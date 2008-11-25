@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       RelationEndPointCollection oppositeEndPoints = new RelationEndPointCollection (_clientTransaction);
 
-      foreach (RelationEndPointID endPointID in domainObject.GetDataContainerForTransaction (_clientTransaction).RelationEndPointIDs)
+      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).RelationEndPointIDs)
         oppositeEndPoints.Combine (GetOppositeRelationEndPoints (this[endPointID]));
 
       return oppositeEndPoints;

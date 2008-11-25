@@ -43,12 +43,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [StorageClassNone]
     public DataContainer InternalDataContainer
     {
-      get { return (DataContainer) PrivateInvoke.InvokeNonPublicMethod (this, typeof (DomainObject), "GetDataContainerForTransaction", ClientTransaction); }
+      get { return GetInternalDataContainerForTransaction (ClientTransaction); }
     }
 
-    public DataContainer GetInternalDataContainerForTransaction(ClientTransaction transaction)
+    public DataContainer GetInternalDataContainerForTransaction (ClientTransaction transaction)
     {
-      return (DataContainer) PrivateInvoke.InvokeNonPublicMethod (this, "GetDataContainerForTransaction", transaction);
+      return (DataContainer) PrivateInvoke.InvokeNonPublicMethod (transaction, typeof (ClientTransaction), "GetDataContainer", this);
     }
 
     public DomainObject GetRelatedObject (string propertyName)

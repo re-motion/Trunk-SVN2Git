@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Transport
     {
       DomainObject existingObject = existingObjects[transportItem.ID];
       if (existingObject != null)
-        return existingObject.GetDataContainerForTransaction (targetTransaction);
+        return targetTransaction.GetDataContainer(existingObject);
       else
       {
         DataContainer targetDataContainer = targetTransaction.CreateNewDataContainer (transportItem.ID);

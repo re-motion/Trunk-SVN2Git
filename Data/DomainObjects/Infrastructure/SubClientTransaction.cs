@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // ensure that parent transaction knows the given object, that way, LoadDataContainer will associate the child DataContainer with it
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
-        domainObject.GetDataContainerForTransaction (ParentTransaction);
+        ParentTransaction.GetDataContainer(domainObject);
       }
 
       using (EnterNonDiscardingScope ())
@@ -191,7 +191,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private DataContainer TransferParentDomainObject (DomainObject parentObject)
     {
-      DataContainer parentDataContainer = parentObject.GetDataContainerForTransaction (ParentTransaction);
+      DataContainer parentDataContainer = ParentTransaction.GetDataContainer(parentObject);
       DataContainer thisDataContainer = TransferParentContainer (parentDataContainer);
 
       thisDataContainer.SetClientTransaction (this);
@@ -220,7 +220,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       if (parentObject != null)
       {
-        DataContainer loadedDataContainer = parentObject.GetDataContainerForTransaction (this);
+        DataContainer loadedDataContainer = this.GetDataContainer(parentObject);
         Assertion.IsTrue (parentObject == loadedDataContainer.DomainObject, "invariant");
       }
       else
@@ -240,7 +240,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       DataContainerCollection transferredContainers = new DataContainerCollection();
       foreach (DomainObject parentObject in parentObjects)
       {
-        DataContainer transferredContainer = TransferParentContainer (parentObject.GetDataContainerForTransaction (ParentTransaction));
+        DataContainer transferredContainer = TransferParentContainer (ParentTransaction.GetDataContainer(parentObject));
         transferredContainers.Add (transferredContainer);
         Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
       }

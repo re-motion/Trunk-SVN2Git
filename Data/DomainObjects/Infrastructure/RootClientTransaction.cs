@@ -202,7 +202,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
         using (PersistenceManager persistenceManager = new PersistenceManager())
         {
-          DataContainer relatedDataContainer = persistenceManager.LoadRelatedDataContainer (domainObject.GetDataContainerForTransaction(this), relationEndPointID);
+          DataContainer relatedDataContainer = persistenceManager.LoadRelatedDataContainer (this.GetDataContainer(domainObject), relationEndPointID);
           if (relatedDataContainer != null)
           {
             TransactionEventSink.ObjectLoading (relatedDataContainer.ID);

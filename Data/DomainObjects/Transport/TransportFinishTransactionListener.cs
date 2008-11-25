@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Transport
       foreach (DomainObject domainObject in domainObjects)
       {
         if (!_filter (domainObject))
-          _transaction.DataManager.DataContainerMap.Rollback (domainObject.GetDataContainerForTransaction (_transaction));
+          _transaction.DataManager.DataContainerMap.Rollback (_transaction.GetDataContainer(domainObject));
       }
     }
 

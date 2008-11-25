@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       foreach (DomainObject deletedDomainObject in deletedDomainObjects)
       {
-        foreach (RelationEndPointID endPointID in deletedDomainObject.GetDataContainerForTransaction (_clientTransaction).RelationEndPointIDs)
+        foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(deletedDomainObject).RelationEndPointIDs)
           Remove (endPointID);
       }
     }
@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       foreach (DomainObject newDomainObject in newDomainObjects)
       {
-        foreach (RelationEndPointID endPointID in newDomainObject.GetDataContainerForTransaction (_clientTransaction).RelationEndPointIDs)
+        foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(newDomainObject).RelationEndPointIDs)
           Remove (endPointID);
       }
     }
@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       CheckClientTransactionForDeletion (domainObject);
-      RelationEndPointID[] relationEndPointIDs = domainObject.GetDataContainerForTransaction (_clientTransaction).RelationEndPointIDs;
+      RelationEndPointID[] relationEndPointIDs = _clientTransaction.GetDataContainer(domainObject).RelationEndPointIDs;
       _transactionEventSink.RelationEndPointMapPerformingDelete (relationEndPointIDs);
 
       foreach (RelationEndPointID endPointID in relationEndPointIDs)
@@ -269,7 +269,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       RelationEndPointCollection allRelationEndPoints = new RelationEndPointCollection (_clientTransaction);
 
-      foreach (RelationEndPointID endPointID in domainObject.GetDataContainerForTransaction (_clientTransaction).RelationEndPointIDs)
+      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).RelationEndPointIDs)
       {
         RelationEndPoint endPoint = GetRelationEndPointWithLazyLoad (endPointID);
 
@@ -297,7 +297,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      foreach (RelationEndPointID endPointID in domainObject.GetDataContainerForTransaction (_clientTransaction).RelationEndPointIDs)
+      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).RelationEndPointIDs)
       {
         if (endPointID.Definition.IsMandatory)
         {

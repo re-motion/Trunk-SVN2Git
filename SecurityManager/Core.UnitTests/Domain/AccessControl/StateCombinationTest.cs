@@ -197,7 +197,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       DataContainer dataContainer =
           (DataContainer)
-          PrivateInvoke.InvokeNonPublicMethod (orderClass, typeof (DomainObject), "GetDataContainerForTransaction", orderClass.ClientTransaction);
+          PrivateInvoke.InvokeNonPublicMethod (orderClass.ClientTransaction, typeof (ClientTransaction), "GetDataContainer", orderClass);
       return dataContainer.State;
     }
 

@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("propertyAccessor", propertyAccessor);
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
-      return propertyAccessor.DomainObject.GetDataContainerForTransaction (transaction).PropertyValues[propertyAccessor.PropertyData.PropertyIdentifier];
+      return ((DataContainer) ((ClientTransaction) transaction).GetDataContainer (propertyAccessor.DomainObject)).PropertyValues[propertyAccessor.PropertyData.PropertyIdentifier];
     }
 
     public bool HasChanged (PropertyAccessor propertyAccessor, ClientTransaction transaction)

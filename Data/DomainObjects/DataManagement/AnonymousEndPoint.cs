@@ -79,7 +79,7 @@ public class AnonymousEndPoint : IEndPoint
   public virtual DataContainer GetDataContainer ()
   {
     DomainObject domainObject = GetDomainObject ();
-    return domainObject.GetDataContainerForTransaction(_clientTransaction);
+    return _clientTransaction.GetDataContainer(domainObject);
   }
 
   public virtual ObjectID ObjectID

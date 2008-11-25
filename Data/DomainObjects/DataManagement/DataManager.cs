@@ -50,6 +50,11 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   // methods and properties
 
+  public ClientTransaction ClientTransaction
+  {
+    get { return _clientTransaction; }
+  }
+
   public DataContainerCollection GetChangedDataContainersForCommit ()
   {
     var changedDataContainers = new DataContainerCollection ();
@@ -58,7 +63,7 @@ public class DataManager : ISerializable, IDeserializationCallback
       if (domainObject.TransactionContext[_clientTransaction].State != StateType.Deleted)
         _relationEndPointMap.CheckMandatoryRelations (domainObject);
 
-      DataContainer dataContainer = domainObject.GetDataContainerForTransaction(_clientTransaction);
+      DataContainer dataContainer = _clientTransaction.GetDataContainer(domainObject);
       if (dataContainer.State != StateType.Unchanged)
         changedDataContainers.Add (dataContainer);
     }
@@ -189,7 +194,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     ArgumentUtility.CheckNotNull ("oppositeEndPointModifications", oppositeEndPointModifications);
 
-    DataContainer dataContainer = domainObject.GetDataContainerForTransaction (_clientTransaction);  // rescue dataContainer before the map deletes is
+    DataContainer dataContainer = _clientTransaction.GetDataContainer(domainObject);  // rescue dataContainer before the map deletes is
     if (dataContainer.State == StateType.Deleted)
       return;
 
@@ -229,7 +234,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
   {
-    return new ClientTransactionsDifferException (string.Format (message, args));
+    return new ClientTransactionsDifferException (String.Format (message, args));
   }
 
   public void MarkDiscarded (DataContainer discardedDataContainer)
@@ -252,7 +257,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
     DataContainer discardedDataContainer;
     if (!_discardedDataContainers.TryGetValue (id, out discardedDataContainer))
-      throw new ArgumentException (string.Format ("The object '{0}' has not been discarded.", id), "id");
+      throw new ArgumentException (String.Format ("The object '{0}' has not been discarded.", id), "id");
     else
       return discardedDataContainer;
   }

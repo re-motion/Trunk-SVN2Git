@@ -71,7 +71,7 @@ public abstract class ClientTransaction
   /// </remarks>
   public static ClientTransaction CreateBindingTransaction ()
   {
-    return ObjectFactory.Create<BindingClientTransaction> ().With ();
+    return ObjectFactory.Create<BindingClientTransaction>().With ();
   }
 
   /// <summary>
@@ -529,7 +529,7 @@ public abstract class ClientTransaction
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     if (domainObject.IsBoundToSpecificTransaction && domainObject.ClientTransaction != this)
     {
-      string message = string.Format ("Cannot enlist the domain object '{0}' in this transaction, because it is already bound to another transaction.",
+      string message = String.Format ("Cannot enlist the domain object '{0}' in this transaction, because it is already bound to another transaction.",
           domainObject.ID);
       throw new InvalidOperationException (message);
     }
@@ -683,7 +683,7 @@ public abstract class ClientTransaction
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction ()
   {
-    ClientTransaction subTransaction = ObjectFactory.Create<SubClientTransaction> ().With (this);
+    ClientTransaction subTransaction = ObjectFactory.Create<SubClientTransaction>().With (this);
     return subTransaction;
   }
 
@@ -927,7 +927,7 @@ public abstract class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-    DataContainer dataContainer = domainObject.GetDataContainerForTransaction (this);
+    DataContainer dataContainer = this.GetDataContainer(domainObject);
     return _dataManager.RelationEndPointMap.HasRelationChanged (dataContainer);
   }
 
@@ -1090,20 +1090,41 @@ public abstract class ClientTransaction
   }
 
   /// <summary>
-  /// Loads the data of an existing object from the datasource.
+  /// Gets the <see cref="DataContainer"/> for a given <see cref="DomainObject"/> in the context of this transaction, loading
+  /// it from the data source if necessary.
   /// </summary>
   /// <remarks>
-  /// This method raises the <see cref="Loaded"/> event.
+  /// This method may raise the <see cref="Loaded"/> event.
   /// </remarks>
   /// <param name="domainObject">A <see cref="DomainObject"/> reference indicating the <see cref="DomainObject"/> whose <see cref="DataContainer"/>
-  /// to load. Must not be <see langword="null"/>.</param>
+  /// to retrieve. Must not be <see langword="null"/>.</param>
   /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
+  /// <exception cref="ObjectDiscardedException">The object has been discarded in the context of this transaction.</exception>
+  /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the context of this transaction.</exception>
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="domainObject"/>.<br /> -or- <br />
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
   ///   An error occurred while accessing the datasource.
   /// </exception>
-  protected internal virtual DataContainer LoadExistingObject (DomainObject domainObject)
+  protected internal DataContainer GetDataContainer (DomainObject domainObject)
+  {
+    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+    ((DomainObjectTransactionContext) domainObject.TransactionContext[this]).CheckIfRightTransaction ();
+
+    if (DataManager.IsDiscarded (domainObject.ID))
+      throw new ObjectDiscardedException (domainObject.ID);
+
+    if (DataManager.DataContainerMap[domainObject.ID] == null)
+      LoadExistingObject (domainObject);
+    
+    DataContainer dataContainer = DataManager.DataContainerMap[domainObject.ID];
+    Assertion.IsNotNull (dataContainer);
+
+    return dataContainer;
+  }
+
+  private void LoadExistingObject (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     using (EnterNonDiscardingScope ())
@@ -1112,8 +1133,6 @@ public abstract class ClientTransaction
 
       var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, true);
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
-
-      return dataContainer;
     }
   }
 

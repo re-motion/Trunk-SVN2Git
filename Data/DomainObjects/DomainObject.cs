@@ -442,19 +442,6 @@ namespace Remotion.Data.DomainObjects
         throw new ObjectDiscardedException (ID);
     }
 
-    internal DataContainer GetDataContainerForTransaction (ClientTransaction transaction)
-    {
-      CheckIfObjectIsDiscarded (transaction);
-      ((DomainObjectTransactionContext) TransactionContext[transaction]).CheckIfRightTransaction ();
-
-      DataContainer dataContainer = transaction.DataManager.DataContainerMap[ID];
-      if (dataContainer == null)
-        dataContainer = transaction.LoadExistingObject (this);
-      Assertion.IsNotNull (dataContainer);
-
-      return dataContainer;
-    }
-
     /// <summary>
     /// Deletes the <see cref="DomainObject"/> in the <see cref="ClientTransaction"/>.
     /// </summary>

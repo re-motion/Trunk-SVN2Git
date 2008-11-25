@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           return StateType.Discarded;
         else
         {
-          DataContainer dataContainer = DomainObject.GetDataContainerForTransaction (AssociatedTransaction);
+          DataContainer dataContainer = AssociatedTransaction.GetDataContainer(DomainObject);
           if (dataContainer.State == StateType.Unchanged)
           {
             if (AssociatedTransaction.HasRelationChanged (DomainObject))
@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       DomainObject.CheckIfObjectIsDiscarded (AssociatedTransaction);
 
-      DataContainer dataContainer = DomainObject.GetDataContainerForTransaction (AssociatedTransaction);
+      DataContainer dataContainer = AssociatedTransaction.GetDataContainer(DomainObject);
       try
       {
         dataContainer.MarkAsChanged ();
