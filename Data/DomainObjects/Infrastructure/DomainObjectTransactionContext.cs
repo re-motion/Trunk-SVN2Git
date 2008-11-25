@@ -58,25 +58,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    // TODO refactoring: Move to utility class.
-    public void CheckIfRightTransaction ()
-    {
-      if (!CanBeUsedInTransaction)
-      {
-        string message = string.Format (
-            "Domain object '{0}' cannot be used in the given transaction as it was loaded or created in another "
-            + "transaction. Enter a scope for the transaction, or call EnlistInTransaction to enlist the object "
-            + "in the transaction. (If no transaction was explicitly given, ClientTransaction.Current was used.)",
-            DomainObject.ID);
-        throw new ClientTransactionsDifferException (message);
-      }
-    }
-
     public StateType State
     {
       get
       {
-        CheckIfRightTransaction ();
+        DomainObjectUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
+
         if (IsDiscarded)
           return StateType.Discarded;
         else
@@ -99,14 +86,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        CheckIfRightTransaction ();
+        DomainObjectUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
         return AssociatedTransaction.DataManager.IsDiscarded (DomainObject.ID); 
       }
     }
 
     public void MarkAsChanged()
     {
-      DomainObject.CheckIfObjectIsDiscarded (AssociatedTransaction);
+      DomainObjectUtility.CheckIfObjectIsDiscarded (DomainObject, AssociatedTransaction);
 
       DataContainer dataContainer = AssociatedTransaction.GetDataContainer(DomainObject);
       try

@@ -315,6 +315,12 @@ namespace Remotion.Data.DomainObjects
       return base.GetType();
     }
 
+    /// <summary>
+    /// Returns a textual representation of this object's <see cref="ID"/>.
+    /// </summary>
+    /// <returns>
+    /// A textual representation of <see cref="ID"/>.
+    /// </returns>
     public override string ToString ()
     {
       return ID.ToString();
@@ -371,7 +377,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public StateType State
     {
-      get { return TransactionContext[GetNonNullClientTransaction()].State; }
+      get { return TransactionContext[DomainObjectUtility.GetNonNullClientTransaction(this)].State; }
     }
 
     /// <summary>
@@ -419,7 +425,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public bool IsDiscarded
     {
-      get { return TransactionContext[GetNonNullClientTransaction ()].IsDiscarded; }
+      get { return TransactionContext[DomainObjectUtility.GetNonNullClientTransaction (this)].IsDiscarded; }
     }
 
     /// <summary>
@@ -430,7 +436,7 @@ namespace Remotion.Data.DomainObjects
     /// in the transaction.</remarks>
     public bool CanBeUsedInTransaction
     {
-      get { return TransactionContext[GetNonNullClientTransaction()].CanBeUsedInTransaction; }
+      get { return TransactionContext[DomainObjectUtility.GetNonNullClientTransaction(this)].CanBeUsedInTransaction; }
     }
 
     /// <summary>
@@ -442,14 +448,13 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
     public void MarkAsChanged ()
     {
-      TransactionContext[GetNonNullClientTransaction ()].MarkAsChanged ();
+      TransactionContext[DomainObjectUtility.GetNonNullClientTransaction (this)].MarkAsChanged ();
     }
 
-    // TODO refactoring: Move to utility class.
-    protected internal void CheckIfObjectIsDiscarded (ClientTransaction transaction)
+    internal void Bind (ClientTransaction bindingTransaction)
     {
-      if (TransactionContext[transaction].IsDiscarded)
-        throw new ObjectDiscardedException (ID);
+      ArgumentUtility.CheckNotNull ("bindingTransaction", bindingTransaction);
+      _bindingTransaction = bindingTransaction;
     }
 
     /// <summary>
@@ -461,16 +466,6 @@ namespace Remotion.Data.DomainObjects
     {
       RepositoryAccessor.DeleteObject (this);
     }
-
-    #region Transaction handling
-
-    internal void Bind (ClientTransaction bindingTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("bindingTransaction", bindingTransaction);
-      _bindingTransaction = bindingTransaction;
-    }
-
-    #endregion
 
     #region Property access
 
@@ -685,16 +680,6 @@ namespace Remotion.Data.DomainObjects
     {
       if (Deleted != null)
         Deleted (this, args);
-    }
-
-    // TODO: Refactor
-    internal ClientTransaction GetNonNullClientTransaction ()
-    {
-      ClientTransaction transaction = ClientTransaction;
-      if (transaction == null)
-        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or this object.");
-      else
-        return transaction;
     }
   }
 }

@@ -70,22 +70,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CheckIfRightTransaction_Works ()
-    {
-      _order1Context.CheckIfRightTransaction ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Domain object 'Order|.*|System.Guid' cannot be used in the "
-        + "given transaction as it was loaded or created in another transaction. Enter a scope for the transaction, or call EnlistInTransaction to "
-        + "enlist the object in the transaction. (If no transaction was explicitly given, ClientTransaction.Current was used.)",
-          MatchType = MessageMatch.Regex)]
-    public void CheckIfRightTransaction_Fails ()
-    {
-      _invalidContext.CheckIfRightTransaction ();
-    }
-
-    [Test]
     public void IsDiscarded_False()
     {
       Assert.That (_newOrderContext.IsDiscarded, Is.False);
