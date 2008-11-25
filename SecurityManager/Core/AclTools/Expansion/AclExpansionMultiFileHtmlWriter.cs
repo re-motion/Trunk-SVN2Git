@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Utilities;
 
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -27,13 +28,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public const string MasterFileName = "_AclExpansionMain_";
 
     private readonly ITextWriterFactory _textWriterFactory;
+    private readonly bool _indentXml;
     private AclExpansionHtmlWriterSettings _detailHtmlWriterSettings = new AclExpansionHtmlWriterSettings();
 
     public AclExpansionMultiFileHtmlWriter (ITextWriterFactory textWriterFactory, bool indentXml)
     {
       _textWriterFactory = textWriterFactory;
-      var textWriter = _textWriterFactory.NewTextWriter (MasterFileName);
-      htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
+      _indentXml = indentXml;
+      //var textWriter = _textWriterFactory.NewTextWriter (MasterFileName);
+      //htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
 
 
@@ -46,20 +49,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
+      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       WriteAclExpansionAsHtml (aclExpansion);
     }
 
 
     public void WriteAclExpansionAsHtml (List<AclExpansionEntry> aclExpansion)
     {
-      WritePageStart ("re-motion ACL Expansion - User Master Table");
+      using (var textWriter = _textWriterFactory.NewTextWriter (MasterFileName))
+      {
+        htmlTagWriter = new HtmlTagWriter (textWriter, _indentXml);
 
-      WriteTableStart ("remotion-user-table");
-      WriteTableHeaders ();
-      WriteTableBody (aclExpansion);
-      WriteTableEnd ();
-
-      WritePageEnd ();
+        WritePageStart ("re-motion ACL Expansion - User Master Table");
+        WriteTableStart ("remotion-user-table");
+        WriteTableHeaders ();
+        WriteTableBody (aclExpansion);
+        WriteTableEnd ();
+        WritePageEnd ();
+      }
     }
 
     private void WriteTableHeaders ()
