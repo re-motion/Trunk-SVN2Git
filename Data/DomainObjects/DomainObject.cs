@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects
   /// </remarks>
   [Serializable]
   [DebuggerDisplay ("{GetPublicDomainObjectType().FullName}: {ID.ToString()}")]
-  public class DomainObject
+  public class DomainObject : IDomainObjectTransactionContext
   {
     // types
 
@@ -464,6 +464,11 @@ namespace Remotion.Data.DomainObjects
     public bool IsDiscarded
     {
       get { return IsDiscardedInTransaction (GetNonNullClientTransaction ()); }
+    }
+
+    bool IDomainObjectTransactionContext.CanBeUsedInTransaction
+    {
+      get { throw new NotImplementedException (); }
     }
 
     /// <summary>
