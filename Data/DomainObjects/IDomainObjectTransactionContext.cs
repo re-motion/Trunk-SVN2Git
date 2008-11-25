@@ -19,7 +19,7 @@ namespace Remotion.Data.DomainObjects
     /// Determines whether this instance can be used in the associated <see cref="ClientTransaction"/>.
     /// </summary>
     /// <remarks>If this property returns false, <see cref="DomainObjects.ClientTransaction.EnlistDomainObject"/> can be used to enlist the object
-    /// in another transaction.</remarks>
+    /// in the transaction.</remarks>
     bool CanBeUsedInTransaction { get; }
 
     /// <summary>

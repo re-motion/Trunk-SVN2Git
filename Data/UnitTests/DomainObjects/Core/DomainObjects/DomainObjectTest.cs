@@ -366,12 +366,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (customer);
-        Assert.That (customer.GetStateForTransaction (ClientTransaction.Current), Is.EqualTo (StateType.Unchanged));
-        Assert.That (customer.GetStateForTransaction (ClientTransactionMock), Is.EqualTo (StateType.Changed));
+        Assert.That (customer.TransactionContext[ClientTransaction.Current].State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (customer.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Changed));
 
         using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
         {
-          Assert.That (customer.GetStateForTransaction (ClientTransactionMock), Is.EqualTo (StateType.Changed)); // must not throw a ClientTransactionDiffersException
+          Assert.That (customer.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Changed)); // must not throw a ClientTransactionDiffersException
         }
       }
     }
@@ -414,8 +414,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       }
       Assert.That (loadedObject.IsDiscarded, Is.False);
 
-      Assert.That (loadedObject.IsDiscardedInTransaction (otherTransaction), Is.True);
-      Assert.That (loadedObject.IsDiscardedInTransaction (ClientTransaction.Current), Is.False);
+      Assert.That (loadedObject.TransactionContext[otherTransaction].IsDiscarded, Is.True);
+      Assert.That (loadedObject.TransactionContext[ClientTransaction.Current].IsDiscarded, Is.False);
     }
 
     [Test]
@@ -720,8 +720,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         order = Order.GetObject (DomainObjectIDs.Order1);
       }
-      Assert.That (order.CanBeUsedInTransaction (clientTransactionMock), Is.True);
-      Assert.That (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction), Is.False);
+      Assert.That (order.TransactionContext[clientTransactionMock].CanBeUsedInTransaction, Is.True);
+      Assert.That (order.TransactionContext[ClientTransactionScope.CurrentTransaction].CanBeUsedInTransaction, Is.False);
     }
 
     [Test]
@@ -739,8 +739,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
         Assert.That (order.State, Is.EqualTo (StateType.Deleted));
       }
-      Assert.That (order.CanBeUsedInTransaction (clientTransactionMock), Is.True);
-      Assert.That (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction), Is.False);
+      Assert.That (order.TransactionContext[clientTransactionMock].CanBeUsedInTransaction, Is.True);
+      Assert.That (order.TransactionContext[ClientTransactionScope.CurrentTransaction].CanBeUsedInTransaction, Is.False);
     }
 
     [Test]
@@ -752,8 +752,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         order = Order.NewObject ();
       }
-      Assert.That (order.CanBeUsedInTransaction (clientTransactionMock), Is.True);
-      Assert.That (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction), Is.False);
+      Assert.That (order.TransactionContext[clientTransactionMock].CanBeUsedInTransaction, Is.True);
+      Assert.That (order.TransactionContext[ClientTransactionScope.CurrentTransaction].CanBeUsedInTransaction, Is.False);
     }
 
     [Test]

@@ -330,14 +330,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets the current state of the <see cref="DomainObject"/> in the <see cref="ClientTransactionScope.CurrentTransaction"/>.
-    /// </summary>
-    public StateType State
-    {
-      get { return GetStateForTransaction (GetNonNullClientTransaction()); }
-    }
-
-    /// <summary>
     /// Gets the transaction used when this <see cref="DomainObject"/> is accessed. If a <see cref="DomainObject"/> is bound to a specific
     /// <see cref="Remotion.Data.DomainObjects.ClientTransaction"/>, this property will return that transaction, otherwise it returns
     /// <see cref="DomainObjects.ClientTransaction.Current"/>.
@@ -359,13 +351,17 @@ namespace Remotion.Data.DomainObjects
       get { return _bindingTransaction ?? ClientTransaction.Current; }
     }
 
-    internal ClientTransaction GetNonNullClientTransaction ()
+    public DomainObjectTransactionContextIndexer TransactionContext
     {
-      ClientTransaction transaction = ClientTransaction;
-      if (transaction == null)
-        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or this object.");
-      else
-        return transaction;
+      get { return new DomainObjectTransactionContextIndexer (this); }
+    }
+
+    /// <summary>
+    /// Gets the current state of the <see cref="DomainObject"/> in the <see cref="ClientTransactionScope.CurrentTransaction"/>.
+    /// </summary>
+    public StateType State
+    {
+      get { return TransactionContext[GetNonNullClientTransaction()].State; }
     }
 
     /// <summary>
@@ -390,11 +386,6 @@ namespace Remotion.Data.DomainObjects
       get { return _bindingTransaction != null; }
     }
 
-    public DomainObjectTransactionContextIndexer TransactionContext
-    {
-      get { return new DomainObjectTransactionContextIndexer (this); }
-    }
-
       /// <summary>
     /// Gets the event manager responsible for raising this object's events.
     /// </summary>
@@ -407,33 +398,6 @@ namespace Remotion.Data.DomainObjects
           _eventManager = new DomainObjectEventManager (this, false);
 
         return _eventManager;
-      }
-    }
-
-    /// <summary>
-    /// Gets the state of this object in a given <see cref="DomainObjects.ClientTransaction"/>.
-    /// </summary>
-    /// <param name="clientTransaction">The client transaction to retrieve the object's state from.</param>
-    /// <returns>The state of this object in the given transaction.</returns>
-    public StateType GetStateForTransaction (ClientTransaction clientTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
-      CheckIfRightTransaction (clientTransaction);
-      if (IsDiscardedInTransaction (clientTransaction))
-        return StateType.Discarded;
-      else
-      {
-        DataContainer dataContainer = GetDataContainerForTransaction (clientTransaction);
-        if (dataContainer.State == StateType.Unchanged)
-        {
-          if (clientTransaction.HasRelationChanged (this))
-            return StateType.Changed;
-          else
-            return StateType.Unchanged;
-        }
-
-        return dataContainer.State;
       }
     }
 
@@ -468,38 +432,31 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public bool IsDiscarded
     {
-      get { return IsDiscardedInTransaction (GetNonNullClientTransaction ()); }
-    }
-
-    bool IDomainObjectTransactionContext.CanBeUsedInTransaction
-    {
-      get { throw new NotImplementedException (); }
+      get { return TransactionContext[GetNonNullClientTransaction ()].IsDiscarded; }
     }
 
     /// <summary>
-    /// Gets a value indicating the discarded status of the object in the given <see cref="DomainObjects.ClientTransaction"/>.
+    /// Determines whether this instance can be used in the <see cref="ClientTransaction"/>.
     /// </summary>
-    /// <param name="transaction">The transaction to check.</param>
-    /// <returns>True if this object is discarded in the given <paramref name="transaction"/>; otherwise, false.</returns>
-    /// <remarks>
-    /// For more information why and when an object is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
-    /// </remarks>
-    public bool IsDiscardedInTransaction (ClientTransaction transaction)
+    /// <value></value>
+    /// <remarks>If this property returns false, <see cref="DomainObjects.ClientTransaction.EnlistDomainObject"/> can be used to enlist the object
+    /// in the transaction.</remarks>
+    public bool CanBeUsedInTransaction
     {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
-      return transaction.DataManager.IsDiscarded (ID);
+      get { return TransactionContext[GetNonNullClientTransaction()].CanBeUsedInTransaction; }
     }
 
+    // TODO refactoring: Move to utility class.
     protected internal void CheckIfObjectIsDiscarded (ClientTransaction transaction)
     {
-      if (IsDiscardedInTransaction (transaction))
+      if (TransactionContext[transaction].IsDiscarded)
         throw new ObjectDiscardedException (ID);
     }
 
     internal DataContainer GetDataContainerForTransaction (ClientTransaction transaction)
     {
       CheckIfObjectIsDiscarded (transaction);
-      CheckIfRightTransaction (transaction);
+      ((DomainObjectTransactionContext) TransactionContext[transaction]).CheckIfRightTransaction ();
 
       DataContainer dataContainer = transaction.DataManager.DataContainerMap[ID];
       if (dataContainer == null)
@@ -525,42 +482,6 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("bindingTransaction", bindingTransaction);
       _bindingTransaction = bindingTransaction;
-    }
-
-    /// <summary>
-    /// Determines whether this instance can be used in the specified transaction.
-    /// </summary>
-    /// <param name="transaction">The transaction to check this object against.</param>
-    /// <returns>
-    /// True if this instance can be used in the specified transaction; otherwise, false.
-    /// </returns>
-    /// <remarks>If this method returns false, <see cref="DomainObjects.ClientTransaction.EnlistDomainObject"/> can be used to enlist this instance in another
-    /// transaction.</remarks>
-    public bool CanBeUsedInTransaction (ClientTransaction transaction)
-    {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
-      if (transaction.IsEnlisted (this))
-        return true;
-      else if (ClientTransactionScope.ActiveScope != null && ClientTransactionScope.ActiveScope.AutoEnlistDomainObjects)
-      {
-        transaction.EnlistDomainObject (this);
-        return true;
-      }
-      else
-        return false;
-    }
-
-    internal void CheckIfRightTransaction (ClientTransaction transaction)
-    {
-      if (!CanBeUsedInTransaction (transaction))
-      {
-        string message = string.Format (
-            "Domain object '{0}' cannot be used in the given transaction as it was loaded or created in another "
-            + "transaction. Enter a scope for the transaction, or call EnlistInTransaction to enlist the object "
-            + "in the transaction. (If no transaction was explicitly given, ClientTransaction.Current was used.)",
-            ID);
-        throw new ClientTransactionsDifferException (message);
-      }
     }
 
     #endregion
@@ -778,6 +699,16 @@ namespace Remotion.Data.DomainObjects
     {
       if (Deleted != null)
         Deleted (this, args);
+    }
+
+    // TODO: Refactor
+    internal ClientTransaction GetNonNullClientTransaction ()
+    {
+      ClientTransaction transaction = ClientTransaction;
+      if (transaction == null)
+        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or this object.");
+      else
+        return transaction;
     }
   }
 }

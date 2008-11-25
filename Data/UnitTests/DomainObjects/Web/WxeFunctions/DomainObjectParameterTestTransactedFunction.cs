@@ -71,8 +71,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     {
       ClientTransaction clientTransaction = Transaction.GetNativeTransaction<ClientTransaction> ();
       Assert.IsTrue (clientTransaction == null || clientTransaction == ClientTransactionScope.CurrentTransaction);
-      Assert.IsTrue (InParameter.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
-      Assert.IsTrue (InParameterArray[0].CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+      Assert.IsTrue (InParameter.CanBeUsedInTransaction);
+      Assert.IsTrue (InParameterArray[0].CanBeUsedInTransaction);
 
       OutParameter = ClassWithAllDataTypes.GetObject (new DomainObjectIDs().ClassWithAllDataTypes1);
       OutParameter.Int32Property = InParameter.Int32Property + 5;

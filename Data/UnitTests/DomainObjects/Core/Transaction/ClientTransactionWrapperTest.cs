@@ -124,15 +124,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       var secondClientTransaction = ClientTransactionMock;
       ITransaction secondTransaction = secondClientTransaction.ToITransation();
-      Assert.That (domainObject1.CanBeUsedInTransaction (secondClientTransaction), Is.False);
-      Assert.That (domainObject2.CanBeUsedInTransaction (secondClientTransaction), Is.False);
+      Assert.That (domainObject1.TransactionContext[secondClientTransaction].CanBeUsedInTransaction, Is.False);
+      Assert.That (domainObject2.TransactionContext[secondClientTransaction].CanBeUsedInTransaction, Is.False);
 
       secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2, domainObject2 });
 
-      Assert.That (domainObject1.CanBeUsedInTransaction (secondClientTransaction), Is.True);
+      Assert.That (domainObject1.TransactionContext[secondClientTransaction].CanBeUsedInTransaction, Is.True);
       Assert.That (secondClientTransaction.DataManager.DataContainerMap.GetObjectWithoutLoading (domainObject1.ID, false), Is.Not.Null);
 
-      Assert.That (domainObject2.CanBeUsedInTransaction (secondClientTransaction), Is.True);
+      Assert.That (domainObject2.TransactionContext[secondClientTransaction].CanBeUsedInTransaction, Is.True);
       Assert.That (secondClientTransaction.DataManager.DataContainerMap.GetObjectWithoutLoading (domainObject2.ID, false), Is.Not.Null);
     }
 
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (clientTransactionAfter.EnterNonDiscardingScope())
       {
-        Assert.That (order.CanBeUsedInTransaction (clientTransactionAfter), Is.True);
+        Assert.That (order.TransactionContext[clientTransactionAfter].CanBeUsedInTransaction, Is.True);
         Assert.That (order.OrderNumber, Is.EqualTo (1));
 
         Assert.That (addedCalled, Is.False);
@@ -237,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (clientTransactionAfter.EnterNonDiscardingScope())
       {
-        Assert.That (order.CanBeUsedInTransaction (clientTransactionAfter), Is.True);
+        Assert.That (order.TransactionContext[clientTransactionAfter].CanBeUsedInTransaction, Is.True);
         Assert.That (order.OrderNumber, Is.EqualTo (1));
 
         Assert.That (addedCalled, Is.False);

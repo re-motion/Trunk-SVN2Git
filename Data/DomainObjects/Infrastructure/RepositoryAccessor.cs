@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ClientTransaction transaction = objectToBeDeleted.GetNonNullClientTransaction();
 
       objectToBeDeleted.CheckIfObjectIsDiscarded (transaction);
-      objectToBeDeleted.CheckIfRightTransaction (transaction);
+      ((DomainObjectTransactionContext) objectToBeDeleted.TransactionContext[transaction]).CheckIfRightTransaction ();
       transaction.Delete (objectToBeDeleted);
     }
 

@@ -76,8 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
         Assert.IsTrue (results.Length > 0);
 
         Order order = (Order) results[0];
-        Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionMock));
-        Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsFalse (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
+        Assert.IsTrue (order.CanBeUsedInTransaction);
       }
     }
 

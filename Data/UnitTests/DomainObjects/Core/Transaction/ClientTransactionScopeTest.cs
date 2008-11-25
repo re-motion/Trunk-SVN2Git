@@ -362,11 +362,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void NoAutoEnlistingByDefault ()
     {
       Order order = Order.GetObject (new DomainObjectIDs().Order1);
-      Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+      Assert.IsTrue (order.CanBeUsedInTransaction);
       using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         Assert.IsFalse (scope.AutoEnlistDomainObjects);
-        Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsFalse (order.CanBeUsedInTransaction);
       }
     }
 
@@ -376,26 +376,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order1 = Order.GetObject (new DomainObjectIDs().Order1);
       Order order2 = Order.GetObject (new DomainObjectIDs().Order2);
 
-      Assert.IsTrue (order1.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+      Assert.IsTrue (order1.CanBeUsedInTransaction);
       ClientTransaction clientTransaction = ClientTransaction.CreateRootTransaction();
 
       using (ClientTransactionScope scope = clientTransaction.EnterNonDiscardingScope())
       {
         scope.AutoEnlistDomainObjects = true;
-        Assert.IsTrue (order1.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsTrue (order1.CanBeUsedInTransaction);
         scope.AutoEnlistDomainObjects = false;
-        Assert.IsTrue (order1.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
-        Assert.IsFalse (order2.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsTrue (order1.CanBeUsedInTransaction);
+        Assert.IsFalse (order2.CanBeUsedInTransaction);
       }
 
       using (ClientTransactionScope scope = clientTransaction.EnterNonDiscardingScope())
       {
         Assert.IsFalse (scope.AutoEnlistDomainObjects);
-        Assert.IsFalse (order2.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsFalse (order2.CanBeUsedInTransaction);
         scope.AutoEnlistDomainObjects = true;
-        Assert.IsTrue (order2.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsTrue (order2.CanBeUsedInTransaction);
         scope.AutoEnlistDomainObjects = false;
-        Assert.IsTrue (order2.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsTrue (order2.CanBeUsedInTransaction);
       }
     }
 

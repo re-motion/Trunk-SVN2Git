@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void CanBeUsedInTransaction ()
     {
       Order order = GetBound<Order>(DomainObjectIDs.Order1);
-      Assert.IsTrue (order.CanBeUsedInTransaction (_bindingTransaction));
+      Assert.IsTrue (order.TransactionContext[_bindingTransaction].CanBeUsedInTransaction);
     }
 
     [Test]
@@ -114,8 +114,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         Order order = GetBound<Order> (DomainObjectIDs.Order1);
-        Assert.IsTrue (order.CanBeUsedInTransaction (_bindingTransaction));
-        Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransaction.Current));
+        Assert.IsTrue (order.TransactionContext[_bindingTransaction].CanBeUsedInTransaction);
+        Assert.IsFalse (order.TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction);
       }
     }
 

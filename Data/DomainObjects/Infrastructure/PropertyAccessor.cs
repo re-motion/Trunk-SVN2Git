@@ -299,7 +299,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private void CheckTransactionalStatus (ClientTransaction transaction)
     {
       _domainObject.CheckIfObjectIsDiscarded (transaction);
-      _domainObject.CheckIfRightTransaction (transaction);
+      ((DomainObjectTransactionContext) _domainObject.TransactionContext[transaction]).CheckIfRightTransaction ();
     }
 
     private void CheckType (Type typeToCheck)

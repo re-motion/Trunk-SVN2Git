@@ -136,8 +136,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         Assert.AreSame (subTransaction, ClientTransactionScope.CurrentTransaction);
         Order order = Order.NewObject ();
-        Assert.IsTrue (order.CanBeUsedInTransaction (subTransaction));
-        Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
+        Assert.IsTrue (order.TransactionContext[subTransaction].CanBeUsedInTransaction);
+        Assert.IsTrue (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
 
         order.OrderNumber = 4711;
         Assert.AreEqual (4711, order.OrderNumber);
@@ -148,8 +148,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
         Assert.IsNotNull (ceo);
-        Assert.IsTrue (ceo.CanBeUsedInTransaction (subTransaction));
-        Assert.IsTrue (ceo.CanBeUsedInTransaction (ClientTransactionMock));
+        Assert.IsTrue (ceo.TransactionContext[subTransaction].CanBeUsedInTransaction);
+        Assert.IsTrue (ceo.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
 
         Assert.AreSame (ceo.Company, Company.GetObject (DomainObjectIDs.Company1));
       }
@@ -160,8 +160,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = Order.NewObject ();
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
-      Assert.IsTrue (order.CanBeUsedInTransaction (subTransaction));
+      Assert.IsTrue (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
+      Assert.IsTrue (order.TransactionContext[subTransaction].CanBeUsedInTransaction);
     }
 
     [Test]
@@ -171,8 +171,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (subTransaction.EnterDiscardingScope ())
       {
         Order order = Order.NewObject();
-        Assert.IsTrue (order.CanBeUsedInTransaction (subTransaction));
-        Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
+        Assert.IsTrue (order.TransactionContext[subTransaction].CanBeUsedInTransaction);
+        Assert.IsTrue (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
       }
     }
 
@@ -181,8 +181,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
-      Assert.IsTrue (order.CanBeUsedInTransaction (subTransaction));
+      Assert.IsTrue (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
+      Assert.IsTrue (order.TransactionContext[subTransaction].CanBeUsedInTransaction);
     }
 
     [Test]
@@ -192,8 +192,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (subTransaction.EnterDiscardingScope ())
       {
         Order order = Order.GetObject (DomainObjectIDs.Order1);
-        Assert.IsTrue (order.CanBeUsedInTransaction (subTransaction));
-        Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
+        Assert.IsTrue (order.TransactionContext[subTransaction].CanBeUsedInTransaction);
+        Assert.IsTrue (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
       }
     }
 

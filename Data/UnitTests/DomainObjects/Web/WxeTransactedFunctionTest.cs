@@ -188,10 +188,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         ClassWithAllDataTypes outParameter = function.OutParameter;
         ClassWithAllDataTypes[] outParameterArray = function.OutParameterArray;
 
-        Assert.IsTrue (outParameter.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsTrue (outParameter.CanBeUsedInTransaction);
         Assert.AreEqual (12, outParameter.Int32Property);
 
-        Assert.IsTrue (outParameterArray[0].CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsTrue (outParameterArray[0].CanBeUsedInTransaction);
         Assert.AreEqual (13, outParameterArray[0].Int32Property);
       }
     }
@@ -225,8 +225,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         ClassWithAllDataTypes outParameter = function.OutParameter;
         ClassWithAllDataTypes[] outParameterArray = function.OutParameterArray;
 
-        Assert.IsFalse (outParameter.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
-        Assert.IsFalse (outParameterArray[0].CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+        Assert.IsFalse (outParameter.CanBeUsedInTransaction);
+        Assert.IsFalse (outParameterArray[0].CanBeUsedInTransaction);
       }
     }
 

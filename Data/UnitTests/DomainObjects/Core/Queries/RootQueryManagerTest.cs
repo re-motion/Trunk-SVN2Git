@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.AreEqual (2, orders.Count, "Order count");
 
       foreach (Order order in orders)
-        Assert.IsTrue (order.CanBeUsedInTransaction (ClientTransactionMock));
+        Assert.IsTrue (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
 
       int orderNumberSum = 0;
       foreach (Order order in orders)
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       {
         foreach (Order order in orders)
         {
-          if (!order.CanBeUsedInTransaction (newTransaction))
+          if (!order.TransactionContext[newTransaction].CanBeUsedInTransaction)
             newTransaction.EnlistDomainObject (order);  // this throws because there is already _another_ instance of Order1 enlisted
         }
       }

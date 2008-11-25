@@ -51,10 +51,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
       ClassWithAllDataTypes outParameter = childFunction.OutParameter;
       ClassWithAllDataTypes[] outParameterArray = childFunction.OutParameterArray;
 
-      Assert.IsTrue (outParameter.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+      Assert.IsTrue (outParameter.CanBeUsedInTransaction);
       Assert.AreEqual (52, outParameter.Int32Property); // 47 + 5
 
-      Assert.IsTrue (outParameterArray[0].CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
+      Assert.IsTrue (outParameterArray[0].CanBeUsedInTransaction);
       Assert.AreEqual (52, outParameterArray[0].Int32Property); // 48 + 5
     }
   }

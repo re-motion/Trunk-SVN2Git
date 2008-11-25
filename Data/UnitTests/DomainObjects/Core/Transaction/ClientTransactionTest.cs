@@ -618,7 +618,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         Order order = Order.GetObject (DomainObjectIDs.Order1);
 
         Assert.AreSame (clientTransaction, order.InternalDataContainer.ClientTransaction);
-        Assert.IsTrue (order.CanBeUsedInTransaction (clientTransaction));
+        Assert.IsTrue (order.TransactionContext[clientTransaction].CanBeUsedInTransaction);
       }
     }
 
@@ -635,7 +635,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         order = Order.GetObject (DomainObjectIDs.Order1, true);
         Assert.AreEqual (StateType.Deleted, order.State);
         Assert.AreSame (clientTransaction, order.InternalDataContainer.ClientTransaction);
-        Assert.IsTrue (order.CanBeUsedInTransaction (clientTransaction));
+        Assert.IsTrue (order.TransactionContext[clientTransaction].CanBeUsedInTransaction);
       }
     }
 
@@ -806,14 +806,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       var clientTransactionMock = new ClientTransactionMock ();
       var order = (Order) clientTransactionMock.GetObject (DomainObjectIDs.Order1);
-      Assert.IsFalse (order.CanBeUsedInTransaction (ClientTransactionScope.CurrentTransaction));
-      Assert.IsTrue (order.CanBeUsedInTransaction (clientTransactionMock));
+      Assert.IsFalse (order.TransactionContext[ClientTransactionScope.CurrentTransaction].CanBeUsedInTransaction);
+      Assert.IsTrue (order.TransactionContext[clientTransactionMock].CanBeUsedInTransaction);
 
       using (clientTransactionMock.EnterDiscardingScope ())
       {
-        Assert.IsTrue (order.OrderTicket.CanBeUsedInTransaction (clientTransactionMock));
-        Assert.IsTrue (order.Official.CanBeUsedInTransaction (clientTransactionMock));
-        Assert.IsTrue (order.OrderItems[0].CanBeUsedInTransaction (clientTransactionMock));
+        Assert.IsTrue (order.OrderTicket.TransactionContext[clientTransactionMock].CanBeUsedInTransaction);
+        Assert.IsTrue (order.Official.TransactionContext[clientTransactionMock].CanBeUsedInTransaction);
+        Assert.IsTrue (order.OrderItems[0].TransactionContext[clientTransactionMock].CanBeUsedInTransaction);
       }
     }
 

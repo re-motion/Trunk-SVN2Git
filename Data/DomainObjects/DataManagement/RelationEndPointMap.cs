@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         oppositeEndPointModifications.Perform();
         endPoint.PerformDelete();
 
-        if (domainObject.GetStateForTransaction (_clientTransaction) == StateType.New)
+        if (domainObject.TransactionContext[_clientTransaction].State == StateType.New)
           Remove (endPointID);
       }
     }
@@ -378,7 +378,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void CheckDeleted (DomainObject domainObject)
     {
-      if (domainObject != null && domainObject.GetStateForTransaction (_clientTransaction) == StateType.Deleted)
+      if (domainObject != null && domainObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
         throw new ObjectDeletedException (domainObject.ID);
     }
 
@@ -489,7 +489,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void CheckClientTransactionForInsertionIntoCollectionEndPoint (RelationEndPointID endPointID, DomainObject newRelatedObject, int index)
     {
-      if (newRelatedObject != null && !newRelatedObject.CanBeUsedInTransaction (_clientTransaction))
+      if (newRelatedObject != null && !newRelatedObject.TransactionContext[_clientTransaction].CanBeUsedInTransaction)
       {
         throw CreateClientTransactionsDifferException (
             "Cannot insert DomainObject '{0}' at position {1} into collection of property '{2}' of DomainObject '{3}',"
@@ -503,7 +503,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void CheckClientTransactionForRemovalFromCollectionEndPoint (RelationEndPointID endPointID, DomainObject relatedObject)
     {
-      if (relatedObject != null && !relatedObject.CanBeUsedInTransaction (_clientTransaction))
+      if (relatedObject != null && !relatedObject.TransactionContext[_clientTransaction].CanBeUsedInTransaction)
       {
         throw CreateClientTransactionsDifferException (
             "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}',"
@@ -516,7 +516,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void CheckClientTransactionForObjectEndPoint (RelationEndPointID endPointID, DomainObject newRelatedObject)
     {
-      if (newRelatedObject != null && !newRelatedObject.CanBeUsedInTransaction (_clientTransaction))
+      if (newRelatedObject != null && !newRelatedObject.TransactionContext[_clientTransaction].CanBeUsedInTransaction)
       {
         throw CreateClientTransactionsDifferException (
             "Property '{0}' of DomainObject '{1}' cannot be set to DomainObject '{2}',"
@@ -529,7 +529,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void CheckClientTransactionForReplacementInCollectionEndPoint (RelationEndPointID endPointID, DomainObject newRelatedObject, int index)
     {
-      if (newRelatedObject != null && !newRelatedObject.CanBeUsedInTransaction (_clientTransaction))
+      if (newRelatedObject != null && !newRelatedObject.TransactionContext[_clientTransaction].CanBeUsedInTransaction)
       {
         throw CreateClientTransactionsDifferException (
             "Cannot replace DomainObject at position {0} with DomainObject '{1}'"
@@ -544,7 +544,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void CheckClientTransactionForDeletion (DomainObject domainObject)
     {
-      if (!domainObject.CanBeUsedInTransaction (_clientTransaction))
+      if (!domainObject.TransactionContext[_clientTransaction].CanBeUsedInTransaction)
       {
         throw CreateClientTransactionsDifferException (
             "Cannot remove DomainObject '{0}' from RelationEndPointMap, because it belongs to a different ClientTransaction.",

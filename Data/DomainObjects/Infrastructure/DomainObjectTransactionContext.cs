@@ -13,6 +13,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
+  /// <summary>
+  /// Provides the default implementation of the <see cref="IDomainObjectTransactionContext"/> interface.
+  /// Represents the context of a <see cref="DomainObject"/> that is associated with a specific <see cref="ClientTransaction"/>.
+  /// </summary>
   public class DomainObjectTransactionContext : IDomainObjectTransactionContext
   {
     private readonly DomainObject _domainObject;
@@ -53,6 +57,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    // TODO refactoring: Move to utility class.
     public void CheckIfRightTransaction ()
     {
       if (!CanBeUsedInTransaction)

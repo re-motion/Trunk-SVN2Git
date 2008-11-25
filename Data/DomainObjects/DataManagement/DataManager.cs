@@ -52,10 +52,10 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   public DataContainerCollection GetChangedDataContainersForCommit ()
   {
-    DataContainerCollection changedDataContainers = new DataContainerCollection ();
+    var changedDataContainers = new DataContainerCollection ();
     foreach (DomainObject domainObject in GetChangedDomainObjects ())
     {
-      if (domainObject.GetStateForTransaction (_clientTransaction) != StateType.Deleted)
+      if (domainObject.TransactionContext[_clientTransaction].State != StateType.Deleted)
         _relationEndPointMap.CheckMandatoryRelations (domainObject);
 
       DataContainer dataContainer = domainObject.GetDataContainerForTransaction(_clientTransaction);
@@ -89,7 +89,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
     foreach (DataContainer dataContainer in _dataContainerMap)
     {
-      StateType domainObjectState = dataContainer.DomainObject.GetStateForTransaction (_clientTransaction);
+      StateType domainObjectState = dataContainer.DomainObject.TransactionContext[_clientTransaction].State;
       if (includeChanged && domainObjectState == StateType.Changed)
         domainObjects.Add (dataContainer.DomainObject);
 
@@ -173,7 +173,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     CheckClientTransactionForDeletion (domainObject);
 
-    if (domainObject.GetStateForTransaction (_clientTransaction) == StateType.Deleted)
+    if (domainObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
       return;
 
     RelationEndPointModificationCollection oppositeEndPointModifications =
@@ -219,7 +219,7 @@ public class DataManager : ISerializable, IDeserializationCallback
 
   private void CheckClientTransactionForDeletion (DomainObject domainObject)
   {
-    if (!domainObject.CanBeUsedInTransaction (_clientTransaction))
+    if (!domainObject.TransactionContext[_clientTransaction].CanBeUsedInTransaction)
     {
       throw CreateClientTransactionsDifferException (
           "Cannot delete DomainObject '{0}', because it belongs to a different ClientTransaction.",

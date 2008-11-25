@@ -196,7 +196,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public IEnumerable<PropertyAccessor> AsEnumerable (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
-      _domainObject.CheckIfRightTransaction (transaction);
+      ((DomainObjectTransactionContext) _domainObject.TransactionContext[transaction]).CheckIfRightTransaction();
 
       ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
 
