@@ -86,7 +86,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         //{
         //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
         //  aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-        //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+        //  aclExpansionHtmlWriter.WriteAclExpansion ();
         //}
 
 

@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-      //WriteAclExpansionAsHtml ();
+      //WriteAclExpansion ();
       throw new NotImplementedException();
     }
 

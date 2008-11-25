@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var stringWriterFactory = new StringWriterFactory();
         stringWriterFactory.Directory = "";
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (stringWriterFactory, false);
-        aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+        aclExpansionMultiFileHtmlWriter.WriteAclExpansion (aclExpansionEntryList);
         //To.ConsoleLine.e (stringWriterFactory);
         //Clipboard.SetText(WriteStringWriterFactory (stringWriterFactory));
 
@@ -92,7 +92,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var streamWriterFactory = new StreamWriterFactory ();
         streamWriterFactory.Directory = Path.Combine ("c:\\temp\\AclExpansions", "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (streamWriterFactory, true);
-        aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansionEntryList);
+        aclExpansionMultiFileHtmlWriter.WriteAclExpansion (aclExpansionEntryList);
         //var result = stringWriter.ToString();
         //To.ConsoleLine.e (streamWriterFactory);
       }
@@ -124,7 +124,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     //  var stringWriter = new StringWriter ();
     //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, stringWriter, true);
     //  aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-    //  aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+    //  aclExpansionHtmlWriter.WriteAclExpansion ();
     //  string result = stringWriter.ToString ();
     //  //To.ConsoleLine.e (() => result);
     //  Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (3)"));

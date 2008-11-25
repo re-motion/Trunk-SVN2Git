@@ -900,7 +900,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     //    {
     //      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
     //      aclExpansionHtmlWriter.Settings.OutputDenyRights = true;
-    //      aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+    //      aclExpansionHtmlWriter.WriteAclExpansion ();
     //      string result = textWriter.ToString ();
     //      //To.ConsoleLine.e (() => result);
     //      Assert.That (result, NUnitText.Contains ("Denied Rights</th>"));

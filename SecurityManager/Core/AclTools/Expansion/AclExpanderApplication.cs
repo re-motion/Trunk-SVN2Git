@@ -130,7 +130,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
       aclExpansionMultiFileHtmlWriter.DetailHtmlWriterSettings = CreateAclExpansionHtmlWriterSettings();
-      aclExpansionMultiFileHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+      aclExpansionMultiFileHtmlWriter.WriteAclExpansion (aclExpansion);
       
       //File.Copy (Path.Combine (".", CssFileName), Path.Combine (DirectoryUsed, CssFileName), true);
       WriteCssFile ();

@@ -47,15 +47,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
+    //public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
+    //{
+    //  ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
+    //  WriteAclExpansion (aclExpansion);
+    //}
+
+
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-      WriteAclExpansionAsHtml (aclExpansion);
-    }
-
-
-    public void WriteAclExpansionAsHtml (List<AclExpansionEntry> aclExpansion)
-    {
       using (var textWriter = _textWriterFactory.NewTextWriter (MasterFileName))
       {
         htmlTagWriter = new HtmlTagWriter (textWriter, _indentXml);
