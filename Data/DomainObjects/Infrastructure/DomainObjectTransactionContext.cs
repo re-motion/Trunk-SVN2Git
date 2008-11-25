@@ -8,6 +8,7 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
@@ -100,6 +101,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         CheckIfRightTransaction ();
         return AssociatedTransaction.DataManager.IsDiscarded (DomainObject.ID); 
+      }
+    }
+
+    public void MarkAsChanged()
+    {
+      DomainObject.CheckIfObjectIsDiscarded (AssociatedTransaction);
+
+      DataContainer dataContainer = DomainObject.GetDataContainerForTransaction (AssociatedTransaction);
+      try
+      {
+        dataContainer.MarkAsChanged ();
+      }
+      catch (InvalidOperationException ex)
+      {
+        throw new InvalidOperationException ("Only existing DomainObjects can be marked as changed.", ex);
       }
     }
   }

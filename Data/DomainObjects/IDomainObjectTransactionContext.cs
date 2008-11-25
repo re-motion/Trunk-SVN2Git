@@ -8,6 +8,9 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
+using System;
+using Remotion.Data.DomainObjects.DataManagement;
+
 namespace Remotion.Data.DomainObjects
 {
   /// <summary>
@@ -34,5 +37,14 @@ namespace Remotion.Data.DomainObjects
     /// For more information why and when an object is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
     /// </remarks>
     bool IsDiscarded { get; }
+
+    /// <summary>
+    /// Marks the <see cref="DomainObject"/> as changed. If the object's previous <see cref="DomainObject.State"/> was <see cref="StateType.Unchanged"/>, it
+    /// will be <see cref="StateType.Changed"/> after this method has been called.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">This object is not in state <see cref="StateType.Changed"/> or <see cref="StateType.Unchanged"/>.
+    /// New or deleted objects cannot be marked as changed.</exception>
+    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    void MarkAsChanged ();
   }
 }

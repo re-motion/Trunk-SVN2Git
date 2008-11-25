@@ -402,29 +402,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Marks the <see cref="DomainObject"/> as changed. If the object's previous <see cref="State"/> was <see cref="StateType.Unchanged"/>, it
-    /// will be <see cref="StateType.Changed"/> after this method has been called.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">This object is not in state <see cref="StateType.Changed"/> or <see cref="StateType.Unchanged"/>.
-    /// New or deleted objects cannot be marked as changed.</exception>
-    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
-    public void MarkAsChanged ()
-    {
-      ClientTransaction transaction = GetNonNullClientTransaction();
-      CheckIfObjectIsDiscarded (transaction);
-
-      DataContainer dataContainer = GetDataContainerForTransaction (transaction);
-      try
-      {
-        dataContainer.MarkAsChanged();
-      }
-      catch (InvalidOperationException ex)
-      {
-        throw new InvalidOperationException ("Only existing DomainObjects can be marked as changed.", ex);
-      }
-    }
-
-    /// <summary>
     /// Gets a value indicating the discarded status of the object in the <see cref="ClientTransaction"/>.
     /// </summary>
     /// <remarks>
@@ -444,6 +421,18 @@ namespace Remotion.Data.DomainObjects
     public bool CanBeUsedInTransaction
     {
       get { return TransactionContext[GetNonNullClientTransaction()].CanBeUsedInTransaction; }
+    }
+
+    /// <summary>
+    /// Marks the <see cref="DomainObject"/> as changed. If the object's previous <see cref="State"/> was <see cref="StateType.Unchanged"/>, it
+    /// will be <see cref="StateType.Changed"/> after this method has been called.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">This object is not in state <see cref="StateType.Changed"/> or <see cref="StateType.Unchanged"/>.
+    /// New or deleted objects cannot be marked as changed.</exception>
+    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    public void MarkAsChanged ()
+    {
+      TransactionContext[GetNonNullClientTransaction ()].MarkAsChanged ();
     }
 
     // TODO refactoring: Move to utility class.

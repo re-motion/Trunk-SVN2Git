@@ -111,10 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void IsDiscarded_True ()
     {
-      using (_newOrderContext.AssociatedTransaction.EnterNonDiscardingScope ())
-      {
-        _newOrder.Delete();
-      }
+      DeleteNewOrder ();
       Assert.That (_newOrderContext.IsDiscarded, Is.True);
     }
 
@@ -128,10 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void State_IsDiscarded ()
     {
-      using (_newOrderContext.AssociatedTransaction.EnterNonDiscardingScope ())
-      {
-        _newOrder.Delete ();
-      }
+      DeleteNewOrder();
       Assert.That (_newOrderContext.State, Is.EqualTo (StateType.Discarded));
     }
 
@@ -140,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       Assert.That (_newOrderContext.State, Is.EqualTo (StateType.New));
       Assert.That (_order1Context.State, Is.EqualTo (StateType.Unchanged));
-      using (_newOrderContext.AssociatedTransaction.EnterNonDiscardingScope ())
+      using (_order1Context.AssociatedTransaction.EnterNonDiscardingScope ())
       {
         _order1.OrderNumber = 2;
       }
@@ -150,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void State_FromDataContainer_WithChangedRelation ()
     {
-      using (_newOrderContext.AssociatedTransaction.EnterNonDiscardingScope ())
+      using (_order1Context.AssociatedTransaction.EnterNonDiscardingScope ())
       {
         _order1.OrderItems.Clear();
       }
@@ -162,6 +156,68 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void State_InvalidTransaction ()
     {
       Dev.Null = _invalidContext.State;
+    }
+
+    [Test]
+    public void MarkAsChanged_Unchanged()
+    {
+      Assert.That (_order1Context.State, Is.EqualTo (StateType.Unchanged));
+      _order1Context.MarkAsChanged ();
+      Assert.That (_order1Context.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void MarkAsChanged_Changed ()
+    {
+      using (_order1Context.AssociatedTransaction.EnterNonDiscardingScope ())
+      {
+        _order1.OrderNumber = 2;
+      }
+
+      Assert.That (_order1Context.State, Is.EqualTo (StateType.Changed));
+      _order1Context.MarkAsChanged ();
+      Assert.That (_order1Context.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DomainObjects can be marked as changed.")]
+    public void MarkAsChanged_New ()
+    {
+      Assert.That (_newOrderContext.State, Is.EqualTo (StateType.New));
+      _newOrderContext.MarkAsChanged ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DomainObjects can be marked as changed.")]
+    public void MarkAsChanged_Deleted ()
+    {
+      DeleteOrder1 ();
+      Assert.That (_order1Context.State, Is.EqualTo (StateType.Deleted));
+      _order1Context.MarkAsChanged ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDiscardedException))]
+    public void MarkAsChanged_Discarded ()
+    {
+      DeleteNewOrder ();
+      _newOrderContext.MarkAsChanged ();
+    }
+
+    private void DeleteNewOrder ()
+    {
+      using (_newOrderContext.AssociatedTransaction.EnterNonDiscardingScope ())
+      {
+        _newOrder.Delete ();
+      }
+    }
+
+    private void DeleteOrder1 ()
+    {
+      using (_order1Context.AssociatedTransaction.EnterNonDiscardingScope ())
+      {
+        _order1.Delete ();
+      }
     }
   }
 }
