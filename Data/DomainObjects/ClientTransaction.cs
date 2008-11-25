@@ -784,7 +784,7 @@ public abstract class ClientTransaction
   protected internal virtual DomainObject GetObject (ObjectID id, bool includeDeleted)
   {
     ArgumentUtility.CheckNotNull ("id", id);
-    return _dataManager.DataContainerMap.GetObject (id, includeDeleted);
+    return _dataManager.DataContainerMap.GetObjectWithoutLoading (id, includeDeleted) ?? LoadObject (id);
   }
 
   /// <summary>

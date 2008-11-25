@@ -51,13 +51,6 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
     get { return _dataContainers.Count; }
   }
 
-  public DomainObject GetObject (ObjectID id, bool includeDeleted)
-  {
-    ArgumentUtility.CheckNotNull ("id", id);
-
-    return GetObjectWithoutLoading (id, includeDeleted) ?? _clientTransaction.LoadObject (id);
-  }
-
   public DomainObject GetObjectWithoutLoading (ObjectID id, bool includeDeleted)
   {
     if (_dataContainers.Contains (id))
