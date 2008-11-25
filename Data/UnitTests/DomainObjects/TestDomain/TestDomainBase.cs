@@ -92,11 +92,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     {
       get { return (DomainObjectEventManager) PrivateInvoke.GetNonPublicProperty (this, typeof (DomainObject), "EventManager"); }
     }
-
-    public new DomainObjectGraphTraverser GetGraphTraverser(IGraphTraversalStrategy stragety)
-    {
-      return base.GetGraphTraverser (stragety);
-    }
   }
 }
 #pragma warning restore 0618

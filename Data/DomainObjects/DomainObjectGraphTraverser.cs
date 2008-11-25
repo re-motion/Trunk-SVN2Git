@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects
     private readonly IGraphTraversalStrategy _strategy;
     private readonly DomainObject _rootObject;
 
-    internal DomainObjectGraphTraverser (DomainObject rootObject, IGraphTraversalStrategy strategy)
+    public DomainObjectGraphTraverser (DomainObject rootObject, IGraphTraversalStrategy strategy)
     {
       ArgumentUtility.CheckNotNull ("rootObject", rootObject);
       ArgumentUtility.CheckNotNull ("strategy", strategy);

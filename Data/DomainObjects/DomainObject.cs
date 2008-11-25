@@ -571,12 +571,6 @@ namespace Remotion.Data.DomainObjects
         return _properties;
       }
     }
-
-    protected internal DomainObjectGraphTraverser GetGraphTraverser (IGraphTraversalStrategy strategy)
-    {
-      return new DomainObjectGraphTraverser (this, strategy);
-    }
-
     #endregion
 
     /// <summary>

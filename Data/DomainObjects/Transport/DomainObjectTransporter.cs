@@ -186,7 +186,7 @@ namespace Remotion.Data.DomainObjects.Transport
       DomainObject sourceObject = _transportTransaction.GetObject (objectID, false);
       using (_transportTransaction.EnterNonDiscardingScope ())
       {
-        Set<DomainObject> graph = sourceObject.GetGraphTraverser (strategy).GetFlattenedRelatedObjectGraph ();
+        Set<DomainObject> graph = new DomainObjectGraphTraverser (sourceObject, strategy).GetFlattenedRelatedObjectGraph ();
         foreach (DomainObject domainObject in graph)
           Load (domainObject.ID); // explicitly call load rather than just implicitly loading it into the transaction for consistency
         return graph;

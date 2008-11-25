@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetFlattenedRelatedObjectGraph_ContainsRoot ()
     {
       Order order = GetTestGraph();
-      Set<DomainObject> graph = order.GetGraphTraverser(FullGraphTraversalStrategy.Instance).GetFlattenedRelatedObjectGraph ();
+      Set<DomainObject> graph = new DomainObjectGraphTraverser (order, FullGraphTraversalStrategy.Instance).GetFlattenedRelatedObjectGraph ();
 
       Assert.That (graph, List.Contains (order));
     }
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetFlattenedRelatedObjectGraph_ContainsRelatedObjects ()
     {
       Order order = GetTestGraph();
-      Set<DomainObject> graph = order.GetGraphTraverser(FullGraphTraversalStrategy.Instance).GetFlattenedRelatedObjectGraph ();
+      Set<DomainObject> graph = new DomainObjectGraphTraverser (order, FullGraphTraversalStrategy.Instance).GetFlattenedRelatedObjectGraph ();
 
       foreach (DomainObject relatedObject in order.Properties.GetAllRelatedObjects())
         Assert.That (graph, List.Contains (relatedObject));
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetFlattenedRelatedObjectGraph_ContainsIndirectRelatedObjects ()
     {
       Order order = GetTestGraph();
-      Set<DomainObject> graph = order.GetGraphTraverser(FullGraphTraversalStrategy.Instance).GetFlattenedRelatedObjectGraph ();
+      Set<DomainObject> graph = new DomainObjectGraphTraverser (order, FullGraphTraversalStrategy.Instance).GetFlattenedRelatedObjectGraph ();
 
       Assert.That (graph, List.Contains (order.Customer.Ceo));
     }
@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       repository.ReplayAll();
 
-      Set<DomainObject> result = order.GetGraphTraverser (strategy).GetFlattenedRelatedObjectGraph();
+      Set<DomainObject> result = new DomainObjectGraphTraverser (order, strategy).GetFlattenedRelatedObjectGraph();
       Assert.That (result, Is.EquivalentTo (new DomainObject[] {order, order.Official, order.OrderTicket, order.OrderItems[0], order.OrderItems[1],
           order.Customer, order.Customer.Ceo, order.Customer.Ceo.Company, order.Customer.IndustrialSector,
           order.Customer.IndustrialSector.Companies[1], order.Customer.IndustrialSector.Companies[1].Ceo,
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetFlattenedRelatedObjectGraph_WithTraversalFilter_FollowLink ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Set<DomainObject> graph = order.GetGraphTraverser (new TestTraversalStrategy (true, false)).GetFlattenedRelatedObjectGraph ();
+      Set<DomainObject> graph = new DomainObjectGraphTraverser (order, new TestTraversalStrategy (true, false)).GetFlattenedRelatedObjectGraph ();
 
       var expected = new Set<DomainObject> (
           order,
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void GetFlattenedRelatedObjectGraph_WithTraversalFilter_FollowLink_IncludeObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Set<DomainObject> graph = order.GetGraphTraverser (new TestTraversalStrategy (false, false)).GetFlattenedRelatedObjectGraph ();
+      Set<DomainObject> graph = new DomainObjectGraphTraverser (order, new TestTraversalStrategy (false, false)).GetFlattenedRelatedObjectGraph ();
 
       var expected = new Set<DomainObject> (
           order,
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Traversal_NotAffectedByNotProcessingAnObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Set<DomainObject> graph = order.GetGraphTraverser (new TestTraversalStrategy (false, true)).GetFlattenedRelatedObjectGraph ();
+      Set<DomainObject> graph = new DomainObjectGraphTraverser (order, new TestTraversalStrategy (false, true)).GetFlattenedRelatedObjectGraph ();
 
       var expected = new Set<DomainObject> (RepositoryAccessor.GetObject (DomainObjectIDs.Distributor2, false));
 
