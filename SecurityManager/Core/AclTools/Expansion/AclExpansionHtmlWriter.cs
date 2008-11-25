@@ -474,7 +474,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public class EqualsAndGetHashCodeSupplier<T>
+    public class EqualsAndGetHashCodeSupplier<T> where T : class
     {
       private readonly Func<T, object>[] _classMembersUsedForComparison;
 
@@ -485,9 +485,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       public bool Equals (T x, T y)
       {
+        if (x == null || y == null)
+        {
+          return false;
+        }
         foreach (var member in _classMembersUsedForComparison)
         {
-          if (!member (x).Equals (member (y)))
+          if (!(member (x) == member (y)))
+          //if (!member (x).Equals (member (y)))
           {
             return false;
           }
@@ -497,6 +502,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       public int GetHashCode (T x)
       {
+        ArgumentUtility.CheckNotNull ("x", x);
+        //if (x == null)
+        //{
+        //  return 0;
+        //}
         return EqualityUtility.GetRotatedHashCode (_classMembersUsedForComparison.Select(m => m(x)));
       }
     }
