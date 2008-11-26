@@ -75,7 +75,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       //GenerateWxePageReturnMethodWithOutParameters();
 
       // generate a WxeFunction class
-      CodeTypeDeclaration functionClass = GenerateWxeFunctionClassDeclaration (_functionDeclaration, functionName, ns);
+      CodeTypeDeclaration functionClass = GenerateWxeFunctionClassDeclaration (functionName, ns);
 
       // generate a strongly typed CurrentFunction property for the page class
       GenerateWxeTemplateControlCurrentFunctionProperty (partialTemplateControlClass, functionClass);
@@ -87,13 +87,13 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
 
       // add constructors to WXE function
 
-      // ctor () : base (new NoneTransactionMode()) {}
+      // ctor () : base () {}
       GenerateWxeFunctionDefaultConstructor (functionClass);
 
       // ctor (params object[] args): base (args) {}
       // GenerateWxeFunctionConstructorWithParamsArray();
 
-      // ctor (<type1> inarg1, <type2> inarg2, ...): base (new NoneTransactionMode(), inarg1, inarg2, ...) {}
+      // ctor (<type1> inarg1, <type2> inarg2, ...): base (inarg1, inarg2, ...) {}
       GenerateWxeFunctionContructorWithTypesParameters (functionClass);
 
       // <returnType> Call (IWxePage page, WxeExecuteFunctionOptions options, <type> [ref|out] param1, <type> [ref|out] param2, ...)
@@ -189,12 +189,12 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     /// </summary>
     protected abstract void GenerateWxePageCallMethodOverloadWithoutCallArguments (CodeTypeDeclaration partialTemplateControlClass, CodeMemberMethod callMethod);
 
-    private CodeTypeDeclaration GenerateWxeFunctionClassDeclaration (FunctionDeclaration functionDeclaration, string functionName, CodeNamespace ns)
+    private CodeTypeDeclaration GenerateWxeFunctionClassDeclaration (string functionName, CodeNamespace ns)
     {
       CodeTypeDeclaration functionClass = new CodeTypeDeclaration (functionName);
       ns.Types.Add (functionClass);
       functionClass.Attributes = MemberAttributes.Public;
-      functionClass.BaseTypes.Add (new CodeTypeReference (functionDeclaration.FunctionBaseType));
+      functionClass.BaseTypes.Add (new CodeTypeReference (_functionDeclaration.FunctionBaseType));
       functionClass.CustomAttributes.Add (new CodeAttributeDeclaration (new CodeTypeReference (typeof (SerializableAttribute))));
       return functionClass;
     }
@@ -332,6 +332,8 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     }
 
     /// <summary>
+    /// ctor () : base () {}
+    /// <para>- or -</para>
     /// ctor () : base (new NoneTransactionMode()) {}
     /// </summary>
     private void GenerateWxeFunctionDefaultConstructor (CodeTypeDeclaration functionClass)
@@ -339,7 +341,8 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       CodeConstructor defaultCtor = new CodeConstructor();
       functionClass.Members.Add (defaultCtor);
       defaultCtor.Attributes = MemberAttributes.Public;
-      defaultCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
+      if (_functionDeclaration.FunctionBaseType == typeof (WxeFunction).Name)
+        defaultCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
     }
 
     /// <summary>
@@ -361,13 +364,16 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     }
 
     /// <summary>
+    /// ctor (&lt;type1&gt; inarg1, &lt;type2&gt; inarg2, ...): base (inarg1, inarg2, ...) {}
+    /// <para>- or -</para>
     /// ctor (&lt;type1&gt; inarg1, &lt;type2&gt; inarg2, ...): base (new NoneTransactionMode(), inarg1, inarg2, ...) {}
     /// </summary>
     private void GenerateWxeFunctionContructorWithTypesParameters (CodeTypeDeclaration functionClass)
     {
       CodeConstructor typedCtor = new CodeConstructor();
       typedCtor.Attributes = MemberAttributes.Public;
-      typedCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
+      if (_functionDeclaration.FunctionBaseType == typeof (WxeFunction).Name)
+        typedCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
       foreach (ParameterDeclaration parameterDeclaration in _functionDeclaration.Parameters)
       {
         if (parameterDeclaration.Direction == WxeParameterDirection.Out)
