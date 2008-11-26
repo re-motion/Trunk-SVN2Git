@@ -30,7 +30,7 @@ namespace Remotion.Utilities
       public EnumMetadata (Type enumType)
       {
         UnderlyingType = Enum.GetUnderlyingType (enumType);
-        IsFlagsEnum = AttributeUtility.IsDefined<FlagsAttribute> (enumType, false);
+        IsFlagsEnum = Attribute.IsDefined(enumType, typeof (FlagsAttribute), false);
 
         EnumValues = new Dictionary<ulong, object>();
         foreach (object value in Enum.GetValues (enumType))
