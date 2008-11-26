@@ -33,9 +33,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     private static readonly MethodInfo s_performConstructorCheckMethod =
         typeof (DomainObject).GetMethod ("PerformConstructorCheck", _infrastructureBindingFlags);
     private static readonly MethodInfo s_preparePropertyAccessMethod =
-        typeof (DomainObject).GetMethod ("PreparePropertyAccess", _infrastructureBindingFlags);
+        typeof (CurrentPropertyManager).GetMethod ("PreparePropertyAccess", _staticInfrastructureBindingFlags);
     private static readonly MethodInfo s_propertyAccessFinishedMethod =
-        typeof (DomainObject).GetMethod ("PropertyAccessFinished", _infrastructureBindingFlags);
+        typeof (CurrentPropertyManager).GetMethod ("PropertyAccessFinished", _staticInfrastructureBindingFlags);
     private static readonly MethodInfo s_getPropertiesMethod =
         typeof (DomainObject).GetMethod ("get_Properties", _infrastructureBindingFlags);
     private static readonly MethodInfo s_getPropertyAccessorMethod =
@@ -237,7 +237,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       emitter.AddStatement (
           new ExpressionStatement (
               new MethodInvocationExpression (
-                  SelfReference.Self, s_preparePropertyAccessMethod, new ConstReference (propertyIdentifier).ToExpression())));
+                  null,
+                  s_preparePropertyAccessMethod, 
+                  new ConstReference (propertyIdentifier).ToExpression())));
 
       Statement baseCallStatement;
       LocalReference returnValueLocal = null;
@@ -250,7 +252,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
         baseCallStatement = new ExpressionStatement (implementation);
 
       Statement propertyAccessFinishedStatement = new ExpressionStatement (
-          new MethodInvocationExpression (SelfReference.Self, s_propertyAccessFinishedMethod));
+          new MethodInvocationExpression (null, s_propertyAccessFinishedMethod));
 
       emitter.AddStatement (new TryFinallyStatement (new[] {baseCallStatement}, new[] {propertyAccessFinishedStatement}));
 

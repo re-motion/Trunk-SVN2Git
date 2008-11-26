@@ -58,9 +58,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
       get { return base.Properties; }
     }
 
-    public new string GetAndCheckCurrentPropertyName()
+    public string GetAndCheckCurrentPropertyName()
     {
-      return base.GetAndCheckCurrentPropertyName();
+      return CurrentPropertyManager.GetAndCheckCurrentPropertyName();
     }
   }
 }

@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -460,12 +461,6 @@ namespace Remotion.Data.DomainObjects
       TransactionContext[DomainObjectUtility.GetNonNullClientTransaction (this)].MarkAsChanged ();
     }
 
-    internal void Bind (ClientTransaction bindingTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("bindingTransaction", bindingTransaction);
-      _bindingTransaction = bindingTransaction;
-    }
-
     /// <summary>
     /// Deletes the <see cref="DomainObject"/> in the <see cref="ClientTransaction"/>.
     /// </summary>
@@ -474,69 +469,6 @@ namespace Remotion.Data.DomainObjects
     protected void Delete ()
     {
       RepositoryAccessor.DeleteObject (this);
-    }
-
-    #region Property access
-
-    /// <summary>
-    /// Prepares access to the <see cref="PropertyValue"/> of the given name.
-    /// </summary>
-    /// <param name="propertyName">The name of the <see cref="PropertyValue"/> to be accessed.</param>
-    /// <remarks>This method prepares the given property for access via <see cref="CurrentProperty"/>.
-    /// It is automatically invoked for virtual properties in domain objects created with interception support and thus doesn't
-    /// have to be called manually for these objects. If you choose to invoke <see cref="PreparePropertyAccess"/> and
-    /// <see cref="PropertyAccessFinished"/> yourself, be sure to finish the property access with exactly one call to 
-    /// <see cref="PropertyAccessFinished"/> from a finally-block.</remarks>
-    /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="propertyName"/> is an empty string.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="propertyName"/> parameter does not denote a valid property.</exception>
-    /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
-    protected internal virtual void PreparePropertyAccess (string propertyName)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      if (!PropertyAccessorData.IsValidProperty (ID.ClassDefinition, propertyName))
-      {
-        string message = string.Format (
-            "The property identifier '{0}' is not a valid property of domain object type {1}.",
-            propertyName,
-            ID.ClassDefinition.ClassType.FullName);
-        throw new ArgumentException (message, "propertyName");
-      }
-
-      CurrentPropertyManager.PreparePropertyAccess (propertyName);
-    }
-
-    /// <summary>
-    /// Indicates that access to the <see cref="PropertyValue"/> of the given name is finished.
-    /// </summary>
-    /// <remarks>This method must be executed after a property previously prepared via <see cref="PreparePropertyAccess"/> has been accessed as needed.
-    /// It is automatically invoked for virtual properties in domain objects created with interception suppport and thus doesn't
-    /// have to be called manually for these objects. If you choose to invoke <see cref="PreparePropertyAccess"/> and
-    /// <see cref="PropertyAccessFinished"/> yourself, be sure to invoke this method in a finally-block in order to guarantee its execution.</remarks>
-    /// <exception cref="InvalidOperationException">There is no property to be finished. There is likely a mismatched number of calls to
-    /// <see cref="PreparePropertyAccess"/> and <see cref="PropertyAccessFinished"/>.</exception>
-    protected internal virtual void PropertyAccessFinished ()
-    {
-      CurrentPropertyManager.PropertyAccessFinished();
-    }
-
-    /// <summary>
-    /// Retrieves the current property name and throws an exception if there is no current property.
-    /// </summary>
-    /// <returns>The current property name.</returns>
-    /// <remarks>Retrieves the current property name previously initialized via <see cref="PreparePropertyAccess"/>. Domain objects created with 
-    /// interception support automatically initialize their virtual properties without needing any further work.</remarks>
-    /// <exception cref="InvalidOperationException">There is no current property or it hasn't been properly initialized.</exception>
-    protected internal virtual string GetAndCheckCurrentPropertyName ()
-    {
-      string propertyName = CurrentPropertyManager.CurrentPropertyName;
-      if (propertyName == null)
-      {
-        throw new InvalidOperationException (
-            "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?");
-      }
-      else
-        return propertyName;
     }
 
     /// <summary>
@@ -553,7 +485,7 @@ namespace Remotion.Data.DomainObjects
     {
       get
       {
-        string propertyName = GetAndCheckCurrentPropertyName();
+        string propertyName = CurrentPropertyManager.GetAndCheckCurrentPropertyName();
         return Properties[propertyName];
       }
     }
@@ -571,8 +503,7 @@ namespace Remotion.Data.DomainObjects
         return _properties;
       }
     }
-    #endregion
-
+    
     /// <summary>
     /// This method is invoked after the loading process of the object is completed.
     /// </summary>
@@ -683,6 +614,12 @@ namespace Remotion.Data.DomainObjects
     {
       if (Deleted != null)
         Deleted (this, args);
+    }
+
+    internal void BindToTransaction (ClientTransaction bindingTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("bindingTransaction", bindingTransaction);
+      _bindingTransaction = bindingTransaction;
     }
   }
 }

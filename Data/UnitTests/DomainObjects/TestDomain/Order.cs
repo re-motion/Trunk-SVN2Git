@@ -67,14 +67,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBBidirectionalRelation ("Order")]
     public abstract ObjectList<OrderItem> OrderItems { get; }
 
-    public new void PreparePropertyAccess (string propertyName)
+    public void PreparePropertyAccess (string propertyName)
     {
-      base.PreparePropertyAccess (propertyName);
+      CurrentPropertyManager.PreparePropertyAccess (propertyName);
     }
 
-    public new void PropertyAccessFinished()
+    public void PropertyAccessFinished()
     {
-      base.PropertyAccessFinished();
+      CurrentPropertyManager.PropertyAccessFinished();
     }
 
     [StorageClassNone]

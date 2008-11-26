@@ -13,6 +13,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -23,6 +24,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
   [TestFixture]
   public class InterceptedPropertyIntegrationTest : ClientTransactionBaseTest
   {
+    public override void SetUp ()
+    {
+      base.SetUp ();
+      Assert.That (CurrentPropertyManager.CurrentPropertyName, Is.Null);
+    }
+
+    public override void TearDown ()
+    {
+      base.TearDown ();
+      Assert.That (CurrentPropertyManager.CurrentPropertyName, Is.Null);
+    }
+
     [Test]
     public void LoadOfSimpleObjectWorks ()
     {
@@ -336,11 +349,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "is not a valid property", MatchType = MessageMatch.Contains)]
-    public void PreparePropertyAccessThrowsOnInvalidPropertyName ()
+    public void PreparePropertyAccess_DoesNotThrowsOnInvalidPropertyName ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       order.PreparePropertyAccess ("Bla");
+      order.PropertyAccessFinished ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The domain object type Remotion.Data.UnitTests.DomainObjects.TestDomain.Order " 
+        + "does not have a mapping property named 'Bla'.\r\nParameter name: propertyName")]
+    public void CurrentProperty_ThrowsOnInvalidPropertyName ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      order.PreparePropertyAccess ("Bla");
+      try
+      {
+        Dev.Null = order.CurrentProperty;
+      }
+      finally
+      {
+        order.PropertyAccessFinished();
+      }
     }
 
     private bool WasCreatedByFactory (object o)

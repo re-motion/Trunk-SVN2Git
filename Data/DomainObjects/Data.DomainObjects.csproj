@@ -276,7 +276,7 @@
     <Compile Include="StringPropertyAttribute.cs" />
     <Compile Include="Configuration\IDomainObjectsConfiguration.cs" />
     <Compile Include="Infrastructure\Interception\NonInterceptableTypeException.cs" />
-    <Compile Include="CurrentPropertyManager.cs" />
+    <Compile Include="Infrastructure\CurrentPropertyManager.cs" />
     <Compile Include="Development\FakeDomainObjectsConfiguration.cs" />
     <Compile Include="Configuration\DomainObjectsConfiguration.cs" />
     <Compile Include="ObjectList.cs" />

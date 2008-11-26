@@ -11,6 +11,7 @@
 using System;
 using System.IO;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
@@ -57,13 +58,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     public static void SetupAssemblyDirectory()
     {
-      if (!Directory.Exists (InterceptedDomainObjectFactoryTest.AssemblyDirectory))
-        Directory.CreateDirectory (InterceptedDomainObjectFactoryTest.AssemblyDirectory);
+      CleanupAssemblyDirectory ();
+      Directory.CreateDirectory (AssemblyDirectory);
     }
 
     public static void CleanupAssemblyDirectory()
     {
-      Directory.Delete (InterceptedDomainObjectFactoryTest.AssemblyDirectory, true);
+      if (Directory.Exists (AssemblyDirectory))
+        Directory.Delete (InterceptedDomainObjectFactoryTest.AssemblyDirectory, true);
+      Assert.That (Directory.Exists (AssemblyDirectory), Is.False);
     }
   }
 }

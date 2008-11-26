@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void ObjectInitializedFromDataContainer (ObjectID id, DomainObject instance)
     {
-      instance.Bind (_bindingTransaction);
+      instance.BindToTransaction (_bindingTransaction);
     }
 
     public void ObjectsLoaded (DomainObjectCollection domainObjects)
