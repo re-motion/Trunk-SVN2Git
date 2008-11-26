@@ -28,6 +28,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     public EnumerationProperty (Parameters parameters)
         : base (parameters)
     {
+      if (AttributeUtility.IsDefined<FlagsAttribute> (parameters.UnderlyingType, false))
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "The property '{0}' defined on type '{1}' is a flags-enum, which is not supported.",
+                Identifier,
+                PropertyInfo.DeclaringType));
+      }
       _undefinedValue = GetUndefinedValue();
       _enumerationValueFilter = GetEnumerationValueFilter();
     }
@@ -38,7 +46,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// </returns>
     public IEnumerationValueInfo[] GetAllValues (IBusinessObject businessObject)
     {
-      List<IEnumerationValueInfo> valueInfos = new List<IEnumerationValueInfo>();
+      var valueInfos = new List<IEnumerationValueInfo>();
       foreach (Enum value in Enum.GetValues (UnderlyingType))
       {
         IEnumerationValueInfo enumerationValueInfo = GetValueInfoByValue (value, businessObject);
@@ -70,7 +78,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (value == null)
         return null;
 
-      Enum enumValue = (Enum) value;
+      var enumValue = (Enum) value;
       if (IsUndefinedValue (enumValue))
         return null;
 
@@ -118,7 +126,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private string GetDisplayName (Enum value)
     {
-      IBindableObjectGlobalizationService globalizationService = BusinessObjectProvider.GetService<IBindableObjectGlobalizationService> ();
+      var globalizationService = BusinessObjectProvider.GetService<IBindableObjectGlobalizationService> ();
       if (globalizationService == null)
         return value.ToString ();
       return globalizationService.GetEnumerationValueDisplayName (value);
@@ -142,8 +150,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private Enum GetUndefinedValue ()
     {
-      UndefinedEnumValueAttribute undefinedEnumValueAttribute =
-          AttributeUtility.GetCustomAttribute<UndefinedEnumValueAttribute> (UnderlyingType, false);
+      var undefinedEnumValueAttribute = AttributeUtility.GetCustomAttribute<UndefinedEnumValueAttribute> (UnderlyingType, false);
 
       if (undefinedEnumValueAttribute == null)
         return null;
@@ -172,7 +179,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private IEnumerationValueFilter GetEnumerationValueFilter ()
     {
-      DisableEnumValuesAttribute disableEnumValuesAttribute = PropertyInfo.GetCustomAttribute<DisableEnumValuesAttribute> (true);
+      var disableEnumValuesAttribute = PropertyInfo.GetCustomAttribute<DisableEnumValuesAttribute> (true);
 
       if (disableEnumValuesAttribute == null)
         disableEnumValuesAttribute = AttributeUtility.GetCustomAttribute<DisableEnumValuesAttribute> (PropertyInfo.PropertyType, true);

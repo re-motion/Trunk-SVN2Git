@@ -15,108 +15,39 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   [BindableObject]
   public class ClassWithAllDataTypes
   {
-    private bool _boolean;
-    private byte _byte;
-    private DateTime _date;
-    private DateTime _dateTime;
-    private decimal _decimal;
-    private double _double;
-    private TestEnum _enum;
-    private Guid _guid;
-    private short _int16;
-    private int _int32;
-    private long _int64;
-    private SimpleBusinessObjectClass _businessObject;
-    private float _single;
-    private string _string;
-
     public ClassWithAllDataTypes ()
     {
     }
 
-    public bool Boolean
-    {
-      get { return _boolean; }
-      set { _boolean = value; }
-    }
+    public bool Boolean { get; set; }
 
-    public byte Byte
-    {
-      get { return _byte; }
-      set { _byte = value; }
-    }
+    public byte Byte { get; set; }
 
     [DateProperty]
-    public DateTime Date
-    {
-      get { return _date; }
-      set { _date = value; }
-    }
+    public DateTime Date { get; set; }
 
-    public DateTime DateTime
-    {
-      get { return _dateTime; }
-      set { _dateTime = value; }
-    }
+    public DateTime DateTime { get; set; }
 
-    public decimal Decimal
-    {
-      get { return _decimal; }
-      set { _decimal = value; }
-    }
+    public decimal Decimal { get; set; }
 
-    public double Double
-    {
-      get { return _double; }
-      set { _double = value; }
-    }
+    public double Double { get; set; }
 
-    public TestEnum Enum
-    {
-      get { return _enum; }
-      set { _enum = value; }
-    }
+    public TestEnum Enum { get; set; }
 
-    public Guid Guid
-    {
-      get { return _guid; }
-      set { _guid = value; }
-    }
-    
-    public short Int16
-    {
-      get { return _int16; }
-      set { _int16 = value; }
-    }
+    public TestFlags Flags { get; set; }
 
-    public int Int32
-    {
-      get { return _int32; }
-      set { _int32 = value; }
-    }
+    public Guid Guid { get; set; }
 
-    public long Int64
-    {
-      get { return _int64; }
-      set { _int64 = value; }
-    }
+    public short Int16 { get; set; }
 
-    public SimpleBusinessObjectClass BusinessObject
-    {
-      get { return _businessObject; }
-      set { _businessObject = value; }
-    }
- 
-    public float Single
-    {
-      get { return _single; }
-      set { _single = value; }
-    }
+    public int Int32 { get; set; }
 
-    public string String
-    {
-      get { return _string; }
-      set { _string = value; }
-    }
- }
+    public long Int64 { get; set; }
+
+    public SimpleBusinessObjectClass BusinessObject { get; set; }
+
+    public float Single { get; set; }
+
+    public string String { get; set; }
+  }
 }

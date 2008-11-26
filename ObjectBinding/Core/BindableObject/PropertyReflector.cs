@@ -68,7 +68,7 @@ namespace Remotion.ObjectBinding.BindableObject
         return new DecimalProperty (parameters);
       else if (underlyingType == typeof (Double))
         return new DoubleProperty (parameters);
-      else if (underlyingType.IsEnum)
+      else if (underlyingType.IsEnum && !AttributeUtility.IsDefined<FlagsAttribute>(underlyingType, false))
         return new EnumerationProperty (parameters);
       else if (underlyingType == typeof (Guid))
         return new GuidProperty (parameters);

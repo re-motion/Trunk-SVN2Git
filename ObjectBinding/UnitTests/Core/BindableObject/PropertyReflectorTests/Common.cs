@@ -121,6 +121,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     }
 
     [Test]
+    public void GetMetadata_WithFlags ()
+    {
+      IBusinessObjectProperty businessObjectProperty = GetMetadataFromPropertyReflector ("Flags");
+
+      Assert.That (businessObjectProperty, Is.TypeOf (typeof (NotSupportedProperty)));
+      Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("Flags"));
+    }
+
+    [Test]
     public void GetMetadata_WithGuid ()
     {
       IBusinessObjectProperty businessObjectProperty = GetMetadataFromPropertyReflector ("Guid");

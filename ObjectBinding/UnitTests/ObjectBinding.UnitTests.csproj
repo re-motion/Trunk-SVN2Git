@@ -103,6 +103,7 @@
     <Compile Include="Core\TestDomain\ClassWithReferenceToClassDerivedFromBindableObjectBase.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
     <Compile Include="Core\TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod.cs" />
+    <Compile Include="Core\TestDomain\TestFlags.cs" />
     <Compile Include="Core\TestDomain\EnumerationValueFilter.cs" />
     <Compile Include="Core\TestDomain\MixinAddingResources2.cs" />
     <Compile Include="Core\TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin.cs" />
