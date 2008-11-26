@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -100,6 +100,7 @@
   <ItemGroup>
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
     <Compile Include="BridgeImplementations\AssemblyFinderTypeDiscoveryServiceImplementation.cs" />
+    <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Collections\SetBasedCacheKey.cs" />
     <Compile Include="Collections\TypedSequence.cs" />

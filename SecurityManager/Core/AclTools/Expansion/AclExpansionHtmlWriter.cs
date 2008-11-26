@@ -445,33 +445,52 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       public bool Equals (AclExpansionEntry x, AclExpansionEntry y)
       {
         return _equalsAndGetHashCode.Equals (x, y);
-
-        ////bool referencesEqual = x.AccessControlList == y.AccessControlList
-        //bool referencesEqual = Compare.It (x, y, a => a.AccessControlList, a => a.Class, a => a.Role, a => a.User);
-        //if (!referencesEqual)
-        //{
-        //  return false;
-        //}
-
-        //bool accessConditionsEqual = Compare.It (
-        //    x.AccessConditions,
-        //    y.AccessConditions,
-        //    a => a.AbstractRole,
-        //    a => a.GroupHierarchyCondition,
-        //    a => a.IsOwningUserRequired,
-        //    a => a.OwningGroup,
-        //    a => a.OwningTenant,
-        //    a => a.TenantHierarchyCondition);
-
-        //throw new System.NotImplementedException();
       }
 
       public int GetHashCode (AclExpansionEntry x)
       {
         return _equalsAndGetHashCode.GetHashCode (x);
-        //return EqualityUtility.GetRotatedHashCode (x.AccessConditions);
       }
     }
+
+    public class AclExpansionEntryIgnoreStateEqualityComparer2 : IEqualityComparer<AclExpansionEntry>
+    {
+       public bool Equals (AclExpansionEntry x, AclExpansionEntry y)
+      {
+        var relevantValuesX = GetRelevantValues (x);
+        var relevantValuesY = GetRelevantValues (y);
+        return relevantValuesX.SequenceEqual (relevantValuesY);
+      }
+
+      public int GetHashCode (AclExpansionEntry x)
+      {
+        var relevantValuesX = GetRelevantValues (x);
+        return EqualityUtility.GetRotatedHashCode (relevantValuesX);
+      }
+
+      private object[] GetRelevantValues (AclExpansionEntry a)
+      {
+        return new object[] {
+          a.AccessControlList, 
+          a.Class, 
+          a.Role, 
+          a.User,
+          a.AccessConditions.AbstractRole,
+          a.AccessConditions.GroupHierarchyCondition,
+          a.AccessConditions.IsOwningUserRequired,
+          a.AccessConditions.OwningGroup,
+          a.AccessConditions.OwningTenant,
+          a.AccessConditions.TenantHierarchyCondition,
+
+          new EnumerableEqualsWrapper<AccessTypeDefinition> (a.AllowedAccessTypes),
+          new EnumerableEqualsWrapper<AccessTypeDefinition> (a.DeniedAccessTypes)
+        };
+      }
+    }
+
+    
+
+    
 
 
     public class EqualsAndGetHashCodeSupplier<T> where T : class
@@ -491,8 +510,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         }
         foreach (var member in _classMembersUsedForComparison)
         {
-          if (!(member (x) == member (y)))
-          //if (!member (x).Equals (member (y)))
+          if (!object.Equals (member (x), member(y)))
           {
             return false;
           }
@@ -503,10 +521,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       public int GetHashCode (T x)
       {
         ArgumentUtility.CheckNotNull ("x", x);
-        //if (x == null)
-        //{
-        //  return 0;
-        //}
         return EqualityUtility.GetRotatedHashCode (_classMembersUsedForComparison.Select(m => m(x)));
       }
     }

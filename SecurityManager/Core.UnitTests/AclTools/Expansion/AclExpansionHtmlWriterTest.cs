@@ -882,38 +882,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-
-    //[Test]
-    //[Explicit]
-    //// TODO: Complete & add functionality 
-    //public void DenyRightsOptionalOutputTest ()
-    //{
-    //  using (CultureScope_de_DE ())
-    //  {
-    //    var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User,User2,User3);
-    //    var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,Acl2);
-
-    //    List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
-
-    //    //using (var textWriter = new StringWriter ())
-    //    using (var textWriter = new StreamWriter (Path.Combine("c:\\temp","DenyRightsOptionalOutputTest.html")))
-    //    {
-    //      var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
-    //      aclExpansionHtmlWriter.Settings.OutputDenyRights = true;
-    //      aclExpansionHtmlWriter.WriteAclExpansion ();
-    //      string result = textWriter.ToString ();
-    //      //To.ConsoleLine.e (() => result);
-    //      Assert.That (result, NUnitText.Contains ("Denied Rights</th>"));
-    //      //Assert.That (result, NUnitText.Contains ("x,y,z</td><td>a,b</td>"));
-    //    }
-    //  }
-    //}
-
-
-
-
-
-
     private CultureScope CultureScope_de_DE ()
     {
       return new CultureScope ("de-DE");
