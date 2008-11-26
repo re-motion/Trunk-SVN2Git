@@ -1,3 +1,13 @@
+1.11.15
+=======
+- WxeGen:
+  XML-funciton-declaration has been updated:
+  old:
+    <WxePageFunction pageType="Test.AutoPage" aspxFile="AutoPage.aspx" functionBaseType="WxeFunction">
+  new: 
+    <WxeFunction codeBehindType="Test.AutoPage" markupFile="AutoPage.aspx" functionBaseType="WxeFunction" mode="Page">
+  In addition to the codeBehindType and the markupFile, the mode-attribute can be inferred as well from the filename and is therefor optional.
+
 1.11.13
 =======
 - Fixed Issue with LazyContainer and WxeUserControl: Types only marked with a TypeConverter instead of as Serializable broke the ViewState-persistence.
