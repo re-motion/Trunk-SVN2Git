@@ -43,19 +43,15 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       StreamReader reader = new StreamReader (file.FullName, true);
       int lineNumber = 1;
 
-      for (string line = reader.ReadLine (); line != null; line = reader.ReadLine(), lineNumber++)
+      for (string line = reader.ReadLine(); line != null; line = reader.ReadLine(), lineNumber++)
       {
         string lineArgument;
         CodeLineType lineType = _languageProvider.ParseLine (line, out lineArgument);
 
         if (lineType == CodeLineType.NamespaceImport)
-        {
           ProcessNamespaceImportLine (importNamespaces, lineArgument);
-        }
         else if (lineType == CodeLineType.NamespaceDeclaration)
-        {
           ProcessNamespaceDeclarationLine (lineArgument, currentNamespace);
-        }
         else if (lineType == CodeLineType.LineComment)
         {
           commentLineContext = ProcessCommentLine (file, line, lineArgument, commentLineContext, whitespace, lineNumber);
@@ -87,20 +83,19 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       currentNamespace.Append (lineArgument);
     }
 
-    private CommentLineContext ProcessCommentLine (FileInfo file, string line, string lineArgument, CommentLineContext commentLineContext, char[] whitespace, int lineNumber)
+    private CommentLineContext ProcessCommentLine (
+        FileInfo file, string line, string lineArgument, CommentLineContext commentLineContext, char[] whitespace, int lineNumber)
     {
       if (commentLineContext.XmlFragmentContext == null)
       {
         if (lineArgument.TrimStart (whitespace).StartsWith ("<" + FunctionDeclaration.ElementName))
-        {
           return new CommentLineContext (ProcessXmlFragmentOpeningTagLine (line, lineArgument, whitespace, lineNumber), null, false);
-        }
 
         return commentLineContext;
       }
       else
       {
-        commentLineContext.XmlFragmentContext.XmlFragment.AppendLine ();
+        commentLineContext.XmlFragmentContext.XmlFragment.AppendLine();
         commentLineContext.XmlFragmentContext.XmlFragment.Append (lineArgument);
         commentLineContext.XmlFragmentContext.Indents.Add (line.IndexOf (lineArgument));
         if (lineArgument.TrimEnd (whitespace).EndsWith ("</" + FunctionDeclaration.ElementName + ">"))
@@ -116,7 +111,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       xmlFragment.AppendFormat ("<{0} xmlns=\"{1}\"", FunctionDeclaration.ElementName, FunctionDeclaration.SchemaUri);
       lineArgument = lineArgument.TrimStart (whitespace).Substring (FunctionDeclaration.ElementName.Length + 1);
       xmlFragment.Append (lineArgument);
-      var indents = new List<int> ();
+      var indents = new List<int>();
       indents.Add (line.IndexOf (lineArgument));
 
       return new XmlFragmentContext (xmlFragment, lineNumber, indents);
@@ -124,11 +119,11 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
 
     private CommentLineContext ProcessXmlFragmentClosingTagLine (XmlFragmentContext xmlFragmentContext, FileInfo file)
     {
-      FunctionDeclaration declaration = ProcessXmlFragment(xmlFragmentContext, file);
+      FunctionDeclaration declaration = ProcessXmlFragment (xmlFragmentContext, file);
       if (declaration == null)
         return new CommentLineContext (xmlFragmentContext, null, true);
 
-      if (string.IsNullOrEmpty (declaration.AspxFile))
+      if (string.IsNullOrEmpty (declaration.TemplateControlMarkupFile))
       {
         string cd = Environment.CurrentDirectory;
         string path = file.FullName;
@@ -139,7 +134,15 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
         string ext = file.Extension;
         if (!string.IsNullOrEmpty (ext))
           path = path.Substring (0, path.Length - ext.Length);
-        declaration.AspxFile = path;
+        declaration.TemplateControlMarkupFile = path;
+      }
+
+      if (declaration.TemplateControlMode == TemplateMode.AutoDetect)
+      {
+        bool isPageFile = file.Name.EndsWith (".aspx" + file.Extension);
+        bool isUserControlFile = file.Name.EndsWith (".ascx" + file.Extension);
+        Assertion.IsTrue (isPageFile || isUserControlFile);
+        declaration.TemplateControlMode = isPageFile ? TemplateMode.Page : TemplateMode.UserControl;
       }
 
       // replace built-in types
@@ -192,27 +195,38 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
               xmlException);
         }
         else
-        {
           throw;
-        }
       }
     }
 
     private void ProcessClassDeclarationLine (string lineArgument, SeparatedStringBuilder currentNamespace, FunctionDeclaration declaration)
     {
-      if (declaration != null && string.IsNullOrEmpty (declaration.PageType))
+      if (declaration != null && string.IsNullOrEmpty (declaration.TemplateControlCodeBehindType))
       {
         string type = lineArgument;
         if (currentNamespace.Length > 0)
           type = currentNamespace + "." + type;
-        declaration.PageType = type;
+        declaration.TemplateControlCodeBehindType = type;
       }
     }
 
-    private void GenerateClass (FileInfo file, List<string> importNamespaces, FunctionDeclaration declaration, CodeCompileUnit unit, int firstLineNumber)
+    private void GenerateClass (
+        FileInfo file, List<string> importNamespaces, FunctionDeclaration declaration, CodeCompileUnit unit, int firstLineNumber)
     {
-      var generator = new PageFunctionGenerator (unit, declaration, importNamespaces, file, firstLineNumber);
-      generator.GenerateClass ();
+      TemplateControlFunctionGeneratorBase generator;
+      switch (declaration.TemplateControlMode)
+      {
+        case TemplateMode.Page:
+          generator = new PageFunctionGenerator (unit, declaration, importNamespaces, file, firstLineNumber);
+          break;
+        case TemplateMode.UserControl:
+          generator = new UserControlFunctionGenerator (unit, declaration, importNamespaces, file, firstLineNumber);
+          break;
+        default:
+          throw new InvalidOperationException (
+              string.Format ("Value '{0}' is not supported for generating the function and page classes.", declaration.TemplateControlMode));
+      }
+      generator.GenerateClass();
     }
   }
 }

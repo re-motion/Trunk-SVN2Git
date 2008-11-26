@@ -9,7 +9,7 @@
 --%>
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AutoPage.aspx.cs" Inherits="Test.AutoPage" %>
 <%@ Register TagPrefix="remotion" Assembly="Remotion.Web" Namespace="Remotion.Web.UI.Controls" %>
-
+<%@ Register TagPrefix="cc" TagName="AutoUserControl" Src="~/AutoUserControl.ascx" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -48,9 +48,11 @@
     
         <asp:Button ID="ExecSelfButton" runat="server" Text="Execute self" OnClick="ExecSelfButton_Click" />
         <asp:Button ID="ExecCalledPageButton" runat="server" Text="Execute called page" OnClick="ExecCalledPageButton_Click" />
+        <remotion:WebButton ID="ExecUserControlButton" runat="server" Text="Execute called user control" OnClick="ExecUserControlButton_Click" />
         <asp:Button ID="ReturnButton" runat="server" Text="Return" OnClick="ReturnButton_Click" />
         <asp:Button ID="NoOpButton" runat="server" Text="NoOp" />
 
+<cc:AutoUserControl id="AutoUserControl" runat="server" />
     </div>
     </form>
 </body>

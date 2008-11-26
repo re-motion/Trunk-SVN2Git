@@ -7,17 +7,25 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Test
 {
-  // <WxePageFunction pageType="Test.AutoUserControl" aspxFile="AutoUserControl.ascx" functionBaseType="WxeFunction">
-  //   <Parameter name="InArg" type="String" required="true" />
-  //   <Parameter name="InOutArg" type="String" required="true" direction="InOut" />
-  //   <ReturnValue name="OutArg" type="String"/>
+  // <WxeFunction codeBehindType="Test.AutoUserControl" markupFile="AutoUserControl.ascx" functionBaseType="WxeFunction" mode="UserControl">
+  //   <Parameter name="InArg" type="String" />
+  //   <Parameter name="InOutArg" type="String" direction="InOut" />
+  //   <ReturnValue type="String"/>
   //   <Variable name="Suffix" type="String" />
-  // </WxePageFunction>
+  // </WxeFunction>
   public partial class AutoUserControl : WxeUserControl
   {
-    protected void Page_Load (object sender, EventArgs e)
+    protected override void OnLoad (EventArgs e)
     {
-
+      base.OnLoad (e);
+      IsPostBackLabel.Text = IsUserControlPostBack.ToString();
+      string inOutParam = InOutArgField.Text + Suffix;
+      InOutArgField.Text = inOutParam;
+    }
+    protected void Button1_Click (object sender, EventArgs e)
+    {
+      ReturnValue = "thank you";
+      Return ();
     }
   }
 }

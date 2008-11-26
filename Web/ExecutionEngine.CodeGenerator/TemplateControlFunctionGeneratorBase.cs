@@ -44,12 +44,12 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     // generate output classes for [WxePageFunction] page class
     public void GenerateClass ()
     {
-      if (string.IsNullOrEmpty (_functionDeclaration.PageType))
+      if (string.IsNullOrEmpty (_functionDeclaration.TemplateControlCodeBehindType))
         throw new InputException (InputError.ClassNotFound, _file.FullName, _line, 1);
 
       string nameSpace;
       string typeName;
-      SplitTypeName (_functionDeclaration.PageType, out nameSpace, out typeName);
+      SplitTypeName (_functionDeclaration.TemplateControlCodeBehindType, out nameSpace, out typeName);
 
       string functionName = _functionDeclaration.FunctionName;
       if (functionName == null)

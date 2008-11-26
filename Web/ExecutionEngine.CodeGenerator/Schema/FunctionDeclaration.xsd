@@ -9,17 +9,26 @@
  ! WITHOUT WARRANTY OF ANY KIND, either express or implied. 
 -->
 <xs:schema xmlns:tns="http://www.re-motion.org/web/wxefunctiongenerator" elementFormDefault="qualified" targetNamespace="http://www.re-motion.org/web/wxefunctiongenerator" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="WxePageFunction" nillable="true" type="tns:FunctionDeclaration" />
+  <xs:element name="WxeFunction" nillable="true" type="tns:FunctionDeclaration" />
   <xs:complexType name="FunctionDeclaration">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Parameter" type="tns:ParameterDeclaration" />
       <xs:element minOccurs="0" maxOccurs="1" name="ReturnValue" type="tns:ReturnValue" />
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Variable" type="tns:VariableDeclaration" />
     </xs:sequence>
-    <xs:attribute name="pageType" type="xs:string" use="optional" />
-		<xs:attribute name="aspxFile" type="xs:string" use="optional" />
+    <xs:attribute name="codeBehindType" type="xs:string" use="optional" />
+		<xs:attribute name="markupFile" type="xs:string" use="optional" />
     <xs:attribute name="functionName" type="xs:string" use="optional" />
     <xs:attribute name="functionBaseType" type="xs:string" use="optional" />
+    <xs:attribute name="mode" use="optional" default="AutoDetect">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="AutoDetect"/>
+          <xs:enumeration value="Page"/>
+          <xs:enumeration value="UserControl"/>
+        </xs:restriction>        
+      </xs:simpleType>     
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="ParameterDeclaration">
     <xs:complexContent mixed="false">

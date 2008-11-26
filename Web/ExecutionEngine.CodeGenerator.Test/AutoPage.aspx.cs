@@ -1,4 +1,5 @@
 using System;
+using System.Web.UI;
 using Remotion.Web.ExecutionEngine;
 
 namespace Test
@@ -14,12 +15,12 @@ namespace Test
   //{
   //}
 
-  // <WxePageFunction pageType="Test.AutoPage" aspxFile="AutoPage.aspx" functionBaseType="WxeFunction">
+  // <WxeFunction codeBehindType="Test.AutoPage" markupFile="AutoPage.aspx" functionBaseType="WxeFunction" mode="Page">
 	//   <Parameter name="InArg" type="String" required="true" />
 	//   <Parameter name="InOutArg" type="String" required="true" direction="InOut" />
 	//   <ReturnValue name="OutArg" type="String"/>
 	//   <Variable name="Suffix" type="String" />
-	// </WxePageFunction>
+  // </WxeFunction>
   public partial class AutoPage: WxePage
   {
     protected void Page_Load (object sender, EventArgs e)
@@ -42,6 +43,18 @@ namespace Test
     {
       string a, b = null;
       InArgField.Text = CalledPage.Call (this, "hallo", null, out a, ref b);
+    }
+
+    protected void ExecUserControlButton_Click (object sender, EventArgs e)
+    {
+      try
+      {
+        string a = null;
+        InArgField.Text = AutoUserControl.Call (this, AutoUserControl, (Control) sender, "hallo", ref a);
+      }
+      catch (WxeIgnorableException)
+      {
+      }
     }
 
     protected void ReturnButton_Click (object sender, EventArgs e)

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2ADC369A-4CE5-4378-B72E-4FBEDD8FA724}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -125,13 +125,15 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>53513</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>
-          </IISUrl>
+          <IISUrl>http://localhost//dev/Remotion/trunk/Web/ExecutionEngine.CodeGenerator.Test</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
@@ -139,6 +141,6 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)
-..\ExecutionEngine.CodeGenerator\bin\$(ConfigurationName)\wxegen.exe *.aspx.cs Generated.cs /func:Test.BaseFunction /v-</PreBuildEvent>
+..\ExecutionEngine.CodeGenerator\bin\$(ConfigurationName)\wxegen.exe *.as?x.cs Generated.cs /func:Test.BaseFunction /v- /prjfile:Web.ExecutionEngine.CodeGenerator.Test.csproj</PreBuildEvent>
   </PropertyGroup>
 </Project>

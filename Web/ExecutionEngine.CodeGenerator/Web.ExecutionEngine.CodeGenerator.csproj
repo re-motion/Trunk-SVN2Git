@@ -75,12 +75,14 @@
     <Compile Include="CaseInsensitiveStringComparer.cs" />
     <Compile Include="CodeLineType.cs" />
     <Compile Include="CommentLineContext.cs" />
+    <Compile Include="UserControlFunctionGenerator.cs" />
     <Compile Include="CSharpProvider.cs" />
     <Compile Include="FileProcessor.cs" />
     <Compile Include="RegexProvider.cs" />
     <Compile Include="SchemaValidationObject.cs" />
     <Compile Include="Schema\ParameterDeclaration.cs" />
     <Compile Include="Schema\ReturnValueDeclaration.cs" />
+    <Compile Include="Schema\TemplateMode.cs" />
     <Compile Include="Schema\VariableDeclaration.cs" />
     <Compile Include="TemplateControlFunctionGeneratorBase.cs" />
     <Compile Include="InputException.cs" />

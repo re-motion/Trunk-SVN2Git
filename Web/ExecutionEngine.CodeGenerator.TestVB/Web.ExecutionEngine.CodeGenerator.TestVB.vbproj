@@ -67,11 +67,19 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AutoUserControl.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="TestTypes.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoUserControl.ascx.designer.vb">
+      <DependentUpon>AutoUserControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="AutoUserControl.ascx.vb">
+      <DependentUpon>AutoUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Default.aspx.vb">
       <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>Default.aspx</DependentUpon>
@@ -164,7 +172,7 @@
   </ProjectExtensions>
   <PropertyGroup>
     <PreBuildEvent>cd $(ProjectDir)
-..\ExecutionEngine.CodeGenerator\bin\$(ConfigurationName)\wxegen.exe *.aspx.vb Generated.vb /lang:vb /v-
+..\ExecutionEngine.CodeGenerator\bin\$(ConfigurationName)\wxegen.exe *.as?x.vb Generated.vb /lang:vb /v- /prjfile:Web.ExecutionEngine.CodeGenerator.TestVB.vbproj
 </PreBuildEvent>
   </PropertyGroup>
 </Project>

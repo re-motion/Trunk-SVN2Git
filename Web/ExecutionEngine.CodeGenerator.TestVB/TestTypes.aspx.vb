@@ -4,7 +4,7 @@ Imports Remotion.Web.ExecutionEngine
 '  <Parameter name="ps6b" type="String(,)[]" /> - does not work: CodeDOM tries to split type and array dimensions for local vars and parameters: dim ps6b() as String(,)
 
 
-'<WxePageFunction>
+'<WxeFunction>
 '  <Parameter name="p1" type="String" />
 '  <Parameter name="p4" type="String()" />
 '  <Parameter name="p5" type="String(,)" />
@@ -16,7 +16,7 @@ Imports Remotion.Web.ExecutionEngine
 '  <Parameter name="ps4" type="String[]" />
 '  <Parameter name="ps5" type="String[,]" />
 '  <Parameter name="ps6" type="String[,][]" />
-'</WxePageFunction>
+'</WxeFunction>
 Partial Public Class TestTypes
   Inherits WxePage
 

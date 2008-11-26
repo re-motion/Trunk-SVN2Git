@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace Test
 {
-  // <WxePageFunction>
+  // <WxeFunction>
   //   <Parameter name="input" type="string" />
   //   <Parameter name="other" type="List{int[,][]}" />
   //   <Parameter name="output" type="string" direction="Out" />
   //   <Parameter name="bothways" type="string" direction="InOut" />
   //   <ReturnValue type="string" />
-	// </WxePageFunction>
+	// </WxeFunction>
   public partial class CalledPage: WxePage
   {
     protected void Page_Load (object sender, EventArgs e)

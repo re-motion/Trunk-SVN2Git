@@ -18,7 +18,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator.Schema
   [XmlRoot (ElementName, Namespace = SchemaUri)]
   public class FunctionDeclaration
   {
-    public const string ElementName = "WxePageFunction";
+    public const string ElementName = "WxeFunction";
 
     /// <summary> The namespace of the function declaration schema. </summary>
     /// <remarks> <c>http://www.re-motion.org/web/wxefunctiongenerator</c> </remarks>
@@ -32,11 +32,14 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator.Schema
     private ParameterDeclaration[] _parameters = new ParameterDeclaration[0];
     private VariableDeclaration[] _variables = new VariableDeclaration[0];
 
-    [XmlAttribute ("pageType")]
-    public string PageType { get; set; }
+    [XmlAttribute ("codeBehindType")]
+    public string TemplateControlCodeBehindType { get; set; }
 
-    [XmlAttribute ("aspxFile")]
-    public string AspxFile { get; set; }
+    [XmlAttribute ("markupFile")]
+    public string TemplateControlMarkupFile { get; set; }
+
+    [XmlAttribute ("mode")]
+    public TemplateMode TemplateControlMode { get; set; }
 
     [XmlAttribute ("functionName")]
     public string FunctionName { get; set; }
