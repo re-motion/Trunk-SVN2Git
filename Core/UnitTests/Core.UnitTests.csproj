@@ -759,6 +759,7 @@
     <Compile Include="Utilities\AttributeUtilityTests\IsDefined_WithSuppressTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppresTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesWithMetadataTest.cs" />
+    <Compile Include="Utilities\AdvancedEnumConverterTest_Flags.cs" />
     <Compile Include="Utilities\CultureScopeTest.cs" />
     <Compile Include="Utilities\CustomAttributeDataUtilityTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseInheritedAttribute.cs" />
@@ -801,7 +802,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\EnumerableUtilityTest.cs" />
-    <Compile Include="Utilities\EnumUtilityTest.cs">
+    <Compile Include="Utilities\EnumUtilityTests\UInt16Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\UInt32Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\UInt64Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\ByteEnum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\Int64Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\SByteEnum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\Int16Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\Int32Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\Common.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\EqualityUtilityTest.cs" />

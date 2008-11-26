@@ -17,14 +17,16 @@ namespace Remotion.Utilities
   /// <summary> Specialization of <see cref="TypeConverter"/> for conversions from and to <see cref="Enum"/> types. </summary>
   public class AdvancedEnumConverter: EnumConverter
   {
-    private Type _underlyingEnumType;
-    private bool _isNullable;
+    private readonly Type _underlyingEnumType;
+    private readonly bool _isNullable;
+    private readonly bool _isFlagsEnum;
 
     public AdvancedEnumConverter (Type enumType)
         : base (Nullable.GetUnderlyingType (ArgumentUtility.CheckNotNull ("enumType", enumType)) ?? enumType)
     {
       _underlyingEnumType = Enum.GetUnderlyingType (EnumType);
       _isNullable = EnumType != enumType;
+      _isFlagsEnum = EnumUtility.IsFlagsEnumType (EnumType);
     }
 
     /// <summary> Test: Can convert from <paramref name="sourceType"/> to <see cref="String"/>? </summary>
@@ -76,7 +78,7 @@ namespace Remotion.Utilities
       {
         if (value != null && _underlyingEnumType == value.GetType())
         {
-          if (!Enum.IsDefined (EnumType, value))
+          if (!EnumUtility.IsValidEnumValue(EnumType, value))
             throw new ArgumentOutOfRangeException (string.Format ("The value {0} is not supported for enumeration '{1}'.", value, EnumType.FullName), (Exception) null);
 
           return Enum.ToObject (EnumType, value);
