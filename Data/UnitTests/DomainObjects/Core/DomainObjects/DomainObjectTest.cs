@@ -71,6 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (classWithAllDataTypes.DecimalProperty, Is.EqualTo (123456.789m), "DecimalProperty");
       Assert.That (classWithAllDataTypes.DoubleProperty, Is.EqualTo (987654.321d), "DoubleProperty");
       Assert.That (classWithAllDataTypes.EnumProperty, Is.EqualTo (ClassWithAllDataTypes.EnumType.Value1), "EnumProperty");
+      Assert.That (classWithAllDataTypes.FlagsProperty, Is.EqualTo (ClassWithAllDataTypes.FlagsType.Flag2), "FlagsProperty");
       Assert.That (classWithAllDataTypes.GuidProperty, Is.EqualTo (new Guid ("{236C2DCE-43BD-45ad-BDE6-15F8C05C4B29}")), "GuidProperty");
       Assert.That (classWithAllDataTypes.Int16Property, Is.EqualTo (32767), "Int16Property");
       Assert.That (classWithAllDataTypes.Int32Property, Is.EqualTo (2147483647), "Int32Property");
@@ -87,6 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (classWithAllDataTypes.NaDecimalProperty, Is.EqualTo (765.098m), "NaDecimalProperty");
       Assert.That (classWithAllDataTypes.NaDoubleProperty, Is.EqualTo (654321.789d), "NaDoubleProperty");
       Assert.That (classWithAllDataTypes.NaEnumProperty, Is.EqualTo (ClassWithAllDataTypes.EnumType.Value2), "NaEnumProperty");
+      Assert.That (classWithAllDataTypes.NaFlagsProperty, Is.EqualTo (ClassWithAllDataTypes.FlagsType.Flag1 | ClassWithAllDataTypes.FlagsType.Flag2), "NaFlagsProperty");
       Assert.That (classWithAllDataTypes.NaGuidProperty, Is.EqualTo (new Guid ("{19B2DFBE-B7BB-448e-8002-F4DBF6032AE8}")), "NaGuidProperty");
       Assert.That (classWithAllDataTypes.NaInt16Property, Is.EqualTo ((short) 12000), "NaInt16Property");
       Assert.That (classWithAllDataTypes.NaInt32Property, Is.EqualTo (-2147483647), "NaInt32Property");
@@ -100,6 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (classWithAllDataTypes.NaDateTimeWithNullValueProperty, Is.Null, "NaDateTimeWithNullValueProperty");
       Assert.That (classWithAllDataTypes.NaDoubleWithNullValueProperty, Is.Null, "NaDoubleWithNullValueProperty");
       Assert.That (classWithAllDataTypes.NaEnumWithNullValueProperty, Is.Null, "NaEnumWithNullValueProperty");
+      Assert.That (classWithAllDataTypes.NaFlagsWithNullValueProperty, Is.Null, "NaFlagsWithNullValueProperty");
       Assert.That (classWithAllDataTypes.NaGuidWithNullValueProperty, Is.Null, "NaGuidWithNullValueProperty");
       Assert.That (classWithAllDataTypes.NaInt16WithNullValueProperty, Is.Null, "NaInt16WithNullValueProperty");
       Assert.That (classWithAllDataTypes.NaInt32WithNullValueProperty, Is.Null, "NaInt32WithNullValueProperty");

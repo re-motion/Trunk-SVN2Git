@@ -27,6 +27,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       Value2 = 2
     }
 
+    [Flags]
+    public enum FlagsType
+    {
+      Flag0 = 0,
+      Flag1 = 1,
+      Flag2 = 2
+    }
+
+
     public static ClassWithAllDataTypes NewObject ()
     {
       return NewObject<ClassWithAllDataTypes> ().With();
@@ -111,6 +120,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBColumn ("Enum")]
     public abstract EnumType EnumProperty { get; set; }
 
+    [DBColumn ("Flags")]
+    public abstract FlagsType FlagsProperty { get; set; }
+
     [DBColumn ("Guid")]
     public abstract Guid GuidProperty { get; set; }
 
@@ -159,6 +171,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [DBColumn ("NaEnum")]
     public abstract EnumType? NaEnumProperty { get; set; }
 
+    [DBColumn ("NaFlags")]
+    public abstract FlagsType? NaFlagsProperty { get; set; }
+
     [DBColumn ("NaGuid")]
     public abstract Guid? NaGuidProperty { get; set; }
 
@@ -198,6 +213,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     [DBColumn ("NaEnumWithNullValue")]
     public abstract EnumType? NaEnumWithNullValueProperty { get; set; }
+
+    [DBColumn ("NaFlagsWithNullValue")]
+    public abstract FlagsType? NaFlagsWithNullValueProperty { get; set; }
 
     [DBColumn ("NaGuidWithNullValue")]
     public abstract Guid? NaGuidWithNullValueProperty { get; set; }
