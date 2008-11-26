@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private ClientTransaction GetDefaultTransaction ()
     {
-      return DomainObjectUtility.GetNonNullClientTransaction (_domainObject);
+      return DomainObjectCheckUtility.GetNonNullClientTransaction (_domainObject);
     }
 
     private PropertyAccessorData CreatePropertyAccessorData (string propertyName)
@@ -183,7 +183,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <see cref="DomainObject"/>.</returns>
     public IEnumerable<PropertyAccessor> AsEnumerable ()
     {
-      return AsEnumerable (DomainObjectUtility.GetNonNullClientTransaction(_domainObject));
+      return AsEnumerable (DomainObjectCheckUtility.GetNonNullClientTransaction(_domainObject));
     }
 
     /// <summary>
@@ -196,7 +196,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public IEnumerable<PropertyAccessor> AsEnumerable (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
-      DomainObjectUtility.CheckIfRightTransaction (_domainObject, transaction);
+      DomainObjectCheckUtility.CheckIfRightTransaction (_domainObject, transaction);
       
       ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
 

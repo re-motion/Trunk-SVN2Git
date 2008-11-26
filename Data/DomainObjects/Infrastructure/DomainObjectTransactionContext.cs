@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        DomainObjectUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
+        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
 
         if (IsDiscarded)
           return StateType.Discarded;
@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        DomainObjectUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
+        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
         return AssociatedTransaction.DataManager.IsDiscarded (DomainObject.ID); 
       }
     }
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void MarkAsChanged()
     {
-      DomainObjectUtility.CheckIfObjectIsDiscarded (DomainObject, AssociatedTransaction);
+      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (DomainObject, AssociatedTransaction);
 
       DataContainer dataContainer = AssociatedTransaction.GetDataContainer(DomainObject);
       try

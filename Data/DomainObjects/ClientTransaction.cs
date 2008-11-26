@@ -1109,7 +1109,7 @@ public abstract class ClientTransaction
   protected internal DataContainer GetDataContainer (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    DomainObjectUtility.CheckIfRightTransaction (domainObject, this);
+    DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, this);
 
     if (DataManager.IsDiscarded (domainObject.ID))
       throw new ObjectDiscardedException (domainObject.ID);

@@ -232,7 +232,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectEventManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectTransactionContextIndexerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectTransactionContextTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectUtilityTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectCheckUtilityTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SerializableClass.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SerializableClassImplementingISerializable.cs" />

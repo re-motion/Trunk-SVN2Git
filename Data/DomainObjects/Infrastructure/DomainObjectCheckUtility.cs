@@ -16,7 +16,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// Contains commonly used get and check methods dealing with <see cref="DomainObject"/> instances.
   /// </summary>
-  public class DomainObjectUtility
+  public class DomainObjectCheckUtility
   {
     /// <summary>
     /// Returns the <see cref="DomainObject.BindingTransaction"/> of the given <see cref="DomainObject"/>, or the 

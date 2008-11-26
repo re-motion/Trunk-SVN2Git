@@ -19,13 +19,13 @@ using Remotion.Data.DomainObjects;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class DomainObjectUtilityTest : ClientTransactionBaseTest
+  public class DomainObjectCheckUtilityTest : ClientTransactionBaseTest
   {
     [Test]
     public void GetNonNullClientTransaction_Current()
     {
       var order = Order.NewObject();
-      Assert.That (DomainObjectUtility.GetNonNullClientTransaction (order), Is.SameAs (ClientTransaction.Current));
+      Assert.That (DomainObjectCheckUtility.GetNonNullClientTransaction (order), Is.SameAs (ClientTransaction.Current));
     }
 
     [Test]
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       {
         order = Order.NewObject();
       }
-      Assert.That (DomainObjectUtility.GetNonNullClientTransaction (order), Is.SameAs (bindingTransaction));
+      Assert.That (DomainObjectCheckUtility.GetNonNullClientTransaction (order), Is.SameAs (bindingTransaction));
     }
 
     [Test]
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var order = Order.NewObject ();
       using (ClientTransactionScope.EnterNullScope ())
       {
-        DomainObjectUtility.GetNonNullClientTransaction (order);
+        DomainObjectCheckUtility.GetNonNullClientTransaction (order);
       }
     }
 
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CheckIfObjectIsDiscarded_Valid ()
     {
       var order = Order.NewObject ();
-      DomainObjectUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
+      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
     }
 
     [Test]
@@ -65,14 +65,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var order = Order.NewObject ();
       order.Delete ();
-      DomainObjectUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
+      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (order, ClientTransaction.Current);
     }
 
     [Test]
     public void CheckIfRightTransaction_Works ()
     {
       var order = Order.NewObject ();
-      DomainObjectUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
+      DomainObjectCheckUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
     }
 
     [Test]
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var order = Order.NewObject ();
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        DomainObjectUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
+        DomainObjectCheckUtility.CheckIfRightTransaction (order, ClientTransaction.Current);
       }
     }
   }

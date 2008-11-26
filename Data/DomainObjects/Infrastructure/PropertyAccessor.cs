@@ -298,8 +298,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void CheckTransactionalStatus (ClientTransaction transaction)
     {
-      DomainObjectUtility.CheckIfObjectIsDiscarded (_domainObject, transaction);
-      DomainObjectUtility.CheckIfRightTransaction (_domainObject, transaction);
+      DomainObjectCheckUtility.CheckIfObjectIsDiscarded (_domainObject, transaction);
+      DomainObjectCheckUtility.CheckIfRightTransaction (_domainObject, transaction);
     }
 
     private void CheckType (Type typeToCheck)

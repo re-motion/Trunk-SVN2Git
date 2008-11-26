@@ -378,7 +378,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public StateType State
     {
-      get { return TransactionContext[DomainObjectUtility.GetNonNullClientTransaction(this)].State; }
+      get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction(this)].State; }
     }
 
     /// <summary>
@@ -426,7 +426,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public bool IsDiscarded
     {
-      get { return TransactionContext[DomainObjectUtility.GetNonNullClientTransaction (this)].IsDiscarded; }
+      get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction (this)].IsDiscarded; }
     }
 
     /// <summary>
@@ -435,7 +435,7 @@ namespace Remotion.Data.DomainObjects
     /// <value>The timestamp of the object.</value>
     public object Timestamp
     {
-      get { return TransactionContext[DomainObjectUtility.GetNonNullClientTransaction (this)].Timestamp; }
+      get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction (this)].Timestamp; }
     }
 
     /// <summary>
@@ -446,7 +446,7 @@ namespace Remotion.Data.DomainObjects
     /// in the transaction.</remarks>
     public bool CanBeUsedInTransaction
     {
-      get { return TransactionContext[DomainObjectUtility.GetNonNullClientTransaction(this)].CanBeUsedInTransaction; }
+      get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction(this)].CanBeUsedInTransaction; }
     }
 
     /// <summary>
@@ -458,7 +458,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
     public void MarkAsChanged ()
     {
-      TransactionContext[DomainObjectUtility.GetNonNullClientTransaction (this)].MarkAsChanged ();
+      TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction (this)].MarkAsChanged ();
     }
 
     /// <summary>
