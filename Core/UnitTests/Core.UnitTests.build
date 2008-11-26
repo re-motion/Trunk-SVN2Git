@@ -49,6 +49,7 @@
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion.UnitTests">
         <include name="Resources/*.resx" />
         <include name="**/*.xsd" />
+        <include name="Utilities/TestData/WriteEmbeddedStringResourceToFileTestData.txt" />
       </resources>
     </csc>
 
