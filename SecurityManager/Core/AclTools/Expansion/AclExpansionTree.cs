@@ -101,6 +101,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
+    private int CountRowsBelow<T> (IGrouping<T, AclExpansionEntry> grouping)
+    {
+      return grouping.Distinct (AclExpansionHtmlWriter.AclExpansionEntryIgnoreStateEqualityComparer).Count();
+    }
+
+
     public void ToText (IToTextBuilder toTextBuilder)
     {
       toTextBuilder.e (Tree);

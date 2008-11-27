@@ -21,6 +21,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   public class EnumerableEqualsWrapperTest
   {
     [Test]
+    [Explicit]
     public void Spike ()
     {
       int i = 17;
@@ -37,6 +38,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
+    [Explicit]
     public void Spike2 ()
     {
       var c = new ComparableTestClass (6758439);
@@ -56,13 +58,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var numbers0 = new[] { 7, 11, 13 };
 
-#if(false)
-      // TODO: Reactivate these tests as soon as it is clear how best to support the fact that
-      // ComparableTestClass implements IEquatable<int> and the sequences should therefore 
-      // in fact compare equal.
-      Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (numbers0), Is.True);
-      Assert.That (NewEnumerableEqualsWrapper (numbers0).Equals (sequence0), Is.True);
-#endif
+      // Even though the ComparableTestClass incorrectly implements IEquatable<int> 
+      // (IEquatable<> must only be used in the combination "class T : IEquatable<T>"; seeMSDN help) 
+      // the sequences should symetrically not compare equal.
+      Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (numbers0), Is.False);
+      Assert.That (NewEnumerableEqualsWrapper (numbers0).Equals (sequence0), Is.False);
 
       Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (new[] { 7, 12, 13 }), Is.False);
 
