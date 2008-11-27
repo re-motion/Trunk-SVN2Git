@@ -346,7 +346,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private void WriteTableBody_ProcessUser (AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>> userNode)
+    private void WriteTableBody_ProcessUser (AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>>> userNode)
     {
       WriteTableDataWithRowCount (userNode.Key.DisplayName, userNode.NumberLeafNodes);
   
@@ -356,7 +356,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private void WriteTableBody_ProcessRole (AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>> roleNode)
+    private void WriteTableBody_ProcessRole (AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>> roleNode)
     {
       WriteTableDataForRole (roleNode.Key, roleNode.NumberLeafNodes);
  
@@ -366,7 +366,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private void WriteTableBody_ProcessClass (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry> classNode)
+    private void WriteTableBody_ProcessClass (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> classNode)
     {
       if (classNode.Key != null)
       {
@@ -378,10 +378,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classNode.NumberLeafNodes);
       }
 
+      // AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>
       WriteTableBody_ProcessStates(classNode.Children);
     }
 
-#if(true)
+#if(false)
     private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
     {
       // States Output
@@ -401,23 +402,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 #else
-    private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
+    //private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
+    private void WriteTableBody_ProcessStates (IList<AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> states)
     {
       //var statesGroupedByOnlyDiffersInStates = states.GroupBy (aee => aee, aee => aee, AclExpansionEntryIgnoreStateEqualityComparer);
 
-      var statesGroupedByOnlyDiffersInStates = states.GroupBy (aee => aee, aee => aee, 
-        AclExpansionEntryIgnoreStateEqualityComparer).Select(x => AclExpansionTreeNode.New (x.Key,x.Count(),x.ToList()));
+      //var statesGroupedByOnlyDiffersInStates = states.GroupBy (aee => aee, aee => aee, 
+      //  AclExpansionEntryIgnoreStateEqualityComparer).Select(x => AclExpansionTreeNode.New (x.Key,x.Count(),x.ToList()));
 
-      var xxx = from entry in states
-                orderby entry.User.DisplayName
-                group entry by entry.User
-                into grouping
-                select AclExpansionTreeNode.New (grouping.Key, grouping.Count(), grouping.ToList());
+      //var xxx = from entry in states
+      //          orderby entry.User.DisplayName
+      //          group entry by entry.User
+      //          into grouping
+      //          select AclExpansionTreeNode.New (grouping.Key, grouping.Count(), grouping.ToList());
 
 
-      var xxx2 =
-          states.OrderBy (entry => entry.User.DisplayName).GroupBy (entry => entry.User).Select (
-              grouping => AclExpansionTreeNode.New (grouping.Key, grouping.Count(), grouping.ToList()));
+      //var xxx2 =
+      //    states.OrderBy (entry => entry.User.DisplayName).GroupBy (entry => entry.User).Select (
+      //        grouping => AclExpansionTreeNode.New (grouping.Key, grouping.Count(), grouping.ToList()));
 
 
       // TODO: Fix rowspan to take reduced number of table output rows into account:
@@ -425,7 +427,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       // for this in this class).
 
       // States Output
-      foreach (var aclExpansionTreeNode in statesGroupedByOnlyDiffersInStates)
+      foreach (var aclExpansionTreeNode in states)
       {
         WriteTableRowBeginIfNotInTableRow ();
 
@@ -453,7 +455,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       bool firstElement = true;
 
-      To.ConsoleLine.e ("number of elements in statesGroupedByOnlyDiffersInStates: ", aclExpansionEntriesWhichOnlyDiffersInStates.Count ());
+      //To.ConsoleLine.e ("number of elements in statesGroupedByOnlyDiffersInStates: ", aclExpansionEntriesWhichOnlyDiffersInStates.Count ());
 
       foreach (AclExpansionEntry aclExpansionEntry in aclExpansionEntriesWhichOnlyDiffersInStates)
       {

@@ -165,9 +165,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
       string result = stringWriter.ToString ();
       //To.ConsoleLine.e (() => result);
-      Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (3)"));
-      Assert.That (result, NUnitText.Contains ("Da Group, Supreme Being (3)"));
-      Assert.That (result, NUnitText.Contains ("Order (3)"));
+      Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (2)"));
+      Assert.That (result, NUnitText.Contains ("Da Group, Supreme Being (2)"));
+      Assert.That (result, NUnitText.Contains ("Order (2)"));
     }
 
     [Test]
@@ -254,7 +254,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
           aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
           string result = textWriter.ToString();
-          //To.ConsoleLine.e (() => result);
+          
+          //To.ConsoleLine.e (() => result); 
           //Clipboard.SetText (CreateLiteralResultExpectedString(result));
 
           const string resultExpected =
@@ -280,10 +281,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <th class=""header"">Access Rights</th>
       </tr>
       <tr>
-        <td rowspan=""21"">James Ryan</td>
-        <td rowspan=""3"">Anotha Group, Supreme Being</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
+        <td rowspan=""15"">James Ryan</td>
+        <td rowspan=""2"">Anotha Group, Supreme Being</td>
+        <td rowspan=""2"">Bestellung</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -299,17 +300,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Anotha Group, Working Drone</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
+        <td rowspan=""2"">Anotha Group, Working Drone</td>
+        <td rowspan=""2"">Bestellung</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -325,16 +318,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""4"">Da 3rd Group, Combatant</td>
-        <td rowspan=""4"">Bestellung</td>
+        <td rowspan=""3"">Da 3rd Group, Combatant</td>
+        <td rowspan=""3"">Bestellung</td>
         <td>Bezahlt, DHL, Erhalten</td>
         <td></td>
         <td></td>
@@ -343,7 +328,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -359,16 +344,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""4"">Da 3rd Group, Combatant</td>
-        <td rowspan=""4"">Bestellung</td>
+        <td rowspan=""3"">Da 3rd Group, Combatant</td>
+        <td rowspan=""3"">Bestellung</td>
         <td>Bezahlt, DHL, Erhalten</td>
         <td></td>
         <td></td>
@@ -377,7 +354,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -393,16 +370,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""4"">Da Group, Combatant</td>
-        <td rowspan=""4"">Bestellung</td>
+        <td rowspan=""3"">Da Group, Combatant</td>
+        <td rowspan=""3"">Bestellung</td>
         <td>Bezahlt, DHL, Erhalten</td>
         <td></td>
         <td></td>
@@ -411,7 +380,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -427,17 +396,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Da Group, Supreme Being</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
+        <td rowspan=""2"">Da Group, Supreme Being</td>
+        <td rowspan=""2"">Bestellung</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -453,18 +414,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""12"">Smith, Mr.</td>
-        <td rowspan=""3"">Anotha Group, Supreme Being</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
+        <td rowspan=""8"">Smith, Mr.</td>
+        <td rowspan=""2"">Anotha Group, Supreme Being</td>
+        <td rowspan=""2"">Bestellung</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -480,17 +433,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Anotha Group, Working Drone</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
+        <td rowspan=""2"">Anotha Group, Working Drone</td>
+        <td rowspan=""2"">Bestellung</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -506,17 +451,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Da 3rd Group, Working Drone</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
+        <td rowspan=""2"">Da 3rd Group, Working Drone</td>
+        <td rowspan=""2"">Bestellung</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -532,17 +469,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Da Group, Working Drone</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
+        <td rowspan=""2"">Da Group, Working Drone</td>
+        <td rowspan=""2"">Bestellung</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -558,18 +487,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Delete, FirstAccessType, Read, Write</td>
       </tr>
       <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
-      </tr>
-      <tr>
-        <td rowspan=""3"">Usa Da, Dr.</td>
-        <td rowspan=""3"">Da Group, Supreme Being</td>
-        <td rowspan=""3"">Bestellung</td>
-        <td>DHL, Erhalten, Offen</td>
+        <td rowspan=""2"">Usa Da, Dr.</td>
+        <td rowspan=""2"">Da Group, Supreme Being</td>
+        <td rowspan=""2"">Bestellung</td>
+        <td>DHL, Erhalten, Offen; DHL, Erhalten, Offen</td>
         <td></td>
         <td></td>
         <td></td>
@@ -583,14 +504,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         <td>Da Tenant</td>
         <td></td>
         <td>Delete, FirstAccessType, Read, Write</td>
-      </tr>
-      <tr>
-        <td>DHL, Erhalten, Offen</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Delete, FirstAccessType, Read</td>
       </tr>
     </table>
   </body>

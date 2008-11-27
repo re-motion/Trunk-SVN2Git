@@ -13,6 +13,7 @@ using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -82,24 +83,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
-        //using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
-        //{
-        //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
-        //  aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-        //  aclExpansionHtmlWriter.WriteAclExpansion ();
-        //}
-
+        //WriteAclExpansionAsHtmlToDisk(aclExpansion, "c:\\temp\\aaa.html");
 
         var aclExpansionTree = new AclExpansionTree (aclExpansion);
 
-        //foreach (var userNode in aclExpansionTree.Tree)
-        //{
-        //  To.ConsoleLine.sb ().e (userNode.NumberLeafNodes).e (userNode.Key).se ();
-        //}
-
-        //To.Console.IndentationString = "  ";
-        //To.Console.AllowNewline = true;
-        //To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
+        //WriteAclExpansionTreeToConsole(aclExpansionTree);
 
         var userNodes = aclExpansionTree.Tree;
         Assert.That (userNodes.Count, Is.EqualTo (1)); // # users
@@ -114,11 +102,35 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         Assert.That (classNodes[0].Key.StatefulAccessControlLists, NUnitList.Contains (Acl));
 
         var stateNodes = classNodes[0].Children;
-        Assert.That (stateNodes.Count, Is.EqualTo (3)); // # states
-        foreach (AclExpansionEntry aee in stateNodes)
+        Assert.That (stateNodes.Count, Is.EqualTo (2)); // # states
+
+        Assert.That (stateNodes[0].Children.Count, Is.EqualTo (2)); // # states in group with same AclExpansionEntry ignoring StateCombinations
+        Assert.That (stateNodes[1].Children.Count, Is.EqualTo (1)); // # states in group with same AclExpansionEntry ignoring StateCombinations
+
+        foreach (var aclExpansionEntryTreeNode in stateNodes)
         {
-          Assert.That (aee.StateCombinations, Is.SubsetOf (Acl.StateCombinations));
+          foreach (AclExpansionEntry aee in aclExpansionEntryTreeNode.Children)
+          {
+            Assert.That (aee.StateCombinations, Is.SubsetOf (Acl.StateCombinations));
+          }
         }
+      }
+    }
+
+    private void WriteAclExpansionTreeToConsole (AclExpansionTree aclExpansionTree)
+    {
+      To.Console.IndentationString = "  ";
+      To.Console.AllowNewline = true;
+      To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
+    }
+
+    private void WriteAclExpansionAsHtmlToDisk (List<AclExpansionEntry> aclExpansion, string fileName)
+    {
+      using (var textWriter = new StreamWriter (fileName))
+      {
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+        aclExpansionHtmlWriter.Settings.OutputRowCount = true;
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
       }
     }
 
@@ -138,14 +150,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var aclExpansionTreeInverseSorted = new AclExpansionTree (
             aclExpansionEntryList,
             (classEntry => (classEntry.AccessControlList is StatefulAccessControlList) ? "A" : "B")); // sort stateful before stateless
-        LogAclExpansionTree (aclExpansionTreeInverseSorted);
+        //LogAclExpansionTree (aclExpansionTreeInverseSorted);
         Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
-        Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (Acl));
+        //Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (Acl));
+        Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (Acl));
 
         var aclExpansionTreeDefaultSorted = new AclExpansionTree (aclExpansionEntryList);
-        LogAclExpansionTree (aclExpansionTreeDefaultSorted);
+        //LogAclExpansionTree (aclExpansionTreeDefaultSorted);
         Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
-        Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (statelessAcl));
+        //Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (statelessAcl));
+        Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (statelessAcl));
 
       }
     }
