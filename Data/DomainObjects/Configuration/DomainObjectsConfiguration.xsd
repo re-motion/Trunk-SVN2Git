@@ -16,7 +16,7 @@
 							<xs:element name="providerDefinitions" type="c:ProviderCollection" minOccurs="0"/>
               <xs:element name="groups" type="c:StorageGroupCollection" minOccurs="0" />
 						</xs:all>
-						<xs:attribute name="defaultProviderDefinition" type="c:ProviderDefinitionSelection" use="required"/>
+						<xs:attribute name="defaultProviderDefinition" type="c:ProviderDefinitionSelection" use="optional"/>
 					</xs:complexType>
           <xs:unique name="uniqueProviderDefinitions">
             <xs:selector xpath="c:providerDefinitions/c:add"/>
