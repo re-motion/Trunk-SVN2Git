@@ -76,48 +76,71 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
 
-      var aclExpansionTree = (from entry in aclExpansion
-                           orderby entry.User.DisplayName
-                           group entry by entry.User
-                           into grouping
-                               select AclExpansionTreeNode.New (
-                               grouping.Key,
-                               CountRowsBelow (grouping),
-                               (from roleEntry in grouping
-                                orderby roleEntry.Role.Group.DisplayName , roleEntry.Role.Position.DisplayName
-                                group roleEntry by roleEntry.Role
-                                into roleGrouping
-                                    select AclExpansionTreeNode.New (
-                                    roleGrouping.Key,
-                                    CountRowsBelow (roleGrouping),
-                                    (from classEntry in roleGrouping
-                                     orderby _orderbyForSecurableClass (classEntry)
-                                     group classEntry by classEntry.Class
-                                     into classGrouping
-                                         select AclExpansionTreeNode.New (
-                                         classGrouping.Key,
-                                         CountRowsBelow (classGrouping),
-                                         //classGrouping.ToList() // States, i.e. final AclExpansion detail level
-                                         classGrouping.GroupBy (aee => aee, aee => aee,AclExpansionEntryIgnoreStateEqualityComparer
-                                         ).Select (x => AclExpansionTreeNode.New (x.Key, x.Count (), x.ToList ())).ToList()
 
-                           )).ToList() )).ToList() )).ToList();
+
+      //var aclExpansionTree = (from entry in aclExpansion
+      //                        orderby entry.User.DisplayName
+      //                        group entry by entry.User
+      //                          into grouping
+      //                          select AclExpansionTreeNode.New (
+      //                          grouping.Key,
+      //                          CountRowsBelow (grouping),
+      //                          (from roleEntry in grouping
+      //                           orderby roleEntry.Role.Group.DisplayName, roleEntry.Role.Position.DisplayName
+      //                           group roleEntry by roleEntry.Role
+      //                             into roleGrouping
+      //                             select AclExpansionTreeNode.New (
+      //                             roleGrouping.Key,
+      //                             CountRowsBelow (roleGrouping),
+      //                             (from classEntry in roleGrouping
+      //                              orderby _orderbyForSecurableClass (classEntry)
+      //                              group classEntry by classEntry.Class
+      //                                into classGrouping
+      //                                select AclExpansionTreeNode.New (
+      //                                classGrouping.Key,
+      //                                CountRowsBelow (classGrouping),
+      //                                  //classGrouping.ToList() // States, i.e. final AclExpansion detail level
+      //                                classGrouping.GroupBy (aee => aee, aee => aee, AclExpansionEntryIgnoreStateEqualityComparer
+      //                                ).Select (x => AclExpansionTreeNode.New (x.Key, x.Count (), x.ToList ())).ToList ()
+
+      //                  )).ToList ())).ToList ())).ToList ();
+
+      var aclExpansionTree = (aclExpansion.OrderBy (entry => entry.User.DisplayName).GroupBy (entry => entry.User).Select (
+          grouping => AclExpansionTreeNode.New (grouping.Key, CountRowsBelow (grouping), RoleGrouping(grouping).ToList()))).ToList();
 
 
       _aclExpansionTree = aclExpansionTree;
     }
 
-#if(false)
-    private int CountRowsBelow<T> (IGrouping<T, AclExpansionEntry> grouping)
+    private IEnumerable<AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>>> RoleGrouping (IGrouping<User, AclExpansionEntry> grouping)
     {
-      return grouping.Count ();
+      return (grouping.OrderBy (roleEntry => roleEntry.Role.Group.DisplayName).ThenBy (roleEntry => roleEntry.Role.Position.DisplayName).
+          GroupBy (roleEntry => roleEntry.Role).Select (
+          roleGrouping => AclExpansionTreeNode.New (roleGrouping.Key, CountRowsBelow (roleGrouping), ClassGrouping(roleGrouping).ToList())));
     }
-#else
+
+    private IEnumerable<AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>> ClassGrouping (IGrouping<Role, AclExpansionEntry> roleGrouping)
+    {
+      return (roleGrouping.OrderBy (classEntry => _orderbyForSecurableClass (classEntry)).GroupBy (
+          classEntry => classEntry.Class).Select (
+          //classGrouping => AclExpansionTreeNode.New (classGrouping.Key, CountRowsBelow (classGrouping), StateGrouping(classGrouping))));
+          classGrouping => AclExpansionTreeNode.New (classGrouping.Key, CountRowsBelow (classGrouping), StateGrouping (classGrouping).ToList())));
+
+    }
+
+    private List<AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> StateGrouping (IGrouping<SecurableClassDefinition, AclExpansionEntry> classGrouping)
+    {
+      return classGrouping.GroupBy (
+          aee => aee, aee => aee, AclExpansionEntryIgnoreStateEqualityComparer).
+          Select (x => AclExpansionTreeNode.New (x.Key, x.Count(), x.ToList())).ToList();
+    }
+
+
+
     private int CountRowsBelow<T> (IGrouping<T, AclExpansionEntry> grouping)
     {
       return grouping.Distinct (AclExpansionEntryIgnoreStateEqualityComparer).Count ();
     }
-#endif
 
 
     public void ToText (IToTextBuilder toTextBuilder)
