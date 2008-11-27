@@ -881,6 +881,60 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    [Test] 
+    public void AclExpansionEntryIgnoreStateEqualityComparerTest ()
+    {
+      var comparer = AclExpansionHtmlWriter.AclExpansionEntryIgnoreStateEqualityComparer;
+      var aclExpansionEntry1 = 
+          new AclExpansionEntry (
+              User, Role, Acl, new AclExpansionAccessConditions(), new[] { WriteAccessType }, new[] { ReadAccessType, DeleteAccessType });
+      var aclExpansionEntry2 =
+          new AclExpansionEntry (
+              User, Role, Acl2, new AclExpansionAccessConditions (), new[] { WriteAccessType }, new[] { ReadAccessType, DeleteAccessType });
+      var aclExpansionEntry3 =
+         new AclExpansionEntry (
+             User, Role, Acl, new AclExpansionAccessConditions (), new[] { ReadAccessType, WriteAccessType }, new[] { DeleteAccessType });
+      //aclExpansionEntry2.StateCombinations;
+      Assert.That (comparer.Equals (aclExpansionEntry1, aclExpansionEntry1), Is.True);
+      Assert.That (comparer.Equals (aclExpansionEntry1, aclExpansionEntry2), Is.True);
+      Assert.That (comparer.Equals (aclExpansionEntry1, aclExpansionEntry3), Is.False);
+    }
+
+
+    [Test]
+    public void AclExpansionEntryIgnoreStateEqualityComparerTest2 ()
+    {
+      var comparer = AclExpansionHtmlWriter.AclExpansionEntryIgnoreStateEqualityComparer;
+
+      var aclSameClassDiffernenStates = TestHelper.CreateStatefulAcl (Acl.Class, new StateDefinition[] { });
+      var aclDifferentClass = TestHelper.CreateStatefulAcl (TestHelper.CreateClassDefinition("2008-11-26, 16:41"), new StateDefinition[] { });
+
+      var a =
+          new AclExpansionEntry (
+              User, Role, Acl, new AclExpansionAccessConditions (), new[] { WriteAccessType }, new[] { ReadAccessType, DeleteAccessType });
+      var aDifferent =
+          new AclExpansionEntry (
+              User2, Role2, aclDifferentClass, new AclExpansionAccessConditions { OwningTenant = Tenant }, new[] { ReadAccessType }, new[] { DeleteAccessType });
+
+      Assert.That (comparer.Equals (a, 
+        new AclExpansionEntry (a.User,a.Role,a.AccessControlList,a.AccessConditions,a.AllowedAccessTypes, a.DeniedAccessTypes)), Is.True);
+      Assert.That (comparer.Equals (a,
+        new AclExpansionEntry (a.User, a.Role, aclSameClassDiffernenStates, a.AccessConditions, a.AllowedAccessTypes, a.DeniedAccessTypes)), Is.True);
+
+      Assert.That (comparer.Equals (a,
+        new AclExpansionEntry (aDifferent.User, a.Role, a.AccessControlList, a.AccessConditions, a.AllowedAccessTypes, a.DeniedAccessTypes)), Is.False);
+      Assert.That (comparer.Equals (a,
+        new AclExpansionEntry (a.User, aDifferent.Role, a.AccessControlList, a.AccessConditions, a.AllowedAccessTypes, a.DeniedAccessTypes)), Is.False);
+      Assert.That (comparer.Equals (a,
+        new AclExpansionEntry (a.User, a.Role, aDifferent.AccessControlList, a.AccessConditions, a.AllowedAccessTypes, a.DeniedAccessTypes)), Is.False);
+      Assert.That (comparer.Equals (a,
+        new AclExpansionEntry (a.User, a.Role, a.AccessControlList, aDifferent.AccessConditions, a.AllowedAccessTypes, a.DeniedAccessTypes)), Is.False);
+      Assert.That (comparer.Equals (a,
+        new AclExpansionEntry (a.User, a.Role, a.AccessControlList, a.AccessConditions, aDifferent.AllowedAccessTypes, a.DeniedAccessTypes)), Is.False);
+      Assert.That (comparer.Equals (a,
+        new AclExpansionEntry (a.User, a.Role, a.AccessControlList, a.AccessConditions, a.AllowedAccessTypes, aDifferent.DeniedAccessTypes)), Is.False);
+    }
+
 
     private CultureScope CultureScope_de_DE ()
     {

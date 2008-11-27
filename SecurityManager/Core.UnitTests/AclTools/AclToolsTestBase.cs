@@ -137,6 +137,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       TestHelper.AttachAces (Acl2, ace2_1, ace2_2, Ace3);
 
 
+
+
       // Additional roles for users
       //TestHelper.CreateRole (User, Group2, Position2);
       //TestHelper.CreateRole (User, Group3, Position3);

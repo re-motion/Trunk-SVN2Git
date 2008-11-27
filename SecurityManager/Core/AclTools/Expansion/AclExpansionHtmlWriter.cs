@@ -9,12 +9,13 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Remotion.Collections;
 using Remotion.Development.UnitTesting.ObjectMother;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -34,6 +35,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
     private string _statelessAclStateHtmlText = "(stateless)";
     private string _aclWithNoAssociatedStatesHtmlText = "(no associated states)";
+   
+    // IEqualityComparer which ignores differences in states (AclExpansionEntry.StateCombinations) to
+    // group AclExpansionEntry|s together which only differ in state.
+    private static readonly CompoundValueEqualityComparer<AclExpansionEntry> _aclExpansionEntryIgnoreStateEqualityComparer = 
+      new CompoundValueEqualityComparer<AclExpansionEntry> (a => new object[] {
+          //a.AccessControlList, a.Class, a.Role, a.User,
+          a.Class, a.Role, a.User,
+          a.AccessConditions.AbstractRole,
+          a.AccessConditions.GroupHierarchyCondition,
+          a.AccessConditions.IsOwningUserRequired,
+          a.AccessConditions.OwningGroup,
+          a.AccessConditions.OwningTenant,
+          a.AccessConditions.TenantHierarchyCondition,
+          EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
+          EnumerableEqualsWrapper.New (a.DeniedAccessTypes)
+      }
+    );
+
 
     public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
     {
@@ -65,6 +84,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       get { return _aclWithNoAssociatedStatesHtmlText; }
       set { _aclWithNoAssociatedStatesHtmlText = value; }
+    }
+
+    public static CompoundValueEqualityComparer<AclExpansionEntry> AclExpansionEntryIgnoreStateEqualityComparer
+    {
+      get { return _aclExpansionEntryIgnoreStateEqualityComparer; }
     }
 
 
@@ -379,7 +403,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 #else
     private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
     {
-      var statesGroupedByOnlyDiffersInStates = states.GroupBy(aee => aee,aee => aee,new AclExpansionEntryIgnoreStateEqualityComparer());
+      var statesGroupedByOnlyDiffersInStates = states.GroupBy (aee => aee, aee => aee, AclExpansionEntryIgnoreStateEqualityComparer);
+
+      // TODO: Fix rowspan to take reduced number of table output rows into account:
+      // Move grouping to AclExpansionTree (alas need to adapt all "AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, Ac...")
+      // for this in this class).
 
       // States Output
       foreach (var aclExpansionEntryGrouping in statesGroupedByOnlyDiffersInStates)
@@ -389,7 +417,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         // Write all states combined into one cell
         WriteTableDataForStates (aclExpansionEntryGrouping);
 
-        AclExpansionEntry aclExpansionEntry = aclExpansionEntryGrouping.Key; 
+        AclExpansionEntry aclExpansionEntry = aclExpansionEntryGrouping.Key;
+        //WriteTableDataForStates (aclExpansionEntry); // TEST !!!!
         WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
         WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
         if (Settings.OutputDeniedRights)
@@ -402,12 +431,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-
     private void WriteTableDataForStates (IGrouping<AclExpansionEntry,AclExpansionEntry> aclExpansionEntryGrouping)
     {
       htmlTagWriter.Tags.td ();
 
       bool firstElement = true;
+
+      To.ConsoleLine.e ("number of elements in statesGroupedByOnlyDiffersInStates: ", aclExpansionEntryGrouping.Count ());
+
       foreach (AclExpansionEntry aclExpansionEntry in aclExpansionEntryGrouping)
       {
         if (!firstElement)
@@ -420,213 +451,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
       htmlTagWriter.Tags.tdEnd ();
     }
-
  
 
-    public class AclExpansionEntryIgnoreStateEqualityComparer : IEqualityComparer<AclExpansionEntry>
-    {
-      private static readonly EqualsAndGetHashCodeSupplier<AclExpansionEntry> _equalsAndGetHashCode = 
-        new EqualsAndGetHashCodeSupplier<AclExpansionEntry>(
-          a => a.AccessControlList, a => a.Class, a => a.Role, a => a.User,
-          
-          a => a.AccessConditions.AbstractRole,
-          a => a.AccessConditions.GroupHierarchyCondition,
-          a => a.AccessConditions.IsOwningUserRequired,
-          a => a.AccessConditions.OwningGroup,
-          a => a.AccessConditions.OwningTenant,
-          a => a.AccessConditions.TenantHierarchyCondition,
-
-          a => new EnumerableEqualsWrapper<AccessTypeDefinition>(a.AllowedAccessTypes),
-          a => new EnumerableEqualsWrapper<AccessTypeDefinition>(a.DeniedAccessTypes)
-
-      );
-
-
-      public bool Equals (AclExpansionEntry x, AclExpansionEntry y)
-      {
-        return _equalsAndGetHashCode.Equals (x, y);
-      }
-
-      public int GetHashCode (AclExpansionEntry x)
-      {
-        return _equalsAndGetHashCode.GetHashCode (x);
-      }
-    }
-
-    public class AclExpansionEntryIgnoreStateEqualityComparer2 : IEqualityComparer<AclExpansionEntry>
-    {
-       public bool Equals (AclExpansionEntry x, AclExpansionEntry y)
-      {
-        var relevantValuesX = GetRelevantValues (x);
-        var relevantValuesY = GetRelevantValues (y);
-        return relevantValuesX.SequenceEqual (relevantValuesY);
-      }
-
-      public int GetHashCode (AclExpansionEntry x)
-      {
-        var relevantValuesX = GetRelevantValues (x);
-        return EqualityUtility.GetRotatedHashCode (relevantValuesX);
-      }
-
-      private object[] GetRelevantValues (AclExpansionEntry a)
-      {
-        return new object[] {
-          a.AccessControlList, 
-          a.Class, 
-          a.Role, 
-          a.User,
-          a.AccessConditions.AbstractRole,
-          a.AccessConditions.GroupHierarchyCondition,
-          a.AccessConditions.IsOwningUserRequired,
-          a.AccessConditions.OwningGroup,
-          a.AccessConditions.OwningTenant,
-          a.AccessConditions.TenantHierarchyCondition,
-
-          new EnumerableEqualsWrapper<AccessTypeDefinition> (a.AllowedAccessTypes),
-          new EnumerableEqualsWrapper<AccessTypeDefinition> (a.DeniedAccessTypes)
-        };
-      }
-    }
-
-    
-
-    
-
-
-    public class EqualsAndGetHashCodeSupplier<T> where T : class
-    {
-      private readonly Func<T, object>[] _classMembersUsedForComparison;
-
-      public EqualsAndGetHashCodeSupplier(params Func<T, object>[] membersUsedForComparison)
-      {
-        _classMembersUsedForComparison = membersUsedForComparison;
-      }
-
-      public bool Equals (T x, T y)
-      {
-        if (x == null || y == null)
-        {
-          return false;
-        }
-        foreach (var member in _classMembersUsedForComparison)
-        {
-          if (!object.Equals (member (x), member(y)))
-          {
-            return false;
-          }
-        }
-        return true;
-      }
-
-      public int GetHashCode (T x)
-      {
-        ArgumentUtility.CheckNotNull ("x", x);
-        return EqualityUtility.GetRotatedHashCode (_classMembersUsedForComparison.Select(m => m(x)));
-      }
-    }
-
-
-    public class EnumerableEqualsWrapper<TElement> : IEnumerable<TElement>
-
-    {
-      private readonly IEnumerable<TElement> _enumerable;
-
-      public EnumerableEqualsWrapper(IEnumerable<TElement> enumerable)
-      {
-        _enumerable = enumerable;
-      }
-
-
-
-      public override bool Equals(object obj)
-      {
-        if (ReferenceEquals (null, obj))
-          return false;
-        if (ReferenceEquals (this, obj))
-          return true;
-
-        if(obj is EnumerableEqualsWrapper<TElement>)
-        {
-          return obj.Equals (_enumerable);
-        }
-
-        if(!(obj is IEnumerable<TElement>))
-        {
-          return false;
-        }
-
-        IEnumerable<TElement> enumerable = (IEnumerable<TElement>) obj;
-        IEnumerator<TElement> enumerator0 = _enumerable.GetEnumerator();
-        IEnumerator<TElement> enumerator1 = enumerable.GetEnumerator();
-        while (true)
-        {
-          bool hasNext0 = enumerator0.MoveNext();
-          bool hasNext1 = enumerator1.MoveNext();
-
-          if (hasNext0 && hasNext1)
-          {
-            // Both enumerators have next element => continue comparing
-            if (!enumerator0.Current.Equals (enumerator1.Current))
-            {
-              return false;
-            }
-          }
-          else
-          {
-            // Only if both enumerators are false are the sequences equal
-            return hasNext0 == hasNext1;
-          }
-
-          //if(hasNext0 != hasNext1)
-          //{
-          //  // Number of elements not equal => sequence not equal
-          //  return false;
-          //}
-          //if(!hasNext0)
-          //{
-          //  // Both enumerators don't have more elements => sequence equal
-          //  return true;
-          //}
-          //if(!enumerator0.Current.Equals(enumerator1.Current))
-          //{
-          //  return false;
-          //}
-        }
-      }
-
-      public IEnumerator<TElement> GetEnumerator ()
-      {
-        return _enumerable.GetEnumerator();
-      }
-      
-      IEnumerator IEnumerable.GetEnumerator ()
-      {
-        return GetEnumerator();
-      }
-
-      
-      public override int GetHashCode ()
-      {
-        return EqualityUtility.GetRotatedHashCode(_enumerable);
-      }
-    }
-
-
-
-    //private static class Compare
-    //{
-    //  public static bool It<T> (T x, T y, params Func<T, object>[] members)
-    //  {
-    //    foreach (var member in members)
-    //    {
-    //      if (!member (x).Equals (member (y)))
-    //      {
-    //        return false;
-    //      }
-    //    }
-    //    return true;
-    //  }
-    //}
 #endif
 
   }
