@@ -176,13 +176,24 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private string GetStorageProviderID ()
     {
       StorageGroupAttribute storageGroupAttribute = AttributeUtility.GetCustomAttribute<StorageGroupAttribute> (Type, true);
+      var defaultStorageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
       if (storageGroupAttribute == null)
-        return DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name;
+      {
+        //TODO COMMONS-783: Test exception
+        if (defaultStorageProviderDefinition == null)
+          throw new InvalidOperationException ("Missing default storage provider.");
+        return defaultStorageProviderDefinition.Name;
+      }
 
       string storageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (storageGroupAttribute.GetType());
       StorageGroupElement storageGroup = DomainObjectsConfiguration.Current.Storage.StorageGroups[storageGroupName];
       if (storageGroup == null)
-        return DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name;
+      {
+        //TODO COMMONS-783: Test exception
+        if (defaultStorageProviderDefinition == null)
+          throw new InvalidOperationException ("Missing default storage provider.");
+        return defaultStorageProviderDefinition.Name;
+      }
       return storageGroup.StorageProviderName;
     }
 
@@ -202,7 +213,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return Attribute.IsDefined (Type, typeof (StorageGroupAttribute), false);
     }
 
-    private bool IsDomainObjectBase (Type type)
+    //TODO COMMONS-825: Refactor this
+    public static bool IsDomainObjectBase (Type type)
     {
       return type == typeof (DomainObject) || (type.IsGenericType && type.GetGenericTypeDefinition () == typeof (SimpleDomainObject<>));
     }

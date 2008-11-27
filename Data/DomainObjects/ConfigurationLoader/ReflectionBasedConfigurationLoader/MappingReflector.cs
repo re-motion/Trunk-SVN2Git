@@ -17,6 +17,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader
 {
+  //TODO COMMONS-825: join again with base class
   public class MappingReflector : MappingReflectorBase
   {
     private readonly ITypeDiscoveryService _typeDiscoveryService;
@@ -38,6 +39,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       return (from type in _typeDiscoveryService.GetTypes (typeof (DomainObject), false).Cast<Type>()
               where !type.IsDefined (typeof (IgnoreForMappingConfigurationAttribute), false)
+                //TODO COMMONS-825: test this
+              && !ClassReflector.IsDomainObjectBase (type)
               select type).Distinct();
     }
   }
