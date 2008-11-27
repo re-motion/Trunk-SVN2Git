@@ -115,7 +115,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var stateNodes = classNodes[0].Children;
         Assert.That (stateNodes.Count, Is.EqualTo (3)); // # states
-        //Assert.That (stateNodes[0].StateCombinations, Is.SubsetOf (Acl.StateCombinations));
         foreach (AclExpansionEntry aee in stateNodes)
         {
           Assert.That (aee.StateCombinations, Is.SubsetOf (Acl.StateCombinations));

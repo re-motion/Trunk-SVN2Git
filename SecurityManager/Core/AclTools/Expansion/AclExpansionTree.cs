@@ -55,18 +55,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                             orderby entry.User.DisplayName
                             group entry by entry.User
                               into grouping
-                              select AclExpansionTreeNode.New (grouping.Key, grouping.Count (),
+                             select AclExpansionTreeNode.New (grouping.Key, CountRowsBelow(grouping),
                               (from roleEntry in grouping
                                orderby roleEntry.Role.Group.DisplayName, roleEntry.Role.Position.DisplayName
                                group roleEntry by roleEntry.Role
                                  into roleGrouping
-                                 select AclExpansionTreeNode.New (roleGrouping.Key, roleGrouping.Count (),
+                                 select AclExpansionTreeNode.New (roleGrouping.Key, CountRowsBelow(roleGrouping),
                                   (from classEntry in roleGrouping
                                    //orderby ((classEntry.AccessControlList is StatelessAccessControlList) ? "" : classEntry.Class.DisplayName) 
                                    orderby _orderbyForSecurableClass (classEntry)
                                    group classEntry by classEntry.Class
                                      into classGrouping
-                                     select AclExpansionTreeNode.New (classGrouping.Key, classGrouping.Count (),
+                                     select AclExpansionTreeNode.New (classGrouping.Key, CountRowsBelow(classGrouping),
                                       classGrouping.ToList () // States, i.e. final AclExpansion detail level
                                      //select AclExpansionTreeNode.New (classGrouping.Key, classGrouping.Count (),
                                      // (from stateEntry in classGrouping orderby stateEntry. select stateEntry).ToList () // States, i.e. final AclExpansion detail level
@@ -103,8 +103,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private int CountRowsBelow<T> (IGrouping<T, AclExpansionEntry> grouping)
     {
-      return grouping.Distinct (AclExpansionHtmlWriter.AclExpansionEntryIgnoreStateEqualityComparer).Count();
+      return grouping.Count ();
     }
+
+    //private int CountRowsBelow<T> (IGrouping<T, AclExpansionEntry> grouping)
+    //{
+    //  return grouping.Distinct (AclExpansionHtmlWriter.AclExpansionEntryIgnoreStateEqualityComparer).Count();
+    //}
 
 
     public void ToText (IToTextBuilder toTextBuilder)
