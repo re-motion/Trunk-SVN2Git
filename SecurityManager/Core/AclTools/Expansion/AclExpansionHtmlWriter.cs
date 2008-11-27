@@ -36,22 +36,22 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private string _statelessAclStateHtmlText = "(stateless)";
     private string _aclWithNoAssociatedStatesHtmlText = "(no associated states)";
    
-    // IEqualityComparer which ignores differences in states (AclExpansionEntry.StateCombinations) to
-    // group AclExpansionEntry|s together which only differ in state.
-    private static readonly CompoundValueEqualityComparer<AclExpansionEntry> _aclExpansionEntryIgnoreStateEqualityComparer = 
-      new CompoundValueEqualityComparer<AclExpansionEntry> (a => new object[] {
-          //a.AccessControlList, a.Class, a.Role, a.User,
-          a.Class, a.Role, a.User,
-          a.AccessConditions.AbstractRole,
-          a.AccessConditions.GroupHierarchyCondition,
-          a.AccessConditions.IsOwningUserRequired,
-          a.AccessConditions.OwningGroup,
-          a.AccessConditions.OwningTenant,
-          a.AccessConditions.TenantHierarchyCondition,
-          EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
-          EnumerableEqualsWrapper.New (a.DeniedAccessTypes)
-      }
-    );
+    //// IEqualityComparer which ignores differences in states (AclExpansionEntry.StateCombinations) to
+    //// group AclExpansionEntry|s together which only differ in state.
+    //private static readonly CompoundValueEqualityComparer<AclExpansionEntry> _aclExpansionEntryIgnoreStateEqualityComparer = 
+    //  new CompoundValueEqualityComparer<AclExpansionEntry> (a => new object[] {
+    //      //a.AccessControlList, a.Class, a.Role, a.User,
+    //      a.Class, a.Role, a.User,
+    //      a.AccessConditions.AbstractRole,
+    //      a.AccessConditions.GroupHierarchyCondition,
+    //      a.AccessConditions.IsOwningUserRequired,
+    //      a.AccessConditions.OwningGroup,
+    //      a.AccessConditions.OwningTenant,
+    //      a.AccessConditions.TenantHierarchyCondition,
+    //      EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
+    //      EnumerableEqualsWrapper.New (a.DeniedAccessTypes)
+    //  }
+    //);
 
 
     public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
@@ -86,10 +86,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       set { _aclWithNoAssociatedStatesHtmlText = value; }
     }
 
-    public static CompoundValueEqualityComparer<AclExpansionEntry> AclExpansionEntryIgnoreStateEqualityComparer
-    {
-      get { return _aclExpansionEntryIgnoreStateEqualityComparer; }
-    }
+    //public static CompoundValueEqualityComparer<AclExpansionEntry> AclExpansionEntryIgnoreStateEqualityComparer
+    //{
+    //  get { return _aclExpansionEntryIgnoreStateEqualityComparer; }
+    //}
 
 
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)

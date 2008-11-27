@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -25,6 +26,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpansionTree : IToText
   {
     private readonly Func<AclExpansionEntry, string> _orderbyForSecurableClass;
+ 
+    // IEqualityComparer which ignores differences in states (AclExpansionEntry.StateCombinations) to
+    // group AclExpansionEntry|s together which only differ in state.
+    private static readonly CompoundValueEqualityComparer<AclExpansionEntry> _aclExpansionEntryIgnoreStateEqualityComparer =
+      new CompoundValueEqualityComparer<AclExpansionEntry> (a => new object[] {
+          //a.AccessControlList, a.Class, a.Role, a.User,
+          a.Class, a.Role, a.User,
+          a.AccessConditions.AbstractRole,
+          a.AccessConditions.GroupHierarchyCondition,
+          a.AccessConditions.IsOwningUserRequired,
+          a.AccessConditions.OwningGroup,
+          a.AccessConditions.OwningTenant,
+          a.AccessConditions.TenantHierarchyCondition,
+          EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
+          EnumerableEqualsWrapper.New (a.DeniedAccessTypes)
+      }
+    );
+
 
     //List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>>>
     List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>>>>
@@ -47,6 +66,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       get { return _aclExpansionTree; }
     }
 
+
+    public static CompoundValueEqualityComparer<AclExpansionEntry> AclExpansionEntryIgnoreStateEqualityComparer
+    {
+      get { return _aclExpansionEntryIgnoreStateEqualityComparer; }
+    }
 
     private void CreateAclExpansionTree (List<AclExpansionEntry> aclExpansion)
     {
@@ -74,8 +98,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                                          classGrouping.Key,
                                          CountRowsBelow (classGrouping),
                                          //classGrouping.ToList() // States, i.e. final AclExpansion detail level
-                                         classGrouping.GroupBy (aee => aee, aee => aee,
-        AclExpansionHtmlWriter.AclExpansionEntryIgnoreStateEqualityComparer).Select (x => AclExpansionTreeNode.New (x.Key, x.Count (), x.ToList ())).ToList()
+                                         classGrouping.GroupBy (aee => aee, aee => aee,AclExpansionEntryIgnoreStateEqualityComparer
+                                         ).Select (x => AclExpansionTreeNode.New (x.Key, x.Count (), x.ToList ())).ToList()
 
                            )).ToList() )).ToList() )).ToList();
 
@@ -91,7 +115,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 #else
     private int CountRowsBelow<T> (IGrouping<T, AclExpansionEntry> grouping)
     {
-      return grouping.Distinct (AclExpansionHtmlWriter.AclExpansionEntryIgnoreStateEqualityComparer).Count ();
+      return grouping.Distinct (AclExpansionEntryIgnoreStateEqualityComparer).Count ();
     }
 #endif
 
