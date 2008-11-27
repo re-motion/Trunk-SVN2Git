@@ -100,7 +100,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       CodeMemberMethod callMethod = GenerateWxeTemplateControlCallMethod (_functionDeclaration, partialTemplateControlClass, functionClass);
 
       // <returnType> Call (IWxePage page, <type> [ref|out] param1, <type> [ref|out] param2, ...)
-      GenerateWxePageCallMethodOverloadWithoutCallArguments (partialTemplateControlClass, callMethod);
+      GenerateWxeTemplateControlCallMethodOverloadWithoutCallArguments (partialTemplateControlClass, callMethod);
     }
 
     public FunctionDeclaration FunctionDeclaration
@@ -187,7 +187,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     /// <summary>
     /// &lt;returnType&gt; Call (IWxePage page, &lt;type&gt; [ref|out] param1, &lt;type&gt; [ref|out] param2, ...)
     /// </summary>
-    protected abstract void GenerateWxePageCallMethodOverloadWithoutCallArguments (CodeTypeDeclaration partialTemplateControlClass, CodeMemberMethod callMethod);
+    protected abstract void GenerateWxeTemplateControlCallMethodOverloadWithoutCallArguments (CodeTypeDeclaration partialTemplateControlClass, CodeMemberMethod callMethod);
 
     private CodeTypeDeclaration GenerateWxeFunctionClassDeclaration (string functionName, CodeNamespace ns)
     {
@@ -332,9 +332,9 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     }
 
     /// <summary>
-    /// ctor () : base () {}
+    /// ctor () : base (new object[]{}) {}
     /// <para>- or -</para>
-    /// ctor () : base (new NoneTransactionMode()) {}
+    /// ctor () : base (new NoneTransactionMode(), new object[]{}) {}
     /// </summary>
     private void GenerateWxeFunctionDefaultConstructor (CodeTypeDeclaration functionClass)
     {
@@ -343,6 +343,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       defaultCtor.Attributes = MemberAttributes.Public;
       if (_functionDeclaration.FunctionBaseType == typeof (WxeFunction).Name)
         defaultCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
+      defaultCtor.BaseConstructorArgs.Add (new CodeArrayCreateExpression (new CodeTypeReference (typeof (object[])), 0));
     }
 
     /// <summary>
@@ -364,9 +365,9 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
     }
 
     /// <summary>
-    /// ctor (&lt;type1&gt; inarg1, &lt;type2&gt; inarg2, ...): base (inarg1, inarg2, ...) {}
+    /// ctor (&lt;type1&gt; inarg1, &lt;type2&gt; inarg2, ...): base (new object[] {inarg1, inarg2, ...}) {}
     /// <para>- or -</para>
-    /// ctor (&lt;type1&gt; inarg1, &lt;type2&gt; inarg2, ...): base (new NoneTransactionMode(), inarg1, inarg2, ...) {}
+    /// ctor (&lt;type1&gt; inarg1, &lt;type2&gt; inarg2, ...): base (new NoneTransactionMode(), new object[] {inarg1, inarg2, ...}) {}
     /// </summary>
     private void GenerateWxeFunctionContructorWithTypesParameters (CodeTypeDeclaration functionClass)
     {
@@ -374,18 +375,18 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       typedCtor.Attributes = MemberAttributes.Public;
       if (_functionDeclaration.FunctionBaseType == typeof (WxeFunction).Name)
         typedCtor.BaseConstructorArgs.Add (new CodeObjectCreateExpression (new CodeTypeReference (typeof (NoneTransactionMode))));
+      List<CodeExpression> parameters = new List<CodeExpression>();
       foreach (ParameterDeclaration parameterDeclaration in _functionDeclaration.Parameters)
       {
-        if (parameterDeclaration.Direction == WxeParameterDirection.Out)
-          break;
+        if (parameterDeclaration.Direction != WxeParameterDirection.Out)
+        {
+          typedCtor.Parameters.Add (
+              new CodeParameterDeclarationExpression (new CodeTypeReference (parameterDeclaration.TypeName), parameterDeclaration.Name));
 
-        typedCtor.Parameters.Add (
-            new CodeParameterDeclarationExpression (
-                new CodeTypeReference (parameterDeclaration.TypeName),
-                parameterDeclaration.Name));
-
-        typedCtor.BaseConstructorArgs.Add (new CodeArgumentReferenceExpression (parameterDeclaration.Name));
+          parameters.Add (new CodeArgumentReferenceExpression (parameterDeclaration.Name));
+        }
       }
+      typedCtor.BaseConstructorArgs.Add (new CodeArrayCreateExpression (new CodeTypeReference (typeof (object[])), parameters.ToArray()));
       if (typedCtor.Parameters.Count > 0)
         functionClass.Members.Add (typedCtor);
     }

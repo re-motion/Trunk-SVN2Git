@@ -93,22 +93,14 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
           CodeBinaryOperatorType.ValueEquality,
           new CodePrimitiveExpression (false));
       // { 
-      //   function = new <class>Function();
-      ifNotIsReturningPostBack.TrueStatements.Add (
-          new CodeAssignStatement (
-              function,
-              new CodeObjectCreateExpression (new CodeTypeReference (functionClass.Name))));
-      //   function.ParamN = ParamN;
+      //   function = new <class>Function(inarg1, inarg2, ...);
+      CodeObjectCreateExpression functionInitialization = new CodeObjectCreateExpression (new CodeTypeReference (functionClass.Name));
       foreach (ParameterDeclaration parameterDeclaration in functionDeclaration.Parameters)
       {
         if (parameterDeclaration.Direction != WxeParameterDirection.Out)
-        {
-          ifNotIsReturningPostBack.TrueStatements.Add (
-              new CodeAssignStatement (
-                  new CodePropertyReferenceExpression (function, parameterDeclaration.Name),
-                  new CodeArgumentReferenceExpression (parameterDeclaration.Name)));
-        }
+          functionInitialization.Parameters.Add (new CodeArgumentReferenceExpression (parameterDeclaration.Name));
       }
+      ifNotIsReturningPostBack.TrueStatements.Add (new CodeAssignStatement (function, functionInitialization));
       //   function.ExceptionHandler.SetCatchExceptionTypes (typeof (Exception));
       ifNotIsReturningPostBack.TrueStatements.Add (
           new CodeMethodInvokeExpression (
@@ -198,7 +190,7 @@ namespace Remotion.Web.ExecutionEngine.CodeGenerator
       return callMethod;
     }
 
-    protected override void GenerateWxePageCallMethodOverloadWithoutCallArguments (CodeTypeDeclaration partialTemplateControlClass, CodeMemberMethod callMethod)
+    protected override void GenerateWxeTemplateControlCallMethodOverloadWithoutCallArguments (CodeTypeDeclaration partialTemplateControlClass, CodeMemberMethod callMethod)
     {
       //NOP
     }
