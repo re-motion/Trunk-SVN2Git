@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -24,6 +25,22 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpander
   {
     private readonly IUserRoleAclAceCombinations _userRoleAclAceCombinations;
+
+    // IEqualityComparer for value based comparison of AclExpansionEntry|s.
+    private static readonly CompoundValueEqualityComparer<AclExpansionEntry> _aclExpansionEntryEqualityComparer =
+      new CompoundValueEqualityComparer<AclExpansionEntry> (a => new object[] {
+          //a.User, a.Role, a.Class, a.StateCombinations,
+          a.User, a.Role, a.Class, a.AccessControlList is StatefulAccessControlList ? a.StateCombinations : null,
+          a.AccessConditions.AbstractRole,
+          a.AccessConditions.GroupHierarchyCondition,
+          a.AccessConditions.IsOwningUserRequired,
+          a.AccessConditions.OwningGroup,
+          a.AccessConditions.OwningTenant,
+          a.AccessConditions.TenantHierarchyCondition,
+          EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
+          EnumerableEqualsWrapper.New (a.DeniedAccessTypes)
+      }
+    );
 
     public AclExpander (IUserRoleAclAceCombinations userRoleAclAceCombinations)
     {
@@ -48,7 +65,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       return (from AclExpansionEntry aclExpansionEntry in GetAclExpansionEntryList ()
               orderby aclExpansionEntry.User.DisplayName, aclExpansionEntry.Role.DisplayName
-              select aclExpansionEntry ).Distinct().ToList();
+              select aclExpansionEntry).Distinct (_aclExpansionEntryEqualityComparer).ToList ();
     }
 
 

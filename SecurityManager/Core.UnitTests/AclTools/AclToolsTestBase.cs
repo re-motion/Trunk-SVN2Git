@@ -170,8 +170,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     }
 
 
-    protected List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList (
-      List<User> userList, List<AccessControlList> aclList)
+    protected List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList (List<User> userList, List<AccessControlList> aclList, 
+      bool sortedAndDistinct)
     {
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
       userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
@@ -179,12 +179,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
       aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
 
-
       var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+      
+      List<AclExpansionEntry> aclExpansionEntryList; 
 
-
-
-      var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
+      if (sortedAndDistinct)
+      {
+        aclExpansionEntryList = aclExpander.GetAclExpansionEntryListSortedAndDistinct ();
+      }
+      else
+      {
+        aclExpansionEntryList = aclExpander.GetAclExpansionEntryList();
+      }
       //To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations ();
       aclFinderMock.VerifyAllExpectations ();
