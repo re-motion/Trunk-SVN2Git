@@ -72,5 +72,14 @@ namespace Remotion.Development.Web.UnitTesting.AspNetFramework
     {
       return _valueInControlState;
     }
+
+    protected override void Render (HtmlTextWriter writer)
+    {
+      writer.RenderBeginTag( HtmlTextWriterTag.Div);
+      writer.Write ("ValueInViewState: {0}", _valueInViewState);
+      writer.WriteBreak();
+      writer.Write ("ValueInControlState: {0}", _valueInControlState);
+      writer.RenderEndTag ();
+    }
   }
 }

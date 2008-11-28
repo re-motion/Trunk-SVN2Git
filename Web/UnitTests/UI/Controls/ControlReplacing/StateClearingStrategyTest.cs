@@ -9,6 +9,8 @@
  */
 
 using System;
+using System.Collections;
+using System.Web.UI;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -46,20 +48,15 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       IStateModificationStrategy stateModificationStrategy = new StateClearingStrategy ();
       var replacer = new ControlReplacer (MemberCallerMock);
       replacer.StateModificationStrategy = stateModificationStrategy;
-      replacer.Controls.Add (testPageHolder.NamingContainer);
-      var controlToReplace = new ControlMock();
-      PrivateInvoke.SetNonPublicField (replacer, "_controlToWrap", controlToReplace);
-
-      Assert.That (controlToReplace.EnableViewState, Is.True);
+      testPageHolder.Page.Controls.Add (replacer);
+      ControlInvoker replacerInvoker = new ControlInvoker (replacer);
+      replacerInvoker.LoadViewStateRecursive (new Pair (null, new ArrayList { 0, new Pair ("ChildState", null) }));
 
       stateModificationStrategy.LoadViewState (replacer, MemberCallerMock);
 
-      Assert.That (controlToReplace.EnableViewState, Is.False);
-
-      ControlInvoker controlToReplaceInvoker = new ControlInvoker (controlToReplace);
-      controlToReplaceInvoker.LoadRecursive ();
-
-      Assert.That (controlToReplace.EnableViewState, Is.True);
+      var newControl = new ControlMock();
+      replacer.Controls.Add (newControl);
+      Assert.That (newControl.ValueInViewState, Is.Null);
     }
   }
 }

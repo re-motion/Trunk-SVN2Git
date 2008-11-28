@@ -20,6 +20,13 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
   /// </summary>
   public class StateClearingStrategy:IStateModificationStrategy
   {
+    private class ViewStateSink : Control
+    {
+      protected override void LoadViewState (object savedState)
+      {
+      }
+    }
+
     public void LoadControlState (ControlReplacer replacer, IInternalControlMemberCaller memberCaller)
     {
       ArgumentUtility.CheckNotNull ("replacer", replacer);
@@ -33,9 +40,9 @@ namespace Remotion.Web.UI.Controls.ControlReplacing
       ArgumentUtility.CheckNotNull ("replacer", replacer);
       ArgumentUtility.CheckNotNull ("memberCaller", memberCaller);
 
-      bool enableViewStateBackup = replacer.ControlToWrap.EnableViewState;
-      replacer.ControlToWrap.EnableViewState = false;
-      replacer.ControlToWrap.Load += delegate (object sender, EventArgs args ){ ((Control)sender).EnableViewState = enableViewStateBackup; };
+      Assertion.IsTrue (replacer.Controls.Count == 0);
+      replacer.Controls.Add (new ViewStateSink());
+      replacer.Controls.RemoveAt (0);
     }
   }
 }

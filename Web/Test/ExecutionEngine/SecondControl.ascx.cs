@@ -89,10 +89,27 @@ namespace Remotion.Web.Test.ExecutionEngine
       Assertion.IsTrue (WxePage.Variables != this.Variables);
 
       ViewStateValue++;
-      ViewStateLabel.Text = ViewStateValue.ToString ();
+      ViewStateLabel.Text = ViewStateValue.ToString();
 
       ControlStateValue++;
-      ControlStateLabel.Text = ControlStateValue.ToString ();
+      ControlStateLabel.Text = ControlStateValue.ToString();
+
+      if (!IsUserControlPostBack)
+      {
+        Assertion.IsNull (SubControl.ValueInViewState);
+        SubControl.ValueInViewState = 1.ToString ();
+
+        Assertion.IsNull (SubControl.ValueInControlState);
+        SubControl.ValueInControlState = 1.ToString ();
+      }
+      else
+      {
+        Assertion.IsNotNull (SubControl.ValueInViewState);
+        SubControl.ValueInViewState = (int.Parse (SubControl.ValueInViewState) + 1).ToString ();
+
+        Assertion.IsNotNull (SubControl.ValueInControlState);
+        SubControl.ValueInControlState = (int.Parse (SubControl.ValueInControlState) + 1).ToString ();
+      }
     }
 
     protected override void LoadControlState (object savedState)

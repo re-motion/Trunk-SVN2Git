@@ -9,6 +9,7 @@
     <asp:Button ID="ExecuteSecondUserControlAspNetButton" runat="server" Text="Execute Second User Control by ASP.NET Button" OnClick="ExecuteSecondUserControlButton_Click" />
     <remotion:WebButton ID="PostbackButton" runat="server" Text="Postback to Control" /><br />
     ViewState: <asp:Label ID="ViewStateLabel" runat="server" /><br />
-    ControlState: <asp:Label ID="ControlStateLabel" runat="server" />
+    ControlState: <asp:Label ID="ControlStateLabel" runat="server" /><br />
+    <remotion:ControlMock ID="SubControl" runat="server" />
   </p>
 </div>

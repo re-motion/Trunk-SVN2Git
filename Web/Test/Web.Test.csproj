@@ -116,6 +116,10 @@
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
+      <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
+      <Name>Development.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>

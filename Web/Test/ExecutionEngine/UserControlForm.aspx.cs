@@ -39,7 +39,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       //FirstControlPlaceHoder.Controls.Add (control);
 
       //if (!IsPostBack && CurrentPageStep.UserControlExecutor.IsNull)
-      //  FirstControl.ExecuteFunction (new ShowFirstUserControlFormFunction(), this, true);
+      //  FirstControl.ExecuteFunction (new ShowFirstUserControlFormFunction (), this, true);
 
       ViewStateValue++;
       ViewStateLabel.Text = ViewStateValue.ToString();
@@ -56,6 +56,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected void ExecuteSecondUserControlButton_Click (object sender, EventArgs e)
     {
       SecondControl.Call (this, FirstControl, (Control) sender);
+      //SecondControl.Call (this, (WxeUserControl) FirstControlPlaceHoder.Controls[0], (Control) sender);
     }
 
     protected override void LoadControlState (object savedState)

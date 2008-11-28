@@ -75,5 +75,14 @@ namespace Remotion.Web.Test.ExecutionEngine {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label ControlStateLabel;
+        
+        /// <summary>
+        /// SubControl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Development.Web.UnitTesting.AspNetFramework.ControlMock SubControl;
     }
 }
