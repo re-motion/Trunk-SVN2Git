@@ -64,7 +64,17 @@
     </None>
     <None Include="SecurityManager.Clients.Web.build" />
     <Content Include="Global.asax" />
+    <Content Include="res\Image\Collapse.gif" />
     <Content Include="res\Image\DeleteItem.gif" />
+    <Content Include="res\Image\Expand.gif" />
+    <Content Include="res\Image\HierarchyThis.gif" />
+    <Content Include="res\Image\HierarchyThisAndChildren.gif" />
+    <Content Include="res\Image\HierarchyThisAndParent.gif" />
+    <Content Include="res\Image\HierarchyThisAndParentAndChildren.gif" />
+    <Content Include="res\Image\PermissionDenied.gif" />
+    <Content Include="res\Image\PermissionGranted.gif" />
+    <Content Include="res\Image\PermissionUndefined.gif" />
+    <Content Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx" />
     <Content Include="UI\SecurityManagerSearchWebService.asmx" />
     <Content Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx" />
     <Content Include="UI\AccessControl\EditPermissionControl.ascx" />
@@ -294,6 +304,13 @@
       <DependentUpon>UserListFormResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx.cs">
+      <DependentUpon>EditAccessControlEntryHeaderControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx.designer.cs">
+      <DependentUpon>EditAccessControlEntryHeaderControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="UI\SecurityManagerSearchWebService.asmx.cs">
       <DependentUpon>SecurityManagerSearchWebService.asmx</DependentUpon>
       <SubType>Component</SubType>

@@ -71,15 +71,6 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update all permissions.
-        /// </summary>
-        internal static string auto_AllPermissionsLabel_Text {
-            get {
-                return ResourceManager.GetString("auto:AllPermissionsLabel:Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please assign at least one state..
         /// </summary>
         internal static string auto_MissingStateCombinationsValidator_ErrorMessage {
@@ -170,11 +161,20 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapse ACE.
+        /// </summary>
+        internal static string CollapseAccessControlEntryButton_Text {
+            get {
+                return ResourceManager.GetString("CollapseAccessControlEntryButton:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete ACE.
         /// </summary>
-        internal static string DeleteAccessControlEntryButton {
+        internal static string DeleteAccessControlEntryButton_Text {
             get {
-                return ResourceManager.GetString("DeleteAccessControlEntryButton", resourceCulture);
+                return ResourceManager.GetString("DeleteAccessControlEntryButton:Text", resourceCulture);
             }
         }
         
@@ -190,9 +190,9 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         /// <summary>
         ///   Looks up a localized string similar to Remove State.
         /// </summary>
-        internal static string DeleteStateCombinationCommand {
+        internal static string DeleteStateCombination_Text {
             get {
-                return ResourceManager.GetString("DeleteStateCombinationCommand", resourceCulture);
+                return ResourceManager.GetString("DeleteStateCombination:Text", resourceCulture);
             }
         }
         
@@ -202,6 +202,15 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         internal static string DuplicateStateCombinationsValidatorErrorMessage {
             get {
                 return ResourceManager.GetString("DuplicateStateCombinationsValidatorErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand ACE.
+        /// </summary>
+        internal static string ExpandAccessControlEntryButton_Text {
+            get {
+                return ResourceManager.GetString("ExpandAccessControlEntryButton:Text", resourceCulture);
             }
         }
         

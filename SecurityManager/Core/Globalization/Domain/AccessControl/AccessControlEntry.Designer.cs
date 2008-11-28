@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.Globalization.Domain.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Condition.
+        ///   Looks up a localized string similar to Group.
         /// </summary>
         internal static string property_GroupCondition {
             get {
@@ -124,7 +124,7 @@ namespace Remotion.SecurityManager.Globalization.Domain.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tenant Condition.
+        ///   Looks up a localized string similar to Tenant.
         /// </summary>
         internal static string property_TenantCondition {
             get {
@@ -133,7 +133,7 @@ namespace Remotion.SecurityManager.Globalization.Domain.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Condition.
+        ///   Looks up a localized string similar to User.
         /// </summary>
         internal static string property_UserCondition {
             get {

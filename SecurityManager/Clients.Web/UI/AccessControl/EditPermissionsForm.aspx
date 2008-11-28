@@ -22,14 +22,6 @@
   <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition, Remotion.SecurityManager" />
   <asp:CustomValidator ID="DuplicateStateCombinationsValidator" runat="server" ErrorMessage="<%$ res:DuplicateStateCombinationsValidatorErrorMessage %>" OnServerValidate="DuplicateStateCombinationsValidator_ServerValidate"/>
   <asp:PlaceHolder ID="AccessControlListsPlaceHolder" runat="server"/>
-  <%-- 
-  <securityManager:ObjectBoundRepeater ID="AccessControlListsRepeater" runat="server" PropertyIdentifier="AccessControlLists">
-    <HeaderTemplate><div class="accessControlList"></HeaderTemplate>
-    <SeparatorTemplate></div><div class="accessControlList"></SeparatorTemplate>
-    <FooterTemplate></div></FooterTemplate>
-    <ItemTemplate><securityManager:EditAccessControlListControl id="EditAccessControlListControl" runat="server"/></ItemTemplate>
-  </securityManager:ObjectBoundRepeater>
-  --%>
 </asp:Content>
 <asp:Content ID="ActualBottomControlsPlaceHolder" runat="server" ContentPlaceHolderID="BottomControlsPlaceHolder">
   <remotion:WebButton ID="SaveButton" runat="server" Text="$res:Save" OnClick="SaveButton_Click" CausesValidation="false" />

@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="property:TenantCondition" xml:space="preserve">
-    <value>Tenant Condition</value>
+    <value>Tenant</value>
   </data>
   <data name="property:GroupCondition" xml:space="preserve">
-    <value>Group Condition</value>
+    <value>Group</value>
   </data>
   <data name="property:Priority" xml:space="preserve">
     <value>Priority</value>
@@ -142,6 +142,6 @@
     <value>Group Type</value>
   </data>
   <data name="property:UserCondition" xml:space="preserve">
-    <value>User Condition</value>
+    <value>User</value>
   </data>
 </root>

@@ -13,12 +13,13 @@
 <%@ Register TagPrefix="securityManager" Src="EditAccessControlEntryControl.ascx" TagName="EditAccessControlEntryControl" %>
 
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.AccessControl.StatefulAccessControlList, Remotion.SecurityManager" />
+<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server" />
+
 <table class="accessControlList">
   <tr>
   <td class="accessControlListTitleCell" colspan="2">
     <h2 ID="StatefulAccessControlListTitle" runat="server">###</h2>
     <div class="accessControlListButtons">
-      <remotion:WebButton ID="NewStateCombinationButton" runat="server" Text="$res:NewStateCombinationButton" OnClick="NewStateCombinationButton_Click" CausesValidation="false" />
       <remotion:WebButton ID="NewAccessControlEntryButton" runat="server" Text="$res:NewAccessControlEntryButton" OnClick="NewAccessControlEntryButton_Click" CausesValidation="false" />
       <remotion:WebButton ID="DeleteAccessControlListButton" runat="server" Text="$res:DeleteAccessControlListButton" OnClick="DeleteAccessControlListButton_Click" CausesValidation="false" />
     </div>
@@ -26,6 +27,7 @@
   </tr>
   <tr>
     <td class="stateCombinationsContainer">
+      <remotion:WebButton ID="NewStateCombinationButton" runat="server" Text="$res:NewStateCombinationButton" OnClick="NewStateCombinationButton_Click" CausesValidation="false" />
       <asp:PlaceHolder id="StateCombinationControls" runat="server" />
       <asp:CustomValidator ID="MissingStateCombinationsValidator" runat="server" ErrorMessage="###" OnServerValidate="MissingStateCombinationsValidator_ServerValidate" />
     </td>

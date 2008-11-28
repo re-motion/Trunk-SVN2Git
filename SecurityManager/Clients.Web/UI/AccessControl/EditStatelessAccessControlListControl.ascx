@@ -12,6 +12,8 @@
 <%@ Register TagPrefix="securityManager" Src="EditAccessControlEntryControl.ascx" TagName="EditAccessControlEntryControl" %>
 
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.AccessControl.StatelessAccessControlList, Remotion.SecurityManager" />
+<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server" />
+
 <table class="accessControlList">
   <tr>
   <td class="accessControlListTitleCell" colspan="2">

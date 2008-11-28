@@ -23,6 +23,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BindableObjectDataSourceControl CurrentObject;
         
         /// <summary>
+        /// ScriptManagerProxy1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManagerProxy ScriptManagerProxy1;
+        
+        /// <summary>
         /// StatelessAccessControlListTitle control.
         /// </summary>
         /// <remarks>

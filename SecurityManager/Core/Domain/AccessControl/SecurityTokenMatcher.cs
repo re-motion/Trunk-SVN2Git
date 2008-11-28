@@ -255,7 +255,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return new InvalidOperationException (string.Format (message, args));
     }
 
-    //TODO MK: Move to Linq-Extensions
+    //TODO MK: Move to Linq-Extensions, see also ScriptUtility
     private IEnumerable<Group> GetThisAndParents (Group group)
     {
       for (var current = group; current != null; current = current.Parent)

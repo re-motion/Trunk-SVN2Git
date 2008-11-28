@@ -52,9 +52,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       base.OnInit (e);
 
-      DeleteStateDefinitionButton.Icon =
-          new IconInfo (ResourceUrlResolver.GetResourceUrl (this, typeof (EditStateCombinationControl), ResourceType.Image, "DeleteItem.gif"));
-      DeleteStateDefinitionButton.ToolTip = "$res:DeleteStateCombinationCommand";
+      DeleteStateDefinitionButton.Icon = new IconInfo (ResourceUrlResolver.GetResourceUrl (
+          this, typeof (EditStateCombinationControl), ResourceType.Image, "DeleteItem.gif"));
+      DeleteStateDefinitionButton.Icon.AlternateText = Globalization.UI.AccessControl.AccessControlResources.DeleteStateCombination_Text;
     }
 
     public override void LoadValues (bool interim)

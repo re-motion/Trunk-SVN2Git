@@ -40,6 +40,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       where TAccessControlList : AccessControlList
   {
     private readonly List<EditAccessControlEntryControl> _editAccessControlEntryControls = new List<EditAccessControlEntryControl> ();
+    private EditAccessControlEntryHeaderControl _editAccessControlEntryHeaderControl;
 
     protected abstract ControlCollection GetAccessControlEntryControls ();
 
@@ -58,6 +59,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     private void LoadAccessControlEntries (bool interim)
     {
       CreateEditAccessControlEntryControls (CurrentAccessControlList.AccessControlEntries);
+      _editAccessControlEntryHeaderControl.LoadValues (interim);
       foreach (EditAccessControlEntryControl control in _editAccessControlEntryControls)
         control.LoadValues (interim);
     }
@@ -68,16 +70,29 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       accessControlEntryControls.Clear ();
       _editAccessControlEntryControls.Clear ();
 
+      UpdatePanel updatePanel = new UpdatePanel();
+      updatePanel.ID = "UpdatePanel";
+      accessControlEntryControls.Add (updatePanel);
+
+      HtmlGenericControl table = new HtmlGenericControl ("table");
+      table.Attributes.Add ("class", "accessControlEntriesTable");
+      updatePanel.ContentTemplateContainer.Controls.Add (table);
+
+      _editAccessControlEntryHeaderControl = (EditAccessControlEntryHeaderControl) LoadControl ("EditAccessControlEntryHeaderControl.ascx");
+      _editAccessControlEntryHeaderControl.ID = "Ace_Header";
+      _editAccessControlEntryHeaderControl.BusinessObject = CurrentAccessControlList.Class;
+      table.Controls.Add (_editAccessControlEntryHeaderControl);
+
       for (int i = 0; i < accessControlEntries.Count; i++)
       {
-        AccessControlEntry accessControlEntry = (AccessControlEntry) accessControlEntries[i];
+        var accessControlEntry = (AccessControlEntry) accessControlEntries[i];
 
-        EditAccessControlEntryControl editAccessControlEntryControl = (EditAccessControlEntryControl) LoadControl ("EditAccessControlEntryControl.ascx");
+        var editAccessControlEntryControl = (EditAccessControlEntryControl) LoadControl ("EditAccessControlEntryControl.ascx");
         editAccessControlEntryControl.ID = "Ace_" + i;
         editAccessControlEntryControl.BusinessObject = accessControlEntry;
         editAccessControlEntryControl.Delete += EditAccessControlEntryControl_Delete;
 
-        accessControlEntryControls.Add (editAccessControlEntryControl);
+        table.Controls.Add (editAccessControlEntryControl);
 
         _editAccessControlEntryControls.Add (editAccessControlEntryControl);
       }

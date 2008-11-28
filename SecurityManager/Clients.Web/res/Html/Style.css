@@ -6,6 +6,17 @@
   height: 1.1em;
 }
 
+div.singleViewTopControls h1
+{
+  margin-bottom: 0;
+}
+
+button.imageButton
+{
+  border: none;
+  background-color:Transparent;
+}
+
 div.accessControlListContainer
 {
   width: 100%;
@@ -56,6 +67,44 @@ td.accessControlEntriesContainer
   height: auto;
   border-left: solid 1px #005588;
   padding-top: 1em;
+}
+
+table.accessControlEntriesTable
+{
+  border:1px;
+}
+
+table.accessControlEntriesTable th.titleCellHorizontal
+{
+  text-align: left;
+  vertical-align:bottom;
+}
+
+table.accessControlEntriesTable th.titleCellVertical
+{
+  text-align: left;
+  vertical-align: middle;
+  writing-mode: tb-rl; 
+  filter: FlipV() FlipH();
+  padding-top: 0.25em;
+}
+
+table.accessControlEntriesTable td.permissionCell
+{
+  text-align: center;
+  padding-left: 0.25em;
+  padding-bottom: 0.25em;
+}
+
+table.accessControlEntryExpanded
+{
+  border: solid 1px black;
+}
+
+td.accessControlEntryTitleCell
+{
+  border: none;
+  padding: 0;
 }
 
 ul.permissionsList

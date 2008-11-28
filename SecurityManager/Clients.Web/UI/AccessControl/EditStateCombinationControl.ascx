@@ -12,7 +12,7 @@
 <div>
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.AccessControl.StateCombination, Remotion.SecurityManager" />
 <div id="StateDefinitionContainer" runat="server" style="white-space:nowrap;">
-<remotion:WebButton ID="DeleteStateDefinitionButton" runat="server" OnClick="DeleteStateDefinitionButton_Click" style="background-color:Transparent; border:none; padding-bottom:0.5em"/>
+<remotion:WebButton ID="DeleteStateDefinitionButton" runat="server" OnClick="DeleteStateDefinitionButton_Click"  CssClass="imageButton" style="padding-bottom:0.5em"/>
 <remotion:BocReferenceValue id="StateDefinitionField" runat="server" Required="True" Width="10em" />
 </div>
 <asp:CustomValidator ID="RequiredStateCombinationValidator" runat="server" ErrorMessage="###" OnServerValidate="RequiredStateCombinationValidator_ServerValidate" style="display:block"/>
