@@ -9,6 +9,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -16,6 +17,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 using Remotion.Text.CommandLine;
+using Remotion.Text.StringExtensions;
 using Rhino.Mocks;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
@@ -47,10 +49,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
 
       //waitMock.VerifyAllExpectations ();
       Assert.That (outResult, NUnitText.Contains ("Application Usage:"));
-      Assert.That (outResult, NUnitText.Contains ("/? [/stringArg:string_arg_sample] [/flagArg] [{/?}]"));
+      Assert.That (outResult, NUnitText.Contains ("[/stringArg:string_arg_sample] [/flagArg] [{/?}]"));
       Assert.That (outResult, NUnitText.Contains ("/stringArg  stringArg description."));
       Assert.That (outResult, NUnitText.Contains ("/flagArg    flagArg description."));
       Assert.That (outResult, NUnitText.Contains ("/?          Show usage"));
+      Assert.That (outResult, NUnitText.Contains (Process.GetCurrentProcess ().MainModule.FileName.RightUntilChar ('\\')));
+      
       //Assert.That (outResult, NUnitText.Contains ("Press any-key..."));
 
       Assert.That (errorResult, Is.EqualTo (""));
@@ -107,7 +111,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
       var errorResult = stringWriterError.ToString ();
       //To.ConsoleLine.e (() => errorResult);
 
-      Assert.That (errorResult, NUnitText.StartsWith (@"Argument /UNKNOWN_ARGUMENT: invalid argument name"));
+      Assert.That (errorResult, NUnitText.Contains (@"An error occured: Argument /UNKNOWN_ARGUMENT: invalid argument name"));
     }
 
 

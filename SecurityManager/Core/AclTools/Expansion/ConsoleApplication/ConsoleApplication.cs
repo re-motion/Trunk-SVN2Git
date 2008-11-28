@@ -10,10 +10,12 @@
 // 
 // 
 using System;
+using System.Diagnostics;
 using System.IO;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 using Remotion.Text.CommandLine;
+using Remotion.Text.StringExtensions;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
@@ -58,6 +60,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
     private readonly int _bufferWidth;
     private readonly IWait _waitAtEnd;
     private int _result;
+    private string _synopsis = "(Application synopsis not yet retrieved)";
 
 
     public ConsoleApplication (TextWriter errorWriter, TextWriter logWriter, int bufferWidth, IWait waitAtEnd)
@@ -77,13 +80,39 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
     public int Main (string[] args)
     {
       _result = 0;
+      ParseSynopsis (args);
       ParseCommandLineArguments (args);
-      if (_result == 0)
-      {
-        RunApplication (Settings);
-      }
+      ConsoleApplicationMain();
       WaitForKeypress();
       return _result;
+    }
+
+    private void ConsoleApplicationMain ()
+    {
+      if (_result == 0)
+      {
+        if (Settings.Mode == ConsoleApplicationSettings.ShowUsageMode.ShowUsage)
+        {
+          OutputApplicationUsage();
+        }
+        else
+        {
+          RunApplication (Settings);
+        }
+      }
+    }
+
+
+    public string Synopsis
+    {
+      get { return _synopsis; }
+    }
+
+
+    private void OutputApplicationUsage ()
+    {
+      _logToTextBuilder.nl (2).s ("Application Usage: ");
+      _logToTextBuilder.nl (2).s (Synopsis).nl(2);
     }
 
     private void WaitForKeypress ()
@@ -121,25 +150,37 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       try
       {
         Settings = _parser.Parse (args);
-        if (Settings.Mode == ConsoleApplicationSettings.ShowUsageMode.ShowUsage)
-        {
-          _logToTextBuilder.nl (2).s ("Application Usage: ");
-          _logToTextBuilder.nl().s (GetSynopsis (args));
-        }
+        //if (Settings.Mode == ConsoleApplicationSettings.ShowUsageMode.ShowUsage)
+        //{
+        //  _logToTextBuilder.nl (2).s ("Application Usage: ");
+        //  _logToTextBuilder.nl().s (GetSynopsis (args));
+        //}
       }
       catch (CommandLineArgumentException e)
       {
-        _errorToTextBuilder.s (e.Message);
-        _errorToTextBuilder.s ("Usage:");
-        _errorToTextBuilder.s (GetSynopsis (args));
+        _errorToTextBuilder.nl ().s ("An error occured: ").s (e.Message);
+        //_errorToTextBuilder.nl().s ("Usage:");
+        //_errorToTextBuilder.s (Synopsis);
+        OutputApplicationUsage ();
         _result = 1;
         Settings = new TApplicationSettings(); // Use default settings
       }
     }
 
-    public string GetSynopsis (string[] args)
+    public void ParseSynopsis (string[] args)
     {
-      return _parser.GetAsciiSynopsis (args[0], _bufferWidth);
+      try
+      {
+        //string applicationName = args[0];
+        string applicationName = Process.GetCurrentProcess().MainModule.FileName.RightUntilChar('\\');
+        _synopsis = _parser.GetAsciiSynopsis (applicationName, _bufferWidth);
+      }
+      catch (Exception e)
+      {
+        _synopsis = "(An error occured while retrieving the application usage synopsis: " + e.Message + ")";  
+      }
     }
+
+
   }
 }
