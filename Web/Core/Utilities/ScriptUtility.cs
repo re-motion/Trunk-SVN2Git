@@ -9,9 +9,12 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Utilities
 {
@@ -154,6 +157,36 @@ namespace Remotion.Web.Utilities
 
       ScriptUtility.RegisterStartupScriptBlock (
          page, "BorderSpans_" + elementID, string.Format ("StyleUtility.CreateBorderSpans (document.getElementById ('{0}'));", elementID));
+    }
+
+    /// <summary>
+    /// Gets a flag that informs the caller if the <paramref name="control"/> will be part of the rendered output.
+    /// </summary>
+    public static bool IsPartOfRenderedOutput (Control control)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      var scriptManager = ScriptManager.GetCurrent (control.Page);
+      if (scriptManager != null && scriptManager.IsInAsyncPostBack)
+      {
+        bool isInsidePartialRenderingUpdatePanel = GetThisAndParents (control)
+          .Where (c => c is UpdatePanel && ((UpdatePanel)c).IsInPartialRendering)
+          .Cast<UpdatePanel>()
+          .Any();
+
+        return isInsidePartialRenderingUpdatePanel;
+      }
+      else
+      {
+        return true;
+      }
+    }
+
+    //TODO MK: Move to Linq-Extensions
+    private static IEnumerable<Control> GetThisAndParents (Control control)
+    {
+      for (var current = control; current != null; current = current.Parent)
+        yield return current;
     }
   }
 }

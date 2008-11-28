@@ -116,12 +116,15 @@ namespace Remotion.Web.UI.Controls
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-    
-      ScriptUtility.RegisterElementForBorderSpans (Page, ClientID + "_View");
-      ScriptUtility.RegisterElementForBorderSpans (Page, _topControl.ClientID);
-      ScriptUtility.RegisterElementForBorderSpans (Page, _bottomControl.ClientID);
+
+      if (ScriptUtility.IsPartOfRenderedOutput (this))
+      {
+        ScriptUtility.RegisterElementForBorderSpans (Page, ClientID + "_View");
+        ScriptUtility.RegisterElementForBorderSpans (Page, _topControl.ClientID);
+        ScriptUtility.RegisterElementForBorderSpans (Page, _bottomControl.ClientID);
+      }
     }
-    
+
     protected override void AddAttributesToRender (HtmlTextWriter writer)
     {
       base.AddAttributesToRender (writer);

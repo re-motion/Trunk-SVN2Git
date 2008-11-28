@@ -107,7 +107,7 @@ namespace Remotion.Web.UI.Controls
           scriptManager.RegisterPostBackControl (this);
       }
 
-      if (!IsLegacyButtonEnabled)
+      if (!IsLegacyButtonEnabled && ScriptUtility.IsPartOfRenderedOutput (this))
         ScriptUtility.RegisterElementForBorderSpans (Page, ClientID);
     }
 

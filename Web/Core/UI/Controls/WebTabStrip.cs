@@ -223,7 +223,8 @@ public class WebTabStrip :
       WebTab visibleTab = visibleTabs[i];
       if (string.IsNullOrEmpty (visibleTab.ItemID))
         visibleTab.ItemID = i.ToString ();
-      ScriptUtility.RegisterElementForBorderSpans (Page, ClientID + "_" + visibleTab.ItemID);
+      if (ScriptUtility.IsPartOfRenderedOutput (this))
+        ScriptUtility.RegisterElementForBorderSpans (Page, ClientID + "_" + visibleTab.ItemID);
     }
   }
 
