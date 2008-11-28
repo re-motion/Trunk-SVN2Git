@@ -160,7 +160,8 @@ namespace Remotion.Web.Utilities
     }
 
     /// <summary>
-    /// Gets a flag that informs the caller if the <paramref name="control"/> will be part of the rendered output.
+    /// Gets a flag that informs the caller if the <paramref name="control"/> will be part of the rendered output. This method only works during the
+    /// Render cycle.
     /// </summary>
     public static bool IsPartOfRenderedOutput (Control control)
     {

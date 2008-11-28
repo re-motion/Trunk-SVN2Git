@@ -113,18 +113,6 @@ namespace Remotion.Web.UI.Controls
       get { return HtmlTextWriterTag.Div; }
     }
 
-    protected override void OnPreRender (EventArgs e)
-    {
-      base.OnPreRender (e);
-
-      if (ScriptUtility.IsPartOfRenderedOutput (this))
-      {
-        ScriptUtility.RegisterElementForBorderSpans (Page, ClientID + "_View");
-        ScriptUtility.RegisterElementForBorderSpans (Page, _topControl.ClientID);
-        ScriptUtility.RegisterElementForBorderSpans (Page, _bottomControl.ClientID);
-      }
-    }
-
     protected override void AddAttributesToRender (HtmlTextWriter writer)
     {
       base.AddAttributesToRender (writer);
@@ -140,8 +128,15 @@ namespace Remotion.Web.UI.Controls
 
     protected override void RenderContents (HtmlTextWriter writer)
     {
-      EnsureChildControls();
+      if (!ScriptUtility.IsPartOfRenderedOutput (this))
+        return;
 
+      EnsureChildControls ();
+
+      ScriptUtility.RegisterElementForBorderSpans (Page, ClientID + "_View");
+      ScriptUtility.RegisterElementForBorderSpans (Page, _topControl.ClientID);
+      ScriptUtility.RegisterElementForBorderSpans (Page, _bottomControl.ClientID);
+    
       if (!StringUtility.IsNullOrEmpty (CssClass))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClass);
       else if (!StringUtility.IsNullOrEmpty (Attributes["class"]))

@@ -106,9 +106,6 @@ namespace Remotion.Web.UI.Controls
         if (scriptManager != null)
           scriptManager.RegisterPostBackControl (this);
       }
-
-      if (!IsLegacyButtonEnabled && ScriptUtility.IsPartOfRenderedOutput (this))
-        ScriptUtility.RegisterElementForBorderSpans (Page, ClientID);
     }
 
     protected override void AddAttributesToRender (HtmlTextWriter writer)
@@ -246,8 +243,13 @@ namespace Remotion.Web.UI.Controls
     {
       EvaluateWaiConformity();
 
+      if (!ScriptUtility.IsPartOfRenderedOutput (this))
+        return;
+      
       if (IsLegacyButtonEnabled)
         return;
+
+      ScriptUtility.RegisterElementForBorderSpans (Page, ClientID);
 
       //For new styles
       //if (ControlHelper.IsDesignMode (this))
