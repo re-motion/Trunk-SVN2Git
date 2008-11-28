@@ -10,8 +10,8 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using Remotion.Reflection;
@@ -127,9 +127,10 @@ namespace Remotion.Web.Utilities
       var pageStatePersister = GetPageStatePersister (control.Page);
       var controlStates = (IDictionary) pageStatePersister.ControlState;
 
+      var parentPrefix = control.UniqueID + control.Page.IdSeparator;
       foreach (string key in controlStates.Keys)
       {
-        if (key.StartsWith (control.UniqueID) && key != control.UniqueID)
+        if (key.StartsWith (parentPrefix))
           childControlState.Add (key, controlStates[key]);
       }
 

@@ -79,19 +79,36 @@ namespace Remotion.Web.Test.ExecutionEngine
 
       if (!IsUserControlPostBack)
       {
-        Assertion.IsNull (SubControl.ValueInViewState);
-        SubControl.ValueInViewState = 1.ToString ();
+        Assertion.IsNull (SubControlWithState.ValueInViewState);
+        SubControlWithState.ValueInViewState = 1.ToString ();
 
-        Assertion.IsNull (SubControl.ValueInControlState);
-        SubControl.ValueInControlState = 1.ToString ();
+        Assertion.IsNull (SubControlWithState.ValueInControlState);
+        SubControlWithState.ValueInControlState = 1.ToString ();
       }
       else
       {
-        Assertion.IsNotNull (SubControl.ValueInViewState);
-        SubControl.ValueInViewState = (int.Parse (SubControl.ValueInViewState) + 1).ToString ();
+        Assertion.IsNotNull (SubControlWithState.ValueInViewState);
+        SubControlWithState.ValueInViewState = (int.Parse (SubControlWithState.ValueInViewState) + 1).ToString ();
 
-        Assertion.IsNotNull (SubControl.ValueInControlState);
-        SubControl.ValueInControlState = (int.Parse (SubControl.ValueInControlState) + 1).ToString ();
+        Assertion.IsNotNull (SubControlWithState.ValueInControlState);
+        SubControlWithState.ValueInControlState = (int.Parse (SubControlWithState.ValueInControlState) + 1).ToString ();
+      }
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+
+      if (!IsUserControlPostBack)
+      {
+        Assertion.IsTrue (string.IsNullOrEmpty (SubControlWithFormElement.Text));
+        SubControlWithFormElement.Text = 1.ToString ();
+      }
+      else
+      {
+
+        Assertion.IsFalse (string.IsNullOrEmpty (SubControlWithFormElement.Text));
+        SubControlWithFormElement.Text = (int.Parse (SubControlWithFormElement.Text) + 1).ToString();
       }
     }
 

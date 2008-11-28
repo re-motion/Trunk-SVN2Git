@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
@@ -87,6 +88,13 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
               "The WxeUserControl does not support controls that do not use __EventTarget for signaling a postback event.");
           _backedUpPostBackData.Add (sender.UniqueID, _postBackCollection[sender.UniqueID]);
           _postBackCollection.Remove (sender.UniqueID);
+        }
+
+        string uniqueIDPrefix = _userControlID + userControl.Page.IdSeparator;
+        foreach (var key in _postBackCollection.AllKeys.Where (s => s.StartsWith (uniqueIDPrefix)))
+        {
+          _backedUpPostBackData.Add (key, _postBackCollection[key]);
+          _postBackCollection.Remove (key);
         }
       }
     }

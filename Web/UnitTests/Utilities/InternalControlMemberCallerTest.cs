@@ -264,6 +264,7 @@ namespace Remotion.Web.UnitTests.Utilities
       controlState[_parent.UniqueID] = "ParentValue";
       controlState[_child.UniqueID] = "ChildValue";
       controlState[_otherControl.UniqueID] = "OtherValue";
+      controlState[_namingContainer.UniqueID + "1"] = "Parent1Value";
 
       IDictionary childControlState = _memberCaller.GetChildControlState (_namingContainer);
 

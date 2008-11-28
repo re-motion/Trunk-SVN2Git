@@ -10,6 +10,7 @@
     <remotion:WebButton ID="PostbackButton" runat="server" Text="Postback to Control" /><br />
     ViewState: <asp:Label ID="ViewStateLabel" runat="server" /><br />
     ControlState: <asp:Label ID="ControlStateLabel" runat="server" /><br />
-    <remotion:ControlMock ID="SubControl" runat="server" />
+    <remotion:ControlMock ID="SubControlWithState" runat="server" /><br />
+    <asp:TextBox ID="SubControlWithFormElement" runat="server" EnableViewState="false" />
   </p>
 </div>

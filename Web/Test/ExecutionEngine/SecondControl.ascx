@@ -9,7 +9,8 @@
     <remotion:WebButton ID="PostbackButton" runat="server" Text="Postback to Control" /><br />
     ViewState: <asp:Label ID="ViewStateLabel" runat="server" /><br />
     ControlState: <asp:Label ID="ControlStateLabel" runat="server" /><br />
-    <remotion:ControlMock ID="SubControl" runat="server" /><br />
+    <remotion:ControlMock ID="SubControlWithState" runat="server" /><br />
+    <asp:TextBox ID="SubControlWithFormElement" runat="server" EnableViewState="false" /><br />
     <remotion:WebButton ID="ExecuteSecondUserControlButton" runat="server" 
       Text="Throw invalid operation exception / Act as sink for previous button's event target" OnClick="ExecuteSecondUserControlButton_Click" />    
  </p>
