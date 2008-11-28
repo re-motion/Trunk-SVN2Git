@@ -19,10 +19,11 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   /// <summary>
-  /// <see cref="IAclExpansionWriter"/> which outputs a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/> as a master HTML table containing
+  /// <see cref="IAclExpansionWriter"/> which outputs a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/> as a master HTML table consisting
   /// of users linking to detail HTML tables conaining the access rights of the respective user. All HTML files are written
   /// into an automatically generated directory.
   /// </summary>
+  // TODO AE: Remove commented code. (Do not commit.)
   public class AclExpansionMultiFileHtmlWriter : AclExpansionHtmlWriterBase
   {
     public const string MasterFileName = "_AclExpansionMain_";
@@ -72,7 +73,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableHeaders ()
     {
-      htmlTagWriter.Tags.tr ();
+      htmlTagWriter.Tags.tr (); // TODO AE: Consider using <TH>?
       WriteHeaderCell ("User");
       WriteHeaderCell ("First Name");
       WriteHeaderCell ("Last Name");
@@ -89,19 +90,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       foreach (var user in users)
       {
-        WriteTableRowBeginIfNotInTableRow ();
+        WriteTableRowBeginIfNotInTableRow (); // TODO AE: Isn't it well-defined here if in a table row or not?
         WriteTableBody_ProcessUser (user, aclExpansion);
         WriteTableRowEnd ();
       }
     }
 
+    // TODO AE: Rename to WriteUser or ProcessUser.
     private void WriteTableBody_ProcessUser (User user, List<AclExpansionEntry> aclExpansion)
     {
       WriteTableData (user.UserName);
       WriteTableData (user.FirstName);
       WriteTableData (user.LastName);
 
-      string userDetailFileName = ToValidFileName (user.UserName);
+      string userDetailFileName = ToValidFileName (user.UserName); // TODO AE: Is UserName guaranteed to be unique regarding that forbidden characters are replaced by "_"?
       using (var detailTextWriter = _textWriterFactory.NewTextWriter (userDetailFileName))
       {
 
@@ -112,7 +114,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
 
       string relativePath = _textWriterFactory.GetRelativePath (MasterFileName, userDetailFileName);
-      WriteTableRowBeginIfNotInTableRow ();
+      WriteTableRowBeginIfNotInTableRow (); // TODO AE: Isn't it well-defined here if in a table row or not?
       htmlTagWriter.Tags.td ();
       htmlTagWriter.Tag ("a");
       htmlTagWriter.Attribute ("href", relativePath);
@@ -131,6 +133,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
              select user).Distinct();
     }
 
+    // TODO AE: Is list required? (Asymmetric when compared to GetUsers.)
     public List<AclExpansionEntry> GetAccessControlEntriesForUser (IEnumerable<AclExpansionEntry> aclExpansion, User user)
     {
       return (from aee in aclExpansion

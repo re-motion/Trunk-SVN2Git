@@ -23,6 +23,7 @@ using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplication
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   [TestFixture]
   public class ConsoleApplicationTest
   {
@@ -30,6 +31,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
     public void CommandLineSwitchShowUsageTest ()
     {
       var args = new[] { "/?" };
+
+      // TODO AE: Move common initialization code to SetUp method.
 
       var waitMock = MockRepository.GenerateMock<IWait> ();
       //waitMock.Expect (mock => mock.Wait ());
@@ -136,7 +139,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.ConsoleApplicati
   }
 
 
-
+  // TODO AE: Move classes to own files.
 
   public class ConsoleApplicationTestApplicationRunner : IApplicationRunner<ConsoleApplicationTestSettings>
   {

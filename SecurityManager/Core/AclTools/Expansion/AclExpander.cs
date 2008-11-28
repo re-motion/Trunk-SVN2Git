@@ -22,6 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   public class AclExpander
   {
     private readonly IUserRoleAclAceCombinations _userRoleAclAceCombinations;
@@ -48,6 +49,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _userRoleAclAceCombinations = userRoleAclAceCombinations;
     }
 
+    // TODO AE: Delegate to other ctor.
     public AclExpander (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
     {
       ArgumentUtility.CheckNotNull ("userFinder", userFinder);
@@ -58,9 +60,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// <summary>
     /// Default behavior is to use all <see cref="User"/>|s and all <see cref="AccessControlList"/>|s.
     /// </summary>
+    // TODO AE: Test-only ctor, consider dropping.
     public AclExpander () : this (new AclExpanderUserFinder (), new AclExpanderAclFinder ()) {}
 
-
+    // TODO AE: Consider returning IEnumerable<T> to avoid an unnecessary copy.
     public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct ()
     {
       return (from AclExpansionEntry aclExpansionEntry in GetAclExpansionEntryList ()
@@ -75,6 +78,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// supplied in the ctor as a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>. 
     /// </summary>
     /// <returns></returns>
+    // TODO AE: Consider returning IEnumerable<T> and using yield return to allow for lazier evaluation and more parallelism.
     public List<AclExpansionEntry> GetAclExpansionEntryList ()
     {
       var aclExpansionEntries = new List<AclExpansionEntry> ();
@@ -88,6 +92,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
+    // TODO AE: Consider changing this into a method returning an AclExpansionEntry.
+    // TODO AE: Consider making a GetAclExpansionEntry method public. Does not break encapsulation, and would enable you to test it separately.
     private void AddAclExpansionEntry (List<AclExpansionEntry> aclExpansionEntries, UserRoleAclAceCombination userRoleAclAce)
     {
       //To.ConsoleLine.s ("~~~~~ AddAclExpansionEntry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -108,6 +114,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
+    // TODO AE: Avoid out parameters if possible. Consider creating a compound type holding the results.
+    // TODO AE: No fine-grained unit tests exist. (Only integration tests with GetAclExpansionEntryList.) Fine-grained unit tests would reduce the
+    // number of integration tests needed.
     public AccessInformation GetAccessTypes (UserRoleAclAceCombination userRoleAclAce, 
       out AclProbe aclProbe, out AccessTypeStatistics accessTypeStatistics)
     {
@@ -127,6 +136,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       accessTypeStatistics = new AccessTypeStatistics ();
 
       // Create a discarding sub-transaction so we can change the roles of the current user below without side effects.
+      // TODO AE: ClientTransaction.Current could be null. Consider checking at the beginning of the method and throw an InvalidOperationException.
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         // Set roles of user to contain only the role we currently probe for.
@@ -139,8 +149,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         // ACL-expansion, where we want to distinguish which role gives rise
         // to what access rights).
 
-        if (probeForCurrentRoleOnly)
+        if (probeForCurrentRoleOnly) // TODO AE: Remove if and constant.
         {
+          // TODO AE: Roles has no setter anyway, so the following comment seems unnecessary.
           // Exchanging the User.Roles-collection with a new one containing only the current Role would not work (MK),
           // so we empty the collection, then add back the current Role.
           aclProbe.SecurityToken.Principal.Roles.Clear();

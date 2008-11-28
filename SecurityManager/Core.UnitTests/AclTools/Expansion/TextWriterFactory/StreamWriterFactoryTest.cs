@@ -21,6 +21,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
   [TestFixture]
   public class StreamWriterFactoryTest
   {
+    // TODO AE: Non-TDD code? More fine-grained unit tests needed for StreamWriterFactory and TextWriterFactoryBase.
     [Test]
     public void DirectoryAndExtensionSettingTest ()
     {

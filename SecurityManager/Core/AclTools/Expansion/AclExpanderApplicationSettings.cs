@@ -45,7 +45,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     [CommandLineFlagArgument ("rc", false, Description = "Output row count for user, role.... (/multifile- only)")]
     public bool OutputRowCount;
 
-
+    // TODO AE: Consider overriding ToString instead.
+    // TODO AE: Test.
     public void ToText (IToTextBuilder toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);

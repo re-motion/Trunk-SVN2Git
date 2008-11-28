@@ -17,22 +17,29 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
+  // TODO AE: Remove unnecessary interface
   public class StreamWriterFactory : TextWriterFactoryBase, ITextWriterFactory, IToText
   {
+    // TODO AE: Test case where directory does not exist.
+    // TODO AE: Test case where TextWriter already exists.
     public override TextWriter NewTextWriter (string name)
     {
-      ArgumentUtility.CheckNotNull ("name", name);
+      ArgumentUtility.CheckNotNull ("name", name); // TODO AE: CheckNotNullOrEmpty?
+      // TODO AE: Throw an InvalidOperationException manually. (Assertions are more for conditions that you assume can never be false.)
       Assertion.IsNotNull (Directory, "Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"");
       if (!System.IO.Directory.Exists (Directory))
-      {
+      { // TODO AE: Braces
         System.IO.Directory.CreateDirectory (Directory);
       }
 
+      // TODO AE: Why store existing text writers?
+      // TODO AE: Consider moving this to base class (use template method to instantiate StreanWriter
       if (NameToTextWriterData.ContainsKey (name))
       {
         throw new ArgumentException (To.String.s ("TextWriter with name ").e (name).s (" already exists.").CheckAndConvertToString ());
       }
       // Append extension if name does not already contain extension
+      // TODO AE: Use Path.GetExtension for check.
       string nameWithExtension = name.Contains(".") ? name : AppendExtension (name);
       var textWriterData = new TextWriterData (new StreamWriter (Path.Combine (Directory, nameWithExtension)), Directory, Extension);
       NameToTextWriterData[name] = textWriterData;

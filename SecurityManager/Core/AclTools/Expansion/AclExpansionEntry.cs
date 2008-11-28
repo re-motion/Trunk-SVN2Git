@@ -11,6 +11,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <summary>
   /// Represents a row in an access control list expansion (see <see cref="AclExpander"/>).
   /// </summary>
+  // TODO AE: Make this class immutable. (Its set accessors aren't used from the outside anyways.)
+  // TODO AE: Remove commented code. (Do not commit.)
   public class AclExpansionEntry : IToText
   {
     private readonly AccessControlList _accessControlList;
@@ -44,6 +46,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       get { return AccessControlList.Class; }
     }
 
+
+    // TODO AE: Properties throwing exceptions are not good style. Consider returning a useful default (null? empty list?) or create a method.
     public IList<StateCombination> StateCombinations
     {
       get

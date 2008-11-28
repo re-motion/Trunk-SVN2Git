@@ -16,9 +16,11 @@ using Remotion.SecurityManager.AclTools.Expansion;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   [TestFixture]
   public class AclExpanderUserFinderTest : AclToolsTestBase
   {
+    // TODO AE: Remove this method.
     [Test]
     [Explicit]
     public void ListAllUsers ()
@@ -44,6 +46,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var userFinder = new AclExpanderUserFinder();
       var users = userFinder.FindUsers ();
+      // TODO AE: Consider comparing the full list.
       Assert.That (users.Count, Is.EqualTo (6));
     }
 

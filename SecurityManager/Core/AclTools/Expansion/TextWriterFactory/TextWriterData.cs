@@ -15,6 +15,7 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
+  // TODO AE: Consider storing TextWriters instead.
   public class TextWriterData
   {
     public TextWriterData (TextWriter textWriter, string directory, string extension)
@@ -28,7 +29,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     }
 
     public TextWriter TextWriter { get; private set; }
+    // TODO AE: Not used.
     public string Directory { get; private set; }
+    // TODO AE: Not used.
     public string Extension { get; private set; }
   }
 }

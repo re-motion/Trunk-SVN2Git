@@ -21,6 +21,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
   /// <summary>
   /// Tuple of security context class and state, that supports the necessary interfaces to be stored in a Dictionary (<see cref="ClassStateDictionary"/>)
   /// </summary>
+  // TODO AE: Remove unused class.
   public class ClassStateTuple : Tuple<SecurableClassDefinition, List<StateDefinition>>, IComparable<ClassStateTuple>
   {
     public ClassStateTuple (SecurableClassDefinition classDefinition, List<StateDefinition> stateCombinationList) :

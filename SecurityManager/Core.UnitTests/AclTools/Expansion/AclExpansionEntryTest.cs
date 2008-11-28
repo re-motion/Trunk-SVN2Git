@@ -44,8 +44,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var accessConditions = new AclExpansionAccessConditions ();
       var aclExpansionEntry = new AclExpansionEntry (User, Role, statlessAcl, accessConditions, AccessTypeDefinitions, AccessTypeDefinitions2);
-      To.ConsoleLine.e(aclExpansionEntry.StateCombinations);
+      To.ConsoleLine.e(aclExpansionEntry.StateCombinations); // TODO AE: To.Console is never executed. Replace by Dev.Null = ...;
     }
+
+    // TODO AE: Remaining TDD-style unit tests are missing.
 
 
   }

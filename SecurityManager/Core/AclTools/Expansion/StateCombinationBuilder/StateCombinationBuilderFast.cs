@@ -29,6 +29,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
   // StateCombinationBuilderFast.CalculateOuterProduct6 (numberProperty=8,numberState=4): 152 ms = 0,152 s = 0,00253333333333333 min
   // StateCombinationBuilder.CreatePropertyProduct (numberProperty=8,numberState=4): 3958 ms = 3,958 s = 0,0659666666666667 min
 
+  // TODO AE: Remove unused code!
+  // TODO AE: Remove unused class.
   public class StateCombinationBuilderFast : IStateCombinationBuilder 
   {
     public SecurableClassDefinition ClassDefinition

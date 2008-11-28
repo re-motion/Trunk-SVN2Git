@@ -20,13 +20,16 @@ using Remotion.SecurityManager.UnitTests.TestDomain;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   [SetUpFixture]
   public class SetUpFixture
   {
+    // TODO AE: Statics above instance members.
     private DatabaseFixtures _dbFixtures;
 
     public static ObjectID OrderClassID { get; private set; }
 
+    // TODO AE: public static (for consistency)
     static public List<AccessControlList> aclList { get; private set; }
 
     public ObjectID InvoiceClassID { get; set; }
@@ -88,7 +91,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     }
 
 
-    private void LocalizeMetadateObjectEnDe (MetadataObject metadataObject, string nameEnglish, string nameGerman)
+    private void LocalizeMetadataObjectEnDe (MetadataObject metadataObject, string nameEnglish, string nameGerman)
     {
       Culture cultureDe = Culture.NewObject ("de-DE");
       Culture cultureEn = Culture.NewObject ("en-US");
@@ -98,23 +101,25 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
   
     private void LocalizeClassEnDe (SecurableClassDefinition classDefinition, string nameEnglish, string nameGerman)
     {
-      LocalizeMetadateObjectEnDe (classDefinition, nameEnglish, nameGerman);
+      LocalizeMetadataObjectEnDe (classDefinition, nameEnglish, nameGerman);
     }
 
+    // TODO AE: Change to return void.
     private StatePropertyDefinition LocalizeStatePropertyEnDe (SecurableClassDefinition classDefinition, 
       string statePropertyName, string nameEnglish, string nameGerman)
     {
       var stateProperty = classDefinition.GetStateProperty (statePropertyName);
-      LocalizeMetadateObjectEnDe (stateProperty, nameEnglish, nameGerman);
+      LocalizeMetadataObjectEnDe (stateProperty, nameEnglish, nameGerman);
       return stateProperty;
     }
 
+    // TODO AE: Change to return void.
     private StateDefinition LocalizeStateEnDe (SecurableClassDefinition classDefinition,
       string statePropertyName, int stateEnumValue, string nameEnglish, string nameGerman)
     {
       var stateProperty = classDefinition.GetStateProperty (statePropertyName);
       var state = stateProperty.GetState (stateEnumValue);
-      LocalizeMetadateObjectEnDe (state, nameEnglish, nameGerman);
+      LocalizeMetadataObjectEnDe (state, nameEnglish, nameGerman);
       return state;
     }
   }

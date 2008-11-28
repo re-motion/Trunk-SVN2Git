@@ -10,6 +10,7 @@
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  // TODO AE: Consider adding test showing default values. (Low prio)
   public class AclExpansionHtmlWriterSettings
   {
     public AclExpansionHtmlWriterSettings ()

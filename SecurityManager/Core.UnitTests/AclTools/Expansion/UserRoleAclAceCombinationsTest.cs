@@ -20,13 +20,14 @@ using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Rhino.Mocks;
 using System.Linq;
+// TODO AE: Remove unused usings.
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   [TestFixture]
   public class UserRoleAclAceCombinationsTest : AclToolsTestBase
   {
-
     [Test]
     public void CtorTest ()
     {
@@ -39,11 +40,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: When testing enumeration methods, prepare an expected collection and compare actual enumeration.ToArray() to expected collection.
+    // TODO AE: This is usually easier to read.
     [Test]
     public void EnumeratorTest ()
     {
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
 
+      // TODO AE: Differentiate between mocks and stubs.
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); 
       userFinderMock.Expect (mock => mock.FindUsers ()).Return (users);
 

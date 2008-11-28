@@ -17,14 +17,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
   /// <summary>
   /// Creates <see cref="TextWriter"/>|s through <see cref="NewTextWriter"/> in the currently set 
   /// <see cref="Directory"/>.
-  /// Stores references to the created <see cref="TextWriter"/>|s.
+  /// Stores references to the created <see cref="TextWriter"/>|s. // TODO AE: Why?
   /// </summary>
   public interface ITextWriterFactory
   {
-    TextWriter NewTextWriter (string name);
-    string GetRelativePath (string fromName, string toName);
+    TextWriter NewTextWriter (string name); // TODO AE: Rename to CreateTextWriter
+    string GetRelativePath (string fromName, string toName); // TODO AE: Is this method implementation-dependent?
 
-    string Directory { get; set; }
+    string Directory { get; set; } // TODO: Consider making this a parameter of NewTextWriter to avoid set/call dependency. (Unless a good default exists.)
     string Extension { get; set; }
   }
 }

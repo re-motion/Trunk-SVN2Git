@@ -9,6 +9,8 @@
  ! WITHOUT WARRANTY OF ANY KIND, either express or implied. 
 -->
 
+<!-- TODO AE: Consider linking this file from the SecurityManager.Core project -->
+
 <queries 
     application="Remotion.SecurityManager" 
     xmlns="http://www.re-motion.org/Data/DomainObjects/Queries/1.0" 

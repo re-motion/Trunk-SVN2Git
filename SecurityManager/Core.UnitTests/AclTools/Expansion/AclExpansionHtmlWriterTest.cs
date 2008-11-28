@@ -30,9 +30,13 @@ using List = Remotion.Development.UnitTesting.ObjectMother.List;
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
   [TestFixture]
+  // TODO AE: Remove commented code. (Do not commit.)
+  // TODO AE: This class contains highly integrative tests (because AclEpansionHtmlWriter contains so many private methods). Splitting
+  // TODO AE: AclExpansionHtmlWriter and moving the private methods to another class with make testing much easier.
   public class AclExpansionHtmlWriterTest : AclToolsTestBase
   {
     // Note: Code is kept for comparison of readability and XML validity safety with HtmlTagWriter
+    // TODO AE: Nice illustration, but really necessary?
     [Test]
     [Explicit]
     public void XmlWriterSpikeTest ()
@@ -89,6 +93,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
     [Test]
     [Explicit]
+    // TODO AE: Consider making this an automatically executable integration test, or remove.
     public void WriteAclExpansionAsHtmlTest ()
     {
       using (new CultureScope ("de-AT","de-AT"))
@@ -106,9 +111,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void FullNameTest ()
     {
-      using (new CultureScope ("")) // Invariant culture
+      using (new CultureScope ("")) // Invariant culture // TODO AE: Consider replacing with using (CultureScope.CreateInvariantCultureScope() or similar)
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User); // TODO AE: Really simpler than "new List<User> { User }" ?
         var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls, false);
@@ -154,6 +159,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void OutputRowCountTest ()
     {
+      // TODO AE: Move common initialization code to SetUp method.
       var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
       var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
 
@@ -258,6 +264,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           //To.ConsoleLine.e (() => result); 
           //Clipboard.SetText (CreateLiteralResultExpectedString(result));
 
+          // TODO AE: Avoid regions, consider moving long constants to a separate TestConstants class.
           const string resultExpected =
           #region
  @"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"" """">
@@ -544,6 +551,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: Removed unused member
     public static string CreateLiteralResultExpectedString (string result)
     {
       var resultDoubleQuoted = result.Replace ("\"", "\"\"");
@@ -554,6 +562,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void StatelessAclTest ()
     {
+      // TODO AE: Consider opening commonly used scopes in SetUp and closing them in TearDown.
       using (CultureScope_de_DE ())
       {
         var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
@@ -882,12 +891,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       return new CultureScope ("de-DE");
     }
- 
+
+    // TODO AE: Remove unused member.
     private CultureScope CultureScope_en_US ()
     {
       return new CultureScope ("en-US");
     }
 
+    // TODO AE: make private, non-static unused member if usage.
     public static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
     {
       XmlWriterSettings settings = new XmlWriterSettings ();

@@ -29,6 +29,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <see cref="IAclExpansionWriter"/> which outputs a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>
   /// as a single HTML table.
   /// </summary>
+  // TODO AE: Remove commented code. (Do not commit.)
+  // TODO AE: Globalization is not supported for hard-coded strings. Is this a problem for this application?
+  // TODO AE: Split this class! Extract most of the private methods to another class to improve clarity (and to allow for more fine-grained testability).
   public class AclExpansionHtmlWriter : AclExpansionHtmlWriterBase
   {
     private readonly AclExpansionTree _aclExpansionTree;
@@ -56,6 +59,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
     {
+      // TODO AE: Delegate to other ctor.
       _aclExpansionTree = new AclExpansionTree (aclExpansion);
       htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
@@ -92,6 +96,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     //}
 
 
+    // TODO AE: Remove abstract base method since not all derivations support it.
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
@@ -132,7 +137,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
       if (Settings.OutputDeniedRights)
-      {
+      { // TODO AE: Braces.
         WriteHeaderCell ("Denied Rights");
       }
       htmlTagWriter.Tags.trEnd ();
@@ -140,7 +145,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-    private void WriteTableDataAddendum (Object addendum)
+    private void WriteTableDataAddendum (Object addendum) // TODO AE: Use "object".
     {
       if (addendum != null)
       {
@@ -158,18 +163,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteRowspanAttribute(rowCount);
       htmlTagWriter.Value (value);
       if (Settings.OutputRowCount)
-      {
+      { // TODO AE: Braces.
         WriteTableDataAddendum (rowCount);
       }
       htmlTagWriter.Tags.tdEnd ();
     }
 
 
-
+    // TODO AE: Changed unused return value to void.
     private HtmlTagWriter WriteRowspanAttribute (int rowCount)
     {
       if (rowCount > 0)
-      {
+      { // TODO AE: Braces.
         htmlTagWriter.Attribute ("rowspan", Convert.ToString (rowCount));
       }
       return htmlTagWriter;
@@ -184,7 +189,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlTagWriter.Value (", ");
       htmlTagWriter.Value (role.Position.DisplayName);
       if (Settings.OutputRowCount)
-      {
+      { // TODO AE: Braces.
         WriteTableDataAddendum (rowCount);
       }
       htmlTagWriter.Tags.tdEnd ();
@@ -206,14 +211,21 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
       else
       {
+        // TODO AE: Replace comment by extracting method and naming it appropriately.
         // Get the states by flattening the StateCombinations of the AccessControlEntry ACL 
         //var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).OrderBy (x => x.DisplayName).ToArray();
         var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).OrderBy (x => x.DisplayName);
+        
+        // TODO AE: Is this semantically equivalent to the following?
+        // TODO AE: from combination in aclExpansionEntry.StateCombinations
+        // TODO AE: from state in combination.GetStates()
+        // TODO AE: orderby state.DisplayName
+        // TODO AE: select state
 
-        //htmlTagWriter.Value (aclExpansionEntry.StateCombinations + ", "); // !!!!!!!! SPIKE ONLY !!!!!!!!!
+        //htmlTagWriter.Value (aclExpansionEntry.StateCombinations + ", "); // !!!!!!!! SPIKE ONLY !!!!!!!!! // TODO AE: Remove it.
 
         if (!stateDefinitions.Any ())
-        {
+        { // TODO AE: Braces.
           htmlTagWriter.Value (AclWithNoAssociatedStatesHtmlText);
         }
         else
@@ -247,7 +259,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       foreach (AccessTypeDefinition accessTypeDefinition in accessTypeDefinitionsSorted)
       {
         if (!firstElement)
-        {
+        { // TODO AE: Braces
           htmlTagWriter.Value (", ");
         }
         htmlTagWriter.Value (accessTypeDefinition.DisplayName);
@@ -283,7 +295,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlTagWriter.Value (""); // To force <td></td> instead of <td />
       var owningGroup = conditions.OwningGroup;
       if (owningGroup != null)
-      {
+      { // TODO AE: Braces
         htmlTagWriter.Value (owningGroup.DisplayName);
       }
 
@@ -313,7 +325,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlTagWriter.Value (""); // To force <td></td> instead of <td />
       var owningTenant = conditions.OwningTenant;
       if (owningTenant != null)
-      {
+      { // TODO AE: Braces
         htmlTagWriter.Value (owningTenant.DisplayName);
       }
 
@@ -332,7 +344,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableDataForBooleanCondition (bool required)
     {
       htmlTagWriter.Tags.td ();
-      htmlTagWriter.Value (required ? "X" : "");
+      htmlTagWriter.Value (required ? "X" : ""); // TODO AE: Test missing for one of these cases
       htmlTagWriter.Tags.tdEnd ();
     }
 
@@ -341,7 +353,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableBody ()
     {
       foreach (var userNode in _aclExpansionTree.Tree)
-      {
+      {// TODO AE: Braces
         WriteTableBody_ProcessUser(userNode);
       }
     }
@@ -351,7 +363,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableDataWithRowCount (userNode.Key.DisplayName, userNode.NumberLeafNodes);
   
       foreach (var roleNode in userNode.Children)
-      {
+      {// TODO AE: Braces
         WriteTableBody_ProcessRole(roleNode);
       }
     }
@@ -361,7 +373,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableDataForRole (roleNode.Key, roleNode.NumberLeafNodes);
  
       foreach (var classNode in roleNode.Children)
-      {
+      {// TODO AE: Braces
         WriteTableBody_ProcessClass(classNode);
       }
     }
@@ -374,7 +386,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableDataWithRowCount (className, classNode.NumberLeafNodes);
       }
       else
-      {
+      {// TODO AE: Braces
         WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classNode.NumberLeafNodes);
       }
 
@@ -382,7 +394,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableBody_ProcessStates(classNode.Children);
     }
 
-#if(false)
+#if(false) // TODO AE: Remove conditional symbol, remove #else part
     private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
     {
       // States Output
@@ -394,7 +406,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
         WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
         if (Settings.OutputDeniedRights)
-        {
+        { // TODO AE: Braces
           WriteTableDataForAccessTypes (aclExpansionEntry.DeniedAccessTypes);
         }
 

@@ -26,6 +26,8 @@ using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
   [TestFixture]
+  // TODO AE: Remove commented code. (Do not commit.)
+  // TODO AE: Dedicated test for GetUsers and GetAccessControlEntriesForUser should be added. (Non-TDD code?)
   public class AclExpansionMultiFileHtmlWriterTest : AclToolsTestBase
   {
     [Test]
@@ -55,6 +57,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: Move to bottom.
     private void AssertTextWriterFactoryMemberEquals (StringWriterFactory stringWriterFactory, string name, string resultExpected)
     {
       var textWriterData = stringWriterFactory.GetTextWriterData (name);
@@ -67,6 +70,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: Remove unused method.
     public string WriteStringWriterFactory (StringWriterFactory stringWriterFactory) //, IToTextBuilder toTextBuilder)
     {
       ArgumentUtility.CheckNotNull ("stringWriterFactory", stringWriterFactory);
@@ -80,6 +84,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: Consider naming this integration test and making it automatically executable. Or remove it.
     [Test]
     [Explicit]
     public void WriteUserFileTest ()
@@ -101,10 +106,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
+    // TODO AE: Rename test to match method being tested (ToValidFileNameTest). Consider moving to AclExpansionHtmlWriterBaseTest.
     public void ToFileNameTest ()
     {
       const string unityInput = "µabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      const string forbiddenInput =  "\"?/\\*:"; 
+      const string forbiddenInput =  "\"?/\\*:";
       string forbiddenInputResult = new String ('_', forbiddenInput.Length);
       Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (unityInput), Is.EqualTo (unityInput));
       Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (forbiddenInput), Is.EqualTo (forbiddenInputResult));

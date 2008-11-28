@@ -10,6 +10,7 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  // TODO AE: Remove commented code.
   /// <summary>
   /// <para>Contains a <see cref="SecurityToken"/> which can be used to query access rights through calling 
   /// <see cref="AccessControlList.GetAccessTypes(Domain.AccessControl.SecurityToken)"/>; the
@@ -25,7 +26,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// <summary>
     /// Factory method to create an <see cref="AclProbe"/> from the passed <see cref="User"/>, <see cref="Role"/> and <see cref="AccessControlEntry"/>.
     /// </summary>
-    /// <param name="user"></param>
+    /// <param name="user"></param> // TODO AE: Comment or remove param tags.
     /// <param name="role"></param>
     /// <param name="ace"></param>
     /// <returns></returns>
@@ -46,6 +47,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return aclProbe;
     }
      
+    // TODO AE: Consider making public (or moving to another class and make public) in order to improve testing possibilities. (This would reduce the number of integration tests needed.)
     private static IList<AbstractRoleDefinition> CreateAbstractRolesEntry (AclProbe aclProbe, AccessControlEntry ace)
     {
       IList<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition> ();
@@ -59,6 +61,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
+    // TODO AE: Consider making public (or moving to another class and make public) in order to improve testing possibilities. (This would reduce the number of integration tests needed.)
     private static User CreateOwningUserEntry (AclProbe aclProbe, User user, AccessControlEntry ace)
     {
       User owningUser;
@@ -80,6 +83,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           owningUser = null; // No constraint => no condition (will always match).
           break;
         default:
+          // TODO AE: Consider using "Assert.False" instead, since this should not happen. If planning for this possibility, add test.
           throw new ArgumentException (String.Format ("ace.UserSelection={0} is currently not supported by this method. Please extend method to handle the new UserSelection state.", ace.UserCondition));
       }
       return owningUser;
@@ -87,6 +91,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
+    // TODO AE: Consider making public (or moving to another class and make public) in order to improve testing possibilities. (This would reduce the number of integration tests needed.)
     private static Tenant CreateOwningTenantEntry (AclProbe aclProbe, User user, AccessControlEntry ace)
     {
       Tenant owningTenant;
@@ -103,9 +108,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           //aclProbe.AccessConditions.OwningTenant = owningTenant;
           //aclProbe.AccessConditions.TenantHierarchyCondition = ace.TenantHierarchyCondition;
 
-          // Owning tenant will be set to the user's tenant, which should never be empty.
+          // Owning tenant will be set to the user's tenant, which should never be empty. // TODO AE: States the same as the assertion.
           Assertion.IsNotNull (user.Tenant);
-          // TenantHierarchyCondition should always contain the flag for "this tenant";
+          // TenantHierarchyCondition should always contain the flag for "this tenant"; // TODO AE: Would this be a user mistake? If yes, throw an exception instead.
           // if this condition is violated, using owningTenant = user.Tenant will no longer work, since it will not match.
           Assertion.IsTrue ((ace.TenantHierarchyCondition & TenantHierarchyCondition.This) != 0);
           owningTenant = user.Tenant;
@@ -119,11 +124,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           owningTenant = null; // No constraint => no condition (will always match).
           break;
         default:
+          // TODO AE: Consider using "Assert.False" instead, since this should not happen.
           throw new ArgumentException (String.Format ("ace.TenantSelection={0} is currently not supported by this method. Please extend method to handle the new TenantSelection state.", ace.TenantCondition));
       }
       return owningTenant;
     }
 
+    // TODO AE: Consider making public (or moving to another class and make public) in order to improve testing possibilities. (This would reduce the number of integration tests needed.)
     private static Group CreateOwningGroupEntry (AclProbe aclProbe, Role role, AccessControlEntry ace)
     {
       Group owningGroup;
@@ -155,11 +162,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           owningGroup = null; // No constraint => no condition (will always match).
           break;
         default:
+          // TODO AE: Consider using "Assert.False" instead, since this should not happen.
           throw new ArgumentException (String.Format ("ace.GroupSelection={0} is currently not supported by this method. Please extend method to handle the new GroupSelection state.", ace.GroupCondition));
       }
       return owningGroup;
     }
 
+    // TODO AE: Consider making public (or moving to another class and make public) in order to improve testing possibilities. (This would reduce the number of integration tests needed.)
     private static Group FindFirstGroupInThisAndParentHierarchyWhichHasGroupType (Group group, GroupType groupType)
     {
       var thisAndParents = GetThisAndParents(group);

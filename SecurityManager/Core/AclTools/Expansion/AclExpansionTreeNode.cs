@@ -15,10 +15,12 @@ using Remotion.SecurityManager.AclTools.Expansion;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  // TODO AE: Remove commented code.
   public class AclExpansionTreeNode<TParent, TChildren> : IToText
   {
     public AclExpansionTreeNode (TParent parent, int numberLeafNodes, IList<TChildren> children)
     {
+      // TODO AE: Argument checks
       Key = parent;
       Children = children;
       NumberLeafNodes = numberLeafNodes;
@@ -35,6 +37,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   }
 }
 
+// TODO AE: This definitely belongs to another file and project, or namespace.
 namespace Remotion.Development.UnitTesting.ObjectMother
 {
   /// <summary>

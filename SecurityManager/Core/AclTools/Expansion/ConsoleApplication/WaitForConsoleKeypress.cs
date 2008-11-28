@@ -17,6 +17,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
   /// Class implementing <see cref="IWait"/> to wait for a keypress on the console.
   /// The <see cref="Wait"/>-method returns after a console key has been pressed.
   /// </summary>
+  // TODO AE: Class names should have nouns as names.
   public class WaitForConsoleKeypress : IWait
   {
     public void Wait ()

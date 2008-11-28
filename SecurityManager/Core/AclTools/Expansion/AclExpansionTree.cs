@@ -23,6 +23,7 @@ using Remotion.Development.UnitTesting.ObjectMother;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   public class AclExpansionTree : IToText
   {
     private readonly Func<AclExpansionEntry, string> _orderbyForSecurableClass;
@@ -44,7 +45,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     );
 
-
+    // TODO AE: Add "private".
     //List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>>>
     List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>>>>
        _aclExpansionTree;
@@ -54,6 +55,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
     }
 
+    // TODO AE: orderbyForSecurableClass seems to always be the same lamda. Inline it to reduce complexity and remove ctor parameter.
     public AclExpansionTree (List<AclExpansionEntry> aclExpansion, Func<AclExpansionEntry, string> orderbyForSecurableClass)
     {
       _orderbyForSecurableClass = orderbyForSecurableClass;
@@ -72,6 +74,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       get { return _aclExpansionEntryIgnoreStateEqualityComparer; }
     }
 
+    // TODO AE: Make method return the tree rather than setting a member; then make member immutable.
     private void CreateAclExpansionTree (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);

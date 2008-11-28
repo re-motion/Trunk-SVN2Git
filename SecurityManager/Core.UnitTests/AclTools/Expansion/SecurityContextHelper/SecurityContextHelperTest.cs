@@ -22,6 +22,7 @@ using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.SecurityContextHelper
 {
+  // TODO AE: Remove test for unused class.
   [TestFixture]
   public class SecurityContextHelperTest : DomainTest
   {

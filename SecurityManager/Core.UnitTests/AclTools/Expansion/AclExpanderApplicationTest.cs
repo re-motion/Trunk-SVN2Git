@@ -24,10 +24,11 @@ using System.Collections.Generic;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   [TestFixture]
   public class AclExpanderApplicationTest : AclToolsTestBase
   {
-    private const string c_cssFileContent = 
+    private const string c_cssFileContent = // TODO AE: Consider moving to other file instead of using region.
     #region 
         @"table 
 {
@@ -62,16 +63,17 @@ th
 }    ";
     #endregion
 
-    private readonly List<AccessControlList> _aclList = new List<AccessControlList>();
-    private readonly List<SecurityManager.Domain.OrganizationalStructure.User> _userList = new List<User> ();
+    private readonly List<AccessControlList> _aclList = new List<AccessControlList> (); // TODO AE: Remove.
+    private readonly List<SecurityManager.Domain.OrganizationalStructure.User> _userList = new List<User> (); // TODO AE: Remove.
 
     [SetUp]
-    public override void SetUp ()
+    public override void SetUp () // TODO AE: Remove.
     {
       base.SetUp();
     }
 
 
+    // TODO AE: ?
     //[user="test.user",role=["test.user","testOwningGroup","Manager"],{["FirstAccessType"]},conditions=[]]
     //[user="test.user",role=["test.user","testRootGroup","Official"],{["FirstAccessType"]},conditions=[]]
     //[user="test.user",role=["test.user","testGroup","Manager"],{["FirstAccessType"]},conditions=[]]
@@ -81,19 +83,26 @@ th
     //[user="group1/user2",role=["group1/user2","parentGroup1","Official"],{["FirstAccessType"]},conditions=[]]
     //[user="group0/user2",role=["group0/user2","parentGroup0","Official"],{["FirstAccessType"]},conditions=[]]
 
-
+    // TODO AE: Make private and move to bottom.
     public List<AclExpansionEntry> CreateAclExpanderApplicationAndCallGetAclExpansion (AclExpanderApplicationSettings settings)
     {
       var application = new AclExpanderApplication();
       //application.Init (settings, new StringWriter(), new StringWriter());
       PrivateInvoke.InvokeNonPublicMethod (application, "Init", settings, TextWriter.Null,TextWriter.Null);
-      return  (List<AclExpansionEntry>) PrivateInvoke.InvokeNonPublicMethod (application, "GetAclExpansion");
+
+      // TODO AE: Consider making GetAclExpansion public. Wouldn't break encapsulation (IMO, it's only a get method anyway) and would also enable you 
+      // to mock the user finder and acl finder.
+      return (List<AclExpansionEntry>) PrivateInvoke.InvokeNonPublicMethod (application, "GetAclExpansion");
       
       //foreach (AclExpansionEntry entry in aclExpansion)
       //{
       //  To.ConsoleLine.e (entry);
       //}
     }
+
+    // TODO AE: Note: These tests test against the database, so they are actually integration tests.
+    // TODO AE: Consider mocking the user finder, ACL finder, and/or ACL expander to get non-integrative unit tests. (And move the integration tests
+    // TODO AE: to an AclExpanderApplicationIntegrationTest class.)
 
     [Test]
     public void FindAllUsersTest ()
@@ -193,7 +202,7 @@ th
     public void RunSingleFileOutputDirectoryAndExtensionSettingTest ()
     {
       const string directory = "The Directory";
-      const string extension = "html";
+      const string extension = "html"; // TODO AE: Remove unused constant.
 
       var textWriterFactoryMock = MockRepository.GenerateMock<ITextWriterFactory> ();
 
@@ -243,6 +252,7 @@ th
 
 
     // TODO: Adapt test to use StreamWriterFactory and turn into integration test
+    // TODO AE: But still keep a respective unit test.
     [Test]
     public void MultipleFileOutputCssFileWritingTest ()
     {
@@ -257,7 +267,7 @@ th
       // Multifile HTML output => expect at least 3 files (CSS, main HTML, detail HTML files)
       Assert.That (stringWriterFactory.Count, Is.GreaterThanOrEqualTo (3));
 
-      const string cssFileName = AclExpanderApplication.CssFileName;
+      const string cssFileName = AclExpanderApplication.CssFileName;  // TODO AE: Consider inlining constant.
       TextWriterData cssTextWriterData;
       bool cssFileExists = stringWriterFactory.NameToTextWriterData.TryGetValue(cssFileName,out cssTextWriterData);
       Assert.That (cssFileExists, Is.True);
@@ -268,6 +278,7 @@ th
     }
 
     // TODO: Adapt test to use StreamWriterFactory and turn into integration test
+    // TODO AE: But still keep a respective unit test.
     [Test]
     public void SingleFileOutputCssFileWritingTest ()
     {

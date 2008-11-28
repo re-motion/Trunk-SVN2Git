@@ -18,6 +18,7 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   public class AclExpansionAccessConditions  : IToText  
   {
     public bool IsOwningUserRequired { get; set; }

@@ -1,3 +1,4 @@
+// TODO AE: Stick with /* */ license for now, easier to replace at a later time.
 // 
 //  Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
 // 

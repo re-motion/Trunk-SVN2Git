@@ -20,6 +20,7 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
 {
+  // TODO AE: Remove unused class.
   public class ClassStateDictionary 
   {
     private readonly SortedDictionary<ClassStateTuple, AccessControlList> _classStateToAclMap = new SortedDictionary<ClassStateTuple, AccessControlList>();

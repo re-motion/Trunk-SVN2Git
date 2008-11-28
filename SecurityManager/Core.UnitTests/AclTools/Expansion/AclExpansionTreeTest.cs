@@ -25,9 +25,12 @@ using NUnitList = NUnit.Framework.SyntaxHelpers.List;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
+  // TODO AE: Refactory AclExpansionTree to be able to test in a more fine-grained way.
   [TestFixture]
   public class AclExpansionTreeTest : AclToolsTestBase
   {
+    // TODO AE: Remove explicit test - make automatically executable or remove.
     [Test]
     [Explicit]
     public void ExpansionTest ()
@@ -221,6 +224,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
+    // TODO AE: Do not commit console output in unit tests. (Ok for debugging reasons, but slows down build process and clutters the build log.)
     private static void LogAclExpansionTree (AclExpansionTree aclExpansionTree)
     {
       To.Console.IndentationString = "  ";

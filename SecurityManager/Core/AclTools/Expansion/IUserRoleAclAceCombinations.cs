@@ -17,6 +17,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <summary>
   /// Interface for an enumeration that returns <see cref="UserRoleAclAceCombination"/>|s.
   /// </summary>
+  // TODO AE: Consider dropping this interface (it adds unnecessary constraints).
   public interface IUserRoleAclAceCombinations : IEnumerable<UserRoleAclAceCombination>
   {
     new IEnumerator<UserRoleAclAceCombination> GetEnumerator ();

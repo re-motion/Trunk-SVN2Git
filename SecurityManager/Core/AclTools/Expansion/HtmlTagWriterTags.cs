@@ -34,6 +34,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// ]]></code>
   /// </example>
   /// </summary>
+  // TODO AE: Use style guide (PascalCase method names).
+  // TODO AE: Remove commented code. (Do not commit.)
   public class HtmlTagWriterTags
   {
     private readonly HtmlTagWriter _htmlTagWriter;

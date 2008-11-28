@@ -19,7 +19,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
   public abstract class TextWriterFactoryBase : ITextWriterFactory
   {
-    private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> ();
+    private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> (); // TODO AE: _
+
     public abstract TextWriter NewTextWriter (string name);
     public string Directory { get; set; }
     public string Extension { get; set; }
@@ -43,7 +44,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       }
     }
 
-
+    // TODO AE: Test case where no writer with name toName is found.
+    // TODO AE: fromName parameter is not used
     public string GetRelativePath (string fromName, string toName)
     {
       ArgumentUtility.CheckNotNull ("fromName", fromName);
@@ -55,12 +57,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       return ".\\" + AppendExtension(toName);
     }
 
+    // TODO AE: Note: Test-only member.
     public TextWriterData GetTextWriterData (string name)
     {
       ArgumentUtility.CheckNotNull ("name", name);
       return nameToTextWriterData[name];
     }
 
+    // TODO AE: Note: Test-only member.
     public int Count { get { return nameToTextWriterData.Count; } }
 
 

@@ -20,6 +20,8 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 {
+  // TODO AE: Rationale for /wait+?
+  // TODO AE: Too generic for AclExpander, evaluate moving to Remotion.Core or combine to make less generic (and less complex).
   /// <summary>
   /// Console application class: Supplies command line parsing (including standard command line switches; 
   /// see <see cref="ConsoleApplicationSettings"/>) and standardized error handling and output.
@@ -48,7 +50,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
   /// <typeparam name="TApplicationSettings">The settings for the <see cref="TApplication"/>. 
   /// Needs to derive from <see cref="ConsoleApplicationSettings"/>.
   /// </typeparam>
-  
+  // TODO AE: Check double blank lines
   public class ConsoleApplication<TApplication, TApplicationSettings> 
       where TApplication: IApplicationRunner<TApplicationSettings>, new()
       where TApplicationSettings : ConsoleApplicationSettings, new()
@@ -71,7 +73,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       _waitAtEnd = waitAtEnd;
     }
 
-
+    // TODO AE: Test this ctor.
     public ConsoleApplication () : this (System.Console.Error, System.Console.Out, System.Console.BufferWidth, new WaitForConsoleKeypress()) {}
 
     public TApplicationSettings Settings { get; set; }
@@ -124,6 +126,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       }
     }
 
+    // TODO AE: Test exception case.
     public virtual void RunApplication (TApplicationSettings settings)
     {
       try
@@ -162,6 +165,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
         //_errorToTextBuilder.nl().s ("Usage:");
         //_errorToTextBuilder.s (Synopsis);
         OutputApplicationUsage ();
+        // TODO AE: Return bool or throw exception instead of setting a global flag.
+        // TODO AE: Remove flag.
         _result = 1;
         Settings = new TApplicationSettings(); // Use default settings
       }

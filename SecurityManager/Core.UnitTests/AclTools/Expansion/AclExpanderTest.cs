@@ -28,9 +28,13 @@ using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
+  // TODO AE: This test fixture contains many tests that are not for the AclExpander class. Consider removing them or (if required) move them to another test fixture.
+  // TODO AE: This file contains a lot of ReSharper warnings..
   [TestFixture]
   public class AclExpanderTest : AclToolsTestBase
   {
+    // TODO AE: Move initializations to setup method, as the class might not be newly constructed for every single test.
     private readonly List<AccessControlList> _aclList = new List<AccessControlList>();
     private readonly List<User> _userList = new List<User> ();
 
@@ -44,6 +48,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: Make this test an automatically executable test, or remove it.
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     [Explicit]
     public void AccessControlList_GetAccessTypes ()
@@ -65,6 +71,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: Rename test ("2" does not give enough semantics).
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void AccessControlList_GetAccessTypes2 ()
     {
@@ -79,6 +87,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, WriteAccessType }));
     }
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionAll ()
     {
@@ -96,6 +105,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
     }
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionOwningGroup ()
     {
@@ -116,6 +126,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_AceWithPosition_GroupSelectionAll ()
     {
@@ -129,6 +140,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
     }
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_AceWithPosition_GroupSelectionOwningGroup ()
     {
@@ -145,6 +157,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
     }
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList ()
     {
@@ -152,7 +165,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
-          List.New (User),
+          List.New (User), // TODO AE: Is this really much better than new List<User> { User } ?
           List.New(TestHelper.CreateStatefulAcl(ace)), false);
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
@@ -168,7 +181,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     public void GetAclExpansionEntryList_UserList_AceList_MultipleAces ()
     {
       var aceGroupOwning = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
@@ -203,6 +218,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList_AnotherTenant ()
     {
@@ -232,6 +248,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void SpecificTenantAndOwningTenantTest ()
     {
@@ -270,12 +287,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: ?
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void TenantHierarchyConditionTest ()
     {
@@ -322,6 +341,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList_TwoDifferentTenants ()
     {
@@ -356,6 +376,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_UserList_MultipleAces ()
     {
@@ -386,6 +407,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
+    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_UserList_SeparateAcls ()
     {
@@ -429,13 +451,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryListEnumerator.MoveNext (), Is.EqualTo (false));
     }
 
-
-
     [Test]
     public void GetAclExpansionEntryList_UserList_IUserRoleAclAceCombinations ()
     {
+      // TODO AE: After replacing IUserRoleAclAceCombinations with IEnumerable<T>, replace this mock by a simple array.
       var userRoleAclAceCombinationsMock = MockRepository.GenerateMock<IUserRoleAclAceCombinations>();
-      //var myValues = new [] {  new UserRoleAclAceCombination(Role,Ace) };
+      //var myValues = new [] {  new UserRoleAclAceCombination(Role,Ace) }; // TODO AE: Prefer this version as it requires less knowledge about our test helpers.
       var myValues = List.New(new UserRoleAclAceCombination (Role, Ace) );     
       userRoleAclAceCombinationsMock.Expect (mock => mock.GetEnumerator ()).Return (myValues.GetEnumerator ());
 
@@ -445,8 +466,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       userRoleAclAceCombinationsMock.VerifyAllExpectations ();
     }
 
+    // TODO AE: The following tests seem to be mostly integration tests. Move them to a separate fixture (and name them appropriately), and
+    // TODO AE: add unit tests as they would have emerged when using TDD.
 
 
+    // TODO AE: Consider turning this into an automatically executable test, or remove.
     [Test]
     [Explicit]
     public void GetAclExpansionEntryList_ComplexExpansionTest ()
@@ -490,7 +514,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       //To.ConsoleLine.e (() => aclExpansionEntryList);
 
-      // If ACE does not macth, the resulting aclExpansionEntryList must be empty.
+      // If ACE does not macth, the resulting aclExpansionEntryList must be empty. // TODO AE: Consider integrating such comments into the Assert statement.
       Assert.That (aclExpansionEntryList, Is.Empty);
     }
 
@@ -607,6 +631,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: Consider removing this test.
     [Test]
     [Explicit]
     public void NonContributingAcesDebugTestLarge ()
@@ -641,7 +666,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-
+    // TODO AE: The following heading indicates integration tests. Move to a separate fixture.
     //--------------------------------------------------------------------------------------------------------------------------------
     // 2008-11-17 New SecurityManager ACE Features Tests
     //--------------------------------------------------------------------------------------------------------------------------------
@@ -886,6 +911,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     // Helper Methods
     //--------------------------------------------------------------------------------------------------------------------------------
 
+    // TODO AE: Make private.
     public void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)
     {
       string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + "_.html";
@@ -905,6 +931,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
+    // TODO AE: Consider renaming this method to "AssertAccessTypesAndConditions" to avoid the need for a comment.
     /// <summary>
     /// NUnit-Asserts that the passed <see cref="AclExpansionEntry"/> has the passed <see cref="AccessTypeDefinition"/>|s and the
     /// passed <see cref="AclExpansionAccessConditions"/>.
@@ -918,9 +945,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-    // Returns a list of AclExpansionEntry for the passed users and ACLs
+    // Returns a list of AclExpansionEntry for the passed users and ACLs // TODO AE: Seems obvious, given the name and signature.
     private List<AclExpansionEntry> GetAclExpansionEntryList (List<User> userList, List<AccessControlList> aclList)
     {
+      // TODO AE: Differentiate between stubs and mocks - mocks are used for verification, stubs are used to provide predefined values.
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
       userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
 
@@ -938,15 +966,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
- 
 
-    // Returns a list of AclExpansionEntry for the passed User, ACE with the passed Positon and passed GroupSelection
+
+    // Returns a list of AclExpansionEntry for the passed User, ACE with the passed Positon and passed GroupSelection // TODO AE: Seems obvious, given the name and signature.
     private List<AclExpansionEntry> GetAclExpansionEntryList_UserPositionGroupSelection (
       User user, Position position, GroupCondition groupCondition, GroupHierarchyCondition groupHierarchyCondition)
     {
       List<User> userList = new List<User> ();
       userList.Add (user);
 
+      // TODO AE: Differentiate between stubs and mocks - mocks are used for verification, stubs are used to provide predefined values.
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); 
       userFinderMock.Expect (mock => mock.FindUsers()).Return (userList);
 
@@ -977,6 +1006,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
     private void AssertIsNotInMatchingAces (List<User> userList, List<AccessControlList> aclList)
     {
+      // TODO AE: Differentiate between stubs and mocks - mocks are used for verification, stubs are used to provide predefined values.
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
       userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
 

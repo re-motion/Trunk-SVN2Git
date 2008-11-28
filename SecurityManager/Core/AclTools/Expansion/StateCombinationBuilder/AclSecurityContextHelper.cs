@@ -17,6 +17,7 @@ using Remotion.Text.StringExtensions;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder
 {
+  // TODO AE: Remove unused class.
   public class AclSecurityContextHelper : ISecurityContext
   {
     private readonly Dictionary<string, EnumWrapper> _states = new Dictionary<string, EnumWrapper> ();

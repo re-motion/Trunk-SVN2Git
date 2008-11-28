@@ -15,14 +15,16 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
+  // TODO AE: Remove unused class.
+  // TODO AE: Add ctor taking TextWriter and test the class.
   public class AclExpansionConsoleTextWriter : IAclExpansionWriter
   {
     public void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-      WriteHierarchical (aclExpansion);
+      // TODO AE: Consider inlining.
+      WriteHierarchical (aclExpansion); 
     }
-
 
     public void WriteHierarchical (List<AclExpansionEntry> aclExpansion)
     {
@@ -38,14 +40,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
             {
               User = userGroup.Key,
               RoleGroup =
-                from user in userGroup
+                from user in userGroup // TODO AE: Extract method to avoid nested LINQ statements.
                 group user by user.Role
                   into roleGroup
                   select new
                   {
                     Role = roleGroup.Key,
                     ClassGroup =
-                    from role in roleGroup
+                    from role in roleGroup // TODO AE: Extract method to avoid nested LINQ statements.
                     group role by role.Class
                       into classGroup
                       select new
@@ -56,6 +58,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
                   }
             };
 
+      // TODO AE: Consider extracting methods to avoid deep nesting.
       To.ConsoleLine.nl (10).s ("ACL Expansion");
       To.ConsoleLine.s ("====START====");
       foreach (var userGrouping in aclExpansionHierarchy)
@@ -73,7 +76,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
               var stateArray = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).ToArray ();
 
               To.Console.indent ().nl ().sb ();
-              if (repeatHierarchyEntriesInEachRow)
+              if (repeatHierarchyEntriesInEachRow) // TODO AE: Remove if-block, remove constant.
               {
                 To.Console.e ("user", aclExpansionEntry.User.UserName);
                 To.Console.e ("role", aclExpansionEntry.Role);
@@ -94,6 +97,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
+    // TODO AE: Remove unused member.
     public void WriteSimple (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);

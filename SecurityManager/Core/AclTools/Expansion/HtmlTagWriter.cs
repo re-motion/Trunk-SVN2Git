@@ -35,6 +35,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// ]]></code>
   /// </example>
   /// </summary>
+  // TODO AE: Remove commented code. (Do not commit.)
   public class HtmlTagWriter : IDisposable
   {
     private readonly XmlWriter _xmlWriter;
@@ -70,6 +71,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return this;
     }
 
+    // TODO AE: Test exception case.
     public HtmlTagWriter TagEnd (string elementName)
     {
       string ElementNameExpected = _openElementStack.Pop();
@@ -87,6 +89,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return this;
     }
 
+    // TODO AE: Move static to the top.
     public static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
     {
       XmlWriterSettings settings = new XmlWriterSettings ();
@@ -115,6 +118,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
+    // TODO AE: Are those commewnts really necessary? Maybe move them to the same line as the code producing them?
     public HtmlTagWriter WritePageHeader (string pageTitle, string cssFileName)
     {
       // DOCTYPE
@@ -154,11 +158,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-
+    // TODO AE: Consider removing this heading.
     //------------------------------------------------------------
     // Dispose
     //------------------------------------------------------------
     
+    // TODO AE: Consider replacing this with a common pattern:
+    // TODO AE: Add implementation to Close, make Dispose an explicit interface implementation and implement it by 
     public void Close ()
     {
       Dispose ();

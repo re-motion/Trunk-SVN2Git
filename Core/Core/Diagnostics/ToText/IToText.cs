@@ -34,6 +34,7 @@ namespace Remotion.Diagnostics.ToText
   ///   }
   /// }
   /// ]]></code></example>
+  // TODO AE: What's this?
   public class Foo : IToText
   {
     protected string userName, firstName, lastName;
@@ -47,6 +48,7 @@ namespace Remotion.Diagnostics.ToText
     }
   }
 
+  // TODO AE: Interface names should be nouns, eg. IToTextConvertible.
   public interface IToText
   {
     void ToText (IToTextBuilder toTextBuilder);

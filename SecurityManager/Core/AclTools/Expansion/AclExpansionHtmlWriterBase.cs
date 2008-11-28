@@ -30,11 +30,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       foreach (char c in name)
       {
         if (invalidFileNameCharsSortedList.BinarySearch (c) >= 0)
-        {
+        { // TODO AE: Braces
           sb.Append ('_');
         }
         else
-        {
+        {// TODO AE: Braces
           sb.Append (c);
         }
       }
@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       htmlTagWriter.WritePageHeader (pageTitle, "AclExpansion.css");
 
-      // BODY
+      // BODY // TODO AE: Required?
       htmlTagWriter.Tag ("body");
       return htmlTagWriter;
     }
@@ -106,6 +106,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _isInTableRow = false;
     }
 
-    public abstract void WriteAclExpansion (List<AclExpansionEntry> aclExpansion);
+    public abstract void WriteAclExpansion (List<AclExpansionEntry> aclExpansion); // TODO AE: Remove abstract method, it is not used from base class variables.
   }
 }

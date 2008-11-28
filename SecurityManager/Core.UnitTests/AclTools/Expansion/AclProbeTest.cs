@@ -17,8 +17,11 @@ using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Text.StringExtensions;
 
+// TODO AE: Remove unused usings.
+
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   [TestFixture]
   public class AclProbeTest : AclToolsTestBase
   {
@@ -31,11 +34,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.SecurityToken.Principal, Is.EqualTo (User));
     }
 
+    // TODO AE: Remove comment. (Ignore message says the same.)
     // TODO: Enable as soon as GroupSelection supports SpecificGroup state.
     [Test]
     [Ignore ("Enable as soon as GroupSelection supports SpecificGroup state.")]
     public void CreateAclProbe_SpecificGroup_Test ()
     {
+      // TODO AE: Is this code template really needed or is it obvious?
       //AccessControlEntry ace = TestHelper.CreateAceWithSpecficGroup (Group);
       //AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       //Assert.That (aclProbe.SecurityToken.OwningGroups, NUnit.Framework.SyntaxHelpers.List.Contains (ace.SpecificGroup));
@@ -120,7 +125,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant();
       FleshOutAccessControlEntryForTest (ace);
       ace.TenantCondition = (TenantCondition) (object) -1;
-      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
+      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace); // TODO AE: This assignment is never executed, remove it.
     }
 
 
@@ -139,7 +144,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
 
-
+    // TODO AE: Remove blank lines.
 
 
 

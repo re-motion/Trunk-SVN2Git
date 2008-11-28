@@ -17,6 +17,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
   /// Interface for classes that support some sort of wait functionality. The <see cref="Wait"/>-method 
   /// returns when the event the class implementing <see cref="IWait"/> occured (e.g. see <see cref="WaitForConsoleKeypress"/>).
   /// </summary>
+  // TODO AE: Interface (and class) names should have nouns as names.
   public interface IWait
   {
     void Wait ();

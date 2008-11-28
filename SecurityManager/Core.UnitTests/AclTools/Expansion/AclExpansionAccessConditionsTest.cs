@@ -19,6 +19,7 @@ using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
   [TestFixture]
   public class AclExpansionAccessConditionsTest : AclToolsTestBase
   {
@@ -36,12 +37,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (accessConditions.GroupHierarchyCondition, Is.EqualTo (GroupHierarchyCondition.Undefined));
     }
 
+    // TODO AE: Typical pattern:
+    // TODO AE: Equals_True => create two with equal members, assert they are equal
+    // TODO AE: Equals_False_Prop1, Equals_False_Prop2, Equals_False_PropN => create two with equal members but one, assert they are not equal
+    // TODO AE: GetHashCode_Equal => create two with equal members, assert hash codes are equal
+    // TODO AE: GetHashCode_NotEqual should not be tested, too volatile
+
     [Test]
     public void Equals ()
     {
       //BooleanMemberTest ((aeac, b) => aeac.HasOwningGroupCondition = b);
       //BooleanMemberTest ((aeac, b) => aeac.HasOwningTenantCondition = b);
-      BooleanMemberTest ((aeac, b) => aeac.IsOwningUserRequired = b);
+      BooleanMemberTest ((aeac, b) => aeac.IsOwningUserRequired = b); // TODO AE: Inline this member, remove method.
     }
 
     //[Test]
@@ -56,7 +63,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     // Check Equals operator for each property of AclExpansionAccessConditions if changing the property from its default value 
-    // leaves to two instances being unequal.
+    // leaves to two instances being unequal. // TODO AE: leads to two or leaves two? :)
     [Test]
     public void Equals_UsingPropertyObject ()
     {
@@ -109,6 +116,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     // Check if applying the passed Action to only one instance of AclExpansionAccessConditions flips equality.
+    // TODO AE: Remove unused method.
     private void CheckIfPassedPropertyChangeChangesEquality<TProperty> (Action<AclExpansionAccessConditions> changeProperty)
     {
       var accessConditions0 = new AclExpansionAccessConditions ();
@@ -119,7 +127,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    // Check if changing the passed Property of AclExpansionAccessConditions in only one instance flips equality.
+    // Check if changing the passed Property of AclExpansionAccessConditions in only one instance flips equality. // TODO AE: Seems obvious, given the method name.
     private void CheckIfPassedPropertyChangeChangesEquality<TProperty> (Property<AclExpansionAccessConditions, TProperty> boolProperty, TProperty notEqualValue)
     {
       var accessConditions0 = new AclExpansionAccessConditions ();

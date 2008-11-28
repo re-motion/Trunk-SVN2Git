@@ -18,9 +18,12 @@ using Remotion.Diagnostics.ToText;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
+  // TODO AE: Remove commented code. (Do not commit.)
+  // TODO AE: Dedicated tests for methods Attribute, CreateXmlWriter, Close missing.
   [TestFixture]
   public class HtmlTagWriterTest
   {
+    // TODO AE: Consider splitting up this test to match the methods being tested (Tag, Value, TagEnd).
     [Test]
     public void WriteTagTest ()
     {
@@ -49,6 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
+    // TODO AE: Consider moving this to dedicated HtmlTagWriterTagsTest class.
     public void BreakTagTest ()
     {
       var stringWriter = new StringWriter ();
@@ -62,17 +66,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-
+    // TODO AE: Consider moving this to dedicated HtmlTagWriterTagsTest class.
     [Test]
     public void SpecificTagsTest ()
     {
       string[] tagNames = new[] { "html", "head", "title", "style", "body", "table", "th", "tr", "td", "p"  };
       foreach (string tagName in tagNames)
-      {
+      { // TODO AE: Braces
         AssertTagNameOpenCloseHtml (tagName);
       }
     }
 
+    // TODO AE: Move to bottom.
     private void AssertTagNameOpenCloseHtml (string tagName)
     {
       var tagNameHtmlResult = GetSpecificTagOpenCloseHtml (tagName);
@@ -81,6 +86,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: Make private, move to bottom.
     public string GetSpecificTagOpenCloseHtml (string tagName)
     {
       var stringWriter = new StringWriter ();
@@ -95,6 +101,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    // TODO AE: Consider naming this "HtmlPageIntegrationTest".
     [Test]
     public void HtmlPageTest ()
     {
