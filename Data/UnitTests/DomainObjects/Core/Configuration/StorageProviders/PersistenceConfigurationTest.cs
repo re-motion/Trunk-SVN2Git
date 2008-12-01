@@ -93,6 +93,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProvid
     }
 
     [Test]
+    public void Deserialize_WithoutDefaultProviderDefinition ()
+    {
+      string xmlFragment =
+          @"<storage>
+            <providerDefinitions>
+              <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" 
+                  name=""Rdbms"" 
+                  providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider""
+                  connectionString=""Rdbms""/>
+            </providerDefinitions>
+          </storage>";
+
+      ConfigurationHelper.DeserializeSection (_configuration, xmlFragment);
+
+      Assert.That (_configuration.DefaultStorageProviderDefinition, Is.Null);
+      Assert.That (_configuration.StorageProviderDefinitions.Count, Is.EqualTo (1));
+      Assert.That (_configuration.StorageProviderDefinitions["Rdbms"].StorageProviderType, Is.SameAs (typeof (SqlProvider)));
+      Assert.That (((RdbmsProviderDefinition) _configuration.StorageProviderDefinitions["Rdbms"]).ConnectionString, Is.EqualTo ("ConnectionString"));
+    }
+
+    [Test]
     [ExpectedException (typeof (ConfigurationErrorsException),
         ExpectedMessage = "The provider 'Invalid' specified for the defaultProviderDefinition does not exist in the providers collection.")]
     public void Test_WithRdbmsProviderDefinitionAndInvalidName()
