@@ -363,7 +363,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
           List.New (otherTenantUser, User),
-          List.New (TestHelper.CreateStatefulAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning)), false);
+          List.New (TestHelper.CreateStatefulAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning)), 
+          false);
 
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));

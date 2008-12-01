@@ -10,6 +10,7 @@
 // 
 // 
 
+using System;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
 
@@ -19,8 +20,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
   {
     public virtual AclExpansionEntry CreateAclExpansionEntry (UserRoleAclAceCombination userRoleAclAce)
     {
-      //AclProbe aclProbe;
-      //AccessTypeStatistics accessTypeStatistics;
       var accessTypesResult = GetAccessTypes (userRoleAclAce); //, out aclProbe, out accessTypeStatistics);
 
       AclExpansionEntry aclExpansionEntry = null;
@@ -36,11 +35,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     }
 
 
-    // TODO AE: No fine-grained unit tests exist. (Only integration tests with GetAclExpansionEntryList.) Fine-grained unit tests would reduce the
-    // number of integration tests needed.
     public virtual AclExpansionEntryCreator_GetAccessTypesResult GetAccessTypes (UserRoleAclAceCombination userRoleAclAce) // , out AclProbe aclProbe, out AccessTypeStatistics accessTypeStatistics)
     {
-      const bool probeForCurrentRoleOnly = true;
+      if (ClientTransaction.Current == null)
+        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
       var aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
 
@@ -51,12 +49,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       // For decideable access conditons (e.g. specific tenant or specific group), the created SecurityToken
       // is not guaranteed to match. The AccessTypeStatistics returned by Acl.GetAccessTypes are used to filter out these cases.
       //
+      // One could also try to remove these entries by removing all AclExpansionEntry|s which are identical to another AclExpansionEntry,
+      // but have more restrictive AccessConditions; note however that such "double" entries can also come from ACEs which are
+      // being shadowed by a 2nd, less restrictive ACE.
+      //
       // Note also that it does not suffice to get the access types for the current ACE only, since these rights might be denied
       // by another matching ACE in the current ACL. 
       var accessTypeStatistics = new AccessTypeStatistics ();
 
       // Create a discarding sub-transaction so we can change the roles of the current user below without side effects.
-      // TODO AE: ClientTransaction.Current could be null. Consider checking at the beginning of the method and throw an InvalidOperationException.
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         // Set roles of user to contain only the role we currently probe for.
@@ -69,17 +70,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
         // ACL-expansion, where we want to distinguish which role gives rise
         // to what access rights).
 
-        if (probeForCurrentRoleOnly) // TODO AE: Remove if and constant.
-        {
-          // TODO AE: Roles has no setter anyway, so the following comment seems unnecessary.
-          // Exchanging the User.Roles-collection with a new one containing only the current Role would not work (MK),
-          // so we empty the collection, then add back the current Role.
-          aclProbe.SecurityToken.Principal.Roles.Clear();
-          aclProbe.SecurityToken.Principal.Roles.Add (userRoleAclAce.Role);
-        }
+        // Exchanging the User.Roles-collection with a new one containing only the current Role would not work, even
+        // if a public setter would be available, so we empty the collection, then add back the current Role.
+        aclProbe.SecurityToken.Principal.Roles.Clear();
+        aclProbe.SecurityToken.Principal.Roles.Add (userRoleAclAce.Role);
         AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
         
-        //return accessInformation;
         return new AclExpansionEntryCreator_GetAccessTypesResult (accessInformation, aclProbe, accessTypeStatistics);
       }
     }    

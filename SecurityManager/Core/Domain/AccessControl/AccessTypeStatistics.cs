@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     /// Returns true if the passed <see cref="AccessControlEntry"/> has contributed either to the allowing or denying access types
     /// in the call to <see cref="AccessControlList.GetAccessTypes(SecurityToken,AccessTypeStatistics)"/>.
     /// </summary>
-    public bool IsInAccessTypesContributingAces (AccessControlEntry ace)
+    public virtual bool IsInAccessTypesContributingAces (AccessControlEntry ace)
     {
       ArgumentUtility.CheckNotNull ("ace", ace);
       return AccessTypesSupplyingAces.Contains(ace);;
