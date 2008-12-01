@@ -11,7 +11,7 @@
 using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Web.UI.Globalization;

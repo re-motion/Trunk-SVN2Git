@@ -10,19 +10,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Data.DomainObjects;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
-using Remotion.Web.Utilities;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
@@ -100,12 +98,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     {
       base.LoadValues (interim);
 
-      CreateCollapsedTenantInformation();
-      CreateCollapsedGroupInformation();
-      CreateCollapsedUserInformation();
-      CreateCollapsedPermissionControls (CurrentAccessControlEntry.Permissions);
+      var collapsedRenderer = new CollapsedAccessControlEntryRenderer (CurrentAccessControlEntry);
+      CollapsedAccessControlInformation.SetRenderMethodDelegate (collapsedRenderer.Render);
 
-      ExpandedCell.Attributes.Add ("colspan", (6 + CurrentAccessControlEntry.AccessControlList.Class.AccessTypes.Count).ToString());
+      ExpandedCell.Attributes.Add ("colspan", (collapsedRenderer.GetColumnCount() + 1).ToString());
 
       LoadPermissions (interim);
       AdjustSpecificTenantField (false);
@@ -116,184 +112,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       AdjustSpecificUserField (false);
       AdjustSpecificPositionField();
       AdjustSpecificAbstractRoleField();
-    }
-
-    private void CreateCollapsedTenantInformation ()
-    {
-      CollapsedTenantInformation.SetRenderMethodDelegate (
-          delegate (HtmlTextWriter writer, Control container)
-          {
-            switch (CurrentAccessControlEntry.TenantCondition)
-            {
-              case TenantCondition.None:
-                break;
-              case TenantCondition.OwningTenant:
-                RenderTenantHierarchyIcon (writer);
-                RenderPropertyPathString (writer, "TenantCondition");
-                break;
-              case TenantCondition.SpecificTenant:
-                RenderTenantHierarchyIcon (writer);
-                RenderPropertyPathString (writer, "SpecificTenant.DisplayName");
-                break;
-              default:
-                throw new ArgumentOutOfRangeException();
-            }
-          });
-    }
-
-    private void CreateCollapsedGroupInformation ()
-    {
-      CollapsedGroupInformation.SetRenderMethodDelegate (
-          delegate (HtmlTextWriter writer, Control container)
-          {
-            switch (CurrentAccessControlEntry.GroupCondition)
-            {
-              case GroupCondition.None:
-                break;
-              case GroupCondition.OwningGroup:
-                RenderGroupHierarchyIcon (writer);
-                writer.RenderBeginTag (HtmlTextWriterTag.Em);
-                RenderPropertyPathString (writer, "GroupCondition");
-                writer.RenderEndTag();
-                break;
-              case GroupCondition.SpecificGroup:
-                RenderGroupHierarchyIcon (writer);
-                writer.Write (HtmlUtility.HtmlEncode ("Group"));
-                writer.Write (" ");
-                writer.RenderBeginTag (HtmlTextWriterTag.Em);
-                RenderPropertyPathString (writer, "SpecificGroup.ShortName");
-                writer.RenderEndTag();
-                break;
-              case GroupCondition.BranchOfOwningGroup:
-                writer.Write (HtmlUtility.HtmlEncode ("Same"));
-                writer.Write (" ");
-                writer.RenderBeginTag (HtmlTextWriterTag.Em);
-                RenderPropertyPathString (writer, "SpecificGroupType.DisplayName");
-                writer.RenderEndTag();
-                break;
-              case GroupCondition.AnyGroupWithSpecificGroupType:
-                writer.Write (HtmlUtility.HtmlEncode ("GT"));
-                writer.Write (" ");
-                writer.RenderBeginTag (HtmlTextWriterTag.Em);
-                RenderPropertyPathString (writer, "SpecificGroupType.DisplayName");
-                writer.RenderEndTag();
-                break;
-              default:
-                throw new ArgumentOutOfRangeException();
-            }
-          });
-    }
-
-    private void CreateCollapsedUserInformation ()
-    {
-      CollapsedUserInformation.SetRenderMethodDelegate (
-          delegate (HtmlTextWriter writer, Control container)
-          {
-            switch (CurrentAccessControlEntry.UserCondition)
-            {
-              case UserCondition.None:
-                break;
-              case UserCondition.Owner:
-                RenderPropertyPathString (writer, "UserCondition");
-                break;
-              case UserCondition.SpecificUser:
-                RenderPropertyPathString (writer, "SpecificUser.DisplayName");
-                break;
-              case UserCondition.SpecificPosition:
-                RenderPropertyPathString (writer, "SpecificPosition.DisplayName");
-                break;
-              default:
-                throw new ArgumentOutOfRangeException();
-            }
-          });
-    }
-
-    private void CreateCollapsedPermissionControls (ObjectList<Permission> permissions)
-    {
-      var grantedIcon = new IconInfo (GetIconUrl ("PermissionGranted.gif"));
-      var deniedIcon = new IconInfo (GetIconUrl ("PermissionDenied.gif"));
-      var undefinedIcon = new IconInfo (GetIconUrl ("PermissionUndefined.gif"));
-
-      CollapsedPermissionCells.SetRenderMethodDelegate (
-          delegate (HtmlTextWriter writer, Control container)
-          {
-            foreach (var permission in permissions)
-            {
-              writer.AddAttribute (HtmlTextWriterAttribute.Class, "permissionCell");
-              writer.RenderBeginTag (HtmlTextWriterTag.Td);
-              if (permission.Allowed.HasValue)
-              {
-                if (permission.Allowed.Value)
-                  grantedIcon.Render (writer);
-                else
-                  deniedIcon.Render (writer);
-              }
-              else
-                undefinedIcon.Render (writer);
-              writer.RenderEndTag();
-            }
-          });
-    }
-
-    private void RenderPropertyPathString (HtmlTextWriter writer, string propertyPathIdentifier)
-    {
-      IBusinessObject businessObject = CurrentAccessControlEntry;
-      var propertyPath = BusinessObjectPropertyPath.Parse (businessObject.BusinessObjectClass, propertyPathIdentifier);
-      writer.Write (HtmlUtility.HtmlEncode (propertyPath.GetString (businessObject, null)));
-    }
-
-    private void RenderTenantHierarchyIcon (HtmlTextWriter writer)
-    {
-      string url;
-      switch (CurrentAccessControlEntry.TenantHierarchyCondition)
-      {
-        case TenantHierarchyCondition.Undefined:
-          throw new InvalidOperationException();
-        case TenantHierarchyCondition.This:
-          url = "HierarchyThis.gif";
-          break;
-        case TenantHierarchyCondition.Parent:
-          throw new InvalidOperationException();
-        case TenantHierarchyCondition.ThisAndParent:
-          url = "HierarchyThisAndParent.gif";
-          break;
-        default:
-          throw new ArgumentOutOfRangeException();
-      }
-
-      var icon = new IconInfo (GetIconUrl (url));
-      icon.Render (writer);
-    }
-
-    private void RenderGroupHierarchyIcon (HtmlTextWriter writer)
-    {
-      string url;
-      switch (CurrentAccessControlEntry.GroupHierarchyCondition)
-      {
-        case GroupHierarchyCondition.Undefined:
-          throw new InvalidOperationException();
-        case GroupHierarchyCondition.This:
-          url = "HierarchyThis.gif";
-          break;
-        case GroupHierarchyCondition.Parent:
-          throw new InvalidOperationException();
-        case GroupHierarchyCondition.Children:
-          throw new InvalidOperationException();
-        case GroupHierarchyCondition.ThisAndParent:
-          url = "HierarchyThisAndParent.gif";
-          break;
-        case GroupHierarchyCondition.ThisAndChildren:
-          url = "HierarchyThisAndChildren.gif";
-          break;
-        case GroupHierarchyCondition.ThisAndParentAndChildren:
-          url = "HierarchyThisAndParentAndChildren.gif";
-          break;
-        default:
-          throw new ArgumentOutOfRangeException();
-      }
-
-      var icon = new IconInfo (GetIconUrl (url));
-      icon.Render (writer);
     }
 
     public override void SaveValues (bool interim)
@@ -503,7 +321,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private string GetIconUrl (string url)
     {
-      return ResourceUrlResolver.GetResourceUrl (this, Context, typeof (EditAccessControlEntryControl), ResourceType.Image, url);
+      return ResourceUrlResolver.GetResourceUrl (this, typeof (EditAccessControlEntryControl), ResourceType.Image, url);
     }
   }
 }

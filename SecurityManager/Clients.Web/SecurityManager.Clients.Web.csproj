@@ -118,7 +118,8 @@
     <Content Include="WxeHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\EditAccessControlListControlBase.cs">
+    <Compile Include="Classes\AccessControl\CollapsedAccessControlEntryRenderer.cs" />
+    <Compile Include="Classes\AccessControl\EditAccessControlListControlBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Classes\SecurableClassDefinitionTreeView.cs" />
@@ -925,7 +926,6 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Classes\AccessControl\" />
     <Folder Include="Classes\OrganizationalStructure\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

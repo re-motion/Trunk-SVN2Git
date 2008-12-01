@@ -50,49 +50,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::System.Web.UI.WebControls.PlaceHolder CollapsedView;
         
         /// <summary>
-        /// CollapsedTenantInformation control.
+        /// CollapsedAccessControlInformation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedTenantInformation;
-        
-        /// <summary>
-        /// CollapsedGroupInformation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedGroupInformation;
-        
-        /// <summary>
-        /// CollapsedUserInformation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedUserInformation;
-        
-        /// <summary>
-        /// CollapsedSpecificAbstractRoleField control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue CollapsedSpecificAbstractRoleField;
-        
-        /// <summary>
-        /// CollapsedPermissionCells control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedPermissionCells;
+        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedAccessControlInformation;
         
         /// <summary>
         /// ExpandAccessControlEntryButton control.

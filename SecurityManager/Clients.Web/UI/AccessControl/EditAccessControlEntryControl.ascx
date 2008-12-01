@@ -18,13 +18,7 @@
 <tr>
 
 <asp:PlaceHolder ID="CollapsedView" runat="server">
-<td><asp:PlaceHolder ID="CollapsedTenantInformation" runat="server" /></td>
-<td><asp:PlaceHolder ID="CollapsedGroupInformation" runat="server" /></td>
-<td><asp:PlaceHolder ID="CollapsedUserInformation" runat="server" /></td>
-<td>
-  <remotion:BocReferenceValue ID="CollapsedSpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" ReadOnly="true" EnableSelectStatement="false"/>
-</td>
-<asp:PlaceHolder ID="CollapsedPermissionCells" runat="server" />
+<asp:PlaceHolder ID="CollapsedAccessControlInformation" runat="server" />
 <td>
   <remotion:WebButton ID="ExpandAccessControlEntryButton" runat="server" CssClass="imageButton"
     OnClick="ExpandAccessControlEntryButton_Click" CausesValidation="false" RequiresSynchronousPostBack="False" />

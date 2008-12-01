@@ -16,7 +16,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Clients.Web.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 
-namespace Remotion.SecurityManager.Clients.Web.Classes
+namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
 {
   public abstract class EditAccessControlListControlBase : BaseControl
   {
