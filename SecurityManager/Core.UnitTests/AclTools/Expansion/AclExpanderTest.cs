@@ -1023,7 +1023,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
             {
               AclProbe aclProbe;
               AccessTypeStatistics accessTypeStatistics;
-              aclExpander.GetAccessTypes (new UserRoleAclAceCombination (role, ace), out aclProbe, out accessTypeStatistics);
+              aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace), out aclProbe, out accessTypeStatistics);
               Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
             }
           }
@@ -1051,7 +1051,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
             {
               AclProbe aclProbe;
               AccessTypeStatistics accessTypeStatistics;
-              aclExpander.GetAccessTypes (new UserRoleAclAceCombination (role, ace), out aclProbe, out accessTypeStatistics);
+              aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace), out aclProbe, out accessTypeStatistics);
              // Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
               To.ConsoleLine.s ("--------------------------------------------------------------------------------");
               To.ConsoleLine.sb ().e (() => user).e (() => role).e (() => ace).e (() => acl).se();

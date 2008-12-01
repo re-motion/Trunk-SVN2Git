@@ -408,6 +408,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
+
+    public AccessControlEntry CreateAceWithNoMatchingRestrictions ()
+    {
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        AccessControlEntry entry = AccessControlEntry.NewObject ();
+        return entry;
+      }
+    }
+
+
     public AccessControlEntry CreateAceWithOwningUser ()
     {
       using (_transaction.EnterNonDiscardingScope ())
