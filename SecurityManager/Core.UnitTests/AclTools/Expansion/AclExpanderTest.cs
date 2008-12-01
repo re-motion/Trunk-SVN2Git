@@ -1021,10 +1021,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           {
             foreach (AccessControlEntry ace in acl.AccessControlEntries)
             {
-              AclProbe aclProbe;
-              AccessTypeStatistics accessTypeStatistics;
-              aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace), out aclProbe, out accessTypeStatistics);
-              Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
+              //AclProbe aclProbe;
+              //AccessTypeStatistics accessTypeStatistics;
+              var accessTypesResult = aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace)); //, out aclProbe, out accessTypeStatistics);
+              Assert.That (accessTypesResult.AccessTypeStatistics.IsInMatchingAces (ace), Is.False);
             }
           }
         }
@@ -1051,12 +1051,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
             {
               AclProbe aclProbe;
               AccessTypeStatistics accessTypeStatistics;
-              aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace), out aclProbe, out accessTypeStatistics);
+              var accessTypesResult = aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace)); //, out aclProbe, out accessTypeStatistics);
              // Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
               To.ConsoleLine.s ("--------------------------------------------------------------------------------");
               To.ConsoleLine.sb ().e (() => user).e (() => role).e (() => ace).e (() => acl).se();
-              To.ConsoleLine.e ("MatchingAces", accessTypeStatistics.MatchingAces);
-              To.ConsoleLine.e ("AccessTypesSupplyingAces", accessTypeStatistics.AccessTypesSupplyingAces);
+              To.ConsoleLine.e ("MatchingAces", accessTypesResult.AccessTypeStatistics.MatchingAces);
+              To.ConsoleLine.e ("AccessTypesSupplyingAces", accessTypesResult.AccessTypeStatistics.AccessTypesSupplyingAces);
             }
           }
         }

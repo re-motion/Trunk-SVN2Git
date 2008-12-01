@@ -17,19 +17,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
   public class AclExpansionEntryCreator
   {
-    public AclExpansionEntry CreateAclExpansionEntry (UserRoleAclAceCombination userRoleAclAce)
+    public virtual AclExpansionEntry CreateAclExpansionEntry (UserRoleAclAceCombination userRoleAclAce)
     {
-      AclProbe aclProbe;
-      AccessTypeStatistics accessTypeStatistics;
-      AccessInformation accessInformation = GetAccessTypes(userRoleAclAce, out aclProbe, out accessTypeStatistics);
+      //AclProbe aclProbe;
+      //AccessTypeStatistics accessTypeStatistics;
+      var accessTypesResult = GetAccessTypes (userRoleAclAce); //, out aclProbe, out accessTypeStatistics);
 
       AclExpansionEntry aclExpansionEntry = null;
 
       // Create an AclExpansionEntry, if the current probe ACE contributed to the result and returned allowed access types.
-      if (accessTypeStatistics.IsInAccessTypesContributingAces (userRoleAclAce.Ace) && accessInformation.AllowedAccessTypes.Length > 0)
+      if (accessTypesResult.AccessTypeStatistics.IsInAccessTypesContributingAces (userRoleAclAce.Ace) && accessTypesResult.AccessInformation.AllowedAccessTypes.Length > 0)
       {
-        aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions,
-                                                   accessInformation.AllowedAccessTypes, accessInformation.DeniedAccessTypes);
+        aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, accessTypesResult.AclProbe.AccessConditions,
+                                                   accessTypesResult.AccessInformation.AllowedAccessTypes, accessTypesResult.AccessInformation.DeniedAccessTypes);
       }
 
       return aclExpansionEntry;
@@ -38,12 +38,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 
     // TODO AE: No fine-grained unit tests exist. (Only integration tests with GetAclExpansionEntryList.) Fine-grained unit tests would reduce the
     // number of integration tests needed.
-    public AccessInformation GetAccessTypes (UserRoleAclAceCombination userRoleAclAce, 
-                                             out AclProbe aclProbe, out AccessTypeStatistics accessTypeStatistics)
+    public virtual AclExpansionEntryCreator_GetAccessTypesResult GetAccessTypes (UserRoleAclAceCombination userRoleAclAce) // , out AclProbe aclProbe, out AccessTypeStatistics accessTypeStatistics)
     {
       const bool probeForCurrentRoleOnly = true;
 
-      aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
+      var aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
 
       // Note: The aclProbe created above will NOT always match the ACE it was designed to probe; the reason for this
       // is that its SecurityToken is only designed to match the non-decideable access conditions
@@ -54,7 +53,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       //
       // Note also that it does not suffice to get the access types for the current ACE only, since these rights might be denied
       // by another matching ACE in the current ACL. 
-      accessTypeStatistics = new AccessTypeStatistics ();
+      var accessTypeStatistics = new AccessTypeStatistics ();
 
       // Create a discarding sub-transaction so we can change the roles of the current user below without side effects.
       // TODO AE: ClientTransaction.Current could be null. Consider checking at the beginning of the method and throw an InvalidOperationException.
@@ -80,7 +79,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
         }
         AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
         
-        return accessInformation;
+        //return accessInformation;
+        return new AclExpansionEntryCreator_GetAccessTypesResult (accessInformation, aclProbe, accessTypeStatistics);
       }
     }    
   }

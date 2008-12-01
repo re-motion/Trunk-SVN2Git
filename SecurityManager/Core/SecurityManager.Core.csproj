@@ -80,6 +80,7 @@
     <Compile Include="AclTools\Expansion\IAclExpansionWriter.cs" />
     <Compile Include="AclTools\Expansion\AclProbe.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreator.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreator_GetAccessTypesResult.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\AclSecurityContextHelper.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\ClassStateDictionary.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\ClassStateTuple.cs" />
