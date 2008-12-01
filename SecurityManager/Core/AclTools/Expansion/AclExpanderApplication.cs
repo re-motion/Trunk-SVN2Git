@@ -76,7 +76,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
         {
-          List<AclExpansionEntry> aclExpansion = GetAclExpansion();
+          List<AclExpansionEntry> aclExpansion = GetAclExpansion ();
 
           if (Settings.Verbose)
           {

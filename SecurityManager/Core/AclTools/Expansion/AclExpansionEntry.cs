@@ -13,7 +13,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// </summary>
   // TODO AE: Make this class immutable. (Its set accessors aren't used from the outside anyways.)
   // TODO AE: Remove commented code. (Do not commit.)
-  public class AclExpansionEntry : IToText
+  public class AclExpansionEntry : IToTextConvertible
   {
     private readonly AccessControlList _accessControlList;
 

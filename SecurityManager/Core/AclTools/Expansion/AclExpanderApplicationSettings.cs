@@ -16,7 +16,7 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  public class AclExpanderApplicationSettings : ConsoleApplicationSettings, IToText
+  public class AclExpanderApplicationSettings : ConsoleApplicationSettings, IToTextConvertible
   {
     [CommandLineStringArgument ("user", true, Placeholder = "accountants/john.doe", Description = "Fully qualified name of user(s) to query access types for.")]
     public string UserName;

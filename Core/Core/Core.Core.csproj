@@ -498,7 +498,7 @@
     <Compile Include="Text\CommandLine\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Diagnostics\ToText\IToText.cs" />
+    <Compile Include="Diagnostics\ToText\IToTextConvertible.cs" />
     <Compile Include="Diagnostics\OuterProductIndexGenerator.cs" />
     <Compile Include="Diagnostics\ToText\To.cs" />
     <Compile Include="Diagnostics\ToText\ToTextProvider.cs" />

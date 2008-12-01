@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -63,6 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     public Group Group3 { get; private set; }
 
     // Called before each test gets executed.
+    // [SetUp] // TODO AE: Add attribute
     public override void SetUp ()
     {
       base.SetUp ();
@@ -195,7 +197,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       }
       else
       {
-        aclExpansionEntryList = aclExpander.GetAclExpansionEntryList();
+        aclExpansionEntryList = aclExpander.GetAclExpansionEntryList().ToList();
       }
       //To.ConsoleLine.e (() => aclExpansionEntryList);
       userFinderMock.VerifyAllExpectations ();

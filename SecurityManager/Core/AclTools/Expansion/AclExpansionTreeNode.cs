@@ -16,7 +16,7 @@ using Remotion.SecurityManager.AclTools.Expansion;
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   // TODO AE: Remove commented code.
-  public class AclExpansionTreeNode<TParent, TChildren> : IToText
+  public class AclExpansionTreeNode<TParent, TChildren> : IToTextConvertible
   {
     public AclExpansionTreeNode (TParent parent, int numberLeafNodes, IList<TChildren> children)
     {

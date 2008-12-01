@@ -24,7 +24,7 @@ using Remotion.Development.UnitTesting.ObjectMother;
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
   // TODO AE: Remove commented code. (Do not commit.)
-  public class AclExpansionTree : IToText
+  public class AclExpansionTree : IToTextConvertible
   {
     private readonly Func<AclExpansionEntry, string> _orderbyForSecurableClass;
  
@@ -128,7 +128,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
           classEntry => classEntry.Class).Select (
           //classGrouping => AclExpansionTreeNode.New (classGrouping.Key, CountRowsBelow (classGrouping), StateGrouping(classGrouping))));
           classGrouping => AclExpansionTreeNode.New (classGrouping.Key, CountRowsBelow (classGrouping), StateGrouping (classGrouping).ToList())));
-
     }
 
     private List<AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> StateGrouping (IGrouping<SecurableClassDefinition, AclExpansionEntry> classGrouping)

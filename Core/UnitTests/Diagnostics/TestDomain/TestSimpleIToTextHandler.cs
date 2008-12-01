@@ -13,7 +13,7 @@ using Remotion.Diagnostics.ToText;
 
 namespace Remotion.UnitTests.Diagnostics.TestDomain
 {
-  public class TestSimpleIToTextHandler : IToText
+  public class TestSimpleIToTextHandler : IToTextConvertible
   {
     public TestSimpleIToTextHandler ()
     {

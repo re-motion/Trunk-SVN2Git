@@ -25,7 +25,7 @@ namespace Remotion.Diagnostics.ToText
   /// 
   /// <para>See <see cref="RegisterDefaultToTextProviderHandlers"/> for a description of the default ToText-handling-fallback-cascade.</para>
   /// </summary>
-  public class ToTextProvider : IToText
+  public class ToTextProvider : IToTextConvertible
   {
     public readonly ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
     private readonly ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> _interfaceTypeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificInterfaceHandler> ();
@@ -70,7 +70,7 @@ namespace Remotion.Diagnostics.ToText
     /// The handlers are registered in the following order of precedence:
     /// <list type="number">
     /// <item>Handler for specific object type registered (see <see cref="RegisterSpecificTypeHandler{T}"/>).</item>
-    /// <item>Implements <see cref="IToText"/> (i.e. object supplies <see cref="IToText.ToText"/> method).</item>
+    /// <item>Implements <see cref="IToTextConvertible"/> (i.e. object supplies <see cref="IToTextConvertible.ToText"/> method).</item>
     /// <item>Is a string or character (see <see cref="ToTextProviderSettings.UseAutomaticCharEnclosing"/> and <see cref="ToTextProviderSettings.UseAutomaticStringEnclosing"/> respectively).</item>
     /// <item>Implements IFormattable ("is a primitive"); Primitives (e.g. floating point numbers) are alway output formatted locale agnostic.</item>
     /// <item>Is a (rectangular) array (rectangular arrays have to be treated seperately since the IEnumerable handler would treat them as one-dimensional).</item>

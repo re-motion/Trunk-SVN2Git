@@ -15,9 +15,9 @@ using Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler;
 namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
 {
   /// <summary>
-  /// <para>Handles instances which implement the <see cref="IToText"/> interface in <see cref="ToTextProvider"/>'s <see cref="ToTextProvider.ToText"/> fallback cascade.
-  /// Types implementing <see cref="IToText"/> supply a <see cref="IToText.ToText"/> method, which is called to do the transformation into human readable text form.
-  /// <see cref="IToText.ToText"/> can be seen as the ToText-sibling of <see cref="object.ToString"/> (Note that it works more efficiently since it 
+  /// <para>Handles instances which implement the <see cref="IToTextConvertible"/> interface in <see cref="ToTextProvider"/>'s <see cref="ToTextProvider.ToText"/> fallback cascade.
+  /// Types implementing <see cref="IToTextConvertible"/> supply a <see cref="IToTextConvertible.ToText"/> method, which is called to do the transformation into human readable text form.
+  /// <see cref="IToTextConvertible.ToText"/> can be seen as the ToText-sibling of <see cref="object.ToString"/> (Note that it works more efficiently since it 
   /// works by appending its result to a <see cref="ToTextBuilder"/> instead of returning a <see cref="String"/>).</para>
   /// </summary>
   public class ToTextProviderIToTextHandlerHandler : Infrastructure.ToTextProviderHandler.ToTextProviderHandler
@@ -30,9 +30,9 @@ namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
       Type type = toTextParameters.Type;
       IToTextBuilder toTextBuilder = toTextParameters.ToTextBuilder;
 
-      if (obj is IToText)
+      if (obj is IToTextConvertible)
       {
-        ((IToText) obj).ToText (toTextBuilder);
+        ((IToTextConvertible) obj).ToText (toTextBuilder);
         toTextProviderHandlerFeedback.Handled = true;
       }
 

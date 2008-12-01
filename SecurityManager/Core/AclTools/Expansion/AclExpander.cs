@@ -10,19 +10,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
+
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  // TODO AE: Remove commented code. (Do not commit.)
   public class AclExpander
   {
     private readonly IUserRoleAclAceCombinations _userRoleAclAceCombinations;
@@ -30,7 +28,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     // IEqualityComparer for value based comparison of AclExpansionEntry|s.
     private static readonly CompoundValueEqualityComparer<AclExpansionEntry> _aclExpansionEntryEqualityComparer =
       new CompoundValueEqualityComparer<AclExpansionEntry> (a => new object[] {
-          //a.User, a.Role, a.Class, a.StateCombinations,
           a.User, a.Role, a.Class, a.AccessControlList is StatefulAccessControlList ? a.StateCombinations : null,
           a.AccessConditions.AbstractRole,
           a.AccessConditions.GroupHierarchyCondition,
@@ -49,21 +46,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _userRoleAclAceCombinations = userRoleAclAceCombinations;
     }
 
-    // TODO AE: Delegate to other ctor.
     public AclExpander (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
-    {
-      ArgumentUtility.CheckNotNull ("userFinder", userFinder);
-      ArgumentUtility.CheckNotNull ("accessControlListFinder", accessControlListFinder);
-      _userRoleAclAceCombinations = new UserRoleAclAceCombinations (userFinder, accessControlListFinder);
-    }
+      : this (new UserRoleAclAceCombinations (userFinder, accessControlListFinder))
+    {}
 
     /// <summary>
     /// Default behavior is to use all <see cref="User"/>|s and all <see cref="AccessControlList"/>|s.
     /// </summary>
-    // TODO AE: Test-only ctor, consider dropping.
     public AclExpander () : this (new AclExpanderUserFinder (), new AclExpanderAclFinder ()) {}
 
-    // TODO AE: Consider returning IEnumerable<T> to avoid an unnecessary copy.
+
     public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct ()
     {
       return (from AclExpansionEntry aclExpansionEntry in GetAclExpansionEntryList ()
@@ -75,46 +67,53 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// <summary>
     /// Returns the expansion of <see cref="AccessTypeDefinition"/>|s for 
     /// all the <see cref="User"/>|s and all <see cref="AccessControlList"/>|s  
-    /// supplied in the ctor as a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>. 
+    /// supplied in the ctor as a <see cref="IEnumerable{T}"/> of <see cref="AclExpansionEntry"/>. 
     /// </summary>
     /// <returns></returns>
-    // TODO AE: Consider returning IEnumerable<T> and using yield return to allow for lazier evaluation and more parallelism.
-    public List<AclExpansionEntry> GetAclExpansionEntryList ()
+    public IEnumerable<AclExpansionEntry> GetAclExpansionEntries ()
     {
-      var aclExpansionEntries = new List<AclExpansionEntry> ();
-
       foreach (UserRoleAclAceCombination userRoleAclAce in _userRoleAclAceCombinations)
       {
-        AddAclExpansionEntry (aclExpansionEntries, userRoleAclAce);
+        AclExpansionEntry aclExpansionEntry = CreateAclExpansionEntry (userRoleAclAce);
+        if (aclExpansionEntry != null)
+        {
+          yield return aclExpansionEntry;
+        }
       }
-
-      return aclExpansionEntries;
     }
 
 
-    // TODO AE: Consider changing this into a method returning an AclExpansionEntry.
-    // TODO AE: Consider making a GetAclExpansionEntry method public. Does not break encapsulation, and would enable you to test it separately.
-    private void AddAclExpansionEntry (List<AclExpansionEntry> aclExpansionEntries, UserRoleAclAceCombination userRoleAclAce)
+    /// <summary>
+    /// Returns the expansion of <see cref="AccessTypeDefinition"/>|s for 
+    /// all the <see cref="User"/>|s and all <see cref="AccessControlList"/>|s  
+    /// supplied in the ctor as a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>. 
+    /// </summary>
+    /// <returns></returns>
+    public List<AclExpansionEntry> GetAclExpansionEntryList ()
     {
-      //To.ConsoleLine.s ("~~~~~ AddAclExpansionEntry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+      return GetAclExpansionEntries().ToList();
+    }
 
+
+    private AclExpansionEntry CreateAclExpansionEntry (UserRoleAclAceCombination userRoleAclAce)
+    {
       AclProbe aclProbe;
       AccessTypeStatistics accessTypeStatistics;
       AccessInformation accessInformation = GetAccessTypes(userRoleAclAce, out aclProbe, out accessTypeStatistics);
 
+      AclExpansionEntry aclExpansionEntry = null;
 
       // Create an AclExpansionEntry, if the current probe ACE contributed to the result and returned allowed access types.
       if (accessTypeStatistics.IsInAccessTypesContributingAces (userRoleAclAce.Ace) && accessInformation.AllowedAccessTypes.Length > 0)
       {
-        var aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions,
+        aclExpansionEntry = new AclExpansionEntry (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Acl, aclProbe.AccessConditions,
           accessInformation.AllowedAccessTypes, accessInformation.DeniedAccessTypes);
-        aclExpansionEntries.Add (aclExpansionEntry);
       }
+
+      return aclExpansionEntry;
     }
 
 
-
-    // TODO AE: Avoid out parameters if possible. Consider creating a compound type holding the results.
     // TODO AE: No fine-grained unit tests exist. (Only integration tests with GetAclExpansionEntryList.) Fine-grained unit tests would reduce the
     // number of integration tests needed.
     public AccessInformation GetAccessTypes (UserRoleAclAceCombination userRoleAclAce, 
@@ -159,12 +158,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         }
         AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
         
-        // Non-contributing-ACE debugging
-        //NonContributingAceDebugging (ace, aclProbe, accessTypeStatistics, userRoleAclAce.Acl);
-
        return accessInformation;
       }
     }
 
   }
+
+
+
+
 }

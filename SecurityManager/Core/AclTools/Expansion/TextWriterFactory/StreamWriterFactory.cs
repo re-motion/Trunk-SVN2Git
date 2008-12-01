@@ -18,7 +18,7 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
   // TODO AE: Remove unnecessary interface
-  public class StreamWriterFactory : TextWriterFactoryBase, ITextWriterFactory, IToText
+  public class StreamWriterFactory : TextWriterFactoryBase, ITextWriterFactory, IToTextConvertible
   {
     // TODO AE: Test case where directory does not exist.
     // TODO AE: Test case where TextWriter already exists.
