@@ -189,4 +189,13 @@
   <data name="AllPermissionsMenu:GrantAllPermissions:Text" xml:space="preserve">
     <value>Alle Rechte zuweisen</value>
   </data>
+  <data name="PermissionDenied:Text" xml:space="preserve">
+    <value>'{0}'-Zugriff verboten</value>
+  </data>
+  <data name="PermissionGranted:Text" xml:space="preserve">
+    <value>'{0}'-Zugriff erlaubt</value>
+  </data>
+  <data name="PermissionUndefined:Text" xml:space="preserve">
+    <value>'{0}'-Zugriff nicht bestimmt</value>
+  </data>
 </root>

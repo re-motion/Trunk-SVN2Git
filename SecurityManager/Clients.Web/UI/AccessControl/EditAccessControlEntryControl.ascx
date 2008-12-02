@@ -59,6 +59,7 @@
             <DropDownListStyle AutoPostBack="true" />
           </remotion:BocReferenceValue>
           <remotion:BocEnumValue ID="TenantHierarchyConditionField" runat="server" PropertyIdentifier="TenantHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Width="33%" Style="display:block; float:left; margin-top:0.2em"/>
+          <div style="clear:both;"></div>
         </td>
       </tr>
       <tr>
@@ -70,6 +71,7 @@
           <remotion:BocAutoCompleteReferenceValue ID="SpecificGroupField" runat="server" PropertyIdentifier="SpecificGroup" DataSourceControl="CurrentObject" Required="true" Width="33%" Style="display:block; float:left; margin-top:0.2em"/>
           <remotion:BocEnumValue ID="GroupHierarchyConditionField" runat="server" PropertyIdentifier="GroupHierarchyCondition" DataSourceControl="CurrentObject" Required="true" Width="33%" Style="display:block; float:left; margin-top:0.2em"/>
           <remotion:BocReferenceValue ID="SpecificGroupTypeField" runat="server" PropertyIdentifier="SpecificGroupType" DataSourceControl="CurrentObject" Required="true" Width="33%" Style="display:block; float:left; margin-top:0.05em"/>
+          <div style="clear:both;"></div>
         </td>      
       </tr>
       <tr>
@@ -80,6 +82,7 @@
           </remotion:BocEnumValue>
           <remotion:BocAutoCompleteReferenceValue ID="SpecificUserField" runat="server" PropertyIdentifier="SpecificUser" DataSourceControl="CurrentObject" Required="true" Width="33%" Style="display:block; float:left; margin-top:0.2em"/>
           <remotion:BocReferenceValue ID="SpecificPositionField" runat="server" PropertyIdentifier="SpecificPosition" DataSourceControl="CurrentObject" Required="true" Width="33%" Style="display:block; float:left; margin-top:0.05em"/>
+          <div style="clear:both;"></div>
         </td>
       </tr>
       <tr>
@@ -88,6 +91,7 @@
           <remotion:BocReferenceValue ID="SpecificAbstractRoleField" runat="server" PropertyIdentifier="SpecificAbstractRole" DataSourceControl="CurrentObject" Width="33%">
           <DropDownListStyle AutoPostBack="True" />
             </remotion:BocReferenceValue>
+          <div style="clear:both;"></div>
         </td>
       </tr>
     </table>

@@ -251,6 +251,33 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos;-access denied.
+        /// </summary>
+        internal static string PermissionDenied_Text {
+            get {
+                return ResourceManager.GetString("PermissionDenied:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos;-access granted.
+        /// </summary>
+        internal static string PermissionGranted_Text {
+            get {
+                return ResourceManager.GetString("PermissionGranted:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos;-access not set.
+        /// </summary>
+        internal static string PermissionUndefined_Text {
+            get {
+                return ResourceManager.GetString("PermissionUndefined:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Object-based ACLs.
         /// </summary>
         internal static string StatefulAccessControlListsTitle {

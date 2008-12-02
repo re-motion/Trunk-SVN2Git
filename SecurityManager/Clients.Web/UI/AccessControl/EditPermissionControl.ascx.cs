@@ -12,6 +12,7 @@ using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
@@ -19,15 +20,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
   [WebMultiLingualResources (typeof (AccessControlResources))]
   public partial class EditPermissionControl : BaseControl
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -36,6 +28,16 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     public void SetPermissionValue (bool? allowed)
     {
       AllowedField.Value = allowed;
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+
+      string accessTypeName = ((Permission) CurrentObject.BusinessObject).AccessType.DisplayName;
+      AllowedField.TrueDescription = string.Format (AccessControlResources.PermissionGranted_Text, accessTypeName);
+      AllowedField.FalseDescription = string.Format (AccessControlResources.PermissionDenied_Text, accessTypeName);
+      AllowedField.NullDescription = string.Format (AccessControlResources.PermissionUndefined_Text, accessTypeName);
     }
   }
 }

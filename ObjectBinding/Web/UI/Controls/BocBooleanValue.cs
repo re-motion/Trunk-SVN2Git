@@ -259,7 +259,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
 
       if (Enabled)
       {
-        if (!Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey))
+        if (!Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey + resourceSet.ResourceKey))
         {
           string trueValue = true.ToString();
           string falseValue = false.ToString();
@@ -269,7 +269,9 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
               "BocBooleanValue_InitializeGlobals ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}');",
               resourceSet.ResourceKey,
               trueValue, falseValue, nullValue,
-              resourceSet.DefaultTrueDescription, resourceSet.DefaultFalseDescription, resourceSet.DefaultNullDescription,
+              ScriptUtility.EscapeClientScript (resourceSet.DefaultTrueDescription), 
+              ScriptUtility.EscapeClientScript (resourceSet.DefaultFalseDescription), 
+              ScriptUtility.EscapeClientScript (resourceSet.DefaultNullDescription),
               resourceSet.TrueIconUrl, resourceSet.FalseIconUrl, resourceSet.NullIconUrl);
           ScriptUtility.RegisterStartupScriptBlock (Page, s_startUpScriptKey, script);
         }
@@ -287,9 +289,9 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
             + label + ", " 
             + hiddenField + ", "
             + requiredFlag + ", "
-            + (StringUtility.IsNullOrEmpty (_trueDescription) ? "null" : "'" + _trueDescription + "'") + ", "
-            + (StringUtility.IsNullOrEmpty (_falseDescription) ? "null" :"'" +  _falseDescription + "'") + ", "
-            + (StringUtility.IsNullOrEmpty (_nullDescription) ? "null" : "'" + _nullDescription + "'") + ");";
+            + (StringUtility.IsNullOrEmpty (_trueDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (_trueDescription) + "'") + ", "
+            + (StringUtility.IsNullOrEmpty (_falseDescription) ? "null" :"'" +  ScriptUtility.EscapeClientScript (_falseDescription) + "'") + ", "
+            + (StringUtility.IsNullOrEmpty (_nullDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (_nullDescription) + "'") + ");";
 
         if (_autoPostBack == true)
           script += Page.ClientScript.GetPostBackEventReference (this, "") + ";";
