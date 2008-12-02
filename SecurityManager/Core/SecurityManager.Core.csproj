@@ -59,7 +59,7 @@
     </None>
     <None Include="SecurityManager.Core.build" />
     <Compile Include="AclTools\Expansion\AclExpander.cs" />
-    <Compile Include="AclTools\Expansion\AclExpanderAclFinder.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\AclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplication.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationSettings.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderUserFinder.cs" />
@@ -70,15 +70,16 @@
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettings.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriter.cs" />
-    <Compile Include="AclTools\Expansion\AclExpansionTree.cs" />
-    <Compile Include="AclTools\Expansion\AclExpansionTreeNode.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionTree.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionTreeNode.cs" />
     <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationSettings.cs" />
     <Compile Include="AclTools\Expansion\ConsoleApplication\IWait.cs" />
     <Compile Include="AclTools\Expansion\ConsoleApplication\WaitForConsoleKeypress.cs" />
     <Compile Include="AclTools\Expansion\EnumerableEqualsWrapper.cs" />
     <Compile Include="AclTools\Expansion\HtmlTagWriterTags.cs" />
     <Compile Include="AclTools\Expansion\IAclExpansionWriter.cs" />
-    <Compile Include="AclTools\Expansion\AclProbe.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionTreeNode_ObjectMother.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\AclProbe.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreator.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreator_GetAccessTypesResult.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\AclSecurityContextHelper.cs" />
@@ -89,14 +90,14 @@
     <Compile Include="AclTools\Expansion\IAclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\ConsoleApplication\IApplicationRunner.cs" />
-    <Compile Include="AclTools\Expansion\IUserRoleAclAceCombinations.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\IUserRoleAclAceCombinations.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\StateCombinationBuilderFast.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\ITextWriterFactory.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\StreamWriterFactory.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterData.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterFactoryBase.cs" />
-    <Compile Include="AclTools\Expansion\UserRoleAclAceCombination.cs" />
-    <Compile Include="AclTools\Expansion\UserRoleAclAceCombinations.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\UserRoleAclAceCombination.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\UserRoleAclAceCombinations.cs" />
     <Compile Include="Configuration\AccessControlElement.cs" />
     <Compile Include="Configuration\SecurityManagerConfiguration.cs">
       <SubType>Code</SubType>

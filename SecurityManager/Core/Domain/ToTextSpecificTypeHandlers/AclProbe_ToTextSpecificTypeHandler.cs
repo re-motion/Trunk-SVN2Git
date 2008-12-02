@@ -11,7 +11,7 @@
 // 
 using System;
 using Remotion.Diagnostics.ToText;
-using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers

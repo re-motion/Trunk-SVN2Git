@@ -9,14 +9,14 @@
 //  WITHOUT WARRANTY OF ANY KIND, either express or implied. 
 // 
 // 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.AclTools.Expansion
+namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
   /// <summary>
   /// Supplies enumeration over all <see cref="Role"/>|s of <see cref="User"/>|s (taken from <see cref="IAclExpanderUserFinder"/>) and 

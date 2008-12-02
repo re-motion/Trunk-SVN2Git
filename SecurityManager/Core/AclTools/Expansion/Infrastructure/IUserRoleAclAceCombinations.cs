@@ -12,7 +12,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Remotion.SecurityManager.AclTools.Expansion
+namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
   /// <summary>
   /// Interface for an enumeration that returns <see cref="UserRoleAclAceCombination"/>|s.

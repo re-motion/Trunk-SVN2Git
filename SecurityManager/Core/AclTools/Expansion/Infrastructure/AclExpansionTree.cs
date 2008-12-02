@@ -19,11 +19,8 @@ using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
-using Remotion.Development.UnitTesting.ObjectMother; 
-
-namespace Remotion.SecurityManager.AclTools.Expansion
+namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
-  // TODO AE: Remove commented code. (Do not commit.)
   public class AclExpansionTree : IToTextConvertible
   {
     private readonly Func<AclExpansionEntry, string> _orderbyForSecurableClass;
@@ -31,27 +28,27 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     // IEqualityComparer which ignores differences in states (AclExpansionEntry.StateCombinations) to
     // group AclExpansionEntry|s together which only differ in state.
     private static readonly CompoundValueEqualityComparer<AclExpansionEntry> _aclExpansionEntryIgnoreStateEqualityComparer =
-      new CompoundValueEqualityComparer<AclExpansionEntry> (a => new object[] {
-          //a.AccessControlList, a.Class, a.Role, a.User,
-          a.Class, a.Role, a.User,
-          a.AccessConditions.AbstractRole,
-          a.AccessConditions.GroupHierarchyCondition,
-          a.AccessConditions.IsOwningUserRequired,
-          a.AccessConditions.OwningGroup,
-          a.AccessConditions.OwningTenant,
-          a.AccessConditions.TenantHierarchyCondition,
-          EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
-          EnumerableEqualsWrapper.New (a.DeniedAccessTypes)
-      }
-    );
+        new CompoundValueEqualityComparer<AclExpansionEntry> (a => new object[] {
+            //a.AccessControlList, a.Class, a.Role, a.User,
+            a.Class, a.Role, a.User,
+            a.AccessConditions.AbstractRole,
+            a.AccessConditions.GroupHierarchyCondition,
+            a.AccessConditions.IsOwningUserRequired,
+            a.AccessConditions.OwningGroup,
+            a.AccessConditions.OwningTenant,
+            a.AccessConditions.TenantHierarchyCondition,
+            EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
+            EnumerableEqualsWrapper.New (a.DeniedAccessTypes)
+        }
+            );
 
     // TODO AE: Add "private".
     //List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionEntry>>>>
     List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>>>>
-       _aclExpansionTree;
+        _aclExpansionTree;
 
     public AclExpansionTree (List<AclExpansionEntry> aclExpansion)
-      : this (aclExpansion, (classEntry  => (classEntry.AccessControlList is StatelessAccessControlList) ? "" : classEntry.Class.DisplayName))
+        : this (aclExpansion, (classEntry  => (classEntry.AccessControlList is StatelessAccessControlList) ? "" : classEntry.Class.DisplayName))
     {
     }
 

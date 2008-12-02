@@ -15,9 +15,8 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.SecurityManager.Domain.AccessControl;
 
 
-namespace Remotion.SecurityManager.AclTools.Expansion
+namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
-  // TODO AE: Test!
   public class AclExpanderAclFinder : IAclExpanderAclFinder
   {
     public List<AccessControlList> FindAccessControlLists ()

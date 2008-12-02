@@ -10,9 +10,8 @@
 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.ObjectMother;
-using List = Remotion.Development.UnitTesting.ObjectMother.List;
+using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -27,7 +26,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Explicit]
     public void UsageTest ()
     {
-      var data = List.New (List.New ("a", "b"), List.New ("c","d"));
+      var data = List.New (List.New ("a", "b"), List.New ("c", "d"));
       var test = AclExpansionTreeNode.New ("a", 2, List.New ("a", "b"));
     }
   }
