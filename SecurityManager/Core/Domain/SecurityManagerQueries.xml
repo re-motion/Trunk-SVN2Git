@@ -15,14 +15,14 @@
     xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 ..\..\..\Data\DomainObjects\Schemas\queries.xsd">
 
   <query id="Remotion.SecurityManager.Domain.Revision.GetRevision" type="scalar">
-    <storageProviderID>SecurityManager</storageProviderID>
+    <storageGroupType>Remotion.SecurityManager::Domain.SecurityManagerStorageGroupAttribute</storageGroupType>
     <statement>
       SELECT TOP 1 Value FROM [Revision];
     </statement>
   </query>
 
   <query id="Remotion.SecurityManager.Domain.Revision.IncrementRevision" type="scalar">
-    <storageProviderID>SecurityManager</storageProviderID>
+    <storageGroupType>Remotion.SecurityManager::Domain.SecurityManagerStorageGroupAttribute</storageGroupType>
     <statement>
       Update [Revision] SET [Value] = [Value] + 1;
     </statement>
