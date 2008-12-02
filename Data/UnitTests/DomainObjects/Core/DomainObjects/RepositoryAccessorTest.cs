@@ -47,10 +47,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Data.UnitTests.DomainObjects.TestDomain."
-        + "OrderItem does not support the requested constructor with signature (System.String).")]
+        + "OrderItem does not support the requested constructor with signature (System.Decimal).")]
     public void NewObject_WrongCtorArgs ()
     {
-      RepositoryAccessor.NewObject (typeof (OrderItem)).With ("foo");
+      RepositoryAccessor.NewObject (typeof (OrderItem)).With (0m);
     }
 
     [Test]
