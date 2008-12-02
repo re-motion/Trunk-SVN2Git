@@ -139,10 +139,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteAclExpansionAsMultiFileHtml (List<AclExpansionEntry> aclExpansion)
     {
-      //_textWriterFactory.Extension = "html";
       // TODO AE: Directory called "xxx.html" seems strange.
-      string directoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow() + ".html");
+      //string directoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow() + ".html");
+      string directoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
       _textWriterFactory.Directory = directoryUsed;
+      _textWriterFactory.Extension = "html";
 
       var multiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (_textWriterFactory, true);
       multiFileHtmlWriter.DetailHtmlWriterSettings = CreateAclExpansionHtmlWriterSettings();
@@ -194,7 +195,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return FileNameTimestamp (DateTime.Now);
     }
 
-    private List<AclExpansionEntry> GetAclExpansion ()
+    protected virtual List<AclExpansionEntry> GetAclExpansion ()
     {
       var aclExpander =
           new AclExpander (

@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   [TestFixture]
   public class AclExpanderApplicationTest : AclToolsTestBase
   {
-    private const string c_cssFileContent = // TODO AE: Consider moving to other file instead of using region.
+    private const string c_cssFileContent = 
     #region 
         @"table 
 {
@@ -62,8 +62,6 @@ th
 }    ";
     #endregion
 
-    private readonly List<AccessControlList> _aclList = new List<AccessControlList> (); // TODO AE: Remove.
-    private readonly List<SecurityManager.Domain.OrganizationalStructure.User> _userList = new List<User> (); // TODO AE: Remove.
 
     [SetUp]
     public override void SetUp () // TODO AE: Remove.
@@ -238,15 +236,42 @@ th
       AssertGetCultureName ("en-US", "en-US");
     }
 
-    private static void AssertGetCultureName (string cultureNameIn, string cultureNameOut)
+
+
+    [Test]
+    //[Explicit]
+    public void MultipleFileOutputWritingTest ()
     {
-      var textWriterFactoryStub = MockRepository.GenerateStub<ITextWriterFactory> ();
-      var application = new AclExpanderApplication (textWriterFactoryStub);
+      var streamWriterFactory = new StreamWriterFactory ();
+
       var settings = new AclExpanderApplicationSettings ();
-      settings.CultureName = cultureNameIn;
-      application.Init (settings, TextWriter.Null, TextWriter.Null);
-      string cultureName = application.GetCultureName();
-      Assert.That (cultureName, Is.EqualTo (cultureNameOut));
+      settings.UseMultipleFileOutput = true;
+      //string path = Path.GetTempPath ();
+      string path = "c:\\temp";
+      string testDirectory = Path.Combine(path, "TestDirectory");
+      settings.Directory = testDirectory;
+      var application = new AclExpanderApplication (streamWriterFactory);
+      application.Run (settings, TextWriter.Null, TextWriter.Null);
+
+      string outputDirectory = streamWriterFactory.Directory;
+      AssertFileExists (outputDirectory, "group0_user1.html");
+      AssertFileExists (outputDirectory, "group0_user2.html");
+      AssertFileExists (outputDirectory, "group1_user1.html");
+      AssertFileExists (outputDirectory, "group1_user2.html");
+
+      AssertFileExists (outputDirectory, "_AclExpansionMain_.html");
+      AssertFileExists (outputDirectory, "AclExpansion.css");
+
+      // Currently fails; 
+      // TODO: Extend NewTextWriter-method to accept (optional) extension
+      //AssertFileExists (outputDirectory, "test.user.html"); 
+    }
+
+    private static void AssertFileExists (string testDirectory, string fileName)
+    {
+      string fileNameExpected = Path.Combine (testDirectory, fileName);
+      To.ConsoleLine.e (() => fileNameExpected);
+      Assert.That (File.Exists (fileNameExpected), Is.True);
     }
 
 
@@ -266,7 +291,7 @@ th
       // Multifile HTML output => expect at least 3 files (CSS, main HTML, detail HTML files)
       Assert.That (stringWriterFactory.Count, Is.GreaterThanOrEqualTo (3));
 
-      const string cssFileName = AclExpanderApplication.CssFileName;  // TODO AE: Consider inlining constant.
+      const string cssFileName = AclExpanderApplication.CssFileName;  
       TextWriterData cssTextWriterData;
       bool cssFileExists = stringWriterFactory.NameToTextWriterData.TryGetValue(cssFileName,out cssTextWriterData);
       Assert.That (cssFileExists, Is.True);
@@ -302,6 +327,18 @@ th
       Assert.That (result, Is.EqualTo (c_cssFileContent));
     }
 
+
+
+    private static void AssertGetCultureName (string cultureNameIn, string cultureNameOut)
+    {
+      var textWriterFactoryStub = MockRepository.GenerateStub<ITextWriterFactory> ();
+      var application = new AclExpanderApplication (textWriterFactoryStub);
+      var settings = new AclExpanderApplicationSettings ();
+      settings.CultureName = cultureNameIn;
+      application.Init (settings, TextWriter.Null, TextWriter.Null);
+      string cultureName = application.GetCultureName ();
+      Assert.That (cultureName, Is.EqualTo (cultureNameOut));
+    }
 
   }
 }
