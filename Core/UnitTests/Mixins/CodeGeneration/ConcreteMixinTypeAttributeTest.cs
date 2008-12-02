@@ -108,5 +108,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       MixinDefinition definition = attribute.GetMixinDefinition (TargetClassDefinitionCache.Current);
       Assert.That (definition, Is.SameAs (referenceDefinition));
     }
+
+    [Test]
+    [Ignore ("TODO FS: COMMONS-829")]
+    public void Roundtrip_WithPublicVisibility_IntegrationTest()
+    {
+      var classContext = new ClassContext (typeof (BaseType1), new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public));
+      var attribute = ConcreteMixedTypeAttribute.FromClassContext (classContext);
+      var classContext2 = attribute.GetClassContext ();
+
+      Assert.That (classContext2, Is.EqualTo (classContext));
+    }
   }
 }
