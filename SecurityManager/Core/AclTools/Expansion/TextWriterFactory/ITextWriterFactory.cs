@@ -21,7 +21,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
   /// </summary>
   public interface ITextWriterFactory
   {
-    TextWriter NewTextWriter (string name); // TODO AE: Rename to CreateTextWriter
+    TextWriter NewTextWriter (string directory, string name, string extension);
+    TextWriter NewTextWriter (string name); // TODO QAE: Rename to CreateTextWriter; MGi: Used New... on purpose: Create can be more costly than ctor, New is as cheap ctor.
     string GetRelativePath (string fromName, string toName); // TODO AE: Is this method implementation-dependent?
 
     string Directory { get; set; } // TODO: Consider making this a parameter of NewTextWriter to avoid set/call dependency. (Unless a good default exists.)

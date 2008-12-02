@@ -21,6 +21,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
   {
     private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> (); // TODO AE: _
 
+    public abstract TextWriter NewTextWriter (string directory, string name, string extension);
     public abstract TextWriter NewTextWriter (string name);
     public string Directory { get; set; }
     public string Extension { get; set; }

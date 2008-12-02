@@ -40,7 +40,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
       }
     }
 
-
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"")]
+    public void NewTextWriterWithNullDirectoryThrowsTest ()
+    {
+      var streamWriterFactory = new StreamWriterFactory ();
+      streamWriterFactory.Directory = null;
+      streamWriterFactory.NewTextWriter ("whatever");
+    }
 
 
   }

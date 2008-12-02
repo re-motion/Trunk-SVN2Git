@@ -267,12 +267,6 @@ th
       //AssertFileExists (outputDirectory, "test.user.html"); 
     }
 
-    private static void AssertFileExists (string testDirectory, string fileName)
-    {
-      string fileNameExpected = Path.Combine (testDirectory, fileName);
-      To.ConsoleLine.e (() => fileNameExpected);
-      Assert.That (File.Exists (fileNameExpected), Is.True);
-    }
 
 
     // TODO: Adapt test to use StreamWriterFactory and turn into integration test
@@ -339,6 +333,14 @@ th
       string cultureName = application.GetCultureName ();
       Assert.That (cultureName, Is.EqualTo (cultureNameOut));
     }
+
+    private static void AssertFileExists (string testDirectory, string fileName)
+    {
+      string fileNameExpected = Path.Combine (testDirectory, fileName);
+      //To.ConsoleLine.e (() => fileNameExpected);
+      Assert.That (File.Exists (fileNameExpected), Is.True);
+    }
+
 
   }
 }

@@ -17,19 +17,18 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
-  // TODO AE: Remove unnecessary interface
-  public class StreamWriterFactory : TextWriterFactoryBase, ITextWriterFactory, IToTextConvertible
+  public class StreamWriterFactory : TextWriterFactoryBase, IToTextConvertible
   {
     // TODO AE: Test case where directory does not exist.
     // TODO AE: Test case where TextWriter already exists.
-    public override TextWriter NewTextWriter (string name)
+    public override TextWriter NewTextWriter (string directory, string name, string extension)
     {
       ArgumentUtility.CheckNotNull ("name", name); // TODO AE: CheckNotNullOrEmpty?
       // TODO AE: Throw an InvalidOperationException manually. (Assertions are more for conditions that you assume can never be false.)
-      Assertion.IsNotNull (Directory, "Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"");
-      if (!System.IO.Directory.Exists (Directory))
-      { 
-        System.IO.Directory.CreateDirectory (Directory);
+      Assertion.IsNotNull (directory, "directory must not be null. Set using \"directory\"-property before calling \"NewTextWriter\"");
+      if (!System.IO.Directory.Exists (directory))
+      {
+        System.IO.Directory.CreateDirectory (directory);
       }
 
       // TODO AE: Why store existing text writers?
@@ -40,10 +39,22 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       }
       // Append extension if name does not already contain extension
       // TODO AE: Use Path.GetExtension for check.
-      string nameWithExtension = name.Contains(".") ? name : AppendExtension (name);
-      var textWriterData = new TextWriterData (new StreamWriter (Path.Combine (Directory, nameWithExtension)), Directory, Extension);
+      string nameWithExtension = name.Contains (".") ? name : AppendExtension (name);
+      var textWriterData = new TextWriterData (new StreamWriter (Path.Combine (directory, nameWithExtension)), directory, extension);
       NameToTextWriterData[name] = textWriterData;
       return textWriterData.TextWriter;
+    }
+
+    public override TextWriter NewTextWriter (string name)
+    {
+      ArgumentUtility.CheckNotNull ("name", name); 
+      // TODO AE: Throw an InvalidOperationException manually. (Assertions are more for conditions that you assume can never be false.)
+      //Assertion.IsNotNull (Directory, "Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"");
+      if (Directory == null)
+      {
+        throw new InvalidOperationException ("Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"");
+      }
+      return NewTextWriter (Directory, name, Extension);
     }
 
 
