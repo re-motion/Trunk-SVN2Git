@@ -24,7 +24,6 @@ using System.Collections.Generic;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
-  // TODO AE: Remove commented code. (Do not commit.)
   [TestFixture]
   public class AclExpanderApplicationTest : AclToolsTestBase
   {
@@ -72,23 +71,12 @@ th
       base.SetUp();
     }
 
-
-    // TODO AE: ?
-    //[user="test.user",role=["test.user","testOwningGroup","Manager"],{["FirstAccessType"]},conditions=[]]
-    //[user="test.user",role=["test.user","testRootGroup","Official"],{["FirstAccessType"]},conditions=[]]
-    //[user="test.user",role=["test.user","testGroup","Manager"],{["FirstAccessType"]},conditions=[]]
-    //[user="test.user",role=["test.user","testGroup","Official"],{["FirstAccessType"]},conditions=[]]
-    //[user="group1/user1",role=["group1/user1","parentGroup1","Manager"],{["FirstAccessType"]},conditions=[]]
-    //[user="group0/user1",role=["group0/user1","parentGroup0","Manager"],{["FirstAccessType"]},conditions=[]]
-    //[user="group1/user2",role=["group1/user2","parentGroup1","Official"],{["FirstAccessType"]},conditions=[]]
-    //[user="group0/user2",role=["group0/user2","parentGroup0","Official"],{["FirstAccessType"]},conditions=[]]
-
     // TODO AE: Make private and move to bottom.
     public List<AclExpansionEntry> CreateAclExpanderApplicationAndCallGetAclExpansion (AclExpanderApplicationSettings settings)
     {
       var application = new AclExpanderApplication();
-      //application.Init (settings, new StringWriter(), new StringWriter());
-      PrivateInvoke.InvokeNonPublicMethod (application, "Init", settings, TextWriter.Null,TextWriter.Null);
+      application.Init (settings, TextWriter.Null, TextWriter.Null);
+      //PrivateInvoke.InvokeNonPublicMethod (application, "Init", settings, TextWriter.Null,TextWriter.Null);
 
       // TODO AE: Consider making GetAclExpansion public. Wouldn't break encapsulation (IMO, it's only a get method anyway) and would also enable you 
       // to mock the user finder and acl finder.
@@ -207,8 +195,6 @@ th
       var textWriterFactoryMock = MockRepository.GenerateMock<ITextWriterFactory> ();
 
       textWriterFactoryMock.Expect (mock => mock.Directory = directory); 
-      //textWriterFactoryMock.Expect (mock => mock.Extension = extension); 
-      //textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (TextWriter.Null));
       textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter());
       textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter ());
       
@@ -224,31 +210,45 @@ th
       textWriterFactoryMock.VerifyAllExpectations ();
     }
 
-    //[Test]
-    //public void CssFileCopyTest ()
-    //{
-    //  string directory = Path.GetTempPath();
 
-    //  using (File.Create (AclExpanderApplication.CssFileName))
-    //  {
-    //  }
+    [Test]
+    public void InitTest ()
+    {
+      var textWriterFactorStub = MockRepository.GenerateStub<ITextWriterFactory> ();
+      var application = new AclExpanderApplication (textWriterFactorStub);
+      var settings = new AclExpanderApplicationSettings ();
+      var logWriter = new StringWriter();
+      var errorWriter = new StringWriter();
+      application.Init (settings, errorWriter, logWriter);
+      Assert.That (application.Settings, Is.EqualTo (settings));
+      const string errorText = "837r498 2735";
+      application.ErrorToTextBuilder.s (errorText);
+      Assert.That (errorWriter.ToString (), Is.EqualTo (errorText));
 
-    //  try
-    //  {
-    //    var settings = new AclExpanderApplicationSettings ();
-    //    settings.UseMultipleFileOutput = true;
-    //    settings.Directory = directory;
-    //    var application = new AclExpanderApplication ();
-    //    //application.Init (settings, TextWriter.Null, TextWriter.Null);
-    //    application.Run (settings, TextWriter.Null, TextWriter.Null);
+      const string logText = "KEUZHFI 47zw89";
+      application.LogToTextBuilder.s (logText);
+      Assert.That (logWriter.ToString (), Is.EqualTo (logText));
+    }
 
-    //    Assert.That (File.Exists (Path.Combine (application.DirectoryUsed, AclExpanderApplication.CssFileName)), Is.True);
-    //  }
-    //  finally
-    //  {
-    //    File.Delete (AclExpanderApplication.CssFileName);
-    //  }
-    //}
+    [Test]
+    public void GetCultureNameTest ()
+    {
+      AssertGetCultureName(null,null);
+      AssertGetCultureName ("", null);
+      AssertGetCultureName ("de-AT", "de-AT");
+      AssertGetCultureName ("en-US", "en-US");
+    }
+
+    private static void AssertGetCultureName (string cultureNameIn, string cultureNameOut)
+    {
+      var textWriterFactoryStub = MockRepository.GenerateStub<ITextWriterFactory> ();
+      var application = new AclExpanderApplication (textWriterFactoryStub);
+      var settings = new AclExpanderApplicationSettings ();
+      settings.CultureName = cultureNameIn;
+      application.Init (settings, TextWriter.Null, TextWriter.Null);
+      string cultureName = application.GetCultureName();
+      Assert.That (cultureName, Is.EqualTo (cultureNameOut));
+    }
 
 
     // TODO: Adapt test to use StreamWriterFactory and turn into integration test

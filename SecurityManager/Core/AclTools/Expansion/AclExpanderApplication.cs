@@ -50,6 +50,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       get { return _settings; }
     }
 
+    public ToTextBuilder LogToTextBuilder
+    {
+      get { return _logToTextBuilder; }
+    }
+
+    public ToTextBuilder ErrorToTextBuilder
+    {
+      get { return _errorToTextBuilder; }
+    }
+
     public void Run (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
     {
       ArgumentUtility.CheckNotNull ("settings", settings);
@@ -57,10 +67,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       ArgumentUtility.CheckNotNull ("logWriter", logWriter);
       Init (settings, errorWriter, logWriter);
 
-      string cultureName = Settings.CultureName;
-      // TODO AE: Test this case.
-      if (String.IsNullOrEmpty (cultureName)) // TODO AE: Consider checking just for empty string.
-        cultureName = null; // Passing null to CultureScope-ctor below means "keep current culture".
+      string cultureName = GetCultureName();
 
       using (new CultureScope (cultureName))
       {
@@ -76,7 +83,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private void Init (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
+    public string GetCultureName ()
+    {
+      string cultureName = Settings.CultureName;
+      // TODO AE: Test this case.
+      if (String.IsNullOrEmpty (cultureName)) 
+      {
+        cultureName = null; // Passing null to CultureScope-ctor below means "keep current culture".
+      }
+      return cultureName;
+    }
+
+
+    public void Init (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
     {
       _settings = settings;
       _logToTextBuilder = new ToTextBuilder (To.ToTextProvider, logWriter);
@@ -85,10 +104,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void LogAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
-      _logToTextBuilder.nl (2).s ("AclExpander").nl().s ("==========").nl();
-      _logToTextBuilder.e (Settings);
+      LogToTextBuilder.nl (2).s ("AclExpander").nl().s ("==========").nl();
+      LogToTextBuilder.e (Settings);
       foreach (AclExpansionEntry entry in aclExpansion)
-        _logToTextBuilder.nl().e (entry);
+        LogToTextBuilder.nl().e (entry);
     }
 
 
