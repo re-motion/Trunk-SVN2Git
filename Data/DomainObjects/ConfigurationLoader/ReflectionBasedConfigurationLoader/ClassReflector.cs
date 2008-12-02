@@ -214,9 +214,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     }
 
     //TODO COMMONS-825: Refactor this
+    //TODO COMMONS-839: Refactor this
     public static bool IsDomainObjectBase (Type type)
     {
-      return type == typeof (DomainObject) || (type.IsGenericType && type.GetGenericTypeDefinition () == typeof (SimpleDomainObject<>));
+      return type.Assembly == typeof (DomainObject).Assembly;
     }
 
     private ReflectionBasedClassDefinition GetBaseClassDefinition (ClassDefinitionCollection classDefinitions)
