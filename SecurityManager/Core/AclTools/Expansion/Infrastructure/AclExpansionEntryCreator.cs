@@ -20,7 +20,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
   {
     public virtual AclExpansionEntry CreateAclExpansionEntry (UserRoleAclAceCombination userRoleAclAce)
     {
-      var accessTypesResult = GetAccessTypes (userRoleAclAce); //, out aclProbe, out accessTypeStatistics);
+      var accessTypesResult = GetAccessTypes (userRoleAclAce); 
 
       AclExpansionEntry aclExpansionEntry = null;
 
