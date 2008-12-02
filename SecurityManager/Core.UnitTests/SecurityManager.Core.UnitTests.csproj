@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
+    <Compile Include="AclTools\Expansion\AclExpanderAclFinderTest.cs" />
     <Compile Include="AclTools\Expansion\EnumerableEqualsWrapperTest.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreatorTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\AccessControlEntryPropertiesEnumerationValueFilterTestBase.cs" />
