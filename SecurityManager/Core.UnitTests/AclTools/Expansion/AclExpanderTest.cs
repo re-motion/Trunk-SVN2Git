@@ -918,9 +918,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + "_.html";
       using (var streamWriter = new StreamWriter (aclExpansionFileName))
       {
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, streamWriter, true);
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
         aclExpansionHtmlWriter.Settings.OutputRowCount = outputRowCount;
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml ();
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
       }
     }
 
@@ -1051,9 +1051,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           {
             foreach (AccessControlEntry ace in acl.AccessControlEntries)
             {
-              AclProbe aclProbe;
-              AccessTypeStatistics accessTypeStatistics;
-              var accessTypesResult = aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace)); //, out aclProbe, out accessTypeStatistics);
+              var accessTypesResult = aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace));
              // Assert.That (accessTypeStatistics.IsInMatchingAces (ace), Is.False);
               To.ConsoleLine.s ("--------------------------------------------------------------------------------");
               To.ConsoleLine.sb ().e (() => user).e (() => role).e (() => ace).e (() => acl).se();

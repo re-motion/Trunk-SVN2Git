@@ -108,9 +108,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
 
         var aclExpansionSingleUser = GetAccessControlEntriesForUser (aclExpansion, user);
-        var detailAclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansionSingleUser, detailTextWriter, false);
+        var detailAclExpansionHtmlWriter = new AclExpansionHtmlWriter (detailTextWriter, false);
         detailAclExpansionHtmlWriter.Settings = _detailHtmlWriterSettings;
-        detailAclExpansionHtmlWriter.WriteAclExpansionAsHtml();
+        detailAclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansionSingleUser);
       }
 
       string relativePath = _textWriterFactory.GetRelativePath (MasterFileName, userDetailFileName);

@@ -34,41 +34,29 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   // TODO AE: Split this class! Extract most of the private methods to another class to improve clarity (and to allow for more fine-grained testability).
   public class AclExpansionHtmlWriter : AclExpansionHtmlWriterBase
   {
-    private readonly AclExpansionTree _aclExpansionTree;
+    //private readonly AclExpansionTree _aclExpansionTree;
     private AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
     private string _statelessAclStateHtmlText = "(stateless)";
     private string _aclWithNoAssociatedStatesHtmlText = "(no associated states)";
-   
-    //// IEqualityComparer which ignores differences in states (AclExpansionEntry.StateCombinations) to
-    //// group AclExpansionEntry|s together which only differ in state.
-    //private static readonly CompoundValueEqualityComparer<AclExpansionEntry> _aclExpansionEntryIgnoreStateEqualityComparer = 
-    //  new CompoundValueEqualityComparer<AclExpansionEntry> (a => new object[] {
-    //      //a.AccessControlList, a.Class, a.Role, a.User,
-    //      a.Class, a.Role, a.User,
-    //      a.AccessConditions.AbstractRole,
-    //      a.AccessConditions.GroupHierarchyCondition,
-    //      a.AccessConditions.IsOwningUserRequired,
-    //      a.AccessConditions.OwningGroup,
-    //      a.AccessConditions.OwningTenant,
-    //      a.AccessConditions.TenantHierarchyCondition,
-    //      EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
-    //      EnumerableEqualsWrapper.New (a.DeniedAccessTypes)
-    //  }
-    //);
 
-
-    public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
+    public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml)
     {
-      // TODO AE: Delegate to other ctor.
-      _aclExpansionTree = new AclExpansionTree (aclExpansion);
       htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
 
-    public AclExpansionHtmlWriter (AclExpansionTree aclExpansionTree, TextWriter textWriter, bool indentXml)
-    {
-      _aclExpansionTree = aclExpansionTree;
-      htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
-    }
+
+    //public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
+    //{
+    //  // TODO AE: Delegate to other ctor.
+    //  _aclExpansionTree = new AclExpansionTree (aclExpansion);
+    //  htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
+    //}
+
+    //public AclExpansionHtmlWriter (AclExpansionTree aclExpansionTree, TextWriter textWriter, bool indentXml)
+    //{
+    //  _aclExpansionTree = aclExpansionTree;
+    //  htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
+    //}
     
 
     public AclExpansionHtmlWriterSettings Settings
@@ -90,33 +78,26 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       set { _aclWithNoAssociatedStatesHtmlText = value; }
     }
 
-    //public static CompoundValueEqualityComparer<AclExpansionEntry> AclExpansionEntryIgnoreStateEqualityComparer
-    //{
-    //  get { return _aclExpansionEntryIgnoreStateEqualityComparer; }
-    //}
-
 
     // TODO AE: Remove abstract base method since not all derivations support it.
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-      //WriteAclExpansion ();
-      throw new NotImplementedException();
+      WriteAclExpansionAsHtml (aclExpansion);
     }
 
 
-    public void WriteAclExpansionAsHtml ()
+    public void WriteAclExpansionAsHtml (List<AclExpansionEntry> aclExpansion)
     {
-      //ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-
-      //var aclExpansionTree = new AclExpansionTree (aclExpansion);
-
+      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
+    
+      var aclExpansionTree = new AclExpansionTree (aclExpansion);
 
       WritePageStart ("re-motion ACL Expansion");
 
       WriteTableStart ("remotion-ACL-expansion-table");
       WriteTableHeaders ();
-      WriteTableBody ();
+      WriteTableBody (aclExpansionTree);
       WriteTableEnd ();
 
       WritePageEnd ();
@@ -132,7 +113,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("States");
       WriteHeaderCell ("User Must Own");
       WriteHeaderCell ("Owning Group Equals");
-      //WriteHeaderCell ("Tenant Must Own");
       WriteHeaderCell ("Owning Tenant Equals");
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
@@ -350,10 +330,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-    private void WriteTableBody ()
+    private void WriteTableBody (AclExpansionTree aclExpansionTree)
     {
-      foreach (var userNode in _aclExpansionTree.Tree)
-      {// TODO AE: Braces
+      foreach (var userNode in aclExpansionTree.Tree)
+      {
         WriteTableBody_ProcessUser(userNode);
       }
     }

@@ -190,7 +190,6 @@ th
     public void RunSingleFileOutputDirectoryAndExtensionSettingTest ()
     {
       const string directory = "The Directory";
-      const string extension = "html"; // TODO AE: Remove unused constant.
 
       var textWriterFactoryMock = MockRepository.GenerateMock<ITextWriterFactory> ();
 

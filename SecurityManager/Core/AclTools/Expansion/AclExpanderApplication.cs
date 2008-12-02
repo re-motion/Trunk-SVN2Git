@@ -86,7 +86,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public string GetCultureName ()
     {
       string cultureName = Settings.CultureName;
-      // TODO AE: Test this case.
       if (String.IsNullOrEmpty (cultureName)) 
       {
         cultureName = null; // Passing null to CultureScope-ctor below means "keep current culture".
@@ -131,9 +130,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _textWriterFactory.Directory = directoryUsed;
       using (var textWriter = _textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow()))
       {
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, textWriter, true);
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
         aclExpansionHtmlWriter.Settings = CreateAclExpansionHtmlWriterSettings();
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml(); // TODO AE: Inconsistent naming with multi-file writer? (WriteAclExpansion)
+        aclExpansionHtmlWriter.WriteAclExpansionAsHtml(aclExpansion); // TODO AE: Inconsistent naming with multi-file writer? (WriteAclExpansion)
       }
       WriteCssFile();
     }
