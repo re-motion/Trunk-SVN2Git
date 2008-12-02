@@ -33,8 +33,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       try
       {
         base.Initialize (
-            configurationFile, 
-            SchemaLoader.Queries, 
+            configurationFile,
+            SchemaLoader.Queries,
             true,
             PrefixNamespace.QueryConfigurationNamespace);
       }
@@ -54,20 +54,19 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
             e, "Error while reading query configuration: {0} File: '{1}'.", e.Message, Path.GetFullPath (configurationFile));
       }
     }
-  
+
     // methods and properties
 
     public QueryDefinitionCollection GetQueryDefinitions ()
     {
-      QueryDefinitionCollection queries = new QueryDefinitionCollection ();
+      QueryDefinitionCollection queries = new QueryDefinitionCollection();
       FillQueryDefinitions (queries);
       return queries;
     }
 
     private void FillQueryDefinitions (QueryDefinitionCollection queries)
     {
-      XmlNodeList queryNodeList = Document.SelectNodes (FormatXPath (
-                                                            "{0}:queries/{0}:query"), NamespaceManager);
+      XmlNodeList queryNodeList = Document.SelectNodes (FormatXPath ("{0}:queries/{0}:query"), NamespaceManager);
 
       foreach (XmlNode queryNode in queryNodeList)
         queries.Add (GetQueryDefinition (queryNode));
@@ -78,15 +77,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       string queryID = queryNode.SelectSingleNode ("@id", NamespaceManager).InnerText;
       string queryTypeAsString = queryNode.SelectSingleNode ("@type", NamespaceManager).InnerText;
       QueryType queryType = (QueryType) Enum.Parse (typeof (QueryType), queryTypeAsString, true);
-    
-      string storageProviderID = queryNode.SelectSingleNode (FormatXPath (
-                                                                 "{0}:storageProviderID"), NamespaceManager).InnerText;
-    
-      string statement = queryNode.SelectSingleNode (FormatXPath (
-                                                         "{0}:statement"), NamespaceManager).InnerText;
 
-      Type collectionType = LoaderUtility.GetOptionalType (queryNode, 
-                                                           FormatXPath ("{0}:collectionType"), NamespaceManager);
+      string storageProviderID = queryNode.SelectSingleNode (FormatXPath ("{0}:storageProviderID"), NamespaceManager).InnerText;
+
+      string statement = queryNode.SelectSingleNode (FormatXPath ("{0}:statement"), NamespaceManager).InnerText;
+
+      Type collectionType = LoaderUtility.GetOptionalType (queryNode, FormatXPath ("{0}:collectionType"), NamespaceManager);
 
       if (queryType == QueryType.Scalar && collectionType != null)
         throw CreateQueryConfigurationException ("A scalar query '{0}' must not specify a collectionType.", queryID);
@@ -99,17 +95,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       return NamespaceManager.FormatXPath (xPath, PrefixNamespace.QueryConfigurationNamespace.Uri);
     }
 
-    private QueryConfigurationException CreateQueryConfigurationException (
-        string message, 
-        params object[] args)
+    private QueryConfigurationException CreateQueryConfigurationException (string message, params object[] args)
     {
       return CreateQueryConfigurationException (null, message, args);
     }
 
-    private QueryConfigurationException CreateQueryConfigurationException (
-        Exception inner,
-        string message, 
-        params object[] args)
+    private QueryConfigurationException CreateQueryConfigurationException (Exception inner, string message, params object[] args)
     {
       return new QueryConfigurationException (string.Format (message, args), inner);
     }

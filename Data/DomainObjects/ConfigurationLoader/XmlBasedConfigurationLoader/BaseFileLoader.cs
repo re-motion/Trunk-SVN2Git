@@ -86,11 +86,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       }
     }
 
-    public string GetApplicationName ()
-    {
-      return _document.SelectSingleNode ("/*/@application", _namespaceManager).InnerText;
-    }
-
     public string ConfigurationFile
     {
       get { return _configurationFile; }

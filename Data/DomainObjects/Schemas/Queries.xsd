@@ -17,7 +17,6 @@
       <xs:sequence>
         <xs:element name="query" type="q:queryType" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
-      <xs:attribute name="application" type="t:requiredStringType" use="required" />
     </xs:complexType>
 
     <xs:key name="queryKey">

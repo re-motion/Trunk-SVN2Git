@@ -1,3 +1,7 @@
+1.11.16
+=======
+- COMMONS-841 Drop application-attribute from Queries-configuration-file
+
 1.11.14
 =======
 - COMMONS-664 Get rid of ...Tx methods in PropertyAccessor by associating its instances with a specific transaction; add Properties[..., tx]

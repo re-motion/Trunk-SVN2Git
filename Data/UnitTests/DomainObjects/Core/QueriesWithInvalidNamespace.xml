@@ -10,6 +10,5 @@
 -->
 
 <queries 
-    application="UnitTests" 
     xmlns="http://www.re-motion.org/Data/DomainObjects/InvalidNamespace" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
