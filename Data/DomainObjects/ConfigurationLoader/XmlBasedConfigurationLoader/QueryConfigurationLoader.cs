@@ -12,8 +12,11 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
+using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Schemas;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationLoader
 {
@@ -78,7 +81,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       string queryTypeAsString = queryNode.SelectSingleNode ("@type", NamespaceManager).InnerText;
       QueryType queryType = (QueryType) Enum.Parse (typeof (QueryType), queryTypeAsString, true);
 
-      string storageProviderID = queryNode.SelectSingleNode (FormatXPath ("{0}:storageProviderID"), NamespaceManager).InnerText;
+      XmlNode node = queryNode.SelectSingleNode (FormatXPath ("{0}:storageGroupType"), NamespaceManager);
+      string storageProviderID;
+      if (node != null)
+        storageProviderID = GetStorageProviderID (node.InnerText);
+      else
+        storageProviderID = GetStorageProviderID (null);
 
       string statement = queryNode.SelectSingleNode (FormatXPath ("{0}:statement"), NamespaceManager).InnerText;
 
@@ -93,6 +101,33 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
     private string FormatXPath (string xPath)
     {
       return NamespaceManager.FormatXPath (xPath, PrefixNamespace.QueryConfigurationNamespace.Uri);
+    }
+
+    //TODO: COMMONS-842
+    //TODO: Move type resolving to storagegrouplist and unify with ClassReflector
+    //TODO: Test for DefaultStorageProvider
+    private string GetStorageProviderID (string storageGroupName)
+    {
+      var defaultStorageProviderDefinition = DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition;
+      if (storageGroupName == null)
+      {
+        //TODO COMMONS-783: Test exception
+        if (defaultStorageProviderDefinition == null)
+          throw new InvalidOperationException ("Missing default storage provider.\r\nFile: " + ConfigurationFile);
+        return defaultStorageProviderDefinition.Name;
+      }
+
+      Type storageGroupType = TypeUtility.GetType (storageGroupName, true);
+      string canonicalStorageGroupName = TypeUtility.GetPartialAssemblyQualifiedName (storageGroupType);
+      StorageGroupElement storageGroup = DomainObjectsConfiguration.Current.Storage.StorageGroups[canonicalStorageGroupName];
+      if (storageGroup == null)
+      {
+        //TODO COMMONS-783: Test exception
+        if (defaultStorageProviderDefinition == null)
+          throw new InvalidOperationException ("Missing default storage provider.\r\nFile: " + ConfigurationFile);
+        return defaultStorageProviderDefinition.Name;
+      }
+      return storageGroup.StorageProviderName;
     }
 
     private QueryConfigurationException CreateQueryConfigurationException (string message, params object[] args)

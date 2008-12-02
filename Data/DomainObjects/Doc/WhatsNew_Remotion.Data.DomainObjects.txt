@@ -1,6 +1,7 @@
 1.11.16
 =======
-- COMMONS-841 Drop application-attribute from Queries-configuration-file
+- COMMONS-841: Dropped application-attribute from Queries-configuration-file
+- COMMONS-826: Changed element 'storageProviderID' to 'storageGroupType' with the same semantics as with the StorageGroupAttribute on a DomainObject
 
 1.11.14
 =======

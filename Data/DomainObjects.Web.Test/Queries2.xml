@@ -10,13 +10,11 @@
 -->
 
 <queries
-    application="RpaTest" 
     xmlns="http://www.re-motion.org/Data/DomainObjects/Queries/1.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 ..\DomainObjects\Schemas\Queries.xsd">
     
   <query id="QueryWithAllDataTypes" type="collection">
-    <storageProviderID>RpaTest</storageProviderID>
     <statement>
       <![CDATA[
         SELECT * FROM TableWithAllDataTypes WHERE

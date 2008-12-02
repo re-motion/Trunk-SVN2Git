@@ -28,7 +28,7 @@
 
   <xs:complexType name="queryType">
     <xs:sequence>
-      <xs:element name="storageProviderID" type="t:requiredStringType" />
+      <xs:element name="storageGroupType" type="t:requiredStringType" minOccurs="0" />
       <xs:element name="statement" type="t:requiredStringType" />
       <xs:element name="collectionType" type="t:requiredStringType" minOccurs="0" />
     </xs:sequence>

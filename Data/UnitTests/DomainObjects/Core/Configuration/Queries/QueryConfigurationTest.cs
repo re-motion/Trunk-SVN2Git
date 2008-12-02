@@ -335,5 +335,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Queries
 
       return queries;
     }
+
+    [Test]
+    public void Load_ProviderFromDefaultStorageProvider ()
+    {
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForStorageGroupTest.xml");
+      QueryDefinitionCollection queries = loader.GetQueryDefinitions ();
+
+      Assert.That (
+          queries["QueryFromDefaultStorageProvider"].StorageProviderID,
+          Is.EqualTo (DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name));
+    }
+
+    [Test]
+    public void Load_ProviderFromCustomStorageGroup ()
+    {
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForStorageGroupTest.xml");
+      QueryDefinitionCollection queries = loader.GetQueryDefinitions ();
+
+      Assert.That (
+          queries["QueryFromCustomStorageGroup"].StorageProviderID,
+          Is.EqualTo (DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions["TestDomain"].Name));
+      Assert.That (
+         queries["QueryFromCustomStorageGroup"].StorageProviderID,
+         Is.Not.EqualTo (DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name));
+    }
+
+    [Test]
+    public void Load_ProviderFromUndefinedStorageGroup ()
+    {
+      QueryConfigurationLoader loader = new QueryConfigurationLoader (@"DomainObjects\\Core\\QueriesForStorageGroupTest.xml");
+      QueryDefinitionCollection queries = loader.GetQueryDefinitions ();
+
+      Assert.That (
+          queries["QueryFromUndefinedStorageGroup"].StorageProviderID,
+          Is.EqualTo (DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name));
+    }
   }
 }

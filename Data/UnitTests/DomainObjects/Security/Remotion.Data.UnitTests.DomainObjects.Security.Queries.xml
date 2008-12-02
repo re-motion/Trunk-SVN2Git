@@ -14,11 +14,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 ..\..\Data\DomainObjects\Schemas\queries.xsd">
   <query id="GetSecurableObjects" type="collection">
-    <storageProviderID>StorageProvider</storageProviderID>
     <statement>SELECT * FROM [SecurableObject]</statement>
   </query>
   <query id="Dummy" type="collection">
-    <storageProviderID>StorageProvider</storageProviderID>
     <statement>SELECT * FROM [NonExisting]</statement>
   </query>
 </queries>

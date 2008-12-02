@@ -1330,6 +1330,9 @@
     <None Include="DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="DomainObjects\Core\QueriesForStorageGroupTest.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="DomainObjects\Core\QueriesForLoaderTest2.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -14,8 +14,18 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 ..\DomainObjects\Schemas\Queries.xsd">
 
-  <query id="DummyQuery" type="scalar">
+  <query id="QueryFromCustomStorageGroup" type="scalar">
+    <storageGroupType>Remotion.Data.UnitTests::DomainObjects.TestDomain.TestDomainAttribute</storageGroupType>
     <statement>select 42</statement>
   </query>
 
+  <query id="QueryFromUndefinedStorageGroup" type="scalar">
+    <storageGroupType> Remotion.Data.UnitTests::DomainObjects.Core.Configuration.StorageProviders.StubStorageGroup1Attribute</storageGroupType>
+    <statement>select 42</statement>
+  </query>
+
+  <query id="QueryFromDefaultStorageProvider" type="scalar">
+    <statement>select 42</statement>
+  </query>
+  
 </queries>

@@ -171,7 +171,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       return GetID();
     }
 
-    //TODO: Move type resolving to storagegrouplist
+    //TODO: COMMONS-842
+    //TODO: Move type resolving to storagegrouplist and unify with QueryConfigurationLoader
     //TODO: Test for DefaultStorageProvider
     private string GetStorageProviderID ()
     {

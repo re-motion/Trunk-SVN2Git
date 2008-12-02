@@ -13,6 +13,7 @@ using System.IO;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Development;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 
@@ -74,7 +75,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       using (MemoryStream stream = new MemoryStream ())
       {
         Serialize (stream, unknownQueryDefinition);
-        DomainObjectsConfiguration.SetCurrent (null);
+        DomainObjectsConfiguration.SetCurrent (
+            new FakeDomainObjectsConfiguration (
+                DomainObjectsConfiguration.Current.MappingLoader, DomainObjectsConfiguration.Current.Storage, new QueryConfiguration()));
+
         Deserialize (stream);
       }
     }
