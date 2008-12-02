@@ -43,18 +43,22 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       var aclProbe = AclProbe.CreateAclProbe (userRoleAclAce.User, userRoleAclAce.Role, userRoleAclAce.Ace);
 
       // Note: The aclProbe created above will NOT always match the ACE it was designed to probe; the reason for this
-      // is that its SecurityToken is only designed to match the non-decideable access conditions
-      // (abstract role and owning tenant, group, etc) of the ACE
-      // (the "non-decideable" refers to the information context of the AclExpander, which is lacking some information).
+      // is that its SecurityToken created by the AclProbe is only designed to match the non-decideable access conditions
+      // (e.g. abstract role, owning tenant, owning group, etc) of the ACE. If this were not the case, then the AclProbe would need
+      // to reproduce code from the SecurityManager, to be able to decide beforehand, whether decideable access condtions
+      // (e.g. specific tenant, specific user) will match or not. 
+      // 
+      // The "non-decideable" here refers to the information context of the AclExpander, which is lacking some information
+      // available during normal SecurityManager access rights querying.
       // For decideable access conditons (e.g. specific tenant or specific group), the created SecurityToken
-      // is not guaranteed to match. The AccessTypeStatistics returned by Acl.GetAccessTypes are used to filter out these cases.
+      // is not guaranteed to match, therefore the AccessTypeStatistics returned by Acl.GetAccessTypes are used to filter out these cases.
       //
       // One could also try to remove these entries by removing all AclExpansionEntry|s which are identical to another AclExpansionEntry,
-      // but have more restrictive AccessConditions; note however that such "double" entries can also come from ACEs which are
+      // apart from having more restrictive AccessConditions; note however that such "double" entries can also come from ACEs which are
       // being shadowed by a 2nd, less restrictive ACE.
       //
       // Note also that it does not suffice to get the access types for the current ACE only, since these rights might be denied
-      // by another matching ACE in the current ACL. 
+      // by another matching ACE in the current ACL (deny rights always win). 
       var accessTypeStatistics = new AccessTypeStatistics ();
 
       // Create a discarding sub-transaction so we can change the roles of the current user below without side effects.
