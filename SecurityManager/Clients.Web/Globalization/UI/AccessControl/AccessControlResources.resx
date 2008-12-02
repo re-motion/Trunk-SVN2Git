@@ -198,4 +198,7 @@
   <data name="PermissionUndefined:Text" xml:space="preserve">
     <value>'{0}'-access not set</value>
   </data>
+  <data name="BranchOfOwningGroupLabel" xml:space="preserve">
+    <value>Same</value>
+  </data>
 </root>

@@ -11,6 +11,7 @@
 using System;
 using System.Web.UI;
 using Remotion.ObjectBinding;
+using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -77,7 +78,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           RenderLabelAndPropertyPathString (writer, "SpecificGroup.ShortName");
           break;
         case GroupCondition.BranchOfOwningGroup:
-          RenderLabelAndPropertyPathString (writer, "SAME", "SpecificGroupType.DisplayName");
+          RenderLabelAndPropertyPathString (writer, AccessControlResources.BranchOfOwningGroupLabel, "SpecificGroupType.DisplayName");
           break;
         case GroupCondition.AnyGroupWithSpecificGroupType:
           RenderLabelAndPropertyPathString (writer, "SpecificGroupType.DisplayName");

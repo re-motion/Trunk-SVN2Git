@@ -188,6 +188,15 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Same.
+        /// </summary>
+        internal static string BranchOfOwningGroupLabel {
+            get {
+                return ResourceManager.GetString("BranchOfOwningGroupLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collapse ACE.
         /// </summary>
         internal static string CollapseAccessControlEntryButton_Text {
