@@ -10,7 +10,6 @@
 -->
 
 <queries 
-    application="Remotion.SecurityManager" 
     xmlns="http://www.re-motion.org/Data/DomainObjects/Queries/1.0" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://www.re-motion.org/Data/DomainObjects/Queries/1.0 ..\..\..\Data\DomainObjects\Schemas\queries.xsd">
