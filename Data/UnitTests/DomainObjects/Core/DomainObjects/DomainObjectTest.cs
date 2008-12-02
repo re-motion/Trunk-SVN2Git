@@ -918,5 +918,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (((DomainObjectTransactionContext) transactionContextIndexer[ClientTransaction.Current]).DomainObject, Is.SameAs (order));
     }
 
+    [Test]
+    public void ConstructorWithVirtualCall()
+    {
+      var orderItem = OrderItem.NewObject ("Test Toast");
+      Assert.That (orderItem.Product, Is.EqualTo ("Test Toast"));
+    }
+
   }
 }

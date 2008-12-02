@@ -30,6 +30,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return NewObject<OrderItem> ().With (order);
     }
 
+    public static OrderItem NewObject (string product)
+    {
+      return NewObject<OrderItem> ().With (product);
+    }
+
     public new static OrderItem GetObject (ObjectID id)
     {
       return GetObject<OrderItem> (id);
@@ -45,6 +50,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     {
       ArgumentUtility.CheckNotNull ("order", order);
       Order = order;
+    }
+
+    protected OrderItem (string product)
+    {
+      Product = product;
     }
 
     public abstract int Position { get; set; }
