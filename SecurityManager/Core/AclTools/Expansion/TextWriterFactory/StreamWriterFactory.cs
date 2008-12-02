@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       // TODO AE: Throw an InvalidOperationException manually. (Assertions are more for conditions that you assume can never be false.)
       Assertion.IsNotNull (Directory, "Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"");
       if (!System.IO.Directory.Exists (Directory))
-      { // TODO AE: Braces
+      { 
         System.IO.Directory.CreateDirectory (Directory);
       }
 

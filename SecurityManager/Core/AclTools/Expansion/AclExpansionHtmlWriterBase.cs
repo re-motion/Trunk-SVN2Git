@@ -30,11 +30,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       foreach (char c in name)
       {
         if (invalidFileNameCharsSortedList.BinarySearch (c) >= 0)
-        { // TODO AE: Braces
+        { 
           sb.Append ('_');
         }
         else
-        {// TODO AE: Braces
+        {
           sb.Append (c);
         }
       }

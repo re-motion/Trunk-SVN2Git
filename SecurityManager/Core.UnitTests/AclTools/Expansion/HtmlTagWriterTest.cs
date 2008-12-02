@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       string[] tagNames = new[] { "html", "head", "title", "style", "body", "table", "th", "tr", "td", "p"  };
       foreach (string tagName in tagNames)
-      { // TODO AE: Braces
+      { 
         AssertTagNameOpenCloseHtml (tagName);
       }
     }

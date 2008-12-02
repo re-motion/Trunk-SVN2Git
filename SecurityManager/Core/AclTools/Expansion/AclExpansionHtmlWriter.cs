@@ -109,7 +109,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteHeaderCell ("User Must Have Abstract Role");
       WriteHeaderCell ("Access Rights");
       if (Settings.OutputDeniedRights)
-      { // TODO AE: Braces.
+      { 
         WriteHeaderCell ("Denied Rights");
       }
       htmlTagWriter.Tags.trEnd ();
@@ -135,7 +135,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteRowspanAttribute(rowCount);
       htmlTagWriter.Value (value);
       if (Settings.OutputRowCount)
-      { // TODO AE: Braces.
+      { 
         WriteTableDataAddendum (rowCount);
       }
       htmlTagWriter.Tags.tdEnd ();
@@ -146,7 +146,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private HtmlTagWriter WriteRowspanAttribute (int rowCount)
     {
       if (rowCount > 0)
-      { // TODO AE: Braces.
+      { 
         htmlTagWriter.Attribute ("rowspan", Convert.ToString (rowCount));
       }
       return htmlTagWriter;
@@ -161,7 +161,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlTagWriter.Value (", ");
       htmlTagWriter.Value (role.Position.DisplayName);
       if (Settings.OutputRowCount)
-      { // TODO AE: Braces.
+      { 
         WriteTableDataAddendum (rowCount);
       }
       htmlTagWriter.Tags.tdEnd ();
@@ -197,7 +197,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         //htmlTagWriter.Value (aclExpansionEntry.StateCombinations + ", "); // !!!!!!!! SPIKE ONLY !!!!!!!!! // TODO AE: Remove it.
 
         if (!stateDefinitions.Any ())
-        { // TODO AE: Braces.
+        { 
           htmlTagWriter.Value (AclWithNoAssociatedStatesHtmlText);
         }
         else
@@ -231,7 +231,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       foreach (AccessTypeDefinition accessTypeDefinition in accessTypeDefinitionsSorted)
       {
         if (!firstElement)
-        { // TODO AE: Braces
+        { 
           htmlTagWriter.Value (", ");
         }
         htmlTagWriter.Value (accessTypeDefinition.DisplayName);
@@ -267,7 +267,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlTagWriter.Value (""); // To force <td></td> instead of <td />
       var owningGroup = conditions.OwningGroup;
       if (owningGroup != null)
-      { // TODO AE: Braces
+      { 
         htmlTagWriter.Value (owningGroup.DisplayName);
       }
 
@@ -297,7 +297,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       htmlTagWriter.Value (""); // To force <td></td> instead of <td />
       var owningTenant = conditions.OwningTenant;
       if (owningTenant != null)
-      { // TODO AE: Braces
+      { 
         htmlTagWriter.Value (owningTenant.DisplayName);
       }
 
@@ -335,7 +335,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableDataWithRowCount (userNode.Key.DisplayName, userNode.NumberLeafNodes);
   
       foreach (var roleNode in userNode.Children)
-      {// TODO AE: Braces
+      {
         WriteTableBody_ProcessRole(roleNode);
       }
     }
@@ -345,7 +345,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       WriteTableDataForRole (roleNode.Key, roleNode.NumberLeafNodes);
  
       foreach (var classNode in roleNode.Children)
-      {// TODO AE: Braces
+      {
         WriteTableBody_ProcessClass(classNode);
       }
     }
@@ -358,7 +358,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableDataWithRowCount (className, classNode.NumberLeafNodes);
       }
       else
-      {// TODO AE: Braces
+      {
         WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classNode.NumberLeafNodes);
       }
 
@@ -378,7 +378,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
         WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
         if (Settings.OutputDeniedRights)
-        { // TODO AE: Braces
+        { 
           WriteTableDataForAccessTypes (aclExpansionEntry.DeniedAccessTypes);
         }
 
