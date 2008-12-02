@@ -15,6 +15,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactory
 {
@@ -23,18 +24,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
   {
     // TODO AE: Non-TDD code? More fine-grained unit tests needed for StreamWriterFactory and TextWriterFactoryBase.
     [Test]
-    public void DirectoryAndExtensionSettingTest ()
+    public void NewTextWriterArgumentTest ()
     {
       var streamWriterFactory = new StreamWriterFactory ();
       string directory = Path.Combine (Path.GetTempPath (), "StreamWriterFactoryTest_DirectoryTest");
-      streamWriterFactory.Directory = directory;
       const string extension = "xyz";
-      streamWriterFactory.Extension = extension;
       const string fileName = "someFile";
-      using (StreamWriter streamWriter = (StreamWriter) streamWriterFactory.NewTextWriter (fileName))
+      using (StreamWriter streamWriter = (StreamWriter) streamWriterFactory.NewTextWriter (directory, fileName, extension))
       {
         var fileStream = (FileStream) streamWriter.BaseStream;
-        //To.ConsoleLine.e (fileStream.Name);
+        To.ConsoleLine.e (fileStream.Name);
         string filePathExpected = Path.Combine (directory, fileName + "." + extension);
         Assert.That (fileStream.Name, Is.EqualTo (filePathExpected));
       }
@@ -49,6 +48,24 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
       streamWriterFactory.NewTextWriter ("whatever");
     }
 
+    [Test]
+    public void NewTextWriterOnlyNameArgumentTest ()
+    {
+      var mocks = new MockRepository();
+      var streamWriterFactoryMock = mocks.PartialMock<StreamWriterFactory> ();
+      const string directory = "the\\dir\\ect\\ory";
+      streamWriterFactoryMock.Directory = directory;
+      const string extension = "xyz";
+      streamWriterFactoryMock.Extension = extension;
+      const string fileName = "someFile";
 
+      streamWriterFactoryMock.Expect (x => x.NewTextWriter (directory, fileName, extension)).Return(TextWriter.Null);
+      
+      streamWriterFactoryMock.Replay();
+
+      streamWriterFactoryMock.NewTextWriter (fileName);
+
+      streamWriterFactoryMock.VerifyAllExpectations ();
+    }
   }
 }

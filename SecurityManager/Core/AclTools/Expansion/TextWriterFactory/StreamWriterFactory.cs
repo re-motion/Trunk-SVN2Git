@@ -24,8 +24,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     public override TextWriter NewTextWriter (string directory, string name, string extension)
     {
       ArgumentUtility.CheckNotNull ("name", name); // TODO AE: CheckNotNullOrEmpty?
+
       // TODO AE: Throw an InvalidOperationException manually. (Assertions are more for conditions that you assume can never be false.)
       Assertion.IsNotNull (directory, "directory must not be null. Set using \"directory\"-property before calling \"NewTextWriter\"");
+
       if (!System.IO.Directory.Exists (directory))
       {
         System.IO.Directory.CreateDirectory (directory);
@@ -37,9 +39,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       {
         throw new ArgumentException (To.String.s ("TextWriter with name ").e (name).s (" already exists.").CheckAndConvertToString ());
       }
-      // Append extension if name does not already contain extension
-      // TODO AE: Use Path.GetExtension for check.
-      string nameWithExtension = name.Contains (".") ? name : AppendExtension (name);
+
+      //// Append extension if name does not already contain extension
+      //// TODO AE: Use Path.GetExtension for check.
+      //string nameWithExtension = name.Contains (".") ? name : AppendExtension (name);
+      string nameWithExtension = AppendExtension (name, extension);
+
       var textWriterData = new TextWriterData (new StreamWriter (Path.Combine (directory, nameWithExtension)), directory, extension);
       NameToTextWriterData[name] = textWriterData;
       return textWriterData.TextWriter;

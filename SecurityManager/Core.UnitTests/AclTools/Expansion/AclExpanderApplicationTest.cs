@@ -189,11 +189,12 @@ th
     {
       const string directory = "The Directory";
 
-      var textWriterFactoryMock = MockRepository.GenerateMock<ITextWriterFactory> ();
+      var mocks = new MockRepository();
+      var textWriterFactoryMock = mocks.DynamicMock<ITextWriterFactory> ();
 
       textWriterFactoryMock.Expect (mock => mock.Directory = directory); 
-      textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter());
       textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter ());
+      textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything, Arg<String>.Is.Anything, Arg<String>.Is.Anything)).Return (new StringWriter ());
       
       textWriterFactoryMock.Replay();
 
@@ -239,7 +240,6 @@ th
 
 
     [Test]
-    //[Explicit]
     public void MultipleFileOutputWritingTest ()
     {
       var streamWriterFactory = new StreamWriterFactory ();
@@ -262,9 +262,7 @@ th
       AssertFileExists (outputDirectory, "_AclExpansionMain_.html");
       AssertFileExists (outputDirectory, "AclExpansion.css");
 
-      // Currently fails; 
-      // TODO: Extend NewTextWriter-method to accept (optional) extension
-      //AssertFileExists (outputDirectory, "test.user.html"); 
+      AssertFileExists (outputDirectory, "test.user.html"); 
     }
 
 

@@ -32,16 +32,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     }
 
 
-    protected string AppendExtension(string name)
+    public static string AppendExtension(string name, string extension)
     {
       ArgumentUtility.CheckNotNull ("name", name);
-      if (String.IsNullOrEmpty (Extension))
+      if (String.IsNullOrEmpty (extension))
       {
         return name;
       }
       else
       {
-        return name + "." + Extension;
+        return name + "." + extension;
       }
     }
 
@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       {
         throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s (" registered => no relative path exists.").CheckAndConvertToString ());
       }
-      return ".\\" + AppendExtension(toName);
+      return ".\\" + AppendExtension(toName, Extension); // TODO: Implement in more robust manner
     }
 
     // TODO AE: Note: Test-only member.

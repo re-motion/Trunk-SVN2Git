@@ -25,7 +25,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpanderApplication : IApplicationRunner<AclExpanderApplicationSettings>
   {
-    public const string CssFileName = "AclExpansion.css";
+    //public const string CssFileName = "AclExpansion.css";
+    public const string CssFileName = "AclExpansion";
     private AclExpanderApplicationSettings _settings;
     private ToTextBuilder _logToTextBuilder; // TODO QAE: Consider using ILog; MGi: Advantage ?
     private ToTextBuilder _errorToTextBuilder; // TODO QAE: Consider using ILog; MGi: Advantage ?
@@ -154,10 +155,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteCssFile ()
     {
-      using (var cssTextWriter = _textWriterFactory.NewTextWriter (CssFileName))
+      using (var cssTextWriter = _textWriterFactory.NewTextWriter (_textWriterFactory.Directory,CssFileName,"css"))
       {
-        cssTextWriter.Write (GetEmbeddedStringResource ("Data.AclExpansion.css"));
-            // TODO AE: Move CSS file to the namespace of the type used to retrieve it.
+        string resource = GetEmbeddedStringResource ("Data.AclExpansion.css");
+        Assertion.IsNotNull (resource);
+        cssTextWriter.Write (resource);
+        // TODO AE: Move CSS file to the namespace of the type used to retrieve it.
       }
     }
 

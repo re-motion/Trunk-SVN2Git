@@ -65,6 +65,7 @@
     <Compile Include="AclTools\Expansion\AclExpanderAclFinderTest.cs" />
     <Compile Include="AclTools\Expansion\EnumerableEqualsWrapperTest.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreatorTest.cs" />
+    <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterFactoryBaseTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\AccessControlEntryPropertiesEnumerationValueFilterTestBase.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\NotSupportedProperty.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\TeantConditionStateful.cs" />
