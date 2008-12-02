@@ -79,15 +79,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    // TODO AE: Remove abstract base method since not all derivations support it.
     public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
-    {
-      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-      WriteAclExpansionAsHtml (aclExpansion);
-    }
-
-
-    public void WriteAclExpansionAsHtml (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
     

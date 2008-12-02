@@ -55,7 +55,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         {
           var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
           aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-          aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+          aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
           //string result = textWriter.ToString ();
           //To.ConsoleLine.e (() => result);
           //Clipboard.SetText (result); 
@@ -134,7 +134,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
         aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+        aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       }
     }
 

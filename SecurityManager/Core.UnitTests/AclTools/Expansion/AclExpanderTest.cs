@@ -920,7 +920,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
         aclExpansionHtmlWriter.Settings.OutputRowCount = outputRowCount;
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml (aclExpansion);
+        aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       }
     }
 

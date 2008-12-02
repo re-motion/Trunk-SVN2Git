@@ -132,7 +132,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
         aclExpansionHtmlWriter.Settings = CreateAclExpansionHtmlWriterSettings();
-        aclExpansionHtmlWriter.WriteAclExpansionAsHtml(aclExpansion); // TODO AE: Inconsistent naming with multi-file writer? (WriteAclExpansion)
+        aclExpansionHtmlWriter.WriteAclExpansion(aclExpansion);
       }
       WriteCssFile();
     }
