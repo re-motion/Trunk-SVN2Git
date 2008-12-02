@@ -11,24 +11,18 @@ using $DOMAIN_ROOTNAMESPACE$;
 
 namespace $PROJECT_ROOTNAMESPACE$.UI
 {
-  // <WxePageFunction>
+  // <WxeFunction>
   //   <Parameter name="query" type="IQuery" />
   //   <Variable name="searchResult" type="DomainObjectCollection" />
-  // </WxePageFunction>
+  // </WxeFunction>
   public partial class SearchResult$DOMAIN_CLASSNAME$Form : BasePage
   {
     private void Page_Load(object sender, System.EventArgs e)
     {
-      /*
-      if (!IsPostBack)
-      {
-        
-        if (query == null)
-          query = new Query ("All$DOMAIN_CLASSNAME$s");
-        searchResult = ClientTransaction.Current.QueryManager.GetCollection (query);
-      }
-      */
-      // SearchAllObjectsService.SearchAllObjects<Person>()
+      Title = ResourceManagerUtility.GetResourceManager(this).GetString("Search~$DOMAIN_CLASSNAME$");
+      // At the time of this writing (2008-12-01), SearchAllObjectsService is
+      // implemented in a file named SearchAllObjectsService.cs. This file must
+      // be part of your domain project. [reinhard.gantar@rubicon.eu]
       $DOMAIN_CLASSNAME$List.LoadUnboundValue (SearchAllObjectsService.SearchAllObjects<$DOMAIN_CLASSNAME$>(), IsPostBack);
     }
 

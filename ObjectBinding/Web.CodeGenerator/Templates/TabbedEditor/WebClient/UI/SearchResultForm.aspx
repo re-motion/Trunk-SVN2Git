@@ -4,8 +4,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
-<head>
-  <title>$res:$DOMAIN_CLASSNAME$</title>
+<head runat="server">
+  <title><!-- Page title set in Page_Load !--></title>
   <remotion:htmlheadcontents id="HtmlHeadContents" runat="server"></remotion:htmlheadcontents>
 </head>
 

@@ -11,13 +11,14 @@ using $DOMAIN_ROOTNAMESPACE$;
 
 namespace $PROJECT_ROOTNAMESPACE$.UI
 {
-  // <WxePageFunction>
+  // <WxeFunction>
   //   <Parameter name="obj" type="$DOMAIN_CLASSNAME$" />
-  // </WxePageFunction>
+  // </WxeFunction>
   public partial class Edit$DOMAIN_CLASSNAME$Form : EditFormPage
   {
     protected void Page_Load (object sender, EventArgs e)
     {
+      Title = ResourceManagerUtility.GetResourceManager(this).GetString("Edit~$DOMAIN_CLASSNAME$");
       if (!IsPostBack)
       {
         if (obj == null)

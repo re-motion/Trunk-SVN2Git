@@ -148,5 +148,11 @@
 	<data name="$DOMAIN_CLASSNAME$" xml:space="preserve">
     <value>~de~$DOMAIN_CLASSNAME$</value>
   </data>
+        <data name="Edit~$DOMAIN_CLASSNAME$" xml:space="preserve">
+    <value>~de~Edit~$DOMAIN_CLASSNAME$</value>
+  </data>
+        <data name="Search~$DOMAIN_CLASSNAME$" xml:space="preserve">
+    <value>~de~Search~$DOMAIN_CLASSNAME$</value>
+  </data>
 	$REPEAT_FOREACHCLASS_END$
 </root>

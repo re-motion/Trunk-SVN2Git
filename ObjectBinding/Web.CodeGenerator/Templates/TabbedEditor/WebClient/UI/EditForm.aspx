@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head runat="server">
-  <title>$res:$DOMAIN_CLASSNAME$</title>
+  <title><!-- Page title set in Page_Load !--></title>
   <remotion:htmlheadcontents id="HtmlHeadContents" runat="server"></remotion:htmlheadcontents>
 </head>
 

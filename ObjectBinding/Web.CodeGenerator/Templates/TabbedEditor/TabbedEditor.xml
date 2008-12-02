@@ -25,7 +25,7 @@ TODO: <folder>
 		<files pattern="WebClient\*.config" target="$WebClientName$" />
 
 		<copy source="WebClient\Images\*.*" target="$WebClientName$\Images" mode="CopyIfNewer" />
-		<copy source="WebClient\res\*.*" target="$WebClientName$\res" mode="CopyIfNewer" recursive="true" />
+		<copy source="..\..\res\*.*" target="$WebClientName$\res" mode="CopyIfNewer" recursive="true" />
 
 		<files pattern="WebClient\UI\NavigationTabs.*" target="$WebClientName$\UI" />
 		<files pattern="WebClient\Globalization\Global.*" target="$WebClientName$\Globalization" />
@@ -106,9 +106,6 @@ TODO: <folder>
 			</mapping>
 
 			<mapping propertyType="Remotion.ObjectBinding.IBusinessObjectReferenceProperty" isList="false" control="remotion:BocReferenceValue">
-				<additionalAttributes>
-					Select="All$DOMAIN_PROPERTYNAME$s"
-				</additionalAttributes>
 			</mapping>
 		</controlMappings>
 	</properties>

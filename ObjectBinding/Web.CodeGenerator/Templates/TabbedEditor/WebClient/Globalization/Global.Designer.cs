@@ -155,6 +155,26 @@ namespace $PROJECT_ROOTNAMESPACE$.Globalization {
                 return ResourceManager.GetString("$DOMAIN_CLASSNAME$", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string for the domain object class $DOMAIN_CLASSNAME$'s
+        ///   to be displayed as page title for the Edit tab
+        /// </summary>
+        internal static string Edit_$DOMAIN_CLASSNAME$ {
+            get {
+                return ResourceManager.GetString("Edit~$DOMAIN_CLASSNAME$", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string for the domain object class $DOMAIN_CLASSNAME$'s
+        ///   to be displayed as page title for the Search tab
+        /// </summary>
+        internal static string Search_$DOMAIN_CLASSNAME$ {
+            get {
+                return ResourceManager.GetString("Search~$DOMAIN_CLASSNAME$", resourceCulture);
+            }
+        }
 	$REPEAT_FOREACHCLASS_END$
 
     }
