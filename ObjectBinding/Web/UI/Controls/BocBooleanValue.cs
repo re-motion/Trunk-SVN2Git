@@ -16,6 +16,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -43,6 +44,8 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
 
   private const string c_defaultControlWidth = "100pt";
   private const string c_nullString = "null";
+
+  private const string c_defaultResourceGroup = "default";
 
   // types
 
@@ -219,43 +222,32 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
     
     bool isReadOnly = IsReadOnly;
 
-    string trueIconUrl = ResourceUrlResolver.GetResourceUrl (
-        this, Context, typeof (BocBooleanValue), ResourceType.Image, c_trueIcon);
-    string falseIconUrl = ResourceUrlResolver.GetResourceUrl (
-        this, Context, typeof (BocBooleanValue), ResourceType.Image, c_falseIcon);
-    string nullIconUrl = ResourceUrlResolver.GetResourceUrl (
-        this, Context, typeof (BocBooleanValue), ResourceType.Image, c_nullIcon);
-    
-    IResourceManager resourceManager = GetResourceManager();
-    string defaultTrueDescription = resourceManager.GetString (ResourceIdentifier.TrueDescription);
-    string defaultFalseDescription = resourceManager.GetString (ResourceIdentifier.FalseDescription);
-    string defaultNullDescription = resourceManager.GetString (ResourceIdentifier.NullDescription);
 
-    string trueDescription = 
-        (StringUtility.IsNullOrEmpty (_trueDescription) ? defaultTrueDescription : _trueDescription);
-    string falseDescription = 
-        (StringUtility.IsNullOrEmpty (_falseDescription) ? defaultFalseDescription : _falseDescription);
-    string nullDescription = 
-        (StringUtility.IsNullOrEmpty (_nullDescription) ? defaultNullDescription : _nullDescription);
-    
+    BocBooleanValueResourceSet resourceSet = CreateResourceSet();
+
+    string trueDescription = (StringUtility.IsNullOrEmpty (_trueDescription) ? resourceSet.DefaultTrueDescription : _trueDescription);
+    string falseDescription = (StringUtility.IsNullOrEmpty (_falseDescription) ? resourceSet.DefaultFalseDescription : _falseDescription);
+    string nullDescription = (StringUtility.IsNullOrEmpty (_nullDescription) ? resourceSet.DefaultNullDescription : _nullDescription);
+
     string imageUrl;
     string description;
 
+    IResourceManager resourceManager = GetResourceManager ();
     LoadResources (resourceManager);
 
     if (!_value.HasValue)
     {
-      imageUrl = nullIconUrl;
+      imageUrl = resourceSet.NullIconUrl;
       description = nullDescription;
     }
     else if (_value.Value)
     {
-      imageUrl = trueIconUrl;
+      imageUrl = resourceSet.TrueIconUrl;
       description = trueDescription;
     }
     else
     {
-      imageUrl = falseIconUrl;
+      imageUrl = resourceSet.FalseIconUrl;
       description = falseDescription;
     }
 
@@ -274,10 +266,11 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
           string nullValue = c_nullString;
 
           script = string.Format (
-              "BocBooleanValue_InitializeGlobals ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}');",
-              trueValue, falseValue, nullValue, 
-              defaultTrueDescription, defaultFalseDescription, defaultNullDescription, 
-              trueIconUrl, falseIconUrl, nullIconUrl);
+              "BocBooleanValue_InitializeGlobals ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}');",
+              resourceSet.ResourceKey,
+              trueValue, falseValue, nullValue,
+              resourceSet.DefaultTrueDescription, resourceSet.DefaultFalseDescription, resourceSet.DefaultNullDescription,
+              resourceSet.TrueIconUrl, resourceSet.FalseIconUrl, resourceSet.NullIconUrl);
           ScriptUtility.RegisterStartupScriptBlock (Page, s_startUpScriptKey, script);
         }
       }
@@ -288,7 +281,8 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
         string image = "document.getElementById ('" + _image.ClientID + "')";
         string label = _showDescription ? "document.getElementById ('" + _label.ClientID + "')" : "null";
         string hiddenField = "document.getElementById ('" + _hiddenField.ClientID + "')";
-        script = "BocBooleanValue_SelectNextCheckboxValue (" 
+        script = "BocBooleanValue_SelectNextCheckboxValue ("
+            + "'" + resourceSet.ResourceKey + "', "
             + image + ", " 
             + label + ", " 
             + hiddenField + ", "
@@ -328,6 +322,26 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
     _label.Width = Unit.Empty;
     _label.Height = Unit.Empty;
     _label.ApplyStyle (_labelStyle);
+  }
+  
+  /// <summary>
+  /// Override this method to change the default look of the <see cref="BocBooleanValue"/>
+  /// </summary>
+  protected virtual BocBooleanValueResourceSet CreateResourceSet ()
+  {
+    IResourceManager resourceManager = GetResourceManager();
+
+    BocBooleanValueResourceSet resourceSet = new BocBooleanValueResourceSet (
+        c_defaultResourceGroup,
+        ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_trueIcon),
+        ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_falseIcon),
+        ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_nullIcon),
+        resourceManager.GetString (ResourceIdentifier.TrueDescription),
+        resourceManager.GetString (ResourceIdentifier.FalseDescription),
+        resourceManager.GetString (ResourceIdentifier.NullDescription)
+        );
+
+    return resourceSet;
   }
 
   protected override void AddAttributesToRender(HtmlTextWriter writer)
@@ -806,5 +820,4 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
   { get { return "disabled"; } }
   #endregion
 }
-
 }

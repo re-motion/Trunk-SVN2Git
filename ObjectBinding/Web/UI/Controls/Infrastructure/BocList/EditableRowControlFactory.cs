@@ -39,22 +39,22 @@ public class EditableRowControlFactory
 
   public virtual void RegisterHtmlHeadContents (HttpContext context)
   {
-    BocBooleanValue bocBooleanValue = new BocBooleanValue();
+    var bocBooleanValue = new Controls.BocBooleanValue ();
     bocBooleanValue.RegisterHtmlHeadContents (context);
 
-    BocDateTimeValue bocDateTimeValue = new BocDateTimeValue();
+    var bocDateTimeValue = new BocDateTimeValue();
     bocDateTimeValue.RegisterHtmlHeadContents (context);
 
-    BocEnumValue bocEnumValue = new BocEnumValue();
+    var bocEnumValue = new BocEnumValue();
     bocEnumValue.RegisterHtmlHeadContents (context);
 
-    BocMultilineTextValue bocMultilineTextValue = new BocMultilineTextValue ();
+    var bocMultilineTextValue = new BocMultilineTextValue ();
     bocMultilineTextValue.RegisterHtmlHeadContents (context);
 
-    BocReferenceValue bocReferenceValue = new BocReferenceValue();
+    var bocReferenceValue = new BocReferenceValue();
     bocReferenceValue.RegisterHtmlHeadContents (context);
 
-    BocTextValue bocTextValue = new BocTextValue();
+    var bocTextValue = new BocTextValue();
     bocTextValue.RegisterHtmlHeadContents (context);
   }
 }

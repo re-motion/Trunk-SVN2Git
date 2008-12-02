@@ -25,12 +25,26 @@ namespace OBWTest.UI
   /// </summary>
   public class NavigationTabs : UserControl
   {
+    public enum WaiConformanceLevel
+    {
+      Undefined = 0,
+      A = 1,
+      DoubleA = 3,
+      TripleA = 7
+    }
+
     protected BocEnumValue WaiConformanceLevelField;
     protected TabbedMenu TabbedMenu;
+    
+    public WaiConformanceLevel ConformanceLevel
+    {
+      get { return (WaiConformanceLevel) WebConfiguration.Current.Wcag.ConformanceLevel; }
+      set { WebConfiguration.Current.Wcag.ConformanceLevel = (Remotion.Web.Configuration.WaiConformanceLevel) value; }
+    }
 
     private void Page_Load (object sender, EventArgs e)
     {
-      Type itemType = typeof (WcagConfiguration);
+      Type itemType = GetType();
       PropertyInfo propertyInfo = itemType.GetProperty ("ConformanceLevel");
       EnumerationProperty property = new EnumerationProperty (
           new PropertyBase.Parameters (
@@ -42,12 +56,12 @@ namespace OBWTest.UI
               false));
 
       WaiConformanceLevelField.Property = property;
-      WaiConformanceLevelField.LoadUnboundValue (WebConfiguration.Current.Wcag.ConformanceLevel, IsPostBack);
+      WaiConformanceLevelField.LoadUnboundValue (ConformanceLevel, IsPostBack);
     }
 
     private void WaiConformanceLevelField_SelectionChanged (object sender, EventArgs e)
     {
-      WebConfiguration.Current.Wcag.ConformanceLevel = (WaiConformanceLevel) WaiConformanceLevelField.Value;
+      ConformanceLevel = (WaiConformanceLevel) WaiConformanceLevelField.Value;
       WaiConformanceLevelField.IsDirty = false;
     }
 

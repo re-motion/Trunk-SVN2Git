@@ -10,45 +10,143 @@
 
 //  BocBooleanValue.js contains client side scripts used by BocBooleanValue.
 
-//  The string representation of the true, false, and null values.
-var _bocBooleanValue_trueValue;
-var _bocBooleanValue_falseValue;
-var _bocBooleanValue_nullValue;
+var _bocBooleanValue_Resources = new Object();
 
-//  The descriptions used for the true, false, and null values
-var _bocBooleanValue_trueDescription;
-var _bocBooleanValue_falseDescription;
-var _bocBooleanValue_nullDescription;
-
-//  The descriptions used to represent the true, false, and null values
-var _bocBooleanValue_trueIconUrl;
-var _bocBooleanValue_falseIconUrl;
-var _bocBooleanValue_nullIconUrl;
-
-//  Initializes the strings used to represent the true, false and null values.
-//  Call this method once in a startup script.
-function BocBooleanValue_InitializeGlobals (
-  trueValue, 
-  falseValue, 
-  nullValue, 
+BocBooleanValue_Resource = function(
+  trueValue,
+  falseValue,
+  nullValue,
   trueDescription,
   falseDescription,
   nullDescription,
-  trueIconUrl, 
-  falseIconUrl, 
+  trueIconUrl,
+  falseIconUrl,
   nullIconUrl)
 {
-  _bocBooleanValue_trueValue = trueValue;
-  _bocBooleanValue_falseValue = falseValue;
-  _bocBooleanValue_nullValue = nullValue;
+  var _trueValue = trueValue;
+  var _falseValue = falseValue;
+  var _nullValue = nullValue;
 
-  _bocBooleanValue_trueDescription = trueDescription;
-  _bocBooleanValue_falseDescription = falseDescription;
-  _bocBooleanValue_nullDescription = nullDescription;
+  var _trueDescription = trueDescription;
+  var _falseDescription = falseDescription;
+  var _nullDescription = nullDescription;
 
-  _bocBooleanValue_trueIconUrl = trueIconUrl;
-  _bocBooleanValue_falseIconUrl = falseIconUrl;
-  _bocBooleanValue_nullIconUrl = nullIconUrl;
+  var _trueIconUrl = trueIconUrl;
+  var _falseIconUrl = falseIconUrl;
+  var _nullIconUrl = nullIconUrl;
+
+  this.SelectNextCheckboxValue = function(
+      icon,
+      label,
+      hiddenField,
+      isRequired,
+      trueDescription,
+      falseDescription,
+      nullDescription)
+  {
+    var trueValue = _trueValue;
+    var falseValue = _falseValue;
+    var nullValue =_nullValue;
+
+    var oldValue = hiddenField.value;
+    var newValue;
+
+    //  Select the next value.
+    //  true -> false -> null -> true
+    if (isRequired)
+    {
+      if (oldValue == falseValue)
+        newValue = trueValue;
+      else
+        newValue = falseValue;
+    }
+    else
+    {
+      if (oldValue == falseValue)
+        newValue = nullValue;
+      else if (oldValue == nullValue)
+        newValue = trueValue;
+      else
+        newValue = falseValue;
+    }
+
+    // Update the controls
+    hiddenField.value = newValue;
+    var iconSrc;
+    var iconAlt;
+    var labelText;
+
+    if (newValue == falseValue)
+    {
+      iconSrc = _falseIconUrl;
+      var description;
+      if (falseDescription == null)
+        description = _falseDescription;
+      else
+        description = falseDescription;
+      iconAlt = description;
+      labelText = description;
+    }
+    else if (newValue == nullValue)
+    {
+      iconSrc = _nullIconUrl;
+      var description;
+      if (nullDescription == null)
+        description = _nullDescription;
+      else
+        description = nullDescription;
+      iconAlt = description;
+      labelText = description;
+    }
+    else if (newValue == trueValue)
+    {
+      iconSrc = _trueIconUrl;
+      var description;
+      if (trueDescription == null)
+        description = _trueDescription;
+      else
+        description = trueDescription;
+      iconAlt = description;
+      labelText = description;
+    }
+    icon.src = iconSrc;
+    icon.alt = iconAlt;
+    if (label != null)
+      label.innerHTML = labelText;
+
+    if (typeof (hiddenField.fireEvent) != 'undefined')
+      hiddenField.fireEvent('onchange');
+    else if (typeof (hiddenField.dispatchEvent) != 'undefined')
+      hiddenField.dispatchEvent('change');
+    else if (hiddenField.onchange != null)
+      hiddenField.onchange();
+  };
+}
+
+//  Initializes the strings used to represent the true, false and null values.
+//  Call this method once in a startup script.
+function BocBooleanValue_InitializeGlobals(
+    key,
+    trueValue, 
+    falseValue, 
+    nullValue, 
+    trueDescription,
+    falseDescription,
+    nullDescription,
+    trueIconUrl, 
+    falseIconUrl, 
+    nullIconUrl)
+{
+  _bocBooleanValue_Resources[key] = new BocBooleanValue_Resource(
+      trueValue,
+      falseValue,
+      nullValue,
+      trueDescription,
+      falseDescription,
+      nullDescription,
+      trueIconUrl,
+      falseIconUrl,
+      nullIconUrl);
 }
 
 // Selected the next value of the tri-state checkbox, skipping the null value if isRequired is true.
@@ -57,6 +155,7 @@ function BocBooleanValue_InitializeGlobals (
 // hiddenField: The hidden input field used to store the value between postbacks.
 // isRequired: true to enqable the null value, false to limit the choices to true and false.
 function BocBooleanValue_SelectNextCheckboxValue (
+  key,
   icon,
   label,
   hiddenField,
@@ -65,82 +164,14 @@ function BocBooleanValue_SelectNextCheckboxValue (
   falseDescription,
   nullDescription)
 {
-  var trueValue = _bocBooleanValue_trueValue;
-  var falseValue = _bocBooleanValue_falseValue;
-  var nullValue = _bocBooleanValue_nullValue;
-    
-  var oldValue = hiddenField.value;
-  var newValue;
-  
-  //  Select the next value.
-  //  true -> false -> null -> true
-  if (isRequired)
-  {
-    if (oldValue == falseValue)
-      newValue = trueValue;
-    else
-      newValue = falseValue;
-  }   
-  else
-  {
-    if (oldValue == falseValue)
-      newValue = nullValue;
-    else if (oldValue == nullValue)
-      newValue = trueValue;
-    else
-      newValue = falseValue;
-  }
- 
- // Update the controls
-  hiddenField.value = newValue;
-  var iconSrc;
-  var iconAlt;
-  var labelText;
-  
-  if (newValue == falseValue)
-  {
-    iconSrc = _bocBooleanValue_falseIconUrl;
-    var description;
-    if (falseDescription == null)
-      description = _bocBooleanValue_falseDescription;
-    else
-      description = falseDescription;
-    iconAlt = description;
-    labelText = description;
-  }
-  else if (newValue == nullValue)
-  {
-    iconSrc = _bocBooleanValue_nullIconUrl;
-    var description;
-    if (nullDescription == null)
-      description = _bocBooleanValue_nullDescription;
-    else
-      description = nullDescription;
-    iconAlt = description;
-    labelText = description;
-  }
-  else if (newValue == trueValue)
-  {
-    iconSrc = _bocBooleanValue_trueIconUrl;
-    var description;
-    if (trueDescription == null)
-      description = _bocBooleanValue_trueDescription;
-    else
-      description = trueDescription;
-    iconAlt = description;
-    labelText = description;
-  }
-  icon.src = iconSrc;
-  icon.alt = iconAlt;
-  if (label != null)
-    label.innerHTML = labelText;
-    
-  if (typeof (hiddenField.fireEvent) != 'undefined')
-    hiddenField.fireEvent ('onchange');
-  else if (typeof (hiddenField.dispatchEvent) != 'undefined')
-    hiddenField.dispatchEvent ('change');
-  else if (hiddenField.onchange != null)
-    hiddenField.onchange();
+  var resource = _bocBooleanValue_Resources[key];
+  resource.SelectNextCheckboxValue(icon,
+  label,
+  hiddenField,
+  isRequired,
+  trueDescription,
+  falseDescription,
+  nullDescription);
 }
 
 function BocBooleanValue_OnKeyDown (context)
