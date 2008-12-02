@@ -186,11 +186,6 @@
     <Compile Include="Domain\ToTextSpecificTypeHandlers\StateDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\Tenant_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\User_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Globalization\Domain\AccessControl\AccessControlEntry.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AccessControlEntry.resx</DependentUpon>
-    </Compile>
     <Compile Include="Globalization\Domain\OrganizationalStructure\Tenant.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -244,7 +239,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\AccessControl\AccessControlEntry.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AccessControlEntry.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\AccessControl\TenantHierarchyCondition.de.resx">

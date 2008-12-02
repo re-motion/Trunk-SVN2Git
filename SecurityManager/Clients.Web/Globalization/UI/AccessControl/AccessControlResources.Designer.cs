@@ -62,11 +62,65 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove all access.
+        /// </summary>
+        internal static string AllPermissionsMenu_ClearAllPermissions_Text {
+            get {
+                return ResourceManager.GetString("AllPermissionsMenu:ClearAllPermissions:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deny all access.
+        /// </summary>
+        internal static string AllPermissionsMenu_DenyAllPermissions_Text {
+            get {
+                return ResourceManager.GetString("AllPermissionsMenu:DenyAllPermissions:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grant all access.
+        /// </summary>
+        internal static string AllPermissionsMenu_GrantAllPermissions_Text {
+            get {
+                return ResourceManager.GetString("AllPermissionsMenu:GrantAllPermissions:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete ACL.
+        /// </summary>
+        internal static string auto_DeleteAccessControlListButton_Text {
+            get {
+                return ResourceManager.GetString("auto:DeleteAccessControlListButton:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please assign at least one state..
         /// </summary>
         internal static string auto_MissingStateCombinationsValidator_ErrorMessage {
             get {
                 return ResourceManager.GetString("auto:MissingStateCombinationsValidator:ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New ACE.
+        /// </summary>
+        internal static string auto_NewAccessControlEntryButton_Text {
+            get {
+                return ResourceManager.GetString("auto:NewAccessControlEntryButton:Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assign State.
+        /// </summary>
+        internal static string auto_NewStateCombinationButton_Text {
+            get {
+                return ResourceManager.GetString("auto:NewStateCombinationButton:Text", resourceCulture);
             }
         }
         
@@ -152,20 +206,11 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete ACL.
-        /// </summary>
-        internal static string DeleteAccessControlListButton {
-            get {
-                return ResourceManager.GetString("DeleteAccessControlListButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Remove State.
         /// </summary>
-        internal static string DeleteStateCombination_Text {
+        internal static string DeleteStateCombinationButton_Text {
             get {
-                return ResourceManager.GetString("DeleteStateCombination:Text", resourceCulture);
+                return ResourceManager.GetString("DeleteStateCombinationButton:Text", resourceCulture);
             }
         }
         
@@ -188,61 +233,43 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New ACE.
-        /// </summary>
-        internal static string NewAccessControlEntryButton {
-            get {
-                return ResourceManager.GetString("NewAccessControlEntryButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Assign State.
-        /// </summary>
-        internal static string NewStateCombinationButton {
-            get {
-                return ResourceManager.GetString("NewStateCombinationButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to New object-based ACL.
         /// </summary>
-        internal static string NewStatefulAccessControlListButton {
+        internal static string NewStatefulAccessControlListButton_Text {
             get {
-                return ResourceManager.GetString("NewStatefulAccessControlListButton", resourceCulture);
+                return ResourceManager.GetString("NewStatefulAccessControlListButton:Text", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to New class-based ACL.
         /// </summary>
-        internal static string NewStatelessAccessControlListButton {
+        internal static string NewStatelessAccessControlListButton_Text {
             get {
-                return ResourceManager.GetString("NewStatelessAccessControlListButton", resourceCulture);
+                return ResourceManager.GetString("NewStatelessAccessControlListButton:Text", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object-based ACL.
+        ///   Looks up a localized string similar to Object-based ACLs.
         /// </summary>
-        internal static string StatefulAccessControlListTitle_InnerText {
+        internal static string StatefulAccessControlListsTitle {
             get {
-                return ResourceManager.GetString("StatefulAccessControlListTitle:InnerText", resourceCulture);
+                return ResourceManager.GetString("StatefulAccessControlListsTitle", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Class-based ACL.
         /// </summary>
-        internal static string StatelessAccessControlListTitle_InnerText {
+        internal static string StatelessAccessControlListTitle {
             get {
-                return ResourceManager.GetString("StatelessAccessControlListTitle:InnerText", resourceCulture);
+                return ResourceManager.GetString("StatelessAccessControlListTitle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - Edit Permissions.
+        ///   Looks up a localized string similar to Access Control Lists for Class &apos;{0}&apos;.
         /// </summary>
         internal static string Title {
             get {

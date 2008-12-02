@@ -144,4 +144,7 @@
   <data name="property:UserCondition" xml:space="preserve">
     <value>User</value>
   </data>
+  <data name="property:SpecificUser" xml:space="preserve">
+    <value>User</value>
+  </data>
 </root>

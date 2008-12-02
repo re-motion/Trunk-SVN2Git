@@ -26,7 +26,6 @@ h2.accessControlListTitle
 div.accessControlListContainer
 {
   width: 100%;
-  margin-bottom: 1em;
   border-top: solid 2px black;
 }
 
@@ -59,7 +58,6 @@ td.accessControlEntriesContainer
 {
   height: auto;
   border-left: solid 1px #005588;
-  padding-top: 1em;
 }
 
 table.accessControlEntriesTable
@@ -83,11 +81,14 @@ table.accessControlEntriesTable th.titleCellHorizontal
 table.accessControlEntriesTable th.titleCellVertical
 {
   text-align: left;
-  vertical-align: middle;
+  vertical-align: bottom;
+  width: 1.5em;
+}
+table.accessControlEntriesTable th.titleCellVertical div
+{
   writing-mode: tb-rl; 
   filter: FlipV() FlipH();
   padding-top: 0.25em;
-  width: 1.5em;
 }
 
 table.accessControlEntriesTable tr.odd

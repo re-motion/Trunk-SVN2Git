@@ -9,19 +9,14 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Web.UI;
 using System.Web.UI.HtmlControls;
-using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.Web;
 using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
@@ -47,24 +42,27 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       var cssHorizontal = "titleCellHorizontal";
       var cssVertical = "titleCellVertical";
-      HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition("TenantCondition").DisplayName, cssHorizontal));
+      HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("TenantCondition").DisplayName, cssHorizontal));
       HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("GroupCondition").DisplayName, cssHorizontal));
       HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("UserCondition").DisplayName, cssHorizontal));
       HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("SpecificAbstractRole").DisplayName, cssHorizontal));
-      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal));//Toggle Permissions
+      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal)); //Toggle Permissions
       foreach (var accessType in CurrentClassDefinition.AccessTypes)
         HeaderCells.Controls.Add (CreateTableCell (accessType.DisplayName, cssVertical));
-      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal));//ExpandButton
-      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal));//DeleteButton
+      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal)); //ExpandButton
+      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal)); //DeleteButton
     }
 
     private HtmlGenericControl CreateTableCell (string title, string cssClass)
     {
-      HtmlGenericControl control = new HtmlGenericControl ("th");
-      control.InnerText = title;
-      control.Attributes.Add ("class", cssClass);
+      HtmlGenericControl th = new HtmlGenericControl ("th");
+      th.Attributes.Add ("class", cssClass);
 
-      return control;
+      HtmlGenericControl div = new HtmlGenericControl ("div");
+      div.InnerText = title;
+      th.Controls.Add (div);
+
+      return th;
     }
   }
 }

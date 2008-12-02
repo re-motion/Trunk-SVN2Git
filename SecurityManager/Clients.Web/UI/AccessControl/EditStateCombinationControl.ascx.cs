@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       DeleteStateDefinitionButton.Icon = new IconInfo (ResourceUrlResolver.GetResourceUrl (
           this, typeof (EditStateCombinationControl), ResourceType.Image, "DeleteItem.gif"));
-      DeleteStateDefinitionButton.Icon.AlternateText = Globalization.UI.AccessControl.AccessControlResources.DeleteStateCombination_Text;
+      DeleteStateDefinitionButton.Icon.AlternateText = Globalization.UI.AccessControl.AccessControlResources.DeleteStateCombinationButton_Text;
     }
 
     public override void LoadValues (bool interim)

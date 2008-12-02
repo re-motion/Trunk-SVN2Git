@@ -118,7 +118,7 @@
     <Content Include="WxeHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\AccessControl\CollapsedAccessControlEntryRenderer.cs" />
+    <Compile Include="Classes\AccessControl\CollapsedAccessControlConditionsRenderer.cs" />
     <Compile Include="Classes\AccessControl\EditAccessControlListControlBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

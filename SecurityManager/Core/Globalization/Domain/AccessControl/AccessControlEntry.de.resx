@@ -138,6 +138,9 @@
   <data name="property:SpecificTenant" xml:space="preserve">
     <value>Mandant</value>
   </data>
+  <data name="property:SpecificUser" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
   <data name="property:TenantCondition" xml:space="preserve">
     <value>Mandant</value>
   </data>

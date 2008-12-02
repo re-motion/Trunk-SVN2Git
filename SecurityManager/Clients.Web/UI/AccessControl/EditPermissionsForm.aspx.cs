@@ -50,7 +50,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected override void OnPreRenderComplete (EventArgs e)
     {
-      HtmlHeadAppender.Current.SetTitle (string.Format (AccessControlResources.Title, CurrentFunction.SecurableClassDefinition.DisplayName));
+      string title = string.Format (AccessControlResources.Title, CurrentFunction.SecurableClassDefinition.DisplayName);
+      TitleLabel.InnerText = title;
+      HtmlHeadAppender.Current.SetTitle (title);
       base.OnPreRenderComplete (e);
     }
 
@@ -109,7 +111,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
           if (statelessAccessControlListsPlaceHolder.Controls.Count == 0)
           {
             statelessAccessControlListsPlaceHolder.Controls.Add (
-                CreateAccessControlListTitle (AccessControlResources.StatelessAccessControlListTitle_InnerText));
+                CreateAccessControlListTitle (AccessControlResources.StatelessAccessControlListTitle));
           }
           statelessAccessControlListsPlaceHolder.Controls.Add (div);
         }
@@ -118,7 +120,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
           if (statefulAccessControlListsPlaceHolder.Controls.Count == 0)
           {
             statefulAccessControlListsPlaceHolder.Controls.Add (
-                CreateAccessControlListTitle (AccessControlResources.StatefulAccessControlListTitle_InnerText));
+                CreateAccessControlListTitle (AccessControlResources.StatefulAccessControlListsTitle));
           }
           statefulAccessControlListsPlaceHolder.Controls.Add (div);
         }

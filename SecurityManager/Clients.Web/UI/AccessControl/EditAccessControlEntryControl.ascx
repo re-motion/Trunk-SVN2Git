@@ -33,8 +33,7 @@
   </td>
   <asp:PlaceHolder ID="PermissionsPlaceHolder" runat="server" />
   <td class="buttonCell">
-    <remotion:WebButton ID="ToggleAccessControlEntryButton" runat="server" CssClass="imageButton" OnClick="ToggleAccessControlEntryButton_Click" CausesValidation="false"
-      RequiresSynchronousPostBack="False" />
+    <remotion:WebButton ID="ToggleAccessControlEntryButton" runat="server" CssClass="imageButton" OnClick="ToggleAccessControlEntryButton_Click" CausesValidation="false"/>
   </td>
   <td>
     <remotion:WebButton ID="DeleteAccessControlEntryButton" runat="server" CssClass="imageButton" OnClick="DeleteAccessControlEntryButton_Click" CausesValidation="false"

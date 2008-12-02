@@ -76,11 +76,26 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       base.OnInit (e);
 
       AllPermisionsMenu.MenuItems.Add (
-          new WebMenuItem { ItemID = c_clearAllMenuItemID, Text = "Clear All Permissions", Icon = new IconInfo (GetIconUrl ("PermissionUndefined.gif")) });
+          new WebMenuItem
+          {
+              ItemID = c_clearAllMenuItemID,
+              Text = AccessControlResources.AllPermissionsMenu_ClearAllPermissions_Text,
+              Icon = new IconInfo (GetIconUrl ("PermissionUndefined.gif"))
+          });
       AllPermisionsMenu.MenuItems.Add (
-          new WebMenuItem { ItemID = c_grantAllMenuItemID, Text = "Grant All Permissions", Icon = new IconInfo(GetIconUrl ("PermissionGranted.gif")) });
+          new WebMenuItem
+          {
+              ItemID = c_grantAllMenuItemID,
+              Text = AccessControlResources.AllPermissionsMenu_GrantAllPermissions_Text,
+              Icon = new IconInfo (GetIconUrl ("PermissionGranted.gif"))
+          });
       AllPermisionsMenu.MenuItems.Add (
-          new WebMenuItem { ItemID = c_denyAllMenuItemID, Text = "Deny All Permissions", Icon = new IconInfo (GetIconUrl ("PermissionDenied.gif")) });
+          new WebMenuItem
+          {
+              ItemID = c_denyAllMenuItemID,
+              Text = AccessControlResources.AllPermissionsMenu_DenyAllPermissions_Text,
+              Icon = new IconInfo (GetIconUrl ("PermissionDenied.gif"))
+          });
       AllPermisionsMenu.EventCommandClick += AllPermisionsMenu_EventCommandClick;
     }
 
@@ -104,14 +119,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       if (IsCollapsed)
       {
-        var collapsedRenderer = new CollapsedAccessControlEntryRenderer (CurrentAccessControlEntry);
+        var collapsedRenderer = new CollapsedAccessControlConditionsRenderer (CurrentAccessControlEntry);
         CollapsedTenantInformation.SetRenderMethodDelegate (collapsedRenderer.RenderTenant);
         CollapsedGroupInformation.SetRenderMethodDelegate (collapsedRenderer.RenderGroup);
         CollapsedUserInformation.SetRenderMethodDelegate (collapsedRenderer.RenderUser);
         CollapsedAbstractRoleInformation.SetRenderMethodDelegate (collapsedRenderer.RenderAbstractRole);
       }
 
-      DetailsCell.Attributes.Add ("colspan", (4 + CurrentAccessControlEntry.AccessControlList.Class.AccessTypes.Count + 3).ToString ());
+      DetailsCell.Attributes.Add ("colspan", (4 + CurrentAccessControlEntry.AccessControlList.Class.AccessTypes.Count + 3).ToString());
 
       DeleteAccessControlEntryButton.Icon = new IconInfo (GetIconUrl ("DeleteItem.gif"));
       DeleteAccessControlEntryButton.Icon.AlternateText = AccessControlResources.DeleteAccessControlEntryButton_Text;

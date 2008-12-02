@@ -18,8 +18,8 @@
   <tr>
     <td class="stateCombinationsButtons"></td>
     <td class="accessControlListButtons">
-      <remotion:WebButton ID="NewAccessControlEntryButton" runat="server" Text="$res:NewAccessControlEntryButton" OnClick="NewAccessControlEntryButton_Click" CausesValidation="false" />
-      <remotion:WebButton ID="DeleteAccessControlListButton" runat="server" Text="$res:DeleteAccessControlListButton" OnClick="DeleteAccessControlListButton_Click" CausesValidation="false" />
+      <remotion:WebButton ID="NewAccessControlEntryButton" runat="server" OnClick="NewAccessControlEntryButton_Click" CausesValidation="false" />
+      <remotion:WebButton ID="DeleteAccessControlListButton" runat="server" OnClick="DeleteAccessControlListButton_Click" CausesValidation="false" />
     </td>
   </tr>
   <tr>

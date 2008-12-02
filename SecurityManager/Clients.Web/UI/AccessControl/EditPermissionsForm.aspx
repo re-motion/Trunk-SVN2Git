@@ -15,17 +15,17 @@
 
 <asp:Content ID="ActualHeaderControlsPlaceHolder" runat="server" ContentPlaceHolderID="HeaderControlsPlaceHolder">
   <remotion:BindableObjectDataSourceControl ID="CurrentObjectHeaderControls" runat="server" Type="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition, Remotion.SecurityManager" Mode="Read" />
-  <h1 class="pageTitle">Assess Control List for class &quot;<remotion:BocTextValue ID="NameField" runat="server" DataSourceControl="CurrentObjectHeaderControls" PropertyIdentifier="DisplayName" />&quot;</h1>
+  <h1 ID="TitleLabel" runat="server" class="pageTitle">###</h1>
 </asp:Content>
 <asp:Content ID="ActualTopControlsPlaceHolder" runat="server" ContentPlaceHolderID="TopControlsPlaceHolder" />
 <asp:Content ID="ActaulMainContentPlaceHolder" runat="server" ContentPlaceHolderID="MainContentPlaceHolder">
   <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition, Remotion.SecurityManager" />
-  <asp:CustomValidator ID="DuplicateStateCombinationsValidator" runat="server" ErrorMessage="<%$ res:DuplicateStateCombinationsValidatorErrorMessage %>" OnServerValidate="DuplicateStateCombinationsValidator_ServerValidate"/>
+  <asp:CustomValidator ID="DuplicateStateCombinationsValidator" runat="server" ErrorMessage="<%$ res:DuplicateStateCombinationsValidatorErrorMessage %>" OnServerValidate="DuplicateStateCombinationsValidator_ServerValidate" EnableClientScript="false"/>
   <asp:PlaceHolder ID="AccessControlListsPlaceHolder" runat="server"/>
 </asp:Content>
 <asp:Content ID="ActualBottomControlsPlaceHolder" runat="server" ContentPlaceHolderID="BottomControlsPlaceHolder">
   <remotion:WebButton ID="SaveButton" runat="server" Text="$res:Save" OnClick="SaveButton_Click" CausesValidation="false" />
   <remotion:WebButton ID="CancelButton" runat="server" Text="$res:Cancel" Style="margin-left: 1em;" OnClick="CancelButton_Click" CausesValidation="false" />
-  <remotion:WebButton ID="NewStatefulAccessControlListButton" runat="server" Text="$res:NewStatefulAccessControlListButton" Style="margin-left: 1em;" OnClick="NewStatefulAccessControlListButton_Click" CausesValidation="False" />
-  <remotion:WebButton ID="NewStatelessAccessControlListButton" runat="server" Text="$res:NewStatelessAccessControlListButton" Style="margin-left: 1em;" OnClick="NewStatelessAccessControlListButton_Click" CausesValidation="False" />
+  <remotion:WebButton ID="NewStatefulAccessControlListButton" runat="server" Text="$res:NewStatefulAccessControlListButton:Text" Style="margin-left: 1em;" OnClick="NewStatefulAccessControlListButton_Click" CausesValidation="False" />
+  <remotion:WebButton ID="NewStatelessAccessControlListButton" runat="server" Text="$res:NewStatelessAccessControlListButton:Text" Style="margin-left: 1em;" OnClick="NewStatelessAccessControlListButton_Click" CausesValidation="False" />
 </asp:Content>

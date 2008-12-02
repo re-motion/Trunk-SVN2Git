@@ -23,13 +23,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BindableObjectDataSourceControl CurrentObjectHeaderControls;
         
         /// <summary>
-        /// NameField control.
+        /// TitleLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocTextValue NameField;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl TitleLabel;
         
         /// <summary>
         /// CurrentObject control.

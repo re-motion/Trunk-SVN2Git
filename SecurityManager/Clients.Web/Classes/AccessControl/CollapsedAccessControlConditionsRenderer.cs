@@ -20,13 +20,13 @@ using Remotion.Web.Utilities;
 namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
 {
   /// <summary>
-  /// The <see cref="CollapsedAccessControlEntryRenderer"/> type is responsible for generating the collapsed view on an <see cref="AccessControlEntry"/>
+  /// The <see cref="CollapsedAccessControlConditionsRenderer"/> type is responsible for generating the collapsed view on an <see cref="AccessControlEntry"/>
   /// </summary>
-  public class CollapsedAccessControlEntryRenderer
+  public class CollapsedAccessControlConditionsRenderer
   {
     private readonly AccessControlEntry _accessControlEntry;
 
-    public CollapsedAccessControlEntryRenderer (AccessControlEntry accessControlEntry)
+    public CollapsedAccessControlConditionsRenderer (AccessControlEntry accessControlEntry)
     {
       ArgumentUtility.CheckNotNull ("currentAccessControlEntry", accessControlEntry);
       _accessControlEntry = accessControlEntry;
@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           break;
         case TenantCondition.SpecificTenant:
           RenderTenantHierarchyIcon (writer, container);
-          RenderLabelAndPropertyPathString (writer, "Tenant", "SpecificTenant.DisplayName");
+          RenderLabelAndPropertyPathString (writer, "SpecificTenant.DisplayName");
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -74,13 +74,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           break;
         case GroupCondition.SpecificGroup:
           RenderGroupHierarchyIcon (writer, container);
-          RenderLabelAndPropertyPathString (writer, "Group", "SpecificGroup.ShortName");
+          RenderLabelAndPropertyPathString (writer, "SpecificGroup.ShortName");
           break;
         case GroupCondition.BranchOfOwningGroup:
-          RenderLabelAndPropertyPathString (writer, "Same", "SpecificGroupType.DisplayName");
+          RenderLabelAndPropertyPathString (writer, "SAME", "SpecificGroupType.DisplayName");
           break;
         case GroupCondition.AnyGroupWithSpecificGroupType:
-          RenderLabelAndPropertyPathString (writer, "GT", "SpecificGroupType.DisplayName");
+          RenderLabelAndPropertyPathString (writer, "SpecificGroupType.DisplayName");
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -100,10 +100,10 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           RenderPropertyPathString (writer, "UserCondition");
           break;
         case UserCondition.SpecificUser:
-          RenderLabelAndPropertyPathString (writer, "User", "SpecificUser.DisplayName");
+          RenderLabelAndPropertyPathString (writer, "SpecificUser.DisplayName");
           break;
         case UserCondition.SpecificPosition:
-          RenderLabelAndPropertyPathString (writer, "Position", "SpecificPosition.DisplayName");
+          RenderLabelAndPropertyPathString (writer, "SpecificPosition.DisplayName");
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -116,6 +116,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       ArgumentUtility.CheckNotNull ("container", container);
 
       RenderLabelAndPropertyPathString (writer, string.Empty, "SpecificAbstractRole.DisplayName");
+    }
+
+    private void RenderLabelAndPropertyPathString (HtmlTextWriter writer, string propertyPathIdentifier)
+    {
+      string label = GetPropertyDisplayName (propertyPathIdentifier);
+      RenderLabelAndPropertyPathString (writer, label, propertyPathIdentifier);
     }
 
     private void RenderLabelAndPropertyPathString (HtmlTextWriter writer, string label, string propertyPathIdentifier)
@@ -132,6 +138,14 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       IBusinessObject businessObject = _accessControlEntry;
       var propertyPath = BusinessObjectPropertyPath.Parse (businessObject.BusinessObjectClass, propertyPathIdentifier);
       writer.Write (HtmlUtility.HtmlEncode (propertyPath.GetString (businessObject, null)));
+    }
+
+    private string GetPropertyDisplayName (string propertyPathIdentifier)
+    {
+      IBusinessObject businessObject = _accessControlEntry;
+      var propertyPath = BusinessObjectPropertyPath.Parse (businessObject.BusinessObjectClass, propertyPathIdentifier);
+      Assertion.IsTrue (propertyPath.Properties.Length >= 2);
+      return propertyPath.Properties[propertyPath.Properties.Length-2].DisplayName;
     }
 
     private void RenderTenantHierarchyIcon (HtmlTextWriter writer, Control container)
@@ -190,7 +204,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
 
     private string GetIconUrl (string url, Control container)
     {
-      return ResourceUrlResolver.GetResourceUrl (container, typeof (CollapsedAccessControlEntryRenderer), ResourceType.Image, url);
+      return ResourceUrlResolver.GetResourceUrl (container, typeof (CollapsedAccessControlConditionsRenderer), ResourceType.Image, url);
     }
   }
 }
