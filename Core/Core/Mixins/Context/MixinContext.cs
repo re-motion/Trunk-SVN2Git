@@ -47,7 +47,7 @@ namespace Remotion.Mixins.Context
       _mixinKind = mixinKind;
       _introducedMemberVisibility = introducedMemberVisibility;
 
-      _explicitDependencies = new ReadOnlyContextCollection<Type, Type> (delegate (Type t) { return t; }, explicitDependencies);
+      _explicitDependencies = new ReadOnlyContextCollection<Type, Type> (t => t, explicitDependencies);
 
       _cachedHashCode = EqualityUtility.GetRotatedHashCode (_mixinKind, _mixinType, EqualityUtility.GetXorHashCode (ExplicitDependencies), 
           IntroducedMemberVisibility);
@@ -75,7 +75,7 @@ namespace Remotion.Mixins.Context
     /// </returns>
     public override bool Equals (object obj)
     {
-      MixinContext other = obj as MixinContext;
+      var other = obj as MixinContext;
       if (other == null)
         return false;
       

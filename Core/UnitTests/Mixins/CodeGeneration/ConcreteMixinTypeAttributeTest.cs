@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
@@ -24,10 +23,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   public class ConcreteMixinTypeAttributeTest
   {
     [ConcreteMixinType (3, typeof (ConcreteMixinTypeAttributeTest),
-        new MixinKind[] {MixinKind.Extending, MixinKind.Used, MixinKind.Extending}, 
-        new Type[] {typeof (string), typeof (object), typeof (int)},
-        new Type[] {typeof (int)},
-        new Type[] {typeof (object), typeof (double), typeof (bool), typeof (NextMixinDependency), typeof (string), typeof (bool)})]
+        new[] {MixinKind.Extending, MixinKind.Used, MixinKind.Extending}, 
+        new[] {typeof (string), typeof (object), typeof (int)},
+        new[] {typeof (int)},
+        new[] {typeof (object), typeof (double), typeof (bool), typeof (NextMixinDependency), typeof (string), typeof (bool)})]
     private class TestType
     {
     }
@@ -49,7 +48,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void FromClassContextSimple ()
     {
-      ClassContext simpleContext = new ClassContext (typeof (object), typeof (string));
+      var simpleContext = new ClassContext (typeof (object), typeof (string));
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (7, simpleContext);
 
       Assert.That (attribute.MixinIndex, Is.EqualTo (7));

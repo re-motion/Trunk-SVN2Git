@@ -29,12 +29,12 @@ namespace Remotion.Mixins.Context
   {
     private static IEnumerable<MixinContext> GetMixinContexts (Type[] mixinTypes)
     {
-      Dictionary<Type, MixinContext> mixins = new Dictionary<Type, MixinContext> (mixinTypes.Length);
+      var mixins = new Dictionary<Type, MixinContext> (mixinTypes.Length);
       foreach (Type mixinType in mixinTypes)
       {
         if (!mixins.ContainsKey (mixinType))
         {
-          MixinContext context = new MixinContext (MixinKind.Extending, mixinType, MemberVisibility.Private, new Type[0]);
+          var context = new MixinContext (MixinKind.Extending, mixinType, MemberVisibility.Private, new Type[0]);
           mixins.Add (context.MixinType, context);
         }
         else
@@ -72,7 +72,7 @@ namespace Remotion.Mixins.Context
       _type = type;
 
       _mixins = new MixinContextCollection (mixins);
-      _completeInterfaces = new ReadOnlyContextCollection<Type, Type> (delegate (Type t) { return t; }, completeInterfaces);
+      _completeInterfaces = new ReadOnlyContextCollection<Type, Type> (t => t, completeInterfaces);
 
       _cachedHashCode = CalculateHashCode (this);
     }
@@ -148,7 +148,7 @@ namespace Remotion.Mixins.Context
     /// </returns>
     public override bool Equals (object obj)
     {
-      ClassContext other = obj as ClassContext;
+      var other = obj as ClassContext;
       if (other == null)
         return false;
       
@@ -190,7 +190,7 @@ namespace Remotion.Mixins.Context
     /// </returns>
     public override string ToString ()
     {
-      StringBuilder sb = new StringBuilder (Type.FullName);
+      var sb = new StringBuilder (Type.FullName);
       foreach (MixinContext mixinContext in Mixins)
         sb.Append (" + ").Append (mixinContext.MixinType.FullName);
       foreach (Type completeInterfaceType in CompleteInterfaces)
@@ -205,7 +205,7 @@ namespace Remotion.Mixins.Context
     /// <returns>A clone of this <see cref="ClassContext"/> for a different target type.</returns>
     public ClassContext CloneForSpecificType (Type type)
     {
-      ClassContext newInstance = new ClassContext (type, Mixins, CompleteInterfaces);
+      var newInstance = new ClassContext (type, Mixins, CompleteInterfaces);
       return newInstance;
     }
 
@@ -241,7 +241,7 @@ namespace Remotion.Mixins.Context
     public ClassContext InheritFrom (ClassContext baseContext)
     {
       ArgumentUtility.CheckNotNull ("baseContext", baseContext);
-      return InheritFrom (new ClassContext[] {baseContext});
+      return InheritFrom (new[] {baseContext});
     }
 
     /// <summary>
@@ -267,7 +267,7 @@ namespace Remotion.Mixins.Context
     /// <returns>A copy of this <see cref="ClassContext"/> without any mixins that can be ascribed to the given mixin types.</returns>
     public ClassContext SuppressMixins (IEnumerable<Type> mixinTypesToSuppress)
     {
-      Dictionary<Type, MixinContext> mixinsAfterSuppression = new Dictionary<Type, MixinContext> ();
+      var mixinsAfterSuppression = new Dictionary<Type, MixinContext> ();
       foreach (MixinContext mixinContext in _mixins)
         mixinsAfterSuppression.Add (mixinContext.MixinType, mixinContext);
 
@@ -291,7 +291,7 @@ namespace Remotion.Mixins.Context
     private static IEnumerable<MixinContext> DeserializeMixins (SerializationInfo info)
     {
       int mixinCount = info.GetInt32 ("_mixins.Count");
-      List<MixinContext> mixinContexts = new List<MixinContext> (mixinCount);
+      var mixinContexts = new List<MixinContext> (mixinCount);
       for (int i = 0; i < mixinCount; ++i)
       {
         MixinContext mixinContext = MixinContextSerializer.DeserializeFromFlatStructure ("_mixins[" + i + "]", info);
@@ -303,7 +303,7 @@ namespace Remotion.Mixins.Context
     private static IEnumerable<Type> DeserializeCompleteInterfaces (SerializationInfo info)
     {
       int completeInterfaceCount = info.GetInt32 ("_completeInterfaces.Count");
-      List<Type> completeInterfaces = new List<Type> (completeInterfaceCount);
+      var completeInterfaces = new List<Type> (completeInterfaceCount);
       for (int i = 0; i < completeInterfaceCount; ++i)
         completeInterfaces.Add (ReflectionObjectSerializer.DeserializeType ("_completeInterfaces[" + i + "]", info));
       return completeInterfaces;
