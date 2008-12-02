@@ -32,67 +32,67 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.Web.UI.Controls.FormGridManager FormGridManager;
         
         /// <summary>
-        /// ScriptManagerProxy1 control.
+        /// CollapsedTenantInformation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.ScriptManagerProxy ScriptManagerProxy1;
+        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedTenantInformation;
         
         /// <summary>
-        /// CollapsedView control.
+        /// CollapsedGroupInformation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedView;
+        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedGroupInformation;
         
         /// <summary>
-        /// CollapsedAccessControlInformation control.
+        /// CollapsedUserInformation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedAccessControlInformation;
+        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedUserInformation;
         
         /// <summary>
-        /// ExpandAccessControlEntryButton control.
+        /// CollapsedAbstractRoleInformation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton ExpandAccessControlEntryButton;
+        protected global::System.Web.UI.WebControls.PlaceHolder CollapsedAbstractRoleInformation;
         
         /// <summary>
-        /// ExpandedView control.
+        /// AllPermisionsMenu control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder ExpandedView;
+        protected global::Remotion.Web.UI.Controls.DropDownMenu AllPermisionsMenu;
         
         /// <summary>
-        /// ExpandedCell control.
+        /// PermissionsPlaceHolder control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableCell ExpandedCell;
+        protected global::System.Web.UI.WebControls.PlaceHolder PermissionsPlaceHolder;
         
         /// <summary>
-        /// FormGrid control.
+        /// ToggleAccessControlEntryButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable FormGrid;
+        protected global::Remotion.Web.UI.Controls.WebButton ToggleAccessControlEntryButton;
         
         /// <summary>
         /// DeleteAccessControlEntryButton control.
@@ -104,13 +104,31 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.Web.UI.Controls.WebButton DeleteAccessControlEntryButton;
         
         /// <summary>
-        /// CollapseAccessControlEntryButton control.
+        /// DetailsView control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton CollapseAccessControlEntryButton;
+        protected global::System.Web.UI.WebControls.PlaceHolder DetailsView;
+        
+        /// <summary>
+        /// DetailsCell control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableCell DetailsCell;
+        
+        /// <summary>
+        /// FormGrid control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable FormGrid;
         
         /// <summary>
         /// TenantLabel control.
@@ -246,32 +264,5 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue SpecificAbstractRoleField;
-        
-        /// <summary>
-        /// PermissionsLabel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.Web.UI.Controls.FormGridLabel PermissionsLabel;
-        
-        /// <summary>
-        /// AllPermissionsField control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue AllPermissionsField;
-        
-        /// <summary>
-        /// PermissionsPlaceHolder control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder PermissionsPlaceHolder;
     }
 }

@@ -12,17 +12,15 @@
 <%@ Register TagPrefix="securityManager" Src="EditAccessControlEntryControl.ascx" TagName="EditAccessControlEntryControl" %>
 
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.AccessControl.StatelessAccessControlList, Remotion.SecurityManager" />
-<asp:ScriptManagerProxy ID="ScriptManagerProxy1" runat="server" />
+<asp:ScriptManagerProxy runat="server" />
 
 <table class="accessControlList">
   <tr>
-  <td class="accessControlListTitleCell" colspan="2">
-    <h2 ID="StatelessAccessControlListTitle" runat="server">###</h2>
-    <div class="accessControlListButtons">
+    <td class="stateCombinationsButtons"></td>
+    <td class="accessControlListButtons">
       <remotion:WebButton ID="NewAccessControlEntryButton" runat="server" Text="$res:NewAccessControlEntryButton" OnClick="NewAccessControlEntryButton_Click" CausesValidation="false" />
       <remotion:WebButton ID="DeleteAccessControlListButton" runat="server" Text="$res:DeleteAccessControlListButton" OnClick="DeleteAccessControlListButton_Click" CausesValidation="false" />
-    </div>
-  </td>
+    </td>
   </tr>
   <tr>
     <td class="stateCombinationsContainer">

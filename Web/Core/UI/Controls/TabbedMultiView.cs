@@ -396,14 +396,14 @@ namespace Remotion.Web.UI.Controls
 
     protected override void RenderContents (HtmlTextWriter writer)
     {
-      if (!ScriptUtility.IsPartOfRenderedOutput (this))
-        return;
-      
       EnsureChildControls ();
 
-      ScriptUtility.RegisterElementForBorderSpans (Page, ActiveViewClientID);
-      ScriptUtility.RegisterElementForBorderSpans (Page, _topControl.ClientID);
-      ScriptUtility.RegisterElementForBorderSpans (Page, _bottomControl.ClientID);
+      if (!ScriptUtility.IsPartOfRenderedOutput (this))
+      {
+        ScriptUtility.RegisterElementForBorderSpans (Page, ActiveViewClientID);
+        ScriptUtility.RegisterElementForBorderSpans (Page, _topControl.ClientID);
+        ScriptUtility.RegisterElementForBorderSpans (Page, _bottomControl.ClientID);
+      }
 
       if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
         WcagHelper.Instance.HandleError (1, this);
@@ -465,6 +465,7 @@ namespace Remotion.Web.UI.Controls
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassViewBody);
       writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin body div
 
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, ActiveViewClientID + "_Content");
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
 

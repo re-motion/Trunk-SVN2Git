@@ -6,7 +6,7 @@
   height: 1.1em;
 }
 
-div.singleViewTopControls h1
+h1.pageTitle
 {
   margin-bottom: 0;
 }
@@ -17,33 +17,25 @@ button.imageButton
   background-color:Transparent;
 }
 
+h2.accessControlListTitle
+{
+  font-size: 125%;
+  line-height: 1em;
+}
+
 div.accessControlListContainer
 {
   width: 100%;
-  margin-top: 1em;
+  margin-bottom: 1em;
+  border-top: solid 2px black;
 }
 
-td.accessControlListTitleCell,
-td.accessControlEntryTitleCell
-{
-  border-bottom: solid 2px black;
-}
-
-td.accessControlListTitleCell h2,
-td.accessControlEntryTitleCell h3
-{
-  font-size: 125%;
-  float: left;
-}
-
-div.accessControlListButtons,
-div.accessControlEntryButtons
+td.accessControlListButtons
 {
   text-align: right;
 }
 
-div.accessControlListButtons button,
-div.accessControlEntryButtons button
+td.accessControlListButtons button
 {
   margin-left: 1em;  
 }
@@ -56,6 +48,7 @@ table.accessControlList
   border-spacing: 0;
 }
 
+td.stateCombinationsButtons,
 td.stateCombinationsContainer
 {
   border-right: solid 1px #005588;
@@ -71,7 +64,14 @@ td.accessControlEntriesContainer
 
 table.accessControlEntriesTable
 {
-  border:1px;
+  border-collapse: collapse;
+  border-style: none;
+  width: 100%;
+}
+
+table.accessControlEntriesTable th
+{
+  border-bottom: solid 1px black;
 }
 
 table.accessControlEntriesTable th.titleCellHorizontal
@@ -87,36 +87,48 @@ table.accessControlEntriesTable th.titleCellVertical
   writing-mode: tb-rl; 
   filter: FlipV() FlipH();
   padding-top: 0.25em;
+  width: 1.5em;
+}
+
+table.accessControlEntriesTable tr.odd
+{
+	background-color: White;
+}
+
+table.accessControlEntriesTable tr.even
+{
+	background-color: #F4F4F4;
+}
+
+table.accessControlEntriesTable td.conditionCell
+{
+  width: 20%;
+  padding-right: 1em;
 }
 
 table.accessControlEntriesTable td.permissionCell
 {
-  text-align: center;
-  padding-left: 0.25em;
-  padding-bottom: 0.25em;
+  padding: 0.25em;
+  border-left: solid 1px #005588;
+  border-right: solid 1px #005588;
+}
+
+table.accessControlEntriesTable td.buttonCell
+{
+  padding: 0.25em;
 }
 
 table.accessControlEntryExpanded
 {
-  border: solid 1px black;
+  background-color: White;
 }
 
 td.accessControlEntryTitleCell
 {
-  border: none;
-  padding: 0;
+  display: none;
 }
 
-ul.permissionsList
+table.accessControlEntryExpanded td.formGridTopDataRow
 {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-li.permissionsList
-{
-  float: left;
-  white-space: nowrap;
-  margin-right: 2em;
+  border-top: 0;
 }

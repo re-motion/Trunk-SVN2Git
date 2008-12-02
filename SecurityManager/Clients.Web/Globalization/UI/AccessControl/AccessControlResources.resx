@@ -117,11 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="auto:AccessControlEntryTitle:InnerText" xml:space="preserve">
-    <value>ACE (Access Control Entry)</value>
-  </data>
-  <data name="auto:StatefulAccessControlListTitle:InnerText" xml:space="preserve">
-    <value>Object-based ACL (Access Control List)</value>
+  <data name="StatefulAccessControlListTitle:InnerText" xml:space="preserve">
+    <value>Object-based ACL</value>
   </data>
   <data name="auto:MissingStateCombinationsValidator:ErrorMessage" xml:space="preserve">
     <value>Please assign at least one state.</value>
@@ -162,8 +159,8 @@
   <data name="auto:RequiredStateCombinationValidator:ErrorMessage" xml:space="preserve">
     <value>Please select a state.</value>
   </data>
-  <data name="auto:StatelessAccessControlListTitle:InnerText" xml:space="preserve">
-    <value>Class-based ACL (Access Control List)</value>
+  <data name="StatelessAccessControlListTitle:InnerText" xml:space="preserve">
+    <value>Class-based ACL</value>
   </data>
   <data name="auto:SpecificGroupField:ErrorMessage" xml:space="preserve">
     <value>Please select a group.</value>

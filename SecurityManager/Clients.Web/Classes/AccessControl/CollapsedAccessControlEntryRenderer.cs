@@ -32,31 +32,16 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       _accessControlEntry = accessControlEntry;
     }
 
-    public void Render (HtmlTextWriter writer, Control container)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("container", container);
-
-      RenderTenant(writer,container);
-      RenderGroup (writer, container);
-      RenderUser (writer, container);
-      RenderAbstractRole (writer, container);
-      RenderPermissions (writer, container);
-    }
-
-    public decimal GetColumnCount ()
-    {
-      return 4 + _accessControlEntry.AccessControlList.Class.AccessTypes.Count;
-    }
-
     public AccessControlEntry AccessControlEntry
     {
       get { return _accessControlEntry; }
     }
 
-    private void RenderTenant (HtmlTextWriter writer, Control container)
+    public void RenderTenant (HtmlTextWriter writer, Control container)
     {
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("container", container);
+
       switch (_accessControlEntry.TenantCondition)
       {
         case TenantCondition.None:
@@ -67,58 +52,46 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           break;
         case TenantCondition.SpecificTenant:
           RenderTenantHierarchyIcon (writer, container);
-          RenderPropertyPathString (writer, "SpecificTenant.DisplayName");
+          RenderLabelAndPropertyPathString (writer, "Tenant", "SpecificTenant.DisplayName");
           break;
         default:
           throw new ArgumentOutOfRangeException();
       }
-      writer.RenderEndTag ();
     }
 
-    private void RenderGroup (HtmlTextWriter writer, Control container)
+    public void RenderGroup (HtmlTextWriter writer, Control container)
     {
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("container", container);
+
       switch (_accessControlEntry.GroupCondition)
       {
         case GroupCondition.None:
           break;
         case GroupCondition.OwningGroup:
           RenderGroupHierarchyIcon (writer, container);
-          writer.RenderBeginTag (HtmlTextWriterTag.Em);
           RenderPropertyPathString (writer, "GroupCondition");
-          writer.RenderEndTag();
           break;
         case GroupCondition.SpecificGroup:
           RenderGroupHierarchyIcon (writer, container);
-          writer.Write (HtmlUtility.HtmlEncode ("Group"));
-          writer.Write (" ");
-          writer.RenderBeginTag (HtmlTextWriterTag.Em);
-          RenderPropertyPathString (writer, "SpecificGroup.ShortName");
-          writer.RenderEndTag();
+          RenderLabelAndPropertyPathString (writer, "Group", "SpecificGroup.ShortName");
           break;
         case GroupCondition.BranchOfOwningGroup:
-          writer.Write (HtmlUtility.HtmlEncode ("Same"));
-          writer.Write (" ");
-          writer.RenderBeginTag (HtmlTextWriterTag.Em);
-          RenderPropertyPathString (writer, "SpecificGroupType.DisplayName");
-          writer.RenderEndTag();
+          RenderLabelAndPropertyPathString (writer, "Same", "SpecificGroupType.DisplayName");
           break;
         case GroupCondition.AnyGroupWithSpecificGroupType:
-          writer.Write (HtmlUtility.HtmlEncode ("GT"));
-          writer.Write (" ");
-          writer.RenderBeginTag (HtmlTextWriterTag.Em);
-          RenderPropertyPathString (writer, "SpecificGroupType.DisplayName");
-          writer.RenderEndTag();
+          RenderLabelAndPropertyPathString (writer, "GT", "SpecificGroupType.DisplayName");
           break;
         default:
           throw new ArgumentOutOfRangeException();
       }
-      writer.RenderEndTag ();
     }
 
-    private void RenderUser (HtmlTextWriter writer, Control container)
+    public void RenderUser (HtmlTextWriter writer, Control container)
     {
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("container", container);
+
       switch (_accessControlEntry.UserCondition)
       {
         case UserCondition.None:
@@ -127,45 +100,31 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           RenderPropertyPathString (writer, "UserCondition");
           break;
         case UserCondition.SpecificUser:
-          RenderPropertyPathString (writer, "SpecificUser.DisplayName");
+          RenderLabelAndPropertyPathString (writer, "User", "SpecificUser.DisplayName");
           break;
         case UserCondition.SpecificPosition:
-          RenderPropertyPathString (writer, "SpecificPosition.DisplayName");
+          RenderLabelAndPropertyPathString (writer, "Position", "SpecificPosition.DisplayName");
           break;
         default:
           throw new ArgumentOutOfRangeException();
       }
-      writer.RenderEndTag ();
     }
 
-    private void RenderAbstractRole (HtmlTextWriter writer, Control container)
+    public void RenderAbstractRole (HtmlTextWriter writer, Control container)
     {
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      RenderPropertyPathString (writer, "SpecificAbstractRole.DisplayName");
-      writer.RenderEndTag ();
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("container", container);
+
+      RenderLabelAndPropertyPathString (writer, string.Empty, "SpecificAbstractRole.DisplayName");
     }
 
-    private void RenderPermissions (HtmlTextWriter writer, Control container)
+    private void RenderLabelAndPropertyPathString (HtmlTextWriter writer, string label, string propertyPathIdentifier)
     {
-      var grantedIcon = new IconInfo (GetIconUrl ("PermissionGranted.gif", container));
-      var deniedIcon = new IconInfo (GetIconUrl ("PermissionDenied.gif", container));
-      var undefinedIcon = new IconInfo (GetIconUrl ("PermissionUndefined.gif", container));
-
-      foreach (var permission in _accessControlEntry.Permissions)
-      {
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, "permissionCell");
-        writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        if (permission.Allowed.HasValue)
-        {
-          if (permission.Allowed.Value)
-            grantedIcon.Render (writer);
-          else
-            deniedIcon.Render (writer);
-        }
-        else
-          undefinedIcon.Render (writer);
-        writer.RenderEndTag();
-      }
+      writer.Write (HtmlUtility.HtmlEncode (label));
+      writer.Write (" ");
+      writer.RenderBeginTag (HtmlTextWriterTag.Em);
+      RenderPropertyPathString (writer, propertyPathIdentifier);
+      writer.RenderEndTag ();
     }
 
     private void RenderPropertyPathString (HtmlTextWriter writer, string propertyPathIdentifier)

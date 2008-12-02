@@ -51,9 +51,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("GroupCondition").DisplayName, cssHorizontal));
       HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("UserCondition").DisplayName, cssHorizontal));
       HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("SpecificAbstractRole").DisplayName, cssHorizontal));
+      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal));//Toggle Permissions
       foreach (var accessType in CurrentClassDefinition.AccessTypes)
         HeaderCells.Controls.Add (CreateTableCell (accessType.DisplayName, cssVertical));
-      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal));//Button
+      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal));//ExpandButton
+      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal));//DeleteButton
     }
 
     private HtmlGenericControl CreateTableCell (string title, string cssClass)

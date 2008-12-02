@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Web.UI.HtmlControls;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -36,6 +37,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     // member fields
 
     private readonly List<EditPermissionControl> _editPermissionControls = new List<EditPermissionControl>();
+    private const string c_grantAllMenuItemID = "GrantAllPermissions";
+    private const string c_denyAllMenuItemID = "DenyAllPermissions";
+    private const string c_clearAllMenuItemID = "ClearAllPermissions";
 
     // construction and disposing
 
@@ -52,6 +56,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       remove { Events.RemoveHandler (s_deleteEvent, value); }
     }
 
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    public string CssClass { get; set; }
+
     protected bool IsCollapsed
     {
       get { return (bool?) ViewState["IsCollapsed"] ?? CurrentAccessControlEntry.State != StateType.New; }
@@ -63,12 +71,22 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       get { return (AccessControlEntry) CurrentObject.BusinessObject; }
     }
 
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+
+      AllPermisionsMenu.MenuItems.Add (
+          new WebMenuItem { ItemID = c_clearAllMenuItemID, Text = "Clear All Permissions", Icon = new IconInfo (GetIconUrl ("PermissionUndefined.gif")) });
+      AllPermisionsMenu.MenuItems.Add (
+          new WebMenuItem { ItemID = c_grantAllMenuItemID, Text = "Grant All Permissions", Icon = new IconInfo(GetIconUrl ("PermissionGranted.gif")) });
+      AllPermisionsMenu.MenuItems.Add (
+          new WebMenuItem { ItemID = c_denyAllMenuItemID, Text = "Deny All Permissions", Icon = new IconInfo (GetIconUrl ("PermissionDenied.gif")) });
+      AllPermisionsMenu.EventCommandClick += AllPermisionsMenu_EventCommandClick;
+    }
+
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-
-      CollapsedView.Visible = IsCollapsed;
-      ExpandedView.Visible = !IsCollapsed;
 
       if (string.IsNullOrEmpty (SpecificGroupField.ServicePath))
       {
@@ -84,24 +102,37 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         SpecificUserField.ServiceMethod = "GetBusinessObjects";
       }
 
+      if (IsCollapsed)
+      {
+        var collapsedRenderer = new CollapsedAccessControlEntryRenderer (CurrentAccessControlEntry);
+        CollapsedTenantInformation.SetRenderMethodDelegate (collapsedRenderer.RenderTenant);
+        CollapsedGroupInformation.SetRenderMethodDelegate (collapsedRenderer.RenderGroup);
+        CollapsedUserInformation.SetRenderMethodDelegate (collapsedRenderer.RenderUser);
+        CollapsedAbstractRoleInformation.SetRenderMethodDelegate (collapsedRenderer.RenderAbstractRole);
+      }
+
+      DetailsCell.Attributes.Add ("colspan", (4 + CurrentAccessControlEntry.AccessControlList.Class.AccessTypes.Count + 3).ToString ());
+
       DeleteAccessControlEntryButton.Icon = new IconInfo (GetIconUrl ("DeleteItem.gif"));
       DeleteAccessControlEntryButton.Icon.AlternateText = AccessControlResources.DeleteAccessControlEntryButton_Text;
 
-      CollapseAccessControlEntryButton.Icon.Url = GetIconUrl ("Collapse.gif");
-      CollapseAccessControlEntryButton.Icon.AlternateText = AccessControlResources.CollapseAccessControlEntryButton_Text;
-
-      ExpandAccessControlEntryButton.Icon.Url = GetIconUrl ("Expand.gif");
-      ExpandAccessControlEntryButton.Icon.AlternateText = AccessControlResources.ExpandAccessControlEntryButton_Text;
+      if (IsCollapsed)
+      {
+        ToggleAccessControlEntryButton.Icon.Url = GetIconUrl ("Expand.gif");
+        ToggleAccessControlEntryButton.Icon.AlternateText = AccessControlResources.ExpandAccessControlEntryButton_Text;
+        DetailsView.Visible = false;
+      }
+      else
+      {
+        ToggleAccessControlEntryButton.Icon.Url = GetIconUrl ("Collapse.gif");
+        ToggleAccessControlEntryButton.Icon.AlternateText = AccessControlResources.CollapseAccessControlEntryButton_Text;
+        DetailsView.Visible = true;
+      }
     }
 
     public override void LoadValues (bool interim)
     {
       base.LoadValues (interim);
-
-      var collapsedRenderer = new CollapsedAccessControlEntryRenderer (CurrentAccessControlEntry);
-      CollapsedAccessControlInformation.SetRenderMethodDelegate (collapsedRenderer.Render);
-
-      ExpandedCell.Attributes.Add ("colspan", (collapsedRenderer.GetColumnCount() + 1).ToString());
 
       LoadPermissions (interim);
       AdjustSpecificTenantField (false);
@@ -267,10 +298,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       PermissionsPlaceHolder.Controls.Clear();
       _editPermissionControls.Clear();
 
-      var ul = new HtmlGenericControl ("ul");
-      ul.Attributes.Add ("class", "permissionsList");
-      PermissionsPlaceHolder.Controls.Add (ul);
-
       for (int i = 0; i < permissions.Count; i++)
       {
         var permission = permissions[i];
@@ -279,10 +306,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         control.ID = "P_" + i;
         control.BusinessObject = permission;
 
-        var li = new HtmlGenericControl ("li");
-        li.Attributes.Add ("class", "permissionsList");
-        ul.Controls.Add (li);
-        li.Controls.Add (control);
+        var td = new HtmlGenericControl ("td");
+        td.Attributes.Add ("class", "permissionCell");
+        PermissionsPlaceHolder.Controls.Add (td);
+        td.Controls.Add (control);
 
         _editPermissionControls.Add (control);
       }
@@ -297,26 +324,31 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       return isValid;
     }
 
-    protected void AllPermissionsField_CheckedChange (object sender, EventArgs e)
+    private void AllPermisionsMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
     {
-      bool? isAllowed = ((BocBooleanValue) sender).Value;
+      bool? isAllowed;
+      switch (e.Item.ItemID)
+      {
+        case c_grantAllMenuItemID:
+          isAllowed = true;
+          break;
+        case c_denyAllMenuItemID:
+          isAllowed = false;
+          break;
+        case c_clearAllMenuItemID:
+          isAllowed = null;
+          break;
+        default:
+          throw new InvalidOperationException (string.Format ("The menu item '{0}' is not defined.", e.Item.ItemID));
+      }
+
       foreach (var control in _editPermissionControls)
         control.SetPermissionValue (isAllowed);
     }
 
-    protected void ExpandAccessControlEntryButton_Click (object sender, EventArgs e)
+    protected void ToggleAccessControlEntryButton_Click (object sender, EventArgs e)
     {
-      IsCollapsed = false;
-    }
-
-    protected void CollapseAccessControlEntryButton_Click (object sender, EventArgs e)
-    {
-      if (Validate())
-      {
-        SaveValues (false);
-        LoadValues (false);
-        IsCollapsed = true;
-      }
+      IsCollapsed = !IsCollapsed;
     }
 
     private string GetIconUrl (string url)

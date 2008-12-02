@@ -62,15 +62,6 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ACE (Access Control Entry).
-        /// </summary>
-        internal static string auto_AccessControlEntryTitle_InnerText {
-            get {
-                return ResourceManager.GetString("auto:AccessControlEntryTitle:InnerText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please assign at least one state..
         /// </summary>
         internal static string auto_MissingStateCombinationsValidator_ErrorMessage {
@@ -139,24 +130,6 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         internal static string auto_SpecificUserField_ErrorMessage {
             get {
                 return ResourceManager.GetString("auto:SpecificUserField:ErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Object-based ACL (Access Control List).
-        /// </summary>
-        internal static string auto_StatefulAccessControlListTitle_InnerText {
-            get {
-                return ResourceManager.GetString("auto:StatefulAccessControlListTitle:InnerText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Class-based ACL (Access Control List).
-        /// </summary>
-        internal static string auto_StatelessAccessControlListTitle_InnerText {
-            get {
-                return ResourceManager.GetString("auto:StatelessAccessControlListTitle:InnerText", resourceCulture);
             }
         }
         
@@ -247,6 +220,24 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         internal static string NewStatelessAccessControlListButton {
             get {
                 return ResourceManager.GetString("NewStatelessAccessControlListButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object-based ACL.
+        /// </summary>
+        internal static string StatefulAccessControlListTitle_InnerText {
+            get {
+                return ResourceManager.GetString("StatefulAccessControlListTitle:InnerText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class-based ACL.
+        /// </summary>
+        internal static string StatelessAccessControlListTitle_InnerText {
+            get {
+                return ResourceManager.GetString("StatelessAccessControlListTitle:InnerText", resourceCulture);
             }
         }
         

@@ -23,22 +23,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BindableObjectDataSourceControl CurrentObject;
         
         /// <summary>
-        /// ScriptManagerProxy1 control.
+        /// NewStateCombinationButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.ScriptManagerProxy ScriptManagerProxy1;
-        
-        /// <summary>
-        /// StatefulAccessControlListTitle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl StatefulAccessControlListTitle;
+        protected global::Remotion.Web.UI.Controls.WebButton NewStateCombinationButton;
         
         /// <summary>
         /// NewAccessControlEntryButton control.
@@ -57,15 +48,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.Web.UI.Controls.WebButton DeleteAccessControlListButton;
-        
-        /// <summary>
-        /// NewStateCombinationButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton NewStateCombinationButton;
         
         /// <summary>
         /// StateCombinationControls control.
