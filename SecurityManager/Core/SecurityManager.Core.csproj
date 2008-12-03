@@ -401,7 +401,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AclTools\Expansion\Code Repository.txt" />
-    <EmbeddedResource Include="AclTools\Expansion\Data\AclExpansion.css" />
+    <EmbeddedResource Include="AclTools\Expansion\AclExpansion.css" />
     <Content Include="Database\SecurityManagerSetupConstraints.sql" />
     <Content Include="Doc\Whats_New.Remotion.SecurityManager.txt" />
   </ItemGroup>

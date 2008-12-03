@@ -140,8 +140,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteAclExpansionAsMultiFileHtml (List<AclExpansionEntry> aclExpansion)
     {
-      // TODO AE: Directory called "xxx.html" seems strange.
-      //string directoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow() + ".html");
       string directoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
       _textWriterFactory.Directory = directoryUsed;
       _textWriterFactory.Extension = "html";
@@ -157,10 +155,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       using (var cssTextWriter = _textWriterFactory.NewTextWriter (_textWriterFactory.Directory,CssFileName,"css"))
       {
-        string resource = GetEmbeddedStringResource ("Data.AclExpansion.css");
+        string resource = GetEmbeddedStringResource ("AclExpansion.css");
         Assertion.IsNotNull (resource);
         cssTextWriter.Write (resource);
-        // TODO AE: Move CSS file to the namespace of the type used to retrieve it.
       }
     }
 
