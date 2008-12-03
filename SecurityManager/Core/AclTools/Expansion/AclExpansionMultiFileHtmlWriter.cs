@@ -24,7 +24,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// of users linking to detail HTML tables conaining the access rights of the respective user. All HTML files are written
   /// into an automatically generated directory.
   /// </summary>
-  // TODO AE: Remove commented code. (Do not commit.)
   public class AclExpansionMultiFileHtmlWriter : IAclExpansionWriter
   {
     public const string MasterFileName = "_AclExpansionMain_";
@@ -66,12 +65,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableHeaders ()
     {
-      _implementation.HtmlTagWriter.Tags.tr (); // TODO AE: Consider using <TH>?
+      _implementation.HtmlTagWriter.Tags.th (); 
       _implementation.WriteHeaderCell ("User");
       _implementation.WriteHeaderCell ("First Name");
       _implementation.WriteHeaderCell ("Last Name");
       _implementation.WriteHeaderCell ("Access Rights");
-      _implementation.HtmlTagWriter.Tags.trEnd ();
+      _implementation.HtmlTagWriter.Tags.thEnd ();
     }
 
 
