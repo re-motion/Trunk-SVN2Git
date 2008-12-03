@@ -14,21 +14,6 @@ using Remotion.Data.DomainObjects;
 
 namespace $PROJECT_ROOTNAMESPACE$.Classes
 {
-  /*
-  public abstract class BaseFunction : WxeFunction
-  {
-    protected BaseFunction (params object[] args)
-      : this ((WxeTransactionMode<ClientTransactionFactory>)WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent, args)
-    {
-    }
-
-    protected BaseFunction (WxeTransactionMode<ClientTransactionFactory> transactionMode, params object[] args)
-      : base (transactionMode, args)
-    {
-    }
-  }
-   */
-
   public abstract class BaseFunction : WxeFunction
   {
     protected BaseFunction(params object[] args)
