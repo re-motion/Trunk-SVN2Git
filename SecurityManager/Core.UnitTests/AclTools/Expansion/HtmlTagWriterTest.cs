@@ -19,7 +19,6 @@ using Remotion.Diagnostics.ToText;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
-  // TODO AE: Dedicated tests for methods Attribute, CreateXmlWriter, Close missing.
   [TestFixture]
   public class HtmlTagWriterTest
   {
@@ -34,6 +33,45 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var result = stringWriter.ToString ();
       Assert.That (result, Is.EqualTo ("<div>xxx</div>"));
     }
+
+
+    [Test]
+    public void WriteAttributeTest ()
+    {
+      var stringWriter = new StringWriter ();
+      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
+      {
+        htmlWriter.Tag ("div").Attribute("id","myd").TagEnd ("div");
+      }
+      var result = stringWriter.ToString ();
+      Assert.That (result, Is.EqualTo (@"<div id=""myd"" />"));
+    }
+
+    [Test]
+    public void CloseTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var htmlWriter = new HtmlTagWriter (stringWriter, false);
+      htmlWriter.Tag ("div").TagEnd ("div");
+      var resultBeforeClose = stringWriter.ToString ();
+      Assert.That (resultBeforeClose, Is.Empty);
+      htmlWriter.Close();
+      var resultAfterClose = stringWriter.ToString ();
+      Assert.That (resultAfterClose, Is.EqualTo ("<div />"));
+    }
+
+    [Test]
+    public void CreateXmlWriterTest ()
+    {
+      using (XmlWriter xmlWriter = HtmlTagWriter.CreateXmlWriter (TextWriter.Null, true))
+      {
+        Assert.That (xmlWriter.Settings.OmitXmlDeclaration, Is.True);
+        Assert.That (xmlWriter.Settings.Indent, Is.True);
+        Assert.That (xmlWriter.Settings.NewLineOnAttributes, Is.False);
+        Assert.That (xmlWriter.Settings.ConformanceLevel, Is.EqualTo (ConformanceLevel.Document));
+      }
+    }
+
 
     [Test]
     public void WritePageHeaderTest ()
