@@ -11,6 +11,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -28,5 +29,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (settings.UserLastName, Is.Null);
       Assert.That (settings.UserName, Is.Null);
     }
+
+    [Test]
+    public void ToTextTest ()
+    {
+      var settings = new AclExpanderApplicationSettings ();
+      Assert.That (To.String.e (settings).CheckAndConvertToString (), Is.EqualTo (@"(user=null,last=null,first=null,dir=""."",culture=""de-AT"",multifile=False,verbose=False)"));
+    }
+
   }
 }
