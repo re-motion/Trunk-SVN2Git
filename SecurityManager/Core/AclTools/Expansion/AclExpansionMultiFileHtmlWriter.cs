@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -37,8 +38,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       _textWriterFactory = textWriterFactory;
       _indentXml = indentXml;
-      //var textWriter = _textWriterFactory.NewTextWriter (MasterFileName);
-      //htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
 
 
@@ -48,20 +47,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       set { _detailHtmlWriterSettings = value; }
     }
 
-
-    //public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
-    //{
-    //  ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-    //  WriteAclExpansion (aclExpansion);
-    //}
-
-
+    
     public void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       using (var textWriter = _textWriterFactory.NewTextWriter (MasterFileName))
       {
-        //htmlTagWriter = new HtmlTagWriter (textWriter, _indentXml);
         _implementation = new AclExpansionHtmlWriterImplementationBase (textWriter, _indentXml);
 
         _implementation.WritePageStart ("re-motion ACL Expansion - User Master Table");
@@ -115,7 +106,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
 
       string relativePath = _textWriterFactory.GetRelativePath (MasterFileName, userDetailFileName);
-      _implementation.WriteTableRowBeginIfNotInTableRow (); // TODO AE: Isn't it well-defined here if in a table row or not?
+      _implementation.WriteTableRowBeginIfNotInTableRow (); 
       _implementation.HtmlTagWriter.Tags.td ();
       _implementation.HtmlTagWriter.Tag ("a");
       _implementation.HtmlTagWriter.Attribute ("href", relativePath);

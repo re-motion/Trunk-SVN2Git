@@ -36,7 +36,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   public class AclExpansionHtmlWriterTest : AclToolsTestBase
   {
     // Note: Code is kept for comparison of readability and XML validity safety with HtmlTagWriter
-    // TODO AE: Nice illustration, but really necessary?
     [Test]
     [Explicit]
     public void XmlWriterSpikeTest ()

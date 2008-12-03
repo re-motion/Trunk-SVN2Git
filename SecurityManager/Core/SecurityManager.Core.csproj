@@ -59,7 +59,7 @@
     </None>
     <None Include="SecurityManager.Core.build" />
     <Compile Include="AclTools\Expansion\AclExpander.cs" />
-    <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterImplementation.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionHtmlWriterImplementation.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplication.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationSettings.cs" />
@@ -67,7 +67,7 @@
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditions.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionEntry.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriter.cs" />
-    <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterImplementationBase.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionHtmlWriterImplementationBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettings.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriter.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionTree.cs" />

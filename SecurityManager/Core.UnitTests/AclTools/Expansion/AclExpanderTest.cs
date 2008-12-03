@@ -166,7 +166,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList_UserList_AceList (
-          List.New (User), // TODO AE: Is this really much better than new List<User> { User } ?
+          List.New (User), // TODO QAE: Is this really much better than new List<User> { User } ? MGi: Definitely; also consistent with next line...
           List.New(TestHelper.CreateStatefulAcl(ace)), false);
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };

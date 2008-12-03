@@ -17,7 +17,7 @@ using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.AclTools.Expansion
+namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
   public class AclExpansionHtmlWriterImplementation : AclExpansionHtmlWriterImplementationBase
   {
@@ -26,7 +26,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private string _aclWithNoAssociatedStatesHtmlText = "(no associated states)";
 
     public AclExpansionHtmlWriterImplementation (TextWriter textWriter, bool indentXml, AclExpansionHtmlWriterSettings settings)
-      : base (textWriter, indentXml)
+        : base (textWriter, indentXml)
     {
       _settings = settings;
     }

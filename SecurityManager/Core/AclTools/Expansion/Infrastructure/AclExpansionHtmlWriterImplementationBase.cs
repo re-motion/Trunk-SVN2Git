@@ -15,10 +15,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Remotion.SecurityManager.AclTools.Expansion
+namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
   /// <summary>
-  /// Abstract base class for <see cref="IAclExpansionWriter"/>|s which write HTML format.
+  /// Base implementation class for <see cref="AclExpansionHtmlWriter"/> and <see cref="AclExpansionMultiFileHtmlWriter"/>.
   /// </summary>
   public class AclExpansionHtmlWriterImplementationBase
   {
@@ -41,7 +41,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return sb.ToString ();
     }
 
-    private HtmlTagWriter _htmlTagWriter;
+    private readonly HtmlTagWriter _htmlTagWriter;
     private bool _isInTableRow;
 
 
@@ -65,8 +65,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public virtual HtmlTagWriter WritePageStart (string pageTitle)
     {
       _htmlTagWriter.WritePageHeader (pageTitle, "AclExpansion.css");
-
-      // BODY // TODO AE: Required?
       _htmlTagWriter.Tag ("body");
       return _htmlTagWriter;
     }
@@ -112,7 +110,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _isInTableRow = false;
     }
 
-    //public abstract void WriteAclExpansion (List<AclExpansionEntry> aclExpansion); // TODO AE: Remove abstract method, it is not used from base class variables.
     public HtmlTagWriter HtmlTagWriter
     {
       get { return _htmlTagWriter; }
