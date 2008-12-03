@@ -25,8 +25,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpanderApplication : IApplicationRunner<AclExpanderApplicationSettings>
   {
-    //public const string CssFileName = "AclExpansion.css";
     public const string CssFileName = "AclExpansion";
+
+
     private AclExpanderApplicationSettings _settings;
     private ToTextBuilder _logToTextBuilder; // TODO QAE: Consider using ILog; MGi: Advantage ?
     private ToTextBuilder _errorToTextBuilder; // TODO QAE: Consider using ILog; MGi: Advantage ?
@@ -129,7 +130,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _textWriterFactory.Extension = "html";
       string directoryUsed = Settings.Directory;
       _textWriterFactory.Directory = directoryUsed;
-      using (var textWriter = _textWriterFactory.NewTextWriter ("AclExpansion_" + FileNameTimestampNow()))
+      using (var textWriter = _textWriterFactory.NewTextWriter ("AclExpansion_" + StringUtility.GetFileNameTimestampNow ()))
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
         aclExpansionHtmlWriter.Settings = CreateAclExpansionHtmlWriterSettings();
@@ -140,7 +141,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteAclExpansionAsMultiFileHtml (List<AclExpansionEntry> aclExpansion)
     {
-      string directoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
+      string directoryUsed = Path.Combine (Settings.Directory, "AclExpansion_" + StringUtility.GetFileNameTimestampNow ());
       _textWriterFactory.Directory = directoryUsed;
       _textWriterFactory.Extension = "html";
 
@@ -182,18 +183,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return aclExpansionHtmlWriterSettings;
     }
 
-
-    // TODO AE: Move statics to top.
-    public static string FileNameTimestamp (DateTime dt)
-    {
-      return StringUtility.ConcatWithSeparator (new[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond }, "_");
-    }
-
-    // TODO AE: Move statics to top.
-    public static string FileNameTimestampNow ()
-    {
-      return FileNameTimestamp (DateTime.Now);
-    }
 
     protected virtual List<AclExpansionEntry> GetAclExpansion ()
     {

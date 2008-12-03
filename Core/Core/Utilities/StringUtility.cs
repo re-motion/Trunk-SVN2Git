@@ -41,7 +41,20 @@ namespace Remotion.Utilities
       public bool IsQuoted;
     }
 
-    private static Hashtable s_parseMethods = new Hashtable();
+    private static readonly Hashtable s_parseMethods = new Hashtable();
+
+
+    public static string GetFileNameTimestamp (DateTime dt)
+    {
+      const string separator = "_";
+      return StringUtility.ConcatWithSeparator (new[] { dt.Year, dt.Month, dt.Day }, separator) + "__" + StringUtility.ConcatWithSeparator (new[] { dt.Hour, dt.Minute, dt.Second, dt.Millisecond }, separator);
+    }
+
+    public static string GetFileNameTimestampNow ()
+    {
+      return GetFileNameTimestamp (DateTime.Now);
+    }
+
 
     /// <summary>
     ///   Parses a delimiter-separated string into individual elements.

@@ -13,6 +13,8 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities
@@ -30,18 +32,18 @@ public class StringUtilityTest
   private CultureInfo _cultureEnUs;
   private CultureInfo _cultureDeAt;
 
-  private Type _int32 = typeof (int);
-  private Type _nullableInt32 = typeof (int?);
-  private Type _double = typeof (double);
-  private Type _string = typeof (string);
-  private Type _object = typeof (object);
-  private Type _guid = typeof (Guid);
-  private Type _nullableGuid = typeof (Guid?);
-  private Type _enum = typeof (TestEnum);
-  private Type _nullableEnum = typeof (TestEnum?);
-  private Type _dbNull = typeof (DBNull);
-  private Type _doubleArray = typeof (double[]);
-  private Type _stringArray = typeof (string[]);
+  private readonly Type _int32 = typeof (int);
+  private readonly Type _nullableInt32 = typeof (int?);
+  private readonly Type _double = typeof (double);
+  private readonly Type _string = typeof (string);
+  private readonly Type _object = typeof (object);
+  private readonly Type _guid = typeof (Guid);
+  private readonly Type _nullableGuid = typeof (Guid?);
+  private readonly Type _enum = typeof (TestEnum);
+  private readonly Type _nullableEnum = typeof (TestEnum?);
+  private readonly Type _dbNull = typeof (DBNull);
+  private readonly Type _doubleArray = typeof (double[]);
+  private readonly Type _stringArray = typeof (string[]);
 
   [SetUp]
   public void SetUp()
@@ -530,7 +532,7 @@ public class StringUtilityTest
   [Test]
   public void FormatString()
   {
-    string value = "Hello World!";
+    const string value = "Hello World!";
     Assert.AreEqual (value, StringUtility.Format (value, null));
   }
 
@@ -562,6 +564,25 @@ public class StringUtilityTest
     double[] values = new double[] {6543.123, 5432.123, 4321.123};
     Assert.AreEqual (@"6543.123,5432.123,4321.123", StringUtility.Format (values, _cultureEnUs));
   }
+
+
+  [Test]
+  public void GetFileNameTimestampTest ()
+  {
+    var dt = new DateTime (2008, 12, 24, 23, 59, 59, 999);
+    string result = StringUtility.GetFileNameTimestamp (dt);
+    Assert.That (result, Is.EqualTo("2008_12_24__23_59_59_999"));
+  }
+
+  [Test]
+  public void GetFileNameTimestampNowTest ()
+  {
+    string result = StringUtility.GetFileNameTimestampNow ();
+    DateTime dateTimeNow = DateTime.Now;
+    DateTime dateTimeResult = DateTime.ParseExact (result, "yyyy_M_d__H_m_s_FFF", CultureInfo.InvariantCulture.NumberFormat);
+    Assert.That (dateTimeNow - dateTimeResult, Is.LessThanOrEqualTo (new TimeSpan(0,0,0,0,50)));
+  }
+
 }
 
 [TestFixture]
@@ -571,10 +592,10 @@ public class StringUtility_ParseSeparatedListTest
   public void TestParseSeparatedList()
   {
     // char doubleq = '\"';
-    char singleq = '\'';
-    char backsl = '\\';
-    char comma = ',';
-    string whitespace = " ";
+    const char singleq = '\'';
+    const char backsl = '\\';
+    const char comma = ',';
+    const string whitespace = " ";
 
     Check ("1", comma, singleq, singleq, backsl, whitespace, true,
            unquoted ("1"));

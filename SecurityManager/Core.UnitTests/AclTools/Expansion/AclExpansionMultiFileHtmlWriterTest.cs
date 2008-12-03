@@ -95,7 +95,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
         //var stringWriter = new StringWriter();
         var streamWriterFactory = new StreamWriterFactory ();
-        streamWriterFactory.Directory = Path.Combine ("c:\\temp\\AclExpansions", "AclExpansion_" + AclExpanderApplication.FileNameTimestampNow ());
+        streamWriterFactory.Directory = Path.Combine ("c:\\temp\\AclExpansions", "AclExpansion_" + StringUtility.GetFileNameTimestampNow ());
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (streamWriterFactory, true);
         aclExpansionMultiFileHtmlWriter.WriteAclExpansion (aclExpansionEntryList);
         //var result = stringWriter.ToString();
