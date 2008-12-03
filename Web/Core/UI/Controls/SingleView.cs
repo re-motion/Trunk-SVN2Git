@@ -130,7 +130,7 @@ namespace Remotion.Web.UI.Controls
     {
       EnsureChildControls ();
 
-      if (!ScriptUtility.IsPartOfRenderedOutput (this))
+      if (ScriptUtility.IsPartOfRenderedOutput (this))
       {
         ScriptUtility.RegisterElementForBorderSpans (Page, ClientID + "_View");
         ScriptUtility.RegisterElementForBorderSpans (Page, _topControl.ClientID);
