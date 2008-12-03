@@ -6,21 +6,67 @@
   height: 1.1em;
 }
 
+div.singleView
+{
+  background-color:#083779;
+  padding:5px;
+}        
+
+td.singleViewView
+{
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+div.singleViewView div.content
+{
+  padding-bottom: 0;
+  padding-bottom: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+td.singleViewTopControls
+{
+  background-color: White;
+  padding-left:0.5em;
+  padding-top:0.3em;
+  padding-bottom: 0.3em;
+}
+
+div.singleViewBottomControls
+{
+  padding-left:0.5em;
+  padding-top:0.3em;
+  padding-bottom: 0.3em;
+}
+
 h1.pageTitle
 {
-  margin-bottom: 0;
+}
+
+h2.accessControlListTitle
+{
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+}
+
+div.singleViewBottomControls button
+{
+  width:1%;
+  margin-right:0.5em;
+}
+
+div.singleViewBottomControls button span.buttonBody
+{
+  padding-left:15px;
+  padding-right:15px;
 }
 
 button.imageButton
 {
   border: none;
-  background-color:Transparent;
-}
-
-h2.accessControlListTitle
-{
-  font-size: 125%;
-  line-height: 1em;
+  background-color: Transparent;
 }
 
 div.accessControlListContainer
@@ -42,7 +88,6 @@ td.accessControlListButtons button
 table.accessControlList
 {
   width: 100%;
-  height: auto;
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -50,14 +95,14 @@ table.accessControlList
 td.stateCombinationsButtons,
 td.stateCombinationsContainer
 {
-  border-right: solid 1px #005588;
+  border-right: solid 1px #d4d0c8;
   width: 12em;
 }
 
+td.accessControlEntriesButtons,
 td.accessControlEntriesContainer
 {
-  height: auto;
-  border-left: solid 1px #005588;
+  border-left: solid 1px #d4d0c8;
 }
 
 table.accessControlEntriesTable
@@ -67,7 +112,8 @@ table.accessControlEntriesTable
   width: 100%;
 }
 
-table.accessControlEntriesTable th
+table.accessControlEntriesTable th.titleCellHorizontal,
+table.accessControlEntriesTable th.titleCellVertical
 {
   border-bottom: solid 1px black;
 }
@@ -75,7 +121,7 @@ table.accessControlEntriesTable th
 table.accessControlEntriesTable th.titleCellHorizontal
 {
   text-align: left;
-  vertical-align:bottom;
+  vertical-align: bottom;
 }
 
 table.accessControlEntriesTable th.titleCellVertical
@@ -84,6 +130,7 @@ table.accessControlEntriesTable th.titleCellVertical
   vertical-align: bottom;
   width: 1.5em;
 }
+
 table.accessControlEntriesTable th.titleCellVertical div
 {
   writing-mode: tb-rl; 
@@ -104,19 +151,21 @@ table.accessControlEntriesTable tr.even
 table.accessControlEntriesTable td.conditionCell
 {
   width: 20%;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
   padding-right: 1em;
 }
 
 table.accessControlEntriesTable td.permissionCell
 {
   padding: 0.25em;
-  border-left: solid 1px #005588;
-  border-right: solid 1px #005588;
+  border-left: solid 1px #d4d0c8;
+  border-right: solid 1px #d4d0c8;
 }
 
 table.accessControlEntriesTable td.buttonCell
 {
-  padding: 0.25em;
+ padding: 0.25em;
 }
 
 table.accessControlEntryExpanded
@@ -124,12 +173,13 @@ table.accessControlEntryExpanded
   background-color: White;
 }
 
-td.accessControlEntryTitleCell
-{
-  display: none;
-}
-
 table.accessControlEntryExpanded td.formGridTopDataRow
 {
   border-top: 0;
 }
+
+table.accessControlEntryExpanded td.formGridTitleCell
+{
+  display: none;
+}
+
