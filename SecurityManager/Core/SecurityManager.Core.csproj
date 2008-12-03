@@ -65,7 +65,6 @@
     <Compile Include="AclTools\Expansion\AclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditions.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionEntry.cs" />
-    <Compile Include="AclTools\Expansion\AclExpansionConsoleTextWriter.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriter.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettings.cs" />

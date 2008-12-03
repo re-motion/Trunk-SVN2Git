@@ -25,10 +25,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public AclExpanderUserFinder () : this(null,null,null) {}
 
-    // TODO AE: Don't discuss in code, discuss in person, decide, and remove comments. (Or leave comment with rationale only.)
-    // TODO MGI: Only use UserName. This value is authoritive and must be unique
-    // MGI Comment: To be able to filter for first and last name is an additional, orthogonal feature. It
-    // It was not introduced for convenience and is already implemeted.
     public AclExpanderUserFinder (string firstName, string lastName, string userName)
     {
       _firstName = firstName;
