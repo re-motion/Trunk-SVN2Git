@@ -71,6 +71,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
           if (sender.UniqueID.Contains (":"))
             throw new InvalidOperationException ("Executing WxeUserControls are only supported on pages not rendered in XhtmlConformanceMode.Legacy.");
 
+          //TODO: Is this check really necessary?
           if (_postBackCollection[ControlHelper.PostEventSourceID] != sender.UniqueID)
           {
             throw new ArgumentException (
