@@ -186,7 +186,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         // TODO AE: Replace comment by extracting method and naming it appropriately.
         // Get the states by flattening the StateCombinations of the AccessControlEntry ACL 
         //var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).OrderBy (x => x.DisplayName).ToArray();
-        var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates ()).OrderBy (x => x.DisplayName);
+        var stateDefinitions = aclExpansionEntry.GetStateCombinations().SelectMany (x => x.GetStates ()).OrderBy (x => x.DisplayName);
         
         // TODO AE: Is this semantically equivalent to the following?
         // TODO AE: from combination in aclExpansionEntry.StateCombinations

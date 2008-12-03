@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntry.User, Is.EqualTo (User));
       Assert.That (aclExpansionEntry.Role, Is.EqualTo (Role));
       Assert.That (aclExpansionEntry.Class, Is.EqualTo (Acl.Class));
-      Assert.That (aclExpansionEntry.StateCombinations, Is.EqualTo (Acl.StateCombinations));
+      Assert.That (aclExpansionEntry.GetStateCombinations(), Is.EqualTo (Acl.StateCombinations));
       Assert.That (aclExpansionEntry.AccessConditions, Is.EqualTo (accessConditions));
       Assert.That (aclExpansionEntry.AllowedAccessTypes, Is.EqualTo (AccessTypeDefinitions));
       Assert.That (aclExpansionEntry.DeniedAccessTypes, Is.EqualTo (AccessTypeDefinitions2));
@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var accessConditions = new AclExpansionAccessConditions ();
       var aclExpansionEntry = new AclExpansionEntry (User, Role, statlessAcl, accessConditions, AccessTypeDefinitions, AccessTypeDefinitions2);
-      To.ConsoleLine.e(aclExpansionEntry.StateCombinations); // TODO AE: To.Console is never executed. Replace by Dev.Null = ...;
+      To.ConsoleLine.e(aclExpansionEntry.GetStateCombinations()); // TODO AE: To.Console is never executed. Replace by Dev.Null = ...;
     }
 
     // TODO AE: Remaining TDD-style unit tests are missing.

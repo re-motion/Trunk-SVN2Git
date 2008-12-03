@@ -11,9 +11,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <summary>
   /// Represents a row in an access control list expansion (see <see cref="AclExpander"/>).
   /// </summary>
-  // TODO AE: Make this class immutable. (Its set accessors aren't used from the outside anyways.)
-  // TODO AE: Remove commented code. (Do not commit.)
-  public class AclExpansionEntry : IToTextConvertible
+ public class AclExpansionEntry : IToTextConvertible
   {
     private readonly AccessControlList _accessControlList;
 
@@ -38,8 +36,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       DeniedAccessTypes = deniedAccessTypes;
     }
 
-    public User User { get; set; }
-    public Role Role { get; set; }
+    public User User { get; private set; }
+    public Role Role { get; private set; }
 
     public SecurableClassDefinition Class
     {
@@ -47,31 +45,22 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    // TODO AE: Properties throwing exceptions are not good style. Consider returning a useful default (null? empty list?) or create a method.
-    public IList<StateCombination> StateCombinations
+    public IList<StateCombination> GetStateCombinations ()
     {
-      get
+      if (AccessControlList is StatefulAccessControlList)
+        return ((StatefulAccessControlList) AccessControlList).StateCombinations;
+      else
       {
-        if (AccessControlList is StatefulAccessControlList)
-        {
-          return ((StatefulAccessControlList) AccessControlList).StateCombinations;
-        }
-        else
-        {
-          //StateCombination stateCombination = StateCombination.NewObject ();
-          //stateCombination.AccessControlList = _accessControlList;
-          //return new StateCombination[] { stateCombination  };
-          //return new StateCombination[0];
-
-          // Throw exception in case of StatelessAccessControlList, to avoid "silent failure" in calling code
-          throw new InvalidOperationException (@"StateCombinations not defined for StatelessAccessControlList. Test for ""is StatefulAccessControlList"" in calling code.");
-        }
+        // Throw exception (instead of returning e.g. new StateCombination[0]) in case of StatelessAccessControlList, 
+        // to avoid "silent failure" in calling code
+        throw new InvalidOperationException (
+            @"StateCombinations not defined for StatelessAccessControlList. Test for ""is StatefulAccessControlList"" in calling code.");
       }
     }
 
-    public AclExpansionAccessConditions AccessConditions { get; set; }
-    public AccessTypeDefinition[] AllowedAccessTypes { get; set; }
-    public AccessTypeDefinition[] DeniedAccessTypes { get; set; }
+    public AclExpansionAccessConditions AccessConditions { get; private set; }
+    public AccessTypeDefinition[] AllowedAccessTypes { get; private set; }
+    public AccessTypeDefinition[] DeniedAccessTypes { get; private set; }
 
     public AccessControlList AccessControlList
     {

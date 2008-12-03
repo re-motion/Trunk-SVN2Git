@@ -115,7 +115,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         {
           foreach (AclExpansionEntry aee in aclExpansionEntryTreeNode.Children)
           {
-            Assert.That (aee.StateCombinations, Is.SubsetOf (Acl.StateCombinations));
+            Assert.That (aee.GetStateCombinations(), Is.SubsetOf (Acl.StateCombinations));
           }
         }
       }
