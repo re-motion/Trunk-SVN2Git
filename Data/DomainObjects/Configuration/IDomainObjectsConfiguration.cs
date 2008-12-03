@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Configuration
   {
     MappingLoaderConfiguration MappingLoader { get; }
 
-    PersistenceConfiguration Storage { get; }
+    StorageConfiguration Storage { get; }
 
     QueryConfiguration Query { get; }
   }

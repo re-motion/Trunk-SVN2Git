@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
     [Test]
     public void Initialize()
     {
-      PersistenceConfiguration storage = new PersistenceConfiguration ();
+      StorageConfiguration storage = new StorageConfiguration ();
       MappingLoaderConfiguration mappingLoader = new MappingLoaderConfiguration ();
       QueryConfiguration query = new QueryConfiguration ();
       IDomainObjectsConfiguration configuration = new FakeDomainObjectsConfiguration (mappingLoader, storage, query);

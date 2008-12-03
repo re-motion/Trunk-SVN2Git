@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
     public void GetAndSet()
     {
       IDomainObjectsConfiguration configuration =
-          new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), new PersistenceConfiguration(), new QueryConfiguration());
+          new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), new StorageConfiguration(), new QueryConfiguration());
       DomainObjectsConfiguration.SetCurrent (configuration);
 
       Assert.That (DomainObjectsConfiguration.Current, Is.SameAs (configuration));

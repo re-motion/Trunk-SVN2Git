@@ -13,7 +13,7 @@
 
   <configSections>
     <sectionGroup name="remotion.data.domainObjects" type="Remotion.Data.DomainObjects.Configuration.DomainObjectsConfiguration, Remotion.Data.DomainObjects">
-      <section name="storage" type="Remotion.Data.DomainObjects.Persistence.Configuration.PersistenceConfiguration, Remotion.Data.DomainObjects" />
+      <section name="storage" type="Remotion.Data.DomainObjects.Persistence.Configuration.StorageConfiguration, Remotion.Data.DomainObjects" />
       <section name="mapping" type="Remotion.Data.DomainObjects.Mapping.Configuration.MappingLoaderConfiguration, Remotion.Data.DomainObjects" />
     </sectionGroup>
   </configSections>

@@ -30,9 +30,9 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition> ();
       providers.Add (new RdbmsProviderDefinition ("PerformanceTestDomain", typeof (SqlProvider), ConnectionString));
-      PersistenceConfiguration persistenceConfiguration = new PersistenceConfiguration (providers, providers["PerformanceTestDomain"]);
+      StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["PerformanceTestDomain"]);
 
-      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), persistenceConfiguration, new QueryConfiguration()));
+      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), storageConfiguration, new QueryConfiguration()));
 
 
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (

@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
     {
     }
 
-    protected PersistenceConfiguration StorageConfiguration
+    protected StorageConfiguration StorageConfiguration
     {
       get { return DomainObjectsConfiguration.Current.Storage; }
     }

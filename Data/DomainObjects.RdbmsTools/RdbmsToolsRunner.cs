@@ -80,19 +80,19 @@ namespace Remotion.Data.DomainObjects.RdbmsTools
       MappingConfiguration.SetCurrent (new MappingConfiguration (DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader()));
     }
 
-    protected PersistenceConfiguration GetPersistenceConfiguration ()
+    protected StorageConfiguration GetPersistenceConfiguration ()
     {
-      PersistenceConfiguration persistenceConfiguration = DomainObjectsConfiguration.Current.Storage;
-      if (persistenceConfiguration.StorageProviderDefinitions.Count == 0)
+      StorageConfiguration storageConfiguration = DomainObjectsConfiguration.Current.Storage;
+      if (storageConfiguration.StorageProviderDefinitions.Count == 0)
       {
         ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition>();
         RdbmsProviderDefinition providerDefinition = new RdbmsProviderDefinition ("Default", typeof (SqlProvider), "Initial Catalog=DatabaseName;");
         storageProviderDefinitionCollection.Add (providerDefinition);
 
-        persistenceConfiguration = new PersistenceConfiguration (storageProviderDefinitionCollection, providerDefinition);
+        storageConfiguration = new StorageConfiguration (storageProviderDefinitionCollection, providerDefinition);
       }
 
-      return persistenceConfiguration;
+      return storageConfiguration;
     }
 
     protected virtual void BuildSchema ()

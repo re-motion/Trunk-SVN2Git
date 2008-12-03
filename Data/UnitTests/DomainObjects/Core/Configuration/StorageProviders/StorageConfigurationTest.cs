@@ -21,14 +21,14 @@ using Remotion.Development.UnitTesting.Configuration;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProviders
 {
   [TestFixture]
-  public class PersistenceConfigurationTest
+  public class StorageConfigurationTest
   {
-    private PersistenceConfiguration _configuration;
+    private StorageConfiguration _configuration;
 
     [SetUp]
     public void SetUp()
     {
-      _configuration = new PersistenceConfiguration();
+      _configuration = new StorageConfiguration();
 
       FakeConfigurationWrapper configurationWrapper = new FakeConfigurationWrapper ();
       configurationWrapper.SetUpConnectionString ("Rdbms", "ConnectionString", null);
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProvid
       providers.Add (providerDefinition1);
       providers.Add (providerDefinition2);
 
-      PersistenceConfiguration configuration = new PersistenceConfiguration (providers, providerDefinition3);
+      StorageConfiguration configuration = new StorageConfiguration (providers, providerDefinition3);
       Assert.That (configuration.DefaultStorageProviderDefinition, Is.SameAs (providerDefinition3));
       Assert.That (configuration.StorageProviderDefinitions, Is.Not.SameAs (providers));
       Assert.That (configuration.StorageProviderDefinitions.Count, Is.EqualTo (2));
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProvid
       StorageProviderDefinition providerDefinition = new RdbmsProviderDefinition ("ProviderDefinition", typeof (SqlProvider), "ConnectionString");
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
 
-      PersistenceConfiguration configuration = new PersistenceConfiguration (providers, providerDefinition);
+      StorageConfiguration configuration = new StorageConfiguration (providers, providerDefinition);
       configuration.StorageProviderDefinitions.Add (providerDefinition);
     }
 

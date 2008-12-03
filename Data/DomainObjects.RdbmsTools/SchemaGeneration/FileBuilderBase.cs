@@ -29,19 +29,19 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
     public static void Build (
         Type fileBuilderType,
         MappingConfiguration mappingConfiguration,
-        PersistenceConfiguration persistenceConfiguration, 
+        StorageConfiguration storageConfiguration, 
         string outputPath)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("fileBuilderType", fileBuilderType, typeof (FileBuilderBase));
       ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
-      ArgumentUtility.CheckNotNull ("persistenceConfiguration", persistenceConfiguration);
+      ArgumentUtility.CheckNotNull ("persistenceConfiguration", storageConfiguration);
       ArgumentUtility.CheckNotNull ("outputPath", outputPath);
 
       if (outputPath != string.Empty && !Directory.Exists (outputPath))
         Directory.CreateDirectory (outputPath);
 
-      bool createMultipleFiles = persistenceConfiguration.StorageProviderDefinitions.Count > 1;
-      foreach (StorageProviderDefinition storageProviderDefinition in persistenceConfiguration.StorageProviderDefinitions)
+      bool createMultipleFiles = storageConfiguration.StorageProviderDefinitions.Count > 1;
+      foreach (StorageProviderDefinition storageProviderDefinition in storageConfiguration.StorageProviderDefinitions)
       {
         RdbmsProviderDefinition rdbmsProviderDefinition = storageProviderDefinition as RdbmsProviderDefinition;
         if (rdbmsProviderDefinition != null)

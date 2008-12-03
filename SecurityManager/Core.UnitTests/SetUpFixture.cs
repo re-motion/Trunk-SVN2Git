@@ -40,13 +40,13 @@ namespace Remotion.SecurityManager.UnitTests
     {
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition> ();
       providers.Add (new RdbmsProviderDefinition ("SecurityManager", typeof (SecurityManagerSqlProvider), c_testDomainConnectionString));
-      PersistenceConfiguration persistenceConfiguration = new PersistenceConfiguration (providers, providers["SecurityManager"]);
-      persistenceConfiguration.StorageGroups.Add (new StorageGroupElement (new SecurityManagerStorageGroupAttribute(), "SecurityManager"));
+      StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["SecurityManager"]);
+      storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecurityManagerStorageGroupAttribute(), "SecurityManager"));
 
       DomainObjectsConfiguration.SetCurrent (
           new FakeDomainObjectsConfiguration (
               new MappingLoaderConfiguration(),
-              persistenceConfiguration,
+              storageConfiguration,
               new QueryConfiguration (GetFullPath (@"SecurityManagerQueries.xml"))));
 
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (

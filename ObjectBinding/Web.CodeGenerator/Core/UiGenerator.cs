@@ -96,19 +96,19 @@ namespace Remotion.ObjectBinding.Web.CodeGenerator
       MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
     }
 
-    protected PersistenceConfiguration GetPersistenceConfiguration ()
+    protected StorageConfiguration GetPersistenceConfiguration ()
     {
-      PersistenceConfiguration persistenceConfiguration = DomainObjectsConfiguration.Current.Storage;
-      if (persistenceConfiguration.DefaultStorageProviderDefinition == null)
+      StorageConfiguration storageConfiguration = DomainObjectsConfiguration.Current.Storage;
+      if (storageConfiguration.DefaultStorageProviderDefinition == null)
       {
         ProviderCollection<StorageProviderDefinition> storageProviderDefinitionCollection = new ProviderCollection<StorageProviderDefinition> ();
         RdbmsProviderDefinition providerDefinition = new RdbmsProviderDefinition ("Default", typeof (SqlProvider), "Initial Catalog=DatabaseName;");
         storageProviderDefinitionCollection.Add (providerDefinition);
 
-        persistenceConfiguration = new PersistenceConfiguration (storageProviderDefinitionCollection, providerDefinition);
+        storageConfiguration = new StorageConfiguration (storageProviderDefinitionCollection, providerDefinition);
       }
 
-      return persistenceConfiguration;
+      return storageConfiguration;
     }
 
     public void Dispose()

@@ -35,12 +35,12 @@ namespace Remotion.Development.UnitTests.Data.UnitTesting.DomainObjects
       {
         ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
         providers.Add (new RdbmsProviderDefinition ("Development.Data.DomainObjects", typeof (RdbmsProviderDefinition), "ConnectionString"));
-        PersistenceConfiguration persistenceConfiguration = new PersistenceConfiguration (providers, providers["Development.Data.DomainObjects"]);
+        StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["Development.Data.DomainObjects"]);
 
         DomainObjectsConfiguration.SetCurrent (
             new FakeDomainObjectsConfiguration (
                 new MappingLoaderConfiguration(),
-                persistenceConfiguration,
+                storageConfiguration,
                 new QueryConfiguration()));
 
         ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (

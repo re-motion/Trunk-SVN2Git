@@ -16,7 +16,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
 {
-  public class PersistenceConfiguration: ExtendedConfigurationSection
+  public class StorageConfiguration: ExtendedConfigurationSection
   {
     [Obsolete ("Use DefaultStorageProviderDefinition instead. (Version 1.11.14.0")]
     public StorageProviderDefinition StorageProviderDefinition
@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     private readonly List<ProviderHelperBase> _providerHelpers = new List<ProviderHelperBase>();
     private readonly ConfigurationProperty _storageProviderGroupsProperty;
 
-    public PersistenceConfiguration()
+    public StorageConfiguration()
     {
       _storageProviderGroupsProperty = new ConfigurationProperty (
           "groups",
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       _providerHelpers.ForEach (current => current.InitializeProperties (_properties));
     }
 
-    public PersistenceConfiguration (ProviderCollection<StorageProviderDefinition> providers, StorageProviderDefinition defaultProvider)
+    public StorageConfiguration (ProviderCollection<StorageProviderDefinition> providers, StorageProviderDefinition defaultProvider)
         : this()
     {
       ArgumentUtility.CheckNotNull ("providers", providers);

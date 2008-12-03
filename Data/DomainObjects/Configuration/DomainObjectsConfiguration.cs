@@ -45,14 +45,14 @@ namespace Remotion.Data.DomainObjects.Configuration
           new DoubleCheckedLockingContainer<MappingLoaderConfiguration> (delegate { return GetMappingLoaderConfiguration(); });
 
       _persistenceConfiguration =
-          new DoubleCheckedLockingContainer<PersistenceConfiguration> (delegate { return GetPersistenceConfiguration(); });
+          new DoubleCheckedLockingContainer<StorageConfiguration> (delegate { return GetPersistenceConfiguration(); });
 
       _queryConfiguration =
           new DoubleCheckedLockingContainer<QueryConfiguration> (delegate { return GetQueryConfiguration (); });
     }
 
     private readonly DoubleCheckedLockingContainer<MappingLoaderConfiguration> _mappingLoaderConfiguration;
-    private readonly DoubleCheckedLockingContainer<PersistenceConfiguration> _persistenceConfiguration;
+    private readonly DoubleCheckedLockingContainer<StorageConfiguration> _persistenceConfiguration;
     private readonly DoubleCheckedLockingContainer<QueryConfiguration> _queryConfiguration;
 
     [ConfigurationProperty (MappingLoaderPropertyName)]
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Configuration
     }
 
     [ConfigurationProperty (StoragePropertyName)]
-    public PersistenceConfiguration Storage
+    public StorageConfiguration Storage
     {
       get { return _persistenceConfiguration.Value; }
     }
@@ -80,11 +80,11 @@ namespace Remotion.Data.DomainObjects.Configuration
           ?? new MappingLoaderConfiguration();
     }
 
-    private PersistenceConfiguration GetPersistenceConfiguration()
+    private StorageConfiguration GetPersistenceConfiguration()
     {
       return
-          (PersistenceConfiguration) ConfigurationWrapper.Current.GetSection (ConfigKey + "/" + StoragePropertyName, false) 
-          ?? new PersistenceConfiguration();
+          (StorageConfiguration) ConfigurationWrapper.Current.GetSection (ConfigKey + "/" + StoragePropertyName, false) 
+          ?? new StorageConfiguration();
     }
 
     private QueryConfiguration GetQueryConfiguration ()

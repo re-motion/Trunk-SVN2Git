@@ -284,7 +284,7 @@
     <Compile Include="Infrastructure\IDomainObjectFactory.cs" />
     <Compile Include="Mapping\Configuration\MappingLoaderConfiguration.cs" />
     <Compile Include="Infrastructure\FactoryBasedDomainObjectCreator.cs" />
-    <Compile Include="Persistence\Configuration\PersistenceConfiguration.cs" />
+    <Compile Include="Persistence\Configuration\StorageConfiguration.cs" />
     <Compile Include="Persistence\Configuration\StorageProviderDefinitionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

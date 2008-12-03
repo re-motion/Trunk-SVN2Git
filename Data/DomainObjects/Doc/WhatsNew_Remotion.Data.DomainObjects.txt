@@ -2,6 +2,8 @@
 =======
 - COMMONS-841: Dropped application-attribute from Queries-configuration-file
 - COMMONS-826: Changed element 'storageProviderID' to 'storageGroupType' with the same semantics as with the StorageGroupAttribute on a DomainObject
+- COMMONS-804: Renamed PersistenceConfiguration to StorageConfiguration
+  Requires update of config-files (config-section declaration)
 
 1.11.14
 =======

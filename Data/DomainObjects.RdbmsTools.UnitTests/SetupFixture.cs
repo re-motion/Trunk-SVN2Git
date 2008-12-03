@@ -48,14 +48,14 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests
       storageProviderDefinitionCollection.Add (
           new RdbmsProviderDefinition (c_internalStorageProvider, typeof (SqlProvider), c_internalStorageProviderConnectionString));
 
-      PersistenceConfiguration persistenceConfiguration =
-          new PersistenceConfiguration (storageProviderDefinitionCollection, storageProviderDefinitionCollection[c_firstStorageProvider]);
+      StorageConfiguration storageConfiguration =
+          new StorageConfiguration (storageProviderDefinitionCollection, storageProviderDefinitionCollection[c_firstStorageProvider]);
 
-      persistenceConfiguration.StorageGroups.Add (new StorageGroupElement (new FirstStorageGroupAttribute(), c_firstStorageProvider));
-      persistenceConfiguration.StorageGroups.Add (new StorageGroupElement (new SecondStorageGroupAttribute(), c_secondStorageProvider));
-      persistenceConfiguration.StorageGroups.Add (new StorageGroupElement (new InternalStorageGroupAttribute (), c_internalStorageProvider));
+      storageConfiguration.StorageGroups.Add (new StorageGroupElement (new FirstStorageGroupAttribute(), c_firstStorageProvider));
+      storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecondStorageGroupAttribute(), c_secondStorageProvider));
+      storageConfiguration.StorageGroups.Add (new StorageGroupElement (new InternalStorageGroupAttribute (), c_internalStorageProvider));
 
-      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), persistenceConfiguration,
+      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), storageConfiguration,
           new QueryConfiguration()));
 
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (

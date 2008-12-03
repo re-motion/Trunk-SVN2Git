@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     {
       ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
       providers.Add (new RdbmsProviderDefinition ("StorageProvider", typeof (StubStorageProvider), "NonExistingRdbms"));
-      PersistenceConfiguration persistenceConfiguration = new PersistenceConfiguration (providers, providers["StorageProvider"]);
-      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), persistenceConfiguration,
+      StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["StorageProvider"]);
+      DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration (), storageConfiguration,
           new QueryConfiguration (GetFullPath (@"DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml"))));
 
       ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (

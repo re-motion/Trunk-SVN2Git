@@ -362,7 +362,7 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassWithInvalidBidirectionalRelationLeftSide.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Empty\AssemblyInfo.cs" />
     <Compile Include="DomainObjects\Core\Configuration\StorageProviders\StubStorageGroup2Attribute.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\StorageProviders\PersistenceConfigurationTest.cs" />
+    <Compile Include="DomainObjects\Core\Configuration\StorageProviders\StorageConfigurationTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\StorageProviders\StubStorageGroup1Attribute.cs" />
     <Compile Include="DomainObjects\Core\Design\DomainObjectsDesignModeHelperTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\ConstructionTest.cs" />

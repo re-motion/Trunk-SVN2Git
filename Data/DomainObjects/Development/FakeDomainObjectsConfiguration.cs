@@ -23,11 +23,11 @@ namespace Remotion.Data.DomainObjects.Development
   /// </summary>
   public class FakeDomainObjectsConfiguration: IDomainObjectsConfiguration
   {
-    private readonly PersistenceConfiguration _storage;
+    private readonly StorageConfiguration _storage;
     private readonly MappingLoaderConfiguration _mappingLoader;
     private readonly QueryConfiguration _query;
 
-    public FakeDomainObjectsConfiguration (MappingLoaderConfiguration mappingLoader, PersistenceConfiguration storage, QueryConfiguration query)
+    public FakeDomainObjectsConfiguration (MappingLoaderConfiguration mappingLoader, StorageConfiguration storage, QueryConfiguration query)
     {
       ArgumentUtility.CheckNotNull ("mappingLoader", mappingLoader);
       ArgumentUtility.CheckNotNull ("storage", storage);
@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Development
       get { return _mappingLoader; }
     }
 
-    public PersistenceConfiguration Storage
+    public StorageConfiguration Storage
     {
       get { return _storage; }
     }
