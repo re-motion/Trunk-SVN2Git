@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context
@@ -139,6 +140,26 @@ namespace Remotion.Mixins.Context
     public MixinKind MixinKind
     {
       get { return _mixinKind; }
+    }
+
+    public void Serialize (IMixinContextSerializer serializer)
+    {
+      ArgumentUtility.CheckNotNull ("serializer", serializer);
+      serializer.AddMixinType (MixinType);
+      serializer.AddMixinKind (MixinKind);
+      serializer.AddIntroducedMemberVisibility (IntroducedMemberVisibility);
+      serializer.AddExplicitDependencies (ExplicitDependencies);
+    }
+
+    public static MixinContext Deserialize (IMixinContextDeserializer deserializer)
+    {
+      ArgumentUtility.CheckNotNull ("deserializer", deserializer);
+      return new MixinContext (
+          deserializer.GetMixinKind(),
+          deserializer.GetMixinType(),
+          deserializer.GetIntroducedMemberVisibility(),
+          deserializer.GetExplicitDependencies()
+        );
     }
   }
 }

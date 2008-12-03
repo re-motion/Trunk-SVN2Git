@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C216DEC9-8820-4298-B10F-FB4131466B69}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -193,6 +193,8 @@
     <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixinTypeForMixinWithAbstractMembers.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixedTypeForBaseType1.cs" />
     <Compile Include="Mixins\CodeGeneration\SetUpFixture.cs" />
+    <Compile Include="Mixins\Context\Serialization\AttributeMixinContextSerializerTest.cs" />
+    <Compile Include="Mixins\Context\Serialization\SerializationInfoMixinContextSerializationTest.cs" />
     <Compile Include="Mixins\SampleTypes\MixinWithMethodsOverriddenByDifferentClasses2.cs" />
     <Compile Include="Mixins\SampleTypes\DerivedDerivedDerivedClassOverridingMixinMethod2.cs" />
     <Compile Include="Mixins\SampleTypes\DerivedClassOverridingMixinMethod2.cs" />

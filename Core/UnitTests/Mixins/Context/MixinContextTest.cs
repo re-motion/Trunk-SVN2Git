@@ -9,11 +9,14 @@
  */
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.Context
 {
@@ -124,6 +127,35 @@ namespace Remotion.UnitTests.Mixins.Context
     {
       MixinContext context = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public);
       Assert.That (context.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Public));
+    }
+
+    [Test]
+    public void Serialize()
+    {
+      var serializer = MockRepository.GenerateMock<IMixinContextSerializer> ();
+      var context = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, typeof (int), typeof (string));
+      context.Serialize (serializer);
+
+      serializer.AssertWasCalled (mock => mock.AddMixinType (typeof (BT1Mixin1)));
+      serializer.AssertWasCalled (mock => mock.AddMixinKind (MixinKind.Used));
+      serializer.AssertWasCalled (mock => mock.AddIntroducedMemberVisibility (MemberVisibility.Public));
+      serializer.AssertWasCalled (mock => mock.AddExplicitDependencies (Arg<IEnumerable<Type>>.List.Equal (new[] {typeof (int), typeof (string) })));
+    }
+
+    [Test]
+    public void Deserialize ()
+    {
+      var expectedContext = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, typeof (int), typeof (string));
+
+      var deserializer = MockRepository.GenerateMock<IMixinContextDeserializer> ();
+      deserializer.Expect (mock => mock.GetMixinType ()).Return (typeof (BT1Mixin1));
+      deserializer.Expect (mock => mock.GetMixinKind()).Return (MixinKind.Used);
+      deserializer.Expect (mock => mock.GetIntroducedMemberVisibility ()).Return (MemberVisibility.Public);
+      deserializer.Expect (mock => mock.GetExplicitDependencies ()).Return (new[] { typeof (int), typeof (string) });
+
+      var context = MixinContext.Deserialize(deserializer);
+
+      Assert.That (context, Is.EqualTo (expectedContext));
     }
   }
 }
