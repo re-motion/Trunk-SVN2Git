@@ -50,7 +50,7 @@ namespace Remotion.Collections
     /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
     /// <typeparam name="TException">Type type of the exception returned by <paramref name="createNoMatchingElementException"/>.</typeparam>
     /// <param name="source">The <see cref="IEnumerable{T}"/> to return an element of. Must not be <see langword="null" />.</param>
-    /// <param name="predicate">A function to test each element for a condition.</param>
+    /// <param name="predicate">A function to test each element for a condition. Must not be <see langword="null" />.</param>
     /// <param name="createNoMatchingElementException">
     /// This callback is invoked if the sequence is empty or no element satisfies the condition in <paramref name="predicate"/>. 
     /// The returned exception is then thrown to indicate this error. Must not be <see langword="null" />.
@@ -114,7 +114,7 @@ namespace Remotion.Collections
     /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
     /// <typeparam name="TException">Type type of the exception returned by <paramref name="createNoMatchingElementException"/>.</typeparam>
     /// <param name="source">The <see cref="IEnumerable{T}"/> to return a single element of. Must not be <see langword="null" />.</param>
-    /// <param name="predicate">A function to test each element for a condition.</param>
+    /// <param name="predicate">A function to test each element for a condition. Must not be <see langword="null" />.</param>
     /// <param name="createNoMatchingElementException">
     /// This callback is invoked if the sequence is empty or no element satisfies the condition in <paramref name="predicate"/>. 
     /// The returned exception is then thrown to indicate this error. Must not be <see langword="null" />.
@@ -147,6 +147,55 @@ namespace Remotion.Collections
         return result;
 
       throw createNoMatchingElementException();
+    }
+
+    /// <summary>
+    /// Generates a sequence of elements from the <paramref name="source"/> element by applying the specified next-element function, 
+    /// adding elements to the sequence while the current element satisfies the specified condition.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the <paramref name="source"/> element.</typeparam>
+    /// <param name="source">The object to be transformed into a sequence.</param>
+    /// <param name="nextElementSelector">A function to retrieve the next element in the sequence. Must not be <see langword="null" />.</param>
+    /// <param name="predicate">A function to test each element for a condition. Must not be <see langword="null" />.</param>
+    /// <returns>
+    /// A collection of elements containing the <paramref name="source"/> and all subsequent elements where each element satisfies a specified condition.
+    /// </returns>
+    public static IEnumerable<TSource> CreateSequence<TSource> (this TSource source, Func<TSource, TSource> nextElementSelector, Func<TSource, bool> predicate)
+    {
+      ArgumentUtility.CheckNotNull ("nextElementSelector", nextElementSelector);
+      ArgumentUtility.CheckNotNull ("predicate", predicate);
+
+      for (TSource current = source; predicate (current); current = nextElementSelector (current))
+        yield return current;
+    }
+
+    /// <summary>
+    /// Generates a sequence of elements from the <paramref name="source"/> element by applying the specified next-element function, 
+    /// adding elements to the sequence while the current element is not <see langword="null" />.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the <paramref name="source"/> element.</typeparam>
+    /// <param name="source">The object to be transformed into a sequence.</param>
+    /// <param name="nextElementSelector">A function to retrieve the next element in the sequence. Must not be <see langword="null" />.</param>
+    /// <returns>
+    /// A sequence of elements containing the <paramref name="source"/> and all subsequent elements where each element satisfies a specified condition.
+    /// </returns>
+    public static IEnumerable<TSource> CreateSequence<TSource> (this TSource source, Func<TSource, TSource> nextElementSelector)
+        where TSource : class
+    {
+      ArgumentUtility.CheckNotNull ("nextElementSelector", nextElementSelector);
+
+      return CreateSequence (source, nextElementSelector, e => e != null);
+    }
+
+    /// <summary>
+    /// Creates an <see cref="IEnumerable{T}"/> containing the <paramref name="source"/> element.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the <paramref name="source"/> element.</typeparam>
+    /// <param name="source">The object to be added to the sequence. </param>
+    /// <returns>A sequence of elments containing only the <paramref name="source"/> element.</returns>
+    public static IEnumerable<TSource> ToEnumerable<TSource> (this TSource source)
+    {
+      yield return source;
     }
   }
 }

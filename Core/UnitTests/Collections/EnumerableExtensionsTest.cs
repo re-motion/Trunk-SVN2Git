@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
@@ -133,6 +134,92 @@ namespace Remotion.UnitTests.Collections
     public void Single_WithPredicate_ThrowCustomException_NoMatch ()
     {
       _enumerableWithThreeValues.Single (s => s == "invalid", () => new ApplicationException ("ExpectedText"));
+    }
+
+    private class Element
+    {
+      private readonly int _value;
+      public readonly Element Parent;
+
+      public Element (int value, Element parent)
+      {
+        _value = value;
+        Parent = parent;
+      }
+
+      public override string ToString ()
+      {
+        return _value.ToString();
+      }
+    }
+
+    [Test]
+    public void CreateSequence_WhileNotNull ()
+    {
+      Element first = new Element (1, null);
+      Element second = new Element (2, first);
+      Element third = new Element (3, second);
+      Element fourth = new Element (4, third);
+
+      IEnumerable<Element> actual = fourth.CreateSequence (e => e.Parent);
+      Assert.That (actual.ToArray (), Is.EqualTo (new[] { fourth, third, second, first }));
+    }
+
+    [Test]
+    public void CreateSequence_WhilePredicateEvaluatesTrue ()
+    {
+      Element first = new Element (1, new Element (0, null));
+      Element second = new Element (2, first);
+      Element third = new Element (3, second);
+      Element fourth = new Element (4, third);
+
+      IEnumerable<Element> actual = fourth.CreateSequence (e => e.Parent, e => e != first);
+      Assert.That (actual.ToArray (), Is.EqualTo (new[] { fourth, third, second }));
+    }
+
+    [Test]
+    public void CreateSequence_WhilePredicateEvaluatesTrue_WithNull ()
+    {
+      IEnumerable<Element> actual = ((Element)null).CreateSequence (e => e.Parent, e => e != null);
+      Assert.That (actual.ToArray (), Is.Empty);
+    }
+
+    [Test]
+    public void CreateSequence_WhilePredicateEvaluatesTrue_WithSingleElement ()
+    {
+      Element element = new Element (0, null);
+
+      IEnumerable<Element> actual = element.CreateSequence (e => e.Parent, e => e != null);
+      Assert.That (actual.ToArray (), Is.EqualTo (new[] { element }));
+    }
+
+    [Test]
+    public void CreateSequence_WhilePredicateEvaluatesTrue_WithValueType ()
+    {
+      IEnumerable<int> actual = 4.CreateSequence (e => e - 1, e => e > 0);
+      Assert.That (actual.ToArray(), Is.EqualTo (new[] { 4, 3, 2, 1 }));
+    }
+
+    [Test]
+    public void ToEnumerable_WithObject ()
+    {
+      Element element = new Element (0, null);
+      IEnumerable<Element> actual = element.ToEnumerable ();
+      Assert.That (actual.ToArray (), Is.EqualTo (new[] { element }));
+    }
+
+    [Test]
+    public void ToEnumerable_WithNull ()
+    {
+      IEnumerable<Element> actual = ((Element)null).ToEnumerable ();
+      Assert.That (actual.ToArray (), Is.EqualTo (new Element[] { null }));
+    }
+    
+    [Test]
+    public void ToEnumerable_WithValueType ()
+    {      
+      IEnumerable<int> actual = 0.ToEnumerable ();
+      Assert.That (actual.ToArray (), Is.EqualTo (new[] { 0 }));
     }
   }
 }
