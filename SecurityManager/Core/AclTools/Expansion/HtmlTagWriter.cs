@@ -23,7 +23,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// Example writing HTML to <see cref="StringWriter"/>
   /// <code><![CDATA[
   /// var textWriter = new StringWriter ();
-  /// using (var htmlWriter = new HtmlWriter (textWriter, false))
+  /// using (var htmlWriter = new HtmlTagWriter (textWriter, false))
   /// {
   ///   htmlWriter.WritePageHeader("My Page Title","myPage.css");
   ///   htmlWriter.Tags.body();
@@ -35,13 +35,26 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// ]]></code>
   /// </example>
   /// </summary>
-  // TODO AE: Remove commented code. (Do not commit.)
+
   public class HtmlTagWriter : IDisposable
   {
     private readonly XmlWriter _xmlWriter;
     private readonly Stack<string> _openElementStack = new Stack<string>();
 
     private readonly HtmlTagWriterTags _htmlTagWriterTags;
+
+
+    public static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
+    {
+      XmlWriterSettings settings = new XmlWriterSettings ();
+
+      settings.OmitXmlDeclaration = true;
+      settings.Indent = indent;
+      settings.NewLineOnAttributes = false;
+      settings.ConformanceLevel = ConformanceLevel.Document;
+
+      return XmlWriter.Create (textWriter, settings);
+    }
 
 
     public HtmlTagWriter (TextWriter textWriter, bool indentXml)
@@ -77,7 +90,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       string ElementNameExpected = _openElementStack.Pop();
       if (ElementNameExpected != elementName)
       {
-        throw new XmlException (String.Format ("Wrong closing tag in HTML: Expected {0} but was {1}:\n{2}", ElementNameExpected, elementName, _xmlWriter.ToString()));
+        _xmlWriter.Flush();
+        throw new XmlException (String.Format ("Wrong closing tag in HTML: Expected {0} but was {1}.", ElementNameExpected, elementName));
       }
       _xmlWriter.WriteEndElement ();
       return this;
@@ -89,22 +103,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return this;
     }
 
-    // TODO AE: Move static to the top.
-    public static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
-    {
-      XmlWriterSettings settings = new XmlWriterSettings ();
-
-      settings.OmitXmlDeclaration = true;
-      settings.Indent = indent;
-      settings.NewLineOnAttributes = false;
-      //settings.ConformanceLevel = ConformanceLevel.Fragment;
-
-      return XmlWriter.Create (textWriter, settings);
-    }
+ 
 
     public HtmlTagWriter Value (string s)
     {
-      //_xmlWriter.WriteValue(s);
       _xmlWriter.WriteValue (StringUtility.NullToEmpty(s));
       return this;
     }
@@ -117,8 +119,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-
-    // TODO AE: Are those commewnts really necessary? Maybe move them to the same line as the code producing them?
     public HtmlTagWriter WritePageHeader (string pageTitle, string cssFileName)
     {
       // DOCTYPE
@@ -158,21 +158,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-    // TODO AE: Consider removing this heading.
     //------------------------------------------------------------
     // Dispose
     //------------------------------------------------------------
     
-    // TODO AE: Consider replacing this with a common pattern:
-    // TODO AE: Add implementation to Close, make Dispose an explicit interface implementation and implement it by 
     public void Close ()
-    {
-      Dispose ();
-    }
-
-    public void Dispose ()
     {
       _xmlWriter.Close ();
     }
+
+    void IDisposable.Dispose ()
+    {
+      Close ();
+    }
+
   }
 }
