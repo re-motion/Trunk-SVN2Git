@@ -107,7 +107,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void RelationChanged (DomainObject domainObject, string propertyName)
     {
-      s_log.DebugFormat ("RelationChanged: {0] ({1})", propertyName, GetDomainObjectString (domainObject));
+      s_log.DebugFormat ("RelationChanged: {0} ({1})", propertyName, GetDomainObjectString (domainObject));
     }
 
     public void FilterQueryResult (DomainObjectCollection queryResult, IQuery query)
