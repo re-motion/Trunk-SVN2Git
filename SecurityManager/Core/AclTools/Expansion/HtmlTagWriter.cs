@@ -84,7 +84,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return this;
     }
 
-    // TODO AE: Test exception case.
     public HtmlTagWriter TagEnd (string elementName)
     {
       string ElementNameExpected = _openElementStack.Pop();
