@@ -6,43 +6,9 @@
   height: 1.1em;
 }
 
-div.singleView
-{
-  background-color:#083779;
-  padding:5px;
-}        
-
-td.singleViewView
-{
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-}
-
-div.singleViewView div.content
-{
-  padding-bottom: 0;
-  padding-bottom: 0.5em;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-}
-
-td.singleViewTopControls
-{
-  background-color: White;
-  padding-left:0.5em;
-  padding-top:0.3em;
-  padding-bottom: 0.3em;
-}
-
-div.singleViewBottomControls
-{
-  padding-left:0.5em;
-  padding-top:0.3em;
-  padding-bottom: 0.3em;
-}
-
 h1.pageTitle
 {
+  margin: 0;
 }
 
 h2.accessControlListTitle
@@ -53,14 +19,7 @@ h2.accessControlListTitle
 
 div.singleViewBottomControls button
 {
-  width:1%;
   margin-right:0.5em;
-}
-
-div.singleViewBottomControls button span.buttonBody
-{
-  padding-left:15px;
-  padding-right:15px;
 }
 
 button.imageButton
@@ -90,20 +49,12 @@ td.stateCombinationsButtons button
 
 td.accessControlEntriesButtons button
 {
-  width:1%;
-}
-
-td.stateCombinationsButtons button span.buttonBody,
-td.accessControlEntriesButtons button span.buttonBody
-{
-  padding-left:15px;
-  padding-right:15px;
 }
 
 td.stateCombinationsButtons,
 td.stateCombinationsContainer
 {
-  border-right: solid 1px #d4d0c8;
+  border-right: solid 1px #005588;
   padding-top: 0.5em;
   padding-right: 0.5em;
   width: 12em;
@@ -117,7 +68,7 @@ td.stateCombinationsButtons
 td.accessControlEntriesButtons,
 td.accessControlEntriesContainer
 {
-  border-left: solid 1px #d4d0c8;
+  border-left: solid 1px #005588;
   padding-left: 0.5em;
   padding-top: 0.5em;
 }
@@ -174,7 +125,7 @@ table.accessControlEntriesTable tr.odd
 
 table.accessControlEntriesTable tr.even
 {
-	background-color: #F4F4F4;
+	background-color: #E1ECFC;
 }
 
 table.accessControlEntriesTable td.conditionCell
@@ -188,8 +139,8 @@ table.accessControlEntriesTable td.conditionCell
 table.accessControlEntriesTable td.permissionCell
 {
   padding: 0.25em;
-  border-left: solid 1px #d4d0c8;
-  border-right: solid 1px #d4d0c8;
+  border-left: solid 1px #005588;
+  border-right: solid 1px #005588;
 }
 
 table.accessControlEntriesTable td.buttonCell
