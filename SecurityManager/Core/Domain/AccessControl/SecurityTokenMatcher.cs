@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -86,10 +87,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
           throw CreateInvalidOperationException ("The value 'Parent' is not a valid value for matching the 'TenantHierarchyCondition'.");
 
         case TenantHierarchyCondition.ThisAndParent:
-          return GetThisAndParents (referenceTenant).Contains (principal.Tenant);
+          return referenceTenant.CreateSequence (t => t.Parent).Contains (principal.Tenant);
 
         default:
-          throw CreateInvalidOperationException ("The value '{0}' is not a valid value for 'TenantHierarchyCondition'.", _ace.TenantHierarchyCondition);
+          throw CreateInvalidOperationException (
+              "The value '{0}' is not a valid value for 'TenantHierarchyCondition'.", _ace.TenantHierarchyCondition);
       }
     }
 
@@ -162,13 +164,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
         case GroupCondition.SpecificGroup:
           return MatchPrincipalAgainstGroup (token.Principal, _ace.SpecificGroup, _ace.GroupHierarchyCondition);
 
-        // BranchOfOwningGroup matches the ACE iff: The (security token) owning group or any of its parent-groups has the 
-        // group type stored in the ACE - and - the principal is a member of any of the groups which come below the first
-        // group in the group hierarchy including and above the owning group whose group type is equal to the ACE-group-type.
-        // Algorithmically the matcher first walks upward the group hierarchy of the owning group (including the owning group itself),
-        // returning the first group whose group type is equal to the group type stored in the ACE. 
-        // Starting with this group, it then traverses the group hierarchy downward and checks if any of the groups is a member
-        // of the principal's groups; if yes, the ACE matches, otherwise it does not.
+          // BranchOfOwningGroup matches the ACE iff: The (security token) owning group or any of its parent-groups has the 
+          // group type stored in the ACE - and - the principal is a member of any of the groups which come below the first
+          // group in the group hierarchy including and above the owning group whose group type is equal to the ACE-group-type.
+          // Algorithmically the matcher first walks upward the group hierarchy of the owning group (including the owning group itself),
+          // returning the first group whose group type is equal to the group type stored in the ACE. 
+          // Starting with this group, it then traverses the group hierarchy downward and checks if any of the groups is a member
+          // of the principal's groups; if yes, the ACE matches, otherwise it does not.
         case GroupCondition.BranchOfOwningGroup:
           return MatchPrincipalAgainstGroup (token.Principal, FindBranchRoot (token.OwningGroup), GroupHierarchyCondition.ThisAndChildren);
 
@@ -186,7 +188,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       Assertion.IsNotNull (_ace.GroupCondition == GroupCondition.BranchOfOwningGroup);
 
-      return GetThisAndParents (referenceGroup).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault ();
+      return referenceGroup.CreateSequence (g1 => g1.Parent).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault();
     }
 
     private bool MatchPrincipalAgainstGroup (User principal, Group referenceGroup, GroupHierarchyCondition groupHierarchyCondition)
@@ -200,8 +202,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       var roles = GetMatchingPrincipalRoles (principal);
       var principalGroups = roles.Select (r => r.Group);
 
-      Func<bool> isPrincipalMatchingReferenceGroupOrParents = () => principalGroups.Intersect (GetThisAndParents (referenceGroup)).Any();
-      Func<bool> isPrincipalMatchingReferenceGroupOrChildren = () => principalGroups.SelectMany (g => GetThisAndParents (g)).Contains (referenceGroup);
+      Func<bool> isPrincipalMatchingReferenceGroupOrParents =
+          () => principalGroups.Intersect (referenceGroup.CreateSequence (g => g.Parent)).Any();
+      
+      Func<bool> isPrincipalMatchingReferenceGroupOrChildren =
+          () => principalGroups.SelectMany (g => g.CreateSequence (g1 => g1.Parent)).Contains (referenceGroup);
 
       switch (groupHierarchyCondition)
       {
@@ -253,19 +258,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private InvalidOperationException CreateInvalidOperationException (string message, params object[] args)
     {
       return new InvalidOperationException (string.Format (message, args));
-    }
-
-    //TODO MK: Move to Linq-Extensions, see also ScriptUtility
-    private IEnumerable<Group> GetThisAndParents (Group group)
-    {
-      for (var current = group; current != null; current = current.Parent)
-        yield return current;
-    }
-
-    private IEnumerable<Tenant> GetThisAndParents (Tenant tenant)
-    {
-      for (var current = tenant; current != null; current = current.Parent)
-        yield return current;
     }
   }
 }

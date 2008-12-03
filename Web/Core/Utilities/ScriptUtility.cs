@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
+using Remotion.Collections;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
@@ -170,7 +171,7 @@ namespace Remotion.Web.Utilities
       var scriptManager = ScriptManager.GetCurrent (control.Page);
       if (scriptManager != null && scriptManager.IsInAsyncPostBack)
       {
-        bool isInsidePartialRenderingUpdatePanel = GetThisAndParents (control)
+        bool isInsidePartialRenderingUpdatePanel = control.CreateSequence (c => c.Parent)
           .Where (c => c is UpdatePanel && ((UpdatePanel)c).IsInPartialRendering)
           .Cast<UpdatePanel>()
           .Any();
@@ -181,13 +182,6 @@ namespace Remotion.Web.Utilities
       {
         return true;
       }
-    }
-
-    //TODO MK: Move to Linq-Extensions
-    private static IEnumerable<Control> GetThisAndParents (Control control)
-    {
-      for (var current = control; current != null; current = current.Parent)
-        yield return current;
     }
   }
 }
