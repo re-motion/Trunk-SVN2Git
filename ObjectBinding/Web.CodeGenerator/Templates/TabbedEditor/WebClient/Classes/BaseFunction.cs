@@ -32,12 +32,12 @@ namespace $PROJECT_ROOTNAMESPACE$.Classes
   public abstract class BaseFunction : WxeFunction
   {
     protected BaseFunction(params object[] args)
-      : this(WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent, args)
+      : this(WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParentWithAutoCommit, args)
     {
     }
 
     protected BaseFunction(ITransactionMode transactionMode, params object[] args)
-      : base(WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent, args)
+      : base(WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParentWithAutoCommit, args)
     {
     }
   }
