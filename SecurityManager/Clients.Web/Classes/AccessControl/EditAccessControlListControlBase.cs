@@ -92,7 +92,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
         editAccessControlEntryControl.ID = "Ace_" + i;
         editAccessControlEntryControl.BusinessObject = accessControlEntry;
         editAccessControlEntryControl.Delete += EditAccessControlEntryControl_Delete;
-        editAccessControlEntryControl.CssClass = (i%2 == 0) ? "even" : "odd";
+        editAccessControlEntryControl.CssClass = ((i + 1 ) % 2 == 0) ? "even" : "odd";
 
         table.Controls.Add (editAccessControlEntryControl);
 

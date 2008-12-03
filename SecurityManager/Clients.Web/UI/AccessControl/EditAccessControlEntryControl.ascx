@@ -46,8 +46,7 @@
     <td id="DetailsCell" runat="server">
     <table id="FormGrid" runat="server" class="accessControlEntryExpanded">
       <tr>
-        <td class="accessControlEntryTitleCell" colspan="2">
-        </td>
+        <td colspan="2"></td>
       </tr>
       <tr>
         <td><remotion:SmartLabel ID="TenantLabel" runat="server" ForControl="TenantConditionField"/></td>

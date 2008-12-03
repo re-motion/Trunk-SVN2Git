@@ -363,7 +363,17 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected void ToggleAccessControlEntryButton_Click (object sender, EventArgs e)
     {
-      IsCollapsed = !IsCollapsed;
+      if (IsCollapsed)
+      {
+        IsCollapsed = false;
+      }
+      else if (Validate())
+      {
+        SaveValues (false);
+        LoadValues (false);
+        IsCollapsed = true;
+      }
+
     }
 
     private string GetIconUrl (string url)
