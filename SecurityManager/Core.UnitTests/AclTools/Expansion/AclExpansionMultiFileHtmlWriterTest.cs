@@ -112,9 +112,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       const string unityInput = "µabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       const string forbiddenInput =  "\"?/\\*:";
       string forbiddenInputResult = new String ('_', forbiddenInput.Length);
-      Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (unityInput), Is.EqualTo (unityInput));
-      Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (forbiddenInput), Is.EqualTo (forbiddenInputResult));
-      Assert.That (AclExpansionMultiFileHtmlWriter.ToValidFileName (forbiddenInput + unityInput + forbiddenInput + unityInput), Is.EqualTo (forbiddenInputResult + unityInput + forbiddenInputResult  + unityInput));
+      Assert.That (AclExpansionHtmlWriterImplementationBase.ToValidFileName (unityInput), Is.EqualTo (unityInput));
+      Assert.That (AclExpansionHtmlWriterImplementationBase.ToValidFileName (forbiddenInput), Is.EqualTo (forbiddenInputResult));
+      Assert.That (AclExpansionHtmlWriterImplementationBase.ToValidFileName (forbiddenInput + unityInput + forbiddenInput + unityInput), Is.EqualTo (forbiddenInputResult + unityInput + forbiddenInputResult + unityInput));
     }
 
 

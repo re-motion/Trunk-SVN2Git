@@ -24,13 +24,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// into an automatically generated directory.
   /// </summary>
   // TODO AE: Remove commented code. (Do not commit.)
-  public class AclExpansionMultiFileHtmlWriter : AclExpansionHtmlWriterBase
+  public class AclExpansionMultiFileHtmlWriter : IAclExpansionWriter
   {
     public const string MasterFileName = "_AclExpansionMain_";
 
     private readonly ITextWriterFactory _textWriterFactory;
     private readonly bool _indentXml;
     private AclExpansionHtmlWriterSettings _detailHtmlWriterSettings = new AclExpansionHtmlWriterSettings();
+    private AclExpansionHtmlWriterImplementationBase _implementation;
 
     public AclExpansionMultiFileHtmlWriter (ITextWriterFactory textWriterFactory, bool indentXml)
     {
@@ -55,30 +56,31 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     //}
 
 
-    public override void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
+    public void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       using (var textWriter = _textWriterFactory.NewTextWriter (MasterFileName))
       {
-        htmlTagWriter = new HtmlTagWriter (textWriter, _indentXml);
+        //htmlTagWriter = new HtmlTagWriter (textWriter, _indentXml);
+        _implementation = new AclExpansionHtmlWriterImplementationBase (textWriter, _indentXml);
 
-        WritePageStart ("re-motion ACL Expansion - User Master Table");
-        WriteTableStart ("remotion-user-table");
+        _implementation.WritePageStart ("re-motion ACL Expansion - User Master Table");
+        _implementation.WriteTableStart ("remotion-user-table");
         WriteTableHeaders ();
         WriteTableBody (aclExpansion);
-        WriteTableEnd ();
-        WritePageEnd ();
+        _implementation.WriteTableEnd ();
+        _implementation.WritePageEnd ();
       }
     }
 
     private void WriteTableHeaders ()
     {
-      htmlTagWriter.Tags.tr (); // TODO AE: Consider using <TH>?
-      WriteHeaderCell ("User");
-      WriteHeaderCell ("First Name");
-      WriteHeaderCell ("Last Name");
-      WriteHeaderCell ("Access Rights");
-      htmlTagWriter.Tags.trEnd ();
+      _implementation.HtmlTagWriter.Tags.tr (); // TODO AE: Consider using <TH>?
+      _implementation.WriteHeaderCell ("User");
+      _implementation.WriteHeaderCell ("First Name");
+      _implementation.WriteHeaderCell ("Last Name");
+      _implementation.WriteHeaderCell ("Access Rights");
+      _implementation.HtmlTagWriter.Tags.trEnd ();
     }
 
 
@@ -90,38 +92,37 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       foreach (var user in users)
       {
-        WriteTableRowBeginIfNotInTableRow (); // TODO AE: Isn't it well-defined here if in a table row or not?
+        _implementation.WriteTableRowBeginIfNotInTableRow (); // TODO QAE: Isn't it well-defined here if in a table row or not?; MGi: No, due to rowspan
         WriteTableBody_ProcessUser (user, aclExpansion);
-        WriteTableRowEnd ();
+        _implementation.WriteTableRowEnd ();
       }
     }
 
     // TODO AE: Rename to WriteUser or ProcessUser.
     private void WriteTableBody_ProcessUser (User user, List<AclExpansionEntry> aclExpansion)
     {
-      WriteTableData (user.UserName);
-      WriteTableData (user.FirstName);
-      WriteTableData (user.LastName);
+      _implementation.WriteTableData (user.UserName);
+      _implementation.WriteTableData (user.FirstName);
+      _implementation.WriteTableData (user.LastName);
 
-      string userDetailFileName = ToValidFileName (user.UserName); // TODO AE: Is UserName guaranteed to be unique regarding that forbidden characters are replaced by "_"?
+      string userDetailFileName = AclExpansionHtmlWriterImplementationBase.ToValidFileName (user.UserName); // TODO AE: Is UserName guaranteed to be unique regarding that forbidden characters are replaced by "_"?
       using (var detailTextWriter = _textWriterFactory.NewTextWriter (userDetailFileName))
       {
 
         var aclExpansionSingleUser = GetAccessControlEntriesForUser (aclExpansion, user);
-        var detailAclExpansionHtmlWriter = new AclExpansionHtmlWriter (detailTextWriter, false);
-        detailAclExpansionHtmlWriter.Settings = _detailHtmlWriterSettings;
+        var detailAclExpansionHtmlWriter = new AclExpansionHtmlWriter (detailTextWriter, false, _detailHtmlWriterSettings);
         detailAclExpansionHtmlWriter.WriteAclExpansion (aclExpansionSingleUser);
       }
 
       string relativePath = _textWriterFactory.GetRelativePath (MasterFileName, userDetailFileName);
-      WriteTableRowBeginIfNotInTableRow (); // TODO AE: Isn't it well-defined here if in a table row or not?
-      htmlTagWriter.Tags.td ();
-      htmlTagWriter.Tag ("a");
-      htmlTagWriter.Attribute ("href", relativePath);
-      htmlTagWriter.Attribute ("target", "_blank");
-      htmlTagWriter.Value (relativePath);
-      htmlTagWriter.TagEnd ("a");
-      htmlTagWriter.Tags.tdEnd ();
+      _implementation.WriteTableRowBeginIfNotInTableRow (); // TODO AE: Isn't it well-defined here if in a table row or not?
+      _implementation.HtmlTagWriter.Tags.td ();
+      _implementation.HtmlTagWriter.Tag ("a");
+      _implementation.HtmlTagWriter.Attribute ("href", relativePath);
+      _implementation.HtmlTagWriter.Attribute ("target", "_blank");
+      _implementation.HtmlTagWriter.Value (relativePath);
+      _implementation.HtmlTagWriter.TagEnd ("a");
+      _implementation.HtmlTagWriter.Tags.tdEnd ();
     }
 
 

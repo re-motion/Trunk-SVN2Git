@@ -912,14 +912,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     // Helper Methods
     //--------------------------------------------------------------------------------------------------------------------------------
 
-    // TODO AE: Make private.
-    public void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)
+    private void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)
     {
       string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + "_.html";
       using (var streamWriter = new StreamWriter (aclExpansionFileName))
       {
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true);
-        aclExpansionHtmlWriter.Settings.OutputRowCount = outputRowCount;
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true, 
+          new AclExpansionHtmlWriterSettings { OutputRowCount = outputRowCount });
+        //aclExpansionHtmlWriter.Settings.OutputRowCount = outputRowCount;
         aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       }
     }

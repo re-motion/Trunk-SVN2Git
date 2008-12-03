@@ -53,8 +53,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
         {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
-          aclExpansionHtmlWriter.Settings.OutputRowCount = true;
+          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true, 
+            new AclExpansionHtmlWriterSettings { OutputRowCount = true });
+          //aclExpansionHtmlWriter.Settings.OutputRowCount = true;
           aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
           //string result = textWriter.ToString ();
           //To.ConsoleLine.e (() => result);
@@ -132,8 +133,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (var textWriter = new StreamWriter (fileName))
       {
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true);
-        aclExpansionHtmlWriter.Settings.OutputRowCount = true;
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true,
+            new AclExpansionHtmlWriterSettings { OutputRowCount = true });
+        //aclExpansionHtmlWriter.Settings.OutputRowCount = true;
         aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       }
     }

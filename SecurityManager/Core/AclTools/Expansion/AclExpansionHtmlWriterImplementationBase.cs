@@ -20,7 +20,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <summary>
   /// Abstract base class for <see cref="IAclExpansionWriter"/>|s which write HTML format.
   /// </summary>
-  public abstract class AclExpansionHtmlWriterBase : IAclExpansionWriter
+  public class AclExpansionHtmlWriterImplementationBase
   {
     public static string ToValidFileName (string name)
     {
@@ -41,52 +41,58 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return sb.ToString ();
     }
 
-    protected HtmlTagWriter htmlTagWriter;
+    private HtmlTagWriter _htmlTagWriter;
     private bool _isInTableRow;
 
 
-    protected void WriteTableEnd ()
+    public AclExpansionHtmlWriterImplementationBase (TextWriter textWriter, bool indentXml)
     {
-      htmlTagWriter.Tags.tableEnd ();
-    }
-
-    protected virtual void WriteTableStart (string tableId)
-    {
-      htmlTagWriter.Tags.table ().Attribute ("style", "width: 100%;").Attribute ("class", "aclExpansionTable").Attribute ("id", tableId);
+      _htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
 
 
-    protected virtual HtmlTagWriter WritePageStart (string pageTitle)
+    public void WriteTableEnd ()
     {
-      htmlTagWriter.WritePageHeader (pageTitle, "AclExpansion.css");
+      _htmlTagWriter.Tags.tableEnd ();
+    }
+
+    public virtual void WriteTableStart (string tableId)
+    {
+      _htmlTagWriter.Tags.table ().Attribute ("style", "width: 100%;").Attribute ("class", "aclExpansionTable").Attribute ("id", tableId);
+    }
+
+
+    public virtual HtmlTagWriter WritePageStart (string pageTitle)
+    {
+      _htmlTagWriter.WritePageHeader (pageTitle, "AclExpansion.css");
 
       // BODY // TODO AE: Required?
-      htmlTagWriter.Tag ("body");
-      return htmlTagWriter;
+      _htmlTagWriter.Tag ("body");
+      return _htmlTagWriter;
     }
 
 
-    protected virtual void WritePageEnd ()
+    public virtual void WritePageEnd ()
     {
-      htmlTagWriter.TagEnd ("body");
-      htmlTagWriter.TagEnd ("html");
+      _htmlTagWriter.TagEnd ("body");
+      _htmlTagWriter.TagEnd ("html");
 
-      htmlTagWriter.Close ();
+      _htmlTagWriter.Close ();
     }
 
-    protected virtual void WriteHeaderCell (string columnName)
+    public virtual void WriteHeaderCell (string columnName)
     {
-      htmlTagWriter.Tags.th ().Attribute ("class", "header");
-      htmlTagWriter.Value (columnName);
-      htmlTagWriter.Tags.thEnd ();
+      _htmlTagWriter.Tags.th ().Attribute ("class", "header");
+      _htmlTagWriter.Value (columnName);
+      _htmlTagWriter.Tags.thEnd ();
     }
 
-    protected virtual void WriteTableData (string value)
+    public virtual void WriteTableData (string value)
     {
       WriteTableRowBeginIfNotInTableRow ();
-      htmlTagWriter.Tags.td ();
-      htmlTagWriter.Value (value);
-      htmlTagWriter.Tags.tdEnd ();
+      _htmlTagWriter.Tags.td ();
+      _htmlTagWriter.Value (value);
+      _htmlTagWriter.Tags.tdEnd ();
     }
 
 
@@ -95,17 +101,21 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       if (!_isInTableRow)
       {
-        htmlTagWriter.Tags.tr ();
+        _htmlTagWriter.Tags.tr ();
         _isInTableRow = true;
       }
     }
 
     public virtual void WriteTableRowEnd ()
     {
-      htmlTagWriter.Tags.trEnd ();
+      _htmlTagWriter.Tags.trEnd ();
       _isInTableRow = false;
     }
 
-    public abstract void WriteAclExpansion (List<AclExpansionEntry> aclExpansion); // TODO AE: Remove abstract method, it is not used from base class variables.
+    //public abstract void WriteAclExpansion (List<AclExpansionEntry> aclExpansion); // TODO AE: Remove abstract method, it is not used from base class variables.
+    public HtmlTagWriter HtmlTagWriter
+    {
+      get { return _htmlTagWriter; }
+    }
   }
 }
