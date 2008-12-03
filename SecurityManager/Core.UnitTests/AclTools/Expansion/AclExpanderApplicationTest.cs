@@ -10,7 +10,6 @@
 
 using System;
 using System.IO;
-using System.Windows;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;

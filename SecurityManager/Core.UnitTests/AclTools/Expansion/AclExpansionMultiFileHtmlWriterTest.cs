@@ -11,7 +11,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -45,7 +44,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (stringWriterFactory, false);
         aclExpansionMultiFileHtmlWriter.WriteAclExpansion (aclExpansionEntryList);
         //To.ConsoleLine.e (stringWriterFactory);
-        Clipboard.SetText(WriteStringWriterFactory (stringWriterFactory));
 
         Assert.That (stringWriterFactory.Count, Is.EqualTo (6));
 

@@ -25,7 +25,6 @@ using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
-using System.Windows;
 using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
