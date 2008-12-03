@@ -59,6 +59,8 @@
     </None>
     <None Include="SecurityManager.Core.build" />
     <Compile Include="AclTools\Expansion\AclExpander.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterBaseImplementation.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterImplementation.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplication.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationSettings.cs" />

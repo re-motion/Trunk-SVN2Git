@@ -12,9 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
-using Remotion.Collections;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -29,12 +26,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <see cref="IAclExpansionWriter"/> which outputs a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>
   /// as a single HTML table.
   /// </summary>
-  // TODO AE: Remove commented code. (Do not commit.)
   // TODO AE: Globalization is not supported for hard-coded strings. Is this a problem for this application?
   // TODO AE: Split this class! Extract most of the private methods to another class to improve clarity (and to allow for more fine-grained testability).
   public class AclExpansionHtmlWriter : AclExpansionHtmlWriterBase
   {
-    //private readonly AclExpansionTree _aclExpansionTree;
     private AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
     private string _statelessAclStateHtmlText = "(stateless)";
     private string _aclWithNoAssociatedStatesHtmlText = "(no associated states)";
@@ -43,21 +38,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
     }
-
-
-    //public AclExpansionHtmlWriter (List<AclExpansionEntry> aclExpansion, TextWriter textWriter, bool indentXml)
-    //{
-    //  // TODO AE: Delegate to other ctor.
-    //  _aclExpansionTree = new AclExpansionTree (aclExpansion);
-    //  htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
-    //}
-
-    //public AclExpansionHtmlWriter (AclExpansionTree aclExpansionTree, TextWriter textWriter, bool indentXml)
-    //{
-    //  _aclExpansionTree = aclExpansionTree;
-    //  htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
-    //}
-    
+   
 
     public AclExpansionHtmlWriterSettings Settings
     {
@@ -117,7 +98,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
 
-    private void WriteTableDataAddendum (Object addendum) // TODO AE: Use "object".
+    private void WriteTableDataAddendum (object addendum) 
     {
       if (addendum != null)
       {
@@ -142,14 +123,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    // TODO AE: Changed unused return value to void.
-    private HtmlTagWriter WriteRowspanAttribute (int rowCount)
+    private void WriteRowspanAttribute (int rowCount)
     {
       if (rowCount > 0)
       { 
         htmlTagWriter.Attribute ("rowspan", Convert.ToString (rowCount));
       }
-      return htmlTagWriter;
     }
 
     private void WriteTableDataForRole (Role role, int rowCount)
@@ -168,13 +147,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    private void WriteTableDataForStates (AclExpansionEntry aclExpansionEntry)
-    {
-      htmlTagWriter.Tags.td ();
-      WriteTableDataBodyForSingleState(aclExpansionEntry);
-      htmlTagWriter.Tags.tdEnd ();
-    }
-
     private void WriteTableDataBodyForSingleState (AclExpansionEntry aclExpansionEntry)
     {
       if (aclExpansionEntry.AccessControlList is StatelessAccessControlList)
@@ -183,18 +155,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
       else
       {
-        // TODO AE: Replace comment by extracting method and naming it appropriately.
-        // Get the states by flattening the StateCombinations of the AccessControlEntry ACL 
-        //var stateDefinitions = aclExpansionEntry.StateCombinations.SelectMany (x => x.GetStates()).OrderBy (x => x.DisplayName).ToArray();
-        var stateDefinitions = aclExpansionEntry.GetStateCombinations().SelectMany (x => x.GetStates ()).OrderBy (x => x.DisplayName);
-        
-        // TODO AE: Is this semantically equivalent to the following?
-        // TODO AE: from combination in aclExpansionEntry.StateCombinations
-        // TODO AE: from state in combination.GetStates()
-        // TODO AE: orderby state.DisplayName
-        // TODO AE: select state
-
-        //htmlTagWriter.Value (aclExpansionEntry.StateCombinations + ", "); // !!!!!!!! SPIKE ONLY !!!!!!!!! // TODO AE: Remove it.
+        IOrderedEnumerable<StateDefinition> stateDefinitions = GetAllStatesForAclExpansionEntry(aclExpansionEntry);
 
         if (!stateDefinitions.Any ())
         { 
@@ -211,13 +172,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
             }
 
             string stateName = Settings.ShortenNames ? stateDefiniton.ShortName() : stateDefiniton.DisplayName;
-            //string stateName = stateDefiniton.DisplayName + "(" + stateDefiniton.Name + "," + stateDefiniton.Value + ")";
 
             htmlTagWriter.Value (stateName);
             firstElement = false;
           }
         }
       }
+    }
+
+    private IOrderedEnumerable<StateDefinition> GetAllStatesForAclExpansionEntry (AclExpansionEntry aclExpansionEntry)
+    {
+      // Get all states for AclExpansionEntry by flattening the StateCombinations of the AccessControlEntry ACL.
+      return aclExpansionEntry.GetStateCombinations().SelectMany (x => x.GetStates ()).OrderBy (x => x.DisplayName);
     }
 
     private void WriteTableDataForAccessTypes (AccessTypeDefinition[] accessTypeDefinitions)
@@ -243,13 +209,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableDataForBodyConditions (AclExpansionAccessConditions accessConditions)
     {
       WriteTableDataForBooleanCondition (accessConditions.IsOwningUserRequired);
-      
-      //WriteTableDataForBooleanCondition (conditions.HasOwningGroupCondition);
       WriteTableDataForOwningGroupCondition (accessConditions);
-      
-      //WriteTableDataForBooleanCondition (conditions.HasOwningTenantCondition);
       WriteTableDataForOwningTenantCondition (accessConditions);
-
       WriteTableDataForAbstractRoleCondition(accessConditions);
     }
 
@@ -272,16 +233,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
 
       var groupHierarchyCondition = conditions.GroupHierarchyCondition;
+
+      // Bitwise operation is OK (alas marking GroupHierarchyCondition with [Flags] is not supported). 
       if ((groupHierarchyCondition & GroupHierarchyCondition.Parent) != 0)
       {
-        //htmlTagWriter.Value (",");
         htmlTagWriter.Tags.br ();
         htmlTagWriter.Value ("or its parents");
       }
 
+      // Bitwise operation is OK (alas marking GroupHierarchyCondition with [Flags] is not supported). 
       if ((groupHierarchyCondition & GroupHierarchyCondition.Children) != 0)
       {
-        //htmlTagWriter.Value (",");
         htmlTagWriter.Tags.br ();
         htmlTagWriter.Value ("or its children");
       }
@@ -302,9 +264,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
 
       var tenantHierarchyCondition = conditions.TenantHierarchyCondition;
+      // Bitwise operation is OK (alas marking TenantHierarchyCondition with [Flags] is not supported). 
       if ((tenantHierarchyCondition & TenantHierarchyCondition.Parent) != 0)
       {
-        //htmlTagWriter.Value (",");
         htmlTagWriter.Tags.br ();
         htmlTagWriter.Value ("or its parents");
       }
@@ -362,54 +324,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classNode.NumberLeafNodes);
       }
 
-      // AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>
       WriteTableBody_ProcessStates(classNode.Children);
     }
 
-#if(false) // TODO AE: Remove conditional symbol, remove #else part
-    private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
-    {
-      // States Output
-      foreach (var aclExpansionEntry in states)
-      {
-        WriteTableRowBeginIfNotInTableRow ();
 
-        WriteTableDataForStates (aclExpansionEntry);
-        WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
-        WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
-        if (Settings.OutputDeniedRights)
-        { 
-          WriteTableDataForAccessTypes (aclExpansionEntry.DeniedAccessTypes);
-        }
-
-        WriteTableRowEnd ();
-      }
-    }
-#else
-    //private void WriteTableBody_ProcessStates (IList<AclExpansionEntry> states)
     private void WriteTableBody_ProcessStates (IList<AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> states)
     {
-      //var statesGroupedByOnlyDiffersInStates = states.GroupBy (aee => aee, aee => aee, AclExpansionEntryIgnoreStateEqualityComparer);
-
-      //var statesGroupedByOnlyDiffersInStates = states.GroupBy (aee => aee, aee => aee, 
-      //  AclExpansionEntryIgnoreStateEqualityComparer).Select(x => AclExpansionTreeNode.New (x.Key,x.Count(),x.ToList()));
-
-      //var xxx = from entry in states
-      //          orderby entry.User.DisplayName
-      //          group entry by entry.User
-      //          into grouping
-      //          select AclExpansionTreeNode.New (grouping.Key, grouping.Count(), grouping.ToList());
-
-
-      //var xxx2 =
-      //    states.OrderBy (entry => entry.User.DisplayName).GroupBy (entry => entry.User).Select (
-      //        grouping => AclExpansionTreeNode.New (grouping.Key, grouping.Count(), grouping.ToList()));
-
-
-      // TODO: Fix rowspan to take reduced number of table output rows into account:
-      // Move grouping to AclExpansionTree (alas need to adapt all "AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, Ac...")
-      // for this in this class).
-
       // States Output
       foreach (var aclExpansionTreeNode in states)
       {
@@ -419,7 +339,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         WriteTableDataForStates (aclExpansionTreeNode.Children);
 
         AclExpansionEntry aclExpansionEntry = aclExpansionTreeNode.Key;
-        //WriteTableDataForStates (aclExpansionEntry); // TEST !!!!
         WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
         WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
         if (Settings.OutputDeniedRights)
@@ -432,14 +351,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    //private void WriteTableDataForStates (IGrouping<AclExpansionEntry,AclExpansionEntry> aclExpansionEntryGrouping)
     private void WriteTableDataForStates (IList<AclExpansionEntry> aclExpansionEntriesWhichOnlyDiffersInStates)
     {
       htmlTagWriter.Tags.td ();
 
       bool firstElement = true;
-
-      //To.ConsoleLine.e ("number of elements in statesGroupedByOnlyDiffersInStates: ", aclExpansionEntriesWhichOnlyDiffersInStates.Count ());
 
       foreach (AclExpansionEntry aclExpansionEntry in aclExpansionEntriesWhichOnlyDiffersInStates)
       {
@@ -453,9 +369,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
       htmlTagWriter.Tags.tdEnd ();
     }
- 
-
-#endif
 
   }
 }
