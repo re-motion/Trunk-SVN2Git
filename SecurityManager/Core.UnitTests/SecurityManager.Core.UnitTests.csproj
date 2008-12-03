@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{65B86B2E-D54D-425B-B681-82449E31BA01}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderAclFinderTest.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettingsTest.cs" />
     <Compile Include="AclTools\Expansion\EnumerableEqualsWrapperTest.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreatorTest.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterFactoryBaseTest.cs" />
