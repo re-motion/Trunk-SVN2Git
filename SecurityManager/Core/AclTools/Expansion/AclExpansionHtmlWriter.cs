@@ -11,10 +11,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
-using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -26,42 +24,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// <see cref="IAclExpansionWriter"/> which outputs a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>
   /// as a single HTML table.
   /// </summary>
-  // TODO AE: Globalization is not supported for hard-coded strings. Is this a problem for this application?
-  // TODO AE: Split this class! Extract most of the private methods to another class to improve clarity (and to allow for more fine-grained testability).
   public class AclExpansionHtmlWriter : IAclExpansionWriter
   {
     private readonly AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
-    //private string _statelessAclStateHtmlText = "(stateless)";
-    //private string _aclWithNoAssociatedStatesHtmlText = "(no associated states)";
 
     private readonly AclExpansionHtmlWriterImplementation _implementation;
 
     public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml, AclExpansionHtmlWriterSettings settings)
     {
-      //htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
       _settings = settings;
       _implementation = new AclExpansionHtmlWriterImplementation (textWriter, indentXml, settings);
     }
    
-
-    public AclExpansionHtmlWriterSettings Settings
-    {
-      get { return _settings; }
-      //set { _settings = value; }
-    }
-
-
-    //public string StatelessAclStateHtmlText
-    //{
-    //  get { return _statelessAclStateHtmlText; }
-    //  set { _statelessAclStateHtmlText = value; }
-    //}
-    
-    //public string AclWithNoAssociatedStatesHtmlText
-    //{
-    //  get { return _aclWithNoAssociatedStatesHtmlText; }
-    //  set { _aclWithNoAssociatedStatesHtmlText = value; }
-    //}
 
     public AclExpansionHtmlWriterImplementation Implementation
     {
@@ -96,199 +70,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       Implementation.WriteHeaderCell ("Owning Tenant Equals");
       Implementation.WriteHeaderCell ("User Must Have Abstract Role");
       Implementation.WriteHeaderCell ("Access Rights");
-      if (Settings.OutputDeniedRights)
+      if (_settings.OutputDeniedRights)
       {
         Implementation.WriteHeaderCell ("Denied Rights");
       }
       Implementation.HtmlTagWriter.Tags.trEnd ();
     }
-
-
-
-    //private void WriteTableDataAddendum (object addendum) 
-    //{
-    //  if (addendum != null)
-    //  {
-    //    htmlTagWriter.Value (" (");
-    //    htmlTagWriter.Value (addendum);
-    //    htmlTagWriter.Value (") ");
-    //  }
-    //}
-
-
-    //private void WriteTableDataWithRowCount (string value, int rowCount)
-    //{
-    //  WriteTableRowBeginIfNotInTableRow ();
-    //  htmlTagWriter.Tags.td ();
-    //  WriteRowspanAttribute(rowCount);
-    //  htmlTagWriter.Value (value);
-    //  if (Settings.OutputRowCount)
-    //  { 
-    //    WriteTableDataAddendum (rowCount);
-    //  }
-    //  htmlTagWriter.Tags.tdEnd ();
-    //}
-
-
-    //private void WriteRowspanAttribute (int rowCount)
-    //{
-    //  if (rowCount > 0)
-    //  { 
-    //    htmlTagWriter.Attribute ("rowspan", Convert.ToString (rowCount));
-    //  }
-    //}
-
-    //private void WriteTableDataForRole (Role role, int rowCount)
-    //{
-    //  WriteTableRowBeginIfNotInTableRow();
-    //  htmlTagWriter.Tags.td ();
-    //  WriteRowspanAttribute (rowCount);
-    //  htmlTagWriter.Value (role.Group.DisplayName);
-    //  htmlTagWriter.Value (", ");
-    //  htmlTagWriter.Value (role.Position.DisplayName);
-    //  if (Settings.OutputRowCount)
-    //  { 
-    //    WriteTableDataAddendum (rowCount);
-    //  }
-    //  htmlTagWriter.Tags.tdEnd ();
-    //}
-
-
-    //private void WriteTableDataBodyForSingleState (AclExpansionEntry aclExpansionEntry)
-    //{
-    //  if (aclExpansionEntry.AccessControlList is StatelessAccessControlList)
-    //  {
-    //    htmlTagWriter.Value (StatelessAclStateHtmlText);
-    //  }
-    //  else
-    //  {
-    //    IOrderedEnumerable<StateDefinition> stateDefinitions = GetAllStatesForAclExpansionEntry(aclExpansionEntry);
-
-    //    if (!stateDefinitions.Any ())
-    //    { 
-    //      htmlTagWriter.Value (AclWithNoAssociatedStatesHtmlText);
-    //    }
-    //    else
-    //    {
-    //      bool firstElement = true;
-    //      foreach (StateDefinition stateDefiniton in stateDefinitions)
-    //      {
-    //        if (!firstElement)
-    //        {
-    //          htmlTagWriter.Value (", ");
-    //        }
-
-    //        string stateName = Settings.ShortenNames ? stateDefiniton.ShortName() : stateDefiniton.DisplayName;
-
-    //        htmlTagWriter.Value (stateName);
-    //        firstElement = false;
-    //      }
-    //    }
-    //  }
-    //}
-
-    //private IOrderedEnumerable<StateDefinition> GetAllStatesForAclExpansionEntry (AclExpansionEntry aclExpansionEntry)
-    //{
-    //  // Get all states for AclExpansionEntry by flattening the StateCombinations of the AccessControlEntry ACL.
-    //  return aclExpansionEntry.GetStateCombinations().SelectMany (x => x.GetStates ()).OrderBy (x => x.DisplayName);
-    //}
-
-    //private void WriteTableDataForAccessTypes (AccessTypeDefinition[] accessTypeDefinitions)
-    //{
-    //  var accessTypeDefinitionsSorted = from atd in accessTypeDefinitions
-    //                                    orderby atd.DisplayName
-    //                                    select atd;
-
-    //  htmlTagWriter.Tags.td ();
-    //  bool firstElement = true;
-    //  foreach (AccessTypeDefinition accessTypeDefinition in accessTypeDefinitionsSorted)
-    //  {
-    //    if (!firstElement)
-    //    { 
-    //      htmlTagWriter.Value (", ");
-    //    }
-    //    htmlTagWriter.Value (accessTypeDefinition.DisplayName);
-    //    firstElement = false;
-    //  }
-    //  htmlTagWriter.Tags.tdEnd ();
-    //}
-
-    //private void WriteTableDataForBodyConditions (AclExpansionAccessConditions accessConditions)
-    //{
-    //  WriteTableDataForBooleanCondition (accessConditions.IsOwningUserRequired);
-    //  WriteTableDataForOwningGroupCondition (accessConditions);
-    //  WriteTableDataForOwningTenantCondition (accessConditions);
-    //  WriteTableDataForAbstractRoleCondition(accessConditions);
-    //}
-
-    //private void WriteTableDataForAbstractRoleCondition (AclExpansionAccessConditions accessConditions)
-    //{
-    //  htmlTagWriter.Tags.td ();
-    //  htmlTagWriter.Value (accessConditions.IsAbstractRoleRequired ? accessConditions.AbstractRole.DisplayName : "");
-    //  htmlTagWriter.Tags.tdEnd ();
-    //}
-
-    //private void WriteTableDataForOwningGroupCondition (AclExpansionAccessConditions conditions)
-    //{
-    //  Assertion.IsFalse (conditions.GroupHierarchyCondition == GroupHierarchyCondition.Undefined && conditions.OwningGroup != null);
-    //  htmlTagWriter.Tags.td();
-    //  htmlTagWriter.Value (""); // To force <td></td> instead of <td />
-    //  var owningGroup = conditions.OwningGroup;
-    //  if (owningGroup != null)
-    //  { 
-    //    htmlTagWriter.Value (owningGroup.DisplayName);
-    //  }
-
-    //  var groupHierarchyCondition = conditions.GroupHierarchyCondition;
-
-    //  // Bitwise operation is OK (alas marking GroupHierarchyCondition with [Flags] is not supported). 
-    //  if ((groupHierarchyCondition & GroupHierarchyCondition.Parent) != 0)
-    //  {
-    //    htmlTagWriter.Tags.br ();
-    //    htmlTagWriter.Value ("or its parents");
-    //  }
-
-    //  // Bitwise operation is OK (alas marking GroupHierarchyCondition with [Flags] is not supported). 
-    //  if ((groupHierarchyCondition & GroupHierarchyCondition.Children) != 0)
-    //  {
-    //    htmlTagWriter.Tags.br ();
-    //    htmlTagWriter.Value ("or its children");
-    //  }
-
-    //  htmlTagWriter.Tags.tdEnd ();
-    //}
-
-
-    //private void WriteTableDataForOwningTenantCondition (AclExpansionAccessConditions conditions)
-    //{
-    //  Assertion.IsFalse (conditions.TenantHierarchyCondition == TenantHierarchyCondition.Undefined && conditions.OwningTenant != null);
-    //  htmlTagWriter.Tags.td ();
-    //  htmlTagWriter.Value (""); // To force <td></td> instead of <td />
-    //  var owningTenant = conditions.OwningTenant;
-    //  if (owningTenant != null)
-    //  { 
-    //    htmlTagWriter.Value (owningTenant.DisplayName);
-    //  }
-
-    //  var tenantHierarchyCondition = conditions.TenantHierarchyCondition;
-    //  // Bitwise operation is OK (alas marking TenantHierarchyCondition with [Flags] is not supported). 
-    //  if ((tenantHierarchyCondition & TenantHierarchyCondition.Parent) != 0)
-    //  {
-    //    htmlTagWriter.Tags.br ();
-    //    htmlTagWriter.Value ("or its parents");
-    //  }
-
-    //  htmlTagWriter.Tags.tdEnd ();
-    //}
-
-
-    //private void WriteTableDataForBooleanCondition (bool required)
-    //{
-    //  htmlTagWriter.Tags.td ();
-    //  htmlTagWriter.Value (required ? "X" : ""); // TODO AE: Test missing for one of these cases
-    //  htmlTagWriter.Tags.tdEnd ();
-    //}
-
 
 
     private void WriteTableBody (AclExpansionTree aclExpansionTree)
@@ -323,7 +110,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       if (classNode.Key != null)
       {
-        string className = Settings.ShortenNames ? classNode.Key.ShortName () : classNode.Key.DisplayName;
+        string className = _settings.ShortenNames ? classNode.Key.ShortName () : classNode.Key.DisplayName;
         Implementation.WriteTableDataWithRowCount (className, classNode.NumberLeafNodes);
       }
       else
@@ -348,7 +135,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         AclExpansionEntry aclExpansionEntry = aclExpansionTreeNode.Key;
         Implementation.WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
         Implementation.WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
-        if (Settings.OutputDeniedRights)
+        if (_settings.OutputDeniedRights)
         {
           Implementation.WriteTableDataForAccessTypes (aclExpansionEntry.DeniedAccessTypes);
         }

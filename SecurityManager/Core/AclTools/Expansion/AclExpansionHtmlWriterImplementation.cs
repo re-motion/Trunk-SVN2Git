@@ -9,10 +9,8 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -23,28 +21,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpansionHtmlWriterImplementation : AclExpansionHtmlWriterImplementationBase
   {
-    //private AclExpansionHtmlWriterSettings _settings = new AclExpansionHtmlWriterSettings ();
     private readonly AclExpansionHtmlWriterSettings _settings;
     private string _statelessAclStateHtmlText = "(stateless)";
     private string _aclWithNoAssociatedStatesHtmlText = "(no associated states)";
-
-    //AclExpansionHtmlWriterImplementation (TextWriter textWriter, bool indentXml)
-    //{
-    //  htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
-    //}
 
     public AclExpansionHtmlWriterImplementation (TextWriter textWriter, bool indentXml, AclExpansionHtmlWriterSettings settings)
       : base (textWriter, indentXml)
     {
       _settings = settings;
     }
-
-    //public AclExpansionHtmlWriterSettings Settings
-    //{
-    //  get { return _settings; }
-    //  set { _settings = value; }
-    //}
-
 
     public string StatelessAclStateHtmlText
     {
@@ -243,94 +228,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       HtmlTagWriter.Value (required ? "X" : ""); // TODO AE: Test missing for one of these cases
       HtmlTagWriter.Tags.tdEnd ();
     }
-
-
-
-    //private void WriteTableBody (AclExpansionTree aclExpansionTree)
-    //{
-    //  foreach (var userNode in aclExpansionTree.Tree)
-    //  {
-    //    WriteTableBody_ProcessUser(userNode);
-    //  }
-    //}
-
-    //private void WriteTableBody_ProcessUser (AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>>> userNode)
-    //{
-    //  WriteTableDataWithRowCount (userNode.Key.DisplayName, userNode.NumberLeafNodes);
-  
-    //  foreach (var roleNode in userNode.Children)
-    //  {
-    //    WriteTableBody_ProcessRole(roleNode);
-    //  }
-    //}
-
-    //private void WriteTableBody_ProcessRole (AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>> roleNode)
-    //{
-    //  WriteTableDataForRole (roleNode.Key, roleNode.NumberLeafNodes);
- 
-    //  foreach (var classNode in roleNode.Children)
-    //  {
-    //    WriteTableBody_ProcessClass(classNode);
-    //  }
-    //}
-
-    //private void WriteTableBody_ProcessClass (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> classNode)
-    //{
-    //  if (classNode.Key != null)
-    //  {
-    //    string className = Settings.ShortenNames ? classNode.Key.ShortName () : classNode.Key.DisplayName;
-    //    WriteTableDataWithRowCount (className, classNode.NumberLeafNodes);
-    //  }
-    //  else
-    //  {
-    //    WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classNode.NumberLeafNodes);
-    //  }
-
-    //  WriteTableBody_ProcessStates(classNode.Children);
-    //}
-
-
-    //private void WriteTableBody_ProcessStates (IList<AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> states)
-    //{
-    //  // States Output
-    //  foreach (var aclExpansionTreeNode in states)
-    //  {
-    //    WriteTableRowBeginIfNotInTableRow ();
-
-    //    // Write all states combined into one cell
-    //    WriteTableDataForStates (aclExpansionTreeNode.Children);
-
-    //    AclExpansionEntry aclExpansionEntry = aclExpansionTreeNode.Key;
-    //    WriteTableDataForBodyConditions (aclExpansionEntry.AccessConditions);
-    //    WriteTableDataForAccessTypes (aclExpansionEntry.AllowedAccessTypes);
-    //    if (Settings.OutputDeniedRights)
-    //    {
-    //      WriteTableDataForAccessTypes (aclExpansionEntry.DeniedAccessTypes);
-    //    }
-
-    //    WriteTableRowEnd ();
-    //  }
-    //}
-
-
-  //  private void WriteTableDataForStates (IList<AclExpansionEntry> aclExpansionEntriesWhichOnlyDiffersInStates)
-  //  {
-  //    HtmlTagWriter.Tags.td ();
-
-  //    bool firstElement = true;
-
-  //    foreach (AclExpansionEntry aclExpansionEntry in aclExpansionEntriesWhichOnlyDiffersInStates)
-  //    {
-  //      if (!firstElement)
-  //      {
-  //        HtmlTagWriter.Value ("; ");
-  //      }
-
-  //      WriteTableDataBodyForSingleState (aclExpansionEntry);
-  //      firstElement = false;
-  //    }
-  //    HtmlTagWriter.Tags.tdEnd ();
-  //  }    
 
   }
 }
