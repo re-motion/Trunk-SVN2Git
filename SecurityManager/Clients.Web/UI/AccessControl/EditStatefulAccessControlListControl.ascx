@@ -18,20 +18,24 @@
 <table class="accessControlList">
   <tr>
     <td class="stateCombinationsButtons">      
+      <remotion:WebButton ID="DeleteAccessControlListButton" runat="server" OnClick="DeleteAccessControlListButton_Click" CausesValidation="false" />
       <remotion:WebButton ID="NewStateCombinationButton" runat="server" OnClick="NewStateCombinationButton_Click" CausesValidation="false" />
     </td>
-    <td class="accessControlListButtons">
-      <remotion:WebButton ID="NewAccessControlEntryButton" runat="server" OnClick="NewAccessControlEntryButton_Click" CausesValidation="false" />
-      <remotion:WebButton ID="DeleteAccessControlListButton" runat="server" OnClick="DeleteAccessControlListButton_Click" CausesValidation="false" />
-    </td>
+    <td class="accessControlEntriesContainer" rowspan="2">
+      <asp:PlaceHolder id="AccessControlEntryControls" runat="server" />
+   </td>
   </tr>
   <tr>
     <td class="stateCombinationsContainer">
       <asp:PlaceHolder id="StateCombinationControls" runat="server" />
       <asp:CustomValidator ID="MissingStateCombinationsValidator" runat="server" ErrorMessage="###" OnServerValidate="MissingStateCombinationsValidator_ServerValidate" />
     </td>
-    <td class="accessControlEntriesContainer">
-      <asp:PlaceHolder id="AccessControlEntryControls" runat="server" />
+  </tr>
+  <tr>
+    <td class="stateCombinationsButtons">      
+    </td>
+    <td class="accessControlEntriesButtons" rowspan="2">
+      <remotion:WebButton ID="NewAccessControlEntryButton" runat="server" OnClick="NewAccessControlEntryButton_Click" CausesValidation="false" />
    </td>
   </tr>
 </table>

@@ -23,6 +23,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BindableObjectDataSourceControl CurrentObject;
         
         /// <summary>
+        /// DeleteAccessControlListButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton DeleteAccessControlListButton;
+        
+        /// <summary>
         /// NewStateCombinationButton control.
         /// </summary>
         /// <remarks>
@@ -32,22 +41,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.Web.UI.Controls.WebButton NewStateCombinationButton;
         
         /// <summary>
-        /// NewAccessControlEntryButton control.
+        /// AccessControlEntryControls control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton NewAccessControlEntryButton;
-        
-        /// <summary>
-        /// DeleteAccessControlListButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton DeleteAccessControlListButton;
+        protected global::System.Web.UI.WebControls.PlaceHolder AccessControlEntryControls;
         
         /// <summary>
         /// StateCombinationControls control.
@@ -68,12 +68,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::System.Web.UI.WebControls.CustomValidator MissingStateCombinationsValidator;
         
         /// <summary>
-        /// AccessControlEntryControls control.
+        /// NewAccessControlEntryButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder AccessControlEntryControls;
+        protected global::Remotion.Web.UI.Controls.WebButton NewAccessControlEntryButton;
     }
 }

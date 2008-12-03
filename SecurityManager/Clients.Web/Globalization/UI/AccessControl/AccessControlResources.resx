@@ -118,19 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="StatefulAccessControlListsTitle" xml:space="preserve">
-    <value>Object-based ACLs</value>
+    <value>Object-based permissions</value>
   </data>
   <data name="auto:MissingStateCombinationsValidator:ErrorMessage" xml:space="preserve">
     <value>Please assign at least one state.</value>
-  </data>
-  <data name="auto:PermissionsLabel:Text" xml:space="preserve">
-    <value>Permissions</value>
   </data>
   <data name="auto:SpecificTenantField:ErrorMessage" xml:space="preserve">
     <value>Please select a tenant.</value>
   </data>
   <data name="DeleteAccessControlEntryButton:Text" xml:space="preserve">
-    <value>Delete ACE</value>
+    <value>Delete row</value>
   </data>
   <data name="auto:DeleteAccessControlListButton:Text" xml:space="preserve">
     <value>Delete ACL</value>
@@ -142,25 +139,25 @@
     <value>States must be unqiue within the ACL.</value>
   </data>
   <data name="auto:NewAccessControlEntryButton:Text" xml:space="preserve">
-    <value>New ACE</value>
+    <value>Add row</value>
   </data>
   <data name="NewStatefulAccessControlListButton:Text" xml:space="preserve">
-    <value>New object-based ACL</value>
+    <value>Add object-based ACL</value>
   </data>
   <data name="auto:NewStateCombinationButton:Text" xml:space="preserve">
     <value>Assign State</value>
   </data>
   <data name="Title" xml:space="preserve">
-    <value>Access Control Lists for Class '{0}'</value>
+    <value>Edit permissions for class '{0}'</value>
   </data>
   <data name="NewStatelessAccessControlListButton:Text" xml:space="preserve">
-    <value>New class-based ACL</value>
+    <value>Add class-based ACL</value>
   </data>
   <data name="auto:RequiredStateCombinationValidator:ErrorMessage" xml:space="preserve">
     <value>Please select a state.</value>
   </data>
   <data name="StatelessAccessControlListTitle" xml:space="preserve">
-    <value>Class-based ACL</value>
+    <value>Class-based permissions</value>
   </data>
   <data name="auto:SpecificGroupField:ErrorMessage" xml:space="preserve">
     <value>Please select a group.</value>
@@ -175,19 +172,19 @@
     <value>Please select a user.</value>
   </data>
   <data name="CollapseAccessControlEntryButton:Text" xml:space="preserve">
-    <value>Collapse ACE</value>
+    <value>Hide details</value>
   </data>
   <data name="ExpandAccessControlEntryButton:Text" xml:space="preserve">
-    <value>Expand ACE</value>
+    <value>Show details</value>
   </data>
   <data name="AllPermissionsMenu:ClearAllPermissions:Text" xml:space="preserve">
-    <value>Remove all access</value>
+    <value>Remove all</value>
   </data>
   <data name="AllPermissionsMenu:DenyAllPermissions:Text" xml:space="preserve">
-    <value>Deny all access</value>
+    <value>Deny all</value>
   </data>
   <data name="AllPermissionsMenu:GrantAllPermissions:Text" xml:space="preserve">
-    <value>Grant all access</value>
+    <value>Grant all</value>
   </data>
   <data name="PermissionDenied:Text" xml:space="preserve">
     <value>'{0}'-access denied</value>
@@ -199,6 +196,6 @@
     <value>'{0}'-access not set</value>
   </data>
   <data name="BranchOfOwningGroupLabel" xml:space="preserve">
-    <value>Same</value>
+    <value>Within same</value>
   </data>
 </root>

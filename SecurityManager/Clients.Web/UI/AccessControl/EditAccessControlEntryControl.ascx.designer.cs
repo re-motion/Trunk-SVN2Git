@@ -32,6 +32,24 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         protected global::Remotion.Web.UI.Controls.FormGridManager FormGridManager;
         
         /// <summary>
+        /// ToggleAccessControlEntryButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton ToggleAccessControlEntryButton;
+        
+        /// <summary>
+        /// DeleteAccessControlEntryButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton DeleteAccessControlEntryButton;
+        
+        /// <summary>
         /// CollapsedTenantInformation control.
         /// </summary>
         /// <remarks>
@@ -84,24 +102,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.PlaceHolder PermissionsPlaceHolder;
-        
-        /// <summary>
-        /// ToggleAccessControlEntryButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton ToggleAccessControlEntryButton;
-        
-        /// <summary>
-        /// DeleteAccessControlEntryButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton DeleteAccessControlEntryButton;
         
         /// <summary>
         /// DetailsView control.

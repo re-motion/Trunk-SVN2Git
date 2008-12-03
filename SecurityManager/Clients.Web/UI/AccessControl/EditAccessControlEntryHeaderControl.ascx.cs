@@ -42,6 +42,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       var cssHorizontal = "titleCellHorizontal";
       var cssVertical = "titleCellVertical";
+      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal)); //ExpandButton
+      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal)); //DeleteButton
       HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("TenantCondition").DisplayName, cssHorizontal));
       HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("GroupCondition").DisplayName, cssHorizontal));
       HeaderCells.Controls.Add (CreateTableCell (aceClass.GetPropertyDefinition ("UserCondition").DisplayName, cssHorizontal));
@@ -49,8 +51,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal)); //Toggle Permissions
       foreach (var accessType in CurrentClassDefinition.AccessTypes)
         HeaderCells.Controls.Add (CreateTableCell (accessType.DisplayName, cssVertical));
-      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal)); //ExpandButton
-      HeaderCells.Controls.Add (CreateTableCell (string.Empty, cssHorizontal)); //DeleteButton
     }
 
     private HtmlGenericControl CreateTableCell (string title, string cssClass)

@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           break;
         case TenantCondition.SpecificTenant:
           RenderTenantHierarchyIcon (writer, container);
-          RenderLabelAndPropertyPathString (writer, "SpecificTenant.DisplayName");
+          RenderLabelAfterPropertyPathString (writer, "SpecificTenant.DisplayName");
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -75,13 +75,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           break;
         case GroupCondition.SpecificGroup:
           RenderGroupHierarchyIcon (writer, container);
-          RenderLabelAndPropertyPathString (writer, "SpecificGroup.ShortName");
+          RenderLabelAfterPropertyPathString (writer, "SpecificGroup.ShortName");
           break;
         case GroupCondition.BranchOfOwningGroup:
-          RenderLabelAndPropertyPathString (writer, AccessControlResources.BranchOfOwningGroupLabel, "SpecificGroupType.DisplayName");
+          RenderLabelBeforePropertyPathString (writer, AccessControlResources.BranchOfOwningGroupLabel, "SpecificGroupType.DisplayName");
           break;
         case GroupCondition.AnyGroupWithSpecificGroupType:
-          RenderLabelAndPropertyPathString (writer, "SpecificGroupType.DisplayName");
+          RenderLabelAfterPropertyPathString (writer, "SpecificGroupType.DisplayName");
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -101,10 +101,10 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           RenderPropertyPathString (writer, "UserCondition");
           break;
         case UserCondition.SpecificUser:
-          RenderLabelAndPropertyPathString (writer, "SpecificUser.DisplayName");
+          RenderLabelAfterPropertyPathString (writer, "SpecificUser.DisplayName");
           break;
         case UserCondition.SpecificPosition:
-          RenderLabelAndPropertyPathString (writer, "SpecificPosition.DisplayName");
+          RenderLabelAfterPropertyPathString (writer, "SpecificPosition.DisplayName");
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -116,22 +116,27 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("container", container);
 
-      RenderLabelAndPropertyPathString (writer, string.Empty, "SpecificAbstractRole.DisplayName");
+      RenderLabelBeforePropertyPathString (writer, string.Empty, "SpecificAbstractRole.DisplayName");
     }
 
-    private void RenderLabelAndPropertyPathString (HtmlTextWriter writer, string propertyPathIdentifier)
+    private void RenderLabelAfterPropertyPathString (HtmlTextWriter writer, string propertyPathIdentifier)
     {
+      writer.RenderBeginTag (HtmlTextWriterTag.Em);
+      RenderPropertyPathString (writer, propertyPathIdentifier);
+      writer.RenderEndTag();
+      writer.Write (" (");
       string label = GetPropertyDisplayName (propertyPathIdentifier);
-      RenderLabelAndPropertyPathString (writer, label, propertyPathIdentifier);
+      writer.Write (HtmlUtility.HtmlEncode (label));
+      writer.Write (")");
     }
 
-    private void RenderLabelAndPropertyPathString (HtmlTextWriter writer, string label, string propertyPathIdentifier)
+    private void RenderLabelBeforePropertyPathString (HtmlTextWriter writer, string label, string propertyPathIdentifier)
     {
       writer.Write (HtmlUtility.HtmlEncode (label));
       writer.Write (" ");
       writer.RenderBeginTag (HtmlTextWriterTag.Em);
       RenderPropertyPathString (writer, propertyPathIdentifier);
-      writer.RenderEndTag ();
+      writer.RenderEndTag();
     }
 
     private void RenderPropertyPathString (HtmlTextWriter writer, string propertyPathIdentifier)
@@ -146,7 +151,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       IBusinessObject businessObject = _accessControlEntry;
       var propertyPath = BusinessObjectPropertyPath.Parse (businessObject.BusinessObjectClass, propertyPathIdentifier);
       Assertion.IsTrue (propertyPath.Properties.Length >= 2);
-      return propertyPath.Properties[propertyPath.Properties.Length-2].DisplayName;
+      return propertyPath.Properties[propertyPath.Properties.Length - 2].DisplayName;
     }
 
     private void RenderTenantHierarchyIcon (HtmlTextWriter writer, Control container)

@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove all access.
+        ///   Looks up a localized string similar to Remove all.
         /// </summary>
         internal static string AllPermissionsMenu_ClearAllPermissions_Text {
             get {
@@ -71,7 +71,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deny all access.
+        ///   Looks up a localized string similar to Deny all.
         /// </summary>
         internal static string AllPermissionsMenu_DenyAllPermissions_Text {
             get {
@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Grant all access.
+        ///   Looks up a localized string similar to Grant all.
         /// </summary>
         internal static string AllPermissionsMenu_GrantAllPermissions_Text {
             get {
@@ -107,7 +107,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New ACE.
+        ///   Looks up a localized string similar to Add row.
         /// </summary>
         internal static string auto_NewAccessControlEntryButton_Text {
             get {
@@ -121,15 +121,6 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         internal static string auto_NewStateCombinationButton_Text {
             get {
                 return ResourceManager.GetString("auto:NewStateCombinationButton:Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Permissions.
-        /// </summary>
-        internal static string auto_PermissionsLabel_Text {
-            get {
-                return ResourceManager.GetString("auto:PermissionsLabel:Text", resourceCulture);
             }
         }
         
@@ -188,7 +179,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Same.
+        ///   Looks up a localized string similar to Within same.
         /// </summary>
         internal static string BranchOfOwningGroupLabel {
             get {
@@ -197,7 +188,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collapse ACE.
+        ///   Looks up a localized string similar to Hide details.
         /// </summary>
         internal static string CollapseAccessControlEntryButton_Text {
             get {
@@ -206,7 +197,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete ACE.
+        ///   Looks up a localized string similar to Delete row.
         /// </summary>
         internal static string DeleteAccessControlEntryButton_Text {
             get {
@@ -233,7 +224,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expand ACE.
+        ///   Looks up a localized string similar to Show details.
         /// </summary>
         internal static string ExpandAccessControlEntryButton_Text {
             get {
@@ -242,7 +233,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New object-based ACL.
+        ///   Looks up a localized string similar to Add object-based ACL.
         /// </summary>
         internal static string NewStatefulAccessControlListButton_Text {
             get {
@@ -251,7 +242,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New class-based ACL.
+        ///   Looks up a localized string similar to Add class-based ACL.
         /// </summary>
         internal static string NewStatelessAccessControlListButton_Text {
             get {
@@ -287,7 +278,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object-based ACLs.
+        ///   Looks up a localized string similar to Object-based permissions.
         /// </summary>
         internal static string StatefulAccessControlListsTitle {
             get {
@@ -296,7 +287,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Class-based ACL.
+        ///   Looks up a localized string similar to Class-based permissions.
         /// </summary>
         internal static string StatelessAccessControlListTitle {
             get {
@@ -305,7 +296,7 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Access Control Lists for Class &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Edit permissions for class &apos;{0}&apos;.
         /// </summary>
         internal static string Title {
             get {

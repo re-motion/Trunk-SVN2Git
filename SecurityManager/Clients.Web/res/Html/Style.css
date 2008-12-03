@@ -75,16 +75,6 @@ div.accessControlListContainer
   border-top: solid 2px black;
 }
 
-td.accessControlListButtons
-{
-  text-align: right;
-}
-
-td.accessControlListButtons button
-{
-  margin-left: 1em;  
-}
-
 table.accessControlList
 {
   width: 100%;
@@ -92,17 +82,56 @@ table.accessControlList
   border-spacing: 0;
 }
 
+td.stateCombinationsButtons button
+{
+  width:100%;
+  margin-bottom: 0.5em;
+}
+
+td.accessControlEntriesButtons button
+{
+  width:1%;
+}
+
+td.stateCombinationsButtons button span.buttonBody,
+td.accessControlEntriesButtons button span.buttonBody
+{
+  padding-left:15px;
+  padding-right:15px;
+}
+
 td.stateCombinationsButtons,
 td.stateCombinationsContainer
 {
   border-right: solid 1px #d4d0c8;
+  padding-top: 0.5em;
+  padding-right: 0.5em;
   width: 12em;
+}
+
+td.stateCombinationsButtons
+{
+  vertical-align: top;  
 }
 
 td.accessControlEntriesButtons,
 td.accessControlEntriesContainer
 {
   border-left: solid 1px #d4d0c8;
+  padding-left: 0.5em;
+  padding-top: 0.5em;
+}
+
+td.stateCombinationsButtons,
+td.accessControlEntriesButtons
+{
+  padding-bottom: 0.5em;
+}
+
+td.accessControlEntriesButtons
+{
+  text-align: right;
+  vertical-align: top;
 }
 
 table.accessControlEntriesTable
@@ -165,7 +194,8 @@ table.accessControlEntriesTable td.permissionCell
 
 table.accessControlEntriesTable td.buttonCell
 {
- padding: 0.25em;
+  padding: 0.25em;
+  width: 1em;
 }
 
 table.accessControlEntryExpanded
