@@ -70,7 +70,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         SecurableClassDefinition classDefinition = (SecurableClassDefinition) e.BusinessObjectTreeNode.BusinessObject;
         EditPermissionsFormFunction function = new EditPermissionsFormFunction (WxeTransactionMode.CreateRootWithAutoCommit , classDefinition.ID);
         var options = new WxeCallOptionsExternal (
-            "_blank", "width=1000, height=700, resizable=yes, menubar=yes, toolbar=no, location=no, status=no", true);
+            "_blank", "width=1000, height=700, resizable=yes, menubar=no, toolbar=no, location=no, status=no", true);
         try
         {
           ExecuteFunction (function, new WxeCallArguments ((Control) sender, options));
