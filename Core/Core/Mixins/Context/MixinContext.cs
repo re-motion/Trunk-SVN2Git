@@ -24,6 +24,17 @@ namespace Remotion.Mixins.Context
   /// </remarks>
   public class MixinContext
   {
+    public static MixinContext Deserialize (IMixinContextDeserializer deserializer)
+    {
+      ArgumentUtility.CheckNotNull ("deserializer", deserializer);
+      return new MixinContext (
+          deserializer.GetMixinKind (),
+          deserializer.GetMixinType (),
+          deserializer.GetIntroducedMemberVisibility (),
+          deserializer.GetExplicitDependencies ()
+        );
+    }
+
     private readonly Type _mixinType;
     private readonly MixinKind _mixinKind;
 
@@ -149,17 +160,6 @@ namespace Remotion.Mixins.Context
       serializer.AddMixinKind (MixinKind);
       serializer.AddIntroducedMemberVisibility (IntroducedMemberVisibility);
       serializer.AddExplicitDependencies (ExplicitDependencies);
-    }
-
-    public static MixinContext Deserialize (IMixinContextDeserializer deserializer)
-    {
-      ArgumentUtility.CheckNotNull ("deserializer", deserializer);
-      return new MixinContext (
-          deserializer.GetMixinKind(),
-          deserializer.GetMixinType(),
-          deserializer.GetIntroducedMemberVisibility(),
-          deserializer.GetExplicitDependencies()
-        );
     }
   }
 }

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Utilities.Serialization;
 using Remotion.Utilities;
 
@@ -27,6 +28,15 @@ namespace Remotion.Mixins.Context
   [Serializable]
   public sealed class ClassContext : ISerializable
   {
+    public static ClassContext Deserialize (IClassContextDeserializer deserializer)
+    {
+      ArgumentUtility.CheckNotNull ("deserializer", deserializer);
+      return new ClassContext (
+          deserializer.GetClassType (),
+          deserializer.GetMixins (),
+          deserializer.GetCompleteInterfaces ());
+    }
+
     private static IEnumerable<MixinContext> GetMixinContexts (Type[] mixinTypes)
     {
       var mixins = new Dictionary<Type, MixinContext> (mixinTypes.Length);
@@ -327,5 +337,14 @@ namespace Remotion.Mixins.Context
     }
 
     #endregion
+
+    public void Serialize (IClassContextSerializer serializer)
+    {
+      ArgumentUtility.CheckNotNull ("serializer", serializer);
+
+      serializer.AddClassType (Type);
+      serializer.AddMixins (Mixins);
+      serializer.AddCompleteInterfaces (CompleteInterfaces);
+    }
   }
 }

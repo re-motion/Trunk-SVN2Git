@@ -193,6 +193,7 @@
     <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixinTypeForMixinWithAbstractMembers.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixedTypeForBaseType1.cs" />
     <Compile Include="Mixins\CodeGeneration\SetUpFixture.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedGenericMixin.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeMixinContextSerializerTest.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeClassContextSerializationTest.cs" />
     <Compile Include="Mixins\Context\Serialization\SerializationInfoClassContextSerializationTest.cs" />
@@ -399,8 +400,8 @@
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\SerializationTest.cs" />
     <Compile Include="Mixins\Context\ClassContextCollectionTest.cs" />
     <Compile Include="Mixins\Context\ClassContextCollectorTest.cs" />
-    <Compile Include="Mixins\Context\ClassContextTests\ClassContextGeneralTest.cs" />
-    <Compile Include="Mixins\Context\ClassContextTests\ClassContextInheritanceTest.cs" />
+    <Compile Include="Mixins\Context\ClassContextTest.cs" />
+    <Compile Include="Mixins\Context\ClassContextInheritanceTest.cs" />
     <Compile Include="Mixins\Context\DeclarativeAnalyzers\CompleteInterfaceAnalyzerTest.cs" />
     <Compile Include="Mixins\Context\DeclarativeAnalyzers\DeclarativeConfigurationAnalyzerTest.cs" />
     <Compile Include="Mixins\Context\DeclarativeAnalyzers\ExtendsAnalyzerTest.cs" />

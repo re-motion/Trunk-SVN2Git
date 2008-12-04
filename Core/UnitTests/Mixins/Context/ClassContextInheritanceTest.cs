@@ -16,72 +16,19 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
+namespace Remotion.UnitTests.Mixins.Context
 {
   [TestFixture]
   public class ClassContextInheritanceTest
   {
     [Test]
-    public void ContainsOverrideForMixin_False ()
+    public void InheritFrom_Mixins ()
     {
-      ClassContext context = new ClassContext (typeof (string), typeof (NullTarget), typeof (GenericClassExtendedByMixin<>));
+      var baseContext = new ClassContext (typeof (string), typeof (DateTime), typeof (int), typeof (DerivedNullTarget));
+      var inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
 
-      Assert.IsFalse (context.Mixins.ContainsOverrideForMixin (typeof (int))); // completely unrelated
-      Assert.IsFalse (context.Mixins.ContainsOverrideForMixin (typeof (DerivedNullTarget))); // subtype
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (GenericClassExtendedByMixin<object>))); // specialization doesn't matter
-      Assert.IsFalse (context.Mixins.ContainsOverrideForMixin (typeof (DerivedGenericMixin<>))); // subtype
-    }
-
-    [Test]
-    public void ContainsOverrideForMixin_Same ()
-    {
-      ClassContext context = new ClassContext (typeof (string), typeof (NullTarget), typeof (GenericClassExtendedByMixin<>));
-
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (NullTarget)));
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (GenericClassExtendedByMixin<>)));
-    }
-
-    [Test]
-    public void ContainsOverrideForMixin_True ()
-    {
-      ClassContext context = new ClassContext (typeof (string), typeof (DerivedNullTarget), typeof (GenericMixinWithVirtualMethod<object>));
-      
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (NullTarget))); // supertype
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (GenericMixinWithVirtualMethod<>))); // less specialized
-    }
-
-    [Test]
-    public void ContainsOverrideForMixin_DerivedAndSpecialized ()
-    {
-      ClassContext context = new ClassContext (typeof (string), typeof (DerivedNullTarget), typeof (DerivedGenericMixin<object>));
-
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (GenericMixinWithVirtualMethod<>)));
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (GenericMixinWithVirtualMethod<object>)));
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (DerivedGenericMixin<>)));
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (DerivedGenericMixin<object>)));
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (GenericMixinWithVirtualMethod<string>))); // different type arguments don't matter
-      Assert.IsTrue (context.Mixins.ContainsOverrideForMixin (typeof (DerivedGenericMixin<string>))); // different specialization doesn't matter
-    }
-
-    [Test]
-    public void Mixins ()
-    {
-      ClassContext baseContext = new ClassContext (typeof (string), typeof (DateTime), typeof (int));
-      ClassContext inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
-
-      Assert.AreEqual (2, inheritor.Mixins.Count);
+      Assert.AreEqual (3, inheritor.Mixins.Count);
       Assert.That (inheritor.Mixins, Is.EquivalentTo (baseContext.Mixins));
-    }
-
-    [Test]
-    public void ContainsAssignableMixin ()
-    {
-      ClassContext baseContext = new ClassContext (typeof (string), typeof (DerivedNullTarget));
-
-      ClassContext inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
-
-      Assert.IsTrue (inheritor.Mixins.ContainsAssignableMixin (typeof (DerivedNullTarget)));
-      Assert.IsTrue (inheritor.Mixins.ContainsAssignableMixin (typeof (NullTarget)));
     }
 
     [Test]
@@ -158,8 +105,6 @@ namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
       Assert.IsTrue (inheritor.Mixins[typeof (GenericMixinWithVirtualMethod<object>)].ExplicitDependencies.ContainsKey (typeof (decimal)));
     }
 
-    class DerivedGenericMixin<T> : GenericMixinWithVirtualMethod<T> where T : class { }
-
     [Test]
     public void SpecializedDerivedGenericMixin_OverridesInherited ()
     {
@@ -200,8 +145,8 @@ namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The class System.Double inherits the mixin "
-       + ".*DerivedGenericMixin\\`1 from class System.String, but it is explicitly configured for the less "
-        + "specific mixin .*GenericMixinWithVirtualMethod\\`1\\[T\\].", MatchType = MessageMatch.Regex)]
+                                                                           + ".*DerivedGenericMixin\\`1 from class System.String, but it is explicitly configured for the less "
+                                                                           + "specific mixin .*GenericMixinWithVirtualMethod\\`1\\[T\\].", MatchType = MessageMatch.Regex)]
     public void InheritedUnspecializedDerivedGenericMixin_Throws ()
     {
       ClassContext baseContext = new ClassContextBuilder (typeof (string)).AddMixin (typeof (DerivedGenericMixin<>)).WithDependency<int>().BuildClassContext();
@@ -227,7 +172,7 @@ namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
     [Test]
     public void ContainsCompleteInterface ()
     {
-      ClassContext baseContext = new ClassContext (typeof (string), new MixinContext[0], new Type[] {typeof (object)});
+      var baseContext = new ClassContext (typeof (string), new MixinContext[0], new[] {typeof (object)});
 
       ClassContext inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
 
@@ -237,9 +182,9 @@ namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
     [Test]
     public void ExistingCompleteInterface_NotReplacedByInheritance ()
     {
-      ClassContext baseContext = new ClassContext (typeof (string), new MixinContext[0], new Type[] { typeof (object) });
+      var baseContext = new ClassContext (typeof (string), new MixinContext[0], new[] { typeof (object) });
 
-      ClassContext inheritor = new ClassContext (typeof (double), new MixinContext[0], new Type[] {typeof (object)})
+      ClassContext inheritor = new ClassContext (typeof (double), new MixinContext[0], new[] {typeof (object)})
           .InheritFrom (baseContext);
 
       Assert.AreEqual (1, inheritor.CompleteInterfaces.Count);
@@ -261,6 +206,18 @@ namespace Remotion.UnitTests.Mixins.Context.ClassContextTests
 
       Assert.AreEqual (2, inheritor.Mixins.Count);
       Assert.AreEqual (2, inheritor.CompleteInterfaces.Count);
+    }
+
+    [Test]
+    public void MixinsOnInterface ()
+    {
+      MixinConfiguration context = MixinConfiguration.BuildFromActive ()
+          .ForClass<IBaseType2> ().AddMixin<BT2Mixin1> ().BuildConfiguration ();
+
+      ClassContext classContext = context.ClassContexts.GetWithInheritance (typeof (IBaseType2));
+      Assert.IsNotNull (classContext);
+
+      Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (BT2Mixin1)));
     }
   }
 }
