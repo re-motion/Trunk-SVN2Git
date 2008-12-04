@@ -61,8 +61,6 @@
     <Compile Include="AclTools\AclToolsTestBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderAclFinderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettingsTest.cs" />
-    <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationTestApplicationRunner.cs" />
-    <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationTestSettings.cs" />
     <Compile Include="AclTools\Expansion\EnumerableEqualsWrapperTest.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreatorTest.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterFactoryBaseTest.cs" />
@@ -84,7 +82,6 @@
     <Compile Include="AclTools\Expansion\AclExpanderApplicationSettingsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
-    <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationTest.cs" />
     <Compile Include="AclTools\Expansion\SecurityContextHelper\SecurityContextHelperTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderUserFinderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditionsTest.cs" />

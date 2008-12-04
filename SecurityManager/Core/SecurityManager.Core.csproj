@@ -72,9 +72,6 @@
     <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriter.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionTree.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionTreeNode.cs" />
-    <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationSettings.cs" />
-    <Compile Include="AclTools\Expansion\ConsoleApplication\IWait.cs" />
-    <Compile Include="AclTools\Expansion\ConsoleApplication\WaitForConsoleKeypress.cs" />
     <Compile Include="AclTools\Expansion\EnumerableEqualsWrapper.cs" />
     <Compile Include="AclTools\Expansion\HtmlTagWriterTags.cs" />
     <Compile Include="AclTools\Expansion\IAclExpansionWriter.cs" />
@@ -85,11 +82,9 @@
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\AclSecurityContextHelper.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\ClassStateDictionary.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\ClassStateTuple.cs" />
-    <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplication.cs" />
     <Compile Include="AclTools\Expansion\HtmlTagWriter.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderUserFinder.cs" />
-    <Compile Include="AclTools\Expansion\ConsoleApplication\IApplicationRunner.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\IUserRoleAclAceCombinations.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\StateCombinationBuilderFast.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\ITextWriterFactory.cs" />

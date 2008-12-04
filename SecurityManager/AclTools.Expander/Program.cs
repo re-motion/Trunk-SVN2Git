@@ -11,7 +11,7 @@
 // 
 // 
 using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
+using Remotion.Utilities.ConsoleApplication;
 
 namespace Remotion.SecurityManager.AclTools.Expander
 {

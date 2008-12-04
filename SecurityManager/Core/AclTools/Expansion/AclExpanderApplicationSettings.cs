@@ -10,9 +10,9 @@
 
 using System;
 using Remotion.Diagnostics.ToText;
-using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 using Remotion.Text.CommandLine;
 using Remotion.Utilities;
+using Remotion.Utilities.ConsoleApplication;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {

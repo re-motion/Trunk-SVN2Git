@@ -12,14 +12,14 @@
 using System;
 using System.IO;
 
-namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
+namespace Remotion.Utilities.ConsoleApplication
 {
   /// <summary>
   /// Interface for application classes turned into console applications by "wrapping" them in a 
-  /// <see cref="ConsoleApplication{TApplication, TApplicationSettings}"/>.
+  /// <see cref="ConsoleApplicationSettings"/>.
   /// </summary>
   /// <typeparam name="TApplicationSettings">The settings-class for the for the application. 
-  /// Needs to derive from <see cref="ConsoleApplicationSettings"/>.</typeparam>
+  /// Needs to derive from <see cref="ConsoleApplication{TApplication,TApplicationSettings}"/>.</typeparam>
   public interface IApplicationRunner<TApplicationSettings> where TApplicationSettings : ConsoleApplicationSettings, new()
   {
     void Run (TApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter);

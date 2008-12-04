@@ -11,15 +11,17 @@
 // 
 using System;
 
-namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
+namespace Remotion.Utilities.ConsoleApplication
 {
   /// <summary>
-  /// Interface for classes that support some sort of wait functionality. The <see cref="Wait"/>-method 
-  /// returns when the event the class implementing <see cref="IWait"/> occured (e.g. see <see cref="WaitForConsoleKeypress"/>).
+  /// Class implementing <see cref="Wait"/> to wait for a keypress on the console.
+  /// The <see cref="IWaiter"/>-method returns after a console key has been pressed.
   /// </summary>
-  // TODO AE: Interface (and class) names should have nouns as names.
-  public interface IWait
+  public class ConsoleKeypressWaiter : IWaiter
   {
-    void Wait ();
+    public void Wait ()
+    {
+      Console.ReadKey ();
+    }
   }
 }

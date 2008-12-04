@@ -12,16 +12,13 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using Remotion.Diagnostics.ToText;
 using Remotion.Text.CommandLine;
 using Remotion.Text.StringExtensions;
-using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
+namespace Remotion.Utilities.ConsoleApplication
 {
-  // TODO QAE: Rationale for /wait+?. MGi: For all cases where comand window would otherwise close, without anyone having the chance to seing the program output.
-  // TODO QAE: Too generic for AclExpander, evaluate moving to Remotion.Core or combine to make less generic (and less complex). MGi: Was not planned to use it only for AclExpander, but is planned as a general base class for command line apps
-
   /// <summary>
   /// Console application class: Supplies command line parsing (including standard command line switches; 
   /// see <see cref="ConsoleApplicationSettings"/>) and standardized error handling and output.
@@ -47,7 +44,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
   /// by the <see cref="ConsoleApplication"/>.
   /// Needs to implement <see cref="IApplicationRunner{TApplicationSettings}"/>.
   /// </typeparam>
-  /// <typeparam name="TApplicationSettings">The settings for the <see cref="TApplication"/>. 
+  /// <typeparam name="TApplicationSettings">The settings for the <typeparamref name="TApplication"/>. 
   /// Needs to derive from <see cref="ConsoleApplicationSettings"/>.
   /// </typeparam>
 
@@ -61,10 +58,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
     private readonly ToTextBuilder _errorToTextBuilder;
     private readonly CommandLineClassParser<TApplicationSettings> _parser = new CommandLineClassParser<TApplicationSettings> ();
     private readonly int _bufferWidth;
-    private readonly IWait _waitAtEnd;
+    private readonly IWaiter _waitAtEnd;
     private string _synopsis = "(Application synopsis not yet retrieved)";
 
-    public ConsoleApplication (TextWriter errorWriter, TextWriter logWriter, int bufferWidth, IWait waitAtEnd)
+    public ConsoleApplication (TextWriter errorWriter, TextWriter logWriter, int bufferWidth, IWaiter waitAtEnd)
     {
       _errorWriter = errorWriter;
       _logWriter = logWriter;
@@ -74,7 +71,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       _waitAtEnd = waitAtEnd;
     }
 
-    public ConsoleApplication () : this (System.Console.Error, System.Console.Out, 80, new WaitForConsoleKeypress()) {}
+    public ConsoleApplication () : this (System.Console.Error, System.Console.Out, 80, new ConsoleKeypressWaiter()) {}
 
     public TApplicationSettings Settings { get; set; }
 

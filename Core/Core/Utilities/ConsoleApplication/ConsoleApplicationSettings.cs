@@ -10,10 +10,10 @@
 
 using Remotion.Text.CommandLine;
 
-namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
+namespace Remotion.Utilities.ConsoleApplication
 {
   /// <summary>
-  /// Supplies command line arguments for <see cref="ConsoleApplication{TApplication, TApplicationSettings}"/>|s:
+  /// Supplies command line arguments for <see cref="ConsoleApplication{TApplication,TApplicationSettings}"/>|s:
   /// <para>/? ... output usage information</para>
   /// <para>/wait+ ... wait for a keypress at the end of program execution</para>
   /// </summary>
@@ -26,8 +26,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       ShowUsage
     };
 
-    // TODO AE: /? is usually implicit, since the default is to show the synopsis anyway. Assigning non-enum values to enums is discouraged and might lead to future validation errors.
-    // TODO AE: Alternative: Add new value to CommandLineModeArgument: ShowInSynopsis = false.
     // Assign non-enum value != to ShowUsageMode.ShowUsage here, to default to not show usage.
     // Introducing an extra enum value for this state, would lead to it being listed in the "usage" output, which is not what we want.
     [CommandLineModeArgument (true)]
