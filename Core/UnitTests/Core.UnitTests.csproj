@@ -764,9 +764,9 @@
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppresTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesWithMetadataTest.cs" />
     <Compile Include="Utilities\AdvancedEnumConverterTest_Flags.cs" />
-    <Compile Include="Utilities\ConsoleApplication\ConsoleApplicationTest.cs" />
-    <Compile Include="Utilities\ConsoleApplication\ConsoleApplicationTestApplicationRunner.cs" />
-    <Compile Include="Utilities\ConsoleApplication\ConsoleApplicationTestSettings.cs" />
+    <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTest.cs" />
+    <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTestApplicationRunner.cs" />
+    <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTestSettings.cs" />
     <Compile Include="Utilities\CultureScopeTest.cs" />
     <Compile Include="Utilities\CustomAttributeDataUtilityTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseInheritedAttribute.cs" />
