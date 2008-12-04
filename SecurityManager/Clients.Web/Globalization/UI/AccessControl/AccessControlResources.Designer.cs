@@ -233,6 +233,42 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only this group.
+        /// </summary>
+        internal static string GroupHierarchyCondition_This {
+            get {
+                return ResourceManager.GetString("GroupHierarchyCondition.This", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This group or children.
+        /// </summary>
+        internal static string GroupHierarchyCondition_ThisAndChildren {
+            get {
+                return ResourceManager.GetString("GroupHierarchyCondition.ThisAndChildren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This group or parents.
+        /// </summary>
+        internal static string GroupHierarchyCondition_ThisAndParent {
+            get {
+                return ResourceManager.GetString("GroupHierarchyCondition.ThisAndParent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This group or parents or children.
+        /// </summary>
+        internal static string GroupHierarchyCondition_ThisAndParentAndChildren {
+            get {
+                return ResourceManager.GetString("GroupHierarchyCondition.ThisAndParentAndChildren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add object-based ACL.
         /// </summary>
         internal static string NewStatefulAccessControlListButton_Text {
@@ -292,6 +328,24 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         internal static string StatelessAccessControlListTitle {
             get {
                 return ResourceManager.GetString("StatelessAccessControlListTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only this tenant.
+        /// </summary>
+        internal static string TenantHierarchyCondition_This {
+            get {
+                return ResourceManager.GetString("TenantHierarchyCondition.This", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This tenant or parents.
+        /// </summary>
+        internal static string TenantHierarchyCondition_ThisAndParent {
+            get {
+                return ResourceManager.GetString("TenantHierarchyCondition.ThisAndParent", resourceCulture);
             }
         }
         

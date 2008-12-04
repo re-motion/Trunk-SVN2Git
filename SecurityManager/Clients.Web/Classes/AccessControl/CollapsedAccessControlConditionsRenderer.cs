@@ -10,6 +10,7 @@
 
 using System;
 using System.Web.UI;
+using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -157,35 +158,40 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
     private void RenderTenantHierarchyIcon (HtmlTextWriter writer, Control container)
     {
       string url;
+      string text;
       switch (_accessControlEntry.TenantHierarchyCondition)
       {
         case TenantHierarchyCondition.Undefined:
           throw new InvalidOperationException();
         case TenantHierarchyCondition.This:
           url = "HierarchyThis.gif";
+          text = AccessControlResources.TenantHierarchyCondition_This;
           break;
         case TenantHierarchyCondition.Parent:
           throw new InvalidOperationException();
         case TenantHierarchyCondition.ThisAndParent:
           url = "HierarchyThisAndParent.gif";
+          text = AccessControlResources.TenantHierarchyCondition_ThisAndParent;
           break;
         default:
           throw new ArgumentOutOfRangeException();
       }
 
-      var icon = new IconInfo (GetIconUrl (url, container));
+      var icon = new IconInfo (GetIconUrl (url, container)) { AlternateText = text };
       icon.Render (writer);
     }
 
     private void RenderGroupHierarchyIcon (HtmlTextWriter writer, Control container)
     {
       string url;
+      string text;
       switch (_accessControlEntry.GroupHierarchyCondition)
       {
         case GroupHierarchyCondition.Undefined:
           throw new InvalidOperationException();
         case GroupHierarchyCondition.This:
           url = "HierarchyThis.gif";
+          text = AccessControlResources.GroupHierarchyCondition_This;
           break;
         case GroupHierarchyCondition.Parent:
           throw new InvalidOperationException();
@@ -193,18 +199,21 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           throw new InvalidOperationException();
         case GroupHierarchyCondition.ThisAndParent:
           url = "HierarchyThisAndParent.gif";
+          text = AccessControlResources.GroupHierarchyCondition_ThisAndParent;
           break;
         case GroupHierarchyCondition.ThisAndChildren:
           url = "HierarchyThisAndChildren.gif";
+          text = AccessControlResources.GroupHierarchyCondition_ThisAndChildren;
           break;
         case GroupHierarchyCondition.ThisAndParentAndChildren:
           url = "HierarchyThisAndParentAndChildren.gif";
+          text = AccessControlResources.GroupHierarchyCondition_ThisAndParentAndChildren;
           break;
         default:
           throw new ArgumentOutOfRangeException();
       }
 
-      var icon = new IconInfo (GetIconUrl (url, container));
+      var icon = new IconInfo (GetIconUrl (url, container)) { AlternateText = text };
       icon.Render (writer);
     }
 

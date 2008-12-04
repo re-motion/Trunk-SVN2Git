@@ -198,4 +198,22 @@
   <data name="BranchOfOwningGroupLabel" xml:space="preserve">
     <value>Within same</value>
   </data>
+  <data name="GroupHierarchyCondition.This" xml:space="preserve">
+    <value>Only this group</value>
+  </data>
+  <data name="GroupHierarchyCondition.ThisAndChildren" xml:space="preserve">
+    <value>This group or children</value>
+  </data>
+  <data name="GroupHierarchyCondition.ThisAndParent" xml:space="preserve">
+    <value>This group or parents</value>
+  </data>
+  <data name="GroupHierarchyCondition.ThisAndParentAndChildren" xml:space="preserve">
+    <value>This group or parents or children</value>
+  </data>
+  <data name="TenantHierarchyCondition.This" xml:space="preserve">
+    <value>Only this tenant</value>
+  </data>
+  <data name="TenantHierarchyCondition.ThisAndParent" xml:space="preserve">
+    <value>This tenant or parents</value>
+  </data>
 </root>
