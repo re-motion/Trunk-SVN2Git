@@ -61,6 +61,8 @@
     <Compile Include="AclTools\AclToolsTestBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderAclFinderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettingsTest.cs" />
+    <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationTestApplicationRunner.cs" />
+    <Compile Include="AclTools\Expansion\ConsoleApplication\ConsoleApplicationTestSettings.cs" />
     <Compile Include="AclTools\Expansion\EnumerableEqualsWrapperTest.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreatorTest.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterFactoryBaseTest.cs" />

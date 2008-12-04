@@ -20,8 +20,9 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 {
-  // TODO AE: Rationale for /wait+?
-  // TODO AE: Too generic for AclExpander, evaluate moving to Remotion.Core or combine to make less generic (and less complex).
+  // TODO QAE: Rationale for /wait+?. MGi: For all cases where comand window would otherwise close, without anyone having the chance to seing the program output.
+  // TODO QAE: Too generic for AclExpander, evaluate moving to Remotion.Core or combine to make less generic (and less complex). MGi: Was not planned to use it only for AclExpander, but is planned as a general base class for command line apps
+
   /// <summary>
   /// Console application class: Supplies command line parsing (including standard command line switches; 
   /// see <see cref="ConsoleApplicationSettings"/>) and standardized error handling and output.
@@ -50,31 +51,32 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
   /// <typeparam name="TApplicationSettings">The settings for the <see cref="TApplication"/>. 
   /// Needs to derive from <see cref="ConsoleApplicationSettings"/>.
   /// </typeparam>
-  // TODO AE: Check double blank lines
+
   public class ConsoleApplication<TApplication, TApplicationSettings> 
       where TApplication: IApplicationRunner<TApplicationSettings>, new()
       where TApplicationSettings : ConsoleApplicationSettings, new()
   {
-
     private readonly ToTextBuilder _logToTextBuilder;
     private readonly ToTextBuilder _errorToTextBuilder;
     private readonly CommandLineClassParser<TApplicationSettings> _parser = new CommandLineClassParser<TApplicationSettings> ();
+    private readonly TextWriter _errorWriter;
+    private readonly TextWriter _logWriter;
     private readonly int _bufferWidth;
     private readonly IWait _waitAtEnd;
     private int _result;
     private string _synopsis = "(Application synopsis not yet retrieved)";
 
-
     public ConsoleApplication (TextWriter errorWriter, TextWriter logWriter, int bufferWidth, IWait waitAtEnd)
     {
-      _logToTextBuilder = new ToTextBuilder (To.ToTextProvider, logWriter);
+      _errorWriter = errorWriter;
+      _logWriter = logWriter;
       _errorToTextBuilder = new ToTextBuilder (To.ToTextProvider, errorWriter);
+      _logToTextBuilder = new ToTextBuilder (To.ToTextProvider, logWriter);
       _bufferWidth = bufferWidth;
       _waitAtEnd = waitAtEnd;
     }
 
-    // TODO AE: Test this ctor.
-    public ConsoleApplication () : this (System.Console.Error, System.Console.Out, System.Console.BufferWidth, new WaitForConsoleKeypress()) {}
+    public ConsoleApplication () : this (System.Console.Error, System.Console.Out, 80, new WaitForConsoleKeypress()) {}
 
     public TApplicationSettings Settings { get; set; }
 
@@ -110,6 +112,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       get { return _synopsis; }
     }
 
+ 
+    public int BufferWidth
+    {
+      get { return _bufferWidth; }
+    }
+
 
     private void OutputApplicationUsage ()
     {
@@ -126,44 +134,43 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       }
     }
 
-    // TODO AE: Test exception case.
     public virtual void RunApplication (TApplicationSettings settings)
     {
       try
       {
-        TApplication application = new TApplication();
-        application.Run (settings, System.Console.Error, System.Console.Out);
+        var application = CreateApplication();
+        application.Run (settings, _errorWriter, _logWriter);
       }
       catch (Exception e)
       {
         _result = 1;
         using (ConsoleUtility.EnterColorScope (ConsoleColor.White, ConsoleColor.DarkRed))
         {
-          To.Error.s("Execution aborted. Exception stack:");
+          _errorToTextBuilder.s ("Execution aborted. Exception stack:");
           for (; e != null; e = e.InnerException)
           {
-            To.Error.s(e.GetType ().FullName).s(": ").s(e.Message).s(e.StackTrace);
+            _errorToTextBuilder.s (e.GetType ().FullName).s (": ").s (e.Message).s (e.StackTrace);
           }
         }
       }
     }
+
+
+    public virtual IApplicationRunner<TApplicationSettings> CreateApplication ()
+    {
+      return new TApplication();
+    }
+
 
     public virtual void ParseCommandLineArguments (string[] args)
     {
       try
       {
         Settings = _parser.Parse (args);
-        //if (Settings.Mode == ConsoleApplicationSettings.ShowUsageMode.ShowUsage)
-        //{
-        //  _logToTextBuilder.nl (2).s ("Application Usage: ");
-        //  _logToTextBuilder.nl().s (GetSynopsis (args));
-        //}
       }
       catch (CommandLineArgumentException e)
       {
         _errorToTextBuilder.nl ().s ("An error occured: ").s (e.Message);
-        //_errorToTextBuilder.nl().s ("Usage:");
-        //_errorToTextBuilder.s (Synopsis);
         OutputApplicationUsage ();
         // TODO AE: Return bool or throw exception instead of setting a global flag.
         // TODO AE: Remove flag.
@@ -176,7 +183,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
     {
       try
       {
-        //string applicationName = args[0];
         string applicationName = Process.GetCurrentProcess().MainModule.FileName.RightUntilChar('\\');
         _synopsis = _parser.GetAsciiSynopsis (applicationName, _bufferWidth);
       }
