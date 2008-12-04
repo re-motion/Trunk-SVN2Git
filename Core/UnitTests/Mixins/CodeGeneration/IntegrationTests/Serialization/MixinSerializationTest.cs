@@ -8,7 +8,6 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;

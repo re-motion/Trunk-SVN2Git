@@ -266,7 +266,6 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtilityTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\InitializableMixinTargetTest.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinAddingDebuggerDisplay.cs" />
-    <Compile Include="Mixins\Context\MixinContextSerializerTest.cs" />
     <Compile Include="Mixins\Globalization\SampleTypes\InheritedMixinWithoutMultiLingualResourcesAttributes1.cs" />
     <Compile Include="Mixins\Globalization\SampleTypes\InheritedMixinAddingMultiLingualResourcesAttributes.cs" />
     <Compile Include="Reflection\CodeGeneration\AssemblySaverTest.cs" />

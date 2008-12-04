@@ -99,21 +99,6 @@ namespace Remotion.UnitTests.Mixins.Context
     }
 
     [Test]
-    public void ClassContextIsSerializable ()
-    {
-      ClassContext cc = new ClassContextBuilder (typeof (BaseType1))
-          .AddCompleteInterface (typeof (IBT5MixinC1))
-          .AddMixin (typeof (BT1Mixin1)).WithDependency (typeof (IBaseType2))
-          .BuildClassContext ();
-
-      ClassContext cc2 = Serializer.SerializeAndDeserialize (cc);
-      Assert.AreNotSame (cc2, cc);
-      Assert.AreEqual (cc2, cc);
-      Assert.IsTrue (cc2.Mixins.ContainsKey (typeof (BT1Mixin1)));
-      Assert.IsTrue (cc2.Mixins[typeof (BT1Mixin1)].ExplicitDependencies.ContainsKey (typeof (IBaseType2)));
-    }
-
-    [Test]
     public void SpecializeWithTypeArguments ()
     {
       ClassContext original = new ClassContextBuilder (typeof (List<>)).AddMixin<BT1Mixin1>().WithDependency<IBaseType2>().BuildClassContext();

@@ -19,31 +19,34 @@ namespace Remotion.Mixins.Context.Serialization
   public class SerializationInfoClassContextDeserializer : IClassContextDeserializer
   {
     private readonly SerializationInfo _info;
+    private readonly string _prefix;
 
-    public SerializationInfoClassContextDeserializer (SerializationInfo info)
+    public SerializationInfoClassContextDeserializer (SerializationInfo info, string prefix)
     {
       ArgumentUtility.CheckNotNull ("info", info);
+      ArgumentUtility.CheckNotNull ("prefix", prefix);
       _info = info;
+      _prefix = prefix;
     }
 
     public Type GetClassType()
     {
-      return Type.GetType (_info.GetString ("ClassType.AssemblyQualifiedName"));
+      return Type.GetType (_info.GetString (_prefix + "ClassType.AssemblyQualifiedName"));
     }
 
     public IEnumerable<MixinContext> GetMixins()
     {
-      int mixinCount = _info.GetInt32 ("Mixins.Count");
+      int mixinCount = _info.GetInt32 (_prefix + "Mixins.Count");
       for (int i = 0; i < mixinCount; ++i)
       {
-        var deserializer = new SerializationInfoMixinContextDeserializer (_info, "Mixins[" + i + "].");
+        var deserializer = new SerializationInfoMixinContextDeserializer (_info, _prefix + "Mixins[" + i + "].");
         yield return MixinContext.Deserialize (deserializer);
       }
     }
 
     public IEnumerable<Type> GetCompleteInterfaces ()
     {
-      var typeNames = (string[]) _info.GetValue ("CompleteInterfaces.AssemblyQualifiedNames", typeof (string[]));
+      var typeNames = (string[]) _info.GetValue (_prefix + "CompleteInterfaces.AssemblyQualifiedNames", typeof (string[]));
       return typeNames.Select (s => Type.GetType (s));
     }
   }

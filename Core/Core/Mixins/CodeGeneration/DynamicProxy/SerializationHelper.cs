@@ -12,6 +12,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
@@ -28,7 +29,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       info.SetType (typeof (SerializationHelper));
 
-      info.AddValue ("__configuration.ConfigurationContext", configuration.ConfigurationContext);
+      var classContextSerializer = new SerializationInfoClassContextSerializer (info, "__configuration.ConfigurationContext.");
+      configuration.ConfigurationContext.Serialize (classContextSerializer);
+
       info.AddValue ("__extensions", extensions);
 
       object[] baseMemberValues;
@@ -50,7 +53,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly StreamingContext _context;
 
     public SerializationHelper (SerializationInfo info, StreamingContext context)
-        : this (delegate (Type t) { return t; }, info, context)
+        : this (t => t, info, context)
     {
     }
 
@@ -61,7 +64,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _context = context;
 
-      ClassContext configurationContext = (ClassContext) info.GetValue ("__configuration.ConfigurationContext", typeof (ClassContext));
+      var classContextDeserializer = new SerializationInfoClassContextDeserializer (info, "__configuration.ConfigurationContext.");
+      var configurationContext = ClassContext.Deserialize (classContextDeserializer);
       _targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (configurationContext);
 
       Type concreteType = ConcreteTypeBuilder.Current.GetConcreteType (_targetClassDefinition);

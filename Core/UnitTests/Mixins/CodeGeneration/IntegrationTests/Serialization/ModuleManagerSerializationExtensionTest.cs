@@ -125,7 +125,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Member '__configuration.ConfigurationContext' was not found.")]
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Member '__configuration.ConfigurationContext.ClassType.AssemblyQualifiedName' was not found.")]
     public void BeginDeserialization_ThrowsOnUnmixedTypes ()
     {
       ClassImplementingISerializable instance = new ClassImplementingISerializable ();
@@ -140,7 +140,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Member '__configuration.ConfigurationContext' was not found.")]
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Member '__configuration.ConfigurationContext.ClassType.AssemblyQualifiedName' was not found.")]
     
     public void BeginDeserialization_ThrowsOnTypeNotImplementingISerializable ()
     {

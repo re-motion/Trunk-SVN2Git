@@ -31,15 +31,15 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
     public void SetUp()
     {
       _info = new SerializationInfo (typeof (ClassContext), new FormatterConverter());
-      _serializer = new SerializationInfoClassContextSerializer (_info);
-      _deserializer = new SerializationInfoClassContextDeserializer (_info);
+      _serializer = new SerializationInfoClassContextSerializer (_info, "C1.");
+      _deserializer = new SerializationInfoClassContextDeserializer (_info, "C1.");
     }
 
     [Test]
     public void AddClassType ()
     {
       _serializer.AddClassType (typeof (DateTime));
-      Assert.That (_info.GetString ("ClassType.AssemblyQualifiedName"), Is.EqualTo (typeof (DateTime).AssemblyQualifiedName));
+      Assert.That (_info.GetString ("C1.ClassType.AssemblyQualifiedName"), Is.EqualTo (typeof (DateTime).AssemblyQualifiedName));
       Assert.That (_deserializer.GetClassType (), Is.SameAs (typeof (DateTime)));
     }
 
@@ -51,9 +51,9 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
       var mixinContexts = new[] { mixinContext1, mixinContext2 };
       _serializer.AddMixins (mixinContexts);
 
-      Assert.That (_info.GetInt32 ("Mixins.Count"), Is.EqualTo (2));
-      Assert.That (_info.GetValue ("Mixins[0].MixinKind", typeof (MixinKind)), Is.EqualTo (MixinKind.Extending));
-      Assert.That (_info.GetValue ("Mixins[1].MixinKind", typeof (MixinKind)), Is.EqualTo (MixinKind.Used));
+      Assert.That (_info.GetInt32 ("C1.Mixins.Count"), Is.EqualTo (2));
+      Assert.That (_info.GetValue ("C1.Mixins[0].MixinKind", typeof (MixinKind)), Is.EqualTo (MixinKind.Extending));
+      Assert.That (_info.GetValue ("C1.Mixins[1].MixinKind", typeof (MixinKind)), Is.EqualTo (MixinKind.Used));
       Assert.That (_deserializer.GetMixins ().ToArray(), Is.EqualTo (mixinContexts));
     }
 
@@ -61,7 +61,7 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
     public void AddCompleteInterfaces ()
     {
       _serializer.AddCompleteInterfaces (new[] {typeof (int), typeof (string)});
-      Assert.That (_info.GetValue ("CompleteInterfaces.AssemblyQualifiedNames", typeof (string[])), 
+      Assert.That (_info.GetValue ("C1.CompleteInterfaces.AssemblyQualifiedNames", typeof (string[])), 
           Is.EqualTo (new[] {typeof (int).AssemblyQualifiedName, typeof (string).AssemblyQualifiedName}));
       Assert.That (_deserializer.GetCompleteInterfaces().ToArray(), Is.EqualTo (new[] {typeof (int), typeof (string) }));
     }

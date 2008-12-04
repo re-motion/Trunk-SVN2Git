@@ -196,7 +196,6 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\GeneralTypeAssignArrayStatement.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\IInitializableMixinTarget.cs" />
-    <Compile Include="Mixins\Context\MixinContextSerializer.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomClassEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomEventEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomMethodEmitter.cs" />

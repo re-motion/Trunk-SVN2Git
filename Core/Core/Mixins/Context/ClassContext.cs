@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using Remotion.Mixins.Context.Serialization;
-using Remotion.Mixins.Utilities.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context
@@ -25,8 +24,7 @@ namespace Remotion.Mixins.Context
   /// <remarks>
   /// Instances of this class are immutable.
   /// </remarks>
-  [Serializable]
-  public sealed class ClassContext : ISerializable
+  public sealed class ClassContext
   {
     public static ClassContext Deserialize (IClassContextDeserializer deserializer)
     {
@@ -291,52 +289,6 @@ namespace Remotion.Mixins.Context
       }
       return new ClassContext (Type, mixinsAfterSuppression.Values, CompleteInterfaces);
     }
-
-    #region Serialization
-    private ClassContext (SerializationInfo info, StreamingContext context)
-      : this (ReflectionObjectSerializer.DeserializeType ("_type", info), DeserializeMixins (info), DeserializeCompleteInterfaces (info))
-    {
-    }
-
-    private static IEnumerable<MixinContext> DeserializeMixins (SerializationInfo info)
-    {
-      int mixinCount = info.GetInt32 ("_mixins.Count");
-      var mixinContexts = new List<MixinContext> (mixinCount);
-      for (int i = 0; i < mixinCount; ++i)
-      {
-        MixinContext mixinContext = MixinContextSerializer.DeserializeFromFlatStructure ("_mixins[" + i + "]", info);
-        mixinContexts.Add (mixinContext);
-      }
-      return mixinContexts;
-    }
-
-    private static IEnumerable<Type> DeserializeCompleteInterfaces (SerializationInfo info)
-    {
-      int completeInterfaceCount = info.GetInt32 ("_completeInterfaces.Count");
-      var completeInterfaces = new List<Type> (completeInterfaceCount);
-      for (int i = 0; i < completeInterfaceCount; ++i)
-        completeInterfaces.Add (ReflectionObjectSerializer.DeserializeType ("_completeInterfaces[" + i + "]", info));
-      return completeInterfaces;
-    }
-
-    void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
-    {
-      ReflectionObjectSerializer.SerializeType (_type, "_type", info);
-      info.AddValue ("_mixins.Count", _mixins.Count);
-      using (IEnumerator<MixinContext> mixinEnumerator = _mixins.GetEnumerator())
-      {
-        for (int i = 0; mixinEnumerator.MoveNext(); ++i)
-          MixinContextSerializer.SerializeIntoFlatStructure (mixinEnumerator.Current, "_mixins[" + i + "]", info);
-      }
-      using (IEnumerator<Type> interfaceEnumerator = _completeInterfaces.GetEnumerator())
-      {
-        info.AddValue ("_completeInterfaces.Count", _completeInterfaces.Count);
-        for (int i = 0; interfaceEnumerator.MoveNext(); ++i)
-          ReflectionObjectSerializer.SerializeType (interfaceEnumerator.Current, "_completeInterfaces[" + i + "]", info);
-      }
-    }
-
-    #endregion
 
     public void Serialize (IClassContextSerializer serializer)
     {

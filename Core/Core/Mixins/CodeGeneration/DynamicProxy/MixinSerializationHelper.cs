@@ -12,6 +12,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
@@ -37,7 +38,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       if (mixinIndex == -1)
         throw new ArgumentException ("The given mixin is not part of the given targetObject.", "targetObject");
 
-      info.AddValue ("__configuration.TargetClass.ConfigurationContext", targetClassContext);
+      var classContextSerializer = new SerializationInfoClassContextSerializer (info, "__configuration.TargetClass.ConfigurationContext.");
+      targetClassContext.Serialize (classContextSerializer);
+      
       info.AddValue ("__configuration.MixinIndex", mixinIndex);
 
       object[] baseMemberValues;
@@ -63,8 +66,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _context = context;
 
-      var targetClassContext = (ClassContext) info.GetValue ("__configuration.TargetClass.ConfigurationContext", typeof (ClassContext));
-      TargetClassDefinition targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (targetClassContext);
+      var classContextDeserializer = new SerializationInfoClassContextDeserializer (info, "__configuration.TargetClass.ConfigurationContext.");
+      var configurationContext = ClassContext.Deserialize (classContextDeserializer);
+      TargetClassDefinition targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (configurationContext);
 
       int mixinIndex = info.GetInt32 ("__configuration.MixinIndex");
       _mixinDefinition = targetClassDefinition.Mixins[mixinIndex];
