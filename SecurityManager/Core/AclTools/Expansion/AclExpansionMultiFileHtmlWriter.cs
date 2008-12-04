@@ -88,14 +88,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    // TODO AE: Rename to WriteUser or ProcessUser.
+    // TODO QAE: Rename to WriteUser or ProcessUser. MGi: Name has been picked in analogy to AclExpansionHtmlWriter
     private void WriteTableBody_ProcessUser (User user, List<AclExpansionEntry> aclExpansion)
     {
       _implementation.WriteTableData (user.UserName);
       _implementation.WriteTableData (user.FirstName);
       _implementation.WriteTableData (user.LastName);
 
-      string userDetailFileName = AclExpansionHtmlWriterImplementationBase.ToValidFileName (user.UserName); // TODO AE: Is UserName guaranteed to be unique regarding that forbidden characters are replaced by "_"?
+      string userDetailFileName = AclExpansionHtmlWriterImplementationBase.ToValidFileName (user.UserName); 
       using (var detailTextWriter = _textWriterFactory.NewTextWriter (userDetailFileName))
       {
 
@@ -116,15 +116,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public IEnumerable<User> GetUsers (IEnumerable<AclExpansionEntry> aclExpansion)
+    public List<User> GetUsers (IEnumerable<AclExpansionEntry> aclExpansion)
     {
       return (from aee in aclExpansion
              let user = aee.User
              orderby user.LastName, user.FirstName, user.UserName
-             select user).Distinct();
+              select user).Distinct ().ToList ();
     }
 
-    // TODO AE: Is list required? (Asymmetric when compared to GetUsers.)
     public List<AclExpansionEntry> GetAccessControlEntriesForUser (IEnumerable<AclExpansionEntry> aclExpansion, User user)
     {
       return (from aee in aclExpansion
