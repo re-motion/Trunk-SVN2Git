@@ -60,7 +60,7 @@
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion.SecurityManager">
         <include name="Globalization/**/*.resx" />
         <include name="Configuration/SecurityManagerConfiguration.xsd" />
-        <include name="AclTools/Expansion/Data/AclExpansion.css" />
+        <include name="AclTools/Expansion/AclExpansion.css" />
       </resources>
     </csc>
     
