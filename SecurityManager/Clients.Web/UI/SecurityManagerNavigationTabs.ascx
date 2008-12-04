@@ -10,7 +10,7 @@
 <%@ Control Language="C#" AutoEventWireup="true" Codebehind="SecurityManagerNavigationTabs.ascx.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.SecurityManagerNavigationTabs" %>
 <%@ Register TagPrefix="remotion" Namespace="Remotion.Web.UI.Controls" Assembly="Remotion.Web" %>
 <%@ Register TagPrefix="securityManager" Src="SecurityManagerCurrentTenantControl.ascx" TagName="CurrentTenantControl" %>
-<div style="text-align: right">
+<div id="CurrentTenantControl">
 <securityManager:CurrentTenantControl id="SecurityManagerCurrentTenantControl" runat="server" EnableAbstractTenants="true"/>
 </div>
 <remotion:TabbedMenu ID="TabbedMenu" runat="server">
