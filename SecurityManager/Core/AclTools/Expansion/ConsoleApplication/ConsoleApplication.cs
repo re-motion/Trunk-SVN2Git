@@ -13,7 +13,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using Remotion.Diagnostics.ToText;
-using Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication;
 using Remotion.Text.CommandLine;
 using Remotion.Text.StringExtensions;
 using Remotion.Utilities;
@@ -56,14 +55,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       where TApplication: IApplicationRunner<TApplicationSettings>, new()
       where TApplicationSettings : ConsoleApplicationSettings, new()
   {
+    private readonly TextWriter _errorWriter;
+    private readonly TextWriter _logWriter;
     private readonly ToTextBuilder _logToTextBuilder;
     private readonly ToTextBuilder _errorToTextBuilder;
     private readonly CommandLineClassParser<TApplicationSettings> _parser = new CommandLineClassParser<TApplicationSettings> ();
-    private readonly TextWriter _errorWriter;
-    private readonly TextWriter _logWriter;
     private readonly int _bufferWidth;
     private readonly IWait _waitAtEnd;
-    private int _result;
     private string _synopsis = "(Application synopsis not yet retrieved)";
 
     public ConsoleApplication (TextWriter errorWriter, TextWriter logWriter, int bufferWidth, IWait waitAtEnd)
@@ -83,27 +81,27 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
 
     public int Main (string[] args)
     {
-      _result = 0;
       ParseSynopsis (args);
-      ParseCommandLineArguments (args);
-      ConsoleApplicationMain();
+      int result = ParseCommandLineArguments (args);
+      if (result == 0) {
+        result = ConsoleApplicationMain ();
+      }
       WaitForKeypress();
-      return _result;
+      return result;
     }
 
-    private void ConsoleApplicationMain ()
+    private int ConsoleApplicationMain ()
     {
-      if (_result == 0)
+      int result = 0;
+      if (Settings.Mode == ConsoleApplicationSettings.ShowUsageMode.ShowUsage)
       {
-        if (Settings.Mode == ConsoleApplicationSettings.ShowUsageMode.ShowUsage)
-        {
-          OutputApplicationUsage();
-        }
-        else
-        {
-          RunApplication (Settings);
-        }
+        OutputApplicationUsage();
       }
+      else
+      {
+        result = RunApplication (Settings);
+      }
+      return result;
     }
 
 
@@ -134,7 +132,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       }
     }
 
-    public virtual void RunApplication (TApplicationSettings settings)
+    public virtual int RunApplication (TApplicationSettings settings)
     {
       try
       {
@@ -143,7 +141,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       }
       catch (Exception e)
       {
-        _result = 1;
+        //_result = 1;
         using (ConsoleUtility.EnterColorScope (ConsoleColor.White, ConsoleColor.DarkRed))
         {
           _errorToTextBuilder.s ("Execution aborted. Exception stack:");
@@ -152,7 +150,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
             _errorToTextBuilder.s (e.GetType ().FullName).s (": ").s (e.Message).s (e.StackTrace);
           }
         }
+        return 1;
       }
+      return 0;
     }
 
 
@@ -162,7 +162,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
     }
 
 
-    public virtual void ParseCommandLineArguments (string[] args)
+    public virtual int ParseCommandLineArguments (string[] args)
     {
       try
       {
@@ -172,11 +172,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
       {
         _errorToTextBuilder.nl ().s ("An error occured: ").s (e.Message);
         OutputApplicationUsage ();
-        // TODO AE: Return bool or throw exception instead of setting a global flag.
-        // TODO AE: Remove flag.
-        _result = 1;
         Settings = new TApplicationSettings(); // Use default settings
+        return 1;
       }
+      return 0;
     }
 
     public void ParseSynopsis (string[] args)
@@ -191,7 +190,5 @@ namespace Remotion.SecurityManager.AclTools.Expansion.ConsoleApplication
         _synopsis = "(An error occured while retrieving the application usage synopsis: " + e.Message + ")";  
       }
     }
-
-
   }
 }
