@@ -15,7 +15,7 @@ namespace Remotion.Mixins.Context.Serialization
 {
   public interface IClassContextDeserializer
   {
-    Type GetType ();
+    Type GetClassType ();
     IEnumerable<MixinContext> GetMixins ();
     IEnumerable<Type> GetCompleteInterfaces ();
   }

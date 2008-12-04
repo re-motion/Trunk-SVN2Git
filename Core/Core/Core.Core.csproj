@@ -151,12 +151,16 @@
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimer.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinType.cs" />
+    <Compile Include="Mixins\Context\Serialization\AttributeClassContextDeserializer.cs" />
+    <Compile Include="Mixins\Context\Serialization\AttributeClassContextSerializer.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeMixinContextDeserializer.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeMixinContextSerializer.cs" />
     <Compile Include="Mixins\Context\Serialization\IClassContextDeserializer.cs" />
     <Compile Include="Mixins\Context\Serialization\IClassContextSerializer.cs" />
     <Compile Include="Mixins\Context\Serialization\IMixinContextDeserializer.cs" />
     <Compile Include="Mixins\Context\Serialization\IMixinContextSerializer.cs" />
+    <Compile Include="Mixins\Context\Serialization\SerializationInfoClassContextDeserializer.cs" />
+    <Compile Include="Mixins\Context\Serialization\SerializationInfoClassContextSerializer.cs" />
     <Compile Include="Mixins\Context\Serialization\SerializationInfoMixinContextDeserializer.cs" />
     <Compile Include="Mixins\Context\Serialization\SerializationInfoMixinContextSerializer.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencySorting\DependentMixinGrouperAlgorithm.cs" />

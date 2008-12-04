@@ -194,6 +194,8 @@
     <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixedTypeForBaseType1.cs" />
     <Compile Include="Mixins\CodeGeneration\SetUpFixture.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeMixinContextSerializerTest.cs" />
+    <Compile Include="Mixins\Context\Serialization\AttributeClassContextSerializationTest.cs" />
+    <Compile Include="Mixins\Context\Serialization\SerializationInfoClassContextSerializationTest.cs" />
     <Compile Include="Mixins\Context\Serialization\SerializationInfoMixinContextSerializationTest.cs" />
     <Compile Include="Mixins\SampleTypes\MixinWithMethodsOverriddenByDifferentClasses2.cs" />
     <Compile Include="Mixins\SampleTypes\DerivedDerivedDerivedClassOverridingMixinMethod2.cs" />

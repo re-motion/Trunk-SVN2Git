@@ -30,15 +30,15 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
     public void SetUp()
     {
       _info = new SerializationInfo (typeof (MixinContext), new FormatterConverter());
-      _serializer = new SerializationInfoMixinContextSerializer (_info);
-      _deserializer = new SerializationInfoMixinContextDeserializer (_info);
+      _serializer = new SerializationInfoMixinContextSerializer (_info, "M1.");
+      _deserializer = new SerializationInfoMixinContextDeserializer (_info, "M1.");
     }
 
     [Test]
     public void AddMixinType ()
     {
       _serializer.AddMixinType (typeof (DateTime));
-      Assert.That (_info.GetString ("mixinType.AssemblyQualifiedName"), Is.EqualTo (typeof (DateTime).AssemblyQualifiedName));
+      Assert.That (_info.GetString ("M1.MixinType.AssemblyQualifiedName"), Is.EqualTo (typeof (DateTime).AssemblyQualifiedName));
       Assert.That (_deserializer.GetMixinType (), Is.SameAs (typeof (DateTime)));
     }
 
@@ -46,7 +46,7 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
     public void AddMixinKind ()
     {
       _serializer.AddMixinKind (MixinKind.Used);
-      Assert.That (_info.GetValue ("mixinKind", typeof (MixinKind)), Is.EqualTo (MixinKind.Used));
+      Assert.That (_info.GetValue ("M1.MixinKind", typeof (MixinKind)), Is.EqualTo (MixinKind.Used));
       Assert.That (_deserializer.GetMixinKind (), Is.EqualTo (MixinKind.Used));
     }
 
@@ -54,7 +54,7 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
     public void AddExplicitDependencies ()
     {
       _serializer.AddExplicitDependencies (new[] {typeof (int), typeof (string)});
-      Assert.That (_info.GetValue ("explicitDependencies.AssemblyQualifiedNames", typeof (string[])), 
+      Assert.That (_info.GetValue ("M1.ExplicitDependencies.AssemblyQualifiedNames", typeof (string[])), 
           Is.EqualTo (new[] {typeof (int).AssemblyQualifiedName, typeof (string).AssemblyQualifiedName}));
       Assert.That (_deserializer.GetExplicitDependencies ().ToArray(), Is.EqualTo (new[] {typeof (int), typeof (string) }));
     }
@@ -63,7 +63,7 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
     public void AddIntroducedMemberVisibility()
     {
       _serializer.AddIntroducedMemberVisibility (MemberVisibility.Public);
-      Assert.That (_info.GetValue ("introducedMemberVisibility", typeof (MemberVisibility)), Is.EqualTo (MemberVisibility.Public));
+      Assert.That (_info.GetValue ("M1.IntroducedMemberVisibility", typeof (MemberVisibility)), Is.EqualTo (MemberVisibility.Public));
       Assert.That (_deserializer.GetIntroducedMemberVisibility (), Is.EqualTo (MemberVisibility.Public));
     }
   }

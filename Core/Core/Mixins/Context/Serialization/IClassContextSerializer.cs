@@ -15,8 +15,8 @@ namespace Remotion.Mixins.Context.Serialization
 {
   public interface IClassContextSerializer
   {
-    void AddType (Type type);
-    void AddMixins (IEnumerable<MixinContext> mixinContext);
+    void AddClassType (Type type);
+    void AddMixins (IEnumerable<MixinContext> mixinContexts);
     void AddCompleteInterfaces (IEnumerable<Type> completeInterfaces);
   }
 }

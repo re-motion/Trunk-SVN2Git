@@ -18,33 +18,38 @@ namespace Remotion.Mixins.Context.Serialization
   public class SerializationInfoMixinContextSerializer : IMixinContextSerializer
   {
     private readonly SerializationInfo _info;
+    private readonly string _prefix;
 
-    public SerializationInfoMixinContextSerializer (SerializationInfo info)
+    public SerializationInfoMixinContextSerializer (SerializationInfo info, string prefix)
     {
+      ArgumentUtility.CheckNotNull ("info", info);
+      ArgumentUtility.CheckNotNull ("prefix", prefix);
+
       _info = info;
+      _prefix = prefix;
     }
 
     public void AddMixinType(Type mixinType)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-      _info.AddValue ("mixinType.AssemblyQualifiedName", mixinType.AssemblyQualifiedName);
+      _info.AddValue (_prefix + "MixinType.AssemblyQualifiedName", mixinType.AssemblyQualifiedName);
     }
 
     public void AddMixinKind(MixinKind mixinKind)
     {
-      _info.AddValue ("mixinKind", mixinKind);
+      _info.AddValue (_prefix + "MixinKind", mixinKind);
     }
 
     public void AddIntroducedMemberVisibility(MemberVisibility introducedMemberVisibility)
     {
-      _info.AddValue ("introducedMemberVisibility", introducedMemberVisibility);
+      _info.AddValue (_prefix + "IntroducedMemberVisibility", introducedMemberVisibility);
     }
 
     public void AddExplicitDependencies(IEnumerable<Type> explicitDependencies)
     {
       ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
       var typeNames = EnumerableUtility.SelectToArray (explicitDependencies, t => t.AssemblyQualifiedName);
-      _info.AddValue ("explicitDependencies.AssemblyQualifiedNames", typeNames);
+      _info.AddValue (_prefix + "ExplicitDependencies.AssemblyQualifiedNames", typeNames);
     }
   }
 }
