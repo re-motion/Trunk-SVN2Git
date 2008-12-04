@@ -6,6 +6,11 @@
   height: 1.1em;
 }
 
+td.singleViewTopControls div.content div#CurrentTenantControl
+{
+  text-align: right;
+}
+
 h1.pageTitle
 {
   margin: 0;
