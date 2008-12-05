@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="AclTools\AclToolsTestBase.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderAclFinderTest.cs" />
+    <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterImplementationTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionHtmlWriterSettingsTest.cs" />
     <Compile Include="AclTools\Expansion\EnumerableEqualsWrapperTest.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreatorTest.cs" />

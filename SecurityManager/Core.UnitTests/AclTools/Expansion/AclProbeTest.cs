@@ -11,18 +11,13 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.Text.StringExtensions;
 
-// TODO AE: Remove unused usings.
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
-  // TODO AE: Remove commented code. (Do not commit.)
   [TestFixture]
   public class AclProbeTest : AclToolsTestBase
   {
@@ -35,17 +30,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.SecurityToken.Principal, Is.EqualTo (User));
     }
 
-    // TODO AE: Remove comment. (Ignore message says the same.)
-    // TODO: Enable as soon as GroupSelection supports SpecificGroup state.
-    [Test]
-    [Ignore ("Enable as soon as GroupSelection supports SpecificGroup state.")]
-    public void CreateAclProbe_SpecificGroup_Test ()
-    {
-      // TODO AE: Is this code template really needed or is it obvious?
-      //AccessControlEntry ace = TestHelper.CreateAceWithSpecficGroup (Group);
-      //AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      //Assert.That (aclProbe.SecurityToken.OwningGroups, NUnit.Framework.SyntaxHelpers.List.Contains (ace.SpecificGroup));
-    }
 
     [Test]
     public void CreateAclProbe_OwningGroup_Test ()
@@ -69,7 +53,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithoutGroupCondition ();
       FleshOutAccessControlEntryForTest (ace);
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-      //Assert.That (aclProbe.SecurityToken.OwningGroup, Is.SameAs (ace.SpecificGroup));
       Assert.That (aclProbe.SecurityToken.OwningGroup, Is.Null);
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
@@ -108,8 +91,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
       Assert.That (aclProbe.SecurityToken.OwningTenant, Is.EqualTo (User.Tenant));
 
-      //var accessConditionsExpected = new AclExpansionAccessConditions();
-      //accessConditionsExpected.HasOwningTenantCondition = true;
       var accessConditionsExpected = new AclExpansionAccessConditions
       {
         OwningTenant = Tenant,
@@ -126,7 +107,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant();
       FleshOutAccessControlEntryForTest (ace);
       ace.TenantCondition = (TenantCondition) (object) -1;
-      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace); // TODO AE: This assignment is never executed, remove it.
+      AclProbe.CreateAclProbe (User, Role, ace); 
     }
 
 
@@ -140,15 +121,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclProbe.SecurityToken.AbstractRoles, List.Contains (ace.SpecificAbstractRole));
 
       var accessConditionsExpected = new AclExpansionAccessConditions();
-      //accessConditionsExpected.IsAbstractRoleRequired = true;
       accessConditionsExpected.AbstractRole = ace.SpecificAbstractRole;
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
-
-    // TODO AE: Remove blank lines.
-
-
-
 
 
     private void FleshOutAccessControlEntryForTest (AccessControlEntry ace)

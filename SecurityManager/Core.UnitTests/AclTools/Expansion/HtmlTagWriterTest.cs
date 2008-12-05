@@ -15,7 +15,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.Diagnostics.ToText;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -175,7 +174,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     private static void AssertTagNameOpenCloseHtml (string tagName)
     {
       var tagNameHtmlResult = GetSpecificTagOpenCloseHtml (tagName);
-      //To.ConsoleLine.sb().e(() => tagName).e (() => tagNameHtmlResult).se();
       Assert.That (tagNameHtmlResult, Is.EqualTo ("<" + tagName + ">abc</" + tagName + ">"));
     }
 

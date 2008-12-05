@@ -12,7 +12,6 @@ using System.Collections.Generic;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
-  // TODO AE: Remove unused interface. (Or use it.)
   /// <summary>
   /// Interface that allows outputting a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/> through <see cref="WriteAclExpansion"/> method.
   /// </summary>

@@ -222,10 +222,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     }
 
 
-    private void WriteTableDataForBooleanCondition (bool required)
+    public void WriteTableDataForBooleanCondition (bool required)
     {
       HtmlTagWriter.Tags.td ();
-      HtmlTagWriter.Value (required ? "X" : ""); // TODO AE: Test missing for one of these cases
+      HtmlTagWriter.Value (required ? "X" : ""); 
       HtmlTagWriter.Tags.tdEnd ();
     }
 

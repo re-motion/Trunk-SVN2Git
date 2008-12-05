@@ -11,7 +11,6 @@
 // 
 using System;
 using System.IO;
-using Remotion.SecurityManager.AclTools.Expansion;
 
 namespace Remotion.SecurityManager.AclTools.Expansion
 {
@@ -34,8 +33,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// ]]></code>
   /// </example>
   /// </summary>
-  // TODO AE: Use style guide (PascalCase method names).
-  // TODO AE: Remove commented code. (Do not commit.)
+
   public class HtmlTagWriterTags
   {
     private readonly HtmlTagWriter _htmlTagWriter;
@@ -51,12 +49,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// <returns></returns>
     public HtmlTagWriter br ()
     {
-      //_xmlWriter.WriteStartElement ("br");
-      //_xmlWriter.WriteEndElement ();
-
       _htmlTagWriter.Tag ("br");
       _htmlTagWriter.TagEnd ("br");
-
       return _htmlTagWriter;
     }
 

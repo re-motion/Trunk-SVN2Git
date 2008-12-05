@@ -20,7 +20,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   /// </summary>
   public interface IAclExpanderUserFinder
   {
-    // TODO AE: Consider returning IEnumerable<T> to support more laziness. (In theory.)
     List<User> FindUsers ();
   }
 }
