@@ -159,6 +159,7 @@
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCacheTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationClassContextSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinTypeGeneratorTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\ClassWithCtors.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\IMixinWithPropsEventsAtts.cs" />
@@ -190,9 +191,12 @@
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\AbstractMixinImplementingISerializable.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\NotSerializableMixin.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\NotSerializableMixinWithISerializable.cs" />
+    <Compile Include="Mixins\CodeGeneration\MethodBuilderEmitter.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixinTypeForMixinWithAbstractMembers.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixedTypeForBaseType1.cs" />
     <Compile Include="Mixins\CodeGeneration\SetUpFixture.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationMixinContextSerializerTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationSerializerUtilityTest.cs" />
     <Compile Include="Mixins\SampleTypes\DerivedGenericMixin.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeMixinContextSerializerTest.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeClassContextSerializationTest.cs" />

@@ -10,29 +10,32 @@
 
 using System;
 using System.Reflection;
-using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
+using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
+using System.Reflection.Emit;
 using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
-  public class DynamicMethodEmitter : IMemberEmitter
+  public class MethodBuilderEmitter : IMemberEmitter
   {
-    private readonly DynamicMethod _dynamicMethod;
-    private readonly DynamicMethodCodeBuilder _codeBuilder;
+    private readonly MethodBuilder _methodBuilder;
+    private readonly MethodCodeBuilder _codeBuilder;
 
-    public DynamicMethodEmitter (DynamicMethod dynamicMethod)
+    public MethodBuilderEmitter (MethodBuilder methodBuilder)
     {
-      _dynamicMethod = dynamicMethod;
-      _codeBuilder = new DynamicMethodCodeBuilder (dynamicMethod.GetILGenerator ());
+      ArgumentUtility.CheckNotNull ("methodBuilder", methodBuilder);
+      _methodBuilder = methodBuilder;
+      _codeBuilder = new MethodCodeBuilder (methodBuilder.DeclaringType.BaseType, methodBuilder, methodBuilder.GetILGenerator());
     }
 
-    public DynamicMethod DynamicMethod
+    public MethodBuilder MethodBuilder
     {
-      get { return _dynamicMethod; }
+      get { return _methodBuilder; }
     }
 
-    public DynamicMethodCodeBuilder CodeBuilder
+    public MethodCodeBuilder CodeBuilder
     {
       get { return _codeBuilder; }
     }
@@ -49,12 +52,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     public MemberInfo Member
     {
-      get { return _dynamicMethod; }
+      get { return _methodBuilder; }
     }
 
     public Type ReturnType
     {
-      get { return _dynamicMethod.ReturnType; }
+      get { return _methodBuilder.ReturnType; }
     }
   }
 }

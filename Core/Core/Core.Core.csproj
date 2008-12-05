@@ -155,6 +155,9 @@
     <Compile Include="Mixins\Context\Serialization\AttributeClassContextSerializer.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeMixinContextDeserializer.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeMixinContextSerializer.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationMixinContextSerializer.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationSerializerUtility.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationClassContextSerializer.cs" />
     <Compile Include="Mixins\Context\Serialization\IClassContextDeserializer.cs" />
     <Compile Include="Mixins\Context\Serialization\IClassContextSerializer.cs" />
     <Compile Include="Mixins\Context\Serialization\IMixinContextDeserializer.cs" />
