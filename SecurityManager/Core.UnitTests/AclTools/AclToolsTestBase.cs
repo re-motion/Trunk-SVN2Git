@@ -13,18 +13,13 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
-using Remotion.Development.UnitTesting.ObjectMother;
-using Remotion.Diagnostics.ToText;
-using Remotion.Security;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
-using Remotion.SecurityManager.UnitTests.TestDomain;
 using Rhino.Mocks;
-using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
+
 // TODO AE: Cleanup usings.
 
 namespace Remotion.SecurityManager.UnitTests.AclTools

@@ -79,14 +79,10 @@
     <Compile Include="AclTools\Expansion\Infrastructure\AclProbe.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreator.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionEntryCreator_GetAccessTypesResult.cs" />
-    <Compile Include="AclTools\Expansion\StateCombinationBuilder\AclSecurityContextHelper.cs" />
-    <Compile Include="AclTools\Expansion\StateCombinationBuilder\ClassStateDictionary.cs" />
-    <Compile Include="AclTools\Expansion\StateCombinationBuilder\ClassStateTuple.cs" />
     <Compile Include="AclTools\Expansion\HtmlTagWriter.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderUserFinder.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\IUserRoleAclAceCombinationFinder.cs" />
-    <Compile Include="AclTools\Expansion\StateCombinationBuilder\StateCombinationBuilderFast.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\ITextWriterFactory.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\StreamWriterFactory.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterData.cs" />

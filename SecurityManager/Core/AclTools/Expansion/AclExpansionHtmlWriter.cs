@@ -12,9 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
-using Remotion.SecurityManager.AclTools.Expansion.StateCombinationBuilder;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Text.StringExtensions;
 using Remotion.Utilities;
 
 
@@ -165,6 +165,25 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
   }
+
+  public static class StateDefinitionExtensions
+  {
+    public static string ShortName (this StateDefinition stateDefinition)
+    {
+      return stateDefinition.Name.LeftUntilChar ('|');
+      //return stateDefinition.DisplayName;
+    }
+  }
+
+  public static class SecurableClassDefinitionExtensions
+  {
+    public static string ShortName (this SecurableClassDefinition securableClassDefinition)
+    {
+      return securableClassDefinition.Name.RightUntilChar ('.');
+      //return securableClassDefinition.DisplayName;
+    }
+  }
+
 }
 
 
