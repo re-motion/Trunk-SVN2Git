@@ -139,6 +139,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("SpecificUser")]
     protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
 
+    //[DBBidirectionalRelation ("Deputy")]
+    //public abstract ObjectList<Deputization> Deputizations { get; }
+
     protected override void OnDeleting (EventArgs args)
     {
       base.OnDeleting (args);
