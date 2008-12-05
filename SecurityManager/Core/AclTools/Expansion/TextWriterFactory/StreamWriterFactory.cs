@@ -19,8 +19,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
   public class StreamWriterFactory : TextWriterFactoryBase, IToTextConvertible
   {
-    // TODO AE: Test case where directory does not exist.
-    // TODO AE: Test case where TextWriter already exists.
     public override TextWriter CreateTextWriter (string directory, string name, string extension)
     {
       ArgumentUtility.CheckNotNull ("directory", directory);
@@ -64,12 +62,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
         toTextBuilder.e (pair.Key);
       }
       toTextBuilder.se ();
-
-      //foreach (KeyValuePair<string, TextWriterData> pair in NameToTextWriterData)
-      //{
-      //  toTextBuilder.nl ().e (pair.Key).nl ().e (pair.Value.TextWriter.ToString ()).nl ();
-      //}
-
     }
+
   }
 }

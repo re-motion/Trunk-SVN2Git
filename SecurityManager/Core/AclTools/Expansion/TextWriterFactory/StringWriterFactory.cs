@@ -16,7 +16,6 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
-  // TODO AE: Test-only class -> move to UnitTests project.
   public class StringWriterFactory : TextWriterFactoryBase, IToTextConvertible
   {
     public override TextWriter CreateTextWriter (string directory, string name, string extension)
