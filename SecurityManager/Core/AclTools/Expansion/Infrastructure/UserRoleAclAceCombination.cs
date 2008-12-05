@@ -17,7 +17,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
   /// <summary>
   /// A tuple of (<see cref="User"/>, <see cref="Role"/>, <see cref="AccessControlList"/>, <see cref="AccessControlEntry"/>).
-  /// Returned by the enumerator of <see cref="UserRoleAclAceCombinations"/>.
+  /// Returned by the enumerator of <see cref="UserRoleAclAceCombinationFinder"/>.
   /// </summary>
   public class UserRoleAclAceCombination
   {

@@ -23,14 +23,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
   /// <see cref="AccessControlEntry"/>|s of <see cref="AccessControlList"/>|s (taken from <see cref="IAclExpanderAclFinder"/>)
   /// combinations. 
   /// </summary>
-  // TODO AE: Consider renaming to UserRoleAclAceCombinationFinder, since it finds the values it enumerates.
-  public class UserRoleAclAceCombinations : IUserRoleAclAceCombinations
+  public class UserRoleAclAceCombinationFinder : IUserRoleAclAceCombinationFinder
   {
     private readonly IAclExpanderUserFinder _userFinder;
     private readonly IAclExpanderAclFinder _accessControlListFinder;
 
 
-    public UserRoleAclAceCombinations (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
+    public UserRoleAclAceCombinationFinder (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
     {
       _userFinder = userFinder;
       _accessControlListFinder = accessControlListFinder;

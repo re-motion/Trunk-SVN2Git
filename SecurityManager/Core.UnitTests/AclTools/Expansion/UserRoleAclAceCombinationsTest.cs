@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
       var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
 
-      var userRoleAclAceCombinations = new UserRoleAclAceCombinations (userFinderMock,aclFinderMock);
+      var userRoleAclAceCombinations = new UserRoleAclAceCombinationFinder (userFinderMock,aclFinderMock);
       Assert.That (Remotion.Development.UnitTesting.PrivateInvoke.GetNonPublicField (userRoleAclAceCombinations, "_userFinder"), Is.EqualTo(userFinderMock));
       Assert.That (Remotion.Development.UnitTesting.PrivateInvoke.GetNonPublicField (userRoleAclAceCombinations, "_accessControlListFinder"), Is.EqualTo (aclFinderMock));
     }
@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
       aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (acls);
 
-      var userRoleAclAceCombinations = new UserRoleAclAceCombinations (userFinderMock, aclFinderMock);
+      var userRoleAclAceCombinations = new UserRoleAclAceCombinationFinder (userFinderMock, aclFinderMock);
       var enumerator = userRoleAclAceCombinations.GetEnumerator();
 
       foreach (var user in users)

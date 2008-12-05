@@ -456,8 +456,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void GetAclExpansionEntryList_UserList_IUserRoleAclAceCombinations ()
     {
-      // TODO AE: After replacing IUserRoleAclAceCombinations with IEnumerable<T>, replace this mock by a simple array.
-      var userRoleAclAceCombinationsMock = MockRepository.GenerateMock<IUserRoleAclAceCombinations>();
+      // TODO AE: After replacing IUserRoleAclAceCombinationFinder with IEnumerable<T>, replace this mock by a simple array.
+      var userRoleAclAceCombinationsMock = MockRepository.GenerateMock<IUserRoleAclAceCombinationFinder>();
       //var myValues = new [] {  new UserRoleAclAceCombination(Role,Ace) }; // TODO AE: Prefer this version as it requires less knowledge about our test helpers.
       var myValues = List.New(new UserRoleAclAceCombination (Role, Ace) );     
       userRoleAclAceCombinationsMock.Expect (mock => mock.GetEnumerator ()).Return (myValues.GetEnumerator ());

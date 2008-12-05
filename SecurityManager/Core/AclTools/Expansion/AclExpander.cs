@@ -23,7 +23,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpander
   {
-    private readonly IUserRoleAclAceCombinations _userRoleAclAceCombinations;
+    private readonly IUserRoleAclAceCombinationFinder _userRoleAclAceCombinationFinder;
     private readonly Infrastructure.AclExpansionEntryCreator _aclExpansionEntryCreator = new Infrastructure.AclExpansionEntryCreator ();
 
     // IEqualityComparer for value based comparison of AclExpansionEntry|s.
@@ -41,14 +41,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     );
 
-    public AclExpander (IUserRoleAclAceCombinations userRoleAclAceCombinations)
+    public AclExpander (IUserRoleAclAceCombinationFinder userRoleAclAceCombinationFinder)
     {
-      ArgumentUtility.CheckNotNull ("userRoleAclAceCombinations", userRoleAclAceCombinations);
-      _userRoleAclAceCombinations = userRoleAclAceCombinations;
+      ArgumentUtility.CheckNotNull ("userRoleAclAceCombinationFinder", userRoleAclAceCombinationFinder);
+      _userRoleAclAceCombinationFinder = userRoleAclAceCombinationFinder;
     }
 
     public AclExpander (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
-      : this (new UserRoleAclAceCombinations (userFinder, accessControlListFinder))
+      : this (new UserRoleAclAceCombinationFinder (userFinder, accessControlListFinder))
     {}
 
     /// <summary>
@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// <returns></returns>
     public IEnumerable<AclExpansionEntry> GetAclExpansionEntries ()
     {
-      foreach (UserRoleAclAceCombination userRoleAclAce in _userRoleAclAceCombinations)
+      foreach (UserRoleAclAceCombination userRoleAclAce in _userRoleAclAceCombinationFinder)
       {
         AclExpansionEntry aclExpansionEntry = AclExpansionEntryCreator.CreateAclExpansionEntry (userRoleAclAce);
         if (aclExpansionEntry != null)

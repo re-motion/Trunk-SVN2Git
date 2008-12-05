@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{990B8638-A08F-4A94-B01A-E7DAEF089F27}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -85,14 +85,14 @@
     <Compile Include="AclTools\Expansion\HtmlTagWriter.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderAclFinder.cs" />
     <Compile Include="AclTools\Expansion\IAclExpanderUserFinder.cs" />
-    <Compile Include="AclTools\Expansion\Infrastructure\IUserRoleAclAceCombinations.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\IUserRoleAclAceCombinationFinder.cs" />
     <Compile Include="AclTools\Expansion\StateCombinationBuilder\StateCombinationBuilderFast.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\ITextWriterFactory.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\StreamWriterFactory.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterData.cs" />
     <Compile Include="AclTools\Expansion\TextWriterFactory\TextWriterFactoryBase.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\UserRoleAclAceCombination.cs" />
-    <Compile Include="AclTools\Expansion\Infrastructure\UserRoleAclAceCombinations.cs" />
+    <Compile Include="AclTools\Expansion\Infrastructure\UserRoleAclAceCombinationFinder.cs" />
     <Compile Include="Configuration\AccessControlElement.cs" />
     <Compile Include="Configuration\SecurityManagerConfiguration.cs">
       <SubType>Code</SubType>
