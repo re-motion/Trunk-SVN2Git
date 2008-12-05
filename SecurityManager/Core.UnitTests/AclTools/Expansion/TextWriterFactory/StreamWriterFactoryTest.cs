@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
       string directory = Path.Combine (Path.GetTempPath (), "StreamWriterFactoryTest_DirectoryTest");
       const string extension = "xyz";
       const string fileName = "someFile";
-      using (StreamWriter streamWriter = (StreamWriter) streamWriterFactory.NewTextWriter (directory, fileName, extension))
+      using (StreamWriter streamWriter = (StreamWriter) streamWriterFactory.CreateTextWriter (directory, fileName, extension))
       {
         var fileStream = (FileStream) streamWriter.BaseStream;
         To.ConsoleLine.e (fileStream.Name);
@@ -40,12 +40,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Directory must not be null. Set using \"Directory\"-property before calling \"CreateTextWriter\"")]
     public void NewTextWriterWithNullDirectoryThrowsTest ()
     {
       var streamWriterFactory = new StreamWriterFactory ();
       streamWriterFactory.Directory = null;
-      streamWriterFactory.NewTextWriter ("whatever");
+      streamWriterFactory.CreateTextWriter ("whatever");
     }
 
     [Test]
@@ -59,11 +59,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
       streamWriterFactoryMock.Extension = extension;
       const string fileName = "someFile";
 
-      streamWriterFactoryMock.Expect (x => x.NewTextWriter (directory, fileName, extension)).Return(TextWriter.Null);
+      streamWriterFactoryMock.Expect (x => x.CreateTextWriter (directory, fileName, extension)).Return(TextWriter.Null);
       
       streamWriterFactoryMock.Replay();
 
-      streamWriterFactoryMock.NewTextWriter (fileName);
+      streamWriterFactoryMock.CreateTextWriter (fileName);
 
       streamWriterFactoryMock.VerifyAllExpectations ();
     }

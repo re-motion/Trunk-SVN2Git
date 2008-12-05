@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     public void WriteAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
-      using (var textWriter = _textWriterFactory.NewTextWriter (MasterFileName))
+      using (var textWriter = _textWriterFactory.CreateTextWriter (MasterFileName))
       {
         _implementation = new AclExpansionHtmlWriterImplementationBase (textWriter, _indentXml);
 
@@ -96,7 +96,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _implementation.WriteTableData (user.LastName);
 
       string userDetailFileName = AclExpansionHtmlWriterImplementationBase.ToValidFileName (user.UserName); 
-      using (var detailTextWriter = _textWriterFactory.NewTextWriter (userDetailFileName))
+      using (var detailTextWriter = _textWriterFactory.CreateTextWriter (userDetailFileName))
       {
 
         var aclExpansionSingleUser = GetAccessControlEntriesForUser (aclExpansion, user);

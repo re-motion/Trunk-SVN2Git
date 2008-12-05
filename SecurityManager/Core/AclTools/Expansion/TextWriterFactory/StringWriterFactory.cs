@@ -19,7 +19,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
   // TODO AE: Test-only class -> move to UnitTests project.
   public class StringWriterFactory : TextWriterFactoryBase, IToTextConvertible
   {
-    public override TextWriter NewTextWriter (string directory, string name, string extension)
+    public override TextWriter CreateTextWriter (string directory, string name, string extension)
     {
       ArgumentUtility.CheckNotNull ("directory", directory);
       ArgumentUtility.CheckNotNull ("name", name);
@@ -29,10 +29,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       return textWriterData.TextWriter;
     }
     
-    public override TextWriter NewTextWriter (string name)
+    public override TextWriter CreateTextWriter (string name)
     {
       ArgumentUtility.CheckNotNull ("name", name);
-      return NewTextWriter (Directory, name, Extension);
+      return CreateTextWriter (Directory, name, Extension);
     }
 
     public void ToText (IToTextBuilder toTextBuilder)

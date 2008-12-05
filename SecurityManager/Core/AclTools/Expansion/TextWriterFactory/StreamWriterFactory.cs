@@ -21,12 +21,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
   {
     // TODO AE: Test case where directory does not exist.
     // TODO AE: Test case where TextWriter already exists.
-    public override TextWriter NewTextWriter (string directory, string name, string extension)
+    public override TextWriter CreateTextWriter (string directory, string name, string extension)
     {
       ArgumentUtility.CheckNotNull ("name", name); // TODO AE: CheckNotNullOrEmpty?
 
       // TODO AE: Throw an InvalidOperationException manually. (Assertions are more for conditions that you assume can never be false.)
-      Assertion.IsNotNull (directory, "directory must not be null. Set using \"directory\"-property before calling \"NewTextWriter\"");
+      Assertion.IsNotNull (directory, "directory must not be null. Set using \"directory\"-property before calling \"CreateTextWriter\"");
 
       if (!System.IO.Directory.Exists (directory))
       {
@@ -50,16 +50,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       return textWriterData.TextWriter;
     }
 
-    public override TextWriter NewTextWriter (string name)
+    public override TextWriter CreateTextWriter (string name)
     {
       ArgumentUtility.CheckNotNull ("name", name); 
       // TODO AE: Throw an InvalidOperationException manually. (Assertions are more for conditions that you assume can never be false.)
-      //Assertion.IsNotNull (Directory, "Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"");
+      //Assertion.IsNotNull (Directory, "Directory must not be null. Set using \"Directory\"-property before calling \"CreateTextWriter\"");
       if (Directory == null)
       {
-        throw new InvalidOperationException ("Directory must not be null. Set using \"Directory\"-property before calling \"NewTextWriter\"");
+        throw new InvalidOperationException ("Directory must not be null. Set using \"Directory\"-property before calling \"CreateTextWriter\"");
       }
-      return NewTextWriter (Directory, name, Extension);
+      return CreateTextWriter (Directory, name, Extension);
     }
 
 

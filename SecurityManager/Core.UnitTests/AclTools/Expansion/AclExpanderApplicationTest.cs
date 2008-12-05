@@ -192,8 +192,8 @@ th
       var textWriterFactoryMock = mocks.DynamicMock<ITextWriterFactory> ();
 
       textWriterFactoryMock.Expect (mock => mock.Directory = directory); 
-      textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter ());
-      textWriterFactoryMock.Expect (mock => mock.NewTextWriter (Arg<String>.Is.Anything, Arg<String>.Is.Anything, Arg<String>.Is.Anything)).Return (new StringWriter ());
+      textWriterFactoryMock.Expect (mock => mock.CreateTextWriter (Arg<String>.Is.Anything)).Return (new StringWriter ());
+      textWriterFactoryMock.Expect (mock => mock.CreateTextWriter (Arg<String>.Is.Anything, Arg<String>.Is.Anything, Arg<String>.Is.Anything)).Return (new StringWriter ());
       
       textWriterFactoryMock.Replay();
 

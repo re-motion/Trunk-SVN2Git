@@ -15,17 +15,17 @@ using System.IO;
 namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
   /// <summary>
-  /// Creates <see cref="TextWriter"/>|s through <see cref="NewTextWriter"/> in the currently set 
+  /// Creates <see cref="TextWriter"/>|s through <see cref="CreateTextWriter(string,string,string)"/> in the currently set 
   /// <see cref="Directory"/>.
-  /// Stores references to the created <see cref="TextWriter"/>|s. // TODO AE: Why?
+  /// Stores references to the created <see cref="TextWriter"/>|s. 
   /// </summary>
   public interface ITextWriterFactory
   {
-    TextWriter NewTextWriter (string directory, string name, string extension);
-    TextWriter NewTextWriter (string name); // TODO QAE: Rename to CreateTextWriter; MGi: Used New... on purpose: Create can be more costly than ctor, New is as cheap ctor.
-    string GetRelativePath (string fromName, string toName); // TODO AE: Is this method implementation-dependent?
+    TextWriter CreateTextWriter (string directory, string name, string extension);
+    TextWriter CreateTextWriter (string name); 
+    string GetRelativePath (string fromName, string toName); 
 
-    string Directory { get; set; } // TODO: Consider making this a parameter of NewTextWriter to avoid set/call dependency. (Unless a good default exists.)
+    string Directory { get; set; } 
     string Extension { get; set; }
   }
 }

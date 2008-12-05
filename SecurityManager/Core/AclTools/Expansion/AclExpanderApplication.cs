@@ -130,7 +130,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _textWriterFactory.Extension = "html";
       string directoryUsed = Settings.Directory;
       _textWriterFactory.Directory = directoryUsed;
-      using (var textWriter = _textWriterFactory.NewTextWriter ("AclExpansion_" + StringUtility.GetFileNameTimestampNow ()))
+      using (var textWriter = _textWriterFactory.CreateTextWriter ("AclExpansion_" + StringUtility.GetFileNameTimestampNow ()))
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true, CreateAclExpansionHtmlWriterSettings ());
         aclExpansionHtmlWriter.WriteAclExpansion(aclExpansion);
@@ -153,7 +153,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteCssFile ()
     {
-      using (var cssTextWriter = _textWriterFactory.NewTextWriter (_textWriterFactory.Directory,CssFileName,"css"))
+      using (var cssTextWriter = _textWriterFactory.CreateTextWriter (_textWriterFactory.Directory,CssFileName,"css"))
       {
         string resource = GetEmbeddedStringResource ("AclExpansion.css");
         Assertion.IsNotNull (resource);
