@@ -13,7 +13,6 @@ using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
-using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Rhino.Mocks;
 
@@ -22,7 +21,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
   [TestFixture]
   public class StreamWriterFactoryTest
   {
-    // TODO AE: Non-TDD code? More fine-grained unit tests needed for StreamWriterFactory and TextWriterFactoryBase.
     [Test]
     public void NewTextWriterArgumentTest ()
     {
@@ -49,6 +47,18 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
     }
 
     [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = @"TextWriter with name ""abc"" already exists.")]
+    public void NewTextWriterNameAlreadyExistsTest ()
+    {
+      const string textWriterName = "abc";
+      var streamWriterFactory = new StreamWriterFactory ();
+      streamWriterFactory.Directory = "xyz";
+      streamWriterFactory.CreateTextWriter (textWriterName);
+      streamWriterFactory.CreateTextWriter (textWriterName);
+    }
+
+
+    [Test]
     public void NewTextWriterOnlyNameArgumentTest ()
     {
       var mocks = new MockRepository();
@@ -67,5 +77,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
 
       streamWriterFactoryMock.VerifyAllExpectations ();
     }
+
+
   }
 }
