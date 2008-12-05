@@ -22,15 +22,40 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
     [Test]
     public void AppendExtensionTest ()
     {
-      //var mocks = new MockRepository();
-      //var textWriterFactoryBaseMock = mocks.PartialMock<TextWriterFactoryBase>();
-      //textWriterFactoryBaseMock.AppendExtension()
-
       const string name = "huizilipochtli";
       const string extension = "ext";
       Assert.That(TextWriterFactoryBase.AppendExtension (name, extension),Is.EqualTo(name + "." + extension));
       Assert.That (TextWriterFactoryBase.AppendExtension (name, null), Is.EqualTo (name));
       Assert.That (TextWriterFactoryBase.AppendExtension (name, ""), Is.EqualTo (name));
     }
+    
+
+    [Test]
+    public void GetRelativePathTest ()
+    {
+      var mocks = new MockRepository ();
+      var textWriterFactoryBaseMock = mocks.PartialMock<TextWriterFactoryBase> ();
+      textWriterFactoryBaseMock.Expect (x => x.TextWriterExists ("yang")).Return (true);
+      textWriterFactoryBaseMock.Replay();
+      textWriterFactoryBaseMock.Extension = "dat";
+      var result = textWriterFactoryBaseMock.GetRelativePath ("yin", "yang");
+      Assert.That (result, Is.EqualTo (@".\yang.dat"));
+      textWriterFactoryBaseMock.VerifyAllExpectations ();
+    }
+
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = @"No TextWriter with name ""yang"" registered => no relative path exists.")]
+    public void GetRelativePathNoEntryWithNameExistsTest ()
+    {
+      var mocks = new MockRepository ();
+      var textWriterFactoryBaseMock = mocks.PartialMock<TextWriterFactoryBase> ();
+
+      textWriterFactoryBaseMock.Expect (x => x.TextWriterExists ("yang")).Return (false);
+      textWriterFactoryBaseMock.Replay ();
+      textWriterFactoryBaseMock.GetRelativePath ("yin", "yang");
+      textWriterFactoryBaseMock.VerifyAllExpectations();
+    }   
+
   }
 }

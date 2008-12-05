@@ -22,7 +22,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     {
       ArgumentUtility.CheckNotNull ("directory", directory);
       ArgumentUtility.CheckNotNull ("name", name);
-      ArgumentUtility.CheckNotNull ("extension", extension);
+      //ArgumentUtility.CheckNotNull ("extension", extension); // TODO AE
       var textWriterData = new TextWriterData (new StringWriter (), directory, extension);
       NameToTextWriterData[name] = textWriterData;
       return textWriterData.TextWriter;

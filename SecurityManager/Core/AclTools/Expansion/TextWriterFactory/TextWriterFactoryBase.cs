@@ -45,16 +45,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       }
     }
 
-    // TODO AE: Test case where no writer with name toName is found.
-    public string GetRelativePath (string fromName, string toName)
+    public virtual string GetRelativePath (string fromName, string toName)
     {
       ArgumentUtility.CheckNotNull ("fromName", fromName);
       ArgumentUtility.CheckNotNull ("toName", toName);
-      if (!_nameToTextWriterData.ContainsKey (toName))
+      if (!TextWriterExists(toName))
       {
         throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s (" registered => no relative path exists.").CheckAndConvertToString ());
       }
       return Path.Combine(".", AppendExtension (toName, Extension)); 
+    }
+
+    public virtual bool TextWriterExists (string toName)
+    {
+      return _nameToTextWriterData.ContainsKey (toName);
     }
 
     public TextWriterData GetTextWriterData (string name)
