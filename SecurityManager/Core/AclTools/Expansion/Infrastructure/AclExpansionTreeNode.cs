@@ -10,6 +10,7 @@
 
 using System.Collections.Generic;
 using Remotion.Diagnostics.ToText;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
@@ -17,7 +18,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
   {
     public AclExpansionTreeNode (TParent parent, int numberLeafNodes, IList<TChildren> children)
     {
-      // TODO AE: Argument checks
+      ArgumentUtility.CheckNotNull ("parent", parent);
+      ArgumentUtility.CheckNotNull ("numberLeafNodes", numberLeafNodes);
+      ArgumentUtility.CheckNotNull ("children", children);
       Key = parent;
       Children = children;
       NumberLeafNodes = numberLeafNodes;
