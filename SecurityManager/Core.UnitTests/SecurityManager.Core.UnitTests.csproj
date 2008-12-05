@@ -146,6 +146,7 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\UserConditionStateful.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SetUpFixture.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SecurityClientFactory.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\CurrentUser.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\DeleteUser.cs" />
