@@ -13,53 +13,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// SampleWxeFunction ()
-// {
-//   string Var1;
-//   string Var2;
-//   
-//   Var1 = "SampleWxeFunction Step1";
-//   Var2 = "Var2 - Step1";
-// 
-//   WxePageStep ("WebForm1.aspx");
-// 
-//   SampleWxeSubFunction (ref Var2, "constant for Var2");
-// 
-//   WxePageStep ("WebForm1.aspx");
-// }
-// 
-// 
-// SampleWxeSubFunction (ref string Var1, string Var2)
-// {
-//   try
-//   {
-//     WxePageStep ("WebForm1.aspx");
-//  
-//     Var1 = "SampleWxeSubFunction Step3";
-// 
-//     WxePageStep ("WebForm1.aspx");
-// 
-//     Var1 = "exit SampleWxeSubFunction";
-//   }
-//   catch (ApplicationException e)
-//   {
-//     if (e.Message != null && e.Message.Length > 0)
-//     {
-//       Var1 = e.Message;
-//       WxePageStep ("WebForm1.aspx");
-//     }
-//
-//     Var1 = "Exception caught.";
-//     WxePageStep ("WebForm1.aspx");
-//   }
-//   finally 
-//   {
-//     Var2 = "finally";
-//
-//     WxePageStep ("WebForm1.aspx");
-//   }
-// }
-
 using System;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;

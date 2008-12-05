@@ -13,10 +13,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-// Requires:
-// System.dll, System.Design.dll, System.Drawing.dll, System.Web.dll
-// Remotion.dll, Remotion.ObjectBinding.dll, Remotion.ObjectBinding.Web.dll, Remotion.Web.dll
-
 using System;
 using System.Collections;
 using System.ComponentModel;
