@@ -42,32 +42,5 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       ConcreteMixedTypeAttribute attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (type, false);
       Assert.That (attribute.GetClassContext (), Is.EqualTo (context));
     }
-
-    [Test]
-    public void CreateNewAttributeExpression ()
-    {
-      ClassContext context = new ClassContextBuilder (typeof (int))
-          .AddCompleteInterface (typeof (uint))
-          .AddMixin (typeof (double)).OfKind (MixinKind.Used)
-          .AddMixin (typeof (string)).WithDependency (typeof (bool)).OfKind (MixinKind.Extending)
-          .BuildClassContext ();
-
-      DynamicMethod method =
-          new DynamicMethod ("Test_NewAttributeExpressionFromClassContext", typeof (ConcreteMixedTypeAttribute), new Type[] { typeof (ClassContext) }, typeof (ConcreteMixedTypeAttribute));
-      ILGenerator ilGenerator = method.GetILGenerator ();
-      DynamicMethodCodeBuilder codeBuilder = new DynamicMethodCodeBuilder (ilGenerator);
-      DynamicMethodEmitter emitter = new DynamicMethodEmitter (method);
-
-      Expression expression = ConcreteMixedTypeAttributeUtility.CreateNewAttributeExpression (context, codeBuilder);
-      codeBuilder.AddStatement (new ReturnStatement (expression));
-
-      PrivateInvoke.InvokeNonPublicMethod (codeBuilder, "Generate", emitter, ilGenerator);
-
-      Func<ClassContext, ConcreteMixedTypeAttribute> compiledMethod =
-          (Func<ClassContext, ConcreteMixedTypeAttribute>) method.CreateDelegate (typeof (Func<ClassContext, ConcreteMixedTypeAttribute>));
-      ConcreteMixedTypeAttribute generatedAttribute = compiledMethod (context);
-      ClassContext generatedContext = generatedAttribute.GetClassContext ();
-      Assert.That (generatedContext, Is.EqualTo (context));
-    }
   }
 }

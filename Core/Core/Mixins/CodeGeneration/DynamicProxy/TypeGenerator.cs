@@ -199,20 +199,18 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       ConstructorEmitter emitter = _emitter.CreateTypeConstructor ();
 
-      Expression attributeExpression =
-          ConcreteMixedTypeAttributeUtility.CreateNewAttributeExpression (Configuration.ConfigurationContext, emitter.CodeBuilder);
-      LocalReference attributeLocal = emitter.CodeBuilder.DeclareLocal (typeof (ConcreteMixedTypeAttribute));
-      emitter.CodeBuilder.AddStatement (new AssignStatement (attributeLocal, attributeExpression));
-      
-      MethodInfo getTargetClassDefinitionMethod = typeof (ConcreteMixedTypeAttribute).GetMethod ("GetTargetClassDefinition");
-      Assertion.IsNotNull (getTargetClassDefinitionMethod);
+      var classContextSerializer = new CodeGenerationClassContextSerializer (emitter.CodeBuilder);
+      Configuration.ConfigurationContext.Serialize (classContextSerializer);
+      var classContextExpression = classContextSerializer.GetConstructorInvocationExpression ();
 
       var currentCacheProperty = typeof (TargetClassDefinitionCache).BaseType.GetProperty ("Current");
       Assertion.IsNotNull (currentCacheProperty);
       var currentCachePropertyReference = new PropertyReference (null, currentCacheProperty);
 
+      MethodInfo getTargetClassDefinitionMethod = typeof (TargetClassDefinitionCache).GetMethod ("GetTargetClassDefinition");
+
       emitter.CodeBuilder.AddStatement (new AssignStatement (_configurationField,
-          new VirtualMethodInvocationExpression (attributeLocal, getTargetClassDefinitionMethod, currentCachePropertyReference.ToExpression())));
+          new VirtualMethodInvocationExpression (currentCachePropertyReference, getTargetClassDefinitionMethod, classContextExpression)));
 
       emitter.CodeBuilder.AddStatement (new ReturnStatement ());
     }

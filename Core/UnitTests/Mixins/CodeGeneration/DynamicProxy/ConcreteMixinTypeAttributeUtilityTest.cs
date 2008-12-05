@@ -43,33 +43,5 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       Assert.That (attribute.GetClassContext (), Is.EqualTo (context));
       Assert.That (attribute.MixinIndex, Is.EqualTo (12));
     }
-
-    [Test]
-    public void CreateNewAttributeExpression ()
-    {
-      ClassContext context = new ClassContextBuilder (typeof (int))
-          .AddCompleteInterface (typeof (uint))
-          .AddMixin (typeof (double)).OfKind (MixinKind.Used)
-          .AddMixin (typeof (string)).WithDependency (typeof (bool)).OfKind (MixinKind.Extending)
-          .BuildClassContext ();
-
-      DynamicMethod method =
-          new DynamicMethod ("Test_NewAttributeExpressionFromClassContext", typeof (ConcreteMixinTypeAttribute), new Type[] { typeof (ClassContext) }, typeof (ConcreteMixinTypeAttribute));
-      ILGenerator ilGenerator = method.GetILGenerator ();
-      DynamicMethodCodeBuilder codeBuilder = new DynamicMethodCodeBuilder (ilGenerator);
-      DynamicMethodEmitter emitter = new DynamicMethodEmitter (method);
-
-      Expression expression = ConcreteMixinTypeAttributeUtility.CreateNewAttributeExpression (12, context, codeBuilder);
-      codeBuilder.AddStatement (new ReturnStatement (expression));
-
-      PrivateInvoke.InvokeNonPublicMethod (codeBuilder, "Generate", emitter, ilGenerator);
-
-      Func<ClassContext, ConcreteMixinTypeAttribute> compiledMethod =
-          (Func<ClassContext, ConcreteMixinTypeAttribute>) method.CreateDelegate (typeof (Func<ClassContext, ConcreteMixinTypeAttribute>));
-      ConcreteMixinTypeAttribute generatedAttribute = compiledMethod (context);
-      ClassContext generatedContext = generatedAttribute.GetClassContext ();
-      Assert.That (generatedContext, Is.EqualTo (context));
-      Assert.That (generatedAttribute.MixinIndex, Is.EqualTo (12));
-    }
   }
 }

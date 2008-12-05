@@ -34,22 +34,5 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           attribute.MixinKinds, attribute.MixinTypes, attribute.CompleteInterfaces, attribute.ExplicitDependenciesPerMixin });
       return builder;
     }
-
-    public static Expression CreateNewAttributeExpression (int mixinIndex, ClassContext context, AbstractCodeBuilder codeBuilder)
-    {
-      Assertion.IsNotNull (s_attributeCtor);
-
-      Expression mixedTypeAttributeExpression = ConcreteMixedTypeAttributeUtility.CreateNewAttributeExpression (context, codeBuilder);
-      Reference mixedTypeAttributeReference = codeBuilder.DeclareLocal(typeof (ConcreteMixedTypeAttribute));
-      codeBuilder.AddStatement (new AssignStatement (mixedTypeAttributeReference, mixedTypeAttributeExpression));
-
-      return new NewInstanceExpression (s_attributeCtor,
-          new ConstReference (mixinIndex).ToExpression (),
-          new PropertyReference (mixedTypeAttributeReference, typeof (ConcreteMixedTypeAttribute).GetProperty ("TargetType")).ToExpression (),
-          new PropertyReference (mixedTypeAttributeReference, typeof (ConcreteMixedTypeAttribute).GetProperty ("MixinKinds")).ToExpression (),
-          new PropertyReference (mixedTypeAttributeReference, typeof (ConcreteMixedTypeAttribute).GetProperty ("MixinTypes")).ToExpression (),
-          new PropertyReference (mixedTypeAttributeReference, typeof (ConcreteMixedTypeAttribute).GetProperty ("CompleteInterfaces")).ToExpression (),
-          new PropertyReference (mixedTypeAttributeReference, typeof (ConcreteMixedTypeAttribute).GetProperty ("ExplicitDependenciesPerMixin")).ToExpression ());
-    }
   }
 }
