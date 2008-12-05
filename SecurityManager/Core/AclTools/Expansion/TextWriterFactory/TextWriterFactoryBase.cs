@@ -19,7 +19,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 {
   public abstract class TextWriterFactoryBase : ITextWriterFactory
   {
-    private readonly Dictionary<string, TextWriterData> nameToTextWriterData = new Dictionary<string, TextWriterData> (); // TODO AE: _
+    private readonly Dictionary<string, TextWriterData> _nameToTextWriterData = new Dictionary<string, TextWriterData> (); 
 
     public abstract TextWriter CreateTextWriter (string directory, string name, string extension);
     public abstract TextWriter CreateTextWriter (string name);
@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 
     public Dictionary<string, TextWriterData> NameToTextWriterData
     {
-      get { return nameToTextWriterData; }
+      get { return _nameToTextWriterData; }
     }
 
 
@@ -46,28 +46,24 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
     }
 
     // TODO AE: Test case where no writer with name toName is found.
-    // TODO AE: fromName parameter is not used
     public string GetRelativePath (string fromName, string toName)
     {
       ArgumentUtility.CheckNotNull ("fromName", fromName);
       ArgumentUtility.CheckNotNull ("toName", toName);
-      if (!nameToTextWriterData.ContainsKey (toName))
+      if (!_nameToTextWriterData.ContainsKey (toName))
       {
         throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s (" registered => no relative path exists.").CheckAndConvertToString ());
       }
-      return ".\\" + AppendExtension(toName, Extension); // TODO: Implement in more robust manner
+      return Path.Combine(".", AppendExtension (toName, Extension)); 
     }
 
-    // TODO AE: Note: Test-only member.
     public TextWriterData GetTextWriterData (string name)
     {
       ArgumentUtility.CheckNotNull ("name", name);
-      return nameToTextWriterData[name];
+      return _nameToTextWriterData[name];
     }
 
-    // TODO AE: Note: Test-only member.
-    public int Count { get { return nameToTextWriterData.Count; } }
-
+    public int Count { get { return _nameToTextWriterData.Count; } }
 
   }
 }
