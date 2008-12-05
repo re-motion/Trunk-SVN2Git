@@ -12,7 +12,9 @@ using System;
 using System.Text;
 using System.Web.UI;
 using Remotion.Collections;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
@@ -51,6 +53,40 @@ namespace Remotion.Web.Test.ExecutionEngine
       for (WxeStep step = CurrentPageStep; step != null; step = step.ParentStep)
         stringBuilder.AppendFormat ("{0}<br>", step);
       StackLabel.Text = stringBuilder.ToString();
+
+      if (!IsPostBack)
+      {
+        Assertion.IsNull (SubControlWithState.ValueInViewState);
+        SubControlWithState.ValueInViewState = 1.ToString ();
+
+        Assertion.IsNull (SubControlWithState.ValueInControlState);
+        SubControlWithState.ValueInControlState = 1.ToString ();
+      }
+      else
+      {
+        Assertion.IsNotNull (SubControlWithState.ValueInViewState);
+        SubControlWithState.ValueInViewState = (int.Parse (SubControlWithState.ValueInViewState) + 1).ToString ();
+
+        Assertion.IsNotNull (SubControlWithState.ValueInControlState);
+        SubControlWithState.ValueInControlState = (int.Parse (SubControlWithState.ValueInControlState) + 1).ToString ();
+      }
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+
+      if (!IsPostBack)
+      {
+        Assertion.IsTrue (string.IsNullOrEmpty (SubControlWithFormElement.Text));
+        SubControlWithFormElement.Text = 1.ToString ();
+      }
+      else
+      {
+
+        Assertion.IsFalse (string.IsNullOrEmpty (SubControlWithFormElement.Text));
+        SubControlWithFormElement.Text = (int.Parse (SubControlWithFormElement.Text) + 1).ToString ();
+      }
     }
 
     protected void ExecuteSecondUserControlButton_Click (object sender, EventArgs e)

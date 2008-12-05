@@ -19,6 +19,7 @@ using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.Utilities;
 using PreProcessingSubFunctionState = Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute.PreProcessingSubFunctionState;
 using ExecuteByRedirect_PreProcessingSubFunctionState = 
@@ -167,6 +168,7 @@ namespace Remotion.Web.ExecutionEngine
       Execute();
     }
 
+    //TODO: Remove CodeDuplication with WxePageStep
     [EditorBrowsable (EditorBrowsableState.Never)]
     public void ExecuteFunction (WxeUserControl userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
     {
@@ -174,10 +176,16 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("subFunction", subFunction);
       ArgumentUtility.CheckNotNull ("sender", sender);
 
-      _wxeHandler = userControl.WxePage.WxeHandler;
-      
+      IWxePage wxePage = userControl.WxePage;
+      _wxeHandler = wxePage.WxeHandler;
+
       _userControlExecutor = new UserControlExecutor (this, userControl, subFunction, sender, usesEventTarget);
-      Execute ();
+
+      IReplaceableControl replaceableControl = userControl;
+      replaceableControl.Replacer.Controls.Clear();
+      wxePage.SaveAllState();
+
+      Execute();
     }
 
     /// <summary> Gets the token for this page step. </summary>

@@ -14,6 +14,7 @@ using System.Threading;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
+using Remotion.Web.UI.Controls.ControlReplacing;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -78,6 +79,7 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
+    //TODO: Remove CodeDuplication with WxePageStep
     [EditorBrowsable (EditorBrowsableState.Never)]
     public void ExecuteFunction (WxeUserControl userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
     {
@@ -85,11 +87,16 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("subFunction", subFunction);
       ArgumentUtility.CheckNotNull ("sender", sender);
 
-      _wxeHandler = userControl.WxePage.WxeHandler;
-      
+      IWxePage wxePage = userControl.WxePage;
+      _wxeHandler = wxePage.WxeHandler;
+
       _userControlExecutor = new UserControlExecutor (this, userControl, subFunction, sender, usesEventTarget);
-      
-      Execute ();
+
+      IReplaceableControl replaceableControl = userControl;
+      replaceableControl.Replacer.Controls.Clear();
+      wxePage.SaveAllState();
+
+      Execute();
     }
 
     public override WxeStep ExecutingStep

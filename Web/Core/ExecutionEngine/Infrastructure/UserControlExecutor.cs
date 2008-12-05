@@ -48,7 +48,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       if (userControl.WxePage == null)
         throw new ArgumentException ("Execution of user controls that are no longer part of the control hierarchy is not supported.", "userControl");
 
-
       _backedUpUserControlState = userControl.SaveAllState ();
       _backedUpUserControl = userControl.AppRelativeVirtualPath;
       _userControlID = userControl.UniqueID;

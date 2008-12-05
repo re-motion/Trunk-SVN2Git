@@ -36,10 +36,10 @@
       <remotion:WebButton ID="PageButton" runat="server" Text="Postback to Page" OnClick="PageButton_Click" />
       <remotion:WebButton ID="ExecuteSecondUserControlButton" runat="server" Text="Execute Second User Control" OnClick="ExecuteSecondUserControlButton_Click" />
       <br />
-      ViewState:
-      <asp:Label ID="ViewStateLabel" runat="server" /><br />
-      ControlState:
-      <asp:Label ID="ControlStateLabel" runat="server" />
+      ViewState: <asp:Label ID="ViewStateLabel" runat="server" /> (Must increment by two upon execute/return)<br />
+      ControlState: <asp:Label ID="ControlStateLabel" runat="server" /> (Must increment by two upon execute/return)<br />
+      <remotion:ControlMock ID="SubControlWithState" runat="server" /><br />
+      <asp:TextBox ID="SubControlWithFormElement" runat="server" EnableViewState="false" />
     </p>
   </div>
   <asp:PlaceHolder ID="FirstControlPlaceHoder" runat="server" />
