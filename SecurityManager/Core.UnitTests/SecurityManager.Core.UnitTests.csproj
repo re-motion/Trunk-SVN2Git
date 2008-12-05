@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{65B86B2E-D54D-425B-B681-82449E31BA01}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -83,7 +83,6 @@
     <Compile Include="AclTools\Expansion\AclExpanderApplicationSettingsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderApplicationTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderTest.cs" />
-    <Compile Include="AclTools\Expansion\SecurityContextHelper\SecurityContextHelperTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpanderUserFinderTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionAccessConditionsTest.cs" />
     <Compile Include="AclTools\Expansion\AclExpansionEntryTest.cs" />
@@ -142,7 +141,6 @@
     <Compile Include="Domain\AccessControl\PermissionTest.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenBuilderTest.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenTest.cs" />
-    <Compile Include="Domain\AccessControl\StateCombinationBuilderTest.cs" />
     <Compile Include="Domain\AccessControl\StateCombinationComparerTest.cs" />
     <Compile Include="Domain\AccessControl\StateCombinationTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilterTests\UserConditionStateful.cs" />
