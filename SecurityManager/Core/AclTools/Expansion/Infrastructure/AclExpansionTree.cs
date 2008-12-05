@@ -36,11 +36,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
             a.AccessConditions.OwningTenant,
             a.AccessConditions.TenantHierarchyCondition,
             EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
-            EnumerableEqualsWrapper.New (a.DeniedAccessTypes)
+            EnumerableEqualsWrapper.New (a.DeniedAccessTypes) 
           }
         );
 
-    private List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, 
+    private readonly List<AclExpansionTreeNode<User, AclExpansionTreeNode<Role, AclExpansionTreeNode<SecurableClassDefinition, 
       AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>>>> _aclExpansionTree;
 
     public AclExpansionTree (List<AclExpansionEntry> aclExpansion)
