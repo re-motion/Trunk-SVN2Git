@@ -42,29 +42,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   [TestFixture]
   public class AclExpanderTest : AclToolsTestBase
   {
-    // TODO AE: Make this test an automatically executable test, or remove it.
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
-    [Test]
-    [Explicit]
-    public void AccessControlList_GetAccessTypes ()
-    {
-      var user = User;
-      List<AccessControlList> aclList = new List<AccessControlList> ();
-
-      AccessControlEntry ace = AccessControlEntry.NewObject ();
-      //AccessTypeDefinition readAccessType = TestHelper.CreateReadAccessTypeAndSetWithValueAtAce (ace, true);
-      //AccessTypeDefinition writeAccessType = TestHelper.CreateWriteAccessTypeAndSetWithValueAtAce (ace, true);
-      //AccessTypeDefinition deleteAccessType = TestHelper.CreateDeleteAccessTypeAndSetWithValueAtAce (ace, true);
-
-      AccessControlList acl = TestHelper.CreateStatefulAcl (ace);
-      aclList.Add (acl);
-
-      SecurityToken securityToken = new SecurityToken (user, User.Tenant, null, null, new List<AbstractRoleDefinition> ());
-      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
-      To.ConsoleLine.sb ().e (accessInformation.AllowedAccessTypes.Length).e (() => accessInformation.AllowedAccessTypes).se ();
-    }
-
-
     // TODO AE: Rename test ("2" does not give enough semantics).
     // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
@@ -117,6 +94,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
     }
+
+
+
+
+
+
+
 
 
 
@@ -200,14 +184,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
 
-      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType, DeleteAccessType }, 
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType, DeleteAccessType }, 
         //new AclExpansionAccessConditions { HasOwningGroupCondition = true });
         new AclExpansionAccessConditions { OwningGroup = aclExpansionEntryList[0].Role.Group, GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent });
 
-      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { ReadAccessType, DeleteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[1], new[] { ReadAccessType, DeleteAccessType },
        new AclExpansionAccessConditions { AbstractRole = aceAbstractRole.SpecificAbstractRole });
 
-      AssertAclExpansionEntry (aclExpansionEntryList[2], new[] { ReadAccessType, WriteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[2], new[] { ReadAccessType, WriteAccessType },
        new AclExpansionAccessConditions());
     }
 
@@ -237,7 +221,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
 
-      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { WriteAccessType },
         new AclExpansionAccessConditions());
     }
 
@@ -272,10 +256,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
       // Test of specific-tenant-ACE: gives write-access
-      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
 
       // Test of owning-tenant-ACE (specific-tenant-ACE matches also): gives write-access + delete-access with condition: tenant-must-own
-      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType }, 
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType }, 
         //new AclExpansionAccessConditions { IsOwningTenantRequired = true });
         new AclExpansionAccessConditions { OwningTenant = otherTenant, TenantHierarchyCondition = TenantHierarchyCondition.This });
     }
@@ -363,10 +347,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
-      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType },
         new AclExpansionAccessConditions ());
 
-      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { ReadAccessType, DeleteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[1], new[] { ReadAccessType, DeleteAccessType },
         new AclExpansionAccessConditions { OwningGroup = aclExpansionEntryList[1].Role.Group, GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent });
     }
 
@@ -391,11 +375,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
-      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { ReadAccessType, WriteAccessType },
         //new AclExpansionAccessConditions { IsOwningTenantRequired = true });
         new AclExpansionAccessConditions { OwningTenant = User.Tenant, TenantHierarchyCondition = TenantHierarchyCondition.This });
 
-      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { ReadAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[1], new[] { ReadAccessType },
         //new AclExpansionAccessConditions { HasOwningGroupCondition = true });
         new AclExpansionAccessConditions { OwningGroup = aclExpansionEntryList[1].Role.Group, GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent });
      }
@@ -429,16 +413,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclExpansionEntryListEnumerator = aclExpansionEntryList.GetEnumerator ();
 
       aclExpansionEntryListEnumerator.MoveNext ();
-      AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
         //new AclExpansionAccessConditions { IsOwningTenantRequired = true });
         new AclExpansionAccessConditions { OwningTenant = User.Tenant, TenantHierarchyCondition = TenantHierarchyCondition.This });
 
       aclExpansionEntryListEnumerator.MoveNext ();
-      AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, WriteAccessType },
         new AclExpansionAccessConditions ());
 
       aclExpansionEntryListEnumerator.MoveNext ();
-      AssertAclExpansionEntry (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, DeleteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryListEnumerator.Current, new[] { ReadAccessType, DeleteAccessType },
         //new AclExpansionAccessConditions { HasOwningGroupCondition = true });
         new AclExpansionAccessConditions { OwningGroup = aclExpansionEntryListEnumerator.Current.Role.Group, 
           GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent });
@@ -542,7 +526,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       // To.ConsoleLine.e (aclExpansion.AccessConditions.GroupHierarchyCondition);
 
-      AssertAclExpansionEntry (aclExpansion, new[] { ReadAccessType, WriteAccessType, DeleteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansion, new[] { ReadAccessType, WriteAccessType, DeleteAccessType },
         //new AclExpansionAccessConditions { HasOwningGroupCondition = true });
         new AclExpansionAccessConditions { OwningGroup = aclExpansionEntryList[0].Role.Group, GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent });
 
@@ -700,12 +684,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
       // Test of specific-group-ACE: gives write-access
-      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
 
       //To.ConsoleLine.e (aclExpansionEntryList[1].AccessConditions.GroupHierarchyCondition);
 
       // Test of owning-group-ACE (specific-group-ACE matches also): gives write-access + delete-access with condition: group-must-own
-      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType },
         //new AclExpansionAccessConditions { HasOwningGroupCondition = true });
         new AclExpansionAccessConditions { OwningGroup = aclExpansionEntryList[1].Role.Group, 
           GroupHierarchyCondition = GroupHierarchyCondition.This }
@@ -751,9 +735,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
 
-      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
-      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { DeleteAccessType }, new AclExpansionAccessConditions ());
-      AssertAclExpansionEntry (aclExpansionEntryList[2], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[1], new[] { DeleteAccessType }, new AclExpansionAccessConditions ());
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[2], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
     }
 
 
@@ -825,7 +809,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       // To.ConsoleLine.e (() => aclExpansionEntryList);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
-      AssertAclExpansionEntry (aclExpansionEntryList[0], 
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], 
         new[] { WriteAccessType }, 
         new AclExpansionAccessConditions  {
           OwningGroup = groupWithGroupTypeInAce,
@@ -862,12 +846,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
       // Test of specific-user-ACE: gives write-access
-      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
 
       //To.ConsoleLine.e (aclExpansionEntryList[1].AccessConditions.UserHierarchyCondition);
 
       // Test of owning-user-ACE (specific-user-ACE matches also): gives write-access + delete-access with condition: user-must-own
-      AssertAclExpansionEntry (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType },
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType },
         new AclExpansionAccessConditions 
         {
           IsOwningUserRequired = true,
@@ -897,7 +881,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
 
       // Test of specific-user-ACE: gives write-access
-      AssertAclExpansionEntry (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
+      AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
     }
 
 
@@ -925,12 +909,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-    // TODO AE: Consider renaming this method to "AssertAccessTypesAndConditions" to avoid the need for a comment.
-    /// <summary>
-    /// NUnit-Asserts that the passed <see cref="AclExpansionEntry"/> has the passed <see cref="AccessTypeDefinition"/>|s and the
-    /// passed <see cref="AclExpansionAccessConditions"/>.
-    /// </summary>
-    private void AssertAclExpansionEntry (AclExpansionEntry actualAclExpansionEntry, AccessTypeDefinition[] expectedAccessTypeDefinitions,
+    private void AssertAclExpansionEntryAccessTypesAndConditions (AclExpansionEntry actualAclExpansionEntry, AccessTypeDefinition[] expectedAccessTypeDefinitions,
       AclExpansionAccessConditions expectedAclExpansionAccessConditions)
     {
       Assert.That (actualAclExpansionEntry.AllowedAccessTypes, Is.EquivalentTo (expectedAccessTypeDefinitions));
@@ -939,39 +918,37 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-    // Returns a list of AclExpansionEntry for the passed users and ACLs // TODO AE: Seems obvious, given the name and signature.
+    // Returns a list of AclExpansionEntry for the passed users and ACLs
     private List<AclExpansionEntry> GetAclExpansionEntryList (List<User> userList, List<AccessControlList> aclList)
     {
-      // TODO AE: Differentiate between stubs and mocks - mocks are used for verification, stubs are used to provide predefined values.
-      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
-      userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
+      var userFinderStub = MockRepository.GenerateStub<IAclExpanderUserFinder> ();
+      userFinderStub.Expect (mock => mock.FindUsers ()).Return (userList);
 
-      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
-      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+      var aclFinderStub = MockRepository.GenerateStub<IAclExpanderAclFinder> ();
+      aclFinderStub.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
 
-      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+      var aclExpander = new AclExpander (userFinderStub, aclFinderStub);
 
       // Retrieve the resulting list of AclExpansionEntry|s
       var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
 
-      userFinderMock.VerifyAllExpectations ();
-      aclFinderMock.VerifyAllExpectations ();
+      userFinderStub.VerifyAllExpectations ();
+      aclFinderStub.VerifyAllExpectations ();
       return aclExpansionEntryList;
     }
 
 
 
 
-    // Returns a list of AclExpansionEntry for the passed User, ACE with the passed Positon and passed GroupSelection // TODO AE: Seems obvious, given the name and signature.
+    // Returns a list of AclExpansionEntry for the passed User, ACE with the passed Positon and passed GroupSelection 
     private List<AclExpansionEntry> GetAclExpansionEntryList_UserPositionGroupSelection (
       User user, Position position, GroupCondition groupCondition, GroupHierarchyCondition groupHierarchyCondition)
     {
       List<User> userList = new List<User> ();
       userList.Add (user);
 
-      // TODO AE: Differentiate between stubs and mocks - mocks are used for verification, stubs are used to provide predefined values.
-      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); 
-      userFinderMock.Expect (mock => mock.FindUsers()).Return (userList);
+      var userFinderStub = MockRepository.GenerateStub<IAclExpanderUserFinder> (); 
+      userFinderStub.Expect (mock => mock.FindUsers()).Return (userList);
 
       List<AccessControlList> aclList = new List<AccessControlList>();
 
@@ -983,31 +960,27 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var acl = TestHelper.CreateStatefulAcl (ace);
       aclList.Add (acl);
 
-      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
-      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+      var aclFinderStub = MockRepository.GenerateStub<IAclExpanderAclFinder> ();
+      aclFinderStub.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
 
-      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+      var aclExpander = new AclExpander (userFinderStub, aclFinderStub);
 
       // Retrieve the resulting list of AclExpansionEntry|s
       var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList();
 
-      //To.ConsoleLine.e (() => aclExpansionEntryList);
-      userFinderMock.VerifyAllExpectations();
-      aclFinderMock.VerifyAllExpectations ();
       return aclExpansionEntryList;
     }
 
 
     private void AssertIsNotInMatchingAces (List<User> userList, List<AccessControlList> aclList)
     {
-      // TODO AE: Differentiate between stubs and mocks - mocks are used for verification, stubs are used to provide predefined values.
-      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
-      userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
+      var userFinderStub = MockRepository.GenerateStub<IAclExpanderUserFinder> ();
+      userFinderStub.Expect (mock => mock.FindUsers ()).Return (userList);
 
-      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
-      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+      var aclFinderStub = MockRepository.GenerateStub<IAclExpanderAclFinder> ();
+      aclFinderStub.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
 
-      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+      var aclExpander = new AclExpander (userFinderStub, aclFinderStub);
       foreach (User user in userList)
       {
         foreach (Role role in user.Roles)
@@ -1016,8 +989,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           {
             foreach (AccessControlEntry ace in acl.AccessControlEntries)
             {
-              //AclProbe aclProbe;
-              //AccessTypeStatistics accessTypeStatistics;
               var accessTypesResult = aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace)); //, out aclProbe, out accessTypeStatistics);
               Assert.That (accessTypesResult.AccessTypeStatistics.IsInMatchingAces (ace), Is.False);
             }
@@ -1029,13 +1000,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
     private void OutputAccessStatistics (List<User> userList, List<AccessControlList> aclList)
     {
-      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
-      userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
+      var userFinderStub = MockRepository.GenerateStub<IAclExpanderUserFinder> ();
+      userFinderStub.Expect (mock => mock.FindUsers ()).Return (userList);
 
-      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
-      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+      var aclFinderStub = MockRepository.GenerateStub<IAclExpanderAclFinder> ();
+      aclFinderStub.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
 
-      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+      var aclExpander = new AclExpander (userFinderStub, aclFinderStub);
       foreach (User user in userList)
       {
         foreach (Role role in user.Roles)
