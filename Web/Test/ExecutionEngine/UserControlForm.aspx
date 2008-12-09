@@ -11,7 +11,7 @@
 
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="UserControlForm.aspx.cs" Inherits="Remotion.Web.Test.ExecutionEngine.UserControlForm" %>
 
-<%@ Register TagPrefix="webTest" TagName="FirstControl" Src="FirstControl.ascx" %>
+<%@ Register TagPrefix="webTest" TagName="ZeroControl" Src="ZeroControl.ascx" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -43,7 +43,7 @@
     </p>
   </div>
   <asp:PlaceHolder ID="FirstControlPlaceHoder" runat="server" />
-  <webTest:FirstControl ID="FirstControl" runat="server" />
+  <webTest:ZeroControl ID="TheUserControl" runat="server" />
   <div>
     Stack:
     <p>

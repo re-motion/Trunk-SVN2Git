@@ -5,6 +5,7 @@
     Last postback on control:
     <asp:Label ID="ControlLabel" runat="server" /><br />
     <remotion:WebButton ID="ExecuteNextStepButton" runat="server" Text="Execute Next Step (Return)" OnClick="ExecuteNextStep_Click" />
+    <remotion:WebButton ID="CancelButton" runat="server" Text="Cancel" OnClick="Cancel_Click" />
     <remotion:WebButton ID="ExecuteThirdUserControlButton" runat="server" Text="Execute Third User Control" OnClick="ExecuteThirdUserControlButton_Click" /><br />
     <remotion:WebButton ID="PostbackButton" runat="server" Text="Postback to Control" /><br />
     ViewState: <asp:Label ID="ViewStateLabel" runat="server" /><br />

@@ -31,8 +31,15 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected void ExecuteSecondUserControlButton_Click (object sender, EventArgs e)
     {
       ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Executed";
-      SecondControl.Call (WxePage, this, (Control) sender);
-      ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Returned";
+      try
+      {
+        SecondControl.Call (WxePage, this, (Control) sender);
+        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Returned";
+      }
+      catch (WxeUserCancelException)
+      {
+        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Canceled";
+      }
 
       //if (!WxePage.IsReturningPostBack)
       //{
@@ -49,6 +56,11 @@ namespace Remotion.Web.Test.ExecutionEngine
     {
       ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss");
       ExecuteNextStep ();
+    }
+
+    protected void Cancel_Click (object sender, EventArgs e)
+    {
+      throw new WxeUserCancelException();
     }
 
     protected override void OnInitComplete (EventArgs e)
@@ -73,18 +85,9 @@ namespace Remotion.Web.Test.ExecutionEngine
         Assertion.IsTrue (IsPostBack);
         Assertion.IsTrue (IsUserControlPostBack);
       }
-
-      if (CurrentFunction is ShowFirstUserControlFormFunction)
-      {
-        Assertion.IsTrue (WxePage.CurrentFunction is ShowUserControlFormFunction);
-        Assertion.IsTrue (WxePage.Variables != this.Variables);
-      }
-      else
-      {
-        Assertion.IsTrue (WxePage.CurrentFunction == this.CurrentFunction);
-        Assertion.IsTrue (CurrentFunction is ShowUserControlFormFunction);
-        Assertion.IsTrue (WxePage.Variables == this.Variables);
-      }
+      Assertion.IsTrue (CurrentFunction is ShowFirstUserControlFormFunction);
+      Assertion.IsTrue (WxePage.CurrentFunction is ShowUserControlFormFunction);
+      Assertion.IsTrue (WxePage.Variables != this.Variables);
 
       ViewStateValue++;
       ViewStateLabel.Text = ViewStateValue.ToString();
@@ -165,6 +168,5 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     private int ControlStateValue { get; set; }
     private bool HasLoaded { get; set; }
-
   }
 }

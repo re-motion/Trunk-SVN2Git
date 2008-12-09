@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -25,32 +26,30 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
-  public partial class SecondControl : WxeUserControl
+  public partial class ZeroControl : WxeUserControl
   {
-    public static void Call (IWxePage page, WxeUserControl userControl, Control sender)
+    protected void ExecuteSecondUserControlButton_Click (object sender, EventArgs e)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
-      ArgumentUtility.CheckNotNull ("userControl", userControl);
-      ArgumentUtility.CheckNotNull ("sender", sender);
+      ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Executed";
+      try
+      {
+        SecondControl.Call (WxePage, this, (Control) sender);
+        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Returned";
+      }
+      catch (WxeUserCancelException)
+      {
+        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Canceled";
+      }
 
-      ShowSecondUserControlFormFunction function;
-      if ((page.IsReturningPostBack == false))
-      {
-        function = new ShowSecondUserControlFormFunction ();
-        function.ExceptionHandler.SetCatchExceptionTypes (typeof (System.Exception));
-        WxeUserControl actualUserControl = (WxeUserControl) page.FindControl (userControl.PermanentUniqueID);
-        Assertion.IsNotNull (actualUserControl);
-        actualUserControl.ExecuteFunction (function, sender, null);
-        throw new System.Exception ("(Unreachable code)");
-      }
-      else
-      {
-        function = ((ShowSecondUserControlFormFunction) (page.ReturningFunction));
-        if ((function.ExceptionHandler.Exception != null))
-        {
-          throw function.ExceptionHandler.Exception;
-        }
-      }
+      //if (!WxePage.IsReturningPostBack)
+      //{
+      //  ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Executed";
+      //  ExecuteFunction (new ShowSecondUserControlFormFunction(), (Control)sender, null);
+      //}
+      //else
+      //{
+      //  ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Returned";
+      //}
     }
 
     protected void ExecuteNextStep_Click (object sender, EventArgs e)
@@ -61,25 +60,7 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     protected void Cancel_Click (object sender, EventArgs e)
     {
-      throw new WxeUserCancelException ();
-    }
-
-    protected void ExecuteSecondUserControlButton_Click (object sender, EventArgs e)
-    {
-      throw new InvalidOperationException ("This event handler should never be called.");
-    }
-
-    protected void ExecuteThirdUserControlButton_Click (object sender, EventArgs e)
-    {
-      if (!WxePage.IsReturningPostBack)
-      {
-        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Executed";
-        ExecuteFunction (new ShowThirdUserControlFormFunction (), (Control) sender, null);
-      }
-      else
-      {
-        ControlLabel.Text = DateTime.Now.ToString ("HH:mm:ss") + ": Returned";
-      }
+      throw new WxeUserCancelException();
     }
 
     protected override void OnInitComplete (EventArgs e)
@@ -96,7 +77,7 @@ namespace Remotion.Web.Test.ExecutionEngine
 
       if (ControlStateValue == 0)
       {
-        Assertion.IsTrue (IsPostBack);
+        Assertion.IsFalse (IsPostBack);
         Assertion.IsFalse (IsUserControlPostBack);
       }
       else
@@ -104,15 +85,16 @@ namespace Remotion.Web.Test.ExecutionEngine
         Assertion.IsTrue (IsPostBack);
         Assertion.IsTrue (IsUserControlPostBack);
       }
-      Assertion.IsTrue (CurrentFunction is ShowSecondUserControlFormFunction);
-      Assertion.IsTrue (WxePage.CurrentFunction is ShowUserControlFormFunction);
-      Assertion.IsTrue (WxePage.Variables != this.Variables);
+
+      Assertion.IsTrue (WxePage.CurrentFunction == this.CurrentFunction);
+      Assertion.IsTrue (CurrentFunction is ShowUserControlFormFunction);
+      Assertion.IsTrue (WxePage.Variables == this.Variables);
 
       ViewStateValue++;
       ViewStateLabel.Text = ViewStateValue.ToString();
 
       ControlStateValue++;
-      ControlStateLabel.Text = ControlStateValue.ToString();
+      ControlStateLabel.Text = ControlStateValue.ToString ();
 
       if (!IsUserControlPostBack)
       {
@@ -145,36 +127,38 @@ namespace Remotion.Web.Test.ExecutionEngine
       {
 
         Assertion.IsFalse (string.IsNullOrEmpty (SubControlWithFormElement.Text));
-        SubControlWithFormElement.Text = (int.Parse (SubControlWithFormElement.Text) + 1).ToString ();
+        SubControlWithFormElement.Text = (int.Parse (SubControlWithFormElement.Text) + 1).ToString();
       }
     }
 
     protected override void LoadControlState (object savedState)
     {
-      var controlState = (Tuple<object, int, Type>) savedState;
-      base.LoadControlState (controlState.A);
-      ControlStateValue = controlState.B;
-      Assertion.IsTrue (controlState.C == typeof (SecondControl), "Expected ControlState from 'SecondControl' but was '{0}'.", controlState.C.Name);
+      var controlState = (object[]) savedState;
+      base.LoadControlState (controlState[0]);
+      ControlStateValue = (int) controlState[1];
+      Assertion.IsTrue ((Type) controlState[2] == typeof (ZeroControl), "Expected ControlState from 'ZeroControl' but was '{0}'.", ((Type)controlState[2]).Name);
+      HasLoaded = (bool) controlState[3];
+      Assertion.IsTrue (((NonSerializeableObject)controlState[4]).Value == "TheValue");
     }
 
     protected override object SaveControlState ()
     {
-      return new Tuple<object, int, Type> (base.SaveControlState (), ControlStateValue, typeof (SecondControl));
+      return new [] {base.SaveControlState(), ControlStateValue, typeof (ZeroControl), HasLoaded, new NonSerializeableObject ("TheValue")};
     }
 
     protected override void LoadViewState (object savedState)
     {
       Assertion.IsNotNull (savedState, "Missing ViewState.");
 
-      var  statePair =  (Tuple<object, Type>) savedState;
-      base.LoadViewState (statePair.A);
+      var viewState = (Tuple<object, Type>) savedState;
+      base.LoadViewState (viewState.A);
 
-      Assertion.IsTrue (statePair.B == typeof (SecondControl), "Expected ViewState from 'SecondControl' but was '{0}'.", statePair.B.Name);
+      Assertion.IsTrue (viewState.B == typeof (ZeroControl), "Expected ViewState from 'ZeroControl' but was '{0}'.", viewState.B.Name);
     }
 
     protected override object SaveViewState ()
     {
-      return new Tuple<object, Type> (base.SaveViewState (), typeof (SecondControl));
+      return new Tuple<object, Type> (base.SaveViewState (), typeof (ZeroControl));
     }
 
     private int ViewStateValue
@@ -184,5 +168,6 @@ namespace Remotion.Web.Test.ExecutionEngine
     }
 
     private int ControlStateValue { get; set; }
+    private bool HasLoaded { get; set; }
   }
 }

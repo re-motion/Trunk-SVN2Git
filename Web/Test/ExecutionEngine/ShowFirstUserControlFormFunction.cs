@@ -27,7 +27,8 @@ namespace Remotion.Web.Test.ExecutionEngine
   {
     public ShowFirstUserControlFormFunction ()
       : base (new NoneTransactionMode ())
-    {      
+    {
+      ExceptionHandler.AppendCatchExceptionTypes (typeof (WxeUserCancelException));
     }
 
     private WxeUserControlStep Step1 = new WxeUserControlStep ("~/ExecutionEngine/FirstControl.ascx");

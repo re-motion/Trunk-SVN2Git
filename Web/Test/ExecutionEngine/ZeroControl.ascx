@@ -1,6 +1,6 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FirstControl.ascx.cs" Inherits="Remotion.Web.Test.ExecutionEngine.FirstControl" %>
-<div style="background-color:#CCFFCC">
-  First Control
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ZeroControl.ascx.cs" Inherits="Remotion.Web.Test.ExecutionEngine.ZeroControl" %>
+<div style="background-color:#CCCCCC">
+  Zero Control
   <p>
     Last postback on control:
     <asp:Label ID="ControlLabel" runat="server" /><br />

@@ -131,6 +131,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecutionEngine\ZeroControl.ascx.cs">
+      <DependentUpon>ZeroControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\ZeroControl.ascx.designer.cs">
+      <DependentUpon>ZeroControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ExecutionEngine\NonSerializeableObject.cs" />
     <Compile Include="ExecutionEngine\NonSerializeableObjectConverter.cs" />
     <Compile Include="ExecutionEngine\ShowFirstUserControlFormFunction.cs" />
@@ -281,6 +288,7 @@
     <Compile Include="UpdatePanelTests\SutUserControl.ascx.designer.cs">
       <DependentUpon>SutUserControl.ascx</DependentUpon>
     </Compile>
+    <Content Include="ExecutionEngine\ZeroControl.ascx" />
     <Content Include="ExecutionEngine\FourthControl.ascx" />
     <Content Include="ExecutionEngine\ThirdControl.ascx" />
     <Content Include="ExecutionEngine\SecondControl.ascx" />
