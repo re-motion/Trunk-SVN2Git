@@ -18,42 +18,18 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
-  // TODO AE: Remove commented code. (Do not commit.)
   [TestFixture]
   public class AclExpanderUserFinderTest : AclToolsTestBase
   {
-    // TODO AE: Remove this method.
-    [Test]
-    [Explicit]
-    public void ListAllUsers ()
-    {
-      var userFinder = new AclExpanderUserFinder ();
-      var users = userFinder.FindUsers ();
-      foreach (var user in users)
-      {
-        //To.ConsoleLine.sb ().e (() => user).e (user.FirstName).e (user.LastName).e (user.UserName).e (user.DisplayName).se ();
-      }
-
-      //(user=["User.Tenant2"],"User","Tenant 2","User.Tenant2","Tenant 2 User")
-      //(user=["test.user"],"test","user","test.user","user test, Dipl.Ing.(FH)")
-      //(user=["group1/user1"],"","user1","group1/user1","user1")
-      //(user=["group0/user1"],"","user1","group0/user1","user1")
-      //(user=["group0/user2"],"","user2","group0/user2","user2")
-      //(user=["group1/user2"],"","user2","group1/user2","user2")
-    }
-
-
     [Test]
     public void FindAllUsersTest ()
     {
       var userFinder = new AclExpanderUserFinder();
       var users = userFinder.FindUsers ();
-      // TODO AE: Consider comparing the full list.
       Assert.That (users.Count, Is.EqualTo (6));
     }
 
@@ -76,8 +52,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var userFinder = new AclExpanderUserFinder (null, lastName, null);
 
       var users = userFinder.FindUsers ();
-
-      //var expectedUserNameList = List.New ("group1/user2", "group0/user2");
 
       Assert.That (users.Count, Is.EqualTo (2));
       Assert.That (users[0].LastName, Is.EqualTo (lastName));
