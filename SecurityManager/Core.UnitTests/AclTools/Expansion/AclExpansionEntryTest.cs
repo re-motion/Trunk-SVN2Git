@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -41,7 +42,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntry.DeniedAccessTypes, Is.EqualTo (AccessTypeDefinitions2));
     }
 
-
+      
     [Test]
     [ExpectedException(typeof(InvalidOperationException), ExpectedMessage = @"StateCombinations not defined for StatelessAccessControlList. Test for ""is StatefulAccessControlList"" in calling code.") ]
     public void StateCombinationsForStatelessAclThrowsTest ()
@@ -51,11 +52,27 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var accessConditions = new AclExpansionAccessConditions ();
       var aclExpansionEntry = new AclExpansionEntry (User, Role, statlessAcl, accessConditions, AccessTypeDefinitions, AccessTypeDefinitions2);
-      To.ConsoleLine.e(aclExpansionEntry.GetStateCombinations()); // TODO AE: To.Console is never executed. Replace by Dev.Null = ...;
+      Dev.Null = aclExpansionEntry.GetStateCombinations(); 
     }
 
-    // TODO AE: Remaining TDD-style unit tests are missing.
 
+    [Test]
+    public void GetStateCombinationsTest ()
+    {
+      SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
+      var aclExpansionEntry = new AclExpansionEntry (User, Role, Acl, new AclExpansionAccessConditions (), AccessTypeDefinitions, AccessTypeDefinitions2);
+      var result = aclExpansionEntry.GetStateCombinations ();
+      Assert.That (result, Is.EqualTo(Acl.StateCombinations));
+    }
+
+    [Test]
+    public void ToTextTest ()
+    {
+      var aclExpansionEntry = new AclExpansionEntry (User, Role, Acl, new AclExpansionAccessConditions (), AccessTypeDefinitions, AccessTypeDefinitions2);
+      var resultEpected = @"[user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""Read""],[""Write""],[""Delete""]},denied={[""Read""],[""Delete""]},conditions=[]]";
+      var result = To.String.e (aclExpansionEntry).CheckAndConvertToString();
+      Assert.That (result, Is.EqualTo (resultEpected));
+    }
 
   }
 }
