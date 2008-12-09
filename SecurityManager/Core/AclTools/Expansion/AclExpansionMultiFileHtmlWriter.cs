@@ -89,13 +89,15 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
       foreach (var user in users)
       {
-        _implementation.WriteTableRowBeginIfNotInTableRow (); // TODO QAE: Isn't it well-defined here if in a table row or not?; MGi: No, due to rowspan
+        // Note: Due to HTML-table-cells using rowspan attribute it is not safe to assume that we are already in a table row here
+        // (i.e. a <tr>-tag has already been written).
+        _implementation.WriteTableRowBeginIfNotInTableRow (); 
         WriteTableBody_ProcessUser (user, aclExpansion);
         _implementation.WriteTableRowEnd ();
       }
     }
 
-    // TODO QAE: Rename to WriteUser or ProcessUser. MGi: Name has been picked in analogy to AclExpansionHtmlWriter
+    // Note: Method name has been picked in analogy to method names in AclExpansionHtmlWriter.
     private void WriteTableBody_ProcessUser (User user, List<AclExpansionEntry> aclExpansion)
     {
       _implementation.WriteTableData (user.UserName);

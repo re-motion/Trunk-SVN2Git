@@ -34,8 +34,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
 
     private AclExpanderApplicationSettings _settings;
-    private ToTextBuilder _logToTextBuilder; // TODO QAE: Consider using ILog; MGi: Advantage ?
-    private ToTextBuilder _errorToTextBuilder; // TODO QAE: Consider using ILog; MGi: Advantage ?
+    private ToTextBuilder _logToTextBuilder; 
+    private ToTextBuilder _errorToTextBuilder; 
 
     private readonly ITextWriterFactory _textWriterFactory;
 
