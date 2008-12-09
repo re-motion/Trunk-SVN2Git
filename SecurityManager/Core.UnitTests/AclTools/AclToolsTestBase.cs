@@ -27,14 +27,10 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using Rhino.Mocks;
 
-// TODO AE: Cleanup usings.
-
 namespace Remotion.SecurityManager.UnitTests.AclTools
 {
-  // TODO AE: Remove commented code. (Do not commit.)
   public class AclToolsTestBase : DomainTest
   {
-    // TODO AE: Rename properties to express semantics (eg. AceWithOwningTenant and AceWithSpecificTenant rather than Ace and Ace2).
     public StatefulAccessControlList Acl { get; private set; }
     public StatefulAccessControlList Acl2 { get; private set; }
     
@@ -58,7 +54,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     public Position Position2 { get; private set; }
     public Group Group2 { get; private set; }
 
-    //public AccessTypeDefinition[] AccessTypeDefinitions3 { get; private set; }
     public AccessControlEntry Ace3 { get; private set; }
     public Role Role3 { get; private set; }
     public User User3 { get; private set; }
@@ -66,14 +61,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     public Group Group3 { get; private set; }
 
     // Called before each test gets executed.
-    // [SetUp] // TODO AE: Add attribute
     public override void SetUp ()
     {
       base.SetUp ();
       TestHelper = new AccessControlTestHelper ();
 
-      // Base class TearDown()-method (executed after each test) calls ClientTransactionScope.ResetActiveScope(),
-      // discarding the transaction opened by EnterNonDiscardingScope below. // TODO AE: Why not close the scope manually in TearDown? (Better style, and gets rid of the comment.)
+      // base class TearDown()-method (by MK) calls ClientTransactionScope.ResetActiveScope(),
+      // discarding the transaction opened by EnterNonDiscardingScope below. 
       TestHelper.Transaction.EnterNonDiscardingScope ();
 
 
@@ -112,9 +106,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       Position3 = TestHelper.CreatePosition ("Combatant");
       User3 = TestHelper.CreateUser ("ryan_james", "Ryan", "James", "", Group3, Tenant);
       Role3 = TestHelper.CreateRole (User3, Group3, Position3);
-      // TODO AE: Maybe fix functionality for group matching instead?
-      // DO NOT use TestHelper.CreateAceWithOwningGroup() here; functionality for group matching is
-      // incomplete and therefore the ACE entry will always match.
       Ace3 = TestHelper.CreateAceWithPositionAndGroupCondition (Position3, GroupCondition.None);
 
       TestHelper.AttachAccessType (Ace3, ReadAccessType, true);
@@ -122,15 +113,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       TestHelper.AttachAccessType (Ace3, DeleteAccessType, null);
 
 
-      // TODO AE: Consider dropping this heading.
       //--------------------------------
       // Create ACLs
       //--------------------------------
 
-      //Acl = TestHelper.CreateAcl (Ace, Ace2, Ace3);
-
       SecurableClassDefinition orderClass = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID);
-      //var aclList = SecurableClassDefinition.GetObject (SetUpFixture.OrderClassID).AccessControlLists;
       var aclList = orderClass.StatefulAccessControlLists;
       Assert.That (aclList.Count, Is.GreaterThanOrEqualTo (2));
       
@@ -140,17 +127,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       var ace2_1 = TestHelper.CreateAceWithAbstractRole();
       var ace2_2 = TestHelper.CreateAceWithPositionAndGroupCondition (Position2, GroupCondition.OwningGroup);
 
-      //Acl2 = TestHelper.CreateAcl (ace2_1, ace2_2, Ace3);
       Acl2 = aclList[1];
       TestHelper.AttachAces (Acl2, ace2_1, ace2_2, Ace3);
 
-
-
-
       // Additional roles for users
-      //TestHelper.CreateRole (User, Group2, Position2);
-      //TestHelper.CreateRole (User, Group3, Position3);
-
       TestHelper.CreateRole (User2, Group, Position2);
       TestHelper.CreateRole (User2, Group2, Position);
       TestHelper.CreateRole (User2, Group3, Position2);
@@ -171,25 +151,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     }
 
 
-    // TODO AE: Remove unused method
-    private User CreateUser (Tenant userTenant, Group userGroup)
-    {
-      return TestHelper.CreateUser ("JoDo", "John", "Doe", "Prof.", userGroup, userTenant);
-    }
-
-
-    // TODO AE: Consider renaming method to just "GetAclExpansionEntryList".
-    protected List<AclExpansionEntry> GetAclExpansionEntryList_UserList_AceList (List<User> userList, List<AccessControlList> aclList, 
+    protected List<AclExpansionEntry> GetAclExpansionEntryList (List<User> userList, List<AccessControlList> aclList, 
       bool sortedAndDistinct)
     {
-      // TODO AE: Use stubs rather than mocks if verification is not the goal.
-      var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> ();
-      userFinderMock.Expect (mock => mock.FindUsers ()).Return (userList);
+      var userFinderStub = MockRepository.GenerateStub<IAclExpanderUserFinder> ();
+      userFinderStub.Expect (mock => mock.FindUsers ()).Return (userList);
 
-      var aclFinderMock = MockRepository.GenerateMock<IAclExpanderAclFinder> ();
-      aclFinderMock.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
+      var aclFinderStub = MockRepository.GenerateStub<IAclExpanderAclFinder> ();
+      aclFinderStub.Expect (mock => mock.FindAccessControlLists ()).Return (aclList);
 
-      var aclExpander = new AclExpander (userFinderMock, aclFinderMock);
+      var aclExpander = new AclExpander (userFinderStub, aclFinderStub);
       
       List<AclExpansionEntry> aclExpansionEntryList; 
 
@@ -201,9 +172,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       {
         aclExpansionEntryList = aclExpander.GetAclExpansionEntryList().ToList();
       }
-      //To.ConsoleLine.e (() => aclExpansionEntryList);
-      userFinderMock.VerifyAllExpectations ();
-      aclFinderMock.VerifyAllExpectations ();
       return aclExpansionEntryList;
     }
 

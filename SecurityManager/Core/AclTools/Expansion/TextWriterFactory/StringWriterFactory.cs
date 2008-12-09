@@ -26,9 +26,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
   {
     public override TextWriter CreateTextWriter (string directory, string name, string extension)
     {
+      // Note: extension can be null.
       ArgumentUtility.CheckNotNull ("directory", directory);
       ArgumentUtility.CheckNotNull ("name", name);
-      //ArgumentUtility.CheckNotNull ("extension", extension); // TODO AE
       var textWriterData = new TextWriterData (new StringWriter (), directory, extension);
       NameToTextWriterData[name] = textWriterData;
       return textWriterData.TextWriter;

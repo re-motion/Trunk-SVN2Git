@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var acls = List.New<AccessControlList> (Acl, statelessAcl);
 
-        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls, false);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
         using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
         {
@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var acls = List.New<AccessControlList> (Acl);
 
-        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls, false);
+        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
         //WriteAclExpansionAsHtmlToDisk(aclExpansion, "c:\\temp\\aaa.html");
 
@@ -158,7 +158,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var statelessAcl = CreateStatelessAcl (Ace);
         var acls = List.New (Acl, statelessAcl);
 
-        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList_UserList_AceList (users, acls, false);
+        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (users, acls, false);
 
         var aclExpansionTreeInverseSorted = new AclExpansionTree (
             aclExpansionEntryList,
