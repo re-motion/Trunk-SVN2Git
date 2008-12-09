@@ -25,6 +25,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   [Instantiable]
   public abstract class StatefulAccessControlList : AccessControlList
   {
+    private DomainObjectDeleteHandler _deleteHandler;
+
     public static StatefulAccessControlList NewObject ()
     {
       return NewObject<StatefulAccessControlList>().With ();
@@ -34,8 +36,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       return GetObject<StatefulAccessControlList> (id);
     }
-
-    private ObjectList<StateCombination> _stateCombinationsToBeDeleted;
 
     protected StatefulAccessControlList ()
     {
@@ -89,7 +89,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleting (args);
 
-      _stateCombinationsToBeDeleted = StateCombinations.Clone();
+      _deleteHandler = new DomainObjectDeleteHandler (StateCombinations);
     }
 
     //TODO: Rewrite with test
@@ -97,9 +97,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleted (args);
 
-      foreach (var stateCombination in _stateCombinationsToBeDeleted)
-        stateCombination.Delete();
-      _stateCombinationsToBeDeleted = null;
+      _deleteHandler.Delete();
     }
 
     public StateCombination CreateStateCombination ()

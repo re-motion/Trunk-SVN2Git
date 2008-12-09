@@ -1,0 +1,52 @@
+// This file is part of re-strict (www.re-motion.org)
+// Copyright (C) 2005-2008 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// re-strict is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License version 3.0 as
+// published by the Free Software Foundation.
+// 
+// re-strict is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with re-strict; if not, see http://www.gnu.org/licenses.
+// 
+// Additional permissions are listed in the file re-motion_exceptions.txt.
+// 
+using System;
+using System.Collections;
+using System.Linq;
+using Remotion.Utilities;
+
+namespace Remotion.SecurityManager.Domain
+{
+  public class DomainObjectDeleteHandler
+  {
+    private BaseSecurityManagerObject[] _objectsToBeDeleted;
+
+    public DomainObjectDeleteHandler (params IEnumerable[] lists)
+    {
+      ArgumentUtility.CheckNotNullOrItemsNull ("lists", lists);
+
+      _objectsToBeDeleted = lists.SelectMany (objects => objects.Cast<BaseSecurityManagerObject>()).ToArray();
+    }
+
+    public bool IsDeleted
+    {
+      get { return _objectsToBeDeleted == null; }
+    }
+
+    public void Delete ()
+    {
+      if (IsDeleted)
+        throw new InvalidOperationException ("The Delete operation my only be performed once.");
+
+      foreach (BaseSecurityManagerObject domainObject in _objectsToBeDeleted.Where (o => !o.IsDiscarded))
+        domainObject.Delete();
+
+      _objectsToBeDeleted = null;
+    }
+  }
+}

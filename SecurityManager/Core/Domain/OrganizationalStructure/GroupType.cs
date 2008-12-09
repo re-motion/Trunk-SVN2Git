@@ -24,7 +24,6 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -36,6 +35,8 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [SecurityManagerStorageGroup]
   public abstract class GroupType : OrganizationalStructureObject
   {
+    private DomainObjectDeleteHandler _deleteHandler;
+
     public enum Methods
     {
       Search
@@ -62,9 +63,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       throw new NotImplementedException ("This method is only intended for framework support and should never be called.");
     }
 
-    private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
-    private ObjectList<GroupTypePosition> _groupTypePositionsToBeDeleted;
-
     protected GroupType ()
     {
     }
@@ -86,21 +84,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       base.OnDeleting (args);
 
-      _accessControlEntriesToBeDeleted = AccessControlEntries.Clone ();
-      _groupTypePositionsToBeDeleted = Positions.Clone ();
+      _deleteHandler = new DomainObjectDeleteHandler (AccessControlEntries, Positions);
     }
 
     protected override void OnDeleted (EventArgs args)
     {
       base.OnDeleted (args);
 
-      foreach (AccessControlEntry accessControlEntry in _accessControlEntriesToBeDeleted)
-        accessControlEntry.Delete ();
-      _accessControlEntriesToBeDeleted = null;
-
-      foreach (GroupTypePosition groupTypePosition in _groupTypePositionsToBeDeleted)
-        groupTypePosition.Delete ();
-      _groupTypePositionsToBeDeleted = null;
+      _deleteHandler.Delete();
     }
 
     public override string DisplayName

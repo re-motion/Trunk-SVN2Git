@@ -138,4 +138,7 @@
   <data name="property:Roles" xml:space="preserve">
     <value>Roles</value>
   </data>
+  <data name="property:SubstitutedBy" xml:space="preserve">
+    <value>Substituted by</value>
+  </data>
 </root>

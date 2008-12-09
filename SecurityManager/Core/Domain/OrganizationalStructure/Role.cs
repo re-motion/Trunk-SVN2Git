@@ -34,6 +34,8 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [SecurityManagerStorageGroup]
   public abstract class Role : OrganizationalStructureObject
   {
+    private DomainObjectDeleteHandler _deleteHandler;
+
     public static Role NewObject ()
     {
       return NewObject<Role>().With();
@@ -80,6 +82,20 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         positions = group.GroupType.Positions.Select (gtp => gtp.Position).Distinct();
 
       return FilterByAccess (positions, SecurityManagerAccessTypes.AssignRole);
+    }
+
+    protected override void OnDeleting (EventArgs args)
+    {
+      base.OnDeleting (args);
+
+      _deleteHandler = new DomainObjectDeleteHandler (SubstitutedBy);
+    }
+
+    protected override void OnDeleted (EventArgs args)
+    {
+      base.OnDeleted (args);
+
+      _deleteHandler.Delete ();
     }
 
     private List<T> FilterByAccess<T> (IEnumerable<T> securableObjects, params Enum[] requiredAccessTypeEnums) where T: ISecurableObject

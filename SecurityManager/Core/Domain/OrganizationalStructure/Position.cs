@@ -36,6 +36,8 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [SecurityManagerStorageGroup]
   public abstract class Position : OrganizationalStructureObject
   {
+    private DomainObjectDeleteHandler _deleteHandler;
+
     public enum Methods
     {
       //Create
@@ -76,10 +78,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       throw new NotImplementedException ("This method is only intended for framework support and should never be called.");
     }
 
-    private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
-    private ObjectList<Role> _rolesToBeDeleted;
-    private ObjectList<GroupTypePosition> _groupTypePositionsToBeDeleted;
-
     protected Position ()
     {
     }
@@ -112,26 +110,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       base.OnDeleting (args);
 
-      _accessControlEntriesToBeDeleted = AccessControlEntries.Clone ();
-      _rolesToBeDeleted = Roles.Clone ();
-      _groupTypePositionsToBeDeleted = GroupTypes.Clone ();
+      _deleteHandler = new DomainObjectDeleteHandler (AccessControlEntries, Roles, GroupTypes);
     }
 
     protected override void OnDeleted (EventArgs args)
     {
       base.OnDeleted (args);
 
-      foreach (AccessControlEntry accessControlEntry in _accessControlEntriesToBeDeleted)
-        accessControlEntry.Delete ();
-      _accessControlEntriesToBeDeleted = null;
-
-      foreach (Role role in _rolesToBeDeleted)
-        role.Delete ();
-      _rolesToBeDeleted = null;
-
-      foreach (GroupTypePosition groupTypePosition in _groupTypePositionsToBeDeleted)
-        groupTypePosition.Delete ();
-      _groupTypePositionsToBeDeleted = null;
+      _deleteHandler.Delete();
     }
 
     protected override IDictionary<string, Enum> GetStates ()

@@ -58,5 +58,37 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
         Assert.IsTrue (role.IsDiscarded);
       }
     }
+
+    [Test]
+    public void DeleteUser_WithSubstitutionAsSubstitutingUser ()
+    {
+      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        User substitutingUser = testHelper.CreateUser ("user", null, "Lastname", null, null, null);
+        Substitution substitution = substitutingUser.CreateSubstitution();
+
+        substitutingUser.Delete ();
+
+        Assert.IsTrue (substitution.IsDiscarded);
+      }
+    }
+
+    [Test]
+    public void DeleteUser_WithSubstitutionAsSubstitutedUser ()
+    {
+      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        User substitutingUser = testHelper.CreateUser ("user", null, "Lastname", null, null, null);
+        User substitutedUser = testHelper.CreateUser ("user", null, "Lastname", null, null, null);
+        Substitution substitution = substitutingUser.CreateSubstitution ();
+        substitution.SubstitutedUser = substitutedUser;
+
+        substitutedUser.Delete ();
+
+        Assert.IsTrue (substitution.IsDiscarded);
+      }
+    }
   }
 }

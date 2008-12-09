@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   [SecurityManagerStorageGroup]
   public abstract class AccessControlList : AccessControlObject
   {
-    private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
+    private DomainObjectDeleteHandler _deleteHandler;
 
     protected AccessControlList ()
     {
@@ -136,7 +136,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleting (args);
 
-      _accessControlEntriesToBeDeleted = AccessControlEntries.Clone();
+      _deleteHandler = new DomainObjectDeleteHandler (AccessControlEntries);
     }
 
     //TODO: Rewrite with test
@@ -144,9 +144,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleted (args);
 
-      foreach (var accessControlEntry in _accessControlEntriesToBeDeleted)
-        accessControlEntry.Delete();
-      _accessControlEntriesToBeDeleted = null;
+      _deleteHandler.Delete();
     }
 
     public AccessControlEntry CreateAccessControlEntry ()

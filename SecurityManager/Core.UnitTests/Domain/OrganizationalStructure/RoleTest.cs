@@ -260,6 +260,30 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Assert.That (actualUsers, Is.EquivalentTo (expectedGroups));
     }
 
+    [Test]
+    public void DeleteRole_WithSubstitution()
+    {
+      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper ();
+      using (testHelper.Transaction.EnterNonDiscardingScope ())
+      {
+        Tenant tenant = testHelper.CreateTenant ("TestTenant", "UID: testTenant");
+        Group userGroup = testHelper.CreateGroup ("UserGroup", Guid.NewGuid ().ToString (), null, tenant);
+        Group roleGroup = testHelper.CreateGroup ("RoleGroup", Guid.NewGuid ().ToString (), null, tenant);
+        User user = testHelper.CreateUser ("user", "Firstname", "Lastname", "Title", userGroup, tenant);
+        Position position = testHelper.CreatePosition ("Position");
+        Role role = testHelper.CreateRole (user, roleGroup, position);
+
+        User substitutingUser = testHelper.CreateUser ("user", null, "Lastname", null, null, null);
+
+        Substitution substitution = substitutingUser.CreateSubstitution ();
+        substitution.SubstitutedRole = role;
+
+        role.Delete ();
+
+        Assert.IsTrue (substitution.IsDiscarded);
+      }
+    }
+
     private void ExpectSecurityProviderGetAccessForGroup (string owningGroup, string owningTenant, IPrincipal principal, params Enum[] returnedAccessTypeEnums)
     {
       Type classType = typeof (Group);

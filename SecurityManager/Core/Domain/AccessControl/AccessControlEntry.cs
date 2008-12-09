@@ -50,8 +50,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     // member fields
 
-    private ObjectList<Permission> _permissionsToBeDeleted;
     private SecurityTokenMatcher _matcher;
+    private DomainObjectDeleteHandler _deleteHandler;
 
     // construction and disposing
 
@@ -221,17 +221,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleting (args);
 
-      _permissionsToBeDeleted = Permissions.Clone();
+      _deleteHandler = new DomainObjectDeleteHandler (Permissions);
     }
 
     protected override void OnDeleted (EventArgs args)
     {
       base.OnDeleted (args);
 
-      foreach (var permission in _permissionsToBeDeleted)
-        permission.Delete();
-
-      _permissionsToBeDeleted = null;
+      _deleteHandler.Delete();
     }
 
     public AccessControlEntryValidationResult Validate ()

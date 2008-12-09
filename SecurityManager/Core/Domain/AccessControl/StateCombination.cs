@@ -41,7 +41,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     // member fields
 
-    private ObjectList<StateUsage> _stateUsagesToBeDeleted;
+    private DomainObjectDeleteHandler _deleteHandler;
 
     // construction and disposing
 
@@ -119,16 +119,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleting (args);
 
-      _stateUsagesToBeDeleted = StateUsages.Clone ();
+      _deleteHandler = new DomainObjectDeleteHandler (StateUsages);
     }
     
     protected override void OnDeleted (EventArgs args)
     {
       base.OnDeleted (args);
 
-      foreach (StateUsage stateUsage in _stateUsagesToBeDeleted)
-        stateUsage.Delete ();
-      _stateUsagesToBeDeleted = null;
+      _deleteHandler.Delete();
     }
   }
 }

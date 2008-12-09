@@ -112,6 +112,7 @@
     <Compile Include="Domain\AccessControl\StatefulAccessControlList.cs" />
     <Compile Include="Domain\AccessControl\StatelessAccessControlList.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilter.cs" />
+    <Compile Include="Domain\DomainObjectDeleteHandler.cs" />
     <Compile Include="Domain\OrganizationalStructure\Substitution.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -129,4 +129,7 @@
   <data name="property:DisplayName" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="property:SubstitutedBy" xml:space="preserve">
+    <value>Substituted by</value>
+  </data>
 </root>

@@ -112,8 +112,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       throw new NotImplementedException ("This method is only intended for framework support and should never be called.");
     }
 
-    private ObjectList<AccessControlEntry> _accessControlEntriesToBeDeleted;
-    private ObjectList<Role> _rolesToBeDeleted;
+    private DomainObjectDeleteHandler _deleteHandler;
 
     protected User ()
     {
@@ -163,21 +162,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       base.OnDeleting (args);
 
-      _accessControlEntriesToBeDeleted = AccessControlEntries.Clone ();
-      _rolesToBeDeleted = Roles.Clone ();
+      _deleteHandler = new DomainObjectDeleteHandler (AccessControlEntries, Roles, SubstitutingFor, SubstitutedBy);
     }
 
     protected override void OnDeleted (EventArgs args)
     {
       base.OnDeleted (args);
 
-      foreach (AccessControlEntry accessControlEntry in _accessControlEntriesToBeDeleted)
-        accessControlEntry.Delete ();
-      _accessControlEntriesToBeDeleted = null;
-
-      foreach (Role role in _rolesToBeDeleted)
-        role.Delete ();
-      _rolesToBeDeleted = null;
+      _deleteHandler.Delete();
     }
 
     public override string DisplayName
