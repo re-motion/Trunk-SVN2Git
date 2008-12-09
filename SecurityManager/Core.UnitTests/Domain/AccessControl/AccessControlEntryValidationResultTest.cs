@@ -18,8 +18,8 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 {

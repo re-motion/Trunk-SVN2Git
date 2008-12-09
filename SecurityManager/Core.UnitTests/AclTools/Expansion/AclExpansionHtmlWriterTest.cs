@@ -22,11 +22,7 @@ using System.Linq;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
-using Remotion.Development.UnitTesting.ObjectMother;
-using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
-using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -37,100 +33,23 @@ using List = Remotion.Development.UnitTesting.ObjectMother.List;
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
   [TestFixture]
-  // TODO AE: Remove commented code. (Do not commit.)
-  // TODO AE: This class contains highly integrative tests (because AclEpansionHtmlWriter contains so many private methods). Splitting
-  // TODO AE: AclExpansionHtmlWriter and moving the private methods to another class with make testing much easier.
   public class AclExpansionHtmlWriterTest : AclToolsTestBase
   {
-    // Note: Code is kept for comparison of readability and XML validity safety with HtmlTagWriter
-    [Test]
-    [Explicit]
-    public void XmlWriterSpikeTest ()
-    {
-      var stringWriter = new StringWriter ();
-      var xmlWriter = CreateXmlWriter (stringWriter, false);
-
-      //xmlWriter.WriteStartDocument();
-      // DOCTYPE
-      xmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN",null,null);
-      // HTML
-      xmlWriter.WriteStartElement ("html");
-        // HEAD
-        xmlWriter.WriteStartElement ("head");
-          // TITLE
-          xmlWriter.WriteStartElement ("title");
-            xmlWriter.WriteValue ("re-motion ACL Expansion");
-          xmlWriter.WriteEndElement (); // title
-
-          // STYLE
-          xmlWriter.WriteStartElement ("style");
-            xmlWriter.WriteValue ("@import \"AclExpansion.css\";");
-          xmlWriter.WriteEndElement (); // style
-        xmlWriter.WriteEndElement (); // head
-
-        // BODY
-        xmlWriter.WriteStartElement ("body");
-            xmlWriter.WriteValue ("re-motion ACL Expansion body");
-            
-            // TABLE
-            xmlWriter.WriteStartElement ("table");
-              xmlWriter.WriteAttributeString ("style", "width: 100%;");
-              xmlWriter.WriteAttributeString ("class", "aclExpansionTable");
-              xmlWriter.WriteAttributeString ("id", "remotion-ACL-expansion-table");
-              
-              // TR
-              xmlWriter.WriteStartElement ("tr");
-                // TD
-                xmlWriter.WriteStartElement ("td");
-                  xmlWriter.WriteAttributeString ("class", "header");
-                  xmlWriter.WriteValue ("User");
-                  xmlWriter.WriteEndElement (); // td
-              xmlWriter.WriteEndElement (); // tr
-
-            xmlWriter.WriteEndElement (); // table
-        xmlWriter.WriteEndElement (); // body
-      xmlWriter.WriteEndElement (); // html
-
-      xmlWriter.Close();
-
-      //To.ConsoleLine.s (stringWriter.ToString());
-    }
-
-
-    [Test]
-    [Explicit]
-    // TODO AE: Consider making this an automatically executable integration test, or remove.
-    public void WriteAclExpansionAsHtmlTest ()
-    {
-      using (new CultureScope ("de-AT","de-AT"))
-      {
-        var aclExpander = new AclExpander();
-        var aclExpansion = aclExpander.GetAclExpansionEntryList ();
-        var stringWriter = new StringWriter();
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true, new AclExpansionHtmlWriterSettings());
-        aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
-        //To.ConsoleLine.s (stringWriter.ToString());
-      }
-    }
-
-
     [Test]
     public void FullNameTest ()
     {
-      using (new CultureScope ("")) // Invariant culture // TODO AE: Consider replacing with using (CultureScope.CreateInvariantCultureScope() or similar)
+      using (CultureScope.CreateInvariantCultureScope()) 
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User); // TODO AE: Really simpler than "new List<User> { User }" ?
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
+        var users = List.New (User); 
+        var acls = List.New<AccessControlList> (Acl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
         var stringWriter = new StringWriter();
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true,  
           new AclExpansionHtmlWriterSettings { ShortenNames = false });
-        //aclExpansionHtmlWriter.Settings.ShortenNames = false;
         aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
         string result = stringWriter.ToString();
-        //To.ConsoleLine.e (() => result);
         Assert.That (result, NUnitText.Contains ("Dhl|Remotion.SecurityManager.UnitTests.TestDomain.Delivery, Remotion.SecurityManager.UnitTests"));
         Assert.That (result, NUnitText.Contains ("Remotion.SecurityManager.UnitTests.TestDomain.Order"));
       }
@@ -139,20 +58,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void ShortNameTest ()
     {
-      using (new CultureScope ("")) // Invariant culture
+      using (CultureScope.CreateInvariantCultureScope ()) 
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
-
+        var users = List.New (User);
+        var acls = List.New<AccessControlList> (Acl);
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
         var stringWriter = new StringWriter ();
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true,
           new AclExpansionHtmlWriterSettings { ShortenNames = true });
-        //aclExpansionHtmlWriter.Settings.ShortenNames = true;
         aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
         string result = stringWriter.ToString ();
-        //To.ConsoleLine.e (() => result);
         Assert.That (result, NUnitText.Contains ("Dhl"));
         Assert.That (
             result,
@@ -167,19 +83,15 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void OutputRowCountTest ()
     {
-      // TODO AE: Move common initialization code to SetUp method.
-      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
-
+      var users = List.New (User);
+      var acls = List.New<AccessControlList> (Acl);
       List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
       var stringWriter = new StringWriter ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true,
         new AclExpansionHtmlWriterSettings { OutputRowCount = true });
-      //aclExpansionHtmlWriter.Settings.OutputRowCount = true;
       aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       string result = stringWriter.ToString ();
-      //To.ConsoleLine.e (() => result);
       Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (2)"));
       Assert.That (result, NUnitText.Contains ("Da Group, Supreme Being (2)"));
       Assert.That (result, NUnitText.Contains ("Order (2)"));
@@ -188,18 +100,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void DontOutputRowCountTest ()
     {
-      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
+      var users = List.New (User);
+      var acls = List.New<AccessControlList> (Acl);
 
       List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
       var stringWriter = new StringWriter ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true, 
         new AclExpansionHtmlWriterSettings { OutputRowCount = false });
-      //aclExpansionHtmlWriter.Settings.OutputRowCount = false;
       aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       string result = stringWriter.ToString ();
-      //To.ConsoleLine.e (() => result);
       Assert.That (result, NUnitText.DoesNotContain ("(2)"));
     }
 
@@ -207,18 +117,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void UserSortOrderTest ()
     {
-      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl, Acl2);
+      var users = List.New (User, User2, User3);
+      var acls = List.New<AccessControlList> (Acl, Acl2);
 
       List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
       var stringWriter = new StringWriter ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true,
         new AclExpansionHtmlWriterSettings { ShortenNames = true });
-      //aclExpansionHtmlWriter.Settings.ShortenNames = true;
       aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       string result = stringWriter.ToString ();
-      //To.ConsoleLine.e (() => result);
 
       Assert.That (result, NUnitText.Contains ("James Ryan"));
       Assert.That (result.IndexOf ("James Ryan"), Is.LessThan (result.IndexOf ("Smith, Mr.")));
@@ -227,20 +135,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void SortOrderTest ()
     {
-      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User3);
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
+      var users = List.New (User3);
+      var acls = List.New<AccessControlList> (Acl);
 
       List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
       var stringWriter = new StringWriter ();
-      //var aclExpansionTree = new AclExpansionTree (aclExpansion);
-      // To.ConsoleLine.e (() => aclExpansionTree).nl();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true,
           new AclExpansionHtmlWriterSettings { ShortenNames = true });
-      //aclExpansionHtmlWriter.Settings.ShortenNames = true;
       aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       string result = stringWriter.ToString ();
-      //To.ConsoleLine.e (() => result); Clipboard.SetText (result);
 
       // Roles
       const string firstRoleText = "Anotha Group, Supreme Being";
@@ -258,25 +162,21 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void ResultTest ()
     {
-      //using (CultureScope_en_US ())
       using (CultureScope_de_DE())
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl2, Acl);
+        var users = List.New (User, User2, User3);
+        var acls = List.New<AccessControlList> (Acl2, Acl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
         using (var textWriter = new StringWriter())
-        //using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
         {
           var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true, new AclExpansionHtmlWriterSettings());
           aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
           string result = textWriter.ToString();
           
-          //To.ConsoleLine.e (() => result); 
           //Clipboard.SetText (CreateLiteralResultExpectedString(result));
 
-          // TODO AE: Avoid regions, consider moving long constants to a separate TestConstants class.
           const string resultExpected =
           #region
  @"<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"" """">
@@ -536,56 +436,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
-    [Explicit]
-    public void DistinctResultTest ()
-    {
-      //using (CultureScope_en_US ())
-      using (CultureScope_de_DE ())
-      {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl2, Acl);
-
-        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, true);
-
-        //using (var textWriter = new StringWriter())
-        using (var textWriter = new StreamWriter ("c:\\temp\\DistinctAclExpansion.html"))
-        {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true, new AclExpansionHtmlWriterSettings());
-          aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
-          string result = textWriter.ToString ();
-
-          //To.ConsoleLine.e (() => result); 
-          //Clipboard.SetText (CreateLiteralResultExpectedString(result));
-
-          //Assert.That (result, Is.EqualTo (resultExpected));
-        }
-      }
-    }
-
-
-    // TODO AE: Removed unused member
-    public static string CreateLiteralResultExpectedString (string result)
-    {
-      var resultDoubleQuoted = result.Replace ("\"", "\"\"");
-      return "\nconst string resultExpected =\n#region\n@\"" + resultDoubleQuoted + "\";\n#endregion\n";
-    }
-
-
-    [Test]
     public void StatelessAclTest ()
     {
-      // TODO AE: Consider opening commonly used scopes in SetUp and closing them in TearDown.
       using (CultureScope_de_DE ())
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+        var users = List.New (User);
 
         // Create stateless-only ACL
         SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
         var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
         TestHelper.AttachAces (statlessAcl, Ace);
-
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (statlessAcl);
-
+        var acls = List.New<AccessControlList> (statlessAcl);
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
         using (var textWriter = new StringWriter ())
@@ -595,8 +456,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           aclExpansionHtmlWriter.Implementation.StatelessAclStateHtmlText = stateLessAclStateHtmlText;
           aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
           string result = textWriter.ToString ();
-          //To.ConsoleLine.e (() => result);
-
           Assert.That (result, NUnitText.Contains("<td>"+ stateLessAclStateHtmlText + @"</td>"));
         }
       }
@@ -608,9 +467,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (CultureScope_de_DE ())
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+        var users = List.New (User);
 
-        
         // Create an ACL with no states
         var orderClassDefinition = TestHelper.CreateOrderClassDefinition ();
         var acl = TestHelper.CreateStatefulAcl (orderClassDefinition, new StateDefinition[0]);
@@ -621,7 +479,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var stateDefinitions = acl.StateCombinations.SelectMany (x => x.GetStates ());
         Assert.IsFalse (stateDefinitions.Any()); 
 
-        var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (acl);
+        var acls = List.New<AccessControlList> (acl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -632,43 +490,19 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           aclExpansionHtmlWriter.Implementation.AclWithNoAssociatedStatesHtmlText = aclWithNoAssociatedStatesHtmlText;
           aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
           string result = textWriter.ToString ();
-          //To.ConsoleLine.e (() => result);
-
           Assert.That (result, NUnitText.Contains ("<td>" + aclWithNoAssociatedStatesHtmlText + @"</td>"));
         }
       }
     }
 
 
-    //[Test]
-    //public void AclExpansionTreeCtorEquivalenceTest ()
-    //{
-    //  var aclExpansionEntry = new AclExpansionEntry (
-    //      User, Role, Acl, new AclExpansionAccessConditions (), AccessTypeDefinitions, AccessTypeDefinitions2);
-    //  var aclExpansionEntryList = List.New (aclExpansionEntry);
-      
-    //  var textWriterAclExpansionEntryList = new StringWriter ();
-    //  new AclExpansionHtmlWriter (aclExpansionEntryList, textWriterAclExpansionEntryList, false).WriteAclExpansion();
-
-    //  var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
-    //  var textWriterAclExpansionTree = new StringWriter ();
-    //  new AclExpansionHtmlWriter (aclExpansionTree, textWriterAclExpansionTree, false).WriteAclExpansion();
-
-    //  string resultAclExpansionEntryList = textWriterAclExpansionEntryList.ToString();
-    //  string resultAclExpansionTree = textWriterAclExpansionTree.ToString ();
-
-    //  Assert.That (resultAclExpansionEntryList, Is.EqualTo (resultAclExpansionTree));
-    //}
-
 
     [Test]
     public void EmptyAclExpansionListResultTest ()
     {
-      //var aclExpansionTree = new AclExpansionTree (new List<AclExpansionEntry>());
       var textWriter = new StringWriter ();
       new AclExpansionHtmlWriter (textWriter, true, new AclExpansionHtmlWriterSettings()).WriteAclExpansion (new List<AclExpansionEntry> ());
       string result = textWriter.ToString ();
-      //To.ConsoleLine.e (() => result);
 
       const string resultExpected =
       #region
@@ -708,18 +542,14 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           User, Role, Acl, new AclExpansionAccessConditions (), new[] { DeleteAccessType }, new[] { ReadAccessType, WriteAccessType });
       var aclExpansionEntryList = List.New (aclExpansionEntry);
 
-      //var textWriterAclExpansionEntryList = new StringWriter ();
-      //using (var textWriter = new StreamWriter (Path.Combine ("c:\\temp", "DenyRightsOptionalOutputTest2.html")))
       using (var textWriter = new StringWriter ())
       {
         var aclExpansionWriter = new AclExpansionHtmlWriter (textWriter, true,
         new AclExpansionHtmlWriterSettings { OutputDeniedRights = true });
-        //aclExpansionWriter.Settings.OutputDeniedRights = true;
         aclExpansionWriter.WriteAclExpansion (aclExpansionEntryList);
 
 
         string result = textWriter.ToString ();
-        //To.ConsoleLine.e (() => result);
         //Clipboard.SetText (result);
 
         // Detail tests 
@@ -795,12 +625,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
 
       var stringWriter = new StringWriter ();
-      //var aclExpansionTree = new AclExpansionTree (aclExpansion);
-      //To.ConsoleLine.e (() => aclExpansionTree).nl ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true, new AclExpansionHtmlWriterSettings());
       aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       string result = stringWriter.ToString ();
-      // To.ConsoleLine.e (() => result);
       //Clipboard.SetText (result);
 
       Assert.That (result, NUnitText.Contains (inResultingHtmlString));
@@ -829,12 +656,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
 
       var stringWriter = new StringWriter ();
-      //var aclExpansionTree = new AclExpansionTree (aclExpansion);
-      //To.ConsoleLine.e (() => aclExpansionTree).nl ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true, new AclExpansionHtmlWriterSettings());
       aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       string result = stringWriter.ToString ();
-      // To.ConsoleLine.e (() => result);
       //Clipboard.SetText (result);
 
       Assert.That (result, NUnitText.Contains (inResultingHtmlString));
@@ -845,19 +669,88 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    [Test]
+    [Explicit]
+    public void WriteAclExpansionAsHtmlTest ()
+    {
+      using (new CultureScope ("de-AT", "de-AT"))
+      {
+        var aclExpander = new AclExpander ();
+        var aclExpansion = aclExpander.GetAclExpansionEntryList ();
+        var stringWriter = new StringWriter ();
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true, new AclExpansionHtmlWriterSettings ());
+        aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
+      }
+    }
+
+
+    // Note: Code is kept for comparison of readability and XML validity safety with HtmlTagWriter
+    [Test]
+    [Explicit]
+    public void XmlWriterSpikeTest ()
+    {
+      var stringWriter = new StringWriter ();
+      var xmlWriter = CreateXmlWriter (stringWriter, false);
+
+      //xmlWriter.WriteStartDocument();
+      // DOCTYPE
+      xmlWriter.WriteDocType ("HTML", "-//W3C//DTD HTML 4.0 Transitional//EN", null, null);
+      // HTML
+      xmlWriter.WriteStartElement ("html");
+      // HEAD
+      xmlWriter.WriteStartElement ("head");
+      // TITLE
+      xmlWriter.WriteStartElement ("title");
+      xmlWriter.WriteValue ("re-motion ACL Expansion");
+      xmlWriter.WriteEndElement (); // title
+
+      // STYLE
+      xmlWriter.WriteStartElement ("style");
+      xmlWriter.WriteValue ("@import \"AclExpansion.css\";");
+      xmlWriter.WriteEndElement (); // style
+      xmlWriter.WriteEndElement (); // head
+
+      // BODY
+      xmlWriter.WriteStartElement ("body");
+      xmlWriter.WriteValue ("re-motion ACL Expansion body");
+
+      // TABLE
+      xmlWriter.WriteStartElement ("table");
+      xmlWriter.WriteAttributeString ("style", "width: 100%;");
+      xmlWriter.WriteAttributeString ("class", "aclExpansionTable");
+      xmlWriter.WriteAttributeString ("id", "remotion-ACL-expansion-table");
+
+      // TR
+      xmlWriter.WriteStartElement ("tr");
+      // TD
+      xmlWriter.WriteStartElement ("td");
+      xmlWriter.WriteAttributeString ("class", "header");
+      xmlWriter.WriteValue ("User");
+      xmlWriter.WriteEndElement (); // td
+      xmlWriter.WriteEndElement (); // tr
+
+      xmlWriter.WriteEndElement (); // table
+      xmlWriter.WriteEndElement (); // body
+      xmlWriter.WriteEndElement (); // html
+
+      xmlWriter.Close ();
+    }
+
+
+    public static string CreateLiteralResultExpectedString (string result)
+    {
+      var resultDoubleQuoted = result.Replace ("\"", "\"\"");
+      return "\nconst string resultExpected =\n#region\n@\"" + resultDoubleQuoted + "\";\n#endregion\n";
+    }
+
+
     private CultureScope CultureScope_de_DE ()
     {
       return new CultureScope ("de-DE");
     }
 
-    // TODO AE: Remove unused member.
-    private CultureScope CultureScope_en_US ()
-    {
-      return new CultureScope ("en-US");
-    }
 
-    // TODO AE: make private, non-static unused member if usage.
-    public static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
+    private static XmlWriter CreateXmlWriter (TextWriter textWriter, bool indent)
     {
       XmlWriterSettings settings = new XmlWriterSettings ();
 

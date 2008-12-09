@@ -18,7 +18,7 @@ using System.Globalization;
 using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
@@ -59,6 +59,19 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
         Assert.That (currentThread.CurrentCulture.Name, Is.EqualTo ("de-AT"));
         Assert.That (currentThread.CurrentUICulture.Name, Is.EqualTo ("uz-Cyrl-UZ"));
       }
+    }
+
+
+    [Test]
+    public void CreateInvariantCultureScopeTest ()
+    {
+      Thread currentThread = Thread.CurrentThread;
+      using (CultureScope.CreateInvariantCultureScope ())
+      {
+        Assert.That (currentThread.CurrentCulture, Is.EqualTo (CultureInfo.InvariantCulture));
+        Assert.That (currentThread.CurrentUICulture, Is.EqualTo (CultureInfo.InvariantCulture));
+      }    
+    
     }
   }
 }

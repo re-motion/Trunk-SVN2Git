@@ -17,7 +17,6 @@ using System;
 using System.Globalization;
 using System.Threading;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities

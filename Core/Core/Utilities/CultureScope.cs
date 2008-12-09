@@ -17,7 +17,7 @@ using System;
 using System.Globalization;
 using System.Threading;
 
-namespace Remotion.Development.UnitTesting
+namespace Remotion.Utilities
 {
   /// <summary>
   /// Represents a scope with a specific culture and UI-culture (see <see cref="CultureInfo"/>). 
@@ -36,6 +36,16 @@ namespace Remotion.Development.UnitTesting
   {
     private readonly CultureInfo _backupCulture;
     private readonly CultureInfo _backupUICulture;
+
+
+    /// <summary>
+    /// Returns an invariant culture scope, i.e. initialized with <see cref="CultureInfo"/> = <see cref="CultureInfo.InvariantCulture"/>.
+    /// </summary>
+    public static CultureScope CreateInvariantCultureScope()
+    {
+      return new CultureScope (CultureInfo.InvariantCulture, CultureInfo.InvariantCulture);
+    }
+
 
     /// <summary>
     /// Intialize <see cref="CultureScope"/> with culture-names-strings, e.g. "de-AT", "en-GB".
@@ -76,7 +86,7 @@ namespace Remotion.Development.UnitTesting
     /// <param name="cultureInfo">Culture to use.</param>
     /// <param name="uiCultureInfo">User interface culture to use.</param>
     public CultureScope (CultureInfo cultureInfo, CultureInfo uiCultureInfo)
-      : this (cultureInfo.Name, uiCultureInfo.Name)
+        : this (cultureInfo.Name, uiCultureInfo.Name)
     {}
 
 
