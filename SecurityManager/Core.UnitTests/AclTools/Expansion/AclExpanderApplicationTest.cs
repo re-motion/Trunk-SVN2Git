@@ -23,9 +23,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
-using Remotion.SecurityManager.Domain.AccessControl;
 using Rhino.Mocks;
-using User=Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 using System.Collections.Generic;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -69,39 +67,11 @@ th
     #endregion
 
 
-    [SetUp]
-    public override void SetUp () // TODO AE: Remove.
-    {
-      base.SetUp();
-    }
-
-    // TODO AE: Make private and move to bottom.
-    public List<AclExpansionEntry> CreateAclExpanderApplicationAndCallGetAclExpansion (AclExpanderApplicationSettings settings)
-    {
-      var application = new AclExpanderApplication();
-      application.Init (settings, TextWriter.Null, TextWriter.Null);
-      //PrivateInvoke.InvokeNonPublicMethod (application, "Init", settings, TextWriter.Null,TextWriter.Null);
-
-      // TODO AE: Consider making GetAclExpansion public. Wouldn't break encapsulation (IMO, it's only a get method anyway) and would also enable you 
-      // to mock the user finder and acl finder.
-      return (List<AclExpansionEntry>) PrivateInvoke.InvokeNonPublicMethod (application, "GetAclExpansion");
-      
-      //foreach (AclExpansionEntry entry in aclExpansion)
-      //{
-      //  To.ConsoleLine.e (entry);
-      //}
-    }
-
-    // TODO AE: Note: These tests test against the database, so they are actually integration tests.
-    // TODO AE: Consider mocking the user finder, ACL finder, and/or ACL expander to get non-integrative unit tests. (And move the integration tests
-    // TODO AE: to an AclExpanderApplicationIntegrationTest class.)
-
     [Test]
     public void FindAllUsersTest ()
     {
       var settings = new AclExpanderApplicationSettings();
       var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
-      //To.ConsoleLine.e (() => aclExpansion);
       Assert.That (aclExpansion.Count, Is.EqualTo (16));
     }
 
@@ -166,7 +136,6 @@ th
       Assert.That (aclExpansion.Count, Is.EqualTo (8));
       foreach (AclExpansionEntry entry in aclExpansion)
       {
-        //To.ConsoleLine.e (() => entry);
         Assert.That (entry.User.FirstName, Is.EqualTo (firstName));
         Assert.That (entry.User.LastName, Is.EqualTo (lastName));
         Assert.That (entry.User.UserName, Is.EqualTo (userName));
@@ -252,8 +221,8 @@ th
 
       var settings = new AclExpanderApplicationSettings ();
       settings.UseMultipleFileOutput = true;
-      //string path = Path.GetTempPath ();
-      string path = "c:\\temp";
+      string path = Path.GetTempPath ();
+      //string path = "c:\\temp";
       string testDirectory = Path.Combine(path, "TestDirectory");
       settings.Directory = testDirectory;
       var application = new AclExpanderApplication (streamWriterFactory);
@@ -272,9 +241,6 @@ th
     }
 
 
-
-    // TODO: Adapt test to use StreamWriterFactory and turn into integration test
-    // TODO AE: But still keep a respective unit test.
     [Test]
     public void MultipleFileOutputCssFileWritingTest ()
     {
@@ -299,8 +265,7 @@ th
       Assert.That (result, Is.EqualTo (c_cssFileContent));
     }
 
-    // TODO: Adapt test to use StreamWriterFactory and turn into integration test
-    // TODO AE: But still keep a respective unit test.
+
     [Test]
     public void SingleFileOutputCssFileWritingTest ()
     {
@@ -327,6 +292,69 @@ th
 
 
 
+    [Test]
+    public void MultipleFileOutputCssFileWritingUsingStreamWriterTest ()
+    {
+      string path = Path.Combine(Path.GetTempPath (),"mf");
+      if (Directory.Exists (path))
+      {
+        Directory.Delete (path, true);
+      }
+      var streamWriterFactory = new StreamWriterFactory ();
+
+      var settings = new AclExpanderApplicationSettings ();
+      settings.UseMultipleFileOutput = true;
+      settings.Directory = path;
+      var application = new AclExpanderApplication (streamWriterFactory);
+      application.Run (settings, TextWriter.Null, TextWriter.Null);
+
+      const string cssFileName = AclExpanderApplication.CssFileName;
+      TextWriterData cssTextWriterData;
+      streamWriterFactory.NameToTextWriterData.TryGetValue (cssFileName, out cssTextWriterData);
+
+      To.ConsoleLine.e (cssTextWriterData.Directory);
+
+      // Multifile HTML output => expect at least 3 files (CSS, main HTML, detail HTML files)
+      Assert.That (Directory.GetFiles (cssTextWriterData.Directory).Length, Is.EqualTo (7));
+
+      Assert.That (File.Exists (Path.Combine (cssTextWriterData.Directory, Path.ChangeExtension (cssFileName, "css"))), Is.True);
+    }
+
+    [Test]
+    public void SingleFileOutputCssFileWritingUsingStreamWriterTest ()
+    {
+      string path = Path.Combine (Path.GetTempPath (), "sf");
+      if (Directory.Exists (path))
+      {
+        Directory.Delete (path, true);
+      }
+      var streamWriterFactory = new StreamWriterFactory ();
+
+      var settings = new AclExpanderApplicationSettings ();
+      settings.UseMultipleFileOutput = false;
+      settings.Directory = path;
+      var application = new AclExpanderApplication (streamWriterFactory);
+      application.Run (settings, TextWriter.Null, TextWriter.Null);
+
+      // Single file HTML output => expect 2 files (CSS, HTML file)
+      Assert.That (Directory.GetFiles (path).Length, Is.EqualTo (2));
+
+      const string cssFileName = AclExpanderApplication.CssFileName;
+      Assert.That (File.Exists (Path.Combine (path, Path.ChangeExtension(cssFileName,"css"))), Is.True);
+
+
+    }
+
+
+
+
+    private List<AclExpansionEntry> CreateAclExpanderApplicationAndCallGetAclExpansion (AclExpanderApplicationSettings settings)
+    {
+      var application = new AclExpanderApplication ();
+      application.Init (settings, TextWriter.Null, TextWriter.Null);
+      return (List<AclExpansionEntry>) PrivateInvoke.InvokeNonPublicMethod (application, "GetAclExpansion");
+    }
+
     private static void AssertGetCultureName (string cultureNameIn, string cultureNameOut)
     {
       var textWriterFactoryStub = MockRepository.GenerateStub<ITextWriterFactory> ();
@@ -341,7 +369,6 @@ th
     private static void AssertFileExists (string testDirectory, string fileName)
     {
       string fileNameExpected = Path.Combine (testDirectory, fileName);
-      //To.ConsoleLine.e (() => fileNameExpected);
       Assert.That (File.Exists (fileNameExpected), Is.True);
     }
 
