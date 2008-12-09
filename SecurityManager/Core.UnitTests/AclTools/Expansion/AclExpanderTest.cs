@@ -35,9 +35,6 @@ using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
-  // TODO AE: Remove commented code. (Do not commit.)
-  // TODO AE: This test fixture contains many tests that are not for the AclExpander class. Consider removing them or (if required) move them to another test fixture.
-  // TODO AE: This file contains a lot of ReSharper warnings..
   [TestFixture]
   public class AclExpanderTest : AclToolsTestBase
   {
@@ -619,21 +616,15 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceOwningUser, null, null, true);
       Assert.That (aceOwningUser.Validate ().IsValid);
 
-      //To.ConsoleLine.e (() => aceSpecificGroup);
-
       var userList = List.New (User);
       var aclList = List.New (TestHelper.CreateStatefulAcl (aceSpecificUser, aceOwningUser));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
 
-      // To.ConsoleLine.e (() => aclExpansionEntryList);
-
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
       // Test of specific-user-ACE: gives write-access
       AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[0], new[] { WriteAccessType }, new AclExpansionAccessConditions ());
-
-      //To.ConsoleLine.e (aclExpansionEntryList[1].AccessConditions.UserHierarchyCondition);
 
       // Test of owning-user-ACE (specific-user-ACE matches also): gives write-access + delete-access with condition: user-must-own
       AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType },
@@ -660,8 +651,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclList = List.New (TestHelper.CreateStatefulAcl (aceSpecificPosition, aceSpecificPosition2));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
-
-      // To.ConsoleLine.e (() => aclExpansionEntryList);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
 
@@ -694,7 +683,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
     private void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion, bool outputRowCount)
     {
-      string aclExpansionFileName = "c:\\temp\\AclExpansionTest_" + FileNameTimestamp (DateTime.Now) + "_.html";
+      string aclExpansionFileName = Path.Combine(@"c:\temp\AclExpansionTest_", Path.ChangeExtension(StringUtility.GetFileNameTimestampNow (), "html"));
+      
       using (var streamWriter = new StreamWriter (aclExpansionFileName))
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true, 
@@ -702,13 +692,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       }
     }
-
-    private string FileNameTimestamp (DateTime dt)
-    {
-      return StringUtility.ConcatWithSeparator (new[] { dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond }, "_");
-    }
-
-
 
 
     private void AssertAclExpansionEntryAccessTypesAndConditions (AclExpansionEntry actualAclExpansionEntry, AccessTypeDefinition[] expectedAccessTypeDefinitions,
