@@ -37,7 +37,7 @@ namespace Remotion.Mixins.Context.Serialization
     public void AddMixins(IEnumerable<MixinContext> mixinContexts)
     {
       ArgumentUtility.CheckNotNull ("mixinContexts", mixinContexts);
-      Values[1] = EnumerableUtility.SelectToArray<MixinContext, object[]> (mixinContexts, SerializeMixinContext);
+      Values[1] = EnumerableUtility.SelectToArray<MixinContext, object> (mixinContexts, SerializeMixinContext);
     }
 
     public void AddCompleteInterfaces(IEnumerable<Type> completeInterfaces)

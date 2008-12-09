@@ -15,15 +15,14 @@
 // 
 using System;
 using System.Reflection.Emit;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
@@ -44,8 +43,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       TypeBuilder typeBuilder = ((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.ObtainDynamicModuleWithWeakName ().DefineType ("Test_ConcreteMixinTypeAttribute");
       typeBuilder.SetCustomAttribute (builder);
       Type type = typeBuilder.CreateType ();
-      ConcreteMixinTypeAttribute attribute = AttributeUtility.GetCustomAttribute<ConcreteMixinTypeAttribute> (type, false);
-      Assert.That (attribute.GetClassContext (), Is.EqualTo (context));
+      
+      var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixinTypeAttribute> (type, false);
+      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      var regeneratedContext = ClassContext.Deserialize (deserializer);
+
+      Assert.That (regeneratedContext, Is.EqualTo (context));
       Assert.That (attribute.MixinIndex, Is.EqualTo (12));
     }
   }

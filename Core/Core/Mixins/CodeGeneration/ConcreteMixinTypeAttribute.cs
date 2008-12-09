@@ -15,27 +15,35 @@
 // 
 using System;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Definitions;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration
 {
   [CLSCompliant (false)]
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-  public class ConcreteMixinTypeAttribute : ConcreteMixedTypeAttribute
+  public class ConcreteMixinTypeAttribute : Attribute
   {
     public static ConcreteMixinTypeAttribute FromClassContext (int mixinIndex, ClassContext targetClassContext)
     {
-      ConcreteMixedTypeAttribute baseAttribute = FromClassContext (targetClassContext);
-      return new ConcreteMixinTypeAttribute (mixinIndex, baseAttribute.TargetType, baseAttribute.MixinKinds, baseAttribute.MixinTypes, 
-          baseAttribute.CompleteInterfaces, baseAttribute.ExplicitDependenciesPerMixin);
+      ArgumentUtility.CheckNotNull ("targetClassContext", targetClassContext);
+
+      var serializer = new AttributeClassContextSerializer ();
+      targetClassContext.Serialize (serializer);
+
+      return new ConcreteMixinTypeAttribute (mixinIndex, serializer.Values);
     }
 
     private readonly int _mixinIndex;
+    private readonly object[] _data;
 
-    public ConcreteMixinTypeAttribute (int mixinIndex, Type baseType, MixinKind[] mixinKinds, Type[] mixinTypes, Type[] completeInterfaces, Type[] explicitDependenciesPerMixin)
-        : base (baseType, mixinKinds, mixinTypes, completeInterfaces, explicitDependenciesPerMixin)
+    public ConcreteMixinTypeAttribute (int mixinIndex, object[] data)
     {
+      ArgumentUtility.CheckNotNull ("data", data);
+
       _mixinIndex = mixinIndex;
+      _data = data;
     }
 
     public int MixinIndex
@@ -43,9 +51,15 @@ namespace Remotion.Mixins.CodeGeneration
       get { return _mixinIndex; }
     }
 
+    public object[] Data
+    {
+      get { return _data; }
+    }
+
     public MixinDefinition GetMixinDefinition (ITargetClassDefinitionCache targetClassDefinitionCache)
     {
-      return GetTargetClassDefinition (targetClassDefinitionCache).Mixins[MixinIndex];
+      var respectiveMixedTypeAttribute = new ConcreteMixedTypeAttribute (Data);
+      return respectiveMixedTypeAttribute.GetTargetClassDefinition (targetClassDefinitionCache).Mixins[MixinIndex];
     }
   }
 }

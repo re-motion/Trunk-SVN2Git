@@ -18,7 +18,6 @@ using System.Runtime.InteropServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
@@ -98,8 +97,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var importer = new AttributeBasedMetadataImporter ();
 
       var typeMock = MockRepository.GenerateMock<_Type> ();
-      var attribute1 = new ConcreteMixedTypeAttribute (typeof (object), new MixinKind[0], new Type[0], new Type[0], new Type[0]);
-      var attribute2 = new ConcreteMixedTypeAttribute (typeof (string), new MixinKind[0], new Type[0], new Type[0], new Type[0]);
+      var attribute1 = ConcreteMixedTypeAttribute.FromClassContext (new ClassContext (typeof (object)));
+      var attribute2 = ConcreteMixedTypeAttribute.FromClassContext (new ClassContext (typeof (string)));
 
       typeMock.Expect (mock => mock.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false)).Return (new[] { attribute1, attribute2});
       typeMock.Replay ();
@@ -116,8 +115,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var importer = new AttributeBasedMetadataImporter ();
 
       var typeMock = MockRepository.GenerateMock<_Type> ();
-      var attribute1 = new ConcreteMixinTypeAttribute (0, typeof (object), new MixinKind[0], new Type[0], new Type[0], new Type[0]);
-      var attribute2 = new ConcreteMixinTypeAttribute (0, typeof (string), new MixinKind[0], new Type[0], new Type[0], new Type[0]);
+      var attribute1 = ConcreteMixinTypeAttribute.FromClassContext (0, new ClassContext (typeof (object)));
+      var attribute2 = ConcreteMixinTypeAttribute.FromClassContext (0, new ClassContext (typeof (string)));
 
       typeMock.Expect (mock => mock.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false)).Return (new[] { attribute1, attribute2 });
       typeMock.Replay ();

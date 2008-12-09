@@ -50,9 +50,10 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
     [Test]
     public void AddMixins ()
     {
-      var mixinContext = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, new[] {typeof (int), typeof (string)});
-      _serializer.AddMixins (new[] {mixinContext});
-      Assert.That (_deserializer.GetMixins().ToArray(), Is.EqualTo (new[] { mixinContext }));
+      var mixinContext1 = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, new[] { typeof (int), typeof (string) });
+      var mixinContext2 = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, new[] { typeof (int), typeof (string) });
+      _serializer.AddMixins (new[] {mixinContext1, mixinContext2});
+      Assert.That (_deserializer.GetMixins().ToArray(), Is.EqualTo (new[] { mixinContext1, mixinContext2 }));
     }
 
     [Test]
@@ -79,7 +80,7 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
 
     [Test]
     [ExpectedException (typeof (SerializationException),
-        ExpectedMessage = "Expected value of type 'System.Object[][]' at index 1 in the values array, but found 'System.Int32'.")]
+        ExpectedMessage = "Expected value of type 'System.Object[]' at index 1 in the values array, but found 'System.Int32'.")]
     public void GetMixins_Invalid ()
     {
       _invalidDeserializer.GetMixins ();

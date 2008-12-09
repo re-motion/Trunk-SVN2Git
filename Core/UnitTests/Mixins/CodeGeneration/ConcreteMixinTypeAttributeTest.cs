@@ -13,13 +13,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Definitions;
+using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
@@ -27,27 +30,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   [TestFixture]
   public class ConcreteMixinTypeAttributeTest
   {
-    [ConcreteMixinType (3, typeof (ConcreteMixinTypeAttributeTest),
-        new[] {MixinKind.Extending, MixinKind.Used, MixinKind.Extending}, 
-        new[] {typeof (string), typeof (object), typeof (int)},
-        new[] {typeof (int)},
-        new[] {typeof (object), typeof (double), typeof (bool), typeof (NextMixinDependency), typeof (string), typeof (bool)})]
-    private class TestType
-    {
-    }
-
     [Test]
     public void FromAttributeApplication ()
     {
-      ConcreteMixinTypeAttribute attribute = ((ConcreteMixinTypeAttribute[]) typeof (TestType).GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false))[0];
+      ConcreteMixinTypeAttribute attribute = ((ConcreteMixinTypeAttribute[]) typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers).GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false)).Single();
+      var mixinDefinition = attribute.GetMixinDefinition (TargetClassDefinitionCache.Current);
 
-      Assert.That (attribute.MixinIndex, Is.EqualTo (3));
-      Assert.That (attribute.TargetType, Is.EqualTo (typeof (ConcreteMixinTypeAttributeTest)));
-      Assert.That (attribute.MixinKinds, Is.EqualTo (new object[] {MixinKind.Extending, MixinKind.Used, MixinKind.Extending}));
-      Assert.That (attribute.MixinTypes, Is.EqualTo (new object[] { typeof (string), typeof (object), typeof (int) }));
-      Assert.That (attribute.CompleteInterfaces, Is.EqualTo (new object[] { typeof (int) }));
-      Assert.That (attribute.ExplicitDependenciesPerMixin,
-          Is.EqualTo (new object[] { typeof (object), typeof (double), typeof (bool), typeof (NextMixinDependency), typeof (string), typeof (bool), }));
+      Assert.That (mixinDefinition.MixinIndex, Is.EqualTo (0));
+      Assert.That (mixinDefinition.Type, Is.EqualTo (typeof (MixinWithAbstractMembers)));
+      Assert.That (mixinDefinition.TargetClass.Type, Is.EqualTo (typeof (ClassOverridingMixinMembers)));
+      Assert.That (mixinDefinition.MixinKind, Is.EqualTo (MixinKind.Used));
+      Assert.That (mixinDefinition.TargetClass.ConfigurationContext.Mixins[typeof (MixinWithAbstractMembers)].IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Private));
+      Assert.That (mixinDefinition.MixinDependencies.Count, Is.EqualTo (0));
+      Assert.That (mixinDefinition.TargetClass.ConfigurationContext.CompleteInterfaces, Is.Empty);
     }
 
     [Test]
@@ -57,10 +52,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (7, simpleContext);
 
       Assert.That (attribute.MixinIndex, Is.EqualTo (7));
-      Assert.That (attribute.TargetType, Is.EqualTo (typeof (object)));
-      Assert.That (attribute.MixinTypes, Is.EqualTo (new object[] { typeof (string), }));
-      Assert.That (attribute.CompleteInterfaces, Is.Empty);
-      Assert.That (attribute.ExplicitDependenciesPerMixin, Is.Empty);
+      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      Assert.That (ClassContext.Deserialize (deserializer), Is.EqualTo (simpleContext));
     }
 
     [Test]
@@ -75,11 +68,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (5, context);
 
       Assert.That (attribute.MixinIndex, Is.EqualTo (5));
-      Assert.That (attribute.TargetType, Is.EqualTo (typeof (int)));
-      Assert.That (attribute.MixinTypes, Is.EqualTo (new object[] { typeof (string), typeof (double), }));
-      Assert.That (attribute.CompleteInterfaces, Is.EqualTo (new object[] { typeof (uint), }));
-      Assert.That (attribute.ExplicitDependenciesPerMixin, 
-          Is.EqualTo (new object[] { typeof (string), typeof (bool), typeof (NextMixinDependency), typeof (double), typeof (int), }));
+      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      Assert.That (ClassContext.Deserialize (deserializer), Is.EqualTo (context));
     }
 
     [Test]
@@ -94,13 +84,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (5, context);
 
       Assert.That (attribute.MixinIndex, Is.EqualTo (5));
-      Assert.That (attribute.TargetType, Is.EqualTo (typeof (int)));
-      Assert.That (attribute.MixinKinds, Is.EqualTo (new object[] { MixinKind.Extending, MixinKind.Used }));
-      Assert.That (attribute.MixinTypes, Is.EqualTo (new object[] { typeof (string), typeof (double), }));
-      Assert.That (attribute.CompleteInterfaces, Is.EqualTo (new object[] { typeof (uint), }));
-      Assert.That (attribute.ExplicitDependenciesPerMixin, Is.Empty);
+      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      Assert.That (ClassContext.Deserialize (deserializer), Is.EqualTo (context));
     }
-
 
     [Test]
     public void GetMixinDefinition ()
@@ -111,17 +97,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (0, context);
       MixinDefinition definition = attribute.GetMixinDefinition (TargetClassDefinitionCache.Current);
       Assert.That (definition, Is.SameAs (referenceDefinition));
-    }
-
-    [Test]
-    [Ignore ("TODO FS: COMMONS-829")]
-    public void Roundtrip_WithPublicVisibility_IntegrationTest()
-    {
-      var classContext = new ClassContext (typeof (BaseType1), new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public));
-      var attribute = ConcreteMixedTypeAttribute.FromClassContext (classContext);
-      var classContext2 = attribute.GetClassContext ();
-
-      Assert.That (classContext2, Is.EqualTo (classContext));
     }
   }
 }

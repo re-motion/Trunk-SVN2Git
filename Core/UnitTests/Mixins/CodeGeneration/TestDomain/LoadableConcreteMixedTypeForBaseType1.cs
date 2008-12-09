@@ -20,7 +20,7 @@ using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  [ConcreteMixedType (typeof (BaseType1), new[] {MixinKind.Used}, new [] {typeof (BT1Mixin1)}, new Type[0], new Type[0])]
+  [ConcreteMixedType (new object[] { typeof (BaseType1), new object[] { new object[] {typeof (BT1Mixin1), MixinKind.Used, MemberVisibility.Private, new Type[0] }}, new Type[0] })]
   public class LoadableConcreteMixedTypeForBaseType1
   { }
 }

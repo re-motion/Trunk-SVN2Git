@@ -42,8 +42,8 @@ namespace Remotion.Mixins.Context.Serialization
 
     public IEnumerable<MixinContext> GetMixins()
     {
-      var mixins = GetValue<object[][]> (1);
-      return mixins.Select (oa => MixinContext.Deserialize (new AttributeMixinContextDeserializer (oa)));
+      var mixins = GetValue<object[]> (1);
+      return mixins.Select (oa => MixinContext.Deserialize (new AttributeMixinContextDeserializer ((object[]) oa)));
     }
 
     public IEnumerable<Type> GetCompleteInterfaces()

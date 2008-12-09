@@ -13,30 +13,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Mixins.Context;
-using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public static class ConcreteMixinTypeAttributeUtility
   {
-    private static readonly ConstructorInfo s_attributeCtor =
-        typeof (ConcreteMixinTypeAttribute).GetConstructor (
-            new Type[] {typeof (int), typeof (Type), typeof (MixinKind[]), typeof (Type[]), typeof (Type[]), typeof (Type[])});
+    private static readonly ConstructorInfo s_attributeCtor = typeof (ConcreteMixinTypeAttribute).GetConstructor (new[] {typeof (int), typeof (object[])});
 
     public static CustomAttributeBuilder CreateAttributeBuilder (int mixinIndex, ClassContext context)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
       Assertion.IsNotNull (s_attributeCtor);
 
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (mixinIndex, context);
-      CustomAttributeBuilder builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { attribute.MixinIndex, attribute.TargetType,
-          attribute.MixinKinds, attribute.MixinTypes, attribute.CompleteInterfaces, attribute.ExplicitDependenciesPerMixin });
+      var builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { attribute.MixinIndex, attribute.Data });
       return builder;
     }
   }
