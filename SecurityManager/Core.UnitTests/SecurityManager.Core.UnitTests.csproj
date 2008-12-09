@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{65B86B2E-D54D-425B-B681-82449E31BA01}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -147,7 +147,10 @@
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityClientFactory.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SecurityTestHelper.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SubstitutionTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\BindableObjectImplementation.cs" />
+    <Compile Include="Domain\OrganizationalStructure\UserTests\AccessControl.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\CurrentUser.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\DeleteUser.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\FindUser.cs" />

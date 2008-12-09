@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.BindableObject;
@@ -35,7 +36,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public static Role NewObject ()
     {
-      return NewObject<Role> ().With ();
+      return NewObject<Role>().With();
     }
 
     protected Role ()
@@ -44,7 +45,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     [DBBidirectionalRelation ("Roles")]
     [Mandatory]
-    [SearchAvailableObjectsServiceType(typeof (RolePropertiesSearchService))]
+    [SearchAvailableObjectsServiceType (typeof (RolePropertiesSearchService))]
     public abstract Group Group { get; set; }
 
     [DBBidirectionalRelation ("Roles")]
@@ -56,14 +57,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [SearchAvailableObjectsServiceType (typeof (RolePropertiesSearchService))]
     public abstract User User { get; set; }
 
+    [DBBidirectionalRelation ("SubstitutedRole")]
+    protected abstract ObjectList<Substitution> SubstitutedBy { get; }
 
     public List<Group> GetPossibleGroups (ObjectID tenantID)
     {
       ArgumentUtility.CheckNotNull ("tenantID", tenantID);
 
-      List<Group> groups = new List<Group> ();
-      foreach (Group group in Group.FindByTenantID (tenantID))
-        groups.Add (group);
+      IEnumerable<Group> groups = Group.FindByTenantID (tenantID);
 
       return FilterByAccess (groups, SecurityManagerAccessTypes.AssignRole);
     }
@@ -72,36 +73,21 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("group", group);
 
-      List<Position> positions = new List<Position> ();
+      IEnumerable<Position> positions;
       if (group.GroupType == null)
-      {
-        foreach (Position position in Position.FindAll ())
-          positions.Add (position);
-      }
+        positions = Position.FindAll();
       else
-      {
-        foreach (GroupTypePosition groupTypePosition in group.GroupType.Positions)
-        {
-          if (!positions.Contains (groupTypePosition.Position))
-            positions.Add (groupTypePosition.Position);
-        }
-      }
+        positions = group.GroupType.Positions.Select (gtp => gtp.Position).Distinct();
 
       return FilterByAccess (positions, SecurityManagerAccessTypes.AssignRole);
     }
 
-    private List<T> FilterByAccess<T> (List<T> securableObjects, params Enum[] requiredAccessTypeEnums) where T : ISecurableObject
+    private List<T> FilterByAccess<T> (IEnumerable<T> securableObjects, params Enum[] requiredAccessTypeEnums) where T: ISecurableObject
     {
-      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
+      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
       AccessType[] requiredAccessTypes = Array.ConvertAll<Enum, AccessType> (requiredAccessTypeEnums, AccessType.Get);
-      List<T> filteredObjects = new List<T> ();
-      foreach (T securableObject in securableObjects)
-      {
-        if (securityClient.HasAccess (securableObject, requiredAccessTypes))
-          filteredObjects.Add (securableObject);
-      }
 
-      return filteredObjects;
+      return securableObjects.Where (o => securityClient.HasAccess (o, requiredAccessTypes)).ToList();
     }
 
     protected override string GetOwningTenant ()

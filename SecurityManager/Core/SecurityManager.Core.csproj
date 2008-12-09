@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{990B8638-A08F-4A94-B01A-E7DAEF089F27}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -112,6 +112,9 @@
     <Compile Include="Domain\AccessControl\StatefulAccessControlList.cs" />
     <Compile Include="Domain\AccessControl\StatelessAccessControlList.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesEnumerationValueFilter.cs" />
+    <Compile Include="Domain\OrganizationalStructure\Substitution.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\AccessControl\TenantCondition.cs" />
     <Compile Include="Domain\AccessControl\GroupCondition.cs" />
@@ -177,6 +180,11 @@
     <Compile Include="Domain\ToTextSpecificTypeHandlers\StateDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\Tenant_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\User_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="Globalization\Domain\OrganizationalStructure\Substitution.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Substitution.resx</DependentUpon>
+    </Compile>
     <Compile Include="Globalization\Domain\OrganizationalStructure\Tenant.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -392,6 +400,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AclTools\Expansion\AclExpansion.css" />
+    <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.de.resx" />
+    <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Substitution.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <Content Include="Database\SecurityManagerSetupConstraints.sql" />
     <Content Include="Doc\Whats_New.Remotion.SecurityManager.txt" />
   </ItemGroup>

@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Globalization;
+using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -146,8 +147,17 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("SpecificUser")]
     protected abstract ObjectList<AccessControlEntry> AccessControlEntries { get; }
 
-    //[DBBidirectionalRelation ("Deputy")]
-    //public abstract ObjectList<Deputization> Deputizations { get; }
+    [DBBidirectionalRelation ("SubstitutingUser")]
+    protected abstract ObjectList<Substitution> SubstitutingFor { get; }
+
+    [DemandPropertyWritePermission (SecurityManagerAccessTypes.AssignSubstitute)]
+    [DBBidirectionalRelation ("SubstitutedUser")]
+    public abstract ObjectList<Substitution> SubstitutedBy { get; }
+
+    public Substitution CreateSubstitution ()
+    {
+      return Substitution.NewObject (this);
+    }
 
     protected override void OnDeleting (EventArgs args)
     {

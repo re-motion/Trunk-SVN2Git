@@ -71,6 +71,9 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'PositionVi
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'RoleView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[RoleView]
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SubstitutionView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SubstitutionView]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TenantView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[TenantView]
 
@@ -83,7 +86,7 @@ DECLARE @statement nvarchar (4000)
 SET @statement = ''
 SELECT @statement = @statement + 'ALTER TABLE [dbo].[' + t.name + '] DROP CONSTRAINT [' + fk.name + ']; ' 
     FROM sysobjects fk INNER JOIN sysobjects t ON fk.parent_obj = t.id 
-    WHERE fk.xtype = 'F' AND t.name IN ('AccessControlEntry', 'Permission', 'StateCombination', 'AccessControlList', 'StateUsage', 'EnumValueDefinition', 'AccessTypeReference', 'Culture', 'LocalizedName', 'SecurableClassDefinition', 'StatePropertyDefinition', 'StatePropertyReference', 'Group', 'GroupType', 'GroupTypePosition', 'Position', 'Role', 'Tenant', 'User')
+    WHERE fk.xtype = 'F' AND t.name IN ('AccessControlEntry', 'Permission', 'StateCombination', 'AccessControlList', 'StateUsage', 'EnumValueDefinition', 'AccessTypeReference', 'Culture', 'LocalizedName', 'SecurableClassDefinition', 'StatePropertyDefinition', 'StatePropertyReference', 'Group', 'GroupType', 'GroupTypePosition', 'Position', 'Role', 'Substitution', 'Tenant', 'User')
     ORDER BY t.name, fk.name
 exec sp_executesql @statement
 GO
@@ -139,6 +142,9 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Position'
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Role' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[Role]
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Substitution' AND TABLE_SCHEMA = 'dbo')
+  DROP TABLE [dbo].[Substitution]
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Tenant' AND TABLE_SCHEMA = 'dbo')
   DROP TABLE [dbo].[Tenant]
@@ -424,6 +430,23 @@ CREATE TABLE [dbo].[Role]
   CONSTRAINT [PK_Role] PRIMARY KEY CLUSTERED ([ID])
 )
 
+CREATE TABLE [dbo].[Substitution]
+(
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+
+  -- Substitution columns
+  [SubstitutingUserID] uniqueidentifier NULL,
+  [SubstitutedUserID] uniqueidentifier NULL,
+  [SubstitutedRoleID] uniqueidentifier NULL,
+  [BeginDate] datetime NULL,
+  [EndDate] datetime NULL,
+  [IsEnabled] bit NOT NULL,
+
+  CONSTRAINT [PK_Substitution] PRIMARY KEY CLUSTERED ([ID])
+)
+
 CREATE TABLE [dbo].[Tenant]
 (
   [ID] uniqueidentifier NOT NULL,
@@ -512,6 +535,11 @@ ALTER TABLE [dbo].[Role] ADD
   CONSTRAINT [FK_Role_GroupID] FOREIGN KEY ([GroupID]) REFERENCES [dbo].[Group] ([ID]),
   CONSTRAINT [FK_Role_PositionID] FOREIGN KEY ([PositionID]) REFERENCES [dbo].[Position] ([ID]),
   CONSTRAINT [FK_Role_UserID] FOREIGN KEY ([UserID]) REFERENCES [dbo].[User] ([ID])
+
+ALTER TABLE [dbo].[Substitution] ADD
+  CONSTRAINT [FK_Substitution_SubstitutingUserID] FOREIGN KEY ([SubstitutingUserID]) REFERENCES [dbo].[User] ([ID]),
+  CONSTRAINT [FK_Substitution_SubstitutedUserID] FOREIGN KEY ([SubstitutedUserID]) REFERENCES [dbo].[User] ([ID]),
+  CONSTRAINT [FK_Substitution_SubstitutedRoleID] FOREIGN KEY ([SubstitutedRoleID]) REFERENCES [dbo].[Role] ([ID])
 
 ALTER TABLE [dbo].[Tenant] ADD
   CONSTRAINT [FK_Tenant_ParentID] FOREIGN KEY ([ParentID]) REFERENCES [dbo].[Tenant] ([ID])
@@ -710,6 +738,14 @@ CREATE VIEW [dbo].[RoleView] ([ID], [ClassID], [Timestamp], [GroupID], [Position
   SELECT [ID], [ClassID], [Timestamp], [GroupID], [PositionID], [UserID]
     FROM [dbo].[Role]
     WHERE [ClassID] IN ('Role')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[SubstitutionView] ([ID], [ClassID], [Timestamp], [SubstitutingUserID], [SubstitutedUserID], [SubstitutedRoleID], [BeginDate], [EndDate], [IsEnabled])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [SubstitutingUserID], [SubstitutedUserID], [SubstitutedRoleID], [BeginDate], [EndDate], [IsEnabled]
+    FROM [dbo].[Substitution]
+    WHERE [ClassID] IN ('Substitution')
   WITH CHECK OPTION
 GO
 
