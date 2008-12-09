@@ -153,5 +153,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
         Assert.AreEqual (0, copiedAttributes.Length);
       }
     }
+
+    [Test]
+    public void AbstractMixinWithoutAbstractMembers()
+    {
+      var instance = CreateMixedObject<NullTarget> (typeof (AbstractMixinWithoutAbstractMembers)).With();
+      var m1 = Mixin.Get<AbstractMixinWithoutAbstractMembers> (instance);
+      Assert.That (m1, Is.Not.Null);
+      Assert.That (m1, Is.InstanceOfType (typeof (AbstractMixinWithoutAbstractMembers)));
+      Assert.That (m1.GetType (), Is.Not.SameAs (typeof (AbstractMixinWithoutAbstractMembers)));
+      Assert.That (m1.M1 (), Is.EqualTo ("AbstractMixinWithoutAbstractMembers.M1"));
+    }
   }
 }

@@ -49,6 +49,16 @@ namespace Remotion.UnitTests.Mixins.Definitions
     }
 
     [Test]
+    public void NeedsDerivedMixinType_True_AbstractClass ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<AbstractMixinWithoutAbstractMembers> ().EnterScope ())
+      {
+        var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (AbstractMixinWithoutAbstractMembers)];
+        Assert.That (definition.NeedsDerivedMixinType (), Is.True);
+      }
+    }
+
+    [Test]
     public void NeedsDerivedMixinType_False ()
     {
       var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];

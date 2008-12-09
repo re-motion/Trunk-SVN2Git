@@ -198,6 +198,7 @@
     <Compile Include="Mixins\CodeGeneration\SetUpFixture.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationMixinContextSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationSerializerUtilityTest.cs" />
+    <Compile Include="Mixins\SampleTypes\AbstractMixinWithoutAbstractMembers.cs" />
     <Compile Include="Mixins\SampleTypes\DerivedGenericMixin.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeMixinContextSerializerTest.cs" />
     <Compile Include="Mixins\Context\Serialization\AttributeClassContextSerializationTest.cs" />

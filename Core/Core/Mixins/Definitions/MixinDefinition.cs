@@ -159,7 +159,7 @@ namespace Remotion.Mixins.Definitions
 
     public bool NeedsDerivedMixinType ()
     {
-      return HasOverriddenMembers () || HasProtectedOverriders ();
+      return Type.IsAbstract || HasOverriddenMembers () || HasProtectedOverriders ();
     }
 
     public object GetConcreteMixinTypeCacheKey ()
