@@ -42,20 +42,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   [TestFixture]
   public class AclExpanderTest : AclToolsTestBase
   {
-    // TODO AE: Rename test ("2" does not give enough semantics).
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
-
-
-
-
-
-
-
-
-
-
-
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_AceWithPosition_GroupSelectionAll ()
     {
@@ -69,7 +55,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
     }
 
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_AceWithPosition_GroupSelectionOwningGroup ()
     {
@@ -86,7 +71,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (aclExpansionEntryList[0].AccessConditions, Is.EqualTo (accessConditions));
     }
 
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList ()
     {
@@ -94,13 +78,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
-          List.New (User), // TODO QAE: Is this really much better than new List<User> { User } ? MGi: Definitely; also consistent with next line...
+          List.New (User), 
           List.New(TestHelper.CreateStatefulAcl(ace)), false);
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
       var accessConditions = new AclExpansionAccessConditions ()
       {
-        //HasOwningGroupCondition = true, //  GroupSelection.OwningGroup => group must be owner
         OwningGroup = User.Roles[0].Group, //  GroupSelection.OwningGroup => group must be owner
         GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParent
       };
@@ -110,9 +93,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     public void GetAclExpansionEntryList_UserList_AceList_MultipleAces ()
     {
       var aceGroupOwning = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
@@ -123,10 +104,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       var aceGroupAll = TestHelper.CreateAceWithoutGroupCondition ();
       AttachAccessTypeReadWriteDelete (aceGroupAll, true, true, null);
-
-      //To.ConsoleLine.e (() => aceGroupOwning);
-      //To.ConsoleLine.e (() => aceAbstractRole);
-      //To.ConsoleLine.e (() => aceGroupAll);
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
@@ -147,7 +124,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void GetAclExpansionEntryList_UserList_AceList_AnotherTenant ()
     {
@@ -156,19 +132,15 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var otherTenantGroup = TestHelper.CreateGroup ("GroupForOtherTenant", null, otherTenant);
       var otherTenantPosition = TestHelper.CreatePosition ("Head Honcho");
       var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", otherTenantGroup, otherTenant);
-      var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
+      TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
 
       var aceGroupSpecificTenant = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceGroupSpecificTenant, null, true, null);
-
-
-      //To.ConsoleLine.e (() => aceGroupSpecificTenant);
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
           List.New (otherTenantUser),
           List.New (TestHelper.CreateStatefulAcl (aceGroupSpecificTenant)), false);
-
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
 
@@ -177,7 +149,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void SpecificTenantAndOwningTenantTest ()
     {
@@ -186,7 +157,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var otherTenantGroup = TestHelper.CreateGroup ("GroupForOtherTenant", null, otherTenant);
       var otherTenantPosition = TestHelper.CreatePosition ("Head Honcho");
       var otherTenantUser = TestHelper.CreateUser ("UserForOtherTenant", "User", "Other", "Chief", otherTenantGroup, otherTenant);
-      var otherTenantRole = TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
+      TestHelper.CreateRole (otherTenantUser, otherTenantGroup, otherTenantPosition);
 
       var aceGroupSpecificTenant = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (aceGroupSpecificTenant, null, true, null);
@@ -194,15 +165,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aceGroupOwningTenant = TestHelper.CreateAceWithOwningTenant ();
       AttachAccessTypeReadWriteDelete (aceGroupOwningTenant, null, null, true);
 
-      //To.ConsoleLine.e (() => aceGroupSpecificTenant);
-
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
           List.New (otherTenantUser),
           List.New (TestHelper.CreateStatefulAcl (aceGroupSpecificTenant, aceGroupOwningTenant)), false);
-
-
-      //To.ConsoleLine.e (() => aclExpansionEntryList);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
@@ -211,19 +177,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       // Test of owning-tenant-ACE (specific-tenant-ACE matches also): gives write-access + delete-access with condition: tenant-must-own
       AssertAclExpansionEntryAccessTypesAndConditions (aclExpansionEntryList[1], new[] { WriteAccessType, DeleteAccessType }, 
-        //new AclExpansionAccessConditions { IsOwningTenantRequired = true });
         new AclExpansionAccessConditions { OwningTenant = otherTenant, TenantHierarchyCondition = TenantHierarchyCondition.This });
     }
 
 
-    // TODO AE: ?
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
     public void TenantHierarchyConditionTest ()
     {
@@ -234,12 +191,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var group = TestHelper.CreateGroup ("Group", null, tenant);
       var position = TestHelper.CreatePosition ("Position");
       var user = TestHelper.CreateUser ("User", "U", "Ser", "Dr", group, tenant);
-      var role = TestHelper.CreateRole (user, group, position);
-
+      TestHelper.CreateRole (user, group, position);
 
       var ace = TestHelper.CreateAceWithOwningTenant ();
       ace.TenantHierarchyCondition = TenantHierarchyCondition.ThisAndParent;
-
 
       AttachAccessTypeReadWriteDelete (ace, null, true, null);
       Assert.That (ace.Validate ().IsValid);
@@ -247,13 +202,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AccessControlList> aclList = new List<AccessControlList> ();
       aclList.Add (acl);
 
-      List<AclExpansionEntry> aclExpansionEntryList =
-        GetAclExpansionEntryList (List.New (User), aclList);
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (List.New (User), aclList);
 
       var owningTenant = aclExpansionEntryList[0].User.Tenant;
       var tenantHierarchyCondition = TenantHierarchyCondition.ThisAndParent;
 
-      var accessConditions = new AclExpansionAccessConditions ()
+      var accessConditions = new AclExpansionAccessConditions
       {
         OwningTenant = owningTenant, 
         TenantHierarchyCondition = tenantHierarchyCondition
@@ -847,7 +801,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       {
         var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (streamWriter, true, 
           new AclExpansionHtmlWriterSettings { OutputRowCount = outputRowCount });
-        //aclExpansionHtmlWriter.Settings.OutputRowCount = outputRowCount;
         aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       }
     }
