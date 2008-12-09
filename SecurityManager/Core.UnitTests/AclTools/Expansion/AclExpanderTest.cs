@@ -42,20 +42,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   [TestFixture]
   public class AclExpanderTest : AclToolsTestBase
   {
-    // TODO AE: Move initializations to setup method, as the class might not be newly constructed for every single test.
-    private readonly List<AccessControlList> _aclList = new List<AccessControlList>();
-    private readonly List<User> _userList = new List<User> ();
-
-    [SetUp]
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      TestHelper.CreateAceWithSpecificTenant (Tenant);
-      _aclList.Add (TestHelper.CreateStatefulAcl());
-    }
-
-
     // TODO AE: Make this test an automatically executable test, or remove it.
     // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
     [Test]
