@@ -52,6 +52,24 @@ namespace Remotion.UnitTests.Collections
 
 
     [Test]
+    public void EqualsObjectTest ()
+    {
+      var comparer = new CompoundValueEqualityComparer<CompoundValueEqualityComparerTestClass> (x => (new object[] { x.Number, x.TestClass, x.Text, x.Text2 }));
+      var testClass = new CompoundValueEqualityComparerTestClass ();
+      var testClassCopy = new CompoundValueEqualityComparerTestClass ();
+      var testClass2 = new CompoundValueEqualityComparerTestClass { Text = "changed1" };
+      Object obj = new Object ();
+      const Object objNull = null;
+
+      Assert.That (comparer.Equals (testClass, objNull), Is.False);
+      Assert.That (comparer.Equals (testClass, obj), Is.False);
+      Assert.That (comparer.Equals (testClass, (object) testClass), Is.True);
+      Assert.That (comparer.Equals (testClass, (object) testClassCopy), Is.True);
+      Assert.That (comparer.Equals (testClass, (object) testClass2), Is.False);
+    }
+
+
+    [Test]
     public void GetHashCodeConsistencyTest ()
     {
       var comparer = new CompoundValueEqualityComparer<CompoundValueEqualityComparerTestClass> (x => (new object[] { x.Number, x.TestClass, x.Text, x.Text2 }));

@@ -32,7 +32,7 @@ namespace Remotion.Collections
   /// </para>
   /// </summary>
   /// <typeparam name="T">Type for which <see cref="Equals"/> and <see cref="GetHashCode"/> are supplied.</typeparam>
-  public class CompoundValueEqualityComparer<T> : IEqualityComparer<T>
+  public class CompoundValueEqualityComparer<T> : IEqualityComparer<T> where T : class 
   {
     private readonly Func<T, object[]> _equalityParticipantsProvider;
 
@@ -46,8 +46,23 @@ namespace Remotion.Collections
       _equalityParticipantsProvider = relevantValueProvider;
     }
 
+
     /// <summary>
-    /// <see cref="Equals"/> implementation comparing all <see cref="object"/>|s in the array returned by the <see cref="Func{T,TResult}"/>.
+    /// Standard conforming <see cref="object.Equals(object)"/> implementation comparing <see cref="T"/> with an <see cref="object"/>,
+    /// using <see cref="Equals(T,T)"/>
+    /// </summary>
+    public bool Equals (T x, Object obj)
+    {
+      var y = obj as T;
+      if (y == null)
+      {
+        return false;
+      }
+      return Equals(x,y);
+    }
+
+    /// <summary>
+    /// <see cref="object.Equals(object)"/> implementation comparing all <see cref="object"/>|s in the array returned by the <see cref="Func{T,TResult}"/>.
     /// </summary>
     public bool Equals (T x, T y)
     {

@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Collections;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -26,6 +27,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 {
   public class AclExpansionAccessConditions  : IToTextConvertible  
   {
+    private static readonly CompoundValueEqualityComparer<AclExpansionAccessConditions> _equalityComparer =
+      new CompoundValueEqualityComparer<AclExpansionAccessConditions> (a => new object[] {
+          a.AbstractRole, a.OwningGroup, a.GroupHierarchyCondition, a.OwningTenant, a.TenantHierarchyCondition, a.IsOwningUserRequired
+      }
+    );
+
+
     public bool IsOwningUserRequired { get; set; }
 
     public bool IsAbstractRoleRequired
@@ -70,6 +78,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
         (ac.OwningTenant == OwningTenant) &&
         (ac.TenantHierarchyCondition == TenantHierarchyCondition) &&
         (ac.IsOwningUserRequired == IsOwningUserRequired);
+      //return _equalityComparer.Equals (this, obj);
     }
 
     public override int GetHashCode ()
