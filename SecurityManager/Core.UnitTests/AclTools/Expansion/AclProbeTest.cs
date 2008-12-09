@@ -21,6 +21,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
 
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -131,6 +132,51 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       accessConditionsExpected.AbstractRole = ace.SpecificAbstractRole;
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
+
+    
+    
+    
+    //--------------------------------------------------------------------------------------------------------------------------------
+    // SecurityToken creation expectance tests
+    //--------------------------------------------------------------------------------------------------------------------------------
+
+
+    [Test]
+    public void AccessControlList_GetAccessTypes2 ()
+    {
+      var user = User3;
+      var acl = TestHelper.CreateStatefulAcl (Ace3);
+      Assert.That (Ace3.Validate ().IsValid);
+      SecurityToken securityToken = new SecurityToken (user, user.Tenant, null, null, new System.Collections.Generic.List<AbstractRoleDefinition> ());
+      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
+      Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, WriteAccessType }));
+    }
+
+    [Test]
+    public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionAll ()
+    {
+      var ace = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.None);
+      AttachAccessTypeReadWriteDelete (ace, true, null, true);
+      Assert.That (ace.Validate ().IsValid);
+      var acl = TestHelper.CreateStatefulAcl (ace);
+      SecurityToken securityToken = new SecurityToken (User, User.Tenant, null, null, new System.Collections.Generic.List<AbstractRoleDefinition> ());
+      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
+      Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
+    }
+
+    [Test]
+    public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionOwningGroup ()
+    {
+      var ace = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
+      AttachAccessTypeReadWriteDelete (ace, true, null, true);
+      Assert.That (ace.Validate ().IsValid);
+      var acl = TestHelper.CreateStatefulAcl (ace);
+      // We pass the Group used in the ace Position above in the owningGroups-list => ACE will match.
+      SecurityToken securityToken = new SecurityToken (User, User.Tenant, Group, null, new System.Collections.Generic.List<AbstractRoleDefinition> ());
+      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
+      Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
+    }
+
 
 
     private void FleshOutAccessControlEntryForTest (AccessControlEntry ace)

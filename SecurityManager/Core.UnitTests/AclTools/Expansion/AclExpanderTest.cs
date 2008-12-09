@@ -44,56 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   {
     // TODO AE: Rename test ("2" does not give enough semantics).
     // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
-    [Test]
-    public void AccessControlList_GetAccessTypes2 ()
-    {
-      var user = User3;
-      //var acl = TestHelper.CreateAcl (Ace3, Ace2, Ace);
-      var acl = TestHelper.CreateStatefulAcl (Ace3);
-      Assert.That (Ace3.Validate().IsValid);
-      SecurityToken securityToken = new SecurityToken (user, user.Tenant, null, null, new List<AbstractRoleDefinition> ());
-      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
-      //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
 
-      Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, WriteAccessType }));
-    }
-
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
-    [Test]
-    public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionAll ()
-    {
-      var ace = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.None);
-      AttachAccessTypeReadWriteDelete (ace, true, null, true);
-
-      Assert.That (ace.Validate ().IsValid);
-      
-      var acl = TestHelper.CreateStatefulAcl (ace);
-      SecurityToken securityToken = new SecurityToken (User, User.Tenant, null, null, new List<AbstractRoleDefinition> ());
-      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
-   
-      //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
-
-      Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
-    }
-
-    // TODO AE: This test does not really test AclExpander. Is it required and should it be in this file?
-    [Test]
-    public void AccessControlList_GetAccessTypes_AceWithPosition_GroupSelectionOwningGroup ()
-    {
-      var ace = TestHelper.CreateAceWithPositionAndGroupCondition (Position, GroupCondition.OwningGroup);
-      AttachAccessTypeReadWriteDelete (ace, true, null, true);
-
-      Assert.That (ace.Validate ().IsValid);
-
-      var acl = TestHelper.CreateStatefulAcl (ace);
-      // We pass the Group used in the ace Position above in the owningGroups-list => ACE will match.
-      SecurityToken securityToken = new SecurityToken (User, User.Tenant, Group, null, new List<AbstractRoleDefinition> ());
-      AccessInformation accessInformation = acl.GetAccessTypes (securityToken);
-
-      //To.ConsoleLine.s ("AccessControlList_GetAccessTypes2: ").sb ().e (() => accessTypeDefinitions).se ();
-
-      Assert.That (accessInformation.AllowedAccessTypes, Is.EquivalentTo (new[] { ReadAccessType, DeleteAccessType }));
-    }
 
 
 
