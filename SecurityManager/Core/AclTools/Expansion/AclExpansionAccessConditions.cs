@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -29,9 +30,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   {
     private static readonly CompoundValueEqualityComparer<AclExpansionAccessConditions> _equalityComparer =
       new CompoundValueEqualityComparer<AclExpansionAccessConditions> (a => new object[] {
-          a.AbstractRole, a.OwningGroup, a.GroupHierarchyCondition, a.OwningTenant, a.TenantHierarchyCondition, a.IsOwningUserRequired
+          a.AbstractRole, a.OwningGroup, a.OwningTenant, a.GroupHierarchyCondition, a.TenantHierarchyCondition, a.IsOwningUserRequired
       }
     );
+
+    public static CompoundValueEqualityComparer<AclExpansionAccessConditions> EqualityComparer
+    {
+      get { return _equalityComparer; }
+    }
 
 
     public bool IsOwningUserRequired { get; set; }
@@ -66,25 +72,26 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public override bool Equals (object obj)
     {
-      var ac = obj as AclExpansionAccessConditions;
-      if (ac == null)
-      {
-        return false;
-      }
+      //var ac = obj as AclExpansionAccessConditions;
+      //if (ac == null)
+      //{
+      //  return false;
+      //}
 
-      return (ac.AbstractRole == AbstractRole) &&
-        (ac.OwningGroup == OwningGroup) &&
-        (ac.GroupHierarchyCondition == GroupHierarchyCondition) &&
-        (ac.OwningTenant == OwningTenant) &&
-        (ac.TenantHierarchyCondition == TenantHierarchyCondition) &&
-        (ac.IsOwningUserRequired == IsOwningUserRequired);
-      //return _equalityComparer.Equals (this, obj);
+      //return (ac.AbstractRole == AbstractRole) &&
+      //  (ac.OwningGroup == OwningGroup) &&
+      //  (ac.GroupHierarchyCondition == GroupHierarchyCondition) &&
+      //  (ac.OwningTenant == OwningTenant) &&
+      //  (ac.TenantHierarchyCondition == TenantHierarchyCondition) &&
+      //  (ac.IsOwningUserRequired == IsOwningUserRequired);
+      return EqualityComparer.Equals (this, obj);
     }
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (AbstractRole, OwningGroup, GroupHierarchyCondition, 
-        OwningTenant, TenantHierarchyCondition, IsOwningUserRequired);
+      //return EqualityUtility.GetRotatedHashCode (AbstractRole, OwningGroup, GroupHierarchyCondition, 
+      //  OwningTenant, TenantHierarchyCondition, IsOwningUserRequired);
+      return EqualityComparer.GetHashCode (this);
     }
 
 

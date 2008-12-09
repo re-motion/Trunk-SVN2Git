@@ -19,10 +19,8 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
-using Remotion.Reflection;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
-using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -44,17 +42,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    // Check Equals operator for each property of AclExpansionAccessConditions whether changing the property from its default value 
-    // leads to inequality. 
     [Test]
-    public void Equals_UsingPropertyObject ()
+    public void EqualsByCheckingCompoundValueEqualityComparerParticipatingObjects ()
     {
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.IsOwningUserRequired), true);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.AbstractRole), TestHelper.CreateAbstractRoleDefinition ("titatutest", 11235));
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.OwningGroup), Group3);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.GroupHierarchyCondition), GroupHierarchyCondition.ThisAndParentAndChildren);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.OwningTenant), Tenant);
-      CheckIfPassedPropertyChangeChangesEquality (Properties<AclExpansionAccessConditions>.Get (aeac => aeac.TenantHierarchyCondition), TenantHierarchyCondition.ThisAndParent);
+      var a = new AclExpansionAccessConditions ();
+      var equalityObjects = AclExpansionAccessConditions.EqualityComparer.GetEqualityParticipatingObjects (a);
+      Assert.That (equalityObjects, Is.EqualTo (new object[] { a.AbstractRole, a.OwningGroup, a.OwningTenant, 
+        a.GroupHierarchyCondition, a.TenantHierarchyCondition, a.IsOwningUserRequired }));
     }
 
 
@@ -78,20 +72,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       accessConditions.TenantHierarchyCondition = TenantHierarchyCondition.ThisAndParent;
       var result = To.String.e (accessConditions).CheckAndConvertToString ();
       Assert.That (result, Is.EqualTo (@"[userMustOwn=True,owningGroup=[""Anotha Group""],groupHierarchyCondition=ThisAndParentAndChildren,tenantMustOwn=True,abstractRoleMustMatch=True,abstractRole=[""xyz""]]"));
-    }
-
-
-
-    // Check if changing the passed Property of AclExpansionAccessConditions in only one instance flips equality. 
-    private void CheckIfPassedPropertyChangeChangesEquality<TProperty> (Property<AclExpansionAccessConditions, TProperty> boolProperty, TProperty notEqualValue)
-    {
-      var accessConditions0 = new AclExpansionAccessConditions ();
-      var accessConditions1 = new AclExpansionAccessConditions ();
-      Assert.That (accessConditions0.Equals (accessConditions1), Is.True);
-      Assert.That (accessConditions0.GetHashCode (), Is.EqualTo (accessConditions1.GetHashCode ()));
-      boolProperty.Set (accessConditions1, notEqualValue);
-      Assert.That (accessConditions0.Equals (accessConditions1), Is.False);
-      // Note: We do not assert here that GetHashCode() returns a different result, since this cannot be guaranteed.
     }
 
 

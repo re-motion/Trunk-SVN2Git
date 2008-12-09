@@ -22,16 +22,16 @@ using Remotion.Utilities;
 namespace Remotion.Collections
 {
   /// <summary>
-  /// <para>Class supplying automatic consistent <see cref="Equals"/> and <see cref="GetHashCode"/> implementation
-  /// for instances of its generic type parameter, using a <see cref="Func{T,TResult}"/> which returns
+  /// <para>Class supplying automatic consistent <see cref="Equals(T,T)"/>, <see cref="Equals(T,object)"/> and <see cref="GetHashCode"/> 
+  /// implementation for instances of its generic type parameter, using a <see cref="Func{T,TResult}"/> which returns
   /// the instance members which shall participate in the equality/hash code calculation.
   /// </para>
   /// <para>
-  /// Note: The performance of the implementation incurs the overhead of the creation of the <see cref="object"/>-array every time
-  /// <see cref="Equals"/> and <see cref="GetHashCode"/> get called. Be aware of this when using in performance critical code.
+  /// Note: The implementation incurs the performance overhead of the creation of the <see cref="object"/>-arrays every time
+  /// <see cref="Equals(T,T)"/> and <see cref="GetHashCode"/> get called. Be aware of this when using in performance critical code.
   /// </para>
   /// </summary>
-  /// <typeparam name="T">Type for which <see cref="Equals"/> and <see cref="GetHashCode"/> are supplied.</typeparam>
+  /// <typeparam name="T">Type for which <see cref="Equals(T,T)"/>, <see cref="Equals(T,object)"/> and <see cref="GetHashCode"/> are supplied.</typeparam>
   public class CompoundValueEqualityComparer<T> : IEqualityComparer<T> where T : class 
   {
     private readonly Func<T, object[]> _equalityParticipantsProvider;
@@ -54,7 +54,7 @@ namespace Remotion.Collections
     public bool Equals (T x, Object obj)
     {
       var y = obj as T;
-      if (y == null)
+      if (Object.ReferenceEquals (y, null))
       {
         return false;
       }
@@ -66,6 +66,16 @@ namespace Remotion.Collections
     /// </summary>
     public bool Equals (T x, T y)
     {
+      // Note: We do not use "x == null" etc since an overloaded operator== would lead to endless recursion.
+      if (Object.ReferenceEquals(x,null) || Object.ReferenceEquals(y,null))
+      {
+        return false;
+      }
+      else if (Object.ReferenceEquals(x,y))
+      {
+        return true;
+      }
+
       var equalityParticipantsX = _equalityParticipantsProvider (x);
       var equalityParticipantsY = _equalityParticipantsProvider (y);
       return equalityParticipantsX.SequenceEqual (equalityParticipantsY);
@@ -90,5 +100,6 @@ namespace Remotion.Collections
     {
       return new ReadOnlyCollection<object>(_equalityParticipantsProvider (x));
     }
+ 
   }
 }
