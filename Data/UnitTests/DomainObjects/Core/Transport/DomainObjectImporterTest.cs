@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
       foreach (DomainObject domainObject in transportedObjects.TransportedObjects)
       {
         Assert.IsTrue (domainObject.IsBoundToSpecificTransaction);
-        Assert.AreSame (transportedObjects.DataTransaction, domainObject.ClientTransaction);
+        Assert.AreSame (transportedObjects.DataTransaction, domainObject.BindingTransaction);
       }
     }
 
@@ -195,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
         Assert.IsTrue (loadedObject2.Properties[typeof (Computer), "Employee"].HasChanged);
         Assert.IsFalse (loadedObject3.Properties[typeof (Computer), "Employee"].HasChanged);
 
-        using (loadedObject1.ClientTransaction.EnterNonDiscardingScope ())
+        using (loadedObject1.BindingTransaction.EnterNonDiscardingScope ())
         {
           Assert.AreEqual (Employee.GetObject (DomainObjectIDs.Employee3), loadedObject1.Employee);
           Assert.AreEqual (Employee.GetObject (DomainObjectIDs.Employee4), loadedObject2.Employee);
@@ -278,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
         Assert.IsTrue (loadedObject1.Properties[typeof (OrderItem), "Order"].HasChanged);
         Assert.IsFalse (loadedObject2.Properties[typeof (OrderItem), "Order"].HasChanged);
 
-        using (loadedObject1.ClientTransaction.EnterNonDiscardingScope ())
+        using (loadedObject1.BindingTransaction.EnterNonDiscardingScope ())
         {
           Assert.AreEqual (Order.GetObject (DomainObjectIDs.Order1), loadedObject1.Order);
           Assert.AreEqual (Order.GetObject (DomainObjectIDs.Order1), loadedObject2.Order);

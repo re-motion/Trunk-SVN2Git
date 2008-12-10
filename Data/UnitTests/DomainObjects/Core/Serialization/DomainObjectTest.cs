@@ -67,11 +67,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       instance.Int32Property = 5;
       Tuple<ClientTransaction, ClassWithAllDataTypes> deserializedData =
-          Serializer.SerializeAndDeserialize (Tuple.NewTuple (instance.ClientTransaction, instance));
+          Serializer.SerializeAndDeserialize (Tuple.NewTuple (instance.BindingTransaction, instance));
       
       ClassWithAllDataTypes deserializedInstance = deserializedData.B;
       Assert.IsTrue (deserializedInstance.IsBoundToSpecificTransaction);
-      Assert.AreSame (deserializedData.A, deserializedInstance.ClientTransaction);
+      Assert.AreSame (deserializedData.A, deserializedInstance.BindingTransaction);
       Assert.AreEqual (5, deserializedInstance.Int32Property);
     }
 

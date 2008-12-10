@@ -59,23 +59,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         Order newOrder = Order.NewObject();
         Assert.IsFalse (newOrder.IsBoundToSpecificTransaction);
-        Assert.AreSame (ClientTransaction.Current, newOrder.ClientTransaction);
+        Assert.IsNull (newOrder.BindingTransaction);
 
         Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
         Assert.IsFalse (loadedOrder.IsBoundToSpecificTransaction);
-        Assert.AreSame (ClientTransaction.Current, loadedOrder.ClientTransaction);
+        Assert.IsNull (loadedOrder.BindingTransaction);
       }
     }
 
     [Test]
     public void UnboundObjects_NoCurrentTransaction ()
     {
-      Order newOrder;
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        newOrder = Order.NewObject ();
+        Order newOrder = Order.NewObject ();
+        Assert.IsNull (newOrder.BindingTransaction);
       }
-      Assert.IsNull (newOrder.ClientTransaction);
     }
 
     [Test]
@@ -83,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = NewBound<Order>();
       Assert.IsTrue (order.IsBoundToSpecificTransaction);
-      Assert.AreSame (_bindingTransaction, order.ClientTransaction);
+      Assert.AreSame (_bindingTransaction, order.BindingTransaction);
     }
 
     [Test]
@@ -91,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
       Assert.IsTrue (order.IsBoundToSpecificTransaction);
-      Assert.AreSame (_bindingTransaction, order.ClientTransaction);
+      Assert.AreSame (_bindingTransaction, order.BindingTransaction);
     }
 
     [Test]
@@ -101,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         Order order = GetBound<Order> (DomainObjectIDs.Order1);
         Assert.IsTrue (order.IsBoundToSpecificTransaction);
-        Assert.AreSame (_bindingTransaction, order.ClientTransaction);
+        Assert.AreSame (_bindingTransaction, order.BindingTransaction);
         Assert.AreNotSame (order, Order.GetObject (DomainObjectIDs.Order1));
       }
     }
@@ -162,9 +161,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
       Assert.IsTrue (order.OrderTicket.IsBoundToSpecificTransaction);
-      Assert.AreSame (_bindingTransaction, order.OrderTicket.ClientTransaction);
+      Assert.AreSame (_bindingTransaction, order.OrderTicket.BindingTransaction);
       Assert.IsTrue (order.OrderItems[0].IsBoundToSpecificTransaction);
-      Assert.AreSame (_bindingTransaction, order.OrderItems[0].ClientTransaction);
+      Assert.AreSame (_bindingTransaction, order.OrderItems[0].BindingTransaction);
     }
 
     [Test]

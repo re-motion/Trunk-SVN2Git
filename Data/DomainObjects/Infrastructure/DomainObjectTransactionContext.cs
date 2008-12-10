@@ -98,12 +98,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public object Timestamp
     {
-      get { return AssociatedTransaction.GetDataContainer (DomainObject).Timestamp; }
+      get
+      {
+        DomainObjectCheckUtility.CheckIfObjectIsDiscarded (DomainObject, AssociatedTransaction);
+        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
+        return AssociatedTransaction.GetDataContainer (DomainObject).Timestamp;
+      }
     }
 
     public void MarkAsChanged()
     {
       DomainObjectCheckUtility.CheckIfObjectIsDiscarded (DomainObject, AssociatedTransaction);
+      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, AssociatedTransaction);
 
       DataContainer dataContainer = AssociatedTransaction.GetDataContainer(DomainObject);
       try

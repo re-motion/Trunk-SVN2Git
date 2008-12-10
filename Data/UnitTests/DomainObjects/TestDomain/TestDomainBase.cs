@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     [StorageClassNone]
     public DataContainer InternalDataContainer
     {
-      get { return GetInternalDataContainerForTransaction (ClientTransaction); }
+      get { return GetInternalDataContainerForTransaction (BindingTransaction ?? ClientTransaction.Current); }
     }
 
     public DataContainer GetInternalDataContainerForTransaction (ClientTransaction transaction)

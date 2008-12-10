@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       ClientTransaction cloneTransaction = ClientTransaction.CreateBindingTransaction ();
       _cloner.CloneTransaction = cloneTransaction;
       DomainObject clone = _cloner.CreateCloneHull (_classWithAllDataTypes);
-      Assert.That (clone.ClientTransaction, Is.SameAs (cloneTransaction));
+      Assert.That (clone.BindingTransaction, Is.SameAs (cloneTransaction));
     }
 
     [Test]

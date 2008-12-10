@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
@@ -84,7 +83,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     /// <summary>
-    /// Deletes the given <see cref="DomainObject"/> in the object's <see cref="DomainObject.ClientTransaction"/>.
+    /// Deletes the given <see cref="DomainObject"/> in the default transaction, ie. the object's <see cref="DomainObject.BindingTransaction"/> or 
+    /// - if none - <see cref="ClientTransaction.Current"/>.
     /// </summary>
     /// <param name="objectToBeDeleted">The object to be deleted.</param>
     /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>

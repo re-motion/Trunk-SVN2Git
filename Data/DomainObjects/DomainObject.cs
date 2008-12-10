@@ -18,7 +18,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -341,33 +340,19 @@ namespace Remotion.Data.DomainObjects
       get { return _id; }
     }
 
-    /// <summary>
-    /// Gets the transaction used when this <see cref="DomainObject"/> is accessed. If a <see cref="DomainObject"/> is bound to a specific
-    /// <see cref="Remotion.Data.DomainObjects.ClientTransaction"/>, this property will return that transaction, otherwise it returns
-    /// <see cref="DomainObjects.ClientTransaction.Current"/>.
-    /// </summary>
-    /// <value>The transaction used by this <see cref="DomainObject"/> when it is accessed.</value>
-    /// <remarks>
-    /// <para>
-    /// To check whether this object is bound to the transaction returned by the <see cref="ClientTransaction"/> property, check the
-    /// <see cref="IsBoundToSpecificTransaction"/> property.
-    /// </para>
-    /// <para>
-    /// To check whether this <see cref="DomainObject"/> can actually be used in the transaction returned by this property, use the 
-    /// <see cref="CanBeUsedInTransaction"/> method. To enlist the object in the transaction, call
-    /// <see cref="DomainObjects.ClientTransaction.EnlistDomainObject"/>.
-    /// </para>
-    /// </remarks>
+    [Obsolete ("This property has been removed because its behavior is too unintuitive. Use either BindingTransaction or ClientTransaction.Current "
+        + "instead, whichever appropriate. If you don't know which one to use, use the following expression: "
+        + "'BindingTransaction ?? ClientTransaction.Current'. (Build 1.11.17)", true)]
     public ClientTransaction ClientTransaction
     {
-      get { return _bindingTransaction ?? ClientTransaction.Current; }
+      get { throw new NotImplementedException (); }
     }
 
     /// <summary>
-    /// Gets the <see cref="ClientTransaction"/> this <see cref="DomainObject"/> instance was bound to, or <see langword="null"/>
+    /// Gets the <see cref="DomainObjects.ClientTransaction"/> this <see cref="DomainObject"/> instance was bound to, or <see langword="null"/>
     /// if the object has not been bound.
     /// </summary>
-    /// <value>The <see cref="ClientTransaction"/> this object was bound to, or <see langword="null"/>.</value>
+    /// <value>The <see cref="DomainObjects.ClientTransaction"/> this object was bound to, or <see langword="null"/>.</value>
     public ClientTransaction BindingTransaction
     {
       get { return _bindingTransaction; }
@@ -400,7 +385,7 @@ namespace Remotion.Data.DomainObjects
     /// in its scope to itself.
     /// </para>
     /// <para>
-    /// To retrieve the transaction the object is bound to, use the <see cref="ClientTransaction"/> property.
+    /// To retrieve the transaction the object is bound to, use the <see cref="BindingTransaction"/> property.
     /// </para>
     /// </remarks>
     public bool IsBoundToSpecificTransaction
@@ -424,27 +409,33 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets a value indicating the discarded status of the object in the <see cref="ClientTransaction"/>.
+    /// Gets a value indicating the discarded status of the object in the default transaction, ie. in the <see cref="BindingTransaction"/> or - if
+    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <remarks>
     /// For more information why and when an object is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
     /// </remarks>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
     public bool IsDiscarded
     {
       get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction (this)].IsDiscarded; }
     }
 
     /// <summary>
-    /// Gets the timestamp used for optimistic locking when the object is committed to the database.
+    /// Gets the timestamp used for optimistic locking when the object is committed to the database in the default transaction, ie. in the 
+    /// <see cref="BindingTransaction"/> or - if none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <value>The timestamp of the object.</value>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
+    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
     public object Timestamp
     {
       get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction (this)].Timestamp; }
     }
 
     /// <summary>
-    /// Determines whether this instance can be used in the <see cref="ClientTransaction"/>.
+    /// Determines whether this instance can be used in the default transaction, ie. in the <see cref="BindingTransaction"/> or - if
+    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <value></value>
     /// <remarks>If this property returns false, <see cref="DomainObjects.ClientTransaction.EnlistDomainObject"/> can be used to enlist the object
@@ -455,19 +446,22 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Marks the <see cref="DomainObject"/> as changed. If the object's previous <see cref="State"/> was <see cref="StateType.Unchanged"/>, it
+    /// Marks the <see cref="DomainObject"/> as changed in the default transaction, ie. in the <see cref="BindingTransaction"/> or - if
+    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If the object's previous <see cref="State"/> was <see cref="StateType.Unchanged"/>, it
     /// will be <see cref="StateType.Changed"/> after this method has been called.
     /// </summary>
     /// <exception cref="InvalidOperationException">This object is not in state <see cref="StateType.Changed"/> or <see cref="StateType.Unchanged"/>.
     /// New or deleted objects cannot be marked as changed.</exception>
     /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
     public void MarkAsChanged ()
     {
       TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction (this)].MarkAsChanged ();
     }
 
     /// <summary>
-    /// Deletes the <see cref="DomainObject"/> in the <see cref="ClientTransaction"/>.
+    /// Deletes the <see cref="DomainObject"/> in the default transaction, ie. in the <see cref="BindingTransaction"/> or - if
+    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
     /// <remarks>To perform custom actions when a <see cref="DomainObject"/> is deleted <see cref="OnDeleting"/> and <see cref="OnDeleted"/> should be overridden.</remarks>

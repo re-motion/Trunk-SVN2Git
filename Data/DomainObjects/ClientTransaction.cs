@@ -532,7 +532,7 @@ public abstract class ClientTransaction
   public bool EnlistDomainObject (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    if (domainObject.IsBoundToSpecificTransaction && domainObject.ClientTransaction != this)
+    if (domainObject.IsBoundToSpecificTransaction && domainObject.BindingTransaction != this)
     {
       string message = String.Format ("Cannot enlist the domain object '{0}' in this transaction, because it is already bound to another transaction.",
           domainObject.ID);

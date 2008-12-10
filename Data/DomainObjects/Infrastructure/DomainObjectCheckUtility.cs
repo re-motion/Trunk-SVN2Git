@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <paramref name="domainObject"/>.</exception>
     public static ClientTransaction GetNonNullClientTransaction (DomainObject domainObject)
     {
-      ClientTransaction transaction = domainObject.ClientTransaction;
+      ClientTransaction transaction = domainObject.BindingTransaction ?? ClientTransaction.Current;
       if (transaction == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or this object.");
       else
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         string message = String.Format (
             "Domain object '{0}' cannot be used in the given transaction as it was loaded or created in another "
-            + "transaction. Enter a scope for the transaction, or call EnlistInTransaction to enlist the object "
+            + "transaction. Enter a scope for the transaction, or enlist the object "
             + "in the transaction. (If no transaction was explicitly given, ClientTransaction.Current was used.)",
             domainObject.ID);
         throw new ClientTransactionsDifferException (message);

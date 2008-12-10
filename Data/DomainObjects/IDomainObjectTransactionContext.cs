@@ -33,6 +33,7 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Gets the current state of the <see cref="DomainObject"/> in the associated <see cref="ClientTransaction"/>.
     /// </summary>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
     StateType State { get; }
 
     /// <summary>
@@ -41,12 +42,15 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>
     /// For more information why and when an object is discarded see <see cref="Remotion.Data.DomainObjects.DataManagement.ObjectDiscardedException"/>.
     /// </remarks>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
     bool IsDiscarded { get; }
 
     /// <summary>
     /// Gets the timestamp used for optimistic locking when the object is committed to the database.
     /// </summary>
     /// <value>The timestamp of the object.</value>
+    /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
     object Timestamp { get; }
 
     /// <summary>
@@ -56,6 +60,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="InvalidOperationException">This object is not in state <see cref="StateType.Changed"/> or <see cref="StateType.Unchanged"/>.
     /// New or deleted objects cannot be marked as changed.</exception>
     /// <exception cref="ObjectDiscardedException">The object has already been discarded.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
     void MarkAsChanged ();
   }
 }

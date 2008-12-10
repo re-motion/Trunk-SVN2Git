@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
     [Test]
     [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Domain object '.*' cannot be used in the given transaction "
-        + "as it was loaded or created in another transaction. Enter a scope for the transaction, or call EnlistInTransaction to enlist the object in "
+        + "as it was loaded or created in another transaction. Enter a scope for the transaction, or enlist the object in "
         + "the transaction. \\(If no transaction was explicitly given, ClientTransaction.Current was used.\\)", MatchType = MessageMatch.Regex)]
     public void ThrowsWhenCannotBeUsedInTransaction ()
     {
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
     [Test]
     [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Domain object '.*' cannot be used in the given transaction "
-        + "as it was loaded or created in another transaction. Enter a scope for the transaction, or call EnlistInTransaction to enlist the object in "
+        + "as it was loaded or created in another transaction. Enter a scope for the transaction, or enlist the object in "
         + "the transaction. \\(If no transaction was explicitly given, ClientTransaction.Current was used.\\)", 
         MatchType = MessageMatch.Regex)]
     public void ThrowsOnDeleteWhenCannotBeUsedInTransaction ()
