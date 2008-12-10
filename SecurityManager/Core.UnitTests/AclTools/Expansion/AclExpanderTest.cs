@@ -85,7 +85,23 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclExpansionEntryListExpected = ListMother.New (aclExpansionEntry1, aclExpansionEntry0, aclExpansionEntry2);
 
       Assert.That (aclExpansionEntryListResult, Is.EqualTo (aclExpansionEntryListExpected));
+      aclExpanderMock.VerifyAllExpectations();
     }
+
+
+    [Test]
+    public void GetAclExpansionEntryList_UserList_IUserRoleAclAceCombinations2 ()
+    {
+      var userRoleAclAceCombinationsMock = MockRepository.GenerateMock<IUserRoleAclAceCombinationFinder> ();
+      var myValues = ListMother.New (new UserRoleAclAceCombination (Role, Ace));
+      userRoleAclAceCombinationsMock.Expect (mock => mock.GetEnumerator ()).Return (myValues.GetEnumerator ());
+
+      var aclExpander = new AclExpander (userRoleAclAceCombinationsMock);
+      aclExpander.GetAclExpansionEntryList ();
+      userRoleAclAceCombinationsMock.VerifyAllExpectations ();
+    }
+
+
 
 
     //--------------------------------------------------------------------------------------------------------------------------------
@@ -371,19 +387,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       Assert.That (aclExpansionEntryListEnumerator.MoveNext (), Is.EqualTo (false));
     }
-
-    [Test]
-    public void GetAclExpansionEntryList_UserList_IUserRoleAclAceCombinations ()
-    {
-      var userRoleAclAceCombinationsMock = MockRepository.GenerateMock<IUserRoleAclAceCombinationFinder>();
-      var myValues = ListMother.New(new UserRoleAclAceCombination (Role, Ace) );     
-      userRoleAclAceCombinationsMock.Expect (mock => mock.GetEnumerator ()).Return (myValues.GetEnumerator ());
-
-      var aclExpander = new AclExpander (userRoleAclAceCombinationsMock);
-      aclExpander.GetAclExpansionEntryList ();
-      userRoleAclAceCombinationsMock.VerifyAllExpectations ();
-    }
-
 
 
     [Test]
