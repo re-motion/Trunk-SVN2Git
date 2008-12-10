@@ -1,1 +1,0 @@
-﻿TODO AE: Consider deleting this folder or consider moving this folder to a dedicated SecurityManager.AclTools.Expander.Test project. (Only if really necessary.)

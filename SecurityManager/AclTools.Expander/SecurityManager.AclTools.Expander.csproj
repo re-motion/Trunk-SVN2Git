@@ -56,9 +56,8 @@
     <Content Include="..\Core\Domain\SecurityManagerQueries.xml">
       <Link>SecurityManagerQueries.xml</Link>
     </Content>
-    <Content Include="HTML\AclExpansion.css" />
-    <Content Include="HTML\TODO.txt" />
-    <Content Include="HTML\AclExpansionTest.htm" />
+    <Content Include="Test HTML\AclExpansionTest.css" />
+    <Content Include="Test HTML\AclExpansionTest.htm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
