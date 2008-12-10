@@ -33,17 +33,26 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     private readonly IAclExpanderUserFinder _userFinder;
     private readonly IAclExpanderAclFinder _accessControlListFinder;
 
-
     public UserRoleAclAceCombinationFinder (IAclExpanderUserFinder userFinder, IAclExpanderAclFinder accessControlListFinder)
     {
       _userFinder = userFinder;
       _accessControlListFinder = accessControlListFinder;
     }
 
+    public IAclExpanderUserFinder UserFinder
+    {
+      get { return _userFinder; }
+    }
+
+    public IAclExpanderAclFinder AccessControlListFinder
+    {
+      get { return _accessControlListFinder; }
+    }
+
     public IEnumerator<UserRoleAclAceCombination> GetEnumerator ()
     {
-      var users = _userFinder.FindUsers ();
-      var acls = _accessControlListFinder.FindAccessControlLists ();
+      var users = UserFinder.FindUsers ();
+      var acls = AccessControlListFinder.FindAccessControlLists ();
 
       foreach (var user in users)
       {

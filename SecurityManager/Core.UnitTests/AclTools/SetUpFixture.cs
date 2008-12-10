@@ -27,20 +27,14 @@ using Remotion.SecurityManager.UnitTests.TestDomain;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools
 {
-  // TODO AE: Remove commented code. (Do not commit.)
   [SetUpFixture]
   public class SetUpFixture
   {
-    // TODO AE: Statics above instance members.
     private DatabaseFixtures _dbFixtures;
 
     public static ObjectID OrderClassID { get; private set; }
-
-    // TODO AE: public static (for consistency)
-    static public List<AccessControlList> aclList { get; private set; }
-
+    public static  List<AccessControlList> aclList { get; private set; }
     public ObjectID InvoiceClassID { get; set; }
-
 
     [SetUp]
     public void SetUp ()
@@ -53,7 +47,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
           _dbFixtures = new DatabaseFixtures();
           _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
 
-
           SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition();
           OrderClassID = orderClass.ID;
 
@@ -64,12 +57,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
           var ace = aclList[0].CreateAccessControlEntry ();
           ace.Permissions[0].Allowed = true; // FirstAccessType
 
-          //Culture cultureDe = Culture.NewObject ("de");
-
-
           var invoiceClass = testHelper.CreateInvoiceClassDefinition();
           InvoiceClassID = invoiceClass.ID;
-          //LocalizedName.NewObject ("Rechnung", cultureDe, invoiceClass);
 
           LocalizeClassEnDe (orderClass, "Order", "Bestellung");
           
@@ -84,8 +73,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
           LocalizeStatePropertyEnDe (orderClass, "Delivery", "Delivery Provider", "Auslieferer");
           LocalizeStateEnDe (orderClass, "Delivery", (int) Delivery.Dhl, "DHL", "DHL");
           LocalizeStateEnDe (orderClass, "Delivery", (int) Delivery.Post, "Mail", "Post");
-
-
 
           ClientTransaction.Current.Commit();
         }
@@ -111,23 +98,19 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
       LocalizeMetadataObjectEnDe (classDefinition, nameEnglish, nameGerman);
     }
 
-    // TODO AE: Change to return void.
-    private StatePropertyDefinition LocalizeStatePropertyEnDe (SecurableClassDefinition classDefinition, 
+    private void LocalizeStatePropertyEnDe (SecurableClassDefinition classDefinition, 
       string statePropertyName, string nameEnglish, string nameGerman)
     {
       var stateProperty = classDefinition.GetStateProperty (statePropertyName);
       LocalizeMetadataObjectEnDe (stateProperty, nameEnglish, nameGerman);
-      return stateProperty;
     }
 
-    // TODO AE: Change to return void.
-    private StateDefinition LocalizeStateEnDe (SecurableClassDefinition classDefinition,
+    private void LocalizeStateEnDe (SecurableClassDefinition classDefinition,
       string statePropertyName, int stateEnumValue, string nameEnglish, string nameGerman)
     {
       var stateProperty = classDefinition.GetStateProperty (statePropertyName);
       var state = stateProperty.GetState (stateEnumValue);
       LocalizeMetadataObjectEnDe (state, nameEnglish, nameGerman);
-      return state;
     }
   }
 }

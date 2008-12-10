@@ -31,7 +31,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
   public class AclExpander
   {
     private readonly IUserRoleAclAceCombinationFinder _userRoleAclAceCombinationFinder;
-    private readonly Infrastructure.AclExpansionEntryCreator _aclExpansionEntryCreator = new Infrastructure.AclExpansionEntryCreator ();
+    private readonly AclExpansionEntryCreator _aclExpansionEntryCreator = new AclExpansionEntryCreator ();
 
     // IEqualityComparer for value based comparison of AclExpansionEntry|s.
     private static readonly CompoundValueEqualityComparer<AclExpansionEntry> _aclExpansionEntryEqualityComparer =

@@ -28,6 +28,7 @@ using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using System.Collections.Generic;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.UnitTests.AclTools.Expansion.TestClasses;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -39,6 +40,28 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   {
 
     // TODO AE: add unit tests as they would have emerged when using TDD.
+
+    [Test]
+    public void Ctor_UserFinderAclFinder_Test ()
+    {
+      var userFinderStub = MockRepository.GenerateStub<IAclExpanderUserFinder> ();
+      var aclFinderStub = MockRepository.GenerateStub<IAclExpanderAclFinder> ();
+      var aclExpander = new AclExpander (userFinderStub, aclFinderStub);
+      var iFinder = AclExpanderXray.GetUserRoleAclAceCombinationFinder (aclExpander);
+      Assert.That (iFinder, Is.TypeOf (typeof (UserRoleAclAceCombinationFinder)));
+      var finder = (UserRoleAclAceCombinationFinder) iFinder;
+      Assert.That (finder.UserFinder, Is.EqualTo (userFinderStub));
+      Assert.That (finder.AccessControlListFinder, Is.EqualTo (aclFinderStub));
+    }
+
+    [Test]
+    public void Ctor_UserRoleAclAceCombinationFinder_Test ()
+    {
+      var userRoleAclAceCombinationFinderStub = MockRepository.GenerateStub<IUserRoleAclAceCombinationFinder> ();
+      var aclExpander = new AclExpander (userRoleAclAceCombinationFinderStub);
+      var finder = AclExpanderXray.GetUserRoleAclAceCombinationFinder (aclExpander);
+      Assert.That (finder, Is.EqualTo (userRoleAclAceCombinationFinderStub));
+    }
 
 
     //--------------------------------------------------------------------------------------------------------------------------------
@@ -676,6 +699,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
+
+
+
     //--------------------------------------------------------------------------------------------------------------------------------
     // Helper Methods
     //--------------------------------------------------------------------------------------------------------------------------------
@@ -812,5 +838,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
   }
+
 }
 

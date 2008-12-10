@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{990B8638-A08F-4A94-B01A-E7DAEF089F27}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -402,10 +402,13 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AclTools\Expansion\AclExpansion.css" />
-    <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.de.resx" />
+    <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Substitution.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="Database\SecurityManagerSetupConstraints.sql" />
     <Content Include="Doc\Whats_New.Remotion.SecurityManager.txt" />
