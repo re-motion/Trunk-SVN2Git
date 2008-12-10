@@ -149,7 +149,12 @@
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityClientFactory.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityTestHelper.cs" />
-    <Compile Include="Domain\OrganizationalStructure\SubstitutionTest.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutingUser.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SetUpFixture.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\BindableObjectImplementation.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\Common.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\IsActive.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\SubstitutionTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\AccessControl.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\CurrentUser.cs" />

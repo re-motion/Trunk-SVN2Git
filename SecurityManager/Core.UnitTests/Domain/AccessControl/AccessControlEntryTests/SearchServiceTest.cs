@@ -18,13 +18,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryTests
@@ -32,38 +29,40 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
   [TestFixture]
   public class SearchSerivceTest : DomainTest
   {
-    private DatabaseFixtures _dbFixtures;
     private AccessControlTestHelper _testHelper;
     private IBusinessObjectClass _aceClass;
     private AccessControlEntry _ace;
+    private ISearchAvailableObjectsService _searchServiceStub;
+    private ISearchAvailableObjectsArguments _searchServiceArgsStub;
 
     public override void TestFixtureSetUp ()
     {
       base.TestFixtureSetUp();
 
+      _searchServiceStub = MockRepository.GenerateStub<ISearchAvailableObjectsService>();
+      _searchServiceArgsStub = MockRepository.GenerateStub<ISearchAvailableObjectsArguments>();
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (AccessControlEntryPropertiesSearchService), new AccessControlEntryPropertiesSearchService ());
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (ISearchAvailableObjectsService), MockRepository.GenerateStub<ISearchAvailableObjectsService>());
-
-      _dbFixtures = new DatabaseFixtures ();
-      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (
+          typeof (AccessControlEntryPropertiesSearchService), _searchServiceStub);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (
+          typeof (ISearchAvailableObjectsService), MockRepository.GenerateStub<ISearchAvailableObjectsService>());
     }
 
     public override void SetUp ()
     {
       base.SetUp();
-      
+
       _aceClass = BindableObjectProvider.GetBindableObjectClass (typeof (AccessControlEntry));
-    
+
       _testHelper = new AccessControlTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
-      
-      _ace = AccessControlEntry.NewObject ();
+
+      _ace = AccessControlEntry.NewObject();
     }
 
     public override void TestFixtureTearDown ()
     {
-      base.TestFixtureTearDown ();
+      base.TestFixtureTearDown();
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
@@ -73,12 +72,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificTenant");
       Assert.That (property, Is.Not.Null);
 
-      ObjectList<Tenant> expected = Tenant.FindAll();
-      Assert.That (expected, Is.Not.Empty);
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject>() };
+
+      _searchServiceStub.Stub (stub => stub.SupportsProperty (property)).Return (true);
+      _searchServiceStub.Stub (stub => stub.Search (_ace, property, _searchServiceArgsStub)).Return (expected);
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, null);
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, _searchServiceArgsStub);
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
@@ -88,15 +89,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificGroup");
       Assert.That (property, Is.Not.Null);
 
-      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
-      Assert.That (tenant, Is.Not.Null);
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject>() };
 
-      ObjectList<Group> expected = Group.FindByTenantID (tenant.ID);
-      Assert.That (expected, Is.Not.Empty);
+      _searchServiceStub.Stub (stub => stub.SupportsProperty (property)).Return (true);
+      _searchServiceStub.Stub (stub => stub.Search (_ace, property, _searchServiceArgsStub)).Return (expected);
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, new DefaultSearchArguments (tenant.ID.ToString()));
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, _searchServiceArgsStub);
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
@@ -106,12 +106,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificGroupType");
       Assert.That (property, Is.Not.Null);
 
-      ObjectList<GroupType> expected = GroupType.FindAll ();
-      Assert.That (expected, Is.Not.Empty);
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject>() };
+
+      _searchServiceStub.Stub (stub => stub.SupportsProperty (property)).Return (true);
+      _searchServiceStub.Stub (stub => stub.Search (_ace, property, _searchServiceArgsStub)).Return (expected);
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, null);
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, _searchServiceArgsStub);
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
@@ -121,15 +123,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificUser");
       Assert.That (property, Is.Not.Null);
 
-      var tenant = Tenant.FindByUnqiueIdentifier ("UID: testTenant");
-      Assert.That (tenant, Is.Not.Null);
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject>() };
 
-      ObjectList<User> expected = User.FindByTenantID (tenant.ID);
-      Assert.That (expected, Is.Not.Empty);
+      _searchServiceStub.Stub (stub => stub.SupportsProperty (property)).Return (true);
+      _searchServiceStub.Stub (stub => stub.Search (_ace, property, _searchServiceArgsStub)).Return (expected);
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, new DefaultSearchArguments (tenant.ID.ToString ()));
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, _searchServiceArgsStub);
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
@@ -139,12 +140,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificPosition");
       Assert.That (property, Is.Not.Null);
 
-      ObjectList<Position> expected = Position.FindAll ();
-      Assert.That (expected, Is.Not.Empty);
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject>() };
+
+      _searchServiceStub.Stub (stub => stub.SupportsProperty (property)).Return (true);
+      _searchServiceStub.Stub (stub => stub.Search (_ace, property, _searchServiceArgsStub)).Return (expected);
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, null);
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, _searchServiceArgsStub);
       Assert.That (actual, Is.EquivalentTo (expected));
     }
 
@@ -154,12 +157,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var property = (IBusinessObjectReferenceProperty) _aceClass.GetPropertyDefinition ("SpecificAbstractRole");
       Assert.That (property, Is.Not.Null);
 
-      ObjectList<AbstractRoleDefinition> expected = AbstractRoleDefinition.FindAll();
-      Assert.That (expected, Is.Not.Empty);
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject>() };
+
+      _searchServiceStub.Stub (stub => stub.SupportsProperty (property)).Return (true);
+      _searchServiceStub.Stub (stub => stub.Search (_ace, property, _searchServiceArgsStub)).Return (expected);
 
       Assert.That (property.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, null);
+      IBusinessObject[] actual = property.SearchAvailableObjects (_ace, _searchServiceArgsStub);
       Assert.That (actual, Is.EquivalentTo (expected));
     }
   }

@@ -17,21 +17,22 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.UserTests
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionTests
 {
   [TestFixture]
-  public class Common : UserTestBase
+  public class Common : SubstitutionTestBase
   {
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException))]
-    public void UserName_SameNameTwice ()
+    public void Initialize ()
     {
-      CreateUser();
-      CreateUser();
-      ClientTransactionScope.CurrentTransaction.Commit();
+      Substitution substitution = Substitution.NewObject();
+
+      Assert.That (substitution.IsEnabled, Is.True);
+      Assert.That (substitution.BeginDate, Is.Null);
+      Assert.That (substitution.EndDate, Is.Null);
     }
   }
 }

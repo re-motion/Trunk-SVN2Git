@@ -281,6 +281,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
     #endregion
 
+    //TODO: Refactor to mock
     [Test]
     public void SearchParentGroups ()
     {

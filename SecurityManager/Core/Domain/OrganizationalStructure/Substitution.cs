@@ -19,6 +19,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
@@ -33,26 +34,24 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   [Instantiable]
   [DBTable]
   [SecurityManagerStorageGroup]
-  public abstract class Substitution : OrganizationalStructureObject
+  public abstract class Substitution : BaseSecurityManagerObject
   {
-    public static Substitution NewObject (User substitutingUser)
+    public static Substitution NewObject ()
     {
-      return NewObject<Substitution>().With (substitutingUser);
+      return NewObject<Substitution>().With ();
     }
 
-    protected Substitution (User substitutingUser)
+    protected Substitution ()
     {
-      ArgumentUtility.CheckNotNull ("substitutingUser", substitutingUser);
-
       // ReSharper disable DoNotCallOverridableMethodsInConstructor
-      SubstitutingUser = substitutingUser;
       IsEnabled = true;
       // ReSharper restore DoNotCallOverridableMethodsInConstructor
     }
 
     [DBBidirectionalRelation ("SubstitutingFor")]
     [Mandatory]
-    public abstract User SubstitutingUser { get; protected set; }
+    [SearchAvailableObjectsServiceType (typeof (SubstitutionPropertiesSearchService))]
+    public abstract User SubstitutingUser { get; set; }
 
     [DBBidirectionalRelation ("SubstitutedBy")]
     [Mandatory]

@@ -17,21 +17,25 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.UserTests
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionTests
 {
   [TestFixture]
-  public class Common : UserTestBase
+  public class SubstitutionTestBase : DomainTest
   {
-    [Test]
-    [ExpectedException (typeof (RdbmsProviderException))]
-    public void UserName_SameNameTwice ()
+    private OrganizationalStructureTestHelper _testHelper;
+
+    public override void SetUp ()
     {
-      CreateUser();
-      CreateUser();
-      ClientTransactionScope.CurrentTransaction.Commit();
+      base.SetUp();
+
+      _testHelper = new OrganizationalStructureTestHelper();
+      TestHelper.Transaction.EnterNonDiscardingScope();
+    }
+
+    protected OrganizationalStructureTestHelper TestHelper
+    {
+      get { return _testHelper; }
     }
   }
 }

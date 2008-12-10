@@ -19,20 +19,18 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using System.Collections.Generic;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RolePropertiesSearchServiceTests
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionPropertiesSearchServiceTests
 {
   [TestFixture]
-  public class SearchUser : DomainTest
+  public class SearchSubstitutingUser : DomainTest
   {
     private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
-    private IBusinessObjectReferenceProperty _userProperty;
+    private IBusinessObjectReferenceProperty _substitutingUserProperty;
     private User _user;
 
     public override void SetUp ()
@@ -42,10 +40,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       _testHelper = new OrganizationalStructureTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
 
-      _searchService = new RolePropertiesSearchService();
-      IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClass(typeof (Role));
-      _userProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("User");
-      Assert.That (_userProperty, Is.Not.Null);
+      _searchService = new SubstitutionPropertiesSearchService();
+      IBusinessObjectClass substitutionClass = BindableObjectProvider.GetBindableObjectClass (typeof (Substitution));
+      _substitutingUserProperty = (IBusinessObjectReferenceProperty) substitutionClass.GetPropertyDefinition ("SubstitutingUser");
+      Assert.That (_substitutingUserProperty, Is.Not.Null);
 
       _user = User.FindByUserName ("group0/user1");
       Assert.That (_user, Is.Not.Null);
@@ -54,44 +52,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     [Test]
     public void SupportsProperty ()
     {
-      Assert.That (_searchService.SupportsProperty (_userProperty), Is.True);
+      Assert.That (_searchService.SupportsProperty (_substitutingUserProperty), Is.True);
     }
 
     [Test]
     public void Search ()
     {
-      Group group = Group.FindByUnqiueIdentifier ("UID: group0");
-      Assert.That (group, Is.Not.Null);
-      Role role = _testHelper.CreateRole (_user, group, null);
-      DomainObjectCollection expectedUsers = User.FindByTenantID (group.Tenant.ID);
+      DomainObjectCollection expectedUsers = User.FindByTenantID (_user.Tenant.ID);
       Assert.That (expectedUsers, Is.Not.Empty);
 
-      IBusinessObject[] actualUsers = _searchService.Search (role, _userProperty, null);
+      IBusinessObject[] actualUsers = _searchService.Search (null, _substitutingUserProperty, new DefaultSearchArguments (_user.Tenant.ID.ToString()));
 
       Assert.That (actualUsers, Is.EquivalentTo (expectedUsers));
-    }
-
-    [Test]
-    public void Search_WithRoleHasNoGroup ()
-    {
-      Role role = _testHelper.CreateRole (_user, null, null);
-
-      IBusinessObject[] actualUsers = _searchService.Search (role, _userProperty, null);
-
-      Assert.That (actualUsers, Is.Empty);
-    }
-
-    [Test]
-    public void Search_WithGroupHasNoTenant ()
-    {
-      Group group = Group.FindByUnqiueIdentifier ("UID: group0");
-      Assert.That (group, Is.Not.Null);
-      group.Tenant = null;
-      Role role = _testHelper.CreateRole (_user, group, null);
-
-      IBusinessObject[] actualUsers = _searchService.Search (role, _userProperty, null);
-
-      Assert.That (actualUsers, Is.Empty);
     }
   }
 }

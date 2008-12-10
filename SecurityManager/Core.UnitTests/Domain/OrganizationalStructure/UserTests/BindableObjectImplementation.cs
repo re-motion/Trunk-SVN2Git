@@ -81,16 +81,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       Assert.That (owningGroupProperty, Is.Not.Null);
 
       User user = CreateUser();
-      Group expectedGroup = TestHelper.CreateGroup ("group", "uid", null, user.Tenant);
-      IBusinessObject[] expected = new IBusinessObject[] { expectedGroup };
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject> () };
 
       searchServiceStub.Stub (stub => stub.SupportsProperty (owningGroupProperty)).Return (true);
       searchServiceStub.Stub (stub => stub.Search (user, owningGroupProperty, args)).Return (expected);
 
       Assert.That (owningGroupProperty.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actualOwningGroups = owningGroupProperty.SearchAvailableObjects (user, args);
-      Assert.That (actualOwningGroups, Is.SameAs (expected));
+      IBusinessObject[] actual = owningGroupProperty.SearchAvailableObjects (user, args);
+      Assert.That (actual, Is.SameAs (expected));
     }
   }
 }

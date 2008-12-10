@@ -18,6 +18,7 @@
 using System;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 {
@@ -36,6 +37,8 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     private IBusinessObject[] FindPossibleOwningGroups (User user, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
+      ArgumentUtility.CheckNotNull ("user", user);
+
       if (user.Tenant == null)
         return new IBusinessObject[0];
       return Group.FindByTenantID (user.Tenant.ID).ToArray();

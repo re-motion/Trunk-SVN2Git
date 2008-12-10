@@ -153,11 +153,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     [DBBidirectionalRelation ("SubstitutedUser")]
     public abstract ObjectList<Substitution> SubstitutedBy { get; }
 
-    public Substitution CreateSubstitution ()
-    {
-      return Substitution.NewObject (this);
-    }
-
     protected override void OnDeleting (EventArgs args)
     {
       base.OnDeleting (args);

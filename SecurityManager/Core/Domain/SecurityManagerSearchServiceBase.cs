@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.Domain
 
     public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
-      T referencingSecurityManagerObject = ArgumentUtility.CheckNotNullAndType<T> ("referencingObject", referencingObject);
+      T referencingSecurityManagerObject = ArgumentUtility.CheckType<T> ("referencingObject", referencingObject);
       ArgumentUtility.CheckNotNull ("property", property);
 
       Func<T, IBusinessObjectReferenceProperty, ISearchAvailableObjectsArguments, IBusinessObject[]> searchDelegate;

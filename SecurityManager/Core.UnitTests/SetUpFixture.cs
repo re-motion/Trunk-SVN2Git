@@ -45,29 +45,36 @@ namespace Remotion.SecurityManager.UnitTests
     [SetUp]
     public void SetUp()
     {
-      ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition> ();
-      providers.Add (new RdbmsProviderDefinition ("SecurityManager", typeof (SecurityManagerSqlProvider), c_testDomainConnectionString));
-      StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["SecurityManager"]);
-      storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecurityManagerStorageGroupAttribute(), "SecurityManager"));
+      try
+      {
+        ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition> ();
+        providers.Add (new RdbmsProviderDefinition ("SecurityManager", typeof (SecurityManagerSqlProvider), c_testDomainConnectionString));
+        StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["SecurityManager"]);
+        storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecurityManagerStorageGroupAttribute(), "SecurityManager"));
 
-      DomainObjectsConfiguration.SetCurrent (
-          new FakeDomainObjectsConfiguration (
-              new MappingLoaderConfiguration(),
-              storageConfiguration,
-              new QueryConfiguration (GetFullPath (@"SecurityManagerQueries.xml"))));
+        DomainObjectsConfiguration.SetCurrent (
+            new FakeDomainObjectsConfiguration (
+                new MappingLoaderConfiguration(),
+                storageConfiguration,
+                new QueryConfiguration (GetFullPath (@"SecurityManagerQueries.xml"))));
 
-      ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
+        ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
             new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, typeof (BaseSecurityManagerObject).Assembly));
-      MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
+        MappingConfiguration.SetCurrent (new MappingConfiguration (new MappingReflector (typeDiscoveryService)));
 
-      SqlConnection.ClearAllPools();
+        SqlConnection.ClearAllPools();
 
-      DatabaseAgent masterAgent = new DatabaseAgent (c_masterConnectionString);
-      masterAgent.ExecuteBatch ("SecurityManagerCreateDB.sql", false);
-      DatabaseAgent databaseAgent = new DatabaseAgent (c_testDomainConnectionString);
-      databaseAgent.ExecuteBatch ("SecurityManagerSetupDB.sql", true);
-      databaseAgent.ExecuteBatch ("SecurityManagerSetupConstraints.sql", true);
-      databaseAgent.ExecuteBatch ("SecurityManagerSetupDBSpecialTables.sql", true);
+        DatabaseAgent masterAgent = new DatabaseAgent (c_masterConnectionString);
+        masterAgent.ExecuteBatch ("SecurityManagerCreateDB.sql", false);
+        DatabaseAgent databaseAgent = new DatabaseAgent (c_testDomainConnectionString);
+        databaseAgent.ExecuteBatch ("SecurityManagerSetupDB.sql", true);
+        databaseAgent.ExecuteBatch ("SecurityManagerSetupConstraints.sql", true);
+        databaseAgent.ExecuteBatch ("SecurityManagerSetupDBSpecialTables.sql", true);
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine (e);
+      }
     }
 
     [TearDown]

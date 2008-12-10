@@ -66,7 +66,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
         User substitutingUser = testHelper.CreateUser ("user", null, "Lastname", null, null, null);
-        Substitution substitution = substitutingUser.CreateSubstitution();
+        Substitution substitution = Substitution.NewObject();
+        substitution.SubstitutingUser = substitutingUser;
 
         substitutingUser.Delete ();
 
@@ -80,9 +81,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper ();
       using (testHelper.Transaction.EnterNonDiscardingScope ())
       {
-        User substitutingUser = testHelper.CreateUser ("user", null, "Lastname", null, null, null);
         User substitutedUser = testHelper.CreateUser ("user", null, "Lastname", null, null, null);
-        Substitution substitution = substitutingUser.CreateSubstitution ();
+        Substitution substitution = Substitution.NewObject ();
         substitution.SubstitutedUser = substitutedUser;
 
         substitutedUser.Delete ();

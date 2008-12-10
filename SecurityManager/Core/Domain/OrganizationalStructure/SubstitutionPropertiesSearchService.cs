@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
@@ -29,30 +30,20 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   /// The service is applied to the <see cref="Role.Group"/> and the <see cref="Role.User"/> properties via the
   /// <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.
   /// </remarks>
-  public sealed class RolePropertiesSearchService : SecurityManagerSearchServiceBase<Role>
+  public sealed class SubstitutionPropertiesSearchService : SecurityManagerSearchServiceBase<Substitution>
   {
-    public RolePropertiesSearchService ()
+    public SubstitutionPropertiesSearchService ()
     {
-      AddSearchDelegate ("Group", FindPossibleGroups);
-      AddSearchDelegate ("User", FindPossibleUsers);
+      AddSearchDelegate ("SubstitutingUser", FindPossibleSubstitutingUser);
     }
 
-    private IBusinessObject[] FindPossibleGroups (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    private IBusinessObject[] FindPossibleSubstitutingUser (Substitution Substitution, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
-      ArgumentUtility.CheckNotNull ("role", role);
+      var defaultSearchArguments = ArgumentUtility.CheckNotNullAndType<DefaultSearchArguments> ("searchArguments", searchArguments);
+      ArgumentUtility.CheckNotNullOrEmpty ("defaultSearchArguments.SearchStatement", defaultSearchArguments.SearchStatement);
+      ObjectID tenantID = ObjectID.Parse (defaultSearchArguments.SearchStatement);
 
-      if (role.User == null || role.User.Tenant == null)
-        return new IBusinessObject[0];
-      return role.GetPossibleGroups (role.User.Tenant.ID).ToArray();
-    }
-
-    private IBusinessObject[] FindPossibleUsers (Role role, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
-    {
-      ArgumentUtility.CheckNotNull ("role", role);
-
-      if (role.Group == null || role.Group.Tenant == null)
-        return new IBusinessObject[0];
-      return User.FindByTenantID (role.Group.Tenant.ID).ToArray();
+      return User.FindByTenantID (tenantID).ToArray ();
     }
   }
 }

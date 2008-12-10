@@ -212,6 +212,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Assert.AreEqual (3, positions.Count);
     }
 
+    //TODO: Refactor to mock
     [Test]
     public void SearchGroups ()
     {
@@ -236,6 +237,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Assert.That (actualGroups, Is.EquivalentTo (expectedGroups));
     }
 
+    //TODO: Refactor to mock
     [Test]
     public void SearchUsers ()
     {
@@ -273,9 +275,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         Position position = testHelper.CreatePosition ("Position");
         Role role = testHelper.CreateRole (user, roleGroup, position);
 
-        User substitutingUser = testHelper.CreateUser ("user", null, "Lastname", null, null, null);
-
-        Substitution substitution = substitutingUser.CreateSubstitution ();
+        Substitution substitution = Substitution.NewObject ();
         substitution.SubstitutedRole = role;
 
         role.Delete ();

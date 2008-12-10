@@ -18,20 +18,37 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.ObjectBinding;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.UserTests
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionPropertiesSearchServiceTests
 {
-  [TestFixture]
-  public class Common : UserTestBase
+  [SetUpFixture]
+  public class SetUpFixture
   {
-    [Test]
-    [ExpectedException (typeof (RdbmsProviderException))]
-    public void UserName_SameNameTwice ()
+    private DatabaseFixtures _dbFixtures;
+
+    [SetUp]
+    public void SetUp ()
     {
-      CreateUser();
-      CreateUser();
-      ClientTransactionScope.CurrentTransaction.Commit();
+      try
+      {
+        BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+        
+        _dbFixtures = new DatabaseFixtures ();
+        _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine (e);
+        throw;
+      }
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
   }
 }
