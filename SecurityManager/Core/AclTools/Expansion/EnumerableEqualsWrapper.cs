@@ -116,7 +116,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
   public static class EnumerableEqualsWrapper 
   {
-    public static EnumerableEqualsWrapper<T> New<T> (params T[] elements)
+    //public static EnumerableEqualsWrapper<T> New<T> (params T[] elements)
+    public static EnumerableEqualsWrapper<T> New<T> (IEnumerable<T> elements)
     {
       return new EnumerableEqualsWrapper<T> (elements);
     }

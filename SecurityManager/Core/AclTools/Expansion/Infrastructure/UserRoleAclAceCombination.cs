@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Collections;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -25,8 +26,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
   /// A tuple of (<see cref="User"/>, <see cref="Role"/>, <see cref="AccessControlList"/>, <see cref="AccessControlEntry"/>).
   /// Returned by the enumerator of <see cref="UserRoleAclAceCombinationFinder"/>.
   /// </summary>
-  public class UserRoleAclAceCombination
+  public class UserRoleAclAceCombination : IEquatable<UserRoleAclAceCombination>
   {
+    private static readonly CompoundValueEqualityComparer<UserRoleAclAceCombination> _userRoleAclAceCombinationsComparer =
+      new CompoundValueEqualityComparer<UserRoleAclAceCombination> (x => new object[] { x.Role, x.Ace });
+
+
     public UserRoleAclAceCombination (Role role, AccessControlEntry ace)
     {
       Role = role;
@@ -37,5 +42,25 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     public User User { get { return Role.User; } }
     public AccessControlEntry Ace { get; private set; }
     public AccessControlList Acl { get { return Ace.AccessControlList; } }
+
+    public static CompoundValueEqualityComparer<UserRoleAclAceCombination> Comparer
+    {
+      get { return _userRoleAclAceCombinationsComparer; }
+    }
+
+    public override int GetHashCode ()
+    {
+      return _userRoleAclAceCombinationsComparer.GetHashCode(this);
+    }
+
+    public override bool Equals (object obj)
+    {
+      return _userRoleAclAceCombinationsComparer.Equals (this, obj);
+    }
+
+    public bool Equals (UserRoleAclAceCombination other)
+    {
+      return _userRoleAclAceCombinationsComparer.Equals (this, other);
+    }
   }
 }

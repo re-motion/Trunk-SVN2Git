@@ -25,64 +25,14 @@ using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using System.Collections.Generic;
 using Remotion.Utilities;
-using NUnitList = NUnit.Framework.SyntaxHelpers.List;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
-  // TODO AE: Remove commented code. (Do not commit.)
-  // TODO AE: Refactory AclExpansionTree to be able to test in a more fine-grained way.
   [TestFixture]
   public class AclExpansionTreeTest : AclToolsTestBase
   {
-    // TODO AE: Remove explicit test - make automatically executable or remove.
-    [Test]
-    [Explicit]
-    public void ExpansionTest ()
-    {
-      using (new CultureScope ("de-DE"))
-      {
-        var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User2, User3, User);
-
-        // Create stateless-only ACL
-        //SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
-        //var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
-        //TestHelper.AttachAces (statlessAcl, Ace);
-
-        var statelessAcl = CreateStatelessAcl (Ace);
-
-        var acls = ListMother.New<AccessControlList> (Acl, statelessAcl);
-
-        List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
-
-        using (var textWriter = new StreamWriter ("c:\\temp\\aaa.html"))
-        {
-          var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true, 
-            new AclExpansionHtmlWriterSettings { OutputRowCount = true });
-          //aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-          aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
-          //string result = textWriter.ToString ();
-          //To.ConsoleLine.e (() => result);
-          //Clipboard.SetText (result); 
-        }
-
-
-        var aclExpansionTree = new AclExpansionTree (aclExpansion);
-
-        foreach (var userNode in aclExpansionTree.Tree)
-        {
-          To.ConsoleLine.sb().e (userNode.NumberLeafNodes).e (userNode.Key).se();
-        }
-
-        To.Console.IndentationString = "  ";
-        To.Console.AllowNewline = true;
-        To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
-
-      }
-    }
-
     [Test]
     public void SingleAclSingleUserExpansionTest ()
     {
@@ -110,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         
         var classNodes = roleNodes[0].Children;
         Assert.That (classNodes.Count, Is.EqualTo (1)); // # classes
-        Assert.That (classNodes[0].Key.StatefulAccessControlLists, NUnitList.Contains (Acl));
+        Assert.That (classNodes[0].Key.StatefulAccessControlLists, List.Contains (Acl));
 
         var stateNodes = classNodes[0].Children;
         Assert.That (stateNodes.Count, Is.EqualTo (2)); // # states
@@ -125,24 +75,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
             Assert.That (aee.GetStateCombinations(), Is.SubsetOf (Acl.StateCombinations));
           }
         }
-      }
-    }
-
-    private void WriteAclExpansionTreeToConsole (AclExpansionTree aclExpansionTree)
-    {
-      To.Console.IndentationString = "  ";
-      To.Console.AllowNewline = true;
-      To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
-    }
-
-    private void WriteAclExpansionAsHtmlToDisk (List<AclExpansionEntry> aclExpansion, string fileName)
-    {
-      using (var textWriter = new StreamWriter (fileName))
-      {
-        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true,
-            new AclExpansionHtmlWriterSettings { OutputRowCount = true });
-        //aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-        aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
       }
     }
 
@@ -162,15 +94,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var aclExpansionTreeInverseSorted = new AclExpansionTree (
             aclExpansionEntryList,
             (classEntry => (classEntry.AccessControlList is StatefulAccessControlList) ? "A" : "B")); // sort stateful before stateless
-        //LogAclExpansionTree (aclExpansionTreeInverseSorted);
         Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
-        //Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (Acl));
         Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (Acl));
 
         var aclExpansionTreeDefaultSorted = new AclExpansionTree (aclExpansionEntryList);
-        //LogAclExpansionTree (aclExpansionTreeDefaultSorted);
         Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
-        //Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (statelessAcl));
         Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (statelessAcl));
 
       }
@@ -190,7 +118,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclExpansionEntry3 =
          new AclExpansionEntry (
              User, Role, Acl, new AclExpansionAccessConditions (), new[] { ReadAccessType, WriteAccessType }, new[] { DeleteAccessType });
-      //aclExpansionEntry2.StateCombinations;
       Assert.That (comparer.Equals (aclExpansionEntry1, aclExpansionEntry1), Is.True);
       Assert.That (comparer.Equals (aclExpansionEntry1, aclExpansionEntry2), Is.True);
       Assert.That (comparer.Equals (aclExpansionEntry1, aclExpansionEntry3), Is.False);
@@ -233,18 +160,33 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-    // TODO AE: Do not commit console output in unit tests. (Ok for debugging reasons, but slows down build process and clutters the build log.)
-    private static void LogAclExpansionTree (AclExpansionTree aclExpansionTree)
+    public static void LogAclExpansionTree (AclExpansionTree aclExpansionTree)
     {
       To.Console.IndentationString = "  ";
       To.Console.AllowNewline = true;
       To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
     }
 
+    public void WriteAclExpansionTreeToConsole (AclExpansionTree aclExpansionTree)
+    {
+      To.Console.IndentationString = "  ";
+      To.Console.AllowNewline = true;
+      To.ConsoleLine.nl (2).e (aclExpansionTree.Tree);
+    }
+
+    public void WriteAclExpansionAsHtmlToDisk (List<AclExpansionEntry> aclExpansion, string fileName)
+    {
+      using (var textWriter = new StreamWriter (fileName))
+      {
+        var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (textWriter, true,
+            new AclExpansionHtmlWriterSettings { OutputRowCount = true });
+        aclExpansionHtmlWriter.WriteAclExpansion (aclExpansion);
+      }
+    }
+
 
     private AccessControlList CreateStatelessAcl (params AccessControlEntry[] aces)
     {
-      // Create stateless-only ACL
       SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
       var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
       foreach (AccessControlEntry ace in aces)
