@@ -63,17 +63,16 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// </summary>
     public AclExpander () : this (new AclExpanderUserFinder (), new AclExpanderAclFinder ()) {}
 
-
-    public Infrastructure.AclExpansionEntryCreator AclExpansionEntryCreator
+    public AclExpansionEntryCreator AclExpansionEntryCreator
     {
       get { return _aclExpansionEntryCreator; }
     }
 
 
-    public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct ()
+    virtual public List<AclExpansionEntry> GetAclExpansionEntryListSortedAndDistinct ()
     {
       return (from AclExpansionEntry aclExpansionEntry in GetAclExpansionEntryList ()
-              orderby aclExpansionEntry.User.DisplayName, aclExpansionEntry.Role.DisplayName
+              orderby aclExpansionEntry.User.LastName, aclExpansionEntry.User.FirstName
               select aclExpansionEntry).Distinct (_aclExpansionEntryEqualityComparer).ToList ();
     }
 
@@ -84,7 +83,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// supplied in the ctor as a <see cref="IEnumerable{T}"/> of <see cref="AclExpansionEntry"/>. 
     /// </summary>
     /// <returns></returns>
-    public IEnumerable<AclExpansionEntry> GetAclExpansionEntries ()
+    virtual public IEnumerable<AclExpansionEntry> GetAclExpansionEntries ()
     {
       foreach (UserRoleAclAceCombination userRoleAclAce in _userRoleAclAceCombinationFinder)
       {
@@ -103,7 +102,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     /// supplied in the ctor as a <see cref="List{T}"/> of <see cref="AclExpansionEntry"/>. 
     /// </summary>
     /// <returns></returns>
-    public List<AclExpansionEntry> GetAclExpansionEntryList ()
+    virtual public List<AclExpansionEntry> GetAclExpansionEntryList ()
     {
       return GetAclExpansionEntries().ToList();
     }

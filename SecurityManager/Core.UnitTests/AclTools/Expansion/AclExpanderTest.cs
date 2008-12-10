@@ -64,6 +64,30 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
+    [Test]
+    public void GetAclExpansionEntryListSortedAndDistinctTest ()
+    {
+      var userRoleAclAceCombinationFinderStub = MockRepository.GenerateStub<IUserRoleAclAceCombinationFinder> ();
+      var mocks = new MockRepository ();
+      var aclExpanderMock = mocks.PartialMock<AclExpander> (userRoleAclAceCombinationFinderStub);
+      var accessConditions = new AclExpansionAccessConditions ();
+      var accessTypeDefinitions = new AccessTypeDefinition[0];
+      
+      var aclExpansionEntry0 = new AclExpansionEntry (User2, Role, Acl, accessConditions, accessTypeDefinitions, accessTypeDefinitions);
+      var aclExpansionEntry1 = new AclExpansionEntry (User3, Role, Acl, accessConditions, accessTypeDefinitions, accessTypeDefinitions);
+      var aclExpansionEntry2 = new AclExpansionEntry (User, Role, Acl, accessConditions, accessTypeDefinitions, accessTypeDefinitions);
+
+      var aclExpansionEntryList = ListMother.New (aclExpansionEntry0, aclExpansionEntry2, aclExpansionEntry1, aclExpansionEntry1, aclExpansionEntry0);
+
+      aclExpanderMock.Expect (x => x.GetAclExpansionEntryList ()).Return (aclExpansionEntryList);
+      aclExpanderMock.Replay();
+      var aclExpansionEntryListResult = aclExpanderMock.GetAclExpansionEntryListSortedAndDistinct();
+      var aclExpansionEntryListExpected = ListMother.New (aclExpansionEntry1, aclExpansionEntry0, aclExpansionEntry2);
+
+      Assert.That (aclExpansionEntryListResult, Is.EqualTo (aclExpansionEntryListExpected));
+    }
+
+
     //--------------------------------------------------------------------------------------------------------------------------------
     // AclExpander Integration Tests
     //--------------------------------------------------------------------------------------------------------------------------------
@@ -799,7 +823,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           {
             foreach (AccessControlEntry ace in acl.AccessControlEntries)
             {
-              var accessTypesResult = aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace)); //, out aclProbe, out accessTypeStatistics);
+              var accessTypesResult = aclExpander.AclExpansionEntryCreator.GetAccessTypes (new UserRoleAclAceCombination (role, ace));
               Assert.That (accessTypesResult.AccessTypeStatistics.IsInMatchingAces (ace), Is.False);
             }
           }
