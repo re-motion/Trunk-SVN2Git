@@ -16,25 +16,36 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
   [TestFixture]
-  public class AclExpansionTreeNodeTest
+  public class AclExpansionTreeNodeTest : AclToolsTestBase
   {
-    // TODO: Ctor test
-    // TODO AE: Good idea.
-
-    // TODO AE: Remove this method.
     [Test]
-    [Explicit]
-    public void UsageTest ()
+    public void CtorTest ()
     {
-      var data = ListMother.New (ListMother.New ("a", "b"), ListMother.New ("c", "d"));
-      var test = AclExpansionTreeNode.New ("a", 2, ListMother.New ("a", "b"));
+      List<Role> children = ListMother.New (Role,Role2,Role3);
+      var aclExpansionTreeNode = new AclExpansionTreeNode<User, Role> (User, 17, children);
+      Assert.That (aclExpansionTreeNode.Key,Is.EqualTo(User));
+      Assert.That (aclExpansionTreeNode.NumberLeafNodes, Is.EqualTo (17));
+      Assert.That (aclExpansionTreeNode.Children, Is.EqualTo (children));
+    }
+
+    [Test]
+    public void FactoryTest ()
+    {
+      List<Role> children = ListMother.New (Role, Role2, Role3);
+      var aclExpansionTreeNode = AclExpansionTreeNode.New (User, 17, children);
+      Assert.That (aclExpansionTreeNode.Key, Is.EqualTo (User));
+      Assert.That (aclExpansionTreeNode.NumberLeafNodes, Is.EqualTo (17));
+      Assert.That (aclExpansionTreeNode.Children, Is.EqualTo (children));
     }
   }
 }
