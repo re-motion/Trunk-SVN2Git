@@ -23,10 +23,10 @@ namespace Remotion.Development.UnitTesting.ObjectMother
   /// </summary>
   /// <example><code>
   /// <![CDATA[  
-  /// var queue = Queue.New("process","emit0","wait");
+  /// var queue = QueueMother.New("process","emit0","wait");
   /// ]]>
   /// </code></example>
-  public class Queue
+  public class QueueMother
   {
     public static System.Collections.Generic.Queue<T> New<T> (params T[] values)
     {

@@ -90,7 +90,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       foreach (var user in users)
       {
         // Note: Due to HTML-table-cells using rowspan attribute it is not safe to assume that we are already in a table row here
-        // (i.e. a <tr>-tag has already been written).
+        // (i.e. that a <tr>-tag has already been written).
         _implementation.WriteTableRowBeginIfNotInTableRow (); 
         WriteTableBody_ProcessUser (user, aclExpansion);
         _implementation.WriteTableRowEnd ();
@@ -125,7 +125,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public List<User> GetUsers (IEnumerable<AclExpansionEntry> aclExpansion)
+    public static List<User> GetUsers (IEnumerable<AclExpansionEntry> aclExpansion)
     {
       return (from aee in aclExpansion
              let user = aee.User
@@ -133,7 +133,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
               select user).Distinct ().ToList ();
     }
 
-    public List<AclExpansionEntry> GetAccessControlEntriesForUser (IEnumerable<AclExpansionEntry> aclExpansion, User user)
+    public static List<AclExpansionEntry> GetAccessControlEntriesForUser (IEnumerable<AclExpansionEntry> aclExpansion, User user)
     {
       return (from aee in aclExpansion
              where aee.User == user

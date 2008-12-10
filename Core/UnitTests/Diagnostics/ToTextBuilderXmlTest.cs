@@ -23,7 +23,6 @@ using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.UnitTests.Diagnostics.TestDomain;
 using Rhino.Mocks;
-using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 
 namespace Remotion.UnitTests.Diagnostics
@@ -220,7 +219,7 @@ namespace Remotion.UnitTests.Diagnostics
       var simpleTest = new TestSimpleToTextBuilderXmlTest ("ToTextXmlInstanceTest", 333);
       simpleTest.Talk = new TestSimpleToTextBuilderXmlTestOwned("Silverlight");
       simpleTest.Talk.Short = "Interesting stuff about silver lines and  moonlighting.";
-      simpleTest.Talk.Participants = List.New("Markus","Fabian","Heinz","Peter");
+      simpleTest.Talk.Participants = ListMother.New("Markus","Fabian","Heinz","Peter");
       for (int counter = 1; counter < 5; ++counter)
       {
         toTextBuilderXml.sb ().e (() => counter).e (simpleTest).se ();
@@ -342,7 +341,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var stringWriter = new StringWriter ();
       var toTextBuilderXml = CreateTextBuilderXml (stringWriter, false);
-      var dictionary = Dictionary.New ("a", 11, "b", 22, "C", 33);
+      var dictionary = DictionaryMother.New ("a", 11, "b", 22, "C", 33);
       toTextBuilderXml.WriteDictionary (dictionary);
       toTextBuilderXml.Flush ();
       string result = stringWriter.ToString ();

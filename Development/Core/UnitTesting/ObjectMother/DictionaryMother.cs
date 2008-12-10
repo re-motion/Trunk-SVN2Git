@@ -23,44 +23,44 @@ namespace Remotion.Development.UnitTesting.ObjectMother
   /// </summary>
   /// <example><code>
   /// <![CDATA[  
-  /// var d = Dictionary.New("A",1, "B",2, "C",3); // d["A"]=1, d["B"]=2,...
+  /// var d = DictionaryMother.New("A",1, "B",2, "C",3); // d["A"]=1, d["B"]=2,...
   /// ]]>
   /// </code></example>
-  public class Dictionary
+  public class DictionaryMother
   {
-    public static System.Collections.Generic.Dictionary<TKey, TValue> New<TKey, TValue> ()
+    public static Dictionary<TKey, TValue> New<TKey, TValue> ()
     {
-      var container = new System.Collections.Generic.Dictionary<TKey, TValue> ();
+      var container = new Dictionary<TKey, TValue> ();
       return container;
     }
 
-    public static System.Collections.Generic.Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0)
+    public static Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0)
     {
-      var container = new System.Collections.Generic.Dictionary<TKey, TValue> (1);
+      var container = new Dictionary<TKey, TValue> (1);
       container[key0] = value0;
       return container;
     }
 
-    public static System.Collections.Generic.Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0, TKey key1, TValue value1)
+    public static Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0, TKey key1, TValue value1)
     {
-      var container = new System.Collections.Generic.Dictionary<TKey, TValue> (2);
+      var container = new Dictionary<TKey, TValue> (2);
       container[key0] = value0;
       container[key1] = value1;
       return container;
     }
 
-    public static System.Collections.Generic.Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0, TKey key1, TValue value1, TKey key2, TValue value2)
+    public static Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0, TKey key1, TValue value1, TKey key2, TValue value2)
     {
-      var container = new System.Collections.Generic.Dictionary<TKey, TValue> (3);
+      var container = new Dictionary<TKey, TValue> (3);
       container[key0] = value0;
       container[key1] = value1;
       container[key2] = value2;
       return container;
     }
 
-    public static System.Collections.Generic.Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0, TKey key1, TValue value1, TKey key2, TValue value2, TKey key3, TValue value3)
+    public static Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0, TKey key1, TValue value1, TKey key2, TValue value2, TKey key3, TValue value3)
     {
-      var container = new System.Collections.Generic.Dictionary<TKey, TValue> (4);
+      var container = new Dictionary<TKey, TValue> (4);
       container[key0] = value0;
       container[key1] = value1;
       container[key2] = value2;

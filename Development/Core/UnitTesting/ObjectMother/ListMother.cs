@@ -23,10 +23,10 @@ namespace Remotion.Development.UnitTesting.ObjectMother
   /// </summary>
   /// <example><code>
   /// <![CDATA[  
-  /// var listList = List.New( List.New(1,2), List.New(3,4) );
+  /// var listList = ListMother.New( List.New(1,2), List.New(3,4) );
   /// ]]>
   /// </code></example>
-  public class List
+  public class ListMother
   {
     public static System.Collections.Generic.List<T> New<T> (params T[] values)
     {

@@ -24,7 +24,6 @@ using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.UnitTests.Diagnostics.TestDomain;
-using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 
 namespace Remotion.UnitTests.Diagnostics
@@ -147,7 +146,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       //var list = new List<int> () { 5, 3, 1 };
-      var myList = List.New (5, 3, 1);
+      var myList = ListMother.New (5, 3, 1);
       toTextBuilder.e ("myList", myList);
       var result = toTextBuilder.CheckAndConvertToString();
       //Assert.That (result, Is.EqualTo ("myList:{5,3,1}"));
@@ -168,7 +167,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void MemberVariableTest2 ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      var myList = List.New (5, 3, 1);
+      var myList = ListMother.New (5, 3, 1);
       toTextBuilder.e (() => myList);
       var result = toTextBuilder.CheckAndConvertToString ();
       Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
@@ -190,7 +189,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void MemberInSequenceTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var myList = List.New (5, 3, 1);
+      var myList = ListMother.New (5, 3, 1);
       toTextBuilder.sb().e ("Abra").e ("myList", myList).e ("myList", myList).e ("Kadabra").se();
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
@@ -201,7 +200,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void AppendCollectionTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = List.New (5, 3, 1, 11, 13, 17);
+      var list = ListMother.New (5, 3, 1, 11, 13, 17);
       toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
@@ -212,7 +211,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void WriteDictionaryTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var dictionary = Dictionary.New ("a",11,"b",22,"C",33);
+      var dictionary = DictionaryMother.New ("a",11,"b",22,"C",33);
       toTextBuilder.WriteDictionary (dictionary);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
@@ -226,7 +225,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void AppendNestedCollectionTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = List.New (List.New (5, 3, 1), List.New (11, 13, 17));
+      var list = ListMother.New (ListMother.New (5, 3, 1), ListMother.New (11, 13, 17));
       toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
@@ -237,7 +236,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void AppendNestedCollectionStringMemberTest ()
     {
       var toTextBuilder = CreateTextBuilder ();
-      var list = List.New (List.New ("5", "3", "1"), List.New ("11", "13", "17"));
+      var list = ListMother.New (ListMother.New ("5", "3", "1"), ListMother.New ("11", "13", "17"));
       toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString ();
       Log (result);
@@ -249,7 +248,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void AppendNestedCollectionTest2 ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = List.New (List.New (5, 3, 1), List.New (11, 13, 17), List.New (19, 23, 29));
+      var list = ListMother.New (ListMother.New (5, 3, 1), ListMother.New (11, 13, 17), ListMother.New (19, 23, 29));
       toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
@@ -260,7 +259,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void AppendNestedCollectionTest3 ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = List.New (List.New (List.New (5, 3, 1), List.New (11, 13, 17)), List.New (List.New (19, 23, 29), List.New (31, 37, 41)));
+      var list = ListMother.New (ListMother.New (ListMother.New (5, 3, 1), ListMother.New (11, 13, 17)), ListMother.New (ListMother.New (19, 23, 29), ListMother.New (31, 37, 41)));
       toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
@@ -271,10 +270,10 @@ namespace Remotion.UnitTests.Diagnostics
     public void AppendNestedCollectionTest4 ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = List.New (
-          List.New (List.New (1, 2, 3), List.New (4, 5, 6), List.New (7, 8, 9)),
-          List.New (List.New (10, 11, 12), List.New (13, 14, 15), List.New (16, 17, 18)),
-          List.New (List.New (19, 20, 21), List.New (22, 23, 24), List.New (25, 26, 27))
+      var list = ListMother.New (
+          ListMother.New (ListMother.New (1, 2, 3), ListMother.New (4, 5, 6), ListMother.New (7, 8, 9)),
+          ListMother.New (ListMother.New (10, 11, 12), ListMother.New (13, 14, 15), ListMother.New (16, 17, 18)),
+          ListMother.New (ListMother.New (19, 20, 21), ListMother.New (22, 23, 24), ListMother.New (25, 26, 27))
           );
       toTextBuilder.WriteEnumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
@@ -286,7 +285,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void collectionTest ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = List.New (List.New (List.New ("A", "B", "C")));
+      var list = ListMother.New (ListMother.New (ListMother.New ("A", "B", "C")));
       toTextBuilder.enumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);
@@ -345,7 +344,7 @@ namespace Remotion.UnitTests.Diagnostics
     public void collectionTest2 ()
     {
       var toTextBuilder = CreateTextBuilder();
-      var list = List.New (List.New (List.New ("A", "B", "C")));
+      var list = ListMother.New (ListMother.New (ListMother.New ("A", "B", "C")));
       toTextBuilder.enumerable (list);
       var result = toTextBuilder.CheckAndConvertToString();
       Log (result);

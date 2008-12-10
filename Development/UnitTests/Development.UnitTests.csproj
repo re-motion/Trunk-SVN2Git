@@ -133,7 +133,7 @@
     <Compile Include="Data\UnitTesting\DomainObjects\Linq\ExpressionTreeComparerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\SetUpFixture.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\TestDomain\SimpleDomainObject.cs" />
-    <Compile Include="NewTest.cs" />
+    <Compile Include="ObjectMotherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

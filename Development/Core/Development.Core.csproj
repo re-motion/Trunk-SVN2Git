@@ -116,9 +116,9 @@
     <Compile Include="UnitTesting\ISerializationEventReceiver.cs" />
     <Compile Include="UnitTesting\MethodNotFoundException.cs" />
     <Compile Include="UnitTesting\MixinWithSerializationCallbacks.cs" />
-    <Compile Include="UnitTesting\ObjectMother\Dictionary.cs" />
-    <Compile Include="UnitTesting\ObjectMother\List.cs" />
-    <Compile Include="UnitTesting\ObjectMother\Queue.cs" />
+    <Compile Include="UnitTesting\ObjectMother\DictionaryMother.cs" />
+    <Compile Include="UnitTesting\ObjectMother\ListMother.cs" />
+    <Compile Include="UnitTesting\ObjectMother\QueueMother.cs" />
     <Compile Include="UnitTesting\PEVerifier.cs" />
     <Compile Include="UnitTesting\PEVerifyException.cs" />
     <Compile Include="UnitTesting\PrivateInvoke.cs">

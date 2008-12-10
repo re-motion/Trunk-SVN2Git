@@ -102,7 +102,7 @@ namespace Remotion.UnitTests.Diagnostics.TestDomain
     public Object[, ,] RectangularArray3D { get; set; }
 
     private string _privateFieldString = "FieldString text";
-    private List<List<string>> _privateFieldListList = List.New (Development.UnitTesting.ObjectMother.List.New ("private", "field"), Development.UnitTesting.ObjectMother.List.New ("list of", "list"));
+    private List<List<string>> _privateFieldListList = ListMother.New (Development.UnitTesting.ObjectMother.ListMother.New ("private", "field"), Development.UnitTesting.ObjectMother.ListMother.New ("list of", "list"));
   }
 
   public class TestChild : Test

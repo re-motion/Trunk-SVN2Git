@@ -28,7 +28,6 @@ using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using System.Collections.Generic;
 using Remotion.Utilities;
-using List = Remotion.Development.UnitTesting.ObjectMother.List;
 using NUnitList = NUnit.Framework.SyntaxHelpers.List;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -45,7 +44,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (new CultureScope ("de-DE"))
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User2, User3, User);
+        var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User2, User3, User);
 
         // Create stateless-only ACL
         //SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
@@ -54,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
         var statelessAcl = CreateStatelessAcl (Ace);
 
-        var acls = List.New<AccessControlList> (Acl, statelessAcl);
+        var acls = ListMother.New<AccessControlList> (Acl, statelessAcl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -89,9 +88,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (new CultureScope ("de-DE"))
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+        var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User);
 
-        var acls = List.New<AccessControlList> (Acl);
+        var acls = ListMother.New<AccessControlList> (Acl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -153,10 +152,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (new CultureScope ("de-DE"))
       {
-        var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
+        var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User);
         
         var statelessAcl = CreateStatelessAcl (Ace);
-        var acls = List.New (Acl, statelessAcl);
+        var acls = ListMother.New (Acl, statelessAcl);
 
         List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (users, acls, false);
 

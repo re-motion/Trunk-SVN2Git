@@ -22,13 +22,13 @@ using System.Linq;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
-using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -40,8 +40,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (CultureScope.CreateInvariantCultureScope()) 
       {
-        var users = List.New (User); 
-        var acls = List.New<AccessControlList> (Acl);
+        var users = ListMother.New (User); 
+        var acls = ListMother.New<AccessControlList> (Acl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -60,8 +60,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (CultureScope.CreateInvariantCultureScope ()) 
       {
-        var users = List.New (User);
-        var acls = List.New<AccessControlList> (Acl);
+        var users = ListMother.New (User);
+        var acls = ListMother.New<AccessControlList> (Acl);
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
         var stringWriter = new StringWriter ();
@@ -83,8 +83,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void OutputRowCountTest ()
     {
-      var users = List.New (User);
-      var acls = List.New<AccessControlList> (Acl);
+      var users = ListMother.New (User);
+      var acls = ListMother.New<AccessControlList> (Acl);
       List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
       var stringWriter = new StringWriter ();
@@ -100,8 +100,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void DontOutputRowCountTest ()
     {
-      var users = List.New (User);
-      var acls = List.New<AccessControlList> (Acl);
+      var users = ListMother.New (User);
+      var acls = ListMother.New<AccessControlList> (Acl);
 
       List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -117,8 +117,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void UserSortOrderTest ()
     {
-      var users = List.New (User, User2, User3);
-      var acls = List.New<AccessControlList> (Acl, Acl2);
+      var users = ListMother.New (User, User2, User3);
+      var acls = ListMother.New<AccessControlList> (Acl, Acl2);
 
       List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -135,8 +135,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void SortOrderTest ()
     {
-      var users = List.New (User3);
-      var acls = List.New<AccessControlList> (Acl);
+      var users = ListMother.New (User3);
+      var acls = ListMother.New<AccessControlList> (Acl);
 
       List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -164,8 +164,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (CultureScope_de_DE())
       {
-        var users = List.New (User, User2, User3);
-        var acls = List.New<AccessControlList> (Acl2, Acl);
+        var users = ListMother.New (User, User2, User3);
+        var acls = ListMother.New<AccessControlList> (Acl2, Acl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -440,13 +440,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (CultureScope_de_DE ())
       {
-        var users = List.New (User);
+        var users = ListMother.New (User);
 
         // Create stateless-only ACL
         SecurableClassDefinition classDefinition = TestHelper.CreateOrderClassDefinition ();
         var statlessAcl = TestHelper.CreateStatelessAcl (classDefinition);
         TestHelper.AttachAces (statlessAcl, Ace);
-        var acls = List.New<AccessControlList> (statlessAcl);
+        var acls = ListMother.New<AccessControlList> (statlessAcl);
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
         using (var textWriter = new StringWriter ())
@@ -467,7 +467,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (CultureScope_de_DE ())
       {
-        var users = List.New (User);
+        var users = ListMother.New (User);
 
         // Create an ACL with no states
         var orderClassDefinition = TestHelper.CreateOrderClassDefinition ();
@@ -479,7 +479,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
         var stateDefinitions = acl.StateCombinations.SelectMany (x => x.GetStates ());
         Assert.IsFalse (stateDefinitions.Any()); 
 
-        var acls = List.New<AccessControlList> (acl);
+        var acls = ListMother.New<AccessControlList> (acl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -540,7 +540,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var aclExpansionEntry = new AclExpansionEntry (
           User, Role, Acl, new AclExpansionAccessConditions (), new[] { DeleteAccessType }, new[] { ReadAccessType, WriteAccessType });
-      var aclExpansionEntryList = List.New (aclExpansionEntry);
+      var aclExpansionEntryList = ListMother.New (aclExpansionEntry);
 
       using (var textWriter = new StringWriter ())
       {
@@ -622,7 +622,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var accessConditions = new AclExpansionAccessConditions { OwningGroup = owningGroup, GroupHierarchyCondition = groupHierarchyCondition };
       var aclExpansionEntry = new AclExpansionEntry (
           User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
-      List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
+      List<AclExpansionEntry> aclExpansion = ListMother.New (aclExpansionEntry);
 
       var stringWriter = new StringWriter ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true, new AclExpansionHtmlWriterSettings());
@@ -653,7 +653,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var accessConditions = new AclExpansionAccessConditions { OwningTenant = owningTenant, TenantHierarchyCondition = tenantHierarchyCondition };
       var aclExpansionEntry = new AclExpansionEntry ( User, Role, Acl, accessConditions, new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
-      List<AclExpansionEntry> aclExpansion = List.New (aclExpansionEntry);
+      List<AclExpansionEntry> aclExpansion = ListMother.New (aclExpansionEntry);
 
       var stringWriter = new StringWriter ();
       var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (stringWriter, true, new AclExpansionHtmlWriterSettings());

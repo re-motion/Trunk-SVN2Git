@@ -24,16 +24,15 @@ using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
-using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Text.StringExtensions;
 using Remotion.Utilities;
-using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
+using Remotion.Development.UnitTesting.ObjectMother;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
   [TestFixture]
-  // TODO AE: Remove commented code. (Do not commit.)
-  // TODO AE: Dedicated test for GetUsers and GetAccessControlEntriesForUser should be added. (Non-TDD code?)
   public class AclExpansionMultiFileHtmlWriterTest : AclToolsTestBase
   {
     [Test]
@@ -64,23 +63,52 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    // TODO AE: Move to bottom.
-    private void AssertTextWriterFactoryMemberEquals (StringWriterFactory stringWriterFactory, string name, string resultExpected)
+    [Test]
+    public void GetUsersTest ()
     {
-      var textWriterData = stringWriterFactory.GetTextWriterData (name);
-      string result = textWriterData.TextWriter.ToString();
+      var aclExpansionEntryList = new List<AclExpansionEntry>();
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser(User));
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User3));
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User2));
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User2));
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User));
+      var userList = AclExpansionMultiFileHtmlWriter.GetUsers (aclExpansionEntryList);
+      Assert.That (userList, Is.EqualTo (new List<User> { User3, User2, User }));
+    }
 
-      //To.ConsoleLine.e ("resultExpected", resultExpected);
-      //To.ConsoleLine.e ("result        ", result);
+    [Test]
+    public void GetAccessControlEntriesForUserTest ()
+    {
+      AclExpansionEntry aclExpansionEntry0 = GetAclExpansionEntryWithUser (User);
+      AclExpansionEntry aclExpansionEntry1 = GetAclExpansionEntryWithUser (User);
+      AclExpansionEntry aclExpansionEntry2 = GetAclExpansionEntryWithUser (User);
 
-      Assert.That (result, Is.EqualTo (resultExpected));
+      var aclExpansionEntryList = new List<AclExpansionEntry> ();
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User3));
+      aclExpansionEntryList.Add (aclExpansionEntry0);
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User3));
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User2));
+      aclExpansionEntryList.Add (aclExpansionEntry1);
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User3));
+      aclExpansionEntryList.Add (aclExpansionEntry2);
+      aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User2));
+      
+      var aclExpansionEntryListResult = AclExpansionMultiFileHtmlWriter.GetAccessControlEntriesForUser (aclExpansionEntryList, User);
+      Assert.That (aclExpansionEntryListResult, Is.EquivalentTo (ListMother.New( aclExpansionEntry0, aclExpansionEntry1, aclExpansionEntry2 )));
+      Assert.That (aclExpansionEntryListResult, Is.EquivalentTo (ListMother.New (aclExpansionEntry0, aclExpansionEntry1, aclExpansionEntry2)));
     }
 
 
-    public string WriteStringWriterFactory (StringWriterFactory stringWriterFactory) //, IToTextBuilder toTextBuilder)
+    private AclExpansionEntry GetAclExpansionEntryWithUser (User user)
+    {
+      return new AclExpansionEntry (
+          user, Role, Acl, new AclExpansionAccessConditions (), new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
+    }
+
+
+    public string WriteStringWriterFactory (StringWriterFactory stringWriterFactory)
     {
       ArgumentUtility.CheckNotNull ("stringWriterFactory", stringWriterFactory);
-      //ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
       var toTextBuilderString = To.String;
       foreach (KeyValuePair<string, TextWriterData> pair in stringWriterFactory.NameToTextWriterData)
       {
@@ -90,33 +118,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    // TODO AE: Consider naming this integration test and making it automatically executable. Or remove it.
+  
     [Test]
-    [Explicit]
-    public void WriteUserFileTest ()
-    {
-      using (new CultureScope ("de-AT", "de-AT"))
-      {
-        var aclExpander = new AclExpander();
-        var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
-        //var stringWriter = new StringWriter();
-        var streamWriterFactory = new StreamWriterFactory ();
-        streamWriterFactory.Directory = Path.Combine ("c:\\temp\\AclExpansions", "AclExpansion_" + StringUtility.GetFileNameTimestampNow ());
-        var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (streamWriterFactory, true);
-        aclExpansionMultiFileHtmlWriter.WriteAclExpansion (aclExpansionEntryList);
-        //var result = stringWriter.ToString();
-        //To.ConsoleLine.e (streamWriterFactory);
-      }
-    }
-    
-
-
-    [Test]
-    // TODO AE: Rename test to match method being tested (ToValidFileNameTest). Consider moving to AclExpansionHtmlWriterBaseTest.
-    public void ToFileNameTest ()
+    public void ToValidFileNameTest ()
     {
       const string unityInput = "µabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      const string forbiddenInput =  "\"?/\\*:";
+      //const string forbiddenInput =  "\"?/\\*:";
+      string forbiddenInput = new string (Path.GetInvalidFileNameChars());
       string forbiddenInputResult = new String ('_', forbiddenInput.Length);
       Assert.That (AclExpansionHtmlWriterImplementationBase.ToValidFileName (unityInput), Is.EqualTo (unityInput));
       Assert.That (AclExpansionHtmlWriterImplementationBase.ToValidFileName (forbiddenInput), Is.EqualTo (forbiddenInputResult));
@@ -125,25 +133,29 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-    //[Test]
-    //public void OutputRowCountTest ()
-    //{
-    //  var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User);
-    //  var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl);
+    [Test]
+    [Explicit]
+    public void WriteUserFileTest ()
+    {
+      using (new CultureScope ("de-AT", "de-AT"))
+      {
+        var aclExpander = new AclExpander ();
+        var aclExpansionEntryList = aclExpander.GetAclExpansionEntryList ();
+        var streamWriterFactory = new StreamWriterFactory ();
+        streamWriterFactory.Directory = Path.Combine ("c:\\temp\\AclExpansions", "AclExpansion_" + StringUtility.GetFileNameTimestampNow ());
+        var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (streamWriterFactory, true);
+        aclExpansionMultiFileHtmlWriter.WriteAclExpansion (aclExpansionEntryList);
+      }
+    }
 
-    //  List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList_UserList_AceList (users, acls);
 
-    //  var stringWriter = new StringWriter ();
-    //  var aclExpansionHtmlWriter = new AclExpansionHtmlWriter (aclExpansion, stringWriter, true);
-    //  aclExpansionHtmlWriter.Settings.OutputRowCount = true;
-    //  aclExpansionHtmlWriter.WriteAclExpansion ();
-    //  string result = stringWriter.ToString ();
-    //  //To.ConsoleLine.e (() => result);
-    //  Assert.That (result, NUnitText.Contains ("Usa Da, Dr. (3)"));
-    //  Assert.That (result, NUnitText.Contains ("Da Group, Supreme Being (3)"));
-    //  Assert.That (result, NUnitText.Contains ("Order (3)"));
-    //}
-    
+
+    private void AssertTextWriterFactoryMemberEquals (StringWriterFactory stringWriterFactory, string name, string resultExpected)
+    {
+      var textWriterData = stringWriterFactory.GetTextWriterData (name);
+      string result = textWriterData.TextWriter.ToString ();
+      Assert.That (result, Is.EqualTo (resultExpected));
+    }
 
 
   }

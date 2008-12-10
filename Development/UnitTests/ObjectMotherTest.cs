@@ -18,17 +18,16 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.ObjectMother;
-using List = Remotion.Development.UnitTesting.ObjectMother.List;
 
 namespace Remotion.Development.UnitTests
 {
   [NUnit.Framework.TestFixture]
-  public class NewTest
+  public class ObjectMotherTest
   {
     [Test]
     public void NewListTest ()
     {
-      var collection = List.New (7, 11, 13, 17);
+      var collection = ListMother.New (7, 11, 13, 17);
       var collectionExpected = new List<int> { 7, 11, 13, 17 };
       Assert.That (collection, Is.EqualTo (collectionExpected));
     }
@@ -36,7 +35,7 @@ namespace Remotion.Development.UnitTests
     [Test]
     public void NewQueueTest ()
     {
-      var collection = Queue.New (7, 11, 13, 17);
+      var collection = QueueMother.New (7, 11, 13, 17);
       var collectionExpected = new Queue<int>();
       collectionExpected.Enqueue (7);
       collectionExpected.Enqueue (11);
@@ -49,7 +48,7 @@ namespace Remotion.Development.UnitTests
     [Test]
     public void NewDictionary1Test ()
     {
-      var collection = Dictionary.New ("B", 2);
+      var collection = DictionaryMother.New ("B", 2);
       var collectionExpected = new Dictionary<string, int>();
       collectionExpected["B"] = 2;
       Assert.That (collection, Is.EquivalentTo (collectionExpected));
@@ -58,7 +57,7 @@ namespace Remotion.Development.UnitTests
     [Test]
     public void NewDictionary2Test ()
     {
-      var collection = Dictionary.New ("B", 2, "D", 4);
+      var collection = DictionaryMother.New ("B", 2, "D", 4);
       var collectionExpected = new Dictionary<string, int>();
       collectionExpected["B"] = 2;
       collectionExpected["D"] = 4;
@@ -68,7 +67,7 @@ namespace Remotion.Development.UnitTests
     [Test]
     public void NewDictionary3Test ()
     {
-      var collection = Dictionary.New ("B", 2, "D", 4, "C", 3);
+      var collection = DictionaryMother.New ("B", 2, "D", 4, "C", 3);
       var collectionExpected = new Dictionary<string, int>();
       collectionExpected["B"] = 2;
       collectionExpected["C"] = 3;
@@ -79,7 +78,7 @@ namespace Remotion.Development.UnitTests
     [Test]
     public void NewDictionaryTest4 ()
     {
-      var collection = Dictionary.New ("B", 2, "D", 4, "C", 3, "A", 1);
+      var collection = DictionaryMother.New ("B", 2, "D", 4, "C", 3, "A", 1);
       //var collectionExpected = new Queue<int> { 7, 11, 13, 17 };
       var collectionExpected = new Dictionary<string, int>();
       collectionExpected["A"] = 1;

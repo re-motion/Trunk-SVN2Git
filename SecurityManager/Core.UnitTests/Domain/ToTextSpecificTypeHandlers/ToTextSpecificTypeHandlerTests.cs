@@ -19,12 +19,12 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
-using List = Remotion.Development.UnitTesting.ObjectMother.List;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 
@@ -212,7 +212,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.ToTextSpecificTypeHandlers
     [Test]
     public void SecurityTokenTest ()
     {
-      var x = new SecurityToken (User, Tenant, Group, User2, List.New (TestHelper.CreateAbstractRoleDefinition("arole",456)));
+      var x = new SecurityToken (User, Tenant, Group, User2, ListMother.New (TestHelper.CreateAbstractRoleDefinition("arole",456)));
       var result = To.String.e (x).CheckAndConvertToString ();
       //To.ConsoleLine.e (() => result);
       //Assert.That (result, NUnitText.Contains ("\"DaUs\"],tenant=[\"Da Tenant\"]," + Environment.NewLine + "roles={[\"DaUs\",\"Da Group\",\"Supreme Being\"]}],[\"Da Tenant\"],{[\"Da Group\"],[\"Anotha Group\"]},{[\"DaUs\",\"Da Group\",\"Supreme Being\"]},{[\"arole\"]}]"));

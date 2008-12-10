@@ -53,13 +53,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void EnumeratorTest ()
     {
-      var users = Remotion.Development.UnitTesting.ObjectMother.List.New (User, User2, User3);
+      var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User, User2, User3);
 
       // TODO AE: Differentiate between mocks and stubs.
       var userFinderMock = MockRepository.GenerateMock<IAclExpanderUserFinder> (); 
       userFinderMock.Expect (mock => mock.FindUsers ()).Return (users);
 
-      var acls = Remotion.Development.UnitTesting.ObjectMother.List.New<AccessControlList> (Acl,Acl2);
+      var acls = Remotion.Development.UnitTesting.ObjectMother.ListMother.New<AccessControlList> (Acl,Acl2);
 
       var numberRoles = users.SelectMany (x => x.Roles).Count();
       Assert.That (numberRoles, Is.GreaterThanOrEqualTo (11));

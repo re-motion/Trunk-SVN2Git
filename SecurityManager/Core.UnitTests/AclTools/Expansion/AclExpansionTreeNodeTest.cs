@@ -33,8 +33,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Explicit]
     public void UsageTest ()
     {
-      var data = List.New (List.New ("a", "b"), List.New ("c", "d"));
-      var test = AclExpansionTreeNode.New ("a", 2, List.New ("a", "b"));
+      var data = ListMother.New (ListMother.New ("a", "b"), ListMother.New ("c", "d"));
+      var test = AclExpansionTreeNode.New ("a", 2, ListMother.New ("a", "b"));
     }
   }
 }
