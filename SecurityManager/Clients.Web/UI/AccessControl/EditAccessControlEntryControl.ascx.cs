@@ -26,6 +26,7 @@ using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -111,18 +112,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       base.OnPreRender (e);
 
       if (string.IsNullOrEmpty (SpecificGroupField.ServicePath))
-      {
-        SpecificGroupField.ServicePath = ResourceUrlResolver.GetResourceUrl (
-            this, Context, typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx");
-        SpecificGroupField.ServiceMethod = "GetBusinessObjects";
-      }
+        SecurityManagerSearchWebService.BindServiceToControl(SpecificGroupField);
 
       if (string.IsNullOrEmpty (SpecificUserField.ServicePath))
-      {
-        SpecificUserField.ServicePath = ResourceUrlResolver.GetResourceUrl (
-            this, Context, typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx");
-        SpecificUserField.ServiceMethod = "GetBusinessObjects";
-      }
+        SecurityManagerSearchWebService.BindServiceToControl (SpecificUserField);
 
       if (IsCollapsed)
       {

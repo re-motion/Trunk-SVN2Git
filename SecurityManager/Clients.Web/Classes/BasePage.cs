@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     // methods and properties
 
-    protected new BaseTransactedFunction CurrentFunction
+    public new BaseTransactedFunction CurrentFunction
     {
       get { return (BaseTransactedFunction) base.CurrentFunction; }
     }

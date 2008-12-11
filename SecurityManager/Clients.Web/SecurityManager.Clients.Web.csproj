@@ -64,8 +64,10 @@
     </None>
     <None Include="SecurityManager.Clients.Web.build" />
     <Content Include="Global.asax" />
+    <Content Include="res\Image\CancelButton.gif" />
     <Content Include="res\Image\Collapse.gif" />
     <Content Include="res\Image\DeleteItem.gif" />
+    <Content Include="res\Image\EditItem.gif" />
     <Content Include="res\Image\Expand.gif" />
     <Content Include="res\Image\HierarchyThis.gif" />
     <Content Include="res\Image\HierarchyThisAndChildren.gif" />
@@ -74,6 +76,7 @@
     <Content Include="res\Image\PermissionDenied.gif" />
     <Content Include="res\Image\PermissionGranted.gif" />
     <Content Include="res\Image\PermissionUndefined.gif" />
+    <Content Include="res\Image\SaveButton.gif" />
     <Content Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx" />
     <Content Include="UI\SecurityManagerSearchWebService.asmx" />
     <Content Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx" />
@@ -123,6 +126,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Classes\AccessControl\PermissionBooleanValue.cs" />
+    <Compile Include="Classes\EditableRowAutoCompleteControlFactory.cs" />
     <Compile Include="Classes\SecurableClassDefinitionTreeView.cs" />
     <Compile Include="Classes\BaseControl.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -133,7 +137,6 @@
     <Compile Include="Classes\BasePage.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Classes\ObjectBoundRepeater.cs" />
     <Compile Include="Classes\SecurityManagerHttpApplication.cs" />
     <Compile Include="default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>

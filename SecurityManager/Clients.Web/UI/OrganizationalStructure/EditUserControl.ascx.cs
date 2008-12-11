@@ -16,11 +16,15 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Clients.Web.Globalization.UI;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -44,6 +48,23 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     public override IFocusableControl InitialFocusControl
     {
       get { return UserNameField; }
+    }
+
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+
+      SubstitutedByList.EditModeControlFactory = new EditableRowAutoCompleteControlFactory();
+      var editModeColumn = (BocRowEditModeColumnDefinition) SubstitutedByList.FixedColumns[0];
+      editModeColumn.EditIcon = GetIcon ("EditItem.gif", GlobalResources.Edit);
+      editModeColumn.SaveIcon = GetIcon ("SaveButton.gif", GlobalResources.Save);
+      editModeColumn.CancelIcon = GetIcon ("CancelButton.gif", GlobalResources.Cancel);
+    }
+
+    private IconInfo GetIcon (string resourceUrl, string alternateText)
+    {
+      return new IconInfo (ResourceUrlResolver.GetResourceUrl (this, typeof (EditUserControl), ResourceType.Image, resourceUrl))
+             { AlternateText = alternateText };
     }
 
     protected override void OnLoad (EventArgs e)
@@ -121,6 +142,32 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       EditRoleFormFunction editRoleFormFunction = new EditRoleFormFunction (WxeTransactionMode.None, (role != null) ? role.ID : null, user, group);
       Page.ExecuteFunction (editRoleFormFunction, WxeCallArguments.Default);
+    }
+
+    protected void SubstitutedByList_MenuItemClick (object sender, WebMenuItemClickEventArgs e)
+    {
+      if (e.Item.ItemID == "NewItem")
+      {
+        SubstitutedByList.AddAndEditRow (Substitution.NewObject());
+      }
+
+      if (e.Item.ItemID == "DeleteItem")
+      {
+        foreach (Role role in SubstitutedByList.GetSelectedBusinessObjects())
+        {
+          SubstitutedByList.RemoveRow (role);
+          role.Delete();
+        }
+      }
+
+      SubstitutedByList.ClearSelectedRows();
+    }
+
+    protected void SubstitutedByList_EditableRowChangesCanceled (object sender, BocListItemEventArgs e)
+    {
+      Substitution substitution = (Substitution) e.BusinessObject;
+      if (substitution.State == StateType.New)
+        substitution.Delete();
     }
   }
 }

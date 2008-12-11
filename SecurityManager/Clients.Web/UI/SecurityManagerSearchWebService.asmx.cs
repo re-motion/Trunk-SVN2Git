@@ -25,19 +25,33 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web;
-using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
+using Remotion.Web;
 
 namespace Remotion.SecurityManager.Clients.Web.UI
 {
+  /// <summary>
+  /// The <see cref="SecurityManagerSearchWebService"/> is used as an interface between <see cref="BocAutoCompleteReferenceValue"/> controls and the 
+  /// <see cref="ISearchAvailableObjectsService"/> implementation.
+  /// </summary>
   [WebService (Namespace = "http://www.re-motion.org/SecurityManager/")]
   [WebServiceBinding (ConformsTo = WsiProfiles.BasicProfile1_1)]
   [ToolboxItem (false)]
   [ScriptService]
-  public class SecurityManagerSearchWebService : WebService
+  public class SecurityManagerSearchWebService : WebService, ISearchAvailableObjectWebService
   {
+    public static void BindServiceToControl (BocAutoCompleteReferenceValue control)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      control.ServicePath = ResourceUrlResolver.GetResourceUrl (
+          control, typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx");
+      control.ServiceMethod = "Search";
+    }
+
     [WebMethod (EnableSession = true)]
-    public BusinessObjectWithIdentityProxy[] GetBusinessObjects (
+    public BusinessObjectWithIdentityProxy[] Search (
         string prefixText,
         int? completionSetCount,
         string businessObjectClass,
@@ -49,18 +63,19 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       ArgumentUtility.CheckNotNullOrEmpty ("businessObjectProperty", businessObjectProperty);
       ArgumentUtility.CheckNotNullOrEmpty ("args", args);
 
-      Type type = TypeUtility.GetType (businessObjectClass);
+      Type type = TypeUtility.GetType (businessObjectClass, true);
       BindableObjectClass bindableObjectClass = BindableObjectProvider.GetBindableObjectClass (type);
-      
+
       IBusinessObjectProperty propertyDefinition = bindableObjectClass.GetPropertyDefinition (businessObjectProperty);
       Assertion.IsNotNull (propertyDefinition);
       Assertion.IsTrue (propertyDefinition is IBusinessObjectReferenceProperty);
-      
+
       IBusinessObjectReferenceProperty referenceProperty = (IBusinessObjectReferenceProperty) propertyDefinition;
 
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        var result = referenceProperty.SearchAvailableObjects ((IBusinessObject)RepositoryAccessor.NewObject (type).With(), new DefaultSearchArguments (args));
+        var result = referenceProperty.SearchAvailableObjects (
+            (IBusinessObject) RepositoryAccessor.NewObject (type).With(), new DefaultSearchArguments (args));
         if (completionSetCount.HasValue)
           result.Take (completionSetCount.Value);
         return result.Cast<IBusinessObjectWithIdentity>().Select (o => new BusinessObjectWithIdentityProxy (o)).ToArray();

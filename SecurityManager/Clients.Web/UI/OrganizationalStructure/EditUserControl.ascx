@@ -11,6 +11,7 @@
 
 <remotion:FormGridManager ID="FormGridManager" runat="server" ValidatorVisibility="HideValidators" />
 <remotion:BindableObjectDataSourceControl id="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.OrganizationalStructure.User, Remotion.SecurityManager" />
+<asp:ScriptManagerProxy runat="server" />
 <table id="FormGrid" runat="server" cellpadding="0" cellspacing="0">
   <tr class="underlinedMarkerCellRow">
     <td class="formGridTitleCell" style="white-space: nowrap;" colspan="2">
@@ -66,16 +67,8 @@
     <td>
       <remotion:BocList ID="RolesList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="Roles" OnMenuItemClick="RolesList_MenuItemClick" Selection="Multiple" ShowEmptyListMessage="True" ShowEmptyListReadOnlyMode="True">
         <FixedColumns>
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Group">
-            <PersistedCommand>
-              <remotion:BocListItemCommand />
-            </PersistedCommand>
-          </remotion:BocSimpleColumnDefinition>
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Position">
-            <PersistedCommand>
-              <remotion:BocListItemCommand />
-            </PersistedCommand>
-          </remotion:BocSimpleColumnDefinition>
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Group" />
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Position" />
         </FixedColumns>
         <ListMenuItems>
           <remotion:BocMenuItem ItemID="NewItem" Text="$res:New">
@@ -84,6 +77,33 @@
             </PersistedCommand>
           </remotion:BocMenuItem>
           <remotion:BocMenuItem ItemID="EditItem" RequiredSelection="ExactlyOne" Text="$res:Edit">
+            <PersistedCommand>
+              <remotion:BocMenuItemCommand Show="EditMode" />
+            </PersistedCommand>
+          </remotion:BocMenuItem>
+          <remotion:BocMenuItem ItemID="DeleteItem" RequiredSelection="OneOrMore" Text="$res:Delete">
+            <PersistedCommand>
+              <remotion:BocMenuItemCommand Show="EditMode" />
+            </PersistedCommand>
+          </remotion:BocMenuItem>
+        </ListMenuItems>
+      </remotion:BocList>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocList ID="SubstitutedByList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="SubstitutedBy" OnMenuItemClick="SubstitutedByList_MenuItemClick" OnEditableRowChangesCanceled="SubstitutedByList_EditableRowChangesCanceled" Selection="Multiple" ShowEmptyListMessage="True" ShowEmptyListReadOnlyMode="True">
+        <FixedColumns>
+          <remotion:BocRowEditModeColumnDefinition />
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="SubstitutingUser" />
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="IsEnabled" />
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="BeginDate" />
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="EndDate" />          
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="SubstitutedRole" />
+        </FixedColumns>
+        <ListMenuItems>
+          <remotion:BocMenuItem ItemID="NewItem" Text="$res:New">
             <PersistedCommand>
               <remotion:BocMenuItemCommand Show="EditMode" />
             </PersistedCommand>
