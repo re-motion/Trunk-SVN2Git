@@ -108,7 +108,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void SpecificTagsTest ()
     {
-      string[] tagNames = new[] { "html", "head", "title", "style", "body", "table", "th", "tr", "td", "p"  };
+      string[] tagNames = new[] { "html", "head", "title", "style", "body", "table", "th", "tr", "td", "p", "a"  };
       foreach (string tagName in tagNames)
       { 
         AssertTagNameOpenCloseHtml (tagName);

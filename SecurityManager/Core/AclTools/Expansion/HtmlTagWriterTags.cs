@@ -261,5 +261,25 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       return _htmlTagWriter;
     }
 
+
+    /// <summary>
+    /// Writes out an &lt;a&gt; HTML-tag
+    /// </summary>
+    /// <returns></returns>
+    public HtmlTagWriter a ()
+    {
+      _htmlTagWriter.Tag ("a");
+      return _htmlTagWriter;
+    }
+
+    /// <summary>
+    /// Writes out an &lt;/a&gt; HTML-tag
+    /// </summary>
+    /// <returns></returns>
+    public HtmlTagWriter aEnd ()
+    {
+      _htmlTagWriter.TagEnd ("a");
+      return _htmlTagWriter;
+    }
   }
 }

@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         _implementation = new AclExpansionHtmlWriterImplementationBase (textWriter, _indentXml);
 
-        _implementation.WritePageStart ("re-motion ACL Expansion - User Master Table");
+        _implementation.WritePageStart (AclExpansionMultiFileHtmlWriterResources.PageTitle);
         _implementation.WriteTableStart ("remotion-user-table");
         WriteTableHeaders ();
         WriteTableBody (aclExpansion);
@@ -74,11 +74,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableHeaders ()
     {
       _implementation.HtmlTagWriter.Tags.th (); 
-      //_implementation.WriteHeaderCell ("User");
       _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.UserHeaderTable);  // localization 
-      _implementation.WriteHeaderCell ("First Name");
-      _implementation.WriteHeaderCell ("Last Name");
-      _implementation.WriteHeaderCell ("Access Rights");
+      _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.FirstNameHeaderTable);
+      _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.LastNameHeaderTable);
+      _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.AccessRightsNameHeaderTable);
       _implementation.HtmlTagWriter.Tags.thEnd ();
     }
 
@@ -118,11 +117,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       string relativePath = _textWriterFactory.GetRelativePath (MasterFileName, userDetailFileName);
       _implementation.WriteTableRowBeginIfNotInTableRow (); 
       _implementation.HtmlTagWriter.Tags.td ();
-      _implementation.HtmlTagWriter.Tag ("a");
+      _implementation.HtmlTagWriter.Tags.a();
       _implementation.HtmlTagWriter.Attribute ("href", relativePath);
       _implementation.HtmlTagWriter.Attribute ("target", "_blank");
       _implementation.HtmlTagWriter.Value (relativePath);
-      _implementation.HtmlTagWriter.TagEnd ("a");
+      _implementation.HtmlTagWriter.Tags.aEnd ();
       _implementation.HtmlTagWriter.Tags.tdEnd ();
     }
 

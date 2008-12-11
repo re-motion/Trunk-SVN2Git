@@ -62,6 +62,42 @@ namespace Remotion.SecurityManager.Globalization.AclTools.Expansion {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Access Rights.
+        /// </summary>
+        internal static string AccessRightsNameHeaderTable {
+            get {
+                return ResourceManager.GetString("AccessRightsNameHeaderTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First Name.
+        /// </summary>
+        internal static string FirstNameHeaderTable {
+            get {
+                return ResourceManager.GetString("FirstNameHeaderTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Name.
+        /// </summary>
+        internal static string LastNameHeaderTable {
+            get {
+                return ResourceManager.GetString("LastNameHeaderTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to re-motion ACL Expansion - User Master Table.
+        /// </summary>
+        internal static string PageTitle {
+            get {
+                return ResourceManager.GetString("PageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User.
         /// </summary>
         internal static string UserHeaderTable {
