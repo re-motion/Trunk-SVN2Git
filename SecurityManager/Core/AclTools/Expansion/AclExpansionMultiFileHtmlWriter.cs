@@ -48,7 +48,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _indentXml = indentXml;
       
       //AclExpansionMultiFileHtmlWriterResources.Culture = CultureInfo.CurrentCulture;
-      //AclExpansionMultiFileHtmlWriterResources.Culture = new CultureInfo("de-AT");
+      //AclToolsExpansion.Culture = new CultureInfo ("de-AT");
       //AclExpansionMultiFileHtmlWriterResources.Culture = new CultureInfo ("");
     }
 
