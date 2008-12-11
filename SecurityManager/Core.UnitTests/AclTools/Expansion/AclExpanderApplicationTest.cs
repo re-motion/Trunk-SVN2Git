@@ -312,7 +312,7 @@ th
       TextWriterData cssTextWriterData;
       streamWriterFactory.NameToTextWriterData.TryGetValue (cssFileName, out cssTextWriterData);
 
-      To.ConsoleLine.e (cssTextWriterData.Directory);
+      //To.ConsoleLine.e (cssTextWriterData.Directory);
 
       // Multifile HTML output => expect at least 3 files (CSS, main HTML, detail HTML files)
       Assert.That (Directory.GetFiles (cssTextWriterData.Directory).Length, Is.EqualTo (7));
