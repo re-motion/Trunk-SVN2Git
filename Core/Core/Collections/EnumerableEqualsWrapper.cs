@@ -21,6 +21,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
+  /// <summary>
+  /// Wrapper around an <see cref="IEnumerable{T}"/> which supplies element-wise <see cref="Object.Equals(object)"/> and
+  /// <see cref="Object.GetHashCode"/> semantics. Use in conjunction with <see cref="CompoundValueEqualityComparer{T}"/>
+  /// to get value based semantics for container class members.
+  /// </summary>
+  /// <typeparam name="TElement"></typeparam>
   public class EnumerableEqualsWrapper<TElement> : IEnumerable<TElement>
   {
     private readonly IEnumerable<TElement> _enumerable;
@@ -35,7 +41,10 @@ namespace Remotion.Collections
       get { return _enumerable; }
     }
 
-
+    /// <summary>
+    /// Compares the elements of the <see cref="IEnumerable{T}"/> for equality, if the passed <see cref="object"/> 
+    /// is an <see cref="IEnumerable{T}"/> .
+    /// </summary>
     public override bool Equals (object obj)
     {
       if (ReferenceEquals (null, obj))
@@ -68,13 +77,18 @@ namespace Remotion.Collections
       return GetEnumerator ();
     }
 
-
+    /// <summary>
+    /// Returns a hash code based on the members of the <see cref="IEnumerable{T}"/>.
+    /// </summary>
     public override int GetHashCode ()
     {
       return EqualityUtility.GetRotatedHashCode (_enumerable);
     }
   }
 
+  /// <summary>
+  /// EnumerableEqualsWrapper-factory: EnumerableEqualsWrapper.New(<see cref="IEnumerable{T}"/>).
+  /// </summary>
   public static class EnumerableEqualsWrapper 
   {
     public static EnumerableEqualsWrapper<T> New<T> (IEnumerable<T> elements)
