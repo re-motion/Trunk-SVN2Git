@@ -21,6 +21,7 @@ using System.Linq;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Globalization.AclTools.Expansion.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
@@ -28,8 +29,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
   public class AclExpansionHtmlWriterImplementation : AclExpansionHtmlWriterImplementationBase
   {
     private readonly AclExpansionHtmlWriterSettings _settings;
-    private string _statelessAclStateHtmlText = "(stateless)";
-    private string _aclWithNoAssociatedStatesHtmlText = "(no associated states)";
+    private string _statelessAclStateHtmlText = "(" + AclExpansionHtmlWriterImplementationResources.StatelessHtmlText + ")";
+    private string _aclWithNoAssociatedStatesHtmlText = "(" + AclExpansionHtmlWriterImplementationResources.NoAssociatedStatesHtmlText + ")";
 
     public AclExpansionHtmlWriterImplementation (TextWriter textWriter, bool indentXml, AclExpansionHtmlWriterSettings settings)
         : base (textWriter, indentXml)

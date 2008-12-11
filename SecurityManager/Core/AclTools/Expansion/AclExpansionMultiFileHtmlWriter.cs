@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
@@ -45,6 +46,10 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       _textWriterFactory = textWriterFactory;
       _indentXml = indentXml;
+      
+      //AclExpansionMultiFileHtmlWriterResources.Culture = CultureInfo.CurrentCulture;
+      //AclExpansionMultiFileHtmlWriterResources.Culture = new CultureInfo("de-AT");
+      AclExpansionMultiFileHtmlWriterResources.Culture = new CultureInfo ("");
     }
 
 
@@ -73,12 +78,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableHeaders ()
     {
-      _implementation.HtmlTagWriter.Tags.th (); 
+      _implementation.HtmlTagWriter.Tags.tr (); 
       _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.UserHeaderTable);  // localization 
       _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.FirstNameHeaderTable);
       _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.LastNameHeaderTable);
       _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.AccessRightsNameHeaderTable);
-      _implementation.HtmlTagWriter.Tags.thEnd ();
+      _implementation.HtmlTagWriter.Tags.trEnd ();
     }
 
 
