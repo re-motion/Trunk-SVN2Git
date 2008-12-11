@@ -17,8 +17,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 
@@ -54,35 +56,79 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
-    public void EqualsTest ()
+    public void CtorTest ()
+    {
+      var array = new object[0];
+      var wrapper = new EnumerableEqualsWrapper<object> (array);
+      Assert.That (wrapper.Enumerable,Is.EqualTo(array));
+    }
+
+
+    [Test]
+    public void FactoryTest ()
+    {
+      var array = new object[0];
+      var wrapper = EnumerableEqualsWrapper.New (array);
+      Assert.That (wrapper.Enumerable, Is.EqualTo (array));
+    }
+
+
+    [Test]
+    public void EnumerableTest ()
+    {
+      var enumerable = ListMother.New (9, 7, 22, 1);
+      var enumerableWrapped = NewEnumerableEqualsWrapper (enumerable);
+      Assert.That (enumerableWrapped.Cast<object> ().SequenceEqual (enumerable.Cast<object> ()));
+    }
+
+
+    [Test]
+    public void EqualsAndGetHashCodeTest ()
     {
       var sequence0 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (13) };
       var sequence1 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (13) };
       var sequence2 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (13), new ComparableTestClass (17) };
       var sequence3 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (14) };
+      var sequence4 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (13), new ComparableTestClass (17) };
 
       Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (null), Is.False);
+
+      var sequenceWrapped0 = NewEnumerableEqualsWrapper (sequence0);
+      var sequenceWrapped1 = NewEnumerableEqualsWrapper (sequence1);
+      var sequenceWrapped2 = NewEnumerableEqualsWrapper (sequence2);
+      var sequenceWrapped3 = NewEnumerableEqualsWrapper (sequence3);
+      var sequenceWrapped4 = NewEnumerableEqualsWrapper (sequence4);
 
       var numbers0 = new[] { 7, 11, 13 };
 
       // Even though the ComparableTestClass incorrectly implements IEquatable<int> 
       // (IEquatable<> must only be used in the combination "class T : IEquatable<T>"; seeMSDN help) 
       // the sequences should symetrically not compare equal.
-      Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (numbers0), Is.False);
+
+      Assert.That (sequenceWrapped0.Equals (numbers0), Is.False);
       Assert.That (NewEnumerableEqualsWrapper (numbers0).Equals (sequence0), Is.False);
 
-      Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (new[] { 7, 12, 13 }), Is.False);
+      Assert.That (sequenceWrapped0.Equals (new[] { 7, 12, 13 }), Is.False);
 
-      Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (sequence0), Is.True);
-      Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (sequence1), Is.True);
-      Assert.That (NewEnumerableEqualsWrapper (sequence1).Equals (sequence2), Is.False);
-      Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (sequence3), Is.False);
+      Assert.That (sequenceWrapped0.Equals (sequence0), Is.True);
+      Assert.That (sequenceWrapped0.Equals (sequenceWrapped0), Is.True);
+      Assert.That (sequenceWrapped0.Equals (sequence1), Is.True);
+      Assert.That (sequenceWrapped0.Equals (sequenceWrapped2), Is.False);
+      Assert.That (sequenceWrapped0.GetHashCode (), Is.EqualTo (sequenceWrapped1.GetHashCode ()));
 
-      Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (NewEnumerableEqualsWrapper (sequence0)), Is.True);
-      Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (NewEnumerableEqualsWrapper (sequence2)), Is.False);
+      Assert.That (sequenceWrapped1.Equals (sequence2), Is.False);
+      Assert.That (sequenceWrapped0.Equals (sequence3), Is.False);
+      Assert.That (sequenceWrapped3.Equals (sequenceWrapped0), Is.False);
+      Assert.That (sequenceWrapped0.Equals (sequenceWrapped3), Is.False);
+
+      Assert.That (sequenceWrapped2.Equals (sequence4), Is.True);
+      Assert.That (sequenceWrapped4.Equals (sequence2), Is.True);
+      Assert.That (sequenceWrapped2.Equals (sequenceWrapped4), Is.True);
+      Assert.That (sequenceWrapped4.Equals (sequenceWrapped2), Is.True);
+      Assert.That (sequenceWrapped2.GetHashCode (), Is.EqualTo (sequenceWrapped4.GetHashCode ()));
     }
 
-    private EnumerableEqualsWrapper<T> NewEnumerableEqualsWrapper<T> (params T[] elements)
+    private EnumerableEqualsWrapper<T> NewEnumerableEqualsWrapper<T> (IEnumerable<T> elements)
     {
       return new EnumerableEqualsWrapper<T> (elements);
     }
@@ -115,10 +161,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
           return true;
         }
       }
-      //else if (Object.Equals (obj, Number))
-      //{
-      //  return true;
-      //}
     
       return false;
     }

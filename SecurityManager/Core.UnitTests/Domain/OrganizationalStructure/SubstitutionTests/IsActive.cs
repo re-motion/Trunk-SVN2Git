@@ -26,20 +26,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
   [TestFixture]
   public class IsActive : SubstitutionTestBase
   {
-    protected Substitution _substitution;
+    protected Substitution substitution;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _substitution = Substitution.NewObject();
+      substitution = Substitution.NewObject();
     }
 
     [Test]
     public void EvaluatesFalse_BeforeCommit ()
     {
-      Assert.That (_substitution.State, Is.Not.EqualTo (StateType.Unchanged));
-      Assert.That (_substitution.IsActive, Is.False);
+      Assert.That (substitution.State, Is.Not.EqualTo (StateType.Unchanged));
+      Assert.That (substitution.IsActive, Is.False);
     }
 
     [Test]
@@ -47,79 +47,79 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
     {
       TestHelper.Transaction.CreateSubTransaction().EnterDiscardingScope();
 
-      Assert.That (_substitution.IsActive, Is.True);
+      Assert.That (substitution.IsActive, Is.True);
     }
 
     [Test]
     public void WithIsEnabledFalse_WithoutTimeSpan()
     {
-      _substitution.IsEnabled = false;
+      substitution.IsEnabled = false;
       TestHelper.Transaction.CreateSubTransaction().EnterDiscardingScope();
 
-      Assert.That (_substitution.IsActive, Is.False);
+      Assert.That (substitution.IsActive, Is.False);
     }
 
     [Test]
     public void EvaluatesTrue_WithIsEnabledTrue_WithBeginDateLessThanCurrentDate ()
     {
-      _substitution.BeginDate = DateTime.Today.AddDays (-2);
+      substitution.BeginDate = DateTime.Today.AddDays (-2);
       TestHelper.Transaction.CreateSubTransaction().EnterDiscardingScope();
 
-      Assert.That (_substitution.IsActive, Is.True);
+      Assert.That (substitution.IsActive, Is.True);
     }
 
     [Test]
     public void EvaluatesTrue_WithIsEnabledTrue_WithBeginDateSameAsCurrentDate ()
     {
-      _substitution.BeginDate = DateTime.Today;
+      substitution.BeginDate = DateTime.Today;
       TestHelper.Transaction.CreateSubTransaction().EnterDiscardingScope();
 
-      Assert.That (_substitution.IsActive, Is.True);
+      Assert.That (substitution.IsActive, Is.True);
     }
 
     [Test]
     public void EvaluatesTrue_WithIsEnabledTrue_WithBeginDateSameAsCurrentDateButGreaterTime ()
     {
-      _substitution.BeginDate = DateTime.Now.AddMinutes (1);
+      substitution.BeginDate = DateTime.Now.AddMinutes (1);
       TestHelper.Transaction.CreateSubTransaction().EnterDiscardingScope();
 
-      Assert.That (_substitution.IsActive, Is.True);
+      Assert.That (substitution.IsActive, Is.True);
     }
 
     [Test]
     public void EvaluatesFalse_WithIsEnabledTrue_WithBeginDateGreaterThanCurrentDate()
     {
-      _substitution.BeginDate = DateTime.Today.AddDays (+2);
+      substitution.BeginDate = DateTime.Today.AddDays (+2);
       TestHelper.Transaction.CreateSubTransaction().EnterDiscardingScope();
 
-      Assert.That (_substitution.IsActive, Is.False);
+      Assert.That (substitution.IsActive, Is.False);
     }
 
     [Test]
     public void EvaluatesTrue_WithIsEnabledTrue_WithEndDateSameAsCurrentDate ()
     {
-      _substitution.EndDate = DateTime.Today;
+      substitution.EndDate = DateTime.Today;
       TestHelper.Transaction.CreateSubTransaction().EnterDiscardingScope();
 
-      Assert.That (_substitution.IsActive, Is.True);
+      Assert.That (substitution.IsActive, Is.True);
     }
 
     [Test]
     public void EvaluatesTrue_WithIsEnabledTrue_WithEndDateSameAsCurrentDateButLessTime()
     {
-      _substitution.EndDate = DateTime.Now.AddMinutes (-1);
+      substitution.EndDate = DateTime.Now.AddMinutes (-1);
       TestHelper.Transaction.CreateSubTransaction().EnterDiscardingScope();
 
-      Assert.That (_substitution.IsActive, Is.True);
+      Assert.That (substitution.IsActive, Is.True);
     }
 
     [Test]
     public void EvaluatesFalse_WithIsEnabledTrue_WithEndDateLessThanCurrentDate()
     {
-      _substitution.EndDate = DateTime.Today.AddDays (-2);
+      substitution.EndDate = DateTime.Today.AddDays (-2);
       TestHelper.Transaction.CreateSubTransaction().EnterDiscardingScope();
 
-      Assert.That (_substitution.IsActive, Is.False);
+      Assert.That (substitution.IsActive, Is.False);
     }
   }
 }
