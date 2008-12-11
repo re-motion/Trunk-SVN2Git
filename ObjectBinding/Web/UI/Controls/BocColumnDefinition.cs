@@ -19,6 +19,7 @@ using System.Drawing.Design;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.Mixins;
 using Remotion.ObjectBinding.Design;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -503,9 +504,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (StringUtility.IsNullOrEmpty (_editModeControlType))
         return null;
-
+      
       Type type = WebTypeUtility.GetType (_editModeControlType, true, false);
-      return (IBusinessObjectBoundEditableWebControl) Activator.CreateInstance (type);
+      return (IBusinessObjectBoundEditableWebControl) ObjectFactory.Create (type).With() ;
     }
 
     /// <summary>

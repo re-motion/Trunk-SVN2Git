@@ -14,9 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web
 {
+  /// <summary>
+  /// The <see cref="ISearchAvailableObjectWebService"/> interface defines a facade for <see cref="ISearchAvailableObjectsService"/> when accessed 
+  /// via the <see cref="BocAutoCompleteReferenceValue"/>.
+  /// </summary>
   public interface ISearchAvailableObjectWebService
   {
     BusinessObjectWithIdentityProxy[] Search (

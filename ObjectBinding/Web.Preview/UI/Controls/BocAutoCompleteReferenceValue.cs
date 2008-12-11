@@ -553,7 +553,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             }
             else if (DataSource.BusinessObject != null)
             {
-              _extender.BusinessObjectClass = DataSource.BusinessObject.GetType ().FullName;
+              _extender.BusinessObjectClass = DataSource.BusinessObject.BusinessObjectClass.Identifier;
               if (Property != null)
                 _extender.BusinessObjectProperty = Property.Identifier;
             }
