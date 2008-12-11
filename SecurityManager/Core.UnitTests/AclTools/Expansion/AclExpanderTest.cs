@@ -38,9 +38,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
   [TestFixture]
   public class AclExpanderTest : AclToolsTestBase
   {
-
-    // TODO AE: add unit tests as they would have emerged when using TDD.
-
     [Test]
     public void Ctor_UserFinderAclFinder_Test ()
     {

@@ -23,6 +23,7 @@ using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
+using Remotion.Collections;
 
 
 namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
@@ -168,28 +169,20 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 
     private static Group FindFirstGroupInThisAndParentHierarchyWhichHasGroupType (Group group, GroupType groupType)
     {
-      var thisAndParents = GetThisAndParents(group);
-      //To.ConsoleLine.e (() => thisAndParents);
+      var thisAndParents = group.CreateSequence (t => t.Parent);
       Group matchingGroup = thisAndParents.Where (g => g.GroupType == groupType).FirstOrDefault ();
-      //To.ConsoleLine.e (() => matchingGroup).nl ();
       return matchingGroup;
     }
 
-    // TODO: Remove code duplication as soon as SecurityTokenMatcher.GetThisAndParents is moved to generic Linq extension method.
-    private static IEnumerable<Group> GetThisAndParents (Group group)
-    {
-      for (var current = group; current != null; current = current.Parent)
-        yield return current;
-    }
 
 
-    // The SecurityToken that will be used in the call to AccessControlList.GetAccessTypes
+    // The SecurityToken that will be used in the call to AccessControlList.GetAccessTypes .
     private SecurityToken _securityToken;
     // The access conditions that must be satisfied for the _securityToken to match; i.e. the permissions returned by
     // the call to AccessControlList.GetAccessTypes apply only if the access conditions are satisfied. 
     private readonly AclExpansionAccessConditions _accessConditions = new AclExpansionAccessConditions();
 
-    // Create through factory only
+    // Create through factory only.
     private AclProbe () {}
 
 
