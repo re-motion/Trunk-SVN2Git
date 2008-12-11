@@ -49,7 +49,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       
       //AclExpansionMultiFileHtmlWriterResources.Culture = CultureInfo.CurrentCulture;
       //AclExpansionMultiFileHtmlWriterResources.Culture = new CultureInfo("de-AT");
-      AclExpansionMultiFileHtmlWriterResources.Culture = new CultureInfo ("");
+      //AclExpansionMultiFileHtmlWriterResources.Culture = new CultureInfo ("");
     }
 
 
@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         _implementation = new AclExpansionHtmlWriterImplementationBase (textWriter, _indentXml);
 
-        _implementation.WritePageStart (AclExpansionMultiFileHtmlWriterResources.PageTitle);
+        _implementation.WritePageStart (AclToolsExpansion.PageTitle);
         _implementation.WriteTableStart ("remotion-user-table");
         WriteTableHeaders ();
         WriteTableBody (aclExpansion);
@@ -78,11 +78,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private void WriteTableHeaders ()
     {
-      _implementation.HtmlTagWriter.Tags.tr (); 
-      _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.UserHeaderTable);  // localization 
-      _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.FirstNameHeaderTable);
-      _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.LastNameHeaderTable);
-      _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.AccessRightsNameHeaderTable);
+      _implementation.HtmlTagWriter.Tags.tr ();
+      _implementation.WriteHeaderCell (AclToolsExpansion.UserTableHeader);  // localization 
+      _implementation.WriteHeaderCell (AclToolsExpansion.FirstNameTableHeader);
+      _implementation.WriteHeaderCell (AclToolsExpansion.LastNameTableHeader);
+      _implementation.WriteHeaderCell (AclToolsExpansion.AccessRightsNameTableHeader);
       _implementation.HtmlTagWriter.Tags.trEnd ();
     }
 

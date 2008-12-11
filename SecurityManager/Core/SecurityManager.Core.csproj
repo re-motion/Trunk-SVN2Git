@@ -181,20 +181,15 @@
     <Compile Include="Domain\ToTextSpecificTypeHandlers\StateDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\Tenant_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\User_ToTextSpecificTypeHandler.cs" />
-    <Compile Include="Globalization\AclTools\Expansion\AclExpansionMultiFileHtmlWriterResources.de-AT.Designer.cs">
-      <DependentUpon>AclExpansionMultiFileHtmlWriterResources.de-AT.resx</DependentUpon>
+    <Compile Include="Globalization\AclTools\Expansion\AclToolsExpansion.de.Designer.cs">
+      <DependentUpon>AclToolsExpansion.de.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Globalization\AclTools\Expansion\AclExpansionMultiFileHtmlWriterResources.Designer.cs">
-      <DependentUpon>AclExpansionMultiFileHtmlWriterResources.resx</DependentUpon>
+    <Compile Include="Globalization\AclTools\Expansion\AclToolsExpansion.Designer.cs">
+      <DependentUpon>AclToolsExpansion.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="Globalization\AclTools\Expansion\Infrastructure\AclExpansionHtmlWriterImplementationResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AclExpansionHtmlWriterImplementationResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Globalization\Domain\OrganizationalStructure\Substitution.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -416,20 +411,15 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AclTools\Expansion\AclExpansion.css" />
-    <EmbeddedResource Include="Globalization\AclTools\Expansion\AclExpansionMultiFileHtmlWriterResources.de-AT.resx">
+    <EmbeddedResource Include="Globalization\AclTools\Expansion\AclToolsExpansion.de.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AclExpansionMultiFileHtmlWriterResources.de-AT.Designer.cs</LastGenOutput>
+      <LastGenOutput>AclToolsExpansion.de.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\AclTools\Expansion\AclExpansionMultiFileHtmlWriterResources.resx">
+    <EmbeddedResource Include="Globalization\AclTools\Expansion\AclToolsExpansion.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AclExpansionMultiFileHtmlWriterResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\AclTools\Expansion\Infrastructure\AclExpansionHtmlWriterImplementationResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AclExpansionHtmlWriterImplementationResources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
+      <LastGenOutput>AclToolsExpansion.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.de.resx">
       <SubType>Designer</SubType>
