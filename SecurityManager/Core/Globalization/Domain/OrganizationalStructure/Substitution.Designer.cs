@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Globalization.Domain.OrganizationalStructure 
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Substituted user.
+        ///   Looks up a localized string similar to User.
         /// </summary>
         internal static string proeprty_SubstitutedUser {
             get {
@@ -98,7 +98,7 @@ namespace Remotion.SecurityManager.Globalization.Domain.OrganizationalStructure 
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Substituted role.
+        ///   Looks up a localized string similar to Role.
         /// </summary>
         internal static string property_SubstitutedRole {
             get {

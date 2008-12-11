@@ -147,8 +147,8 @@
     <Compile Include="Domain\DomainObjectDeleteHandlerTest.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\RolePropertiesSearchServiceTests\SetUpFixture.cs" />
-    <Compile Include="Domain\OrganizationalStructure\SecurityClientFactory.cs" />
     <Compile Include="Domain\OrganizationalStructure\SecurityTestHelper.cs" />
+    <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutedRole.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SearchSubstitutingUser.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionPropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\BindableObjectImplementation.cs" />

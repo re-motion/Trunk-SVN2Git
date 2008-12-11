@@ -58,6 +58,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public abstract User SubstitutedUser { get; set; }
 
     [DBBidirectionalRelation ("SubstitutedBy")]
+    [SearchAvailableObjectsServiceType (typeof (SubstitutionPropertiesSearchService))]
     public abstract Role SubstitutedRole { get; set; }
 
     [DateProperty]

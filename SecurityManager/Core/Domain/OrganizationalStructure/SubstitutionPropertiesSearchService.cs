@@ -34,16 +34,28 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public SubstitutionPropertiesSearchService ()
     {
-      AddSearchDelegate ("SubstitutingUser", FindPossibleSubstitutingUser);
+      AddSearchDelegate ("SubstitutingUser", FindPossibleSubstitutingUsers);
+      AddSearchDelegate ("SubstitutedRole", FindPossibleSubstitutedRoles);
     }
 
-    private IBusinessObject[] FindPossibleSubstitutingUser (Substitution Substitution, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    private IBusinessObject[] FindPossibleSubstitutingUsers (
+        Substitution substitution, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
       var defaultSearchArguments = ArgumentUtility.CheckNotNullAndType<DefaultSearchArguments> ("searchArguments", searchArguments);
       ArgumentUtility.CheckNotNullOrEmpty ("defaultSearchArguments.SearchStatement", defaultSearchArguments.SearchStatement);
       ObjectID tenantID = ObjectID.Parse (defaultSearchArguments.SearchStatement);
 
-      return User.FindByTenantID (tenantID).ToArray ();
+      return User.FindByTenantID (tenantID).ToArray();
+    }
+
+    private IBusinessObject[] FindPossibleSubstitutedRoles (
+        Substitution substitution, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
+    {
+      ArgumentUtility.CheckNotNull ("substitution", substitution);
+
+      if (substitution.SubstitutedUser == null)
+        return new IBusinessObject[0];
+      return substitution.SubstitutedUser.Roles.ToArray();
     }
   }
 }

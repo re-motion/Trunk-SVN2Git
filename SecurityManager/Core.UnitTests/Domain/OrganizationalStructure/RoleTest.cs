@@ -45,6 +45,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     private ISecurityProvider _mockSecurityProvider;
     private IUserProvider _mockUserProvider;
     private IFunctionalSecurityStrategy _stubFunctionalSecurityStrategy;
+    private OrganizationalStructureTestHelper _testHelper;
 
     public override void TestFixtureSetUp ()
     {
@@ -85,6 +86,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       SecurityConfiguration.Current.FunctionalSecurityStrategy = _stubFunctionalSecurityStrategy;
 
       ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
+
+      _testHelper = new OrganizationalStructureTestHelper ();
+      _testHelper.Transaction.EnterNonDiscardingScope ();
     }
 
     public override void TearDown ()
@@ -212,54 +216,52 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       Assert.AreEqual (3, positions.Count);
     }
 
-    //TODO: Refactor to mock
     [Test]
     public void SearchGroups ()
     {
-      SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider ();
-      SecurityConfiguration.Current.UserProvider = new ThreadUserProvider ();
+      ISearchAvailableObjectsService searchServiceStub = MockRepository.GenerateStub<ISearchAvailableObjectsService> ();
+      ISearchAvailableObjectsArguments args = MockRepository.GenerateStub<ISearchAvailableObjectsArguments> ();
+
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (RolePropertiesSearchService), searchServiceStub);
       IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClass (typeof (Role));
       IBusinessObjectReferenceProperty groupProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Group");
       Assert.That (groupProperty, Is.Not.Null);
 
-      User user = User.FindByUserName ("group0/user1");
-      Assert.That (user, Is.Not.Null);
-      Role role = Role.NewObject();
-      role.User = user;
-      List<Group> expectedGroups = role.GetPossibleGroups (user.Tenant.ID);
-      Assert.That (expectedGroups, Is.Not.Empty);
+      Role role = Role.NewObject ();
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject> () };
+
+      searchServiceStub.Stub (stub => stub.SupportsProperty (groupProperty)).Return (true);
+      searchServiceStub.Stub (stub => stub.Search (role, groupProperty, args)).Return (expected);
 
       Assert.That (groupProperty.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actualGroups = groupProperty.SearchAvailableObjects (role, null);
-      Assert.That (actualGroups, Is.EquivalentTo (expectedGroups));
+      IBusinessObject[] actual = groupProperty.SearchAvailableObjects (role, args);
+      Assert.That (actual, Is.SameAs (expected));
     }
 
-    //TODO: Refactor to mock
     [Test]
     public void SearchUsers ()
     {
-      SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider ();
-      SecurityConfiguration.Current.UserProvider = new ThreadUserProvider ();
+      ISearchAvailableObjectsService searchServiceStub = MockRepository.GenerateStub<ISearchAvailableObjectsService> ();
+      ISearchAvailableObjectsArguments args = MockRepository.GenerateStub<ISearchAvailableObjectsArguments> ();
+
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (RolePropertiesSearchService), new RolePropertiesSearchService ());
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (typeof (RolePropertiesSearchService), searchServiceStub);
       IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClass (typeof (Role));
       IBusinessObjectReferenceProperty userProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("User");
       Assert.That (userProperty, Is.Not.Null);
 
-      Group group = Group.FindByUnqiueIdentifier ("UID: group0");
-      Assert.That (group, Is.Not.Null);
       Role role = Role.NewObject ();
-      role.Group = group;
-      DomainObjectCollection expectedGroups = User.FindByTenantID (group.Tenant.ID);
-      Assert.That (expectedGroups, Is.Not.Empty);
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject> () };
+
+      searchServiceStub.Stub (stub => stub.SupportsProperty (userProperty)).Return (true);
+      searchServiceStub.Stub (stub => stub.Search (role, userProperty, args)).Return (expected);
 
       Assert.That (userProperty.SupportsSearchAvailableObjects, Is.True);
 
-      IBusinessObject[] actualUsers = userProperty.SearchAvailableObjects (role, null);
-      Assert.That (actualUsers, Is.EquivalentTo (expectedGroups));
+      IBusinessObject[] actual = userProperty.SearchAvailableObjects (role, args);
+      Assert.That (actual, Is.SameAs (expected));
     }
 
     [Test]

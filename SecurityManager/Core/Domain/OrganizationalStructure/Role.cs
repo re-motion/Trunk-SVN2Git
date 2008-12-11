@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     public abstract User User { get; set; }
 
     [DBBidirectionalRelation ("SubstitutedRole")]
-    protected abstract ObjectList<Substitution> SubstitutedBy { get; }
+    public abstract ObjectList<Substitution> SubstitutedBy { get; }
 
     public List<Group> GetPossibleGroups (ObjectID tenantID)
     {
@@ -116,5 +116,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
       return null;
     }
+
+
   }
 }

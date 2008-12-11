@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="proeprty:SubstitutedUser" xml:space="preserve">
-    <value>Substituted user</value>
+    <value>User</value>
   </data>
   <data name="property:BeginDate" xml:space="preserve">
     <value>Active from</value>
@@ -130,7 +130,7 @@
     <value>Is enabled</value>
   </data>
   <data name="property:SubstitutedRole" xml:space="preserve">
-    <value>Substituted role</value>
+    <value>Role</value>
   </data>
   <data name="property:SubstitutingUser" xml:space="preserve">
     <value>Stand-in user</value>

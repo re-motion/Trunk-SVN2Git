@@ -48,14 +48,40 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
       var substitutingUserProperty = (IBusinessObjectReferenceProperty) substitutionClass.GetPropertyDefinition ("SubstitutingUser");
       Assert.That (substitutingUserProperty, Is.Not.Null);
 
-      var expected = new[] { MockRepository.GenerateStub<IBusinessObject>() };
+      Substitution substitution = Substitution.NewObject ();
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject> () };
 
       searchServiceStub.Stub (stub => stub.SupportsProperty (substitutingUserProperty)).Return (true);
-      searchServiceStub.Stub (stub => stub.Search (null, substitutingUserProperty, args)).Return (expected);
+      searchServiceStub.Stub (stub => stub.Search (substitution, substitutingUserProperty, args)).Return (expected);
 
       Assert.That (substitutingUserProperty.SupportsSearchAvailableObjects, Is.True);
 
-      var actual = substitutingUserProperty.SearchAvailableObjects (null, args);
+      var actual = substitutingUserProperty.SearchAvailableObjects (substitution, args);
+      Assert.That (actual, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void SearchSubstitutedRoles ()
+    {
+      var searchServiceStub = MockRepository.GenerateStub<ISearchAvailableObjectsService> ();
+      var args = MockRepository.GenerateStub<ISearchAvailableObjectsArguments> ();
+
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute> ().AddService (
+          typeof (SubstitutionPropertiesSearchService), searchServiceStub);
+      var substitutionClass = BindableObjectProvider.GetBindableObjectClass (typeof (Substitution));
+      var substitutedRoleProperty = (IBusinessObjectReferenceProperty) substitutionClass.GetPropertyDefinition ("SubstitutedRole");
+      Assert.That (substitutedRoleProperty, Is.Not.Null);
+
+      Substitution substitution = Substitution.NewObject();
+      var expected = new[] { MockRepository.GenerateStub<IBusinessObject> () };
+
+      searchServiceStub.Stub (stub => stub.SupportsProperty (substitutedRoleProperty)).Return (true);
+      searchServiceStub.Stub (stub => stub.Search (substitution, substitutedRoleProperty, args)).Return (expected);
+
+      Assert.That (substitutedRoleProperty.SupportsSearchAvailableObjects, Is.True);
+
+      var actual = substitutedRoleProperty.SearchAvailableObjects (substitution, args);
       Assert.That (actual, Is.SameAs (expected));
     }
   }

@@ -47,7 +47,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (
           stub => stub.GetAccess (
-                      Arg<ISecurityContext>.Matches (sc => TypeUtility.GetType (sc.Class) == securableClassType),
+                      Arg<ISecurityContext>.Matches (sc => TypeUtility.GetType (sc.Class, true) == securableClassType),
                       Arg.Is (principal)))
           .Return (returnedAccessTypes.Select (accessType => AccessType.Get (accessType)).ToArray());
       

@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="proeprty:SubstitutedUser" xml:space="preserve">
-    <value>Stellvertretener Benutzer</value>
+    <value>Benutzer</value>
   </data>
   <data name="property:BeginDate" xml:space="preserve">
-    <value>Stellvertretung gültig von</value>
+    <value>Gültig von</value>
   </data>
   <data name="property:EndDate" xml:space="preserve">
-    <value>Stellvertretung gültig bis</value>
+    <value>Gültig bis</value>
   </data>
   <data name="property:IsEnabled" xml:space="preserve">
-    <value>Stellvertretung verfügbar</value>
+    <value>Ist verfügbar</value>
   </data>
   <data name="property:SubstitutedRole" xml:space="preserve">
-    <value>Stellvertretene Rolle</value>
+    <value>Rolle</value>
   </data>
   <data name="property:SubstitutingUser" xml:space="preserve">
     <value>Stellvertreter</value>
