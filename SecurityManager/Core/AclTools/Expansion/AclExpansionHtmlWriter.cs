@@ -21,6 +21,7 @@ using System.IO;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Globalization.AclTools.Expansion;
 using Remotion.Text.StringExtensions;
 using Remotion.Utilities;
 
@@ -56,7 +57,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     
       var aclExpansionTree = new AclExpansionTree (aclExpansion);
 
-      Implementation.WritePageStart ("re-motion ACL Expansion");
+      Implementation.WritePageStart (AclToolsExpansion.PageTitleSingleFile); // re-motion ACL Expansion
       Implementation.WriteTableStart ("remotion-ACL-expansion-table");
       WriteTableHeaders ();
       WriteTableBody (aclExpansionTree);
@@ -68,18 +69,18 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableHeaders ()
     {
       Implementation.HtmlTagWriter.Tags.tr ();
-      Implementation.WriteHeaderCell ("User");
-      Implementation.WriteHeaderCell ("Role");
-      Implementation.WriteHeaderCell ("Class");
-      Implementation.WriteHeaderCell ("States");
-      Implementation.WriteHeaderCell ("User Must Own");
-      Implementation.WriteHeaderCell ("Owning Group Equals");
-      Implementation.WriteHeaderCell ("Owning Tenant Equals");
-      Implementation.WriteHeaderCell ("User Must Have Abstract Role");
-      Implementation.WriteHeaderCell ("Access Rights");
+      Implementation.WriteHeaderCell (AclToolsExpansion.UserTableHeader); // User
+      Implementation.WriteHeaderCell (AclToolsExpansion.RoleTableHeader); // Role
+      Implementation.WriteHeaderCell (AclToolsExpansion.ClassTableHeader); // Class
+      Implementation.WriteHeaderCell (AclToolsExpansion.StatesTableHeader); // States
+      Implementation.WriteHeaderCell (AclToolsExpansion.UserMustOwnTableHeader); // User Must Own
+      Implementation.WriteHeaderCell (AclToolsExpansion.OwningGroupEqualsTableHeader); // Owning Group Equals
+      Implementation.WriteHeaderCell (AclToolsExpansion.OwningTenantEqualsTableHeader); // Owning Tenant Equals
+      Implementation.WriteHeaderCell (AclToolsExpansion.UserMustHaveAbstractRoleTableHeader); // User Must Have Abstract Role
+      Implementation.WriteHeaderCell (AclToolsExpansion.AccessRightsNameTableHeader); // Access Rights
       if (_settings.OutputDeniedRights)
       {
-        Implementation.WriteHeaderCell ("Denied Rights");
+        Implementation.WriteHeaderCell (AclToolsExpansion.DeniedRightsTableHeader); // Denied Rights
       }
       Implementation.HtmlTagWriter.Tags.trEnd ();
     }
@@ -122,7 +123,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
       else
       {
-        Implementation.WriteTableDataWithRowCount ("_NO_CLASSES_DEFINED_", classNode.NumberLeafNodes);
+        Implementation.WriteTableDataWithRowCount (AclToolsExpansion.NO_CLASSES_DEFINED_Text, classNode.NumberLeafNodes); // _NO_CLASSES_DEFINED_
       }
 
       WriteTableBody_ProcessStates(classNode.Children);

@@ -22,7 +22,7 @@ namespace Remotion.SecurityManager.Globalization.AclTools.Expansion {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "2.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AclToolsExpansion {
+    public class AclToolsExpansion {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.Globalization.AclTools.Expansion {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Remotion.SecurityManager.Globalization.AclTools.Expansion.AclToolsExpansion", typeof(AclToolsExpansion).Assembly);
@@ -51,7 +51,7 @@ namespace Remotion.SecurityManager.Globalization.AclTools.Expansion {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,16 +63,34 @@ namespace Remotion.SecurityManager.Globalization.AclTools.Expansion {
         /// <summary>
         ///   Looks up a localized string similar to Access Rights.
         /// </summary>
-        internal static string AccessRightsNameTableHeader {
+        public static string AccessRightsNameTableHeader {
             get {
                 return ResourceManager.GetString("AccessRightsNameTableHeader", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Class.
+        /// </summary>
+        public static string ClassTableHeader {
+            get {
+                return ResourceManager.GetString("ClassTableHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Denied Rights.
+        /// </summary>
+        public static string DeniedRightsTableHeader {
+            get {
+                return ResourceManager.GetString("DeniedRightsTableHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First Name.
         /// </summary>
-        internal static string FirstNameTableHeader {
+        public static string FirstNameTableHeader {
             get {
                 return ResourceManager.GetString("FirstNameTableHeader", resourceCulture);
             }
@@ -81,16 +99,25 @@ namespace Remotion.SecurityManager.Globalization.AclTools.Expansion {
         /// <summary>
         ///   Looks up a localized string similar to Last Name.
         /// </summary>
-        internal static string LastNameTableHeader {
+        public static string LastNameTableHeader {
             get {
                 return ResourceManager.GetString("LastNameTableHeader", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _NO_CLASSES_DEFINED_.
+        /// </summary>
+        public static string NO_CLASSES_DEFINED_Text {
+            get {
+                return ResourceManager.GetString("NO_CLASSES_DEFINED_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to no associated states.
         /// </summary>
-        internal static string NoAssociatedStatesHtmlText {
+        public static string NoAssociatedStatesHtmlText {
             get {
                 return ResourceManager.GetString("NoAssociatedStatesHtmlText", resourceCulture);
             }
@@ -99,7 +126,7 @@ namespace Remotion.SecurityManager.Globalization.AclTools.Expansion {
         /// <summary>
         ///   Looks up a localized string similar to or its children.
         /// </summary>
-        internal static string OrItsChildren {
+        public static string OrItsChildren {
             get {
                 return ResourceManager.GetString("OrItsChildren", resourceCulture);
             }
@@ -108,34 +135,97 @@ namespace Remotion.SecurityManager.Globalization.AclTools.Expansion {
         /// <summary>
         ///   Looks up a localized string similar to or its parents.
         /// </summary>
-        internal static string OrItsParents {
+        public static string OrItsParents {
             get {
                 return ResourceManager.GetString("OrItsParents", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Owning Group Equals.
+        /// </summary>
+        public static string OwningGroupEqualsTableHeader {
+            get {
+                return ResourceManager.GetString("OwningGroupEqualsTableHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owning Tenant Equals.
+        /// </summary>
+        public static string OwningTenantEqualsTableHeader {
+            get {
+                return ResourceManager.GetString("OwningTenantEqualsTableHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to re-motion ACL Expansion - User Master Table.
         /// </summary>
-        internal static string PageTitle {
+        public static string PageTitle {
             get {
                 return ResourceManager.GetString("PageTitle", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to re-motion ACL Expansion.
+        /// </summary>
+        public static string PageTitleSingleFile {
+            get {
+                return ResourceManager.GetString("PageTitleSingleFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role.
+        /// </summary>
+        public static string RoleTableHeader {
+            get {
+                return ResourceManager.GetString("RoleTableHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to stateless.
         /// </summary>
-        internal static string StatelessHtmlText {
+        public static string StatelessHtmlText {
             get {
                 return ResourceManager.GetString("StatelessHtmlText", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to States.
+        /// </summary>
+        public static string StatesTableHeader {
+            get {
+                return ResourceManager.GetString("StatesTableHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Must Have Abstract Role.
+        /// </summary>
+        public static string UserMustHaveAbstractRoleTableHeader {
+            get {
+                return ResourceManager.GetString("UserMustHaveAbstractRoleTableHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Must Own.
+        /// </summary>
+        public static string UserMustOwnTableHeader {
+            get {
+                return ResourceManager.GetString("UserMustOwnTableHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User.
         /// </summary>
-        internal static string UserTableHeader {
+        public static string UserTableHeader {
             get {
                 return ResourceManager.GetString("UserTableHeader", resourceCulture);
             }

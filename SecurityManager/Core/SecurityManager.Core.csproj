@@ -418,7 +418,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\AclTools\Expansion\AclToolsExpansion.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AclToolsExpansion.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.de.resx">

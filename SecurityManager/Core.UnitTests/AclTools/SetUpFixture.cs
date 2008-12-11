@@ -17,10 +17,12 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.Globalization.AclTools.Expansion;
 using Remotion.SecurityManager.UnitTests.Domain;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using Remotion.SecurityManager.UnitTests.TestDomain;
@@ -41,6 +43,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
     {
       try
       {
+        // Use default localization for tests
+        AclToolsExpansion.Culture = new CultureInfo ("");
+
         AccessControlTestHelper testHelper = new AccessControlTestHelper();
         using (testHelper.Transaction.EnterDiscardingScope())
         {

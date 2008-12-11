@@ -46,10 +46,6 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     {
       _textWriterFactory = textWriterFactory;
       _indentXml = indentXml;
-      
-      //AclExpansionMultiFileHtmlWriterResources.Culture = CultureInfo.CurrentCulture;
-      //AclToolsExpansion.Culture = new CultureInfo ("de-AT");
-      //AclExpansionMultiFileHtmlWriterResources.Culture = new CultureInfo ("");
     }
 
 
@@ -79,7 +75,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableHeaders ()
     {
       _implementation.HtmlTagWriter.Tags.tr ();
-      _implementation.WriteHeaderCell (AclToolsExpansion.UserTableHeader);  // localization 
+      _implementation.WriteHeaderCell (AclToolsExpansion.UserTableHeader);  
       _implementation.WriteHeaderCell (AclToolsExpansion.FirstNameTableHeader);
       _implementation.WriteHeaderCell (AclToolsExpansion.LastNameTableHeader);
       _implementation.WriteHeaderCell (AclToolsExpansion.AccessRightsNameTableHeader);

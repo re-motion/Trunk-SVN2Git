@@ -120,6 +120,12 @@
   <data name="AccessRightsNameTableHeader" xml:space="preserve">
     <value>Access Rights</value>
   </data>
+  <data name="ClassTableHeader" xml:space="preserve">
+    <value>Class</value>
+  </data>
+  <data name="DeniedRightsTableHeader" xml:space="preserve">
+    <value>Denied Rights</value>
+  </data>
   <data name="FirstNameTableHeader" xml:space="preserve">
     <value>First Name</value>
   </data>
@@ -129,17 +135,41 @@
   <data name="NoAssociatedStatesHtmlText" xml:space="preserve">
     <value>no associated states</value>
   </data>
+  <data name="NO_CLASSES_DEFINED_Text" xml:space="preserve">
+    <value>_NO_CLASSES_DEFINED_</value>
+  </data>
   <data name="OrItsChildren" xml:space="preserve">
     <value>or its children</value>
   </data>
   <data name="OrItsParents" xml:space="preserve">
     <value>or its parents</value>
   </data>
+  <data name="OwningGroupEqualsTableHeader" xml:space="preserve">
+    <value>Owning Group Equals</value>
+  </data>
+  <data name="OwningTenantEqualsTableHeader" xml:space="preserve">
+    <value>Owning Tenant Equals</value>
+  </data>
   <data name="PageTitle" xml:space="preserve">
     <value>re-motion ACL Expansion - User Master Table</value>
   </data>
+  <data name="PageTitleSingleFile" xml:space="preserve">
+    <value>re-motion ACL Expansion</value>
+  </data>
+  <data name="RoleTableHeader" xml:space="preserve">
+    <value>Role</value>
+  </data>
   <data name="StatelessHtmlText" xml:space="preserve">
     <value>stateless</value>
+  </data>
+  <data name="StatesTableHeader" xml:space="preserve">
+    <value>States</value>
+  </data>
+  <data name="UserMustHaveAbstractRoleTableHeader" xml:space="preserve">
+    <value>User Must Have Abstract Role</value>
+  </data>
+  <data name="UserMustOwnTableHeader" xml:space="preserve">
+    <value>User Must Own</value>
   </data>
   <data name="UserTableHeader" xml:space="preserve">
     <value>User</value>
