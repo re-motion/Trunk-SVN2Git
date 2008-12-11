@@ -101,6 +101,7 @@
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
     <Compile Include="BridgeImplementations\AssemblyFinderTypeDiscoveryServiceImplementation.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
+    <Compile Include="Collections\EnumerableEqualsWrapper.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Collections\SetBasedCacheKey.cs" />
     <Compile Include="Collections\TypedSequence.cs" />

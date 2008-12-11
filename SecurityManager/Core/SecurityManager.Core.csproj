@@ -72,7 +72,6 @@
     <Compile Include="AclTools\Expansion\AclExpansionMultiFileHtmlWriter.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionTree.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionTreeNode.cs" />
-    <Compile Include="AclTools\Expansion\EnumerableEqualsWrapper.cs" />
     <Compile Include="AclTools\Expansion\HtmlTagWriterTags.cs" />
     <Compile Include="AclTools\Expansion\IAclExpansionWriter.cs" />
     <Compile Include="AclTools\Expansion\Infrastructure\AclExpansionTreeNode_ObjectMother.cs" />
@@ -182,6 +181,11 @@
     <Compile Include="Domain\ToTextSpecificTypeHandlers\StateDefinition_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\Tenant_ToTextSpecificTypeHandler.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\User_ToTextSpecificTypeHandler.cs" />
+    <Compile Include="Globalization\AclTools\Expansion\AclExpansionMultiFileHtmlWriterResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AclExpansionMultiFileHtmlWriterResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Globalization\Domain\OrganizationalStructure\Substitution.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -402,6 +406,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AclTools\Expansion\AclExpansion.css" />
+    <EmbeddedResource Include="Globalization\AclTools\Expansion\AclExpansionMultiFileHtmlWriterResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AclExpansionMultiFileHtmlWriterResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

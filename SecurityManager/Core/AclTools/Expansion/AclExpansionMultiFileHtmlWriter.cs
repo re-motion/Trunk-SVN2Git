@@ -22,6 +22,7 @@ using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
+using Remotion.SecurityManager.Globalization.AclTools.Expansion;
 
 
 namespace Remotion.SecurityManager.AclTools.Expansion
@@ -73,7 +74,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     private void WriteTableHeaders ()
     {
       _implementation.HtmlTagWriter.Tags.th (); 
-      _implementation.WriteHeaderCell ("User");
+      //_implementation.WriteHeaderCell ("User");
+      _implementation.WriteHeaderCell (AclExpansionMultiFileHtmlWriterResources.UserHeaderTable);  // localization 
       _implementation.WriteHeaderCell ("First Name");
       _implementation.WriteHeaderCell ("Last Name");
       _implementation.WriteHeaderCell ("Access Rights");
