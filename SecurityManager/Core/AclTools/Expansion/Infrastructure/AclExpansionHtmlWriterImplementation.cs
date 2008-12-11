@@ -192,14 +192,14 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       if ((groupHierarchyCondition & GroupHierarchyCondition.Parent) != 0)
       {
         HtmlTagWriter.Tags.br ();
-        HtmlTagWriter.Value ("or its parents");
+        HtmlTagWriter.Value (AclToolsExpansion.OrItsParents); // or its parents
       }
 
       // Bitwise operation is OK (alas marking GroupHierarchyCondition with [Flags] is not supported). 
       if ((groupHierarchyCondition & GroupHierarchyCondition.Children) != 0)
       {
         HtmlTagWriter.Tags.br ();
-        HtmlTagWriter.Value ("or its children");
+        HtmlTagWriter.Value (AclToolsExpansion.OrItsChildren); // or its children
       }
 
       HtmlTagWriter.Tags.tdEnd ();
@@ -222,7 +222,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       if ((tenantHierarchyCondition & TenantHierarchyCondition.Parent) != 0)
       {
         HtmlTagWriter.Tags.br ();
-        HtmlTagWriter.Value ("or its parents");
+        HtmlTagWriter.Value (AclToolsExpansion.OrItsParents); // or its parents
       }
 
       HtmlTagWriter.Tags.tdEnd ();

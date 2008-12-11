@@ -97,6 +97,24 @@ namespace Remotion.SecurityManager.Globalization.AclTools.Expansion {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to or its children.
+        /// </summary>
+        internal static string OrItsChildren {
+            get {
+                return ResourceManager.GetString("OrItsChildren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to or its parents.
+        /// </summary>
+        internal static string OrItsParents {
+            get {
+                return ResourceManager.GetString("OrItsParents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to re-motion ACL Expansion - User Master Table.
         /// </summary>
         internal static string PageTitle {

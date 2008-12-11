@@ -72,25 +72,11 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     public override bool Equals (object obj)
     {
-      //var ac = obj as AclExpansionAccessConditions;
-      //if (ac == null)
-      //{
-      //  return false;
-      //}
-
-      //return (ac.AbstractRole == AbstractRole) &&
-      //  (ac.OwningGroup == OwningGroup) &&
-      //  (ac.GroupHierarchyCondition == GroupHierarchyCondition) &&
-      //  (ac.OwningTenant == OwningTenant) &&
-      //  (ac.TenantHierarchyCondition == TenantHierarchyCondition) &&
-      //  (ac.IsOwningUserRequired == IsOwningUserRequired);
       return EqualityComparer.Equals (this, obj);
     }
 
     public override int GetHashCode ()
     {
-      //return EqualityUtility.GetRotatedHashCode (AbstractRole, OwningGroup, GroupHierarchyCondition, 
-      //  OwningTenant, TenantHierarchyCondition, IsOwningUserRequired);
       return EqualityComparer.GetHashCode (this);
     }
 

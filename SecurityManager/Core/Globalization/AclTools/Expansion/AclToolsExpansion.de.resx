@@ -129,6 +129,12 @@
   <data name="NoAssociatedStatesHtmlText" xml:space="preserve">
     <value>keine assoziierten Zustände</value>
   </data>
+  <data name="OrItsChildren" xml:space="preserve">
+    <value>oder darunterliegende</value>
+  </data>
+  <data name="OrItsParents" xml:space="preserve">
+    <value>oder darüber liegende</value>
+  </data>
   <data name="PageTitle" xml:space="preserve">
     <value>re-motion ACL Expansion - Benutzer Tabelle</value>
   </data>
