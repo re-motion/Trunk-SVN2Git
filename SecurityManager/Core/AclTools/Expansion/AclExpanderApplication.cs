@@ -67,11 +67,12 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       get { return _errorToTextBuilder; }
     }
 
-    public void Run (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
+    public virtual void Run (AclExpanderApplicationSettings settings, TextWriter errorWriter, TextWriter logWriter)
     {
       ArgumentUtility.CheckNotNull ("settings", settings);
       ArgumentUtility.CheckNotNull ("errorWriter", errorWriter);
       ArgumentUtility.CheckNotNull ("logWriter", logWriter);
+      
       Init (settings, errorWriter, logWriter);
 
       string cultureName = GetCultureName();
@@ -80,7 +81,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       {
         using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
         {
-          List<AclExpansionEntry> aclExpansion = GetAclExpansion();
+          List<AclExpansionEntry> aclExpansion = GetAclExpansion ();
 
           if (Settings.Verbose)
             LogAclExpansion (aclExpansion);
@@ -108,8 +109,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       _errorToTextBuilder = new ToTextBuilder (To.ToTextProvider, errorWriter);
     }
 
-    private void LogAclExpansion (List<AclExpansionEntry> aclExpansion)
+    public virtual void LogAclExpansion (List<AclExpansionEntry> aclExpansion)
     {
+      ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       LogToTextBuilder.nl (2).s ("AclExpander").nl().s ("==========").nl();
       LogToTextBuilder.e (Settings);
       foreach (AclExpansionEntry entry in aclExpansion)
@@ -117,7 +119,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    public void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion)
+    public virtual void WriteAclExpansionAsHtmlToStreamWriter (List<AclExpansionEntry> aclExpansion)
     {
       ArgumentUtility.CheckNotNull ("aclExpansion", aclExpansion);
       if (Settings.UseMultipleFileOutput)
@@ -188,7 +190,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    protected virtual List<AclExpansionEntry> GetAclExpansion ()
+    public virtual List<AclExpansionEntry> GetAclExpansion ()
     {
       var aclExpander =
           new AclExpander (

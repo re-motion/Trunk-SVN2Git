@@ -20,9 +20,11 @@ using System.IO;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
+using Remotion.SecurityManager.Domain.Metadata;
 using Rhino.Mocks;
 using System.Collections.Generic;
 
@@ -346,13 +348,64 @@ th
     }
 
 
+    [Test]
+    public void LogAclExpansionTest ()
+    {
+      var aclExpansionEntry = new AclExpansionEntry (User, Role, Acl, new AclExpansionAccessConditions(), new AccessTypeDefinition[0], new AccessTypeDefinition[0]);
+      List<AclExpansionEntry> aclExpansion = ListMother.New (aclExpansionEntry);
+
+      var textWriterFactoryStub = MockRepository.GenerateStub<ITextWriterFactory> ();
+      var logWriter = new StringWriter();
+      var settings = new AclExpanderApplicationSettings ();
+      var application = new AclExpanderApplication (textWriterFactoryStub);
+      application.Init (settings, TextWriter.Null, logWriter);
+
+      application.LogAclExpansion (aclExpansion);
+
+      var result = logWriter.ToString();
+
+      var resultExpected =
+      #region
+ @"
+
+AclExpander
+==========
+(user=null,last=null,first=null,dir=""."",culture=""de-AT"",multifile=False,verbose=False)
+[user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={},denied={},conditions=[]]";
+      #endregion
+      Assert.That (result, Is.EqualTo(resultExpected));
+    }
+
+
+    [Test]
+    public void VerboseSettingTest ()
+    {
+      var mocks = new MockRepository ();
+      var textWriterFactoryStub = mocks.Stub<ITextWriterFactory> ();
+      var applicationMock = mocks.PartialMock<AclExpanderApplication> (textWriterFactoryStub);
+
+
+      var aclExpansionEntries = new List<AclExpansionEntry>();
+      applicationMock.Expect (x => x.GetAclExpansion ()).Return(aclExpansionEntries);
+      applicationMock.Expect (x => x.LogAclExpansion (Arg<List<AclExpansionEntry>>.Is.Equal (aclExpansionEntries)));
+      applicationMock.Expect (x => x.WriteAclExpansionAsHtmlToStreamWriter (Arg<List<AclExpansionEntry>>.Is.Equal (aclExpansionEntries)));
+
+      mocks.ReplayAll();
+
+      var settings = new AclExpanderApplicationSettings ();
+      settings.Verbose = true;
+      applicationMock.Run (settings, TextWriter.Null, TextWriter.Null);
+
+      applicationMock.VerifyAllExpectations();
+    }
+
 
 
     private List<AclExpansionEntry> CreateAclExpanderApplicationAndCallGetAclExpansion (AclExpanderApplicationSettings settings)
     {
       var application = new AclExpanderApplication ();
       application.Init (settings, TextWriter.Null, TextWriter.Null);
-      return (List<AclExpansionEntry>) PrivateInvoke.InvokeNonPublicMethod (application, "GetAclExpansion");
+      return application.GetAclExpansion(); 
     }
 
     private static void AssertGetCultureName (string cultureNameIn, string cultureNameOut)
@@ -375,3 +428,4 @@ th
 
   }
 }
+
