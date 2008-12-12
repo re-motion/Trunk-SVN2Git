@@ -29,6 +29,7 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Text.StringExtensions;
 using Remotion.Utilities;
 using Remotion.Development.UnitTesting.ObjectMother;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
@@ -131,6 +132,16 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (AclExpansionHtmlWriterImplementationBase.ToValidFileName (forbiddenInput + unityInput + forbiddenInput + unityInput), Is.EqualTo (forbiddenInputResult + unityInput + forbiddenInputResult + unityInput));
     }
 
+
+
+    [Test]
+    public void DetailHtmlWriterSettingsTest ()
+    {
+      var aclExpansionMultiFileHtmlWriter = new AclExpansionMultiFileHtmlWriter (MockRepository.GenerateMock<ITextWriterFactory>(), true);
+      var settings = new AclExpansionHtmlWriterSettings();
+      aclExpansionMultiFileHtmlWriter.DetailHtmlWriterSettings = settings;
+      Assert.That(aclExpansionMultiFileHtmlWriter.DetailHtmlWriterSettings, Is.EqualTo(settings));
+    }
 
 
     [Test]

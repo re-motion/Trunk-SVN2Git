@@ -21,11 +21,13 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
+using Remotion.SecurityManager.Domain.Metadata;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
   [TestFixture]
-  public class AclExpansionHtmlWriterImplementationTest
+  public class AclExpansionHtmlWriterImplementationTest : AclToolsTestBase
   {
     [Test]
     public void WriteTableDataForBooleanConditionTest ()
@@ -43,6 +45,21 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       implementation.HtmlTagWriter.Close ();
       var result = stringWriter.ToString ();
       Assert.That (result, Is.EqualTo (resultingXmlExpected));
+    }
+
+    [Test]
+    public void WriteTableDataForAbstractRoleConditionNoAbstractRoleTest ()
+    {
+      AclExpansionAccessConditions accessConditions = new AclExpansionAccessConditions { AbstractRole = null };
+      AssertAclExpansionHtmlWriterImplementationResult (x => x.WriteTableDataForAbstractRoleCondition (accessConditions), "<td></td>");
+    }
+
+    [Test]
+    public void WriteTableDataForAbstractRoleConditionAbstractRoleTest ()
+    {
+      var abstractRole = TestHelper.CreateTestAbstractRole();
+      AclExpansionAccessConditions accessConditions = new AclExpansionAccessConditions { AbstractRole = abstractRole };
+      AssertAclExpansionHtmlWriterImplementationResult (x => x.WriteTableDataForAbstractRoleCondition (accessConditions), "<td>Test</td>");
     }
   }
 }

@@ -38,10 +38,17 @@ namespace Remotion.SecurityManager.AclTools.Expansion
 
     private readonly AclExpansionHtmlWriterImplementation _implementation;
 
-    public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml, AclExpansionHtmlWriterSettings settings)
+    public AclExpansionHtmlWriter (TextWriter textWriter, bool indentXml, AclExpansionHtmlWriterSettings settings) :
+      this(new AclExpansionHtmlWriterImplementation (textWriter, indentXml, settings), settings)
     {
+      //_settings = settings;
+      //_implementation = new AclExpansionHtmlWriterImplementation (textWriter, indentXml, settings);
+    }
+
+    public AclExpansionHtmlWriter (AclExpansionHtmlWriterImplementation implementation, AclExpansionHtmlWriterSettings settings)
+    {
+      _implementation = implementation;
       _settings = settings;
-      _implementation = new AclExpansionHtmlWriterImplementation (textWriter, indentXml, settings);
     }
    
 
@@ -114,7 +121,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion
       }
     }
 
-    private void WriteTableBody_ProcessClass (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> classNode)
+    public virtual void WriteTableBody_ProcessClass (AclExpansionTreeNode<SecurableClassDefinition, AclExpansionTreeNode<AclExpansionEntry, 
+      AclExpansionEntry>> classNode)
     {
       if (classNode.Key != null)
       {
@@ -130,7 +138,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion
     }
 
 
-    private void WriteTableBody_ProcessStates (IList<AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> states)
+    public virtual void WriteTableBody_ProcessStates (IList<AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>> states)
     {
       // States Output
       foreach (var aclExpansionTreeNode in states)

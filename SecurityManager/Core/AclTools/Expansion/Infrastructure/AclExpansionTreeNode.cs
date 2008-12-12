@@ -25,7 +25,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
   {
     public AclExpansionTreeNode (TParent parent, int numberLeafNodes, IList<TChildren> children)
     {
-      ArgumentUtility.CheckNotNull ("parent", parent);
+      // Note: null for parent is OK
       ArgumentUtility.CheckNotNull ("numberLeafNodes", numberLeafNodes);
       ArgumentUtility.CheckNotNull ("children", children);
       Key = parent;
@@ -34,8 +34,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     }
 
     public TParent Key { get; private set; }
-    public IList<TChildren> Children { get; private set; }
-    public int NumberLeafNodes { get; private set; }
+    public virtual IList<TChildren> Children { get; private set; }
+    public virtual int NumberLeafNodes { get; private set; }
     
     public void ToText (IToTextBuilder toTextBuilder)
     {

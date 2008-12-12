@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     }
 
 
-    public void WriteTableDataWithRowCount (string value, int rowCount)
+    public virtual void WriteTableDataWithRowCount (string value, int rowCount)
     {
       WriteTableRowBeginIfNotInTableRow ();
       HtmlTagWriter.Tags.td ();
@@ -168,7 +168,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       WriteTableDataForAbstractRoleCondition(accessConditions);
     }
 
-    private void WriteTableDataForAbstractRoleCondition (AclExpansionAccessConditions accessConditions)
+    public void WriteTableDataForAbstractRoleCondition (AclExpansionAccessConditions accessConditions)
     {
       HtmlTagWriter.Tags.td ();
       HtmlTagWriter.Value (accessConditions.IsAbstractRoleRequired ? accessConditions.AbstractRole.DisplayName : "");

@@ -24,10 +24,13 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Globalization.AclTools.Expansion;
 using Remotion.Utilities;
+using Rhino.Mocks;
 using NUnitText = NUnit.Framework.SyntaxHelpers.Text;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -666,6 +669,36 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       {
         Assert.That (result, NUnitText.DoesNotContain (notInResultingHtml));
       }
+    }
+
+
+
+    [Test]
+    public void WriteTableBody_ProcessClassClassNodeKeyIsNullTest ()
+    {
+      const int nrLeafNodes = 33;
+
+      var mocks = new MockRepository();
+
+      var aclExpansionTreeChildrenMock = mocks.DynamicMock<List<AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>> ();
+
+      var aclExpansionTreeNodeMock = mocks.DynamicMock<AclExpansionTreeNode<SecurableClassDefinition,
+        AclExpansionTreeNode<AclExpansionEntry, AclExpansionEntry>>> (null, nrLeafNodes, aclExpansionTreeChildrenMock);
+      aclExpansionTreeNodeMock.Expect(x => x.NumberLeafNodes).Return(nrLeafNodes);
+      aclExpansionTreeNodeMock.Expect(x => x.Children).Return(aclExpansionTreeChildrenMock);
+
+      var aclExpansionHtmlWriterImplementation = mocks.DynamicMock<AclExpansionHtmlWriterImplementation>(TextWriter.Null,true,new AclExpansionHtmlWriterSettings());
+      aclExpansionHtmlWriterImplementation.Expect(x => x.WriteTableDataWithRowCount (AclToolsExpansion.NO_CLASSES_DEFINED_Text, nrLeafNodes));
+
+      var aclExpansionHtmlWriterMock = mocks.PartialMock<AclExpansionHtmlWriter> (
+          aclExpansionHtmlWriterImplementation, new AclExpansionHtmlWriterSettings());
+      aclExpansionHtmlWriterMock.Expect(x => x.WriteTableBody_ProcessStates(aclExpansionTreeChildrenMock));
+
+      mocks.ReplayAll();
+
+      aclExpansionHtmlWriterMock.WriteTableBody_ProcessClass (aclExpansionTreeNodeMock);
+
+      mocks.VerifyAll();
     }
 
 

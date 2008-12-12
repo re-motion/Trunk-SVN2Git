@@ -53,6 +53,15 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
     [Test]
+    public void GetHashCodeTest ()
+    {
+      var aclExpansionAccessConditions = new AclExpansionAccessConditions ();
+      Assert.That (aclExpansionAccessConditions.GetHashCode(), 
+        Is.EqualTo (AclExpansionAccessConditions.EqualityComparer.GetHashCode (aclExpansionAccessConditions)));
+    }
+
+
+    [Test]
     public void ToTextDefaultConstructed ()
     {
       var accessConditions = new AclExpansionAccessConditions ();

@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     }
 
 
-    public virtual AclExpansionEntryCreator_GetAccessTypesResult GetAccessTypes (UserRoleAclAceCombination userRoleAclAce) // , out AclProbe aclProbe, out AccessTypeStatistics accessTypeStatistics)
+    public virtual AclExpansionEntryCreator_GetAccessTypesResult GetAccessTypes (UserRoleAclAceCombination userRoleAclAce) 
     {
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");

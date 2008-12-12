@@ -81,7 +81,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.Infrastructure
       var mocks = new MockRepository ();
       var aclExpansionEntryCreatorMock = mocks.PartialMock<AclExpansionEntryCreator> ();
       var aclProbe = AclProbe.CreateAclProbe (User, Role, Ace);
-      //var accessTypeStatistics = new AccessTypeStatistics ();
       var accessTypeStatisticsMock = mocks.StrictMock<AccessTypeStatistics>();
       accessTypeStatisticsMock.Expect (x => x.IsInAccessTypesContributingAces (userRoleAclAce.Ace)).Return(true);
 
@@ -103,6 +102,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.Infrastructure
       Assert.That (aclExpansionEntry.AllowedAccessTypes, Is.EqualTo (allowedAccessTypes));
       Assert.That (aclExpansionEntry.DeniedAccessTypes, Is.EqualTo (deniedAccessTypes));
     }
+
+
+
 
 
   }
