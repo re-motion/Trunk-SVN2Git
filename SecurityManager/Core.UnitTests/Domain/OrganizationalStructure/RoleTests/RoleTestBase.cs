@@ -18,11 +18,17 @@
 using System;
 using NUnit.Framework;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionTests
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RoleTests
 {
-  public class SubstitutionTestBase : DomainTest
+  [TestFixture]
+  public class RoleTestBase : DomainTest
   {
     private OrganizationalStructureTestHelper _testHelper;
+
+    protected OrganizationalStructureTestHelper TestHelper
+    {
+      get { return _testHelper; }
+    }
 
     public override void SetUp ()
     {
@@ -30,11 +36,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
 
       _testHelper = new OrganizationalStructureTestHelper();
       TestHelper.Transaction.EnterNonDiscardingScope();
-    }
-
-    protected OrganizationalStructureTestHelper TestHelper
-    {
-      get { return _testHelper; }
     }
   }
 }

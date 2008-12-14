@@ -19,30 +19,14 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.UserTests
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RoleTests
 {
   [TestFixture]
-  public class DeleteUser : UserTestBase
+  public class DeleteRole : RoleTestBase
   {
     [Test]
-    public void CascadeToAccessControlEntry ()
-    {
-      AccessControlTestHelper testHelper = new AccessControlTestHelper();
-      using (testHelper.Transaction.EnterNonDiscardingScope())
-      {
-        var user = testHelper.CreateUser ("user", null, "user", null, null, testHelper.CreateTenant ("tenant"));
-        var ace = testHelper.CreateAceWithSpecificUser (user);
-
-        user.Delete();
-
-        Assert.That (ace.IsDiscarded, Is.True);
-      }
-    }
-
-    [Test]
-    public void CascadeToRole ()
+    public void CascadeToSubstitution ()
     {
       Tenant tenant = TestHelper.CreateTenant ("TestTenant", "UID: testTenant");
       Group userGroup = TestHelper.CreateGroup ("UserGroup", Guid.NewGuid().ToString(), null, tenant);
@@ -51,31 +35,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
       Position position = TestHelper.CreatePosition ("Position");
       Role role = TestHelper.CreateRole (user, roleGroup, position);
 
-      user.Delete();
-
-      Assert.That (role.IsDiscarded, Is.True);
-    }
-
-    [Test]
-    public void CascadeToSubstitution_FromSubstitutingUser ()
-    {
-      User substitutingUser = TestHelper.CreateUser ("user", null, "Lastname", null, null, null);
       Substitution substitution = Substitution.NewObject();
-      substitution.SubstitutingUser = substitutingUser;
+      substitution.SubstitutedRole = role;
 
-      substitutingUser.Delete();
-
-      Assert.That (substitution.IsDiscarded, Is.True);
-    }
-
-    [Test]
-    public void CascadeToSubstitution_FromSubstitutedUser ()
-    {
-      User substitutedUser = TestHelper.CreateUser ("user", null, "Lastname", null, null, null);
-      Substitution substitution = Substitution.NewObject();
-      substitution.SubstitutedUser = substitutedUser;
-
-      substitutedUser.Delete();
+      role.Delete();
 
       Assert.That (substitution.IsDiscarded, Is.True);
     }

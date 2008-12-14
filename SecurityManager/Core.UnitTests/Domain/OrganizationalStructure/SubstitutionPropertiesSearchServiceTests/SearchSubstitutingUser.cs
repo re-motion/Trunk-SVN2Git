@@ -26,9 +26,8 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionPropertiesSearchServiceTests
 {
   [TestFixture]
-  public class SearchSubstitutingUser : DomainTest
+  public class SearchSubstitutingUser : SubstitutionPropertiesSearchServiceTestBase
   {
-    private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _substitutingUserProperty;
     private User _user;
@@ -36,9 +35,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
     public override void SetUp ()
     {
       base.SetUp();
-
-      _testHelper = new OrganizationalStructureTestHelper();
-      _testHelper.Transaction.EnterNonDiscardingScope();
 
       _searchService = new SubstitutionPropertiesSearchService();
       IBusinessObjectClass substitutionClass = BindableObjectProvider.GetBindableObjectClass (typeof (Substitution));

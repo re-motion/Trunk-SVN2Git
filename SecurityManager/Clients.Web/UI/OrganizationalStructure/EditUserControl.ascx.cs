@@ -35,6 +35,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   [WebMultiLingualResources (typeof (EditUserControlResources))]
   public partial class EditUserControl : BaseControl
   {
+    private bool _isNewSubstitution;
+
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -53,6 +55,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
+
+      Page.RegisterRequiresControlState (this);
 
       SubstitutedByList.EditModeControlFactory = new EditableRowAutoCompleteControlFactory();
       var editModeColumn = (BocRowEditModeColumnDefinition) SubstitutedByList.FixedColumns[0];
@@ -149,6 +153,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       if (e.Item.ItemID == "NewItem")
       {
         SubstitutedByList.AddAndEditRow (Substitution.NewObject());
+        _isNewSubstitution = true;
       }
 
       if (e.Item.ItemID == "DeleteItem")
@@ -166,8 +171,31 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     protected void SubstitutedByList_EditableRowChangesCanceled (object sender, BocListItemEventArgs e)
     {
       Substitution substitution = (Substitution) e.BusinessObject;
-      if (substitution.State == StateType.New)
+      if (_isNewSubstitution)
         substitution.Delete();
+      _isNewSubstitution = false;
+    }
+
+    protected void SubstitutedByList_EditableRowChangesSaved (object sender, BocListItemEventArgs e)
+    {
+      _isNewSubstitution = false;
+    }
+
+    protected override void LoadControlState (object savedState)
+    {
+      object[] controlState = (object[])savedState;
+
+      base.LoadControlState (controlState[0]);
+      _isNewSubstitution = (bool) controlState[1];
+    }
+
+    protected override object SaveControlState ()
+    {
+      object[] controlState = new object[2];
+      controlState[0] = base.SaveControlState ();
+      controlState[1] = _isNewSubstitution;
+      
+      return controlState;
     }
   }
 }

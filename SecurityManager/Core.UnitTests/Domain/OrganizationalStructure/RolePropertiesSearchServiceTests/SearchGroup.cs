@@ -16,21 +16,18 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using System.Collections.Generic;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RolePropertiesSearchServiceTests
 {
   [TestFixture]
-  public class SearchGroup : DomainTest
+  public class SearchGroup : RolePropertiesSearchServiceTestBase
   {
-    private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _groupProperty;
     private Group _group;
@@ -39,10 +36,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     {
       base.SetUp();
 
-      _testHelper = new OrganizationalStructureTestHelper();
-      _testHelper.Transaction.EnterNonDiscardingScope();
-
-      _searchService = new RolePropertiesSearchService ();
+      _searchService = new RolePropertiesSearchService();
       IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClass (typeof (Role));
       _groupProperty = (IBusinessObjectReferenceProperty) roleClass.GetPropertyDefinition ("Group");
       Assert.That (_groupProperty, Is.Not.Null);
@@ -62,7 +56,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     {
       User user = User.FindByUserName ("group0/user1");
       Assert.That (user, Is.Not.Null);
-      Role role = _testHelper.CreateRole (user, _group, null);
+      Role role = TestHelper.CreateRole (user, _group, null);
       List<Group> expectedGroups = role.GetPossibleGroups (user.Tenant.ID);
       Assert.That (expectedGroups, Is.Not.Empty);
 
@@ -74,8 +68,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     [Test]
     public void Search_WithRoleHasNoUser ()
     {
-      Role role = _testHelper.CreateRole (null, _group, null);
-      
+      Role role = TestHelper.CreateRole (null, _group, null);
+
       IBusinessObject[] actualGroups = _searchService.Search (role, _groupProperty, null);
 
       Assert.That (actualGroups, Is.Empty);
@@ -87,7 +81,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       User user = User.FindByUserName ("group0/user1");
       Assert.That (user, Is.Not.Null);
       user.Tenant = null;
-      Role role = _testHelper.CreateRole (user, _group, null);
+      Role role = TestHelper.CreateRole (user, _group, null);
 
       IBusinessObject[] actualGroups = _searchService.Search (role, _groupProperty, null);
 

@@ -28,9 +28,8 @@ using System.Collections.Generic;
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RolePropertiesSearchServiceTests
 {
   [TestFixture]
-  public class SearchUser : DomainTest
+  public class SearchUser : RolePropertiesSearchServiceTestBase
   {
-    private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _userProperty;
     private User _user;
@@ -38,9 +37,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     public override void SetUp ()
     {
       base.SetUp();
-
-      _testHelper = new OrganizationalStructureTestHelper();
-      _testHelper.Transaction.EnterNonDiscardingScope();
 
       _searchService = new RolePropertiesSearchService();
       IBusinessObjectClass roleClass = BindableObjectProvider.GetBindableObjectClass(typeof (Role));
@@ -62,7 +58,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     {
       Group group = Group.FindByUnqiueIdentifier ("UID: group0");
       Assert.That (group, Is.Not.Null);
-      Role role = _testHelper.CreateRole (_user, group, null);
+      Role role = TestHelper.CreateRole (_user, group, null);
       DomainObjectCollection expectedUsers = User.FindByTenantID (group.Tenant.ID);
       Assert.That (expectedUsers, Is.Not.Empty);
 
@@ -74,7 +70,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     [Test]
     public void Search_WithRoleHasNoGroup ()
     {
-      Role role = _testHelper.CreateRole (_user, null, null);
+      Role role = TestHelper.CreateRole (_user, null, null);
 
       IBusinessObject[] actualUsers = _searchService.Search (role, _userProperty, null);
 
@@ -87,7 +83,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       Group group = Group.FindByUnqiueIdentifier ("UID: group0");
       Assert.That (group, Is.Not.Null);
       group.Tenant = null;
-      Role role = _testHelper.CreateRole (_user, group, null);
+      Role role = TestHelper.CreateRole (_user, group, null);
 
       IBusinessObject[] actualUsers = _searchService.Search (role, _userProperty, null);
 

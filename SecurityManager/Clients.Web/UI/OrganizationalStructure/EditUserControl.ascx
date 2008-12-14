@@ -93,14 +93,14 @@
   <tr>
     <td></td>
     <td>
-      <remotion:BocList ID="SubstitutedByList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="SubstitutedBy" OnMenuItemClick="SubstitutedByList_MenuItemClick" OnEditableRowChangesCanceled="SubstitutedByList_EditableRowChangesCanceled" Selection="Multiple" ShowEmptyListMessage="True" ShowEmptyListReadOnlyMode="True">
+      <remotion:BocList ID="SubstitutedByList" runat="server" DataSourceControl="CurrentObject" PropertyIdentifier="SubstitutedBy" OnMenuItemClick="SubstitutedByList_MenuItemClick" OnEditableRowChangesCanceled="SubstitutedByList_EditableRowChangesCanceled" OnEditableRowChangesSaved="SubstitutedByList_EditableRowChangesSaved" Selection="Multiple" ShowEmptyListMessage="True" ShowEmptyListReadOnlyMode="True">
         <FixedColumns>
-          <remotion:BocRowEditModeColumnDefinition />
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="SubstitutingUser" />
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="IsEnabled" />
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="BeginDate" />
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="EndDate" />          
-          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="SubstitutedRole" />
+          <remotion:BocRowEditModeColumnDefinition Width="40px"/>
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="SubstitutingUser" Width="30%" />
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="SubstitutedRole" Width="30%" />
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="BeginDate" Width="15%" />
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="EndDate" Width="15%" />          
+          <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="IsEnabled" Width="10%" />
         </FixedColumns>
         <ListMenuItems>
           <remotion:BocMenuItem ItemID="NewItem" Text="$res:New">

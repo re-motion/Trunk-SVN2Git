@@ -18,7 +18,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -26,18 +25,14 @@ using Remotion.SecurityManager.Domain.OrganizationalStructure;
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RolePropertiesSearchServiceTests
 {
   [TestFixture]
-  public class SearchOtherProperty : DomainTest
+  public class SearchOtherProperty : RolePropertiesSearchServiceTestBase
   {
-    private OrganizationalStructureTestHelper _testHelper;
     private ISearchAvailableObjectsService _searchService;
     private IBusinessObjectReferenceProperty _tenantProperty;
 
     public override void SetUp ()
     {
       base.SetUp();
-
-      _testHelper = new OrganizationalStructureTestHelper();
-      _testHelper.Transaction.EnterNonDiscardingScope();
 
       _searchService = new RolePropertiesSearchService();
       IBusinessObjectClass userClass = BindableObjectProvider.GetBindableObjectClass (typeof (User));
@@ -52,13 +47,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = 
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The property 'Tenant' is not supported by the 'Remotion.SecurityManager.Domain.OrganizationalStructure.RolePropertiesSearchService' type.",
         MatchType = MessageMatch.Contains)]
     public void Search_WithInvalidProperty ()
     {
-      Role role = _testHelper.CreateRole (null, null, null);
+      Role role = TestHelper.CreateRole (null, null, null);
 
       _searchService.Search (role, _tenantProperty, null);
     }

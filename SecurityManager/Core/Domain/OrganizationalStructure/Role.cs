@@ -117,6 +117,15 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       return null;
     }
 
+    public override string DisplayName
+    {
+      get
+      {
+        string positionName = Position != null ? Position.DisplayName : null;
+        string groupName = Group != null ? Group.DisplayName : null;
 
+        return string.Format ("{0} / {1}", positionName ?? "?", groupName ?? "?" );
+      }
+    }
   }
 }

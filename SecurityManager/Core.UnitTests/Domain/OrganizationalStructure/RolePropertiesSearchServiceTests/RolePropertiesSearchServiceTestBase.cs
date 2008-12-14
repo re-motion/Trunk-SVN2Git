@@ -16,11 +16,10 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using NUnit.Framework;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.SubstitutionTests
+namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RolePropertiesSearchServiceTests
 {
-  public class SubstitutionTestBase : DomainTest
+  public class RolePropertiesSearchServiceTestBase : DomainTest
   {
     private OrganizationalStructureTestHelper _testHelper;
 
@@ -29,7 +28,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
       base.SetUp();
 
       _testHelper = new OrganizationalStructureTestHelper();
-      TestHelper.Transaction.EnterNonDiscardingScope();
+      _testHelper.Transaction.EnterNonDiscardingScope();
     }
 
     protected OrganizationalStructureTestHelper TestHelper
