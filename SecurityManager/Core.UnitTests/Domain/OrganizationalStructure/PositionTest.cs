@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Security;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -180,6 +181,35 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         Assert.IsEmpty (securityContext.AbstractRoles);
         Assert.AreEqual (1, securityContext.GetNumberOfStates());
         Assert.AreEqual (new EnumWrapper (Delegation.Enabled), securityContext.GetState ("Delegation"));
+      }
+    }
+
+    [Test]
+    public void Get_UniqueIdentifier ()
+    {
+      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper();
+      using (testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        Position position = testHelper.CreatePosition ("Position");
+
+        Assert.IsNotEmpty (position.UniqueIdentifier);
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException))]
+    public void UniqueIdentifier_SameIdentifierTwice ()
+    {
+      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper();
+      using (testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        Position position1 = testHelper.CreatePosition ("Position1");
+        position1.UniqueIdentifier = "UID";
+
+        Position position2 = testHelper.CreatePosition ("Position2");
+        position2.UniqueIdentifier = "UID";
+
+        ClientTransactionScope.CurrentTransaction.Commit();
       }
     }
   }

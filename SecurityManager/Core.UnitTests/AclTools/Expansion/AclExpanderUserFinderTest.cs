@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var userFinder = new AclExpanderUserFinder();
       var users = userFinder.FindUsers ();
-      Assert.That (users.Count, Is.EqualTo (6));
+      Assert.That (users.Count, Is.EqualTo (7));
     }
 
 

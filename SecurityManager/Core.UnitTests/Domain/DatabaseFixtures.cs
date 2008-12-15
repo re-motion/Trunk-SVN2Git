@@ -82,10 +82,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
         Position globalPosition = CreatePosition ("Global");
         globalPosition.Delegation = Delegation.Enabled;
+        globalPosition.UniqueIdentifier = "UID: Global";
+        
         Position officialPosition = CreatePosition ("Official");
+        officialPosition.UniqueIdentifier = "UID: Official";
         officialPosition.Delegation = Delegation.Enabled;
+        
         Position managerPosition = CreatePosition ("Manager");
         managerPosition.Delegation = Delegation.Disabled;
+        managerPosition.UniqueIdentifier = "UID: Manager";
 
         GroupType groupType1 = CreateGroupType ("groupType 1");
         GroupType groupType2 = CreateGroupType ("groupType 2");
@@ -124,10 +129,26 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         Group testGroup = CreateGroup ("testGroup", "UID: testGroup", null, tenant1);
         User testUser = CreateUser ("test.user", "test", "user", "Dipl.Ing.(FH)", testOwningGroup, tenant1);
 
-        CreateRole (testUser, testGroup, officialPosition);
-        CreateRole (testUser, testGroup, managerPosition);
+        Role officialRole = CreateRole (testUser, testGroup, officialPosition);
+        Role managerRole = CreateRole (testUser, testGroup, managerPosition);
         CreateRole (testUser, testOwningGroup, managerPosition);
         CreateRole (testUser, testRootGroup, officialPosition);
+
+        User substitutingUser = CreateUser ("substituting.user", null, "substitute", null, testRootGroup, tenant1);
+        Substitution enabledUserSubstitution = Substitution.NewObject ();
+        enabledUserSubstitution.SubstitutingUser = substitutingUser;
+        enabledUserSubstitution.SubstitutedUser = testUser;
+
+        Substitution enabledRoleSubstitution = Substitution.NewObject ();
+        enabledRoleSubstitution.SubstitutingUser = substitutingUser;
+        enabledRoleSubstitution.SubstitutedUser = testUser;
+        enabledRoleSubstitution.SubstitutedRole = officialRole;
+
+        Substitution disabledRoleSubstitution = Substitution.NewObject ();
+        disabledRoleSubstitution.SubstitutingUser = substitutingUser;
+        disabledRoleSubstitution.SubstitutedUser = testUser;
+        disabledRoleSubstitution.SubstitutedRole = managerRole;
+        disabledRoleSubstitution.IsEnabled = false;
 
         Tenant tenant2 = CreateTenant ("Tenant 2");
         Group groupTenant2 = CreateGroup ("Group Tenant 2", "UID: group Tenant 2", null, tenant2);

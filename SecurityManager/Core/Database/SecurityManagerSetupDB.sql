@@ -411,6 +411,7 @@ CREATE TABLE [dbo].[Position]
 
   -- Position columns
   [Name] nvarchar (100) NOT NULL,
+  [UniqueIdentifier] nvarchar (100) NOT NULL,
   [Delegation] int NOT NULL,
 
   CONSTRAINT [PK_Position] PRIMARY KEY CLUSTERED ([ID])
@@ -725,9 +726,9 @@ CREATE VIEW [dbo].[GroupTypePositionView] ([ID], [ClassID], [Timestamp], [GroupT
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[PositionView] ([ID], [ClassID], [Timestamp], [Name], [Delegation])
+CREATE VIEW [dbo].[PositionView] ([ID], [ClassID], [Timestamp], [Name], [UniqueIdentifier], [Delegation])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Name], [Delegation]
+  SELECT [ID], [ClassID], [Timestamp], [Name], [UniqueIdentifier], [Delegation]
     FROM [dbo].[Position]
     WHERE [ClassID] IN ('Position')
   WITH CHECK OPTION

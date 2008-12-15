@@ -62,13 +62,44 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private Principal CreatePrincipal (ISecurityPrincipal principal)
     {
-      User principalUser = GetUser (principal.User);
-      if (principalUser == null)
+      User user = GetUser (principal.User);
+      if (user == null)
         throw CreateAccessControlException ("No principal was provided.");
 
-      return new Principal (principalUser.Tenant, principalUser, principalUser.Roles);
+      Tenant principalTenant = user.Tenant;
+
+      IEnumerable<Role> principalRoles;
+      if (principal.SubstitutedRole != null)
+      {
+        principalRoles = user.GetActiveSubstitutions()
+            .Where (s => IsRoleMatchingPrincipalRole (s.SubstitutedRole, principal.SubstitutedRole))
+            .Select (s => s.SubstitutedRole);
+      }
+      else if (principal.Role != null)
+      {
+        principalRoles = user.Roles.Where (r => IsRoleMatchingPrincipalRole (r, principal.Role));
+      }
+      else
+      {
+        principalRoles = user.Roles;
+      }
+
+      User principalUser;
+      if (principal.SubstitutedRole != null)
+        principalUser = null;
+      else
+        principalUser = user;
+
+      return new Principal (principalTenant, principalUser, principalRoles.ToArray());
     }
 
+    private bool IsRoleMatchingPrincipalRole (Role role, ISecurityPrincipalRole principalRole)
+    {
+      if (role == null)
+        return false;
+
+      return role.Group.UniqueIdentifier == principalRole.Group && role.Position.UniqueIdentifier == principalRole.Position;
+    }
 
     private Tenant GetTenant (string tenantUniqueIdentifier)
     {
@@ -117,12 +148,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return abstractRolesCollection;
     }
 
-    private EnumWrapper? FindFirstMissingAbstractRole (EnumWrapper[] expectedAbstractRoles, IList<AbstractRoleDefinition> actualAbstractRolesCollection)
+    private EnumWrapper? FindFirstMissingAbstractRole (
+        EnumWrapper[] expectedAbstractRoles, IList<AbstractRoleDefinition> actualAbstractRolesCollection)
     {
       var actualAbstractRoles = from r in actualAbstractRolesCollection select new EnumWrapper (r.Name);
       var result = from expected in expectedAbstractRoles
                    where !actualAbstractRoles.Contains (expected)
-                   select (EnumWrapper?)expected;
+                   select (EnumWrapper?) expected;
 
       return result.FirstOrDefault();
     }

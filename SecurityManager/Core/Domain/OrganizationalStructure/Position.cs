@@ -80,10 +80,16 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     protected Position ()
     {
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
+      UniqueIdentifier = Guid.NewGuid ().ToString ();
+// ReSharper restore DoNotCallOverridableMethodsInConstructor
     }
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]
     public abstract string Name { get; set; }
+
+    [StringProperty (IsNullable = false, MaximumLength = 100)]
+    public abstract string UniqueIdentifier { get; set; }
 
     [PermanentGuid ("5C31F600-88F3-4ff7-988C-0E45A857AB4B")]
     public abstract Delegation Delegation { get; set; }

@@ -9,3 +9,6 @@ ALTER TABLE [User]
 
 ALTER TABLE [Group]
   ADD CONSTRAINT GroupUniqueIdentifier UNIQUE NONCLUSTERED ([UniqueIdentifier])
+
+ALTER TABLE [Position]
+  ADD CONSTRAINT PositionUniqueIdentifier UNIQUE NONCLUSTERED ([UniqueIdentifier])

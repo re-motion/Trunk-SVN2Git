@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.User
     {
       DomainObjectCollection users = User.FindByTenantID (_expectedTenantID);
 
-      Assert.AreEqual (5, users.Count);
+      Assert.AreEqual (6, users.Count);
     }
   }
 }

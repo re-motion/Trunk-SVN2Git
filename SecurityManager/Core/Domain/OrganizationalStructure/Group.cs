@@ -127,7 +127,9 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     protected Group ()
     {
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
       UniqueIdentifier = Guid.NewGuid().ToString();
+// ReSharper restore DoNotCallOverridableMethodsInConstructor
     }
 
     // methods and properties
