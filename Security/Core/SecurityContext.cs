@@ -238,12 +238,6 @@ namespace Remotion.Security
       return ((IEquatable<SecurityContext>) this).Equals (other);
     }
 
-    bool IEquatable<ISecurityContext>.Equals (ISecurityContext other)
-    {
-      SecurityContext otherContext = other as SecurityContext;
-      return otherContext != null && ((IEquatable<SecurityContext>) this).Equals (otherContext);
-    }
-
     bool IEquatable<SecurityContext>.Equals (SecurityContext other)
     {
       if (other == null)

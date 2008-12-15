@@ -25,7 +25,7 @@ namespace Remotion.Security
   /// is typically used by the <see cref="ISecurityStrategy"/>'s <see cref="ISecurityStrategy.HasAccess"/> method to create a
   /// security context for a security query.
   /// </remarks>
-  public interface ISecurityContext : IEquatable<ISecurityContext>
+  public interface ISecurityContext
   {
     /// <summary>
     /// Gets the type name of the <see cref="ISecurableObject"/> for which the permissions are to be evaluated by the <see cref="ISecurityStrategy"/>.
