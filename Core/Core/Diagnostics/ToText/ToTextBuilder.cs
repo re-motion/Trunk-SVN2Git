@@ -17,10 +17,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq.Expressions;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Utilities;
-using Remotion.Text.StringExtensions;
 
 namespace Remotion.Diagnostics.ToText
 {
@@ -28,6 +26,7 @@ namespace Remotion.Diagnostics.ToText
   {
     private readonly DisableableWriter _disableableWriter;
     private readonly Stack<int> _indendationStack = new Stack<int> (16);
+    //private const bool _autoIndentSequence = true;
 
     public ToTextBuilder (ToTextProvider toTextProvider, TextWriter textWriter)
       : base (toTextProvider)
@@ -70,16 +69,10 @@ namespace Remotion.Diagnostics.ToText
 
     public override string ToString ()
     {
-      //SequenceEnd();
       //Assertion.IsFalse (IsInSequence);
       return _disableableWriter.ToString ();
     }
 
-    //public override string ToString ()
-    //{
-    //  //SequenceEnd ();
-    //  return _disableableWriter.ToString ();
-    //}
 
 
     //--------------------------------------------------------------------------
@@ -90,7 +83,6 @@ namespace Remotion.Diagnostics.ToText
     {
       if (IsInSequence)
       {
-        //_disableableWriter.Write (SequenceState.Counter == 0 ? SequenceState.ElementPrefix : SequenceState.Separator);
         _disableableWriter.Write (SequenceState.ElementPrefix);
       }
     }
@@ -99,7 +91,6 @@ namespace Remotion.Diagnostics.ToText
     {
       if (IsInSequence)
       {
-        //_disableableWriter.Write (SequenceState.ElementPostfix);
         _disableableWriter.Write (SequenceState.ElementPostfix);
         _disableableWriter.WriteDelayedAsPrefix (SequenceState.Separator);
         SequenceState.IncrementCounter ();
@@ -123,12 +114,6 @@ namespace Remotion.Diagnostics.ToText
     ////--------------------------------------------------------------------------
     //// Low Level Emitters
     ////--------------------------------------------------------------------------
-
-    //public IToTextBuilder sf (string format, params object[] paramArray)
-    //{
-    //  return WriteRawStringUnsafe (string.Format (format, paramArray)); 
-    //}
-
 
     public override IToTextBuilder WriteNewLine ()
     {
@@ -188,7 +173,6 @@ namespace Remotion.Diagnostics.ToText
     //--------------------------------------------------------------------------
     // Low level Sequence Emitters
     //--------------------------------------------------------------------------
-
 
     protected IToTextBuilder SequenceLiteralBegin (string name, string sequencePrefix, string elementPrefix, string elementPostfix, string separator, string sequencePostfix)
     {
@@ -318,8 +302,6 @@ namespace Remotion.Diagnostics.ToText
       Assertion.IsTrue (IsInSequence);
       _disableableWriter.ClearDelayedPrefix(); // sequence closes = > clear delayed element separator 
       
-      //_disableableWriter.Write (SequenceState.SequencePostfix);
-
       // Always write the sequence end if the start was written
       if (SequenceState.SequenceStartWritten)
       {
@@ -328,8 +310,29 @@ namespace Remotion.Diagnostics.ToText
 
       SequenceState = sequenceStack.Pop ();
 
-      AfterWriteElement (); 
+      if (Settings.AutoIndentSequences)
+      {
+        unindent ();
+        //WriteNewLine ();
+        //_disableableWriter.WriteDelayedAsPrefix (Environment.NewLine);
+      }
+
+      AfterWriteElement ();
     }
+
+    protected override void BeforeNewSequence ()
+    {
+      if (Settings.AutoIndentSequences)
+      {
+        //_disableableWriter.ClearDelayedPrefix (); 
+        WriteNewLine ();
+        indent ();
+      }
+
+      BeforeWriteElement ();
+      PushSequenceState (SequenceState);
+    }
+
 
     public override void Close ()
     {

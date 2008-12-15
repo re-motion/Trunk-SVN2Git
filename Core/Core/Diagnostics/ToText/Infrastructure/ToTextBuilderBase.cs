@@ -181,6 +181,12 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
 
     protected virtual void BeforeNewSequence ()
     {
+      //if (autoIndentSequence)
+      //{
+      //  indent();
+      //  WriteNewLine();
+      //}
+
       BeforeWriteElement();
       PushSequenceState (SequenceState);
     }

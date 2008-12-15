@@ -23,6 +23,7 @@ using Remotion.Development.UnitTesting.Logging;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
+using Remotion.Reflection;
 using Remotion.UnitTests.Diagnostics.TestDomain;
 
 
@@ -970,14 +971,125 @@ line5"));
     }
 
 
-    //[Test]
-    //public void AlwaysInSequenceTest ()
-    //{
-    //  var toTextBuilder = CreateTextBuilder ();
-    //  toTextBuilder.e (1).e("xyz").e(new object());
-    //  string result = toTextBuilder.ToString ();
-    //  Assert.That (result, Is.EqualTo ("1 xyz System.Object"));
-    //}
+    [Test]
+    public void AutoIndentSequencesOffTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      string result = WriteNestedSequences(toTextBuilder).ToString();
+      var resultExpected = @"(1,xyz,(2,3,(ABC{9,8,7,6,5,4,3,2,1},{a,b,c,d,e,f,g},{9,8,7,6,5,4,3,2,1}),xyz,{a,b,c,d,e,f,g},{a,b,c,d,e,f,g}),4,System.Object)";
+      Assert.That (result, Is.EqualTo (resultExpected));
+    }
+
+    [Test]
+    public void AutoIndentSequencesOnTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      toTextBuilder.Settings.AutoIndentSequences = true;
+      string result = WriteNestedSequences (toTextBuilder).ToString ();
+      var resultExpected = @"
+(1,xyz,
+  (2,3,
+    (ABC
+      {9,8,7,6,5,4,3,2,1},
+      {a,b,c,d,e,f,g},
+      {9,8,7,6,5,4,3,2,1}),xyz,
+    {a,b,c,d,e,f,g},
+    {a,b,c,d,e,f,g}),4,System.Object)";
+      Assert.That (result, Is.EqualTo (resultExpected));
+    }
+
+    [Test]
+    public void AutoIndentSequencesOnOffTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+      
+      toTextBuilder.Settings.AutoIndentSequences = true;
+      toTextBuilder.sb().e(1).e(2);
+      toTextBuilder.sb ().e (3).e(4);
+      toTextBuilder.sb().e ("a").e("b").se ();
+      toTextBuilder.sb ().e ("a").e ("b").se ();
+      toTextBuilder.e (5).e (6).se ();
+      toTextBuilder.Settings.AutoIndentSequences = false;
+      toTextBuilder.sb ().e ("not").e ("indented").e("sequence").se ();
+      toTextBuilder.nl().e ("not a sequence");
+      toTextBuilder.nl ().e ("also not a sequence");
+      toTextBuilder.Settings.AutoIndentSequences = true;
+      toTextBuilder.sb ().e ("a").e ("b").se ();
+      toTextBuilder.se ();
+      toTextBuilder.sb().e ("xyz").e("abc").se();
+
+      var result = toTextBuilder.ToString();
+      var resultExpected = @"
+(1,2,
+  (3,4,
+    (a,b),
+    (a,b),5,6),(not,indented,sequence),
+  not a sequence,
+  also not a sequence,
+  (a,b))
+(xyz,abc)";
+      Assert.That (result, Is.EqualTo (resultExpected));
+    }
+
+
+    [Test]
+    public void AutoIndentSequencesPropertyRestorerTest ()
+    {
+      var toTextBuilder = CreateTextBuilder ();
+
+      toTextBuilder.Settings.AutoIndentSequences = true;
+
+      //using (PropertyRestorerMother.New (toTextBuilder.Settings, Properties<ToTextBuilderSettings>.Get (x => x.AutoIndentSequences)))
+      using (PropertyRestorerMother.New (toTextBuilder.Settings, x => x.AutoIndentSequences))
+      {
+        toTextBuilder.Settings.AutoIndentSequences = true;
+        toTextBuilder.sb().e (1).e (2);
+        toTextBuilder.sb().e (3).e (4);
+        toTextBuilder.sb().e ("a").e ("b").se();
+        toTextBuilder.sb().e ("a").e ("b").se();
+        toTextBuilder.e (5).e (6).se();
+        toTextBuilder.Settings.AutoIndentSequences = false;
+        toTextBuilder.sb().e ("not").e ("indented").e ("sequence").se();
+        toTextBuilder.nl().e ("not a sequence");
+        toTextBuilder.nl().e ("also not a sequence");
+        toTextBuilder.Settings.AutoIndentSequences = true;
+        toTextBuilder.sb().e ("a").e ("b").se();
+        toTextBuilder.se();
+        toTextBuilder.sb().e ("xyz").e ("abc").se();
+        toTextBuilder.Settings.AutoIndentSequences = false;
+        Assert.That (toTextBuilder.Settings.AutoIndentSequences,Is.False);
+      }
+
+      Assert.That (toTextBuilder.Settings.AutoIndentSequences, Is.True);
+
+      var result = toTextBuilder.ToString ();
+      Log (result);
+      var resultExpected = @"
+(1,2,
+  (3,4,
+    (a,b),
+    (a,b),5,6),(not,indented,sequence),
+  not a sequence,
+  also not a sequence,
+  (a,b))
+(xyz,abc)";
+      Assert.That (result, Is.EqualTo (resultExpected));
+    }
+
+
+
+    private ToTextBuilder WriteNestedSequences (ToTextBuilder toTextBuilder)
+    {
+      var numbersList = ListMother.New (9, 8, 7, 6, 5, 4, 3, 2, 1);
+      var stringList = ListMother.New ("a", "b", "c", "d", "e", "f", "g");
+      toTextBuilder.sb ().e (1).e ("xyz");
+      toTextBuilder.sb().e (2).e (3);
+      toTextBuilder.sb ().s ("ABC").e (numbersList).e (stringList).e (numbersList).se ();
+      toTextBuilder.e ("xyz");
+      toTextBuilder.e (stringList).e (stringList).se ();
+      toTextBuilder.e(4).e (new object ()).se ();
+      return toTextBuilder;
+    }
 
 
     public static ToTextBuilder CreateTextBuilder ()

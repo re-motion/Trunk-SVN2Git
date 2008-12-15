@@ -30,6 +30,8 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
       ArrayElementPrefix = "";
       ArraySeparator = ",";
       ArrayPrefix = "{";
+
+      AutoIndentSequences = false;
     }
 
     public string ArrayPrefix { get; set; }
@@ -43,5 +45,7 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
     public string EnumerableElementPostfix { get; set; }
     public string EnumerableSeparator { get; set; }
     public string EnumerablePostfix { get; set; }
+
+    public bool AutoIndentSequences { get; set; }
   }
 }
