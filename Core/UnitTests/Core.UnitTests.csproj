@@ -155,7 +155,6 @@
     <Compile Include="Diagnostics\ToTextBuilderXmlTest.cs" />
     <Compile Include="Diagnostics\ToTextProviderHandlerTest.cs" />
     <Compile Include="Diagnostics\ToTextSpecificHandlerCollectorTest.cs" />
-    <Compile Include="Diagnostics\ToTextTest.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporterTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCacheTest.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimerTest.cs" />

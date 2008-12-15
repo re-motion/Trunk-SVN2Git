@@ -54,9 +54,9 @@ namespace Remotion.Diagnostics.ToText
       return this;
     }
 
-    public override string CheckAndConvertToString ()
+    public override string ToString ()
     {
-      Assertion.IsFalse (IsInSequence);
+      //Assertion.IsFalse (IsInSequence);
       return _disableableWriter.ToString ();
     }
 

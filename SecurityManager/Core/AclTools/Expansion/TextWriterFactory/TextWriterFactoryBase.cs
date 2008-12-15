@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
       ArgumentUtility.CheckNotNull ("toName", toName);
       if (!TextWriterExists(toName))
       {
-        throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s (" registered => no relative path exists.").CheckAndConvertToString ());
+        throw new ArgumentException (To.String.s ("No TextWriter with name ").e (toName).s ("registered => no relative path exists.").ToString ());
       }
       return Path.Combine(".", AppendExtension (toName, Extension)); 
     }

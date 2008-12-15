@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void ToTextDefaultConstructed ()
     {
       var accessConditions = new AclExpansionAccessConditions ();
-      var result = To.String.e (accessConditions).CheckAndConvertToString ();
+      var result = To.String.e (accessConditions).ToString ();
       Assert.That (result, Is.EqualTo ("[]"));
     }
 
@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       accessConditions.GroupHierarchyCondition = GroupHierarchyCondition.ThisAndParentAndChildren;
       accessConditions.OwningTenant = Tenant;
       accessConditions.TenantHierarchyCondition = TenantHierarchyCondition.ThisAndParent;
-      var result = To.String.e (accessConditions).CheckAndConvertToString ();
+      var result = To.String.e (accessConditions).ToString ();
       Assert.That (result, Is.EqualTo (@"[userMustOwn=True,owningGroup=[""Anotha Group""],groupHierarchyCondition=ThisAndParentAndChildren,tenantMustOwn=True,abstractRoleMustMatch=True,abstractRole=[""xyz""]]"));
     }
 

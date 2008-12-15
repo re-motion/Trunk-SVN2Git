@@ -137,11 +137,21 @@ line3";
     [Test]
     public void ToStringTest ()
     {
-      var stringWriter = new StringWriter ();
+      //var stringWriter = new StringWriter ();
       var toStringToTextBuilder = To.String.s ("ToStringTest");
-      var result = toStringToTextBuilder.CheckAndConvertToString();
+      var result = toStringToTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("ToStringTest"));
     }
+
+
+    [Test]
+    public void ToStringAlwaysInSequenceTest ()
+    {
+      var toTextBuilder = To.String.e (1).e ("xyz").e (new object ());
+      string result = toTextBuilder.ToString ();
+      Assert.That (result, Is.EqualTo (@"1 ""xyz"" System.Object"));
+    }
+
 
     //private static readonly ILog s_log = LogManager.GetLogger (typeof (ToTest));
 
@@ -166,7 +176,7 @@ line3";
     {
       // TODO: Implement test
       var log = LogManager.GetLogger (typeof (ToTest));
-      //log.Log (LogLevel.Debug, log.IsDebugEnabled ? "" : To.String.s ("ToILogTest").CheckAndConvertToString());
+      //log.Log (LogLevel.Debug, log.IsDebugEnabled ? "" : To.String.s ("ToILogTest").ToString());
       log.Log (LogLevel.Debug, ttb => ttb.sb ().e ("ToILogTest2").se ());
     }
    
@@ -204,6 +214,8 @@ line3";
       var Thank = "You";
       To.Console.e (() => Thank);
     }
+
+
 
 
 

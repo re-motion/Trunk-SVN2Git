@@ -144,7 +144,6 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
     }
 
     public abstract IToTextBuilder WriteTheFollowingIfComplexityLevelIsGreaterThanOrEqualTo (ToTextBuilderOutputComplexityLevel complexityLevel);
-    public abstract string CheckAndConvertToString ();
     protected abstract void BeforeWriteElement ();
     protected abstract void AfterWriteElement ();
     public abstract IToTextBuilder Flush ();

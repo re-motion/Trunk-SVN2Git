@@ -41,7 +41,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void ToTextTest ()
     {
       var settings = new AclExpanderApplicationSettings ();
-      Assert.That (To.String.e (settings).CheckAndConvertToString (), Is.EqualTo (@"(user=null,last=null,first=null,dir=""."",culture=""de-AT"",multifile=False,verbose=False)"));
+      Assert.That (To.String.e (settings).ToString (), 
+        Is.EqualTo (@"(user=null,last=null,first=null,dir=""."",culture=""de-AT"",multifile=False,verbose=False)"));
     }
 
   }

@@ -36,6 +36,7 @@ namespace Remotion.Diagnostics.ToText
       IndendationLevel = 0;
       _disableableWriter = new DisableableWriter (textWriter);
       Settings = new ToTextBuilderSettings ();
+      //SequenceLiteralBegin ("", "", "", "", " ", "");
     }
 
     public ToTextBuilder (ToTextProvider toTextProvider)
@@ -56,12 +57,6 @@ namespace Remotion.Diagnostics.ToText
     //--------------------------------------------------------------------------
 
 
-    //public override bool AllowNewline
-    //{
-    //  get { return _allowNewline; }
-    //  set { _allowNewline = value; }
-    //}
-
     public override bool Enabled
     {
       get { return _disableableWriter.Enabled; }
@@ -73,16 +68,18 @@ namespace Remotion.Diagnostics.ToText
     // Final Output Methods
     //--------------------------------------------------------------------------
 
-    public override string CheckAndConvertToString ()
+    public override string ToString ()
     {
-      Assertion.IsFalse (IsInSequence);
+      //SequenceEnd();
+      //Assertion.IsFalse (IsInSequence);
       return _disableableWriter.ToString ();
     }
 
-    public override string ToString ()
-    {
-      return _disableableWriter.ToString ();
-    }
+    //public override string ToString ()
+    //{
+    //  //SequenceEnd ();
+    //  return _disableableWriter.ToString ();
+    //}
 
 
     //--------------------------------------------------------------------------

@@ -115,7 +115,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       {
         toTextBuilderString.nl ().s ("AssertTextWriterFactoryMemberEquals(stringWriterFactory,").e (pair.Key).s (", ").e (pair.Value.TextWriter.ToString ().Escape ()).s (");");
       }
-      return toTextBuilderString.CheckAndConvertToString();
+      return toTextBuilderString.ToString();
     }
 
 

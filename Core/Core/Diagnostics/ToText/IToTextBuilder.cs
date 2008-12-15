@@ -98,12 +98,10 @@ namespace Remotion.Diagnostics.ToText
     /// </summary>
     IToTextBuilder SetOutputComplexityToFull ();
 
-
-
-    /// <summary>
-    /// <para>Check if e.g. all open sequences have been closed and return a string which represents the current <see cref="ToTextBuilder"/> text.</para> 
-    /// </summary>
-    string CheckAndConvertToString ();
+    ///// <summary>
+    ///// <para>Check if e.g. all open sequences have been closed and return a string which represents the current <see cref="ToTextBuilder"/> text.</para> 
+    ///// </summary>
+    //string CheckAndConvertToString ();
     
     /// <summary>
     /// <para>Flushes the underlying stream writer.</para> 
@@ -270,7 +268,7 @@ namespace Remotion.Diagnostics.ToText
     /// <example><code>
     /// var myList = List.New(5,3,1);
     /// toTextBuilder.e(() => myList);
-    /// var result = toTextBuilder.CheckAndConvertToString(); // returns: myList={5,3,1}
+    /// var result = toTextBuilder.ToString(); // returns: myList={5,3,1}
     /// </code></example>
     /// </remarks>
     IToTextBuilder WriteElement<T> (Expression<Func<T>> expression);
@@ -357,7 +355,7 @@ namespace Remotion.Diagnostics.ToText
     /// <remarks>
     /// <example><code>
     /// toTextBuilder.sbLiteral ("", "|", ">", "", "").elementsNumbered ("a", 1, 5).se();
-    /// var result = toTextBuilder.CheckAndConvertToString(); // returns: |a1>|a2>|a3>|a4>|a5>
+    /// var result = toTextBuilder.ToString(); // returns: |a1>|a2>|a3>|a4>|a5>
     /// </code></example>
     /// </remarks>    
     IToTextBuilder elementsNumbered (string s, int i0, int i1);

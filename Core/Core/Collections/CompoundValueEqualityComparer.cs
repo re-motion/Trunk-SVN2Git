@@ -48,7 +48,7 @@ namespace Remotion.Collections
 
 
     /// <summary>
-    /// Standard conforming <see cref="object.Equals(object)"/> implementation comparing <see cref="T"/> with an <see cref="object"/>,
+    /// Standard conforming <see cref="object.Equals(object)"/> implementation comparing <typeparamref name="T"/> with an <see cref="object"/>,
     /// using <see cref="Equals(T,T)"/>
     /// </summary>
     public bool Equals (T x, Object obj)

@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory
 
       if (NameToTextWriterData.ContainsKey (name))
       {
-        throw new ArgumentException (To.String.s ("TextWriter with name ").e (name).s (" already exists.").CheckAndConvertToString ());
+        throw new ArgumentException (To.String.s ("TextWriter with name ").e (name).s ("already exists.").ToString ());
       }
 
       string nameWithExtension = AppendExtension (name, extension);

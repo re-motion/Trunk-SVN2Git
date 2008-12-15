@@ -56,7 +56,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = new ToTextBuilder (toText);
       toText.ToText (o, toTextBuilder);
-      return toTextBuilder.CheckAndConvertToString ();
+      return toTextBuilder.ToString ();
     }
 
 

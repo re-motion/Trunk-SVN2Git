@@ -39,7 +39,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = new ToTextBuilder (toText);
       toText.ToText (o, toTextBuilder);
-      return toTextBuilder.CheckAndConvertToString ();
+      return toTextBuilder.ToString ();
     }
 
 
@@ -661,7 +661,7 @@ namespace Remotion.UnitTests.Diagnostics
       var feedback = new ToTextProviderHandlerFeedback();
       handler.ToTextIfTypeMatches (parameters,feedback);
       Assert.That (feedback.Handled, Is.EqualTo (true));
-      var result = parameters.ToTextBuilder.CheckAndConvertToString();
+      var result = parameters.ToTextBuilder.ToString();
       Log (result);
       Assert.That (result, Is.EqualTo ("null"));
     }
@@ -764,7 +764,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = new ToTextBuilder (toText);
       toTextBuilder.SetOutputComplexityToSkeleton ();
       toText.ToText (test, toTextBuilder);
-      string toTextTest = toTextBuilder.CheckAndConvertToString ();
+      string toTextTest = toTextBuilder.ToString ();
       Log ("toTextTest=" + toTextTest);
     }
 
@@ -808,7 +808,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = new ToTextBuilder (toText);
       toTextBuilder.SetOutputComplexityToSkeleton();
       toText.ToText (test, toTextBuilder);
-      string toTextTest = toTextBuilder.CheckAndConvertToString ();
+      string toTextTest = toTextBuilder.ToString ();
       Log ("toTextTest=" + toTextTest);
     }
 

@@ -116,7 +116,8 @@ namespace Remotion.Diagnostics.ToText
     public virtual string ToTextString (object obj)
     {
       var toTextBuilder = new ToTextBuilder (this);
-      return toTextBuilder.WriteElement (obj).CheckAndConvertToString ();
+      //return toTextBuilder.WriteElement (obj).CheckAndConvertToString ();
+      return toTextBuilder.WriteElement (obj).ToString ();
     }
 
     public void ToText (object obj, IToTextBuilder toTextBuilder)

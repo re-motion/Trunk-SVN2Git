@@ -38,7 +38,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.s ("ABC defg");
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("ABC defg"));
     }
 
@@ -48,7 +48,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.s ("A");
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("A"));
     }
 
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.nl().s ("");
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo (System.Environment.NewLine));
     }
 
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.s ("A").s ("B").s ("C");
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("ABC"));
     }
 
@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var o = new Object();
       toTextBuilder.e (o);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo (o.ToString()));
     }
 
@@ -89,7 +89,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var o = new Object();
       toTextBuilder.e (o);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo (o.ToString()));
     }
 
@@ -99,7 +99,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var myList = ListMother.New (5, 3, 1);
       toTextBuilder.e ("myList", myList);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     }
 
@@ -109,7 +109,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder ();
       var theAnswer = 42;
       toTextBuilder.e (() => theAnswer);
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("theAnswer=42"));
     }
 
@@ -119,7 +119,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder ();
       var myList = ListMother.New (5, 3, 1);
       toTextBuilder.e (() => myList);
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("myList={5,3,1}"));
     }
 
@@ -132,7 +132,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var myList = ListMother.New (5, 3, 1);
       toTextBuilder.sb().e ("Abra").e ("myList", myList).e ("myList", myList).e ("Kadabra").se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("(Abra,myList={5,3,1},myList={5,3,1},Kadabra)"));
     }
 
@@ -142,7 +142,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var list = ListMother.New (5, 3, 1, 11, 13, 17);
       toTextBuilder.WriteEnumerable (list);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{5,3,1,11,13,17}"));
     }
 
@@ -152,7 +152,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var dictionary = DictionaryMother.New ("a",11,"b",22,"C",33);
       toTextBuilder.WriteDictionary (dictionary);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{a:11,b:22,C:33}"));
     }
 
@@ -165,7 +165,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var list = ListMother.New (ListMother.New (5, 3, 1), ListMother.New (11, 13, 17));
       toTextBuilder.WriteEnumerable (list);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17}}"));
     }
 
@@ -175,7 +175,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder ();
       var list = ListMother.New (ListMother.New ("5", "3", "1"), ListMother.New ("11", "13", "17"));
       toTextBuilder.WriteEnumerable (list);
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17}}"));
     }
 
@@ -186,7 +186,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var list = ListMother.New (ListMother.New (5, 3, 1), ListMother.New (11, 13, 17), ListMother.New (19, 23, 29));
       toTextBuilder.WriteEnumerable (list);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{{5,3,1},{11,13,17},{19,23,29}}"));
     }
 
@@ -196,7 +196,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var list = ListMother.New (ListMother.New (ListMother.New (5, 3, 1), ListMother.New (11, 13, 17)), ListMother.New (ListMother.New (19, 23, 29), ListMother.New (31, 37, 41)));
       toTextBuilder.WriteEnumerable (list);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{{{5,3,1},{11,13,17}},{{19,23,29},{31,37,41}}}"));
     }
 
@@ -210,7 +210,7 @@ namespace Remotion.UnitTests.Diagnostics
           ListMother.New (ListMother.New (19, 20, 21), ListMother.New (22, 23, 24), ListMother.New (25, 26, 27))
           );
       toTextBuilder.WriteEnumerable (list);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{{{1,2,3},{4,5,6},{7,8,9}},{{10,11,12},{13,14,15},{16,17,18}},{{19,20,21},{22,23,24},{25,26,27}}}"));
     }
 
@@ -220,7 +220,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var list = ListMother.New (ListMother.New (ListMother.New ("A", "B", "C")));
       toTextBuilder.enumerable (list);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{{{A,B,C}}}"));
     }
 
@@ -235,7 +235,7 @@ namespace Remotion.UnitTests.Diagnostics
           new[] {new[] {11, 13}, new[] {17, 19}},
           new[] {new[] {23, 29}, new[] {31, 37}}};
       toTextBuilder.WriteArray (array);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{{{1,3},{5,7}},{{11,13},{17,19}},{{23,29},{31,37}}}"));
     }
 
@@ -245,7 +245,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       int[,,] array = { { { 1, 3 }, { 5, 7 } }, { { 11, 13 }, { 17, 19 } }, { { 23, 29 }, { 31, 37 } } };
       toTextBuilder.WriteArray (array);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{{{1,3},{5,7}},{{11,13},{17,19}},{{23,29},{31,37}}}"));
     }
 
@@ -264,7 +264,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.Settings.ArrayPostfix = "}";
 
       toTextBuilder.WriteArray (array);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{({({(1),(3)}),({(5),(7)})}),({({(11),(13)}),({(17),(19)})}),({({(23),(29)}),({(31),(37)})})}"));
     }
 
@@ -275,7 +275,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var list = ListMother.New (ListMother.New (ListMother.New ("A", "B", "C")));
       toTextBuilder.enumerable (list);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{{{A,B,C}}}"));
     }
 
@@ -293,7 +293,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.Settings.ArrayPostfix = ">";
 
       toTextBuilder.WriteArray (array);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("<[<[<[1];[3];[5]>];[<[5];[7];[11]>]>]>"));
     }
 
@@ -304,12 +304,12 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.AllowNewline = false;
       toTextBuilder.s ("Hello").nl().s (" world");
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("Hello world"));
 
       toTextBuilder.AllowNewline = true;
       toTextBuilder.s (" here comes the").nl().s ("newline");
-      var result2 = toTextBuilder.CheckAndConvertToString();
+      var result2 = toTextBuilder.ToString();
       Assert.That (result2, Is.EqualTo ("Hello world here comes the" + Environment.NewLine + "newline"));
     }
 
@@ -320,7 +320,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.AllowNewline = true;
 
       toTextBuilder.nl (3);
-      string result = toTextBuilder.CheckAndConvertToString ();
+      string result = toTextBuilder.ToString ();
       string sExpected = ((Func<string, string>) (s => s + s + s)) (Environment.NewLine);
       To.Console.sEsc (result).s (",").sEsc (sExpected);
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.Contains (sExpected));
@@ -331,13 +331,13 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.s ("test");
-      Assert.That (toTextBuilder.CheckAndConvertToString(), Is.EqualTo ("test"));
+      Assert.That (toTextBuilder.ToString(), Is.EqualTo ("test"));
       toTextBuilder.Enabled = false;
       toTextBuilder.s ("test");
-      Assert.That (toTextBuilder.CheckAndConvertToString(), Is.EqualTo ("test"));
+      Assert.That (toTextBuilder.ToString(), Is.EqualTo ("test"));
       toTextBuilder.Enabled = true;
       toTextBuilder.s ("test");
-      Assert.That (toTextBuilder.CheckAndConvertToString(), Is.EqualTo ("testtest"));
+      Assert.That (toTextBuilder.ToString(), Is.EqualTo ("testtest"));
     }
 
     [Test]
@@ -370,7 +370,7 @@ namespace Remotion.UnitTests.Diagnostics
       if (toTextBuilder == null)
         toTextBuilder = CreateTextBuilder();
       toTextBuilder.writeIfBasicOrHigher.s ("b").writeIfComplexOrHigher.s ("c").writeIfFull.s ("f").writeIfMediumOrHigher.s ("m").writeIfSkeletonOrHigher.s ("s");
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       return toTextBuilder;
     }
 
@@ -381,42 +381,42 @@ namespace Remotion.UnitTests.Diagnostics
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.SetOutputComplexityToDisable();
-        var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo (""));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.SetOutputComplexityToSkeleton();
-        var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("s"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.SetOutputComplexityToBasic();
-        var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("bs"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.SetOutputComplexityToMedium();
-        var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("bms"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.SetOutputComplexityToComplex();
-        var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("bcms"));
       }
 
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.SetOutputComplexityToFull();
-        var result = AllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
+        var result = AllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("bcfms"));
       }
     }
@@ -433,7 +433,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.e ("end").se ();
       toTextBuilder.e ("after").se ();
 
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       return toTextBuilder;
     }
 
@@ -443,7 +443,7 @@ namespace Remotion.UnitTests.Diagnostics
       {
         var toTextBuilder = CreateTextBuilder();
         toTextBuilder.SetOutputComplexityToMedium ();
-        var result = SequenceAllFilterLevelsFilteredOutput (toTextBuilder).CheckAndConvertToString ();
+        var result = SequenceAllFilterLevelsFilteredOutput (toTextBuilder).ToString ();
         Assert.That (result, Is.EqualTo ("(before,(start,m,s,b))"));
       }
     }
@@ -453,7 +453,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       var o = new Object();
-      Assert.That (toTextBuilder.WriteRawElementBegin().WriteRaw (o).WriteRawElementEnd().CheckAndConvertToString (), Is.EqualTo (o.ToString ()));
+      Assert.That (toTextBuilder.WriteRawElementBegin().WriteRaw (o).WriteRawElementEnd().ToString (), Is.EqualTo (o.ToString ()));
     }
 
 
@@ -463,7 +463,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder();
       var obj = new object();
       toTextBuilder.WriteInstanceBegin (obj.GetType (),null).WriteSequenceEnd ();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("[Object]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
     }
 
@@ -472,7 +472,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.ib<Test>().ie();
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("[Test]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
     }
 
@@ -481,7 +481,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.ib<Test> ("ShortName").ie ();
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("[ShortName]")); // NUnit.Framework.SyntaxHelpers.Text.Contains("[ToTextBuilder"));
     }
 
@@ -505,7 +505,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.sbLiteral ("<{[", ",", "]}>").e ("hello").e ("world").e (1).e (2).e (3).se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("<{[hello,world,1,2,3]}>"));
     }
 
@@ -514,7 +514,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.sbLiteral ("<", "(", ")", ",", ">").e ("hello").e ("world").e (1).e (2).e (3).se ();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("<(hello),(world),(1),(2),(3)>"));
     }
 
@@ -524,7 +524,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.sbLiteral ("", "|", ">", "", "").elementsNumbered ("a", 1, 5).se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("|a1>|a2>|a3>|a4>|a5>"));
     }
 
@@ -542,7 +542,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.e ("drei");
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
       toTextBuilder.WriteSequenceEnd();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("1,2,drei"));
     }
 
@@ -560,7 +560,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.e (dreiString);
       Assert.That (toTextBuilder.SequenceState.Counter, Is.EqualTo (3));
       toTextBuilder.WriteSequenceEnd();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("1,2,drei"));
     }
 
@@ -572,7 +572,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.sbLiteral ("<", "(", ")", ";", ">").e ("hello").e ("world").e (toTextBuilder.SequenceState.Counter).e (
           toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se();
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("[hello,1,<(hello);(world);(2);(3);(4)>,world,4,5]"));
     }
 
@@ -595,7 +595,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.sbLiteral ("[", "", "", ",", "]").WriteSequenceElements ("a", 2, "b", 3, "c").se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("[a,2,b,3,c]"));
     }
 
@@ -604,7 +604,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.sbLiteral ("<", ">").e ("ABC").e (toTextBuilder.SequenceState.Counter).e ("DEFG").se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("<ABC,1,DEFG>"));
     }
 
@@ -613,7 +613,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.sbLiteral ("<", ";", ">").e ("ABC").e (toTextBuilder.SequenceState.Counter).e ("DEFG").se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("<ABC;1;DEFG>"));
     }
 
@@ -622,7 +622,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.sb().e ("ABC").e (toTextBuilder.SequenceState.Counter).e ("DEFG").se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("(ABC,1,DEFG)"));
     }
 
@@ -631,7 +631,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.sbLiteral ("[", "", "", ",", "]").elements ("a", 2, "b", 3, "c").se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("[a,2,b,3,c]"));
     }
 
@@ -640,7 +640,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.sequence("a", 2, "b", 3, "c");
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("(a,2,b,3,c)"));
     }
 
@@ -655,7 +655,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.sbLiteral ("<", "(", ")", ";", ">").e ("a variable").e ("simpleTest", simpleTest).e ("was here and").e ("simpleTest2", simpleTest2).e ("here").e (
           toTextBuilder.SequenceState.Counter).se();
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (
           result,
           Is.EqualTo (
@@ -668,7 +668,7 @@ namespace Remotion.UnitTests.Diagnostics
     {
       var toTextBuilder = CreateTextBuilder();
       toTextBuilder.sbLiteral ("[", "", "", ",", "]").e ("ABC").e (toTextBuilder.SequenceState.Counter).e ("DEFG").se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("[ABC,1,DEFG]"));
     }
 
@@ -682,25 +682,25 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.sbLiteral ("<", "(", ")", ";", ">").e ("a variable").e ("simpleTest", simpleTest).e ("was here and").e ("simpleTest2", simpleTest2).e ("here").e (
           toTextBuilder.SequenceState.Counter).se();
       toTextBuilder.e ("world").e (toTextBuilder.SequenceState.Counter).e (toTextBuilder.SequenceState.Counter).se();
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result,
           Is.EqualTo (
               "[hello,1,<(a variable);(simpleTest=((TestSimple) Name:ABC abc,Int:54321));(was here and);(simpleTest2=((TestSimple) Name:simple Test,Int:987654321));(here);(5)>,world,4,5]"
       ));
     }
 
-    [Test]
-    [ExpectedException (typeof (Remotion.Utilities.AssertionException), ExpectedMessage = "Assertion failed: Expression evaluates to true.")]
-    public void NotInSequenceTest ()
-    {
-      var toTextBuilder = CreateTextBuilder();
-      toTextBuilder.sbLiteral ("[", "", "", ",", "]").e ("hello").e (toTextBuilder.SequenceState.Counter); // missing se()
-      var result = toTextBuilder.CheckAndConvertToString();
-    }
+    //[Test]
+    //[ExpectedException (typeof (Remotion.Utilities.AssertionException), ExpectedMessage = "Assertion failed: Expression evaluates to true.")]
+    //public void NotInSequenceTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder();
+    //  toTextBuilder.sbLiteral ("[", "", "", ",", "]").e ("hello").e (toTextBuilder.SequenceState.Counter); // missing se()
+    //  var result = toTextBuilder.ToString();
+    //}
 
     private void EscapeString(string s, ToTextBuilder toTextBuilder)
     {
-      var mapping = new Dictionary<char, string> () { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, {'\b',"\\b"}, {'\v',"\\v"}, {'\f',"\\f"} };
+      var mapping = new Dictionary<char, string> { { '"', "\\\"" }, { '\n', "\\n" }, { '\r', "\\r" }, { '\t', "\\t" }, { '\\', "\\\\" }, {'\b',"\\b"}, {'\v',"\\v"}, {'\f',"\\f"} };
       toTextBuilder.WriteRawElementBegin();
       foreach (char c in s)
       {
@@ -724,7 +724,7 @@ namespace Remotion.UnitTests.Diagnostics
       var testString = "abcdEFG\t\n\"\\ HIJklmn \t\t\n\n\"\"\\\\ \r \b\v\f";
       var toTextBuilder = CreateTextBuilder ();
       EscapeString (testString, toTextBuilder);
-      var result = toTextBuilder.CheckAndConvertToString();
+      var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("abcdEFG\\t\\n\\\"\\\\ HIJklmn \\t\\t\\n\\n\\\"\\\"\\\\\\\\ \\r \\b\\v\\f"));
     }
 
@@ -734,7 +734,7 @@ namespace Remotion.UnitTests.Diagnostics
       var testString = "abcdEFG\t\n\"\\ HIJklmn \t\t\n\n\"\"\\\\ \r \b\v\f";
       var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.sEsc (testString);
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("abcdEFG\\t\\n\\\"\\\\ HIJklmn \\t\\t\\n\\n\\\"\\\"\\\\\\\\ \\r \\b\\v\\f"));
     }
 
@@ -746,7 +746,7 @@ namespace Remotion.UnitTests.Diagnostics
       var someVar = 345.789;
       toTextBuilder.e("xyz").e("abc");
       toTextBuilder.e (() => someVar);
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("xyzabcsomeVar=345.789"));
     }
 
@@ -771,7 +771,7 @@ namespace Remotion.UnitTests.Diagnostics
       var typeHandlerMap = new ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> ();
       typeHandlerMap.Add (typeof (Test), new TestTypeHandler());
       toTextBuilder.e (To.ToTextProvider.typeHandlerMap);
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
     }
 
 
@@ -848,7 +848,7 @@ namespace Remotion.UnitTests.Diagnostics
     //  stopwatch.Stop ();
     //  double milliSeconds = stopwatch.ElapsedMilliseconds;
     //  To.Console.e (() => milliSeconds);
-    //  To.Console.s(toTextBuilder.CheckAndConvertToString())
+    //  To.Console.s(toTextBuilder.ToString())
     //  ;
     //}
 
@@ -889,7 +889,7 @@ namespace Remotion.UnitTests.Diagnostics
       Object nullVar = null;
       var someVar = "text";
       toTextBuilder.eIfNotNull (nullVar).eIfNotNull (someVar).e (nullVar);
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo ("textnull"));
     }
 
@@ -900,7 +900,7 @@ namespace Remotion.UnitTests.Diagnostics
       Object nullVar = null;
       var someVar = "text";
       toTextBuilder.eIfNotNull ("nullVar_NotEmitted", nullVar).eIfNotNull ("someVar", someVar).e ("nullVar", nullVar);
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("NotEmitted"));
     }
 
@@ -914,7 +914,7 @@ namespace Remotion.UnitTests.Diagnostics
       toTextBuilder.sb ().eIfNotEqualTo ("testBoolFalse_NotEmitted", testBool, false).eIfNotEqualTo ("testBoolFalse", testBool, true);
       toTextBuilder.eIfNotEqualTo ("s_NotEmitted", s, "ABC").eIfNotEqualTo ("s", s, "XYZ");
       toTextBuilder.eIfNotEqualTo ("nullVar_NotEmitted", nullVar, null).eIfNotEqualTo ("nullVar", nullVar, s).se();
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, NUnit.Framework.SyntaxHelpers.Text.DoesNotContain ("NotEmitted"));
     }
 
@@ -924,7 +924,7 @@ namespace Remotion.UnitTests.Diagnostics
       var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.IndentationString = "  ";
       toTextBuilder.s ("line0").indent ().nl ().s ("line1").nl ().s ("line2").indent ().nl ().s ("line3").unindent ().nl ().s ("line4").unindent ().nl ().s ("line5");
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo (
 @"line0
   line1
@@ -948,7 +948,7 @@ line5"));
       var toTextBuilder = CreateTextBuilder ();
       toTextBuilder.IndentationString = ">}|";
       toTextBuilder.s ("line0").indent ().nl ().s ("line1").nl ().s ("line2").indent ().nl ().s ("line3").unindent ().nl ().s ("line4").unindent ().nl ().s ("line5");
-      var result = toTextBuilder.CheckAndConvertToString ();
+      var result = toTextBuilder.ToString ();
       Assert.That (result, Is.EqualTo (
 @"line0
 >}|line1
@@ -969,6 +969,15 @@ line5"));
       Assert.That (result, Is.EqualTo ("test"));
     }
 
+
+    //[Test]
+    //public void AlwaysInSequenceTest ()
+    //{
+    //  var toTextBuilder = CreateTextBuilder ();
+    //  toTextBuilder.e (1).e("xyz").e(new object());
+    //  string result = toTextBuilder.ToString ();
+    //  Assert.That (result, Is.EqualTo ("1 xyz System.Object"));
+    //}
 
 
     public static ToTextBuilder CreateTextBuilder ()

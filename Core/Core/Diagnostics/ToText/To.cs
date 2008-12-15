@@ -111,7 +111,9 @@ namespace Remotion.Diagnostics.ToText
       _toTextProvider.Settings.UseAutomaticObjectToText = false;
 
       //_toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (LogFilePath));
-      
+
+      ToTextBuilderSequenceBegin (_toTextBuilderConsole);
+      ToTextBuilderSequenceBegin (_toTextBuilderError);
     }
 
     private static void DisposeAtShutdown (object sender, EventArgs e)
@@ -184,6 +186,7 @@ namespace Remotion.Diagnostics.ToText
         if (_toTextBuilderLog == null)
         {
           _toTextBuilderLog = new ToTextBuilder (_toTextProvider, new StreamWriter (LogFilePath));
+          ToTextBuilderSequenceBegin (_toTextBuilderLog);
         }
         return _toTextBuilderLog;
       }
@@ -217,15 +220,22 @@ namespace Remotion.Diagnostics.ToText
 
     /// <summary>
     /// <para>Returns a new <see cref="ToTextBuilder"/> preconfigured to write to a <see cref="StringWriter"/>.
-    /// Call <see cref="ToTextBuilder.CheckAndConvertToString()"/> on the returned <see cref="ToTextBuilder"/> to get the resulting string.
+    /// Call <see cref="ToTextBuilder.ToString()"/> on the returned <see cref="ToTextBuilder"/> to get the resulting string.
     /// </para>
     /// </summary>    
     public static ToTextBuilder String
     {
       get
       {
-        return new ToTextBuilder (_toTextProvider, new StringWriter ());
+        var toTextBuilder = new ToTextBuilder (_toTextProvider, new StringWriter ());
+        ToTextBuilderSequenceBegin(toTextBuilder);
+        return toTextBuilder;
       }
+    }
+
+    private static void ToTextBuilderSequenceBegin (ToTextBuilder toTextBuilder)
+    {
+      toTextBuilder.WriteSequenceLiteralBegin ("", "", "", "", " ", "");
     }
 
 
@@ -333,7 +343,7 @@ namespace Remotion.Diagnostics.ToText
     //{
     //  if (log.IsLogLevelEnabled (logLevel))
     //  {
-    //    log.Log (logLevel, toTextBuilder.CheckAndConvertToString ());
+    //    log.Log (logLevel, toTextBuilder.ToString ());
     //  }
     //}
 
@@ -379,7 +389,7 @@ namespace Remotion.Diagnostics.ToText
       {
         var toTextBuilderString = To.String;
         toTextBuilderFunc (toTextBuilderString);
-        var logMessage = toTextBuilderString.CheckAndConvertToString();
+        var logMessage = toTextBuilderString.ToString();
         log.Log (logLevel, logMessage);
       }
     }
