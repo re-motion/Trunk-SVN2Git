@@ -160,6 +160,35 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
+    //[Test]
+    //public void ToTextTest ()
+    //{
+    //  using (new CultureScope ("de-DE"))
+    //  {
+    //    var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User);
+
+    //    var statelessAcl = CreateStatelessAcl (Ace);
+    //    var acls = ListMother.New (Acl, statelessAcl);
+
+    //    List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (users, acls, false);
+
+    //    var aclExpansionTreeInverseSorted = new AclExpansionTree (
+    //        aclExpansionEntryList,
+    //        (classEntry => (classEntry.AccessControlList is StatefulAccessControlList) ? "A" : "B")); // sort stateful before stateless
+    //    Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
+    //    Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (Acl));
+
+    //    var aclExpansionTreeDefaultSorted = new AclExpansionTree (aclExpansionEntryList);
+
+    //    //To.String.aclExpansionTreeDefaultSorted
+
+    //    Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
+    //    Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (statelessAcl));
+
+    //  }
+    //}
+
+
 
 
     public static void LogAclExpansionTree (AclExpansionTree aclExpansionTree)
@@ -197,5 +226,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       }
       return statlessAcl;
     }
+
+
+ 
   }
 }

@@ -79,10 +79,10 @@ namespace Remotion.Diagnostics.ToText
       return _disableableWriter.ToString ();
     }
 
-    //public override string ToString ()
-    //{
-    //  return _disableableWriter.ToString ();
-    //}
+    public override string ToString ()
+    {
+      return _disableableWriter.ToString ();
+    }
 
 
     //--------------------------------------------------------------------------
