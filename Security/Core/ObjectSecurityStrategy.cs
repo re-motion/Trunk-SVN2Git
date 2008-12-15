@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using Remotion.Utilities;
 
 namespace Remotion.Security
@@ -22,20 +21,20 @@ namespace Remotion.Security
   [Serializable]
   public class ObjectSecurityStrategy : IObjectSecurityStrategy
   {
-    private ISecurityStrategy _securityStrategy;
-    private ISecurityContextFactory _securityContextFactory;
+    private readonly ISecurityStrategy _securityStrategy;
+    private readonly ISecurityContextFactory _securityContextFactory;
 
     public ObjectSecurityStrategy (ISecurityContextFactory securityContextFactory, ISecurityStrategy securityStrategy)
     {
       ArgumentUtility.CheckNotNull ("securityContextFactory", securityContextFactory);
       ArgumentUtility.CheckNotNull ("securityStrategy", securityStrategy);
-      
+
       _securityContextFactory = securityContextFactory;
       _securityStrategy = securityStrategy;
     }
 
     public ObjectSecurityStrategy (ISecurityContextFactory securityContextFactory)
-      : this (securityContextFactory, new SecurityStrategy ())
+        : this (securityContextFactory, new SecurityStrategy())
     {
     }
 
@@ -51,16 +50,16 @@ namespace Remotion.Security
 
     public void InvalidateLocalCache ()
     {
-      _securityStrategy.InvalidateLocalCache ();
+      _securityStrategy.InvalidateLocalCache();
     }
 
-    public virtual bool HasAccess (ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes)
+    public virtual bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
 
-      return _securityStrategy.HasAccess (_securityContextFactory, securityProvider, user, requiredAccessTypes);
+      return _securityStrategy.HasAccess (_securityContextFactory, securityProvider, principal, requiredAccessTypes);
     }
   }
 }

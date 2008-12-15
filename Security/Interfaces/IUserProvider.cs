@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 
 namespace Remotion.Security
 {
@@ -22,7 +21,7 @@ namespace Remotion.Security
   public interface IUserProvider : INullObject
   {
     /// <summary>Gets the current user.</summary>
-    /// <returns>The <see cref="IPrincipal"/> representing the current user.</returns>
-    IPrincipal GetUser();
+    /// <returns>The <see cref="ISecurityPrincipal"/> representing the current user.</returns>
+    ISecurityPrincipal GetUser ();
   }
 }

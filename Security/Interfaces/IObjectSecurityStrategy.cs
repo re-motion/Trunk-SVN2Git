@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 
 namespace Remotion.Security
 {
@@ -29,7 +28,7 @@ namespace Remotion.Security
   {
     /// <summary>Determines whether the requested access is granted.</summary>
     /// <param name="securityProvider">The <see cref="ISecurityProvider"/> used to determine the permissions.</param>
-    /// <param name="user">The <see cref="IPrincipal"/> on whose behalf the permissions are evaluated.</param>
+    /// <param name="principal">The <see cref="ISecurityPrincipal"/> on whose behalf the permissions are evaluated.</param>
     /// <param name="requiredAccessTypes">The access rights required for the access to be granted.</param>
     /// <returns><see langword="true"/> if the <paramref name="requiredAccessTypes"/> are granted.</returns>
     /// <remarks>
@@ -39,6 +38,6 @@ namespace Remotion.Security
     /// The <paramref name="requiredAccessTypes"/> are determined by the <see cref="T:Remotion.Security.SecurityClient"/>, 
     /// taking the business object instance and the member name (property or method) into account.
     /// </remarks>
-    bool HasAccess (ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes);
+    bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes);
   }
 }

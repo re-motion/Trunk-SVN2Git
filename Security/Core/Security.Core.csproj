@@ -63,8 +63,7 @@
     <Compile Include="IFunctionalSecurityStrategy.cs" />
     <Compile Include="IGlobalAccessTypeCacheProvider.cs" />
     <Compile Include="IRevisionBasedSecurityProvider.cs" />
-    <Compile Include="NullIdentity.cs" />
-    <Compile Include="NullPrincipal.cs" />
+    <Compile Include="NullSecurityPrincipal.cs" />
     <Compile Include="NullSecurityClient.cs" />
     <Compile Include="NullSecurityProvider.cs" />
     <Compile Include="Configuration\PermissionProviderHelper.cs" />

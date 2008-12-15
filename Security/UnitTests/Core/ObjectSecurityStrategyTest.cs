@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Remotion.Collections;
@@ -32,7 +31,7 @@ namespace Remotion.Security.UnitTests.Core
     private ISecurityStrategy _mockSecurityStrategy;
     private ISecurityProvider _stubSecurityProvider;
     private ISecurityContextFactory _stubContextFactory;
-    private IPrincipal _user;
+    private ISecurityPrincipal _stubUser;
     private AccessType[] _accessTypeResult;
     private ObjectSecurityStrategy _strategy;
 
@@ -44,8 +43,9 @@ namespace Remotion.Security.UnitTests.Core
       _stubSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
       _stubContextFactory = _mocks.StrictMock<ISecurityContextFactory> ();
 
-      _user = new GenericPrincipal (new GenericIdentity ("owner"), new string[0]);
-      _accessTypeResult = new AccessType[] { AccessType.Get (GeneralAccessTypes.Read), AccessType.Get (GeneralAccessTypes.Edit) };
+      _stubUser = _mocks.Stub<ISecurityPrincipal> ();
+      SetupResult.For (_stubUser.User).Return ("user");
+      _accessTypeResult = new[] { AccessType.Get (GeneralAccessTypes.Read), AccessType.Get (GeneralAccessTypes.Edit) };
 
       _strategy = new ObjectSecurityStrategy (_stubContextFactory, _mockSecurityStrategy);
 
@@ -74,17 +74,17 @@ namespace Remotion.Security.UnitTests.Core
 
       Assert.AreSame (_stubContextFactory, strategy.SecurityContextFactory);
       Assert.IsInstanceOfType (typeof (SecurityStrategy), strategy.SecurityStrategy);
-      Assert.IsInstanceOfType (typeof (Cache<string, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
+      Assert.IsInstanceOfType (typeof (Cache<ISecurityPrincipal, AccessType[]>), ((SecurityStrategy) strategy.SecurityStrategy).LocalCache);
       Assert.AreSame (stubGlobalCacheProvider, ((SecurityStrategy) strategy.SecurityStrategy).GlobalCacheProvider);
     }
 
     [Test]
     public void HasAccess_WithAccessGranted ()
     {
-      Expect.Call (_mockSecurityStrategy.HasAccess (_stubContextFactory, _stubSecurityProvider, _user, _accessTypeResult)).Return (true);
+      Expect.Call (_mockSecurityStrategy.HasAccess (_stubContextFactory, _stubSecurityProvider, _stubUser, _accessTypeResult)).Return (true);
       _mocks.ReplayAll ();
 
-      bool hasAccess = _strategy.HasAccess (_stubSecurityProvider, _user, _accessTypeResult);
+      bool hasAccess = _strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll ();
       Assert.AreEqual (true, hasAccess);
@@ -93,10 +93,10 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void HasAccess_WithAccessDenied ()
     {
-      Expect.Call (_mockSecurityStrategy.HasAccess (_stubContextFactory, _stubSecurityProvider, _user, _accessTypeResult)).Return (false);
+      Expect.Call (_mockSecurityStrategy.HasAccess (_stubContextFactory, _stubSecurityProvider, _stubUser, _accessTypeResult)).Return (false);
       _mocks.ReplayAll ();
 
-      bool hasAccess = _strategy.HasAccess (_stubSecurityProvider, _user, _accessTypeResult);
+      bool hasAccess = _strategy.HasAccess (_stubSecurityProvider, _stubUser, _accessTypeResult);
 
       _mocks.VerifyAll ();
       Assert.AreEqual (false, hasAccess);
@@ -116,7 +116,7 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void Serialization ()
     {
-      SecurityStrategy securityStrategy = new SecurityStrategy(new NullCache<string, AccessType[]>(), new NullGlobalAccessTypeCacheProvider());
+      SecurityStrategy securityStrategy = new SecurityStrategy(new NullCache<ISecurityPrincipal, AccessType[]>(), new NullGlobalAccessTypeCacheProvider());
       ISecurityContextFactory factory = new FunctionalSecurityContextFactory (typeof (SecurableObject));
 
       ObjectSecurityStrategy strategy = new ObjectSecurityStrategy (factory, securityStrategy);

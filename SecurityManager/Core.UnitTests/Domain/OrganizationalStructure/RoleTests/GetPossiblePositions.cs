@@ -91,10 +91,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     [Test]
     public void Test ()
     {
-      IPrincipal principal = new GenericPrincipal (new GenericIdentity ("group0/user1"), new string[0]);
-      SetupResult.For (_mockUserProvider.GetUser()).Return (principal);
-      SetupResultSecurityProviderGetAccessForPosition (Delegation.Enabled, principal, SecurityManagerAccessTypes.AssignRole);
-      SetupResultSecurityProviderGetAccessForPosition (Delegation.Disabled, principal);
+      var principalStub = _mocks.Stub<ISecurityPrincipal> ();
+      SetupResult.For (principalStub.User).Return ("group0/user1");
+      SetupResult.For (_mockUserProvider.GetUser ()).Return (principalStub);
+      SetupResultSecurityProviderGetAccessForPosition (Delegation.Enabled, principalStub, SecurityManagerAccessTypes.AssignRole);
+      SetupResultSecurityProviderGetAccessForPosition (Delegation.Disabled, principalStub);
       Role role = Role.NewObject();
       Group parentGroup = Group.GetObject (_expectedParentGroup0ID);
       _mocks.ReplayAll();
@@ -109,10 +110,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     [Test]
     public void Test_WithoutGroupType ()
     {
-      IPrincipal principal = new GenericPrincipal (new GenericIdentity ("group0/user1"), new string[0]);
-      SetupResult.For (_mockUserProvider.GetUser()).Return (principal);
-      SetupResultSecurityProviderGetAccessForPosition (Delegation.Enabled, principal, SecurityManagerAccessTypes.AssignRole);
-      SetupResultSecurityProviderGetAccessForPosition (Delegation.Disabled, principal);
+      var principalStub = _mocks.Stub<ISecurityPrincipal> ();
+      SetupResult.For (principalStub.User).Return ("group0/user1");
+      SetupResult.For (_mockUserProvider.GetUser ()).Return (principalStub);
+      SetupResultSecurityProviderGetAccessForPosition (Delegation.Enabled, principalStub, SecurityManagerAccessTypes.AssignRole);
+      SetupResultSecurityProviderGetAccessForPosition (Delegation.Disabled, principalStub);
       Role role = Role.NewObject();
       Group rootGroup = Group.GetObject (_expectedRootGroupID);
       _mocks.ReplayAll();
@@ -163,7 +165,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       Assert.AreEqual (3, positions.Count);
     }
 
-    private void SetupResultSecurityProviderGetAccessForPosition (Delegation delegation, IPrincipal principal, params Enum[] returnedAccessTypeEnums)
+    private void SetupResultSecurityProviderGetAccessForPosition (Delegation delegation, ISecurityPrincipal principal, params Enum[] returnedAccessTypeEnums)
     {
       Type classType = typeof (Position);
       string owner = string.Empty;

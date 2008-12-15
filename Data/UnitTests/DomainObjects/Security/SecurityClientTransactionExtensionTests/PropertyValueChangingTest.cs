@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -113,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       DataContainer dataContainer = securableObject.GetDataContainer ();
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyWritePermissions ("StringProperty", TestAccessTypes.First);
-      HasAccessDelegate hasAccess = delegate (ISecurityProvider securityProvider, IPrincipal user, AccessType[] requiredAccessTypes)
+      HasAccessDelegate hasAccess = delegate 
       {
         securableObject.OtherStringProperty = "dummy";
         return true;

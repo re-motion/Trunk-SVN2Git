@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Security.Principal;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
@@ -51,7 +50,7 @@ namespace Remotion.SecurityManager.UnitTests
     private SecurityContext _context;
     private Tenant _tenant;
     private AccessControlEntry _ace;
-    private IPrincipal _principal;
+    private ISecurityPrincipal _principalStub;
 
     private MemoryAppender _memoryAppender;
     private ClientTransaction _clientTransaction;
@@ -75,7 +74,9 @@ namespace Remotion.SecurityManager.UnitTests
         _tenant = organizationalStructureFactory.CreateTenant();
         _ace = CreateAce();
       }
-      _principal = CreateUser ();
+      
+      _principalStub = _mocks.Stub<ISecurityPrincipal> ();
+      SetupResult.For (_principalStub.User).Return ("group0/user1");
   
       _memoryAppender = new MemoryAppender();
       
@@ -116,11 +117,11 @@ namespace Remotion.SecurityManager.UnitTests
         SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, new List<AbstractRoleDefinition> ());
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
-        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principal, _context)).Return (token);
+        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Return (token);
       }
       _mocks.ReplayAll ();
 
-      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principal);
+      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
       Assert.AreEqual (0, accessTypes.Length);
@@ -136,11 +137,11 @@ namespace Remotion.SecurityManager.UnitTests
         SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, roles);
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
-        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principal, _context)).Return (token);
+        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Return (token);
       }
       _mocks.ReplayAll ();
 
-      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principal);
+      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
       Assert.AreEqual (1, accessTypes.Length);
@@ -161,12 +162,12 @@ namespace Remotion.SecurityManager.UnitTests
             Mocks_Is.Same (_context));
         Expect.Call (_mockTokenBuilder.CreateToken (null, null, null)).Return (token).Constraints (
             Mocks_Is.NotNull(),
-            Mocks_Is.Same (_principal),
+            Mocks_Is.Same (_principalStub),
             Mocks_Is.Same (_context));
       }
       _mocks.ReplayAll ();
 
-      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principal);
+      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
       Assert.AreEqual (1, accessTypes.Length);
@@ -183,7 +184,7 @@ namespace Remotion.SecurityManager.UnitTests
       }
       _mocks.ReplayAll ();
 
-      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principal);
+      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
       Assert.AreEqual (0, accessTypes.Length);
@@ -200,11 +201,11 @@ namespace Remotion.SecurityManager.UnitTests
       using (_clientTransaction.EnterNonDiscardingScope ())
       {
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
-        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principal, _context)).Throw (expectedException);
+        Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principalStub, _context)).Throw (expectedException);
       }
       _mocks.ReplayAll ();
 
-      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principal);
+      AccessType[] accessTypes = _service.GetAccess (_clientTransaction, _context, _principalStub);
 
       _mocks.VerifyAll ();
       Assert.AreEqual (0, accessTypes.Length);
@@ -255,11 +256,6 @@ namespace Remotion.SecurityManager.UnitTests
       ace.AllowAccess (readAccessType);
 
       return ace;
-    }
-
-    private IPrincipal CreateUser ()
-    {
-      return new GenericPrincipal (new GenericIdentity ("user"), new string[0]);
     }
   }
 }

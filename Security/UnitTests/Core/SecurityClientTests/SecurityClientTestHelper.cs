@@ -15,10 +15,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Security.Principal;
-using Rhino.Mocks;
 using Remotion.Security.Metadata;
 using Remotion.Security.UnitTests.Core.SampleDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 {
@@ -26,37 +25,39 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
   {
     public static SecurityClientTestHelper CreateForStatelessSecurity ()
     {
-      return new SecurityClientTestHelper (SecurityContext.CreateStateless(typeof (SecurableObject)));
+      return new SecurityClientTestHelper (SecurityContext.CreateStateless (typeof (SecurableObject)));
     }
-    
+
     public static SecurityClientTestHelper CreateForStatefulSecurity ()
     {
-      SecurityContext context = SecurityContext.Create(typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);
+      SecurityContext context = SecurityContext.Create (
+          typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum>(), new Enum[0]);
       return new SecurityClientTestHelper (context);
     }
 
-    private MockRepository _mocks;
-    private IPrincipal _user;
-    private SecurityContext _context;
-    private ISecurityProvider _mockSecurityProvider;
-    private IPermissionProvider _mockPermissionReflector;
-    private IObjectSecurityStrategy _mockObjectSecurityStrategy;
-    private IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
-    private IUserProvider _stubUserProvider;
-    private SecurableObject _securableObject;
+    private readonly MockRepository _mocks;
+    private readonly ISecurityPrincipal _userStub;
+    private readonly SecurityContext _context;
+    private readonly ISecurityProvider _mockSecurityProvider;
+    private readonly IPermissionProvider _mockPermissionReflector;
+    private readonly IObjectSecurityStrategy _mockObjectSecurityStrategy;
+    private readonly IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
+    private readonly IUserProvider _stubUserProvider;
+    private readonly SecurableObject _securableObject;
 
     private SecurityClientTestHelper (SecurityContext context)
     {
       _context = context;
-      _user = new GenericPrincipal (new GenericIdentity ("owner"), new string[0]);
 
-      _mocks = new MockRepository ();
-      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
-      _mockPermissionReflector = _mocks.StrictMock<IPermissionProvider> ();
-      _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy> ();
-      _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
-      _stubUserProvider = _mocks.StrictMock<IUserProvider> ();
-      SetupResult.For (_stubUserProvider.GetUser ()).Return (_user);
+      _mocks = new MockRepository();
+      _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider>();
+      _mockPermissionReflector = _mocks.StrictMock<IPermissionProvider>();
+      _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy>();
+      _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy>();
+      _userStub = _mocks.Stub<ISecurityPrincipal>();
+      SetupResult.For (_userStub.User).Return ("user");
+      _stubUserProvider = _mocks.Stub<IUserProvider>();
+      SetupResult.For (_stubUserProvider.GetUser()).Return (_userStub);
 
       _securableObject = new SecurableObject (_mockObjectSecurityStrategy);
     }
@@ -93,44 +94,46 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
 
     public void ExpectObjectSecurityStrategyHasAccess (Enum requiredAccessType, bool returnValue)
     {
-      ExpectObjectSecurityStrategyHasAccess (new Enum[] { requiredAccessType }, returnValue);
+      ExpectObjectSecurityStrategyHasAccess (new[] { requiredAccessType }, returnValue);
     }
 
     public void ExpectObjectSecurityStrategyHasAccess (Enum[] requiredAccessTypes, bool returnValue)
     {
       Expect
-          .Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _user, ConvertAccessTypeEnums (requiredAccessTypes)))
+          .Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _userStub, ConvertAccessTypeEnums (requiredAccessTypes)))
           .Return (returnValue);
     }
 
     public void ExpectFunctionalSecurityStrategyHasAccess (Enum requiredAccessType, bool returnValue)
     {
-      ExpectFunctionalSecurityStrategyHasAccess (new Enum[] { requiredAccessType }, returnValue);
+      ExpectFunctionalSecurityStrategyHasAccess (new[] { requiredAccessType }, returnValue);
     }
 
     public void ExpectFunctionalSecurityStrategyHasAccess (Enum[] requiredAccessTypes, bool returnValue)
     {
       Expect
-          .Call (_mockFunctionalSecurityStrategy.HasAccess (typeof (SecurableObject), _mockSecurityProvider, _user, ConvertAccessTypeEnums (requiredAccessTypes)))
+          .Call (
+          _mockFunctionalSecurityStrategy.HasAccess (
+              typeof (SecurableObject), _mockSecurityProvider, _userStub, ConvertAccessTypeEnums (requiredAccessTypes)))
           .Return (returnValue);
     }
 
     public void ExpectSecurityProviderGetAccess (params Enum[] returnValue)
     {
-      AccessType[] accessTypes = Array.ConvertAll<Enum, AccessType> (returnValue, new Converter<Enum, AccessType> (AccessType.Get));
-      Expect.Call (_mockSecurityProvider.GetAccess (_context, _user)).Return (accessTypes);
+      AccessType[] accessTypes = Array.ConvertAll (returnValue, new Converter<Enum, AccessType> (AccessType.Get));
+      Expect.Call (_mockSecurityProvider.GetAccess (_context, _userStub)).Return (accessTypes);
     }
 
     public void ReplayAll ()
     {
-      _mocks.ReplayAll ();
+      _mocks.ReplayAll();
     }
 
     public void VerifyAll ()
     {
-      _mocks.VerifyAll ();
+      _mocks.VerifyAll();
     }
- 
+
     private AccessType[] ConvertAccessTypeEnums (Enum[] accessTypeEnums)
     {
       return Array.ConvertAll (accessTypeEnums, new Converter<Enum, AccessType> (AccessType.Get));

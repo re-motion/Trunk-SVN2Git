@@ -28,9 +28,10 @@ namespace Remotion.Security
   [Serializable]
   public class NullGlobalAccessTypeCacheProvider : ExtendedProviderBase, IGlobalAccessTypeCacheProvider
   {
-    private readonly NullCache<Tuple<ISecurityContext, string>, AccessType[]> _cache = new NullCache<Tuple<ISecurityContext, string>, AccessType[]>();
+    private readonly NullCache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> _cache =
+        new NullCache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>();
 
-    public NullGlobalAccessTypeCacheProvider()
+    public NullGlobalAccessTypeCacheProvider ()
         : this ("Null", new NameValueCollection())
     {
     }
@@ -46,7 +47,7 @@ namespace Remotion.Security
     {
     }
 
-    public ICache<Tuple<ISecurityContext, string>, AccessType[]> GetCache()
+    public ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> GetCache ()
     {
       return _cache;
     }

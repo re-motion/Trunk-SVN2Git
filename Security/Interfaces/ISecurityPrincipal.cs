@@ -20,7 +20,7 @@ namespace Remotion.Security
   /// <summary>
   /// The <see cref="ISecurityPrincipal"/> interface represents a user, and optionally his active role and the user for whom he's acting as a substitue.
   /// </summary>
-  public interface ISecurityPrincipal
+  public interface ISecurityPrincipal : INullObject
   {
     string User { get; }
     ISecurityPrincipalRole Role { get; }

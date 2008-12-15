@@ -42,7 +42,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     ///   A matching <see cref="Group"/> is not found for the <paramref name="context"/>'s <see cref="ISecurityContext.OwnerGroup"/>.<br/>- or -<br/>
     ///   A matching <see cref="AbstractRoleDefinition"/> is not found for all entries in the <paramref name="context"/>'s <see cref="SecurityContext.AbstractRoles"/> collection.
     /// </exception>
-    public SecurityToken CreateToken (ClientTransaction transaction, IPrincipal principal, ISecurityContext context)
+    public SecurityToken CreateToken (ClientTransaction transaction, ISecurityPrincipal principal, ISecurityContext context)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("principal", principal);
@@ -60,9 +60,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
-    private Principal CreatePrincipal (IPrincipal principal)
+    private Principal CreatePrincipal (ISecurityPrincipal principal)
     {
-      User principalUser = GetUser (principal.Identity.Name);
+      User principalUser = GetUser (principal.User);
       if (principalUser == null)
         throw CreateAccessControlException ("No principal was provided.");
 

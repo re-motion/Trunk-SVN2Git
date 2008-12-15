@@ -14,32 +14,35 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Security.UnitTests.Core
 {
   [TestFixture]
   public class NullPrincipalTest
   {
-    private IPrincipal _principal;
+    private ISecurityPrincipal _principal;
 
     [SetUp]
-    public void SetUp()
+    public void SetUp ()
     {
-      _principal = new NullPrincipal();
+      _principal = new NullSecurityPrincipal();
     }
 
     [Test]
-    public void IsInRole()
+    public void Initialize ()
     {
-      Assert.IsFalse (_principal.IsInRole (string.Empty));
+      Assert.That (_principal.User, Is.Null);
+      Assert.That (_principal.Role, Is.Null);
+      Assert.That (_principal.SubstitutedUser, Is.Null);
+      Assert.That (_principal.SubstitutedRole, Is.Null);
     }
 
     [Test]
-    public void GetIdentity()
+    public void IsNull ()
     {
-      Assert.IsInstanceOfType (typeof (NullIdentity), _principal.Identity);
+      Assert.That (_principal.IsNull, Is.True);
     }
   }
 }

@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -110,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       securableObject.OtherParent = _testHelper.CreateSecurableObject ();
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions ("Parent", TestAccessTypes.First);
-      HasAccessDelegate hasAccess = delegate (ISecurityProvider securityProvider, IPrincipal user, AccessType[] requiredAccessTypes)
+      HasAccessDelegate hasAccess = delegate
       {
         Dev.Null = securableObject.OtherParent;
         return true;
@@ -130,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       securableObject.OtherChildren.Add (_testHelper.CreateSecurableObject ());
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredPropertyReadPermissions ("Children", TestAccessTypes.First);
-      HasAccessDelegate hasAccess = delegate (ISecurityProvider securityProvider, IPrincipal user, AccessType[] requiredAccessTypes)
+      HasAccessDelegate hasAccess = delegate
       {
         Dev.Null = securableObject.OtherChildren[0];
         return true;

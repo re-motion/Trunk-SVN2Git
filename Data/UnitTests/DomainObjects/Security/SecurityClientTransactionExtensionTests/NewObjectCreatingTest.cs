@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
@@ -100,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       IObjectSecurityStrategy objectSecurityStrategy = _testHelper.CreateObjectSecurityStrategy ();
       _testHelper.AddExtension (_extension);
-      HasStatelessAccessDelegate hasAccess = delegate (Type type, ISecurityProvider securityProvider, IPrincipal user, AccessType[] requiredAccessTypes)
+      HasStatelessAccessDelegate hasAccess = delegate
       {
         SecurableObject.NewObject (_testHelper.Transaction, objectSecurityStrategy);
         return true;

@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Linq;
-using System.Security.Principal;
 using Remotion.Security;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
@@ -42,7 +41,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
           MockRepository.GenerateStub<IFunctionalSecurityStrategy>());
     }
 
-    private ISecurityProvider CreateSecurityProviderStub (Type securableClassType, IPrincipal principal, Enum[] returnedAccessTypes)
+    private ISecurityProvider CreateSecurityProviderStub (Type securableClassType, ISecurityPrincipal principal, Enum[] returnedAccessTypes)
     {
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (
@@ -54,7 +53,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       return securityProviderStub;
     }
 
-    private IUserProvider CreateUserProviderStub (IPrincipal principal)
+    private IUserProvider CreateUserProviderStub (ISecurityPrincipal principal)
     {
       var userProviderStub = MockRepository.GenerateStub<IUserProvider>();
       userProviderStub.Stub (stub => stub.GetUser()).Return (principal);
@@ -62,13 +61,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       return userProviderStub;
     }
 
-    private static IPrincipal CreatePrincipalStub ()
+    private static ISecurityPrincipal CreatePrincipalStub ()
     {
-      var principalStub = MockRepository.GenerateStub<IPrincipal>();
-      var identityStub = MockRepository.GenerateStub<IIdentity>();
+      var principalStub = MockRepository.GenerateStub<ISecurityPrincipal> ();
 
-      principalStub.Stub (stub => stub.Identity).Return (identityStub);
-      identityStub.Stub (stub => stub.Name).Return ("user");
+      principalStub.Stub (stub => stub.User).Return ("user");
 
       return principalStub;
     }

@@ -14,38 +14,41 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
-using NUnit.Framework;
 
-namespace Remotion.Security.UnitTests.Core
+namespace Remotion.Security
 {
-  [TestFixture]
-  public class NullIdentityTest
+  /// <summary>
+  /// Represents a nullable <see cref="ISecurityPrincipal"/> according to the "Null Object Pattern".
+  /// </summary>
+  public sealed class NullSecurityPrincipal : ISecurityPrincipal
   {
-    private IIdentity _identity;
-
-    [SetUp]
-    public void SetUp()
+    public NullSecurityPrincipal ()
     {
-      _identity = new NullIdentity();
     }
 
-    [Test]
-    public void GetName()
+    public string User
     {
-      Assert.AreEqual (string.Empty, _identity.Name);
+      get { return null; }
     }
 
-    [Test]
-    public void GetIsAuthenticated()
+    public ISecurityPrincipalRole Role
     {
-      Assert.IsFalse (_identity.IsAuthenticated);
+      get { return null; }
     }
 
-    [Test]
-    public void GetAuthenticationType()
+    public string SubstitutedUser
     {
-      Assert.AreEqual (string.Empty, _identity.AuthenticationType);
+      get { return null; }
+    }
+
+    public ISecurityPrincipalRole SubstitutedRole
+    {
+      get { return null; }
+    }
+
+    public bool IsNull
+    {
+      get { return true; }
     }
   }
 }

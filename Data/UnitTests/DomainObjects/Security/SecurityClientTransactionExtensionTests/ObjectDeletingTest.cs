@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
@@ -110,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       SecurableObject otherObject = _testHelper.CreateSecurableObject ();
       _testHelper.Transaction.Commit ();
       _testHelper.AddExtension (_extension);
-      HasAccessDelegate hasAccess = delegate (ISecurityProvider securityProvider, IPrincipal user, AccessType[] requiredAccessTypes)
+      HasAccessDelegate hasAccess = delegate
       {
         otherObject.Delete ();
         return true;

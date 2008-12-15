@@ -15,16 +15,15 @@
 // 
 using System;
 using System.ComponentModel;
-using System.Security.Principal;
 using Remotion.Security.Configuration;
 using Remotion.Security.Metadata;
 using Remotion.Utilities;
 
 namespace Remotion.Security
 {
-  public class SecurityClient:INullObject
+  public class SecurityClient : INullObject
   {
-    public static SecurityClient CreateSecurityClientFromConfiguration()
+    public static SecurityClient CreateSecurityClientFromConfiguration ()
     {
       ISecurityProvider securityProvider = SecurityConfiguration.Current.SecurityProvider;
 
@@ -38,10 +37,10 @@ namespace Remotion.Security
           SecurityConfiguration.Current.FunctionalSecurityStrategy);
     }
 
-    private ISecurityProvider _securityProvider;
-    private IPermissionProvider _permissionProvider;
-    private IUserProvider _userProvider;
-    private IFunctionalSecurityStrategy _functionalSecurityStrategy;
+    private readonly ISecurityProvider _securityProvider;
+    private readonly IPermissionProvider _permissionProvider;
+    private readonly IUserProvider _userProvider;
+    private readonly IFunctionalSecurityStrategy _functionalSecurityStrategy;
 
     public SecurityClient (
         ISecurityProvider securityProvider,
@@ -66,10 +65,10 @@ namespace Remotion.Security
       return HasAccess (securableObject, _userProvider.GetUser(), requiredAccessTypes);
     }
 
-    public virtual bool HasAccess (ISecurableObject securableObject, IPrincipal user, params AccessType[] requiredAccessTypes)
+    public virtual bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
 
       if (SecurityFreeSection.IsActive)
@@ -79,7 +78,7 @@ namespace Remotion.Security
       if (objectSecurityStrategy == null)
         throw new InvalidOperationException ("The securableObject did not return an IObjectSecurityStrategy.");
 
-      return objectSecurityStrategy.HasAccess (_securityProvider, user, requiredAccessTypes);
+      return objectSecurityStrategy.HasAccess (_securityProvider, principal, requiredAccessTypes);
     }
 
     public void CheckAccess (ISecurableObject securableObject, params AccessType[] requiredAccessTypes)
@@ -87,13 +86,13 @@ namespace Remotion.Security
       CheckAccess (securableObject, _userProvider.GetUser(), requiredAccessTypes);
     }
 
-    public void CheckAccess (ISecurableObject securableObject, IPrincipal user, params AccessType[] requiredAccessTypes)
+    public void CheckAccess (ISecurableObject securableObject, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
 
-      if (!HasAccess (securableObject, user, requiredAccessTypes))
+      if (!HasAccess (securableObject, principal, requiredAccessTypes))
         throw CreatePermissionDeniedException ("Access has been denied.");
     }
 
@@ -103,16 +102,16 @@ namespace Remotion.Security
       return HasStatelessAccess (securableClass, _userProvider.GetUser(), requiredAccessTypes);
     }
 
-    public virtual bool HasStatelessAccess (Type securableClass, IPrincipal user, params AccessType[] requiredAccessTypes)
+    public virtual bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
 
       if (SecurityFreeSection.IsActive)
         return true;
 
-      return _functionalSecurityStrategy.HasAccess (securableClass, _securityProvider, user, requiredAccessTypes);
+      return _functionalSecurityStrategy.HasAccess (securableClass, _securityProvider, principal, requiredAccessTypes);
     }
 
     public void CheckStatelessAccess (Type securableClass, params AccessType[] requiredAccessTypes)
@@ -120,13 +119,13 @@ namespace Remotion.Security
       CheckStatelessAccess (securableClass, _userProvider.GetUser(), requiredAccessTypes);
     }
 
-    public void CheckStatelessAccess (Type securableClass, IPrincipal user, params AccessType[] requiredAccessTypes)
+    public void CheckStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
 
-      if (!HasStatelessAccess (securableClass, user, requiredAccessTypes))
+      if (!HasStatelessAccess (securableClass, principal, requiredAccessTypes))
         throw CreatePermissionDeniedException ("Access has been denied.");
     }
 
@@ -136,17 +135,17 @@ namespace Remotion.Security
       return HasMethodAccess (securableObject, methodName, _userProvider.GetUser());
     }
 
-    public virtual bool HasMethodAccess (ISecurableObject securableObject, string methodName, IPrincipal user)
+    public virtual bool HasMethodAccess (ISecurableObject securableObject, string methodName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
       Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType(), methodName);
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
-      return HasAccess (securableObject, methodName, requiredAccessTypeEnums, user);
+      return HasAccess (securableObject, methodName, requiredAccessTypeEnums, principal);
     }
 
     public void CheckMethodAccess (ISecurableObject securableObject, string methodName)
@@ -154,16 +153,16 @@ namespace Remotion.Security
       CheckMethodAccess (securableObject, methodName, _userProvider.GetUser());
     }
 
-    public void CheckMethodAccess (ISecurableObject securableObject, string methodName, IPrincipal user)
+    public void CheckMethodAccess (ISecurableObject securableObject, string methodName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
-      if (!HasMethodAccess (securableObject, methodName, user))
+      if (!HasMethodAccess (securableObject, methodName, principal))
       {
         throw CreatePermissionDeniedException (
-            "Access to method '{0}' on type '{1}' has been denied.", methodName, securableObject.GetSecurableType ().FullName);
+            "Access to method '{0}' on type '{1}' has been denied.", methodName, securableObject.GetSecurableType().FullName);
       }
     }
 
@@ -173,20 +172,20 @@ namespace Remotion.Security
       return HasPropertyReadAccess (securableObject, propertyName, _userProvider.GetUser());
     }
 
-    public virtual bool HasPropertyReadAccess (ISecurableObject securableObject, string propertyName, IPrincipal user)
+    public virtual bool HasPropertyReadAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType (), propertyName);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyReadPermissions (securableObject.GetSecurableType(), propertyName);
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyReadPermissions evaluated and returned null.");
 
       if (requiredAccessTypeEnums.Length == 0)
-        requiredAccessTypeEnums = new Enum[] {GeneralAccessTypes.Read};
+        requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Read };
 
-      return HasAccess (securableObject, propertyName, requiredAccessTypeEnums, user);
+      return HasAccess (securableObject, propertyName, requiredAccessTypeEnums, principal);
     }
 
     public void CheckPropertyReadAccess (ISecurableObject securableObject, string propertyName)
@@ -194,16 +193,16 @@ namespace Remotion.Security
       CheckPropertyReadAccess (securableObject, propertyName, _userProvider.GetUser());
     }
 
-    public void CheckPropertyReadAccess (ISecurableObject securableObject, string propertyName, IPrincipal user)
+    public void CheckPropertyReadAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
-      if (!HasPropertyReadAccess (securableObject, propertyName, user))
+      if (!HasPropertyReadAccess (securableObject, propertyName, principal))
       {
         throw CreatePermissionDeniedException (
-            "Access to get-accessor of property '{0}' on type '{1}' has been denied.", propertyName, securableObject.GetSecurableType ().FullName);
+            "Access to get-accessor of property '{0}' on type '{1}' has been denied.", propertyName, securableObject.GetSecurableType().FullName);
       }
     }
 
@@ -212,20 +211,20 @@ namespace Remotion.Security
       return HasPropertyWriteAccess (securableObject, propertyName, _userProvider.GetUser());
     }
 
-    public virtual bool HasPropertyWriteAccess (ISecurableObject securableObject, string propertyName, IPrincipal user)
+    public virtual bool HasPropertyWriteAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyWritePermissions (securableObject.GetSecurableType (), propertyName);
+      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredPropertyWritePermissions (securableObject.GetSecurableType(), propertyName);
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredPropertyWritePermissions evaluated and returned null.");
 
       if (requiredAccessTypeEnums.Length == 0)
-        requiredAccessTypeEnums = new Enum[] {GeneralAccessTypes.Edit};
+        requiredAccessTypeEnums = new Enum[] { GeneralAccessTypes.Edit };
 
-      return HasAccess (securableObject, propertyName, requiredAccessTypeEnums, user);
+      return HasAccess (securableObject, propertyName, requiredAccessTypeEnums, principal);
     }
 
     public void CheckPropertyWriteAccess (ISecurableObject securableObject, string propertyName)
@@ -233,16 +232,16 @@ namespace Remotion.Security
       CheckPropertyWriteAccess (securableObject, propertyName, _userProvider.GetUser());
     }
 
-    public void CheckPropertyWriteAccess (ISecurableObject securableObject, string propertyName, IPrincipal user)
+    public void CheckPropertyWriteAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableObject", securableObject);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
-      if (!HasPropertyWriteAccess (securableObject, propertyName, user))
+      if (!HasPropertyWriteAccess (securableObject, propertyName, principal))
       {
         throw CreatePermissionDeniedException (
-            "Access to set-accessor of property '{0}' on type '{1}' has been denied.", propertyName, securableObject.GetSecurableType ().FullName);
+            "Access to set-accessor of property '{0}' on type '{1}' has been denied.", propertyName, securableObject.GetSecurableType().FullName);
       }
     }
 
@@ -252,17 +251,17 @@ namespace Remotion.Security
       return HasConstructorAccess (securableClass, _userProvider.GetUser());
     }
 
-    public virtual bool HasConstructorAccess (Type securableClass, IPrincipal user)
+    public virtual bool HasConstructorAccess (Type securableClass, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
       if (SecurityFreeSection.IsActive)
         return true;
 
-      AccessType[] requiredAccessTypes = new AccessType[] {AccessType.Get (GeneralAccessTypes.Create)};
+      AccessType[] requiredAccessTypes = new[] { AccessType.Get (GeneralAccessTypes.Create) };
 
-      return _functionalSecurityStrategy.HasAccess (securableClass, _securityProvider, user, requiredAccessTypes);
+      return _functionalSecurityStrategy.HasAccess (securableClass, _securityProvider, principal, requiredAccessTypes);
     }
 
     public void CheckConstructorAccess (Type securableClass)
@@ -270,12 +269,12 @@ namespace Remotion.Security
       CheckConstructorAccess (securableClass, _userProvider.GetUser());
     }
 
-    public void CheckConstructorAccess (Type securableClass, IPrincipal user)
+    public void CheckConstructorAccess (Type securableClass, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
-      if (!HasConstructorAccess (securableClass, user))
+      if (!HasConstructorAccess (securableClass, principal))
         throw CreatePermissionDeniedException ("Access to constructor of type '{0}' has been denied.", securableClass.FullName);
     }
 
@@ -285,17 +284,17 @@ namespace Remotion.Security
       return HasStaticMethodAccess (securableClass, methodName, _userProvider.GetUser());
     }
 
-    public virtual bool HasStaticMethodAccess (Type securableClass, string methodName, IPrincipal user)
+    public virtual bool HasStaticMethodAccess (Type securableClass, string methodName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
       Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredStaticMethodPermissions (securableClass, methodName);
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredStaticMethodPermissions evaluated and returned null.");
 
-      return HasStatelessAccess (securableClass, methodName, requiredAccessTypeEnums, user);
+      return HasStatelessAccess (securableClass, methodName, requiredAccessTypeEnums, principal);
     }
 
     public void CheckStaticMethodAccess (Type securableClass, string methodName)
@@ -303,13 +302,13 @@ namespace Remotion.Security
       CheckStaticMethodAccess (securableClass, methodName, _userProvider.GetUser());
     }
 
-    public void CheckStaticMethodAccess (Type securableClass, string methodName, IPrincipal user)
+    public void CheckStaticMethodAccess (Type securableClass, string methodName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
-      if (!HasStaticMethodAccess (securableClass, methodName, user))
+      if (!HasStaticMethodAccess (securableClass, methodName, principal))
         throw CreatePermissionDeniedException ("Access to static method '{0}' on type '{1}' has been denied.", methodName, securableClass.FullName);
     }
 
@@ -321,34 +320,34 @@ namespace Remotion.Security
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public virtual bool HasStatelessMethodAccess (Type securableClass, string methodName, IPrincipal user)
+    public virtual bool HasStatelessMethodAccess (Type securableClass, string methodName, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("securableClass", securableClass);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
       Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodName);
       if (requiredAccessTypeEnums == null)
         throw new InvalidOperationException ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
-      return HasStatelessAccess (securableClass, methodName, requiredAccessTypeEnums, user);
+      return HasStatelessAccess (securableClass, methodName, requiredAccessTypeEnums, principal);
     }
 
 
-    private bool HasAccess (ISecurableObject securableObject, string memberName, Enum[] requiredAccessTypeEnums, IPrincipal user)
+    private bool HasAccess (ISecurableObject securableObject, string memberName, Enum[] requiredAccessTypeEnums, ISecurityPrincipal principal)
     {
       if (requiredAccessTypeEnums.Length == 0)
         throw new ArgumentException (string.Format ("The member '{0}' does not define required permissions.", memberName), "requiredAccessTypeEnums");
 
-      return HasAccess (securableObject, user, ConvertRequiredAccessTypeEnums (requiredAccessTypeEnums));
+      return HasAccess (securableObject, principal, ConvertRequiredAccessTypeEnums (requiredAccessTypeEnums));
     }
 
-    private bool HasStatelessAccess (Type securableClass, string memberName, Enum[] requiredAccessTypeEnums, IPrincipal user)
+    private bool HasStatelessAccess (Type securableClass, string memberName, Enum[] requiredAccessTypeEnums, ISecurityPrincipal principal)
     {
       if (requiredAccessTypeEnums.Length == 0)
         throw new ArgumentException (string.Format ("The member '{0}' does not define required permissions.", memberName), "requiredAccessTypeEnums");
 
-      return HasStatelessAccess (securableClass, user, ConvertRequiredAccessTypeEnums (requiredAccessTypeEnums));
+      return HasStatelessAccess (securableClass, principal, ConvertRequiredAccessTypeEnums (requiredAccessTypeEnums));
     }
 
 

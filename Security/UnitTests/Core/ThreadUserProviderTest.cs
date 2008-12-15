@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Security.Principal;
 using System.Threading;
 using NUnit.Framework;
 using Remotion.Configuration;
@@ -24,32 +25,22 @@ namespace Remotion.Security.UnitTests.Core
   [TestFixture]
   public class ThreadUserProviderTest
   {
-    // types
-
-    // static members
-
-    // member fields
-
     private IUserProvider _userProvider;
-
-    // construction and disposing
 
     public ThreadUserProviderTest ()
     {
     }
 
-    // methods and properties
-
     [SetUp]
     public void SetUp ()
     {
-      _userProvider = new ThreadUserProvider ();
+      _userProvider = new ThreadUserProvider();
     }
 
     [Test]
     public void Initialize ()
     {
-      NameValueCollection config = new NameValueCollection ();
+      NameValueCollection config = new NameValueCollection();
       config.Add ("description", "The Description");
 
       ExtendedProviderBase provider = new ThreadUserProvider ("Provider", config);
@@ -61,9 +52,17 @@ namespace Remotion.Security.UnitTests.Core
     [Test]
     public void GetUser ()
     {
-      Assert.AreSame (Thread.CurrentPrincipal, _userProvider.GetUser ());
+      Thread.CurrentPrincipal = new GenericPrincipal (new GenericIdentity ("user"), new string[0]);
+      Assert.AreEqual ("user", _userProvider.GetUser().User);
     }
-    
+
+    [Test]
+    public void GetUser_WithEmptyIdentity ()
+    {
+      Thread.CurrentPrincipal = new GenericPrincipal (new GenericIdentity (string.Empty), new string[0]);
+      Assert.IsTrue (_userProvider.GetUser().IsNull);
+    }
+
     [Test]
     public void GetIsNull ()
     {

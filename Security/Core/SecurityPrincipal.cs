@@ -22,7 +22,7 @@ namespace Remotion.Security
   /// The <see cref="SecurityPrincipal"/> type represents a user, and optionally his active role and the user for whom he's acting as a substitue.
   /// </summary>
   [Serializable]
-  public class SecurityPrincipal : ISecurityPrincipal, IEquatable<SecurityPrincipal>
+  public sealed class SecurityPrincipal : ISecurityPrincipal, IEquatable<SecurityPrincipal>
   {
     private readonly string _user;
     private readonly ISecurityPrincipalRole _role;
@@ -91,6 +91,11 @@ namespace Remotion.Security
     public override int GetHashCode ()
     {
       return EqualityUtility.GetRotatedHashCode (_user, _role, _substitutedUser, _substitutedRole);
+    }
+
+    public bool IsNull
+    {
+      get { return false; }
     }
   }
 }

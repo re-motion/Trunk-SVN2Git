@@ -24,15 +24,15 @@ namespace Remotion.Security
   [Serializable]
   public class SecurityStrategy : ISecurityStrategy
   {
-    private readonly ICache<string, AccessType[]> _localCache;
+    private readonly ICache<ISecurityPrincipal, AccessType[]> _localCache;
     private readonly IGlobalAccessTypeCacheProvider _globalCacheProvider;
 
     public SecurityStrategy ()
-      : this (new Cache<string, AccessType[]> (), SecurityConfiguration.Current.GlobalAccessTypeCacheProvider)
+      : this (new Cache<ISecurityPrincipal, AccessType[]> (), SecurityConfiguration.Current.GlobalAccessTypeCacheProvider)
     {
     }
 
-    public SecurityStrategy (ICache<string, AccessType[]> localCache, IGlobalAccessTypeCacheProvider globalCacheProvider)
+    public SecurityStrategy (ICache<ISecurityPrincipal, AccessType[]> localCache, IGlobalAccessTypeCacheProvider globalCacheProvider)
     {
       ArgumentUtility.CheckNotNull ("localCache", localCache);
       ArgumentUtility.CheckNotNull ("globalCacheProvider", globalCacheProvider);
@@ -41,7 +41,7 @@ namespace Remotion.Security
       _globalCacheProvider = globalCacheProvider;
     }
 
-    public ICache<string, AccessType[]> LocalCache
+    public ICache<ISecurityPrincipal, AccessType[]> LocalCache
     {
       get { return _localCache; }
     }
@@ -56,38 +56,37 @@ namespace Remotion.Security
       _localCache.Clear ();
     }
 
-    public bool HasAccess (ISecurityContextFactory factory, ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes)
+    public bool HasAccess (ISecurityContextFactory factory, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNull ("factory", factory);
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
 
-      AccessType[] actualAccessTypes = GetAccessFromLocalCache (factory, securityProvider, user);
+      AccessType[] actualAccessTypes = GetAccessFromLocalCache (factory, securityProvider, principal);
 
       foreach (AccessType requiredAccessType in requiredAccessTypes)
       {
-        if (Array.IndexOf<AccessType> (actualAccessTypes, requiredAccessType) < 0)
+        if (Array.IndexOf (actualAccessTypes, requiredAccessType) < 0)
           return false;
       }
 
       return true;
     }
 
-    private AccessType[] GetAccessFromLocalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, IPrincipal user)
+    private AccessType[] GetAccessFromLocalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, ISecurityPrincipal principal)
     {
-      string key = user.Identity.Name;
       AccessType[] value;
 
-      if (!_localCache.TryGetValue (key, out value))
-        value = _localCache.GetOrCreateValue (key, delegate { return GetAccessFromGlobalCache (factory, securityProvider, user); });
+      if (!_localCache.TryGetValue (principal, out value))
+        value = _localCache.GetOrCreateValue (principal, delegate { return GetAccessFromGlobalCache (factory, securityProvider, principal); });
 
       return value;
     }
 
-    private AccessType[] GetAccessFromGlobalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, IPrincipal user)
+    private AccessType[] GetAccessFromGlobalCache (ISecurityContextFactory factory, ISecurityProvider securityProvider, ISecurityPrincipal principal)
     {
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> globalAccessTypeCache = _globalCacheProvider.GetCache ();
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> globalAccessTypeCache = _globalCacheProvider.GetCache ();
       if (globalAccessTypeCache == null)
         throw new InvalidOperationException ("IGlobalAccesTypeCacheProvider.GetAccessTypeCache() evaluated and returned null.");
 
@@ -95,18 +94,18 @@ namespace Remotion.Security
       if (context == null)
         throw new InvalidOperationException ("ISecurityContextFactory.CreateSecurityContext() evaluated and returned null.");
 
-      Tuple<ISecurityContext, string> key = new Tuple<ISecurityContext, string> (context, user.Identity.Name);
+      Tuple<ISecurityContext, ISecurityPrincipal> key = new Tuple<ISecurityContext, ISecurityPrincipal> (context, principal);
 
       AccessType[] value;
       if (!globalAccessTypeCache.TryGetValue (key, out value))
-        value = globalAccessTypeCache.GetOrCreateValue (key, delegate { return GetAccessFromSecurityProvider (securityProvider, context, user); });
+        value = globalAccessTypeCache.GetOrCreateValue (key, delegate { return GetAccessFromSecurityProvider (securityProvider, context, principal); });
   
       return value;
     }
 
-    private AccessType[] GetAccessFromSecurityProvider (ISecurityProvider securityProvider, ISecurityContext context, IPrincipal user)
+    private AccessType[] GetAccessFromSecurityProvider (ISecurityProvider securityProvider, ISecurityContext context, ISecurityPrincipal principal)
     {
-      AccessType[] actualAccessTypes = securityProvider.GetAccess (context, user);
+      AccessType[] actualAccessTypes = securityProvider.GetAccess (context, principal);
       if (actualAccessTypes == null)
         actualAccessTypes = new AccessType[0];
       return actualAccessTypes;

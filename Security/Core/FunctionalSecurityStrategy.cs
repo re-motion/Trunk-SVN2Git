@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using Remotion.Collections;
 using Remotion.Security.Configuration;
 using Remotion.Utilities;
@@ -33,7 +32,7 @@ namespace Remotion.Security
     }
 
     public FunctionalSecurityStrategy ()
-      : this (new SecurityStrategy (new NullCache<string, AccessType[]> (), SecurityConfiguration.Current.GlobalAccessTypeCacheProvider))
+        : this (new SecurityStrategy (new NullCache<ISecurityPrincipal, AccessType[]>(), SecurityConfiguration.Current.GlobalAccessTypeCacheProvider))
     {
     }
 
@@ -42,14 +41,14 @@ namespace Remotion.Security
       get { return _securityStrategy; }
     }
 
-    public bool HasAccess (Type type, ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes)
+    public bool HasAccess (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (ISecurableObject));
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("requiredAccessTypes", requiredAccessTypes);
 
-      return _securityStrategy.HasAccess (new FunctionalSecurityContextFactory (type), securityProvider, user, requiredAccessTypes);
+      return _securityStrategy.HasAccess (new FunctionalSecurityContextFactory (type), securityProvider, principal, requiredAccessTypes);
     }
   }
 }

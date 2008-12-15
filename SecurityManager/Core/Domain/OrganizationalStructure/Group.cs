@@ -60,14 +60,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         _group = group;
       }
 
-      public override bool HasAccess (ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes)
+      public override bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
       {
         //TODO: if (!_group.IsDiscarded && _group.State == StateType.New)
         // Move ObjectSecurityAdapter into RPA and add IsDiscarded check.
         if (_group.IsDiscarded || _group.State == StateType.New)
           return true;
 
-        return base.HasAccess (securityProvider, user, requiredAccessTypes);
+        return base.HasAccess (securityProvider, principal, requiredAccessTypes);
       }
     }
 

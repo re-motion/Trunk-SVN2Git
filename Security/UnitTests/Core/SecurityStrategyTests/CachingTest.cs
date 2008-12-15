@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Security.Principal;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Remotion.Collections;
@@ -28,7 +27,7 @@ using Mocks_Property = Rhino.Mocks.Constraints.Property;
 
 namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
 {
-  using GlobalCacheKey = Tuple<ISecurityContext, string>;
+  using GlobalCacheKey = Tuple<ISecurityContext, ISecurityPrincipal>;
 
   [TestFixture]
   public class CachingTest
@@ -37,9 +36,9 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
     private ISecurityProvider _mockSecurityProvider;
     private IGlobalAccessTypeCacheProvider _mockGlobalAccessTypeCacheProvider;
     private ICache<GlobalCacheKey, AccessType[]> _mockGlobalAccessTypeCache;
-    private ICache<string, AccessType[]> _mockLocalAccessTypeCache;
+    private ICache<ISecurityPrincipal, AccessType[]> _mockLocalAccessTypeCache;
     private ISecurityContextFactory _mockContextFactory;
-    private IPrincipal _user;
+    private ISecurityPrincipal _stubUser;
     private SecurityContext _context;
     private GlobalCacheKey _globalAccessTypeCacheKey;
     private SecurityStrategy _strategy;
@@ -51,12 +50,13 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider>();
       _mockGlobalAccessTypeCacheProvider = _mocks.StrictMock<IGlobalAccessTypeCacheProvider>();
       _mockGlobalAccessTypeCache = _mocks.StrictMock<ICache<GlobalCacheKey, AccessType[]>>();
-      _mockLocalAccessTypeCache = _mocks.StrictMock<ICache<string, AccessType[]>>();
+      _mockLocalAccessTypeCache = _mocks.StrictMock<ICache<ISecurityPrincipal, AccessType[]>>();
       _mockContextFactory = _mocks.StrictMock<ISecurityContextFactory>();
 
-      _user = new GenericPrincipal (new GenericIdentity ("user"), new string[0]);
-      _context = SecurityContext.Create(typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);
-      _globalAccessTypeCacheKey = new GlobalCacheKey (_context, _user.Identity.Name);
+        _stubUser = _mocks.Stub<ISecurityPrincipal> ();
+        SetupResult.For (_stubUser.User).Return ("user");
+      _context = SecurityContext.Create (typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum> (), new Enum[0]);
+      _globalAccessTypeCacheKey = new GlobalCacheKey (_context, _stubUser);
 
       _strategy = new SecurityStrategy (_mockLocalAccessTypeCache, _mockGlobalAccessTypeCacheProvider);
 
@@ -83,7 +83,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       SecurityConfiguration.Current.GlobalAccessTypeCacheProvider = stubGlobalCacheProvider;
       SecurityStrategy strategy = new SecurityStrategy();
 
-      Assert.IsInstanceOfType (typeof (Cache<string, AccessType[]>), strategy.LocalCache);
+      Assert.IsInstanceOfType (typeof (Cache<ISecurityPrincipal, AccessType[]>), strategy.LocalCache);
       Assert.AreSame (stubGlobalCacheProvider, strategy.GlobalCacheProvider);
     }
 
@@ -96,12 +96,12 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
         AccessType[] value;
         Expect.Call (_mockLocalAccessTypeCache.TryGetValue (null, out value))
             .IgnoreArguments()
-            .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.Anything()).OutRef (new object[] { new AccessType[0] })
+            .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.Anything ()).OutRef (new object[] { new AccessType[0] })
             .Return (false);
         Expect.Call (_mockLocalAccessTypeCache.GetOrCreateValue (null, null))
             .IgnoreArguments()
-            .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.NotNull())
-            .Do (GetOrCreateValueFromValueFactory<string>());
+            .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.NotNull ())
+            .Do (GetOrCreateValueFromValueFactory<ISecurityPrincipal> ());
         Expect.Call (_mockGlobalAccessTypeCacheProvider.GetCache()).Return (_mockGlobalAccessTypeCache);
         Expect.Call (_mockContextFactory.CreateSecurityContext()).Return (_context);
         Expect.Call (_mockGlobalAccessTypeCache.TryGetValue (null, out value))
@@ -112,11 +112,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
             .IgnoreArguments()
             .Constraints (Mocks_Is.Equal (_globalAccessTypeCacheKey), Mocks_Is.NotNull())
             .Do (GetOrCreateValueFromValueFactory<GlobalCacheKey>());
-        Expect.Call (_mockSecurityProvider.GetAccess (_context, _user)).Return (accessTypeResult);
+        Expect.Call (_mockSecurityProvider.GetAccess (_context, _stubUser)).Return (accessTypeResult);
       }
       _mocks.ReplayAll();
 
-      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _user, AccessType.Get (GeneralAccessTypes.Edit));
+      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
       Assert.AreEqual (true, hasAccess);
@@ -131,12 +131,12 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
         AccessType[] value;
         Expect.Call (_mockLocalAccessTypeCache.TryGetValue (null, out value))
             .IgnoreArguments()
-            .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.Anything()).OutRef (new object[] { new AccessType[0] })
+            .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.Anything ()).OutRef (new object[] { new AccessType[0] })
             .Return (false);
         Expect.Call (_mockLocalAccessTypeCache.GetOrCreateValue (null, null))
             .IgnoreArguments()
-            .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.NotNull())
-            .Do (GetOrCreateValueFromValueFactory<string>());
+            .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.NotNull ())
+            .Do (GetOrCreateValueFromValueFactory<ISecurityPrincipal> ());
         Expect.Call (_mockGlobalAccessTypeCacheProvider.GetCache()).Return (_mockGlobalAccessTypeCache);
         Expect.Call (_mockContextFactory.CreateSecurityContext()).Return (_context);
         Expect.Call (_mockGlobalAccessTypeCache.TryGetValue (null, out value))
@@ -147,11 +147,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
             .IgnoreArguments()
             .Constraints (Mocks_Is.Equal (_globalAccessTypeCacheKey), Mocks_Is.NotNull())
             .Do (GetOrCreateValueFromValueFactory<GlobalCacheKey>());
-        Expect.Call (_mockSecurityProvider.GetAccess (_context, _user)).Return (accessTypeResult);
+        Expect.Call (_mockSecurityProvider.GetAccess (_context, _stubUser)).Return (accessTypeResult);
       }
       _mocks.ReplayAll();
 
-      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _user, AccessType.Get (GeneralAccessTypes.Edit));
+      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
       Assert.AreEqual (false, hasAccess);
@@ -166,12 +166,12 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
         AccessType[] value;
         Expect.Call (_mockLocalAccessTypeCache.TryGetValue (null, out value))
             .IgnoreArguments()
-            .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.Anything()).OutRef (new object[] { new AccessType[0] })
+            .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.Anything ()).OutRef (new object[] { new AccessType[0] })
             .Return (false);
         Expect.Call (_mockLocalAccessTypeCache.GetOrCreateValue (null, null))
             .IgnoreArguments()
-            .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.NotNull())
-            .Do (GetOrCreateValueFromValueFactory<string>());
+            .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.NotNull ())
+            .Do (GetOrCreateValueFromValueFactory<ISecurityPrincipal> ());
         Expect.Call (_mockGlobalAccessTypeCacheProvider.GetCache()).Return (_mockGlobalAccessTypeCache);
         Expect.Call (_mockContextFactory.CreateSecurityContext()).Return (_context);
         Expect.Call (_mockGlobalAccessTypeCache.TryGetValue (null, out value))
@@ -181,7 +181,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       }
       _mocks.ReplayAll();
 
-      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _user, AccessType.Get (GeneralAccessTypes.Edit));
+      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
       Assert.AreEqual (true, hasAccess);
@@ -195,12 +195,12 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
         AccessType[] value;
         Expect.Call (_mockLocalAccessTypeCache.TryGetValue (null, out value))
             .IgnoreArguments()
-            .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.Anything()).OutRef (new object[] { new AccessType[0] })
+            .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.Anything ()).OutRef (new object[] { new AccessType[0] })
             .Return (false);
         Expect.Call (_mockLocalAccessTypeCache.GetOrCreateValue (null, null))
             .IgnoreArguments()
-            .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.NotNull())
-            .Do (GetOrCreateValueFromValueFactory<string>());
+            .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.NotNull ())
+            .Do (GetOrCreateValueFromValueFactory<ISecurityPrincipal> ());
         Expect.Call (_mockGlobalAccessTypeCacheProvider.GetCache()).Return (_mockGlobalAccessTypeCache);
         Expect.Call (_mockContextFactory.CreateSecurityContext()).Return (_context);
         Expect.Call (_mockGlobalAccessTypeCache.TryGetValue (null, out value))
@@ -210,7 +210,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       }
       _mocks.ReplayAll();
 
-      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _user, AccessType.Get (GeneralAccessTypes.Edit));
+      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
       Assert.AreEqual (false, hasAccess);
@@ -223,11 +223,11 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       AccessType[] value;
       Expect.Call (_mockLocalAccessTypeCache.TryGetValue (null, out value))
           .IgnoreArguments()
-          .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.Anything ()).OutRef (new object[] { accessTypeResult })
+          .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.Anything ()).OutRef (new object[] { accessTypeResult })
           .Return (true);
       _mocks.ReplayAll();
 
-      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _user, AccessType.Get (GeneralAccessTypes.Edit));
+      bool hasAccess = _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
 
       _mocks.VerifyAll();
       Assert.AreEqual (false, hasAccess);
@@ -240,16 +240,16 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       AccessType[] value;
       SetupResult.For (_mockLocalAccessTypeCache.TryGetValue (null, out value))
           .IgnoreArguments ()
-          .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.Anything ()).OutRef (new AccessType[0])
+          .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.Anything ()).OutRef (new AccessType[0])
           .Return (false);
       SetupResult.For (_mockLocalAccessTypeCache.GetOrCreateValue (null, null))
           .IgnoreArguments ()
-          .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.NotNull ())
-          .Do (GetOrCreateValueFromValueFactory<string>());
+          .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.NotNull ())
+          .Do (GetOrCreateValueFromValueFactory<ISecurityPrincipal>());
       SetupResult.For (_mockGlobalAccessTypeCacheProvider.GetCache()).Return (null);
       _mocks.ReplayAll();
 
-      _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _user, AccessType.Get (GeneralAccessTypes.Edit));
+      _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
     }
 
     [Test]
@@ -259,17 +259,17 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       AccessType[] value;
       SetupResult.For (_mockLocalAccessTypeCache.TryGetValue (null, out value))
           .IgnoreArguments ()
-          .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.Anything ()).OutRef (new AccessType[0])
+          .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.Anything ()).OutRef (new AccessType[0])
           .Return (false);
       SetupResult.For (_mockLocalAccessTypeCache.GetOrCreateValue (null, null))
           .IgnoreArguments ()
-          .Constraints (Mocks_Is.Equal ("user"), Mocks_Is.NotNull ())
-          .Do (GetOrCreateValueFromValueFactory<string>());
+          .Constraints (Mocks_Is.Same (_stubUser), Mocks_Is.NotNull ())
+          .Do (GetOrCreateValueFromValueFactory<ISecurityPrincipal> ());
       SetupResult.For (_mockGlobalAccessTypeCacheProvider.GetCache()).Return (_mockGlobalAccessTypeCache);
       SetupResult.For (_mockContextFactory.CreateSecurityContext()).Return (null);
       _mocks.ReplayAll();
 
-      _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _user, AccessType.Get (GeneralAccessTypes.Edit));
+      _strategy.HasAccess (_mockContextFactory, _mockSecurityProvider, _stubUser, AccessType.Get (GeneralAccessTypes.Edit));
     }
 
     [Test]
@@ -281,14 +281,6 @@ namespace Remotion.Security.UnitTests.Core.SecurityStrategyTests
       _strategy.InvalidateLocalCache();
 
       _mocks.VerifyAll();
-    }
-
-    /// <summary>
-    /// Creates a delegate that simply returns the access types passed to this method.
-    /// </summary>
-    private Func<TKey, Func<TKey, AccessType[]>, AccessType[]> GetOrCreateValueFromFixedResult<TKey> (AccessType[] result)
-    {
-      return delegate { return result; };
     }
 
     /// <summary>

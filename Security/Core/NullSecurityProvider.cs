@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Specialized;
 using System.Configuration.Provider;
-using System.Security.Principal;
 using Remotion.Configuration;
 
 namespace Remotion.Security
@@ -28,7 +27,7 @@ namespace Remotion.Security
   public class NullSecurityProvider : ExtendedProviderBase, ISecurityProvider
   {
     public NullSecurityProvider ()
-      : this ("Null", new NameValueCollection ())
+        : this ("Null", new NameValueCollection())
     {
     }
 
@@ -41,7 +40,7 @@ namespace Remotion.Security
     /// The "Null Object" implementation always returns an empty array.
     /// </summary>
     /// <returns>Always returns an empty array.</returns>
-    public AccessType[] GetAccess (ISecurityContext context, IPrincipal user)
+    public AccessType[] GetAccess (ISecurityContext context, ISecurityPrincipal principal)
     {
       return new AccessType[0];
     }

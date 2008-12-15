@@ -1,22 +1,22 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of re-strict (www.re-motion.org)
 // Copyright (C) 2005-2008 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
-// The re-motion Core Framework is free software; you can redistribute it 
-// and/or modify it under the terms of the GNU Lesser General Public License 
-// version 3.0 as published by the Free Software Foundation.
+// re-strict is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License version 3.0 as
+// published by the Free Software Foundation.
 // 
-// re-motion is distributed in the hope that it will be useful, 
+// re-strict is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of 
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-// GNU Lesser General Public License for more details.
+// GNU General Public License for more details.
 // 
-// You should have received a copy of the GNU Lesser General Public License
-// along with re-motion; if not, see http://www.gnu.org/licenses.
+// You should have received a copy of the GNU General Public License
+// along with re-strict; if not, see http://www.gnu.org/licenses.
+// 
+// Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
 using System.Collections.Specialized;
-using System.Configuration.Provider;
-using System.Security.Principal;
 using System.Web;
 using Remotion.Configuration;
 using Remotion.Security;
@@ -25,15 +25,7 @@ namespace Remotion.Web.Security
 {
   public class HttpContextUserProvider : ExtendedProviderBase, IUserProvider
   {
-    // types
-
-    // static members
-
-    // member fields
-
-    // construction and disposing
-
-    public HttpContextUserProvider()
+    public HttpContextUserProvider ()
         : this ("HttpContext", new NameValueCollection())
     {
     }
@@ -42,15 +34,17 @@ namespace Remotion.Web.Security
         : base (name, config)
     {
     }
-    
-     // methods and properties
 
-    public IPrincipal GetUser()
+    public ISecurityPrincipal GetUser ()
     {
       if (HttpContext.Current == null)
-        return null;
-      else
-        return HttpContext.Current.User;
+        return new NullSecurityPrincipal();
+
+      string userName = HttpContext.Current.User.Identity.Name;
+      if (userName.Length == 0)
+        return new NullSecurityPrincipal();
+
+      return new SecurityPrincipal (userName, null, null, null);
     }
 
     bool INullObject.IsNull

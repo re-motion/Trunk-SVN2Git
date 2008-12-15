@@ -73,7 +73,7 @@ namespace Remotion.Security.UnitTests.Core
       Expect.Call (_mockSecurityProvider.GetRevision()).Return (0);
       _mocks.ReplayAll();
 
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> actual = _provider.GetCache();
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = _provider.GetCache ();
 
       _mocks.VerifyAll();
       Assert.IsNotNull (actual);
@@ -85,8 +85,8 @@ namespace Remotion.Security.UnitTests.Core
       Expect.Call (_mockSecurityProvider.GetRevision()).Return (0);
       _mocks.ReplayAll();
 
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> expected = _provider.GetCache();
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> actual = _provider.GetCache();
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> expected = _provider.GetCache ();
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = _provider.GetCache ();
 
       _mocks.VerifyAll();
       Assert.AreSame (expected, actual);
@@ -102,8 +102,8 @@ namespace Remotion.Security.UnitTests.Core
       }
       _mocks.ReplayAll();
 
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> expected = _provider.GetCache();
-      ICache<Tuple<ISecurityContext, string>, AccessType[]> actual = null;
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> expected = _provider.GetCache ();
+      ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> actual = null;
 
       ThreadRunner.Run (delegate { actual = _provider.GetCache(); });
 
@@ -139,19 +139,20 @@ namespace Remotion.Security.UnitTests.Core
 
       RevisionBasedAccessTypeCacheProvider provider = new RevisionBasedAccessTypeCacheProvider ("MyProvider", config);
       SecurityContext securityContext = SecurityContext.CreateStateless(typeof (SecurableObject));
-      AccessType[] accessTypes = new AccessType[] { AccessType.Get (TestAccessTypes.Fifth) };
-      provider.GetCache().GetOrCreateValue (Tuple.NewTuple ((ISecurityContext) securityContext, "bla"), delegate { return accessTypes; });
+      AccessType[] accessTypes = new[] { AccessType.Get (TestAccessTypes.Fifth) };
+      ISecurityPrincipal securityPrincipal = new SecurityPrincipal ("foo", null, null, null);
+      provider.GetCache().GetOrCreateValue (Tuple.NewTuple ((ISecurityContext) securityContext, securityPrincipal), delegate { return accessTypes; });
 
       RevisionBasedAccessTypeCacheProvider deserializedProvider = Serializer.SerializeAndDeserialize (provider);
 
       Assert.AreEqual ("MyProvider", deserializedProvider.Name);
       Assert.AreEqual ("The Description", deserializedProvider.Description);
-      Assert.IsInstanceOfType (typeof (InterlockedCache<Tuple<ISecurityContext, string>, AccessType[]>), deserializedProvider.GetCache());
+      Assert.IsInstanceOfType (typeof (InterlockedCache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]>), deserializedProvider.GetCache ());
       Assert.AreNotSame (provider.GetCache(), deserializedProvider.GetCache());
       Assert.IsFalse (((IGlobalAccessTypeCacheProvider) deserializedProvider).IsNull);
 
       AccessType[] newAccessTypes;
-      bool result = deserializedProvider.GetCache().TryGetValue (Tuple.NewTuple ((ISecurityContext) securityContext, "bla"), out newAccessTypes);
+      bool result = deserializedProvider.GetCache().TryGetValue (Tuple.NewTuple ((ISecurityContext) securityContext, securityPrincipal), out newAccessTypes);
       Assert.IsTrue (result);
       Assert.AreNotSame (accessTypes, newAccessTypes);
       Assert.AreEqual (1, newAccessTypes.Length);

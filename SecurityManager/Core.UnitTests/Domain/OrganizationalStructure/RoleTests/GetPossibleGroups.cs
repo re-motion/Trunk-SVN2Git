@@ -91,17 +91,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     [Test]
     public void Test ()
     {
-      IPrincipal principal = new GenericPrincipal (new GenericIdentity ("group0/user1"), new string[0]);
-      SetupResult.For (_mockUserProvider.GetUser()).Return (principal);
-      ExpectSecurityProviderGetAccessForGroup ("UID: rootGroup", "UID: testTenant", principal);
-      ExpectSecurityProviderGetAccessForGroup ("UID: parentGroup0", "UID: testTenant", principal, SecurityManagerAccessTypes.AssignRole);
-      ExpectSecurityProviderGetAccessForGroup ("UID: group0", "UID: testTenant", principal, SecurityManagerAccessTypes.AssignRole);
-      ExpectSecurityProviderGetAccessForGroup ("UID: parentGroup1", "UID: testTenant", principal);
-      ExpectSecurityProviderGetAccessForGroup ("UID: group1", "UID: testTenant", principal);
-      ExpectSecurityProviderGetAccessForGroup ("UID: testRootGroup", "UID: testTenant", principal);
-      ExpectSecurityProviderGetAccessForGroup ("UID: testParentOfOwningGroup", "UID: testTenant", principal);
-      ExpectSecurityProviderGetAccessForGroup ("UID: testOwningGroup", "UID: testTenant", principal);
-      ExpectSecurityProviderGetAccessForGroup ("UID: testGroup", "UID: testTenant", principal);
+      ISecurityPrincipal principalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
+      principalStub.Stub (stub => stub.User).Return ("group0/user1");
+      SetupResult.For (_mockUserProvider.GetUser ()).Return (principalStub);
+      ExpectSecurityProviderGetAccessForGroup ("UID: rootGroup", "UID: testTenant", principalStub);
+      ExpectSecurityProviderGetAccessForGroup ("UID: parentGroup0", "UID: testTenant", principalStub, SecurityManagerAccessTypes.AssignRole);
+      ExpectSecurityProviderGetAccessForGroup ("UID: group0", "UID: testTenant", principalStub, SecurityManagerAccessTypes.AssignRole);
+      ExpectSecurityProviderGetAccessForGroup ("UID: parentGroup1", "UID: testTenant", principalStub);
+      ExpectSecurityProviderGetAccessForGroup ("UID: group1", "UID: testTenant", principalStub);
+      ExpectSecurityProviderGetAccessForGroup ("UID: testRootGroup", "UID: testTenant", principalStub);
+      ExpectSecurityProviderGetAccessForGroup ("UID: testParentOfOwningGroup", "UID: testTenant", principalStub);
+      ExpectSecurityProviderGetAccessForGroup ("UID: testOwningGroup", "UID: testTenant", principalStub);
+      ExpectSecurityProviderGetAccessForGroup ("UID: testGroup", "UID: testTenant", principalStub);
       Role role = Role.NewObject();
       _mocks.ReplayAll();
 
@@ -109,7 +110,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
 
       _mocks.VerifyAll();
       Assert.AreEqual (2, groups.Count);
-      foreach (string groupUnqiueIdentifier in new string[] { "UID: parentGroup0", "UID: group0" })
+      foreach (string groupUnqiueIdentifier in new [] { "UID: parentGroup0", "UID: group0" })
       {
         Assert.IsTrue (
             groups.Exists (delegate (Group current) { return groupUnqiueIdentifier == current.UniqueIdentifier; }),
@@ -131,7 +132,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     }
 
     private void ExpectSecurityProviderGetAccessForGroup (
-        string owningGroup, string owningTenant, IPrincipal principal, params Enum[] returnedAccessTypeEnums)
+        string owningGroup, string owningTenant, ISecurityPrincipal principal, params Enum[] returnedAccessTypeEnums)
     {
       Type classType = typeof (Group);
       string owner = string.Empty;

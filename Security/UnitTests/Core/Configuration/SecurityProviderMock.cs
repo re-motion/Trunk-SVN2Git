@@ -21,23 +21,12 @@ namespace Remotion.Security.UnitTests.Core.Configuration
 {
   public class SecurityProviderMock : ExtendedProviderBase, ISecurityProvider
   {
-    // types
-
-    // static members
-
-    // member fields
-
-    // construction and disposing
-
-
     public SecurityProviderMock (string name, NameValueCollection config)
         : base (name, config)
     {
     }
-    
-     // methods and properties
 
-    public AccessType[] GetAccess (ISecurityContext context, System.Security.Principal.IPrincipal user)
+    public AccessType[] GetAccess (ISecurityContext context, ISecurityPrincipal principal)
     {
       return new AccessType[0];
     }

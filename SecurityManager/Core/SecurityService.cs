@@ -17,7 +17,6 @@
 // 
 using System;
 using System.Collections.Specialized;
-using System.Security.Principal;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects;
 using Remotion.Logging;
@@ -29,14 +28,14 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager
 {
-  public class SecurityService: ExtendedProviderBase, IRevisionBasedSecurityProvider
+  public class SecurityService : ExtendedProviderBase, IRevisionBasedSecurityProvider
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (SecurityService));
 
     private readonly IAccessControlListFinder _accessControlListFinder;
     private readonly ISecurityTokenBuilder _securityTokenBuilder;
 
-    public SecurityService()
+    public SecurityService ()
         : this (new AccessControlListFinder(), new SecurityTokenBuilder())
     {
     }
@@ -63,23 +62,23 @@ namespace Remotion.SecurityManager
       _securityTokenBuilder = securityTokenBuilder;
     }
 
-    public AccessType[] GetAccess (ISecurityContext context, IPrincipal user)
+    public AccessType[] GetAccess (ISecurityContext context, ISecurityPrincipal principal)
     {
-      return GetAccess (ClientTransaction.CreateRootTransaction(), context, user);
+      return GetAccess (ClientTransaction.CreateRootTransaction(), context, principal);
     }
 
-    public AccessType[] GetAccess (ClientTransaction transaction, ISecurityContext context, IPrincipal user)
+    public AccessType[] GetAccess (ClientTransaction transaction, ISecurityContext context, ISecurityPrincipal principal)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("user", user);
+      ArgumentUtility.CheckNotNull ("principal", principal);
 
       AccessControlList acl;
       SecurityToken token;
       try
       {
         acl = _accessControlListFinder.Find (transaction, context);
-        token = _securityTokenBuilder.CreateToken (transaction, user, context);
+        token = _securityTokenBuilder.CreateToken (transaction, principal, context);
       }
       catch (AccessControlException e)
       {
@@ -98,7 +97,7 @@ namespace Remotion.SecurityManager
     {
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        return Revision.GetRevision ();
+        return Revision.GetRevision();
       }
     }
 

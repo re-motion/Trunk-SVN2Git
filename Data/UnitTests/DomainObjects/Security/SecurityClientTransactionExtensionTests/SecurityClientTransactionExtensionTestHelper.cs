@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
@@ -27,8 +26,8 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransactionExtensionTests
 {
-  public delegate bool HasAccessDelegate (ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes);
-  public delegate bool HasStatelessAccessDelegate (Type type, ISecurityProvider securityProvider, IPrincipal user, params AccessType[] requiredAccessTypes);
+  public delegate bool HasAccessDelegate (ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes);
+  public delegate bool HasStatelessAccessDelegate (Type type, ISecurityProvider securityProvider, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes);
 
   public class SecurityClientTransactionExtensionTestHelper
   {
@@ -38,13 +37,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
     // member fields
 
-    private MockRepository _mocks;
-    private IPrincipal _user;
-    private ISecurityProvider _mockSecurityProvider;
-    private IUserProvider _stubUserProvider;
-    private IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
-    private IPermissionProvider _mockPermissionReflector;
-    private ClientTransaction _transaction;
+    private readonly MockRepository _mocks;
+    private readonly ISecurityPrincipal _stubUser;
+    private readonly ISecurityProvider _mockSecurityProvider;
+    private readonly IUserProvider _stubUserProvider;
+    private readonly IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
+    private readonly IPermissionProvider _mockPermissionReflector;
+    private readonly ClientTransaction _transaction;
 
     // construction and disposing
 
@@ -52,9 +51,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       _mocks = new MockRepository ();
       _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
-      _user = new GenericPrincipal (new GenericIdentity ("owner"), new string[0]);
+      _stubUser = _mocks.Stub<ISecurityPrincipal> ();
+      SetupResult.For (_stubUser.User).Return ("user");
       _stubUserProvider = _mocks.StrictMock<IUserProvider> ();
-      SetupResult.For (_stubUserProvider.GetUser ()).Return (_user);
+      SetupResult.For (_stubUserProvider.GetUser ()).Return (_stubUser);
       _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
       _mockPermissionReflector = _mocks.StrictMock<IPermissionProvider> ();
       _transaction = ClientTransaction.CreateRootTransaction();
@@ -123,26 +123,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     public void ExpectObjectSecurityStrategyHasAccess (SecurableObject securableObject, Enum accessTypeEnum, HasAccessDelegate doDelegate)
     {
       IObjectSecurityStrategy objectSecurityStrategy = securableObject.GetSecurityStrategy ();
-      Expect.Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _user, AccessType.Get (accessTypeEnum))).Do (doDelegate);
+      Expect.Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum))).Do (doDelegate);
     }
 
     public void ExpectObjectSecurityStrategyHasAccess (SecurableObject securableObject, Enum accessTypeEnum, bool returnValue)
     {
       IObjectSecurityStrategy objectSecurityStrategy = securableObject.GetSecurityStrategy ();
-      Expect.Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _user, AccessType.Get (accessTypeEnum))).Return (returnValue);
+      Expect.Call (objectSecurityStrategy.HasAccess (_mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum))).Return (returnValue);
     }
 
     public void ExpectFunctionalSecurityStrategyHasAccess (Type securableObjectType, Enum accessTypeEnum, HasStatelessAccessDelegate doDelegate)
     {
       Expect
-          .Call (_mockFunctionalSecurityStrategy.HasAccess (securableObjectType, _mockSecurityProvider, _user, AccessType.Get (accessTypeEnum)))
+          .Call (_mockFunctionalSecurityStrategy.HasAccess (securableObjectType, _mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
           .Do (doDelegate);
     }
 
     public void ExpectFunctionalSecurityStrategyHasAccess (Type securableObjectType, Enum accessTypeEnum, bool returnValue)
     {
       Expect
-          .Call (_mockFunctionalSecurityStrategy.HasAccess (securableObjectType, _mockSecurityProvider, _user, AccessType.Get (accessTypeEnum)))
+          .Call (_mockFunctionalSecurityStrategy.HasAccess (securableObjectType, _mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
           .Return (returnValue);
     }
 
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
     public void ExpectSecurityProviderGetAccess (SecurityContext context, params Enum[] returnedAccessTypes)
     {
-      Expect.Call (_mockSecurityProvider.GetAccess (context, _user)).Return (Array.ConvertAll<Enum, AccessType> (returnedAccessTypes, AccessType.Get));
+      Expect.Call (_mockSecurityProvider.GetAccess (context, _stubUser)).Return (Array.ConvertAll<Enum, AccessType> (returnedAccessTypes, AccessType.Get));
     }
   }
 }

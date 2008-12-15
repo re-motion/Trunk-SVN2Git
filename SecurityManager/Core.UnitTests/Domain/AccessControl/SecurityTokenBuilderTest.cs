@@ -17,8 +17,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -26,6 +24,7 @@ using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 {
@@ -84,7 +83,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     [Test]
     [ExpectedException (typeof (AccessControlException), ExpectedMessage =
-        "The abstract role 'Undefined|Remotion.SecurityManager.UnitTests.TestDomain.UndefinedAbstractRoles, Remotion.SecurityManager.UnitTests' could not be found.")]
+        "The abstract role 'Undefined|Remotion.SecurityManager.UnitTests.TestDomain.UndefinedAbstractRoles, Remotion.SecurityManager.UnitTests' could not be found."
+        )]
     public void Create_WithNotExistingAbstractRole ()
     {
       SecurityContext context = CreateContext (ProjectRoles.Developer, UndefinedAbstractRoles.Undefined, ProjectRoles.QualityManager);
@@ -99,7 +99,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Create_WithValidPrincipal ()
     {
       SecurityContext context = CreateContext();
-      IPrincipal principal = CreateTestPrincipal();
+      ISecurityPrincipal principal = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
@@ -114,28 +114,28 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Create_WithNotExistingPrincipal ()
     {
       SecurityContext context = CreateContext();
-      IPrincipal principal = CreateNotExistingUser();
+      ISecurityPrincipal principal = CreateNotExistingUser();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
     }
 
     [Test]
     [ExpectedException (typeof (AccessControlException), ExpectedMessage = "No principal was provided.")]
     public void Create_WithEmptyPrincipal ()
     {
-      SecurityContext context = CreateContext ();
-      IPrincipal principal = CreateUser (string.Empty);
+      SecurityContext context = CreateContext();
+      ISecurityPrincipal principal = CreateUser (string.Empty);
 
-      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
+      SecurityTokenBuilder builder = new SecurityTokenBuilder();
+      builder.CreateToken (ClientTransactionScope.CurrentTransaction, principal, context);
     }
 
     [Test]
     public void Create_WithValidOwningTenant ()
     {
       SecurityContext context = CreateContext();
-      IPrincipal user = CreateTestPrincipal();
+      ISecurityPrincipal user = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
@@ -148,7 +148,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Create_WithoutOwningTenant ()
     {
       SecurityContext context = CreateContextWithoutOwningTenant();
-      IPrincipal user = CreateTestPrincipal();
+      ISecurityPrincipal user = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
@@ -161,17 +161,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Create_WithNotExistingOwningTenant ()
     {
       SecurityContext context = CreateContextWithNotExistingOwningTenant();
-      IPrincipal user = CreateTestPrincipal();
+      ISecurityPrincipal user = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
     }
 
     [Test]
     public void Create_WithValidOwningGroup ()
     {
       SecurityContext context = CreateContext();
-      IPrincipal user = CreateTestPrincipal();
+      ISecurityPrincipal user = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
@@ -185,7 +185,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Create_WithoutOwningGroup ()
     {
       SecurityContext context = CreateContextWithoutOwningGroup();
-      IPrincipal user = CreateTestPrincipal();
+      ISecurityPrincipal user = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
@@ -198,17 +198,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Create_WithNotExistingOwningGroup ()
     {
       SecurityContext context = CreateContextWithNotExistingOwningGroup();
-      IPrincipal user = CreateTestPrincipal();
+      ISecurityPrincipal user = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
     }
 
     [Test]
     public void Create_WithValidOwningUser ()
     {
       SecurityContext context = CreateContext();
-      IPrincipal user = CreateTestPrincipal();
+      ISecurityPrincipal user = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
@@ -222,7 +222,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Create_WithoutOwningUser ()
     {
       SecurityContext context = CreateContextWithoutOwningUser();
-      IPrincipal user = CreateTestPrincipal();
+      ISecurityPrincipal user = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
       SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
@@ -235,25 +235,27 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Create_WithNotExistingOwningUser ()
     {
       SecurityContext context = CreateContextWithNotExistingOwningUser();
-      IPrincipal user = CreateTestPrincipal();
+      ISecurityPrincipal user = CreateTestPrincipal();
 
       SecurityTokenBuilder builder = new SecurityTokenBuilder();
-      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
+      builder.CreateToken (ClientTransactionScope.CurrentTransaction, user, context);
     }
 
-    private IPrincipal CreateTestPrincipal ()
+    private ISecurityPrincipal CreateTestPrincipal ()
     {
       return CreateUser ("test.user");
     }
 
-    private IPrincipal CreateNotExistingUser ()
+    private ISecurityPrincipal CreateNotExistingUser ()
     {
       return CreateUser ("notexisting.user");
     }
 
-    private IPrincipal CreateUser (string userName)
+    private ISecurityPrincipal CreateUser (string userName)
     {
-      return new GenericPrincipal (new GenericIdentity (userName), new string[0]);
+      var principalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
+      principalStub.Stub (stub => stub.User).Return (userName);
+      return principalStub;
     }
 
     private SecurityContext CreateContext (params Enum[] abstractRoles)

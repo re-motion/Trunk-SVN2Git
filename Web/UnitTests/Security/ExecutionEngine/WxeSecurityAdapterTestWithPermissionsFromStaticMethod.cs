@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Security.Principal;
 using NUnit.Framework;
 using Remotion.Security;
 using Remotion.Web.UnitTests.Security.Configuration;
@@ -40,7 +39,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
     private IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
     private ISecurityProvider _mockSecurityProvider;
     private IUserProvider _userProvider;
-    private IPrincipal _user;
+    private ISecurityPrincipal _stubUser;
 
     // construction and disposing
 
@@ -59,9 +58,10 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
 
       _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider>();
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
-      _user = new GenericPrincipal (new GenericIdentity ("owner"), new string[0]);
-      _userProvider = _mocks.StrictMock<IUserProvider>();
-      SetupResult.For (_userProvider.GetUser()).Return (_user);
+      _stubUser = _mocks.Stub<ISecurityPrincipal> ();
+      SetupResult.For (_stubUser.User).Return ("user");
+      _userProvider = _mocks.StrictMock<IUserProvider> ();
+      SetupResult.For (_userProvider.GetUser()).Return (_stubUser);
 
       _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy>();
 
@@ -186,7 +186,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
     private void ExpectFunctionalSecurityStrategyHasAccessForSecurableObject (Enum accessTypeEnum, bool returnValue)
     {
       Expect
-          .Call (_mockFunctionalSecurityStrategy.HasAccess (typeof (SecurableObject), _mockSecurityProvider, _user, AccessType.Get (accessTypeEnum)))
+          .Call (_mockFunctionalSecurityStrategy.HasAccess (typeof (SecurableObject), _mockSecurityProvider, _stubUser, AccessType.Get (accessTypeEnum)))
           .Return (returnValue);
     }
   }

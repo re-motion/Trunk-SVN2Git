@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Specialized;
-using System.Security.Principal;
 using Remotion.Configuration;
 
 namespace Remotion.Security
@@ -23,11 +22,11 @@ namespace Remotion.Security
   /// <summary>
   /// Represents a nullable <see cref="IUserProvider"/> according to the "Null Object Pattern".
   /// </summary>
-  public class NullUserProvider: ExtendedProviderBase, IUserProvider
+  public class NullUserProvider : ExtendedProviderBase, IUserProvider
   {
-    private NullPrincipal _principal = new NullPrincipal();
+    private readonly NullSecurityPrincipal _securityPrincipal = new NullSecurityPrincipal();
 
-    public NullUserProvider()
+    public NullUserProvider ()
         : this ("Null", new NameValueCollection())
     {
     }
@@ -37,9 +36,9 @@ namespace Remotion.Security
     {
     }
 
-    public IPrincipal GetUser()
+    public ISecurityPrincipal GetUser ()
     {
-      return _principal;
+      return _securityPrincipal;
     }
 
     bool INullObject.IsNull

@@ -22,22 +22,12 @@ namespace Remotion.Security.UnitTests.Core.Configuration
 {
   public class GlobalAccessTypeCacheProviderMock : ExtendedProviderBase, IGlobalAccessTypeCacheProvider
   {
-    // types
-
-    // static members
-
-    // member fields
-
-    // construction and disposing
-
     public GlobalAccessTypeCacheProviderMock (string name, NameValueCollection config)
         : base (name, config)
     {
     }
-    
-     // methods and properties
 
-    public ICache<Tuple<ISecurityContext, string>, AccessType[]> GetCache ()
+    public ICache<Tuple<ISecurityContext, ISecurityPrincipal>, AccessType[]> GetCache ()
     {
       throw new NotImplementedException();
     }

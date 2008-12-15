@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Security
 
     // methods and properties
 
-    public override bool HasAccess (ISecurityProvider securityService, IPrincipal user, params AccessType[] requiredAccessTypes)
+    public override bool HasAccess (ISecurityProvider securityService, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
     {
       if (SecurityContextFactory.IsDiscarded)
         return true;
@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Security
       if (!isSecurityRequiredForDeleted && SecurityContextFactory.IsDeleted)
         return true;
 
-      return base.HasAccess (securityService, user, requiredAccessTypes);
+      return base.HasAccess (securityService, principal, requiredAccessTypes);
     }
 
     public new IDomainObjectSecurityContextFactory SecurityContextFactory

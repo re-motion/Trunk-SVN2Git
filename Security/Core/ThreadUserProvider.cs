@@ -15,23 +15,14 @@
 // 
 using System;
 using System.Collections.Specialized;
-using System.Security.Principal;
 using System.Threading;
 using Remotion.Configuration;
 
 namespace Remotion.Security
 {
-  public class ThreadUserProvider: ExtendedProviderBase, IUserProvider
+  public class ThreadUserProvider : ExtendedProviderBase, IUserProvider
   {
-    // types
-
-    // static members
-
-    // member fields
-
-    // construction and disposing
-
-    public ThreadUserProvider()
+    public ThreadUserProvider ()
         : this ("Thread", new NameValueCollection())
     {
     }
@@ -41,11 +32,13 @@ namespace Remotion.Security
     {
     }
 
-    // methods and properties
-
-    public IPrincipal GetUser()
+    public ISecurityPrincipal GetUser ()
     {
-      return Thread.CurrentPrincipal;
+      string userName = Thread.CurrentPrincipal.Identity.Name;
+      if (userName.Length == 0)
+        return new NullSecurityPrincipal();
+
+      return new SecurityPrincipal (userName, null, null, null);
     }
 
     bool INullObject.IsNull

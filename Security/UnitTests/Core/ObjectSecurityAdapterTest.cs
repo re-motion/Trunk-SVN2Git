@@ -39,7 +39,7 @@ namespace Remotion.Security.UnitTests.Core
     private IObjectSecurityStrategy _mockObjectSecurityStrategy;
     private ISecurityProvider _mockSecurityProvider;
     private IUserProvider _mockUserProvider;
-    private IPrincipal _user;
+    private ISecurityPrincipal _userStub;
     private IPermissionProvider _mockPermissionProvider;
 
     // construction and disposing
@@ -62,8 +62,9 @@ namespace Remotion.Security.UnitTests.Core
       _mockUserProvider = _mocks.StrictMock<IUserProvider> ();
       _mockPermissionProvider = _mocks.StrictMock<IPermissionProvider> ();
 
-      _user = new GenericPrincipal (new GenericIdentity ("owner"), new string[0]);
-      SetupResult.For (_mockUserProvider.GetUser ()).Return (_user);
+      _userStub = _mocks.Stub < ISecurityPrincipal>();
+      SetupResult.For (_userStub.User).Return ("user");
+      SetupResult.For (_mockUserProvider.GetUser ()).Return (_userStub);
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
@@ -165,7 +166,7 @@ namespace Remotion.Security.UnitTests.Core
     private void ExpectExpectObjectSecurityStrategyHasAccess (bool accessAllowed)
     {
       AccessType[] accessTypes = new AccessType[] { AccessType.Get (TestAccessTypes.First) };
-      Expect.Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _user, accessTypes)).Return (accessAllowed);
+      Expect.Call (_mockObjectSecurityStrategy.HasAccess (_mockSecurityProvider, _userStub, accessTypes)).Return (accessAllowed);
     }
 
     private void ExpectGetRequiredPropertyReadPermissions (string propertyName)

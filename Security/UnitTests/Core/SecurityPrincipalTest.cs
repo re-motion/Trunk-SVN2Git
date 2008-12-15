@@ -185,6 +185,14 @@ namespace Remotion.Security.UnitTests.Core
       Assert.AreEqual (principal, deserializedRole);
     }
 
+    [Test]
+    public void IsNull ()
+    {
+      var principal = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
+      
+      Assert.That (principal.IsNull, Is.False);
+    }
+
     private SecurityPrincipal CreatePrincipal (string user, string roleGroup, string substitutedUser, string substitutedRoleGroup)
     {
       var role = roleGroup != null ? new SecurityPrincipalRole (roleGroup, null) : null;

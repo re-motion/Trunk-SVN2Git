@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test
                  string.Empty,
                  new Dictionary<string, Enum>(),
                  new Enum[] {DomainAbstractRoles.Creator});
-      GenericPrincipal user = new GenericPrincipal (new GenericIdentity ("1A"), new string[0]);
+      ISecurityPrincipal user = new SecurityPrincipal ("1A", null, null, null);
       AccessType[] accessTypes = provider.GetAccess (context, user);
     }
 
