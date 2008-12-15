@@ -104,6 +104,7 @@
     <Compile Include="Domain\AccessControl\AccessControlEntryPropertiesSearchServiceTests\SetUpFixture.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\SearchServiceTest.cs" />
     <Compile Include="Domain\AccessControl\AccessControlEntryTests\ValidationTest.cs" />
+    <Compile Include="Domain\AccessControl\PrincipalTest.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningGroupAndParents.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningGroup.cs" />
     <Compile Include="Domain\AccessControl\SecurityTokenMatcherTests\AceForOwningGroupAndChildren.cs" />
