@@ -56,9 +56,19 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       Tenant owningTenant = CreateOwningTenantEntry (aclProbe, user, ace);
       IList<AbstractRoleDefinition> abstractRoles = CreateAbstractRolesEntry (aclProbe, ace);
 
-      //aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroup, null, abstractRoles);
+
+      // Create a new Principal which has only the one role we are currently probing for.
+      // If we don't do that and set all the user's roles for the principal,
+      // another role of the user could match the ACE.SpecificPosition
+      // for case GroupSelection.All or GroupSelection.OwningGroup, giving access rights
+      // which the user does not have due to the currently tested role.
+      // (Note that the user is in fact always in all roles at the same time, so he will, in fact,
+      // always have the access rights returned; this is just not the information we want to present in the 
+      // ACL-expansion, where we distinguish which role gives rise to which access rights).
+
       Principal principal = new Principal (user.Tenant, user, new[] {role});
       aclProbe._securityToken = new SecurityToken (principal, owningTenant, owningGroup, owningUser, abstractRoles);
+
       return aclProbe;
     }
      

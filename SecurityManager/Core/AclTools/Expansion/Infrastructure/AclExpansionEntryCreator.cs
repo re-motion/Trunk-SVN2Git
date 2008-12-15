@@ -67,20 +67,9 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       // by another matching ACE in the current ACL (deny rights always win). 
       var accessTypeStatistics = new AccessTypeStatistics();
 
-      // Set roles of user to contain only the role we currently probe for.
-      // If we don't do that another role of the user can match the ACE.SpecificPosition
-      // for case GroupSelection.All or GroupSelection.OwningGroup, giving access rights
-      // which the user does not have due to the currently tested role.
-      // (Note that the user is in fact always in all roles at the same time, so he will
-      // have the access rights returned if the user's roles are not artificially reduced
-      // to contain only the role probed for; it's just not the information we want to present in the 
-      // ACL-expansion, where we want to distinguish which role gives rise
-      // to what access rights).
-
-      // Exchanging the User.Roles-collection with a new one containing only the current Role would not work, even
-      // if a public setter would be available, so we empty the collection, then add back the current Role.
       Assertion.IsTrue (aclProbe.SecurityToken.Principal.Roles.Count == 1);
       Assertion.IsTrue (object.ReferenceEquals (aclProbe.SecurityToken.Principal.Roles[0], userRoleAclAce.Role));
+      
       AccessInformation accessInformation = userRoleAclAce.Acl.GetAccessTypes (aclProbe.SecurityToken, accessTypeStatistics);
 
       return new AclExpansionEntryCreator_GetAccessTypesResult (accessInformation, aclProbe, accessTypeStatistics);
