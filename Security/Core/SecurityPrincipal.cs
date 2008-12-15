@@ -21,6 +21,7 @@ namespace Remotion.Security
   /// <summary>
   /// The <see cref="SecurityPrincipal"/> type represents a user, and optionally his active role and the user for whom he's acting as a substitue.
   /// </summary>
+  [Serializable]
   public class SecurityPrincipal : ISecurityPrincipal, IEquatable<SecurityPrincipal>
   {
     private readonly string _user;

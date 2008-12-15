@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
 namespace Remotion.Security.UnitTests.Core
@@ -171,6 +172,17 @@ namespace Remotion.Security.UnitTests.Core
       var right = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
 
       Assert.That (left.GetHashCode(), Is.EqualTo (right.GetHashCode()));
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      var principal = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
+
+      var deserializedRole = Serializer.SerializeAndDeserialize (principal);
+
+      Assert.AreNotSame (principal, deserializedRole);
+      Assert.AreEqual (principal, deserializedRole);
     }
 
     private SecurityPrincipal CreatePrincipal (string user, string roleGroup, string substitutedUser, string substitutedRoleGroup)
