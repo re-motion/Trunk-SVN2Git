@@ -11,8 +11,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Diagnostics.ToText.Infrastructure;
-using Remotion.Reflection;
 
 namespace Remotion.UnitTests.Diagnostics.PropertyRestorer
 {

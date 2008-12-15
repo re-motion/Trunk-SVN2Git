@@ -21,25 +21,6 @@ using Remotion.Reflection;
 
 namespace Remotion.UnitTests.Diagnostics
 {
-  //public class PropertyRestorer<TClass, TProperty> : IDisposable
-  //{
-  //  private readonly TClass _instance;
-  //  private readonly Property<TClass, TProperty> _property;
-  //  private readonly TProperty _propertyValue;
-
-  //  public PropertyRestorer (TClass instance, Property<TClass, TProperty> property)
-  //  {
-  //    _instance = instance;
-  //    _property = property;
-  //    _propertyValue = _property.Get (_instance);
-  //  }
-
-  //  public void Dispose ()
-  //  {
-  //    _property.Set (_instance, _propertyValue);
-  //  }
-  //}
-
   public class PropertyRestorer<TClass, TProperty> : IDisposable
   {
     private readonly TClass _instance;

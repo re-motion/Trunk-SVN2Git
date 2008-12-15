@@ -26,7 +26,6 @@ namespace Remotion.Diagnostics.ToText
   {
     private readonly DisableableWriter _disableableWriter;
     private readonly Stack<int> _indendationStack = new Stack<int> (16);
-    //private const bool _autoIndentSequence = true;
 
     public ToTextBuilder (ToTextProvider toTextProvider, TextWriter textWriter)
       : base (toTextProvider)
@@ -35,7 +34,6 @@ namespace Remotion.Diagnostics.ToText
       IndendationLevel = 0;
       _disableableWriter = new DisableableWriter (textWriter);
       Settings = new ToTextBuilderSettings ();
-      //SequenceLiteralBegin ("", "", "", "", " ", "");
     }
 
     public ToTextBuilder (ToTextProvider toTextProvider)

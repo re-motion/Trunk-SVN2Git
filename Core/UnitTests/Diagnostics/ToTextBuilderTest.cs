@@ -1039,7 +1039,6 @@ line5"));
 
       toTextBuilder.Settings.AutoIndentSequences = true;
 
-      //using (PropertyRestorerMother.New (toTextBuilder.Settings, Properties<ToTextBuilderSettings>.Get (x => x.AutoIndentSequences)))
       using (PropertyRestorerMother.New (toTextBuilder.Settings, x => x.AutoIndentSequences))
       {
         toTextBuilder.Settings.AutoIndentSequences = true;

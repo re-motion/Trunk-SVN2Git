@@ -17,17 +17,11 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Reflection;
 
 namespace Remotion.UnitTests.Diagnostics
 {
   public static class PropertyRestorerMother
   {
-    //public static PropertyRestorer<TClass, TProperty> New<TClass, TProperty> (TClass instance, Property<TClass, TProperty> property)
-    //{
-    //  return new PropertyRestorer<TClass, TProperty> (instance, property);
-    //}
-
     public static PropertyRestorer<TClass, TProperty> New<TClass, TProperty> (TClass instance, Expression<Func<TClass, TProperty>> propertyLambda)
     {
       return new PropertyRestorer<TClass, TProperty> (instance, propertyLambda);
