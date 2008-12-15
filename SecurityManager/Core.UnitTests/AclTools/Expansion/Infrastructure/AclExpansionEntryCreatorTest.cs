@@ -50,23 +50,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.Infrastructure
     }
 
     [Test]
-    public void GetAccessTypesUsesDiscardingScopeTest ()
+    public void GetAccessTypesDoesNotModifyUserRoles ()
     {
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        var aclExpansionEntryCreator = new AclExpansionEntryCreator ();
-        //AclProbe aclProbe;
-        //AccessTypeStatistics accessTypeStatistics;
-        User.Roles.Add (Role2);
-        //To.ConsoleLine.e (User.Roles);
-        var userRoleAclAceCombination = new UserRoleAclAceCombination (Role, Ace);
-        var accessTypesResult =
-          aclExpansionEntryCreator.GetAccessTypes (userRoleAclAceCombination); //, out aclProbe, out accessTypeStatistics);
-        Assert.That (User.Roles, Is.EquivalentTo (new[] { Role, Role2 }));
-        accessTypesResult.AclProbe.SecurityToken.Principal.Roles.Clear ();
-        accessTypesResult.AclProbe.SecurityToken.Principal.Roles.Add (userRoleAclAceCombination.Role);
-        Assert.That (User.Roles, Is.Not.EquivalentTo (new[] { Role, Role2 }));
-      }
+      var aclExpansionEntryCreator = new AclExpansionEntryCreator();
+      //AclProbe aclProbe;
+      //AccessTypeStatistics accessTypeStatistics;
+      User.Roles.Add (Role2);
+      //To.ConsoleLine.e (User.Roles);
+      var userRoleAclAceCombination = new UserRoleAclAceCombination (Role, Ace);
+      var accessTypesResult = aclExpansionEntryCreator.GetAccessTypes (userRoleAclAceCombination); //, out aclProbe, out accessTypeStatistics);
+      Assert.That (User.Roles, Is.EquivalentTo (new[] { Role, Role2 }));
+      Assert.That (accessTypesResult.AclProbe.SecurityToken.Principal.Roles, Is.EquivalentTo (new[] { Role }));
     }
 
 

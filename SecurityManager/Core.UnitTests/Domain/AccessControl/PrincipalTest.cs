@@ -38,43 +38,51 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void Initialize_WithUserAndRoles ()
+    public void Initialize_WithTenantAndUserAndRoles ()
     {
+      Tenant tenant = _testHelper.CreateTenant ("tenant");
       User user = _testHelper.CreateUser ("userName", null, "lastName", null, null, null);
       Role[] roles = new[] { _testHelper.CreateRole (null, null, null), _testHelper.CreateRole (null, null, null) };
-      Principal principal = new Principal (user, roles);
+      Principal principal = new Principal (tenant, user, roles);
 
+      Assert.That (principal.Tenant, Is.SameAs (tenant));
       Assert.That (principal.User, Is.SameAs (user));
       Assert.That (principal.Roles, Is.Not.SameAs (roles));
       Assert.That (principal.Roles, Is.EquivalentTo (roles));
     }
 
     [Test]
-    public void Initialize_WithUserAndWithoutRoles ()
+    public void Initialize_WithTenantAndUserAndWithoutRoles ()
     {
+      Tenant tenant = _testHelper.CreateTenant ("tenant");
       User user = _testHelper.CreateUser ("userName", null, "lastName", null, null, null);
-      Principal principal = new Principal (user, new Role[0]);
+      Principal principal = new Principal (tenant, user, new Role[0]);
 
+      Assert.That (principal.Tenant, Is.SameAs (tenant));
       Assert.That (principal.User, Is.SameAs (user));
       Assert.That (principal.Roles, Is.Empty);
     }
 
     [Test]
-    public void Initialize_WithoutUserAndWithRoles ()
+    public void Initialize_WithtenantAndWithoutUserAndWithRoles ()
     {
+      Tenant tenant = _testHelper.CreateTenant ("tenant");
       Role[] roles = new[] { _testHelper.CreateRole (null, null, null), _testHelper.CreateRole (null, null, null) };
-      Principal principal = new Principal (null, roles);
+      Principal principal = new Principal (tenant, null, roles);
 
+      Assert.That (principal.Tenant, Is.SameAs (tenant));
       Assert.That (principal.User, Is.Null);
       Assert.That (principal.Roles, Is.Not.SameAs (roles));
       Assert.That (principal.Roles, Is.EquivalentTo (roles));
     }
 
     [Test]
-    public void Initialize_WithoutUserAndWithoutRoles ()
+    public void Initialize_WithTenantAndWithoutUserAndWithoutRoles ()
     {
-      Principal principal = new Principal (null, new Role[0]);
+      Tenant tenant = _testHelper.CreateTenant ("tenant");
+      Principal principal = new Principal (tenant, null, new Role[0]);
 
+      Assert.That (principal.Tenant, Is.SameAs (tenant));
       Assert.That (principal.User, Is.Null);
       Assert.That (principal.Roles, Is.Empty);
     }

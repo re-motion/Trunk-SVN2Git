@@ -27,6 +27,10 @@ using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
+  /// <summary>
+  /// Teh <see cref="SecurityTokenBuilder"/> is responsible for creating a <see cref="SecurityToken"/> from an <see cref="ISecurityContext"/> and an
+  /// <see cref="IPrincipal"/>.
+  /// </summary>
   public class SecurityTokenBuilder : ISecurityTokenBuilder
   {
     public SecurityTokenBuilder ()
@@ -46,15 +50,25 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       using (transaction.EnterNonDiscardingScope())
       {
-        User user = GetUser (principal.Identity.Name);
+        Principal principalUser = CreatePrincipal (principal);
         Tenant owningTenant = GetTenant (context.OwnerTenant);
         Group owningGroup = GetGroup (context.OwnerGroup);
         User owningUser = GetUser (context.Owner);
         IList<AbstractRoleDefinition> abstractRoles = GetAbstractRoles (context.AbstractRoles);
 
-        return new SecurityToken (user, owningTenant, owningGroup, owningUser, abstractRoles);
+        return new SecurityToken (principalUser, owningTenant, owningGroup, owningUser, abstractRoles);
       }
     }
+
+    private Principal CreatePrincipal (IPrincipal principal)
+    {
+      User principalUser = GetUser (principal.Identity.Name);
+      if (principalUser == null)
+        throw CreateAccessControlException ("No principal was provided.");
+
+      return new Principal (principalUser.Tenant, principalUser, principalUser.Roles);
+    }
+
 
     private Tenant GetTenant (string tenantUniqueIdentifier)
     {

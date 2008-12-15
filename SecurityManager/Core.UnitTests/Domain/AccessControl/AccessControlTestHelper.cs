@@ -369,37 +369,52 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public SecurityToken CreateEmptyToken ()
     {
-      return CreateToken (null, null, null, null, null);
+      Principal principal;
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        principal = new Principal (CreateTenant ("tenant"), null, new Role[0]);
+      }
+      return new SecurityToken (principal, null, null, null, new AbstractRoleDefinition[0]);
     }
 
-    public SecurityToken CreateTokenWithOwningTenant (User user, Tenant owningTenant)
+    public SecurityToken CreateTokenWithOwningTenant (User principalUser, Tenant owningTenant)
     {
-      return CreateToken (user, owningTenant, null, null, null);
+      ArgumentUtility.CheckNotNull ("principalUser", principalUser);
+      return CreateToken (principalUser, owningTenant, null, null, null);
     }
 
     public SecurityToken CreateTokenWithAbstractRole (params AbstractRoleDefinition[] roleDefinitions)
     {
-      return CreateToken (null, null, null, null, roleDefinitions);
+      Principal principal;
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        principal = new Principal (CreateTenant ("tenant"), null, new Role[0]);
+      }
+      return new SecurityToken (principal, null, null, null, (AbstractRoleDefinition[]) roleDefinitions.Clone());
     }
 
-    public SecurityToken CreateTokenWithOwningGroup (User user, Group owningGroup)
+    public SecurityToken CreateTokenWithOwningGroup (User principalUser, Group owningGroup)
     {
-      return CreateToken (user, null, owningGroup, null, null);
+      ArgumentUtility.CheckNotNull ("principalUser", principalUser);
+      return CreateToken (principalUser, null, owningGroup, null, null);
     }
 
-    public SecurityToken CreateTokenWithOwningUser (User principal, User owningUser)
+    public SecurityToken CreateTokenWithOwningUser (User principalUser, User owningUser)
     {
-      return CreateToken (principal, null, null, owningUser, null);
+      ArgumentUtility.CheckNotNull ("principalUser", principalUser);
+      return CreateToken (principalUser, null, null, owningUser, null);
     }
 
-    public SecurityToken CreateToken (User user, Tenant owningTenant, Group owningGroup, User owningUser, AbstractRoleDefinition[] abstractRoleDefinitions)
+    public SecurityToken CreateToken (User principalUser, Tenant owningTenant, Group owningGroup, User owningUser, AbstractRoleDefinition[] abstractRoleDefinitions)
     {
+      ArgumentUtility.CheckNotNull ("principalUser", principalUser);
       List<AbstractRoleDefinition> abstractRoles = new List<AbstractRoleDefinition> ();
 
       if (abstractRoleDefinitions != null)
         abstractRoles.AddRange (abstractRoleDefinitions);
 
-      return new SecurityToken (user, owningTenant, owningGroup, owningUser, abstractRoles);
+      Principal principal = new Principal (principalUser.Tenant, principalUser, principalUser.Roles);
+      return new SecurityToken (principal, owningTenant, owningGroup, owningUser, abstractRoles);
     }
 
     public AbstractRoleDefinition CreateTestAbstractRole ()

@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenMatcherTests
@@ -60,6 +61,22 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
+    public void TokenWithoutPrincipalUserButWithPrincipalRole_Matches ()
+    {
+      User user = CreateUser (_companyHelper.CompanyTenant, null);
+      Group userGroup = _companyHelper.AustrianProjectsDepartment;
+      Role userRole = TestHelper.CreateRole (user, userGroup, _companyHelper.HeadPosition);
+      
+      SecurityToken token = new SecurityToken (
+          new Principal (_companyHelper.CompanyTenant, null, new[] { userRole }),
+          null, userGroup, null, new AbstractRoleDefinition[0]);
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsTrue (matcher.MatchesToken (token));
+    }
+
+    [Test]
     public void TokenWithPrincipalInGroupWithOtherGroupType_DoesNotMatch ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
@@ -75,9 +92,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithoutPrincipal_DoesNotMatch ()
+    public void TokenWithoutPrincipalRoles_DoesNotMatch ()
     {
-      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (null, _companyHelper.AustrianProjectsDepartment);
+      SecurityToken token = new SecurityToken (
+          new Principal (_companyHelper.CompanyTenant, _companyHelper.CarTeamMember, new Role[0]),
+          null, _companyHelper.AustrianCarTeam, null, new AbstractRoleDefinition[0]);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
@@ -87,7 +106,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     [Test]
     public void TokenWithoutPrincipalAndWithoutOwningGroup_DoesNotMatch ()
     {
-      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (null, null);
+      SecurityToken token = TestHelper.CreateEmptyToken();
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 

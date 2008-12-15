@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenMatcherTests
@@ -107,29 +108,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithoutPrincipal_DoesNotMatch ()
+    public void TokenWithoutPrincipalUser_Matches ()
     {
-      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (null, _companyHelper.CompanyTenant);
+      SecurityToken token = new SecurityToken (new Principal (_companyHelper.CompanyTenant, null, new Role[0]), _companyHelper.CompanyTenant, null, null, new AbstractRoleDefinition[0]);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
-      Assert.IsFalse (matcher.MatchesToken (token));
+      Assert.IsTrue (matcher.MatchesToken (token));
     }
 
     [Test]
-    public void TokenWithPrincipalWithoutTenantAndOwningTenant_DoesNotMatch ()
+    public void TokenWithTenantDifferentFromOwningTenant_DoesNotMatch ()
     {
-      User principal = CreateUser (null, null);
-      Tenant owningTenant = _companyHelper.CompanyTenant;
-      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (principal, owningTenant);
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
-
-      Assert.IsFalse (matcher.MatchesToken (token));
-    }
-
-    [Test]
-    public void EmptyToken_DoesNotMatch ()
-    {
-      SecurityToken token = TestHelper.CreateEmptyToken ();
+      SecurityToken token = new SecurityToken (new Principal (TestHelper.CreateTenant ("tenant"), null, new Role[0]), _companyHelper.CompanyTenant, null, null, new AbstractRoleDefinition[0]);
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
       Assert.IsFalse (matcher.MatchesToken (token));

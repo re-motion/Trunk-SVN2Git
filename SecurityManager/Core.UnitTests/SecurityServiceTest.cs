@@ -24,6 +24,7 @@ using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
 using NUnit.Framework;
+using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
@@ -48,6 +49,7 @@ namespace Remotion.SecurityManager.UnitTests
 
     private SecurityService _service;
     private SecurityContext _context;
+    private Tenant _tenant;
     private AccessControlEntry _ace;
     private IPrincipal _principal;
 
@@ -69,6 +71,8 @@ namespace Remotion.SecurityManager.UnitTests
       _clientTransaction = ClientTransaction.CreateRootTransaction ();
       using (_clientTransaction.EnterNonDiscardingScope ())
       {
+        OrganizationalStructureFactory organizationalStructureFactory = new OrganizationalStructureFactory();
+        _tenant = organizationalStructureFactory.CreateTenant();
         _ace = CreateAce();
       }
       _principal = CreateUser ();
@@ -109,7 +113,7 @@ namespace Remotion.SecurityManager.UnitTests
     {
       using (_clientTransaction.EnterNonDiscardingScope ())
       {
-        SecurityToken token = new SecurityToken (null, null, null, null, new List<AbstractRoleDefinition> ());
+        SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, new List<AbstractRoleDefinition> ());
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
         Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principal, _context)).Return (token);
@@ -129,7 +133,7 @@ namespace Remotion.SecurityManager.UnitTests
       {
         List<AbstractRoleDefinition> roles = new List<AbstractRoleDefinition>();
         roles.Add (_ace.SpecificAbstractRole);
-        SecurityToken token = new SecurityToken (null, null, null, null, roles);
+        SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, roles);
 
         Expect.Call (_mockAclFinder.Find (ClientTransactionScope.CurrentTransaction, _context)).Return (CreateAcl (_ace));
         Expect.Call (_mockTokenBuilder.CreateToken (ClientTransactionScope.CurrentTransaction, _principal, _context)).Return (token);
@@ -150,7 +154,7 @@ namespace Remotion.SecurityManager.UnitTests
       {
         List<AbstractRoleDefinition> roles = new List<AbstractRoleDefinition>();
         roles.Add (_ace.SpecificAbstractRole);
-        SecurityToken token = new SecurityToken (null, null, null, null, roles);
+        SecurityToken token = new SecurityToken (new Principal (_tenant, null, new Role[0]), null, null, null, roles);
 
         Expect.Call (_mockAclFinder.Find (null, null)).Return (CreateAcl (_ace)).Constraints (
             Mocks_Is.NotNull(),

@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     {
       AccessControlEntry entry = AccessControlEntry.NewObject ();
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
-      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (null, entry.SpecificTenant);
+      SecurityToken token = TestHelper.CreateEmptyToken();
 
       Assert.IsTrue (matcher.MatchesToken (token));
     }

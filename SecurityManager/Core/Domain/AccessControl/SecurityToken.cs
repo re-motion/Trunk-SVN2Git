@@ -26,14 +26,15 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 {
   public sealed class SecurityToken
   {
-    private readonly User _principal;
+    private readonly Principal _principal;
     private readonly Tenant _owningTenant;
     private readonly Group _owningGroup;
     private readonly User _owningUser;
     private readonly ReadOnlyCollection<AbstractRoleDefinition> _abstractRoles;
 
-    public SecurityToken (User principal, Tenant owningTenant, Group owningGroup, User owningUser, IList<AbstractRoleDefinition> abstractRoles)
+    public SecurityToken (Principal principal, Tenant owningTenant, Group owningGroup, User owningUser, IList<AbstractRoleDefinition> abstractRoles)
     {
+      ArgumentUtility.CheckNotNull ("principal", principal);
       ArgumentUtility.CheckNotNullOrItemsNull ("abstractRoles", abstractRoles);
 
       _principal = principal;
@@ -43,7 +44,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       _abstractRoles = new ReadOnlyCollection<AbstractRoleDefinition> (abstractRoles);
     }
 
-    public User Principal
+    public Principal Principal
     {
       get { return _principal; }
     }

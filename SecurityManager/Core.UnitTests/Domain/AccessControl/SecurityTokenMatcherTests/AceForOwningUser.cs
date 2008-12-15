@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenMatcherTests
@@ -31,11 +32,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _companyHelper = new CompanyStructureHelper (TestHelper.Transaction);
 
-      _ace = TestHelper.CreateAceWithOwningUser ();
+      _ace = TestHelper.CreateAceWithOwningUser();
 
       Assert.That (_ace.TenantCondition, Is.EqualTo (TenantCondition.None));
       Assert.That (_ace.GroupCondition, Is.EqualTo (GroupCondition.None));
@@ -73,7 +74,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     public void TokenWithoutOwningUser_DoesNotMatch ()
     {
       User principal = CreateUser (_companyHelper.CompanyTenant, null);
-      
+
       SecurityToken token = TestHelper.CreateTokenWithOwningUser (principal, null);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
@@ -82,11 +83,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithoutPrincipal_DoesNotMatch ()
+    public void TokenWithoutPrincipalUser_DoesNotMatch ()
     {
       User owningUser = CreateUser (_companyHelper.CompanyTenant, null);
 
-      SecurityToken token = TestHelper.CreateTokenWithOwningUser (null, owningUser);
+      SecurityToken token = new SecurityToken (
+          new Principal (_companyHelper.CompanyTenant, null, new Role[0]), 
+          null, null, owningUser, new AbstractRoleDefinition[0]);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 

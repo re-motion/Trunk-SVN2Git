@@ -57,7 +57,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private bool MatchesTenantCondition (SecurityToken token)
     {
-      Assertion.IsNotNull (token);
       switch (_ace.TenantCondition)
       {
         case TenantCondition.None:
@@ -74,11 +73,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
-    private bool MatchPrincipalAgainstTenant (User principal, Tenant referenceTenant)
+    private bool MatchPrincipalAgainstTenant (Principal principal, Tenant referenceTenant)
     {
-      if (principal == null)
-        return false;
-
       if (referenceTenant == null)
         return false;
 
@@ -104,7 +100,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private bool MatchesAbstractRole (SecurityToken token)
     {
-      Assertion.IsNotNull (token);
       if (_ace.SpecificAbstractRole == null)
         return true;
 
@@ -138,28 +133,21 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
-    private bool MatchPrincipalAgainstUser (User principal, User referenceUser)
+    private bool MatchPrincipalAgainstUser (Principal principal, User referenceUser)
     {
-      if (principal == null)
-        return false;
-
       if (referenceUser == null)
         return false;
 
-      return principal == referenceUser;
+      return principal.User == referenceUser;
     }
 
-    private bool MatchPrincipalAgainstPosition (User principal)
+    private bool MatchPrincipalAgainstPosition (Principal principal)
     {
-      if (principal == null)
-        return false;
-
       return GetMatchingPrincipalRoles (principal).Any();
     }
 
     private bool MatchesGroupCondition (SecurityToken token)
     {
-      Assertion.IsNotNull (token);
       switch (_ace.GroupCondition)
       {
         case GroupCondition.None:
@@ -198,11 +186,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return referenceGroup.CreateSequence (g1 => g1.Parent).Where (g => g.GroupType == _ace.SpecificGroupType).FirstOrDefault();
     }
 
-    private bool MatchPrincipalAgainstGroup (User principal, Group referenceGroup, GroupHierarchyCondition groupHierarchyCondition)
+    private bool MatchPrincipalAgainstGroup (Principal principal, Group referenceGroup, GroupHierarchyCondition groupHierarchyCondition)
     {
-      if (principal == null)
-        return false;
-
       if (referenceGroup == null)
         return false;
 
@@ -243,10 +228,8 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
-    private IEnumerable<Role> GetMatchingPrincipalRoles (User principal)
+    private IEnumerable<Role> GetMatchingPrincipalRoles (Principal principal)
     {
-      Assertion.IsNotNull (principal);
-
       var roles = (IEnumerable<Role>) principal.Roles;
       if (_ace.UserCondition == UserCondition.SpecificPosition)
         roles = roles.Where (r => r.Position == _ace.SpecificPosition);

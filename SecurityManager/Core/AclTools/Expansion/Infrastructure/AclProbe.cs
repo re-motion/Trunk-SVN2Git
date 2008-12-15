@@ -57,7 +57,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       IList<AbstractRoleDefinition> abstractRoles = CreateAbstractRolesEntry (aclProbe, ace);
 
       //aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroup, null, abstractRoles);
-      aclProbe._securityToken = new SecurityToken (user, owningTenant, owningGroup, owningUser, abstractRoles);
+      Principal principal = new Principal (user.Tenant, user, new[] {role});
+      aclProbe._securityToken = new SecurityToken (principal, owningTenant, owningGroup, owningUser, abstractRoles);
       return aclProbe;
     }
      

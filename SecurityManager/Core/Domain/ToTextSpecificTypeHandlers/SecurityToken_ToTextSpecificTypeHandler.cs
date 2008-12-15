@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Domain.ToTextSpecificTypeHandlers
     {
       ArgumentUtility.CheckNotNull ("securityToken", securityToken);
       ArgumentUtility.CheckNotNull ("toTextBuilder", toTextBuilder);
-      toTextBuilder.ib<SecurityToken> ("").e ("principal", securityToken.Principal).eIfNotNull (securityToken.OwningTenant).eIfNotNull (securityToken.OwningGroup).eIfNotNull (securityToken.OwningUser).eIfNotNull (securityToken.AbstractRoles).ie ();
+      toTextBuilder.ib<SecurityToken> ("").e ("principal", securityToken.Principal.User).eIfNotNull (securityToken.OwningTenant).eIfNotNull (securityToken.OwningGroup).eIfNotNull (securityToken.OwningUser).eIfNotNull (securityToken.AbstractRoles).ie ();
     }
   }
 }

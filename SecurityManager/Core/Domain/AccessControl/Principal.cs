@@ -10,20 +10,28 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain.AccessControl
 {
   /// <summary>
-  /// The <see cref="Principal"/> type encapsulates a <see cref="User"/> object and one or more <see cref="Role"/> objects. Together, they specify
-  /// the principal for which the permissions are evaluated.
+  /// The <see cref="Principal"/> type encapsulates a <see cref="Tenant"/> object, a <see cref="User"/> object, 
+  /// and one or more <see cref="Role"/> objects. Together, they specify the principal for which the permissions are evaluated.
   /// </summary>
   public class Principal
   {
+    private readonly Tenant _tenant;
     private readonly User _user;
     private readonly IList<Role> _roles;
 
-    public Principal (User user, IList<Role> roles)
+    public Principal (Tenant tenant, User user, IList<Role> roles)
     {
+      ArgumentUtility.CheckNotNull ("tenant", tenant);
       ArgumentUtility.CheckNotNullOrItemsNull ("roles", roles);
 
+      _tenant = tenant;
       _user = user;
       _roles = new ReadOnlyCollection<Role> (roles);
+    }
+
+    public Tenant Tenant
+    {
+      get { return _tenant; }
     }
 
     public User User

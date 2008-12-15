@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenMatcherTests
@@ -45,13 +46,25 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithPrincipal_Matches ()
+    public void TokenWithPrincipalUser_Matches ()
     {
       User user = CreateUser (_companyHelper.CompanyTenant, null);
       Group owningGroup = _companyHelper.AustrianProjectsDepartment;
       TestHelper.CreateRole (user, owningGroup, _companyHelper.HeadPosition);
 
       SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
+
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
+
+      Assert.IsTrue (matcher.MatchesToken (token));
+    }
+
+    [Test]
+    public void TokenWithoutPrincipalUserButWithPrincipalRole_Matches ()
+    {
+      SecurityToken token = new SecurityToken (
+          new Principal (_companyHelper.CompanyTenant, null, new[] { _companyHelper.AustrianCarTeam.Roles[0] }),
+          null, _companyHelper.AustrianCarTeam, null, new AbstractRoleDefinition[0]);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
@@ -91,9 +104,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
     }
 
     [Test]
-    public void TokenWithoutPrincipal_DoesNotMatch ()
+    public void TokenWithoutPrincipalRoles_DoesNotMatch ()
     {
-      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (null, _companyHelper.AustrianProjectsDepartment);
+      SecurityToken token = new SecurityToken (
+          new Principal (_companyHelper.CompanyTenant, _companyHelper.CarTeamMember, new Role[0]),
+          null, _companyHelper.AustrianCarTeam, null, new AbstractRoleDefinition[0]);
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (_ace);
 
