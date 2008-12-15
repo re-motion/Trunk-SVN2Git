@@ -160,33 +160,42 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
 
 
-    //[Test]
-    //public void ToTextTest ()
-    //{
-    //  using (new CultureScope ("de-DE"))
-    //  {
-    //    var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User);
-
-    //    var statelessAcl = CreateStatelessAcl (Ace);
-    //    var acls = ListMother.New (Acl, statelessAcl);
-
-    //    List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (users, acls, false);
-
-    //    var aclExpansionTreeInverseSorted = new AclExpansionTree (
-    //        aclExpansionEntryList,
-    //        (classEntry => (classEntry.AccessControlList is StatefulAccessControlList) ? "A" : "B")); // sort stateful before stateless
-    //    Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
-    //    Assert.That (aclExpansionTreeInverseSorted.Tree[0].Children[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (Acl));
-
-    //    var aclExpansionTreeDefaultSorted = new AclExpansionTree (aclExpansionEntryList);
-
-    //    //To.String.aclExpansionTreeDefaultSorted
-
-    //    Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children.Count, Is.EqualTo (2));
-    //    Assert.That (aclExpansionTreeDefaultSorted.Tree[0].Children[0].Children[0].Children[0].Children[0].AccessControlList, Is.EqualTo (statelessAcl));
-
-    //  }
-    //}
+    [Test]
+    public void ToTextTest ()
+    {
+      using (new CultureScope ("de-DE"))
+      {
+        var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User);
+        var statelessAcl = CreateStatelessAcl (Ace);
+        var acls = ListMother.New (Acl, statelessAcl);
+        List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (users, acls, false);
+        var aclExpansionTree = new AclExpansionTree (aclExpansionEntryList);
+        var result = To.String.e (aclExpansionTree).ToString();
+        To.ConsoleLine.e (result);
+        var resultExpected =
+        #region
+ @"{
+([""DaUs""],2,
+{
+  ([""DaUs"",""Da Group"",""Supreme Being""],2,
+  {
+    ([""Remotion.SecurityManager.UnitTests.TestDomain.Order""],1,
+    {
+      ([user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""Write""]},denied={},conditions=[tenantMustOwn=True]],1,
+      [
+        [user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""Write""]},denied={},conditions=[tenantMustOwn=True]],
+        ])}),
+    ([""Bestellung""],1,
+    {
+      ([user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""FirstAccessType""],[""Read""],[""Delete""]},denied={},conditions=[]],2,
+      [
+        [user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""FirstAccessType""],[""Read""],[""Delete""]},denied={},conditions=[]],
+        [user=""DaUs"",role=[""DaUs"",""Da Group"",""Supreme Being""],allowed={[""FirstAccessType""],[""Read""],[""Delete""]},denied={},conditions=[]],
+        ])})})})}";
+        #endregion
+        Assert.That (result, Is.EqualTo (resultExpected));
+      }
+    }
 
 
 
