@@ -18,13 +18,18 @@ using System;
 namespace Remotion.Security
 {
   /// <summary>
-  /// The <see cref="ISecurityPrincipal"/> interface represents a user, and optionally his active role and the user for whom he's acting as a substitue.
+  /// The <see cref="ISecurityPrincipalRole"/> interface defines a role the user can be in.
   /// </summary>
-  public interface ISecurityPrincipal
+  public interface ISecurityPrincipalRole
   {
-    string User { get; }
-    ISecurityPrincipalRole Role { get; }
-    string SubstitutedUser { get; }
-    ISecurityPrincipalRole SubstitutedRole { get; }
+    /// <summary>
+    /// The group the user is a member of. 
+    /// </summary>
+    string Group { get; }
+
+    /// <summary>
+    /// The position the user is a member of. Can be <see langword="null" />.
+    /// </summary>
+    string Position { get; }
   }
 }

@@ -121,6 +121,7 @@
     <Compile Include="Core\NullUserProviderTest.cs" />
     <Compile Include="Core\SampleDomain\IInterfaceWithProperty.cs" />
     <Compile Include="Core\SecurityPrincipalRoleTest.cs" />
+    <Compile Include="Core\SecurityPrincipalTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\RevisionBasedAccessTypeCacheProviderTest.cs" />
     <Compile Include="Core\SampleDomain\DerivedSecurableObject.cs" />

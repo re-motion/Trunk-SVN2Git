@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -117,6 +117,8 @@
     <Compile Include="ObjectSecurityAdapter.cs" />
     <Compile Include="ObjectSecurityStrategy.cs" />
     <Compile Include="SecurityFreeSection.cs" />
+    <Compile Include="SecurityPrincipal.cs" />
+    <Compile Include="SecurityPrincipalRole.cs" />
     <Compile Include="SecurityStrategy.cs" />
     <Compile Include="ThreadUserProvider.cs" />
     <EmbeddedResource Include="Configuration\SecurityConfiguration.xsd">

@@ -22,7 +22,7 @@ namespace Remotion.Security
   /// The <see cref="SecurityPrincipalRole"/> type defines a role the user can be in.
   /// </summary>
   [Serializable]
-  public sealed class SecurityPrincipalRole : IEquatable<SecurityPrincipalRole>
+  public sealed class SecurityPrincipalRole : ISecurityPrincipalRole, IEquatable<SecurityPrincipalRole>
   {
     private readonly string _group;
     private readonly string _position;
@@ -35,8 +35,7 @@ namespace Remotion.Security
     public SecurityPrincipalRole (string group, string position)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("group", group);
-      if (position != null && position.Length == 0)
-        throw new ArgumentEmptyException ("position");
+      ArgumentUtility.CheckNotEmpty ("position", position);
 
       _group = group;
       _position = position;
@@ -76,7 +75,7 @@ namespace Remotion.Security
 
     public override int GetHashCode ()
     {
-      return _group.GetHashCode() ^ (_position ?? string.Empty).GetHashCode();
+      return EqualityUtility.GetRotatedHashCode (_group, _position);
     }
   }
 }

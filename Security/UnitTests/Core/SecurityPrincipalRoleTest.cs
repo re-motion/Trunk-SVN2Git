@@ -17,6 +17,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
 
 namespace Remotion.Security.UnitTests.Core
 {
@@ -39,6 +40,27 @@ namespace Remotion.Security.UnitTests.Core
 
       Assert.That (role.Group, Is.EqualTo ("TheGroup"));
       Assert.That (role.Position, Is.EqualTo ("ThePosition"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = "Value cannot be null.\r\nParameter name: group")]
+    public void Initialize_WithoutGroup ()
+    {
+      new SecurityPrincipalRole (null, null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentEmptyException), ExpectedMessage = "Parameter 'group' cannot be empty.\r\nParameter name: group")]
+    public void Initialize_WithGroupEmpty ()
+    {
+      new SecurityPrincipalRole (string.Empty, null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentEmptyException), ExpectedMessage = "Parameter 'position' cannot be empty.\r\nParameter name: position")]
+    public void Initialize_WithPositionEmpty ()
+    {
+      new SecurityPrincipalRole ("TheGroup", string.Empty);
     }
 
     [Test]
