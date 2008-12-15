@@ -40,51 +40,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (Remotion.Development.UnitTesting.PrivateInvoke.GetNonPublicField (userRoleAclAceCombinations, "_accessControlListFinder"), Is.EqualTo (aclFinderMock));
     }
 
-    // TODO AE (MGi): Remove this test in favor of its Linq based variant
+    
     [Test]
     public void EnumeratorTest ()
-    {
-      var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User, User2, User3);
-
-      var userFinderStub = MockRepository.GenerateStub<IAclExpanderUserFinder> ();
-      userFinderStub.Expect (stub => stub.FindUsers ()).Return (users);
-
-      var acls = Remotion.Development.UnitTesting.ObjectMother.ListMother.New<AccessControlList> (Acl,Acl2);
-
-      var numberRoles = users.SelectMany (x => x.Roles).Count();
-      Assert.That (numberRoles, Is.GreaterThanOrEqualTo (11));
-      var numberAces = acls.SelectMany (x => x.AccessControlEntries).Count ();
-      Assert.That (numberAces, Is.GreaterThanOrEqualTo (5));
-     
-      var aclFinderStub = MockRepository.GenerateStub<IAclExpanderAclFinder> ();
-      aclFinderStub.Expect (stub => stub.FindAccessControlLists ()).Return (acls);
-
-      var userRoleAclAceCombinations = new UserRoleAclAceCombinationFinder (userFinderStub, aclFinderStub);
-      var enumerator = userRoleAclAceCombinations.GetEnumerator();
-
-      foreach (var user in users)
-      {
-        foreach (var role in user.Roles)
-        {
-          foreach (var acl in acls)
-          {
-            foreach (var ace in acl.AccessControlEntries)
-            {
-              enumerator.MoveNext();
-              Assert.That (enumerator.Current.User, Is.EqualTo (user));
-              Assert.That (enumerator.Current.Role, Is.EqualTo (role));
-              Assert.That (enumerator.Current.Acl, Is.EqualTo (acl));
-              Assert.That (enumerator.Current.Ace, Is.EqualTo (ace));
-            }
-          }
-        }
-      }    
-    
-    }
-
-    
-    [Test]
-    public void EnumeratorTest2 ()
     {
       // Prepare to serve some User|s
       var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User, User2, User3);
@@ -128,9 +86,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       var userRoleAclAceCombination = new UserRoleAclAceCombination (Role, Ace);
       var userRoleAclAceCombinationSame = new UserRoleAclAceCombination (Role, Ace);
-      Assert.That (userRoleAclAceCombination,Is.EqualTo (userRoleAclAceCombination));
-      Assert.That (userRoleAclAceCombination, Is.EqualTo (userRoleAclAceCombinationSame));
-      Assert.That (userRoleAclAceCombinationSame, Is.EqualTo (userRoleAclAceCombination));
+      Assert.That (userRoleAclAceCombination,Is.EqualTo ((Object) userRoleAclAceCombination));
+      Assert.That (userRoleAclAceCombination, Is.EqualTo ((Object) userRoleAclAceCombinationSame));
+      Assert.That (userRoleAclAceCombinationSame, Is.EqualTo ((Object) userRoleAclAceCombination));
     }
 
     [Test]
@@ -144,6 +102,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       Assert.That (userRoleAclAceCombinationDifferent0, Is.Not.EqualTo (userRoleAclAceCombination));
       Assert.That (userRoleAclAceCombinationDifferent1, Is.Not.EqualTo (userRoleAclAceCombination));
     }
+
+    [Test]
+    public void EqualsUserRoleAclAceCombinationTest ()
+    {
+      var userRoleAclAceCombination = new UserRoleAclAceCombination (Role, Ace);
+      var userRoleAclAceCombinationSame = new UserRoleAclAceCombination (Role, Ace);
+      Assert.That (userRoleAclAceCombination.Equals (userRoleAclAceCombination), Is.True);
+      Assert.That (userRoleAclAceCombination.Equals (userRoleAclAceCombinationSame), Is.True);
+      Assert.That (userRoleAclAceCombinationSame.Equals (userRoleAclAceCombination), Is.True);
+    }
+
 
     [Test]
     public void GetHashCodeTest ()
