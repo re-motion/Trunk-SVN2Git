@@ -14,6 +14,13 @@
       <remotion:BocCommand />
     </PersistedCommand>
   </remotion:BocReferenceValue>
+  &nbsp;
+  <remotion:BocReferenceValue ID="CurrentSubstitutionField" runat="server" Required="False" OnSelectionChanged="CurrentSubstitutionField_SelectionChanged" OnCommandClick="CurrentSubstitutionField_CommandClick" >
+    <PersistedCommand>
+      <remotion:BocCommand Show="ReadOnly" Type="Event" />
+    </PersistedCommand>
+    <DropDownListStyle AutoPostBack="True" />
+  </remotion:BocReferenceValue>
 </div>
 <div>
   <remotion:BocReferenceValue ID="CurrentTenantField" runat="server" Required="True" OnSelectionChanged="CurrentTenantField_SelectionChanged" OnCommandClick="CurrentTenantField_CommandClick">

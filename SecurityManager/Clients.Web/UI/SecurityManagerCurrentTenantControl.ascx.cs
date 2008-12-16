@@ -22,7 +22,6 @@ using System.Linq;
 using System.Web.UI;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -35,8 +34,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI
   {
     private static readonly string s_isTenantSelectionEnabledKey = typeof (CurrentTenantControl).FullName + "_IsTenantSelectionEnabled";
     private static readonly string s_enableAbstractTenantsKey = typeof (CurrentTenantControl).FullName + "_EnableAbstractTenants";
+    private static readonly string s_isSubstitutionSelectionEnabledKey = typeof (CurrentTenantControl).FullName + "_IsSubstitutionSelectionEnabled";
 
     private bool _isCurrentTenantFieldReadOnly = true;
+    private bool _isCurrentSubstitutionFieldReadOnly = true;
 
     [DefaultValue (true)]
     public bool EnableAbstractTenants
@@ -56,7 +57,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       if (!IsPostBack)
       {
-        Tenant[] tenants = GetPossibleTenants ();
+        Tenant[] tenants = GetPossibleTenants();
         CurrentTenantField.SetBusinessObjectList (tenants);
         Tenant currentTenant = SecurityManagerPrincipal.Current.Tenant;
 
@@ -66,10 +67,20 @@ namespace Remotion.SecurityManager.Clients.Web.UI
         bool isCurrentTenantTheOnlyTenant = tenants.Length == 0 && currentTenant != null;
         bool hasExactlyOneTenant = isCurrentTenantTheOnlyTenantInTheCollection || isCurrentTenantTheOnlyTenant;
         IsTenantSelectionEnabled = !hasExactlyOneTenant;
+
+        Substitution[] substitutions = GetPossibleSubstitutions();
+        CurrentSubstitutionField.SetBusinessObjectList (substitutions);
+        Substitution currentSubstitution = SecurityManagerPrincipal.Current.Substitution;
+
+        CurrentSubstitutionField.LoadUnboundValue (currentSubstitution, false);
+        IsSubstitutionSelectionEnabled = substitutions.Length > 0;
       }
 
       if (!IsTenantSelectionEnabled)
         CurrentTenantField.Command.Type = CommandType.None;
+
+      if (!IsSubstitutionSelectionEnabled)
+        CurrentSubstitutionField.Command.Type = CommandType.None;
     }
 
     private Tenant[] GetPossibleTenants ()
@@ -85,6 +96,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       return tenants.ToArray();
     }
 
+    private Substitution[] GetPossibleSubstitutions ()
+    {
+      if (SecurityManagerPrincipal.Current.IsNull)
+        return new Substitution[0];
+
+      return SecurityManagerPrincipal.Current.User.GetActiveSubstitutions().ToArray();
+    }
+
     protected void CurrentTenantField_SelectionChanged (object sender, EventArgs e)
     {
       string tenantID = CurrentTenantField.BusinessObjectID;
@@ -95,16 +114,38 @@ namespace Remotion.SecurityManager.Clients.Web.UI
               Tenant.GetObject (ObjectID.Parse (tenantID)),
               SecurityManagerPrincipal.Current.User,
               SecurityManagerPrincipal.Current.Substitution));
-     
+
       _isCurrentTenantFieldReadOnly = true;
       CurrentTenantField.IsDirty = false;
+    }
+
+    protected void CurrentSubstitutionField_SelectionChanged (object sender, EventArgs e)
+    {
+      string substitutionID = CurrentSubstitutionField.BusinessObjectID;
+      Assertion.IsNotNull (substitutionID);
+
+      ApplicationInstance.SetCurrentPrincipal (
+          new SecurityManagerPrincipal (
+              SecurityManagerPrincipal.Current.Tenant,
+              SecurityManagerPrincipal.Current.User,
+              (Substitution) Substitution.GetObject (ObjectID.Parse (substitutionID))));
+
+      _isCurrentSubstitutionFieldReadOnly = true;
+      CurrentSubstitutionField.IsDirty = false;
     }
 
     protected void CurrentTenantField_CommandClick (object sender, BocCommandClickEventArgs e)
     {
       _isCurrentTenantFieldReadOnly = false;
-      CurrentTenantField.SetBusinessObjectList (GetPossibleTenants ());
+      CurrentTenantField.SetBusinessObjectList (GetPossibleTenants());
       CurrentTenantField.LoadUnboundValue (SecurityManagerPrincipal.Current.Tenant, false);
+    }
+
+    protected void CurrentSubstitutionField_CommandClick (object sender, BocCommandClickEventArgs e)
+    {
+      _isCurrentSubstitutionFieldReadOnly = false;
+      CurrentSubstitutionField.SetBusinessObjectList (GetPossibleSubstitutions());
+      CurrentSubstitutionField.LoadUnboundValue (SecurityManagerPrincipal.Current.Substitution, false);
     }
 
     protected override void OnPreRender (EventArgs e)
@@ -116,6 +157,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       else
         CurrentTenantField.ReadOnly = false;
 
+      if (_isCurrentSubstitutionFieldReadOnly && !SecurityManagerPrincipal.Current.IsNull)
+        CurrentSubstitutionField.ReadOnly = true;
+      else
+        CurrentSubstitutionField.ReadOnly = false;
+      //For now: the subsitution is permanenty editable.
+      CurrentSubstitutionField.ReadOnly = false;
+
       CurrentUserField.LoadUnboundValue (SecurityManagerPrincipal.Current.User, false);
     }
 
@@ -123,6 +171,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI
     {
       get { return (bool?) ViewState[s_isTenantSelectionEnabledKey] ?? true; }
       set { ViewState[s_isTenantSelectionEnabledKey] = value; }
+    }
+
+    private bool IsSubstitutionSelectionEnabled
+    {
+      get { return (bool?) ViewState[s_isSubstitutionSelectionEnabledKey] ?? true; }
+      set { ViewState[s_isSubstitutionSelectionEnabledKey] = value; }
     }
   }
 }
