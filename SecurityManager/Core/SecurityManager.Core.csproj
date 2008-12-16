@@ -115,6 +115,7 @@
     <Compile Include="Domain\OrganizationalStructure\Substitution.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Domain\SecurityManagerPrincipal.cs" />
     <Compile Include="Domain\SecurityManagerSearchServiceBase.cs" />
     <Compile Include="Domain\AccessControl\TenantCondition.cs" />
     <Compile Include="Domain\AccessControl\GroupCondition.cs" />

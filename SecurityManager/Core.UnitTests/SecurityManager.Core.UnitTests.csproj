@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{65B86B2E-D54D-425B-B681-82449E31BA01}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -202,6 +202,7 @@
     <Compile Include="Domain\OrganizationalStructure\UserTests\Common.cs" />
     <Compile Include="Domain\Metadata\SecurableClassValidationResultTest.cs" />
     <Compile Include="Domain\RevisionTest.cs" />
+    <Compile Include="Domain\SecurityManagerPrincipalTest.cs" />
     <Compile Include="Domain\SerializationTest.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\ToTextSpecificTypeHandlerTests.cs" />
     <Compile Include="Persistence\RevisionSqlProviderExtensionTest.cs" />
