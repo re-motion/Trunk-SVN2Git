@@ -551,6 +551,8 @@
     <Compile Include="Utilities\HtmlTagWriterTags.cs" />
     <Compile Include="Utilities\IConsoleManager.cs" />
     <Compile Include="Utilities\NullableTypeUtility.cs" />
+    <Compile Include="Utilities\PropertyRestorer\PropertyRestorer.cs" />
+    <Compile Include="Utilities\PropertyRestorer\PropertyRestorerMother.cs" />
     <Compile Include="Utilities\TypeConverterResult.cs" />
     <Compile Include="Utilities\TypeConverterType.cs" />
     <Compile Include="Utilities\TypeNameConverter.cs" />

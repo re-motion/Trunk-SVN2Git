@@ -147,9 +147,7 @@
     <Compile Include="Diagnostics\BugReportTest.cs" />
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
-    <Compile Include="Diagnostics\PropertyRestorer.cs" />
-    <Compile Include="Diagnostics\PropertyRestorerMother.cs" />
-    <Compile Include="Diagnostics\PropertyRestorer\PropertyRestorerTest.cs" />
+    <Compile Include="Utilities\PropertyRestorerTest.cs" />
     <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTest.cs" />
     <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTestOwned.cs" />
     <Compile Include="Diagnostics\TestDomain\TestSimpleIToTextHandler.cs" />

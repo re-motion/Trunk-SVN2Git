@@ -25,6 +25,7 @@ using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Reflection;
 using Remotion.UnitTests.Diagnostics.TestDomain;
+using Remotion.Utilities.PropertyRestorer;
 
 
 namespace Remotion.UnitTests.Diagnostics

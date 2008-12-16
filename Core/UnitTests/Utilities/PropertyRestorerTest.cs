@@ -16,8 +16,9 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Utilities.PropertyRestorer;
 
-namespace Remotion.UnitTests.Diagnostics.PropertyRestorer
+namespace Remotion.UnitTests.Utilities
 {
   [TestFixture]
   public class PropertyRestorerTest
