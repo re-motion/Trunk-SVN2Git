@@ -102,7 +102,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, null);
 
       Assert.IsNotNull (businessObjects);
-      Assert.AreEqual (0, businessObjects.Length);
+      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order2)));
     }
 
     [Test]
@@ -111,7 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments (null));
 
       Assert.IsNotNull (businessObjects);
-      Assert.AreEqual (0, businessObjects.Length);
+      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order2)));
     }
 
     [Test]
@@ -120,7 +122,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments (""));
 
       Assert.IsNotNull (businessObjects);
-      Assert.AreEqual (0, businessObjects.Length);
+      Assert.IsNotNull (businessObjects);
+      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order2)));
     }
   }
 }

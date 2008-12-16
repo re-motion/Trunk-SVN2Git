@@ -24,6 +24,8 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   public class BindableDomainObjectSearchService : ISearchAvailableObjectsService
   {
+    private readonly BindableDomainObjectSearchAllService _searchAllService = new BindableDomainObjectSearchAllService ();
+
     public bool SupportsProperty (IBusinessObjectReferenceProperty property)
     {
       return true;
@@ -31,9 +33,9 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     public IBusinessObject[] Search (IBusinessObject referencingObject, IBusinessObjectReferenceProperty property, ISearchAvailableObjectsArguments searchArguments)
     {
-      DefaultSearchArguments defaultSearchArguments = searchArguments as DefaultSearchArguments;
+      var defaultSearchArguments = searchArguments as DefaultSearchArguments;
       if (defaultSearchArguments == null || string.IsNullOrEmpty (defaultSearchArguments.SearchStatement))
-        return new IBusinessObjectWithIdentity[] { };
+        return _searchAllService.Search (referencingObject, property, searchArguments);
 
       QueryDefinition definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions.GetMandatory (defaultSearchArguments.SearchStatement);
       if (definition.QueryType != QueryType.Collection)
@@ -42,7 +44,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ClientTransaction clientTransaction = ClientTransactionScope.CurrentTransaction;
 
       DomainObjectCollection result = clientTransaction.QueryManager.GetCollection (QueryFactory.CreateQuery (definition));
-      IBusinessObjectWithIdentity[] availableObjects = new IBusinessObjectWithIdentity[result.Count];
+      var availableObjects = new IBusinessObjectWithIdentity[result.Count];
 
       if (availableObjects.Length > 0)
         result.CopyTo (availableObjects, 0);
