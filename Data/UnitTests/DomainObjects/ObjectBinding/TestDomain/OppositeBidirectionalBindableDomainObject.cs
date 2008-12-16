@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
@@ -23,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   [Instantiable]
   [Serializable]
   [DBTable]
-  public abstract class OppositeBidirectionalBindableDomainObject : DomainObject
+  public abstract class OppositeBidirectionalBindableDomainObject : BindableDomainObject
   {
     [DBBidirectionalRelation ("RequiredBidirectionalRelatedObjectProperty", ContainsForeignKey = true)]
     public abstract BindableDomainObjectWithProperties OppositeRequiredRelatedObject { get; set; }
@@ -35,5 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
     public abstract BindableDomainObjectWithProperties OppositeRequiredRelatedObjects { get; set; }
     [DBBidirectionalRelation ("NonRequiredBidirectionalRelatedObjectsProperty")]
     public abstract BindableDomainObjectWithProperties OppositeNonRequiredRelatedObjects { get; set; }
+
+    [DBBidirectionalRelation ("RelatedObjectProperty1", ContainsForeignKey = true)]
+    public abstract SampleBindableDomainObject OppositeSampleObject { get; set; }
+    [DBBidirectionalRelation ("RelatedObjectProperty2")]
+    public abstract ObjectList<SampleBindableDomainObject> OppositeSampleObjects { get; set; }
   }
 }

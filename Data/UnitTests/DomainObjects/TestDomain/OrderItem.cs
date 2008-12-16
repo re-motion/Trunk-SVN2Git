@@ -45,6 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return GetObject<OrderItem> (id);
     }
 
+    public static event EventHandler StaticLoadHandler;
     public event EventHandler ProtectedLoaded;
 
     protected OrderItem()
@@ -79,9 +80,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     protected override void OnLoaded (LoadMode loadMode)
     {
-      base.OnLoaded (loadMode);
       if (ProtectedLoaded != null)
         ProtectedLoaded (this, EventArgs.Empty);
+      if (StaticLoadHandler != null)
+        StaticLoadHandler (this, EventArgs.Empty);
+      base.OnLoaded (loadMode);
     }
   }
 }

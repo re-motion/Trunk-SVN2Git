@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
@@ -23,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   [Instantiable]
   [Serializable]
   [DBTable]
-  public abstract class OppositeAnonymousBindableDomainObject : DomainObject
+  public abstract class OppositeAnonymousBindableDomainObject : BindableDomainObject
   {
   }
 }

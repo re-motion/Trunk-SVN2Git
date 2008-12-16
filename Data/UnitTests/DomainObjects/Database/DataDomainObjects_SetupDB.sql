@@ -100,6 +100,10 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SupplierVi
   DROP VIEW [dbo].[SupplierView]
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'SampleBindableDomainObjectView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[SampleBindableDomainObjectView]
+GO
+
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_Target')
 BEGIN
@@ -971,7 +975,8 @@ CREATE TABLE [SampleBindableDomainObject] (
   [Timestamp] rowversion NOT NULL,
 
   [Name] nvarchar(100) NULL,
-  [Int32] int NOT NULL
+  [Int32] int NOT NULL,
+  [RelatedObjectProperty2ID] uniqueidentifier NULL,
 )
 GO
 
@@ -1262,5 +1267,13 @@ CREATE VIEW [dbo].[SupplierView] ([ID], [ClassID], [Timestamp], [Name], [Industr
   SELECT [ID], [ClassID], [Timestamp], [Name], [IndustrialSectorID], [ContactPersonID], [SupplierQuality]
     FROM [dbo].[Company]
     WHERE [ClassID] IN ('Supplier')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[SampleBindableDomainObjectView] ([ID], [ClassID], [Timestamp], [Name], [Int32])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [Name], [Int32]
+    FROM [dbo].[SampleBindableDomainObject]
+    WHERE [ClassID] IN ('SampleBindableDomainObject')
   WITH CHECK OPTION
 GO

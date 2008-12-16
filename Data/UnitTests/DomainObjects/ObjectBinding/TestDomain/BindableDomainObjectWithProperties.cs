@@ -103,6 +103,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 
     [StorageClassNone]
     public string NoMaxLengthStringPropertyNotInMapping { get { return ""; } set {Dev.Null = value; } }
+
+    [StorageClassNone]
+    public IBusinessObject ReferencePropertyNotInMapping { get; set; }
     
     [StringProperty (MaximumLength = 7)]
     public abstract string MaxLength7StringProperty { get; set; }
