@@ -233,6 +233,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
+    public void Create_WithNullPrincipal ()
+    {
+      SecurityContext context = CreateContext ();
+      var principalStub = MockRepository.GenerateStub<ISecurityPrincipal> ();
+      principalStub.Stub (stub => stub.IsNull).Return (true);
+
+      SecurityTokenBuilder builder = new SecurityTokenBuilder ();
+      SecurityToken token = builder.CreateToken (ClientTransactionScope.CurrentTransaction, principalStub, context);
+
+      Assert.That (token.Principal.User, Is.Null);
+      Assert.That (token.Principal.Tenant, Is.Null);
+      Assert.That (token.Principal.Roles, Is.Empty);
+    }
+
+    [Test]
     [ExpectedException (typeof (AccessControlException), ExpectedMessage = "The user 'notexisting.user' could not be found.")]
     public void Create_WithInvalidPrincipal_InvalidUserName ()
     {

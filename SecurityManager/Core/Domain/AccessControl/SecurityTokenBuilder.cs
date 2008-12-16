@@ -63,6 +63,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private Principal CreatePrincipal (ISecurityPrincipal principal)
     {
+      if (principal.IsNull)
+        return new Principal (null, null, new Role[0]);
+
       if (string.IsNullOrEmpty (principal.User))
         throw CreateAccessControlException ("No principal was provided.");
 
@@ -73,9 +76,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       Assertion.IsNotNull (user);
 
       Tenant principalTenant = user.Tenant;
-
       User principalUser;
       IEnumerable<Role> principalRoles;
+
       if (principal.SubstitutedUser != null)
       {
         Substitution substitution = GetSubstitution (principal, user);

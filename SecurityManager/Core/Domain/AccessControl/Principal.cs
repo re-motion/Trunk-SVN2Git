@@ -35,7 +35,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public Principal (Tenant tenant, User user, IList<Role> roles)
     {
-      ArgumentUtility.CheckNotNull ("tenant", tenant);
       ArgumentUtility.CheckNotNullOrItemsNull ("roles", roles);
 
       _tenant = tenant;

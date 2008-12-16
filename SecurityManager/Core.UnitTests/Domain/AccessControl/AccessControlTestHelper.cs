@@ -369,11 +369,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public SecurityToken CreateEmptyToken ()
     {
-      Principal principal;
-      using (_transaction.EnterNonDiscardingScope ())
-      {
-        principal = new Principal (CreateTenant ("tenant"), null, new Role[0]);
-      }
+      Principal principal = new Principal (null, null, new Role[0]);
       return new SecurityToken (principal, null, null, null, new AbstractRoleDefinition[0]);
     }
 
@@ -385,11 +381,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     public SecurityToken CreateTokenWithAbstractRole (params AbstractRoleDefinition[] roleDefinitions)
     {
-      Principal principal;
-      using (_transaction.EnterNonDiscardingScope ())
-      {
-        principal = new Principal (CreateTenant ("tenant"), null, new Role[0]);
-      }
+      Principal principal = new Principal (null, null, new Role[0]);
       return new SecurityToken (principal, null, null, null, (AbstractRoleDefinition[]) roleDefinitions.Clone());
     }
 

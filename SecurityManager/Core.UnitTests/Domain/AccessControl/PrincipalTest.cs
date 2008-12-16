@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void Initialize_WithtenantAndWithoutUserAndWithRoles ()
+    public void Initialize_WithTenantAndWithoutUserAndWithRoles ()
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
       Role[] roles = new[] { _testHelper.CreateRole (null, null, null), _testHelper.CreateRole (null, null, null) };
@@ -83,6 +83,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Principal principal = new Principal (tenant, null, new Role[0]);
 
       Assert.That (principal.Tenant, Is.SameAs (tenant));
+      Assert.That (principal.User, Is.Null);
+      Assert.That (principal.Roles, Is.Empty);
+    }
+
+    [Test]
+    public void Initialize_WithoutTenantAndWithoutUserAndWithoutRoles ()
+    {
+      Principal principal = new Principal (null, null, new Role[0]);
+
+      Assert.That (principal.Tenant, Is.Null);
       Assert.That (principal.User, Is.Null);
       Assert.That (principal.Roles, Is.Empty);
     }
