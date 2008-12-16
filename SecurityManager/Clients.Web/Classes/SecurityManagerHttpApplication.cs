@@ -23,6 +23,7 @@ using System.Web.SessionState;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
+using Remotion.Utilities;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes
@@ -35,14 +36,16 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
     }
 
-    public void SetCurrentPrincipal (SecurityManagerPrincipal securityManagerPrincipal)
+    public void SetCurrentPrincipal (ISecurityManagerPrincipal securityManagerPrincipal)
     {
+      ArgumentUtility.CheckNotNull ("securityManagerPrincipal", securityManagerPrincipal);
+
       SecurityManagerPrincipal.Current = securityManagerPrincipal;
-      SavePrincipalToSession (SecurityManagerPrincipal.Current);
+      SavePrincipalToSession (securityManagerPrincipal);
 
       using (new SecurityFreeSection())
       {
-        IPrincipal principal = GetPrincipal (SecurityManagerPrincipal.Current != null ? SecurityManagerPrincipal.Current.User : null);
+        IPrincipal principal = GetPrincipal (securityManagerPrincipal.User);
         HttpContext.Current.User = principal;
         Thread.CurrentPrincipal = principal;
       }
@@ -54,17 +57,16 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       return new GenericPrincipal (new GenericIdentity (userName), new string[0]);
     }
 
-    protected SecurityManagerPrincipal LoadPrincipalFromSession ()
+    protected ISecurityManagerPrincipal LoadPrincipalFromSession ()
     {
-      return (SecurityManagerPrincipal) Session[s_principalKey];
+      return (ISecurityManagerPrincipal) Session[s_principalKey] ?? SecurityManagerPrincipal.Null;
     }
 
-    protected void SavePrincipalToSession (SecurityManagerPrincipal principal)
+    protected void SavePrincipalToSession (ISecurityManagerPrincipal principal)
     {
-      if (principal == null)
-        Session.Remove (s_principalKey);
-      else
-        Session[s_principalKey] = principal;
+      ArgumentUtility.CheckNotNull ("principal", principal);
+
+      Session[s_principalKey] = principal;
     }
 
     protected bool HasSessionState
@@ -83,8 +85,8 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
       if (HasSessionState)
       {
-        SecurityManagerPrincipal principal = LoadPrincipalFromSession();
-        if (principal == null && Context.User.Identity.IsAuthenticated)
+        var principal = LoadPrincipalFromSession();
+        if (principal.IsNull && Context.User.Identity.IsAuthenticated)
         {
           using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
           {
@@ -92,13 +94,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
             if (user != null)
               SetCurrentPrincipal (new SecurityManagerPrincipal (user.Tenant, user, null));
             else
-              SetCurrentPrincipal (null);
+              SetCurrentPrincipal (SecurityManagerPrincipal.Null);
           }
         }
         else
         {
-          if (principal != null)
-            principal.Refresh();
+          principal.Refresh();
           SetCurrentPrincipal (principal);
         }
       }

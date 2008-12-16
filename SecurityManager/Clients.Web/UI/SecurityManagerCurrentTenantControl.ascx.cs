@@ -58,7 +58,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       {
         Tenant[] tenants = GetPossibleTenants ();
         CurrentTenantField.SetBusinessObjectList (tenants);
-        Tenant currentTenant = SecurityManagerPrincipal.Current != null ? SecurityManagerPrincipal.Current.Tenant : null;
+        Tenant currentTenant = SecurityManagerPrincipal.Current.Tenant;
 
         CurrentTenantField.LoadUnboundValue (currentTenant, false);
 
@@ -74,7 +74,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
     private Tenant[] GetPossibleTenants ()
     {
-      if (SecurityManagerPrincipal.Current == null)
+      if (SecurityManagerPrincipal.Current.IsNull)
         return new Tenant[0];
 
       IEnumerable<Tenant> tenants = SecurityManagerPrincipal.Current.User.Tenant.GetHierachy();
@@ -111,18 +111,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI
     {
       base.OnPreRender (e);
 
-      if (_isCurrentTenantFieldReadOnly && SecurityManagerPrincipal.Current != null)
+      if (_isCurrentTenantFieldReadOnly && !SecurityManagerPrincipal.Current.IsNull)
         CurrentTenantField.ReadOnly = true;
       else
         CurrentTenantField.ReadOnly = false;
 
-      User user;
-      if (SecurityManagerPrincipal.Current != null)
-        user = SecurityManagerPrincipal.Current.User;
-      else
-        user = null;
-
-      CurrentUserField.LoadUnboundValue (user, false);
+      CurrentUserField.LoadUnboundValue (SecurityManagerPrincipal.Current.User, false);
     }
 
     private bool IsTenantSelectionEnabled

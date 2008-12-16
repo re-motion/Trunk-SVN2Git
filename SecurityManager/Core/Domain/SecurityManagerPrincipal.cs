@@ -29,14 +29,24 @@ namespace Remotion.SecurityManager.Domain
   /// The <see cref="SecurityManagerPrincipal"/> type is represent the current <see cref="Tenant"/>, <see cref="User"/>, 
   /// and optional <see cref="Substitution"/>.
   /// </summary>
-  public class SecurityManagerPrincipal
+  [Serializable]
+  public class SecurityManagerPrincipal : ISecurityManagerPrincipal
   {
     private static readonly string s_currentKey = typeof (SecurityManagerPrincipal).AssemblyQualifiedName + "_Current";
 
-    public static SecurityManagerPrincipal Current
+    public static readonly ISecurityManagerPrincipal Null = new NullSecurityManagerPrincipal();
+
+    public static ISecurityManagerPrincipal Current
     {
-      get { return (SecurityManagerPrincipal) SafeContext.Instance.GetData (s_currentKey); }
-      set { SafeContext.Instance.SetData (s_currentKey, value); }
+      get
+      {
+        return (ISecurityManagerPrincipal) SafeContext.Instance.GetData (s_currentKey) ?? SecurityManagerPrincipal.Null;
+      }
+      set
+      {
+        ArgumentUtility.CheckNotNull ("value", value);
+        SafeContext.Instance.SetData (s_currentKey, value);
+      }
     }
 
     private ClientTransaction _transaction;
@@ -120,8 +130,13 @@ namespace Remotion.SecurityManager.Domain
     private void InitializeClientTransaction ()
     {
       _transaction = ClientTransaction.CreateBindingTransaction();
-      //if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-      //  _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension ());
+      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
+        _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension());
+    }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
     }
   }
 }

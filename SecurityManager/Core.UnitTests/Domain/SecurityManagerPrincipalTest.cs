@@ -42,14 +42,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public override void SetUp ()
     {
       base.SetUp();
-      SecurityManagerPrincipal.Current = null;
+      SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
       ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
     }
 
     public override void TearDown ()
     {
       base.TearDown();
-      SecurityManagerPrincipal.Current = null;
+      SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
     }
 
     [Test]
@@ -140,7 +140,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     [Test]
     public void Get_Current_NotInitialized ()
     {
-      Assert.That (SecurityManagerPrincipal.Current, Is.Null);
+      Assert.That (SecurityManagerPrincipal.Current.IsNull, Is.True);
     }
 
     [Test]
@@ -169,7 +169,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
               User otherUser = User.FindByUserName ("group1/user1");
               SecurityManagerPrincipal otherPrincipal = new SecurityManagerPrincipal (otherUser.Tenant, otherUser, null);
 
-              Assert.That (SecurityManagerPrincipal.Current, Is.Null);
+              Assert.That (SecurityManagerPrincipal.Current.IsNull, Is.True);
               SecurityManagerPrincipal.Current = otherPrincipal;
               Assert.That (SecurityManagerPrincipal.Current, Is.SameAs (otherPrincipal));
             }
@@ -198,6 +198,37 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         Assert.That (principal.Substitution.ID, Is.EqualTo (substitution.ID));
         Assert.That (principal.Substitution, Is.Not.SameAs (substitution));
       }
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      User user = User.FindByUserName ("substituting.user");
+      Tenant tenant = user.Tenant;
+      Substitution substitution = user.GetActiveSubstitutions ().First ();
+
+      var principal = new SecurityManagerPrincipal (tenant, user, substitution);
+      var deserializedPrincipal = Serializer.SerializeAndDeserialize (principal);
+
+      Assert.That (deserializedPrincipal.Tenant.ID, Is.EqualTo (principal.Tenant.ID));
+      Assert.That (deserializedPrincipal.Tenant, Is.Not.SameAs (principal.Tenant));
+
+      Assert.That (deserializedPrincipal.User.ID, Is.EqualTo (principal.User.ID));
+      Assert.That (deserializedPrincipal.User, Is.Not.SameAs (principal.User));
+
+      Assert.That (deserializedPrincipal.Substitution.ID, Is.EqualTo (principal.Substitution.ID));
+      Assert.That (deserializedPrincipal.Substitution, Is.Not.SameAs (principal.Substitution));     
+    }
+
+    [Test]
+    public void Get_IsNull ()
+    {
+      User user = User.FindByUserName ("substituting.user");
+      Tenant tenant = user.Tenant;
+      
+      ISecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, null);
+
+      Assert.That (principal.IsNull, Is.False);
     }
   }
 }

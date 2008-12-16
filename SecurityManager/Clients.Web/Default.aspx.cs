@@ -44,12 +44,7 @@ namespace Remotion.SecurityManager.Clients.Web
         using (new SecurityFreeSection())
         {
           var users = (from u in QueryFactory.CreateLinqQuery<SecurityManagerUser>() orderby u.UserName select u).ToArray();
-
-          SecurityManagerUser user;
-          if (SecurityManagerPrincipal.Current != null)
-            user = SecurityManagerPrincipal.Current.User;
-          else
-            user = null;
+          var user = SecurityManagerPrincipal.Current.User;
 
           UsersField.SetBusinessObjectList (users);
           UsersField.LoadUnboundValue (user, false);

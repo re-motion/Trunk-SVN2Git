@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 
     public ObjectID TenantID
     {
-      get { return (SecurityManagerPrincipal.Current != null) ? SecurityManagerPrincipal.Current.Tenant.ID : null; }
+      get { return (!SecurityManagerPrincipal.Current.IsNull) ? SecurityManagerPrincipal.Current.Tenant.ID : null; }
     }
 
     public bool HasUserCancelled
