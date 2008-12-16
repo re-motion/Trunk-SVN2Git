@@ -86,5 +86,17 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
     }
 
 
+    [Test]
+    public void ToTextTest ()
+    {
+      var streamWriterFactory = new StreamWriterFactory ();
+      var result = To.String.e (streamWriterFactory).ToString ();
+      var resultExpected =
+      #region
+ @"StreamWriterFactory()";
+      #endregion
+      Assert.That (result, Is.EqualTo (resultExpected));
+    }
+
   }
 }
