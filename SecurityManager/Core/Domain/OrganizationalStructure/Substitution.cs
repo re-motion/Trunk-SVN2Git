@@ -93,5 +93,20 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         return true;
       }
     }
+
+    public override string DisplayName
+    {
+      get
+      {
+        string userName = SubstitutedUser != null ? SubstitutedUser.DisplayName : null;
+        string roleName = SubstitutedRole != null ? SubstitutedRole.DisplayName : null;
+
+        string displayName = userName ?? "?";
+        if (roleName != null)
+          displayName += " (" + roleName + ")";
+
+        return displayName;
+      }
+    }
   }
 }

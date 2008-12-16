@@ -84,5 +84,51 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Subs
       var actual = substitutedRoleProperty.SearchAvailableObjects (substitution, args);
       Assert.That (actual, Is.SameAs (expected));
     }
+
+    [Test]
+    public void GetDisplayName_WithSubstitutedUser ()
+    {
+      User user = TestHelper.CreateUser ("user", "Firstname", "Lastname", "Title", null, null);
+      Substitution substitution = Substitution.NewObject ();
+      substitution.SubstitutedUser = user;
+
+      Assert.That (substitution.DisplayName, Is.EqualTo ("Lastname Firstname, Title"));
+    }
+
+    [Test]
+    public void GetDisplayName_WithSubstitutedUserAndSubstitutedRole ()
+    {
+      Group roleGroup = TestHelper.CreateGroup ("RoleGroup", Guid.NewGuid ().ToString (), null, null);
+      User user = TestHelper.CreateUser ("user", "Firstname", "Lastname", "Title", null, null);
+      Position position = TestHelper.CreatePosition ("Position");
+      Role role = TestHelper.CreateRole (user, roleGroup, position);
+      Substitution substitution = Substitution.NewObject();
+      substitution.SubstitutedUser = user;
+      substitution.SubstitutedRole = role;
+
+      Assert.That (substitution.DisplayName, Is.EqualTo ("Lastname Firstname, Title (Position / RoleGroup)"));
+    }
+
+    [Test]
+    public void GetDisplayName_WithoutSubstitutedUser ()
+    {
+      Substitution substitution = Substitution.NewObject ();
+      substitution.SubstitutedUser = null;
+
+      Assert.That (substitution.DisplayName, Is.EqualTo ("?"));
+    }
+
+    [Test]
+    public void GetDisplayName_WithoutSubstitutedUserAndWithSubstitutedRole ()
+    {
+      Group roleGroup = TestHelper.CreateGroup ("RoleGroup", Guid.NewGuid ().ToString (), null, null);
+      User user = TestHelper.CreateUser ("user", "Firstname", "Lastname", "Title", null, null);
+      Position position = TestHelper.CreatePosition ("Position");
+      Role role = TestHelper.CreateRole (user, roleGroup, position);
+      Substitution substitution = Substitution.NewObject ();
+      substitution.SubstitutedRole = role;
+
+      Assert.That (substitution.DisplayName, Is.EqualTo ("? (Position / RoleGroup)"));
+    }
   }
 }
