@@ -1,3 +1,8 @@
+1.11.18
+=======
+- SecurityManagerPrincipal
+  * Replaces User.Current and Tenant.Current.
+
 1.11.14
 =======
 - AccessControlEntry
