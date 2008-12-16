@@ -16,12 +16,9 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.Security.Principal;
-using System.Threading;
 using System.Web;
 using System.Web.SessionState;
 using Remotion.Data.DomainObjects;
-using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.Utilities;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
@@ -42,19 +39,6 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
       SecurityManagerPrincipal.Current = securityManagerPrincipal;
       SavePrincipalToSession (securityManagerPrincipal);
-
-      using (new SecurityFreeSection())
-      {
-        IPrincipal principal = GetPrincipal (securityManagerPrincipal.User);
-        HttpContext.Current.User = principal;
-        Thread.CurrentPrincipal = principal;
-      }
-    }
-
-    protected virtual IPrincipal GetPrincipal (SecurityManagerUser user)
-    {
-      string userName = (user != null) ? user.UserName : string.Empty;
-      return new GenericPrincipal (new GenericIdentity (userName), new string[0]);
     }
 
     protected ISecurityManagerPrincipal LoadPrincipalFromSession ()
@@ -88,7 +72,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
         var principal = LoadPrincipalFromSession();
         if (principal.IsNull && Context.User.Identity.IsAuthenticated)
         {
-          using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+          using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
           {
             SecurityManagerUser user = SecurityManagerUser.FindByUserName (Context.User.Identity.Name);
             if (user != null)
