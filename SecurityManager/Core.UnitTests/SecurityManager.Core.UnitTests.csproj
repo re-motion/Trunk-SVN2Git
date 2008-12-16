@@ -202,6 +202,7 @@
     <Compile Include="Domain\OrganizationalStructure\UserTests\Common.cs" />
     <Compile Include="Domain\Metadata\SecurableClassValidationResultTest.cs" />
     <Compile Include="Domain\RevisionTest.cs" />
+    <Compile Include="Domain\SecurityManagerPrincipalProviderTest.cs" />
     <Compile Include="Domain\SecurityManagerPrincipalTest.cs" />
     <Compile Include="Domain\SerializationTest.cs" />
     <Compile Include="Domain\ToTextSpecificTypeHandlers\ToTextSpecificTypeHandlerTests.cs" />
