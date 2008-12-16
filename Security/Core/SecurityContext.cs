@@ -172,9 +172,9 @@ namespace Remotion.Security
         EnumWrapper[] abstractRoles)
     {
       _class = TypeUtility.GetPartialAssemblyQualifiedName (classType);
-      _owner = StringUtility.NullToEmpty (owner);
-      _ownerGroup = StringUtility.NullToEmpty (ownerGroup);
-      _ownerTenant = StringUtility.NullToEmpty (ownerTenant);
+      _owner = StringUtility.EmptyToNull (owner);
+      _ownerGroup = StringUtility.EmptyToNull (ownerGroup);
+      _ownerTenant = StringUtility.EmptyToNull (ownerTenant);
       _isStateless = isStateless;
       _states = states;
       _abstractRoles = abstractRoles;

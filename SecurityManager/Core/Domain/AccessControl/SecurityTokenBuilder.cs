@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using Remotion.Data.DomainObjects;
+using Remotion.Collections;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
@@ -62,35 +63,63 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private Principal CreatePrincipal (ISecurityPrincipal principal)
     {
-      User user = GetUser (principal.User);
-      if (user == null)
+      if (string.IsNullOrEmpty (principal.User))
         throw CreateAccessControlException ("No principal was provided.");
+
+      if (string.IsNullOrEmpty (principal.SubstitutedUser) && principal.SubstitutedRole != null)
+        throw CreateAccessControlException ("A substituted role was specified without a substituted user.");
+     
+      User user = GetUser (principal.User);
+      Assertion.IsNotNull (user);
 
       Tenant principalTenant = user.Tenant;
 
-      IEnumerable<Role> principalRoles;
-      if (principal.SubstitutedRole != null)
-      {
-        principalRoles = user.GetActiveSubstitutions()
-            .Where (s => IsRoleMatchingPrincipalRole (s.SubstitutedRole, principal.SubstitutedRole))
-            .Select (s => s.SubstitutedRole);
-      }
-      else if (principal.Role != null)
-      {
-        principalRoles = user.Roles.Where (r => IsRoleMatchingPrincipalRole (r, principal.Role));
-      }
-      else
-      {
-        principalRoles = user.Roles;
-      }
-
       User principalUser;
-      if (principal.SubstitutedRole != null)
-        principalUser = null;
-      else
+      IEnumerable<Role> principalRoles;
+      if (principal.SubstitutedUser != null)
+      {
+        Substitution substitution = GetSubstitution (principal, user);
+
+        if (substitution == null)
+        {
+          principalUser = null;
+          principalRoles = new Role[0];
+        }
+        else if (principal.SubstitutedRole != null)
+        {
+          principalUser = null;
+          principalRoles = substitution.SubstitutedRole.ToEnumerable ();
+        }
+        else
+        {
+          principalUser = substitution.SubstitutedUser;
+          principalRoles = substitution.SubstitutedUser.Roles;
+        }
+      }
+      else 
+      {
         principalUser = user;
+        principalRoles = user.Roles;
+        
+        if (principal.Role != null)
+          principalRoles = principalRoles.Where (r => IsRoleMatchingPrincipalRole (r, principal.Role));
+      }
 
       return new Principal (principalTenant, principalUser, principalRoles.ToArray());
+    }
+
+    private Substitution GetSubstitution (ISecurityPrincipal principal, User user)
+    {
+      IEnumerable<Substitution> substitutions = user.GetActiveSubstitutions ();
+      
+      substitutions = substitutions.Where (s => s.SubstitutedUser.UserName == principal.SubstitutedUser && s.SubstitutedUser.Tenant == user.Tenant);
+      
+      if (principal.SubstitutedRole != null)
+        substitutions = substitutions.Where (s => IsRoleMatchingPrincipalRole (s.SubstitutedRole, principal.SubstitutedRole));
+      else
+        substitutions = substitutions.Where (s => s.SubstitutedRole == null);
+
+      return substitutions.FirstOrDefault ();
     }
 
     private bool IsRoleMatchingPrincipalRole (Role role, ISecurityPrincipalRole principalRole)
@@ -149,9 +178,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     }
 
     private EnumWrapper? FindFirstMissingAbstractRole (
-        EnumWrapper[] expectedAbstractRoles, IList<AbstractRoleDefinition> actualAbstractRolesCollection)
+        EnumWrapper[] expectedAbstractRoles, IList<AbstractRoleDefinition> actualAbstractRoleDefinitions)
     {
-      var actualAbstractRoles = from r in actualAbstractRolesCollection select new EnumWrapper (r.Name);
+      var actualAbstractRoles = from r in actualAbstractRoleDefinitions select new EnumWrapper (r.Name);
       var result = from expected in expectedAbstractRoles
                    where !actualAbstractRoles.Contains (expected)
                    select (EnumWrapper?) expected;

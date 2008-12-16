@@ -74,7 +74,7 @@ th
     {
       var settings = new AclExpanderApplicationSettings();
       var aclExpansion = CreateAclExpanderApplicationAndCallGetAclExpansion (settings);
-      Assert.That (aclExpansion.Count, Is.EqualTo (16));
+      Assert.That (aclExpansion.Count, Is.EqualTo (20));
     }
 
 
@@ -317,7 +317,7 @@ th
       //To.ConsoleLine.e (cssTextWriterData.Directory);
 
       // Multifile HTML output => expect at least 3 files (CSS, main HTML, detail HTML files)
-      Assert.That (Directory.GetFiles (cssTextWriterData.Directory).Length, Is.EqualTo (7));
+      Assert.That (Directory.GetFiles (cssTextWriterData.Directory).Length, Is.EqualTo (8));
 
       Assert.That (File.Exists (Path.Combine (cssTextWriterData.Directory, Path.ChangeExtension (cssFileName, "css"))), Is.True);
     }

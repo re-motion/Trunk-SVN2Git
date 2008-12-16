@@ -148,7 +148,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
       ISecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext ();
       Assert.AreEqual (group.GetPublicDomainObjectType (), Type.GetType (securityContext.Class));
-      Assert.IsEmpty (securityContext.Owner);
+      Assert.IsNull (securityContext.Owner);
       Assert.AreEqual (group.UniqueIdentifier, securityContext.OwnerGroup);
       Assert.AreEqual (group.Tenant.UniqueIdentifier, securityContext.OwnerTenant);
       Assert.IsEmpty (securityContext.AbstractRoles);
@@ -163,9 +163,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
       ISecurityContext securityContext = ((ISecurityContextFactory) group).CreateSecurityContext ();
       Assert.AreEqual (group.GetPublicDomainObjectType (), Type.GetType (securityContext.Class));
-      Assert.IsEmpty (securityContext.Owner);
+      Assert.IsNull (securityContext.Owner);
       Assert.AreEqual (group.UniqueIdentifier, securityContext.OwnerGroup);
-      Assert.IsEmpty (securityContext.OwnerTenant);
+      Assert.IsNull (securityContext.OwnerTenant);
       Assert.IsEmpty (securityContext.AbstractRoles);
       Assert.IsFalse (securityContext.IsStateless);
     }

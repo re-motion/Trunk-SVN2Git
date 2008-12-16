@@ -155,7 +155,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     public IList<Substitution> GetActiveSubstitutions ()
     {
-      return SubstitutingFor.ToArray();
+      return SubstitutingFor.Where (s => s.IsActive).ToArray();
     }
 
     protected override void OnDeleting (EventArgs args)

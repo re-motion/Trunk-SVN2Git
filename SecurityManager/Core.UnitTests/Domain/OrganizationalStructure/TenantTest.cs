@@ -200,8 +200,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
       ISecurityContext securityContext = ((ISecurityContextFactory) tenant).CreateSecurityContext ();
       Assert.AreEqual (tenant.GetPublicDomainObjectType (), Type.GetType (securityContext.Class));
-      Assert.IsEmpty (securityContext.Owner);
-      Assert.IsEmpty (securityContext.OwnerGroup);
+      Assert.IsNull (securityContext.Owner);
+      Assert.IsNull (securityContext.OwnerGroup);
       Assert.AreEqual (tenant.UniqueIdentifier, securityContext.OwnerTenant);
       Assert.IsEmpty (securityContext.AbstractRoles);
       Assert.IsFalse (securityContext.IsStateless);

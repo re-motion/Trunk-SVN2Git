@@ -135,6 +135,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         CreateRole (testUser, testRootGroup, officialPosition);
 
         User substitutingUser = CreateUser ("substituting.user", null, "substitute", null, testRootGroup, tenant1);
+        CreateRole (substitutingUser, testOwningGroup, managerPosition);
+        CreateRole (substitutingUser, testRootGroup, officialPosition);
+
         Substitution enabledUserSubstitution = Substitution.NewObject ();
         enabledUserSubstitution.SubstitutingUser = substitutingUser;
         enabledUserSubstitution.SubstitutedUser = testUser;
@@ -153,6 +156,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         Tenant tenant2 = CreateTenant ("Tenant 2");
         Group groupTenant2 = CreateGroup ("Group Tenant 2", "UID: group Tenant 2", null, tenant2);
         User userTenant2 = CreateUser ("User.Tenant2", "User", "Tenant 2", string.Empty, groupTenant2, tenant2);
+        Substitution userTenant2Substitution = Substitution.NewObject ();
+        userTenant2Substitution.SubstitutingUser = userTenant2;
+        userTenant2Substitution.SubstitutedUser = testUser;
 
         ClientTransactionScope.CurrentTransaction.Commit ();
         return tenant1;

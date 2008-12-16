@@ -175,9 +175,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 
         ISecurityContext securityContext = ((ISecurityContextFactory) position).CreateSecurityContext();
         Assert.AreEqual (position.GetPublicDomainObjectType(), Type.GetType (securityContext.Class));
-        Assert.IsEmpty (securityContext.Owner);
-        Assert.IsEmpty (securityContext.OwnerGroup);
-        Assert.IsEmpty (securityContext.OwnerTenant);
+        Assert.IsNull (securityContext.Owner);
+        Assert.IsNull (securityContext.OwnerGroup);
+        Assert.IsNull (securityContext.OwnerTenant);
         Assert.IsEmpty (securityContext.AbstractRoles);
         Assert.AreEqual (1, securityContext.GetNumberOfStates());
         Assert.AreEqual (new EnumWrapper (Delegation.Enabled), securityContext.GetState ("Delegation"));
