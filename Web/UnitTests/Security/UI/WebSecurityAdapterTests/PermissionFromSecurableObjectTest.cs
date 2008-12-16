@@ -38,7 +38,7 @@ namespace Remotion.Web.UnitTests.Security.UI.WebSecurityAdapterTests
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
       _testHelper = new WebPermissionProviderTestHelper ();
       SecurityConfiguration.Current.SecurityProvider = _testHelper.SecurityProvider;
-      SecurityConfiguration.Current.UserProvider = _testHelper.UserProvider;
+      SecurityConfiguration.Current.PrincipalProvider = _testHelper.PrincipalProvider;
       SecurityConfiguration.Current.FunctionalSecurityStrategy = _testHelper.FunctionalSecurityStrategy;
     }
 

@@ -22,14 +22,14 @@ using Remotion.Development.UnitTesting.Configuration;
 namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTests
 {
   [TestFixture]
-  public class DeserializeSecurityConfigurationForUserProviderTest : TestBase
+  public class DeserializeSecurityConfigurationForPrincipalProviderTest : TestBase
   {
     [Test]
     public void Test_WithDefaultUserProvider ()
     {
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (ThreadUserProvider), Configuration.UserProvider);
+      Assert.IsInstanceOfType (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
     }
 
     [Test]
@@ -37,30 +37,30 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"<remotion.security />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.AreSame (Configuration.UserProvider, Configuration.UserProvider);
+      Assert.AreSame (Configuration.PrincipalProvider, Configuration.PrincipalProvider);
     }
 
     [Test]
     public void Test_WithThreadUserProvider ()
     {
-      string xmlFragment = @"<remotion.security defaultUserProvider=""Thread"" />";
+      string xmlFragment = @"<remotion.security defaultPrincipalProvider=""Thread"" />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (ThreadUserProvider), Configuration.UserProvider);
+      Assert.IsInstanceOfType (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
     }
 
     [Test]
     public void Test_WithCustomUserProvider ()
     {
       string xmlFragment = @"
-          <remotion.security defaultUserProvider=""Custom"">
-            <userProviders>
-              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
-            </userProviders>
+          <remotion.security defaultPrincipalProvider=""Custom"">
+            <principalProviders>
+              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.PrincipalProviderMock"" />
+            </principalProviders>
           </remotion.security>";
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.IsInstanceOfType (typeof (UserProviderMock), Configuration.UserProvider);
+      Assert.IsInstanceOfType (typeof (PrincipalProviderMock), Configuration.PrincipalProvider);
     }
 
     [Test]
@@ -68,34 +68,34 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     {
       string xmlFragment = @"
           <remotion.security>
-            <userProviders>
-              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
-            </userProviders>
+            <principalProviders>
+              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.PrincipalProviderMock"" />
+            </principalProviders>
           </remotion.security>";
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Assert.AreEqual (2, Configuration.UserProviders.Count);
-      Assert.IsInstanceOfType (typeof (UserProviderMock), Configuration.UserProviders["Custom"]);
-      Assert.IsInstanceOfType (typeof (ThreadUserProvider), Configuration.UserProvider);
-      Assert.AreSame (Configuration.UserProvider, Configuration.UserProviders["Thread"]);
+      Assert.AreEqual (2, Configuration.PrincipalProviders.Count);
+      Assert.IsInstanceOfType (typeof (PrincipalProviderMock), Configuration.PrincipalProviders["Custom"]);
+      Assert.IsInstanceOfType (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
+      Assert.AreSame (Configuration.PrincipalProvider, Configuration.PrincipalProviders["Thread"]);
     }
 
     [Test]
     [ExpectedException (typeof (ConfigurationErrorsException),
-         ExpectedMessage = "The provider 'Invalid' specified for the defaultUserProvider does not exist in the providers collection.")]
+         ExpectedMessage = "The provider 'Invalid' specified for the defaultPrincipalProvider does not exist in the providers collection.")]
     public void Test_WithCustomUserProviderAndInvalidName ()
     {
       string xmlFragment = @"
-          <remotion.security defaultUserProvider=""Invalid"">
-            <userProviders>
-              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
-            </userProviders>
+          <remotion.security defaultPrincipalProvider=""Invalid"">
+            <principalProviders>
+              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.PrincipalProviderMock"" />
+            </principalProviders>
           </remotion.security>";
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Dev.Null = Configuration.UserProvider;
+      Dev.Null = Configuration.PrincipalProvider;
     }
 
     [Test]
@@ -104,10 +104,10 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     public void Test_DuplicateWellKnownUserProviderForThreadUserProvider ()
     {
       string xmlFragment = @"
-          <remotion.security defaultUserProvider=""Thread"">
-            <userProviders>
+          <remotion.security defaultPrincipalProvider=""Thread"">
+            <principalProviders>
               <add name=""Thread"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
-            </userProviders>
+            </principalProviders>
           </remotion.security>";
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
@@ -119,30 +119,30 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     public void Test_DuplicateWellKnownUserProviderForHttpContextUserProvider ()
     {
       string xmlFragment = @"
-          <remotion.security defaultUserProvider=""HttpContext"">
-            <userProviders>
+          <remotion.security defaultPrincipalProvider=""HttpContext"">
+            <principalProviders>
               <add name=""HttpContext"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
-            </userProviders>
+            </principalProviders>
           </remotion.security>";
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationErrorsException),
-        ExpectedMessage = "The value for the property 'defaultUserProvider' is not valid. The error is: The string must be at least 1 characters long.")]
+    [ExpectedException (typeof (ConfigurationErrorsException), ExpectedMessage = 
+        "The value for the property 'defaultPrincipalProvider' is not valid. The error is: The string must be at least 1 characters long.")]
     public void Test_WithCustomUserProviderNameEmpty ()
     {
       string xmlFragment = @"
-          <remotion.security defaultUserProvider="""">
-            <userProviders>
-              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
-            </userProviders>
+          <remotion.security defaultPrincipalProvider="""">
+            <principalProviders>
+              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.PrincipalProviderMock"" />
+            </principalProviders>
           </remotion.security>";
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Dev.Null = Configuration.UserProvider;
+      Dev.Null = Configuration.PrincipalProvider;
     }
 
     [Test]
@@ -152,30 +152,31 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       string xmlFragment =
           @"
           <remotion.security>
-            <userProviders>
-              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
-            </userProviders>
+            <principalProviders>
+              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.PrincipalProviderMock"" />
+            </principalProviders>
           </remotion.security>";
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
-      Configuration.UserProviders.Clear ();
+      Configuration.PrincipalProviders.Clear ();
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ConfigurationErrorsException), ExpectedMessage = "Provider must implement the interface 'Remotion.Security.IUserProvider'.")]
+    [ExpectedExceptionAttribute (typeof (ConfigurationErrorsException), ExpectedMessage = 
+      "Provider must implement the interface 'Remotion.Security.IPrincipalProvider'.")]
     public void InstantiateProvider_WithTypeNotImplementingRequiredInterface ()
     {
       string xmlFragment =
           @"
           <remotion.security>
-            <userProviders>
+            <principalProviders>
               <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.PermissionProviderMock"" />
-            </userProviders>
+            </principalProviders>
           </remotion.security>";
 
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
 
-      Dev.Null = Configuration.UserProvider;
+      Dev.Null = Configuration.PrincipalProvider;
     }
   }
 }

@@ -68,7 +68,7 @@
     <Compile Include="NullSecurityProvider.cs" />
     <Compile Include="Configuration\PermissionProviderHelper.cs" />
     <Compile Include="Configuration\GlobalAccessTypeCacheProviderHelper.cs" />
-    <Compile Include="Configuration\UserProviderHelper.cs" />
+    <Compile Include="Configuration\PrincipalProviderHelper.cs" />
     <Compile Include="FunctionalSecurityContextFactory.cs" />
     <Compile Include="GeneralAccessTypes.cs" />
     <Compile Include="NullGlobalAccessTypeCacheProvider.cs" />
@@ -106,7 +106,7 @@
     <Compile Include="Metadata\SecurityMetadataSchema.cs" />
     <Compile Include="Metadata\StatePropertyInfo.cs" />
     <Compile Include="Metadata\StatePropertyReflector.cs" />
-    <Compile Include="NullUserProvider.cs" />
+    <Compile Include="PrincipalUserProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RevisionBasedAccessTypeCacheProvider.cs" />
     <Compile Include="SecurityClient.cs" />
@@ -119,7 +119,7 @@
     <Compile Include="SecurityPrincipal.cs" />
     <Compile Include="SecurityPrincipalRole.cs" />
     <Compile Include="SecurityStrategy.cs" />
-    <Compile Include="ThreadUserProvider.cs" />
+    <Compile Include="ThreadPrincipalProvider.cs" />
     <EmbeddedResource Include="Configuration\SecurityConfiguration.xsd">
       <SubType>
       </SubType>

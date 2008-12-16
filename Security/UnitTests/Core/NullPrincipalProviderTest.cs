@@ -15,35 +15,44 @@
 // 
 using System;
 using System.Collections.Specialized;
+using NUnit.Framework;
 using Remotion.Configuration;
 
-namespace Remotion.Security
+namespace Remotion.Security.UnitTests.Core
 {
-  /// <summary>
-  /// Represents a nullable <see cref="IUserProvider"/> according to the "Null Object Pattern".
-  /// </summary>
-  public class NullUserProvider : ExtendedProviderBase, IUserProvider
+  [TestFixture]
+  public class NullPrincipalProviderTest
   {
-    private readonly NullSecurityPrincipal _securityPrincipal = new NullSecurityPrincipal();
+    private IPrincipalProvider _provider;
 
-    public NullUserProvider ()
-        : this ("Null", new NameValueCollection())
+    [SetUp]
+    public void SetUp()
     {
+      _provider = new PrincipalUserProvider();
     }
 
-    public NullUserProvider (string name, NameValueCollection config)
-        : base (name, config)
+    [Test]
+    public void Initialize ()
     {
+      NameValueCollection config = new NameValueCollection ();
+      config.Add ("description", "The Description");
+
+      ExtendedProviderBase provider = new PrincipalUserProvider ("Provider", config);
+
+      Assert.AreEqual ("Provider", provider.Name);
+      Assert.AreEqual ("The Description", provider.Description);
+    }
+    
+    [Test]
+    public void GetUser()
+    {
+      Assert.IsInstanceOfType (typeof (NullSecurityPrincipal), _provider.GetPrincipal());
     }
 
-    public ISecurityPrincipal GetUser ()
+    [Test]
+    public void GetIsNull()
     {
-      return _securityPrincipal;
-    }
-
-    bool INullObject.IsNull
-    {
-      get { return true; }
+      Assert.IsTrue (_provider.IsNull);
     }
   }
 }

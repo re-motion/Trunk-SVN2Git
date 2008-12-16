@@ -30,7 +30,7 @@ namespace Remotion.Web.UnitTests.Security
       NameValueCollection config = new NameValueCollection ();
       config.Add ("description", "The Description");
 
-      HttpContextUserProvider provider = new HttpContextUserProvider ("Provider", config);
+      HttpContextPrincipalProvider provider = new HttpContextPrincipalProvider ("Provider", config);
 
       Assert.AreEqual ("Provider", provider.Name);
       Assert.AreEqual ("The Description", provider.Description);
@@ -39,8 +39,8 @@ namespace Remotion.Web.UnitTests.Security
     [Test]
     public void GetIsNull()
     {
-      IUserProvider _userProvider = new HttpContextUserProvider();
-      Assert.IsFalse (_userProvider.IsNull);
+      IPrincipalProvider _principalProvider = new HttpContextPrincipalProvider();
+      Assert.IsFalse (_principalProvider.IsNull);
     }
   }
 }

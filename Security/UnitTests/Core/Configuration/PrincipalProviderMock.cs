@@ -19,14 +19,14 @@ using Remotion.Configuration;
 
 namespace Remotion.Security.UnitTests.Core.Configuration
 {
-  public class UserProviderMock : ExtendedProviderBase, IUserProvider
+  public class PrincipalProviderMock : ExtendedProviderBase, IPrincipalProvider
   {
-    public UserProviderMock (string name, NameValueCollection config)
+    public PrincipalProviderMock (string name, NameValueCollection config)
         : base (name, config)
     {
     }
 
-    public ISecurityPrincipal GetUser ()
+    public ISecurityPrincipal GetPrincipal ()
     {
       throw new NotImplementedException();
     }

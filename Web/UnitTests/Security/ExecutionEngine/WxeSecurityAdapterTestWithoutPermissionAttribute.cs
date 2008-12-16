@@ -37,7 +37,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
     private MockRepository _mocks;
     private IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
     private ISecurityProvider _mockSecurityProvider;
-    private IUserProvider _mockUserProvider;
+    private IPrincipalProvider _mockPrincipalProvider;
 
     // construction and disposing
 
@@ -56,12 +56,12 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
 
       _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
-      _mockUserProvider = _mocks.StrictMock<IUserProvider> ();
+      _mockPrincipalProvider = _mocks.StrictMock<IPrincipalProvider> ();
       _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
-      SecurityConfiguration.Current.UserProvider = _mockUserProvider;
+      SecurityConfiguration.Current.PrincipalProvider = _mockPrincipalProvider;
       SecurityConfiguration.Current.FunctionalSecurityStrategy = _mockFunctionalSecurityStrategy;
     }
 

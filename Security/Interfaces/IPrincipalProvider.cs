@@ -17,11 +17,11 @@ using System;
 
 namespace Remotion.Security
 {
-  /// <summary>Defines an interface for retrieving the current user.</summary>
-  public interface IUserProvider : INullObject
+  /// <summary>Defines an interface for retrieving the current principal.</summary>
+  public interface IPrincipalProvider : INullObject
   {
     /// <summary>Gets the current user.</summary>
-    /// <returns>The <see cref="ISecurityPrincipal"/> representing the current user.</returns>
-    ISecurityPrincipal GetUser ();
+    /// <returns>The <see cref="ISecurityPrincipal"/> representing the current principal.</returns>
+    ISecurityPrincipal GetPrincipal ();
   }
 }

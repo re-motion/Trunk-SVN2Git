@@ -61,11 +61,11 @@
     <Compile Include="Core\Configuration\SecurityConfigurationMock.cs" />
     <Compile Include="Core\Configuration\SecurityConfigurationTests\DeserializeSecurityConfigurationForGlobalAccessTypeCacheProviderTest.cs" />
     <Compile Include="Core\Configuration\SecurityConfigurationTests\DeserializeSecurityConfigurationForSecurityProviderTest.cs" />
-    <Compile Include="Core\Configuration\SecurityConfigurationTests\DeserializeSecurityConfigurationForUserProviderTest.cs" />
+    <Compile Include="Core\Configuration\SecurityConfigurationTests\DeserializeSecurityConfigurationForPrincipalProviderTest.cs" />
     <Compile Include="Core\Configuration\SecurityConfigurationTests\SecurityConfigurationTest.cs" />
     <Compile Include="Core\Configuration\SecurityConfigurationTests\TestBase.cs" />
     <Compile Include="Core\Configuration\SecurityConfigurationTests\DeserializeSecurityConfigurationForPermissionProviderTest.cs" />
-    <Compile Include="Core\Configuration\UserProviderMock.cs" />
+    <Compile Include="Core\Configuration\PrincipalProviderMock.cs" />
     <Compile Include="Core\Configuration\SecurityProviderMock.cs" />
     <Compile Include="Core\EnumWrapperTest.cs" />
     <Compile Include="Core\FunctionalSecurityContextFactoryTest.cs" />
@@ -117,7 +117,7 @@
     <Compile Include="Core\NullSecurityClientTests\HasStaticMethodAccessTest.cs" />
     <Compile Include="Core\NullSecurityClientTests\NullSecurityClientTestHelper.cs" />
     <Compile Include="Core\NullSecurityProviderTest.cs" />
-    <Compile Include="Core\NullUserProviderTest.cs" />
+    <Compile Include="Core\NullPrincipalProviderTest.cs" />
     <Compile Include="Core\SampleDomain\IInterfaceWithProperty.cs" />
     <Compile Include="Core\SecurityPrincipalRoleTest.cs" />
     <Compile Include="Core\SecurityPrincipalTest.cs" />

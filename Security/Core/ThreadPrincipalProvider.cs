@@ -21,19 +21,19 @@ using Remotion.Configuration;
 
 namespace Remotion.Security
 {
-  public class ThreadUserProvider : ExtendedProviderBase, IUserProvider
+  public class ThreadPrincipalProvider : ExtendedProviderBase, IPrincipalProvider
   {
-    public ThreadUserProvider ()
+    public ThreadPrincipalProvider ()
         : this ("Thread", new NameValueCollection())
     {
     }
 
-    public ThreadUserProvider (string name, NameValueCollection config)
+    public ThreadPrincipalProvider (string name, NameValueCollection config)
         : base (name, config)
     {
     }
 
-    public ISecurityPrincipal GetUser ()
+    public ISecurityPrincipal GetPrincipal ()
     {
       IIdentity identity = Thread.CurrentPrincipal.Identity;
       if (!identity.IsAuthenticated)

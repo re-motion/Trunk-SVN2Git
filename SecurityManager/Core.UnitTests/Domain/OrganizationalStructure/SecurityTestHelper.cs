@@ -53,10 +53,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
       return securityProviderStub;
     }
 
-    private IUserProvider CreateUserProviderStub (ISecurityPrincipal principal)
+    private IPrincipalProvider CreateUserProviderStub (ISecurityPrincipal principal)
     {
-      var userProviderStub = MockRepository.GenerateStub<IUserProvider>();
-      userProviderStub.Stub (stub => stub.GetUser()).Return (principal);
+      var userProviderStub = MockRepository.GenerateStub<IPrincipalProvider>();
+      userProviderStub.Stub (stub => stub.GetPrincipal()).Return (principal);
       
       return userProviderStub;
     }

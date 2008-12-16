@@ -1,3 +1,9 @@
+1.11.18
+=======
+- Renamed IUserProvider to IPrincipalProvider
+- Updated configuration to use "defaultPrincipalProvider" instead of "defaultUserProvider"
+- Updated configuration to use "principalProviders" instead of "defaultPrincipalProvider"
+
 1.11.3
 ======
 - SecurityContext: Changed constructor to factory methods and provided overload for instaniating an instance by using EnumWrappers instead of Enums.

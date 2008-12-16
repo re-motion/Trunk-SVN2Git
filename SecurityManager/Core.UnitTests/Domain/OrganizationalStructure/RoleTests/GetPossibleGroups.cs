@@ -39,7 +39,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     private ObjectID _expectedGroup0ID;
     private MockRepository _mocks;
     private ISecurityProvider _mockSecurityProvider;
-    private IUserProvider _mockUserProvider;
+    private IPrincipalProvider _mockPrincipalProvider;
     private IFunctionalSecurityStrategy _stubFunctionalSecurityStrategy;
 
     public override void TestFixtureSetUp ()
@@ -72,12 +72,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
       _mocks = new MockRepository();
       _mockSecurityProvider = (ISecurityProvider) _mocks.StrictMultiMock (typeof (ProviderBase), typeof (ISecurityProvider));
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
-      _mockUserProvider = (IUserProvider) _mocks.StrictMultiMock (typeof (ProviderBase), typeof (IUserProvider));
+      _mockPrincipalProvider = (IPrincipalProvider) _mocks.StrictMultiMock (typeof (ProviderBase), typeof (IPrincipalProvider));
       _stubFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy>();
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
-      SecurityConfiguration.Current.UserProvider = _mockUserProvider;
+      SecurityConfiguration.Current.PrincipalProvider = _mockPrincipalProvider;
       SecurityConfiguration.Current.FunctionalSecurityStrategy = _stubFunctionalSecurityStrategy;
     }
 
@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     {
       ISecurityPrincipal principalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
       principalStub.Stub (stub => stub.User).Return ("group0/user1");
-      SetupResult.For (_mockUserProvider.GetUser ()).Return (principalStub);
+      SetupResult.For (_mockPrincipalProvider.GetPrincipal ()).Return (principalStub);
       ExpectSecurityProviderGetAccessForGroup ("UID: rootGroup", "UID: testTenant", principalStub);
       ExpectSecurityProviderGetAccessForGroup ("UID: parentGroup0", "UID: testTenant", principalStub, SecurityManagerAccessTypes.AssignRole);
       ExpectSecurityProviderGetAccessForGroup ("UID: group0", "UID: testTenant", principalStub, SecurityManagerAccessTypes.AssignRole);
@@ -123,7 +123,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
     public void Test_WithoutSecurityProvider ()
     {
       SecurityConfiguration.Current.SecurityProvider = new NullSecurityProvider();
-      SecurityConfiguration.Current.UserProvider = new ThreadUserProvider();
+      SecurityConfiguration.Current.PrincipalProvider = new ThreadPrincipalProvider();
       Role role = Role.NewObject();
 
       List<Group> groups = role.GetPossibleGroups (_expectedTenantID);

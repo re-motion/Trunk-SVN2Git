@@ -20,7 +20,7 @@
         </xs:element>
       </xs:all>
       <xs:attribute name="defaultSecurityProvider" type="c:SecurityProviderSelection" default="None" />
-      <xs:attribute name="defaultUserProvider" type="c:UserProviderSelection" default="Thread" />
+      <xs:attribute name="defaultPrincipalProvider" type="c:PrincipalProviderSelection" default="Thread" />
       <xs:attribute name="defaultPermissionProvider" type="c:PermissionProviderSelection" default="Reflection" />
       <xs:attribute name="defaultGlobalAccessTypeCacheProvider" type="c:GlobalAccessTypeCacheProviderSelection" default="None" />
     </xs:complexType>
@@ -40,7 +40,7 @@
     </xs:union>
   </xs:simpleType>
 
-  <xs:simpleType name="UserProviderSelection">
+  <xs:simpleType name="PrincipalProviderSelection">
     <xs:union>
       <xs:simpleType>
         <xs:restriction base="xs:string">

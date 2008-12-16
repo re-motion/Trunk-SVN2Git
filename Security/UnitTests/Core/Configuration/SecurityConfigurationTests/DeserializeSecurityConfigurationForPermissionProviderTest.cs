@@ -157,7 +157,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
           @"
           <remotion.security>
             <permissionProviders>
-              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
+              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.PrincipalProviderMock"" />
             </permissionProviders>
           </remotion.security>";
 

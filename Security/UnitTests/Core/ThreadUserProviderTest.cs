@@ -25,7 +25,7 @@ namespace Remotion.Security.UnitTests.Core
   [TestFixture]
   public class ThreadUserProviderTest
   {
-    private IUserProvider _userProvider;
+    private IPrincipalProvider _principalProvider;
 
     public ThreadUserProviderTest ()
     {
@@ -34,7 +34,7 @@ namespace Remotion.Security.UnitTests.Core
     [SetUp]
     public void SetUp ()
     {
-      _userProvider = new ThreadUserProvider();
+      _principalProvider = new ThreadPrincipalProvider();
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.Security.UnitTests.Core
       NameValueCollection config = new NameValueCollection();
       config.Add ("description", "The Description");
 
-      ExtendedProviderBase provider = new ThreadUserProvider ("Provider", config);
+      ExtendedProviderBase provider = new ThreadPrincipalProvider ("Provider", config);
 
       Assert.AreEqual ("Provider", provider.Name);
       Assert.AreEqual ("The Description", provider.Description);
@@ -53,7 +53,7 @@ namespace Remotion.Security.UnitTests.Core
     public void GetUser ()
     {
       Thread.CurrentPrincipal = new GenericPrincipal (new GenericIdentity ("user"), new string[0]);
-      Assert.AreEqual ("user", _userProvider.GetUser().User);
+      Assert.AreEqual ("user", _principalProvider.GetPrincipal().User);
     }
 
     [Test]
@@ -61,13 +61,13 @@ namespace Remotion.Security.UnitTests.Core
     {
       Thread.CurrentPrincipal = new GenericPrincipal (new GenericIdentity (string.Empty), new string[0]);
       Assert.IsFalse (Thread.CurrentPrincipal.Identity.IsAuthenticated);
-      Assert.IsTrue (_userProvider.GetUser ().IsNull);
+      Assert.IsTrue (_principalProvider.GetPrincipal ().IsNull);
     }
 
     [Test]
     public void GetIsNull ()
     {
-      Assert.IsFalse (_userProvider.IsNull);
+      Assert.IsFalse (_principalProvider.IsNull);
     }
   }
 }

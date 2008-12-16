@@ -190,7 +190,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
           @"
           <remotion.security>
             <globalAccessTypeCacheProviders>
-              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
+              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.PrincipalProviderMock"" />
             </globalAccessTypeCacheProviders>
           </remotion.security>";
 

@@ -42,7 +42,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     private readonly IPermissionProvider _mockPermissionReflector;
     private readonly IObjectSecurityStrategy _mockObjectSecurityStrategy;
     private readonly IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
-    private readonly IUserProvider _stubUserProvider;
+    private readonly IPrincipalProvider _stubPrincipalProvider;
     private readonly SecurableObject _securableObject;
 
     private SecurityClientTestHelper (SecurityContext context)
@@ -56,15 +56,15 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy>();
       _userStub = _mocks.Stub<ISecurityPrincipal>();
       SetupResult.For (_userStub.User).Return ("user");
-      _stubUserProvider = _mocks.Stub<IUserProvider>();
-      SetupResult.For (_stubUserProvider.GetUser()).Return (_userStub);
+      _stubPrincipalProvider = _mocks.Stub<IPrincipalProvider>();
+      SetupResult.For (_stubPrincipalProvider.GetPrincipal()).Return (_userStub);
 
       _securableObject = new SecurableObject (_mockObjectSecurityStrategy);
     }
 
     public SecurityClient CreateSecurityClient ()
     {
-      return new SecurityClient (_mockSecurityProvider, _mockPermissionReflector, _stubUserProvider, _mockFunctionalSecurityStrategy);
+      return new SecurityClient (_mockSecurityProvider, _mockPermissionReflector, _stubPrincipalProvider, _mockFunctionalSecurityStrategy);
     }
 
     public SecurableObject SecurableObject

@@ -38,7 +38,7 @@ namespace Remotion.Security.UnitTests.Core
     private SecurableObject _securableObject;
     private IObjectSecurityStrategy _mockObjectSecurityStrategy;
     private ISecurityProvider _mockSecurityProvider;
-    private IUserProvider _mockUserProvider;
+    private IPrincipalProvider _mockPrincipalProvider;
     private ISecurityPrincipal _userStub;
     private IPermissionProvider _mockPermissionProvider;
 
@@ -59,16 +59,16 @@ namespace Remotion.Security.UnitTests.Core
 
       _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
-      _mockUserProvider = _mocks.StrictMock<IUserProvider> ();
+      _mockPrincipalProvider = _mocks.StrictMock<IPrincipalProvider> ();
       _mockPermissionProvider = _mocks.StrictMock<IPermissionProvider> ();
 
       _userStub = _mocks.Stub < ISecurityPrincipal>();
       SetupResult.For (_userStub.User).Return ("user");
-      SetupResult.For (_mockUserProvider.GetUser ()).Return (_userStub);
+      SetupResult.For (_mockPrincipalProvider.GetPrincipal ()).Return (_userStub);
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
-      SecurityConfiguration.Current.UserProvider = _mockUserProvider;
+      SecurityConfiguration.Current.PrincipalProvider = _mockPrincipalProvider;
       SecurityConfiguration.Current.PermissionProvider = _mockPermissionProvider;
 
       _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy> ();

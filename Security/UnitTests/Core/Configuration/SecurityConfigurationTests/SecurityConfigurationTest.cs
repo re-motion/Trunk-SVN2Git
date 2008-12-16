@@ -31,7 +31,7 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
       Assert.IsNotNull (configuration);
       Assert.IsInstanceOfType (typeof (NullSecurityProvider), configuration.SecurityProvider);
-      Assert.IsInstanceOfType (typeof (ThreadUserProvider), configuration.UserProvider);
+      Assert.IsInstanceOfType (typeof (ThreadPrincipalProvider), configuration.PrincipalProvider);
       Assert.IsInstanceOfType (typeof (FunctionalSecurityStrategy), configuration.FunctionalSecurityStrategy);
       Assert.IsInstanceOfType (typeof (PermissionReflector), configuration.PermissionProvider);
       Assert.IsInstanceOfType (typeof (NullGlobalAccessTypeCacheProvider), configuration.GlobalAccessTypeCacheProvider);

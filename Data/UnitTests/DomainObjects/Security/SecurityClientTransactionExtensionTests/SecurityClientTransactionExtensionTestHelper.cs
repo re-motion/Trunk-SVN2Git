@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     private readonly MockRepository _mocks;
     private readonly ISecurityPrincipal _stubUser;
     private readonly ISecurityProvider _mockSecurityProvider;
-    private readonly IUserProvider _stubUserProvider;
+    private readonly IPrincipalProvider _stubPrincipalProvider;
     private readonly IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
     private readonly IPermissionProvider _mockPermissionReflector;
     private readonly ClientTransaction _transaction;
@@ -53,8 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _mockSecurityProvider = _mocks.StrictMock<ISecurityProvider> ();
       _stubUser = _mocks.Stub<ISecurityPrincipal> ();
       SetupResult.For (_stubUser.User).Return ("user");
-      _stubUserProvider = _mocks.StrictMock<IUserProvider> ();
-      SetupResult.For (_stubUserProvider.GetUser ()).Return (_stubUser);
+      _stubPrincipalProvider = _mocks.StrictMock<IPrincipalProvider> ();
+      SetupResult.For (_stubPrincipalProvider.GetPrincipal ()).Return (_stubUser);
       _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
       _mockPermissionReflector = _mocks.StrictMock<IPermissionProvider> ();
       _transaction = ClientTransaction.CreateRootTransaction();
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       PrivateInvoke.InvokeNonPublicStaticMethod (typeof (SecurityConfiguration), "SetCurrent", new SecurityConfiguration ());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
-      SecurityConfiguration.Current.UserProvider = _stubUserProvider;
+      SecurityConfiguration.Current.PrincipalProvider = _stubPrincipalProvider;
       SecurityConfiguration.Current.FunctionalSecurityStrategy = _mockFunctionalSecurityStrategy;
       SecurityConfiguration.Current.PermissionProvider = _mockPermissionReflector;
     }

@@ -33,36 +33,36 @@ namespace Remotion.Security
       return new SecurityClient (
           securityProvider,
           SecurityConfiguration.Current.PermissionProvider,
-          SecurityConfiguration.Current.UserProvider,
+          SecurityConfiguration.Current.PrincipalProvider,
           SecurityConfiguration.Current.FunctionalSecurityStrategy);
     }
 
     private readonly ISecurityProvider _securityProvider;
     private readonly IPermissionProvider _permissionProvider;
-    private readonly IUserProvider _userProvider;
+    private readonly IPrincipalProvider _principalProvider;
     private readonly IFunctionalSecurityStrategy _functionalSecurityStrategy;
 
     public SecurityClient (
         ISecurityProvider securityProvider,
         IPermissionProvider permissionProvider,
-        IUserProvider userProvider,
+        IPrincipalProvider principalProvider,
         IFunctionalSecurityStrategy functionalSecurityStrategy)
     {
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.CheckNotNull ("permissionProvider", permissionProvider);
-      ArgumentUtility.CheckNotNull ("userProvider", userProvider);
+      ArgumentUtility.CheckNotNull ("userProvider", principalProvider);
       ArgumentUtility.CheckNotNull ("functionalSecurityStrategy", functionalSecurityStrategy);
 
       _securityProvider = securityProvider;
       _permissionProvider = permissionProvider;
-      _userProvider = userProvider;
+      _principalProvider = principalProvider;
       _functionalSecurityStrategy = functionalSecurityStrategy;
     }
 
 
     public bool HasAccess (ISecurableObject securableObject, params AccessType[] requiredAccessTypes)
     {
-      return HasAccess (securableObject, _userProvider.GetUser(), requiredAccessTypes);
+      return HasAccess (securableObject, _principalProvider.GetPrincipal(), requiredAccessTypes);
     }
 
     public virtual bool HasAccess (ISecurableObject securableObject, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
@@ -83,7 +83,7 @@ namespace Remotion.Security
 
     public void CheckAccess (ISecurableObject securableObject, params AccessType[] requiredAccessTypes)
     {
-      CheckAccess (securableObject, _userProvider.GetUser(), requiredAccessTypes);
+      CheckAccess (securableObject, _principalProvider.GetPrincipal(), requiredAccessTypes);
     }
 
     public void CheckAccess (ISecurableObject securableObject, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
@@ -99,7 +99,7 @@ namespace Remotion.Security
 
     public bool HasStatelessAccess (Type securableClass, params AccessType[] requiredAccessTypes)
     {
-      return HasStatelessAccess (securableClass, _userProvider.GetUser(), requiredAccessTypes);
+      return HasStatelessAccess (securableClass, _principalProvider.GetPrincipal(), requiredAccessTypes);
     }
 
     public virtual bool HasStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
@@ -116,7 +116,7 @@ namespace Remotion.Security
 
     public void CheckStatelessAccess (Type securableClass, params AccessType[] requiredAccessTypes)
     {
-      CheckStatelessAccess (securableClass, _userProvider.GetUser(), requiredAccessTypes);
+      CheckStatelessAccess (securableClass, _principalProvider.GetPrincipal(), requiredAccessTypes);
     }
 
     public void CheckStatelessAccess (Type securableClass, ISecurityPrincipal principal, params AccessType[] requiredAccessTypes)
@@ -132,7 +132,7 @@ namespace Remotion.Security
 
     public bool HasMethodAccess (ISecurableObject securableObject, string methodName)
     {
-      return HasMethodAccess (securableObject, methodName, _userProvider.GetUser());
+      return HasMethodAccess (securableObject, methodName, _principalProvider.GetPrincipal());
     }
 
     public virtual bool HasMethodAccess (ISecurableObject securableObject, string methodName, ISecurityPrincipal principal)
@@ -150,7 +150,7 @@ namespace Remotion.Security
 
     public void CheckMethodAccess (ISecurableObject securableObject, string methodName)
     {
-      CheckMethodAccess (securableObject, methodName, _userProvider.GetUser());
+      CheckMethodAccess (securableObject, methodName, _principalProvider.GetPrincipal());
     }
 
     public void CheckMethodAccess (ISecurableObject securableObject, string methodName, ISecurityPrincipal principal)
@@ -169,7 +169,7 @@ namespace Remotion.Security
 
     public bool HasPropertyReadAccess (ISecurableObject securableObject, string propertyName)
     {
-      return HasPropertyReadAccess (securableObject, propertyName, _userProvider.GetUser());
+      return HasPropertyReadAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
     }
 
     public virtual bool HasPropertyReadAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
@@ -190,7 +190,7 @@ namespace Remotion.Security
 
     public void CheckPropertyReadAccess (ISecurableObject securableObject, string propertyName)
     {
-      CheckPropertyReadAccess (securableObject, propertyName, _userProvider.GetUser());
+      CheckPropertyReadAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
     }
 
     public void CheckPropertyReadAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
@@ -208,7 +208,7 @@ namespace Remotion.Security
 
     public bool HasPropertyWriteAccess (ISecurableObject securableObject, string propertyName)
     {
-      return HasPropertyWriteAccess (securableObject, propertyName, _userProvider.GetUser());
+      return HasPropertyWriteAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
     }
 
     public virtual bool HasPropertyWriteAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
@@ -229,7 +229,7 @@ namespace Remotion.Security
 
     public void CheckPropertyWriteAccess (ISecurableObject securableObject, string propertyName)
     {
-      CheckPropertyWriteAccess (securableObject, propertyName, _userProvider.GetUser());
+      CheckPropertyWriteAccess (securableObject, propertyName, _principalProvider.GetPrincipal());
     }
 
     public void CheckPropertyWriteAccess (ISecurableObject securableObject, string propertyName, ISecurityPrincipal principal)
@@ -248,7 +248,7 @@ namespace Remotion.Security
 
     public bool HasConstructorAccess (Type securableClass)
     {
-      return HasConstructorAccess (securableClass, _userProvider.GetUser());
+      return HasConstructorAccess (securableClass, _principalProvider.GetPrincipal());
     }
 
     public virtual bool HasConstructorAccess (Type securableClass, ISecurityPrincipal principal)
@@ -266,7 +266,7 @@ namespace Remotion.Security
 
     public void CheckConstructorAccess (Type securableClass)
     {
-      CheckConstructorAccess (securableClass, _userProvider.GetUser());
+      CheckConstructorAccess (securableClass, _principalProvider.GetPrincipal());
     }
 
     public void CheckConstructorAccess (Type securableClass, ISecurityPrincipal principal)
@@ -281,7 +281,7 @@ namespace Remotion.Security
 
     public bool HasStaticMethodAccess (Type securableClass, string methodName)
     {
-      return HasStaticMethodAccess (securableClass, methodName, _userProvider.GetUser());
+      return HasStaticMethodAccess (securableClass, methodName, _principalProvider.GetPrincipal());
     }
 
     public virtual bool HasStaticMethodAccess (Type securableClass, string methodName, ISecurityPrincipal principal)
@@ -299,7 +299,7 @@ namespace Remotion.Security
 
     public void CheckStaticMethodAccess (Type securableClass, string methodName)
     {
-      CheckStaticMethodAccess (securableClass, methodName, _userProvider.GetUser());
+      CheckStaticMethodAccess (securableClass, methodName, _principalProvider.GetPrincipal());
     }
 
     public void CheckStaticMethodAccess (Type securableClass, string methodName, ISecurityPrincipal principal)
@@ -316,7 +316,7 @@ namespace Remotion.Security
     [EditorBrowsable (EditorBrowsableState.Never)]
     public bool HasStatelessMethodAccess (Type securableClass, string methodName)
     {
-      return HasStatelessMethodAccess (securableClass, methodName, _userProvider.GetUser());
+      return HasStatelessMethodAccess (securableClass, methodName, _principalProvider.GetPrincipal());
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

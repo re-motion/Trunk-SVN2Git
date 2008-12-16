@@ -32,7 +32,7 @@ namespace Remotion.Web.UnitTests.Security.UI.WebSecurityAdapterTests
     private readonly MockRepository _mocks;
     private readonly ISecurityPrincipal _stubUser;
     private readonly ISecurityProvider _mockSecurityProvider;
-    private readonly IUserProvider _mockUserProvider;
+    private readonly IPrincipalProvider _mockPrincipalProvider;
     private readonly IObjectSecurityStrategy _mockObjectSecurityStrategy;
     private readonly IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
     private readonly IWxeSecurityAdapter _mockWxeSecurityAdapter;
@@ -51,8 +51,8 @@ namespace Remotion.Web.UnitTests.Security.UI.WebSecurityAdapterTests
 
       _stubUser = _mocks.Stub<ISecurityPrincipal> ();
       SetupResult.For (_stubUser.User).Return ("user");
-      _mockUserProvider = _mocks.StrictMock<IUserProvider> ();
-      SetupResult.For (_mockUserProvider.GetUser()).Return (_stubUser);
+      _mockPrincipalProvider = _mocks.StrictMock<IPrincipalProvider> ();
+      SetupResult.For (_mockPrincipalProvider.GetPrincipal()).Return (_stubUser);
     }
 
     // methods and properties
@@ -91,9 +91,9 @@ namespace Remotion.Web.UnitTests.Security.UI.WebSecurityAdapterTests
       get { return _mockSecurityProvider; }
     }
 
-    public IUserProvider UserProvider
+    public IPrincipalProvider PrincipalProvider
     {
-      get { return _mockUserProvider; }
+      get { return _mockPrincipalProvider; }
     }
 
     public IFunctionalSecurityStrategy FunctionalSecurityStrategy

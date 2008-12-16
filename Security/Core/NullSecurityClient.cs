@@ -29,7 +29,7 @@ namespace Remotion.Security
         : base (
             new NullSecurityProvider(),
             new PermissionReflector(),
-            new NullUserProvider(),
+            new PrincipalUserProvider(),
             new FunctionalSecurityStrategy (
                 new SecurityStrategy (new NullCache<ISecurityPrincipal, AccessType[]>(), new NullGlobalAccessTypeCacheProvider())))
     {

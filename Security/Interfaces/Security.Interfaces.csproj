@@ -54,7 +54,7 @@
     <Compile Include="ISecurityPrincipal.cs" />
     <Compile Include="ISecurityProvider.cs" />
     <Compile Include="ISecurityStrategy.cs" />
-    <Compile Include="IUserProvider.cs" />
+    <Compile Include="IPrincipalProvider.cs" />
     <Compile Include="PermissionDeniedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ISecurityPrincipalRole.cs" />

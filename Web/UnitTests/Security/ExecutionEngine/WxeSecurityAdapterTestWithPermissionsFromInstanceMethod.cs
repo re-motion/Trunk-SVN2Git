@@ -41,7 +41,7 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
     private IObjectSecurityStrategy _mockObjectSecurityStrategy;
     private IFunctionalSecurityStrategy _mockFunctionalSecurityStrategy;
     private ISecurityProvider _mockSecurityProvider;
-    private IUserProvider _userProvider;
+    private IPrincipalProvider _principalProvider;
     private ISecurityPrincipal _stubUser;
 
     // construction and disposing
@@ -63,15 +63,15 @@ namespace Remotion.Web.UnitTests.Security.ExecutionEngine
       SetupResult.For (_mockSecurityProvider.IsNull).Return (false);
       _stubUser = _mocks.Stub<ISecurityPrincipal> ();
       SetupResult.For (_stubUser.User).Return ("user");
-      _userProvider = _mocks.StrictMock<IUserProvider> ();
-      SetupResult.For (_userProvider.GetUser ()).Return (_stubUser);
+      _principalProvider = _mocks.StrictMock<IPrincipalProvider> ();
+      SetupResult.For (_principalProvider.GetPrincipal ()).Return (_stubUser);
 
       _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy> ();
       _mockFunctionalSecurityStrategy = _mocks.StrictMock<IFunctionalSecurityStrategy> ();
 
       SecurityConfigurationMock.SetCurrent (new SecurityConfiguration ());
       SecurityConfiguration.Current.SecurityProvider = _mockSecurityProvider;
-      SecurityConfiguration.Current.UserProvider = _userProvider;
+      SecurityConfiguration.Current.PrincipalProvider = _principalProvider;
       SecurityConfiguration.Current.PermissionProvider = new PermissionReflector ();
       SecurityConfiguration.Current.FunctionalSecurityStrategy = _mockFunctionalSecurityStrategy;
     }

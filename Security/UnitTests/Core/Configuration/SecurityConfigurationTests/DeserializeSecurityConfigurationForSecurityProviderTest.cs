@@ -182,14 +182,15 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
     }
 
     [Test]
-    [ExpectedExceptionAttribute (typeof (ConfigurationErrorsException), ExpectedMessage = "Provider must implement the interface 'Remotion.Security.ISecurityProvider'.")]
+    [ExpectedExceptionAttribute (typeof (ConfigurationErrorsException), ExpectedMessage = 
+        "Provider must implement the interface 'Remotion.Security.ISecurityProvider'.")]
     public void InstantiateProvider_WithTypeNotImplementingRequiredInterface ()
     {
       string xmlFragment =
           @"
           <remotion.security>
             <securityProviders>
-              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.UserProviderMock"" />
+              <add name=""Custom"" type=""Remotion.Security.UnitTests::Core.Configuration.PrincipalProviderMock"" />
             </securityProviders>
           </remotion.security>";
 

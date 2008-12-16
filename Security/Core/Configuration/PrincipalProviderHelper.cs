@@ -22,37 +22,37 @@ using Remotion.Utilities;
 
 namespace Remotion.Security.Configuration
 {
-  /// <summary>Helper class that loads implementations of <see cref="IUserProvider"/> from the <see cref="SecurityConfiguration"/> section.</summary>
-  public class UserProviderHelper : ProviderHelperBase<IUserProvider>
+  /// <summary>Helper class that loads implementations of <see cref="IPrincipalProvider"/> from the <see cref="SecurityConfiguration"/> section.</summary>
+  public class PrincipalProviderHelper : ProviderHelperBase<IPrincipalProvider>
   {
-    private const string c_threadUserProviderWellKnownName = "Thread";
-    private const string c_httpContexUserProviderWellKnownName = "HttpContext";
+    private const string c_threadPrincipalProviderWellKnownName = "Thread";
+    private const string c_httpContexPrincipalProviderWellKnownName = "HttpContext";
 
     private readonly object _sync = new object();
-    private Type _httpContextUserProviderType;
+    private Type _httpContextPrincipalProviderType;
 
-    public UserProviderHelper (SecurityConfiguration configuration)
+    public PrincipalProviderHelper (SecurityConfiguration configuration)
         : base (configuration)
     {
     }
 
     protected override ConfigurationProperty CreateDefaultProviderNameProperty ()
     {
-      return CreateDefaultProviderNameProperty ("defaultUserProvider", c_threadUserProviderWellKnownName);
+      return CreateDefaultProviderNameProperty ("defaultPrincipalProvider", c_threadPrincipalProviderWellKnownName);
     }
 
     protected override ConfigurationProperty CreateProviderSettingsProperty ()
     {
-      return CreateProviderSettingsProperty ("userProviders");
+      return CreateProviderSettingsProperty ("principalProviders");
     }
 
     public override void PostDeserialze ()
     {
-      CheckForDuplicateWellKownProviderName (c_threadUserProviderWellKnownName);
-      CheckForDuplicateWellKownProviderName (c_httpContexUserProviderWellKnownName);
+      CheckForDuplicateWellKownProviderName (c_threadPrincipalProviderWellKnownName);
+      CheckForDuplicateWellKownProviderName (c_httpContexPrincipalProviderWellKnownName);
 
-      if (DefaultProviderName.Equals (c_httpContexUserProviderWellKnownName, StringComparison.Ordinal))
-        EnsureHttpContextUserProviderTypeInitialized();
+      if (DefaultProviderName.Equals (c_httpContexPrincipalProviderWellKnownName, StringComparison.Ordinal))
+        EnsureHttpContextPrincipalProviderTypeInitialized();
     }
 
     protected override void EnsureWellKownProviders (ProviderCollection collection)
@@ -60,36 +60,36 @@ namespace Remotion.Security.Configuration
       ArgumentUtility.CheckNotNull ("collection", collection);
 
       EnsureWellKnownThreadUserProvider (collection);
-      EnsureWellKnownHttpContextUserProvider (collection);
+      EnsureWellKnownHttpContextPrincipalProvider (collection);
     }
 
     private void EnsureWellKnownThreadUserProvider (ProviderCollection collection)
     {
-      collection.Add (new ThreadUserProvider(c_threadUserProviderWellKnownName, new NameValueCollection()));
+      collection.Add (new ThreadPrincipalProvider(c_threadPrincipalProviderWellKnownName, new NameValueCollection()));
     }
 
-    private void EnsureWellKnownHttpContextUserProvider (ProviderCollection collection)
+    private void EnsureWellKnownHttpContextPrincipalProvider (ProviderCollection collection)
     {
-      if (_httpContextUserProviderType != null)
+      if (_httpContextPrincipalProviderType != null)
       {
        collection.Add ((ExtendedProviderBase) Activator.CreateInstance (
-          _httpContextUserProviderType, 
-          new object[] { c_httpContexUserProviderWellKnownName, new NameValueCollection()}));
+          _httpContextPrincipalProviderType, 
+          new object[] { c_httpContexPrincipalProviderWellKnownName, new NameValueCollection()}));
       }
     }
 
-    private void EnsureHttpContextUserProviderTypeInitialized ()
+    private void EnsureHttpContextPrincipalProviderTypeInitialized ()
     {
-      if (_httpContextUserProviderType == null)
+      if (_httpContextPrincipalProviderType == null)
       {
         lock (_sync)
         {
-          if (_httpContextUserProviderType == null)
+          if (_httpContextPrincipalProviderType == null)
           {
-            _httpContextUserProviderType = GetTypeWithMatchingVersionNumber (
+            _httpContextPrincipalProviderType = GetTypeWithMatchingVersionNumber (
                 DefaultProviderNameProperty,
                 "Remotion.Web.Security",
-                "Remotion.Web.Security.HttpContextUserProvider");
+                "Remotion.Web.Security.HttpContextPrincipalProvider");
           }
         }
       }

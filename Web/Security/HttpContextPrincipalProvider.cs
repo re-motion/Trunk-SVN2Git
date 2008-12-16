@@ -24,19 +24,19 @@ using Remotion.Security;
 
 namespace Remotion.Web.Security
 {
-  public class HttpContextUserProvider : ExtendedProviderBase, IUserProvider
+  public class HttpContextPrincipalProvider : ExtendedProviderBase, IPrincipalProvider
   {
-    public HttpContextUserProvider ()
+    public HttpContextPrincipalProvider ()
         : this ("HttpContext", new NameValueCollection())
     {
     }
 
-    public HttpContextUserProvider (string name, NameValueCollection config)
+    public HttpContextPrincipalProvider (string name, NameValueCollection config)
         : base (name, config)
     {
     }
 
-    public ISecurityPrincipal GetUser ()
+    public ISecurityPrincipal GetPrincipal ()
     {
       if (HttpContext.Current == null)
         return new NullSecurityPrincipal();

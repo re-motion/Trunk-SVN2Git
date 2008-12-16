@@ -58,7 +58,7 @@ namespace Remotion.Security.Configuration
 
     private PermissionProviderHelper _permissionProviderHelper;
     private SecurityProviderHelper _securityProviderHelper;
-    private UserProviderHelper _userProviderHelper;
+    private PrincipalProviderHelper _principalProviderHelper;
     private GlobalAccessTypeCacheProviderHelper _globalAccessTypeCacheProviderHelper;
     private List<ProviderHelperBase> _providerHelpers = new List<ProviderHelperBase>();
 
@@ -72,8 +72,8 @@ namespace Remotion.Security.Configuration
       _securityProviderHelper = new SecurityProviderHelper (this);
       _providerHelpers.Add (_securityProviderHelper);
       
-      _userProviderHelper = new UserProviderHelper (this);
-      _providerHelpers.Add (_userProviderHelper);
+      _principalProviderHelper = new PrincipalProviderHelper (this);
+      _providerHelpers.Add (_principalProviderHelper);
       
       _globalAccessTypeCacheProviderHelper = new GlobalAccessTypeCacheProviderHelper (this);
       _providerHelpers.Add (_globalAccessTypeCacheProviderHelper);
@@ -118,15 +118,15 @@ namespace Remotion.Security.Configuration
       get { return _securityProviderHelper.Providers; }
     }
 
-    public IUserProvider UserProvider
+    public IPrincipalProvider PrincipalProvider
     {
-      get { return _userProviderHelper.Provider; }
-      set { _userProviderHelper.Provider = value; }
+      get { return _principalProviderHelper.Provider; }
+      set { _principalProviderHelper.Provider = value; }
     }
 
-    public ProviderCollection UserProviders
+    public ProviderCollection PrincipalProviders
     {
-      get { return _userProviderHelper.Providers; }
+      get { return _principalProviderHelper.Providers; }
     }
 
 

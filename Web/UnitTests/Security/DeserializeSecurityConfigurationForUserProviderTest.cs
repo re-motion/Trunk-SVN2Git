@@ -30,7 +30,7 @@ namespace Remotion.Web.UnitTests.Security
       SecurityConfiguration configuration = new SecurityConfiguration ();
       string xmlFragment = @"<remotion.security defaultUserProvider=""HttpContext"" />";
       ConfigurationHelper.DeserializeSection (configuration, xmlFragment);
-      Assert.IsInstanceOfType (typeof (HttpContextUserProvider), configuration.UserProvider);
+      Assert.IsInstanceOfType (typeof (HttpContextPrincipalProvider), configuration.PrincipalProvider);
     }
 
   }
