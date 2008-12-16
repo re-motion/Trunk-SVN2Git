@@ -24,7 +24,7 @@ using Remotion.Collections;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 
-namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
+namespace Remotion.UnitTests.Collections
 {
   [TestFixture]
   public class EnumerableEqualsWrapperTest
@@ -34,7 +34,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void Spike ()
     {
       int i = 17;
-      var c = new ComparableTestClass(i);
+      var c = new ComparableTestClass_EnumerableEqualsWrapper(i);
       var comparer = EqualityComparer<object>.Default;
 
       To.ConsoleLine.e (c.Number.Equals (c));
@@ -50,7 +50,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Explicit]
     public void Spike2 ()
     {
-      var c = new ComparableTestClass (6758439);
+      var c = new ComparableTestClass_EnumerableEqualsWrapper (6758439);
       To.ConsoleLine.e (c.Number.Equals (c));
       To.ConsoleLine.e (c.Equals (c.Number));
     }
@@ -85,11 +85,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void EqualsAndGetHashCodeTest ()
     {
-      var sequence0 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (13) };
-      var sequence1 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (13) };
-      var sequence2 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (13), new ComparableTestClass (17) };
-      var sequence3 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (14) };
-      var sequence4 = new [] {  new ComparableTestClass (7), new ComparableTestClass (11), new ComparableTestClass (13), new ComparableTestClass (17) };
+      var sequence0 = new [] {  new ComparableTestClass_EnumerableEqualsWrapper (7), new ComparableTestClass_EnumerableEqualsWrapper (11), new ComparableTestClass_EnumerableEqualsWrapper (13) };
+      var sequence1 = new [] {  new ComparableTestClass_EnumerableEqualsWrapper (7), new ComparableTestClass_EnumerableEqualsWrapper (11), new ComparableTestClass_EnumerableEqualsWrapper (13) };
+      var sequence2 = new [] {  new ComparableTestClass_EnumerableEqualsWrapper (7), new ComparableTestClass_EnumerableEqualsWrapper (11), new ComparableTestClass_EnumerableEqualsWrapper (13), new ComparableTestClass_EnumerableEqualsWrapper (17) };
+      var sequence3 = new [] {  new ComparableTestClass_EnumerableEqualsWrapper (7), new ComparableTestClass_EnumerableEqualsWrapper (11), new ComparableTestClass_EnumerableEqualsWrapper (14) };
+      var sequence4 = new [] {  new ComparableTestClass_EnumerableEqualsWrapper (7), new ComparableTestClass_EnumerableEqualsWrapper (11), new ComparableTestClass_EnumerableEqualsWrapper (13), new ComparableTestClass_EnumerableEqualsWrapper (17) };
 
       Assert.That (NewEnumerableEqualsWrapper (sequence0).Equals (null), Is.False);
 
@@ -134,15 +134,13 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
   }
 
-  
-
-  internal class ComparableTestClass : IEquatable<int>
+  internal class ComparableTestClass_EnumerableEqualsWrapper : IEquatable<int>
   {
     public int Number;
 
-    public ComparableTestClass () { }
+    public ComparableTestClass_EnumerableEqualsWrapper () { }
 
-    public ComparableTestClass (int number)
+    public ComparableTestClass_EnumerableEqualsWrapper (int number)
     {
       Number = number;
     }
@@ -154,9 +152,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
     public override bool Equals (object obj)
     {
-      if (obj is ComparableTestClass)
+      if (obj is ComparableTestClass_EnumerableEqualsWrapper)
       {
-        if (Object.Equals (((ComparableTestClass) obj).Number, Number))
+        if (Object.Equals (((ComparableTestClass_EnumerableEqualsWrapper) obj).Number, Number))
         {
           return true;
         }
@@ -171,4 +169,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       return Number;
     }
   }
+
+
 }

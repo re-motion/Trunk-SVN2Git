@@ -21,7 +21,7 @@ using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
-using Remotion.SecurityManager.AclTools.Expansion;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 {
