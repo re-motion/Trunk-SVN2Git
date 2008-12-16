@@ -27,7 +27,7 @@ using Remotion.Diagnostics.ToText;
 namespace Remotion.UnitTests.Collections
 {
   [TestFixture]
-  public class EnumerableEqualsWrapperTest
+  public class ComponentwiseEqualsAndHashcodeWrapperTest
   {
     [Test]
     [Explicit]
@@ -59,7 +59,7 @@ namespace Remotion.UnitTests.Collections
     public void CtorTest ()
     {
       var array = new object[0];
-      var wrapper = new EnumerableEqualsWrapper<object> (array);
+      var wrapper = new ComponentwiseEqualsAndHashcodeWrapper<object> (array);
       Assert.That (wrapper.Enumerable,Is.EqualTo(array));
     }
 
@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Collections
     public void FactoryTest ()
     {
       var array = new object[0];
-      var wrapper = EnumerableEqualsWrapper.New (array);
+      var wrapper = ComponentwiseEqualsAndHashcodeWrapper.New (array);
       Assert.That (wrapper.Enumerable, Is.EqualTo (array));
     }
 
@@ -110,27 +110,29 @@ namespace Remotion.UnitTests.Collections
 
       Assert.That (sequenceWrapped0.Equals (new[] { 7, 12, 13 }), Is.False);
 
-      Assert.That (sequenceWrapped0.Equals (sequence0), Is.True);
+      Assert.That (sequenceWrapped0.Equals (sequence0), Is.False);
+
       Assert.That (sequenceWrapped0.Equals (sequenceWrapped0), Is.True);
-      Assert.That (sequenceWrapped0.Equals (sequence1), Is.True);
+
+      Assert.That (sequenceWrapped0.Equals (sequence1), Is.False);
+
       Assert.That (sequenceWrapped0.Equals (sequenceWrapped2), Is.False);
       Assert.That (sequenceWrapped0.GetHashCode (), Is.EqualTo (sequenceWrapped1.GetHashCode ()));
 
-      Assert.That (sequenceWrapped1.Equals (sequence2), Is.False);
-      Assert.That (sequenceWrapped0.Equals (sequence3), Is.False);
       Assert.That (sequenceWrapped3.Equals (sequenceWrapped0), Is.False);
       Assert.That (sequenceWrapped0.Equals (sequenceWrapped3), Is.False);
 
-      Assert.That (sequenceWrapped2.Equals (sequence4), Is.True);
-      Assert.That (sequenceWrapped4.Equals (sequence2), Is.True);
+      Assert.That (sequenceWrapped2.Equals (sequence4), Is.False);
+      Assert.That (sequenceWrapped4.Equals (sequence2), Is.False);
+
       Assert.That (sequenceWrapped2.Equals (sequenceWrapped4), Is.True);
       Assert.That (sequenceWrapped4.Equals (sequenceWrapped2), Is.True);
       Assert.That (sequenceWrapped2.GetHashCode (), Is.EqualTo (sequenceWrapped4.GetHashCode ()));
     }
 
-    private EnumerableEqualsWrapper<T> NewEnumerableEqualsWrapper<T> (IEnumerable<T> elements)
+    private ComponentwiseEqualsAndHashcodeWrapper<T> NewEnumerableEqualsWrapper<T> (IEnumerable<T> elements)
     {
-      return new EnumerableEqualsWrapper<T> (elements);
+      return new ComponentwiseEqualsAndHashcodeWrapper<T> (elements);
     }
   }
 

@@ -27,11 +27,11 @@ namespace Remotion.Collections
   /// to get value based semantics for container class members.
   /// </summary>
   /// <typeparam name="TElement"></typeparam>
-  public class EnumerableEqualsWrapper<TElement> : IEnumerable<TElement>
+  public class ComponentwiseEqualsAndHashcodeWrapper<TElement> : IEnumerable<TElement>
   {
     private readonly IEnumerable<TElement> _enumerable;
 
-    public EnumerableEqualsWrapper (IEnumerable<TElement> enumerable)
+    public ComponentwiseEqualsAndHashcodeWrapper (IEnumerable<TElement> enumerable)
     {
       _enumerable = enumerable;
     }
@@ -41,9 +41,10 @@ namespace Remotion.Collections
       get { return _enumerable; }
     }
 
+
     /// <summary>
-    /// Compares the elements of the <see cref="IEnumerable{T}"/> for equality, if the passed <see cref="object"/> 
-    /// is an <see cref="IEnumerable{T}"/> .
+    /// Compares the elements of the <see cref="ComponentwiseEqualsAndHashcodeWrapper{TElement}"/> for equality, if the passed <see cref="object"/> 
+    /// is an <see cref="ComponentwiseEqualsAndHashcodeWrapper{TElement}"/> .
     /// </summary>
     public override bool Equals (object obj)
     {
@@ -55,10 +56,10 @@ namespace Remotion.Collections
       {
         return true;
       }
-      else if (obj is IEnumerable)
+      else if (obj is ComponentwiseEqualsAndHashcodeWrapper<TElement>)
       {
-        var enumerable = (IEnumerable) obj;
-        return enumerable.Cast<object> ().SequenceEqual (Enumerable.Cast<object> ());
+        var enumerableEqualsWrapper = (ComponentwiseEqualsAndHashcodeWrapper<TElement>) obj;
+        return enumerableEqualsWrapper.Enumerable.Cast<object> ().SequenceEqual (Enumerable.Cast<object> ());
       }
       else
       {
@@ -87,13 +88,13 @@ namespace Remotion.Collections
   }
 
   /// <summary>
-  /// EnumerableEqualsWrapper-factory: EnumerableEqualsWrapper.New(<see cref="IEnumerable{T}"/>).
+  /// ComponentwiseEqualsAndHashcodeWrapper-factory: ComponentwiseEqualsAndHashcodeWrapper.New(<see cref="IEnumerable{T}"/>).
   /// </summary>
-  public static class EnumerableEqualsWrapper 
+  public static class ComponentwiseEqualsAndHashcodeWrapper 
   {
-    public static EnumerableEqualsWrapper<T> New<T> (IEnumerable<T> elements)
+    public static ComponentwiseEqualsAndHashcodeWrapper<T> New<T> (IEnumerable<T> elements)
     {
-      return new EnumerableEqualsWrapper<T> (elements);
+      return new ComponentwiseEqualsAndHashcodeWrapper<T> (elements);
     }
   }
 }

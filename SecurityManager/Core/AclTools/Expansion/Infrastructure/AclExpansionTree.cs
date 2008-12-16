@@ -42,8 +42,8 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
             a.AccessConditions.OwningGroup,
             a.AccessConditions.OwningTenant,
             a.AccessConditions.TenantHierarchyCondition,
-            EnumerableEqualsWrapper.New (a.AllowedAccessTypes),
-            EnumerableEqualsWrapper.New (a.DeniedAccessTypes) 
+            ComponentwiseEqualsAndHashcodeWrapper.New (a.AllowedAccessTypes),
+            ComponentwiseEqualsAndHashcodeWrapper.New (a.DeniedAccessTypes) 
           }
         );
 
