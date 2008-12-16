@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Security.Principal;
 using System.Threading;
 using Remotion.Configuration;
 
@@ -34,11 +35,11 @@ namespace Remotion.Security
 
     public ISecurityPrincipal GetUser ()
     {
-      string userName = Thread.CurrentPrincipal.Identity.Name;
-      if (userName.Length == 0)
+      IIdentity identity = Thread.CurrentPrincipal.Identity;
+      if (!identity.IsAuthenticated)
         return new NullSecurityPrincipal();
 
-      return new SecurityPrincipal (userName, null, null, null);
+      return new SecurityPrincipal (identity.Name, null, null, null);
     }
 
     bool INullObject.IsNull

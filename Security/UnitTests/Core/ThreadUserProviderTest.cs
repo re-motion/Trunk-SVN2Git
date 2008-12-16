@@ -57,10 +57,11 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
-    public void GetUser_WithEmptyIdentity ()
+    public void GetUser_NotAuthenticated ()
     {
       Thread.CurrentPrincipal = new GenericPrincipal (new GenericIdentity (string.Empty), new string[0]);
-      Assert.IsTrue (_userProvider.GetUser().IsNull);
+      Assert.IsFalse (Thread.CurrentPrincipal.Identity.IsAuthenticated);
+      Assert.IsTrue (_userProvider.GetUser ().IsNull);
     }
 
     [Test]

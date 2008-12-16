@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Security.Principal;
 using System.Web;
 using Remotion.Configuration;
 using Remotion.Security;
@@ -40,11 +41,11 @@ namespace Remotion.Web.Security
       if (HttpContext.Current == null)
         return new NullSecurityPrincipal();
 
-      string userName = HttpContext.Current.User.Identity.Name;
-      if (userName.Length == 0)
-        return new NullSecurityPrincipal();
+      IIdentity identity = HttpContext.Current.User.Identity;
+      if (!identity.IsAuthenticated)
+        return new NullSecurityPrincipal ();
 
-      return new SecurityPrincipal (userName, null, null, null);
+      return new SecurityPrincipal (identity.Name, null, null, null);
     }
 
     bool INullObject.IsNull
