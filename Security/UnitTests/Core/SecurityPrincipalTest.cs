@@ -72,6 +72,14 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The substituted user must be specified if a substituted role is also specified.\r\nParameter name: substitutedUser")]
+    public void Initialize_WithSubstitutedUserMissing ()
+    {
+      new SecurityPrincipal ("TheUser", null, null, new SecurityPrincipalRole("group", "position"));
+    }
+
+    [Test]
     public void Equals_WithEqualUser ()
     {
       var left = CreatePrincipal ("TheUser", null, null, null);

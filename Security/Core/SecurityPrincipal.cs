@@ -33,6 +33,8 @@ namespace Remotion.Security
     {
       ArgumentUtility.CheckNotNullOrEmpty ("user", user);
       ArgumentUtility.CheckNotEmpty ("substitutedUser", substitutedUser);
+      if (substitutedRole != null && substitutedUser == null)
+        throw new ArgumentException ("The substituted user must be specified if a substituted role is also specified.", "substitutedUser");
 
       _user = user;
       _substitutedRole = substitutedRole;

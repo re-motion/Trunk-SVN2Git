@@ -22,9 +22,25 @@ namespace Remotion.Security
   /// </summary>
   public interface ISecurityPrincipal : INullObject
   {
+    /// <summary>
+    /// Gets the name of the user. The <see cref="User"/> must always be specified.
+    /// </summary>
     string User { get; }
+
+    /// <summary>
+    /// Gets the active role of the user. The <see cref="Role"/> is optional.
+    /// </summary>
     ISecurityPrincipalRole Role { get; }
+
+    /// <summary>
+    /// Gets the name of the user that is being substitued. 
+    /// The <see cref="SubstitutedUser"/> must be specified if a <see cref="SubstitutedRole"/> is specified as well.
+    /// </summary>
     string SubstitutedUser { get; }
+
+    /// <summary>
+    /// Gets the role that is being substituted. The <see cref="SubstitutedRole"/> is optional.
+    /// </summary>
     ISecurityPrincipalRole SubstitutedRole { get; }
   }
 }
