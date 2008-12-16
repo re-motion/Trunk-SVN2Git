@@ -19,6 +19,7 @@ using System;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Security;
+using Remotion.Security;
 using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
@@ -89,7 +90,12 @@ namespace Remotion.SecurityManager.Domain
       get { return GetSubstitution (_transaction); }
     }
 
-    public Tenant GetTenant (ClientTransaction transaction)
+    public void Refresh ()
+    {
+      InitializeClientTransaction ();
+    }
+
+    private Tenant GetTenant (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -99,7 +105,7 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    public User GetUser (ClientTransaction transaction)
+    private User GetUser (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -109,7 +115,7 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    public Substitution GetSubstitution (ClientTransaction transaction)
+    private Substitution GetSubstitution (ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
 
@@ -122,11 +128,6 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    public void Refresh ()
-    {
-      InitializeClientTransaction();
-    }
-
     private void InitializeClientTransaction ()
     {
       _transaction = ClientTransaction.CreateBindingTransaction();
@@ -137,6 +138,26 @@ namespace Remotion.SecurityManager.Domain
     bool INullObject.IsNull
     {
       get { return false; }
+    }
+
+    public ISecurityPrincipal GetSecurityPrincipal ()
+    {
+      string substitutedUser = null;
+      SecurityPrincipalRole substitutedRole = null;
+     
+      Substitution substitution = Substitution;
+      if (substitution != null)
+      {
+        substitutedUser = substitution.SubstitutedUser.UserName;
+        if (substitution.SubstitutedRole != null)
+        {
+          substitutedRole = new SecurityPrincipalRole (
+              substitution.SubstitutedRole.Group.UniqueIdentifier, 
+              substitution.SubstitutedRole.Position.UniqueIdentifier);
+        }
+      }
+
+      return new SecurityPrincipal (User.UserName, null, substitutedUser, substitutedRole);
     }
   }
 }

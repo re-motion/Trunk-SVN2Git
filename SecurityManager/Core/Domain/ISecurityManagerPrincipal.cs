@@ -16,7 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using Remotion.Data.DomainObjects;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.Domain
@@ -31,9 +31,7 @@ namespace Remotion.SecurityManager.Domain
     Tenant Tenant { get; }
     User User { get; }
     Substitution Substitution { get; }
-    Tenant GetTenant (ClientTransaction transaction);
-    User GetUser (ClientTransaction transaction);
-    Substitution GetSubstitution (ClientTransaction transaction);
     void Refresh ();
+    ISecurityPrincipal GetSecurityPrincipal ();
   }
 }

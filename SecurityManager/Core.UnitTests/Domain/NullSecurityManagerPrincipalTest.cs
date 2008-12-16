@@ -17,15 +17,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     public void Get_Members ()
     {
       ISecurityManagerPrincipal principal = SecurityManagerPrincipal.Null;
-      ClientTransaction transaction = ClientTransaction.CreateBindingTransaction();
 
       Assert.That (principal.Tenant, Is.Null);
       Assert.That (principal.User, Is.Null);
       Assert.That (principal.Substitution, Is.Null);
-
-      Assert.That (principal.GetTenant (transaction), Is.Null);
-      Assert.That (principal.GetUser (transaction), Is.Null);
-      Assert.That (principal.GetSubstitution (transaction), Is.Null);
     }
 
     [Test]
@@ -33,6 +28,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       ISecurityManagerPrincipal principal = SecurityManagerPrincipal.Null;
       principal.Refresh();
+    }
+
+    [Test]
+    public void GetSecurityPrincipal ()
+    {
+      ISecurityManagerPrincipal principal = SecurityManagerPrincipal.Null;
+
+      Assert.That (principal.GetSecurityPrincipal().IsNull, Is.True);
     }
 
     [Test]

@@ -4,6 +4,7 @@
 using System;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -35,26 +36,13 @@ namespace Remotion.SecurityManager.Domain
       get { return null; }
     }
 
-    public Tenant GetTenant (ClientTransaction transaction)
-    {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
-      return null;
-    }
-
-    public User GetUser (ClientTransaction transaction)
-    {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
-      return null;
-    }
-
-    public Substitution GetSubstitution (ClientTransaction transaction)
-    {
-      ArgumentUtility.CheckNotNull ("transaction", transaction);
-      return null;
-    }
-
     public void Refresh ()
     {
+    }
+
+    public ISecurityPrincipal GetSecurityPrincipal ()
+    {
+      return new NullSecurityPrincipal();
     }
 
     bool INullObject.IsNull

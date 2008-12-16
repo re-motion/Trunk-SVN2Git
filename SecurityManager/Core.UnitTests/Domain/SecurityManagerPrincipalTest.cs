@@ -21,6 +21,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
+using Remotion.Security;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -116,28 +117,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     }
 
     [Test]
-    public void Get_FromTransaction ()
-    {
-      User user = User.FindByUserName ("substituting.user");
-      Tenant tenant = user.Tenant;
-      Substitution substitution = user.GetActiveSubstitutions().First();
-
-      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
-
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        Assert.That (principal.Tenant.ID, Is.EqualTo (principal.GetTenant(ClientTransaction.Current).ID));
-        Assert.That (principal.Tenant, Is.Not.SameAs (principal.GetTenant (ClientTransaction.Current)));
-
-        Assert.That (principal.User.ID, Is.EqualTo (principal.GetUser (ClientTransaction.Current).ID));
-        Assert.That (principal.User, Is.Not.SameAs (principal.GetUser (ClientTransaction.Current)));
-
-        Assert.That (principal.Substitution.ID, Is.EqualTo (principal.GetSubstitution (ClientTransaction.Current).ID));
-        Assert.That (principal.Substitution, Is.Not.SameAs (principal.GetSubstitution (ClientTransaction.Current)));
-      }
-    }
-
-    [Test]
     public void Get_Current_NotInitialized ()
     {
       Assert.That (SecurityManagerPrincipal.Current.IsNull, Is.True);
@@ -198,6 +177,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         Assert.That (principal.Substitution.ID, Is.EqualTo (substitution.ID));
         Assert.That (principal.Substitution, Is.Not.SameAs (substitution));
       }
+    }
+
+    [Test]
+    public void GetSecurityPrincipal ()
+    {
+      User user = User.FindByUserName ("substituting.user");
+      Tenant tenant = user.Tenant;
+      Substitution substitution = user.GetActiveSubstitutions ().Where (s => s.SubstitutedRole != null).First ();
+
+      SecurityManagerPrincipal principal = new SecurityManagerPrincipal (tenant, user, substitution);
+
+      ISecurityPrincipal securityPrincipal = principal.GetSecurityPrincipal();
+      Assert.That (securityPrincipal.IsNull, Is.False);
+      Assert.That (securityPrincipal.User, Is.EqualTo (user.UserName));
+      Assert.That (securityPrincipal.Role, Is.Null);
+      Assert.That (securityPrincipal.SubstitutedUser, Is.EqualTo (substitution.SubstitutedUser.UserName));
+      Assert.That (securityPrincipal.SubstitutedRole.Group, Is.EqualTo (substitution.SubstitutedRole.Group.UniqueIdentifier));
+      Assert.That (securityPrincipal.SubstitutedRole.Position, Is.EqualTo (substitution.SubstitutedRole.Position.UniqueIdentifier));
     }
 
     [Test]
