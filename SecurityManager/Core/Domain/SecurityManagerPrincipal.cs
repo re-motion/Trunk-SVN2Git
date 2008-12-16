@@ -18,6 +18,8 @@
 using System;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Security;
+using Remotion.Security.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 
@@ -118,6 +120,8 @@ namespace Remotion.SecurityManager.Domain
     private void InitializeClientTransaction ()
     {
       _transaction = ClientTransaction.CreateBindingTransaction();
+      //if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
+      //  _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension ());
     }
   }
 }

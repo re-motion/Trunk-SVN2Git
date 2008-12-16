@@ -49,26 +49,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     // static members
 
-    private static readonly string s_currentKey = typeof (Tenant).AssemblyQualifiedName + "_Current";
-
-    public static Tenant Current
-    {
-      get
-      {
-        ObjectID tenantID = (ObjectID) SafeContext.Instance.GetData (s_currentKey);
-        if (tenantID == null)
-          return null;
-        return GetObject (tenantID);
-      }
-      set
-      {
-        if (value == null)
-          SafeContext.Instance.SetData (s_currentKey, null);
-        else
-          SafeContext.Instance.SetData (s_currentKey, value.ID);
-      }
-    }
-
     internal static Tenant NewObject ()
     {
       return NewObject<Tenant> ().With ();

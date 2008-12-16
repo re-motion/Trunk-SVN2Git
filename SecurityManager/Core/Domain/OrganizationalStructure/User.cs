@@ -46,26 +46,6 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
       Search
     }
 
-    private static readonly string s_currentKey = typeof (User).AssemblyQualifiedName + "_Current";
-
-    public static User Current
-    {
-      get
-      {
-        ObjectID userID = (ObjectID) SafeContext.Instance.GetData (s_currentKey);
-        if (userID == null)
-          return null;
-        return GetObject (userID);
-      }
-      set
-      {
-        if (value == null)
-          SafeContext.Instance.SetData (s_currentKey, null);
-        else
-          SafeContext.Instance.SetData (s_currentKey, value.ID);
-      }
-    }
-
     internal static User NewObject ()
     {
       return NewObject<User> ().With ();

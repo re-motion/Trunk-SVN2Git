@@ -104,53 +104,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
     }
 
     [Test]
-    public void Get_Current_NotInitialized ()
-    {
-      Assert.IsNull (Tenant.Current);
-    }
-
-    [Test]
-    public void SetAndGet_Current()
-    {
-      Tenant tenant = Tenant.GetObject (_expectedTenantID);
-      
-      Tenant.Current = tenant;
-      Assert.AreSame (tenant, Tenant.Current);
-
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        Assert.AreEqual(tenant.ID, Tenant.Current.ID);
-        Assert.AreNotSame (tenant, Tenant.Current);
-      }
-
-      Tenant.Current = null;
-    }
-
-    [Test]
-    public void SetAndGet_Current_Threading ()
-    {
-      Tenant tenant = Tenant.GetObject (_expectedTenantID);
-
-      Tenant.Current = tenant;
-      Assert.AreSame (tenant, Tenant.Current);
-
-      ThreadRunner.Run (
-          delegate ()
-          {
-            Tenant otherTenant = _testHelper.CreateTenant ("OtherTenant", "UID: OtherTenant");
-
-            Assert.IsNull (Tenant.Current);
-            Tenant.Current = otherTenant;
-            using (_testHelper.Transaction.EnterNonDiscardingScope())
-            {
-              Assert.AreSame (otherTenant, Tenant.Current);
-            }
-          });
-
-      Assert.AreSame (tenant, Tenant.Current);
-    }
-
-    [Test]
     public void GetSecurityStrategy ()
     {
       ISecurableObject tenant = _testHelper.CreateTenant ("Tenant", "UID: Tenant");

@@ -16,11 +16,15 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
+using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
@@ -52,12 +56,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       if (!IsPostBack)
       {
-        DomainObjectCollection tenants = GetPossibleTenants ();
+        Tenant[] tenants = GetPossibleTenants ();
         CurrentTenantField.SetBusinessObjectList (tenants);
-        CurrentTenantField.LoadUnboundValue (Tenant.Current, false);
+        Tenant currentTenant = SecurityManagerPrincipal.Current != null ? SecurityManagerPrincipal.Current.Tenant : null;
 
-        bool isCurrentTenantTheOnlyTenantInTheCollection = tenants.Count == 1 && Tenant.Current != null && tenants.Contains (Tenant.Current.ID);
-        bool isCurrentTenantTheOnlyTenant = tenants.Count == 0 && Tenant.Current != null;
+        CurrentTenantField.LoadUnboundValue (currentTenant, false);
+
+        bool isCurrentTenantTheOnlyTenantInTheCollection = tenants.Length == 1 && currentTenant != null && tenants[0].ID == currentTenant.ID;
+        bool isCurrentTenantTheOnlyTenant = tenants.Length == 0 && currentTenant != null;
         bool hasExactlyOneTenant = isCurrentTenantTheOnlyTenantInTheCollection || isCurrentTenantTheOnlyTenant;
         IsTenantSelectionEnabled = !hasExactlyOneTenant;
       }
@@ -66,41 +72,31 @@ namespace Remotion.SecurityManager.Clients.Web.UI
         CurrentTenantField.Command.Type = CommandType.None;
     }
 
-    private DomainObjectCollection GetPossibleTenants ()
+    private Tenant[] GetPossibleTenants ()
     {
-      User user = ApplicationInstance.LoadUserFromSession ();
-      DomainObjectCollection tenants;
-      if (user == null)
-        tenants = new DomainObjectCollection ();
-      else
-        tenants = user.Tenant.GetHierachy ();
+      if (SecurityManagerPrincipal.Current == null)
+        return new Tenant[0];
+
+      IEnumerable<Tenant> tenants = SecurityManagerPrincipal.Current.User.Tenant.GetHierachy();
 
       if (!EnableAbstractTenants)
-      {
-        for (int i = tenants.Count - 1; i >= 0; i--)
-        {
-          if (((Tenant) tenants[i]).IsAbstract)
-            tenants.RemoveAt (i);
-        }
-      }
+        tenants = tenants.Where (t => !t.IsAbstract);
 
-      return tenants;
+      return tenants.ToArray();
     }
 
     protected void CurrentTenantField_SelectionChanged (object sender, EventArgs e)
     {
       string tenantID = CurrentTenantField.BusinessObjectID;
-      if (StringUtility.IsNullOrEmpty (tenantID))
-      {
-        ApplicationInstance.SetCurrentTenant (null);
-        _isCurrentTenantFieldReadOnly = false;
-      }
-      else
-      {
-        ApplicationInstance.SetCurrentTenant (Tenant.GetObject (ObjectID.Parse (tenantID)));
-        _isCurrentTenantFieldReadOnly = true;
-      }
+      Assertion.IsNotNull (tenantID);
 
+      ApplicationInstance.SetCurrentPrincipal (
+          new SecurityManagerPrincipal (
+              Tenant.GetObject (ObjectID.Parse (tenantID)),
+              SecurityManagerPrincipal.Current.User,
+              SecurityManagerPrincipal.Current.Substitution));
+     
+      _isCurrentTenantFieldReadOnly = true;
       CurrentTenantField.IsDirty = false;
     }
 
@@ -108,19 +104,24 @@ namespace Remotion.SecurityManager.Clients.Web.UI
     {
       _isCurrentTenantFieldReadOnly = false;
       CurrentTenantField.SetBusinessObjectList (GetPossibleTenants ());
-      CurrentTenantField.LoadUnboundValue (Tenant.Current, false);
+      CurrentTenantField.LoadUnboundValue (SecurityManagerPrincipal.Current.Tenant, false);
     }
 
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
 
-      if (_isCurrentTenantFieldReadOnly && Tenant.Current != null)
+      if (_isCurrentTenantFieldReadOnly && SecurityManagerPrincipal.Current != null)
         CurrentTenantField.ReadOnly = true;
       else
         CurrentTenantField.ReadOnly = false;
 
-      User user = ApplicationInstance.LoadUserFromSession ();
+      User user;
+      if (SecurityManagerPrincipal.Current != null)
+        user = SecurityManagerPrincipal.Current.User;
+      else
+        user = null;
+
       CurrentUserField.LoadUnboundValue (user, false);
     }
 

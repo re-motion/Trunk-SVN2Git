@@ -30,15 +30,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain
   public class SecurityManagerPrincipalTest : DomainTest
   {
     private DatabaseFixtures _dbFixtures;
-    private ObjectID _expectedTenantID;
 
     public override void TestFixtureSetUp ()
     {
       base.TestFixtureSetUp();
 
       _dbFixtures = new DatabaseFixtures();
-      Tenant tenant = _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
-      _expectedTenantID = tenant.ID;
+      _dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.CreateRootTransaction());
     }
 
     public override void SetUp ()

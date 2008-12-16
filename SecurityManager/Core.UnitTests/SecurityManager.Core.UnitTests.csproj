@@ -163,7 +163,6 @@
     <Compile Include="Domain\OrganizationalStructure\SubstitutionTests\SubstitutionTestBase.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\BindableObjectImplementation.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\AccessControl.cs" />
-    <Compile Include="Domain\OrganizationalStructure\UserTests\CurrentUser.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\DeleteUser.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\FindUser.cs" />
     <Compile Include="Domain\OrganizationalStructure\UserTests\GetActiveSubstitutions.cs" />

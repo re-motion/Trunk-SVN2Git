@@ -22,48 +22,29 @@ using System.Web;
 using System.Web.SessionState;
 using Remotion.Data.DomainObjects;
 using Remotion.Security;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Utilities;
+using Remotion.SecurityManager.Domain;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes
 {
   public class SecurityManagerHttpApplication : HttpApplication
   {
-    // constants
-
-    // types
-
-    // static members
-
-    private static readonly string s_tenantKey = typeof (SecurityManagerHttpApplication).AssemblyQualifiedName + "_Tenant";
-    private static readonly string s_userKey = typeof (SecurityManagerHttpApplication).AssemblyQualifiedName + "_User";
-
-    // member fields
-
-    // construction and disposing
+    private static readonly string s_principalKey = typeof (SecurityManagerHttpApplication).AssemblyQualifiedName + "_Principal";
 
     public SecurityManagerHttpApplication ()
     {
     }
 
-    // methods and properties
-
-    public void SetCurrentUser (SecurityManagerUser user, bool setCurrentTenant)
+    public void SetCurrentPrincipal (SecurityManagerPrincipal securityManagerPrincipal)
     {
-      IPrincipal principal = GetPrincipal (user);
-      HttpContext.Current.User = principal;
-      Thread.CurrentPrincipal = principal;
-      SaveUserToSession (user, false);
-      SecurityManagerUser.Current = user;
-      if (setCurrentTenant)
+      SecurityManagerPrincipal.Current = securityManagerPrincipal;
+      SavePrincipalToSession (SecurityManagerPrincipal.Current);
+
+      using (new SecurityFreeSection())
       {
-        Tenant tenant;
-        using (new SecurityFreeSection ())
-        {
-          tenant = (user != null) ? user.Tenant : null;
-        }
-        SetCurrentTenant (tenant);
+        IPrincipal principal = GetPrincipal (SecurityManagerPrincipal.Current != null ? SecurityManagerPrincipal.Current.User : null);
+        HttpContext.Current.User = principal;
+        Thread.CurrentPrincipal = principal;
       }
     }
 
@@ -73,64 +54,17 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       return new GenericPrincipal (new GenericIdentity (userName), new string[0]);
     }
 
-    public ObjectID LoadUserIDFromSession ()
+    protected SecurityManagerPrincipal LoadPrincipalFromSession ()
     {
-      return (ObjectID) Session[s_userKey];
+      return (SecurityManagerPrincipal) Session[s_principalKey];
     }
 
-    public User LoadUserFromSession ()
+    protected void SavePrincipalToSession (SecurityManagerPrincipal principal)
     {
-      ObjectID userID = LoadUserIDFromSession ();
-      if (userID == null)
-        return null;
-
-      return SecurityManagerUser.GetObject (userID);
-    }
-
-    public void SaveUserToSession (SecurityManagerUser user, bool saveCurrentTenant)
-    {
-      if (user == null)
-        Session.Remove (s_userKey);
+      if (principal == null)
+        Session.Remove (s_principalKey);
       else
-        Session[s_userKey] = user.ID;
-
-      if (saveCurrentTenant)
-      {
-        Tenant tenant;
-        using (new SecurityFreeSection ())
-        {
-          tenant = (user != null) ? user.Tenant : null;
-        }
-        SaveTenantToSession (tenant);
-      }
-    }
-
-    public void SetCurrentTenant (Tenant tenant)
-    {
-      SaveTenantToSession (tenant);
-      Tenant.Current = tenant;
-    }
-
-    public ObjectID LoadTenantIDFromSession ()
-    {
-      return (ObjectID) Session[s_tenantKey];
-    }
-
-    public Tenant LoadTenantFromSession ()
-    {
-      ObjectID tenantID = LoadTenantIDFromSession ();
-      if (tenantID == null)
-        return null;
-
-      return Tenant.GetObject (tenantID);
-    }
-
-    public void SaveTenantToSession (Tenant tenant)
-    {
-      if (tenant == null)
-        Session.Remove (s_tenantKey);
-      else
-        Session[s_tenantKey] = tenant.ID;
+        Session[s_principalKey] = principal;
     }
 
     protected bool HasSessionState
@@ -140,28 +74,32 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     public override void Init ()
     {
-      base.Init ();
+      base.Init();
 
-      PostAcquireRequestState += SecurityManagerHttpApplication_PostAcquireRequestState; 
+      PostAcquireRequestState += SecurityManagerHttpApplication_PostAcquireRequestState;
     }
 
     private void SecurityManagerHttpApplication_PostAcquireRequestState (object sender, EventArgs e)
     {
       if (HasSessionState)
       {
-        using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+        SecurityManagerPrincipal principal = LoadPrincipalFromSession();
+        if (principal == null && Context.User.Identity.IsAuthenticated)
         {
-          SecurityManagerUser user = LoadUserFromSession ();
-          if (user == null && Context.User.Identity.IsAuthenticated)
+          using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
           {
-            user = SecurityManagerUser.FindByUserName (Context.User.Identity.Name);
-            SetCurrentUser (user, true);
+            SecurityManagerUser user = SecurityManagerUser.FindByUserName (Context.User.Identity.Name);
+            if (user != null)
+              SetCurrentPrincipal (new SecurityManagerPrincipal (user.Tenant, user, null));
+            else
+              SetCurrentPrincipal (null);
           }
-          else
-          {
-            SetCurrentUser (user, false);
-            SetCurrentTenant (LoadTenantFromSession ());
-          }
+        }
+        else
+        {
+          if (principal != null)
+            principal.Refresh();
+          SetCurrentPrincipal (principal);
         }
       }
     }

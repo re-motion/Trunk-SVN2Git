@@ -459,7 +459,7 @@
   </target>
 
   <target name="SecurityManager.Clients.Web" depends="Core.Core, ObjectBinding, ObjectBinding.Web, Web, 
-          Data.DomainObjects, SecurityManager.Core">
+          Data.DomainObjects, Data.Linq, SecurityManager.Core">
     <property name="project.name" value="SecurityManager.Clients.Web" />
     <property name="project.dir" value="SecurityManager/Clients.Web" />
     <property name="project.output" value="Remotion.SecurityManager.Clients.Web" />

@@ -38,6 +38,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -98,6 +101,10 @@
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Interfaces</Name>
       <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\Linq\Data.Linq.csproj">
+      <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
+      <Name>Data.Linq</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.Core.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>

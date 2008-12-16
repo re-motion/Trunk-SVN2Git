@@ -17,7 +17,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.SecurityManager.Domain;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 
     public ObjectID TenantID
     {
-      get { return (Tenant.Current != null) ? Tenant.Current.ID : null; }
+      get { return (SecurityManagerPrincipal.Current != null) ? SecurityManagerPrincipal.Current.Tenant.ID : null; }
     }
 
     public bool HasUserCancelled

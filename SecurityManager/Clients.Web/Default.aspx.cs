@@ -16,11 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using System.Web.UI;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
-using Remotion.Utilities;
+using Remotion.SecurityManager.Domain;
 using SecurityManagerUser = Remotion.SecurityManager.Domain.OrganizationalStructure.User;
 
 namespace Remotion.SecurityManager.Clients.Web
@@ -36,42 +37,49 @@ namespace Remotion.SecurityManager.Clients.Web
 
     protected override void OnLoad (EventArgs e)
     {
-      _clientTransaction = ClientTransaction.CreateRootTransaction ();
-      _clientTransaction.EnterDiscardingScope ();
+      _clientTransaction = ClientTransaction.CreateRootTransaction();
+      _clientTransaction.EnterDiscardingScope();
       if (!IsPostBack)
       {
-        using (new SecurityFreeSection ())
+        using (new SecurityFreeSection())
         {
-          DomainObjectCollection users =
-              SecurityManagerUser.FindByTenantID (ObjectID.Parse ("Tenant|00000001-0000-0000-0000-000000000000|System.Guid"));
-          users.Combine (SecurityManagerUser.FindByTenantID (ObjectID.Parse ("Tenant|00000001-0000-0000-0000-000000000001|System.Guid")));
-          users.Combine (SecurityManagerUser.FindByTenantID (ObjectID.Parse ("Tenant|00000001-0000-0000-0000-000000000002|System.Guid")));
+          var users = (from u in QueryFactory.CreateLinqQuery<SecurityManagerUser>() orderby u.UserName select u).ToArray();
+
+          SecurityManagerUser user;
+          if (SecurityManagerPrincipal.Current != null)
+            user = SecurityManagerPrincipal.Current.User;
+          else
+            user = null;
 
           UsersField.SetBusinessObjectList (users);
-          UsersField.LoadUnboundValue (ApplicationInstance.LoadUserFromSession (), false);
+          UsersField.LoadUnboundValue (user, false);
         }
       }
     }
 
     protected void UsersField_SelectionChanged (object sender, EventArgs e)
     {
-      if (StringUtility.IsNullOrEmpty (UsersField.BusinessObjectID))
-        ApplicationInstance.SetCurrentUser (null, true);
+      if (UsersField.BusinessObjectID == null)
+      {
+        ApplicationInstance.SetCurrentPrincipal (null);
+      }
       else
-        ApplicationInstance.SetCurrentUser (SecurityManagerUser.GetObject (ObjectID.Parse (UsersField.BusinessObjectID)), true);
+      {
+        var user = SecurityManagerUser.GetObject (ObjectID.Parse (UsersField.BusinessObjectID));
+        ApplicationInstance.SetCurrentPrincipal (new SecurityManagerPrincipal (user.Tenant, user, null));
+      }
     }
 
     protected override void OnPreRender (EventArgs e)
     {
-      _clientTransaction.EnterDiscardingScope ();
+      _clientTransaction.EnterDiscardingScope();
       base.OnPreRender (e);
     }
 
     protected override void OnUnload (EventArgs e)
     {
       base.OnUnload (e);
-      ClientTransactionScope.ResetActiveScope ();
+      ClientTransactionScope.ResetActiveScope();
     }
-
   }
 }
