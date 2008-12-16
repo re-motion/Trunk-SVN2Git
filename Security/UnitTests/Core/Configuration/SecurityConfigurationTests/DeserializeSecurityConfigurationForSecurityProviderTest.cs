@@ -61,9 +61,9 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
 
     [Test]
     [Explicit]
-    public void Test_WithSecurityManagerService ()
+    public void Test_WithSecurityManagerSecurityService ()
     {
-      string xmlFragment = @"<remotion.security defaultSecurityProvider=""SecurityManagerService"" />";
+      string xmlFragment = @"<remotion.security defaultSecurityProvider=""SecurityManager"" />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
       Type expectedType = TypeUtility.GetType ("Remotion.SecurityManager::SecurityService", true);
 

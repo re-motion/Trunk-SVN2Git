@@ -46,6 +46,7 @@
         <xs:restriction base="xs:string">
           <xs:enumeration value="Thread" />
           <xs:enumeration value="HttpContext" />
+          <xs:enumeration value="SecurityManager" />
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType>

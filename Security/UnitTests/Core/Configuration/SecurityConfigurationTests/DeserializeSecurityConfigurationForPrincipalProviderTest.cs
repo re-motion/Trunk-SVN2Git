@@ -18,6 +18,7 @@ using System.Configuration;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Configuration;
+using Remotion.Utilities;
 
 namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTests
 {
@@ -46,6 +47,17 @@ namespace Remotion.Security.UnitTests.Core.Configuration.SecurityConfigurationTe
       string xmlFragment = @"<remotion.security defaultPrincipalProvider=""Thread"" />";
       ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
       Assert.IsInstanceOfType (typeof (ThreadPrincipalProvider), Configuration.PrincipalProvider);
+    }
+
+    [Test]
+    [Explicit]
+    public void Test_WithSecurityManagerPrincipalProvider ()
+    {
+      string xmlFragment = @"<remotion.security defaultPrincipalProvider=""SecurityManager"" />";
+      ConfigurationHelper.DeserializeSection (Configuration, xmlFragment);
+      Type expectedType = TypeUtility.GetType ("Remotion.SecurityManager::Domain.SecurityManagerPrincipalService", true);
+
+      Assert.IsInstanceOfType (expectedType, Configuration.SecurityProvider);
     }
 
     [Test]

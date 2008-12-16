@@ -122,13 +122,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI
     protected void CurrentSubstitutionField_SelectionChanged (object sender, EventArgs e)
     {
       string substitutionID = CurrentSubstitutionField.BusinessObjectID;
-      Assertion.IsNotNull (substitutionID);
 
       ApplicationInstance.SetCurrentPrincipal (
           new SecurityManagerPrincipal (
               SecurityManagerPrincipal.Current.Tenant,
               SecurityManagerPrincipal.Current.User,
-              (Substitution) Substitution.GetObject (ObjectID.Parse (substitutionID))));
+              substitutionID != null ? (Substitution) Substitution.GetObject (ObjectID.Parse (substitutionID)) : null));
 
       _isCurrentSubstitutionFieldReadOnly = true;
       CurrentSubstitutionField.IsDirty = false;

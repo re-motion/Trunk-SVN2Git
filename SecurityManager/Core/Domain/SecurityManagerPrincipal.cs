@@ -131,6 +131,7 @@ namespace Remotion.SecurityManager.Domain
     private void InitializeClientTransaction ()
     {
       _transaction = ClientTransaction.CreateBindingTransaction();
+      //TODO: Test SecurityClientTransactionExtension
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
         _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension());
     }
@@ -144,20 +145,24 @@ namespace Remotion.SecurityManager.Domain
     {
       string substitutedUser = null;
       SecurityPrincipalRole substitutedRole = null;
-     
-      Substitution substitution = Substitution;
-      if (substitution != null)
-      {
-        substitutedUser = substitution.SubstitutedUser.UserName;
-        if (substitution.SubstitutedRole != null)
-        {
-          substitutedRole = new SecurityPrincipalRole (
-              substitution.SubstitutedRole.Group.UniqueIdentifier, 
-              substitution.SubstitutedRole.Position.UniqueIdentifier);
-        }
-      }
 
-      return new SecurityPrincipal (User.UserName, null, substitutedUser, substitutedRole);
+      //TODO: Test SecurityFreeSection
+      using (new SecurityFreeSection())
+      {
+        Substitution substitution = Substitution;
+        if (substitution != null)
+        {
+          substitutedUser = substitution.SubstitutedUser.UserName;
+          if (substitution.SubstitutedRole != null)
+          {
+            substitutedRole = new SecurityPrincipalRole (
+                substitution.SubstitutedRole.Group.UniqueIdentifier,
+                substitution.SubstitutedRole.Position.UniqueIdentifier);
+          }
+        }
+
+        return new SecurityPrincipal (User.UserName, null, substitutedUser, substitutedRole);
+      }
     }
   }
 }

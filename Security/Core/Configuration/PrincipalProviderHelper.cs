@@ -17,6 +17,7 @@ using System;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Configuration.Provider;
+using System.Reflection;
 using Remotion.Configuration;
 using Remotion.Utilities;
 
@@ -27,9 +28,11 @@ namespace Remotion.Security.Configuration
   {
     private const string c_threadPrincipalProviderWellKnownName = "Thread";
     private const string c_httpContexPrincipalProviderWellKnownName = "HttpContext";
+    private const string c_securityManagerPrincipalProviderWellKnownName = "SecurityManager";
 
     private readonly object _sync = new object();
     private Type _httpContextPrincipalProviderType;
+    private Type _securityManagerPrincipalProviderType;
 
     public PrincipalProviderHelper (SecurityConfiguration configuration)
         : base (configuration)
@@ -50,9 +53,13 @@ namespace Remotion.Security.Configuration
     {
       CheckForDuplicateWellKownProviderName (c_threadPrincipalProviderWellKnownName);
       CheckForDuplicateWellKownProviderName (c_httpContexPrincipalProviderWellKnownName);
+      CheckForDuplicateWellKownProviderName (c_securityManagerPrincipalProviderWellKnownName);
 
       if (DefaultProviderName.Equals (c_httpContexPrincipalProviderWellKnownName, StringComparison.Ordinal))
         EnsureHttpContextPrincipalProviderTypeInitialized();
+
+      if (DefaultProviderName.Equals (c_securityManagerPrincipalProviderWellKnownName, StringComparison.Ordinal))
+        EnsureSecurityManagerPrincipalProviderTypeInitialized ();
     }
 
     protected override void EnsureWellKownProviders (ProviderCollection collection)
@@ -61,6 +68,7 @@ namespace Remotion.Security.Configuration
 
       EnsureWellKnownThreadUserProvider (collection);
       EnsureWellKnownHttpContextPrincipalProvider (collection);
+      EnsureWellKnownSecurityManagerPrincipalProvider (collection);
     }
 
     private void EnsureWellKnownThreadUserProvider (ProviderCollection collection)
@@ -90,6 +98,33 @@ namespace Remotion.Security.Configuration
                 DefaultProviderNameProperty,
                 "Remotion.Web.Security",
                 "Remotion.Web.Security.HttpContextPrincipalProvider");
+          }
+        }
+      }
+    }
+
+    private void EnsureWellKnownSecurityManagerPrincipalProvider (ProviderCollection collection)
+    {
+      if (_securityManagerPrincipalProviderType != null)
+      {
+        collection.Add ((ExtendedProviderBase) Activator.CreateInstance (
+            _securityManagerPrincipalProviderType,
+            new object[] { c_securityManagerPrincipalProviderWellKnownName, new NameValueCollection () }));
+      }
+    }
+
+    private void EnsureSecurityManagerPrincipalProviderTypeInitialized ()
+    {
+      if (_securityManagerPrincipalProviderType == null)
+      {
+        lock (_sync)
+        {
+          if (_securityManagerPrincipalProviderType == null)
+          {
+            _securityManagerPrincipalProviderType = GetType (
+                DefaultProviderNameProperty,
+                new AssemblyName ("Remotion.SecurityManager"),
+                "Remotion.SecurityManager.Domain.SecurityManagerPrincipalProvider");
           }
         }
       }
