@@ -16,7 +16,6 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Utilities;

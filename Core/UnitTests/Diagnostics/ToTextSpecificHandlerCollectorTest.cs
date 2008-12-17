@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class ToTextSpecificHandlerCollectorTest
   {
-    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (true);
+    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (false);
 
     private class TestSimpleSimple
     {

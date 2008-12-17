@@ -120,6 +120,7 @@
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderFormattableHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderHandlerFeedback.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderIToTextHandlerHandler.cs" />
+    <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderLinqHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderNullHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderRegisteredInterfaceHandlerHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextProviderHandler\ToTextProviderRegisteredTypeHandler.cs" />

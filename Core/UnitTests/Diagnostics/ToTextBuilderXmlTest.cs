@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class ToTextBuilderXmlTest
   {
-    private ISimpleLogger log = SimpleLogger.CreateForConsole (true);
+    private ISimpleLogger log = SimpleLogger.CreateForConsole (false);
 
     [Test]
     [Ignore]

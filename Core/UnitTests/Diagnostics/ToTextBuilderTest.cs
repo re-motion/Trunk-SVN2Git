@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class ToTextBuilderTest
   {
-    private ISimpleLogger log = SimpleLogger.CreateForConsole (true);
+    private ISimpleLogger log = SimpleLogger.CreateForConsole (false);
 
     [Test]
     public void StringTest ()
@@ -157,7 +157,6 @@ namespace Remotion.UnitTests.Diagnostics
       var result = toTextBuilder.ToString();
       Assert.That (result, Is.EqualTo ("{a:11,b:22,C:33}"));
     }
-
 
 
 
@@ -815,46 +814,6 @@ namespace Remotion.UnitTests.Diagnostics
       double milliSeconds = stopwatch.ElapsedMilliseconds;
       To.Console.e (() => milliSeconds);
     }
-
-    //[Test]
-    //[Explicit ("performance test")]
-    //public void WriteElementFastPerformanceTest ()
-    //{
-    //  var toTextBuilder = CreateTextBuilder ();
-
-    //  Stopwatch stopwatch = new Stopwatch ();
-    //  stopwatch.Start ();
-    //  for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
-    //  {
-    //    Expression<Func<string>> expression = () => _myVeryLongVariableName;
-    //    toTextBuilder.WriteElementFast (expression);
-    //  }
-    //  stopwatch.Stop ();
-    //  double milliSeconds = stopwatch.ElapsedMilliseconds;
-    //  To.Console.e (() => milliSeconds);
-    //}
-
-    //[Test]
-    //[Explicit("performance test")]
-    //public void WriteElementFast2PerformanceTest ()
-    //{
-    //  var toTextBuilder = CreateTextBuilder ();
-
-    //  Stopwatch stopwatch = new Stopwatch ();
-    //  stopwatch.Start ();
-    //  for (int i = 0; i < _nrWriteElementPerformanceTestLoops; ++i)
-    //  {
-    //    Expression<Func<string>> expression = () => _myVeryLongVariableName;
-    //    toTextBuilder.WriteElementFast2 (expression);
-    //  }
-    //  stopwatch.Stop ();
-    //  double milliSeconds = stopwatch.ElapsedMilliseconds;
-    //  To.Console.e (() => milliSeconds);
-    //  To.Console.s(toTextBuilder.ToString())
-    //  ;
-    //}
-
-
 
 
     [Test]

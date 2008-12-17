@@ -24,7 +24,7 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class IToTextHandlerTest
   {
-    private ISimpleLogger log = SimpleLogger.CreateForConsole (true);
+    private ISimpleLogger log = SimpleLogger.CreateForConsole (false);
 
 
 

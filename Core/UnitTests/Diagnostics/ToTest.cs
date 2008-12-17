@@ -14,15 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using log4net.Core;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics.ToText;
 using Remotion.Diagnostics.ToText.Infrastructure;
 using Remotion.Logging;
-using System.IO;
 
 
 namespace Remotion.UnitTests.Diagnostics
@@ -31,6 +28,9 @@ namespace Remotion.UnitTests.Diagnostics
   public class ToTest
   {
     // TODO: Store & replace the ToTextProvider To.Text uses and restore it after the tests.
+
+    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (false);
+
 
     public class ToTextTest {}
 
@@ -221,12 +221,12 @@ line3";
 
 
 
-    public static void Log (string s)
+    public void Log (string s)
     {
-      Console.WriteLine (s);
+      log.It (s);
     }
 
-    public static void LogVariables (string format, params object[] parameterArray)
+    public void LogVariables (string format, params object[] parameterArray)
     {
       Log (String.Format (format, parameterArray));
     }

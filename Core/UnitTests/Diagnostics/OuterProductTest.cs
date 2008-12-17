@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting.Logging;
 using Remotion.Diagnostics;
 
 
@@ -27,22 +28,25 @@ namespace Remotion.UnitTests.Diagnostics
   [TestFixture]
   public class OuterProductTest
   {
+    private readonly ISimpleLogger log = SimpleLogger.CreateForConsole (false);
+
+    
     /// <summary>
     /// OuterProductIndexGenerator.IOuterProductProcessor implementations
     /// </summary>
     private abstract class OuterProductProcessorBase : Remotion.Diagnostics.OuterProductProcessorBase
     {
-      protected Array _rectangularArray;
-      protected StringBuilder _result = new StringBuilder();
+      protected readonly Array rectangularArray;
+      protected readonly StringBuilder result = new StringBuilder();
 
-      public OuterProductProcessorBase (Array rectangularArray)
+      protected OuterProductProcessorBase (Array rectangularArray)
       {
-        _rectangularArray = rectangularArray;
+        this.rectangularArray = rectangularArray;
       }
 
       public virtual String GetResult ()
       {
-        return _result.ToString();
+        return result.ToString();
       }
     }
 
@@ -58,13 +62,13 @@ namespace Remotion.UnitTests.Diagnostics
       {
         if (ProcessingState.IsInnermostLoop)
         {
-          _result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
-          _result.Append (CollectionToSequenceString (ProcessingState.DimensionIndices));
+          result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
+          result.Append (CollectionToSequenceString (ProcessingState.DimensionIndices));
         }
         else
         {
-          _result.Append (ProcessingState.IsFirstLoopElement ? "" : ","); // Seperator only if not first element
-          _result.Append ("{");
+          result.Append (ProcessingState.IsFirstLoopElement ? "" : ","); // Seperator only if not first element
+          result.Append ("{");
         }
         return true;
       }
@@ -72,7 +76,7 @@ namespace Remotion.UnitTests.Diagnostics
       public override bool DoAfterLoop ()
       {
         if (!ProcessingState.IsInnermostLoop)
-          _result.Append ("}");
+          result.Append ("}");
         return true;
       }
     }
@@ -87,9 +91,9 @@ namespace Remotion.UnitTests.Diagnostics
 
       protected void AppendIndentedLine (string text)
       {
-        _result.AppendLine();
-        _result.Append (' ', ProcessingState.DimensionIndex);
-        _result.Append (text);
+        result.AppendLine();
+        result.Append (' ', ProcessingState.DimensionIndex);
+        result.Append (text);
       }
 
       protected virtual void AppendInnermostLoop ()
@@ -124,7 +128,7 @@ namespace Remotion.UnitTests.Diagnostics
 
       protected override void AppendInnermostLoop ()
       {
-        AppendIndentedLine (_rectangularArray.GetValue (ProcessingState.DimensionIndices).ToString());
+        AppendIndentedLine (rectangularArray.GetValue (ProcessingState.DimensionIndices).ToString());
       }
     }
 
@@ -145,30 +149,30 @@ namespace Remotion.UnitTests.Diagnostics
 
       protected virtual void AppendInnermostLoop ()
       {
-        _result.Append (_rectangularArray.GetValue (ProcessingState.DimensionIndices).ToString());
+        result.Append (rectangularArray.GetValue (ProcessingState.DimensionIndices).ToString());
       }
 
       public override bool DoBeforeLoop ()
       {
         if (ProcessingState.IsInnermostLoop)
         {
-          _result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
+          result.Append (ProcessingState.IsFirstLoopElement ? "" : ",");
           if (NumberElementsToOutputInnermost > 0 && ProcessingState.ElementIndex >= NumberElementsToOutputInnermost)
           {
-            _result.Append ("...");
+            result.Append ("...");
             return false;
           }
           AppendInnermostLoop();
         }
         else
         {
-          _result.Append (ProcessingState.IsFirstLoopElement ? "" : ","); // Seperator only if not first element
+          result.Append (ProcessingState.IsFirstLoopElement ? "" : ","); // Seperator only if not first element
           if (NumberElementsToOutputAllButInnermost > 0 && ProcessingState.ElementIndex >= NumberElementsToOutputAllButInnermost)
           {
-            _result.Append ("...");
+            result.Append ("...");
             return false;
           }
-          _result.Append ("{");
+          result.Append ("{");
         }
         return true;
       }
@@ -176,10 +180,10 @@ namespace Remotion.UnitTests.Diagnostics
       public override bool DoAfterLoop ()
       {
         if (!ProcessingState.IsInnermostLoop)
-          _result.Append ("}");
+          result.Append ("}");
         if (NumberElementsToOutputOverall > 0 && ProcessingState.NumberElementsProcessed >= NumberElementsToOutputOverall)
         {
-          _result.Append (",...");
+          result.Append (",...");
           return false;
         }
         return true;
@@ -234,7 +238,7 @@ namespace Remotion.UnitTests.Diagnostics
       {
         if (ProcessingState.IsInnermostLoop)
         {
-          Log (CollectionToSequenceString (ProcessingState.DimensionIndices));
+          //Log (CollectionToSequenceString (ProcessingState.DimensionIndices));
           outerProductPermutations.Add (ProcessingState.GetDimensionIndicesCopy());
         }
         return true;
@@ -528,7 +532,7 @@ namespace Remotion.UnitTests.Diagnostics
         var outerProduct = new OuterProductIndexGenerator (array);
         var processor = new RectangularArrayToString (array);
         outerProduct.ProcessOuterProduct (processor);
-        System.Console.WriteLine (processor._result.ToString());
+        //System.Console.WriteLine (processor._result.ToString());
 
         string result = processor._result.ToString();
         //Log (result);
@@ -548,10 +552,10 @@ namespace Remotion.UnitTests.Diagnostics
       Log ("--------------------------");
       foreach (var ints in result)
       {
-        System.Console.Write ("(");
+        Log ("(");
         foreach (var i in ints)
-          System.Console.Write (i + " ");
-        System.Console.Write (") ");
+          Log (i + " ");
+        Log (") ");
         //Log (CollectionToSequenceString (ints));
       }
       var resultExpected = new int[][]
@@ -568,12 +572,13 @@ namespace Remotion.UnitTests.Diagnostics
     /// Logging helper functions
     /// </summary>
     /// <param name="s"></param>
-    public static void Log (string s)
+    public void Log (string s)
     {
-      Console.WriteLine (s);
+      //Console.WriteLine (s);
+      log.It (s);
     }
 
-    public static void LogVariables (string format, params object[] parameterArray)
+    public void LogVariables (string format, params object[] parameterArray)
     {
       Log (String.Format (format, parameterArray));
     }

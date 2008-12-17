@@ -30,32 +30,6 @@ namespace Remotion.UnitTests.Collections
   public class ComponentwiseEqualsAndHashcodeWrapperTest
   {
     [Test]
-    [Explicit]
-    public void Spike ()
-    {
-      int i = 17;
-      var c = new ComparableTestClass_EnumerableEqualsWrapper(i);
-      var comparer = EqualityComparer<object>.Default;
-
-      To.ConsoleLine.e (c.Number.Equals (c));
-      To.ConsoleLine.e (c.Equals (c.Number)).nl(2);
-
-      Console.WriteLine (comparer.Equals (1, 1));
-      Console.WriteLine (comparer.Equals (c, 1));
-      Console.WriteLine (comparer.Equals (1, c));
-      Console.WriteLine (comparer.Equals (c, c));
-    }
-
-    [Test]
-    [Explicit]
-    public void Spike2 ()
-    {
-      var c = new ComparableTestClass_EnumerableEqualsWrapper (6758439);
-      To.ConsoleLine.e (c.Number.Equals (c));
-      To.ConsoleLine.e (c.Equals (c.Number));
-    }
-
-    [Test]
     public void CtorTest ()
     {
       var array = new object[0];

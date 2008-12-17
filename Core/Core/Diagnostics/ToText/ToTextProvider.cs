@@ -103,7 +103,9 @@ namespace Remotion.Diagnostics.ToText
 
       RegisterToTextProviderHandler (new ToTextProviderDictionaryHandler ());
       RegisterToTextProviderHandler (new ToTextProviderArrayHandler ());
+      RegisterToTextProviderHandler (new ToTextProviderLinqHandler ());
       RegisterToTextProviderHandler (new ToTextProviderEnumerableHandler ());
+
       RegisterToTextProviderHandler (new ToTextProviderRegisteredInterfaceHandlerHandler (_interfaceTypeHandlerMap));
       // Second call of registered handler, this time with base class fallback.
       RegisterToTextProviderHandler (new ToTextProviderRegisteredTypeHandler (typeHandlerMap, true));
