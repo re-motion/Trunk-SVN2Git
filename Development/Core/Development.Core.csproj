@@ -78,6 +78,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -96,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UnitTesting\AmbiguousMethodNameException.cs" />
+    <Compile Include="UnitTesting\CodeCreator.cs" />
     <Compile Include="UnitTesting\Logging\ISimpleLogger.cs" />
     <Compile Include="UnitTesting\Logging\SimpleLogger.cs" />
     <Compile Include="UnitTesting\Logging\SimpleLoggerNull.cs" />

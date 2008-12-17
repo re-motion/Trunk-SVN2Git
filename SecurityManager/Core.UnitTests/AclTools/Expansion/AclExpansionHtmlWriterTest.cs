@@ -770,11 +770,11 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
 
-    public static string CreateLiteralResultExpectedString (string result)
-    {
-      var resultDoubleQuoted = result.Replace ("\"", "\"\"");
-      return "\nconst string resultExpected =\n#region\n@\"" + resultDoubleQuoted + "\";\n#endregion\n";
-    }
+    //public static string CreateLiteralResultExpectedString (string result)
+    //{
+    //  var resultDoubleQuoted = result.Replace ("\"", "\"\"");
+    //  return "\nconst string resultExpected =\n#region\n@\"" + resultDoubleQuoted + "\";\n#endregion\n";
+    //}
 
 
     private CultureScope CultureScope_de_DE ()
