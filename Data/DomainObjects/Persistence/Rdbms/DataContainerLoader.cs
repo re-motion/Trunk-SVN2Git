@@ -140,7 +140,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return new DataContainerCollection ();
       else if (classDefinition.GetEntityName () != null)
       {
-        SelectCommandBuilder commandBuilder = SelectCommandBuilder.CreateForRelatedIDLookup (Provider, classDefinition, propertyDefinition, relatedID);
+        SelectCommandBuilder commandBuilder = _loaderHelper.GetSelectCommandBuilderForRelatedIDLookup (
+            Provider, classDefinition.GetEntityName(), propertyDefinition, relatedID);
         return Provider.LoadDataContainers (commandBuilder);
       }
       else

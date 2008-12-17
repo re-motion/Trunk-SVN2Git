@@ -31,6 +31,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return SelectCommandBuilder.CreateForIDLookup (provider, entityName, new List<ObjectID> (objectIDs).ToArray ());
     }
 
+    public virtual SelectCommandBuilder GetSelectCommandBuilderForRelatedIDLookup (RdbmsProvider provider, string entityName, PropertyDefinition relationProperty, ObjectID relatedID)
+    {
+      ArgumentUtility.CheckNotNull ("provider", provider);
+      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
+      ArgumentUtility.CheckNotNull ("relationProperty", relationProperty);
+      ArgumentUtility.CheckNotNull ("relatedID", relatedID);
+
+      return SelectCommandBuilder.CreateForRelatedIDLookup (provider, entityName, relationProperty, relatedID);
+    }
+
     public virtual ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (RdbmsProvider provider, ClassDefinition classDefinition,
         PropertyDefinition propertyDefinition, ObjectID relatedID)
     {

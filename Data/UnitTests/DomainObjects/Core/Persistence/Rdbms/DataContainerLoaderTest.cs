@@ -247,8 +247,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           delegate (RdbmsProvider provider)
           {
             Expect.Call (PrivateInvoke.InvokeNonPublicMethod (provider, "LoadDataContainers", new object[] { null }))
-                .IgnoreArguments().CallOriginalMethod(OriginalCallOptions.CreateExpectation);
+                .IgnoreArguments ().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
           });
+    }
+
+    [Test]
+    public void LoadDataContainersByRelatedID_WithEntityName_UsesSelectCommandBuilder ()
+    {
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
+      Assert.IsNotNull (classDefinition.GetEntityName ());
+      
+      var relatedClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
+      var relationPropertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderItem), "Order");
+      var relationPropertyDefinition = classDefinition.GetPropertyDefinition (relationPropertyName);
+
+      IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper> ();
+
+      Expect.Call (loaderHelperMock.GetSelectCommandBuilderForRelatedIDLookup (Provider, relatedClassDefinition.GetEntityName(), 
+          relationPropertyDefinition, DomainObjectIDs.Order1)).IgnoreArguments ().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+
+      _mockRepository.ReplayAll ();
+
+      var loader = new DataContainerLoader (loaderHelperMock, Provider);
+      loader.LoadDataContainersByRelatedID (classDefinition, relationPropertyName, DomainObjectIDs.Order1);
+
+      _mockRepository.VerifyAll();
     }
 
     [Test]

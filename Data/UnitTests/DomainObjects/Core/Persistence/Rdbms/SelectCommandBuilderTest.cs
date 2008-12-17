@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Provider.Connect ();
       SelectCommandBuilder builder = SelectCommandBuilder.CreateForRelatedIDLookup (
-          Provider, orderDefinition, orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), DomainObjectIDs.Customer1);
+          Provider, orderDefinition.GetEntityName(), orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), DomainObjectIDs.Customer1);
 
       using (IDbCommand command = builder.Create ())
       {
@@ -50,8 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       ClassDefinition orderDefinition = TestMappingConfiguration.Current.ClassDefinitions["Order"];
       SelectCommandBuilder.CreateForRelatedIDLookup (
-          Provider, 
-          orderDefinition, 
+          Provider,
+          orderDefinition.GetEntityName (), 
           orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), 
           DomainObjectIDs.Customer1);
     }
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         SelectCommandBuilder builder = SelectCommandBuilder.CreateForRelatedIDLookup (
             Provider,
-            orderDefinition,
+            orderDefinition.GetEntityName (),
             orderDefinition.GetMandatoryPropertyDefinition ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"),
             DomainObjectIDs.Customer1);
 

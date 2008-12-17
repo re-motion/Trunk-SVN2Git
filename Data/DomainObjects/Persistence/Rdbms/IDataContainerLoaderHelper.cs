@@ -22,6 +22,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public interface IDataContainerLoaderHelper
   {
     SelectCommandBuilder GetSelectCommandBuilder (RdbmsProvider provider, string entityName, IEnumerable<ObjectID> objectIDs);
+    SelectCommandBuilder GetSelectCommandBuilderForRelatedIDLookup (
+        RdbmsProvider provider, 
+        string entityName, 
+        PropertyDefinition relationProperty, 
+        ObjectID relatedID);
 
     ConcreteTableInheritanceRelationLoader GetConcreteTableInheritanceRelationLoader (RdbmsProvider provider, ClassDefinition classDefinition,
         PropertyDefinition propertyDefinition, ObjectID relatedID);

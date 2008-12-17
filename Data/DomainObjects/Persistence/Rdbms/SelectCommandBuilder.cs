@@ -47,22 +47,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public static SelectCommandBuilder CreateForRelatedIDLookup (
         RdbmsProvider provider,
-        ClassDefinition classDefinition,
+        string entityName,
         PropertyDefinition propertyDefinition,
         ObjectID relatedID)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
-      VirtualRelationEndPointDefinition oppositeRelationEndPointDefinition =
-          (VirtualRelationEndPointDefinition) classDefinition.GetMandatoryOppositeEndPointDefinition (propertyDefinition.PropertyName);
+
+      VirtualRelationEndPointDefinition oppositeRelationEndPointDefinition = 
+          (VirtualRelationEndPointDefinition) propertyDefinition.ClassDefinition.GetMandatoryOppositeEndPointDefinition (propertyDefinition.PropertyName);
 
       return new SelectCommandBuilder (
           provider,
           "*",
-          classDefinition.GetEntityName(),
+          entityName,
           propertyDefinition.StorageSpecificName,
           new ObjectID[] {relatedID},
           true,
