@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using Remotion.Utilities;
 
 namespace Remotion.Reflection
 {
@@ -57,6 +58,7 @@ namespace Remotion.Reflection
   {
     public static Property<T, R> Get<R> (Expression<Func<T, R>> lambda)
     {
+      ArgumentUtility.CheckNotNull ("lambda", lambda);
       return new Property<T, R> (lambda);
     }
   }
