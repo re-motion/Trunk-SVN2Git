@@ -509,7 +509,21 @@ namespace Remotion.Data.DomainObjects
     /// <param name="loadMode">Specifies whether the whole domain object or only the <see cref="Remotion.Data.DomainObjects.DataContainer"/> has been
     /// newly loaded.</param>
     /// <remarks>
-    /// Override this method to initialize <see cref="DomainObject"/>s that are loaded from the datasource.
+    /// <para>
+    /// Override this method to initialize <see cref="DomainObject"/>s that are loaded from the underlying storage.
+    /// </para>
+    /// <para>
+    /// When a <see cref="DomainObject"/> is loaded for the first time, a new <see cref="DomainObject"/> reference will be created for it. In this
+    /// case, the <see cref="OnLoaded"/> method will be called with <see cref="LoadMode.WholeDomainObjectInitialized"/> being passed to the
+    /// method. When, however, an additional <see cref="DataContainer"/> is loaded for an existing <see cref="DomainObject"/> reference - 
+    /// in reaction to an existing <see cref="DomainObject"/> being loaded into another transaction (eg. a subtransaction), 
+    /// <see cref="LoadMode.DataContainerLoadedOnly"/> is passed to the method.
+    /// </para>
+    /// <para>
+    /// Note that even when an object is first loaded in a subtransaction, this method is called once with <see cref="LoadMode.WholeDomainObjectInitialized"/>,
+    /// and then once with <see cref="LoadMode.DataContainerLoadedOnly"/>. <see cref="LoadMode.WholeDomainObjectInitialized"/> can thus be used to
+    /// identify when the object was actually loaded from the underlying storage.
+    /// </para>
     /// </remarks>
     protected internal virtual void OnLoaded (LoadMode loadMode)
     {
