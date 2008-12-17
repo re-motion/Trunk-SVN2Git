@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AccessRightsNameTableHeader" xml:space="preserve">
-    <value>Erlaubter Zugriff</value>
+    <value>Zugriffsrechte</value>
   </data>
   <data name="ClassTableHeader" xml:space="preserve">
     <value>Klasse</value>
   </data>
   <data name="DeniedRightsTableHeader" xml:space="preserve">
-    <value>Untersagter Zugriff</value>
+    <value>Verweigerte Zugriffsrechte</value>
   </data>
   <data name="FirstNameTableHeader" xml:space="preserve">
     <value>Vorname</value>
@@ -163,7 +163,7 @@
     <value>zustandslos</value>
   </data>
   <data name="StatesTableHeader" xml:space="preserve">
-    <value>Status / Zustand</value>
+    <value>Status</value>
   </data>
   <data name="UserMustHaveAbstractRoleTableHeader" xml:space="preserve">
     <value>Benutzers muß Abstrakte Rolle innehaben</value>

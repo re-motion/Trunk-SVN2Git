@@ -21,7 +21,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     [Test]
     public void CreateResultExpectedCodeTest ()
     {
-      var result = CodeCreator.CreateResultExpectedCode ("heinz",false);
+      var result = CodeCreator.CreateResultExpectedCode ("heinz");
 
       const string resultExpected =
       #region

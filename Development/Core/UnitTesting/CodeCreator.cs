@@ -8,20 +8,14 @@
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
  */
 
-using System.Windows;
-
 namespace Remotion.Development.UnitTesting
 {
   public class CodeCreator
   {
-    public static string CreateResultExpectedCode (string result, bool putOnClipboard)
+    public static string CreateResultExpectedCode (string result)
     {
       var resultDoubleQuoted = result.Replace ("\"", "\"\"");
       var code = "\nconst string resultExpected =\n#region\n@\"" + resultDoubleQuoted + "\";\n#endregion\n";
-      if (putOnClipboard)
-      {
-        Clipboard.SetText (code);
-      }
       return code;
     }
   }
