@@ -77,25 +77,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       SetDatabaseModifyable ();
 
+      // setup new IndustrialSector object in database
+      IndustrialSector industrialSector = CreateNewIndustrialSector();
+      ClientTransactionMock.Commit ();
+      
+      // in parallel transaction, add a Company to the IndustrialSector
+      ObjectID newCompanyID = AddNewCompanyInDatabase(industrialSector);
+      // load Company into this transaction; in the database, the Company has a foreign key to the IndustrialSector
+      Company newCompany = Company.GetObject (newCompanyID); // TODO 731 (re-motion 2.1): This should throw an exception.
+
+      // this prints true/false => the bidirectional relation is inconsistent
+      Console.WriteLine ("{0}.IndustrialSector = {1} (the company has a reference to the industrial sector: {2})", 
+          newCompany, newCompany.IndustrialSector, newCompany.IndustrialSector == industrialSector);
+      Console.WriteLine ("{0}.Companies.Count = {1} (the industrial sector has a reference to the company: {2})", 
+          industrialSector, industrialSector.Companies.Count, industrialSector.Companies.ContainsObject (industrialSector));
+    }
+
+    [Test]
+    [Ignore ("TODO: Should throw with a sensible message - see COMMONS-921")]
+    public void LoadSecondRelationHalf_WithChangedRelationSinceFirstHalf_OneMany_ProblemDetectedInAdd ()
+    {
+      SetDatabaseModifyable ();
+
+      // setup new IndustrialSector object in database
+      IndustrialSector industrialSector = CreateNewIndustrialSector ();
+      ClientTransactionMock.Commit ();
+
+      // in parallel transaction, add a Company to the IndustrialSector
+      ObjectID newCompanyID = AddNewCompanyInDatabase (industrialSector);
+      // load Company into this transaction; in the database, the Company has a foreign key to the IndustrialSector
+      Company newCompany = Company.GetObject (newCompanyID); // TODO 731 (re-motion 2.1): This should throw an exception.
+
+      industrialSector.Companies.Add (newCompany); // TODO 921: Throw here
+      Console.WriteLine ("{0}.IndustrialSector = {1} (the company has a reference to the industrial sector: {2})",
+          newCompany, newCompany.IndustrialSector, newCompany.IndustrialSector == industrialSector);
+      Console.WriteLine ("{0}.Companies.Count = {1} (the industrial sector has a reference to the company: {2})",
+          industrialSector, industrialSector.Companies.Count, industrialSector.Companies.ContainsObject (industrialSector));
+    }
+
+    private IndustrialSector CreateNewIndustrialSector ()
+    {
       IndustrialSector industrialSector = IndustrialSector.NewObject ();
       Company oldCompany = Company.NewObject ();
       oldCompany.Ceo = Ceo.NewObject ();
       industrialSector.Companies.Add (oldCompany);
-      ClientTransactionMock.Commit ();
-      Company company;
+      return industrialSector;
+    }
 
+    private ObjectID AddNewCompanyInDatabase (IndustrialSector industrialSector)
+    {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        ClientTransaction.Current.EnlistDomainObject (industrialSector);
-        company = Company.NewObject ();
-        company.Ceo = Ceo.NewObject ();
-        industrialSector.Companies.Add (company);
+        var industrialSectorInTx = IndustrialSector.GetObject (industrialSector.ID);
+        Company newCompany = Company.NewObject ();
+        newCompany.Ceo = Ceo.NewObject ();
+        industrialSectorInTx.Companies.Add (newCompany);
         ClientTransaction.Current.Commit ();
+        return newCompany.ID;
       }
-
-      ClientTransaction.Current.EnlistDomainObject (company);
-      Console.WriteLine ("{0}.IndustrialSector = {1}", company, company.IndustrialSector);
-      Console.WriteLine ("{0}.Companies.Count = {1}", industrialSector, industrialSector.Companies.Count);
     }
   }
 }
