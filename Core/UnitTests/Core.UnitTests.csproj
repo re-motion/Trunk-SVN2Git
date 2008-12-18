@@ -829,7 +829,6 @@
     </Compile>
     <Compile Include="Utilities\EqualityUtilityTest.cs" />
     <Compile Include="Utilities\FileUtilityTest.cs" />
-    <Compile Include="Utilities\HtmlTagWriterTest.cs" />
     <Compile Include="Utilities\ListUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>

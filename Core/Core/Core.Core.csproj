@@ -548,8 +548,6 @@
     <Compile Include="Utilities\EqualityUtility.cs" />
     <Compile Include="Utilities\ExceptionUtility.cs" />
     <Compile Include="Utilities\FileUtility.cs" />
-    <Compile Include="Utilities\HtmlTagWriter.cs" />
-    <Compile Include="Utilities\HtmlTagWriterTags.cs" />
     <Compile Include="Utilities\IConsoleManager.cs" />
     <Compile Include="Utilities\NullableTypeUtility.cs" />
     <Compile Include="Utilities\PropertyRestorer\PropertyRestorer.cs" />
