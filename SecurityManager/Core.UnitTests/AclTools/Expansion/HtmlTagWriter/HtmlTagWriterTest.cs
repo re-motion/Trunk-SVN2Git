@@ -21,9 +21,9 @@ using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
-using Remotion.Utilities;
+using Remotion.SecurityManager.AclTools.Expansion.HtmlTagWriter;
 
-namespace Remotion.UnitTests.Utilities
+namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.HtmlTagWriter
 {
   [TestFixture]
   public class HtmlTagWriterTest
@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Utilities
     public void WriteTagTest ()
     {
       var stringWriter = new StringWriter();
-      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
+      using (var htmlWriter = new SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter (stringWriter, false))
       {
         htmlWriter.Tag ("div").Value ("xxx").TagEnd ("div");
       }
@@ -45,7 +45,7 @@ namespace Remotion.UnitTests.Utilities
     public void WriteAttributeTest ()
     {
       var stringWriter = new StringWriter ();
-      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
+      using (var htmlWriter = new SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter (stringWriter, false))
       {
         htmlWriter.Tag ("div").Attribute("id","myd").TagEnd ("div");
       }
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Utilities
     public void CloseTest ()
     {
       var stringWriter = new StringWriter ();
-      var htmlWriter = new HtmlTagWriter (stringWriter, false);
+      var htmlWriter = new SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter (stringWriter, false);
       htmlWriter.Tag ("div").TagEnd ("div");
       var resultBeforeClose = stringWriter.ToString ();
       Assert.That (resultBeforeClose, Is.Empty);
@@ -69,7 +69,7 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void CreateXmlWriterTest ()
     {
-      using (XmlWriter xmlWriter = HtmlTagWriter.CreateXmlWriter (TextWriter.Null, true))
+      using (XmlWriter xmlWriter = SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter.CreateXmlWriter (TextWriter.Null, true))
       {
         Assert.That (xmlWriter.Settings.OmitXmlDeclaration, Is.True);
         Assert.That (xmlWriter.Settings.Indent, Is.True);
@@ -83,7 +83,7 @@ namespace Remotion.UnitTests.Utilities
     public void WritePageHeaderTest ()
     {
       var stringWriter = new StringWriter ();
-      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
+      using (var htmlWriter = new SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter (stringWriter, false))
       {
         htmlWriter.WritePageHeader("Page Header Test","pageHeaderTest.css");
       }
@@ -96,7 +96,7 @@ namespace Remotion.UnitTests.Utilities
     public void BreakTagTest ()
     {
       var stringWriter = new StringWriter ();
-      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
+      using (var htmlWriter = new SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter (stringWriter, false))
       {
         htmlWriter.Tags.br();
       }
@@ -121,7 +121,7 @@ namespace Remotion.UnitTests.Utilities
     [ExpectedException (typeof (XmlException), ExpectedMessage = "Wrong closing tag in HTML: Expected abc but was xyz.")]
     public void NonMatchingEndTagTest ()
     {
-      using (var htmlWriter = new HtmlTagWriter (TextWriter.Null, false))
+      using (var htmlWriter = new SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter (TextWriter.Null, false))
       {
         htmlWriter.Tag("abc");
         htmlWriter.TagEnd ("xyz");
@@ -132,7 +132,7 @@ namespace Remotion.UnitTests.Utilities
     [ExpectedException (typeof (XmlException), ExpectedMessage = "Wrong closing tag in HTML: Expected abc but was xyz.")]
     public void ComplexNonMatchingEndTagTest ()
     {
-      using (var htmlWriter = new HtmlTagWriter (TextWriter.Null, false))
+      using (var htmlWriter = new SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter (TextWriter.Null, false))
       {
         htmlWriter.Tag ("abc");
         WriteHtmlPage (htmlWriter);
@@ -145,7 +145,7 @@ namespace Remotion.UnitTests.Utilities
     public void HtmlPageIntegrationTest ()
     {
       var stringWriter = new StringWriter ();
-      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
+      using (var htmlWriter = new SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter (stringWriter, false))
       {
         WriteHtmlPage(htmlWriter);
       }
@@ -153,7 +153,7 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (result, Is.EqualTo ("<html><head><title>Title: My HTML Page</title></head><body><p id=\"first_paragraph\">Smells like...<br />Victory<table class=\"myTable\"><tr><th>1st column</th></tr><tr><td>some data</td></tr><tr><td>some more data</td></tr></table></p></body></html>"));
     }
 
-    private static void WriteHtmlPage (HtmlTagWriter htmlWriter)
+    private static void WriteHtmlPage (SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter htmlWriter)
     {
       htmlWriter.Tags.html ();
       htmlWriter.Tags.head ();
@@ -187,7 +187,7 @@ namespace Remotion.UnitTests.Utilities
     private static string GetSpecificTagOpenCloseHtml (string tagName)
     {
       var stringWriter = new StringWriter ();
-      using (var htmlWriter = new HtmlTagWriter (stringWriter, false))
+      using (var htmlWriter = new SecurityManager.AclTools.Expansion.HtmlTagWriter.HtmlTagWriter (stringWriter, false))
       {
         HtmlTagWriterTags htmlTagWriterTags = htmlWriter.Tags;
         PrivateInvoke.InvokePublicMethod (htmlTagWriterTags, tagName);

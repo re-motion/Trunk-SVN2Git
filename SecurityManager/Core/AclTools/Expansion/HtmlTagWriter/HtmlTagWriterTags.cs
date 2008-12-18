@@ -18,10 +18,12 @@
 using System;
 using System.IO;
 
-namespace Remotion.Utilities
+namespace Remotion.SecurityManager.AclTools.Expansion.HtmlTagWriter
 {
   /// <summary>
   /// Helper class for convenient writing of opening/closing HTML-tags to a <see cref="StringWriter"/>.
+  /// </summary>
+  /// <remarks>
   /// <example>
   /// Example writing HTML to <see cref="HtmlTagWriter"/>
   /// <code><![CDATA[
@@ -38,7 +40,7 @@ namespace Remotion.Utilities
   /// }
   /// ]]></code>
   /// </example>
-  /// </summary>
+  /// </remarks>
 
   public class HtmlTagWriterTags
   {

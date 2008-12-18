@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
 {
@@ -48,13 +47,13 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       return sb.ToString ();
     }
 
-    private readonly HtmlTagWriter _htmlTagWriter;
+    private readonly HtmlTagWriter.HtmlTagWriter _htmlTagWriter;
     private bool _isInTableRow;
 
 
     public AclExpansionHtmlWriterImplementationBase (TextWriter textWriter, bool indentXml)
     {
-      _htmlTagWriter = new HtmlTagWriter (textWriter, indentXml);
+      _htmlTagWriter = new HtmlTagWriter.HtmlTagWriter (textWriter, indentXml);
     }
 
 
@@ -69,7 +68,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
     }
 
 
-    public virtual HtmlTagWriter WritePageStart (string pageTitle)
+    public virtual HtmlTagWriter.HtmlTagWriter WritePageStart (string pageTitle)
     {
       _htmlTagWriter.WritePageHeader (pageTitle, "AclExpansion.css");
       _htmlTagWriter.Tag ("body");
@@ -117,7 +116,7 @@ namespace Remotion.SecurityManager.AclTools.Expansion.Infrastructure
       _isInTableRow = false;
     }
 
-    public HtmlTagWriter HtmlTagWriter
+    public HtmlTagWriter.HtmlTagWriter HtmlTagWriter
     {
       get { return _htmlTagWriter; }
     }

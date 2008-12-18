@@ -19,11 +19,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using Remotion.Utilities;
 
-namespace Remotion.Utilities
+namespace Remotion.SecurityManager.AclTools.Expansion.HtmlTagWriter
 {
   /// <summary>
   /// Supports convenient writing of HTML to a <see cref="TextWriter"/> / <see cref="XmlWriter"/>.
+  /// </summary>
+  /// <remarks>
   /// <example>
   /// Example writing HTML to <see cref="StringWriter"/>
   /// <code><![CDATA[
@@ -39,7 +42,7 @@ namespace Remotion.Utilities
   /// string htmlText = stringWriter.ToString ();
   /// ]]></code>
   /// </example>
-  /// </summary>
+  /// </remarks>
 
   public class HtmlTagWriter : IDisposable
   {

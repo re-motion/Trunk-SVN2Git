@@ -12,6 +12,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Diagnostics.ToText;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
 {
@@ -22,6 +23,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     public void CreateResultExpectedCodeTest ()
     {
       var result = CodeCreator.CreateResultExpectedCode ("heinz");
+      To.ConsoleLine.e (result);
 
       const string resultExpected =
       #region
