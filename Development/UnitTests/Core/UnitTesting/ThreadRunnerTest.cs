@@ -14,13 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
-using Remotion.Development.UnitTesting.Logging;
 using Rhino.Mocks;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
@@ -28,7 +25,13 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
   [TestFixture]
   public class ThreadRunnerTest
   {
-    private readonly ISimpleLogger _log = SimpleLogger.CreateForConsole (false);
+    private MockRepository _mockRepository;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _mockRepository = new MockRepository ();
+    }
 
     [Test]
     public void Run ()
@@ -42,14 +45,14 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     [Test]
     public void Ctor_WithTimeout ()
     {
-      ThreadRunner threadRunner = new ThreadRunner (delegate { }, TimeSpan.FromSeconds (1.0));
+      var threadRunner = new ThreadRunner (delegate { }, TimeSpan.FromSeconds (1.0));
       Assert.That (threadRunner.Timeout, Is.EqualTo (TimeSpan.FromSeconds (1.0)));
     }
 
     [Test]
     public void Ctor_WithoutTimeout_HasInfiniteTimeout ()
     {
-      ThreadRunner threadRunner = new ThreadRunner (delegate { });
+      var threadRunner = new ThreadRunner (delegate { });
       Assert.That (threadRunner.Timeout.TotalMilliseconds, Is.EqualTo (Timeout.Infinite));
     }
 
@@ -57,7 +60,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     public void Run_CallsJoin ()
     {
       TimeSpan timeout = TimeSpan.FromSeconds (1.0);
-      ThreadRunner threadRunnerMock = new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
+      var threadRunnerMock = _mockRepository.PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
       threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (true);
 
       threadRunnerMock.Replay ();
@@ -66,27 +69,36 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     }
 
     [Test]
-    [Ignore("TODO: Fails on local build. MK")]
     public void Run_CallsJoin_WithRightThread ()
     {
-      TimeSpan timeout = TimeSpan.FromSeconds (1.0);
-      Thread threadRunnerThread = null;
-      ThreadRunner threadRunnerMock = 
-          new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { threadRunnerThread = Thread.CurrentThread; }, timeout);
-      threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).
-          Do ( // when this expectation is reached, assert that the threadRunnerThread was passed to the method
-          invocation => Assert.That (invocation.Arguments[0], Is.SameAs (threadRunnerThread))).Return (true);
+      using (var waitHandle = new ManualResetEvent (false))
+      {
+        Thread threadRunnerThread = null;
+        var threadMethod = (ThreadStart) delegate { threadRunnerThread = Thread.CurrentThread; waitHandle.Set (); };
 
-      threadRunnerMock.Replay ();
-      threadRunnerMock.Run ();
-      threadRunnerMock.VerifyAllExpectations ();
+        TimeSpan timeout = TimeSpan.MaxValue;
+        var threadRunnerMock = _mockRepository.PartialMock<ThreadRunner> (threadMethod, timeout);
+
+        threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).
+            Do (
+            // when this expectation is reached, assert that the threadRunnerThread was passed to the method
+            invocation =>
+            {
+              waitHandle.WaitOne ();
+              Assert.That (invocation.Arguments[0], Is.SameAs (threadRunnerThread));
+            }).Return (true);
+
+        threadRunnerMock.Replay();
+        threadRunnerMock.Run();
+        threadRunnerMock.VerifyAllExpectations();
+      }
     }
 
     [Test]
     public void Run_UsesJoinResult_ToIndicateTimedOut_False ()
     {
       TimeSpan timeout = TimeSpan.FromSeconds (1.0);
-      ThreadRunner threadRunnerMock = new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
+      var threadRunnerMock = _mockRepository.PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
       threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (true);
 
       threadRunnerMock.Replay ();
@@ -98,7 +110,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     public void Run_UsesJoinResult_ToIndicateTimedOut_True ()
     {
       TimeSpan timeout = TimeSpan.FromSeconds (1.0);
-      ThreadRunner threadRunnerMock = new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
+      var threadRunnerMock = _mockRepository.PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
       threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (false);
 
       threadRunnerMock.Replay ();
@@ -110,7 +122,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     public void Run_WithTimedOutThread_CallsAbort ()
     {
       TimeSpan timeout = TimeSpan.FromSeconds (1.0);
-      ThreadRunner threadRunnerMock = new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
+      var threadRunnerMock = _mockRepository.PartialMock<ThreadRunner> ((ThreadStart) delegate { }, timeout);
       threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (false);
       threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "AbortThread", Arg<Thread>.Is.Anything));
 
@@ -124,8 +136,8 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     {
       TimeSpan timeout = TimeSpan.FromSeconds (1.0);
       Thread threadRunnerThread = null;
-      ThreadRunner threadRunnerMock =
-          new MockRepository ().PartialMock<ThreadRunner> ((ThreadStart) delegate { threadRunnerThread = Thread.CurrentThread; }, timeout);
+      var threadRunnerMock =
+          _mockRepository.PartialMock<ThreadRunner> ((ThreadStart) delegate { threadRunnerThread = Thread.CurrentThread; }, timeout);
       threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "JoinThread", Arg<Thread>.Is.Anything)).Return (false);
       threadRunnerMock.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "AbortThread", Arg<Thread>.Is.Anything)).
           Do ( // when this expectation is reached, assert that the threadRunnerThread was passed to the method
@@ -165,15 +177,6 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       ThreadRunner.Run (() => { throw exception; });
     }
 
-    private static void RunTimesOutEndlessLoop ()
-    {
-      while (true) { }
-    }
-
-    private static void RunTimesOutVeryFastFunction ()
-    {
-    }
-  
     [Test]
     public void RunWithTimeout ()
     {
@@ -184,8 +187,17 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     [Test]
     public void RunWithoutTimeout ()
     {
-      bool timedOut = ThreadRunner.WithTimeout (RunTimesOutVeryFastFunction, TimeSpan.FromDays (24.8551)).Run ();
+      bool timedOut = ThreadRunner.WithTimeout (RunTimesOutVeryFastFunction, TimeSpan.FromMilliseconds (int.MaxValue)).Run ();
       Assert.That (timedOut, Is.False);
+    }
+
+    private static void RunTimesOutEndlessLoop ()
+    {
+      while (true) { }
+    }
+
+    private static void RunTimesOutVeryFastFunction ()
+    {
     }
   }
 }
