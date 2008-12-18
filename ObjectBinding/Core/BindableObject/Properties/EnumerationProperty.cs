@@ -187,7 +187,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       var disableEnumValuesAttribute = PropertyInfo.GetCustomAttribute<DisableEnumValuesAttribute> (true);
 
       if (disableEnumValuesAttribute == null)
-        disableEnumValuesAttribute = AttributeUtility.GetCustomAttribute<DisableEnumValuesAttribute> (PropertyInfo.PropertyType, true);
+        disableEnumValuesAttribute = AttributeUtility.GetCustomAttribute<DisableEnumValuesAttribute> (UnderlyingType, true);
 
       if (disableEnumValuesAttribute == null)
         return null;

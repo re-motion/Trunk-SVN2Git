@@ -55,9 +55,39 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
     }
 
     [Test]
+    public void DisableFromNullableProperty ()
+    {
+      IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithDisabledEnumValue), "DisabledFromNullableProperty");
+      EnumerationValueInfo[] expected = new[]
+          {
+              new EnumerationValueInfo (TestEnum.Value2, "Value2", "Value2", true),
+              new EnumerationValueInfo (TestEnum.Value3, "Value3", "Value3", true),
+              new EnumerationValueInfo (TestEnum.Value4, "Value4", "Value4", true),
+              new EnumerationValueInfo (TestEnum.Value5, "Value5", "Value5", true)
+          };
+
+      CheckEnumerationValueInfos (expected, property.GetEnabledValues (null));
+    }
+
+    [Test]
     public void DisableFromPropertyType ()
     {
       IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithDisabledEnumValue), "DisabledFromPropertyType");
+      EnumerationValueInfo[] expected = new[]
+          {
+              new EnumerationValueInfo (TestEnum.Value1, "Value1", "Value1", true),
+              new EnumerationValueInfo (TestEnum.Value2, "Value2", "Value2", true),
+              new EnumerationValueInfo (TestEnum.Value3, "Value3", "Value3", true),
+              new EnumerationValueInfo (TestEnum.Value4, "Value4", "Value4", true)
+          };
+
+      CheckEnumerationValueInfos (expected, property.GetEnabledValues (null));
+    }
+
+    [Test]
+    public void DisableFromNullablePropertyType ()
+    {
+      IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithDisabledEnumValue), "DisabledFromNullablePropertyType");
       EnumerationValueInfo[] expected = new[]
           {
               new EnumerationValueInfo (TestEnum.Value1, "Value1", "Value1", true),
@@ -81,6 +111,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.EnumerationProper
           };
 
       CheckEnumerationValueInfos (expected, property.GetEnabledValues (MockRepository.GenerateStub<IBusinessObject>()));
+    }
+
+    [Test]
+    public void DisableWithBusinessObjectFromNullableProperty ()
+    {
+      IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithDisabledEnumValue), "DisabledWithObjectFromNullableProperty");
+      EnumerationValueInfo[] expected = new[]
+          {
+              new EnumerationValueInfo (TestEnum.Value1, "Value1", "Value1", true),
+              new EnumerationValueInfo (TestEnum.Value3, "Value3", "Value3", true),
+              new EnumerationValueInfo (TestEnum.Value5, "Value5", "Value5", true),
+          };
+
+      CheckEnumerationValueInfos (expected, property.GetEnabledValues (MockRepository.GenerateStub<IBusinessObject> ()));
     }
 
     [Test]
