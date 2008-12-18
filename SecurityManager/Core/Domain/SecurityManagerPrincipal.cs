@@ -132,8 +132,9 @@ namespace Remotion.SecurityManager.Domain
     {
       _transaction = ClientTransaction.CreateBindingTransaction();
       //TODO: Test SecurityClientTransactionExtension
-      if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-        _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension());
+      //TODO: Has effect on Tenant.GetPossibleParentTenants and Tenant.GetHierarchy
+      //if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
+      //  _transaction.Extensions.Add (typeof (SecurityClientTransactionExtension).FullName, new SecurityClientTransactionExtension());
     }
 
     bool INullObject.IsNull
