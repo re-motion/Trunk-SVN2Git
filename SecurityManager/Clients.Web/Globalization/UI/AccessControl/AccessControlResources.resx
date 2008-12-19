@@ -216,4 +216,13 @@
   <data name="TenantHierarchyCondition.ThisAndParent" xml:space="preserve">
     <value>This tenant or parents</value>
   </data>
+  <data name="GroupCondition.None" xml:space="preserve">
+    <value>any</value>
+  </data>
+  <data name="TenantCondition.None" xml:space="preserve">
+    <value>any</value>
+  </data>
+  <data name="UserCondition.None" xml:space="preserve">
+    <value>any</value>
+  </data>
 </root>

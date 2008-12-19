@@ -233,6 +233,15 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to any.
+        /// </summary>
+        internal static string GroupCondition_None {
+            get {
+                return ResourceManager.GetString("GroupCondition.None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only this group.
         /// </summary>
         internal static string GroupHierarchyCondition_This {
@@ -332,6 +341,15 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to any.
+        /// </summary>
+        internal static string TenantCondition_None {
+            get {
+                return ResourceManager.GetString("TenantCondition.None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only this tenant.
         /// </summary>
         internal static string TenantHierarchyCondition_This {
@@ -355,6 +373,15 @@ namespace Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl {
         internal static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to any.
+        /// </summary>
+        internal static string UserCondition_None {
+            get {
+                return ResourceManager.GetString("UserCondition.None", resourceCulture);
             }
         }
     }

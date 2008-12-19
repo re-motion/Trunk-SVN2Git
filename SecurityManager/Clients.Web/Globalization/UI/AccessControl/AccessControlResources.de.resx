@@ -216,4 +216,13 @@
   <data name="TenantHierarchyCondition.ThisAndParent" xml:space="preserve">
     <value>Dieser Mandant oder übergeordnete</value>
   </data>
+  <data name="GroupCondition.None" xml:space="preserve">
+    <value>beliebig</value>
+  </data>
+  <data name="TenantCondition.None" xml:space="preserve">
+    <value>beliebig</value>
+  </data>
+  <data name="UserCondition.None" xml:space="preserve">
+    <value>beliebig</value>
+  </data>
 </root>

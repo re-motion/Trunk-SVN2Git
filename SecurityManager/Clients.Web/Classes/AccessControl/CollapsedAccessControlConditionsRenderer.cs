@@ -54,6 +54,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.TenantCondition)
       {
         case TenantCondition.None:
+          writer.Write (HtmlUtility.HtmlEncode (AccessControlResources.TenantCondition_None));
           break;
         case TenantCondition.OwningTenant:
           RenderTenantHierarchyIcon (writer, container);
@@ -76,6 +77,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.GroupCondition)
       {
         case GroupCondition.None:
+          writer.Write (HtmlUtility.HtmlEncode (AccessControlResources.GroupCondition_None));
           break;
         case GroupCondition.OwningGroup:
           RenderGroupHierarchyIcon (writer, container);
@@ -104,6 +106,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.UserCondition)
       {
         case UserCondition.None:
+          writer.Write (HtmlUtility.HtmlEncode (AccessControlResources.UserCondition_None));
           break;
         case UserCondition.Owner:
           RenderPropertyPathString (writer, "UserCondition");
