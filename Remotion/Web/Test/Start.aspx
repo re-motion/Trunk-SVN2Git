@@ -38,10 +38,10 @@
         <a href="UpdatePanelTests/Sut.wxe">UpdatePanel SUT</a>
       </p>
       <p>
-        <a href="../../../../tools/Selenium/trunk/Core/TestRunner.html?test=../../../../Remotion/trunk/Web/Test/MultiplePostbackCatching/TestSuiteForm.aspx">Remotion.Web.Tests.MultiplePostBackCatching</a>
+        <a href="../../../../tools/Selenium/trunk/Core/TestRunner.html?test=../../../../Remotion/trunk/Remotion/Web/Test/MultiplePostbackCatching/TestSuiteForm.aspx">Remotion.Web.Tests.MultiplePostBackCatching</a>
       </p>
       <p>
-        <a href="../../../../tools/Selenium/trunk/Core/TestRunner.html?test=../../../../Remotion/trunk/Web/Test/MultiplePostbackCatching/UpdatePanelTestSuiteForm.aspx">Remotion.Web.Tests.MultiplePostBackCatching for UpdatePanel</a>
+        <a href="../../../../tools/Selenium/trunk/Core/TestRunner.html?test=../../../../Remotion/trunk/Remotion/Web/Test/MultiplePostbackCatching/UpdatePanelTestSuiteForm.aspx">Remotion.Web.Tests.MultiplePostBackCatching for UpdatePanel</a>
       </p>
       <p>
         <a href="redirected.wxe">redirected.wxe</a>
