@@ -184,5 +184,29 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
         Assert.That (businessObject.GetProperty (propertyDefinition), Is.EqualTo ("p"));
       }
     }
+
+    [Test]
+    [Ignore ("TODO: COMMONS-936")]
+    public void ClassReflector_CreatesBaseClass_CompatibleWithDerivedInstances_WithMixins_WithOverriddenProperty ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<BaseBusinessObjectClass> ().AddMixin<MixinOverridingProperty> ()
+          .ForClass<BaseBusinessObjectClass> ().AddMixin<BindableObjectMixin> ()
+          .EnterScope ())
+      {
+        var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
+        var bindableObjectClass = classReflector.GetMetadata ();
+        var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> ().With ();
+
+        derivedBusinessObject.Public = "p";
+        Mixin.Get<MixinOverridingProperty> (derivedBusinessObject).Public += "q";
+        
+        var propertyDefinition = bindableObjectClass.GetPropertyDefinition ("Public");
+        Assert.That (propertyDefinition, Is.Not.Null);
+
+        var businessObject = (IBusinessObject) derivedBusinessObject;
+        Assert.That (businessObject.GetProperty (propertyDefinition), Is.EqualTo ("pq"));
+      }
+    }
   }
 }

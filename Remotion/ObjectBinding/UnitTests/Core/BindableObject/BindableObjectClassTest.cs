@@ -104,8 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
           PropertyReflector.Create(GetPropertyInfo (
                      MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),
                      typeof (IMixinAddingProperty).FullName + ".MixedProperty"), _bindableObjectProvider);
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperty), _bindableObjectProvider, BindableObjectMetadataFactory.Create())
-      ;
+      ClassReflector classReflector = new ClassReflector (typeof (ClassWithMixedProperty), _bindableObjectProvider, BindableObjectMetadataFactory.Create());
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       CheckPropertyBase (propertyReflector.GetMetadata(), bindableObjectClass.GetPropertyDefinition ("MixedProperty"));

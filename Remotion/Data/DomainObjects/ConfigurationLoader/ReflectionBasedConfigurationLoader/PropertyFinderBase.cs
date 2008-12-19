@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      if (!IsOriginalDeclaringType (propertyInfo))
+      if (!Utilities.ReflectionUtility.IsOriginalDeclaration (propertyInfo))
       {
         CheckForMappingAttributes (propertyInfo);
         return false;
@@ -118,16 +118,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
                 propertyInfo.DeclaringType.FullName,
                 propertyInfo.Name));
       }
-    }
-
-    protected bool IsOriginalDeclaringType (PropertyInfo propertyInfo)
-    {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
-
-      Type originalDeclaringType = Remotion.Utilities.ReflectionUtility.GetOriginalDeclaringType (propertyInfo);
-      if (originalDeclaringType.IsGenericType && propertyInfo.DeclaringType.IsGenericType)
-        return originalDeclaringType.GetGenericTypeDefinition() == propertyInfo.DeclaringType.GetGenericTypeDefinition();
-      return originalDeclaringType == propertyInfo.DeclaringType;
     }
 
     protected bool IsUnmanagedProperty (PropertyInfo propertyInfo)

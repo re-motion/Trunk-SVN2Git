@@ -14,17 +14,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
+namespace Remotion.UnitTests.Utilities.ReflectionUtilityTests.TestDomain
 {
-  [BindableObject]
-  [Serializable]
-  public class BaseBusinessObjectClass
+  public abstract class DerivedOpenGenericClassWithDifferentProperties<T> : GenericClassWithDifferentProperties<T>
   {
-    public BaseBusinessObjectClass ()
+    public override T AbstractT
     {
+      get { return default(T); }
+      set { }
     }
 
-    public virtual object Public { get; set; }
+    public abstract T OtherVirtualT { get; set; }
+    public new abstract T VirtualT { get; set; }
   }
 }

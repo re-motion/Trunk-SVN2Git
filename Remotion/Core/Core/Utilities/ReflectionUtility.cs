@@ -27,11 +27,11 @@ namespace Remotion.Utilities
     {
       object[] attributes = member.GetCustomAttributes (attributeType, inherit);
       if (attributes.Length > 1)
-        throw new InvalidOperationException (string.Format ("More that one attribute of type {0} found for {1} {2}. Only single attributes are supported by this method.", attributeType.FullName, member.MemberType, member));
+        throw new InvalidOperationException (String.Format ("More that one attribute of type {0} found for {1} {2}. Only single attributes are supported by this method.", attributeType.FullName, member.MemberType, member));
       if (attributes.Length == 0)
       {
         if (throwExceptionIfNotPresent)
-          throw new ApplicationException (string.Format ("{0} {1} does not have attribute {2}.", member.MemberType, member, attributeType.FullName));
+          throw new ApplicationException (String.Format ("{0} {1} does not have attribute {2}.", member.MemberType, member, attributeType.FullName));
         else
           return null;
       }
@@ -65,7 +65,7 @@ namespace Remotion.Utilities
       if (attributes == null || attributes.Length == 0)
         return null;
       if (attributes.Length > 1)
-        throw new NotSupportedException (string.Format ("Cannot get member value for multiple attributes. Reflection object {0} has {1} instances of attribute {2}", reflectionObject.Name, attributes.Length, attributeType.FullName));
+        throw new NotSupportedException (String.Format ("Cannot get member value for multiple attributes. Reflection object {0} has {1} instances of attribute {2}", reflectionObject.Name, attributes.Length, attributeType.FullName));
       return GetFieldOrPropertyValue (attributes[0], fieldOrProperty);
     }
 
@@ -80,7 +80,7 @@ namespace Remotion.Utilities
         return member;
 
       if (throwExceptionIfNotFound)
-        throw new ArgumentException (string.Format ("{0} is not an instance field or property of type {1}.", fieldOrPropertyName, type.FullName), "memberName");
+        throw new ArgumentException (String.Format ("{0} is not an instance field or property of type {1}.", fieldOrPropertyName, type.FullName), "memberName");
       return null;
     }
 
@@ -109,7 +109,7 @@ namespace Remotion.Utilities
       else if (fieldOrProperty is PropertyInfo)
         return ((PropertyInfo) fieldOrProperty).GetValue (obj, new object[0]);
       else
-        throw new ArgumentException (string.Format ("Argument must be either FieldInfo or PropertyInfo but is {0}.", fieldOrProperty.GetType ().FullName), "member");
+        throw new ArgumentException (String.Format ("Argument must be either FieldInfo or PropertyInfo but is {0}.", fieldOrProperty.GetType ().FullName), "member");
     }
 
 
@@ -137,7 +137,7 @@ namespace Remotion.Utilities
       else if (fieldOrProperty is PropertyInfo)
         ((PropertyInfo) fieldOrProperty).SetValue (obj, value, new object[0]);
       else
-        throw new ArgumentException (string.Format ("Argument must be either FieldInfo or PropertyInfo but is {0}.", fieldOrProperty.GetType ().FullName), "member");
+        throw new ArgumentException (String.Format ("Argument must be either FieldInfo or PropertyInfo but is {0}.", fieldOrProperty.GetType ().FullName), "member");
     }
 
     public static Type GetFieldOrPropertyType (MemberInfo fieldOrProperty)
@@ -260,7 +260,7 @@ namespace Remotion.Utilities
         else
         {
           string message =
-              string.Format ("The type {0} implements the given interface type {1} more than once.", type.FullName, ascribeeType.FullName);
+              String.Format ("The type {0} implements the given interface type {1} more than once.", type.FullName, ascribeeType.FullName);
           throw new AmbiguousMatchException (message);
         }
       }
@@ -303,7 +303,7 @@ namespace Remotion.Utilities
       if (accessors.Length == 0)
       {
         throw new ArgumentException (
-            string.Format ("The property does not define any accessors.\r\n  Type: {0}, property: {1}", propertyInfo.DeclaringType, propertyInfo.Name),
+            String.Format ("The property does not define any accessors.\r\n  Type: {0}, property: {1}", propertyInfo.DeclaringType, propertyInfo.Name),
             "propertyInfo");
       }
 
@@ -316,6 +316,23 @@ namespace Remotion.Utilities
 
       return baseDeclaringType;
     }
+
+    /// <summary>
+    /// Determines whether the given <see cref="PropertyInfo"/> is the original base declaration.
+    /// </summary>
+    /// <param name="propertyInfo">The property info to check.</param>
+    /// <returns>
+    /// 	<see langword="true"/> if the <paramref name="propertyInfo"/> is the first declaration of the property; <see langword="false"/> if it is an 
+    /// 	overrride.
+    /// </returns>
+    public static bool IsOriginalDeclaration (PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      Type originalDeclaringType = GetOriginalDeclaringType (propertyInfo);
+      return originalDeclaringType == propertyInfo.DeclaringType;
+    }
+
 
     /// <summary>
     /// Guesses whether the given property is an explicit interface implementation by checking whether it has got private virtual final accessors.
