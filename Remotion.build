@@ -197,7 +197,7 @@
 
   <target name="Core.Interfaces">
     <property name="project.name" value="Core.Interfaces" />
-    <property name="project.dir" value="Core/Interfaces" />
+    <property name="project.dir" value="Remotion/Core/Interfaces" />
     <property name="project.output" value="Remotion.Interfaces" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -205,7 +205,7 @@
 
   <target name="Core.Core" depends="Core.Interfaces">
     <property name="project.name" value="Core.Core" />
-    <property name="project.dir" value="Core/Core" />
+    <property name="project.dir" value="Remotion/Core/Core" />
     <property name="project.output" value="Remotion" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -213,7 +213,7 @@
 
   <target name="Core.Mixins.MixerTool.Console" depends="Core.Core">
     <property name="project.name" value="Core.Mixins.MixerTool.Console" />
-    <property name="project.dir" value="Core/Mixins.MixerTool.Console" />
+    <property name="project.dir" value="Remotion/Core/Mixins.MixerTool.Console" />
     <property name="project.output" value="TypeMixer" />
     <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
@@ -221,7 +221,7 @@
 
   <target name="Development.Core" depends="Core.Core">
     <property name="project.name" value="Development.Core" />
-    <property name="project.dir" value="Development/Core" />
+    <property name="project.dir" value="Remotion/Development/Core" />
     <property name="project.output" value="Remotion.Development" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -229,7 +229,7 @@
 
   <target name="Development.Data" depends="Core.Core, Data.DomainObjects, Data.Linq">
     <property name="project.name" value="Development.Data" />
-    <property name="project.dir" value="Development/Data" />
+    <property name="project.dir" value="Remotion/Development/Data" />
     <property name="project.output" value="Remotion.Development.Data" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -237,7 +237,7 @@
 
   <target name="Development.Web" depends="Core.Core, Development.Core, Web">
     <property name="project.name" value="Development.Web" />
-    <property name="project.dir" value="Development/Web" />
+    <property name="project.dir" value="Remotion/Development/Web" />
     <property name="project.output" value="Remotion.Development.Web" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -245,7 +245,7 @@
 
   <target name="Development.CodeDom" depends="Core.Core">
     <property name="project.name" value="Development.CodeDom" />
-    <property name="project.dir" value="Development/CodeDom" />
+    <property name="project.dir" value="Remotion/Development/CodeDom" />
     <property name="project.output" value="Remotion.Development.CodeDom" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -277,7 +277,7 @@
 
   <target name="Data.Interfaces" depends="Core.Core">
     <property name="project.name" value="Data.Interfaces" />
-    <property name="project.dir" value="Data/Interfaces" />
+    <property name="project.dir" value="Remotion/Data/Interfaces" />
     <property name="project.output" value="Remotion.Data.Interfaces" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -285,7 +285,7 @@
 
   <target name="Data.Linq" depends="Core.Core">
     <property name="project.name" value="Data.Linq" />
-    <property name="project.dir" value="Data/Linq" />
+    <property name="project.dir" value="Remotion/Data/Linq" />
     <property name="project.output" value="Remotion.Data.Linq" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -293,7 +293,7 @@
 
   <target name="Data.DomainObjects" depends="Core.Core, Data.Interfaces, Data.Linq, ObjectBinding">
     <property name="project.name" value="Data.DomainObjects" />
-    <property name="project.dir" value="Data/DomainObjects" />
+    <property name="project.dir" value="Remotion/Data/DomainObjects" />
     <property name="project.output" value="Remotion.Data.DomainObjects" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -301,7 +301,7 @@
 
   <target name="Data.DomainObjects.RdbmsTools" depends="Core.Core, Data.DomainObjects">
     <property name="project.name" value="Data.DomainObjects.RdbmsTools" />
-    <property name="project.dir" value="Data/DomainObjects.RdbmsTools" />
+    <property name="project.dir" value="Remotion/Data/DomainObjects.RdbmsTools" />
     <property name="project.output" value="Remotion.Data.DomainObjects.RdbmsTools" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -309,7 +309,7 @@
 
   <target name="Data.DomainObjects.RdbmsTools.Console" depends="Core.Core, Data.DomainObjects, Data.DomainObjects.RdbmsTools">
     <property name="project.name" value="Data.DomainObjects.RdbmsTools.Console" />
-    <property name="project.dir" value="Data/DomainObjects.RdbmsTools.Console" />
+    <property name="project.dir" value="Remotion/Data/DomainObjects.RdbmsTools.Console" />
     <property name="project.output" value="dbschema" />
     <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
@@ -317,7 +317,7 @@
 
   <target name="Data.DomainObjects.Security" depends="Core.Core, Data.DomainObjects, Security">
     <property name="project.name" value="Data.DomainObjects.Security" />
-    <property name="project.dir" value="Data/DomainObjects.Security" />
+    <property name="project.dir" value="Remotion/Data/DomainObjects.Security" />
     <property name="project.output" value="Remotion.Data.DomainObjects.Security" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -325,7 +325,7 @@
 
   <target name="Web" depends="Core.Core, Data.Interfaces, Security.Interfaces">
     <property name="project.name" value="Web" />
-    <property name="project.dir" value="Web/Core" />
+    <property name="project.dir" value="Remotion/Web/Core" />
     <property name="project.output" value="Remotion.Web" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -333,7 +333,7 @@
 
   <target name="Web.ExecutionEngine.CodeGenerator" depends="Core.Core, Web">
     <property name="project.name" value="Web.ExecutionEngine.CodeGenerator" />
-    <property name="project.dir" value="Web/ExecutionEngine.CodeGenerator" />
+    <property name="project.dir" value="Remotion/Web/ExecutionEngine.CodeGenerator" />
     <property name="project.output" value="wxegen" />
     <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
@@ -341,7 +341,7 @@
 
   <target name="Web.Security" depends="Core.Core, Security, Web">
     <property name="project.name" value="Web.Security" />
-    <property name="project.dir" value="Web/Security" />
+    <property name="project.dir" value="Remotion/Web/Security" />
     <property name="project.output" value="Remotion.Web.Security" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -349,7 +349,7 @@
 
   <target name="ObjectBinding.Interfaces" depends="Core.Core">
     <property name="project.name" value="ObjectBinding.Interfaces" />
-    <property name="project.dir" value="ObjectBinding/Interfaces" />
+    <property name="project.dir" value="Remotion/ObjectBinding/Interfaces" />
     <property name="project.output" value="Remotion.ObjectBinding.Interfaces" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -357,7 +357,7 @@
   
   <target name="ObjectBinding" depends="Core.Core, ObjectBinding.Interfaces, Security.Interfaces">
     <property name="project.name" value="ObjectBinding" />
-    <property name="project.dir" value="ObjectBinding/Core" />
+    <property name="project.dir" value="Remotion/ObjectBinding/Core" />
     <property name="project.output" value="Remotion.ObjectBinding" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -365,7 +365,7 @@
 
   <target name="ObjectBinding.Web" depends="Core.Core, Web, ObjectBinding, Security.Interfaces">
     <property name="project.name" value="ObjectBinding.Web" />
-    <property name="project.dir" value="ObjectBinding/Web" />
+    <property name="project.dir" value="Remotion/ObjectBinding/Web" />
     <property name="project.output" value="Remotion.ObjectBinding.Web" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -374,7 +374,7 @@
   <target name="ObjectBinding.Web.CodeGenerator" 
       depends="Core.Core, Web, ObjectBinding, ObjectBinding.Web, Data.DomainObjects">
     <property name="project.name" value="ObjectBinding.Web.CodeGenerator" />
-    <property name="project.dir" value="ObjectBinding/Web.CodeGenerator/Core" />
+    <property name="project.dir" value="Remotion/ObjectBinding/Web.CodeGenerator/Core" />
     <property name="project.output" value="UIGen" />
     <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
@@ -382,7 +382,7 @@
 
   <target name="ObjectBinding.Web.CodeGenerator.Templates">
     <property name="project.name" value="ObjectBinding.Web.CodeGenerator.Templates" />
-    <property name="project.dir" value="ObjectBinding/Web.CodeGenerator/Templates" />
+    <property name="project.dir" value="Remotion/ObjectBinding/Web.CodeGenerator/Templates" />
     <property name="project.output" value="" />
     <property name="project.extension" value="" />
     <call target="execute-buildstep" if="${build.step.get-sourcefiles}" />
@@ -396,7 +396,7 @@
 
   <target name="ObjectBinding.Web.Preview" depends="Core.Core, Web, ObjectBinding, ObjectBinding.Web">
     <property name="project.name" value="ObjectBinding.Web.Preview" />
-    <property name="project.dir" value="ObjectBinding/Web.Preview" />
+    <property name="project.dir" value="Remotion/ObjectBinding/Web.Preview" />
     <property name="project.output" value="Remotion.ObjectBinding.Web.Preview" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -404,7 +404,7 @@
 
   <target name="Security.Interfaces" depends="Core.Core, Core.Interfaces">
     <property name="project.name" value="Security.Interfaces" />
-    <property name="project.dir" value="Security/Interfaces" />
+    <property name="project.dir" value="Remotion/Security/Interfaces" />
     <property name="project.output" value="Remotion.Security.Interfaces" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -412,7 +412,7 @@
   
   <target name="Security" depends="Core.Core, Security.Interfaces">
     <property name="project.name" value="Security" />
-    <property name="project.dir" value="Security/Core" />
+    <property name="project.dir" value="Remotion/Security/Core" />
     <property name="project.output" value="Remotion.Security" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -420,7 +420,7 @@
 
   <target name="Security.Metadata.Extractor" depends="Core.Core, Security">
     <property name="project.name" value="Security.Metadata.Extractor" />
-    <property name="project.dir" value="Security/Metadata.Extractor" />
+    <property name="project.dir" value="Remotion/Security/Metadata.Extractor" />
     <property name="project.output" value="Remotion.Security.Metadata.Extractor" />
     <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
@@ -428,7 +428,7 @@
 
   <target name="Security.MSBuild.Tasks" depends="Core.Core, Security">
     <property name="project.name" value="Security.MSBuild.Tasks" />
-    <property name="project.dir" value="Security/MSBuild.Tasks" />
+    <property name="project.dir" value="Remotion/Security/MSBuild.Tasks" />
     <property name="project.output" value="Remotion.Security.MSBuild.Tasks" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -471,7 +471,7 @@
 
   <target name="Core.Mixins.Samples" depends="Core.Core">
     <property name="project.name" value="Core.Mixins.Samples" />
-    <property name="project.dir" value="Core/Mixins.Samples" />
+    <property name="project.dir" value="Remotion/Core/Mixins.Samples" />
     <property name="project.output" value="Remotion.Mixins.Samples" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
@@ -479,7 +479,7 @@
   
   <target name="Core.UnitTests" depends="Core.Core, Core.Mixins.Samples, Development.Core">
     <property name="project.name" value="Core.UnitTests" />
-    <property name="project.dir" value="Core/UnitTests" />
+    <property name="project.dir" value="Remotion/Core/UnitTests" />
     <property name="project.output" value="Remotion.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
@@ -487,7 +487,7 @@
 
   <target name="Development.UnitTests" depends="Development.Core, Development.Data, Development.Web">
     <property name="project.name" value="Development.UnitTests" />
-    <property name="project.dir" value="Development/UnitTests" />
+    <property name="project.dir" value="Remotion/Development/UnitTests" />
     <property name="project.output" value="Remotion.Development.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
@@ -503,7 +503,7 @@
 
   <target name="Web.UnitTests" depends="Core.Core, Development.Core, Development.Web, Security, Web.Security, Web">
     <property name="project.name" value="Web.UnitTests" />
-    <property name="project.dir" value="Web/UnitTests" />
+    <property name="project.dir" value="Remotion/Web/UnitTests" />
     <property name="project.output" value="Remotion.Web.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
@@ -511,7 +511,7 @@
 
   <target name="ObjectBinding.UnitTests" depends="Core.Core, Development.Core, Development.Web, ObjectBinding, Web">
     <property name="project.name" value="ObjectBinding.UnitTests" />
-    <property name="project.dir" value="ObjectBinding/UnitTests" />
+    <property name="project.dir" value="Remotion/ObjectBinding/UnitTests" />
     <property name="project.output" value="Remotion.ObjectBinding.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
@@ -521,7 +521,7 @@
           Core.Core, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security
           Development.Core, Development.Data, Development.Web, Security.Interfaces, Security">
     <property name="project.name" value="Data.UnitTests" />
-    <property name="project.dir" value="Data/UnitTests" />
+    <property name="project.dir" value="Remotion/Data/UnitTests" />
     <property name="project.output" value="Remotion.Data.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
@@ -529,7 +529,7 @@
 
   <target name="Data.DomainObjects.RdbmsTools.UnitTests" depends="Core.Core, Data.DomainObjects, Data.DomainObjects.RdbmsTools">
     <property name="project.name" value="Data.DomainObjects.RdbmsTools.UnitTests" />
-    <property name="project.dir" value="Data/DomainObjects.RdbmsTools.UnitTests" />
+    <property name="project.dir" value="Remotion/Data/DomainObjects.RdbmsTools.UnitTests" />
     <property name="project.output" value="Remotion.Data.DomainObjects.RdbmsTools.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
@@ -537,7 +537,7 @@
 
   <target name="Security.UnitTests.TestDomain" depends="Core.Core, Security">
     <property name="project.name" value="Security.UnitTests.TestDomain" />
-    <property name="project.dir" value="Security/UnitTests.TestDomain" />
+    <property name="project.dir" value="Remotion/Security/UnitTests.TestDomain" />
     <property name="project.output" value="Remotion.Security.UnitTests.TestDomain" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
@@ -545,7 +545,7 @@
 
   <target name="Security.UnitTests" depends="Core.Core, Data.DomainObjects, Development.Core, Security, Security.UnitTests.TestDomain">
     <property name="project.name" value="Security.UnitTests" />
-    <property name="project.dir" value="Security/UnitTests" />
+    <property name="project.dir" value="Remotion/Security/UnitTests" />
     <property name="project.output" value="Remotion.Security.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />

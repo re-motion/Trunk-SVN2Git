@@ -322,13 +322,7 @@
     <delete file="${sourcezipfile.name}" />
     <zip zipfile="${sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
-        <include name="Core/**" />
-        <include name="Development/**" />
-        <include name="Data/**" />
-        <include name="Mixins/**" />
-        <include name="ObjectBinding/**" />
-        <include name="Security/**" />
-        <include name="Web/**" />
+        <include name="Remotion/**" />
         <include name="build/*.xml" />
         <exclude name="**/obj/**" />
         <exclude name="**/bin/**" />

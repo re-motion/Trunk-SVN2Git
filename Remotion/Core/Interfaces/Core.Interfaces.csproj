@@ -1,0 +1,136 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BD061F4A-A9E6-461E-A804-7999623A0060}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion</RootNamespace>
+    <AssemblyName>Remotion.Interfaces</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Remotion.Interfaces.XML</DocumentationFile>
+    <NoWarn>1591;0419</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdapterRegistry.cs" />
+    <Compile Include="BridgeInterfaces\IAssemblyFinderTypeDiscoveryServiceImplementation.cs" />
+    <Compile Include="BridgeInterfaces\IBoostrapStorageProvider.cs" />
+    <Compile Include="BridgeInterfaces\IAdapterRegistryImplementation.cs" />
+    <Compile Include="BridgeInterfaces\ICallContextStorageProvider.cs" />
+    <Compile Include="Collections\ICache.cs" />
+    <Compile Include="Collections\IDataStore.cs" />
+    <Compile Include="Context\ISafeContextStorageProvider.cs" />
+    <Compile Include="Context\SafeContext.cs" />
+    <Compile Include="Design\IDesignModeHelper.cs" />
+    <Compile Include="IAdapter.cs" />
+    <Compile Include="Implementation\ArgumentUtility.cs" />
+    <Compile Include="Implementation\ConcreteImplementationAttribute.cs" />
+    <Compile Include="Implementation\FrameworkVersion.cs" />
+    <Compile Include="Implementation\FrameworkVersionRetriever.cs" />
+    <Compile Include="Implementation\VersionDependentImplementationBridge.cs" />
+    <Compile Include="Implementation\VersionDependentImplementationException.cs" />
+    <Compile Include="INullObject.cs" />
+    <Compile Include="Logging\BridgeInterfaces\ILogManagerImplementation.cs" />
+    <Compile Include="Logging\ILog.cs" />
+    <Compile Include="Logging\ILogManager.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Mixins\AcceptsAlphabeticOrderingAttribute.cs" />
+    <Compile Include="Mixins\BridgeInterfaces\IMixedObjectInstantiator.cs" />
+    <Compile Include="Mixins\CompleteInterfaceAttribute.cs" />
+    <Compile Include="Mixins\CopyCustomAttributesAttribute.cs" />
+    <Compile Include="Mixins\ExtendsAttribute.cs" />
+    <Compile Include="Mixins\GenerationPolicy.cs" />
+    <Compile Include="Mixins\IgnoreForMixinConfigurationAttribute.cs" />
+    <Compile Include="Mixins\IgnoresClassAttribute.cs" />
+    <Compile Include="Mixins\IgnoresMixinAttribute.cs" />
+    <Compile Include="Mixins\BridgeInterfaces\IMixinImplementation.cs" />
+    <Compile Include="Mixins\BridgeInterfaces\ITypeFactoryImplementation.cs" />
+    <Compile Include="Mixins\BridgeInterfaces\IMixinTypeUtilityImplementation.cs" />
+    <Compile Include="Mixins\IInitializableMixin.cs" />
+    <Compile Include="Mixins\IOverrideAttribute.cs" />
+    <Compile Include="Mixins\MemberVisibility.cs" />
+    <Compile Include="Mixins\MemberVisibilityAttribute.cs" />
+    <Compile Include="Mixins\MixAttribute.cs" />
+    <Compile Include="Mixins\Mixin.cs" />
+    <Compile Include="Mixins\MixinParameterAttributes.cs" />
+    <Compile Include="Mixins\MixinRelationship.cs" />
+    <Compile Include="Mixins\MixinRelationshipAttribute.cs" />
+    <Compile Include="Mixins\NonIntroducedAttribute.cs" />
+    <Compile Include="Mixins\ObjectFactory.cs" />
+    <Compile Include="Mixins\OverrideMixinAttribute.cs" />
+    <Compile Include="Mixins\OverrideTargetAttribute.cs" />
+    <Compile Include="Mixins\TypeFactory.cs" />
+    <Compile Include="Mixins\UsesAttribute.cs" />
+    <Compile Include="PermanentGuidAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\ContextAwareTypeDiscoveryUtility.cs" />
+    <Compile Include="Reflection\FuncInvoker.generated.cs" />
+    <Compile Include="Reflection\FuncInvoker.template.cs" />
+    <Compile Include="Reflection\ActionInvoker.generated.cs" />
+    <Compile Include="Reflection\ActionInvoker.template.cs" />
+    <Compile Include="StandardDelegates.cs" />
+    <Compile Include="SuppressAttributesAttribute.cs" />
+    <Compile Include="Utilities\ArgumentEmptyException.cs" />
+    <Compile Include="Utilities\ArgumentItemNullException.cs" />
+    <Compile Include="Utilities\ArgumentItemTypeException.cs" />
+    <Compile Include="Utilities\ArgumentTypeException.cs" />
+    <Compile Include="Utilities\DesignerUtility.cs" />
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Core.Interfaces.build" />
+    <Content Include="doc\include\Logging\ILog.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent>..\..\..\..\..\prereq\FuncGen\FuncGen.exe $(ProjectDir)*.template.cs *.generated.cs /rec</PreBuildEvent>
+  </PropertyGroup>
+</Project>

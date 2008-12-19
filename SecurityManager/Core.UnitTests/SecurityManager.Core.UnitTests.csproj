@@ -223,51 +223,51 @@
     <None Include="SecurityManager.Core.UnitTests.build" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
+    <ProjectReference Include="..\..\Remotion\Core\Interfaces\Core.Interfaces.csproj">
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
+    <ProjectReference Include="..\..\Remotion\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Data\DomainObjects.Security\Data.DomainObjects.Security.csproj">
+    <ProjectReference Include="..\..\Remotion\Data\DomainObjects.Security\Data.DomainObjects.Security.csproj">
       <Project>{2C87FB62-CC00-4297-A3EA-35F4FC6649F0}</Project>
       <Name>Data.DomainObjects.Security</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Data\DomainObjects\Data.DomainObjects.csproj">
+    <ProjectReference Include="..\..\Remotion\Data\DomainObjects\Data.DomainObjects.csproj">
       <Project>{C2D4102A-6DB9-4997-85BE-AFA6ECF42F1A}</Project>
       <Name>Data.DomainObjects</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Data\Interfaces\Data.Interfaces.csproj">
+    <ProjectReference Include="..\..\Remotion\Data\Interfaces\Data.Interfaces.csproj">
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Data\Linq\Data.Linq.csproj">
+    <ProjectReference Include="..\..\Remotion\Data\Linq\Data.Linq.csproj">
       <Project>{DD9AA076-BE37-4A42-BA9E-C35ECC6955C9}</Project>
       <Name>Data.Linq</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
+    <ProjectReference Include="..\..\Remotion\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Development\Data\Development.Data.csproj">
+    <ProjectReference Include="..\..\Remotion\Development\Data\Development.Data.csproj">
       <Project>{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}</Project>
       <Name>Development.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.Core.csproj">
+    <ProjectReference Include="..\..\Remotion\ObjectBinding\Core\ObjectBinding.Core.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
       <Name>ObjectBinding.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ObjectBinding\Interfaces\ObjectBinding.Interfaces.csproj">
+    <ProjectReference Include="..\..\Remotion\ObjectBinding\Interfaces\ObjectBinding.Interfaces.csproj">
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
       <Name>ObjectBinding.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
+    <ProjectReference Include="..\..\Remotion\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
+    <ProjectReference Include="..\..\Remotion\Security\Interfaces\Security.Interfaces.csproj">
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
     </ProjectReference>

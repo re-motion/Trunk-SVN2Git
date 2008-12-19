@@ -1,4 +1,4 @@
-.\..\..\Data\DomainObjects.RdbmsTools.Console\bin\Debug\dbschema.exe `
+.\..\..\..\Remotion\Data\DomainObjects.RdbmsTools.Console\bin\Debug\dbschema.exe `
     "/baseDirectory:bin\debug" `
     "/config:..\Clients.Web\web.config" `
     "/schema" `

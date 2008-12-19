@@ -1,0 +1,750 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DF8BA786-9679-4879-8757-16AE2709D83A}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Remotion.Web</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.Web</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DocumentationFile>bin\debug\Remotion.Web.XML</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1591;0419</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\Remotion.Web.xml</DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1591;1573;0419</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design">
+      <Name>system.design</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Web">
+      <Name>System.Web</Name>
+    </Reference>
+    <Reference Include="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\WINDOWS\assembly\GAC_MSIL\System.Web.Extensions\1.0.61025.0__31bf3856ad364e35\System.Web.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
+    <Compile Include="Context\HttpContextStorageProvider.cs" />
+    <Compile Include="Context\WebSafeContextMixin.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ChildTransactionExecutionListener.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\CreateChildIfParentTransactionMode.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\CreateRootTransactionMode.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\IUserControlExecutor.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionContext.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\IWxeFunctionExecutionListener.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ITransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\NullExecutionListener.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionMode.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\NoneTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\NullTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\NullUserControlExecutor.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionExecutionListener.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\SecurityExecutionListener.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\TransactionStrategyBase.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\RootTransactionStrategy.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ScopedTransactionStrategyBase.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\UserControlExecutor.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxeExceptionHandler.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxeVariablesContainer.cs" />
+    <Compile Include="ExecutionEngine\ITransactionMode.cs" />
+    <Compile Include="ExecutionEngine\WxeFatalExecutionException.cs" />
+    <Compile Include="ExecutionEngine\WxeFunction.cs" />
+    <Compile Include="ExecutionEngine\WxeResourceUserControlStep.cs" />
+    <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\StateClearingStrategy.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategy.cs" />
+    <Compile Include="UI\Controls\LazyInitializationContainer.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\IReplaceableControl.cs" />
+    <Compile Include="Utilities\ControlState.cs" />
+    <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
+    <Compile Include="Utilities\InternalControlMemberCaller.cs" />
+    <Compile Include="ExecutionEngine\IWxePageExecutor.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ResourceObject.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectBase.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectWithVarRef.cs" />
+    <Compile Include="ExecutionEngine\WxeExecuteUserControlNextStepException.cs" />
+    <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
+    <Compile Include="ExecutionEngine\WxePageExecutor.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\PostProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingRedirectToSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\PreProcessingSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\PreparingRedirectToSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\RedirectingToSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\ExecutingSubFunctionWithoutPermaUrlState.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\NullExecutionState.cs" />
+    <Compile Include="ExecutionEngine\WxeRepostOptions.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecutionStateBase.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\ExecutingSubFunctionWithPermaUrlState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecutionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\PostProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\PreparingRedirectToSubFunctionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\RedirectingToSubFunctionState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\ReturningFromSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\IExecutionState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\IExecutionStateContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\IExecutionStateParameters.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\PreProcessingSubFunctionState.cs" />
+    <Compile Include="ExecutionEngine\WxeParameterAttribute.cs" />
+    <Compile Include="ExecutionEngine\WxeReturnOptions.cs" />
+    <Compile Include="ExecutionEngine\WxeUserControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\IWxeExecutor.cs" />
+    <Compile Include="ExecutionEngine\WxeCallArgumentsBase.cs" />
+    <Compile Include="ExecutionEngine\WxeCallOptionsExternalByRedirect.cs" />
+    <Compile Include="ExecutionEngine\IWxeCallArguments.cs" />
+    <Compile Include="ExecutionEngine\WxeCallExternalException.cs" />
+    <Compile Include="ExecutionEngine\WxeCallOptions.cs" />
+    <Compile Include="ExecutionEngine\WxeCallOptionsExternal.cs" />
+    <Compile Include="ExecutionEngine\WxeCallOptionsNoRepost.cs" />
+    <Compile Include="ExecutionEngine\WxeExecutor.cs" />
+    <Compile Include="ExecutionEngine\WxeIgnorableException.cs" />
+    <Compile Include="ExecutionEngine\IWxePage.cs" />
+    <Compile Include="ExecutionEngine\WxeCallArguments.cs" />
+    <Compile Include="ExecutionEngine\WxeFunctionStateManager.cs" />
+    <Compile Include="ExecutionEngine\Obsolete\WxePageExtensions.cs" />
+    <Compile Include="ExecutionEngine\WxePermaUrlCallArguments.cs" />
+    <Compile Include="ExecutionEngine\WxePermaUrlOptions.cs" />
+    <Compile Include="UI\Controls\ControlReplacing\ControlReplacer.cs" />
+    <Compile Include="ExecutionEngine\WxeUserControlStep.cs" />
+    <Compile Include="ExecutionEngine\WxeVariableReference.cs" />
+    <Compile Include="Infrastructure\HttpContextWrapper.cs" />
+    <Compile Include="Infrastructure\HttpRequestWrapper.cs" />
+    <Compile Include="Infrastructure\HttpResponseWrapper.cs" />
+    <Compile Include="Infrastructure\HttpSessionStateWrapper.cs" />
+    <Compile Include="Infrastructure\IHttpContext.cs" />
+    <Compile Include="Infrastructure\IHttpRequest.cs" />
+    <Compile Include="Infrastructure\IHttpResponse.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\ExecutionEngineConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\ResourceConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\SmartNavigationConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\WcagConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\WebConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePermanentUrlTooLongException.cs" />
+    <Compile Include="ExecutionEngine\WxeUnhandledException.cs" />
+    <Compile Include="ExecutionEngine\IWxeSecurityAdapter.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\NumberedMemberFinder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\UrlMapping\ConfigurationBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\UrlMapping\UrlMappingConfiguration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\UrlMapping\UrlMappingLoader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\UrlMapping\UrlMappingSchema.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeExecuteNextStepException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeForm.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeFunctionState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\Obsolete\WxeIf.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeLauncher.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeMethodStep.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeOutParameterNotSupportedException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\Obsolete\WxePageFunction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePageInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePageStep.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeParameterConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeParameterDeclaration.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxePostbackOutOfSequenceException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeResourcePageStep.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeStep.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeStepList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeTemplateControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeTemplateControlInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeTimeoutException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\Obsolete\WxeTryCatch.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExecutionEngine\WxeUserCancelException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IResourceUrlResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ResourceUrlResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\Command.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\CompoundValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\ControlItemCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\HelpInfo.cs" />
+    <Compile Include="UI\Controls\MainMenuTab.cs" />
+    <Compile Include="UI\Controls\MissingPermissionBehavior.cs" />
+    <Compile Include="UI\Controls\DatePickerPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\DropDownMenu.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\EmailAddressValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\FormGridLabel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\FormGridManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\FormGridRowInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\FormGridRowInfoCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\HtmlHeadContents.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IBaseValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IconInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IControlStateManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IControlWithDesignTimeSupport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IEditableControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IFocusableControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IFormGridRowProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\INavigationControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\ISmartControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\ISupportsPostLoadControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\ITemplateControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IUserControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IValidatableControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\SingleView.cs" />
+    <Compile Include="UI\Controls\SubMenuTab.cs" />
+    <Compile Include="UI\Controls\WebTreeViewMenuItemProvider.cs" />
+    <Compile Include="UI\Design\WebDesginModeHelper.cs" />
+    <Compile Include="UI\ISmartPage.cs" />
+    <Compile Include="UI\IWebSecurityAdapter.cs" />
+    <Compile Include="UI\Controls\LazyContainer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\LengthValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\MenuTab.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\MenuTabCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\NavigationCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\NumericValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\SingleControlItemCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\SmartHyperLink.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\SmartLabel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TabbedMenu.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TabbedMenuEvents.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TabbedMultiView.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TabView.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TabViewCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\ValidationError.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\ValidationStateViewer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebButton.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebLinkButton.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebMenuItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebMenuItemCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebTabCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebTabStrip.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebTreeNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebTreeNodeCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebTreeView.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WebTreeViewEvents.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\AdvancedCollectionEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\CollectionEditorServiceProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\ControlToStringConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\FormGridManagerDesigner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\MainMenuTabCollectionEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\SmartControlToStringConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\StringArrayToStringConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\SubMenuTabCollectionEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\TabbedMenuDesigner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\TypeDescriptorContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\WebControlDesigner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\WebMenuItemCollectionEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\WebTreeNodeCollectionEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Globalization\IResourceDispatchTarget.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Globalization\ResourceDispatcher.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Globalization\ResourceManagerUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Globalization\WebMultiLingualResourcesAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\HtmlHeadAppender.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\IPage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\ISmartNavigablePage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\IWindowStateManager.cs" />
+    <Compile Include="UI\PostLoad.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\ShowAbortConfirmation.cs" />
+    <Compile Include="UI\SmartPage.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UI\SmartPageEvents.cs" />
+    <Compile Include="UI\SmartPageInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\WcagException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\WcagHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\ControlHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\HtmlUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\IHttpServerUtility.cs" />
+    <Compile Include="Utilities\PageUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\ScriptUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\HttpServerUtilityWrapper.cs" />
+    <Compile Include="Utilities\UrlUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\WebTypeUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="Configuration\WebConfiguration.xsx">
+      <DependentUpon>WebConfiguration.xsd</DependentUpon>
+    </None>
+    <None Include="Doc\Bugs and ToDos.xls" />
+    <None Include="Doc\FormGridManager.doc" />
+    <None Include="Doc\Globalization.doc" />
+    <None Include="ExecutionEngine\UrlMapping\UrlMapping.xsx">
+      <DependentUpon>UrlMapping.xsd</DependentUpon>
+    </None>
+    <None Include="Res\UI\WxeHandler.ashx" />
+    <None Include="Res\UI\WxeLauncher.ashx" />
+    <None Include="Web.build" />
+    <EmbeddedResource Include="Configuration\WebConfiguration.xsd">
+      <SubType>
+      </SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExecutionEngine\UrlMapping\UrlMapping.xsd">
+      <SubType>
+      </SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\FormGridManager.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\FormGridManager.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\SmartPageInfo.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\SmartPageInfo.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\ValidationStateViewer.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\ValidationStateViewer.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\WxePageInfo.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\WxePageInfo.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Content Include="Doc\include\Configuration\ExecutionEngineConfiguration.xml" />
+    <Content Include="Doc\include\Configuration\ResourceConfiguration.xml" />
+    <Content Include="Doc\include\Configuration\SmartNavigationConfiguration.xml" />
+    <Content Include="Doc\include\Configuration\WcagConfiguration.xml" />
+    <Content Include="Doc\include\Configuration\WebConfiguration.xml" />
+    <Content Include="Doc\include\ExecutionEngine\WxePageExtensions.xml" />
+    <Content Include="Doc\include\ExecutionEngine\IWxePage.xml" />
+    <Content Include="Doc\include\ExecutionEngine\UrlMapping\UrlMappingConfiguration.xml" />
+    <Content Include="Doc\include\ExecutionEngine\WxeContext.xml" />
+    <Content Include="Doc\include\ExecutionEngine\WxeHandler.xml" />
+    <Content Include="Doc\include\ExecutionEngine\WxeMethodStep.xml" />
+    <Content Include="Doc\include\ExecutionEngine\WxePage.xml" />
+    <Content Include="Doc\include\ExecutionEngine\WxePageStep.xml" />
+    <Content Include="Doc\include\ExecutionEngine\WxeStep.xml" />
+    <Content Include="Doc\include\NamespaceDoc.xml" />
+    <Content Include="Doc\include\ResourceDispatcher.xml" />
+    <Content Include="Doc\include\UI\Controls\DropDownMenu.xml" />
+    <Content Include="Doc\include\UI\Controls\FormGridManager.xml" />
+    <Content Include="Doc\include\UI\Controls\TabbedMultiView.xml" />
+    <Content Include="Doc\include\UI\Controls\ValidationStateViewer.xml" />
+    <Content Include="Doc\include\UI\Controls\WebButton.xml" />
+    <Content Include="Doc\include\UI\Controls\WebLinkButton.xml" />
+    <Content Include="Doc\include\UI\Controls\WebTabStrip.xml" />
+    <Content Include="Doc\include\UI\Controls\WebTreeView.xml" />
+    <Content Include="Doc\include\UI\ISmartPage.xml" />
+    <Content Include="Doc\include\UI\SmartPage.xml" />
+    <Content Include="Doc\include\Utilities\UrlUtility.xml" />
+    <Content Include="Doc\WhatsNew_Remotion.Web.txt" />
+    <Content Include="Res\HTML\ColorScheme_1_3_26.css" />
+    <Content Include="Res\HTML\DatePicker.js" />
+    <Content Include="Res\HTML\DropDownMenu.css" />
+    <Content Include="Res\HTML\DropDownMenu.js" />
+    <Content Include="Res\HTML\ExecutionEngine.css" />
+    <Content Include="Res\HTML\ExecutionEngine.js" />
+    <Content Include="Res\HTML\ExecutionEngineIE.css" />
+    <Content Include="Res\HTML\FontSize080.css" />
+    <Content Include="Res\HTML\FontSize080Quirks.css" />
+    <Content Include="Res\HTML\FontSize100.css" />
+    <Content Include="Res\HTML\FontSize100Quirks.css" />
+    <Content Include="Res\HTML\FormGrid.css" />
+    <Content Include="Res\HTML\SingleView.css" />
+    <Content Include="Res\HTML\SmartNavigation.js" />
+    <Content Include="Res\HTML\SmartPage.css" />
+    <Content Include="Res\HTML\SmartPage.js" />
+    <Content Include="Res\HTML\Style.css" />
+    <Content Include="Res\HTML\TabbedMenu.css" />
+    <Content Include="Res\HTML\TabbedMultiView.css" />
+    <Content Include="Res\HTML\TabStrip.css" />
+    <Content Include="Res\HTML\TreeView.css" />
+    <Content Include="Res\HTML\Utilities.js" />
+    <Content Include="Res\HTML\WebButton.css" />
+    <Content Include="Res\HTML\WebButton.js" />
+    <Content Include="Res\Image\DropDownMenuArrow.gif" />
+    <Content Include="Res\Image\DropDownMenuItemIconPane.gif" />
+    <Content Include="Res\Image\Help.gif" />
+    <Content Include="Res\Image\RequiredField.gif" />
+    <Content Include="Res\Image\Spacer.gif" />
+    <Content Include="Res\Image\TabbedMainMenuTabTopLeftCorner.gif" />
+    <Content Include="Res\Image\TabbedMainMenuTabTopRightCorner.gif" />
+    <Content Include="Res\Image\TreeViewF.gif" />
+    <Content Include="Res\Image\TreeViewFMinus.gif" />
+    <Content Include="Res\Image\TreeViewFPlus.gif" />
+    <Content Include="Res\Image\TreeViewI.gif" />
+    <Content Include="Res\Image\TreeViewL.gif" />
+    <Content Include="Res\Image\TreeViewLMinus.gif" />
+    <Content Include="Res\Image\TreeViewLPlus.gif" />
+    <Content Include="Res\Image\TreeViewMinus.gif" />
+    <Content Include="Res\Image\TreeViewPlus.gif" />
+    <Content Include="Res\Image\TreeViewR.gif" />
+    <Content Include="Res\Image\TreeViewRMinus.gif" />
+    <Content Include="Res\Image\TreeViewRPlus.gif" />
+    <Content Include="Res\Image\TreeViewT.gif" />
+    <Content Include="Res\Image\TreeViewTMinus.gif" />
+    <Content Include="Res\Image\TreeViewTPlus.gif" />
+    <Content Include="Res\Image\TreeViewWhite.gif" />
+    <Content Include="Res\Image\ValidationError.gif" />
+    <Content Include="Res\UI\DatePickerForm.aspx">
+      <SubType>Form</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
+      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
+      <Name>Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
+      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
+      <Name>Core.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\Interfaces\Data.Interfaces.csproj">
+      <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
+      <Name>Data.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
+      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
+      <Name>Security.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

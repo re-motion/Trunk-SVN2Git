@@ -1,0 +1,111 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9731FCDD-0F9F-41C5-B691-8AA9101CE249}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.Mixins.Samples</RootNamespace>
+    <AssemblyName>Remotion.Mixins.Samples</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion><SignAssembly>true</SignAssembly><AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile><TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.DynamicProxy, Version=2.0.0.1, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Castle.DynamicProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.4.0.2, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Aktology\Akten\Akt.cs" />
+    <Compile Include="Aktology\Akten\SachAkt.cs" />
+    <Compile Include="Aktology\AktFactory.cs" />
+    <Compile Include="Aktology\Mixins\AngestelltenMixin.cs" />
+    <Compile Include="Aktology\Mixins\TransportFahrzeugMixin.cs" />
+    <Compile Include="Aktology\Mixins\PersonenMixin.cs" />
+    <Compile Include="Aktology\Mixins\FahrzeugMixin.cs" />
+    <Compile Include="DynamicMixinBuilding\BaseRequirements.cs" />
+    <Compile Include="DisposableMixin.cs" />
+    <Compile Include="DynamicMixinBuilding\DynamicMixinBuilder.cs" />
+    <Compile Include="DynamicMixinBuilding\DynamicMixinTypeGenerator.cs" />
+    <Compile Include="EquatableMixin.cs" />
+    <Compile Include="DynamicMixinBuilding\InterfaceEmitter.cs" />
+    <Compile Include="DynamicMixinBuilding\LoadFunctionExpression.cs" />
+    <Compile Include="PhotoStuff\DataObject.cs" />
+    <Compile Include="PhotoStuff\IDataObject.cs" />
+    <Compile Include="PhotoStuff\IDocument.cs" />
+    <Compile Include="PhotoStuff\StoredAttribute.cs" />
+    <Compile Include="PhotoStuff\Variant1\Document.cs" />
+    <Compile Include="PhotoStuff\Variant1\Photo.cs" />
+    <Compile Include="PhotoStuff\Variant2\Document.cs" />
+    <Compile Include="PhotoStuff\Variant2\DocumentMixin.cs" />
+    <Compile Include="PhotoStuff\Variant2\Photo.cs" />
+    <Compile Include="PhotoStuff\Variant3\Document.cs" />
+    <Compile Include="PhotoStuff\Variant3\Photo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Core.Mixins.Samples.build" />
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="..\..\remotion.snk"><Link>remotion.snk</Link></None>
+    <Compile Include="UnitTests\Aktology\AktenTest.cs" />
+    <Compile Include="UnitTests\DisposableMixinTest.cs" />
+    <Compile Include="UnitTests\DynamicMixinBuilderTest.cs" />
+    <Compile Include="UnitTests\EquatableMixinTest.cs" />
+    <Compile Include="UnitTests\PhotoStuff\Variant3.cs" />
+    <Compile Include="UnitTests\PhotoStuff\Variant2.cs" />
+    <Compile Include="UnitTests\PhotoStuff\Variant1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Interfaces\Core.Interfaces.csproj">
+      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
+      <Name>Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.Core.csproj">
+      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
+      <Name>Core.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
+      <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
+      <Name>Development.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

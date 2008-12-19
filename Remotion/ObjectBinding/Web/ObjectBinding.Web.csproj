@@ -1,0 +1,414 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{390FBB93-A757-47A7-B769-A64A7465FF84}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Remotion.ObjectBinding.Web</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.ObjectBinding.Web</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DocumentationFile>bin\Debug\Remotion.ObjectBinding.Web.XML</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1591;0419</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\Remotion.ObjectBinding.Web.xml</DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1591;1573</NoWarn>
+    <WarningsAsErrors>1570;1571;1572;1573;1574;1580;1581;1584;1587;1589;1590;1592;3008</WarningsAsErrors>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Design">
+      <Name>system.design</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>system.drawing</Name>
+    </Reference>
+    <Reference Include="System.Web">
+      <Name>system.web</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>system.windows.forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
+      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
+      <Name>Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
+      <Name>Core.Core</Name>
+      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
+      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
+      <Name>Security.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
+      <Name>Web.Core</Name>
+      <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\ObjectBinding.Core.csproj">
+      <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
+      <Name>ObjectBinding.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Interfaces\ObjectBinding.Interfaces.csproj">
+      <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
+      <Name>ObjectBinding.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="UI\Controls\BindableObjectDataSourceControl.cs">
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ControlFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IBusinessObjectWebUIService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocBooleanValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocCheckbox.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocColumnDefinition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocColumnDefinitionCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocCustomColumnDefinition.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocDateTimeValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocDateTimeValueValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocDropDownMenu.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocEnumValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocListEvents.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocListItemCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocListRow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocListSortingOrderEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocListView.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocListViewCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocMenuItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocMenuItemCommand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocMultilineTextValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocReferenceValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocTextValue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocTextValueValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocTreeNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocTreeView.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocTreeViewMenuItemProvider.cs" />
+    <Compile Include="UI\Controls\BusinessObjectBinding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BusinessObjectBoundEditableWebControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BusinessObjectBoundWebControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BusinessObjectControlItemCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BusinessObjectDataSourceControl.cs" />
+    <Compile Include="UI\Controls\BusinessObjectReferenceDataSourceControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BocLiteral.cs" />
+    <Compile Include="UI\Controls\BusinessObjectReferenceSearchDataSourceControl.cs" />
+    <Compile Include="UI\Controls\DataEditControl.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IBusinessObjectBoundEditableWebControl.cs" />
+    <Compile Include="UI\Controls\IBusinessObjectBoundWebControl.cs" />
+    <Compile Include="UI\Controls\IBusinessObjectDataSourceControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\IDataEditControl.cs" />
+    <Compile Include="UI\Controls\IExtendedBusinessObjectBoundWebControl.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocBooleanValue\BocBooleanValueResourceSet.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\EditableRow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\Infrastructure\BocList\EditableRowControlFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\Infrastructure\BocList\EditableRowDataSourceFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\Infrastructure\BocList\EditableRowIDProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\Infrastructure\BocList\EditModeController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\Infrastructure\BocList\EditModeValidator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\PropertyPathBinding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\PropertyPathBindingCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\Styles.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\UserControlBinding.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\BocColumnDefinitionCollectionEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\BocDataSourceDesigner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\BocDesigner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\BocListDesigner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\BocListViewCollectionEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\BocMenuItemCollectionEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\BocReferenceValueDesigner.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\BusinessObjectDataSourceControlConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\Design\BindableObjectDataSourceDesigner.cs" />
+    <Compile Include="UI\Design\PropertyPathBindingCollectionEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="ObjectBinding.Web.build" />
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
+    <Content Include="Doc\include\NamespaceDoc.xml" />
+    <Content Include="Doc\include\UI\Controls\BocBooleanValue.xml" />
+    <Content Include="Doc\include\UI\Controls\BocCheckBox.xml" />
+    <Content Include="Doc\include\UI\Controls\BocDateTimeValue.xml" />
+    <Content Include="Doc\include\UI\Controls\BocDateTimeValueValidator.xml" />
+    <Content Include="Doc\include\UI\Controls\BocDropDownMenu.xml" />
+    <Content Include="Doc\include\UI\Controls\BocEnumValue.xml" />
+    <Content Include="Doc\include\UI\Controls\BocList.xml" />
+    <Content Include="Doc\include\UI\Controls\BocMultilineTextValue.xml" />
+    <Content Include="Doc\include\UI\Controls\BocReferenceValue.xml" />
+    <Content Include="Doc\include\UI\Controls\BocTextValue.xml" />
+    <Content Include="Doc\include\UI\Controls\BocTreeView.xml" />
+    <Content Include="Doc\include\UI\Controls\BocLiteral.xml" />
+    <Content Include="Doc\include\UI\Controls\IBusinessObjectDataSourceControl.xml" />
+    <Content Include="Doc\WhatsNew_Remotion.ObjectBinding.Web.txt" />
+    <Content Include="Res\HTML\BocBooleanValue.css" />
+    <Content Include="Res\HTML\BocBooleanValue.js" />
+    <Content Include="Res\HTML\BocCheckBox.js" />
+    <Content Include="Res\HTML\BocCheckboxValue.css" />
+    <Content Include="Res\HTML\BocDateTimeValue.css" />
+    <Content Include="Res\HTML\BocEnumValue.css" />
+    <Content Include="Res\HTML\BocList.css" />
+    <Content Include="Res\HTML\BocList.js" />
+    <Content Include="Res\HTML\BocMultilineTextValue.css" />
+    <Content Include="Res\HTML\BocReferenceValue.css" />
+    <Content Include="Res\HTML\BocReferenceValue.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Res\HTML\BocTextValue.css" />
+    <Content Include="Res\HTML\TextBoxStyle.js" />
+    <Content Include="Res\Image\CheckBoxFalse.gif" />
+    <Content Include="Res\Image\CheckBoxNull.gif" />
+    <Content Include="Res\Image\CheckBoxTrue.gif" />
+    <Content Include="Res\Image\DatePicker.gif" />
+    <Content Include="Res\Image\MoveFirst.gif" />
+    <Content Include="Res\Image\MoveFirstInactive.gif" />
+    <Content Include="Res\Image\MoveLast.gif" />
+    <Content Include="Res\Image\MoveLastInactive.gif" />
+    <Content Include="Res\Image\MoveNext.gif" />
+    <Content Include="Res\Image\MoveNextInactive.gif" />
+    <Content Include="Res\Image\MovePrevious.gif" />
+    <Content Include="Res\Image\MovePreviousInactive.gif" />
+    <Content Include="Res\Image\RequiredField.gif" />
+    <Content Include="Res\Image\SortAscending.gif" />
+    <Content Include="Res\Image\SortDescending.gif" />
+    <Content Include="Res\Image\ValidationError.gif" />
+    <EmbeddedResource Include="Globalization\BocBooleanValue.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocBooleanValue.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocCheckBox.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocCheckBox.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocDateTimeValue.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocDateTimeValue.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocEnumValue.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocEnumValue.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocList.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocList.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocMultilineTextValue.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocMultilineTextValue.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocReferenceValue.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocReferenceValue.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocTextValue.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocTextValue.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

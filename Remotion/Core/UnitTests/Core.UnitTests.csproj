@@ -1,0 +1,924 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C216DEC9-8820-4298-B10F-FB4131466B69}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Remotion.UnitTests</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Remotion.UnitTests</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>0067</NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy, Version=2.0.0.1, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Castle.DynamicProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <Name>nunit.framework</Name>
+      <HintPath>..\..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.0.1.526, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <ProjectReference Include="..\Interfaces\Core.Interfaces.csproj">
+      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
+      <Name>Core.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mixins.Samples\Core.Mixins.Samples.csproj">
+      <Project>{9731FCDD-0F9F-41C5-B691-8AA9101CE249}</Project>
+      <Name>Core.Mixins.Samples</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.Core.csproj">
+      <Name>Core.Core</Name>
+      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
+      <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
+      <Name>Development.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdapterRegistryMock.cs" />
+    <Compile Include="AdapterRegistryTest.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
+    <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />
+    <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
+    <Compile Include="Collections\EnumerableExtensionsTest.cs" />
+    <Compile Include="Collections\SetBasedCacheKeyTest.cs" />
+    <Compile Include="Collections\TypedSequenceTest.cs" />
+    <Compile Include="Context\BootstrapStorageProvider.cs" />
+    <Compile Include="Design\DesignerUtilityTest.cs" />
+    <Compile Include="Diagnostics\ByteValueTest.cs" />
+    <Compile Include="Diagnostics\BugReportTest.cs" />
+    <Compile Include="Diagnostics\DisableableWriterTest.cs" />
+    <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
+    <Compile Include="Utilities\PropertyRestorerTest.cs" />
+    <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTest.cs" />
+    <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTestOwned.cs" />
+    <Compile Include="Diagnostics\TestDomain\TestSimpleIToTextHandler.cs" />
+    <Compile Include="Diagnostics\TestDomain\ToTextProviderHandlerTestTestClasses.cs" />
+    <Compile Include="Diagnostics\TestDomain\ToTextProvider\ToTextProviderTestTestClasses.cs" />
+    <Compile Include="Diagnostics\ToTextBuilderXmlTest.cs" />
+    <Compile Include="Diagnostics\ToTextProviderHandlerTest.cs" />
+    <Compile Include="Diagnostics\ToTextSpecificHandlerCollectorTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporterTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\CodeGenerationCacheTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\CodeGenerationTimerTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationClassContextSerializerTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinTypeGeneratorTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\ClassWithCtors.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\IMixinWithPropsEventsAtts.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\MixinAddingAttributes.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\MixinSuppressingAllAttributes.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\MixinSuppressingAllAttributesAddingAttributes.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\MixinWithAttributes.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\MixinWithPropsEventAtts.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\MultiInheritedAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\MultiNonInheritedAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\NonMultiInheritedAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\NonMultiNonInheritedAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\ReplicatableAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\TargetWithAttributes.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\TargetWithNonInheritedAttributes.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TestDomain\TargetWithoutAttributes.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\AdvancedCachingTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\ClassOverridingMixinMethod.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\PublicWrapperTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\SimpleMixin.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\AbstractMixinWithSerializationCallbacks.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TargetTypeWithSerializationCallbacks.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\MixinWithOnInitializedAndOnDeserialized.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\NotSerializableClassWithISerializable.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\NotSerializableClass.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\OverridableBaseType.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\ClassWithoutDefaultCtor.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\ClassImplementingISerializable.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\AbstractMixinImplementingISerializable.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\NotSerializableMixin.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\NotSerializableMixinWithISerializable.cs" />
+    <Compile Include="Mixins\CodeGeneration\MethodBuilderEmitter.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixedTypeForClassOverridingMixinMembers.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixinTypeForMixinWithAbstractMembers.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\LoadableConcreteMixedTypeForBaseType1.cs" />
+    <Compile Include="Mixins\CodeGeneration\SetUpFixture.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationMixinContextSerializerTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationSerializerUtilityTest.cs" />
+    <Compile Include="Mixins\SampleTypes\AbstractMixinWithoutAbstractMembers.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedGenericMixin.cs" />
+    <Compile Include="Mixins\Context\Serialization\AttributeMixinContextSerializerTest.cs" />
+    <Compile Include="Mixins\Context\Serialization\AttributeClassContextSerializationTest.cs" />
+    <Compile Include="Mixins\Context\Serialization\SerializationInfoClassContextSerializationTest.cs" />
+    <Compile Include="Mixins\Context\Serialization\SerializationInfoMixinContextSerializationTest.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithMethodsOverriddenByDifferentClasses2.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedDerivedDerivedClassOverridingMixinMethod2.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedClassOverridingMixinMethod2.cs" />
+    <Compile Include="Mixins\SampleTypes\SerializableBaseType31Mock.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseClassNotOverridingMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedDerivedClassOverridingMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedDerivedDerivedClassOverridingMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedClassOverridingMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithMethodsOverriddenByDifferentClasses.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\TargetClassCallingIntroducedMethodFromCtor.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\MixinIntroducingMethodCalledFromCtor.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\MixinOverridingMethodCalledFromCtor.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\TargetClassCallingOverriddenMethodFromCtor.cs" />
+    <Compile Include="Mixins\DefinitionObjectMother.cs" />
+    <Compile Include="Mixins\Definitions\MixinDefinitionTest.cs" />
+    <Compile Include="Mixins\MixAttributeTest.cs" />
+    <Compile Include="Mixins\CodeGenerationStatisticsTest.cs" />
+    <Compile Include="Mixins\SampleTypes\IMarkerInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinNonIntroducingSimpleAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinSuppressingAndAddingBT1Attribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinSuppressingBT1Attribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinAddingSimpleAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinAddingNonInheritedAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassWithSuppressAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinIntroducingMembersWithDifferentVisibilities.cs" />
+    <Compile Include="Mixins\SampleTypes\TargetClassSuppressingBT1Attribute.cs" />
+    <Compile Include="Mixins\SampleTypes\TargetClassWinningOverMixinAddingBT1AttributeToMember.cs" />
+    <Compile Include="Mixins\SampleTypes\TargetClassWithMixinNonIntroducingSimpleAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\SerializableBaseType32Mock.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultEventIntroductionRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultPropertyIntroductionRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultMethodIntroductionRulesTest.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinIntroducingMembersWithPrivateVisibilities.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinWithProtectedOverriderWithoutMixinBase.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\TargetClassWithSameNamesDifferentSignaturesAsIntroducedMembers.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\OtherMixinIntroducingMembersWithDifferentVisibilities.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\TargetClassWithSameNamesAsIntroducedMembers.cs" />
+    <Compile Include="Reflection\AssemblyFinderTest.cs" />
+    <Compile Include="Reflection\AssemblyLoaderTest.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\FileLoadExceptionConsoleApplication\Program.cs" />
+    <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttributeTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithReplicatableConstructors.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\SimpleAttribute.cs" />
+    <Compile Include="Reflection\CodeGeneration\SetUpFixture.cs" />
+    <Compile Include="Reflection\ConstructorLookupInfoTest.cs" />
+    <Compile Include="Reflection\MethodLookupInfoTest.cs" />
+    <Compile Include="Reflection\PropertyTest.cs" />
+    <Compile Include="Reflection\TestAssemblyFinder.cs" />
+    <Compile Include="Reflection\TestDomain\Base.cs" />
+    <Compile Include="Reflection\TestDomain\Derived.cs" />
+    <Compile Include="Reflection\TestDomain\DerivedDerived.cs" />
+    <Compile Include="Reflection\TestDomain\Struct.cs" />
+    <Compile Include="Reflection\TestDomain\TestClass.cs" />
+    <Compile Include="SafeContextSingletonTest.cs" />
+    <Compile Include="Collections\InterlockedDataStoreTest.cs" />
+    <Compile Include="Collections\MonitorCheckingInterceptor.cs" />
+    <Compile Include="Collections\SimpleDataStoreTest.cs" />
+    <Compile Include="Context\CallContextStorageProviderTest.cs" />
+    <Compile Include="Context\SafeContextIntegrationTest.cs" />
+    <Compile Include="Context\SafeContextTest.cs" />
+    <Compile Include="Globalization\ResourceManagerFactoryTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicMethodCodeBuilder.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicMethodEmitter.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtilityTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtilityTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\InitializableMixinTargetTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\MixinAddingDebuggerDisplay.cs" />
+    <Compile Include="Mixins\Globalization\SampleTypes\InheritedMixinWithoutMultiLingualResourcesAttributes1.cs" />
+    <Compile Include="Mixins\Globalization\SampleTypes\InheritedMixinAddingMultiLingualResourcesAttributes.cs" />
+    <Compile Include="Reflection\CodeGeneration\AssemblySaverTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\AttributeReplicatorTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\PopStatementTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\BaseClassWithDeserializationEvents.cs" />
+    <Compile Include="Reflection\CodeGeneration\ClassEmitterGenericsTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\ClassEmitterTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithDeserializationEvents.cs" />
+    <Compile Include="Reflection\CodeGeneration\EventEmitterTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\CustomAttributeExpressionTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\ExpressionReferenceTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\FieldInfoReferenceTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\IfStatementTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\PropertyEmitterTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\LdArrayElementTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\MethodEmitterTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\PropertyReferenceTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\SameConditionExpressionTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithAllKindsOfMembers.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithConstrainedGenericMethod.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithCustomAttribute.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithProtectedMethod.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithPublicFields.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithSimpleGenericMethod.cs" />
+    <Compile Include="Reflection\CodeGeneration\CodeGenerationBaseTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\GenericClassWithNested.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\SerializableClassWithPrivateGetObjectData.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\GenericInterfaceWithAllKindsOfMembers.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\GenericClassWithAllKindsOfMembers.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\GenericClassWithConstraints.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\GenericClassWithGenericMethod.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\IArrayProvider.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\IInterfaceWithMethod.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\IMarkerInterface.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\SerializableClass.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\SerializableClassWithoutCtor.cs" />
+    <Compile Include="Mixins\SampleTypes\SimpleAttribute.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\SimpleArrayProvider.cs" />
+    <Compile Include="Reflection\CodeGeneration\SampleTypes\StructWithMethod.cs" />
+    <Compile Include="Reflection\CodeGeneration\SerializationEventRaiserTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\SerializationImplementerTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\SnippetGenerationBaseTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\TryFinallyStatementTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\TypedMethodInvocationExpressionTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\TypeReferenceWrapperTest.cs" />
+    <Compile Include="Collections\InterlockedCacheTest.cs" />
+    <Compile Include="Collections\SetTest.cs" />
+    <Compile Include="Collections\AutoInitDictionaryTest.cs" />
+    <Compile Include="Configuration\ConstructorException.cs" />
+    <Compile Include="Configuration\ThrowingFakeProvider.cs" />
+    <Compile Include="Configuration\ExtendedProviderBaseTest.cs" />
+    <Compile Include="Configuration\FakeWellKnownProvider.cs" />
+    <Compile Include="Configuration\IFakeProvider.cs" />
+    <Compile Include="Configuration\DerivedSampleType.cs" />
+    <Compile Include="Configuration\FakeProvider.cs" />
+    <Compile Include="Configuration\ProviderHelperBaseTest.cs" />
+    <Compile Include="Configuration\StubExtendedConfigurationSection.cs" />
+    <Compile Include="Configuration\StubExtendedProvider.cs" />
+    <Compile Include="Configuration\StubProviderHelper.cs" />
+    <Compile Include="Configuration\TypeElement2Test.cs" />
+    <Compile Include="Configuration\FakeOtherProvider.cs" />
+    <Compile Include="Configuration\FakeProviderBase.cs" />
+    <Compile Include="Collections\LazyInterlockedCacheTest.cs" />
+    <Compile Include="Configuration\SampleType.cs" />
+    <Compile Include="Configuration\TypeElementTest.cs" />
+    <Compile Include="Design\DesignModeHelperBaseTest.cs" />
+    <Compile Include="Design\StubDesignModeHelper.cs" />
+    <Compile Include="DoubleCheckedLockingContainerTest.cs" />
+    <Compile Include="Globalization\ResourceManagerResolverTest.cs" />
+    <Compile Include="Globalization\ResourceManagerResolverUtilityTest.cs" />
+    <Compile Include="Globalization\SampleTypes\ClassWithMultiLingualResourcesAttributes.cs" />
+    <Compile Include="Globalization\SampleTypes\ClassWithoutMultiLingualResourcesAttributes.cs" />
+    <Compile Include="Globalization\SampleTypes\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
+    <Compile Include="Globalization\SampleTypes\InheritedClassWithMultiLingualResourcesAttributes.cs" />
+    <Compile Include="Interfaces\Implementation\ConcreteImplementationAttributeTest.cs" />
+    <Compile Include="Interfaces\Implementation\FrameworkVersionRetrieverTest.cs" />
+    <Compile Include="Interfaces\Implementation\FrameworkVersionTest.cs" />
+    <Compile Include="Interfaces\Implementation\VersionDependentImplementationBridgeTest.cs" />
+    <Compile Include="Logging\Log4NetLogManagerTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\BaseTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\ConvertTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\DebugTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\ErrorTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\FatalTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\InfoTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\LogTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\LogToEventLogTest.cs" />
+    <Compile Include="Logging\Log4NetLogTests\WarningTest.cs" />
+    <Compile Include="Logging\Log4NetTraceListenerTest.cs" />
+    <Compile Include="Logging\LogManagerTest.cs" />
+    <Compile Include="Logging\LogMessages.cs" />
+    <Compile Include="Logging\SampleType.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\BaseCallProxyCodeGeneration\BaseCallTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\BaseCallProxyCodeGeneration\InstantiationTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\BaseCallProxyCodeGeneration\TypeFeatureTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\CodeGenerationBaseTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteMixedTypeAttributeTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeAttributeTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteTypeBuilderTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\AttributeSpike.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\AttributeTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\DependencyTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\DuckRequirementTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\GeneratedTypeInConfigurationTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\GenericsTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\InstantiationTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\IntroductionTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\MixedMixinTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\OverrideTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\StrongNameTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\TypeFeatureTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\GeneratedTypeInConfigurationTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\OverrideTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\StrongNameTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TypeFeatureTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ModuleManagerTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\NamespaceChangingNameProviderTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\TargetClassOverridingMixinMember.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\ClassWithCopyCustomAttributes.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\MixinIntroducingGenericInterface.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\MixinWithOverridableMember.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\MixinWithProtectedOverriderAndAttributes.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\MixinWithThisAsBase.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\SampleCopyTemplateAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\VeryGenericMixin.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\MixinSerializationTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\ModuleManagerSerializationExtensionTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\RhinoMocksRepositoryAdapter.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\SerializationCallbackTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\SerializationTest.cs" />
+    <Compile Include="Mixins\Context\ClassContextCollectionTest.cs" />
+    <Compile Include="Mixins\Context\ClassContextCollectorTest.cs" />
+    <Compile Include="Mixins\Context\ClassContextTest.cs" />
+    <Compile Include="Mixins\Context\ClassContextInheritanceTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\CompleteInterfaceAnalyzerTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\DeclarativeConfigurationAnalyzerTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\ExtendsAnalyzerTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\IgnoresAnalyzerTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\MixAnalyzerTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeAnalyzers\UsesAnalyzerTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilderTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\DeclarativeConfigurationBuilderGeneralTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\DeclarativeConfigurationBuilderGenericInheritanceTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\DeclarativeConfigurationBuilderInheritanceTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\ExtendsAnalysisTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\IgnoresClassTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\IgnoresMixinTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\MixAnalysisTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\MixedInterfaceTest.cs" />
+    <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\UsesAnalysisTest.cs" />
+    <Compile Include="Mixins\Context\FluentBuilders\ClassContextBuilderTest.cs" />
+    <Compile Include="Mixins\Context\FluentBuilders\MixinConfigurationBuilderTest.cs" />
+    <Compile Include="Mixins\Context\FluentBuilders\MixinContextBuilderTest.cs" />
+    <Compile Include="Mixins\Context\InheritedClassContextRetrievalAlgorithmTest.cs" />
+    <Compile Include="Mixins\Context\MixinContextCollectionTest.cs" />
+    <Compile Include="Mixins\Context\MixinContextTest.cs" />
+    <Compile Include="Mixins\Context\ReadOnlyContextCollectionTest.cs" />
+    <Compile Include="Mixins\Context\SynchronizedReadOnlyContextCollectionTest.cs" />
+    <Compile Include="Mixins\Definitions\AttributeDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\AttributeIntroductionDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\TargetClassDefinitionTest.cs" />
+    <Compile Include="Mixins\Definitions\DependencyDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\DependentMixinGrouperTest.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\MixinDependencyAnalyzerTest.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\IBaseCallDependency1.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\IBaseCallDependency2.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\IndependentMixin1.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\IndependentMixin2.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\MixinImplementingAdditionalDependency.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\MixinImplementingBaseCallDependency1.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\MixinOverridingM1.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\MixinOverridingM1M2.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\MixinOverridingM2.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\MixinWithAdditionalDependency.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\MixinWithBaseCallDependency1.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\MixinWithBaseCallDependency2OverridingM1.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\SampleTypes\TargetClass.cs" />
+    <Compile Include="Mixins\Definitions\InheritanceDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\InterfaceIntroductionDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\MemberChainTest.cs" />
+    <Compile Include="Mixins\Definitions\MemberDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\MixedMixinTest.cs" />
+    <Compile Include="Mixins\Definitions\MixinDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\MixinDependencySortTest.cs" />
+    <Compile Include="Mixins\Definitions\OverrideAttributeHierarchyTest.cs" />
+    <Compile Include="Mixins\Definitions\OverrideDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\RequiredMethodDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\TargetClassDefinitionBuilderTest.cs" />
+    <Compile Include="Mixins\Definitions\TargetClassDefinitionCacheTest.cs" />
+    <Compile Include="Mixins\Globalization\MixedMultiLingualResourcesTests\ExistsResourceTest.cs" />
+    <Compile Include="Mixins\Globalization\MixedMultiLingualResourcesTests\GeneralTest.cs" />
+    <Compile Include="Mixins\Globalization\MixedMultiLingualResourcesTests\GetResourceManagerTest.cs" />
+    <Compile Include="Mixins\Globalization\MixedResourceManagerResolverTest.cs" />
+    <Compile Include="Mixins\Globalization\SampleTypes\ClassWithMultiLingualResourcesAttributes.cs" />
+    <Compile Include="Mixins\Globalization\SampleTypes\ClassWithoutMultiLingualResourcesAttributes.cs" />
+    <Compile Include="Mixins\Globalization\SampleTypes\InheritedClassWithMultiLingualResourcesAttributes.cs" />
+    <Compile Include="Mixins\Globalization\SampleTypes\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
+    <Compile Include="Mixins\Globalization\SampleTypes\MixinAddingMultiLingualResourcesAttributes1.cs" />
+    <Compile Include="Mixins\Globalization\SampleTypes\MixinAddingMultiLingualResourcesAttributes2.cs" />
+    <Compile Include="Mixins\Utilities\MixedObjectInstantiationScopeTest.cs" />
+    <Compile Include="Mixins\MixerTool\MixerRunnerTest.cs" />
+    <Compile Include="Mixins\MixerTool\MixerTest.cs" />
+    <Compile Include="Mixins\MixerTool\MixerToolBaseTest.cs" />
+    <Compile Include="Mixins\MixerTool\Mixer_IntegrationTest.cs" />
+    <Content Include="Mixins\MixerTool\SampleAssembly\SampleTypes.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Utilities\TestData\WriteEmbeddedStringResourceToFileTestData.txt" />
+    <Compile Include="Mixins\MixinBaseClassTest.cs" />
+    <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationBuildTest.cs" />
+    <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationCompleteInterfaceTest.cs" />
+    <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationCurrentConfigurationTest.cs" />
+    <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationGeneralTest.cs" />
+    <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationInheritanceTest.cs" />
+    <Compile Include="Mixins\MixinConfigurationTests\MixinConfigurationValidationTest.cs" />
+    <Compile Include="Mixins\MixinReflectionTest.cs" />
+    <Compile Include="Mixins\MixinTargetMockUtilityTest.cs" />
+    <Compile Include="Mixins\ObjectFactoryTest.cs" />
+    <Compile Include="Mixins\SampleTypes\AbstractBaseType.cs" />
+    <Compile Include="Mixins\SampleTypes\AdditionalDependencyForGlobalMix.cs" />
+    <Compile Include="Mixins\SampleTypes\AttributeWithParameters.cs" />
+    <Compile Include="Mixins\SampleTypes\AttributeWithParameters2.cs" />
+    <Compile Include="Mixins\SampleTypes\AttributeWithParameters3.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseClassForDerivedClassIgnoredByMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseClassForDerivedClassIgnoringMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseType1.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseType2.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseType3.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseType4.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseType5.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseType6.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseType7.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseTypeWithAllowMultiple.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseTypeWithDuckBaseMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\BaseTypeWithDuckFaceMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\BT1Mixin1.cs" />
+    <Compile Include="Mixins\SampleTypes\BT1Mixin2.cs" />
+    <Compile Include="Mixins\SampleTypes\BT2Mixin1.cs" />
+    <Compile Include="Mixins\SampleTypes\BT3CompleteIfaces.cs" />
+    <Compile Include="Mixins\SampleTypes\BT3Mixin1.cs" />
+    <Compile Include="Mixins\SampleTypes\BT3Mixin2.cs" />
+    <Compile Include="Mixins\SampleTypes\BT3Mixin3.cs" />
+    <Compile Include="Mixins\SampleTypes\BT3Mixin4.cs" />
+    <Compile Include="Mixins\SampleTypes\BT3Mixin5.cs" />
+    <Compile Include="Mixins\SampleTypes\BT3Mixin6.cs" />
+    <Compile Include="Mixins\SampleTypes\BT3Mixin7Base.cs" />
+    <Compile Include="Mixins\SampleTypes\BT3Mixin7Face.cs" />
+    <Compile Include="Mixins\SampleTypes\BT4Mixin1.cs" />
+    <Compile Include="Mixins\SampleTypes\BT5Mixin1.cs" />
+    <Compile Include="Mixins\SampleTypes\BT5Mixin2.cs" />
+    <Compile Include="Mixins\SampleTypes\BT5Mixin3.cs" />
+    <Compile Include="Mixins\SampleTypes\BT5Mixin4.cs" />
+    <Compile Include="Mixins\SampleTypes\BT5Mixin5.cs" />
+    <Compile Include="Mixins\SampleTypes\BT5MixinCircular.cs" />
+    <Compile Include="Mixins\SampleTypes\BT6Mixin1.cs" />
+    <Compile Include="Mixins\SampleTypes\BT6Mixin2.cs" />
+    <Compile Include="Mixins\SampleTypes\BT6Mixin3.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin0.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin1.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin10.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin2.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin3.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin4.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin5.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin6.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin7.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin8.cs" />
+    <Compile Include="Mixins\SampleTypes\BT7Mixin9.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassesWithOverridesAndShadowing.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassFulfillingAllMemberRequirements.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassFulfillingAllMemberRequirementsDuck.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassFulfillingAllMemberRequirementsExplicitly.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassFulfillingNoMemberRequirements.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassImplementingSimpleInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassOverridingInheritedMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassOverridingMixinMembers.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassOverridingMixinMembersProtected.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassOverridingMixinMethodWrongSig.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassOverridingSingleMixinMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassOverridingSpecificGenericMixinMember.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassOverridingSpecificMixinMember.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassOverridingToString.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassWithMixedInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassWithMixedMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\ClassWithMixinsAcceptingAlphabeticOrdering.cs" />
+    <Compile Include="Mixins\SampleTypes\ClosedGenericClassForMixinIgnoringDerivedClass.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedClassIgnoredByMixins.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedClassIgnoringMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedDerivedClassIgnoredByMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedDerivedClassIgnoringMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedDerivedNullMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedGenericTargetClass.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedNullMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\DerivedNullTarget.cs" />
+    <Compile Include="Mixins\SampleTypes\DuckBaseMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\DuckFaceMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\GenericClassExtendedByMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\GenericClassForMixinIgnoringDerivedClass.cs" />
+    <Compile Include="Mixins\SampleTypes\GenericMixinWithVirtualMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\GenericMixinWithVirtualMethod2.cs" />
+    <Compile Include="Mixins\SampleTypes\GenericTargetClass.cs" />
+    <Compile Include="Mixins\SampleTypes\GlobalMixAttributes.cs" />
+    <Compile Include="Mixins\SampleTypes\IMixedInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\ISimpleInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinAcceptingAlphabeticOrdering1.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinAcceptingAlphabeticOrdering2.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinAddingAllowMultipleToClassAndMember.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinAddingBT1Attribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinAddingBT1AttributeToMember.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinBaseDependingOnInheritedInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinExtendingMixedInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinExtendingSpecificGenericClass.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinFaceDependingOnInheritedInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinForGlobalMix.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinFulfillingAllMemberRequirements.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinIgnoringDerivedClass.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinImplementingFullPropertiesWithPartialIntroduction.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinImplementingSimpleInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinIndirectlyAddingAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinIndirectlyAddingFilteredAttributes.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinIndirectlyAddingInheritedAttributeFromSelf.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinIndirectlyAddingNonInheritedAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinIndirectlyAddingNonInheritedAttributeFromSelf.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinIntroducingInheritedInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinMixingClass.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinMixingMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinOverridingClassMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinOverridingInheritedMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinOverridingToString.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinRequiringAllMembersBase.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinRequiringAllMembersFace.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinRequiringEmptyInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinNonIntroducingSimpleInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinsWithCircularDependencies.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithAbstractMembers.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithAdditionalClassDependency.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithAdditionalInterfaceDependency.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithClassBase.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithClassFaceImplementingInternalInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithEmptyInterface.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithExplicitImplementation.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithIndirectRequirements.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithNoAdditionalDependency.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithProtectedOverrider.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithSingleAbstractMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithSystemObjectBase.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithThisRequirementWithStaticMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithVirtualMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\MixinWithVirtualMethod2.cs" />
+    <Compile Include="Mixins\SampleTypes\MultiAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\NonInheritedAttribute.cs" />
+    <Compile Include="Mixins\SampleTypes\NullMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\NullMixin2.cs" />
+    <Compile Include="Mixins\SampleTypes\NullMixin3.cs" />
+    <Compile Include="Mixins\SampleTypes\NullMixin4.cs" />
+    <Compile Include="Mixins\SampleTypes\NullTarget.cs" />
+    <Compile Include="Mixins\SampleTypes\SuppressedMixinForGlobalMix.cs" />
+    <Compile Include="Mixins\SampleTypes\TargetClassForGlobalMix.cs" />
+    <Compile Include="Mixins\SampleTypes\TargetClassWithAdditionalDependencies.cs" />
+    <Compile Include="Mixins\SampleTypes\ValueTypeMixin.cs" />
+    <Compile Include="Mixins\TypeFactoryTest.cs" />
+    <Compile Include="Mixins\MixinTypeUtilityTest.cs" />
+    <Compile Include="Mixins\UnvalidatedDefinitionBuilder.cs" />
+    <Compile Include="Mixins\Utilities\DependencySortTest.cs" />
+    <Compile Include="Mixins\Utilities\GenericTypeInstantiatorTest.cs" />
+    <Compile Include="Mixins\Utilities\MixedObjectInstantiatorTest.cs" />
+    <Compile Include="Mixins\Utilities\MixedTypeConstructorLookupInfoTest.cs" />
+    <Compile Include="Mixins\Utilities\MixinTypeInstantiatorTest.cs" />
+    <Compile Include="Mixins\Utilities\NameAndSignatureEqualityComparerTest.cs" />
+    <Compile Include="Mixins\Utilities\ReflectionUtilityTest.cs" />
+    <Compile Include="Mixins\Utilities\Serialization\GenericType.cs" />
+    <Compile Include="Mixins\Utilities\Serialization\ReflectionObjectSerializerTest.cs" />
+    <Compile Include="Mixins\Utilities\SignatureCheckerTest.cs" />
+    <Compile Include="Mixins\Utilities\SignatureEqualityComparerTest.cs" />
+    <Compile Include="Mixins\Validation\DelegateRuleDescriptionTest.cs" />
+    <Compile Include="Mixins\Validation\GeneralValidationTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultAttributeIntroductionRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultBaseDependencyRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultInterfaceIntroductionRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultMethodRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultMixinDependencyRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultMixinRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultPropertyRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultRequiredBaseCallTypeRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultRequiredFaceTypeRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultRequiredMethodRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultTargetClassRulesTest.cs" />
+    <Compile Include="Mixins\Validation\Rules\DefaultThisDependencyRulesTest.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\AbstractMixinWithoutBase.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\BaseWithGetterOnly.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\ClassAndMixinWithFinalOverride.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\ClassLookingLikeBaseType3.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\ClassOverridingMixinEvent.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\ClassWithNonPublicOverrider.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\ClassWithPrivateCtor.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\ClassWithVirtualMethod.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\DoubleImplementer.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\InternalClass.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\InternalNester.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinImplementingIMixinTarget.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinIntroducingInternalInterface.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinOverridingSameClassMethod.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinOverridingSetterOnly.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinsWithInvisibleDependencies.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinsWithUnsatisfiedEmptyDependencies.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinWithClassThisDependency.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinWithEvent.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinWithNonVirtualMethodToBeOverridden.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\MixinWithPrivateCtorAndVirtualMethod.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\PublicNester.cs" />
+    <Compile Include="Mixins\Validation\ValidationSampleTypes\ThrowingRuleSet.cs" />
+    <Compile Include="Mixins\Validation\ValidationTestBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collections\CacheTest.cs" />
+    <Compile Include="Collections\NullCacheTest.cs" />
+    <Compile Include="Collections\TupleAbcdTest.cs" />
+    <Compile Include="Collections\TupleAbcTest.cs" />
+    <Compile Include="Collections\TupleAbTest.cs" />
+    <Compile Include="Reflection\AssemblyFinderFilterTest.cs" />
+    <Compile Include="Reflection\AssemblyFinderIntegrationTest.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedExeAssembly\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\UnmarkedAssembly\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\UnmarkedInMemoryAssembly\AssemblyInfo.cs" />
+    <Compile Include="Reflection\MarkerAttribute.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\SecondInMemoryAssembly\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedAssembly\AssemblyInfo.cs" />
+    <Compile Include="Reflection\DerivedMarkerAttribute.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedAssemblyWithDerivedAttribute\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedAssemblyWithDerivedAttributeInOtherDirectory\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\FirstInMemoryAssembly\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedReferencedAssembly\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedAssembly\SampleType.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedReferencedAssembly\ReferencedSampleType.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedAssemblyInRelativeSearchPath\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedExeAssemblyInRelativeSearchPath\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedAssemblyInDynamicDirectory\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedExeAssemblyInDynamicDirectory\AssemblyInfo.cs" />
+    <Compile Include="Reflection\AssemblyFinderTypeDiscoveryServiceTest.cs" />
+    <Compile Include="Reflection\ContextAwareTypeDiscoveryUtilityTest.cs" />
+    <Compile Include="Reflection\FuncInvokerWrapperTest.cs" />
+    <Compile Include="Reflection\InheritanceHierarchyFilterTest.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\MarkedAssemblyWithOtherFileNameInRelativeSearchPath\AssemblyInfo.cs" />
+    <Compile Include="Reflection\MethodCallerTest.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\NonApplicationMarkedAssembly\AssemblyInfo.cs" />
+    <TestAssembly Include="Reflection\TestAssemblies\NonApplicationMarkedAssembly\SampleType.cs" />
+    <Compile Include="Reflection\TypesafeActivatorTest.cs" />
+    <Compile Include="Text\CommandLine\CommandLineClassParserTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\CommandLine\CommandLineParserTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Diagnostics\IToTextHandlerTest.cs" />
+    <Compile Include="Diagnostics\OuterProductTest.cs" />
+    <Compile Include="Diagnostics\ToTest.cs" />
+    <Compile Include="Diagnostics\ToTextBuilderTest.cs" />
+    <Compile Include="Diagnostics\ToTextProviderTest.cs" />
+    <Compile Include="Text\IdentifierGeneratorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\MonospaceTextFormatTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\SimpleParserTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text\StringExtensions\StringExtensionsTest.cs" />
+    <Compile Include="Utilities\AdvancedEnumConverterTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\ArgumentEmptyExceptionTest.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotEmpty.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNull.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckType.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckTypeObsolete.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullAndTypeIsAssignableFrom.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckTypeIsAssignableFrom.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullOrItemsNull.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullOrEmpty.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullAndType.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckEnums.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckNotNullOrEmptyOrItemsNull.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\CheckType2.cs" />
+    <Compile Include="Utilities\ArgumentUtilityTests\NonDisposableEnumerable.cs" />
+    <Compile Include="Utilities\ArrayUtilityTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\AssertionTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\AttributeUsageTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\AttributeWithMetadataTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesForMixedTypes_WithSuppressTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\IsDefined_WithSuppressTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromType_WithSuppresTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesWithMetadataTest.cs" />
+    <Compile Include="Utilities\AdvancedEnumConverterTest_Flags.cs" />
+    <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTest.cs" />
+    <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTestApplicationRunner.cs" />
+    <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTestSettings.cs" />
+    <Compile Include="Utilities\CultureScopeTest.cs" />
+    <Compile Include="Utilities\CustomAttributeDataUtilityTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseClassWithAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseWithAttributesForSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ClassWithNonInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ClassWithoutAttributes.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\ComplexAttributeTarget.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromTypeTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\BaseNonInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\InheritedNotMultipleAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedDerivedDerivedSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedDerivedWithAttributesForSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedNonInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedClassWithAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedWithAttributesAndSuppressed.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\MixinAddingInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\MixinAddingSuppressAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\MixinSuppressingNonInheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\NotInheritedNotMultipleAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ImplicitUsageAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\IsDefinedFromMemberInfoTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\MultipleAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\DerivedSampleClass.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributeFromMemberInfoTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\GetCustomAttributesFromMemberInfoTest.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\ICustomAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\InheritedAttribute.cs" />
+    <Compile Include="Utilities\AttributeUtilityTests\SampleTypes\SampleClass.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\AttributeWithFieldParams.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\AttributeWithPropertyAndFieldParams.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\AttributeWithPropertyParams.cs" />
+    <Compile Include="Utilities\BidirectionalStringConverterTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\ComplexAttribute.cs" />
+    <Compile Include="Utilities\ConsoleUtilityTest.cs" />
+    <Compile Include="Utilities\EnumDescriptionTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\EnumerableUtilityTest.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\UInt16Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\UInt32Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\UInt64Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\ByteEnum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\Int64Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\SByteEnum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\Int16Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\Int32Enum.cs" />
+    <Compile Include="Utilities\EnumUtilityTests\Common.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\EqualityUtilityTest.cs" />
+    <Compile Include="Utilities\FileUtilityTest.cs" />
+    <Compile Include="Utilities\ListUtilityTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\NameValueCollectionUtilityTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\NullableTypeUtilityTest.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericClass.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericInterface.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericClass.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericInterface.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithGenericClass.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithGenericInterface.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithNonGenericClass.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\GetAscribedGenericArguments_WithNonGenericInterface.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\GetOriginalDeclaringType.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\GuessIsExplicitInterfaceProperty.cs" />
+    <Compile Include="Utilities\ReflectionUtilityTests\SampleTypes.cs" />
+    <Compile Include="Utilities\StubStringUtility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\StringUtilityTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\StubTypeConversionProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\TestAttributeApplicationWithCtorArgumentsAndNamedFields.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\TestAttributeApplicationWithCtorArgumentsAndNamedProperties.cs" />
+    <Compile Include="Utilities\CustomAttributeUtilityTestDomain\TestAttributeApplicationWithCtorArgumentsNamedPropertiesAndNamedFields.cs" />
+    <Compile Include="Utilities\TypeConversionProviderTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\TypeNameConverterTest.cs" />
+    <Compile Include="Utilities\TypeUtilityTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\WorkContextTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xml\SampleClass.cs" />
+    <Compile Include="Xml\SchemaLoaderBaseMock.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Xml\SchemaLoaderBaseTest.cs" />
+    <Compile Include="Xml\XmlSerializationUtilityTests\DeserializeUsingSchema.cs" />
+    <Compile Include="Xml\XmlSerializationUtilityTests\GetNamespaceTest.cs" />
+    <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <None Include="Core.UnitTests.build" />
+    <TestAssembly Include="Reflection\TestAssemblies\DelaySignAssembly\PublicKey.snk" />
+    <None Include="..\..\remotion.snk">
+      <Link>remotion.snk</Link>
+    </None>
+    <None Include="Xml\SampleClass.xsx">
+      <DependentUpon>SampleClass.xsd</DependentUpon>
+    </None>
+    <EmbeddedResource Include="Xml\SampleClass.xsd">
+      <SubType>
+      </SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Xml\SchemaLoaderBaseMock.xsd">
+      <SubType>
+      </SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\strings.en-US.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\strings.resx">
+      <AutoGen>True</AutoGen>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\xy.en-US.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\xy.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Target Name="AfterBuild">
+    <Delete Files="@(TestAssembly->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Directory)')" />
+    <Copy SourceFiles="@(TestAssembly->'%(Fullpath)')" DestinationFiles="@(TestAssembly->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Identity)')" />
+  </Target>
+</Project>
