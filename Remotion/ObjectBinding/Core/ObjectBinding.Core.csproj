@@ -251,7 +251,7 @@
     <Compile Include="UndefinedEnumValueAttribute.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="ObjectBinding.build" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <EmbeddedResource Include="Design\BindableObject\BindableObjectTypePickerControl.resx">

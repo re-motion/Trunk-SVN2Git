@@ -1325,7 +1325,7 @@
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithFakeMappingLoader.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithMinimumSettings.xml" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithCustomSectionGroupName.xml" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="DomainObjects\Security\Remotion.Data.UnitTests.DomainObjects.Security.Queries.xml">

@@ -885,7 +885,7 @@
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Core.UnitTests.build" />
     <TestAssembly Include="Reflection\TestAssemblies\DelaySignAssembly\PublicKey.snk" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="Xml\SampleClass.xsx">

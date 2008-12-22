@@ -62,7 +62,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Data.DomainObjects.RdbmsTools.UnitTests.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="Test.config">

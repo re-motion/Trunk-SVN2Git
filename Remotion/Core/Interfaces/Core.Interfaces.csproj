@@ -110,7 +110,7 @@
     <Compile Include="Utilities\ArgumentItemTypeException.cs" />
     <Compile Include="Utilities\ArgumentTypeException.cs" />
     <Compile Include="Utilities\DesignerUtility.cs" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="Properties\AssemblyInfoTemplate.cs" />

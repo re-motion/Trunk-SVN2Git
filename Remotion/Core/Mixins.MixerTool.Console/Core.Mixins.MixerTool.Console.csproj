@@ -60,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Core.Mixins.MixerTool.Console.build" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
   </ItemGroup>

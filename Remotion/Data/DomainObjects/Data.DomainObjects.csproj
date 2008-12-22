@@ -605,7 +605,7 @@
       <SubType>Code</SubType>
     </None>
     <None Include="Data.DomainObjects.build" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <EmbeddedResource Include="ObjectBinding\Globalization\BooleanProperty.de.resx">

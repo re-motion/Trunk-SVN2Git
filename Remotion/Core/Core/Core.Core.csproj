@@ -601,7 +601,7 @@
     <Compile Include="Xml\XmlSerializationUtility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="Mixins\Context\Context.cd" />

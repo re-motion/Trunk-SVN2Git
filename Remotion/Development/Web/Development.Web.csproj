@@ -63,7 +63,7 @@
     <Compile Include="UnitTesting\UI\Controls\ControlInvoker.cs" />
     <Compile Include="UnitTesting\UI\Controls\NamingContainerMock.cs" />
     <Compile Include="UnitTesting\UI\WcagHelperMock.cs" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="Development.Web.build" />

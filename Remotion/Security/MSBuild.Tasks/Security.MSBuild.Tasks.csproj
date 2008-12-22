@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="Security.MSBuild.Tasks.build" />

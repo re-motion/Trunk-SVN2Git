@@ -131,7 +131,7 @@
     <Compile Include="UnitTesting\ThreadRunner.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Development.Core.build" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
   </ItemGroup>

@@ -63,7 +63,7 @@
     <Compile Include="UI\DemandTargetWxeFunctionPermissionAttribute.cs" />
     <Compile Include="UI\WebSecurityAdapter.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="Web.Security.build" />

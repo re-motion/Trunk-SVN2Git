@@ -162,7 +162,7 @@
     <Compile Include="Web\UnitTesting\UI\Controls\ControlInvokerTest.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Development.UnitTests.build" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
   </ItemGroup>

@@ -65,7 +65,7 @@
     <Compile Include="UI\Controls\BocAutoCompleteReferenceValueExtender.cs" />
     <None Include="ObjectBinding.Web.Preview.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
   </ItemGroup>

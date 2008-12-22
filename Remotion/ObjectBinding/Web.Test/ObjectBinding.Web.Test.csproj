@@ -499,7 +499,7 @@
     <Content Include="WebForm3.aspx">
       <SubType>Form</SubType>
     </Content>
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <None Include="WxeLauncher.ashx" />

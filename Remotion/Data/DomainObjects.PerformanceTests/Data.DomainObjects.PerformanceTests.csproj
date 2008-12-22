@@ -167,7 +167,7 @@
     </None>
     <None Include="Database\CreateTestData.sql" />
     <None Include="Database\SetupDB.sql" />
-    <None Include="..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
     <Content Include="Database\CreateDB.sql" />
