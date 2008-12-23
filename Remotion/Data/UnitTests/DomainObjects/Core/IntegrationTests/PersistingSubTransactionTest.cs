@@ -64,6 +64,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO: COMMONS-950")]
+    public void PersistedObjects_UnchangedInParentTransaction ()
+    {
+      using (new PersistingSubTransaction (ClientTransactionMock).EnterDiscardingScope ())
+      {
+        _loadedOrder.OrderNumber = 15;
+        _loadedOrder.OrderItems.Add (OrderItem.NewObject ());
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (_loadedOrder.OrderNumber, Is.EqualTo (15));
+      Assert.That (_loadedOrder.OrderItems.Count, Is.EqualTo (3));
+      Assert.That (_loadedOrder.State, Is.EqualTo (StateType.Unchanged));
+      
+      Assert.That (_loadedOrder.OrderItems[0], Is.EqualTo (StateType.Unchanged));
+      Assert.That (_loadedOrder.OrderItems[1], Is.EqualTo (StateType.Unchanged));
+      Assert.That (_loadedOrder.OrderItems[2], Is.EqualTo (StateType.Unchanged));
+      
+      ClientTransaction.Current.Commit ();
+    }
+
+    [Test]
     public void Timestamps ()
     {
       object timestampAfterCommit;
