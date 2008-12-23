@@ -217,17 +217,19 @@ namespace Remotion.Reflection.CodeGeneration
     }
 
     /// <summary>
-    /// Creates a private method override, i.e. a method override with private visibility whose name includes the name of the base method's
+    /// Creates a full-named method override, i.e. a method override with the same visibility as whose name includes the name of the base method's
     /// declaring type, similar to an explicit interface implementation.
     /// </summary>
     /// <param name="baseMethod">The base method to override.</param>
-    /// <returns>A <see cref="CustomMethodEmitter"/> for the private method override.</returns>
+    /// <returns>
+    /// A <see cref="CustomMethodEmitter"/> for the full-named method override.
+    /// </returns>
     /// <remarks>This method can be useful when overriding several (shadowed) methods of the same name inherited by different base types.</remarks>
-    public CustomMethodEmitter CreatePrivateMethodOverride (MethodInfo baseMethod)
+    public CustomMethodEmitter CreateFullNamedMethodOverride (MethodInfo baseMethod)
     {
       ArgumentUtility.CheckNotNull ("baseMethod", baseMethod);
-      return CreateMethodOverrideOrInterfaceImplementation (
-          baseMethod, false, MethodAttributes.NewSlot | MethodAttributes.Private | MethodAttributes.Final);
+      MethodAttributes oldVisibility = baseMethod.Attributes & MethodAttributes.MemberAccessMask;
+      return CreateMethodOverrideOrInterfaceImplementation (baseMethod, false, MethodAttributes.ReuseSlot | MethodAttributes.Final | oldVisibility);
     }
 
     public CustomMethodEmitter CreateInterfaceMethodImplementation (MethodInfo interfaceMethod)
@@ -244,7 +246,7 @@ namespace Remotion.Reflection.CodeGeneration
     /// <param name="interfaceMethod">The interface method to implement.</param>
     /// <returns>A <see cref="CustomMethodEmitter"/> for the interface implementation.</returns>
     /// <remarks>The generated method has public visibility and the <see cref="MethodAttributes.NewSlot"/> flag set. This means that the method
-    /// will shadow methods from the base type with the same name and signature, not override them. Use <see cref="CreatePrivateMethodOverride"/> to
+    /// will shadow methods from the base type with the same name and signature, not override them. Use <see cref="CreateFullNamedMethodOverride"/> to
     /// explicitly create an override for such a method.</remarks>
     public CustomMethodEmitter CreatePublicInterfaceMethodImplementation (MethodInfo interfaceMethod)
     {
@@ -252,7 +254,7 @@ namespace Remotion.Reflection.CodeGeneration
       return CreateMethodOverrideOrInterfaceImplementation (interfaceMethod, true, MethodAttributes.NewSlot | MethodAttributes.Public);
     }
 
-    private CustomMethodEmitter CreateMethodOverrideOrInterfaceImplementation (
+    public CustomMethodEmitter CreateMethodOverrideOrInterfaceImplementation (
         MethodInfo baseOrInterfaceMethod,
         bool keepName,
         MethodAttributes visibilityFlags)

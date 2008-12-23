@@ -23,6 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 {
@@ -376,6 +377,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       {
         order.PropertyAccessFinished();
       }
+    }
+
+    [Test]
+    public void AccessingInterceptedProperties_ViaReflection_GetProperty ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      var propertyInfo = ((object) order).GetType ().GetProperty ("OrderNumber");
+      Assert.That (propertyInfo, Is.Not.Null);
+      Assert.That (propertyInfo.GetValue (order, null), Is.EqualTo (1));
+    }
+
+    [Test]
+    public void AccessingInterceptedProperties_ViaReflection_GetProperties ()
+    {
+      Order order = Order.GetObject (DomainObjectIDs.Order1);
+      var propertyInfos = ((object) order).GetType ().GetProperties ();
+      var orderNumberProperty = propertyInfos.Where (pi => pi.Name == "OrderNumber") .SingleOrDefault();
+      Assert.That (orderNumberProperty, Is.Not.Null);
     }
 
     private bool WasCreatedByFactory (object o)

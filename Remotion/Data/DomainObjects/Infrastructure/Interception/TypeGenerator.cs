@@ -172,7 +172,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       Assertion.IsFalse (accessor.IsAbstract);
       Assertion.IsTrue (InterceptedPropertyCollector.IsOverridable (accessor));
 
-      CustomMethodEmitter emitter = _classEmitter.CreatePrivateMethodOverride (accessor);
+      CustomMethodEmitter emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
       var baseCallExpression = new MethodInvocationExpression (SelfReference.Self, accessor, emitter.GetArgumentExpressions());
 
       ImplementWrappedAccessor (emitter, propertyIdentifier, baseCallExpression, accessor.ReturnType);
@@ -185,7 +185,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       Assertion.IsTrue (accessor.ReturnType != typeof (void));
 
-      CustomMethodEmitter emitter = _classEmitter.CreatePrivateMethodOverride (accessor);
+      CustomMethodEmitter emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
 
       ExpressionReference propertyAccessorReference = CreatePropertyAccessorReference (propertyIdentifier, emitter);
       var getValueMethodCall = 
@@ -202,7 +202,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       Assertion.IsTrue (accessor.ReturnType == typeof (void));
 
-      CustomMethodEmitter emitter = _classEmitter.CreatePrivateMethodOverride (accessor);
+      CustomMethodEmitter emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
 
       Assertion.IsTrue (emitter.ArgumentReferences.Length > 0);
       Reference valueArgumentReference = emitter.ArgumentReferences[emitter.ArgumentReferences.Length - 1];
@@ -270,16 +270,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     private void ImplementISerializable ()
     {
       SerializationImplementer.ImplementGetObjectDataByDelegation (_classEmitter,
-          delegate (CustomMethodEmitter methodEmitter, bool baseIsISerializable)
-          {
-            return new MethodInvocationExpression (
+          (methodEmitter, baseIsISerializable) => new MethodInvocationExpression (
                 null,
                 s_getObjectDataForGeneratedTypesMethod,
                 methodEmitter.ArgumentReferences[0].ToExpression(),
                 methodEmitter.ArgumentReferences[1].ToExpression(),
                 SelfReference.Self.ToExpression(),
-                new ConstReference (!baseIsISerializable).ToExpression());
-          });
+                new ConstReference (!baseIsISerializable).ToExpression())
+          );
 
       // Implement dummy ISerializable constructor if we haven't already replicated it
       SerializationImplementer.ImplementDeserializationConstructorByThrowingIfNotExistsOnBase (_classEmitter);

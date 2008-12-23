@@ -208,12 +208,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
-    public void CreatePrivateMethodOverride ()
+    public void CreateFullNamedMethodOverride ()
     {
-      var classEmitter = new CustomClassEmitter (Scope, "CreatePrivateMethodOverride", typeof (object), new[] { typeof (IMarkerInterface) },
+      var classEmitter = new CustomClassEmitter (Scope, "CreateFullNamedMethodOverride", typeof (object), new[] { typeof (IMarkerInterface) },
           TypeAttributes.Public | TypeAttributes.Class, false);
 
-      CustomMethodEmitter toStringMethod = classEmitter.CreatePrivateMethodOverride (typeof (object).GetMethod ("ToString"));
+      CustomMethodEmitter toStringMethod = classEmitter.CreateFullNamedMethodOverride (typeof (object).GetMethod ("ToString"));
       toStringMethod.AddStatement (new ReturnStatement (new ConstReference ("P0wned!")));
 
       Type builtType = classEmitter.BuildType ();
@@ -223,11 +223,36 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       method = builtType.GetMethod ("System.Object.ToString",
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
       Assert.IsNotNull (method);
-      Assert.IsTrue (method.IsPrivate);
+      Assert.IsTrue (method.IsPublic);
       Assert.IsTrue (method.IsVirtual);
       Assert.IsTrue (method.IsFinal);
       object instance = Activator.CreateInstance (builtType);
       Assert.AreEqual ("P0wned!", instance.ToString ());
+    }
+
+    [Test]
+    public void CreateFullNamedMethodOverride_ProtectedMethod ()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "CreateFullNamedMethodOverride_ProtectedMethod", typeof (ClassWithProtectedVirtualMethod), new[] { typeof (IMarkerInterface) },
+          TypeAttributes.Public | TypeAttributes.Class, false);
+
+      CustomMethodEmitter toStringMethod = classEmitter.CreateFullNamedMethodOverride (typeof (ClassWithProtectedVirtualMethod).GetMethod (
+          "GetSecret", BindingFlags.NonPublic | BindingFlags.Instance));
+      toStringMethod.AddStatement (new ReturnStatement (new ConstReference ("P0wned!")));
+
+      Type builtType = classEmitter.BuildType ();
+      MethodInfo method = builtType.GetMethod ("GetSecret",
+          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+      Assert.IsNull (method);
+      method = builtType.GetMethod (typeof (ClassWithProtectedVirtualMethod).FullName + ".GetSecret",
+          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+      Assert.IsNotNull (method);
+      Assert.IsTrue (method.IsFamily);
+      Assert.IsTrue (method.IsVirtual);
+      Assert.IsTrue (method.IsFinal);
+      
+      var instance = (ClassWithProtectedVirtualMethod) Activator.CreateInstance (builtType);
+      Assert.AreEqual ("P0wned!", method.Invoke (instance, null));
     }
 
     [Test]

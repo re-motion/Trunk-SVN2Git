@@ -190,15 +190,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
-    public void OverriddenVirtualPropertyAccessorsArePrivate ()
+    public void OverriddenVirtualPropertyAccessors_KeepVisibility ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType ();
-      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".get_PropertyWithGetterOnly", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".set_PropertyWithSetterOnly", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".get_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".set_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".get_ProtectedProperty", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".set_ProtectedProperty", _declaredInstanceFlags).IsPrivate);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".get_PropertyWithGetterOnly", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".set_PropertyWithSetterOnly", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".get_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".set_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".get_ProtectedProperty", _declaredInstanceFlags).IsFamily);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithVirtualProperties).FullName + ".set_ProtectedProperty", _declaredInstanceFlags).IsFamily);
     }
 
     [Test]
@@ -329,15 +329,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
-    public void ImplementedAbstractPropertyAccessorsArePrivate ()
+    public void ImplementedAbstractPropertyAccessors_KeepVisibility ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithAbstractProperties)).BuildType ();
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".get_PropertyWithGetterOnly", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".set_PropertyWithSetterOnly", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".get_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".set_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".get_ProtectedProperty", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".set_ProtectedProperty", _declaredInstanceFlags).IsPrivate);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".get_PropertyWithGetterOnly", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".set_PropertyWithSetterOnly", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".get_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".set_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".get_ProtectedProperty", _declaredInstanceFlags).IsFamily);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAbstractProperties).FullName + ".set_ProtectedProperty", _declaredInstanceFlags).IsFamily);
     }
 
     [Test]
@@ -404,15 +404,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
-    public void ImplementedAutomaticPropertyAccessorsArePrivate ()
+    public void ImplementedAutomaticPropertyAccessors_KeepVisibility ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithAutomaticProperties)).BuildType ();
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_PropertyWithGetterOnly", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_PropertyWithSetterOnly", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_ProtectedProperty", _declaredInstanceFlags).IsPrivate);
-      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_ProtectedProperty", _declaredInstanceFlags).IsPrivate);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_PropertyWithGetterOnly", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_PropertyWithSetterOnly", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_PropertyWithGetterAndSetter", _declaredInstanceFlags).IsPublic);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".get_ProtectedProperty", _declaredInstanceFlags).IsFamily);
+      Assert.IsTrue (type.GetMethod (typeof (DOWithAutomaticProperties).FullName + ".set_ProtectedProperty", _declaredInstanceFlags).IsFamily);
     }
 
     [Test]
