@@ -126,21 +126,21 @@ namespace Remotion.Mixins
     }
 
     /// <summary>
-    /// Prepares a creator for a mixed instance of the given <paramref name="targetType"/> with a public constructor.
+    /// Prepares a creator for a mixed instance of the given <paramref name="targetOrConcreteType"/> with a public constructor.
     /// </summary>
-    /// <param name="targetType">The target type a mixed instance of which should be created.</param>
+    /// <param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param>
     /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <paramref name="targetType"/>. Those mixins for which no
+    /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
-    /// <returns>An object which can be used to instantiate a mixed type derived from <paramref name="targetType"/> and initialize the instance. Use the object's
+    /// <returns>An object which can be used to instantiate a mixed type derived from <paramref name="targetOrConcreteType"/> and initialize the instance. Use the object's
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
+    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
+    /// the <paramref name="targetOrConcreteType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The <paramref name="targetType"/> is an interface and it cannot be determined which class
+    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
     /// to instantiate.
     /// </para>
     /// <para>
@@ -160,35 +160,35 @@ namespace Remotion.Mixins
     /// </para>
     /// <para>
     /// The <see cref="Create(Type, object[])"/> method supports the creation of instances from their complete interfaces:
-    /// <paramref name="targetType"/> can be an interface registered in the current mixin configuration. See also
+    /// <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
     /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// <para>
-    /// If <paramref name="targetType"/> is already a generated type, this method will not subclass it again.
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
     /// </para>
     /// </remarks>
-    public static FuncInvokerWrapper<object> Create (Type targetType, params object[] preparedMixins)
+    public static FuncInvokerWrapper<object> Create (Type targetOrConcreteType, params object[] preparedMixins)
     {
-      return Create (false, targetType, preparedMixins);
+      return Create (false, targetOrConcreteType, preparedMixins);
     }
 
     /// <summary>
-    /// Prepares a creator for a mixed instance of the given <paramref name="targetType"/> with a public constructor.
+    /// Prepares a creator for a mixed instance of the given <paramref name="targetOrConcreteType"/> with a public constructor.
     /// </summary>
-    /// <param name="targetType">The target type a mixed instance of which should be created.</param>
+    /// <param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param>
     /// <param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param>
     /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <paramref name="targetType"/>. Those mixins for which no
+    /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
-    /// <returns>An object which can be used to instantiate a mixed type derived from <paramref name="targetType"/> and initialize the instance. Use the object's
+    /// <returns>An object which can be used to instantiate a mixed type derived from <paramref name="targetOrConcreteType"/> and initialize the instance. Use the object's
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
+    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
+    /// the <paramref name="targetOrConcreteType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The <paramref name="targetType"/> is an interface and it cannot be determined which class
+    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
     /// to instantiate.
     /// </para>
     /// <para>
@@ -208,17 +208,17 @@ namespace Remotion.Mixins
     /// </para>
     /// <para>
     /// The <see cref="Create (Type, GenerationPolicy, object[])"/> method supports the creation of instances from their complete
-    /// interfaces: <paramref name="targetType"/> can be an interface registered in the current mixin configuration. See also
+    /// interfaces: <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
     /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// <para>
-    /// If <paramref name="targetType"/> is already a generated type, this method will only subclass it again when
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will only subclass it again when
     /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
     /// </para>
     /// </remarks>
-    public static FuncInvokerWrapper<object> Create (Type targetType, GenerationPolicy generationPolicy, params object[] preparedMixins)
+    public static FuncInvokerWrapper<object> Create (Type targetOrConcreteType, GenerationPolicy generationPolicy, params object[] preparedMixins)
     {
-      return Create (false, targetType, generationPolicy, preparedMixins);
+      return Create (false, targetOrConcreteType, generationPolicy, preparedMixins);
     }
 
     #endregion
@@ -316,23 +316,23 @@ namespace Remotion.Mixins
     }
 
     /// <summary>
-    /// Prepares a creator for a mixed instance of the given <paramref name="targetType"/>.
+    /// Prepares a creator for a mixed instance of the given <paramref name="targetOrConcreteType"/>.
     /// </summary>
     /// <param name="allowNonPublicConstructors">If true, the factory will also construct objects without a public constructor. If false, an exception is thrown
     /// unless a public constructor is available.</param>
-    /// <param name="targetType">The target type a mixed instance of which should be created.</param>
+    /// <param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param>
     /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <paramref name="targetType"/>. Those mixins for which no
+    /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
-    /// <returns>An object which can be used to instantiate a mixed type derived from <paramref name="targetType"/> and initialize the instance. Use the object's
+    /// <returns>An object which can be used to instantiate a mixed type derived from <paramref name="targetOrConcreteType"/> and initialize the instance. Use the object's
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
+    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
+    /// the <paramref name="targetOrConcreteType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The <paramref name="targetType"/> is an interface and it cannot be determined which class
+    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
     /// to instantiate.
     /// </para>
     /// <para>
@@ -352,37 +352,37 @@ namespace Remotion.Mixins
     /// </para>
     /// <para>
     /// The <see cref="Create(Type, object[])"/> method supports the creation of instances from their complete interfaces:
-    /// <paramref name="targetType"/> can be an interface registered in the current mixin configuration. See also
+    /// <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
     /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// <para>
-    /// If <paramref name="targetType"/> is already a generated type, this method will not subclass it again.
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
     /// </para>
     /// </remarks>
-    public static FuncInvokerWrapper<object> Create (bool allowNonPublicConstructors, Type targetType, params object[] preparedMixins)
+    public static FuncInvokerWrapper<object> Create (bool allowNonPublicConstructors, Type targetOrConcreteType, params object[] preparedMixins)
     {
-      return Create (allowNonPublicConstructors, targetType, GenerationPolicy.GenerateOnlyIfConfigured, preparedMixins);
+      return Create (allowNonPublicConstructors, targetOrConcreteType, GenerationPolicy.GenerateOnlyIfConfigured, preparedMixins);
     }
 
     /// <summary>
-    /// Prepares a creator for a mixed instance of the given <paramref name="targetType"/>.
+    /// Prepares a creator for a mixed instance of the given <paramref name="targetOrConcreteType"/>.
     /// </summary>
     /// <param name="allowNonPublicConstructors">If true, the factory will also construct objects without a public constructor. If false, an exception is thrown
     /// unless a public constructor is available.</param>
-    /// <param name="targetType">The target type a mixed instance of which should be created.</param>
+    /// <param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param>
     /// <param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param>
     /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <paramref name="targetType"/>. Those mixins for which no
+    /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
-    /// <returns>An object which can be used to instantiate a mixed type derived from <paramref name="targetType"/> and initialize the instance. Use the object's
+    /// <returns>An object which can be used to instantiate a mixed type derived from <paramref name="targetOrConcreteType"/> and initialize the instance. Use the object's
     /// <see cref="IFuncInvoker{T}.With()"/> methods to actually create the mixed instance.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetType"/> contains severe configuration problems 
+    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe configuration problems 
     /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
+    /// the <paramref name="targetOrConcreteType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The <paramref name="targetType"/> is an interface and it cannot be determined which class
+    /// The <paramref name="targetOrConcreteType"/> is an interface and it cannot be determined which class
     /// to instantiate.
     /// </para>
     /// <para>
@@ -402,18 +402,18 @@ namespace Remotion.Mixins
     /// </para>
     /// <para>
     /// The <see cref="Create (Type, GenerationPolicy, object[])"/> method supports the creation of instances from their complete
-    /// interfaces: <paramref name="targetType"/> can be an interface registered in the current mixin configuration. See also
+    /// interfaces: <paramref name="targetOrConcreteType"/> can be an interface registered in the current mixin configuration. See also
     /// <see cref="CompleteInterfaceAttribute"/>.
     /// </para>
     /// <para>
-    /// If <paramref name="targetType"/> is already a generated type, this method will only subclass it again when
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will only subclass it again when
     /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
     /// </para>
     /// </remarks>
-    public static FuncInvokerWrapper<object> Create (bool allowNonPublicConstructors, Type targetType, GenerationPolicy generationPolicy, params object[] preparedMixins)
+    public static FuncInvokerWrapper<object> Create (bool allowNonPublicConstructors, Type targetOrConcreteType, GenerationPolicy generationPolicy, params object[] preparedMixins)
     {
       return VersionDependentImplementationBridge<IMixedObjectInstantiator>.Implementation
-          .CreateConstructorInvoker<object> (targetType, generationPolicy, allowNonPublicConstructors, preparedMixins);
+          .CreateConstructorInvoker<object> (targetOrConcreteType, generationPolicy, allowNonPublicConstructors, preparedMixins);
     }
     #endregion
   }

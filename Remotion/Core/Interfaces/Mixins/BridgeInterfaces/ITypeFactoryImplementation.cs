@@ -21,7 +21,7 @@ namespace Remotion.Mixins.BridgeInterfaces
   [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.TypeFactoryImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
   public interface ITypeFactoryImplementation
   {
-    Type GetConcreteType (Type targetType, GenerationPolicy generationPolicy);
+    Type GetConcreteType (Type targetOrConcreteType, GenerationPolicy generationPolicy);
     void InitializeUnconstructedInstance (object mixinTarget);
   }
 }

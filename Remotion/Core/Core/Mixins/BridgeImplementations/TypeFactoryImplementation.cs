@@ -23,12 +23,12 @@ namespace Remotion.Mixins.BridgeImplementations
 {
   public class TypeFactoryImplementation : ITypeFactoryImplementation
   {
-    public Type GetConcreteType (Type targetType, GenerationPolicy generationPolicy)
+    public Type GetConcreteType (Type targetOrConcreteType, GenerationPolicy generationPolicy)
     {
-      ArgumentUtility.CheckNotNull ("targetType", targetType);
-      TargetClassDefinition configuration = TargetClassDefinitionUtility.GetActiveConfiguration (targetType, generationPolicy);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
+      TargetClassDefinition configuration = TargetClassDefinitionUtility.GetActiveConfiguration (targetOrConcreteType, generationPolicy);
       if (configuration == null)
-        return targetType;
+        return targetOrConcreteType;
       else
         return ConcreteTypeBuilder.Current.GetConcreteType (configuration);
     }

@@ -22,7 +22,7 @@ namespace Remotion.Mixins.BridgeInterfaces
   [ConcreteImplementation ("Remotion.Mixins.BridgeImplementations.MixedObjectInstantiator, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
   public interface IMixedObjectInstantiator
   {
-    FuncInvokerWrapper<T> CreateConstructorInvoker<T> (Type baseTypeOrInterface, GenerationPolicy generationPolicy, bool allowNonPublic,
+    FuncInvokerWrapper<T> CreateConstructorInvoker<T> (Type baseTypeOrInterfaceOrConcreteType, GenerationPolicy generationPolicy, bool allowNonPublic,
         params object[] preparedMixins);
   }
 }

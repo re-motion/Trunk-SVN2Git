@@ -28,12 +28,12 @@ namespace Remotion.Mixins
     /// Returns a <see cref="TargetClassDefinition"/> for the a given target type, or <see langword="null"/> if no mixin configuration exists for
     /// this type.
     /// </summary>
-    /// <param name="targetType">Base type for which an analyzed mixin configuration should be returned.</param>
+    /// <param name="targetOrConcreteType">Base type for which an analyzed mixin configuration should be returned or a concrete mixed type.</param>
     /// <returns>A non-null <see cref="TargetClassDefinition"/> for the a given target type.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetType"/> contains severe problems that
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe problems that
     /// make generation of a <see cref="TargetClassDefinition"/> object impossible.</exception>
-    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetType"/> violates at least one validation
+    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> violates at least one validation
     /// rule, which would make code generation impossible. </exception>
     /// <remarks>
     /// <para>
@@ -44,23 +44,26 @@ namespace Remotion.Mixins
     /// Use <see cref="GetActiveConfiguration(Type,GenerationPolicy)"/> to force generation of an empty configuration if none currently
     /// exists for the given type in <see cref="MixinConfiguration.ActiveConfiguration"/>.
     /// </para>
+    /// <para>
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, no new <see cref="TargetClassDefinition"/> is created for it.
+    /// </para>
     /// </remarks>
-    public static TargetClassDefinition GetActiveConfiguration (Type targetType)
+    public static TargetClassDefinition GetActiveConfiguration (Type targetOrConcreteType)
     {
-      return GetActiveConfiguration (targetType, GenerationPolicy.GenerateOnlyIfConfigured);
+      return GetActiveConfiguration (targetOrConcreteType, GenerationPolicy.GenerateOnlyIfConfigured);
     }
 
     /// <summary>
     /// Returns a <see cref="TargetClassDefinition"/> for the a given target type.
     /// </summary>
-    /// <param name="targetType">Base type for which an analyzed mixin configuration should be returned.</param>
+    /// <param name="targetOrConcreteType">Base type for which an analyzed mixin configuration should be returned or a concrete mixed type.</param>
     /// <param name="generationPolicy">Defines whether to return <see langword="null"/> or generate an empty default configuration if no mixin
-    /// configuration is available for the given <paramref name="targetType"/>.</param>
+    /// configuration is available for the given <paramref name="targetOrConcreteType"/>.</param>
     /// <returns>A <see cref="TargetClassDefinition"/> for the a given target type.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetType"/> contains severe problems that
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe problems that
     /// make generation of a <see cref="TargetClassDefinition"/> object impossible.</exception>
-    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetType"/> violates at least one validation
+    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> violates at least one validation
     /// rule, which would make code generation impossible. </exception>
     /// <remarks>
     /// <para>
@@ -71,24 +74,28 @@ namespace Remotion.Mixins
     /// Use the <paramref name="generationPolicy"/> parameter to configure whether this method should return an empty but valid
     /// <see cref="TargetClassDefinition"/> for types that do not have a mixin configuration in <see cref="MixinConfiguration.ActiveConfiguration"/>.
     /// </para>
+    /// <para>
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, no new <see cref="TargetClassDefinition"/> is created for it unless
+    /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
+    /// </para>
     /// </remarks>
-    public static TargetClassDefinition GetActiveConfiguration (Type targetType, GenerationPolicy generationPolicy)
+    public static TargetClassDefinition GetActiveConfiguration (Type targetOrConcreteType, GenerationPolicy generationPolicy)
     {
-      return GetConfiguration (targetType, MixinConfiguration.ActiveConfiguration, generationPolicy);
+      return GetConfiguration (targetOrConcreteType, MixinConfiguration.ActiveConfiguration, generationPolicy);
     }
 
     /// <summary>
     /// Returns a <see cref="TargetClassDefinition"/> for the a given target type, or <see langword="null"/> if no mixin configuration exists for
     /// this type.
     /// </summary>
-    /// <param name="targetType">Base type for which an analyzed mixin configuration should be returned.</param>
+    /// <param name="targetOrConcreteType">Base type for which an analyzed mixin configuration should be returned or a concrete mixed type.</param>
     /// <param name="mixinConfiguration">The <see cref="MixinConfiguration"/> to use.</param>
     /// <returns>A <see cref="TargetClassDefinition"/> for the a given target type, or <see langword="null"/> if no mixin configuration exists for
     /// the given type.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetType"/> contains severe problems that
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe problems that
     /// make generation of a <see cref="TargetClassDefinition"/> object impossible.</exception>
-    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetType"/> violates at least one validation
+    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> violates at least one validation
     /// rule, which would make code generation impossible. </exception>
     /// <remarks>
     /// <para>
@@ -99,24 +106,27 @@ namespace Remotion.Mixins
     /// Use <see cref="GetConfiguration(Type,MixinConfiguration,GenerationPolicy)"/> to force generation of an empty configuration if none currently
     /// exists for the given type.
     /// </para>
+    /// <para>
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, no new <see cref="TargetClassDefinition"/> is created for it.
+    /// </para>
     /// </remarks>
-    public static TargetClassDefinition GetConfiguration (Type targetType, MixinConfiguration mixinConfiguration)
+    public static TargetClassDefinition GetConfiguration (Type targetOrConcreteType, MixinConfiguration mixinConfiguration)
     {
-      return GetConfiguration (targetType, mixinConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
+      return GetConfiguration (targetOrConcreteType, mixinConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
     }
 
     /// <summary>
     /// Returns a <see cref="TargetClassDefinition"/> for the a given target type.
     /// </summary>
-    /// <param name="targetType">Base type for which an analyzed mixin configuration should be returned.</param>
+    /// <param name="targetOrConcreteType">Base type for which an analyzed mixin configuration should be returned or a concrete mixed type.</param>
     /// <param name="mixinConfiguration">The <see cref="MixinConfiguration"/> to use.</param>
     /// <param name="generationPolicy">Defines whether to return <see langword="null"/> or generate an empty default configuration if no mixin
-    /// configuration is available for the given <paramref name="targetType"/>.</param>
+    /// configuration is available for the given <paramref name="targetOrConcreteType"/>.</param>
     /// <returns>A <see cref="TargetClassDefinition"/> for the a given target type, or <see langword="null"/>.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetType"/> contains severe problems that
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe problems that
     /// make generation of a <see cref="TargetClassDefinition"/> object impossible.</exception>
-    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetType"/> violates at least one validation
+    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> violates at least one validation
     /// rule, which would make code generation impossible. </exception>
     /// <remarks>
     /// <para>
@@ -128,17 +138,16 @@ namespace Remotion.Mixins
     /// <see cref="TargetClassDefinition"/> for types that do not have a mixin configuration in <paramref name="mixinConfiguration"/>.
     /// </para>
     /// <para>
-    /// If <paramref name="targetType"/> is already a generated type, no new <see cref="TargetClassDefinition"/> is created for it unless
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, no new <see cref="TargetClassDefinition"/> is created for it unless
     /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
     /// </para>
     /// </remarks>
-    public static TargetClassDefinition GetConfiguration (Type targetType, MixinConfiguration mixinConfiguration, GenerationPolicy generationPolicy)
+    public static TargetClassDefinition GetConfiguration (Type targetOrConcreteType, MixinConfiguration mixinConfiguration, GenerationPolicy generationPolicy)
     {
-      ArgumentUtility.CheckNotNull ("targetType", targetType);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
       ArgumentUtility.CheckNotNull ("mixinConfiguration", mixinConfiguration);
 
-      ClassContext context;
-      context = GetContext (targetType, mixinConfiguration, generationPolicy);
+      ClassContext context = GetContext (targetOrConcreteType, mixinConfiguration, generationPolicy);
 
       if (context == null)
         return null;
@@ -149,12 +158,12 @@ namespace Remotion.Mixins
     /// <summary>
     /// Returns a <see cref="ClassContext"/> for the a given target type.
     /// </summary>
-    /// <param name="targetType">Base type for which a context should be returned.</param>
+    /// <param name="targetOrConcreteType">Base type for which a context should be returned or a concrete mixed type.</param>
     /// <param name="mixinConfiguration">The <see cref="MixinConfiguration"/> to use.</param>
     /// <param name="generationPolicy">Defines whether to return <see langword="null"/> or generate an empty default configuration if no mixin
-    /// configuration is available for the given <paramref name="targetType"/>.</param>
+    /// configuration is available for the given <paramref name="targetOrConcreteType"/>.</param>
     /// <returns>A <see cref="ClassContext"/> for the a given target type, or <see langword="null"/>.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetType"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <remarks>
     /// <para>
     /// Use this to extract a class context for a given target type from an <see cref="MixinConfiguration"/> as it would be used to create the
@@ -167,26 +176,26 @@ namespace Remotion.Mixins
     /// <see cref="ClassContext"/> for types that do not have a mixin configuration in the <paramref name="mixinConfiguration"/>.
     /// </para>
     /// <para>
-    /// If <paramref name="targetType"/> is already a generated type, the <see cref="ClassContext"/> used for its generation is returned unless
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, the <see cref="ClassContext"/> used for its generation is returned unless
     /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
     /// </para>
     /// </remarks>
-    public static ClassContext GetContext (Type targetType, MixinConfiguration mixinConfiguration, GenerationPolicy generationPolicy)
+    public static ClassContext GetContext (Type targetOrConcreteType, MixinConfiguration mixinConfiguration, GenerationPolicy generationPolicy)
     {
-      ArgumentUtility.CheckNotNull ("targetType", targetType);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
       ArgumentUtility.CheckNotNull ("mixinConfiguration", mixinConfiguration);
 
       ClassContext context;
-      if (generationPolicy != GenerationPolicy.ForceGeneration && MixinTypeUtility.IsGeneratedConcreteMixedType (targetType))
-        context = MixinReflector.GetClassContextFromConcreteType (targetType);
+      if (generationPolicy != GenerationPolicy.ForceGeneration && MixinTypeUtility.IsGeneratedConcreteMixedType (targetOrConcreteType))
+        context = MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType);
       else
-        context = mixinConfiguration.ClassContexts.GetWithInheritance (targetType);
+        context = mixinConfiguration.ClassContexts.GetWithInheritance (targetOrConcreteType);
 
       if (context == null && generationPolicy == GenerationPolicy.ForceGeneration)
-        context = new ClassContext (targetType);
+        context = new ClassContext (targetOrConcreteType);
 
-      if (context != null && targetType.IsGenericType && context.Type.IsGenericTypeDefinition)
-        context = context.SpecializeWithTypeArguments (targetType.GetGenericArguments ());
+      if (context != null && targetOrConcreteType.IsGenericType && context.Type.IsGenericTypeDefinition)
+        context = context.SpecializeWithTypeArguments (targetOrConcreteType.GetGenericArguments ());
 
       return context;
     }

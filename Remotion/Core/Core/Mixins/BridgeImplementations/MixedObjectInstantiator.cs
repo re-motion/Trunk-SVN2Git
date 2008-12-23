@@ -45,18 +45,18 @@ namespace Remotion.Mixins.BridgeImplementations
       return targetType;
     }
 
-    public FuncInvokerWrapper<T> CreateConstructorInvoker<T> (Type baseTypeOrInterface, GenerationPolicy generationPolicy, bool allowNonPublic,
+    public FuncInvokerWrapper<T> CreateConstructorInvoker<T> (Type baseTypeOrInterfaceOrConcreteType, GenerationPolicy generationPolicy, bool allowNonPublic,
         params object[] preparedMixins)
     {
-      ArgumentUtility.CheckNotNull ("baseTypeOrInterface", baseTypeOrInterface);
+      ArgumentUtility.CheckNotNull ("baseTypeOrInterfaceOrConcreteType", baseTypeOrInterfaceOrConcreteType);
       ArgumentUtility.CheckNotNull ("preparedMixins", preparedMixins);
 
-      Type resolvedTargetType = ResolveType (baseTypeOrInterface);
+      Type resolvedTargetType = ResolveType (baseTypeOrInterfaceOrConcreteType);
       Type concreteType = TypeFactory.GetConcreteType (resolvedTargetType, generationPolicy);
 
       if (!typeof (IMixinTarget).IsAssignableFrom (concreteType) && preparedMixins.Length > 0)
         throw new ArgumentException (string.Format ("There is no mixin configuration for type {0}, so no mixin instances must be specified.",
-            baseTypeOrInterface.FullName), "preparedMixins");
+            baseTypeOrInterfaceOrConcreteType.FullName), "preparedMixins");
 
       MixedTypeConstructorLookupInfo constructorLookupInfo = new MixedTypeConstructorLookupInfo (concreteType, resolvedTargetType, allowNonPublic);
       FuncInvoker<object[], T> constructorInvoker = new FuncInvoker<object[], T> (constructorLookupInfo.GetDelegate, preparedMixins);
