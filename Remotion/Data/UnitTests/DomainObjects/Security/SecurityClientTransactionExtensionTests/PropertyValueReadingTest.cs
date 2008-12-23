@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueReading (new RootClientTransaction(), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
+      _extension.PropertyValueReading (ClientTransaction.CreateRootTransaction (), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueReading (new RootClientTransaction(), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
+      _extension.PropertyValueReading (ClientTransaction.CreateRootTransaction (), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       using (new SecurityFreeSection ())
       {
-        _extension.PropertyValueReading (new RootClientTransaction(), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
+        _extension.PropertyValueReading (ClientTransaction.CreateRootTransaction (), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
       }
 
       _testHelper.VerifyAll ();
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueReading (new RootClientTransaction(), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.NonSecurableObject.StringProperty"], ValueAccess.Current);
+      _extension.PropertyValueReading (ClientTransaction.CreateRootTransaction (), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.NonSecurableObject.StringProperty"], ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueReading (new RootClientTransaction(), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
+      _extension.PropertyValueReading (ClientTransaction.CreateRootTransaction (), dataContainer, dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.Security.TestDomain.SecurableObject.StringProperty"], ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }

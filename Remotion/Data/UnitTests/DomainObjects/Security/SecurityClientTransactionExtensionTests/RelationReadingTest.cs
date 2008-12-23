@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.RelationReading (new RootClientTransaction (), securableObject, "Parent", ValueAccess.Current);
+      _extension.RelationReading (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.RelationReading (new RootClientTransaction(), securableObject, "Parent", ValueAccess.Current);
+      _extension.RelationReading (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", ValueAccess.Current);
     }
 
     [Test]
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       using (new SecurityFreeSection ())
       {
-        _extension.RelationReading (new RootClientTransaction(), securableObject, "Parent", ValueAccess.Current);
+        _extension.RelationReading (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", ValueAccess.Current);
       }
 
       _testHelper.VerifyAll ();
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.RelationReading (new RootClientTransaction(), nonSecurableObject, "Parent", ValueAccess.Current);
+      _extension.RelationReading (ClientTransaction.CreateRootTransaction (), nonSecurableObject, "Parent", ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.RelationReading (new RootClientTransaction(), securableObject, "Parent", ValueAccess.Current);
+      _extension.RelationReading (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.RelationReading (new RootClientTransaction(), securableObject, "Children", ValueAccess.Current);
+      _extension.RelationReading (ClientTransaction.CreateRootTransaction (), securableObject, "Children", ValueAccess.Current);
 
       _testHelper.VerifyAll ();
     }

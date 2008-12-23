@@ -683,7 +683,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       mockRepository.ReplayAll ();
 
-      ClientTransaction subTransaction = new SubClientTransaction (mockParent);
+      ClientTransaction subTransaction = mockParent.CreateSubTransaction();
 
       using (subTransaction.EnterDiscardingScope())
       {
@@ -718,7 +718,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       mockRepository.ReplayAll ();
 
-      ClientTransaction subTransaction = new SubClientTransaction (mockParent);
+      ClientTransaction subTransaction = mockParent.CreateSubTransaction();
 
       using (subTransaction.EnterDiscardingScope ())
       {

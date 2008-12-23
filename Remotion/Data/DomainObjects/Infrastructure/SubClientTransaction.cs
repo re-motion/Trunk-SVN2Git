@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     [NonSerialized]
     private SubQueryManager _queryManager;
 
-    public SubClientTransaction (ClientTransaction parentTransaction)
+    protected SubClientTransaction (ClientTransaction parentTransaction)
         : base (ArgumentUtility.CheckNotNull("parentTransaction", parentTransaction).ApplicationData, parentTransaction.Extensions)
     {
       parentTransaction.NotifyOfSubTransactionCreating ();

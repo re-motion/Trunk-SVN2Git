@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -48,7 +49,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>
     /// Initializes a new instance of the <b>RootClientTransaction</b> class.
     /// </summary>
-    public RootClientTransaction ()
+    protected RootClientTransaction ()
       : base (new Dictionary<Enum, object>(), new ClientTransactionExtensionCollection ())
     {
       _enlistedObjects = new Dictionary<ObjectID, DomainObject>();
@@ -67,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <summary>Initializes a new instance of this transaction.</summary>
     public override ClientTransaction CreateEmptyTransactionOfSameType ()
     {
-      return (ClientTransaction) TypesafeActivator.CreateInstance (GetType()).With();
+      return (ClientTransaction) TypesafeActivator.CreateInstance (GetType (), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With ();
     }
 
     public override IQueryManager QueryManager

@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (new RootClientTransaction(), collection, query);
+      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
 
       _testHelper.VerifyAll ();
       Assert.AreEqual (1, collection.Count);
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (new RootClientTransaction(), collection, query);
+      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
 
       _testHelper.VerifyAll ();
       Assert.AreEqual (0, collection.Count);
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (new RootClientTransaction (), collection, query);
+      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
 
       _testHelper.VerifyAll ();
       Assert.AreEqual (0, collection.Count);
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (new RootClientTransaction (), collection, query);
+      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
 
       _testHelper.VerifyAll ();
       Assert.AreEqual (1, collection.Count);
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (new RootClientTransaction (), collection, query);
+      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
 
       _testHelper.VerifyAll ();
       Assert.AreEqual (1, collection.Count);
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       using (new SecurityFreeSection ())
       {
-        _extension.FilterQueryResult (new RootClientTransaction (), collection, query);
+        _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
       }
 
       _testHelper.VerifyAll ();
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Find, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (new RootClientTransaction (), collection, query);
+      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
 
       _testHelper.VerifyAll ();
     }

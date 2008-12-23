@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (new RootClientTransaction (), securableObject, "Parent", null, null);
+      _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", null, null);
 
       _testHelper.VerifyAll ();
     }
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (new RootClientTransaction (), securableObject, "Parent", null, null);
+      _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", null, null);
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
 
       using (new SecurityFreeSection ())
       {
-        _extension.RelationChanging (new RootClientTransaction (), securableObject, "Parent", null, null);
+        _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", null, null);
       }
 
       _testHelper.VerifyAll ();
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (new RootClientTransaction (), nonSecurableObject, "Parent", null, null);
+      _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), nonSecurableObject, "Parent", null, null);
 
       _testHelper.VerifyAll ();
     }
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.RelationChanging (new RootClientTransaction (), securableObject, "Parent", null, null);
+      _extension.RelationChanging (ClientTransaction.CreateRootTransaction (), securableObject, "Parent", null, null);
 
       _testHelper.VerifyAll ();
     }

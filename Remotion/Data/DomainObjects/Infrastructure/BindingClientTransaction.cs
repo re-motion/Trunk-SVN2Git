@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ClientTransaction.CreateRootTransaction();
     }
 
-    public BindingClientTransaction ()
+    protected BindingClientTransaction ()
     {
       AddListener (new BindingClientTransactionListener (this));
     }
