@@ -1,11 +1,19 @@
-<%-- Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
- %
- % This program is free software: you can redistribute it and/or modify it under 
- % the terms of the re:motion license agreement in license.txt. If you did not 
- % receive it, please visit http://www.re-motion.org/licensing.
+<%-- This file is part of re-strict (www.re-motion.org)
+ % Copyright (C) 2005-2008 rubicon informationstechnologie gmbh, www.rubicon.eu
  % 
- % Unless otherwise provided, this software is distributed on an "AS IS" basis, 
- % WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ % This program is free software; you can redistribute it and/or modify
+ % it under the terms of the GNU Affero General Public License version 3.0 
+ % as published by the Free Software Foundation.
+ % 
+ % This program is distributed in the hope that it will be useful, 
+ % but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+ % GNU Affero General Public License for more details.
+ % 
+ % You should have received a copy of the GNU Affero General Public License
+ % along with this program; if not, see http://www.gnu.org/licenses.
+ % 
+ % Additional permissions are listed in the file re-motion_exceptions.txt.
 --%>
 <%@ Page Language="C#" AutoEventWireup="true" Codebehind="SecurableClassDefinitionListForm.aspx.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.AccessControl.SecurableClassDefinitionListForm"
   MasterPageFile="../SecurityManagerMasterPage.Master" %>
