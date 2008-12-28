@@ -1,18 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
- !
- ! This program is free software: you can redistribute it and/or modify it under 
- ! the terms of the re:motion license agreement in license.txt. If you did not 
- ! receive it, please visit http://www.re-motion.org/licensing.
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file is part of the re-motion Core Framework (www.re-motion.org)
+ ! Copyright (C) 2005-2008 rubicon informationstechnologie gmbh, www.rubicon.eu
  ! 
- ! Unless otherwise provided, this software is distributed on an "AS IS" basis, 
- ! WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ ! The re-motion Core Framework is free software; you can redistribute it 
+ ! and/or modify it under the terms of the GNU Lesser General Public License 
+ ! version 3.0 as published by the Free Software Foundation.
+ ! 
+ ! re-motion is distributed in the hope that it will be useful, 
+ ! but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+ ! GNU Lesser General Public License for more details.
+ ! 
+ ! You should have received a copy of the GNU Lesser General Public License
+ ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
-
 <project xmlns="nant-schema">
-  <property name="text.copyright" value="(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu" />
+  <property name="text.copyright.Remotion" value="(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu" />
+  <property name="text.copyright.Dms" value="(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu" />
+  <property name="text.copyright.SecurityManager" value="(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu" />
+
   <property name="text.companyname" value="rubicon informationstechnologie gmbh" />
   <property name="text.companyurl" value="http://www.rubicon.eu" />
-  <property name="text.productname" value="Remotion" />
-  <property name="text.productshortname" value="Remotion" />
+  
+  <property name="text.productname.Remotion" value="re-motion core framework (www.re-motion.org)" />
+  <property name="text.productname.Dms" value="re-vision (www.re-motion.org)" />
+  <property name="text.productname.SecurityManager" value="re-strict (www.re-motion.org)" />
+  
+  <property name="text.productshortname" value="re-motion" />
 </project>

@@ -1,14 +1,19 @@
-<?xml version="1.0" ?>
-<!-- Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
- !
- ! This program is free software: you can redistribute it and/or modify it under 
- ! the terms of the re:motion license agreement in license.txt. If you did not 
- ! receive it, please visit http://www.re-motion.org/licensing.
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file is part of the re-motion Core Framework (www.re-motion.org)
+ ! Copyright (C) 2005-2008 rubicon informationstechnologie gmbh, www.rubicon.eu
  ! 
- ! Unless otherwise provided, this software is distributed on an "AS IS" basis, 
- ! WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ ! The re-motion Core Framework is free software; you can redistribute it 
+ ! and/or modify it under the terms of the GNU Lesser General Public License 
+ ! version 3.0 as published by the Free Software Foundation.
+ ! 
+ ! re-motion is distributed in the hope that it will be useful, 
+ ! but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ ! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+ ! GNU Lesser General Public License for more details.
+ ! 
+ ! You should have received a copy of the GNU Lesser General Public License
+ ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
-
 <project name="Remotion-Helper" xmlns="nant-schema">
 
   <!--======================= VERSION =======================-->
@@ -254,19 +259,51 @@
     <!--
     <attrib readonly="false" file="${project.basedir}/Properties/AssemblyInfo.cs"/>
     -->
-    <replace>
-      <filterset>
-        <filter token="keyfile" value="${solution.key-file}" />
-        <filter token="versionnumber" value="${build.version}" />
-        <filter token="buildinfo" value=".NET Framework: ${nant.settings.currentframework}, build type: ${project.config}" />
-        <filter token="company" value="${text.companyname}" />
-        <filter token="copyright" value="${text.copyright}" />
-        <filter token="productname" value="${text.productname}" />
-      </filterset>
-      <fileset>
-        <include name="${project.basedir}/Properties/AssemblyInfo.cs" />
-      </fileset>
-    </replace>
+    <if test="${string::starts-with(project.basedir, path::combine(solution.basedir, 'Remotion'))}">
+      <replace>
+        <filterset>
+          <filter token="keyfile" value="${solution.key-file}" />
+          <filter token="versionnumber" value="${build.version}" />
+          <filter token="buildinfo" value=".NET Framework: ${nant.settings.currentframework}, build type: ${project.config}" />
+          <filter token="company" value="${text.companyname}" />
+          <filter token="copyright" value="${text.copyright.Remotion}" />
+          <filter token="productname" value="${text.productname.Remotion}" />
+        </filterset>
+        <fileset>
+          <include name="${project.basedir}/Properties/AssemblyInfo.cs" />
+        </fileset>
+      </replace>
+    </if>
+    <if test="${string::starts-with(project.basedir, path::combine(solution.basedir, 'Dms'))}">
+      <replace>
+        <filterset>
+          <filter token="keyfile" value="${solution.key-file}" />
+          <filter token="versionnumber" value="${build.version}" />
+          <filter token="buildinfo" value=".NET Framework: ${nant.settings.currentframework}, build type: ${project.config}" />
+          <filter token="company" value="${text.companyname}" />
+          <filter token="copyright" value="${text.copyright.Dms}" />
+          <filter token="productname" value="${text.productname.Dms}" />
+        </filterset>
+        <fileset>
+          <include name="${project.basedir}/Properties/AssemblyInfo.cs" />
+        </fileset>
+      </replace>
+    </if>
+    <if test="${string::starts-with(project.basedir, path::combine(solution.basedir, 'SecurityManager'))}">
+      <replace>
+        <filterset>
+          <filter token="keyfile" value="${solution.key-file}" />
+          <filter token="versionnumber" value="${build.version}" />
+          <filter token="buildinfo" value=".NET Framework: ${nant.settings.currentframework}, build type: ${project.config}" />
+          <filter token="company" value="${text.companyname}" />
+          <filter token="copyright" value="${text.copyright.SecurityManager}" />
+          <filter token="productname" value="${text.productname.SecurityManager}" />
+        </filterset>
+        <fileset>
+          <include name="${project.basedir}/Properties/AssemblyInfo.cs" />
+        </fileset>
+      </replace>
+    </if>
     <!--
     <attrib readonly="true" file="${project.basedir}/AssemblyInfo.cs"/>
     -->
@@ -324,12 +361,13 @@
       <fileset basedir="${solution.basedir}">
         <include name="Remotion/**" />
         <include name="build/*.xml" />
-        <exclude name="**/obj/**" />
-        <exclude name="**/bin/**" />
-        <exclude name="**/*.zip" />
-        <exclude name="**/*.dll" />
-        <exclude name="**/*.exe" />
-        <exclude name="**/*.pdb" />
+        <include name="prereq/**" />
+        <exclude name="Remotion/**/obj/**" />
+        <exclude name="Remotion/**/bin/**" />
+        <exclude name="Remotion/**/*.zip" />
+        <exclude name="Remotion/**/*.dll" />
+        <exclude name="Remotion/**/*.exe" />
+        <exclude name="Remotion/**/*.pdb" />
       </fileset>
     </zip>
   </target>
@@ -373,12 +411,13 @@
     <zip zipfile="${securityManager-sourcezipfile.name}">
       <fileset basedir="${solution.basedir}">
         <include name="SecurityManager/**" />
-        <exclude name="**/obj/**" />
-        <exclude name="**/bin/**" />
-        <exclude name="**/*.zip" />
-        <exclude name="**/*.dll" />
-        <exclude name="**/*.exe" />
-        <exclude name="**/*.pdb" />
+        <include name="prereq/**" />
+        <exclude name="SecurityManager/**/obj/**" />
+        <exclude name="SecurityManager/**/bin/**" />
+        <exclude name="SecurityManager/**/*.zip" />
+        <exclude name="SecurityManager/**/*.dll" />
+        <exclude name="SecurityManager/**/*.exe" />
+        <exclude name="SecurityManager/**/*.pdb" />
       </fileset>
     </zip>
   </target>

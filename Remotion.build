@@ -21,7 +21,7 @@
   <property name="solution.key-file" value="${solution.basedir}/remotion.snk" overwrite="false" />
   <property name="solution.intellisense-xslt-file" value="file:///${solution.basedir}/build/xmldoc.xslt" overwrite="false" />
   <property name="prereq.assemblies" value="${solution.basedir}/prereq/assemblies" />
-  <property name="project.basedir" value="${solution.basedir}/${project.dir}" dynamic="true" />
+  <property name="project.basedir" value="${path::combine(solution.basedir, project.dir)}" dynamic="true" />
   <property name="build.outputdir" value="${build.basedir}/${nant.settings.currentframework}/bin/${project.config}" dynamic="true" />
   <property name="build.temp.root" value="" overwrite="false" />
   <property name="build.temp.outputdir" value="${build.temp.basedir}/${nant.settings.currentframework}/${project.config}" dynamic="true" />

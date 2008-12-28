@@ -28,7 +28,7 @@ using System.Resources;
 [assembly: AssemblyDescription("Generic interfaces and classes for BusinessObjects and data binding.")]
 [assembly: AssemblyConfiguration(".NET Framework: net-3.5, build type: debug")]
 [assembly: AssemblyCompany("rubicon informationstechnologie gmbh")]
-[assembly: AssemblyProduct("Remotion")]
+[assembly: AssemblyProduct("re-motion core framework (www.re-motion.org)")]
 [assembly: AssemblyCopyright("(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
@@ -44,4 +44,4 @@ using System.Resources;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.11.14.2")]
+[assembly: AssemblyVersion("1.11.19.2")]
