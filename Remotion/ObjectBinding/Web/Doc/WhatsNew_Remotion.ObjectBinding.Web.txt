@@ -25,7 +25,7 @@
 
 1.9.0
 =====
-- Umstellung auf re:motion
+- Umstellung auf re-motion
 - Umstellung von NullableValueTypes auf .NET-Nullables (z.B. NaInt32 => int?)
   Achtung: Wenn in aspx/ascx-Files für Nullable-Properties der Default-Wert explizit per Attribut zugewiesen wird (à la 'AutoPostBack=""'), dann 
   führt das zu einem Parse-Fehler. Solche Attribut-Strings müssen entfernt werden.

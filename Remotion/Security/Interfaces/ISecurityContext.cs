@@ -34,7 +34,7 @@ namespace Remotion.Security
     /// A <see cref="string"/> that uniquely identifies the type of the <see cref="ISecurableObject"/> to the <see cref="IServiceProvider"/>.
     /// </value>
     /// <remarks>
-    /// The default implementation of the security infrastructure in the re:motion framework uses partial assembly-qualified type names to identify 
+    /// The default implementation of the security infrastructure in the re-motion framework uses partial assembly-qualified type names to identify 
     /// the <see cref="Class"/> of the <see cref="ISecurableObject"/>. This results from the sole reliance on reflection information for extracting 
     /// the  security metadata. If a different means of generating the security metadata is used, it is perfectly legal to use strings of any format
     /// for the <see cref="Class"/>. The only requirement is that the <see cref="IServiceProvider"/> can find the <see cref="Class"/> within its 

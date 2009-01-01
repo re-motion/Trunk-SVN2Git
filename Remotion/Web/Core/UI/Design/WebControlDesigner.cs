@@ -82,9 +82,9 @@ namespace Remotion.Web.UI.Design
         if (assemblyDictionary.ContainsKey (assembly.FullName))
         {
           throw new NotSupportedException (
-              "Duplicate re:motion framework assemblies have been detected. In order to provide a consistent design time experience it is necessary"
-              + " to install the re:motion framework in the global assembly cache (GAC). In addition, please ensure that the 'Copy Local' flag"
-              + " is set to 'true' for all re:motion framework assemblies referenced by the web project.");
+              "Duplicate re-motion framework assemblies have been detected. In order to provide a consistent design time experience it is necessary"
+              + " to install the re-motion framework in the global assembly cache (GAC). In addition, please ensure that the 'Copy Local' flag"
+              + " is set to 'true' for all re-motion framework assemblies referenced by the web project.");
         }
         assemblyDictionary.Add (assembly.FullName, assembly);
       }
