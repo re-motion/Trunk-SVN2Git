@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Linq;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -47,8 +48,14 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         throw new ArgumentException (message, "property");
       }
 
-      var domainObjectType = GetDomainObjectType (property);
-      return GetAllObjects (domainObjectType);
+      var referencedDomainObjectType = GetDomainObjectType (property);
+      var referencingDomainObject = referencingObject as DomainObject;
+      
+      var clientTransaction = referencingDomainObject != null ? DomainObjectCheckUtility.GetNonNullClientTransaction (referencingDomainObject) : ClientTransaction.Current;
+      if (clientTransaction == null)
+        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or the referencing object.");
+
+      return GetAllObjects (clientTransaction, referencedDomainObjectType);
     }
 
     private Type GetDomainObjectType (IBusinessObjectReferenceProperty property)
@@ -61,11 +68,13 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         return null;
     }
 
-    public IBusinessObject[] GetAllObjects (Type type)
+    public IBusinessObject[] GetAllObjects (ClientTransaction clientTransaction, Type type)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("type", type);
+
       var query = GetQuery (type);
-      return ClientTransaction.Current.QueryManager.GetCollection (query).Cast<IBusinessObject>().ToArray();
+      return clientTransaction.QueryManager.GetCollection (query).Cast<IBusinessObject>().ToArray();
     }
 
     private IQuery GetQuery (Type type)

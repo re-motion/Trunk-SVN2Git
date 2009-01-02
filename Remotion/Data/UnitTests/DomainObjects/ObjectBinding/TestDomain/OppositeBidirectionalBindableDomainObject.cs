@@ -26,6 +26,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   [DBTable]
   public abstract class OppositeBidirectionalBindableDomainObject : BindableDomainObject
   {
+    public static OppositeBidirectionalBindableDomainObject NewObject ()
+    {
+      return NewObject<OppositeBidirectionalBindableDomainObject> ().With ();
+    }
+
     [DBBidirectionalRelation ("RequiredBidirectionalRelatedObjectProperty", ContainsForeignKey = true)]
     public abstract BindableDomainObjectWithProperties OppositeRequiredRelatedObject { get; set; }
     [DBBidirectionalRelation ("NonRequiredBidirectionalRelatedObjectProperty", ContainsForeignKey = true)]
