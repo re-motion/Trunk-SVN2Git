@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 {
@@ -84,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "This service only supports queries for DomainObject types.\r\nParameter name: type")]
     public void GetAllObjects_ThrowsOnNonDomainObjects ()
     {
-      _service.GetAllObjects (typeof (object));
+      _service.GetAllObjects (ClientTransaction.Current, typeof (object));
     }
 
     [Test]
@@ -93,14 +94,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
         + "BindableDomainObjectAttribute.\r\nParameter name: type")]
     public void GetAllObjects_ThrowsOnNonBindableObjects ()
     {
-      _service.GetAllObjects (typeof (Order));
+      _service.GetAllObjects (ClientTransaction.Current, typeof (Order));
     }
 
     [Test]
     public void GetAllObjects_WorksOnBindableDomainObjects ()
     {
-      var result = _service.GetAllObjects (typeof (SampleBindableDomainObject));
+      var result = _service.GetAllObjects (ClientTransaction.Current, typeof (SampleBindableDomainObject));
       Assert.That (result, Is.EquivalentTo (new[] { _persistedSampleObject1, _persistedSampleObject2 }));
+    }
+
+    [Test]
+    public void GetAllObjects_DifferentTransaction ()
+    {
+      var transaction = ClientTransaction.CreateRootTransaction ();
+      var result = _service.GetAllObjects (transaction, typeof (SampleBindableDomainObject));
+      Assert.That (((DomainObject) result[0]).TransactionContext[transaction].CanBeUsedInTransaction, Is.True);
+      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction, Is.False);
     }
 
     [Test]
@@ -134,6 +144,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
           typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObjects");
       var result = _service.Search (null, property, null);
       Assert.That (result, Is.EquivalentTo (new[] { _persistedSampleObject1, _persistedSampleObject2 }));
+    }
+
+    [Test]
+    public void Search_UsesCurrentTransaction_WithNullObject ()
+    {
+      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
+          typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
+      var result = _service.Search (null, property, null);
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (((DomainObject) result[0]).BindingTransaction, Is.Null);
+      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.True);
+    }
+
+    [Test]
+    public void Search_UsesCurrentTransaction_WithNonDomainObject ()
+    {
+      var property = (IBusinessObjectReferenceProperty) BindableObjectProvider.GetBindableObjectClass (
+          typeof (BindableNonDomainObjectReferencingDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
+      var result = _service.Search (new BindableNonDomainObjectReferencingDomainObject(), property, null);
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (((DomainObject) result[0]).BindingTransaction, Is.Null);
+      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.True);
+    }
+
+    [Test]
+    public void Search_UsesCurrentTransaction_WithUnboundObject ()
+    {
+      var referencingObject = OppositeBidirectionalBindableDomainObject.NewObject();
+
+      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
+          typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
+      var result = _service.Search (referencingObject, property, null);
+
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (((DomainObject) result[0]).BindingTransaction, Is.Null);
+      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.True);
+    }
+
+    [Test]
+    public void Search_UsesBindingTransaction_WithBoundObject ()
+    {
+      OppositeBidirectionalBindableDomainObject referencingObject;
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      using (bindingTransaction.EnterNonDiscardingScope ())
+      {
+        referencingObject = OppositeBidirectionalBindableDomainObject.NewObject();
+      }
+
+      var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
+          typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
+      var result = _service.Search (referencingObject, property, null);
+      Assert.That (result.Length, Is.EqualTo (2));
+      Assert.That (((DomainObject) result[0]).BindingTransaction, Is.SameAs (bindingTransaction));
+      Assert.That (((DomainObject) result[1]).BindingTransaction, Is.SameAs (bindingTransaction));
+      Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.False);
+      Assert.That (((DomainObject) result[1]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.False);
+      Assert.That (((DomainObject) result[0]).TransactionContext[bindingTransaction].CanBeUsedInTransaction, Is.True);
+      Assert.That (((DomainObject) result[1]).TransactionContext[bindingTransaction].CanBeUsedInTransaction, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread or " 
+        + "the referencing object.")]
+    public void Search_NoCurrentTransaction ()
+    {
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        var property = (IBusinessObjectReferenceProperty) BindableDomainObjectProvider.GetBindableObjectClass (
+                                                              typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition (
+                                                              "OppositeSampleObject");
+        _service.Search (null, property, null);
+      }
     }
   }
 }
