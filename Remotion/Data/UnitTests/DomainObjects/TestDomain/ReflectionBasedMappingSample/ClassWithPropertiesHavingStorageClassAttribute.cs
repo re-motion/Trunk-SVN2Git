@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappin
     public abstract int Transaction { get; set; }
 
     [StorageClassTransaction]
-    public abstract object TransactionWithObjectDataType { get; set; }
+    public abstract DateTime TransactionWithDateTimeDataType { get; set; }
 
     [StorageClassNone]
     public object None 

@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public abstract int Int32TransactionProperty { get; set; }
 
     [StorageClassTransaction]
-    public abstract object ObjectTransactionProperty { get; set; }
+    public abstract DateTime DateTimeTransactionProperty { get; set; }
 
     [StorageClassTransaction]
     [DBBidirectionalRelation ("ComputerTransactionProperty", ContainsForeignKey = true)]

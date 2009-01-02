@@ -39,6 +39,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _classDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", c_testDomainProviderID, typeof (Order), false);
     }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The property 'test' (declared on class 'Order') is invalid because its "
+        + "values cannot be copied. Only value types, strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's "
+        + "type is 'System.Collections.Generic.List`1[[System.Object, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]'.")]
+    public void PropertyValue_WithReferenceType_NotAllowed ()
+    {
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (List<object>), null);
+      new PropertyValue (propertyDefinition, null);
+    }
+
+    [Test]
+    public void PropertyValue_WithValueType_Allowed ()
+    {
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (DateTime), null);
+      var propertyValue = new PropertyValue (propertyDefinition, DateTime.Now);
+      Assert.That (propertyValue.PropertyType, Is.EqualTo (typeof (DateTime)));
+    }
+
+    [Test]
+    public void PropertyValue_WithString_Allowed ()
+    {
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (string), null);
+      var propertyValue = new PropertyValue (propertyDefinition, null);
+      Assert.That (propertyValue.PropertyType, Is.EqualTo (typeof (string)));
+    }
+
+    [Test]
+    public void PropertyValue_WithType_Allowed ()
+    {
+      PropertyDefinition propertyDefinition = CreatePropertyDefinition ("test", typeof (Type), null);
+      var propertyValue = new PropertyValue (propertyDefinition, null);
+      Assert.That (propertyValue.PropertyType, Is.EqualTo (typeof (Type)));
+    }
     
     [Test]
     public void TestEquals ()
@@ -790,6 +824,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       PropertyDefinition definition = CreatePropertyDefinition ("testProperty2", typeof (int), null);
       PropertyValue propertyValue = new PropertyValue (definition, 0);
       propertyValue.RestoreData (new object[] { false, 1, 1, "foo" });
+    }
+
+    [Test]
+    [Ignore ("TODO 954: Fix this bug! https://dev.rubicon-it.com/jira/browse/COMMONS-954")]
+    public void BinaryDataBug ()
+    {
+      PropertyDefinition definition = CreatePropertyDefinition ("testProperty2", typeof (byte[]), null);
+      var propertyValue = new PropertyValue (definition, new byte[] {1, 2, 3});
+      
+      ((byte[]) propertyValue.Value)[0] = 7;
+      Assert.That (propertyValue.HasChanged, Is.True);
+      Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (7));
+      Assert.That (((byte[]) propertyValue.OriginalValue)[0], Is.EqualTo (1));
+
+      PrivateInvoke.InvokeNonPublicMethod (propertyValue, "Rollback");
+      Assert.That (propertyValue.HasChanged, Is.False);
+      Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (1));
+
+      ((byte[]) propertyValue.Value)[0] = 7;
+      Assert.That (propertyValue.HasChanged, Is.True);
+      Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (7));
+
+      PrivateInvoke.InvokeNonPublicMethod (propertyValue, "Commit");
+      Assert.That (propertyValue.HasChanged, Is.False);
+      Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (7));
     }
     
     private PropertyValue CreateIntPropertyValue (string name, int intValue)

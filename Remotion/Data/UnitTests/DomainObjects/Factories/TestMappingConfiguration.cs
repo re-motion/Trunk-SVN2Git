@@ -608,7 +608,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
       computer.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (computer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Int32TransactionProperty", null, typeof (int), null, null, StorageClass.Transaction));
       computer.MyPropertyDefinitions.Add (
-          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (computer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.ObjectTransactionProperty", null, typeof (object), true, null, StorageClass.Transaction));
+          ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (computer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.DateTimeTransactionProperty", null, typeof (DateTime), null, null, StorageClass.Transaction));
       computer.MyPropertyDefinitions.Add (
           ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (computer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.EmployeeTransactionProperty", null, typeof (ObjectID), true, null, StorageClass.Transaction));
 

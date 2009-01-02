@@ -35,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     <Property Name=""Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Int32TransactionProperty"">
       <int>0</int>
     </Property>
-    <Property Name=""Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.ObjectTransactionProperty"">
-      <null />
+    <Property Name=""Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.DateTimeTransactionProperty"">
+      <dateTime>0001-01-01T00:00:00</dateTime>
     </Property>
     <Property Name=""Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.EmployeeTransactionProperty"">
       <null />
@@ -63,8 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     <Property Name=""Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Int32TransactionProperty"">
       <int>0</int>
     </Property>
-    <Property Name=""Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.ObjectTransactionProperty"">
-      <null />
+    <Property Name=""Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.DateTimeTransactionProperty"">
+      <dateTime>0001-01-01T00:00:00</dateTime>
     </Property>
     <Property Name=""Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.EmployeeTransactionProperty"">
       <null />

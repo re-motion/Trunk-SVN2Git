@@ -71,9 +71,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
     }
 
-    internal PropertyValue (PropertyDefinition definition, object value, object originalValue)
+    private PropertyValue (PropertyDefinition definition, object value, object originalValue)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
+
+      if (!definition.PropertyType.IsValueType
+          && definition.PropertyType != typeof (string)
+          && definition.PropertyType != typeof (byte[]) 
+          && definition.PropertyType != typeof (Type)
+          && definition.PropertyType != typeof (ObjectID))
+      {
+        var message = string.Format ("The property '{0}' (declared on class '{1}') is invalid because its values cannot be copied. Only value types, "
+            + "strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's type is '{2}'.",
+            definition.PropertyName, definition.ClassDefinition.ID, definition.PropertyType.FullName);
+        throw new NotSupportedException (message);
+      }
+
       CheckValue (value, definition);
       CheckValue (originalValue, definition);
 

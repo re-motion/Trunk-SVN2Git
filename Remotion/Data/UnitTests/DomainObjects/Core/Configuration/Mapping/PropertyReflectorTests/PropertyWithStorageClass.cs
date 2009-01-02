@@ -100,10 +100,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.Prope
     [Test]
     public void GetMetadata_WithStorageClassTransaction_NonPersistableDataType ()
     {
-      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("TransactionWithObjectDataType");
+      PropertyReflector propertyReflector = CreatePropertyReflector<ClassWithPropertiesHavingStorageClassAttribute> ("TransactionWithDateTimeDataType");
       PropertyDefinition propertyDefinition = propertyReflector.GetMetadata ();
       Assert.That (propertyDefinition.StorageClass, Is.EqualTo (StorageClass.Transaction));
-      Assert.That (propertyDefinition.PropertyType, Is.EqualTo (typeof (object)));
+      Assert.That (propertyDefinition.PropertyType, Is.EqualTo (typeof (DateTime)));
     }
 
     [Test]
