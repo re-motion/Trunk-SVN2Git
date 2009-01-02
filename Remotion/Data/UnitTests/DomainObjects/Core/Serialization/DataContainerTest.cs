@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
   public class DataContainerTest : ClientTransactionBaseTest
   {
     [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Type 'Remotion.Data.DomainObjects.DataContainer' in Assembly "
+    [ExpectedException (typeof (SerializationException), ExpectedMessage = "Type 'Remotion.Data.DomainObjects.DataManagement.DataContainer' in Assembly "
         + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
     public void DataContainerIsNotSerializable ()
     {

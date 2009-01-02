@@ -506,7 +506,7 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// This method is invoked after the loading process of the object is completed.
     /// </summary>
-    /// <param name="loadMode">Specifies whether the whole domain object or only the <see cref="Remotion.Data.DomainObjects.DataContainer"/> has been
+    /// <param name="loadMode">Specifies whether the whole domain object or only the <see cref="Remotion.Data.DomainObjects.DataManagement.DataContainer"/> has been
     /// newly loaded.</param>
     /// <remarks>
     /// <para>
