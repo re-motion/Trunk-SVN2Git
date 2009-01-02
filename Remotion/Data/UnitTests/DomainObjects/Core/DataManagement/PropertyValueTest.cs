@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping;
@@ -313,11 +314,128 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void EnumCheck_ValidNonFlagsEnum ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition,
+          "test",
+          "test",
+          typeof (DayOfWeek));
+
+      var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
+      propertyValue.Value = DayOfWeek.Monday;
+      Assert.That (propertyValue.Value, Is.EqualTo (DayOfWeek.Monday));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '17420' for property 'test' is not defined by enum type "
+        + "'System.DayOfWeek'.")]
+    public void EnumCheck_InvalidNonFlagsEnum ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition, 
+          "test", 
+          "test", 
+          typeof (DayOfWeek));
+
+      PropertyValue propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
+      propertyValue.Value = (DayOfWeek) 17420;
+    }
+
+    [Test]
+    public void EnumCheck_ValidFlagsEnum ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition,
+          "test",
+          "test",
+          typeof (AttributeTargets));
+
+      PropertyValue propertyValue = new PropertyValue (definition, AttributeTargets.Method);
+      propertyValue.Value = AttributeTargets.Field | AttributeTargets.Method;
+      Assert.That (propertyValue.Value, Is.EqualTo (AttributeTargets.Field | AttributeTargets.Method));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '-1' for property 'test' is not defined by enum type "
+        + "'System.AttributeTargets'.")]
+    public void EnumCheck_InvalidFlagsEnum ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition,
+          "test",
+          "test",
+          typeof (AttributeTargets));
+
+      var propertyValue = new PropertyValue (definition, AttributeTargets.Method);
+      propertyValue.Value = (AttributeTargets) (-1);
+    }
+
+    [Test]
+    public void EnumCheck_ValidNullEnum ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition,
+          "test",
+          "test",
+          typeof (DayOfWeek?));
+
+      var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
+      propertyValue.Value = DayOfWeek.Monday;
+      Assert.That (propertyValue.Value, Is.EqualTo (DayOfWeek.Monday));
+      propertyValue.Value = null;
+      Assert.That (propertyValue.Value, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '17420' for property 'test' is not defined by enum type "
+        + "'System.DayOfWeek'.")]
+    public void EnumCheck_InvalidNullEnum ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition,
+          "test",
+          "test",
+          typeof (DayOfWeek?));
+
+      var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
+      propertyValue.Value = (DayOfWeek) 17420;
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
+    public void EnumCheck_InvalidNonNullEnum_Null ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition,
+          "test",
+          "test",
+          typeof (DayOfWeek));
+
+      var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
+      propertyValue.Value = null;
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '17420' for property 'test' is not defined by enum type "
+        + "'System.DayOfWeek'.")]
+    public void EnumCheckInConstructor ()
+    {
+      PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (
+          _classDefinition,
+          "test",
+          "test",
+          typeof (DayOfWeek));
+
+      new PropertyValue (definition, (DayOfWeek) 17420);
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The relation property 'test' cannot be set directly.")]
     public void SetRelationPropertyDirectly ()
     {
       PropertyDefinition definition = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "test", "test", typeof (ObjectID), true);
-      PropertyValue propertyValue = new PropertyValue (definition, null);
+      var propertyValue = new PropertyValue (definition, null);
 
       propertyValue.Value = DomainObjectIDs.Customer1;
     }

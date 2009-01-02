@@ -401,6 +401,9 @@ public class PropertyValue
 
       if (value.GetType () == typeof (byte[]))
         CheckByteArrayValue ((byte[]) value, definition);
+
+      if (value.GetType ().IsEnum)
+        CheckEnumValue (value, definition);
     }
     else
     {
@@ -432,6 +435,24 @@ public class PropertyValue
           definition.PropertyName, definition.MaxLength.Value);
 
       throw new ValueTooLongException (message, definition.PropertyName, definition.MaxLength.Value);
+    }
+  }
+
+  private void CheckEnumValue (object value, PropertyDefinition definition)
+  {
+    if (value != null)
+    {
+      Type underlyingType = definition.IsNullable ? NullableTypeUtility.GetBasicType (definition.PropertyType) : definition.PropertyType;
+      if (!EnumUtility.IsValidEnumValue (underlyingType, value))
+      {
+        string message = string.Format (
+            "Value '{0}' for property '{1}' is not defined by enum type '{2}'.",
+            value,
+            definition.PropertyName,
+            underlyingType);
+
+        throw new InvalidEnumValueException (message, definition.PropertyName, underlyingType, value);
+      }
     }
   }
 

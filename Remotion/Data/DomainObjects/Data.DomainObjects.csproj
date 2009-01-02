@@ -140,6 +140,7 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
+    <Compile Include="InvalidEnumValueException.cs" />
     <Compile Include="DataManagement\CollectionEndPointModification.cs" />
     <Compile Include="DataManagement\RelationEndPointModificationCollection.cs" />
     <Compile Include="DataManagement\NullEndPointModification.cs" />

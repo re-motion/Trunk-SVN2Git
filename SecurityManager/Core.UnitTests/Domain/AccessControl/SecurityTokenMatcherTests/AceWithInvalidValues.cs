@@ -93,25 +93,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The value '1000' is not a valid value for 'GroupHierarchyCondition'.")]
-    public void GroupHierarchyCondition_InvalidValue ()
-    {
-      User user = CreateUser (_companyHelper.CompanyTenant, null);
-      Group owningGroup = _companyHelper.AustrianProjectsDepartment;
-      TestHelper.CreateRole (user, owningGroup, _companyHelper.HeadPosition);
-
-      SecurityToken token = TestHelper.CreateTokenWithOwningGroup (user, owningGroup);
-
-      AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup ();
-      ace.GroupHierarchyCondition = (GroupHierarchyCondition)1000;
-
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
-
-      matcher.MatchesToken (token);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
         "The value 'Undefined' is not a valid value for matching the 'TenantHierarchyCondition'.")]
     public void TenantHierarchyCondition_UndefinedValue ()
     {
@@ -140,69 +121,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
 
       AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant ();
       ace.TenantHierarchyCondition = TenantHierarchyCondition.Parent;
-
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
-
-      matcher.MatchesToken (token);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The value '1000' is not a valid value for 'TenantHierarchyCondition'.")]
-    public void TenantHierarchyCondition_InvalidValue ()
-    {
-      User user = CreateUser (_companyHelper.CompanyTenant, null);
-      Tenant owningTenant = _companyHelper.CompanyTenant;
-
-      SecurityToken token = TestHelper.CreateTokenWithOwningTenant (user, owningTenant);
-
-      AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant ();
-      ace.TenantHierarchyCondition = (TenantHierarchyCondition) 1000;
-
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
-
-      matcher.MatchesToken (token);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The value '1000' is not a valid value for 'TenantCondition'.")]
-    public void TenantCondition_InvalidValue ()
-    {
-      SecurityToken token = TestHelper.CreateEmptyToken ();
-
-      AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant();
-      ace.TenantCondition = (TenantCondition) 1000;
-
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
-
-      matcher.MatchesToken (token);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The value '1000' is not a valid value for 'GroupCondition'.")]
-    public void GroupCondition_InvalidValue ()
-    {
-      SecurityToken token = TestHelper.CreateEmptyToken();
-
-      AccessControlEntry ace = TestHelper.CreateAceWithOwningGroup ();
-      ace.GroupCondition = (GroupCondition) 1000;
-
-      SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
-
-      matcher.MatchesToken (token);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The value '1000' is not a valid value for 'UserCondition'.")]
-    public void UserCondition_InvalidValue ()
-    {
-      SecurityToken token = TestHelper.CreateEmptyToken ();
-
-      AccessControlEntry ace = TestHelper.CreateAceWithOwningUser ();
-      ace.UserCondition = (UserCondition) 1000;
 
       SecurityTokenMatcher matcher = new SecurityTokenMatcher (ace);
 

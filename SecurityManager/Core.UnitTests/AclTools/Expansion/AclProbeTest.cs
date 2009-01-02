@@ -86,18 +86,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "ace.GroupSelection=2147483647 is currently not supported by this method. Please extend method to handle the new GroupSelection state.")]
-    public void CreateAclProbe_UnsupportedGroupSelection_Test ()
-    {
-      AccessControlEntry ace = TestHelper.CreateAceWithoutGroupCondition ();
-      FleshOutAccessControlEntryForTest (ace);
-      ace.GroupCondition = (GroupCondition) int.MaxValue;
-      AclProbe aclProbe = AclProbe.CreateAclProbe (User, Role, ace);
-    }
-
-
-    [Test]
     public void CreateAclProbe_SpecificTenant_Test ()
     {
       AccessControlEntry ace = TestHelper.CreateAceWithSpecificTenant (Tenant);
@@ -124,18 +112,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       };
       Assert.That (aclProbe.AccessConditions, Is.EqualTo (accessConditionsExpected));
     }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "ace.TenantSelection=-1 is currently not supported by this method. Please extend method to handle the new TenantSelection state.")]
-    public void CreateAclProbe_UnsupportedTenantSelection_Test ()
-    {
-      AccessControlEntry ace = TestHelper.CreateAceWithOwningTenant();
-      FleshOutAccessControlEntryForTest (ace);
-      ace.TenantCondition = (TenantCondition) (object) -1;
-      AclProbe.CreateAclProbe (User, Role, ace); 
-    }
-
 
     [Test]
     public void CreateAclProbe_SpecificAbstractRole_Test ()
