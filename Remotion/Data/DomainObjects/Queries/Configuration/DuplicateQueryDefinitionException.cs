@@ -17,7 +17,7 @@ using System;
 
 namespace Remotion.Data.DomainObjects.Queries.Configuration
 {
-  public class DuplicateQueryDefinitionException : Exception
+  public class DuplicateQueryDefinitionException : DomainObjectException
   {
     private readonly QueryDefinition _queryDefinition;
     private readonly QueryDefinition _duplicate;

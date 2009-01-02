@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
   /// This exception is thrown when the property interception mechanism cannot be applied to a specific <see cref="DomainObject"/> type
   /// because of problems with that type's declaration.
   /// </summary>
-  public class NonInterceptableTypeException : Exception
+  public class NonInterceptableTypeException : DomainObjectException
   {
     private readonly Type _type;
 

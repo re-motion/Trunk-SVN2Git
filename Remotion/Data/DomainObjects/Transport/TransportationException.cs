@@ -23,15 +23,8 @@ namespace Remotion.Data.DomainObjects.Transport
   /// the data or objects either don't match the <see cref="IImportStrategy"/> or <see cref="IExportStrategy"/> being used, or the data has become
   /// corrupted.
   /// </summary>
-  public class TransportationException : Exception
+  public class TransportationException : DomainObjectException
   {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TransportationException"/> class.
-    /// </summary>
-    public TransportationException ()
-    {
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="TransportationException"/> class.
     /// </summary>

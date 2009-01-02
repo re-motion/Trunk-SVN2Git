@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Thrown when a client transaction's state is tried to be modified and the ClientTransaction's internal state is set to read-only,
   /// usually because there is an active nested transaction.
   /// </summary>
-  public class ClientTransactionReadOnlyException : Exception
+  public class ClientTransactionReadOnlyException : DomainObjectException
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="ClientTransactionReadOnlyException"/> class, specifying an exception message.

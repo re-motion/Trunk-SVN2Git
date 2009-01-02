@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// <summary>
   /// Thrown when the process of loading multiple objects at the same time fails.
   /// </summary>
-  public class BulkLoadException : Exception
+  public class BulkLoadException : DomainObjectException
   {
     /// <summary>
     /// The exceptions that occurred while the objects were loaded.
