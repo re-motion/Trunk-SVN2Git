@@ -107,6 +107,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     }
 
     [Test]
+    public void SearchAvailableObjectsWithNullSearchArguments_BindingTransaction ()
+    {
+      var transaction = ClientTransaction.CreateBindingTransaction ();
+      IBusinessObject boundOrderItem;
+      using (transaction.EnterNonDiscardingScope ())
+      {
+        boundOrderItem = (IBusinessObject) OrderItem.NewObject ();
+      }
+
+      IBusinessObject[] businessObjects = _property.SearchAvailableObjects (boundOrderItem, null);
+
+      Assert.IsNotNull (businessObjects);
+      Assert.That (((DomainObject) businessObjects[0]).BindingTransaction, Is.SameAs (transaction));
+    }
+
+    [Test]
     public void SearchAvailableObjectsWithNullQuery ()
     {
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments (null));
