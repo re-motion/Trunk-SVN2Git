@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Data;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -68,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     /// <remarks>
-    /// This method cannot be used for binary (BLOB) <paramref name="parameterValues"/>. Use the overload with a <see cref="Remotion.Data.DomainObjects.PropertyValue"/> instead.
+    /// This method cannot be used for binary (BLOB) <paramref name="parameterValues"/>. Use the overload with a <see cref="PropertyValue"/> instead.
     /// </remarks>
     public IDataParameter AddCommandParameter (IDbCommand command, string parameterName, object parameterValue)
     {

@@ -16,6 +16,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects

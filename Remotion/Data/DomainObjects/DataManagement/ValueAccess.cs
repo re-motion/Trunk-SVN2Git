@@ -15,7 +15,7 @@
 // 
 using System;
 
-namespace Remotion.Data.DomainObjects
+namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
   /// An value indicating whether the original or current value of a <see cref="PropertyValue"/> is being accessed.

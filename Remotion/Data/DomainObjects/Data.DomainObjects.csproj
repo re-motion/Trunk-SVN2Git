@@ -319,7 +319,7 @@
     <Compile Include="ConfigurationLoader\XmlBasedConfigurationLoader\QueryConfigurationLoader.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataContainer.cs">
+    <Compile Include="DataManagement\DataContainer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataManagement\AnonymousEndPoint.cs">
@@ -535,10 +535,10 @@
     <Compile Include="Persistence\ValueConverterBase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PropertyValue.cs">
+    <Compile Include="DataManagement\PropertyValue.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PropertyValueCollection.cs">
+    <Compile Include="DataManagement\PropertyValueCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Queries\Configuration\QueryConfiguration.cs">
@@ -594,7 +594,7 @@
     <Compile Include="Transport\TransportItem.cs" />
     <Compile Include="Transport\XmlExportStrategy.cs" />
     <Compile Include="Transport\XmlImportStrategy.cs" />
-    <Compile Include="ValueAccess.cs" />
+    <Compile Include="DataManagement\ValueAccess.cs" />
     <Compile Include="ValueTooLongException.cs">
       <SubType>Code</SubType>
     </Compile>

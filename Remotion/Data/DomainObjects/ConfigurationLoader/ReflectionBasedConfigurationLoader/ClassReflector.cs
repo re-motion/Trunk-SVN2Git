@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Reflection;

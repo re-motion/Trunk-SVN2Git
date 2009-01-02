@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -103,7 +104,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets the <see cref="Remotion.Data.DomainObjects.PropertyValue"/> object that is being changed.
+    /// Gets the <see cref="DataManagement.PropertyValue"/> object that is being changed.
     /// </summary>
     public PropertyValue PropertyValue
     {

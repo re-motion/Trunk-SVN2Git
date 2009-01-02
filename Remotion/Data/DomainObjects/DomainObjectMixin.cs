@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Mixins;
 
@@ -124,7 +125,7 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Called when the mixin's target domain object has been loaded.
     /// </summary>
-    /// <param name="loadMode">Specifies whether the whole domain object or only the <see cref="Remotion.Data.DomainObjects.DataContainer"/> has been
+    /// <param name="loadMode">Specifies whether the whole domain object or only the <see cref="DataContainer"/> has been
     /// newly loaded.</param>
     protected virtual void OnDomainObjectLoaded (LoadMode loadMode)
     {

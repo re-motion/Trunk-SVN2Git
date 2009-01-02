@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.Infrastructure

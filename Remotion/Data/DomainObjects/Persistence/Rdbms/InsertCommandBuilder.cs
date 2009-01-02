@@ -16,6 +16,7 @@
 using System;
 using System.Data;
 using System.Text;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 

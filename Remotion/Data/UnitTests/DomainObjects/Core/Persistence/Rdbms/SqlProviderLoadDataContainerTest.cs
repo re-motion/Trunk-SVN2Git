@@ -17,6 +17,7 @@ using System;
 using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms

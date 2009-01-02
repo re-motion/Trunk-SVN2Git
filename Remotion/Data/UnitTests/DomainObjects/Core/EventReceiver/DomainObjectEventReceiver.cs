@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 {

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;

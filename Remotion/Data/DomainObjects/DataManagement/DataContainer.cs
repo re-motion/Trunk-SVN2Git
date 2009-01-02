@@ -14,18 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Remotion.Collections;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects
+namespace Remotion.Data.DomainObjects.DataManagement
 {
   /// <summary>
   /// Represents a container for the persisted properties of a DomainObject.

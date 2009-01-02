@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Data;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms

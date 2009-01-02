@@ -17,7 +17,6 @@
 // 
 using System;
 using System.Data;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries.Configuration;

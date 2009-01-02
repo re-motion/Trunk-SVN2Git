@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
