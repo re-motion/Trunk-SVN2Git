@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.ObjectBinding;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
@@ -21,5 +22,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   public class BindableNonDomainObjectReferencingDomainObject : BindableObjectBase
   {
     public SampleBindableDomainObject OppositeSampleObject { get; set; }
+    public Order Order { get; set; }
   }
 }

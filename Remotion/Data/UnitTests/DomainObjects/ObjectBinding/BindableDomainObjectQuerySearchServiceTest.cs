@@ -19,17 +19,18 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 {
   [TestFixture]
-  [Ignore ("TODO 914 FS")]
   public class BindableDomainObjectQuerySearchServiceTest : ObjectBindingBaseTest
   {
+    private BindableDomainObjectQuerySearchService _service;
+
     private IBusinessObject _orderItem;
     private IBusinessObjectReferenceProperty _property;
 
@@ -38,12 +39,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public override void SetUp ()
     {
       base.SetUp ();
-      BusinessObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (typeof (ISearchAvailableObjectsService), new BindableDomainObjectSearchService ());
-
       _mixinConfiguration = MixinConfiguration.BuildFromActive ()
           .ForClass<Order> ().Clear ().AddMixin<BindableDomainObjectMixin> ()
           .ForClass<OrderItem> ().Clear ().AddMixin<BindableDomainObjectMixin> ()
           .EnterScope();
+
+      _service = new BindableDomainObjectQuerySearchService ();
 
       _orderItem = (IBusinessObject) OrderItem.NewObject();
       _property = (IBusinessObjectReferenceProperty) _orderItem.BusinessObjectClass.GetPropertyDefinition ("Order");
@@ -59,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void SearchViaReferencePropertyWithIdentity ()
     {
       Assert.IsTrue (_property.SupportsSearchAvailableObjects);
-      IBusinessObjectWithIdentity[] results = (IBusinessObjectWithIdentity[]) _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments("QueryWithSpecificCollectionType"));
+      IBusinessObject[] results = _service.Search (_orderItem, _property, new DefaultSearchArguments("QueryWithSpecificCollectionType"));
       Assert.That (results, Is.EqualTo (ClientTransactionMock.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType"))));
     }
 
@@ -67,31 +68,96 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void SearchViaReferencePropertyWithoutIdentity ()
     {
       Assert.IsTrue (_property.SupportsSearchAvailableObjects);
-      IBusinessObject[] results = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
+      IBusinessObject[] results = _service.Search (_orderItem, _property, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
       Assert.That (results, Is.EqualTo (ClientTransactionMock.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType"))));
     }
 
     [Test]
-    public void SearchAvailableObjectsUsesCurrentTransaction ()
+    public void SearchAvailableObjectsUsesCurrentTransaction_NullObject ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        IBusinessObject[] results = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
+        IBusinessObject[] results = _service.Search (null, _property, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
 
         Assert.IsNotNull (results);
         Assert.IsTrue (results.Length > 0);
 
-        Order order = (Order) results[0];
+        var order = (Order) results[0];
         Assert.IsFalse (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
-        Assert.IsTrue (order.CanBeUsedInTransaction);
+        Assert.IsTrue (order.TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction);
+      }
+    }
+
+    [Test]
+    public void SearchAvailableObjectsUsesCurrentTransaction_NonDomainObject ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        var nonDomainObject = new BindableNonDomainObjectReferencingDomainObject();
+        var property = (IBusinessObjectReferenceProperty) nonDomainObject.BusinessObjectClass.GetPropertyDefinition ("Order");
+        IBusinessObject[] results = _service.Search (nonDomainObject, property, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
+
+        Assert.IsNotNull (results);
+        Assert.IsTrue (results.Length > 0);
+
+        var order = (Order) results[0];
+        Assert.IsFalse (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
+        Assert.IsTrue (order.TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction);
+      }
+    }
+
+    [Test]
+    public void SearchAvailableObjectsUsesCurrentTransaction_UnboundObject ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        IBusinessObject[] results = _service.Search (_orderItem, _property, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
+
+        Assert.IsNotNull (results);
+        Assert.IsTrue (results.Length > 0);
+
+        var order = (Order) results[0];
+        Assert.IsFalse (order.TransactionContext[ClientTransactionMock].CanBeUsedInTransaction);
+        Assert.IsTrue (order.TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction);
+      }
+    }
+
+    [Test]
+    public void SearchAvailableObjectsUsesBindingTransaction_BoundObject ()
+    {
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+
+      IBusinessObject boundOrderItem;
+      using (bindingTransaction.EnterNonDiscardingScope ())
+      {
+        boundOrderItem = (IBusinessObject) OrderItem.NewObject();
+      }
+
+      IBusinessObject[] results = _service.Search (boundOrderItem, _property, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
+
+      Assert.IsNotNull (results);
+      Assert.IsTrue (results.Length > 0);
+
+      var order = (Order) results[0];
+      Assert.That (order.TransactionContext[ClientTransaction.Current].CanBeUsedInTransaction, Is.False);
+      Assert.That (order.TransactionContext[bindingTransaction].CanBeUsedInTransaction, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread or "
+         + "the referencing object.")]
+    public void SearchAvailableObjects_NoTransaction ()
+    {
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        _service.Search (null, _property, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
       }
     }
 
     [Test]
     public void SearchAvailableObjectsWithDifferentObject ()
     {
-      IBusinessObject[] businessObjects =
-          _property.SearchAvailableObjects ((IBusinessObject) Order.NewObject(), new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
+      IBusinessObject[] businessObjects = _service.Search (_orderItem, _property, new DefaultSearchArguments("QueryWithSpecificCollectionType"));
 
       Assert.IsNotNull (businessObjects);
       Assert.IsTrue (businessObjects.Length > 0);
@@ -100,32 +166,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void SearchAvailableObjectsWithNullSearchArguments ()
     {
-      IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, null);
+      IBusinessObject[] businessObjects = _service.Search (_orderItem, _property, null);
 
       Assert.IsNotNull (businessObjects);
-      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order1)));
-      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order2)));
+      Assert.That (businessObjects, Is.Empty);
     }
 
     [Test]
     public void SearchAvailableObjectsWithNullQuery ()
     {
-      IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments (null));
+      IBusinessObject[] businessObjects = _service.Search (_orderItem, _property, new DefaultSearchArguments (null));
 
       Assert.IsNotNull (businessObjects);
-      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order1)));
-      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order2)));
+      Assert.That (businessObjects, Is.Empty);
     }
 
     [Test]
     public void SearchAvailableObjectsWithEmptyQuery ()
     {
-      IBusinessObject[] businessObjects = _property.SearchAvailableObjects (_orderItem, new DefaultSearchArguments (""));
+      IBusinessObject[] businessObjects = _service.Search (_orderItem, _property, new DefaultSearchArguments (""));
 
       Assert.IsNotNull (businessObjects);
-      Assert.IsNotNull (businessObjects);
-      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order1)));
-      Assert.That (businessObjects, List.Contains (Order.GetObject (DomainObjectIDs.Order2)));
+      Assert.That (businessObjects, Is.Empty);
     }
   }
 }

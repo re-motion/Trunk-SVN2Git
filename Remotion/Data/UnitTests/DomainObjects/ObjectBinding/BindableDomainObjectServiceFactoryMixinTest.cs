@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       Assert.That (
           _serviceFactory.CreateService (_bindableDomainObjectProvider, typeof (ISearchAvailableObjectsService)),
-          Is.InstanceOfType (typeof (BindableDomainObjectSearchService)));
+          Is.InstanceOfType (typeof (BindableDomainObjectCompoundSearchService)));
     }
 
     [Test]

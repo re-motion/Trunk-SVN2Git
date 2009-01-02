@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   ///   </item>
   ///   <item>
   ///     <term><see cref="ISearchAvailableObjectsService"/></term>
-  ///     <description><see cref="BindableDomainObjectSearchService"/></description>
+  ///     <description><see cref="BindableDomainObjectCompoundSearchService"/></description>
   ///   </item>
   /// </list>
   /// </remarks>
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
           return new BindableDomainObjectGetObjectService();
 
         if (serviceType == typeof (ISearchAvailableObjectsService))
-          return new BindableDomainObjectSearchService();
+          return new BindableDomainObjectCompoundSearchService();
       }
 
       return Base.CreateService (provider, serviceType);

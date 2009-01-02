@@ -196,8 +196,9 @@
     <Compile Include="ObjectBinding\BindableDomainObjectPropertyReflector.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProvider.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectProviderAttribute.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectQuerySearchService.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectSearchAllService.cs" />
-    <Compile Include="ObjectBinding\BindableDomainObjectSearchService.cs" />
+    <Compile Include="ObjectBinding\BindableDomainObjectCompoundSearchService.cs" />
     <Compile Include="ObjectBinding\BindableDomainObjectServiceFactoryMixin.cs" />
     <Compile Include="ObjectBinding\IBindableDomainObjectImplementation.cs" />
     <Compile Include="Persistence\BulkLoadException.cs" />

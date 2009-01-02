@@ -14,17 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
-  public class BindableDomainObjectSearchService : ISearchAvailableObjectsService
+  public class BindableDomainObjectCompoundSearchService : ISearchAvailableObjectsService
   {
     private readonly BindableDomainObjectSearchAllService _searchAllService = new BindableDomainObjectSearchAllService ();
+    private readonly BindableDomainObjectQuerySearchService _querySearchService = new BindableDomainObjectQuerySearchService ();
 
     public bool SupportsProperty (IBusinessObjectReferenceProperty property)
     {
@@ -36,20 +34,8 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       var defaultSearchArguments = searchArguments as DefaultSearchArguments;
       if (defaultSearchArguments == null || string.IsNullOrEmpty (defaultSearchArguments.SearchStatement))
         return _searchAllService.Search (referencingObject, property, searchArguments);
-
-      QueryDefinition definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions.GetMandatory (defaultSearchArguments.SearchStatement);
-      if (definition.QueryType != QueryType.Collection)
-        throw new ArgumentException (string.Format ("The query '{0}' is not a collection query.", defaultSearchArguments.SearchStatement));
-
-      ClientTransaction clientTransaction = ClientTransactionScope.CurrentTransaction;
-
-      DomainObjectCollection result = clientTransaction.QueryManager.GetCollection (QueryFactory.CreateQuery (definition));
-      var availableObjects = new IBusinessObjectWithIdentity[result.Count];
-
-      if (availableObjects.Length > 0)
-        result.CopyTo (availableObjects, 0);
-
-      return availableObjects;
+      else
+        return _querySearchService.Search (referencingObject, property, searchArguments);
     }
   }
 }
