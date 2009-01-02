@@ -101,55 +101,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     // methods and properties
 
     /// <summary>
-    /// Returns an array of objects representing the current state of this object. This state can later be restored via <see cref="RestoreData"/>.
-    /// </summary>
-    /// <returns>A representation of the current state of this object that can be restored at a later point of time.</returns>
-    /// <remarks>The data returned by this method can be used for efficient serialization of this object.</remarks>
-    public object[] GetData ()
-    {
-      if (_isDiscarded)
-        return new object[] { true };
-      else
-        return new object[] { _isDiscarded, _value, _originalValue, _hasBeenTouched };
-    }
-
-    /// <summary>
-    /// Restores this object to the state saved previously via <see cref="GetData"/>.
-    /// </summary>
-    /// <param name="data">The data objects returned by <see cref="GetData"/>.</param>
-    /// <remarks>This method can be used for efficient deserialization of this object. Note however that the owner of this
-    /// object is responsible for instantiating the object with the appropriate mapping references before filling it with data.</remarks>
-    public void RestoreData (object[] data)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("data", data);
-
-      switch (data.Length)
-      {
-        case 1:
-          if (ArgumentUtility.CheckType<bool> ("data[0]", data[0]) != true)
-            throw CreateInvalidDataException ("data[0]");
-          _isDiscarded = true;
-          break;
-        case 4:
-          if (ArgumentUtility.CheckType<bool> ("data[0]", data[0]) != false)
-            throw CreateInvalidDataException ("data[0]");
-
-          _isDiscarded = false;
-          _value = ArgumentUtility.CheckType ("data[1]", data[1], PropertyType);
-          _originalValue = ArgumentUtility.CheckType ("data[2]", data[2], PropertyType);
-          _hasBeenTouched = ArgumentUtility.CheckNotNullAndType<bool> ("data[3]", data[3]);
-          break;
-        default:
-          throw CreateInvalidDataException ("data");
-      }
-    }
-
-    private Exception CreateInvalidDataException (string argumentName)
-    {
-      return new ArgumentException ("Invalid data specified, expected an object array as returned by GetData.", argumentName);
-    }
-
-    /// <summary>
     /// Gets the <see cref="PropertyDefinition"/> of the <see cref="PropertyValue"/>.
     /// </summary>
     /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
