@@ -168,6 +168,7 @@
     <Compile Include="Mixins\Context\Serialization\SerializationInfoMixinContextDeserializer.cs" />
     <Compile Include="Mixins\Context\Serialization\SerializationInfoMixinContextSerializer.cs" />
     <Compile Include="Mixins\Definitions\Building\DependencySorting\DependentMixinGrouperAlgorithm.cs" />
+    <Compile Include="Reflection\AssemblyLoaderException.cs" />
     <Compile Include="Reflection\CodeGeneration\GeneratedMethodWrapperAttribute.cs" />
     <Compile Include="Mixins\CodeGeneration\ICodeGenerationModule.cs" />
     <Compile Include="Mixins\CodeGeneration\IConcreteTypeMetadataImporter.cs" />
