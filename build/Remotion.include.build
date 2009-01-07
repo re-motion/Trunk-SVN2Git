@@ -348,9 +348,19 @@
         <exclude name="*.zip" />
         <exclude name="*/bin/documentation/**/*" />
         <exclude name="${build.temp.basedir}" />
-       
+
+        <!-- Exclude Dms, SecurityManager, and AclExpander -->
+        
+        <!-- Assemblies and resources -->
         <exclude name="**/Remotion.SecurityManager*/**" />
+        <exclude name="**/Remotion.Dms*/**" />
+        <exclude name="**/Dms*/**" />
+        <exclude name="**/AclExpander*/**" />
+
+        <!-- Executables, DB scripts, and config files -->
         <exclude name="*/bin/**/SecurityManager*.*" />
+        <exclude name="*/bin/**/Dms*.*" />
+        <exclude name="*/bin/**/AclExpander*.*" />
       </fileset>
     </zip>
   </target>
@@ -402,6 +412,15 @@
         <exclude name="*.zip" />
         <exclude name="*/bin/documentation/**" />
         <exclude name="${build.temp.basedir}" />
+
+        <!-- Exclude Dms -->
+
+        <!-- Assemblies and resources -->
+        <exclude name="**/Remotion.Dms*/**" />
+        <exclude name="**/Dms*/**" />
+
+        <!-- Executables, DB scripts, and config files -->
+        <exclude name="*/bin/**/Dms*.*" />
       </fileset>
     </zip>
   </target>
