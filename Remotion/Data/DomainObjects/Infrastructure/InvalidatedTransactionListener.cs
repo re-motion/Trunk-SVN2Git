@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void ObjectInitializedFromDataContainer (ObjectID id, DomainObject instance)
+    public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       throw CreateException();
     }

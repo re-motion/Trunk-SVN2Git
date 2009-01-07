@@ -15,8 +15,10 @@
 // 
 using System;
 using System.Reflection;
+using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -26,6 +28,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
 using NUnit.Framework.SyntaxHelpers;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -931,5 +934,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (orderItem.Product, Is.EqualTo ("Test Toast"));
     }
 
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
+    public void Initialize_ThrowsForNewObject ()
+    {
+      var orderItem = OrderItem.NewObject ("Test Toast");
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
+    public void Initialize_ThrowsForLoadedObject ()
+    {
+      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The object cannot be initialized, it already has an ID.")]
+    public void Initialize_ThrowsForDeserializedObject ()
+    {
+      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var deserializedOrderItem = Serializer.SerializeAndDeserialize (orderItem);
+      deserializedOrderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+    }
+
+    [Test]
+    public void Initialize_WithEmptyHull_SetsID ()
+    {
+      var type = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (OrderItem));
+      var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+
+      Assert.That (orderItem.ID, Is.EqualTo (DomainObjectIDs.OrderItem1));
+    }
+
+    [Test]
+    public void Initialize_WithEmptyHull_EnlistsObject ()
+    {
+      var type = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (OrderItem));
+      var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+
+      Assert.That (ClientTransactionMock.GetObject (DomainObjectIDs.OrderItem1), Is.SameAs (orderItem));
+      Assert.That (orderItem.CanBeUsedInTransaction);
+    }
+
+    [Test]
+    public void Initialize_WithEmptyHull_TriggersEvent ()
+    {
+      var type = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (OrderItem));
+      var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
+
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      listenerMock
+          .Expect (mock => mock.ObjectGotID (orderItem, DomainObjectIDs.OrderItem1))
+          .Do (invocation => Assert.That (orderItem.ID, Is.EqualTo (DomainObjectIDs.OrderItem1), "ID must have been set when event is raised"));
+      ClientTransactionMock.AddListener (listenerMock);
+
+      orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
+
+      listenerMock.VerifyAllExpectations ();
+    }
   }
 }

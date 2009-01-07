@@ -49,9 +49,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       s_log.DebugFormat ("ObjectLoading: {0}", id);
     }
 
-    public void ObjectInitializedFromDataContainer (ObjectID id, DomainObject instance)
+    public void ObjectGotID (DomainObject instance, ObjectID id)
     {
-      s_log.DebugFormat ("ObjectInitializedFromDataContainer: {0}", id);
+      s_log.DebugFormat ("ObjectGotID: {0}", id);
     }
 
     public void ObjectsLoaded (DomainObjectCollection domainObjects)

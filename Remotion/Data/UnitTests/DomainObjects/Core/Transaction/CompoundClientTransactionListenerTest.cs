@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectLoading"), new object[] { order.ID });
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectsLoaded"), new object[] {new DomainObjectCollection()});
 
-      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectInitializedFromDataContainer"), new object[] { order.ID, order });
+      CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectGotID"), new object[] { order, order.ID });
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectDeleting"), new object[] {order});
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("ObjectDeleted"), new object[] {order});

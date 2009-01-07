@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.ObjectLoading (_clientTransaction, id);
     }
 
-    public void ObjectInitializedFromDataContainer (ObjectID id, DomainObject instance)
+    public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       // not handled by this listener
     }

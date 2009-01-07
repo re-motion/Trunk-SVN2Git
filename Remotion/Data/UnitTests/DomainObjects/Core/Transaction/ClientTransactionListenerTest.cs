@@ -72,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           _listener.DataContainerMapRegistering (null);
           LastCall.IgnoreArguments ();
 
-          _listener.ObjectInitializedFromDataContainer (null, null);
+          _listener.ObjectGotID (null, null);
           LastCall.IgnoreArguments ();
         },
         delegate { ClassWithAllDataTypes.NewObject (); });
@@ -88,10 +88,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           _listener.DataContainerMapRegistering (null);
           LastCall.IgnoreArguments ();
 
-          _listener.ObjectInitializedFromDataContainer (null, null);
+          _listener.ObjectGotID (null, null);
           LastCall.Constraints (
-              Mock_Is.Equal (DomainObjectIDs.ClassWithAllDataTypes1),
-              Mock_Is.NotNull() & Mock_Property.ValueConstraint ("ID", Mock_Is.NotNull()));
+              Mock_Is.NotNull() & Mock_Property.ValueConstraint ("ID", Mock_Is.NotNull()),
+              Mock_Is.Equal (DomainObjectIDs.ClassWithAllDataTypes1));
 
           _listener.ObjectsLoaded (null);
           LastCall.Constraints (Mock_Property.Value ("Count", 1));
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           _listener.DataContainerMapRegistering (null);
           LastCall.IgnoreArguments ();
 
-          _listener.ObjectInitializedFromDataContainer (null, null);
+          _listener.ObjectGotID (null, null);
           LastCall.IgnoreArguments ();
 
           _listener.RelationEndPointMapRegistering (null);
@@ -296,7 +296,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           _listener.RelationEndPointMapRegistering (null);
           LastCall.Constraints (Mock_Property.Value ("ObjectID", DomainObjectIDs.Customer1));
 
-          _listener.ObjectInitializedFromDataContainer (null, null);
+          _listener.ObjectGotID (null, null);
           LastCall.IgnoreArguments ();
 
           _listener.ObjectsLoaded (null);
@@ -349,7 +349,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           _listener.DataContainerMapRegistering (null);
           LastCall.Constraints (Mock_Property.Value ("ID", DomainObjectIDs.ClassWithAllDataTypes1));
 
-          _listener.ObjectInitializedFromDataContainer (null, null);
+          _listener.ObjectGotID (null, null);
           LastCall.IgnoreArguments();
 
           _listener.ObjectsLoaded (null);

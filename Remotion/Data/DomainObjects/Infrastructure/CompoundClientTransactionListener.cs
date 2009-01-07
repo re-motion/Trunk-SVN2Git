@@ -61,10 +61,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.ObjectLoading (id);
     }
 
-    public void ObjectInitializedFromDataContainer (ObjectID id, DomainObject instance)
+    public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       foreach (IClientTransactionListener listener in _listeners)
-        listener.ObjectInitializedFromDataContainer (id, instance);
+        listener.ObjectGotID (instance, id);
     }
 
     public void ObjectsLoaded (DomainObjectCollection domainObjects)

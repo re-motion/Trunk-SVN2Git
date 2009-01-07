@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void ObjectLoading (ObjectID id);
     void ObjectsLoaded (DomainObjectCollection domainObjects);
 
-    void ObjectInitializedFromDataContainer (ObjectID id, DomainObject instance);
+    void ObjectGotID (DomainObject instance, ObjectID id);
 
     void ObjectDeleting (DomainObject domainObject);
     void ObjectDeleted (DomainObject domainObject);

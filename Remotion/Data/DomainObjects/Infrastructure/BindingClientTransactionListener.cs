@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void ObjectInitializedFromDataContainer (ObjectID id, DomainObject instance)
+    public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       instance.BindToTransaction (_bindingTransaction);
     }

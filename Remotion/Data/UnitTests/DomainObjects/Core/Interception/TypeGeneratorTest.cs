@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void OverridesGetPublicDomainObjectType ()
     {
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
-      Assert.IsNotNull (type.GetMethod ("GetPublicDomainObjectType", _declaredPublicInstanceFlags));
+      Assert.IsNotNull (type.GetMethod ("GetPublicDomainObjectTypeImplementation", _declaredInstanceFlags));
     }
 
     [Test]
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Type type = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
       var instance = (DOWithVirtualProperties) Activator.CreateInstance (type);
       Assert.AreEqual (typeof (DOWithVirtualProperties), instance.GetPublicDomainObjectType ());
-      Assert.IsNotNull (type.GetMethod ("GetPublicDomainObjectType", _declaredPublicInstanceFlags));
+      Assert.IsNotNull (type.GetMethod ("GetPublicDomainObjectTypeImplementation", _declaredInstanceFlags));
     }
 
     [Test]

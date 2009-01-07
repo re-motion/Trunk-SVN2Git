@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
     private const BindingFlags _staticInfrastructureBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
     private static readonly MethodInfo s_getPublicDomainObjectTypeMethod =
-        typeof (DomainObject).GetMethod ("GetPublicDomainObjectType", _infrastructureBindingFlags);
+        typeof (DomainObject).GetMethod ("GetPublicDomainObjectTypeImplementation", _infrastructureBindingFlags);
     private static readonly MethodInfo s_performConstructorCheckMethod =
         typeof (DomainObject).GetMethod ("PerformConstructorCheck", _infrastructureBindingFlags);
     private static readonly MethodInfo s_preparePropertyAccessMethod =

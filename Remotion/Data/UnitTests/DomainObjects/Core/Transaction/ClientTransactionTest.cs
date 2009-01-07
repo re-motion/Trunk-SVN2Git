@@ -1014,7 +1014,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       LastCall.IgnoreArguments ().Repeat.Any ();
       listenerMock.ObjectsLoaded (null);
       LastCall.IgnoreArguments ();
-      listenerMock.ObjectInitializedFromDataContainer (null, null);
+      listenerMock.ObjectGotID (null, null);
       LastCall.IgnoreArguments ().Repeat.Any();
 
       mockRepository.ReplayAll ();

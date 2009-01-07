@@ -28,9 +28,11 @@ namespace Remotion.Data.DomainObjects
   /// Base class for all objects that are persisted by the framework.
   /// </summary>
   /// <remarks>
+  /// <para>
   /// If a class implementing <see cref="ISerializable"/> is derived from this base class, it must provide a deserialization constructor invoking
   /// this class' deserialization constructor, and it must call <see cref="BaseGetObjectData"/> from the <see cref="ISerializable.GetObjectData"/>
   /// implementation.
+  /// </para>
   /// </remarks>
   [Serializable]
   [DebuggerDisplay ("{GetPublicDomainObjectType().FullName}: {ID.ToString()}")]
@@ -189,21 +191,28 @@ namespace Remotion.Data.DomainObjects
 
     private ObjectID _id;
     private ClientTransaction _bindingTransaction; // null unless this object is bound to a fixed transaction
-    
-    [NonSerialized] // lazily initialized
-    private PropertyIndexer _properties;
 
-    private DomainObjectEventManager _eventManager;
+    [NonSerialized] // required when ISerializable is not implemented by subclass
+    private PropertyIndexer _properties; // lazily initialized
+    private DomainObjectEventManager _eventManager; // lazily initialized if the object was freshly loaded
 
     // construction and disposing
 
     /// <summary>
     /// Initializes a new <see cref="DomainObject"/> with the current <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
-    /// <remarks>Any constructors implemented on concrete domain objects should delegate to this base constructor. As domain objects generally should 
+    /// <remarks>
+    /// <para>
+    /// Any constructors implemented on concrete domain objects should delegate to this base constructor. As domain objects generally should 
     /// not be constructed via the
     /// <c>new</c> operator, these constructors must remain protected, and the concrete domain objects should have a static "NewObject" method,
-    /// which delegates to <see cref="NewObject{T}"/>, passing it the required constructor arguments.</remarks>
+    /// which delegates to <see cref="NewObject{T}"/>, passing it the required constructor arguments.
+    /// </para>
+    /// <para>
+    /// It is safe to access virtual properties that are automatically implemented by the framework from constructors because this base constructor
+    /// prepares everything necessary for them to work.
+    /// </para>
+    /// </remarks>
     protected DomainObject ()
     {
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
@@ -215,8 +224,9 @@ namespace Remotion.Data.DomainObjects
       DataContainer firstDataContainer = ClientTransactionScope.CurrentTransaction.CreateNewDataContainer (publicDomainObjectType);
       firstDataContainer.SetDomainObject (this);
 
-      InitializeFromDataContainer (firstDataContainer);
       _eventManager = new DomainObjectEventManager (this, true);
+
+      Initialize (firstDataContainer.ID, firstDataContainer.ClientTransaction);
     }
 
     /// <summary>
@@ -248,88 +258,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     // methods and properties
-
-    /// <summary>
-    /// Ensures that <see cref="DomainObject"/> instances are not created via constructor checks.
-    /// </summary>
-    /// <remarks>
-    /// The default implementation of this method throws an exception. When the runtime code generation invoked via <see cref="NewObject{T}"/>
-    /// generates a concrete <see cref="DomainObject"/> type, it overrides this method to disable the exception. This ensures that 
-    /// <see cref="DomainObject"/> instances cannot be created simply by calling the <see cref="DomainObject"/>'s constructor.
-    /// </remarks>
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    protected virtual void PerformConstructorCheck ()
-    {
-      throw new InvalidOperationException ("DomainObject constructors must not be called directly. Use DomainObject.NewObject to create DomainObject "
-          + "instances.");
-    }
-
-    /// <summary>
-    /// Serializes the base data needed to deserialize a <see cref="DomainObject"/> instance.
-    /// </summary>
-    /// <param name="info">The <see cref="SerializationInfo"/> coming from the .NET serialization infrastructure.</param>
-    /// <param name="context">The <see cref="StreamingContext"/> coming from the .NET serialization infrastructure.</param>
-    /// <remarks>Be sure to call this method from the <see cref="ISerializable.GetObjectData"/> implementation of any concrete
-    /// <see cref="DomainObject"/> type implementing the <see cref="ISerializable"/> interface.</remarks>
-    protected void BaseGetObjectData (SerializationInfo info, StreamingContext context)
-    {
-      ArgumentUtility.CheckNotNull ("info", info);
-
-      info.AddValue ("DomainObject.ID", ID);
-      info.AddValue ("DomainObject._bindingTransaction", _bindingTransaction);
-      info.AddValue ("DomainObject._eventManager", _eventManager);
-    }
-
-    /// <summary>
-    /// Sets the data container during the process creating a domain object or loading it for the first time.
-    /// </summary>
-    /// <param name="dataContainer">The data container to be associated with the loaded domain object.</param>
-    /// <exception cref="ArgumentNullException">The <paramref name="dataContainer"/> parameter is null.</exception>
-    /// <remarks>This method is always called exactly once per <see cref="DomainObject"/> instance, and it is called regardless of
-    /// whether the object has been created by <see cref="NewObject{T}"/> or loaded via <see cref="GetObject{T}(ObjectID)"/>.</remarks>
-    internal void InitializeFromDataContainer (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-      _id = dataContainer.ID;
-      dataContainer.ClientTransaction.TransactionEventSink.ObjectInitializedFromDataContainer (_id, this);
-      dataContainer.ClientTransaction.EnlistDomainObject (this);
-    }
-
-    /// <summary>
-    /// GetType might return a <see cref="Type"/> object for a generated class, which is usually not what is expected.
-    /// <see cref="DomainObject.GetPublicDomainObjectType"/> can be used to get the Type object of the original underlying domain object type. If
-    /// the <see cref="Type"/> object for the generated class is explicitly required, this object can be cast to 'object' before calling GetType.
-    /// </summary>
-    [Obsolete ("GetType might return a Type object for a generated class., which is usually not what is expected. "
-        + "DomainObject.GetPublicDomainObjectType can be used to get the Type object of the original underlying domain object type. If the Type object"
-        + "for the generated class is explicitly required, this object can be cast to 'object' before calling GetType.", true)]
-    public new Type GetType ()
-    {
-      throw new InvalidOperationException ("DomainObject.GetType should not be used.");
-    }
-
-    /// <summary>
-    /// Returns the public type representation of this domain object, i.e. the type object visible to mappings, database, etc.
-    /// </summary>
-    /// <returns>The public type representation of this domain object.</returns>
-    /// <remarks>A domain object should override this method if it wants to impersonate one of its base types. The framework will handle this object
-    /// as if it was of the type returned by this method and ignore its actual type.</remarks>
-    public virtual Type GetPublicDomainObjectType ()
-    {
-      return base.GetType();
-    }
-
-    /// <summary>
-    /// Returns a textual representation of this object's <see cref="ID"/>.
-    /// </summary>
-    /// <returns>
-    /// A textual representation of <see cref="ID"/>.
-    /// </returns>
-    public override string ToString ()
-    {
-      return ID.ToString();
-    }
 
     /// <summary>
     /// Gets the <see cref="ObjectID"/> of the <see cref="DomainObject"/>.
@@ -443,6 +371,107 @@ namespace Remotion.Data.DomainObjects
     public bool CanBeUsedInTransaction
     {
       get { return TransactionContext[DomainObjectCheckUtility.GetNonNullClientTransaction(this)].CanBeUsedInTransaction; }
+    }
+
+    /// <summary>
+    /// Ensures that <see cref="DomainObject"/> instances are not created via constructor checks.
+    /// </summary>
+    /// <remarks>
+    /// The default implementation of this method throws an exception. When the runtime code generation invoked via <see cref="NewObject{T}"/>
+    /// generates a concrete <see cref="DomainObject"/> type, it overrides this method to disable the exception. This ensures that 
+    /// <see cref="DomainObject"/> instances cannot be created simply by calling the <see cref="DomainObject"/>'s constructor.
+    /// </remarks>
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    protected virtual void PerformConstructorCheck ()
+    {
+      throw new InvalidOperationException ("DomainObject constructors must not be called directly. Use DomainObject.NewObject to create DomainObject "
+          + "instances.");
+    }
+
+    /// <summary>
+    /// Serializes the base data needed to deserialize a <see cref="DomainObject"/> instance.
+    /// </summary>
+    /// <param name="info">The <see cref="SerializationInfo"/> coming from the .NET serialization infrastructure.</param>
+    /// <param name="context">The <see cref="StreamingContext"/> coming from the .NET serialization infrastructure.</param>
+    /// <remarks>Be sure to call this method from the <see cref="ISerializable.GetObjectData"/> implementation of any concrete
+    /// <see cref="DomainObject"/> type implementing the <see cref="ISerializable"/> interface.</remarks>
+    protected void BaseGetObjectData (SerializationInfo info, StreamingContext context)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      info.AddValue ("DomainObject.ID", ID);
+      info.AddValue ("DomainObject._bindingTransaction", _bindingTransaction);
+      info.AddValue ("DomainObject._eventManager", _eventManager);
+    }
+
+    /// <summary>
+    /// Initializes a new <see cref="DomainObject"/> during a call to <see cref="NewObject{T}"/> or <see cref="GetObject{T}(ObjectID)"/>. This method
+    /// is automatically called by the framework and should not normally be invoked by user code.
+    /// </summary>
+    /// <param name="id">The <see cref="ObjectID"/> to associate the new <see cref="DomainObject"/> with.</param>
+    /// <param name="clientTransaction">The <see cref="DomainObjects.ClientTransaction"/> to associate the new <see cref="DomainObject"/> with.</param>
+    /// <exception cref="ArgumentNullException">The <paramref name="id"/> or <paramref name="clientTransaction"/> parameter is null.</exception>
+    /// <exception cref="InvalidOperationException">This <see cref="DomainObject"/> has already been initialized.</exception>
+    /// <remarks>This method is always called exactly once per <see cref="DomainObject"/> instance by the framework. It sets the object's 
+    /// <see cref="ID"/> and enlists it with the given <see cref="DomainObjects.ClientTransaction"/>. It also causes the 
+    /// <see cref="IClientTransactionListener.ObjectGotID"/> event to be .</remarks>
+    public void Initialize (ObjectID id, ClientTransaction clientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      if (_id != null)
+        throw new InvalidOperationException ("The object cannot be initialized, it already has an ID.");
+
+      _id = id;
+      clientTransaction.TransactionEventSink.ObjectGotID (this, _id);
+
+      clientTransaction.EnlistDomainObject (this);
+    }
+
+    /// <summary>
+    /// GetType might return a <see cref="Type"/> object for a generated class, which is usually not what is expected.
+    /// <see cref="DomainObject.GetPublicDomainObjectType"/> can be used to get the Type object of the original underlying domain object type. If
+    /// the <see cref="Type"/> object for the generated class is explicitly required, this object can be cast to 'object' before calling GetType.
+    /// </summary>
+    [Obsolete ("GetType might return a Type object for a generated class, which is usually not what is expected. "
+        + "DomainObject.GetPublicDomainObjectType can be used to get the Type object of the original underlying domain object type. If the Type object"
+        + "for the generated class is explicitly required, this object can be cast to 'object' before calling GetType.", true)]
+    public new Type GetType ()
+    {
+      throw new InvalidOperationException ("DomainObject.GetType should not be used.");
+    }
+
+    /// <summary>
+    /// Returns the public type representation of this domain object, i.e. the type object visible to mappings, database, etc.
+    /// </summary>
+    /// <returns>The public type representation of this domain object.</returns>
+    public Type GetPublicDomainObjectType ()
+    {
+      return GetPublicDomainObjectTypeImplementation ();
+    }
+
+    /// <summary>
+    /// Implements the functionality required by <see cref="GetPublicDomainObjectType"/>. This is a separate method to avoid having to make the 
+    /// virtual call in the constructor.
+    /// </summary>
+    /// <returns>The public type representation of this domain object.</returns>
+    /// <remarks>A domain object should override this method if it wants to impersonate one of its base types. The framework will handle this object
+    /// as if it was of the type returned by this method and ignore its actual type.</remarks>
+    protected virtual Type GetPublicDomainObjectTypeImplementation ()
+    {
+      return base.GetType ();
+    }
+
+    /// <summary>
+    /// Returns a textual representation of this object's <see cref="ID"/>.
+    /// </summary>
+    /// <returns>
+    /// A textual representation of <see cref="ID"/>.
+    /// </returns>
+    public override string ToString ()
+    {
+      return ID.ToString ();
     }
 
     /// <summary>

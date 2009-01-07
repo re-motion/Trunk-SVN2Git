@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Transport
       // not handled by this listener
     }
 
-    public void ObjectInitializedFromDataContainer (ObjectID id, DomainObject instance)
+    public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       // not handled by this listener
     }

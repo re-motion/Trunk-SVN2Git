@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Transport
       
     }
 
-    public void ObjectInitializedFromDataContainer (ObjectID id, DomainObject instance)
+    public void ObjectGotID (DomainObject instance, ObjectID id)
     {
       
     }
