@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -866,6 +867,8 @@ public abstract class ClientTransaction
       if (idsToBeLoaded.Count > 0)
       {
         DataContainerCollection additionalDataContainers = LoadDataContainers (idsToBeLoaded, throwOnNotFound);
+        RegisterLoadedDataContainers (additionalDataContainers);
+
         var loadedDomainObjects = new DomainObjectCollection (additionalDataContainers, true);
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
@@ -914,12 +917,6 @@ public abstract class ClientTransaction
       RegisterNewDataContainer(newDataContainer);
       return newDataContainer;
     }
-  }
-
-  protected internal void RegisterNewDataContainer (DataContainer newDataContainer)
-  {
-    SetClientTransaction (newDataContainer);
-    _dataManager.RegisterNewDataContainer (newDataContainer);
   }
 
   /// <summary>
@@ -1086,12 +1083,16 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer dataContainer = LoadDataContainer (id);
-      var domainObject = SetDomainObject (dataContainer);
+      RegisterLoadedDataContainer (dataContainer);
 
-      var loadedDomainObjects = new DomainObjectCollection (new[] { domainObject }, true);
+      Assertion.IsTrue (dataContainer.DomainObject.ID == id);
+      Assertion.IsTrue (dataContainer.ClientTransaction == this);
+      Assertion.IsTrue (DataManager.DataContainerMap[id] == dataContainer);
+
+      var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, true);
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
-      return domainObject;
+      return dataContainer.DomainObject;
     }
   }
 
@@ -1135,6 +1136,11 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer dataContainer = LoadDataContainerForExistingObject (domainObject);
+      RegisterLoadedDataContainer (dataContainer);
+
+      Assertion.IsTrue (dataContainer.DomainObject == domainObject);
+      Assertion.IsTrue (dataContainer.ClientTransaction == this);
+      Assertion.IsTrue (DataManager.DataContainerMap[domainObject.ID] == dataContainer);
 
       var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, true);
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
@@ -1200,7 +1206,10 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainerCollection newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (dataContainers);
-      InitializeNewLoadedDataContainers (newLoadedDataContainers);
+      foreach (DataContainer dataContainer in newLoadedDataContainers)
+        TransactionEventSink.ObjectLoading (dataContainer.ID);
+      
+      RegisterLoadedDataContainers (newLoadedDataContainers);
 
       var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (dataContainers);
       DomainObjectCollection domainObjects = DomainObjectCollection.Create (collectionType, mergedContainers, requiredItemType);
@@ -1213,13 +1222,6 @@ public abstract class ClientTransaction
 
       return domainObjects;
     }
-  }
-
-  protected DomainObject SetDomainObject (DataContainer newLoadedDataContainer)
-  {
-    var domainObject = GetObjectForDataContainer (newLoadedDataContainer);
-    newLoadedDataContainer.SetDomainObject (domainObject);
-    return domainObject;
   }
 
   /// <summary>
@@ -1500,18 +1502,31 @@ public abstract class ClientTransaction
     return new ClientTransactionWrapper (this);
   }
 
-  protected void InitializeNewLoadedDataContainers (DataContainerCollection newLoadedDataContainers)
+  private void RegisterNewDataContainer (DataContainer newDataContainer)
+  {
+    newDataContainer.SetClientTransaction (this);
+    _dataManager.RegisterNewDataContainer (newDataContainer);
+  }
+
+  private void RegisterLoadedDataContainers (DataContainerCollection newLoadedDataContainers)
   {
     ArgumentUtility.CheckNotNull ("newLoadedDataContainers", newLoadedDataContainers);
 
     foreach (DataContainer dataContainer in newLoadedDataContainers)
-    {
-      TransactionEventSink.ObjectLoading (dataContainer.ID);
-      SetClientTransaction (dataContainer);
-      SetDomainObject (dataContainer);
+      RegisterLoadedDataContainer(dataContainer);
+  }
 
-      DataManager.RegisterExistingDataContainer (dataContainer);
-    }
+  // TODO 960: Make this private by moving LoadRelatedObject to this class (extract LoadRelatedDataContainer)
+  protected void RegisterLoadedDataContainer (DataContainer dataContainer)
+  {
+    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+
+    dataContainer.SetClientTransaction (this);
+    
+    var domainObject = GetObjectForDataContainer (dataContainer);
+    dataContainer.SetDomainObject (domainObject);
+
+    DataManager.RegisterExistingDataContainer (dataContainer);
   }
 }
 }

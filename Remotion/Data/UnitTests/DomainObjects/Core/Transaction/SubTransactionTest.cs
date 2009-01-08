@@ -739,6 +739,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope ())
       {
+        var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+        PrivateInvoke.InvokeNonPublicMethod (subTransaction, "AddListener", listenerMock);
+
         ClientTransactionEventReceiver eventReceiver = new ClientTransactionEventReceiver (subTransaction);
         ObjectList<DomainObject> objects = subTransaction.GetObjects<DomainObject> (
             DomainObjectIDs.Order1,
@@ -747,6 +750,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         Assert.AreEqual (1, eventReceiver.LoadedDomainObjects.Count);
         Assert.That (eventReceiver.LoadedDomainObjects[0], Is.EqualTo (objects));
+
+        listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.Order1));
+        listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.Order2));
+        listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.OrderItem1));
+
+        listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<DomainObjectCollection>.List.Equal (objects)));
       }
     }
 
@@ -782,8 +791,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         eventReceiver.Clear();
 
+        var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+        PrivateInvoke.InvokeNonPublicMethod (subTransaction, "AddListener", listenerMock);
+
         subTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1);
         Assert.That (eventReceiver.LoadedDomainObjects, Is.Empty);
+
+        listenerMock.AssertWasNotCalled (mock => mock.ObjectLoading (Arg<ObjectID>.Is.Anything));
+        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<DomainObjectCollection>.Is.Anything));
       }
     }
 
@@ -809,8 +824,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         DomainObject[] expectedObjects = new DomainObject[] {Order.NewObject(), OrderItem.NewObject()};
         eventReceiver.Clear();
 
+        var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+        PrivateInvoke.InvokeNonPublicMethod (subTransaction, "AddListener", listenerMock);
+
         subTransaction.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
         Assert.That (eventReceiver.LoadedDomainObjects, Is.Empty);
+
+        listenerMock.AssertWasNotCalled (mock => mock.ObjectLoading (Arg<ObjectID>.Is.Anything));
+        listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<DomainObjectCollection>.Is.Anything));
       }
     }
 

@@ -85,13 +85,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         {
           _listener.ObjectLoading (DomainObjectIDs.ClassWithAllDataTypes1);
 
-          _listener.DataContainerMapRegistering (null);
-          LastCall.IgnoreArguments ();
-
           _listener.ObjectGotID (null, null);
           LastCall.Constraints (
               Mock_Is.NotNull() & Mock_Property.ValueConstraint ("ID", Mock_Is.NotNull()),
               Mock_Is.Equal (DomainObjectIDs.ClassWithAllDataTypes1));
+
+          _listener.DataContainerMapRegistering (null);
+          LastCall.IgnoreArguments ();
 
           _listener.ObjectsLoaded (null);
           LastCall.Constraints (Mock_Property.Value ("Count", 1));
@@ -290,14 +290,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           LastCall.IgnoreArguments ();
           _listener.ObjectLoading (null);
           LastCall.IgnoreArguments ();
+
+          _listener.ObjectGotID (null, null);
+          LastCall.IgnoreArguments ();
+          
           _listener.DataContainerMapRegistering (null);
           LastCall.IgnoreArguments ();
 
           _listener.RelationEndPointMapRegistering (null);
           LastCall.Constraints (Mock_Property.Value ("ObjectID", DomainObjectIDs.Customer1));
-
-          _listener.ObjectGotID (null, null);
-          LastCall.IgnoreArguments ();
 
           _listener.ObjectsLoaded (null);
           LastCall.IgnoreArguments ();
@@ -346,11 +347,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           _listener.ObjectLoading (null);
           LastCall.IgnoreArguments ();
 
+          _listener.ObjectGotID (null, null);
+          LastCall.IgnoreArguments ();
+
           _listener.DataContainerMapRegistering (null);
           LastCall.Constraints (Mock_Property.Value ("ID", DomainObjectIDs.ClassWithAllDataTypes1));
-
-          _listener.ObjectGotID (null, null);
-          LastCall.IgnoreArguments();
 
           _listener.ObjectsLoaded (null);
           LastCall.IgnoreArguments ();

@@ -143,7 +143,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         using (TransactionUnlocker.MakeWriteable (ParentTransaction))
         {
           DomainObject parentObject = ParentTransaction.GetObject (id);
-          DataContainer thisDataContainer = TransferParentDomainObject (parentObject);
+          DataContainer thisDataContainer = TransferParentObject (parentObject);
           return thisDataContainer;
         }
       }
@@ -159,18 +159,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           throw new ObjectDiscardedException (id);
       }
 
-      foreach (ObjectID id in objectIDs)
-        TransactionEventSink.ObjectLoading (id);
-
       using (TransactionUnlocker.MakeWriteable (ParentTransaction))
       {
         ObjectList<DomainObject> parentObjects = ParentTransaction.GetObjects<DomainObject> (new List<ObjectID> (objectIDs).ToArray(), throwOnNotFound);
-        DataContainerCollection loadedDataContainers = new DataContainerCollection();
+        var loadedDataContainers = new DataContainerCollection();
         foreach (DomainObject parentObject in parentObjects)
         {
-          DataContainer thisDataContainer = TransferParentDomainObject(parentObject);
+          DataContainer thisDataContainer = TransferParentObject(parentObject);
           loadedDataContainers.Add (thisDataContainer);
         }
+
+        foreach (DataContainer dataContainer in loadedDataContainers)
+          TransactionEventSink.ObjectLoading (dataContainer.ID);
+        
         return loadedDataContainers;
       }
     }
@@ -187,24 +188,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       using (EnterNonDiscardingScope ())
       {
-        DataContainer dataContainer = LoadDataContainer (domainObject.ID);
-        Assertion.IsTrue (dataContainer.DomainObject == domainObject);
-
-        return dataContainer;
+        return LoadDataContainer (domainObject.ID);
       }
     }
 
-    private DataContainer TransferParentDomainObject (DomainObject parentObject)
+    private DataContainer TransferParentObject (DomainObject parentObject)
     {
-      DataContainer parentDataContainer = ParentTransaction.GetDataContainer(parentObject);
+      DataContainer parentDataContainer = ParentTransaction.GetDataContainer (parentObject);
       DataContainer thisDataContainer = TransferParentContainer (parentDataContainer);
-
-      thisDataContainer.SetClientTransaction (this);
-      thisDataContainer.SetDomainObject (parentObject);
-
-      DataManager.RegisterExistingDataContainer (thisDataContainer);
       return thisDataContainer;
     }
+
 
     private DataContainer TransferParentContainer (DataContainer parentDataContainer)
     {

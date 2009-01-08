@@ -1372,13 +1372,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       using (_mockRepository.Ordered ())
       {
-        _extension.ObjectLoading (_subTransaction, DomainObjectIDs.Order2);
-        _extension.ObjectLoading (_subTransaction, DomainObjectIDs.Order3);
+        // parent transaction first, just like persistence manager comes first in root transactions (ie. persistence manager loads data containers 
+        // before any events are raised)
         _extension.ObjectLoading (_subTransaction.ParentTransaction, DomainObjectIDs.Order2);
         _extension.ObjectLoading (_subTransaction.ParentTransaction, DomainObjectIDs.Order3);
-
         _extension.ObjectsLoaded (null, null);
         LastCall.Constraints (Mocks_Is.Same (_subTransaction.ParentTransaction), Mocks_List.Count (Mocks_Is.Equal (2)));
+
+        _extension.ObjectLoading (_subTransaction, DomainObjectIDs.Order2);
+        _extension.ObjectLoading (_subTransaction, DomainObjectIDs.Order3);
         _extension.ObjectsLoaded (null, null);
         LastCall.Constraints (Mocks_Is.Same (_subTransaction), Mocks_List.Count (Mocks_Is.Equal (2)));
       }

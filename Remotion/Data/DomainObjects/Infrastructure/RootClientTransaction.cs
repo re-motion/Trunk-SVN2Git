@@ -155,15 +155,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      using (PersistenceManager persistenceManager = new PersistenceManager())
+      using (PersistenceManager persistenceManager = new PersistenceManager ())
       {
-        DataContainer dataContainer = persistenceManager.LoadDataContainer (id);
-        
-        // TODO rf: Move to InitializeNewLoadedDataContainer
+        var dataContainer = persistenceManager.LoadDataContainer (id);
         TransactionEventSink.ObjectLoading (dataContainer.ID);
-        SetClientTransaction (dataContainer);
-        DataManager.RegisterExistingDataContainer (dataContainer);
-        
         return dataContainer;
       }
     }
@@ -181,7 +176,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       using (PersistenceManager persistenceManager = new PersistenceManager ())
       {
         DataContainerCollection newLoadedDataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
-        InitializeNewLoadedDataContainers(newLoadedDataContainers);
+        foreach (DataContainer dataContainer in newLoadedDataContainers)
+          TransactionEventSink.ObjectLoading (dataContainer.ID);
         return newLoadedDataContainers;
       }
     }
@@ -191,10 +187,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       using (EnterNonDiscardingScope ())
       {
-        DataContainer dataContainer = LoadDataContainer (domainObject.ID);
-        dataContainer.SetDomainObject (domainObject);
-
-        return dataContainer;
+        // ensure that the transaction knows the given object, that way, LoadDataContainer will associate the new DataContainer with it
+        EnlistDomainObject (domainObject);
+        return LoadDataContainer (domainObject.ID);
       }
     }
 
@@ -211,14 +206,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           if (relatedDataContainer != null)
           {
             TransactionEventSink.ObjectLoading (relatedDataContainer.ID);
-            SetClientTransaction (relatedDataContainer);
-            var relatedDomainObject = SetDomainObject (relatedDataContainer);
-            DataManager.RegisterExistingDataContainer (relatedDataContainer);
+            RegisterLoadedDataContainer (relatedDataContainer);
 
-            DomainObjectCollection loadedDomainObjects = new DomainObjectCollection (new[] { relatedDomainObject }, true);
+            DomainObjectCollection loadedDomainObjects = new DomainObjectCollection (new[] { relatedDataContainer.DomainObject }, true);
             OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
-            return relatedDomainObject;
+            return relatedDataContainer.DomainObject;
           }
           else
           {

@@ -371,10 +371,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void GetObjects_UnloadedObjects_Events ()
     {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
       ObjectList<DomainObject> objects = ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
       Assert.AreEqual (1, _eventReceiver.LoadedDomainObjects.Count);
       Assert.That (_eventReceiver.LoadedDomainObjects[0], Is.EqualTo (objects));
+
+      listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.Order1));
+      listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.Order2));
+      listenerMock.AssertWasCalled (mock => mock.ObjectLoading (DomainObjectIDs.OrderItem1));
+
+      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (Arg<DomainObjectCollection>.List.Equal (objects)));
     }
 
     [Test]
@@ -396,8 +405,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _eventReceiver.Clear ();
 
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
       ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1);
       Assert.That (_eventReceiver.LoadedDomainObjects, Is.Empty);
+
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectLoading (Arg<ObjectID>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<DomainObjectCollection>.Is.Anything));
     }
 
     [Test]
@@ -414,8 +429,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var expectedObjects = new DomainObject[] { Order.NewObject (), OrderItem.NewObject () };
       _eventReceiver.Clear ();
 
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      ClientTransactionMock.AddListener (listenerMock);
+
       ClientTransactionMock.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
       Assert.That (_eventReceiver.LoadedDomainObjects, Is.Empty);
+
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectLoading (Arg<ObjectID>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoaded (Arg<DomainObjectCollection>.Is.Anything));
     }
 
     [Test]
