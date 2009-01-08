@@ -185,6 +185,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     protected internal override DataContainer LoadDataContainerForExistingObject (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
       using (EnterNonDiscardingScope ())
       {
         // ensure that the transaction knows the given object, that way, LoadDataContainer will associate the new DataContainer with it
@@ -195,6 +196,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
+      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, false);
       DataContainer relatedDataContainer;
       using (var persistenceManager = new PersistenceManager())
@@ -207,17 +210,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return relatedDataContainer;
     }
 
-    protected internal override DomainObjectCollection LoadRelatedObjects (RelationEndPointID relationEndPointID)
+    protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-      using (EnterNonDiscardingScope())
+
+      DataContainerCollection relatedDataContainers;
+      using (var persistenceManager = new PersistenceManager())
       {
-        using (PersistenceManager persistenceManager = new PersistenceManager())
-        {
-          DataContainerCollection relatedDataContainers = persistenceManager.LoadRelatedDataContainers (relationEndPointID);
-          return MergeLoadedDomainObjects (relatedDataContainers, relationEndPointID);
-        }
+        relatedDataContainers = persistenceManager.LoadRelatedDataContainers (relationEndPointID);
       }
+      return relatedDataContainers;
     }
 
     protected internal override bool HasCollectionEndPointDataChanged (DomainObjectCollection currentData, DomainObjectCollection originalData)

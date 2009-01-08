@@ -318,7 +318,7 @@ public abstract class ClientTransaction
   ///   set the <see cref="ClientTransaction"/> of the loaded data container,
   ///   register the container in the <see cref="DataContainerMap"/>,
   ///   or set the  <see cref="DomainObject"/> of the container.
-  /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>.
+  /// All of these activities are performed by the callers of <see cref="LoadRelatedDataContainer"/>.
   /// </para>
   /// </remarks>
   /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
@@ -339,17 +339,32 @@ public abstract class ClientTransaction
   protected abstract DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID);
 
   /// <summary>
-  /// Loads all related <see cref="DomainObject"/>s of a given <see cref="DataManagement.RelationEndPointID"/>. 
+  /// Loads all related <see cref="DataContainer"/>s of a given <see cref="DataManagement.RelationEndPointID"/>.
   /// </summary>
   /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
   /// <paramref name="relationEndPointID"/> must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
-  /// <returns>A <see cref="DomainObjectCollection"/> containing all related <see cref="DomainObject"/>s.</returns>
+  /// <returns>
+  /// A <see cref="DomainObjectCollection"/> containing all related <see cref="DomainObject"/>s.
+  /// </returns>
+  /// <remarks>
+  /// <para>
+  /// This method does not raise any load events in this transaction. The load events are only raised when the loaded containers are merged with those
+  /// that have already been loaded.
+  /// </para>
+  /// <para>
+  /// This method should not 
+  ///   set the <see cref="ClientTransaction"/> of the loaded data containers,
+  ///   register the containers in the <see cref="DataContainerMap"/>,
+  ///   or set the  <see cref="DomainObject"/> of the containers.
+  /// All of these activities are performed by the callers of <see cref="LoadRelatedDataContainers"/>.
+  /// </para>
+  /// </remarks>
   /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
   /// <exception cref="Persistence.PersistenceException">
-  ///   <paramref name="relationEndPointID"/> does not refer to one-to-many relation.<br /> -or- <br />
-  ///   The StorageProvider for the related objects could not be initialized.
+  /// 	<paramref name="relationEndPointID"/> does not refer to one-to-many relation.<br/> -or- <br/>
+  /// The StorageProvider for the related objects could not be initialized.
   /// </exception>
-  protected internal abstract DomainObjectCollection LoadRelatedObjects (RelationEndPointID relationEndPointID);
+  protected abstract DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID);
 
   /// <summary>
   /// Determines whether a specific collection end point's data has changed with the semantics defined by this transaction.
@@ -1145,7 +1160,7 @@ public abstract class ClientTransaction
   ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
   ///   An error occurred while accessing the datasource.
   /// </exception>
-  protected internal DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
+  protected internal virtual DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
   {
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
     using (EnterNonDiscardingScope ())
@@ -1167,6 +1182,27 @@ public abstract class ClientTransaction
         return null;
       }
     }
+  }
+
+  /// <summary>
+  /// Loads all related <see cref="DomainObject"/>s of a given <see cref="DataManagement.RelationEndPointID"/>.
+  /// </summary>
+  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
+  /// <paramref name="relationEndPointID"/> must refer to a <see cref="CollectionEndPoint"/>. Must not be <see langword="null"/>.</param>
+  /// <returns>
+  /// A <see cref="DomainObjectCollection"/> containing all related <see cref="DomainObject"/>s.
+  /// </returns>
+  /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
+  /// <exception cref="Persistence.PersistenceException">
+  /// 	<paramref name="relationEndPointID"/> does not refer to one-to-many relation.<br/> -or- <br/>
+  /// The StorageProvider for the related objects could not be initialized.
+  /// </exception>
+  protected internal virtual DomainObjectCollection LoadRelatedObjects (RelationEndPointID relationEndPointID)
+  {
+    ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+
+    DataContainerCollection relatedDataContainers = LoadRelatedDataContainers (relationEndPointID);
+    return MergeLoadedDomainObjects (relatedDataContainers, relationEndPointID);
   }
 
   /// <summary>
@@ -1589,8 +1625,7 @@ public abstract class ClientTransaction
       RegisterLoadedDataContainer(dataContainer);
   }
 
-  // TODO 960: Make this private by moving LoadRelatedObject to this class (extract LoadRelatedDataContainer)
-  protected void RegisterLoadedDataContainer (DataContainer dataContainer)
+  private void RegisterLoadedDataContainer (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 

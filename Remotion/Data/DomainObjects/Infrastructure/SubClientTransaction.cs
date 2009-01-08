@@ -202,6 +202,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return parentRelatedObject != null ? LoadDataContainer (parentRelatedObject.ID) : null;
     }
 
+
+    protected override DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
+    {
+      DomainObjectCollection parentObjects;
+      using (TransactionUnlocker.MakeWriteable (ParentTransaction))
+      {
+        parentObjects = ParentTransaction.GetRelatedObjects (relationEndPointID);
+      }
+
+      var transferredContainers = new DataContainerCollection ();
+      foreach (DomainObject parentObject in parentObjects)
+      {
+        DataContainer transferredContainer = TransferParentContainer (ParentTransaction.GetDataContainer (parentObject));
+        transferredContainers.Add (transferredContainer);
+        Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
+      }
+
+      return transferredContainers;
+    }
+
     private DataContainer TransferParentObject (DomainObject parentObject)
     {
       DataContainer parentDataContainer = ParentTransaction.GetDataContainer (parentObject);
@@ -216,25 +236,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       DataContainer thisDataContainer = parentDataContainer.Clone();
       thisDataContainer.Commit(); // for the new DataContainer, the current parent DC state becomes the Unchanged state
       return thisDataContainer;
-    }
-
-    protected internal override DomainObjectCollection LoadRelatedObjects (RelationEndPointID relationEndPointID)
-    {
-      DomainObjectCollection parentObjects;
-      using (TransactionUnlocker.MakeWriteable (ParentTransaction))
-      {
-        parentObjects = ParentTransaction.GetRelatedObjects (relationEndPointID);
-      }
-
-      DataContainerCollection transferredContainers = new DataContainerCollection();
-      foreach (DomainObject parentObject in parentObjects)
-      {
-        DataContainer transferredContainer = TransferParentContainer (ParentTransaction.GetDataContainer(parentObject));
-        transferredContainers.Add (transferredContainer);
-        Assertion.IsTrue (parentObject == transferredContainer.DomainObject, "invariant");
-      }
-
-      return MergeLoadedDomainObjects (transferredContainers, relationEndPointID);
     }
 
     protected override void PersistData (DataContainerCollection changedDataContainers)
