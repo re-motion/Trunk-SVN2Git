@@ -186,10 +186,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
           _listener.ObjectsLoaded (null);
           LastCall.IgnoreArguments ().Repeat.Any ();
 
-          _listener.DataContainerMapRegistering (null);
+          _listener.ObjectGotID (null, null);
           LastCall.IgnoreArguments ();
 
-          _listener.ObjectGotID (null, null);
+          _listener.DataContainerMapRegistering (null);
           LastCall.IgnoreArguments ();
 
           _listener.RelationEndPointMapRegistering (null);

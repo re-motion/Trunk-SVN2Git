@@ -627,6 +627,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       }
     }
 
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This DataContainer has not been associated with a DomainObject yet.")]
+    public void DomainObject_NoneSet ()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      Dev.Null = dc.DomainObject;
+    }
+
+    [Test]
+    public void SetDomainObject ()
+    {
+      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      dc.SetDomainObject (domainObject);
+
+      Assert.That (dc.DomainObject, Is.SameAs (domainObject));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given DomainObject has another ID than this DataContainer.\r\n" 
+        + "Parameter name: domainObject")]
+    public void SetDomainObject_InvalidID ()
+    {
+      var domainObject = Order.GetObject (DomainObjectIDs.Order2);
+
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      dc.SetDomainObject (domainObject);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This DataContainer has already been associated with a DomainObject.")]
+    public void SetDomainObject_DomainObjectAlreadySet ()
+    {
+      var domainObject1 = Order.GetObject (DomainObjectIDs.Order1);
+      var domainObject2 = new ClientTransactionMock().GetObject (DomainObjectIDs.Order1);
+
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      dc.SetDomainObject (domainObject1);
+      dc.SetDomainObject (domainObject2);
+    }
+
+    [Test]
+    public void SetDomainObject_SameDomainObjectAlreadySet ()
+    {
+      var domainObject = Order.GetObject (DomainObjectIDs.Order1);
+
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      dc.SetDomainObject (domainObject);
+      dc.SetDomainObject (domainObject);
+
+      Assert.That (dc.DomainObject, Is.SameAs (domainObject));
+    }
+
     private string GetStorageClassPropertyName (string shortName)
     {
       return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);

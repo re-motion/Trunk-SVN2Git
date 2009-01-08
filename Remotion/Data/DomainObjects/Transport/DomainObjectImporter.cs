@@ -78,7 +78,9 @@ namespace Remotion.Data.DomainObjects.Transport
       else
       {
         DataContainer targetDataContainer = targetTransaction.CreateNewDataContainer (transportItem.ID);
-        targetTransaction.EnlistDomainObject (targetDataContainer.DomainObject);
+        var domainObject = targetTransaction.GetObjectForDataContainer (targetDataContainer);
+        targetDataContainer.SetDomainObject (domainObject);
+        targetTransaction.EnlistDomainObject (domainObject);
         return targetDataContainer;
       }
     }

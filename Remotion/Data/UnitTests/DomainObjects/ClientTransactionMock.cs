@@ -109,6 +109,11 @@ namespace Remotion.Data.UnitTests.DomainObjects
       base.SetClientTransaction (dataContainer);
     }
 
+    public new DomainObject GetObjectForDataContainer (DataContainer dataContainer)
+    {
+      return base.GetObjectForDataContainer (dataContainer);
+    }
+
     public int NumberOfCallsToLoadDataContainer
     {
       get { return _numberOfCallsToLoadDataContainer; }

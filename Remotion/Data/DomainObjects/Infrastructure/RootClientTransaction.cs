@@ -158,10 +158,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       using (PersistenceManager persistenceManager = new PersistenceManager())
       {
         DataContainer dataContainer = persistenceManager.LoadDataContainer (id);
+        
+        // TODO rf: Move to InitializeNewLoadedDataContainer
         TransactionEventSink.ObjectLoading (dataContainer.ID);
         SetClientTransaction (dataContainer);
-
         DataManager.RegisterExistingDataContainer (dataContainer);
+        
         return dataContainer;
       }
     }
@@ -179,10 +181,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       using (PersistenceManager persistenceManager = new PersistenceManager ())
       {
         DataContainerCollection newLoadedDataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
-        NotifyOfLoading (newLoadedDataContainers);
-        SetClientTransaction (newLoadedDataContainers);
-        
-        DataManager.RegisterExistingDataContainers (newLoadedDataContainers);
+        InitializeNewLoadedDataContainers(newLoadedDataContainers);
         return newLoadedDataContainers;
       }
     }
@@ -208,17 +207,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
         using (PersistenceManager persistenceManager = new PersistenceManager())
         {
-          DataContainer relatedDataContainer = persistenceManager.LoadRelatedDataContainer (this.GetDataContainer(domainObject), relationEndPointID);
+          DataContainer relatedDataContainer = persistenceManager.LoadRelatedDataContainer (GetDataContainer(domainObject), relationEndPointID);
           if (relatedDataContainer != null)
           {
             TransactionEventSink.ObjectLoading (relatedDataContainer.ID);
             SetClientTransaction (relatedDataContainer);
+            var relatedDomainObject = SetDomainObject (relatedDataContainer);
             DataManager.RegisterExistingDataContainer (relatedDataContainer);
 
-            DomainObjectCollection loadedDomainObjects = new DomainObjectCollection (new DomainObject[] {relatedDataContainer.DomainObject}, true);
+            DomainObjectCollection loadedDomainObjects = new DomainObjectCollection (new[] { relatedDomainObject }, true);
             OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
-            return relatedDataContainer.DomainObject;
+            return relatedDomainObject;
           }
           else
           {

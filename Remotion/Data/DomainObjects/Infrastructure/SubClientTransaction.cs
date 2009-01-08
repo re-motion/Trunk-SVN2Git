@@ -225,8 +225,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       if (parentObject != null)
       {
-        DataContainer loadedDataContainer = this.GetDataContainer(parentObject);
-        Assertion.IsTrue (parentObject == loadedDataContainer.DomainObject, "invariant");
+        Assertion.IsTrue (parentObject == GetDataContainer(parentObject).DomainObject, "invariant");
       }
       else
         DataManager.RelationEndPointMap.RegisterObjectEndPoint (relationEndPointID, null);

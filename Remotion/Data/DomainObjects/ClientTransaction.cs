@@ -1086,11 +1086,12 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer dataContainer = LoadDataContainer (id);
+      var domainObject = SetDomainObject (dataContainer);
 
-      var loadedDomainObjects = new DomainObjectCollection (new[] {dataContainer.DomainObject}, true);
+      var loadedDomainObjects = new DomainObjectCollection (new[] { domainObject }, true);
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
-      return dataContainer.DomainObject;
+      return domainObject;
     }
   }
 
@@ -1199,12 +1200,10 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainerCollection newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (dataContainers);
-      NotifyOfLoading (newLoadedDataContainers);
-      SetClientTransaction (newLoadedDataContainers);
-      _dataManager.RegisterExistingDataContainers (newLoadedDataContainers);
+      InitializeNewLoadedDataContainers (newLoadedDataContainers);
 
-      DomainObjectCollection domainObjects = DomainObjectCollection.Create (
-          collectionType, _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (dataContainers), requiredItemType);
+      var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (dataContainers);
+      DomainObjectCollection domainObjects = DomainObjectCollection.Create (collectionType, mergedContainers, requiredItemType);
 
       if (relationEndPointID != null)
         _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, domainObjects);
@@ -1215,23 +1214,12 @@ public abstract class ClientTransaction
       return domainObjects;
     }
   }
-      
-  /// <summary>
-  /// Sets the ClientTransaction property of all <see cref="DataContainer"/>s of a given <see cref="DataManagement.DataContainerCollection"/>.
-  /// </summary>
-  /// <param name="dataContainers">The <see cref="DataContainerCollection"/> with all the <see cref="DataContainer"/> objects that should be set to the <b>ClientTransaction</b>. Must not be <see langword="null"/>.</param>
-  /// <exception cref="System.ArgumentNullException"><paramref name="dataContainers"/> is <see langword="null"/>.</exception>
-  protected void SetClientTransaction (DataContainerCollection dataContainers)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-    foreach (DataContainer dataContainer in dataContainers)
-      SetClientTransaction (dataContainer);
-  }
 
-  protected void NotifyOfLoading (DataContainerCollection loadedDataContainers)
+  protected DomainObject SetDomainObject (DataContainer newLoadedDataContainer)
   {
-    foreach (DataContainer dataContainer in loadedDataContainers)
-      TransactionEventSink.ObjectLoading (dataContainer.ID);
+    var domainObject = GetObjectForDataContainer (newLoadedDataContainer);
+    newLoadedDataContainer.SetDomainObject (domainObject);
+    return domainObject;
   }
 
   /// <summary>
@@ -1510,6 +1498,20 @@ public abstract class ClientTransaction
   public virtual ITransaction ToITransation ()
   {
     return new ClientTransactionWrapper (this);
+  }
+
+  protected void InitializeNewLoadedDataContainers (DataContainerCollection newLoadedDataContainers)
+  {
+    ArgumentUtility.CheckNotNull ("newLoadedDataContainers", newLoadedDataContainers);
+
+    foreach (DataContainer dataContainer in newLoadedDataContainers)
+    {
+      TransactionEventSink.ObjectLoading (dataContainer.ID);
+      SetClientTransaction (dataContainer);
+      SetDomainObject (dataContainer);
+
+      DataManager.RegisterExistingDataContainer (dataContainer);
+    }
   }
 }
 }

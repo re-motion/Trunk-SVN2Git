@@ -218,9 +218,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         DataContainer classWithAllDataTypes2 = LoadDataContainer (sqlProvider, DomainObjectIDs.ClassWithAllDataTypes1);
 
-        // need to make sure only one DomainObjectReference exists for the current ClientTransaction
-        PrivateInvoke.InvokeNonPublicMethod (classWithAllDataTypes2, "SetDomainObject", classWithAllDataTypes1.DomainObject);
-
+        DomainObject domainObject = ClientTransactionMock.GetObjectForDataContainer (classWithAllDataTypes1);
+        classWithAllDataTypes1.SetDomainObject (domainObject);
+        classWithAllDataTypes2.SetDomainObject (domainObject); // make sure only one DomainObjectReference exists for the current ClientTransaction
+        
         Assert.AreEqual (true, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
         Assert.AreEqual ((byte) 78, classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
         Assert.AreEqual (new DateTime (2005, 2, 1), classWithAllDataTypes2["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
@@ -332,9 +333,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       {
         DataContainer orderContainer1 = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
         DataContainer orderContainer2 = LoadDataContainer (sqlProvider, DomainObjectIDs.Order1);
-        
-        // need to make sure only one DomainObjectReference exists for the current ClientTransaction
-        PrivateInvoke.InvokeNonPublicMethod (orderContainer2, "SetDomainObject", orderContainer1.DomainObject);
+
+        DomainObject domainObject = ClientTransactionMock.GetObjectForDataContainer (orderContainer1);
+        orderContainer1.SetDomainObject (domainObject);
+        orderContainer2.SetDomainObject (domainObject); // need to make sure only one DomainObjectReference exists for the current ClientTransaction
 
         orderContainer1["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
         orderContainer2["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 11;

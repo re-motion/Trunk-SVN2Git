@@ -279,8 +279,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         if (_domainObject == null)
         {
-          Assertion.IsFalse (IsDiscarded, "DataContainers cannot be discarded when they don't have a DomainObject referende");
-          _domainObject = ClientTransaction.GetObjectForDataContainer (this);
+          Assertion.IsFalse (IsDiscarded, "DataContainers cannot be discarded when they don't have a DomainObject reference");
+          throw new InvalidOperationException ("This DataContainer has not been associated with a DomainObject yet.");
         }
 
         return _domainObject;
@@ -487,10 +487,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    internal void SetDomainObject (DomainObject domainObject)
+    public void SetDomainObject (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      Assertion.IsTrue (_domainObject == null || _domainObject == domainObject, "a DataContainer can only be associated with one DomainObject");
+
+      if (domainObject.ID != null && domainObject.ID != _id)
+        throw new ArgumentException ("The given DomainObject has another ID than this DataContainer.", "domainObject");
+      if (_domainObject != null && _domainObject != domainObject)
+        throw new InvalidOperationException ("This DataContainer has already been associated with a DomainObject.");
 
       _domainObject = domainObject;
     }
@@ -512,8 +516,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
         // Therefore notification of DomainObject when changing property values is not organized through events.
-        DomainObject.EventManager.BeginPropertyValueChange (args.PropertyValue, args.OldValue, args.NewValue);
-
+        if (_domainObject != null)
+        {
+          _domainObject.EventManager.BeginPropertyValueChange (args.PropertyValue, args.OldValue, args.NewValue);
+        }
         OnPropertyChanging (args);
       }
     }
@@ -524,9 +530,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         OnPropertyChanged (args);
 
-        // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
-        // Therefore notification of DomainObject when changing property values is not organized through events.
-        DomainObject.EventManager.EndPropertyValueChange (args.PropertyValue, args.OldValue, args.NewValue);
+        if (_domainObject != null)
+        {
+          // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
+          // Therefore notification of DomainObject when changing property values is not organized through events.
+          _domainObject.EventManager.EndPropertyValueChange (args.PropertyValue, args.OldValue, args.NewValue);
+        }
       }
 
       if (_clientTransaction != null)

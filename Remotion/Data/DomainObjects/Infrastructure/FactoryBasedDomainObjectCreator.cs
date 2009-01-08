@@ -42,6 +42,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Type concreteType = factory.GetConcreteDomainObjectType(dataContainer.DomainObjectType);
       DomainObject instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
       factory.PrepareUnconstructedInstance (instance);
+      dataContainer.SetDomainObject (instance);
       instance.Initialize (dataContainer.ID, dataContainer.ClientTransaction);
       return instance;
     }

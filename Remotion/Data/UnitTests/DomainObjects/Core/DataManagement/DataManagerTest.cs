@@ -48,8 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetUnchangedDomainObjectsFromStateTypeOverload ()
     {
-      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer ();
-      _dataManager.RegisterExistingDataContainer (container);
+      DataContainer container = CreateOrder1DataContainer ();
 
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (StateType.Unchanged);
       Assert.IsNotNull (domainObjects);
@@ -60,8 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetUnchangedDomainObjects ()
     {
-      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer ();
-      _dataManager.RegisterExistingDataContainer (container);
+      DataContainer container = CreateOrder1DataContainer ();
 
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new StateType[] { StateType.Unchanged });
       Assert.IsNotNull (domainObjects);
@@ -72,10 +70,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetChangedAndUnchangedDomainObjects ()
     {
-      DataContainer container1 = TestDataContainerFactory.CreateOrder1DataContainer ();
-      DataContainer container2 = TestDataContainerFactory.CreateOrder2DataContainer ();
-      _dataManager.RegisterExistingDataContainer (container1);
-      _dataManager.RegisterExistingDataContainer (container2);
+      DataContainer container1 = CreateOrder1DataContainer ();
+      DataContainer container2 = CreateOrder2DataContainer();
 
       container1.SetValue (
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber",
@@ -95,10 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDeletedAndUnchangedDomainObjects ()
     {
-      DataContainer container1 = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
-      DataContainer container2 = TestDataContainerFactory.CreateOrder2DataContainer ();
-      _dataManager.RegisterExistingDataContainer (container1);
-      _dataManager.RegisterExistingDataContainer (container2);
+      DataContainer container1 = CreateClassWithAllDataTypesDataContainer();
+      DataContainer container2 = CreateOrder2DataContainer ();
 
       _dataManager.Delete (container1.DomainObject);
 
@@ -117,8 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetNewAndUnchangedDomainObjects ()
     {
 			DataContainer container1 = Order.NewObject ().InternalDataContainer;
-      DataContainer container2 = TestDataContainerFactory.CreateOrder2DataContainer ();
-      _dataManager.RegisterExistingDataContainer (container2);
+      DataContainer container2 = CreateOrder2DataContainer ();
 
       DomainObjectCollection domainObjects = _dataManager.GetDomainObjects (new StateType[] { StateType.New });
       Assert.IsNotNull (domainObjects);
@@ -140,8 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetChangedDomainObjects ()
     {
-      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer ();
-      _dataManager.RegisterExistingDataContainer (container);
+      DataContainer container = CreateOrder1DataContainer ();
       container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
 
       DomainObjectCollection changedObjects = _dataManager.GetChangedDomainObjects ();
@@ -152,10 +144,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetChangedDomainObjectsForMultipleObjects ()
     {
-      DataContainer container1 = TestDataContainerFactory.CreateOrder1DataContainer ();
-      DataContainer container2 = TestDataContainerFactory.CreateOrderTicket1DataContainer ();
-      _dataManager.RegisterExistingDataContainer (container1);
-      _dataManager.RegisterExistingDataContainer (container2);
+      CreateOrder1DataContainer ();
+      DataContainer container2 = CreateOrderTicket1DataContainer ();
 
       container2["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.FileName"] = @"C:\NewFile.jpg";
 
@@ -167,16 +157,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetChangedDomainObjectsForRelationChange ()
     {
-      DataContainer order1 = TestDataContainerFactory.CreateOrder1DataContainer ();
-      DataContainer orderTicket1 = TestDataContainerFactory.CreateOrderTicket1DataContainer ();
-      DataContainer orderTicket2 = TestDataContainerFactory.CreateOrderTicket2DataContainer ();
-
-      DataContainer orderWithoutOrderItemDataContainer = TestDataContainerFactory.CreateOrderWithoutOrderItemDataContainer ();
-
-      _dataManager.RegisterExistingDataContainer (order1);
-      _dataManager.RegisterExistingDataContainer (orderTicket1);
-      _dataManager.RegisterExistingDataContainer (orderTicket2);
-      _dataManager.RegisterExistingDataContainer (orderWithoutOrderItemDataContainer);
+      DataContainer order1 = CreateOrder1DataContainer ();
+      CreateOrderTicket1DataContainer ();
+      DataContainer orderTicket2 = CreateOrderTicket2DataContainer ();
+      CreateOrderWithoutOrderItemDataContainer();
 
       RelationEndPointID order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       ClientTransactionMock.SetRelatedObject (order1EndPointID, orderTicket2.DomainObject);
@@ -235,8 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Commit ()
     {
-      DataContainer container = TestDataContainerFactory.CreateOrder1DataContainer ();
-      _dataManager.RegisterExistingDataContainer (container);
+      DataContainer container = CreateOrder1DataContainer();
       container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
 
       _dataManager.Commit ();
@@ -250,17 +233,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CommitOneToOneRelationChange ()
     {
-      DataContainer order1 = TestDataContainerFactory.CreateOrder1DataContainer ();
-      DataContainer orderTicket1 = TestDataContainerFactory.CreateOrderTicket1DataContainer ();
-      DataContainer orderTicket2 = TestDataContainerFactory.CreateOrderTicket2DataContainer ();
-
-      DataContainer orderWithoutOrderItemDataContainer =
-          TestDataContainerFactory.CreateOrderWithoutOrderItemDataContainer ();
-
-      _dataManager.RegisterExistingDataContainer (order1);
-      _dataManager.RegisterExistingDataContainer (orderTicket1);
-      _dataManager.RegisterExistingDataContainer (orderTicket2);
-      _dataManager.RegisterExistingDataContainer (orderWithoutOrderItemDataContainer);
+      DataContainer order1 = CreateOrder1DataContainer ();
+      DataContainer orderTicket1 = CreateOrderTicket1DataContainer();
+      DataContainer orderTicket2 = CreateOrderTicket2DataContainer();
+      DataContainer orderWithoutOrderItemDataContainer = CreateOrderWithoutOrderItemDataContainer ();
 
       RelationEndPointID order1EndPointID = new RelationEndPointID (order1.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       ClientTransactionMock.SetRelatedObject (order1EndPointID, orderTicket2.DomainObject);
@@ -505,6 +481,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreEqual (nonEmptyTransaction.DataManager.DiscardedObjectCount, _dataManager.DiscardedObjectCount);
       Assert.AreEqual (nonEmptyTransaction.DataManager.DataContainerMap.Count, _dataManager.DataContainerMap.Count);
       Assert.AreEqual (nonEmptyTransaction.DataManager.RelationEndPointMap.Count, _dataManager.RelationEndPointMap.Count);
+    }
+
+    private DataContainer CreateOrder1DataContainer ()
+    {
+      var dataContainer = TestDataContainerFactory.CreateOrder1DataContainer ();
+      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+      return dataContainer;
+    }
+
+    private DataContainer CreateOrderTicket1DataContainer ()
+    {
+      var dataContainer = TestDataContainerFactory.CreateOrderTicket1DataContainer ();
+      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+      return dataContainer;
+    }
+
+    private DataContainer CreateOrderTicket2DataContainer ()
+    {
+      var dataContainer = TestDataContainerFactory.CreateOrderTicket2DataContainer ();
+      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+      return dataContainer;
+    }
+
+    private DataContainer CreateOrder2DataContainer ()
+    {
+      var dataContainer = TestDataContainerFactory.CreateOrder2DataContainer ();
+      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+      return dataContainer;
+    }
+
+    private DataContainer CreateOrderWithoutOrderItemDataContainer ()
+    {
+      var dataContainer = TestDataContainerFactory.CreateOrderWithoutOrderItemDataContainer ();
+      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+      return dataContainer;
+    }
+
+    private DataContainer CreateClassWithAllDataTypesDataContainer ()
+    {
+      var dataContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
+      dataContainer.SetDomainObject (ClientTransactionMock.GetObjectForDataContainer (dataContainer));
+      _dataManager.RegisterExistingDataContainer (dataContainer);
+      return dataContainer;
     }
   }
 }

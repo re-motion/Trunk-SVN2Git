@@ -130,14 +130,6 @@ public class DataManager : ISerializable, IDeserializationCallback
     return (Array.IndexOf (states, state) >= 0);
   }
 
-  public void RegisterExistingDataContainers (DataContainerCollection dataContainers)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-
-    foreach (DataContainer dataContainer in dataContainers)
-      RegisterExistingDataContainer (dataContainer); 
-  }
-
   public void RegisterExistingDataContainer (DataContainer dataContainer)
   {
     ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);

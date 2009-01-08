@@ -224,9 +224,9 @@ namespace Remotion.Data.DomainObjects
       DataContainer firstDataContainer = ClientTransactionScope.CurrentTransaction.CreateNewDataContainer (publicDomainObjectType);
       firstDataContainer.SetDomainObject (this);
 
-      _eventManager = new DomainObjectEventManager (this, true);
-
       Initialize (firstDataContainer.ID, firstDataContainer.ClientTransaction);
+
+      _eventManager = new DomainObjectEventManager (this, true);
     }
 
     /// <summary>
