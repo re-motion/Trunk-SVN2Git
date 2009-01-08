@@ -244,9 +244,15 @@ public abstract class ClientTransaction
   /// <returns>A <see cref="DataContainer"/> with the given <paramref name="id"/>.</returns>
   /// <remarks>
   /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, sets the
-  /// <see cref="ClientTransaction"/> of the loaded data container, and registers the container in the <see cref="DataContainerMap"/>. It does
-  /// not raise the <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
+  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
+  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
+  /// </para>
+  /// <para>
+  /// This method should not 
+  ///   set the <see cref="ClientTransaction"/> of the loaded data container,
+  ///   register the container in the <see cref="DataContainerMap"/>,
+  ///   or set the  <see cref="DomainObject"/> of the container.
+  /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>.
   /// </para>
   /// </remarks>
   protected abstract DataContainer LoadDataContainer (ObjectID id);
@@ -260,9 +266,15 @@ public abstract class ClientTransaction
   /// for an <see cref="ObjectID"/>. If false, the method should proceed as if the invalid ID hadn't been given.</param>
   /// <remarks>
   /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, sets the
-  /// <see cref="ClientTransaction"/> of the loaded data containers, and registers the containers in the <see cref="DataContainerMap"/>. It does
-  /// not raise the <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
+  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
+  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
+  /// </para>
+  /// <para>
+  /// This method should not 
+  ///   set the <see cref="ClientTransaction"/> of the loaded data containers,
+  ///   register the containers in the <see cref="DataContainerMap"/>,
+  ///   or set the  <see cref="DomainObject"/> of the containers.
+  /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>.
   /// </para>
   /// </remarks>
   protected abstract DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound);
@@ -272,9 +284,15 @@ public abstract class ClientTransaction
   /// </summary>
   /// <remarks>
   /// <para>
-  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, sets the
-  /// <see cref="ClientTransaction"/> of the loaded data container, and registers the container in the <see cref="DataContainerMap"/>. It does
-  /// not raise the <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
+  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
+  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
+  /// </para>
+  /// <para>
+  /// This method should not 
+  ///   set the <see cref="ClientTransaction"/> of the loaded data container,
+  ///   register the container in the <see cref="DataContainerMap"/>,
+  ///   or set the  <see cref="DomainObject"/> of the container.
+  /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>.
   /// </para>
   /// </remarks>
   /// <param name="domainObject">The <see cref="DomainObject"/> to load the <see cref="DataContainer"/> for. Must not be <see langword="null"/>.</param>
@@ -288,18 +306,27 @@ public abstract class ClientTransaction
   protected internal abstract DataContainer LoadDataContainerForExistingObject (DomainObject domainObject);
 
   /// <summary>
-  /// Loads the related <see cref="DomainObject"/> of a given <see cref="DataManagement.RelationEndPointID"/>.
+  /// Loads the related <see cref="DataContainer"/> for a given <see cref="DataManagement.RelationEndPointID"/>.
   /// </summary>
   /// <remarks>
-  /// This method raises the <see cref="Loaded"/> event.
+  /// <para>
+  /// This method raises the <see cref="IClientTransactionListener.ObjectLoading"/> event on the <see cref="TransactionEventSink"/>, but not the 
+  /// <see cref="IClientTransactionListener.ObjectsLoaded"/> event.
+  /// </para>
+  /// <para>
+  /// This method should not 
+  ///   set the <see cref="ClientTransaction"/> of the loaded data container,
+  ///   register the container in the <see cref="DataContainerMap"/>,
+  ///   or set the  <see cref="DomainObject"/> of the container.
+  /// All of these activities are performed by the callers of <see cref="LoadDataContainer"/>.
+  /// </para>
   /// </remarks>
   /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
   /// <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
-  /// <returns>The related <see cref="DomainObject"/>.</returns>
+  /// <returns>The related <see cref="DataContainer"/>.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
   /// <exception cref="System.InvalidCastException"><paramref name="relationEndPointID"/> does not refer to an 
   /// <see cref="DataManagement.ObjectEndPoint"/></exception>
-  /// <exception cref="DataManagement.ObjectDeletedException">The related <see cref="DomainObject"/> has been deleted.</exception>
   /// <exception cref="Persistence.PersistenceException">
   ///   The related object could not be loaded, but is mandatory.<br /> -or- <br />
   ///   The relation refers to non-existing object.<br /> -or- <br />
@@ -307,10 +334,9 @@ public abstract class ClientTransaction
   /// </exception>
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
-  ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
   ///   An error occurred while accessing the datasource.
   /// </exception>
-  protected internal abstract DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID);
+  protected abstract DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID);
 
   /// <summary>
   /// Loads all related <see cref="DomainObject"/>s of a given <see cref="DataManagement.RelationEndPointID"/>. 
@@ -1093,6 +1119,53 @@ public abstract class ClientTransaction
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
 
       return dataContainer.DomainObject;
+    }
+  }
+
+  /// <summary>
+  /// Loads the related <see cref="DomainObject"/> of a given <see cref="DataManagement.RelationEndPointID"/>.
+  /// </summary>
+  /// <remarks>
+  /// This method raises the <see cref="Loaded"/> event.
+  /// </remarks>
+  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> of the end point that should be evaluated.
+  /// <paramref name="relationEndPointID"/> must refer to an <see cref="ObjectEndPoint"/>. Must not be <see langword="null"/>.</param>
+  /// <returns>The related <see cref="DomainObject"/>.</returns>
+  /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointID"/> is <see langword="null"/>.</exception>
+  /// <exception cref="System.InvalidCastException"><paramref name="relationEndPointID"/> does not refer to an 
+  /// <see cref="DataManagement.ObjectEndPoint"/></exception>
+  /// <exception cref="DataManagement.ObjectDeletedException">The related <see cref="DomainObject"/> has been deleted.</exception>
+  /// <exception cref="Persistence.PersistenceException">
+  ///   The related object could not be loaded, but is mandatory.<br /> -or- <br />
+  ///   The relation refers to non-existing object.<br /> -or- <br />
+  ///   <paramref name="relationEndPointID"/> does not refer to an <see cref="DataManagement.ObjectEndPoint"/>.
+  /// </exception>
+  /// <exception cref="Persistence.StorageProviderException">
+  ///   The Mapping does not contain a class definition for the given <paramref name="relationEndPointID"/>.<br /> -or- <br />
+  ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
+  ///   An error occurred while accessing the datasource.
+  /// </exception>
+  protected internal DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
+  {
+    ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+    using (EnterNonDiscardingScope ())
+    {
+      DataContainer relatedDataContainer = LoadRelatedDataContainer (relationEndPointID);
+
+      if (relatedDataContainer != null)
+      {
+        RegisterLoadedDataContainer (relatedDataContainer);
+
+        var loadedDomainObjects = new DomainObjectCollection (new[] { relatedDataContainer.DomainObject }, true);
+        OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
+
+        return relatedDataContainer.DomainObject;
+      }
+      else
+      {
+        DataManager.RelationEndPointMap.RegisterObjectEndPoint (relationEndPointID, null);
+        return null;
+      }
     }
   }
 

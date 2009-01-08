@@ -192,14 +192,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
+    protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
+    {
+      DomainObject parentRelatedObject;
+      using (TransactionUnlocker.MakeWriteable (ParentTransaction))
+      {
+        parentRelatedObject = ParentTransaction.GetRelatedObject (relationEndPointID);
+      }
+      return parentRelatedObject != null ? LoadDataContainer (parentRelatedObject.ID) : null;
+    }
+
     private DataContainer TransferParentObject (DomainObject parentObject)
     {
       DataContainer parentDataContainer = ParentTransaction.GetDataContainer (parentObject);
       DataContainer thisDataContainer = TransferParentContainer (parentDataContainer);
       return thisDataContainer;
     }
-
-
+    
     private DataContainer TransferParentContainer (DataContainer parentDataContainer)
     {
       Assertion.IsFalse (DataManager.IsDiscarded (parentDataContainer.ID));
@@ -207,24 +216,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       DataContainer thisDataContainer = parentDataContainer.Clone();
       thisDataContainer.Commit(); // for the new DataContainer, the current parent DC state becomes the Unchanged state
       return thisDataContainer;
-    }
-
-    protected internal override DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
-    {
-      DomainObject parentObject;
-      using (TransactionUnlocker.MakeWriteable (ParentTransaction))
-      {
-        parentObject = ParentTransaction.GetRelatedObject (relationEndPointID);
-      }
-
-      if (parentObject != null)
-      {
-        Assertion.IsTrue (parentObject == GetDataContainer(parentObject).DomainObject, "invariant");
-      }
-      else
-        DataManager.RelationEndPointMap.RegisterObjectEndPoint (relationEndPointID, null);
-
-      return parentObject;
     }
 
     protected internal override DomainObjectCollection LoadRelatedObjects (RelationEndPointID relationEndPointID)

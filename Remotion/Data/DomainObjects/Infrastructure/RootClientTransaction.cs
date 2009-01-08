@@ -193,33 +193,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    protected internal override DomainObject LoadRelatedObject (RelationEndPointID relationEndPointID)
+    protected override DataContainer LoadRelatedDataContainer (RelationEndPointID relationEndPointID)
     {
-      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-      using (EnterNonDiscardingScope())
+      DomainObject domainObject = GetObject (relationEndPointID.ObjectID, false);
+      DataContainer relatedDataContainer;
+      using (var persistenceManager = new PersistenceManager())
       {
-        DomainObject domainObject = GetObject (relationEndPointID.ObjectID, false);
-
-        using (PersistenceManager persistenceManager = new PersistenceManager())
-        {
-          DataContainer relatedDataContainer = persistenceManager.LoadRelatedDataContainer (GetDataContainer(domainObject), relationEndPointID);
-          if (relatedDataContainer != null)
-          {
-            TransactionEventSink.ObjectLoading (relatedDataContainer.ID);
-            RegisterLoadedDataContainer (relatedDataContainer);
-
-            DomainObjectCollection loadedDomainObjects = new DomainObjectCollection (new[] { relatedDataContainer.DomainObject }, true);
-            OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
-
-            return relatedDataContainer.DomainObject;
-          }
-          else
-          {
-            DataManager.RelationEndPointMap.RegisterObjectEndPoint (relationEndPointID, null);
-            return null;
-          }
-        }
+        relatedDataContainer = persistenceManager.LoadRelatedDataContainer (GetDataContainer (domainObject), relationEndPointID);
+        Assertion.IsTrue (relatedDataContainer == null || DataManager.DataContainerMap[relatedDataContainer.ID] == null);
+        if (relatedDataContainer != null)
+          TransactionEventSink.ObjectLoading (relatedDataContainer.ID);
       }
+      return relatedDataContainer;
     }
 
     protected internal override DomainObjectCollection LoadRelatedObjects (RelationEndPointID relationEndPointID)
