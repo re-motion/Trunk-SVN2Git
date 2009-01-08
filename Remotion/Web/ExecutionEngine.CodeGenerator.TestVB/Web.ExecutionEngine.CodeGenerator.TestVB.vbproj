@@ -154,7 +154,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>53518</DevelopmentServerPort>
+          <DevelopmentServerPort>53520</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/dev/Remotion/trunk/Web/ExecutionEngine.CodeGenerator.TestVB</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
