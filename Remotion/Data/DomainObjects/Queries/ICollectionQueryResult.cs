@@ -26,7 +26,6 @@ namespace Remotion.Data.DomainObjects.Queries
   /// <remarks>
   /// <para>
   /// The result might contain duplicates or <see langword="null"/> values when calling <see cref="AsEnumerable"/> or <see cref="ToArray"/>. To filter
-  /// <see cref="IEnumerable{T}"/>
   /// them out, use the <see cref="Enumerable.Distinct{TSource}(IEnumerable{TSource})"/> and 
   /// <see cref="Enumerable.Where{TSource}(IEnumerable{TSource},Func{TSource,bool})"/> methods.
   /// </para>
