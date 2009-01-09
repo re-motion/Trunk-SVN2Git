@@ -30,11 +30,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return ClientTransaction.CreateRootTransaction();
     }
 
-    protected BindingClientTransaction ()
-    {
-      AddListener (new BindingClientTransactionListener (this));
-    }
-
     public override ClientTransaction CreateSubTransaction ()
     {
       throw new InvalidOperationException ("Binding transactions cannot have subtransactions.");

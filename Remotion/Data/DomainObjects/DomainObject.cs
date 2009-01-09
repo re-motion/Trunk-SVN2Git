@@ -424,8 +424,10 @@ namespace Remotion.Data.DomainObjects
         throw new InvalidOperationException ("The object cannot be initialized, it already has an ID.");
 
       _id = id;
-      clientTransaction.TransactionEventSink.ObjectGotID (this, _id);
+      if (clientTransaction is BindingClientTransaction)
+        _bindingTransaction = clientTransaction;
 
+      clientTransaction.TransactionEventSink.ObjectGotID (this, _id);
       clientTransaction.EnlistDomainObject (this);
     }
 
@@ -656,12 +658,6 @@ namespace Remotion.Data.DomainObjects
     {
       if (Deleted != null)
         Deleted (this, args);
-    }
-
-    internal void BindToTransaction (ClientTransaction bindingTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("bindingTransaction", bindingTransaction);
-      _bindingTransaction = bindingTransaction;
     }
 
     private DomainObjectEventManager CreateEventManager (bool isConstructedDomainObject)

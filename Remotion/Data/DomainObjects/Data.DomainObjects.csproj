@@ -156,7 +156,6 @@
     <Compile Include="FullGraphTraversalStrategy.cs" />
     <Compile Include="IDomainObjectTransactionContext.cs" />
     <Compile Include="Infrastructure\BindingClientTransaction.cs" />
-    <Compile Include="Infrastructure\BindingClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ClientTransactionWrapper.cs" />
     <Compile Include="Infrastructure\DomainObjectEventManager.cs" />
     <Compile Include="Infrastructure\DomainObjectTransactionContextIndexer.cs" />
