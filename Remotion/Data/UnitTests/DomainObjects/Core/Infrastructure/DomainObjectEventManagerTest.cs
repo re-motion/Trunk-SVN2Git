@@ -17,7 +17,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
@@ -68,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void EndObjectLoading_NormallyConstructedObject ()
     {
-      var eventManager = new DomainObjectEventManager (_order, true);
+      var eventManager = CreateEventManager (_order, true);
       eventManager.EndObjectLoading ();
       Assert.That (_onLoadedCalled, Is.True);
       Assert.That (_order.LastLoadMode, Is.EqualTo (LoadMode.DataContainerLoadedOnly));
@@ -77,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void EndObjectLoading_MagicallyConstructedObject ()
     {
-      var eventManager = new DomainObjectEventManager (_order, false);
+      var eventManager = CreateEventManager (_order, false);
       eventManager.EndObjectLoading ();
       Assert.That (_onLoadedCalled, Is.True);
       Assert.That (_order.LastLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
@@ -86,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void EndObjectLoading_MagicallyConstructedObject_Twice ()
     {
-      var eventManager = new DomainObjectEventManager (_order, false);
+      var eventManager = CreateEventManager (_order, false);
       eventManager.EndObjectLoading ();
       eventManager.EndObjectLoading ();
       
@@ -97,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void EndObjectLoading_NotifiesMixins ()
     {
-      var eventManager = new DomainObjectEventManager (_mixedOrder, false);
+      var eventManager = CreateEventManager (_mixedOrder, false);
       eventManager.EndObjectLoading ();
 
       Assert.That (_mixin.OnLoadedCalled, Is.True);
@@ -200,6 +199,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _eventManager.EndRollback ();
 
       Assert.That (_eventReceiver.HasRolledBackEventBeenCalled, Is.True);
+    }
+
+    private DomainObjectEventManager CreateEventManager (DomainObject domainObject, bool isConstructedDomainObject)
+    {
+      return (DomainObjectEventManager) PrivateInvoke.InvokeNonPublicMethod (domainObject, typeof (DomainObject), "CreateEventManager", isConstructedDomainObject);
     }
   }
 }

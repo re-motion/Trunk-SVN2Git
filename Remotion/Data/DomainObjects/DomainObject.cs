@@ -226,7 +226,7 @@ namespace Remotion.Data.DomainObjects
 
       Initialize (firstDataContainer.ID, firstDataContainer.ClientTransaction);
 
-      _eventManager = new DomainObjectEventManager (this, true);
+      _eventManager = CreateEventManager(true);
     }
 
     /// <summary>
@@ -330,7 +330,7 @@ namespace Remotion.Data.DomainObjects
       get
       {
         if (_eventManager == null)
-          _eventManager = new DomainObjectEventManager (this, false);
+          _eventManager = CreateEventManager (false);
 
         return _eventManager;
       }
@@ -509,7 +509,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     /// <exception cref="InvalidOperationException">The current property hasn't been initialized or there is no current property. Perhaps the domain 
     /// object was created with the <c>new</c> operator instead of using the <see cref="NewObject{T}"/> method, or the property is not virtual.</exception>
-    protected internal PropertyAccessor CurrentProperty
+    protected PropertyAccessor CurrentProperty
     {
       get
       {
@@ -549,12 +549,12 @@ namespace Remotion.Data.DomainObjects
     /// <see cref="LoadMode.DataContainerLoadedOnly"/> is passed to the method.
     /// </para>
     /// <para>
-    /// Note that even when an object is first loaded in a subtransaction, this method is called once with <see cref="LoadMode.WholeDomainObjectInitialized"/>,
+    /// Even when an object is first loaded in a subtransaction, this method is called once with <see cref="LoadMode.WholeDomainObjectInitialized"/>,
     /// and then once with <see cref="LoadMode.DataContainerLoadedOnly"/>. <see cref="LoadMode.WholeDomainObjectInitialized"/> can thus be used to
     /// identify when the object was actually loaded from the underlying storage.
     /// </para>
     /// </remarks>
-    protected internal virtual void OnLoaded (LoadMode loadMode)
+    protected virtual void OnLoaded (LoadMode loadMode)
     {
     }
 
@@ -562,7 +562,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="Committing"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnCommitting (EventArgs args)
+    protected virtual void OnCommitting (EventArgs args)
     {
       if (Committing != null)
         Committing (this, args);
@@ -572,7 +572,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="Committed"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnCommitted (EventArgs args)
+    protected virtual void OnCommitted (EventArgs args)
     {
       if (Committed != null)
         Committed (this, args);
@@ -582,7 +582,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="RollingBack"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnRollingBack (EventArgs args)
+    protected virtual void OnRollingBack (EventArgs args)
     {
       if (RollingBack != null)
         RollingBack (this, args);
@@ -592,7 +592,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="RolledBack"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnRolledBack (EventArgs args)
+    protected virtual void OnRolledBack (EventArgs args)
     {
       if (RolledBack != null)
         RolledBack (this, args);
@@ -602,7 +602,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="RelationChanging"/> event.
     /// </summary>
     /// <param name="args">A <see cref="RelationChangingEventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnRelationChanging (RelationChangingEventArgs args)
+    protected virtual void OnRelationChanging (RelationChangingEventArgs args)
     {
       if (RelationChanging != null)
         RelationChanging (this, args);
@@ -612,7 +612,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="RelationChanged"/> event.
     /// </summary>
     /// <param name="args">A <see cref="RelationChangedEventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnRelationChanged (RelationChangedEventArgs args)
+    protected virtual void OnRelationChanged (RelationChangedEventArgs args)
     {
       if (RelationChanged != null)
         RelationChanged (this, args);
@@ -622,7 +622,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="PropertyChanging"/> event.
     /// </summary>
     /// <param name="args">A <see cref="PropertyChangeEventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnPropertyChanging (PropertyChangeEventArgs args)
+    protected virtual void OnPropertyChanging (PropertyChangeEventArgs args)
     {
       if (PropertyChanging != null)
         PropertyChanging (this, args);
@@ -632,7 +632,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="PropertyChanged"/> event.
     /// </summary>
     /// <param name="args">A <see cref="PropertyChangeEventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnPropertyChanged (PropertyChangeEventArgs args)
+    protected virtual void OnPropertyChanged (PropertyChangeEventArgs args)
     {
       if (PropertyChanged != null)
         PropertyChanged (this, args);
@@ -642,7 +642,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="Deleting"/> event.
     /// </summary>
     /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnDeleting (EventArgs args)
+    protected virtual void OnDeleting (EventArgs args)
     {
       if (Deleting != null)
         Deleting (this, args);
@@ -652,7 +652,7 @@ namespace Remotion.Data.DomainObjects
     /// Raises the <see cref="Deleted"/> event.
     /// </summary>
     /// <param name="args">A <see cref="EventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnDeleted (EventArgs args)
+    protected virtual void OnDeleted (EventArgs args)
     {
       if (Deleted != null)
         Deleted (this, args);
@@ -662,6 +662,24 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("bindingTransaction", bindingTransaction);
       _bindingTransaction = bindingTransaction;
+    }
+
+    private DomainObjectEventManager CreateEventManager (bool isConstructedDomainObject)
+    {
+      return new DomainObjectEventManager (
+          this,
+          isConstructedDomainObject,
+          OnLoaded,
+          OnPropertyChanging,
+          OnPropertyChanged,
+          OnRelationChanging,
+          OnRelationChanged,
+          OnDeleting,
+          OnDeleted,
+          OnCommitting,
+          OnCommitted,
+          OnRollingBack,
+          OnRolledBack);
     }
   }
 }
