@@ -117,6 +117,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
+    public void InitializeWithEnumNotDefiningZero ()
+    {
+      PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition (_classDefinition, "PropertyName", "ColumnName", typeof (EnumNotDefiningZero), null, null, StorageClass.Persistent);
+      Assert.AreEqual (EnumNotDefiningZero.First, actual.DefaultValue);
+    }
+
+    [Test]
     public void InitializeWithNullableStringAndMaxLength ()
     {
       PropertyDefinition actual = ReflectionBasedPropertyDefinitionFactory.CreateReflectionBasedPropertyDefinition(_classDefinition, "PropertyName", "ColumnName", typeof (string), true, 100, StorageClass.Persistent);

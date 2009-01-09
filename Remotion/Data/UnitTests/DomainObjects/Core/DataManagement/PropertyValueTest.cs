@@ -729,6 +729,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (propertyValue.HasChanged, Is.False);
       Assert.That (((byte[]) propertyValue.Value)[0], Is.EqualTo (7));
     }
+
+    [Test]
+    public void DefaultPropertyValueWithEnumNotDefiningZero ()
+    {
+      PropertyDefinition definition = CreatePropertyDefinition ("testProperty", typeof (EnumNotDefiningZero), null);
+      var propertyValue = new PropertyValue (definition);
+      Assert.That (propertyValue.Value, Is.EqualTo (definition.DefaultValue));
+      Assert.That (propertyValue.OriginalValue, Is.EqualTo (definition.DefaultValue));
+    }
     
     private PropertyValue CreateIntPropertyValue (string name, int intValue)
     {

@@ -206,6 +206,8 @@
     <Compile Include="Persistence\Rdbms\IDataContainerLoaderHelper.cs" />
     <Compile Include="Persistence\Rdbms\ObjectIDLoader.cs" />
     <Compile Include="Persistence\Rdbms\OppositeClassDefinitionRetriever.cs" />
+    <Compile Include="Queries\CollectionQueryResult.cs" />
+    <Compile Include="Queries\ICollectionQueryResult.cs" />
     <Compile Include="Queries\QueryCache.cs" />
     <Compile Include="Queries\QueryFactory.cs" />
     <Compile Include="SimpleDomainObject.cs" />

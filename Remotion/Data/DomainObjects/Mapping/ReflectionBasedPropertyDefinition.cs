@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -91,6 +92,9 @@ namespace Remotion.Data.DomainObjects.Mapping
 
         if (_propertyType == typeof (string))
           return string.Empty;
+
+        if (_propertyType.IsEnum)
+          return EnumUtility.GetEnumMetadata (_propertyType).OrderedValues[0];
 
         return Activator.CreateInstance (_propertyType, new object[0]);
       }

@@ -14,8 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Remotion.Collections;
 
@@ -26,22 +26,50 @@ namespace Remotion.Utilities
   /// </summary>
   public static class EnumUtility
   {
-    private class EnumMetadata
+    public class EnumMetadata
     {
+      private readonly Dictionary<ulong, object> _enumValuesByNumericValue;
+      private readonly ReadOnlyCollection<object> _enumValues;
+
       public readonly Type UnderlyingType;
       public readonly bool IsFlagsEnum;
-      public readonly Dictionary<ulong, object> EnumValues;
 
       public EnumMetadata (Type enumType)
       {
         UnderlyingType = Enum.GetUnderlyingType (enumType);
         IsFlagsEnum = Attribute.IsDefined(enumType, typeof (FlagsAttribute), false);
 
-        EnumValues = new Dictionary<ulong, object>();
-        foreach (object value in Enum.GetValues (enumType))
+        var enumValueArray = Enum.GetValues (enumType);
+
+        var enumValues = new List<object> (enumValueArray.Length);
+        _enumValuesByNumericValue = new Dictionary<ulong, object> ();
+
+        foreach (object value in enumValueArray)
         {
-          EnumValues[ToUInt64 (value)]= value;
+          enumValues.Add (value);
+          _enumValuesByNumericValue[ToUInt64 (value)] = value;
         }
+        _enumValues = enumValues.AsReadOnly ();
+      }
+
+      public ReadOnlyCollection<object> OrderedValues
+      {
+        get { return _enumValues; }
+      }
+
+      public IEnumerable<ulong> NumericValues
+      {
+        get { return _enumValuesByNumericValue.Keys; }
+      }
+
+      public object GetValueByNumericValue (ulong numericValue)
+      {
+        return _enumValuesByNumericValue[numericValue];
+      }
+
+      public bool ContainsNumericValue (ulong numericValue)
+      {
+        return _enumValuesByNumericValue.ContainsKey (numericValue);
       }
     }
 
@@ -145,10 +173,10 @@ namespace Remotion.Utilities
       if (enumMetaData.IsFlagsEnum)
       {
         if (numericEnumValue == 0L)
-          return enumMetaData.EnumValues.ContainsKey (numericEnumValue);
+          return enumMetaData.ContainsNumericValue (numericEnumValue);
 
         var missingBits = ulong.MaxValue;
-        foreach (var definedValue in enumMetaData.EnumValues.Keys)
+        foreach (var definedValue in enumMetaData.NumericValues)
         {
           if ((definedValue & numericEnumValue) == definedValue)
             missingBits &= ~definedValue;
@@ -157,11 +185,11 @@ namespace Remotion.Utilities
       }
       else
       {
-        return enumMetaData.EnumValues.ContainsKey (numericEnumValue);
+        return enumMetaData.ContainsNumericValue (numericEnumValue);
       }
     }
 
-    private static EnumMetadata GetEnumMetadata (Type enumType)
+    public static EnumMetadata GetEnumMetadata (Type enumType)
     {
       return s_cache.GetOrCreateValue (enumType, t => new EnumMetadata (t));
     }

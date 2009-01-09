@@ -235,6 +235,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectCheckUtilityTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransaction.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\PropertyTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SerializableClass.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SerializableClassImplementingISerializable.cs" />
@@ -483,6 +484,7 @@
     <Compile Include="DomainObjects\Core\TableInheritance\OppositeClassDefinitionRetrieverTest.cs" />
     <Compile Include="DomainObjects\Core\TableInheritance\TestDomain\SpecificFolder.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
+    <Compile Include="DomainObjects\TestDomain\ClassWithEnumNotDefiningZero.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithoutProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassWithSerializationCallbacks.cs" />
     <Compile Include="DomainObjects\Core\Serialization\SerializationCallbackTest.cs" />
@@ -490,6 +492,7 @@
     <Compile Include="DomainObjects\Core\Interception\InterceptedPropertyIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomainFactory.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject_ImplementingISerializable.cs" />
+    <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
     <Compile Include="Linq\ClausesTest\AdditionalFromClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\ClauseFinderTest.cs" />
     <Compile Include="Linq\ClausesTest\FromClauseBaseTest.cs" />
