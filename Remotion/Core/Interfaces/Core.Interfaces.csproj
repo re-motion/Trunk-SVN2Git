@@ -109,6 +109,7 @@
     <Compile Include="Utilities\ArgumentItemNullException.cs" />
     <Compile Include="Utilities\ArgumentItemTypeException.cs" />
     <Compile Include="Utilities\ArgumentTypeException.cs" />
+    <Compile Include="Utilities\ArgumentItemDuplicateException.cs" />
     <Compile Include="Utilities\DesignerUtility.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>

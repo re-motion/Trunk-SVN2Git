@@ -244,6 +244,7 @@
     <Compile Include="DomainObjects\Core\Interception\TestDomain\DirectlyInstantiableDO.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SpecificDerivedDO.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
+    <Compile Include="DomainObjects\Core\Queries\CollectionQueryResultTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryCacheTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Queries\QueryFileElementTest.cs" />
@@ -328,7 +329,7 @@
     <Compile Include="DomainObjects\Core\DomainObjects\RepositoryAccessorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectGraphTraverserTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\MultiTransactionTest.cs" />
-    <Compile Include="DomainObjects\Core\DomainObjects\ObjectListIListTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjects\ObjectListTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyIndexerTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\RelationChangeBaseTest.cs" />

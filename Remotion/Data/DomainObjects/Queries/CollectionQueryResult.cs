@@ -16,6 +16,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
@@ -36,15 +38,33 @@ namespace Remotion.Data.DomainObjects.Queries
   /// parameter is not known at compile time.
   /// </para>
   /// </remarks>
-  public class CollectionQueryResult<T> : ICollectionQueryResult where T: DomainObject
+  public class CollectionQueryResult<T> : ICollectionQueryResult
+      where T : DomainObject
   {
+    private readonly IQuery _query;
+    private readonly T[] _queryResult;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CollectionQueryResult{T}"/> class.
+    /// </summary>
+    /// <param name="query">The query that yielded the <paramref name="queryResult"/></param>.
+    /// <param name="queryResult">The elements making up the query result. The <see cref="IEnumerable{T}"/> is enumerated exactly once by this class.</param>
+    public CollectionQueryResult (IQuery query, IEnumerable<T> queryResult)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+      ArgumentUtility.CheckNotNull ("queryResult", queryResult);
+
+      _query = query;
+      _queryResult = queryResult.ToArray ();
+    }
+
     /// <summary>
     /// Gets the number of <see cref="DomainObject"/> instances returned by the query.
     /// </summary>
     /// <value>The result count.</value>
     public int Count
     {
-      get { throw new System.NotImplementedException(); }
+      get { return _queryResult.Length; }
     }
 
     /// <summary>
@@ -53,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <value>The query that yielded the result.</value>
     public IQuery Query
     {
-      get { throw new System.NotImplementedException(); }
+      get { return _query; }
     }
 
     /// <summary>
@@ -62,9 +82,23 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <returns>
     /// 	<c>true</c> if result set contains duplicates; otherwise, <c>false</c>.
     /// </returns>
+    /// <remarks>
+    /// This method needs additional memory to hold up to <see cref="Count"/> elements to check for duplicates, and it iterates over the result 
+    /// elements, visiting each at most once.
+    /// </remarks>
     public bool ContainsDuplicates ()
     {
-      throw new System.NotImplementedException();
+      var visitedElements = new HashSet<T> ();
+
+      foreach (var resultElement in _queryResult)
+      {
+        if (visitedElements.Contains (resultElement))
+          return true;
+
+        visitedElements.Add (resultElement);
+      }
+
+      return false;
     }
 
     /// <summary>
@@ -73,9 +107,12 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <returns>
     /// 	<c>true</c> if result set contains <see langword="null"/> values; otherwise, <c>false</c>.
     /// </returns>
+    /// <remarks>
+    /// This method iterates over the result elements, visiting each at most once.
+    /// </remarks>
     public bool ContainsNulls ()
     {
-      throw new System.NotImplementedException();
+      return _queryResult.Contains (null);
     }
 
     /// <summary>
@@ -86,12 +123,12 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </returns>
     public IEnumerable<T> AsEnumerable ()
     {
-      throw new System.NotImplementedException ();
+      return _queryResult;
     }
 
     IEnumerable<DomainObject> ICollectionQueryResult.AsEnumerable ()
     {
-      throw new System.NotImplementedException ();
+      return _queryResult;
     }
 
     /// <summary>
@@ -102,12 +139,12 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </returns>
     public T[] ToArray ()
     {
-      throw new System.NotImplementedException ();
+      return (T[]) _queryResult.Clone();
     }
 
     DomainObject[] ICollectionQueryResult.ToArray ()
     {
-      throw new System.NotImplementedException ();
+      return ToArray ();
     }
 
     /// <summary>
@@ -120,12 +157,29 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <exception cref="InvalidOperationException">The query contains <see langword="null"/> values or duplicates.</exception>
     public ObjectList<T> ToObjectList ()
     {
-      throw new System.NotImplementedException ();
+      return ToObjectList (_queryResult);
     }
 
     ObjectList<DomainObject> ICollectionQueryResult.ToObjectList ()
     {
-      throw new System.NotImplementedException();
+      return ToObjectList<DomainObject> (_queryResult);
+    }
+
+    private ObjectList<TResult> ToObjectList<TResult> (IEnumerable<TResult> values)
+      where TResult : DomainObject
+    {
+      try
+      {
+        return new ObjectList<TResult> (values, false);
+      }
+      catch (ArgumentItemNullException ex)
+      {
+        throw new InvalidOperationException ("Cannot create an ObjectList for the query result because it contains a null value: " + ex.Message, ex);
+      }
+      catch (ArgumentItemDuplicateException ex)
+      {
+        throw new InvalidOperationException ("Cannot create an ObjectList for the query result because it contains a duplicate value: " + ex.Message, ex);
+      }
     }
   }
 }

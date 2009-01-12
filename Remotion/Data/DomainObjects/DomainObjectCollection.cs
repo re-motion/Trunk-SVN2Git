@@ -335,8 +335,17 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
     private DomainObjectCollection (IEnumerable domainObjects, bool makeCollectionReadOnly)
     {
+      int index = 0;
       foreach (DomainObject domainObject in domainObjects)
-        Add (domainObject);
+      {
+        if (domainObject == null)
+          throw new ArgumentItemNullException ("domainObjects", index);
+        if (Contains (domainObject.ID))
+          throw new ArgumentItemDuplicateException ("domainObjects", index, domainObject.ID);
+
+          Add (domainObject);
+        ++index;
+      }
 
       this.SetIsReadOnly (makeCollectionReadOnly);
     }

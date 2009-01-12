@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -30,6 +31,11 @@ namespace Remotion.Data.DomainObjects
 
     public ObjectList (ObjectList<T> collection, bool isCollectionReadOnly)
       : base (collection, isCollectionReadOnly)
+    {
+    }
+
+    public ObjectList (IEnumerable<T> collection, bool isCollectionReadOnly)
+      : base (collection.Cast<DomainObject>(), isCollectionReadOnly)
     {
     }
 

@@ -21,18 +21,20 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
   [TestFixture]
-  public class ObjectListIListTest : ClientTransactionBaseTest
+  public class ObjectListTest : ClientTransactionBaseTest
   {
     private Order _order;
     private OrderItem _orderItem1;
     private OrderItem _orderItem2;
     private OrderItem _orderItem3;
     private OrderItem _orderItem4;
-    private IList<OrderItem> _orderItemList;
+    private ObjectList<OrderItem> _orderItemList;
+    private IList<OrderItem> _orderItemListAsIList;
 
     public override void SetUp ()
     {
@@ -43,43 +45,81 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       _orderItem2 = _order.OrderItems[1];
       _orderItem3 = OrderItem.GetObject (DomainObjectIDs.OrderItem3);
       _orderItem4 = OrderItem.GetObject (DomainObjectIDs.OrderItem4);
-      _orderItemList = _order.OrderItems;
+      _orderItemListAsIList = _order.OrderItems;
     }
 
     [Test]
-    public void ObjectListIsIList ()
+    public void Initialization_WithIEnumerable_ReadOnlyFalse ()
+    {
+      var list = new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }, false);
+      Assert.That (list, Is.EqualTo (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }));
+      Assert.That (list.IsReadOnly, Is.False);
+    }
+
+    [Test]
+    public void Initialization_WithIEnumerable_ReadOnlyTrue ()
+    {
+      var list = new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }, true);
+      Assert.That (list, Is.EqualTo (new[] { _orderItem1, _orderItem2, _orderItem3, _orderItem4 }));
+      Assert.That (list.IsReadOnly, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentItemDuplicateException), ExpectedMessage = "Item 1 of argument domainObjects is a duplicate "
+        + "('OrderItem|ad620a11-4bc4-4791-bcf4-a0770a08c5b0|System.Guid').")]
+    public void Initialization_WithEnumerableWithDuplicates ()
+    {
+      new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem1 }, false);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentItemNullException), ExpectedMessage = "Item 0 of argument domainObjects is null.")]
+    public void Initialization_WithEnumerableWithNulls ()
+    {
+      new ObjectList<OrderItem> (new OrderItem[] { null }, false);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentItemNullException), ExpectedMessage = "Item 2 of argument domainObjects is null.")]
+    public void Initialization_WithEnumerableWithLaterNulls ()
+    {
+      new ObjectList<OrderItem> (new[] { _orderItem1, _orderItem2, null }, false);
+    }
+
+    [Test]
+    public void ObjectList_IsIList ()
     {
       IList<OrderItem> list = new ObjectList<OrderItem> ();
       Assert.IsInstanceOfType (typeof (IList<OrderItem>), list);
     }
 
     [Test]
-    public void IndexOf ()
+    public void IList_IndexOf ()
     {
       IList<OrderItem> emptyList = new ObjectList<OrderItem> ();
       Assert.AreEqual (-1, emptyList.IndexOf (_orderItem1));
-      Assert.AreEqual (0, _orderItemList.IndexOf (_orderItem1));
-      Assert.AreEqual (1, _orderItemList.IndexOf (_orderItem2));
-      Assert.AreEqual (-1, _orderItemList.IndexOf (_orderItem3));
+      Assert.AreEqual (0, _orderItemListAsIList.IndexOf (_orderItem1));
+      Assert.AreEqual (1, _orderItemListAsIList.IndexOf (_orderItem2));
+      Assert.AreEqual (-1, _orderItemListAsIList.IndexOf (_orderItem3));
     }
 
     [Test]
-    public void Insert ()
+    public void IList_Insert ()
     {
       IList<OrderItem> list = new ObjectList<OrderItem> ();
       list.Insert (0, _orderItem2);
-      Assert.That (list, Is.EqualTo (new OrderItem[] { _orderItem2 }));
+      Assert.That (list, Is.EqualTo (new[] { _orderItem2 }));
       list.Insert (0, _orderItem1);
-      Assert.That (list, Is.EqualTo (new OrderItem[] { _orderItem1, _orderItem2 }));
+      Assert.That (list, Is.EqualTo (new[] { _orderItem1, _orderItem2 }));
       list.Insert (1, _orderItem3);
-      Assert.That (list, Is.EqualTo (new OrderItem[] { _orderItem1, _orderItem3, _orderItem2 }));
+      Assert.That (list, Is.EqualTo (new[] { _orderItem1, _orderItem3, _orderItem2 }));
       list.Insert (3, _orderItem4);
-      Assert.That (list, Is.EqualTo (new OrderItem[] { _orderItem1, _orderItem3, _orderItem2, _orderItem4 }));
+      Assert.That (list, Is.EqualTo (new[] { _orderItem1, _orderItem3, _orderItem2, _orderItem4 }));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot insert an item into a read-only collection.")]
-    public void InsertThrowsIfReadOnly ()
+    public void IList_InsertThrowsIfReadOnly ()
     {
       IList<OrderItem> readOnlyList = new ObjectList<OrderItem> (new ObjectList<OrderItem> (), true);
       readOnlyList.Insert (0, _orderItem2);
@@ -89,148 +129,149 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ArgumentOutOfRangeException),
         ExpectedMessage = "Index is out of range. Must be non-negative and less than or equal to the size of the collection.",
         MatchType = MessageMatch.Contains)]
-    public void InsertThrowsOnWrongIndex ()
+    public void IList_InsertThrowsOnWrongIndex ()
     {
       IList<OrderItem> list = new ObjectList<OrderItem> ();
       list.Insert (1, _orderItem2);
     }
 
     [Test]
-    public void Item ()
+    public void IList_Item ()
     {
-      Assert.AreSame (_orderItem1, _orderItemList[0]);
-      Assert.AreSame (_orderItem2, _orderItemList[1]);
+      Assert.AreSame (_orderItem1, _orderItemListAsIList[0]);
+      Assert.AreSame (_orderItem2, _orderItemListAsIList[1]);
 
-      Assert.That (_orderItemList, Is.EqualTo (new object[] { _orderItem1, _orderItem2 }));
+      Assert.That (_orderItemListAsIList, Is.EqualTo (new object[] { _orderItem1, _orderItem2 }));
 
-      _orderItemList[0] = _orderItem3;
+      _orderItemListAsIList[0] = _orderItem3;
 
-      Assert.That (_orderItemList, Is.EqualTo (new object[] { _orderItem3, _orderItem2 }));
+      Assert.That (_orderItemListAsIList, Is.EqualTo (new object[] { _orderItem3, _orderItem2 }));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentOutOfRangeException),
         ExpectedMessage = "Index was out of range. Must be non-negative and less than the size of the collection.",
         MatchType = MessageMatch.Contains)]
-    public void ItemGetThrowsOnWrongIndex ()
+    public void IList_ItemGetThrowsOnWrongIndex ()
     {
-      Dev.Null = _orderItemList[2];
+      Dev.Null = _orderItemListAsIList[2];
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentOutOfRangeException),
         ExpectedMessage = "Index is out of range. Must be non-negative and less than the size of the collection.",
         MatchType = MessageMatch.Contains)]
-    public void ItemSetThrowsOnWrongIndex ()
+    public void IList_ItemSetThrowsOnWrongIndex ()
     {
-      _orderItemList[-1] = null;
+      _orderItemListAsIList[-1] = null;
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot modify a read-only collection.")]
-    public void ItemSetThrowsOnReadOnlyList ()
+    public void IList_ItemSetThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>)_orderItemList, true);
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>)_orderItemListAsIList, true);
       readOnlyList[0] = null;
     }
 
     [Test]
-    public void Add ()
+    public void IList_Add ()
     {
       IList<OrderItem> list = new ObjectList<OrderItem> ();
       list.Add (_orderItem1);
       Assert.That (list, Is.EqualTo (new object[] { _orderItem1 }));
+      
       list.Add (_orderItem2);
       Assert.That (list, Is.EqualTo (new object[] { _orderItem1, _orderItem2 }));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot add an item to a read-only collection.")]
-    public void AddThrowsOnReadOnlyList ()
+    public void IList_AddThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>) _orderItemList, true);
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>) _orderItemListAsIList, true);
       readOnlyList.Add (_orderItem1);
     }
 
     [Test]
-    public void Contains ()
+    public void IList_Contains ()
     {
-      Assert.IsTrue (_orderItemList.Contains (_orderItem1));
-      Assert.IsTrue (_orderItemList.Contains (_orderItem2));
-      Assert.IsFalse (_orderItemList.Contains (_orderItem3));
+      Assert.IsTrue (_orderItemListAsIList.Contains (_orderItem1));
+      Assert.IsTrue (_orderItemListAsIList.Contains (_orderItem2));
+      Assert.IsFalse (_orderItemListAsIList.Contains (_orderItem3));
     }
 
     [Test]
-    public void CopyToTightFit ()
+    public void IList_CopyToTightFit ()
     {
-      OrderItem[] destination = new OrderItem[2];
-      _orderItemList.CopyTo (destination, 0);
+      var destination = new OrderItem[2];
+      _orderItemListAsIList.CopyTo (destination, 0);
       Assert.That (destination, Is.EqualTo (new object[] { _orderItem1, _orderItem2 }));
     }
 
     [Test]
-    public void CopyToLargeFit ()
+    public void IList_CopyToLargeFit ()
     {
-      OrderItem[] destination = new OrderItem[5];
-      _orderItemList.CopyTo (destination, 0);
+      var destination = new OrderItem[5];
+      _orderItemListAsIList.CopyTo (destination, 0);
       Assert.That (destination, Is.EqualTo (new object[] { _orderItem1, _orderItem2, null, null, null }));
-      _orderItemList.CopyTo (destination, 1);
+      _orderItemListAsIList.CopyTo (destination, 1);
       Assert.That (destination, Is.EqualTo (new object[] { _orderItem1, _orderItem1, _orderItem2, null, null}));
-      _orderItemList.CopyTo (destination, 3);
+      _orderItemListAsIList.CopyTo (destination, 3);
       Assert.That (destination, Is.EqualTo (new object[] { _orderItem1, _orderItem1, _orderItem2, _orderItem1, _orderItem2}));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentOutOfRangeException),
         ExpectedMessage = "Index must be greater than or equal to zero.", MatchType = MessageMatch.Contains)]
-    public void CopyToNegativeIndex ()
+    public void IList_CopyToNegativeIndex ()
     {
-      OrderItem[] destination = new OrderItem[5];
-      _orderItemList.CopyTo (destination, -1);
+      var destination = new OrderItem[5];
+      _orderItemListAsIList.CopyTo (destination, -1);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Index cannot be equal to or greater than the length of the array.",
         MatchType = MessageMatch.Contains)]
-    public void CopyToGreatIndex ()
+    public void IList_CopyToGreatIndex ()
     {
-      OrderItem[] destination = new OrderItem[5];
-      _orderItemList.CopyTo (destination, 5);
+      var destination = new OrderItem[5];
+      _orderItemListAsIList.CopyTo (destination, 5);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException),
         ExpectedMessage = "The number of items in the source collection is greater than the available space from index to the end of the destination array.",
         MatchType = MessageMatch.Contains)]
-    public void CopyToTooLittleSpace ()
+    public void IList_CopyToTooLittleSpace ()
     {
-      OrderItem[] destination = new OrderItem[5];
-      _orderItemList.CopyTo (destination, 4);
+      var destination = new OrderItem[5];
+      _orderItemListAsIList.CopyTo (destination, 4);
     }
 
     [Test]
-    public void Remove ()
+    public void IList_Remove ()
     {
-      Assert.IsFalse (_orderItemList.Remove (_orderItem3));
-      Assert.IsTrue (_orderItemList.Remove (_orderItem1));
-      Assert.IsFalse (_orderItemList.Remove (_orderItem1));
-      Assert.IsTrue (_orderItemList.Remove (_orderItem2));
-      Assert.IsFalse (_orderItemList.Remove (_orderItem2));
+      Assert.IsFalse (_orderItemListAsIList.Remove (_orderItem3));
+      Assert.IsTrue (_orderItemListAsIList.Remove (_orderItem1));
+      Assert.IsFalse (_orderItemListAsIList.Remove (_orderItem1));
+      Assert.IsTrue (_orderItemListAsIList.Remove (_orderItem2));
+      Assert.IsFalse (_orderItemListAsIList.Remove (_orderItem2));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
-    public void RemoveThrowsOnReadOnlyList ()
+    public void IList_RemoveThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>) _orderItemList, true);
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>) _orderItemListAsIList, true);
       readOnlyList.Remove (_orderItem1);
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot remove an item from a read-only collection.")]
-    public void RemoveInexistentThrowsOnReadOnlyList ()
+    public void IList_RemoveInexistentThrowsOnReadOnlyList ()
     {
-      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>) _orderItemList, true);
+      IList<OrderItem> readOnlyList = new ObjectList<OrderItem> ((ObjectList<OrderItem>) _orderItemListAsIList, true);
       readOnlyList.Remove (_orderItem3);
     }
 
@@ -242,7 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.IsFalse (enumerator.MoveNext());
       }
 
-      using (IEnumerator<OrderItem> enumerator = _orderItemList.GetEnumerator())
+      using (IEnumerator<OrderItem> enumerator = _orderItemListAsIList.GetEnumerator())
       {
         Assert.IsTrue (enumerator.MoveNext());
         Assert.AreSame (_orderItem1, enumerator.Current);
@@ -263,7 +304,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Linq ()
     {
-      var result = from oi in _order.OrderItems where oi.Position == 0 select oi;
+      var result = from oi in _order.OrderItems where oi.Product == _orderItem1.Product select oi;
+      Assert.That (result.ToArray(), Is.EqualTo (new[] {_orderItem1}));
     }
   }
 }
