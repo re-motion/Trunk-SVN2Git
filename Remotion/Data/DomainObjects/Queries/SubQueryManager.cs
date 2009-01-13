@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <remarks>
     /// This query manager executes all queries indirectly, via the <see cref="SubClientTransaction.ParentTransaction"/> of this manager's transaction.
     /// </remarks>
-    public DomainObjectCollection GetCollection (IQuery query)
+    public QueryResult<DomainObject> GetCollection (IQuery query)
     {
       using (TransactionUnlocker.MakeWriteable (ClientTransaction.ParentTransaction))
       {
@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <remarks>
     /// This query manager executes all queries indirectly, via the <see cref="SubClientTransaction.ParentTransaction"/> of this manager's transaction.
     /// </remarks>
-    public ObjectList<T> GetCollection<T> (IQuery query) where T: DomainObject
+    public QueryResult<T> GetCollection<T> (IQuery query) where T: DomainObject
     {
       using (TransactionUnlocker.MakeWriteable (ClientTransaction.ParentTransaction))
       {

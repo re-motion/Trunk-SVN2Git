@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var queryManagerMock = MockRepository.GenerateMock<IQueryManager> ();
       clientTransactionStub.SetQueryManager (queryManagerMock);
 
-      var expectedResult = new ObjectList<Order> ();
+      var expectedResult = new QueryResult<Order> (query, new Order[0]);
       queryManagerMock.Expect (mock => mock.GetCollection<Order> (query)).Return (expectedResult);
       queryManagerMock.Replay ();
 

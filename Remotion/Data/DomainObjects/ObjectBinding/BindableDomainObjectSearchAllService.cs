@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ArgumentUtility.CheckNotNull ("type", type);
 
       var query = GetQuery (type);
-      return clientTransaction.QueryManager.GetCollection (query).Cast<IBusinessObject>().ToArray();
+      return clientTransaction.QueryManager.GetCollection (query).AsEnumerable().Cast<IBusinessObject>().ToArray();
     }
 
     private IQuery GetQuery (Type type)

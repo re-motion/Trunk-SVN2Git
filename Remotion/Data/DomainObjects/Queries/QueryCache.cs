@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// The <paramref name="queryGenerator"/> delegate is only evaluated if no query with the given <paramref name="id"/> is found in the cache. However,
     /// the query is always executed.
     /// </remarks>
-    public ObjectList<T> ExecuteCollectionQuery<T> (ClientTransaction transaction, string id, Func<DomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
+    public QueryResult<T> ExecuteCollectionQuery<T> (ClientTransaction transaction, string id, Func<DomainObjectQueryable<T>, IQueryable> queryGenerator) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);

@@ -52,12 +52,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
-      DomainObjectCollection customers = _queryManager.GetCollection (query);
+      var customers = _queryManager.GetCollection (query);
 
       Assert.IsNotNull (customers);
       Assert.AreEqual (1, customers.Count);
-      Assert.AreEqual (DomainObjectIDs.Customer1, customers[0].ID);
-      Assert.AreEqual (typeof (Customer), customers[0].GetPublicDomainObjectType());
+      Assert.AreEqual (DomainObjectIDs.Customer1, customers.ToArray ()[0].ID);
+      Assert.AreEqual (typeof (Customer), customers.ToArray ()[0].GetPublicDomainObjectType ());
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
-      ObjectList<Customer> customers = _queryManager.GetCollection<Customer> (query);
+      var customers = _queryManager.GetCollection<Customer> (query).ToObjectList();
       Assert.IsNotNull (customers);
       Assert.AreEqual (1, customers.Count);
       Assert.AreEqual (DomainObjectIDs.Customer1, customers[0].ID);
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderByOfficialQuery");
       query.Parameters.Add ("@officialID", DomainObjectIDs.Official1);
 
-      ObjectList<Order> orders = _queryManager.GetCollection<Order> (query);
+      var orders = _queryManager.GetCollection<Order> (query).ToCustomCollection();
       Assert.AreEqual (5, orders.Count);
       Assert.That (orders, Is.EquivalentTo (new object[]
       {
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetStoredProcedureResult ()
     {
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery"));
+      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
 
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQueryWithParameter");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (query);
+      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (query).ToCustomCollection();
 
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in transaction
 
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery"));
+      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
       Assert.AreEqual (2, orders.Count, "Order count");
 
       foreach (Order order in orders)
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
         Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in newTransaction
       }
 
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery"));
+      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
       Assert.AreEqual (2, orders.Count, "Order count");
 
       using (newTransaction.EnterDiscardingScope ())

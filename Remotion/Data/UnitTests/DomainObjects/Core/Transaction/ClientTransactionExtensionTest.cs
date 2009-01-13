@@ -1197,8 +1197,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       using (_newTransaction.EnterNonDiscardingScope ())
       {
-        DomainObjectCollection queryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-        Assert.AreEqual (1, queryResult.Count);
+        var queryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query).ToArray();
+        Assert.AreEqual (1, queryResult.Length);
       }
 
       _mockRepository.VerifyAll();

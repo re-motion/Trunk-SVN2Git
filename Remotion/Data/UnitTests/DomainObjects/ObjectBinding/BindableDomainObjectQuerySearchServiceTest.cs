@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       Assert.IsTrue (_property.SupportsSearchAvailableObjects);
       IBusinessObject[] results = _service.Search (_orderItem, _property, new DefaultSearchArguments("QueryWithSpecificCollectionType"));
-      Assert.That (results, Is.EqualTo (ClientTransactionMock.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType"))));
+      Assert.That (results, Is.EqualTo (ClientTransactionMock.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType")).ToArray()));
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       Assert.IsTrue (_property.SupportsSearchAvailableObjects);
       IBusinessObject[] results = _service.Search (_orderItem, _property, new DefaultSearchArguments ("QueryWithSpecificCollectionType"));
-      Assert.That (results, Is.EqualTo (ClientTransactionMock.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType"))));
+      Assert.That (results, Is.EqualTo (ClientTransactionMock.QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType")).ToArray()));
     }
 
     [Test]

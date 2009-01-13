@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries
@@ -34,28 +35,28 @@ namespace Remotion.Data.DomainObjects.Queries
   /// <see cref="Enumerable.Where{TSource}(IEnumerable{TSource},Func{TSource,bool})"/> methods.
   /// </para>
   /// <para>
-  /// This class implements the <see cref="ICollectionQueryResult"/> interface, which can be used if the <typeparamref name="T">T</typeparamref> type
+  /// This class implements the <see cref="IQueryResult"/> interface, which can be used if the <typeparamref name="T">T</typeparamref> type
   /// parameter is not known at compile time.
   /// </para>
   /// </remarks>
-  public class CollectionQueryResult<T> : ICollectionQueryResult
+  public class QueryResult<T> : IQueryResult
       where T : DomainObject
   {
     private readonly IQuery _query;
     private readonly T[] _queryResult;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CollectionQueryResult{T}"/> class.
+    /// Initializes a new instance of the <see cref="QueryResult{T}"/> class.
     /// </summary>
     /// <param name="query">The query that yielded the <paramref name="queryResult"/></param>.
     /// <param name="queryResult">The elements making up the query result. The <see cref="IEnumerable{T}"/> is enumerated exactly once by this class.</param>
-    public CollectionQueryResult (IQuery query, IEnumerable<T> queryResult)
+    public QueryResult (IQuery query, T[] queryResult)
     {
       ArgumentUtility.CheckNotNull ("query", query);
       ArgumentUtility.CheckNotNull ("queryResult", queryResult);
 
       _query = query;
-      _queryResult = queryResult.ToArray ();
+      _queryResult = queryResult;
     }
 
     /// <summary>
@@ -126,7 +127,7 @@ namespace Remotion.Data.DomainObjects.Queries
       return _queryResult;
     }
 
-    IEnumerable<DomainObject> ICollectionQueryResult.AsEnumerable ()
+    IEnumerable<DomainObject> IQueryResult.AsEnumerable ()
     {
       return _queryResult;
     }
@@ -142,7 +143,7 @@ namespace Remotion.Data.DomainObjects.Queries
       return (T[]) _queryResult.Clone();
     }
 
-    DomainObject[] ICollectionQueryResult.ToArray ()
+    DomainObject[] IQueryResult.ToArray ()
     {
       return ToArray ();
     }
@@ -160,9 +161,35 @@ namespace Remotion.Data.DomainObjects.Queries
       return ToObjectList (_queryResult);
     }
 
-    ObjectList<DomainObject> ICollectionQueryResult.ToObjectList ()
+    ObjectList<DomainObject> IQueryResult.ToObjectList ()
     {
       return ToObjectList<DomainObject> (_queryResult);
+    }
+
+    /// <summary>
+    /// Returns the query result set as the custom collection specified by the query <see cref="ObjectList{T}"/>. If the result set contains
+    /// duplicates or <see langword="null"/> values, this method throws an exception. If no custom collection was specified, a standard
+    /// <see cref="DomainObjectCollection"/> is returned.
+    /// </summary>
+    /// <returns>
+    /// An instance of <see cref="DomainObjectCollection"/> containing the <see cref="DomainObject"/> instances yielded by the query. The
+    /// concrete type of this collection is determined by the <see cref="IQuery.CollectionType"/> property of the query used.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">The query contains <see langword="null"/> values or duplicates.</exception>
+    public DomainObjectCollection ToCustomCollection ()
+    {
+      var collectionType = Query.CollectionType ?? typeof (DomainObjectCollection);
+      var collection = DomainObjectCollection.Create (collectionType);
+      try
+      {
+        collection.AddRange (_queryResult);
+      }
+      catch (Exception ex)
+      {
+        throw new InvalidOperationException (string.Format ("Cannot create a custom collection of type '{0}' for the query result: {1}", 
+            collectionType.Name, ex.Message), ex);
+      }
+      return collection;
     }
 
     private ObjectList<TResult> ToObjectList<TResult> (IEnumerable<TResult> values)
@@ -172,13 +199,9 @@ namespace Remotion.Data.DomainObjects.Queries
       {
         return new ObjectList<TResult> (values, false);
       }
-      catch (ArgumentItemNullException ex)
+      catch (Exception ex)
       {
-        throw new InvalidOperationException ("Cannot create an ObjectList for the query result because it contains a null value: " + ex.Message, ex);
-      }
-      catch (ArgumentItemDuplicateException ex)
-      {
-        throw new InvalidOperationException ("Cannot create an ObjectList for the query result because it contains a duplicate value: " + ex.Message, ex);
+        throw new InvalidOperationException ("Cannot create an ObjectList for the query result: " + ex.Message, ex);
       }
     }
   }

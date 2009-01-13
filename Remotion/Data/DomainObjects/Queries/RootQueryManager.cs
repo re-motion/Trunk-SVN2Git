@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -110,31 +111,12 @@ public class RootQueryManager : IQueryManager
   /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
   ///   An error occurred while executing the query.
   /// </exception>
-  public DomainObjectCollection GetCollection (IQuery query)
+  public QueryResult<DomainObject> GetCollection (IQuery query)
   {
     ArgumentUtility.CheckNotNull ("query", query);
     Type collectionType = query.CollectionType;
 
-    return GetCollection(query, collectionType, null);
-  }
-
-  private DomainObjectCollection GetCollection (IQuery query, Type collectionType, Type requiredItemType)
-  {
-    if (query.QueryType == QueryType.Scalar)
-      throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
-
-    using (_clientTransaction.EnterNonDiscardingScope ())
-    {
-      using (StorageProviderManager storageProviderManager = new StorageProviderManager())
-      {
-        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
-        DataContainerCollection dataContainers = provider.ExecuteCollectionQuery (query);
-
-        DomainObjectCollection queryResult = _clientTransaction.MergeLoadedDomainObjects (dataContainers, collectionType, requiredItemType);
-        _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult, query);
-        return queryResult;
-      }
-    }
+    return GetCollection<DomainObject> (query, collectionType);
   }
 
   /// <summary>
@@ -158,7 +140,7 @@ public class RootQueryManager : IQueryManager
   /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
   /// An error occurred while executing the query.
   /// </exception>
-  public ObjectList<T> GetCollection<T> (IQuery query) where T : DomainObject
+  public QueryResult<T> GetCollection<T> (IQuery query) where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("query", query);
 
@@ -181,7 +163,7 @@ public class RootQueryManager : IQueryManager
 
     try
     {
-      return (ObjectList<T>) GetCollection (query, collectionType, typeof (T));
+      return GetCollection<T> (query, collectionType);
     }
     catch (ArgumentTypeException ex)
     {
@@ -190,5 +172,29 @@ public class RootQueryManager : IQueryManager
       throw new InvalidTypeException (message, ex);
     }
   }
+
+  private QueryResult<T> GetCollection<T> (IQuery query, Type collectionType)
+    where T : DomainObject
+  {
+    if (query.QueryType == QueryType.Scalar)
+      throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
+
+    using (_clientTransaction.EnterNonDiscardingScope ())
+    {
+      using (var storageProviderManager = new StorageProviderManager ())
+      {
+        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
+        DataContainerCollection dataContainers = provider.ExecuteCollectionQuery (query);
+
+        DomainObjectCollection queryResult = _clientTransaction.MergeLoadedDomainObjects (dataContainers, collectionType, typeof (T));
+        _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult, query);
+
+        var resultArray = new T[queryResult.Count];
+        queryResult.CopyTo (resultArray, 0);
+        return new QueryResult<T> (query, resultArray);
+      }
+    }
+  }
+
 }
 }

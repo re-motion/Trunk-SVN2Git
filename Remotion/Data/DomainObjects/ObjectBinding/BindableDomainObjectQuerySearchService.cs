@@ -46,11 +46,11 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       if (clientTransaction == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or the referencing object.");
 
-      DomainObjectCollection result = clientTransaction.QueryManager.GetCollection (QueryFactory.CreateQuery (definition));
+      var result = clientTransaction.QueryManager.GetCollection (QueryFactory.CreateQuery (definition));
       var availableObjects = new IBusinessObjectWithIdentity[result.Count];
 
       if (availableObjects.Length > 0)
-        result.CopyTo (availableObjects, 0);
+        result.ToArray().CopyTo (availableObjects, 0);
 
       return availableObjects;
     }

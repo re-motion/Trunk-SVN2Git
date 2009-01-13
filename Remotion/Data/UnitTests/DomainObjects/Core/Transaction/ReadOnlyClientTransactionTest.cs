@@ -391,11 +391,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void CanExecuteQueryIfAlreadyLoaded ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
-      OrderCollection loadedOrders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query);
+      OrderCollection loadedOrders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
 
       ClientTransactionMock.IsReadOnly = true;
       
-      OrderCollection orders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query);
+      OrderCollection orders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
       Assert.AreEqual (loadedOrders.Count, orders.Count);
       Assert.AreSame (loadedOrders[0], orders[0]);
     }

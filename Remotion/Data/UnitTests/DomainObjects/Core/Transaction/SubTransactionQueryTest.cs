@@ -46,12 +46,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
-        DomainObjectCollection queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-        Customer queriedObject = (Customer) queriedObjects[0];
+        var queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+        var array = queriedObjects.ToArray ();
+        Customer queriedObject = (Customer) array[0];
 
         Assert.IsNotNull (queriedObjects);
         Assert.AreEqual (1, queriedObjects.Count);
-        Assert.AreEqual (DomainObjectIDs.Customer1, queriedObjects[0].ID);
+        Assert.AreEqual (DomainObjectIDs.Customer1, array[0].ID);
 
         Assert.AreEqual (new DateTime(2000, 1, 1), queriedObject.CustomerSince);
         Assert.AreSame (Order.GetObject (DomainObjectIDs.Order1), queriedObject.Orders[0]);
@@ -66,12 +67,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
-        ObjectList<Customer> queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection<Customer> (query);
-        Customer queriedObject = queriedObjects[0];
+        var queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection<Customer> (query);
+        var array = queriedObjects.ToArray ();
+        Customer queriedObject = array[0];
 
         Assert.IsNotNull (queriedObjects);
         Assert.AreEqual (1, queriedObjects.Count);
-        Assert.AreEqual (DomainObjectIDs.Customer1, queriedObjects[0].ID);
+        Assert.AreEqual (DomainObjectIDs.Customer1, array[0].ID);
 
         Assert.AreEqual (new DateTime (2000, 1, 1), queriedObject.CustomerSince);
         Assert.AreSame (Order.GetObject (DomainObjectIDs.Order1), queriedObject.Orders[0]);
@@ -81,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ObjectQueryInSubAndRootTransaction ()
     {
-      DomainObjectCollection queriedObjectsInSub;
+      IQueryResult queriedObjectsInSub;
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
@@ -93,14 +95,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       var queryInRoot = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       queryInRoot.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
-      DomainObjectCollection queriedObjectsInRoot = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (queryInRoot);
-      Assert.That (queriedObjectsInRoot, Is.EqualTo (queriedObjectsInSub));
+      IQueryResult queriedObjectsInRoot = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (queryInRoot);
+      Assert.That (queriedObjectsInRoot.ToArray(), Is.EqualTo (queriedObjectsInSub.ToArray()));
     }
 
     [Test]
     public void QueriedObjectsCanBeUsedInParentTransaction ()
     {
-      DomainObjectCollection queriedObjects;
+      IQueryResult queriedObjects;
 
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
@@ -110,12 +112,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
       }
 
-      Customer queriedObject = (Customer) queriedObjects[0];
+      Customer queriedObject = (Customer) queriedObjects.ToArray()[0];
 
       Assert.IsNotNull (queriedObjects);
       Assert.AreEqual (1, queriedObjects.Count);
-      Assert.AreEqual (DomainObjectIDs.Customer1, queriedObjects[0].ID);
-    
+      
+      Assert.AreEqual (DomainObjectIDs.Customer1, queriedObject.ID);
       Assert.AreEqual (new DateTime (2000, 1, 1), queriedObject.CustomerSince);
       Assert.AreSame (Order.GetObject (DomainObjectIDs.Order1), queriedObject.Orders[0]);
     }
@@ -123,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ChangedComittedQueriedObjectsCanBeUsedInParentTransaction ()
     {
-      DomainObjectCollection queriedObjects;
+      IQueryResult queriedObjects;
       Customer queriedObject;
 
       Order newOrder;
@@ -133,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
         queriedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-        queriedObject = (Customer) queriedObjects[0];
+        queriedObject = (Customer) queriedObjects.ToArray() [0];
 
         newOrder = Order.NewObject ();
         newOrder.Official = Official.NewObject ();
@@ -147,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       Assert.IsNotNull (queriedObjects);
       Assert.AreEqual (1, queriedObjects.Count);
-      Assert.AreEqual (DomainObjectIDs.Customer1, queriedObjects[0].ID);
+      Assert.AreEqual (DomainObjectIDs.Customer1, queriedObjects.ToArray()[0].ID);
 
       Assert.IsNull (queriedObject.CustomerSince);
       Assert.AreSame (newOrder, queriedObject.Orders[0]);

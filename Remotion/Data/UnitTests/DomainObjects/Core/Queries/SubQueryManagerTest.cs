@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetCollection_NonGeneric_DelegatedToParent ()
     {
-      var expectedResult = new DomainObjectCollection ();
+      var expectedResult = new QueryResult<DomainObject> (_queryMock, new DomainObject[0]);
 
       _parentQueryManagerMock
           .Expect (mock => mock.GetCollection (_queryMock))
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetCollection_Generic_DelegatedToParent ()
     {
-      var expectedResult = new ObjectList<Order> ();
+      var expectedResult = new QueryResult<Order> (_queryMock, new Order[0]);
 
       _parentQueryManagerMock
           .Expect (mock => mock.GetCollection<Order> (_queryMock))

@@ -1147,7 +1147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.ReplayAll ();
 
-      DomainObjectCollection loadedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
+      var loadedObjects = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query).ToArray();
       Dev.Null = ((Order) loadedObjects[0]).InternalDataContainer;
 
       _mockRepository.VerifyAll ();
@@ -1192,8 +1192,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       _mockRepository.ReplayAll ();
 
-      DomainObjectCollection queryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query);
-      Assert.AreEqual (1, queryResult.Count);
+      var queryResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (query).ToArray();
+      Assert.AreEqual (1, queryResult.Length);
 
       _mockRepository.VerifyAll ();
     }

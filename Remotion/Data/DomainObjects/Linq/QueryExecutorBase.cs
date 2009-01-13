@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
       IQuery query = CreateQuery("<dynamic query>", queryModel);
-      return ClientTransaction.Current.QueryManager.GetCollection (query);
+      return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable();
     }
 
     private void CheckProjection (IEvaluation evaluation)

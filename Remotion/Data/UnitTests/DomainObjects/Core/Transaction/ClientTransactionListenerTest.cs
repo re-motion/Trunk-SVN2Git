@@ -222,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void FilterQueryResult ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
-      OrderCollection orders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query);
+      OrderCollection orders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
 
       Expect (delegate
         {

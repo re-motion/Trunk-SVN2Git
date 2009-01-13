@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
 
     public void Requery ()
     {
-      Result = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (SearchObject.CreateQuery());
+      Result = ClientTransactionScope.CurrentTransaction.QueryManager.GetCollection (SearchObject.CreateQuery()).ToCustomCollection();
     }
 
     private void Step1 ()
