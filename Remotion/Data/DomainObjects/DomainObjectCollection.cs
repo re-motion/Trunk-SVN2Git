@@ -327,28 +327,6 @@ namespace Remotion.Data.DomainObjects
     {
     }
 
-    /// <summary>
-    /// Initializes a new <b>DomainObjectCollection</b> as a shallow copy of a given enumeration of <see cref="DomainObject"/>s.
-    /// </summary>
-    /// <param name="domainObjects">The <see cref="DomainObject"/>s to copy. Must not be <see langword="null"/>.</param>
-    /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
-    private DomainObjectCollection (IEnumerable domainObjects, bool makeCollectionReadOnly)
-    {
-      int index = 0;
-      foreach (DomainObject domainObject in domainObjects)
-      {
-        if (domainObject == null)
-          throw new ArgumentItemNullException ("domainObjects", index);
-        if (Contains (domainObject.ID))
-          throw new ArgumentItemDuplicateException ("domainObjects", index, domainObject.ID);
-
-          Add (domainObject);
-        ++index;
-      }
-
-      this.SetIsReadOnly (makeCollectionReadOnly);
-    }
 
     /// <summary>
     /// Initializes a new <b>DomainObjectCollection</b> as a shallow copy of a <see cref="DataManagement.DataContainerCollection"/>s.
@@ -361,6 +339,19 @@ namespace Remotion.Data.DomainObjects
     {
       Assertion.IsTrue (base.Count == dataContainers.Count);
     }
+    
+    /// <summary>
+    /// Initializes a new <b>DomainObjectCollection</b> as a shallow copy of a given enumeration of <see cref="DomainObject"/>s.
+    /// </summary>
+    /// <param name="domainObjects">The <see cref="DomainObject"/>s to copy. Must not be <see langword="null"/>.</param>
+    /// <param name="makeCollectionReadOnly">Indicates whether the new collection should be read-only.</param>
+    /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
+    private DomainObjectCollection (IEnumerable domainObjects, bool makeCollectionReadOnly)
+    {
+      AddRange(domainObjects);
+      this.SetIsReadOnly (makeCollectionReadOnly);
+    }
+
 
     private static IEnumerable<DomainObject> GetDomainObjectsFromDataContainers (DataContainerCollection dataContainers)
     {
@@ -568,7 +559,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>The zero-based index where the <paramref name="domainObject"/> has been added.</returns>
     /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
-    /// <exception cref="System.ArgumentException"><paramref name="domainObject"/> is not of type <see cref="RequiredItemType"/> or one of its derived types.</exception>
+    /// <exception cref="ArgumentTypeException"><paramref name="domainObject"/> is not of type <see cref="RequiredItemType"/> or one of its derived types.</exception>
     /// <exception cref="DataManagement.ClientTransactionsDifferException">
     ///   <paramref name="domainObject"/> belongs to a <see cref="ClientTransaction"/> that is different from the <see cref="ClientTransaction"/> 
     ///   managing this collection. 
@@ -598,6 +589,45 @@ namespace Remotion.Data.DomainObjects
 
       return Count - 1;
     }
+
+    /// <summary>
+    /// Adds a range of <see cref="DomainObject"/> instances to this collection, calling <see cref="Add"/> for each single item.
+    /// </summary>
+    /// <param name="domainObjects">The domain objects to add.</param>
+    /// <exception cref="ArgumentNullException">The <paramref name="domainObjects"/> parameter is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentItemNullException">The range contains a <see langword="null"/> element.</exception>
+    /// <exception cref="ArgumentItemDuplicateException">The range contains a duplicate element.</exception>
+    /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
+    /// <exception cref="ArgumentItemTypeException">An element in the range is not of type <see cref="RequiredItemType"/> or one of its derived types.</exception>
+    /// <exception cref="DataManagement.ClientTransactionsDifferException">
+    ///   An element in the range belongs to a <see cref="ClientTransaction"/> that is different from the <see cref="ClientTransaction"/> 
+    ///   managing this collection. 
+    ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
+    /// </exception>
+    public void AddRange (IEnumerable domainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+      int index = 0;
+      foreach (DomainObject domainObject in domainObjects)
+      {
+        if (domainObject == null)
+          throw new ArgumentItemNullException ("domainObjects", index);
+        if (Contains (domainObject.ID))
+          throw new ArgumentItemDuplicateException ("domainObjects", index, domainObject.ID);
+
+        try
+        {
+          Add (domainObject);
+        }
+        catch (ArgumentTypeException ex)
+        {
+          throw new ArgumentItemTypeException ("domainObjects", index, ex.ExpectedType, ex.ActualType);
+        }
+        ++index;
+      }
+    }
+
 
     /// <summary>
     /// Removes a <see cref="DomainObject"/> from the collection.

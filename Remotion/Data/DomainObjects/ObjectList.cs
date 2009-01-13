@@ -75,6 +75,11 @@ namespace Remotion.Data.DomainObjects
       base.Add (item);
     }
 
+    public void AddRange (IEnumerable<T> items)
+    {
+      base.AddRange (items);
+    }
+
     bool ICollection<T>.Contains (T item)
     {
       return base.ContainsObject (item);
