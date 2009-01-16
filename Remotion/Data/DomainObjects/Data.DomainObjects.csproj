@@ -142,6 +142,7 @@
     <Compile Include="ClientTransactionScope.cs" />
     <Compile Include="DataManagement\DomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\IDomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\ReadOnlyDomainObjectCollectionData.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
     <Compile Include="DataManagement\CollectionEndPointModification.cs" />
     <Compile Include="DataManagement\RelationEndPointModificationCollection.cs" />

@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public interface IDomainObjectCollectionData : IEnumerable<DomainObject>
   {
     int Count { get; }
+    bool IsReadOnly { get; }
 
     bool ContainsObjectID (ObjectID objectID);
 

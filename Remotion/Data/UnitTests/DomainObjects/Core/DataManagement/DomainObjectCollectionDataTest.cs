@@ -41,6 +41,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void IsReadOnly ()
+    {
+      Assert.That (_data.IsReadOnly, Is.False);
+    }
+
+    [Test]
     public void Insert ()
     {
       Add (_order1);
@@ -136,6 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_data.IndexOf (_order1.ID), Is.EqualTo (0));
       Assert.That (_data.IndexOf (_order2.ID), Is.EqualTo (1));
       Assert.That (_data.IndexOf (_order3.ID), Is.EqualTo (2));
+      Assert.That (_data.IndexOf (_order4.ID), Is.EqualTo (-1));
     }
 
     [Test]

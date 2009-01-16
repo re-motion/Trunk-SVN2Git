@@ -25,6 +25,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _orderedObjectIDs.Count; }
     }
 
+    public bool IsReadOnly
+    {
+      get { return false; }
+    }
+
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
