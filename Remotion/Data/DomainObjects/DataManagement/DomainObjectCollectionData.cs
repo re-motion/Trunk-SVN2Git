@@ -18,6 +18,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly List<ObjectID> _orderedObjectIDs = new List<ObjectID> ();
     private readonly Dictionary<ObjectID, DomainObject> _objectsByID = new Dictionary<ObjectID, DomainObject> ();
 
+    public DomainObjectCollectionData ()
+    {
+    }
+
+    public DomainObjectCollectionData (IEnumerable<DomainObject> domainObjects)
+    {
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+      foreach (var domainObject in domainObjects)
+      {
+        Insert (Count, domainObject);
+      }
+    }
+
     public int Version { get; private set; }
 
     public int Count

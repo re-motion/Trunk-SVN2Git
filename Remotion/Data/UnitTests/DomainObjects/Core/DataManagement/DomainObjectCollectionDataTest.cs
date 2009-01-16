@@ -41,6 +41,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Initialization_WithValues ()
+    {
+      var data = new DomainObjectCollectionData (new[] {_order1, _order2, _order3});
+      Assert.That (data.ToArray (), Is.EqualTo (new[] { _order1, _order2, _order3 }));
+      Assert.That (data.Count, Is.EqualTo (3));
+    }
+
+    [Test]
     public void IsReadOnly ()
     {
       Assert.That (_data.IsReadOnly, Is.False);
