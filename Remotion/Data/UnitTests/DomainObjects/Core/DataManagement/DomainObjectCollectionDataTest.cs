@@ -9,6 +9,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using System.Linq;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -281,6 +282,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Add (_order4);
 
       enumerator.MoveNext ();
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      Add (_order1);
+      Add (_order2);
+      Add (_order3);
+
+      var result = Serializer.SerializeAndDeserialize (_data);
+      Assert.That (result.Count, Is.EqualTo (3));
     }
 
     private void Add (Order order)

@@ -12,6 +12,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// This class acts as a read-only adapter for another <see cref="IDomainObjectCollectionData"/> object. Every modifying method of the
   /// <see cref="IDomainObjectTransactionContext"/> will throw an <see cref="InvalidOperationException"/> when invoked on this class.
   /// </summary>
+  [Serializable]
   public class ReadOnlyDomainObjectCollectionData : IDomainObjectCollectionData
   {
     private readonly IDomainObjectCollectionData _wrappedData;

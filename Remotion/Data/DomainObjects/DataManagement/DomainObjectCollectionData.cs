@@ -13,6 +13,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <see cref="IDomainObjectCollectionData"/> interface. The data is stored by means of two collections, an ordered <see cref="List{T}"/> of 
   /// <see cref="ObjectID"/>s and a <see cref="Dictionary{TKey,TValue}"/> mapping the IDs to <see cref="DomainObject"/> instances.
   /// </summary>
+  [Serializable]
   public class DomainObjectCollectionData : IDomainObjectCollectionData
   {
     private readonly List<ObjectID> _orderedObjectIDs = new List<ObjectID> ();

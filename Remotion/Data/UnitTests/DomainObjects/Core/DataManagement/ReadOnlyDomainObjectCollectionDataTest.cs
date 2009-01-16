@@ -6,6 +6,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -107,6 +108,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Replace_Throws ()
     {
       _data.Replace (_order1.ID, _order1);
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var result = Serializer.SerializeAndDeserialize (_data);
+      Assert.That (result.Count, Is.EqualTo (3));
     }
   }
 }
