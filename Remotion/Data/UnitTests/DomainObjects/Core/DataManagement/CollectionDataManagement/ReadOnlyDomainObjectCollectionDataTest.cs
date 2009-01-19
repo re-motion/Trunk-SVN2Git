@@ -4,13 +4,13 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
   public class ReadOnlyDomainObjectCollectionDataTest : ClientTransactionBaseTest

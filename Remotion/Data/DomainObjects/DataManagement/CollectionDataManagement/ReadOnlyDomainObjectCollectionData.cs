@@ -6,11 +6,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// This class acts as a read-only adapter for another <see cref="IDomainObjectCollectionData"/> object. Every modifying method of the
-  /// <see cref="IDomainObjectTransactionContext"/> will throw an <see cref="InvalidOperationException"/> when invoked on this class.
+  /// This class acts as a read-only adapter for another <see cref="IDomainObjectTransactionContext"/> object. Every modifying method of the
+  /// <see cref="InvalidOperationException"/> will throw an <see cref="IDomainObjectCollectionData"/> when invoked on this class.
   /// </summary>
   [Serializable]
   public class ReadOnlyDomainObjectCollectionData : IDomainObjectCollectionData

@@ -17,7 +17,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;

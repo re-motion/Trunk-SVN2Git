@@ -5,12 +5,12 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects.DataManagement;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
   public class DomainObjectCollectionDataTest : ClientTransactionBaseTest
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The collection already contains an object with ID "
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
+                                                                              + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
     public void Insert_SameItemTwice ()
     {
       Add (_order1);
@@ -226,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "The collection does not contain a DomainObject with ID "
-        + "'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'.")]
+                                                                         + "'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'.")]
     public void Replace_NonExisting ()
     {
       _data.Replace (_order2.ID, _order4);

@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
   /// Provides an an encapsulation of the data stored inside a <see cref="DomainObjectCollection"/>, implementing the 

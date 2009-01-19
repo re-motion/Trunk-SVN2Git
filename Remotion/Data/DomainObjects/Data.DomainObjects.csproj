@@ -140,9 +140,9 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
-    <Compile Include="DataManagement\DomainObjectCollectionData.cs" />
-    <Compile Include="DataManagement\IDomainObjectCollectionData.cs" />
-    <Compile Include="DataManagement\ReadOnlyDomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\ReadOnlyDomainObjectCollectionData.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
     <Compile Include="DataManagement\CollectionEndPointModification.cs" />
     <Compile Include="DataManagement\RelationEndPointModificationCollection.cs" />
