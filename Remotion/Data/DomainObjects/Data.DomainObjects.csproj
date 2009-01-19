@@ -143,6 +143,7 @@
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ReadOnlyDomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\TypeCheckingCollectionData.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
     <Compile Include="DataManagement\CollectionEndPointModification.cs" />
     <Compile Include="DataManagement\RelationEndPointModificationCollection.cs" />
