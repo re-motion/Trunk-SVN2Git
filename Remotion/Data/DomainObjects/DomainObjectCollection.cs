@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -105,7 +106,7 @@ namespace Remotion.Data.DomainObjects
   /// </para>
   /// </remarks>
   [Serializable]
-  public class DomainObjectCollection : CommonCollection, ICloneable, IList
+  public class DomainObjectCollection : ICloneable, IList
   {
     // types
 
@@ -172,7 +173,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("collectionType", collectionType);
       ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
 
-      DomainObjectCollection domainObjects = (DomainObjectCollection) ReflectionUtility.CreateObject (collectionType);
+      var domainObjects = (DomainObjectCollection) ReflectionUtility.CreateObject (collectionType);
       domainObjects._requiredItemType = requiredItemType;
 
       foreach (DataContainer dataContainer in dataContainers)
@@ -273,6 +274,7 @@ namespace Remotion.Data.DomainObjects
     /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event DomainObjectCollectionChangeEventHandler Removed;
 
+    private IDomainObjectCollectionData _data;
     private Type _requiredItemType;
     
     [NonSerialized]
@@ -296,6 +298,7 @@ namespace Remotion.Data.DomainObjects
     public DomainObjectCollection (Type requiredItemType)
     {
       _requiredItemType = requiredItemType;
+      _data = new DomainObjectCollectionData ();
     }
 
     // standard constructor for collections
@@ -312,7 +315,7 @@ namespace Remotion.Data.DomainObjects
     public DomainObjectCollection (DomainObjectCollection collection, bool makeCollectionReadOnly)
         : this ((IEnumerable) ArgumentUtility.CheckNotNull ("collection", collection), makeCollectionReadOnly)
     {
-      Assertion.IsTrue (base.Count == collection.Count);
+      Assertion.IsTrue (Count == collection.Count);
       _requiredItemType = collection.RequiredItemType;
     }
 
@@ -337,7 +340,7 @@ namespace Remotion.Data.DomainObjects
     public DomainObjectCollection (DataContainerCollection dataContainers, bool makeCollectionReadOnly)
         : this (GetDomainObjectsFromDataContainers (ArgumentUtility.CheckNotNull ("dataContainers", dataContainers)), makeCollectionReadOnly)
     {
-      Assertion.IsTrue (base.Count == dataContainers.Count);
+      Assertion.IsTrue (Count == dataContainers.Count);
     }
     
     /// <summary>
@@ -348,10 +351,10 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObjects"/> is <see langword="null"/>.</exception>
     private DomainObjectCollection (IEnumerable domainObjects, bool makeCollectionReadOnly)
     {
+      _data = new DomainObjectCollectionData ();
       AddRange(domainObjects);
-      this.SetIsReadOnly (makeCollectionReadOnly);
+      SetIsReadOnly(makeCollectionReadOnly);
     }
-
 
     private static IEnumerable<DomainObject> GetDomainObjectsFromDataContainers (DataContainerCollection dataContainers)
     {
@@ -360,6 +363,27 @@ namespace Remotion.Data.DomainObjects
     }
 
     // methods and properties
+
+    /// <summary>
+    /// Gets the number of elements contained in the <see cref="DomainObjectCollection"/>.
+    /// </summary>
+    /// <returns>
+    /// The number of elements contained in the <see cref="DomainObjectCollection"/>.
+    /// </returns>
+    public int Count
+    {
+      get { return _data.Count; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this collection is read-only.
+    /// </summary>
+    /// <returns>true if this collection is read-only; otherwise, false.
+    /// </returns>
+    public bool IsReadOnly
+    {
+      get { return _data.IsReadOnly; }
+    }
 
     /// <summary>
     /// Adds all items of the given <see cref="DomainObjectCollection"/> to the <b>DomainObjectCollection</b>, that are not already part of it.
@@ -465,7 +489,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      return BaseContains (domainObject.ID, domainObject);
+      return _data.ContainsObjectID (domainObject.ID) && object.ReferenceEquals (_data.GetObject (domainObject.ID), domainObject);
     }
 
     /// <summary>
@@ -478,7 +502,7 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      return BaseContainsKey (id);
+      return _data.ContainsObjectID (id);
     }
 
     /// <summary>
@@ -495,7 +519,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="System.InvalidOperationException"><paramref name="value"/> is already part of the collection.</exception>
     public DomainObject this [int index]
     {
-      get { return (DomainObject) BaseGetObject (index); }
+      get { return _data.GetObject (index); }
       set
       {
         CheckIndexForIndexer ("index", index);
@@ -549,7 +573,7 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>The indexer returns <see langword="null"/> if the given <paramref name="id"/> was not found.</remarks>
     public DomainObject this [ObjectID id]
     {
-      get { return (DomainObject) BaseGetObject (id); }
+      get { return _data.GetObject (id); }
     }
 
     /// <summary>
@@ -724,12 +748,10 @@ namespace Remotion.Data.DomainObjects
     /// <returns>The zero-based index of the <paramref name="domainObject"/>, if found; otherwise, -1.</returns>
     public int IndexOf (DomainObject domainObject)
     {
-      ObjectID id = null;
-
       if (domainObject != null)
-        id = domainObject.ID;
-
-      return IndexOf (id);
+        return IndexOf (domainObject.ID);
+      else
+        return -1;
     }
 
     /// <summary>
@@ -739,7 +761,10 @@ namespace Remotion.Data.DomainObjects
     /// <returns>The zero-based index of the <paramref name="id"/>, if found; otherwise, -1.</returns>
     public int IndexOf (ObjectID id)
     {
-      return BaseIndexOfKey (id);
+      if (id != null)
+        return _data.IndexOf (id);
+      else
+        return -1;
     }
 
     /// <summary>
@@ -794,7 +819,35 @@ namespace Remotion.Data.DomainObjects
       get { return false; }
     }
 
-    #region Explicitly implemeted IList Members
+    /// <summary>
+    /// Copies the elements of the collection to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
+    /// </summary>
+    /// <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from the collection. The 
+    /// <see cref="T:System.Array"/> must have zero-based indexing.</param>
+    /// <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+    /// <exception cref="T:System.ArgumentNullException">
+    /// 	<paramref name="array"/> is null.
+    /// </exception>
+    /// <exception cref="T:System.ArgumentOutOfRangeException">
+    /// 	<paramref name="index"/> is less than zero.
+    /// </exception>
+    /// <exception cref="T:System.ArgumentException">
+    /// 	<paramref name="array"/> is multidimensional.
+    /// -or-
+    /// <paramref name="index"/> is equal to or greater than the length of <paramref name="array"/>.
+    /// -or-
+    /// The number of elements in this collection is greater than the available space from <paramref name="index"/> to the end of the destination 
+    /// <paramref name="array"/>.
+    /// </exception>
+    /// <exception cref="T:System.ArgumentException">
+    /// The type of the source collection cannot be cast automatically to the type of the destination <paramref name="array"/>.
+    /// </exception>
+    public void CopyTo (Array array, int index)
+    {
+      _data.ToArray ().CopyTo (array, index);
+    }
+
+    #region Explicitly implemeted IList and ICollection Members
 
     /// <summary>
     /// Gets or sets the element at the specified index. 
@@ -894,13 +947,27 @@ namespace Remotion.Data.DomainObjects
       return Add ((DomainObject) value);
     }
 
+    object ICollection.SyncRoot
+    {
+      get { return this; }
+    }
+
+    bool ICollection.IsSynchronized
+    {
+      get { return false; }
+    }
+
     #endregion
 
     #region IEnumerable<DomainObject> members
-    public new IEnumerator<DomainObject> GetEnumerator ()
+    public IEnumerator<DomainObject> GetEnumerator ()
     {
-      foreach (DomainObject domainObject in (CommonCollection) this)
-        yield return domainObject;
+      return _data.GetEnumerator ();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator ();
     }
 
     #endregion
@@ -936,7 +1003,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public DomainObjectCollection Clone()
     {
-      return Clone (this.IsReadOnly);
+      return Clone (IsReadOnly);
     }
 
     /// <summary>
@@ -952,10 +1019,13 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public virtual DomainObjectCollection Clone (bool makeCloneReadOnly)
     {
-      DomainObjectCollection clone = Create (this.GetType());
+      DomainObjectCollection clone = Create (GetType());
 
-      clone._requiredItemType = this.RequiredItemType;
+      clone._requiredItemType = RequiredItemType;
       clone.Combine (this);
+
+      IDomainObjectCollectionData clonedData = new DomainObjectCollectionData (_data);
+      clone._data = clonedData;
       clone.SetIsReadOnly (makeCloneReadOnly);
 
       return clone;
@@ -967,22 +1037,13 @@ namespace Remotion.Data.DomainObjects
     {
       Assertion.IsTrue (_requiredItemType == source._requiredItemType);
 
-      SetIsReadOnly (false);
-      BaseClear ();
-      foreach (DomainObject domainObject in source)
-        BaseAdd (domainObject.ID, domainObject);
+      _data = new DomainObjectCollectionData (source.Cast<DomainObject>());
       SetIsReadOnly (source.IsReadOnly);
     }
 
     internal void TakeOverCommittedData (DomainObjectCollection source)
     {
-      Assertion.IsTrue (_requiredItemType == source._requiredItemType);
-
-      SetIsReadOnly (false);
-      BaseClear ();
-      foreach (DomainObject domainObject in source)
-        BaseAdd (domainObject.ID, domainObject);
-      SetIsReadOnly (source.IsReadOnly);
+      AssumeSameState (source);
     }
 
     internal void BeginAdd (DomainObject domainObject)
@@ -1037,13 +1098,13 @@ namespace Remotion.Data.DomainObjects
     ///   the <see cref="ClientTransaction"/> managing this collection. 
     ///   This applies only to <see cref="DomainObjectCollection"/>s that represent a relation.
     /// </exception>
+    // TODO 905: Consider making private; if it is only used by Commit and Rollback, PerformAdd isn't necessary (the _data ctor could take it).
     protected virtual void ReplaceItems (DomainObjectCollection domainObjects)
     {
       bool isReadOnly = IsReadOnly;
 
-      SetIsReadOnly (false);
+      _data = new DomainObjectCollectionData ();
 
-      BaseClear();
       foreach (DomainObject domainObject in domainObjects)
         PerformAdd (domainObject);
 
@@ -1070,7 +1131,9 @@ namespace Remotion.Data.DomainObjects
         throw new NotSupportedException ("Cannot add an item to a read-only collection.");
       CheckItemType (domainObject, "domainObject");
 
-      int index = BaseAdd (domainObject.ID, domainObject);
+      int index = Count;
+      _data.Insert (index, domainObject);
+
       Touch ();
       return index;
     }
@@ -1101,7 +1164,7 @@ namespace Remotion.Data.DomainObjects
         throw new NotSupportedException ("Cannot insert an item into a read-only collection.");
       CheckItemType (domainObject, "domainObject");
 
-      BaseInsert (index, domainObject.ID, domainObject);
+      _data.Insert (index, domainObject);
       Touch ();
     }
 
@@ -1127,7 +1190,7 @@ namespace Remotion.Data.DomainObjects
       if (IsReadOnly)
         throw new NotSupportedException ("Cannot remove an item from a read-only collection.");
 
-      BaseRemove (domainObject.ID);
+      _data.Remove (domainObject.ID);
       Touch ();
     }
 
@@ -1146,7 +1209,7 @@ namespace Remotion.Data.DomainObjects
         throw new NotSupportedException ("Cannot clear a read-only collection.");
 
       OnDeleting();
-      BaseClear();
+      _data.Clear ();
       Touch ();
       OnDeleted ();
     }
@@ -1226,6 +1289,16 @@ namespace Remotion.Data.DomainObjects
     {
     }
 
+    protected void SetIsReadOnly (bool isReadOnly)
+    {
+      if (isReadOnly)
+        _data = new ReadOnlyDomainObjectCollectionData (_data);
+      else if (_data.IsReadOnly)
+        _data = new DomainObjectCollectionData (_data);
+
+      Assertion.IsTrue (IsReadOnly == isReadOnly);
+    }
+
     private void CheckItemType (DomainObject domainObject, string argumentName)
     {
       if (_requiredItemType != null && !_requiredItemType.IsInstanceOfType (domainObject))
@@ -1259,6 +1332,28 @@ namespace Remotion.Data.DomainObjects
     {
       if (_changeDelegate != null)
         _changeDelegate.MarkAsTouched ();
+    }
+
+    private void CheckIndexForInsert (string argumentName, int index)
+    {
+      if (index < 0 || index > Count)
+      {
+        throw new ArgumentOutOfRangeException (
+            argumentName,
+            index,
+            "Index is out of range. Must be non-negative and less than or equal to the size of the collection.");
+      }
+    }
+
+    private void CheckIndexForIndexer (string argumentName, int index)
+    {
+      if (index < 0 || index >= Count)
+      {
+        throw new ArgumentOutOfRangeException (
+            argumentName,
+            index,
+            "Index is out of range. Must be non-negative and less than the size of the collection.");
+      }
     }
   }
 }

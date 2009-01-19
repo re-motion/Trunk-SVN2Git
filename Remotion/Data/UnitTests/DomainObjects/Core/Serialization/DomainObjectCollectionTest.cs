@@ -17,6 +17,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -55,7 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       DomainObjectCollection collection = new DomainObjectCollection (typeof (Order));
       collection.Add (Order.GetObject (DomainObjectIDs.Order1));
-      long version = (long) PrivateInvoke.GetNonPublicField (collection, "_version");
+      var data = (DomainObjectCollectionData) PrivateInvoke.GetNonPublicField (collection, "_data");
+      long version = data.Version;
 
       DomainObjectCollection deserializedCollection = SerializeAndDeserialize (collection);
       Assert.AreEqual (1, deserializedCollection.Count);
@@ -64,14 +66,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (typeof (Order), deserializedCollection.RequiredItemType);
       Assert.IsFalse (deserializedCollection.IsReadOnly);
       Assert.IsNull (PrivateInvoke.GetNonPublicField (deserializedCollection, "_changeDelegate"));
-      Assert.AreEqual (version, PrivateInvoke.GetNonPublicField (collection, "_version"));
+      Assert.AreEqual (version, data.Version);
     }
 
     [Test]
     public void DomainObjectCollection_Events_Contents ()
     {
       var collection = new DomainObjectCollection (typeof (Order)) {Order.GetObject (DomainObjectIDs.Order1)};
-      var version = (long) PrivateInvoke.GetNonPublicField (collection, "_version");
+      var data = (DomainObjectCollectionData) PrivateInvoke.GetNonPublicField (collection, "_data");
+      long version = data.Version;
 
       var eventReceiver = new DomainObjectCollectionEventReceiver (collection);
 
@@ -86,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (typeof (Order), deserializedCollection.RequiredItemType);
       Assert.IsFalse (deserializedCollection.IsReadOnly);
       Assert.IsNull (deserializedCollection.ChangeDelegate);
-      Assert.AreEqual (version, PrivateInvoke.GetNonPublicField (collection, "_version"));
+      Assert.AreEqual (version, data.Version);
 
       Assert.IsFalse (deserializedEventReceiver.HasAddedEventBeenCalled);
       Assert.IsFalse (deserializedEventReceiver.HasAddingEventBeenCalled);

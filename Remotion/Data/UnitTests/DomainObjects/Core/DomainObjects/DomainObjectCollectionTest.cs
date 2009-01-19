@@ -618,7 +618,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The number of items in the source collection is greater than the available space from index to the end of the destination array.\r\nParameter name: index")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.")]
     public void CopyToArraySmallerThanCollection ()
     {
       DomainObject[] array = new DomainObject[_collection.Count - 1];

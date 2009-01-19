@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public int Version { get; private set; }
+    public long Version { get; private set; }
 
     public int Count
     {
@@ -61,10 +61,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       
       DomainObject result;
-      bool found = _objectsByID.TryGetValue (objectID, out result);
-      if (!found)
-        throw new KeyNotFoundException (string.Format ("The collection does not contain a DomainObject with ID '{0}'.", objectID));
-
+      _objectsByID.TryGetValue (objectID, out result);
       return result;
     }
 
@@ -131,6 +128,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         yield return GetObject (i);
       }
+
+      // Need to check again, in case Count was decreased while enumerating
+      if (Version != enumeratedVersion)
+        throw new InvalidOperationException ("Collection was modified during enumeration.");
     }
 
     IEnumerator IEnumerable.GetEnumerator ()

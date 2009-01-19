@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using System.Linq;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -114,11 +113,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "The collection does not contain a DomainObject with ID " 
-        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
     public void GetObject_InvalidID ()
     {
-      _data.GetObject (_order1.ID);
+      Assert.That (_data.GetObject (_order1.ID), Is.Null);
     }
 
     [Test]
@@ -285,6 +282,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Collection was modified during enumeration.")]
+    public void Enumeration_ChokesOnVersionChanges_Remove ()
+    {
+      Add (_order1);
+      Add (_order2);
+
+      foreach (var x in _data)
+        _data.Remove (x.ID);
+    }
+
+    [Test]
     public void Serializable ()
     {
       Add (_order1);
@@ -302,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private void Assert_VersionChanged (Action action)
     {
-      int version = _data.Version;
+      long version = _data.Version;
       action ();
       Assert.That (_data.Version, Is.GreaterThan (version));
     }

@@ -222,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
     [Test]
     [ExpectedException (typeof (ArgumentOutOfRangeException),
-        ExpectedMessage = "Index must be greater than or equal to zero.", MatchType = MessageMatch.Contains)]
+        ExpectedMessage = "Number was less than the array's lower bound in the first dimension.", MatchType = MessageMatch.Contains)]
     public void IList_CopyToNegativeIndex ()
     {
       var destination = new OrderItem[5];
@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Index cannot be equal to or greater than the length of the array.",
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.",
         MatchType = MessageMatch.Contains)]
     public void IList_CopyToGreatIndex ()
     {
@@ -240,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
     [Test]
     [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The number of items in the source collection is greater than the available space from index to the end of the destination array.",
+        ExpectedMessage = "Destination array was not long enough. Check destIndex and length, and the array's lower bounds.",
         MatchType = MessageMatch.Contains)]
     public void IList_CopyToTooLittleSpace ()
     {
