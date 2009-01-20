@@ -213,6 +213,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    public void Remove_NonExistingElement_NoVersionChange ()
+    {
+      long oldVersion = _data.Version;
+      _data.Remove (_order2.ID);
+      Assert.That (_data.Version, Is.EqualTo (oldVersion));
+    }
+
+    [Test]
     public void Replace ()
     {
       Add (_order1);
@@ -240,6 +248,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       Add (_order3);
 
       Assert_VersionChanged (() => _data.Replace (_order2.ID, _order4));
+    }
+
+    [Test]
+    public void Replace_NoVersionChange_OnSelfReplace ()
+    {
+      Add (_order1);
+      Add (_order2);
+      Add (_order3);
+
+      var oldVersion = _data.Version;
+      _data.Replace (_order2.ID, _order2);
+      Assert.That (_data.Version, Is.EqualTo (oldVersion));
     }
 
     [Test]

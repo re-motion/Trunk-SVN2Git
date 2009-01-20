@@ -141,7 +141,9 @@
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyFinderBase.cs" />
     <Compile Include="ClientTransactionScope.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\DomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\EventRaisingCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionData.cs" />
+    <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionEventRaiser.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ReadOnlyDomainObjectCollectionData.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\TypeCheckingCollectionData.cs" />
     <Compile Include="InvalidEnumValueException.cs" />

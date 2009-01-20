@@ -27,21 +27,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   [Serializable]
   public class TypeCheckingCollectionData : IDomainObjectCollectionData
   {
-    private readonly IDomainObjectCollectionData _data;
+    private readonly IDomainObjectCollectionData _wrappedData;
     private readonly Type _requiredItemType;
 
-    public TypeCheckingCollectionData (IDomainObjectCollectionData data, Type requiredItemType)
+    public TypeCheckingCollectionData (IDomainObjectCollectionData wrappedData, Type requiredItemType)
     {
-      ArgumentUtility.CheckNotNull ("data", data);
+      ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
       ArgumentUtility.CheckNotNull ("requiredItemType", requiredItemType);
 
-      _data = data;
+      _wrappedData = wrappedData;
       _requiredItemType = requiredItemType;
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      return _data.GetEnumerator ();
+      return _wrappedData.GetEnumerator ();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
@@ -51,43 +51,43 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public int Count
     {
-      get { return _data.Count; }
+      get { return _wrappedData.Count; }
     }
 
     public bool IsReadOnly
     {
-      get { return _data.IsReadOnly; }
+      get { return _wrappedData.IsReadOnly; }
     }
 
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      return _data.ContainsObjectID (objectID);
+      return _wrappedData.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      return _data.GetObject (index);
+      return _wrappedData.GetObject (index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      return _data.GetObject (objectID);
+      return _wrappedData.GetObject (objectID);
     }
 
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      return _data.IndexOf (objectID);
+      return _wrappedData.IndexOf (objectID);
     }
 
     public void Clear ()
     {
-      _data.Clear ();
+      _wrappedData.Clear ();
     }
 
     public void Insert (int index, DomainObject domainObject)
@@ -95,14 +95,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       CheckItemType (domainObject, "domainObject");
 
-      _data.Insert (index, domainObject);
+      _wrappedData.Insert (index, domainObject);
     }
 
     public void Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      _data.Remove (objectID);
+      _wrappedData.Remove (objectID);
     }
 
     public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
       CheckItemType (newDomainObject, "newDomainObject");
 
-      _data.Replace (oldDomainObjectID, newDomainObject);
+      _wrappedData.Replace (oldDomainObjectID, newDomainObject);
     }
 
     private void CheckItemType (DomainObject domainObject, string argumentName)

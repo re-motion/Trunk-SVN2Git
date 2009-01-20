@@ -74,9 +74,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public void Clear ()
     {
-      _orderedObjectIDs.Clear ();
-      _objectsByID.Clear ();
-
+      PerformClear();
       IncrementVersion ();
     }
 
@@ -87,19 +85,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       if (ContainsObjectID (domainObject.ID))
         throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID));
 
-      _orderedObjectIDs.Insert (index, domainObject.ID);
-      _objectsByID.Add (domainObject.ID, domainObject);
-
+      PerformInsert(index, domainObject);
       IncrementVersion ();
     }
 
     public void Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      _orderedObjectIDs.Remove (objectID);
-      _objectsByID.Remove (objectID);
 
-      IncrementVersion ();
+      var index = IndexOf (objectID);
+      if (index != -1)
+      {
+        PerformRemove (index, objectID);
+        IncrementVersion();
+      }
     }
 
     public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
@@ -114,8 +113,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       if (ContainsObjectID (newDomainObject.ID) && oldDomainObjectID != newDomainObject.ID)
         throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", newDomainObject.ID));
 
-      Remove (oldDomainObjectID);
-      Insert (index, newDomainObject);
+      if (GetObject (index) != newDomainObject)
+      {
+        PerformReplace (index, oldDomainObjectID, newDomainObject);
+        IncrementVersion ();
+      }
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
@@ -137,6 +139,44 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator();
+    }
+
+    protected virtual void PerformClear ()
+    {
+      _orderedObjectIDs.Clear ();
+      _objectsByID.Clear ();
+    }
+
+    protected virtual void PerformInsert (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      _orderedObjectIDs.Insert (index, domainObject.ID);
+      _objectsByID.Add (domainObject.ID, domainObject);
+    }
+
+    protected virtual void PerformRemove (int index, ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      Assertion.IsTrue (_orderedObjectIDs[index] == objectID, "index and objectID must match");
+
+      _orderedObjectIDs.RemoveAt (index);
+      _objectsByID.Remove (objectID);
+    }
+
+    protected virtual void PerformReplace (int index, ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    {
+      ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
+      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
+
+      Assertion.IsTrue (_orderedObjectIDs[index] == oldDomainObjectID, "index and oldDomainObjectID must match");
+      Assertion.IsTrue (!_objectsByID.ContainsKey (newDomainObject.ID), "newDomainObject.ID must not be part of the collection");
+
+      _orderedObjectIDs.RemoveAt (index);
+      _objectsByID.Remove (oldDomainObjectID);
+
+      _orderedObjectIDs.Insert (index, newDomainObject.ID);
+      _objectsByID.Add (newDomainObject.ID, newDomainObject);
     }
 
     private void IncrementVersion ()
