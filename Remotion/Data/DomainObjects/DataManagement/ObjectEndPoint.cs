@@ -164,26 +164,26 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new ObjectEndPointModification (this, oldEndPoint, newEndPoint);
     }
 
-    public virtual void PerformRelationChange (ObjectEndPointModification modification)
+    public virtual void SetOppositeObjectID (ObjectEndPointModification modification)
     {
       ArgumentUtility.CheckNotNull ("modification", modification);
-      PerformRelationChange (modification.NewEndPoint);
-    }
-
-    private void PerformRelationChange (IEndPoint newEndPoint)
-    {
-      OppositeObjectID = newEndPoint.ObjectID;
-
-      if (!IsVirtual)
-      {
-        DataContainer dataContainer = GetDataContainer();
-        dataContainer.PropertyValues[PropertyName].SetRelationValue (newEndPoint.ObjectID);
-      }
+      SetOppositeObjectID (modification.NewEndPoint.ObjectID);
     }
 
     public override void PerformDelete ()
     {
-      PerformRelationChange (RelationEndPoint.CreateNullRelationEndPoint (OppositeEndPointDefinition));
+      SetOppositeObjectID ((ObjectID) null);
+    }
+
+    private void SetOppositeObjectID (ObjectID newObjectID)
+    {
+      OppositeObjectID = newObjectID;
+
+      if (!IsVirtual)
+      {
+        DataContainer dataContainer = GetDataContainer ();
+        dataContainer.PropertyValues[PropertyName].SetRelationValue (newObjectID);
+      }
     }
 
     public ObjectID OriginalOppositeObjectID

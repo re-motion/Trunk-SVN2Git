@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HasBeenTouchedWithPerformRelationChange ()
     {
       Assert.IsFalse (_endPoint.HasBeenTouched);
-      _endPoint.PerformRelationChange (
+      _endPoint.SetOppositeObjectID (
           (ObjectEndPointModification) _endPoint.CreateModification (new NullObjectEndPoint (_endPoint.OppositeEndPointDefinition)));
       Assert.IsTrue (_endPoint.HasBeenTouched);
     }

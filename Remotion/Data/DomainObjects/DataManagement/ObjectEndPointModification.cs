@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override void Perform ()
     {
-      _affectedEndPoint.PerformRelationChange (this);
+      _affectedEndPoint.SetOppositeObjectID (this);
     }
   }
 }

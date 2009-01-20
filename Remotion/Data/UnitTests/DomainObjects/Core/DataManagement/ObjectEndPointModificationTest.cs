@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void PerformInvokesPerformRelationChange ()
     {
-      _endPointMock.PerformRelationChange (_modification);
+      _endPointMock.SetOppositeObjectID (_modification);
 
       _mockRepository.ReplayAll();
 

@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </para>
   /// </remarks>
 public class CollectionEndPointChangeAgent
-{
+  {
   // types
 
   public enum OperationType
