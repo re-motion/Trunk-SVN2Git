@@ -227,11 +227,13 @@
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesVirtualSides.cs" />
     <TestDomain Include="DomainObjects\Core\Configuration\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ChangeDelegateCollectionDataTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\UnsafeDomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\DomainObjectCollectionEventRaiserFake.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\EventRaisingCollectionDataTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ReadOnlyDomainObjectCollectionDataTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\TypeCheckingCollectionDataTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ReadOnlyCollectionDataDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\TypeCheckingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CurrentPropertyManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectEventManagerTest.cs" />

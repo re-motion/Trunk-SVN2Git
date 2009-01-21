@@ -16,14 +16,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   [Serializable]
   public class DomainObjectCollectionData : IDomainObjectCollectionData
   {
-    private readonly List<ObjectID> _orderedObjectIDs = new List<ObjectID> ();
-    private readonly Dictionary<ObjectID, DomainObject> _objectsByID = new Dictionary<ObjectID, DomainObject> ();
+    private readonly UnsafeDomainObjectCollectionData _unsafeData;
+    private readonly IDomainObjectCollectionData _data;
 
     public DomainObjectCollectionData ()
     {
+      _unsafeData = new UnsafeDomainObjectCollectionData ();
+      _data = new ArgumentCheckingCollectionDataDecorator (_unsafeData);
     }
 
-    public DomainObjectCollectionData (IEnumerable<DomainObject> domainObjects)
+    public DomainObjectCollectionData (IEnumerable<DomainObject> domainObjects) : this()
     {
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
@@ -33,155 +35,69 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       }
     }
 
-    public long Version { get; private set; }
-
-    public int Count
-    {
-      get { return _orderedObjectIDs.Count; }
-    }
-
-    public bool IsReadOnly
-    {
-      get { return false; }
-    }
-
-    public bool ContainsObjectID (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      return _objectsByID.ContainsKey (objectID);
-    }
-
-    public DomainObject GetObject (int index)
-    {
-      return _objectsByID[_orderedObjectIDs[index]];
-    }
-
-    public DomainObject GetObject (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      
-      DomainObject result;
-      _objectsByID.TryGetValue (objectID, out result);
-      return result;
-    }
-
-    public int IndexOf (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      return _orderedObjectIDs.IndexOf (objectID);
-    }
-
-    public void Clear ()
-    {
-      PerformClear();
-      IncrementVersion ();
-    }
-
-    public void Insert (int index, DomainObject domainObject)
-    {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      if (ContainsObjectID (domainObject.ID))
-        throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID));
-
-      PerformInsert(index, domainObject);
-      IncrementVersion ();
-    }
-
-    public void Remove (ObjectID objectID)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      var index = IndexOf (objectID);
-      if (index != -1)
-      {
-        PerformRemove (index, objectID);
-        IncrementVersion();
-      }
-    }
-
-    public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
-    {
-      ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
-      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
-
-      int index = IndexOf (oldDomainObjectID);
-      if (index == -1)
-        throw new KeyNotFoundException (string.Format ("The collection does not contain a DomainObject with ID '{0}'.", oldDomainObjectID));
-
-      if (ContainsObjectID (newDomainObject.ID) && oldDomainObjectID != newDomainObject.ID)
-        throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", newDomainObject.ID));
-
-      if (GetObject (index) != newDomainObject)
-      {
-        PerformReplace (index, oldDomainObjectID, newDomainObject);
-        IncrementVersion ();
-      }
+    public long Version 
+    { 
+      get { return _unsafeData.Version; }
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      var enumeratedVersion = Version;
-      for (int i = 0; i < Count; i++)
-      {
-        if (Version != enumeratedVersion)
-          throw new InvalidOperationException ("Collection was modified during enumeration.");
-
-        yield return GetObject (i);
-      }
-
-      // Need to check again, in case Count was decreased while enumerating
-      if (Version != enumeratedVersion)
-        throw new InvalidOperationException ("Collection was modified during enumeration.");
+      return _data.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
-      return GetEnumerator();
+      return GetEnumerator ();
     }
 
-    protected virtual void PerformClear ()
+    public int Count
     {
-      _orderedObjectIDs.Clear ();
-      _objectsByID.Clear ();
+      get { return _data.Count; }
     }
 
-    protected virtual void PerformInsert (int index, DomainObject domainObject)
+    public bool IsReadOnly
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      _orderedObjectIDs.Insert (index, domainObject.ID);
-      _objectsByID.Add (domainObject.ID, domainObject);
+      get { return _data.IsReadOnly; }
     }
 
-    protected virtual void PerformRemove (int index, ObjectID objectID)
+    public bool ContainsObjectID (ObjectID objectID)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-      Assertion.IsTrue (_orderedObjectIDs[index] == objectID, "index and objectID must match");
-
-      _orderedObjectIDs.RemoveAt (index);
-      _objectsByID.Remove (objectID);
+      return _data.ContainsObjectID(objectID);
     }
 
-    protected virtual void PerformReplace (int index, ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    public DomainObject GetObject (int index)
     {
-      ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
-      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
-
-      Assertion.IsTrue (_orderedObjectIDs[index] == oldDomainObjectID, "index and oldDomainObjectID must match");
-      Assertion.IsTrue (!_objectsByID.ContainsKey (newDomainObject.ID), "newDomainObject.ID must not be part of the collection");
-
-      _orderedObjectIDs.RemoveAt (index);
-      _objectsByID.Remove (oldDomainObjectID);
-
-      _orderedObjectIDs.Insert (index, newDomainObject.ID);
-      _objectsByID.Add (newDomainObject.ID, newDomainObject);
+      return _data.GetObject(index);
     }
 
-    private void IncrementVersion ()
+    public DomainObject GetObject (ObjectID objectID)
     {
-      ++Version;
+      return _data.GetObject(objectID);
+    }
+
+    public int IndexOf (ObjectID objectID)
+    {
+      return _data.IndexOf(objectID);
+    }
+
+    public void Clear ()
+    {
+      _data.Clear();
+    }
+
+    public void Insert (int index, DomainObject domainObject)
+    {
+      _data.Insert(index, domainObject);
+    }
+
+    public void Remove (ObjectID objectID)
+    {
+      _data.Remove(objectID);
+    }
+
+    public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    {
+      _data.Replace(oldDomainObjectID, newDomainObject);
     }
   }
 }

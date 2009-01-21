@@ -1293,7 +1293,7 @@ namespace Remotion.Data.DomainObjects
     protected void SetIsReadOnly (bool isReadOnly)
     {
       if (isReadOnly)
-        _data = new ReadOnlyDomainObjectCollectionData (_data);
+        _data = new ReadOnlyCollectionDataDecorator (_data);
       else if (_data.IsReadOnly)
         _data = new DomainObjectCollectionData (_data);
 

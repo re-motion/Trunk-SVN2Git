@@ -13,9 +13,9 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
-  public class ReadOnlyDomainObjectCollectionDataTest : ClientTransactionBaseTest
+  public class ReadOnlyCollectionDataDecoratorTest : ClientTransactionBaseTest
   {
-    private ReadOnlyDomainObjectCollectionData _data;
+    private ReadOnlyCollectionDataDecorator _data;
     private IDomainObjectCollectionData _wrappedData;
 
     private Order _order1;
@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       base.SetUp ();
       _wrappedData = new DomainObjectCollectionData ();
-      _data = new ReadOnlyDomainObjectCollectionData (_wrappedData);
+      _data = new ReadOnlyCollectionDataDecorator (_wrappedData);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);

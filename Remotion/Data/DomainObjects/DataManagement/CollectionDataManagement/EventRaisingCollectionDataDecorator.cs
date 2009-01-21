@@ -30,17 +30,64 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// and semantic checks are performed before the events are raised.
   /// </remarks>
   [Serializable]
-  public class EventRaisingCollectionData : DomainObjectCollectionData
+  public class EventRaisingCollectionDataDecorator : IDomainObjectCollectionData
   {
     private readonly IDomainObjectCollectionEventRaiser _eventRaiser;
+    private readonly IDomainObjectCollectionData _wrappedData;
 
-    public EventRaisingCollectionData (IDomainObjectCollectionEventRaiser eventRaiser)
+    public EventRaisingCollectionDataDecorator (IDomainObjectCollectionEventRaiser eventRaiser, IDomainObjectCollectionData wrappedData)
     {
       ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
+      ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
+
       _eventRaiser = eventRaiser;
+      _wrappedData = wrappedData;
     }
 
-    protected override void PerformClear ()
+    public IEnumerator<DomainObject> GetEnumerator ()
+    {
+      return _wrappedData.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator ();
+    }
+
+    public int Count
+    {
+      get { return _wrappedData.Count; }
+    }
+
+    public bool IsReadOnly
+    {
+      get { return _wrappedData.IsReadOnly; }
+    }
+
+    public bool ContainsObjectID (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _wrappedData.ContainsObjectID(objectID);
+    }
+
+    public DomainObject GetObject (int index)
+    {
+      return _wrappedData.GetObject(index);
+    }
+
+    public DomainObject GetObject (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _wrappedData.GetObject(objectID);
+    }
+
+    public int IndexOf (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _wrappedData.IndexOf(objectID);
+    }
+
+    public void Clear ()
     {
       var removedObjects = new Stack<DomainObject> ();
 
@@ -54,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
       Assertion.IsTrue (index == Count);
 
-      base.PerformClear ();
+      _wrappedData.Clear ();
 
       foreach (var domainObject in removedObjects)
       {
@@ -65,38 +112,46 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       Assertion.IsTrue (index == 0);
     }
 
-    protected override void PerformInsert (int index, DomainObject domainObject)
+    public void Insert (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       _eventRaiser.BeginAdd (index, domainObject);
-      base.PerformInsert (index, domainObject);
+      _wrappedData.Insert (index, domainObject);
       _eventRaiser.EndAdd (index, domainObject);
     }
 
-    protected override void PerformRemove (int index, ObjectID objectID)
+    public void Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var domainObject = GetObject (index);
+      int index = IndexOf (objectID);
+      if (index != -1)
+      {
+        var domainObject = GetObject (index);
 
-      _eventRaiser.BeginRemove (index, domainObject);
-      base.PerformRemove (index, objectID);
-      _eventRaiser.EndRemove (index, domainObject);
+        _eventRaiser.BeginRemove (index, domainObject);
+        _wrappedData.Remove (objectID);
+        _eventRaiser.EndRemove (index, domainObject);
+      }
     }
 
-    protected override void PerformReplace (int index, ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
     {
       ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
 
+      int index = IndexOf (oldDomainObjectID);
       var oldDomainObject = GetObject (oldDomainObjectID);
-      
-      _eventRaiser.BeginRemove (index, oldDomainObject);
-      _eventRaiser.BeginAdd (index, newDomainObject);
-      base.PerformReplace (index, oldDomainObjectID, newDomainObject);
-      _eventRaiser.EndRemove (index, oldDomainObject);
-      _eventRaiser.EndAdd (index, newDomainObject);
+
+      if (oldDomainObject != newDomainObject)
+      {
+        _eventRaiser.BeginRemove (index, oldDomainObject);
+        _eventRaiser.BeginAdd (index, newDomainObject);
+        _wrappedData.Replace (oldDomainObjectID, newDomainObject);
+        _eventRaiser.EndRemove (index, oldDomainObject);
+        _eventRaiser.EndAdd (index, newDomainObject);
+      }
     }
   }
 }

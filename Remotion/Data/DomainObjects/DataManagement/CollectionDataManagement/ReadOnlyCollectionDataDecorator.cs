@@ -13,11 +13,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   /// <see cref="IDomainObjectCollectionData"/> interface will throw an <see cref="InvalidOperationException"/> when invoked on this class.
   /// </summary>
   [Serializable]
-  public class ReadOnlyDomainObjectCollectionData : IDomainObjectCollectionData
+  public class ReadOnlyCollectionDataDecorator : IDomainObjectCollectionData
   {
     private readonly IDomainObjectCollectionData _wrappedData;
 
-    public ReadOnlyDomainObjectCollectionData (IDomainObjectCollectionData wrappedData)
+    public ReadOnlyCollectionDataDecorator (IDomainObjectCollectionData wrappedData)
     {
       _wrappedData = wrappedData;
     }

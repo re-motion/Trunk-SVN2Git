@@ -21,32 +21,29 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
   /// <summary>
-  /// This class acts as a type-checking adapter for another <see cref="IDomainObjectTransactionContext"/> object. Every inserting method of the
-  /// <see cref="IDomainObjectCollectionData"/> interface will check the type of the new item for a given required item <see cref="Type"/>.
+  /// Implements a decorator for <see cref="IDomainObjectCollectionData"/> that performs semantic checks on the arguments passed to 
+  /// <see cref="Insert"/> or <see cref="Replace"/>. Use this to avoid <see cref="Insert"/> or <see cref="Replace"/> being called on the wrapped
+  /// <see cref="IDomainObjectCollectionData"/> instance if the operation cannot be executed because of the arguments.
   /// </summary>
   [Serializable]
-  public class TypeCheckingCollectionData : IDomainObjectCollectionData
+  public class ArgumentCheckingCollectionDataDecorator : IDomainObjectCollectionData
   {
     private readonly IDomainObjectCollectionData _wrappedData;
-    private readonly Type _requiredItemType;
 
-    public TypeCheckingCollectionData (IDomainObjectCollectionData wrappedData, Type requiredItemType)
+    public ArgumentCheckingCollectionDataDecorator (IDomainObjectCollectionData wrappedData)
     {
       ArgumentUtility.CheckNotNull ("wrappedData", wrappedData);
-      ArgumentUtility.CheckNotNull ("requiredItemType", requiredItemType);
-
       _wrappedData = wrappedData;
-      _requiredItemType = requiredItemType;
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      return _wrappedData.GetEnumerator ();
+      return _wrappedData.GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
-      return GetEnumerator();
+      return GetEnumerator ();
     }
 
     public int Count
@@ -62,46 +59,43 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      return _wrappedData.ContainsObjectID (objectID);
+      return _wrappedData.ContainsObjectID(objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      return _wrappedData.GetObject (index);
+      return _wrappedData.GetObject(index);
     }
 
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      return _wrappedData.GetObject (objectID);
+      return _wrappedData.GetObject(objectID);
     }
 
     public int IndexOf (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      return _wrappedData.IndexOf (objectID);
+      return _wrappedData.IndexOf(objectID);
     }
 
     public void Clear ()
     {
-      _wrappedData.Clear ();
+      _wrappedData.Clear();
     }
 
     public void Insert (int index, DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      CheckItemType (domainObject, "domainObject");
+      if (ContainsObjectID (domainObject.ID))
+        throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", domainObject.ID));
 
-      _wrappedData.Insert (index, domainObject);
+      _wrappedData.Insert(index, domainObject);
     }
 
     public void Remove (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-
       _wrappedData.Remove (objectID);
     }
 
@@ -109,19 +103,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     {
       ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
-      CheckItemType (newDomainObject, "newDomainObject");
+
+      int index = IndexOf (oldDomainObjectID);
+      if (index == -1)
+        throw new KeyNotFoundException (string.Format ("The collection does not contain a DomainObject with ID '{0}'.", oldDomainObjectID));
+
+      if (ContainsObjectID (newDomainObject.ID) && oldDomainObjectID != newDomainObject.ID)
+        throw new InvalidOperationException (string.Format ("The collection already contains an object with ID '{0}'.", newDomainObject.ID));
 
       _wrappedData.Replace (oldDomainObjectID, newDomainObject);
-    }
-
-    private void CheckItemType (DomainObject domainObject, string argumentName)
-    {
-      if (_requiredItemType != null && !_requiredItemType.IsInstanceOfType (domainObject))
-      {
-        string message = string.Format ("Values of type '{0}' cannot be added to this collection. Values must be of type '{1}' or derived from '{1}'.",
-            domainObject.GetPublicDomainObjectType (), _requiredItemType);
-        throw new ArgumentTypeException (message, argumentName, _requiredItemType, domainObject.GetPublicDomainObjectType ());
-      }
     }
   }
 }

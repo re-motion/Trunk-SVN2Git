@@ -25,10 +25,10 @@ using Remotion.Utilities;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDataManagement
 {
   [TestFixture]
-  public class TypeCheckingCollectionDataTest : ClientTransactionBaseTest
+  public class TypeCheckingCollectionDataDecoratorTest : ClientTransactionBaseTest
   {
     private IDomainObjectCollectionData _wrappedData;
-    private TypeCheckingCollectionData _data;
+    private TypeCheckingCollectionDataDecorator _data;
 
     private Order _order1;
     private Order _order2;
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       base.SetUp ();
 
       _wrappedData = new DomainObjectCollectionData ();
-      _data = new TypeCheckingCollectionData (_wrappedData, typeof (Order));
+      _data = new TypeCheckingCollectionDataDecorator (_wrappedData, typeof (Order));
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
