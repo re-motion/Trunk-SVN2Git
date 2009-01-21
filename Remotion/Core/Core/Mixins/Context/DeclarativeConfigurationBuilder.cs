@@ -128,7 +128,7 @@ namespace Remotion.Mixins.Context
     /// <returns>A mixin configuration inheriting from <paramref name="parentConfiguration"/> and incorporating the configuration information
     /// held by the given types.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="types"/> parameter is <see langword="null"/>.</exception>
-    private static MixinConfiguration BuildConfigurationFromTypes (MixinConfiguration parentConfiguration, IEnumerable<Type> types)
+    public static MixinConfiguration BuildConfigurationFromTypes (MixinConfiguration parentConfiguration, IEnumerable<Type> types)
     {
       ArgumentUtility.CheckNotNull ("types", types);
 
