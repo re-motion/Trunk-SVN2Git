@@ -20,146 +20,152 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 {
-  //public class ChangeDelegateCollectionData
-  //{
-  //  private readonly DomainObjectCollectionData _data = new DomainObjectCollectionData ();
+  public class ChangeDelegateCollectionData : IDomainObjectCollectionData
+  {
+    private readonly DomainObjectCollectionData _data = new DomainObjectCollectionData ();
 
-  //  private readonly ICollectionChangeDelegate _changeDelegate;
-  //  private readonly IDomainObjectCollectionEventRaiser _eventRaiser;
-  //  private DomainObjectCollection _parentCollection;
+    private readonly ICollectionChangeDelegate _changeDelegate;
+    private readonly IDomainObjectCollectionEventRaiser _eventRaiser;
+    private readonly DomainObjectCollection _parentCollection;
 
-  //  public ChangeDelegateCollectionData (
-  //      ICollectionChangeDelegate changeDelegate, 
-  //      IDomainObjectCollectionEventRaiser eventRaiser, 
-  //      DomainObjectCollection parentCollection)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("changeDelegate", changeDelegate);
-  //    ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
-  //    ArgumentUtility.CheckNotNull ("parentCollection", parentCollection);
+    public ChangeDelegateCollectionData (
+        ICollectionChangeDelegate changeDelegate,
+        IDomainObjectCollectionEventRaiser eventRaiser,
+        DomainObjectCollection parentCollection)
+    {
+      ArgumentUtility.CheckNotNull ("changeDelegate", changeDelegate);
+      ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
+      ArgumentUtility.CheckNotNull ("parentCollection", parentCollection);
 
-  //    _changeDelegate = changeDelegate;
-  //    _eventRaiser = eventRaiser;
-  //    _parentCollection = parentCollection;
-  //  }
+      _changeDelegate = changeDelegate;
+      _eventRaiser = eventRaiser;
+      _parentCollection = parentCollection;
+    }
 
-  //  public ICollectionChangeDelegate ChangeDelegate
-  //  {
-  //    get { return _changeDelegate; }
-  //  }
+    public ICollectionChangeDelegate ChangeDelegate
+    {
+      get { return _changeDelegate; }
+    }
 
-  //  public override int Count
-  //  {
-  //    get { return _data.Count; }
-  //  }
+    public int Count
+    {
+      get { return _data.Count; }
+    }
 
-  //  public override bool IsReadOnly
-  //  {
-  //    get { return false; }
-  //  }
+    public bool IsReadOnly
+    {
+      get { return false; }
+    }
 
-  //  public override bool ContainsObjectID (ObjectID objectID)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("objectID", objectID);
-  //    return _data.ContainsObjectID (objectID);
-  //  }
+    public bool ContainsObjectID (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _data.ContainsObjectID (objectID);
+    }
 
-  //  public override DomainObject GetObject (int index)
-  //  {
-  //    return _data.GetObject (index);
-  //  }
+    public DomainObject GetObject (int index)
+    {
+      return _data.GetObject (index);
+    }
 
-  //  public override DomainObject GetObject (ObjectID objectID)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("objectID", objectID);
-  //    return _data.GetObject (objectID);
-  //  }
+    public DomainObject GetObject (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _data.GetObject (objectID);
+    }
 
-  //  public override int IndexOf (ObjectID objectID)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("objectID", objectID);
-  //    return _data.IndexOf (objectID);
-  //  }
+    public int IndexOf (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _data.IndexOf (objectID);
+    }
 
-  //  public override IEnumerator<DomainObject> GetEnumerator ()
-  //  {
-  //    return _data.GetEnumerator ();
-  //  }
+    public IEnumerator<DomainObject> GetEnumerator ()
+    {
+      return _data.GetEnumerator ();
+    }
 
-  //  protected override void PerformClear ()
-  //  {
-  //    for (int i = Count - 1; i >= 0; --i)
-  //      _changeDelegate.PerformRemove (_parentCollection, GetObject (i));
-  //  }
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
 
-  //  protected override void PerformInsert (int index, DomainObject domainObject)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+    public void Clear ()
+    {
+      for (int i = Count - 1; i >= 0; --i)
+        _changeDelegate.PerformRemove (_parentCollection, GetObject (i));
+    }
 
-  //    // TODO: change delegate
-  //    throw new System.NotImplementedException ();
-  //  }
+    public void Insert (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-  //  protected override void PerformRemove (int index, ObjectID objectID)
-  //  {
-  //    // TODO: change delegate
-  //    throw new System.NotImplementedException ();
-  //  }
+      _changeDelegate.PerformInsert (_parentCollection, domainObject, index);
+    }
 
-  //  protected override void PerformReplace (int index, ObjectID oldDomainObjectID, DomainObject newDomainObject)
-  //  {
-  //    // TODO: change delegate
-  //    throw new System.NotImplementedException ();
-  //  }
+    public void Remove (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-  //  protected override void IncrementVersion ()
-  //  {
-  //    // nothing to do here
-  //  }
+      if (ContainsObjectID (objectID))
+        _changeDelegate.PerformRemove (_parentCollection, GetObject (objectID));
+    }
 
-  //  public void RaiseBeginAddEvent ()
-  //  {
-  //    // TODO: eventRaiser
-  //    throw new System.NotImplementedException ();
-  //  }
+    public void Replace (ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    {
+      ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
+      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
 
-  //  public void RaiseEndAddEvent ()
-  //  {
-  //    // TODO: eventRaiser
-  //    throw new System.NotImplementedException ();
-  //  }
+      if (newDomainObject == GetObject (oldDomainObjectID))
+        _changeDelegate.PerformSelfReplace (_parentCollection, newDomainObject, IndexOf (oldDomainObjectID));
+      else
+        _changeDelegate.PerformReplace (_parentCollection, newDomainObject, IndexOf (oldDomainObjectID));
+    }
 
-  //  public void RaiseBeginRemoveEvent ()
-  //  {
-  //    // TODO: eventRaiser
-  //    throw new System.NotImplementedException ();
-  //  }
+    public void RaiseBeginAddEvent (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      _eventRaiser.BeginAdd (index, domainObject);
+    }
 
-  //  public void RaiseEndRemoveEvent ()
-  //  {
-  //    // TODO: eventRaiser
-  //    throw new System.NotImplementedException ();
-  //  }
+    public void RaiseEndAddEvent (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      _eventRaiser.EndAdd (index, domainObject);
+    }
 
-  //  public void InsertData (int index, DomainObject domainObject)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+    public void RaiseBeginRemoveEvent (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      _eventRaiser.BeginRemove (index, domainObject);
+    }
 
-  //    _data.Insert (index, domainObject);
-  //  }
+    public void RaiseEndRemoveEvent (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      _eventRaiser.EndRemove(index, domainObject);
+    }
 
-  //  public void RemoveData (ObjectID objectID)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("objectID", objectID);
+    public void InsertData (int index, DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-  //    _data.Remove (objectID);
-  //  }
+      _data.Insert (index, domainObject);
+    }
 
-  //  public void ReplaceData (ObjectID oldDomainObjectID, DomainObject newDomainObject)
-  //  {
-  //    ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
-  //    ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
+    public void RemoveData (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-  //    _data.Replace (oldDomainObjectID, newDomainObject);
-  //  }
-  //}
+      _data.Remove (objectID);
+    }
+
+    public void ReplaceData (ObjectID oldDomainObjectID, DomainObject newDomainObject)
+    {
+      ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
+      ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
+
+      _data.Replace (oldDomainObjectID, newDomainObject);
+    }
+  }
 }

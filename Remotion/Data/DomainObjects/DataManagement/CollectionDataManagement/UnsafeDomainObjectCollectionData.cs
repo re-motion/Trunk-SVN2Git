@@ -1,6 +1,18 @@
-// Copyright (C) 2005 - 2008 rubicon informationstechnologie gmbh
-// All rights reserved.
-
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2008 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// This framework is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with this framework; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,8 +28,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
   [Serializable]
   internal class UnsafeDomainObjectCollectionData : IDomainObjectCollectionData
   {
-    private readonly List<ObjectID> _orderedObjectIDs = new List<ObjectID> ();
-    private readonly Dictionary<ObjectID, DomainObject> _objectsByID = new Dictionary<ObjectID, DomainObject> ();
+    private readonly List<ObjectID> _orderedObjectIDs = new List<ObjectID>();
+    private readonly Dictionary<ObjectID, DomainObject> _objectsByID = new Dictionary<ObjectID, DomainObject>();
 
     public long Version { get; private set; }
 
@@ -45,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
     public DomainObject GetObject (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
-      
+
       DomainObject result;
       _objectsByID.TryGetValue (objectID, out result);
       return result;
@@ -60,10 +72,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
 
     public void Clear ()
     {
-      _orderedObjectIDs.Clear ();
-      _objectsByID.Clear ();
+      _orderedObjectIDs.Clear();
+      _objectsByID.Clear();
 
-      IncrementVersion ();
+      IncrementVersion();
     }
 
     public void Insert (int index, DomainObject domainObject)
@@ -73,7 +85,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       _orderedObjectIDs.Insert (index, domainObject.ID);
       _objectsByID.Add (domainObject.ID, domainObject);
 
-      IncrementVersion ();
+      IncrementVersion();
     }
 
     public void Remove (ObjectID objectID)
@@ -104,7 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
         _orderedObjectIDs.Insert (index, newDomainObject.ID);
         _objectsByID.Add (newDomainObject.ID, newDomainObject);
 
-        IncrementVersion ();
+        IncrementVersion();
       }
     }
 
