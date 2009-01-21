@@ -140,7 +140,6 @@
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
     <Compile Include="Collections\EnumerableExtensionsTest.cs" />
     <Compile Include="Collections\SetBasedCacheKeyTest.cs" />
-    <Compile Include="Collections\TypedSequenceTest.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Design\DesignerUtilityTest.cs" />
     <Compile Include="Diagnostics\ByteValueTest.cs" />
@@ -148,6 +147,8 @@
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithProtectedVirtualMethod.cs" />
+    <Compile Include="Reflection\ParamListImplementationTest.cs" />
+    <Compile Include="Reflection\ParamListTest.cs" />
     <Compile Include="Utilities\PropertyRestorerTest.cs" />
     <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTest.cs" />
     <Compile Include="Diagnostics\TestDomain\TestSimpleToTextBuilderXmlTestOwned.cs" />

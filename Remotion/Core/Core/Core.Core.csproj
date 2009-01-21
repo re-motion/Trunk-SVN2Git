@@ -103,7 +103,6 @@
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapper.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
     <Compile Include="Collections\SetBasedCacheKey.cs" />
-    <Compile Include="Collections\TypedSequence.cs" />
     <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Diagnostics\ByteValue.cs" />
     <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
@@ -187,6 +186,10 @@
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
     <Compile Include="Reflection\MemberLookupInfo.cs" />
     <Compile Include="Reflection\MethodLookupInfo.cs" />
+    <Compile Include="Reflection\ParamList.generated.cs" />
+    <Compile Include="Reflection\ParamList.template.cs" />
+    <Compile Include="Reflection\ParamListImplementation.generated.cs" />
+    <Compile Include="Reflection\ParamListImplementation.template.cs" />
     <Compile Include="Reflection\Properties.cs" />
     <Compile Include="Reflection\Property.cs" />
     <Compile Include="SafeContextSingleton.cs" />
