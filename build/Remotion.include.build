@@ -362,6 +362,10 @@
         <exclude name="*/bin/**/Dms*.*" />
         <exclude name="*/bin/**/AclExpander*.*" />
       </fileset>
+      
+      <fileset basedir="${solution.basedir}\Remotion">
+        <include name="license/**/*"/>
+      </fileset>
     </zip>
   </target>
 
@@ -421,6 +425,10 @@
 
         <!-- Executables, DB scripts, and config files -->
         <exclude name="*/bin/**/Dms*.*" />
+      </fileset>
+
+      <fileset basedir="${solution.basedir}\SecurityManager">
+        <include name="license/**/*"/>
       </fileset>
     </zip>
   </target>
