@@ -147,6 +147,7 @@
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithProtectedVirtualMethod.cs" />
+    <Compile Include="Reflection\DynamicParamListImplementationTest.cs" />
     <Compile Include="Reflection\ParamListImplementationTest.cs" />
     <Compile Include="Reflection\ParamListTest.cs" />
     <Compile Include="Utilities\PropertyRestorerTest.cs" />

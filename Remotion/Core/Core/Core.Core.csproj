@@ -184,6 +184,7 @@
     <Compile Include="Reflection\CodeGeneration\IClassEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\IMethodEmitter.cs" />
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
+    <Compile Include="Reflection\DynamicParamListImplementation.cs" />
     <Compile Include="Reflection\MemberLookupInfo.cs" />
     <Compile Include="Reflection\MethodLookupInfo.cs" />
     <Compile Include="Reflection\ParamList.generated.cs" />
