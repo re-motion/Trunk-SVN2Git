@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       public static DomainObjectWithSpecialConstructor NewObject (object o)
       {
-        return NewObject<DomainObjectWithSpecialConstructor> (ParamList.Create (o));
+        return NewObject<DomainObjectWithSpecialConstructor> (ParamList.CreateDynamic (o));
       }
     }
 

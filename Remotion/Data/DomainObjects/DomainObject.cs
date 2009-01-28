@@ -67,7 +67,7 @@ namespace Remotion.Data.DomainObjects
     /// </exception>
     protected static T NewObject<T> () where T : DomainObject
     {
-      return NewObject<T> (ParamList.Create ());
+      return NewObject<T> (ParamList.Empty);
     }
 
     /// <summary>
