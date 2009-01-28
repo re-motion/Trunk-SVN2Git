@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Reflection;
 using Remotion.Utilities;
 using File=System.IO.File;
 
@@ -173,48 +172,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     }
 
     [Test]
-    public void GetTypesafeConstructorInvoker ()
-    {
-      IFuncInvoker<Order> invoker = Factory.GetTypesafeConstructorInvoker<Order> (Factory.GetConcreteDomainObjectType (typeof (Order)));
-      Order order = invoker.With();
-      Assert.IsNotNull (order);
-      Assert.AreSame (Factory.GetConcreteDomainObjectType (typeof (Order)), ((object) order).GetType());
-    }
-
-    [Test]
-    public void GetTypesafeConstructorInvokerWithConstructors ()
-    {
-      IFuncInvoker<DOWithConstructors> invoker =
-          Factory.GetTypesafeConstructorInvoker<DOWithConstructors> (
-              Factory.GetConcreteDomainObjectType (typeof (DOWithConstructors)));
-      DOWithConstructors instance = invoker.With ("17", "4");
-      Assert.IsNotNull (instance);
-      Assert.AreEqual ("17", instance.FirstArg);
-      Assert.AreEqual ("4", instance.SecondArg);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The type Remotion.Data.UnitTests.DomainObjects.TestDomain.Order was not "
-        + "created by InterceptedDomainObjectFactory.GetConcreteDomainObjectType.\r\nParameter name: dynamicType")]
-    public void GetTypesafeConstructorInvokerThrowsOnTypeNotCreatedByFactory ()
-    {
-      Factory.GetTypesafeConstructorInvoker<Order> (typeof (Order));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentTypeException),
-        ExpectedMessage = "Argument dynamicType is a .*Order_WithInterception.* which cannot be assigned to type .*OrderTicket.",
-        MatchType = MessageMatch.Regex)]
-    public void GetTypesafeConstructorInvokerThrowsOnInvalidTMinimimal ()
-    {
-      Factory.GetTypesafeConstructorInvoker<OrderTicket> (Factory.GetConcreteDomainObjectType (typeof (Order)));
-    }
-
-    [Test]
     public void PrepareUnconstructedInstance ()
     {
-      Order order = (Order) FormatterServices.GetSafeUninitializedObject (Factory.GetConcreteDomainObjectType (typeof (Order)));
+      var order = (Order) FormatterServices.GetSafeUninitializedObject (Factory.GetConcreteDomainObjectType (typeof (Order)));
       Factory.PrepareUnconstructedInstance (order);
     }
 

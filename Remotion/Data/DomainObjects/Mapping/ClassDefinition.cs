@@ -549,7 +549,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       }
     }
 
-    protected internal abstract IDomainObjectCreator GetDomainObjectCreator ();
+    public abstract IDomainObjectCreator GetDomainObjectCreator ();
 
     #region Serialization
 

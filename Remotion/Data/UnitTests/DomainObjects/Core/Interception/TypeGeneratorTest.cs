@@ -29,6 +29,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
@@ -580,7 +581,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Assert.IsNotNull (type.GetMethod (typeof (DOWithRealRelationEndPoint).FullName + ".get_RelatedObject", _declaredInstanceFlags));
 
       var instance = (DOWithRealRelationEndPoint) Activator.CreateInstance (type);
-      var relatedObject = (DOWithVirtualRelationEndPoint) RepositoryAccessor.NewObject (typeof (DOWithVirtualRelationEndPoint)).With();
+      var relatedObject = (DOWithVirtualRelationEndPoint) RepositoryAccessor.NewObject (typeof (DOWithVirtualRelationEndPoint), ParamList.Empty);
       instance.RelatedObject = relatedObject;
       Assert.AreSame (relatedObject, instance.RelatedObject);
     }
@@ -592,7 +593,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Assert.IsNotNull (type.GetMethod (typeof (DOWithVirtualRelationEndPoint).FullName + ".get_RelatedObject", _declaredInstanceFlags));
 
       var instance = (DOWithVirtualRelationEndPoint) Activator.CreateInstance (type);
-      var relatedObject = (DOWithRealRelationEndPoint) RepositoryAccessor.NewObject (typeof (DOWithRealRelationEndPoint)).With();
+      var relatedObject = (DOWithRealRelationEndPoint) RepositoryAccessor.NewObject (typeof (DOWithRealRelationEndPoint), ParamList.Empty);
       instance.RelatedObject = relatedObject;
       Assert.AreSame (relatedObject, instance.RelatedObject);
     }
@@ -604,7 +605,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       Assert.IsNotNull (type.GetMethod (typeof (DOWithUnidirectionalRelationEndPoint).FullName + ".get_RelatedObject", _declaredInstanceFlags));
 
       var instance = (DOWithUnidirectionalRelationEndPoint) Activator.CreateInstance (type);
-      var relatedObject = (DOWithVirtualProperties) RepositoryAccessor.NewObject (typeof (DOWithVirtualProperties)).With();
+      var relatedObject = (DOWithVirtualProperties) RepositoryAccessor.NewObject (typeof (DOWithVirtualProperties), ParamList.Empty);
       instance.RelatedObject = relatedObject;
       Assert.AreSame (relatedObject, instance.RelatedObject);
     }
@@ -696,7 +697,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void Overrides_PerformConstructorCheck_WithNoOp ()
     {
       var instance = 
-          (DOWithVirtualStorageClassNoneProperties) RepositoryAccessor.NewObject (typeof (DOWithVirtualStorageClassNoneProperties)).With ();
+          (DOWithVirtualStorageClassNoneProperties) RepositoryAccessor.NewObject (typeof (DOWithVirtualStorageClassNoneProperties), ParamList.Empty);
       PrivateInvoke.InvokeNonPublicMethod (instance, "PerformConstructorCheck");
     }
   }

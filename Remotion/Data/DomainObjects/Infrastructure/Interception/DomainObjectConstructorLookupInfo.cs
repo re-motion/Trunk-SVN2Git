@@ -23,14 +23,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 {
   public class DomainObjectConstructorLookupInfo : ConstructorLookupInfo
   {
-    private readonly Type _baseType;
+    private readonly Type _publicDomainObjectType;
 
-    public DomainObjectConstructorLookupInfo (Type baseType, Type definingType, BindingFlags bindingFlags)
-        : base (ArgumentUtility.CheckNotNull ("definingType", definingType), bindingFlags)
+    public DomainObjectConstructorLookupInfo (Type publicDomainObjectType, Type constructedType, BindingFlags bindingFlags)
+      : base (ArgumentUtility.CheckNotNull ("constructedType", constructedType), bindingFlags)
     {
-      ArgumentUtility.CheckNotNull ("baseType", baseType);
+      ArgumentUtility.CheckNotNull ("publicDomainObjectType", publicDomainObjectType);
 
-      _baseType = baseType;
+      _publicDomainObjectType = publicDomainObjectType;
+    }
+
+    public Type PublicDomainObjectType
+    {
+      get { return _publicDomainObjectType; }
     }
 
     public override Delegate GetDelegate (Type delegateType)
@@ -43,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       {
         Type[] parameterTypes = GetParameterTypes (delegateType);
         string message = string.Format ("Type {0} does not support the requested constructor with signature ({1}).",
-                                        _baseType.FullName, SeparatedStringBuilder.Build (", ", parameterTypes, delegate (Type t) { return t.FullName; })); 
+                                        _publicDomainObjectType.FullName, SeparatedStringBuilder.Build (", ", parameterTypes, delegate (Type t) { return t.FullName; })); 
         throw new MissingMethodException (message, ex);
       }
     }

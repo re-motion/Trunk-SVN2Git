@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 {
@@ -47,23 +48,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       _info = new SerializationInfo (typeof (SerializableClass), new FormatterConverter ());
       _context = new StreamingContext ();
 
-      Type concreteType = Factory.GetConcreteDomainObjectType (typeof (SerializableClass));
-      _serializableInstance = Factory.GetTypesafeConstructorInvoker<SerializableClass> (concreteType).With ();
+      _serializableInstance = CreateInstance<SerializableClass>();
+      _serializableInstanceImplementingISerializable = CreateInstance<SerializableClassImplementingISerializable> ();
+      _serializableInstanceImplementingISerializableNotCallingBaseCtor = CreateInstance<SerializableClassImplementingISerializableNotCallingBaseCtor> ();
+      _serializableInstanceImplementingISerializableNotCallingGetObjectData = CreateInstance<SerializableClassImplementingISerializableNotCallingBaseGetObjectData> ();
+    }
 
-      Type concreteTypeImplementingISerializable = Factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializable));
-      _serializableInstanceImplementingISerializable =
-          Factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializable> (concreteTypeImplementingISerializable).With ();
-
-      Type concreteTypeImplementingISerializableNotCallingBaseCtor =
-          Factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializableNotCallingBaseCtor));
-      _serializableInstanceImplementingISerializableNotCallingBaseCtor =
-          Factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializableNotCallingBaseCtor> (
-              concreteTypeImplementingISerializableNotCallingBaseCtor).With ();
-      Type concreteTypeImplementingISerializableNotCallingBaseGetObjectData =
-          Factory.GetConcreteDomainObjectType (typeof (SerializableClassImplementingISerializableNotCallingBaseGetObjectData));
-      _serializableInstanceImplementingISerializableNotCallingGetObjectData =
-          Factory.GetTypesafeConstructorInvoker<SerializableClassImplementingISerializableNotCallingBaseGetObjectData> (
-              concreteTypeImplementingISerializableNotCallingBaseGetObjectData).With ();
+    private T CreateInstance<T> ()
+    {
+      Type concreteType = Factory.GetConcreteDomainObjectType (typeof (T));
+      var constructorLookupInfo = new DomainObjectConstructorLookupInfo (typeof (T), concreteType, BindingFlags.Public | BindingFlags.Instance);
+      return (T) ParamList.Empty.InvokeConstructor (constructorLookupInfo);
     }
 
     [Test]

@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -30,13 +31,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'System.Object'.")]
     public void NewObject_InvalidType ()
     {
-      RepositoryAccessor.NewObject (typeof (object));
+      RepositoryAccessor.NewObject (typeof (object), ParamList.Empty);
     }
 
     [Test]
     public void NewObject_NoCtorArgs ()
     {
-      Order instance = RepositoryAccessor.NewObject (typeof (Order)).With() as Order;
+      Order instance = RepositoryAccessor.NewObject (typeof (Order), ParamList.Empty) as Order;
       Assert.IsNotNull (instance);
       Assert.IsTrue (instance.CtorCalled);
     }
@@ -45,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NewObject_WithCtorArgs ()
     {
       Order order = Order.NewObject();
-      OrderItem instance = RepositoryAccessor.NewObject (typeof (OrderItem)).With (order) as OrderItem;
+      OrderItem instance = RepositoryAccessor.NewObject (typeof (OrderItem), ParamList.Create (order)) as OrderItem;
       Assert.IsNotNull (instance);
       Assert.AreSame (order, instance.Order);
     }
@@ -55,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         + "OrderItem does not support the requested constructor with signature (System.Decimal).")]
     public void NewObject_WrongCtorArgs ()
     {
-      RepositoryAccessor.NewObject (typeof (OrderItem)).With (0m);
+      RepositoryAccessor.NewObject (typeof (OrderItem), ParamList.Create (0m));
     }
 
     [Test]
@@ -64,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       using (ClientTransactionScope.EnterNullScope ())
       {
-        RepositoryAccessor.NewObject (typeof (Order)).With();
+        RepositoryAccessor.NewObject (typeof (Order), ParamList.Empty);
       }
     }
 

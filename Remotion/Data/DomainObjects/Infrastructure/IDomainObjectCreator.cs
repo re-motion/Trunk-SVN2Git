@@ -33,21 +33,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     DomainObject CreateWithDataContainer (DataContainer dataContainer);
 
     /// <summary>
-    /// Gets a typesafe constructor invoker for the given <see cref="DomainObject"/> type <typeparamref name="T"/>.
+    /// Gets a <see cref="ConstructorLookupInfo"/> that can be used to construct a <see cref="DomainObject"/> of the given 
+    /// <paramref name="domainObjectType"/>.
     /// </summary>
-    /// <typeparam name="T">The <see cref="DomainObject"/> type to construct by the returned object.</typeparam>
-    /// <returns>An object that allows construction of an instance of type <typeparamref name="T"/>. The <see cref="DomainObject"/> constructed
-    /// by this object will be a completely new instance, with no reference to an existing <see cref="DataContainer"/>.</returns>
-    IFuncInvoker<T> GetTypesafeConstructorInvoker<T> () where T : DomainObject;
-
-    /// <summary>
-    /// Gets a typesafe constructor invoker for the given <see cref="DomainObject"/> type <paramref name="domainObjectType"/>.
-    /// </summary>
-    /// <param name="domainObjectType">The <see cref="DomainObject"/> type to construct by the returned object.</param>
-    /// <returns>An object that allows construction of an instance of type <paramref name="domainObjectType"/>. The <see cref="DomainObject"/>
-    /// constructed by this object will be a completely new instance, with no reference to an existing <see cref="DataContainer"/>.</returns>
-    IFuncInvoker<DomainObject> GetTypesafeConstructorInvoker (Type domainObjectType);
-
+    /// <param name="domainObjectType">Type of the domain object.</param>
+    /// <returns>A <see cref="ConstructorLookupInfo"/> that can be used to instantiate a <see cref="DomainObject"/> of the given type.</returns>
+    /// <remarks>
+    /// The <see cref="ConstructorLookupInfo"/> returned by this method might not directly represent the given type; instead, it might represent a 
+    /// proxy type compatible with <paramref name="domainObjectType"/>.
+    /// </remarks>
     ConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType);
   }
 }

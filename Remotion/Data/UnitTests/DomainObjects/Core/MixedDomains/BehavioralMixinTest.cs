@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 {
@@ -62,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (DOWithVirtualPropertiesAndMethods)).Clear().AddMixins (typeof (MixinOverridingPropertiesAndMethods)).EnterScope())
       {
-        DOWithVirtualPropertiesAndMethods instance = (DOWithVirtualPropertiesAndMethods) RepositoryAccessor.NewObject (typeof (DOWithVirtualPropertiesAndMethods)).With();
+        DOWithVirtualPropertiesAndMethods instance = (DOWithVirtualPropertiesAndMethods) RepositoryAccessor.NewObject (typeof (DOWithVirtualPropertiesAndMethods), ParamList.Empty);
         instance.Property = "Text";
         Assert.AreEqual ("Text-MixinSetter-MixinGetter", instance.Property);
         Assert.AreEqual ("Something-MixinMethod", instance.GetSomething ());

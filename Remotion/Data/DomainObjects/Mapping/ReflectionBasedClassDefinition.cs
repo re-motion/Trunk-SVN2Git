@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return new MappingException (string.Format (message, args));
     }
 
-    protected internal override IDomainObjectCreator GetDomainObjectCreator ()
+    public override IDomainObjectCreator GetDomainObjectCreator ()
     {
       return FactoryBasedDomainObjectCreator.Instance;
     }

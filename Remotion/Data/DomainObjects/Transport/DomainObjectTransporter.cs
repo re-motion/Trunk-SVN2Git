@@ -17,11 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
+using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.Transport
 {
@@ -97,13 +97,15 @@ namespace Remotion.Data.DomainObjects.Transport
     /// <summary>
     /// Loads a new instance of a domain object for transportation.
     /// </summary>
-    /// <param name="type">The domain object type to instantiate. The type must have a parameterless constructor.</param>
+    /// <param name="type">The domain object type to instantiate.</param>
+    /// <param name="constructorParameters">A <see cref="ParamList"/> encapsulating the parameters to be passed to the constructor. Instantiate this
+    /// by using one of the <see cref="ParamList.Create{A1,A2}"/> methods.</param>
     /// <returns>A new instance of <paramref name="type"/> prepared for transport.</returns>
-    public DomainObject LoadNew (Type type)
+    public DomainObject LoadNew (Type type, ParamList constructorParameters)
     {
       using (_transportTransaction.EnterNonDiscardingScope ())
       {
-        DomainObject domainObject = RepositoryAccessor.NewObject (type).With();
+        DomainObject domainObject = RepositoryAccessor.NewObject (type, constructorParameters);
         Load (domainObject.ID);
         return domainObject;
       }
@@ -121,11 +123,11 @@ namespace Remotion.Data.DomainObjects.Transport
     /// <para>
     /// If an object has the foreign key side of a relationship and the related object is not loaded into this transporter, the relationship
     /// will still be transported. The related object must exist at the target system, otherwise an exception is thrown in
-    /// <see cref="LoadTransportData"/>.
+    /// <see cref="LoadTransportData(byte[])"/>.
     /// </para>
     /// <para>
     /// If an object has the virtual side of a relationship and the related object is not loaded into this transporter, the relationship
-    /// will not be transported. Its status after <see cref="LoadTransportData"/> depends on the objects at the target system. This
+    /// will not be transported. Its status after <see cref="LoadTransportData(byte[])"/> depends on the objects at the target system. This
     /// also applies to the 1-side of a 1-to-n relationship because the n-side is the foreign key side.
     /// </para>
     /// </remarks>

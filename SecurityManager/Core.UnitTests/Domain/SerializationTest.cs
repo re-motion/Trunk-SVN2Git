@@ -27,6 +27,7 @@ using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 
 namespace Remotion.SecurityManager.UnitTests.Domain
 {
@@ -50,13 +51,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       CheckDomainObjectSerializability (delegate { return StateDefinition.NewObject (); });
       CheckDomainObjectSerializability (delegate { return StatePropertyDefinition.NewObject (); });
       CheckDomainObjectSerializability (delegate { return StatePropertyReference.NewObject (); });
-      CheckDomainObjectSerializability (delegate { return (Group) RepositoryAccessor.NewObject (typeof (Group)).With (); });
-      CheckDomainObjectSerializability (delegate { return (GroupType) RepositoryAccessor.NewObject (typeof (GroupType)).With (); });
+      CheckDomainObjectSerializability (delegate { return (Group) RepositoryAccessor.NewObject (typeof (Group), ParamList.Empty); });
+      CheckDomainObjectSerializability (delegate { return (GroupType) RepositoryAccessor.NewObject (typeof (GroupType), ParamList.Empty); });
       CheckDomainObjectSerializability (delegate { return GroupTypePosition.NewObject (); });
-      CheckDomainObjectSerializability (delegate { return (Position) RepositoryAccessor.NewObject (typeof (Position)).With (); });
+      CheckDomainObjectSerializability (delegate { return (Position) RepositoryAccessor.NewObject (typeof (Position), ParamList.Empty); });
       CheckDomainObjectSerializability (delegate { return Role.NewObject (); });
-      CheckDomainObjectSerializability (delegate { return (Tenant) RepositoryAccessor.NewObject (typeof (Tenant)).With (); });
-      CheckDomainObjectSerializability (delegate { return (User) RepositoryAccessor.NewObject (typeof (User)).With(); });
+      CheckDomainObjectSerializability (delegate { return (Tenant) RepositoryAccessor.NewObject (typeof (Tenant), ParamList.Empty); });
+      CheckDomainObjectSerializability (delegate { return (User) RepositoryAccessor.NewObject (typeof (User), ParamList.Empty); });
     }
 
     private void CheckDomainObjectSerializability<T> (Func<T> creator)

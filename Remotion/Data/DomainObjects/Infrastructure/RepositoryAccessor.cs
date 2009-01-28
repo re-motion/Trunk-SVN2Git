@@ -29,25 +29,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public static class RepositoryAccessor
   {
     /// <summary>
-    /// Returns an invocation object for creating a new instance of a concrete domain object. The object is created in the 
-    /// <see cref="DomainObjects.ClientTransaction"/> that is active at constructor invocation time (i.e. when the invocation object is executed).
+    /// Returns a new instance of a concrete domain object. The object is created with the supplied constructor arguments in the 
+    /// <see cref="DomainObjects.ClientTransaction.Current"/> <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
     /// <param name="domainObjectType">The <see cref="Type"/> of the <see cref="DomainObject"/> to be created.</param>
-    /// <returns>An <see cref="IFuncInvoker{T}"/> object used to create a new domain object instance.</returns>
+    /// <param name="constructorParameters">A <see cref="ParamList"/> encapsulating the parameters to be passed to the constructor. Instantiate this
+    /// by using one of the <see cref="ParamList.Create{A1,A2}"/> methods.</param>
+    /// <returns>A new domain object instance.</returns>
     /// <remarks>
     /// <para>
-    /// This method's return value is an <see cref="IFuncInvoker{T}"/> object, which can be used to specify the required constructor and 
-    /// pass it the necessary arguments in order to create a new domain object. Depending on the mapping being used by the object, one of two
-    /// methods of object creation is used: legacy or via factory.
+    /// Objects created by this factory method are not directly instantiated; instead a proxy is dynamically created, which will assist in 
+    /// management tasks at runtime.
     /// </para>
     /// <para>
-    /// Legacy objects are created by simply invoking the constructor matching the arguments passed to the <see cref="FuncInvoker{T}"/>
-    /// object returned by this method.
+    /// This method should only be used by infrastructure code, ordinary code should use <see cref="DomainObject.NewObject{T}(ParamList)"/>.
     /// </para>
-    /// <para>
-    /// Objects created by the factory are not directly instantiated; instead a proxy is dynamically created for performing management tasks.
-    /// </para>
-    /// <para>This method should only be used by infrastructure code, ordinary code should use <see cref="DomainObject.NewObject{T}"/>.</para>
     /// <para>For more information, also see the constructor documentation (<see cref="DomainObject"/>).</para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">The <paramref name="domainObjectType"/> parameter is null.</exception>
@@ -57,10 +53,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="MissingMethodException">The <paramref name="domainObjectType"/> does not implement the required constructor (see Remarks
     /// section).
     /// </exception>
-    public static IFuncInvoker<DomainObject> NewObject (Type domainObjectType)
+    public static DomainObject NewObject (Type domainObjectType, ParamList constructorParameters)
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
-      return GetCreator (domainObjectType).GetTypesafeConstructorInvoker (domainObjectType);
+      var ctorInfo = GetCreator (domainObjectType).GetConstructorLookupInfo (domainObjectType);
+      return (DomainObject) constructorParameters.InvokeConstructor (ctorInfo);
     }
 
     /// <summary>

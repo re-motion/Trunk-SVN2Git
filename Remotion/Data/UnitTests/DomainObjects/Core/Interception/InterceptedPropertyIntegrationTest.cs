@@ -19,11 +19,13 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using System.Linq;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 {
@@ -157,9 +159,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
         + "Order does not support the requested constructor with signature (System.String, System.String, System.String, System.Object).")]
     public void WrongConstructorCannotBeInstantiated ()
     {
-      Type t = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (Order));
-      DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetTypesafeConstructorInvoker<DomainObject> (t)
-          .With ("foo", "bar", "foobar", (object) null);
+      var creator = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).GetDomainObjectCreator ();
+      var constructorLookupInfo = creator.GetConstructorLookupInfo (typeof (Order));
+      
+      var paramList = ParamList.Create ("foo", "bar", "foobar", (object) null);
+      paramList.InvokeConstructor (constructorLookupInfo);
     }
 
     [Test]

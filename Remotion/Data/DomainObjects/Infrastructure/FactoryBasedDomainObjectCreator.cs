@@ -25,11 +25,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
-  // Creates new domain object instances via the DPInterceptedDomainObjectFactory.
-  // Needed constructors:
-  // (any constructor) -- for new objects
-  // no constructor for loading required
-  internal class FactoryBasedDomainObjectCreator : IDomainObjectCreator
+  /// <summary>
+  /// Creates new domain object instances via the <see cref="InterceptedDomainObjectFactory"/>.
+  /// </summary>
+  public class FactoryBasedDomainObjectCreator : IDomainObjectCreator
   {
     public static readonly FactoryBasedDomainObjectCreator Instance = new FactoryBasedDomainObjectCreator ();
 
@@ -42,36 +41,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
       Type concreteType = factory.GetConcreteDomainObjectType(dataContainer.DomainObjectType);
-      DomainObject instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
+
+      var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
       factory.PrepareUnconstructedInstance (instance);
       dataContainer.SetDomainObject (instance);
       instance.Initialize (dataContainer.ID, dataContainer.ClientTransaction);
       return instance;
-    }
-
-    public IFuncInvoker<T> GetTypesafeConstructorInvoker<T> ()
-       where T : DomainObject
-    {
-      return GetTypesafeConstructorInvoker<T> (typeof (T));
-    }
-
-    public IFuncInvoker<DomainObject> GetTypesafeConstructorInvoker (Type type)
-    {
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (DomainObject));
-      return GetTypesafeConstructorInvoker<DomainObject> (type);
-    }
-
-    private IFuncInvoker<TStaticType> GetTypesafeConstructorInvoker<TStaticType> (Type domainObjectType)
-        where TStaticType : DomainObject
-    {
-      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
-      
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType);
-      classDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
-
-      IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
-      Type concreteType = factory.GetConcreteDomainObjectType(domainObjectType);
-      return factory.GetTypesafeConstructorInvoker<TStaticType> (concreteType);
     }
 
     public ConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType)

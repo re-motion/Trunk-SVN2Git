@@ -28,6 +28,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
@@ -798,7 +799,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void MultiplePropertiesWithSameShortName ()
     {
-      var derivedClass = (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (typeof (DerivedClassWithMixedProperties)).With();
+      var derivedClass = (DerivedClassWithMixedProperties) RepositoryAccessor.NewObject (typeof (DerivedClassWithMixedProperties), ParamList.Empty);
       ClassWithMixedProperties baseClass = derivedClass;
 
       derivedClass.String = "Derived";

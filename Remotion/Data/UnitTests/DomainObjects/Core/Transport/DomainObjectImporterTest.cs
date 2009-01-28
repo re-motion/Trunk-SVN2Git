@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
@@ -108,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     public void NonExistingObjects_NewInSource ()
     {
       DomainObjectTransporter transporter = new DomainObjectTransporter ();
-      Computer outerComputer = (Computer) transporter.LoadNew (typeof (Computer));
+      Computer outerComputer = (Computer) transporter.LoadNew (typeof (Computer), ParamList.Empty);
       byte[] binaryData = transporter.GetBinaryTransportData ();
 
       CheckImport (delegate (List<DomainObject> importedObjects)
@@ -359,8 +360,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     public void ChangedBySource_RelatedObjectToNew ()
     {
       DomainObjectTransporter transporter = new DomainObjectTransporter ();
-      Computer computer = (Computer) transporter.LoadNew (typeof (Computer));
-      Employee employee = (Employee) transporter.LoadNew (typeof (Employee));
+      Computer computer = (Computer) transporter.LoadNew (typeof (Computer), ParamList.Empty);
+      Employee employee = (Employee) transporter.LoadNew (typeof (Employee), ParamList.Empty);
 
       computer.Employee = employee;
 

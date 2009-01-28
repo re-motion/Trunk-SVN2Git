@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Cloning;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
@@ -216,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     {
       using (transaction.EnterNonDiscardingScope ())
       {
-        return (T) RepositoryAccessor.NewObject (typeof (T)).With ();
+        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.Empty);
       }
     }
   }

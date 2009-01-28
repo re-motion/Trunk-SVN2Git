@@ -881,7 +881,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       object creatorInstance = PrivateInvoke.GetPublicStaticField (
           typeof (ReflectionBasedClassDefinition).Assembly.GetType ("Remotion.Data.DomainObjects.Infrastructure.FactoryBasedDomainObjectCreator", true),
           "Instance");
-      Assert.AreEqual (creatorInstance, PrivateInvoke.InvokeNonPublicMethod (_orderClass, "GetDomainObjectCreator"));
+      Assert.AreEqual (creatorInstance, _orderClass.GetDomainObjectCreator());
     }
 
     [Test]

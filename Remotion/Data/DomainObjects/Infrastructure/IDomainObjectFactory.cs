@@ -65,19 +65,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     bool WasCreatedByFactory (Type type);
 
     /// <summary>
-    /// Returns a construction object that can be used to instantiate objects of a given interceptable dynamicType.
-    /// </summary>
-    /// <typeparam name="TStaticType">The type statically returned by the construction object.</typeparam>
-    /// <param name="dynamicType">The exatct interceptable type to be constructed; this must be a type returned by <see cref="GetConcreteDomainObjectType(Type)"/>.
-    /// <typeparamref name="TStaticType"/> must be assignable from this type.</param>
-    /// <returns>A construction object, which instantiates <paramref name="dynamicType"/> and returns <typeparamref name="TStaticType"/>.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="dynamicType"/> argument is null.</exception>
-    /// <exception cref="ArgumentException"><paramref name="dynamicType"/> is not the same or a subtype of <typeparamref name="TStaticType"/> or
-    /// <paramref name="dynamicType"/> wasn't created by this kind of factory.</exception>
-    IFuncInvoker<TStaticType> GetTypesafeConstructorInvoker<TStaticType> (Type dynamicType) where TStaticType : DomainObject;
-
-    /// <summary>
-    /// Prepares an instance which has not been created via <see cref="GetTypesafeConstructorInvoker{TStaticType}"/> for use.
+    /// Prepares an instance which has not been created via an ordinary constructor call for use.
     /// </summary>
     /// <param name="instance">The instance to be prepared</param>
     /// <remarks>

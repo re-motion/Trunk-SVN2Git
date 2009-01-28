@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
@@ -171,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     [Test]
     public void LoadNew ()
     {
-      Order order = (Order) _transporter.LoadNew (typeof (Order));
+      Order order = (Order) _transporter.LoadNew (typeof (Order), ParamList.Empty);
       Assert.IsNotNull (order);
       Assert.IsTrue (_transporter.IsLoaded (order.ID));
     }

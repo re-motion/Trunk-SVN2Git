@@ -22,6 +22,7 @@ using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObjectMixinTests
 {
@@ -92,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetPropertyDefaultForNonMappingProperties ()
     {
-      IBusinessObject businessObject = (IBusinessObject) RepositoryAccessor.NewObject (typeof (BindableDomainObjectWithProperties)).With();
+      IBusinessObject businessObject = (IBusinessObject) RepositoryAccessor.NewObject (typeof (BindableDomainObjectWithProperties), ParamList.Empty);
       Assert.IsNotNull (businessObject.GetProperty ("RequiredPropertyNotInMapping"));
       Assert.AreEqual (true, businessObject.GetProperty ("RequiredPropertyNotInMapping"));
     }

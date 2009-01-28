@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {
@@ -29,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void SerializationEvents ()
     {
       ClassWithSerializationCallbacks instance =
-          (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks)).With();
+          (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object)instance).GetType ());
 
@@ -41,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void DeserializationEvents ()
     {
       ClassWithSerializationCallbacks instance =
-          (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks)).With();
+          (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
 

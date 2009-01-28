@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Returns a new instance of a concrete domain object for the current <see cref="DomainObjects.ClientTransaction"/>. The object is constructed
-    /// using the default constructor.
+    /// using the default constructor in the <see cref="DomainObjects.ClientTransaction.Current"/> <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
     /// <typeparam name="T">The concrete type to be implemented by the object.</typeparam>
     /// <returns>A new domain object instance.</returns>
@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Returns a new instance of a concrete domain object for the current <see cref="DomainObjects.ClientTransaction"/>. The object is constructed
-    /// using the supplied constructor arguments.
+    /// using the supplied constructor arguments in the <see cref="DomainObjects.ClientTransaction.Current"/> <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
     /// <typeparam name="T">The concrete type to be implemented by the object.</typeparam>
     /// <param name="constructorParameters">A <see cref="ParamList"/> encapsulating the parameters to be passed to the constructor. Instantiate this

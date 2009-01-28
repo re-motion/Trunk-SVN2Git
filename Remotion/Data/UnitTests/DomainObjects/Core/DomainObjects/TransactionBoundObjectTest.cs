@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 {
@@ -39,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       using (_bindingTransaction.EnterNonDiscardingScope())
       {
-        return (T) RepositoryAccessor.NewObject (typeof (T)).Invoke (args);
+        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.CreateDynamic (args));
       }
     }
 

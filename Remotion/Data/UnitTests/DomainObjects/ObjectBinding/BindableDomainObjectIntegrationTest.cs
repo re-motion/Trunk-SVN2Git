@@ -26,6 +26,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
@@ -86,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void VerifyInterfaceImplementation ()
     {
       IBusinessObjectWithIdentity businessObject =
-          (SampleBindableDomainObjectWithOverriddenDisplayName) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName)).With();
+          (SampleBindableDomainObjectWithOverriddenDisplayName) RepositoryAccessor.NewObject (typeof (SampleBindableDomainObjectWithOverriddenDisplayName), ParamList.Empty);
       var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (businessObject, typeof (BindableDomainObject), "_implementation");
 
       Assert.That (businessObject.BusinessObjectClass, Is.SameAs (implementation.BusinessObjectClass));

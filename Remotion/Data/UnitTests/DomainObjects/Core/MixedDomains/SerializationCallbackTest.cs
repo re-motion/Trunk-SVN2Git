@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 {
@@ -32,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassWithSerializationCallbacks)).Clear().AddMixins (typeof (MixinWithSerializationCallbacks)).EnterScope())
       {
         ClassWithSerializationCallbacks instance =
-            (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks)).With();
+            (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
         Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType());
         Assert.IsTrue (instance is IMixinTarget);
@@ -48,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassWithSerializationCallbacks)).Clear().AddMixins (typeof (MixinWithSerializationCallbacks)).EnterScope())
       {
         ClassWithSerializationCallbacks instance =
-            (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks)).With();
+            (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
         Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType());
         Assert.IsTrue (instance is IMixinTarget);
@@ -64,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassWithSerializationCallbacks)).Clear().AddMixins (typeof (MixinWithSerializationCallbacks)).EnterScope())
       {
         ClassWithSerializationCallbacks instance =
-            (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks)).With();
+            (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
         Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
         Assert.IsTrue (instance is IMixinTarget);
@@ -80,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassWithSerializationCallbacks)).Clear().AddMixins (typeof (MixinWithSerializationCallbacks)).EnterScope())
       {
         ClassWithSerializationCallbacks instance =
-            (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks)).With();
+            (ClassWithSerializationCallbacks) RepositoryAccessor.NewObject (typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
         Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
         Assert.IsTrue (instance is IMixinTarget);
