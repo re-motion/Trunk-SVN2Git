@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public new static DevelopmentPartner NewObject()
     {
-      return NewObject<DevelopmentPartner>().With();
+      return DomainObject.NewObject<DevelopmentPartner> ();
     }
 
     protected DevelopmentPartner()

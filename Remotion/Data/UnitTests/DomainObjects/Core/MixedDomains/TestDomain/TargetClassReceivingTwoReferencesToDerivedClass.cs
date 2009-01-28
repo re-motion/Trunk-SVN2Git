@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   {
     public static TargetClassReceivingTwoReferencesToDerivedClass NewObject ()
     {
-      return NewObject<TargetClassReceivingTwoReferencesToDerivedClass>().With();
+      return NewObject<TargetClassReceivingTwoReferencesToDerivedClass>();
     }
   }
 }

@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public static Company NewObject ()
     {
-      return NewObject<Company>().With();
+      return DomainObject.NewObject<Company> ();
     }
 
     protected Company ()

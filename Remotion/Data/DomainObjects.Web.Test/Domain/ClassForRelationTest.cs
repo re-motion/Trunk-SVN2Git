@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
   {
     public static ClassForRelationTest NewObject()
     {
-      return DomainObject.NewObject<ClassForRelationTest> ().With ();
+      return DomainObject.NewObject<ClassForRelationTest> ();
     }
 
 

@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public static Ceo NewObject()
     {
-      return NewObject<Ceo>().With();
+      return DomainObject.NewObject<Ceo> ();
     }
 
     protected Ceo()

@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public static AccessControlEntry NewObject ()
     {
-      return NewObject<AccessControlEntry>().With();
+      return NewObject<AccessControlEntry>();
     }
 
     public new static AccessControlEntry GetObject (ObjectID id)

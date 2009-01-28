@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
   {
     public static File NewObject()
     {
-      return NewObject<File>().With();
+      return DomainObject.NewObject<File>();
     }
 
     protected File()

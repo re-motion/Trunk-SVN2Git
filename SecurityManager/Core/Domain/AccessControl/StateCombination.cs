@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public static StateCombination NewObject ()
     {
-      return NewObject<StateCombination> ().With ();
+      return NewObject<StateCombination> ();
     }
 
     // member fields

@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static Person NewObject ()
     {
-      return NewObject<Person> ().With ();
+      return NewObject<Person> ();
     }
 
     public static Person GetObject (ObjectID id)

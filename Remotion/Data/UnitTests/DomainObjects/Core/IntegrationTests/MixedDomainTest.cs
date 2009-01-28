@@ -80,11 +80,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       {
         mixedInstance = TargetClassForPersistentMixin.NewObject();
         mixin = Mixin.Get<MixinAddingPersistentProperties> (mixedInstance);
-        relationTarget1 = RelationTargetForPersistentMixin.NewObject().With();
-        relationTarget2 = RelationTargetForPersistentMixin.NewObject().With();
-        relationTarget3 = RelationTargetForPersistentMixin.NewObject().With();
-        relationTarget4 = RelationTargetForPersistentMixin.NewObject ().With ();
-        relationTarget5 = RelationTargetForPersistentMixin.NewObject ().With ();
+        relationTarget1 = RelationTargetForPersistentMixin.NewObject();
+        relationTarget2 = RelationTargetForPersistentMixin.NewObject();
+        relationTarget3 = RelationTargetForPersistentMixin.NewObject();
+        relationTarget4 = RelationTargetForPersistentMixin.NewObject ();
+        relationTarget5 = RelationTargetForPersistentMixin.NewObject ();
       }
 
       mixin.PersistentProperty = 10;
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
-        mixedInstance = TargetClassWithTwoUnidirectionalMixins.NewObject ().With ();
+        mixedInstance = TargetClassWithTwoUnidirectionalMixins.NewObject ();
         mixin1 = Mixin.Get<MixinAddingUnidirectionalRelation1> (mixedInstance);
         mixin2 = Mixin.Get<MixinAddingUnidirectionalRelation2> (mixedInstance);
 
@@ -174,9 +174,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       using (ClientTransaction.CreateBindingTransaction ().EnterNonDiscardingScope ())
       {
-        mixedInstance1 = TargetClassWithUnidirectionalMixin1.NewObject ().With ();
+        mixedInstance1 = TargetClassWithUnidirectionalMixin1.NewObject ();
         mixin1 = Mixin.Get<MixinAddingUnidirectionalRelation1> (mixedInstance1);
-        mixedInstance2 = TargetClassWithUnidirectionalMixin2.NewObject ().With ();
+        mixedInstance2 = TargetClassWithUnidirectionalMixin2.NewObject ();
         mixin2 = Mixin.Get<MixinAddingUnidirectionalRelation1> (mixedInstance2);
 
         relationTarget1 = Computer.NewObject ();

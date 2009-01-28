@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static File NewObject()
     {
-      return NewObject<File>().With();
+      return NewObject<File>();
     }
 
     public static File GetObject (ObjectID id)

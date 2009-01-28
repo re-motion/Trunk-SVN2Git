@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static ClassWithUnidirectionalRelation NewObject ()
     {
-      return NewObject<ClassWithUnidirectionalRelation> ().With();
+      return NewObject<ClassWithUnidirectionalRelation> ();
     }
 
     public static ClassWithUnidirectionalRelation GetObject (ObjectID id)

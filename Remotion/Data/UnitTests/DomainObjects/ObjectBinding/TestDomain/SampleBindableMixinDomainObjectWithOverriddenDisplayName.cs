@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   {
     public new static SampleBindableMixinDomainObjectWithOverriddenDisplayName NewObject ()
     {
-      return NewObject<SampleBindableMixinDomainObjectWithOverriddenDisplayName> ().With ();
+      return NewObject<SampleBindableMixinDomainObjectWithOverriddenDisplayName> ();
     }
 
     public static new SampleBindableMixinDomainObjectWithOverriddenDisplayName GetObject (ObjectID id)

@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public static OrderItemWithNewPropertyAccess NewObject ()
     {
-      return NewObject<OrderItemWithNewPropertyAccess> ().With();
+      return NewObject<OrderItemWithNewPropertyAccess> ();
     }
 
     protected OrderItemWithNewPropertyAccess()

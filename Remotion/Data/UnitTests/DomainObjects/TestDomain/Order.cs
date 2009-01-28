@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public static Order NewObject ()
     {
-      return NewObject<Order> ().With();
+      return NewObject<Order> ();
     }
 
     public new static Order GetObject (ObjectID id)

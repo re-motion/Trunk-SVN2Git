@@ -204,7 +204,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void UnidirectionalRelationProperty ()
     {
       var tc = TargetClassForPersistentMixin.NewObject ();
-      var relationTarget = RelationTargetForPersistentMixin.NewObject ().With ();
+      var relationTarget = RelationTargetForPersistentMixin.NewObject ();
       var mixin = Mixin.Get<MixinAddingPersistentProperties> (tc);
       mixin.UnidirectionalRelationProperty = relationTarget;
       Assert.AreSame (relationTarget, mixin.UnidirectionalRelationProperty);
@@ -214,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void RelationPropertyRealSide ()
     {
       var  tc = TargetClassForPersistentMixin.NewObject ();
-      var relationTarget = RelationTargetForPersistentMixin.NewObject().With();
+      var relationTarget = RelationTargetForPersistentMixin.NewObject();
       var mixin = Mixin.Get<MixinAddingPersistentProperties> (tc);
       mixin.RelationProperty = relationTarget;
       Assert.AreSame (relationTarget, mixin.RelationProperty);
@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void VirtualRelationProperty ()
     {
       var tc = TargetClassForPersistentMixin.NewObject ();
-      var relationTarget = RelationTargetForPersistentMixin.NewObject ().With ();
+      var relationTarget = RelationTargetForPersistentMixin.NewObject ();
       var mixin = Mixin.Get<MixinAddingPersistentProperties> (tc);
       mixin.VirtualRelationProperty = relationTarget;
       Assert.AreSame (relationTarget, mixin.VirtualRelationProperty);
@@ -236,8 +236,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void CollectionProperty1Side ()
     {
       var tc = TargetClassForPersistentMixin.NewObject ();
-      var relationTarget1 = RelationTargetForPersistentMixin.NewObject ().With ();
-      var relationTarget2 = RelationTargetForPersistentMixin.NewObject ().With ();
+      var relationTarget1 = RelationTargetForPersistentMixin.NewObject ();
+      var relationTarget2 = RelationTargetForPersistentMixin.NewObject ();
       var mixin = Mixin.Get<MixinAddingPersistentProperties> (tc);
       mixin.CollectionProperty1Side.Add (relationTarget1);
       mixin.CollectionProperty1Side.Add (relationTarget2);
@@ -252,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       var tc1 = TargetClassForPersistentMixin.NewObject ();
       var tc2 = TargetClassForPersistentMixin.NewObject ();
-      var relationTarget = RelationTargetForPersistentMixin.NewObject ().With ();
+      var relationTarget = RelationTargetForPersistentMixin.NewObject ();
       var mixin1 = Mixin.Get<MixinAddingPersistentProperties> (tc1);
       var mixin2 = Mixin.Get<MixinAddingPersistentProperties> (tc2);
       mixin1.CollectionPropertyNSide = relationTarget;
@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void DerivedMixin ()
     {
-      var tc = TargetClassForDerivedPersistentMixin.NewObject().With();
+      var tc = TargetClassForDerivedPersistentMixin.NewObject();
       var mixin = Mixin.Get<DerivedMixinAddingPersistentProperties> (tc);
       mixin.AdditionalPersistentProperty = 12;
       Assert.AreEqual (12, mixin.AdditionalPersistentProperty);
@@ -277,7 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void TargetClassAboveInheritanceRoot ()
     {
-      var tc = InheritanceRootInheritingPersistentMixin.NewObject ().With ();
+      var tc = InheritanceRootInheritingPersistentMixin.NewObject ();
       var mixin = Mixin.Get<MixinAddingPersistentPropertiesAboveInheritanceRoot> (tc);
       mixin.PersistentProperty = 10;
       Assert.AreEqual (10, mixin.PersistentProperty);
@@ -286,9 +286,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [Test]
     public void RelationOnTargetClassAboveInheritanceRoot ()
     {
-      var tc = InheritanceRootInheritingPersistentMixin.NewObject ().With ();
+      var tc = InheritanceRootInheritingPersistentMixin.NewObject ();
       var mixin = Mixin.Get<MixinAddingPersistentPropertiesAboveInheritanceRoot> (tc);
-      var relationTarget = RelationTargetForPersistentMixinAboveInheritanceRoot.NewObject ().With ();
+      var relationTarget = RelationTargetForPersistentMixinAboveInheritanceRoot.NewObject ();
       mixin.PersistentRelationProperty = relationTarget;
       Assert.That (mixin.PersistentRelationProperty, Is.SameAs (relationTarget));
     }

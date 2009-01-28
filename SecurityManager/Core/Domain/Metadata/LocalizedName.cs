@@ -17,6 +17,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
@@ -29,7 +30,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
   {
     public static LocalizedName NewObject (string text, Culture culture, MetadataObject metadataObject)
     {
-      return NewObject<LocalizedName> ().With (text, culture, metadataObject);
+      return NewObject<LocalizedName> (ParamList.Create (text, culture, metadataObject));
     }
 
     protected LocalizedName (string text, Culture culture, MetadataObject metadataObject)

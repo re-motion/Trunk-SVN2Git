@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
   {
     public static Person NewObject()
     {
-      return NewObject<Person>().With();
+      return NewObject<Person>();
     }
 
     protected Person()

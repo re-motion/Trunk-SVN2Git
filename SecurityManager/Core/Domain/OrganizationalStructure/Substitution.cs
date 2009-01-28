@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public static Substitution NewObject ()
     {
-      return NewObject<Substitution>().With ();
+      return NewObject<Substitution>();
     }
 
     protected Substitution ()

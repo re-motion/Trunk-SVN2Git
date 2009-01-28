@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
   [TestDomain]
   public class InheritanceRootInheritingPersistentMixin : TargetClassAboveInheritanceRoot
   {
-    public static IFuncInvoker<InheritanceRootInheritingPersistentMixin> NewObject ()
+    public static InheritanceRootInheritingPersistentMixin NewObject ()
     {
       return NewObject<InheritanceRootInheritingPersistentMixin> ();
     }

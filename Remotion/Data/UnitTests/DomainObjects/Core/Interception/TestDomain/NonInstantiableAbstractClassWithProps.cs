@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
   {
     public static NonInstantiableAbstractClassWithProps NewObject ()
     {
-      return NewObject<NonInstantiableAbstractClassWithProps> ().With();
+      return NewObject<NonInstantiableAbstractClassWithProps> ();
     }
 
     protected NonInstantiableAbstractClassWithProps()

@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
@@ -30,12 +31,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
   {
     public static StatePropertyDefinition NewObject ()
     {
-      return NewObject<StatePropertyDefinition>().With();
+      return NewObject<StatePropertyDefinition>();
     }
 
     public static StatePropertyDefinition NewObject (Guid metadataItemID, string name)
     {
-      return NewObject<StatePropertyDefinition>().With (metadataItemID, name);
+      return NewObject<StatePropertyDefinition>(ParamList.Create (metadataItemID, name));
     }
 
     public new static StatePropertyDefinition GetObject (ObjectID id)

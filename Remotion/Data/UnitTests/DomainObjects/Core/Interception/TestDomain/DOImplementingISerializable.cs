@@ -16,6 +16,7 @@
 using System;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
 {
@@ -26,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
   {
     public static DOImplementingISerializable NewObject (string memberHeldAsField)
     {
-      return NewObject<DOImplementingISerializable> ().With (memberHeldAsField);
+      return NewObject<DOImplementingISerializable> (ParamList.Create (memberHeldAsField));
     }
 
     private string _memberHeldAsField;

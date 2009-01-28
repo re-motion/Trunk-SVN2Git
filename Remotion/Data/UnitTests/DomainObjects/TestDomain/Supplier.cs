@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public new static Supplier NewObject ()
     {
-      return NewObject<Supplier>().With();
+      return NewObject<Supplier>();
     }
 
     public new static Supplier GetObject (ObjectID id)

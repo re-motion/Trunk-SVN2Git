@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
   {
     public static StatePropertyReference NewObject ()
     {
-      return NewObject<StatePropertyReference> ().With ();
+      return NewObject<StatePropertyReference> ();
     }
 
     protected StatePropertyReference ()

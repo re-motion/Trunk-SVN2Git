@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public static Computer NewObject ()
     {
-      return NewObject<Computer> ().With();
+      return NewObject<Computer> ();
     }
 
     public new static Computer GetObject (ObjectID id)

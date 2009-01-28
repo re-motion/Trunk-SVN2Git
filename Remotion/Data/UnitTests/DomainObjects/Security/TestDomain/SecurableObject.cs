@@ -17,6 +17,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Remotion.Security;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
@@ -29,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
       using (clientTransaction.EnterNonDiscardingScope())
       {
-        return NewObject<SecurableObject>().With (securityStrategy);
+        return NewObject<SecurableObject>(ParamList.Create (securityStrategy));
       }
     }
 

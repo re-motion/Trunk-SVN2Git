@@ -18,6 +18,7 @@
 using System;
 using System.ComponentModel;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 using Remotion.SecurityManager.Domain.AccessControl;
 
 namespace Remotion.SecurityManager.Domain.Metadata
@@ -32,12 +33,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static StateDefinition NewObject ()
     {
-      return NewObject<StateDefinition> ().With ();
+      return NewObject<StateDefinition> ();
    }
 
     public static StateDefinition NewObject (string name, int value)
     {
-      return NewObject<StateDefinition> ().With (name, value);
+      return NewObject<StateDefinition> (ParamList.Create (name, value));
     }
 
     public static new StateDefinition GetObject (ObjectID id)

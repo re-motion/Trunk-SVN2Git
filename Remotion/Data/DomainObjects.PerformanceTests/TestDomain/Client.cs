@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
   {
     public static Client NewObject()
     {
-      return NewObject<Client>().With();
+      return DomainObject.NewObject<Client>();
     }
 
     public static Client GetObject (ObjectID id)

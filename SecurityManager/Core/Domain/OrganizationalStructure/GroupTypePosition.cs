@@ -31,7 +31,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   {
     public static GroupTypePosition NewObject ()
     {
-      return NewObject<GroupTypePosition> ().With ();
+      return NewObject<GroupTypePosition> ();
     }
 
     protected GroupTypePosition ()

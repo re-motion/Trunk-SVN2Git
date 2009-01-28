@@ -47,5 +47,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>An object that allows construction of an instance of type <paramref name="domainObjectType"/>. The <see cref="DomainObject"/>
     /// constructed by this object will be a completely new instance, with no reference to an existing <see cref="DataContainer"/>.</returns>
     IFuncInvoker<DomainObject> GetTypesafeConstructorInvoker (Type domainObjectType);
+
+    ConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType);
   }
 }

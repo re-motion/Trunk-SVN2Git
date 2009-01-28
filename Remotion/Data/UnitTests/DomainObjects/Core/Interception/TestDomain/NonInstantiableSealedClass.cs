@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
   {
     public static NonInstantiableSealedClass NewObject ()
     {
-      return NewObject<NonInstantiableSealedClass> ().With();
+      return NewObject<NonInstantiableSealedClass> ();
     }
 
     public NonInstantiableSealedClass()

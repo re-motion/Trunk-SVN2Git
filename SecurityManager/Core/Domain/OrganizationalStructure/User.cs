@@ -48,7 +48,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     internal static User NewObject ()
     {
-      return NewObject<User> ().With ();
+      return NewObject<User> ();
     }
 
     public static new User GetObject (ObjectID id)

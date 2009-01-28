@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
   {
     public static ClassWithAbstractRelatedCollectionSetter NewObject ()
     {
-      return NewObject<ClassWithAbstractRelatedCollectionSetter> ().With ();
+      return NewObject<ClassWithAbstractRelatedCollectionSetter> ();
     }
 
     protected ClassWithAbstractRelatedCollectionSetter()

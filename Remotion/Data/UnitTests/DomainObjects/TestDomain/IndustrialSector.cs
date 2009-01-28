@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public static IndustrialSector NewObject ()
     {
-      return NewObject<IndustrialSector> ().With ();
+      return NewObject<IndustrialSector> ();
     }
 
     public new static IndustrialSector GetObject (ObjectID id)

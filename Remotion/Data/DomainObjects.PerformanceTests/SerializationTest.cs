@@ -160,7 +160,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     private void CreateAndFillValuePropertyObject ()
     {
       Random random = new Random();
-      ClassWithValueProperties instance = ClassWithValueProperties.NewObject().With();
+      ClassWithValueProperties instance = ClassWithValueProperties.NewObject();
 
       instance.BoolProperty1 = random.Next () % 2 == 0;
       instance.BoolProperty2 = random.Next () % 2 == 0;
@@ -210,7 +210,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     private void CreateAndFillSmallValuePropertyObject ()
     {
       Random random = new Random ();
-      ClassWithFewValueProperties instance = ClassWithFewValueProperties.NewObject ().With ();
+      ClassWithFewValueProperties instance = ClassWithFewValueProperties.NewObject ();
 
       instance.BoolProperty1 = random.Next () % 2 == 0;
       instance.BoolProperty2 = random.Next () % 2 == 0;
@@ -239,50 +239,50 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     private void CreateAndFillRelationPropertyObject ()
     {
-      ClassWithRelationProperties instance = ClassWithRelationProperties.NewObject().With();
-      instance.Unary1 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
-      instance.Unary2 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
-      instance.Unary3 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
-      instance.Unary4 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
-      instance.Unary5 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
-      instance.Unary6 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
-      instance.Unary7 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
-      instance.Unary8 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
-      instance.Unary9 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
-      instance.Unary10 = OppositeClassWithAnonymousRelationProperties.NewObject ().With ();
+      ClassWithRelationProperties instance = ClassWithRelationProperties.NewObject();
+      instance.Unary1 = OppositeClassWithAnonymousRelationProperties.NewObject ();
+      instance.Unary2 = OppositeClassWithAnonymousRelationProperties.NewObject ();
+      instance.Unary3 = OppositeClassWithAnonymousRelationProperties.NewObject ();
+      instance.Unary4 = OppositeClassWithAnonymousRelationProperties.NewObject ();
+      instance.Unary5 = OppositeClassWithAnonymousRelationProperties.NewObject ();
+      instance.Unary6 = OppositeClassWithAnonymousRelationProperties.NewObject ();
+      instance.Unary7 = OppositeClassWithAnonymousRelationProperties.NewObject ();
+      instance.Unary8 = OppositeClassWithAnonymousRelationProperties.NewObject ();
+      instance.Unary9 = OppositeClassWithAnonymousRelationProperties.NewObject ();
+      instance.Unary10 = OppositeClassWithAnonymousRelationProperties.NewObject ();
 
-      instance.Real1 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
-      instance.Real2 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
-      instance.Real3 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
-      instance.Real4 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
-      instance.Real5 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
-      instance.Real6 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
-      instance.Real7 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
-      instance.Real8 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
-      instance.Real9 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
-      instance.Real10 = OppositeClassWithVirtualRelationProperties.NewObject ().With ();
+      instance.Real1 = OppositeClassWithVirtualRelationProperties.NewObject ();
+      instance.Real2 = OppositeClassWithVirtualRelationProperties.NewObject ();
+      instance.Real3 = OppositeClassWithVirtualRelationProperties.NewObject ();
+      instance.Real4 = OppositeClassWithVirtualRelationProperties.NewObject ();
+      instance.Real5 = OppositeClassWithVirtualRelationProperties.NewObject ();
+      instance.Real6 = OppositeClassWithVirtualRelationProperties.NewObject ();
+      instance.Real7 = OppositeClassWithVirtualRelationProperties.NewObject ();
+      instance.Real8 = OppositeClassWithVirtualRelationProperties.NewObject ();
+      instance.Real9 = OppositeClassWithVirtualRelationProperties.NewObject ();
+      instance.Real10 = OppositeClassWithVirtualRelationProperties.NewObject ();
 
-      instance.Virtual1 = OppositeClassWithRealRelationProperties.NewObject ().With ();
-      instance.Virtual2 = OppositeClassWithRealRelationProperties.NewObject ().With ();
-      instance.Virtual3 = OppositeClassWithRealRelationProperties.NewObject ().With ();
-      instance.Virtual4 = OppositeClassWithRealRelationProperties.NewObject ().With ();
-      instance.Virtual5 = OppositeClassWithRealRelationProperties.NewObject ().With ();
-      instance.Virtual6 = OppositeClassWithRealRelationProperties.NewObject ().With ();
-      instance.Virtual7 = OppositeClassWithRealRelationProperties.NewObject ().With ();
-      instance.Virtual8 = OppositeClassWithRealRelationProperties.NewObject ().With ();
-      instance.Virtual9 = OppositeClassWithRealRelationProperties.NewObject ().With ();
-      instance.Virtual10 = OppositeClassWithRealRelationProperties.NewObject ().With ();
+      instance.Virtual1 = OppositeClassWithRealRelationProperties.NewObject ();
+      instance.Virtual2 = OppositeClassWithRealRelationProperties.NewObject ();
+      instance.Virtual3 = OppositeClassWithRealRelationProperties.NewObject ();
+      instance.Virtual4 = OppositeClassWithRealRelationProperties.NewObject ();
+      instance.Virtual5 = OppositeClassWithRealRelationProperties.NewObject ();
+      instance.Virtual6 = OppositeClassWithRealRelationProperties.NewObject ();
+      instance.Virtual7 = OppositeClassWithRealRelationProperties.NewObject ();
+      instance.Virtual8 = OppositeClassWithRealRelationProperties.NewObject ();
+      instance.Virtual9 = OppositeClassWithRealRelationProperties.NewObject ();
+      instance.Virtual10 = OppositeClassWithRealRelationProperties.NewObject ();
 
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
-      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ().With ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
+      instance.Collection.Add (OppositeClassWithCollectionRelationProperties.NewObject ());
     }
   }
 }

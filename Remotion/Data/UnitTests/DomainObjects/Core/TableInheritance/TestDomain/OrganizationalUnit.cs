@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static OrganizationalUnit NewObject()
     {
-      return NewObject<OrganizationalUnit>().With();
+      return NewObject<OrganizationalUnit>();
     }
 
     protected OrganizationalUnit()

@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public new static Folder NewObject ()
     {
-      return NewObject<Folder> ().With();
+      return NewObject<Folder> ();
     }
 
     protected Folder ()

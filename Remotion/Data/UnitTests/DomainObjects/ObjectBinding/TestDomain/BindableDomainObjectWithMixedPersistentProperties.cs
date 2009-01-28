@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   {
     public static BindableDomainObjectWithMixedPersistentProperties NewObject ()
     {
-      return NewObject<BindableDomainObjectWithMixedPersistentProperties>().With();
+      return NewObject<BindableDomainObjectWithMixedPersistentProperties>();
     }
   }
 }

@@ -45,22 +45,15 @@ namespace Remotion.Data.DomainObjects
     #region Creation and GetObject factory methods
 
     /// <summary>
-    /// Returns an invocation object creating a new instance of a concrete domain object for the current <see cref="DomainObjects.ClientTransaction"/>.
+    /// Returns a new instance of a concrete domain object for the current <see cref="DomainObjects.ClientTransaction"/>. The object is constructed
+    /// using the default constructor.
     /// </summary>
     /// <typeparam name="T">The concrete type to be implemented by the object.</typeparam>
-    /// <returns>An <see cref="IFuncInvoker{T}"/> object used to create a new domain object instance.</returns>
+    /// <returns>A new domain object instance.</returns>
     /// <remarks>
     /// <para>
-    /// This method's return value is an <see cref="IFuncInvoker{T}"/> object, which can be used to specify the required constructor and 
-    /// pass it the necessary arguments in order to create a new domain object. Depending on the mapping being used by the object, one of two
-    /// methods of object creation is used: legacy or via factory.
-    /// </para>
-    /// <para>
-    /// Legacy objects are created by simply invoking the constructor matching the arguments passed to the <see cref="FuncInvoker{T}"/>
-    /// object returned by this method.
-    /// </para>
-    /// <para>
-    /// Objects created by the factory are not directly instantiated; instead a proxy is dynamically created for performing management tasks.
+    /// Objects created by this factory method are not directly instantiated; instead a proxy is dynamically created, which will assist in 
+    /// management tasks at runtime.
     /// </para>
     /// <para>This method should not be directly invoked by a user, but instead by static factory methods of classes derived from
     /// <see cref="DomainObject"/>.</para>
@@ -72,9 +65,42 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="MissingMethodException">The given type <typeparamref name="T"/> does not implement the required protected
     /// constructor (see Remarks section).
     /// </exception>
-    protected static IFuncInvoker<T> NewObject<T> () where T: DomainObject
+    protected static T NewObject<T> () where T : DomainObject
     {
-      return RepositoryAccessor.GetCreator (typeof (T)).GetTypesafeConstructorInvoker<T>();
+      return NewObject<T> (ParamList.Create ());
+    }
+
+    /// <summary>
+    /// Returns a new instance of a concrete domain object for the current <see cref="DomainObjects.ClientTransaction"/>. The object is constructed
+    /// using the supplied constructor arguments.
+    /// </summary>
+    /// <typeparam name="T">The concrete type to be implemented by the object.</typeparam>
+    /// <param name="constructorParameters">A <see cref="ParamList"/> encapsulating the parameters to be passed to the constructor. Instantiate this
+    /// by using one of the <see cref="ParamList.Create{A1,A2}"/> methods.</param>
+    /// <returns>A new domain object instance.</returns>
+    /// <remarks>
+    /// <para>
+    /// Objects created by this factory method are not directly instantiated; instead a proxy is dynamically created, which will assist in 
+    /// management tasks at runtime.
+    /// </para>
+    /// <para>This method should not be directly invoked by a user, but instead by static factory methods of classes derived from
+    /// <see cref="DomainObject"/>.</para>
+    /// <para>For more information, also see the constructor documentation (<see cref="DomainObject()"/>).</para>
+    /// </remarks>
+    /// <seealso cref="DomainObject()"/>
+    /// <exception cref="ArgumentException">The type <typeparamref name="T"/> cannot be extended to a proxy, for example because it is sealed
+    /// or abstract and non-instantiable.</exception>
+    /// <exception cref="MissingMethodException">The given type <typeparamref name="T"/> does not implement the required protected
+    /// constructor (see Remarks section).
+    /// </exception>
+    protected static T NewObject<T> (ParamList constructorParameters) where T : DomainObject
+    {
+      ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
+      
+      var info = RepositoryAccessor.GetCreator (typeof (T)).GetConstructorLookupInfo (typeof (T));
+      var domainObject = (T) constructorParameters.InvokeConstructor (info);
+      DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (domainObject);
+      return domainObject;
     }
 
     /// <summary>
@@ -206,7 +232,7 @@ namespace Remotion.Data.DomainObjects
     /// Any constructors implemented on concrete domain objects should delegate to this base constructor. As domain objects generally should 
     /// not be constructed via the
     /// <c>new</c> operator, these constructors must remain protected, and the concrete domain objects should have a static "NewObject" method,
-    /// which delegates to <see cref="NewObject{T}"/>, passing it the required constructor arguments.
+    /// which delegates to <see cref="NewObject{T}(ParamList)"/>, passing it the required constructor arguments.
     /// </para>
     /// <para>
     /// It is safe to access virtual properties that are automatically implemented by the framework from constructors because this base constructor

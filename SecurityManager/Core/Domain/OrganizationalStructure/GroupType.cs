@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     public static GroupType NewObject ()
     {
-      return NewObject<GroupType> ().With ();
+      return NewObject<GroupType> ();
     }
 
     public static ObjectList<GroupType> FindAll ()

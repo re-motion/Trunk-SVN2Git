@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   {
     public static Permission NewObject ()
     {
-      return NewObject<Permission> ().With ();
+      return NewObject<Permission> ();
     }
 
     protected Permission ()

@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static Region NewObject ()
     {
-      return NewObject<Region> ().With();
+      return NewObject<Region> ();
     }
 
     public static Region GetObject (ObjectID id)

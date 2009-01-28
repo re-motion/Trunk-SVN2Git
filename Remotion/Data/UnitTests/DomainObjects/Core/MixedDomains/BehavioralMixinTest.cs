@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       public static NestedDomainObject NewObject ()
       {
-        return NewObject<NestedDomainObject> ().With ();
+        return NewObject<NestedDomainObject> ();
       }
     }
 

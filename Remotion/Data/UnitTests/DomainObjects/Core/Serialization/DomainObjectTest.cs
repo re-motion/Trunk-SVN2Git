@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void Serializable ()
     {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ().With ();
+      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
       instance.IntProperty = 6;
       Tuple<ClientTransaction, ClassDerivedFromSimpleDomainObject> deserializedData =
           Serializer.SerializeAndDeserialize (Tuple.NewTuple (ClientTransaction.Current, instance));

@@ -23,7 +23,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
   {
     public static ClassWithExplicitInterfaceProperty NewObject()
     {
-      return NewObject<ClassWithExplicitInterfaceProperty>().With();
+      return NewObject<ClassWithExplicitInterfaceProperty>();
     }
 
     protected ClassWithExplicitInterfaceProperty ()

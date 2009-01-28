@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 
     public static BindableDomainObjectWithProperties NewObject ()
     {
-      return NewObject<BindableDomainObjectWithProperties>().With();
+      return NewObject<BindableDomainObjectWithProperties>();
     }
 
     [StorageClassNone]

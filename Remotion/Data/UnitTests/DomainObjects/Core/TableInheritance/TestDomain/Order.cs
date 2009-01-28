@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static Order NewObject()
     {
-      return NewObject<Order>().With();
+      return NewObject<Order>();
     }
 
     public static Order GetObject (ObjectID id)

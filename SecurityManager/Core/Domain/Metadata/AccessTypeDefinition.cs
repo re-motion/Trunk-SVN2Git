@@ -18,6 +18,7 @@
 using System;
 using System.ComponentModel;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
 
@@ -29,12 +30,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
   {
     public static AccessTypeDefinition NewObject ()
     {
-      return NewObject<AccessTypeDefinition> ().With ();
+      return NewObject<AccessTypeDefinition> ();
     }
 
     public static AccessTypeDefinition NewObject (Guid metadataItemID, string name, int value)
     {
-      return NewObject<AccessTypeDefinition> ().With (metadataItemID, name, value);
+      return NewObject<AccessTypeDefinition> (ParamList.Create (metadataItemID, name, value));
     }
 
     protected AccessTypeDefinition ()

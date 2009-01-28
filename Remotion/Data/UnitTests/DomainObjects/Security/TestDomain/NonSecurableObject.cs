@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
       using (clientTransaction.EnterNonDiscardingScope())
       {
-        return NewObject<NonSecurableObject>().With();
+        return NewObject<NonSecurableObject>();
       }
     }
 

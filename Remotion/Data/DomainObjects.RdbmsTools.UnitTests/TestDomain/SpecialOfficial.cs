@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public static new SpecialOfficial NewObject ()
     {
-      return NewObject<SpecialOfficial>().With();
+      return DomainObject.NewObject <SpecialOfficial>();
     }
 
     protected SpecialOfficial()

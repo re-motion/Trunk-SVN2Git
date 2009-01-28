@@ -18,6 +18,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Reflection;
 using System.Runtime.Serialization;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -37,13 +38,13 @@ namespace Remotion.Data.DomainObjects
       where TDomainObject : SimpleDomainObject<TDomainObject>
   {
     /// <summary>
-    /// Returns an invocation object creating a new instance of a concrete domain object for the current
-    /// <see cref="DomainObjects.ClientTransaction"/>.
+    /// Returns a new instance of a concrete domain object for the current<see cref="DomainObjects.ClientTransaction"/>. The instance is constructed
+    /// with the default constructor.
     /// </summary>
-    /// <returns>An <see cref="IFuncInvoker{T}"/> object used to create a new domain object instance.</returns>
+    /// <returns>A new <typeparamref name="TDomainObject"/> instance.</returns>
     /// <remarks>
     /// <para>
-    /// This method is identical to <see cref="DomainObject.NewObject{T}"/>, but can be called from any other class, whereas
+    /// This method is identical to <see cref="DomainObject.NewObject{T}"/>, but it can be called from any other class whereas
     /// <see cref="DomainObject.NewObject{T}"/> can only be called from classes derived from <see cref="DomainObject"/>.
     /// </para>
     /// </remarks>
@@ -53,9 +54,34 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="MissingMethodException">The given type <typeparamref name="TDomainObject"/> does not implement the required protected
     /// constructor.
     /// </exception>
-    public static IFuncInvoker<TDomainObject> NewObject ()
+    public static TDomainObject NewObject ()
     {
       return DomainObject.NewObject<TDomainObject>();
+    }
+
+    /// <summary>
+    /// Returns a new instance of a concrete domain object for the current<see cref="DomainObjects.ClientTransaction"/>. The instance is constructed
+    /// with a constructor accepting the given parameter list.
+    /// </summary>
+    /// <param name="constructorParameters">A <see cref="ParamList"/> object holding the parameters to be passed to the constructor. Instantiate this
+    /// by using one of the <see cref="ParamList.Create{A1,A2}"/> methods.</param>
+    /// <returns>A new <typeparamref name="TDomainObject"/> instance.</returns>
+    /// <remarks>
+    /// <para>
+    /// This method is identical to <see cref="DomainObject.NewObject{T}(ParamList)"/>, but it can be called from any other class whereas
+    /// <see cref="DomainObject.NewObject{T}(ParamList)"/> can only be called from classes derived from <see cref="DomainObject"/>.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="DomainObject.NewObject{T}(ParamList)"/>
+    /// <exception cref="ArgumentException">The type <typeparamref name="TDomainObject"/> cannot be extended to a proxy, for example because it is sealed
+    /// or abstract and non-instantiable.</exception>
+    /// <exception cref="MissingMethodException">The given type <typeparamref name="TDomainObject"/> does not implement the required protected
+    /// constructor.
+    /// </exception>
+    public static TDomainObject NewObject (ParamList constructorParameters)
+    {
+      ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
+      return DomainObject.NewObject<TDomainObject> (constructorParameters);
     }
 
     /// <summary>

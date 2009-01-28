@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public static Client NewObject ()
     {
-      return NewObject<Client> ().With();
+      return NewObject<Client> ();
     }
 
     public new static Client GetObject (ObjectID id)

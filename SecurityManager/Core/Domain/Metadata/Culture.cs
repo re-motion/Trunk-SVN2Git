@@ -20,6 +20,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
@@ -32,7 +33,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
   {
     public static Culture NewObject (string cultureName)
     {
-      return NewObject<Culture> ().With (cultureName);
+      return NewObject<Culture> (ParamList.Create (cultureName));
     }
 
     public static Culture Find (string cultureName)

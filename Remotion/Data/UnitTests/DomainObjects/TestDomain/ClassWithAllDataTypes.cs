@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     public static ClassWithAllDataTypes NewObject ()
     {
-      return NewObject<ClassWithAllDataTypes> ().With();
+      return NewObject<ClassWithAllDataTypes> ();
     }
 
     public new static ClassWithAllDataTypes GetObject (ObjectID id)

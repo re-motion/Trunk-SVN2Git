@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public static StatefulAccessControlList NewObject ()
     {
-      return NewObject<StatefulAccessControlList>().With ();
+      return NewObject<StatefulAccessControlList>();
     }
 
     public new static StatefulAccessControlList GetObject (ObjectID id)

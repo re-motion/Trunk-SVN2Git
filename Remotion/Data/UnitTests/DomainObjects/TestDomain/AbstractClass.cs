@@ -22,7 +22,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public static AbstractClass NewObject ()
     {
-      return NewObject<AbstractClass>().With();
+      return NewObject<AbstractClass>();
     }
 
     protected AbstractClass ()

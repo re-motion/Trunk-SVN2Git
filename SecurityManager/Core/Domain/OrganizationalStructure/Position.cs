@@ -46,7 +46,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     internal static Position NewObject ()
     {
-      return NewObject<Position> ().With ();
+      return NewObject<Position> ();
     }
 
     public static ObjectList<Position> FindAll ()

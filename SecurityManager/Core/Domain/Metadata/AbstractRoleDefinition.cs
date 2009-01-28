@@ -21,6 +21,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
@@ -33,12 +34,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
   {
     public static AbstractRoleDefinition NewObject ()
     {
-      return NewObject<AbstractRoleDefinition>().With();
+      return NewObject<AbstractRoleDefinition>();
     }
 
     public static AbstractRoleDefinition NewObject (Guid metadataItemID, string name, int value)
     {
-      return NewObject<AbstractRoleDefinition>().With (metadataItemID, name, value);
+      return NewObject<AbstractRoleDefinition>(ParamList.Create (metadataItemID, name, value));
     }
 
     public static ObjectList<AbstractRoleDefinition> Find (EnumWrapper[] abstractRoles)

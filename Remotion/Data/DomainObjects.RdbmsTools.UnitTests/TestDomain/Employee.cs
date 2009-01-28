@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public static Employee NewObject ()
     {
-      return NewObject<Employee> ().With();
+      return DomainObject.NewObject<Employee> ();
     }
 
     protected Employee ()

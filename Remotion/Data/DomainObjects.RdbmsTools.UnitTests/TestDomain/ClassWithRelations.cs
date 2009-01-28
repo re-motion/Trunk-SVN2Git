@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public static ClassWithRelations NewObject()
     {
-      return NewObject<ClassWithRelations>().With();
+      return DomainObject.NewObject<ClassWithRelations>();
     }
 
     protected ClassWithRelations()

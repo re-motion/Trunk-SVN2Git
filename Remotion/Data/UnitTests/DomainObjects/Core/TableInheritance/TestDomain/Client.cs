@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static Client NewObject ()
     {
-      return NewObject<Client> ().With();
+      return NewObject<Client> ();
     }
 
     public static Client GetObject (ObjectID id)

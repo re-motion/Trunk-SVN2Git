@@ -21,7 +21,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public new static AbstractWithoutConcreteClass NewObject()
     {
-      return NewObject<AbstractWithoutConcreteClass>().With();
+      return DomainObject.NewObject<AbstractWithoutConcreteClass> ();
     }
 
     protected AbstractWithoutConcreteClass()

@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
   {
     public static Throws NewObject ()
     {
-      return NewObject<Throws> ().With();
+      return NewObject<Throws> ();
     }
 
     public Throws ()

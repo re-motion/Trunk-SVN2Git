@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void NewObject ()
     {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject().With();
+      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject();
       Assert.IsNotNull (instance);
       Assert.AreEqual (0, instance.IntProperty);
       instance.IntProperty = 5;
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetObject_WithoutDeleted ()
     {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ().With ();
+      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
       instance.IntProperty = 7;
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetObject_IncludeDeletedFalse_NonDeleted ()
     {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ().With ();
+      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ClassDerivedFromSimpleDomainObject gottenInstance = ClassDerivedFromSimpleDomainObject.GetObject (instance.ID, false);
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [ExpectedException (typeof (ObjectDeletedException), ExpectedMessage = "Object '.*' is already deleted.", MatchType = MessageMatch.Regex)]
     public void GetObject_IncludeDeletedFalse_Deleted ()
     {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ().With ();
+      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         instance.Delete();
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetObject_IncludeDeletedTrue_NonDeleted ()
     {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ().With ();
+      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ClassDerivedFromSimpleDomainObject gottenInstance = ClassDerivedFromSimpleDomainObject.GetObject (instance.ID, true);
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetObject_IncludeDeletedTrue_Deleted ()
     {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ().With ();
+      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
         instance.Delete ();
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void DeserializationConstructor_CallsBase ()
     {
-      var serializable = ClassDerivedFromSimpleDomainObject_ImplementingISerializable.NewObject ().With();
+      var serializable = ClassDerivedFromSimpleDomainObject_ImplementingISerializable.NewObject ();
 
       var info = new SerializationInfo (typeof (ClassDerivedFromSimpleDomainObject_ImplementingISerializable), new FormatterConverter ());
       var context = new StreamingContext ();

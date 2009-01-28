@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     [Test]
     public void DeserializationConstructor_CallsBase ()
     {
-      var serializable = SampleBindableDomainObject_ImplementingISerializable.NewObject ().With ();
+      var serializable = SampleBindableDomainObject_ImplementingISerializable.NewObject ();
 
       var info = new SerializationInfo (typeof (SampleBindableDomainObject_ImplementingISerializable), new FormatterConverter ());
       var context = new StreamingContext ();

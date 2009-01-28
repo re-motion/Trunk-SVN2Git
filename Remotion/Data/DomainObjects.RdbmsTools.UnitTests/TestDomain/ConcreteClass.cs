@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public static ConcreteClass NewObject()
     {
-      return NewObject<ConcreteClass>().With();
+      return DomainObject.NewObject<ConcreteClass> ();
     }
 
     protected ConcreteClass()

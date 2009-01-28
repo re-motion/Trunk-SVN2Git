@@ -28,7 +28,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
   {
     public static AccessTypeReference NewObject ()
     {
-      return NewObject<AccessTypeReference> ().With ();
+      return NewObject<AccessTypeReference> ();
     }
 
     protected AccessTypeReference ()

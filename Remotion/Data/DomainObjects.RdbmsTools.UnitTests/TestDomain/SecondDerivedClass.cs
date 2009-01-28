@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public new static SecondDerivedClass NewObject()
     {
-      return NewObject<SecondDerivedClass>().With();
+      return DomainObject.NewObject<SecondDerivedClass> ();
     }
 
     protected SecondDerivedClass()

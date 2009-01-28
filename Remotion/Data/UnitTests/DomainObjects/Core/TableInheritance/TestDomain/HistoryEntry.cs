@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static HistoryEntry NewObject()
     {
-      return NewObject<HistoryEntry>().With();
+      return NewObject<HistoryEntry>();
     }
 
     public static HistoryEntry GetObject (ObjectID id)

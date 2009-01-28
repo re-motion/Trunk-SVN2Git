@@ -14,9 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -70,6 +72,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
       Type concreteType = factory.GetConcreteDomainObjectType(domainObjectType);
       return factory.GetTypesafeConstructorInvoker<TStaticType> (concreteType);
+    }
+
+    public ConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType)
+    {
+      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
+
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType);
+      classDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
+
+      IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
+      Type concreteType = factory.GetConcreteDomainObjectType (domainObjectType);
+      return new DomainObjectConstructorLookupInfo (domainObjectType, concreteType, 
+          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
   }
 }

@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public static Address NewObject()
     {
-      return NewObject<Address>().With();
+      return DomainObject.NewObject<Address> ();
     }
 
     protected Address()

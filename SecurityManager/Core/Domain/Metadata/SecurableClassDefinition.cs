@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static SecurableClassDefinition NewObject ()
     {
-      return NewObject<SecurableClassDefinition>().With();
+      return NewObject<SecurableClassDefinition>();
     }
 
     public new static SecurableClassDefinition GetObject (ObjectID id)

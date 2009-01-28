@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
 
     public static ClassWithAllDataTypes NewObject()
     {
-      return NewObject<ClassWithAllDataTypes>().With();
+      return DomainObject.NewObject<ClassWithAllDataTypes> ();
     }
 
     [DBColumn ("Boolean")]

@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static Address NewObject ()
     {
-      return NewObject<Address> ().With();
+      return NewObject<Address> ();
     }
 
     protected Address ()

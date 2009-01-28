@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test.Domain
     {
       using (clientTransaction.EnterNonDiscardingScope())
       {
-        return DomainObject.NewObject<File> ().With ();
+        return DomainObject.NewObject<File> ();
       }
     }
 

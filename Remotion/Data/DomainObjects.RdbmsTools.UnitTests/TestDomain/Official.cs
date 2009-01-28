@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public static Official NewObject()
     {
-      return NewObject<Official>().With();
+      return DomainObject.NewObject<Official> ();
     }
 
     public static Official GetObject (ObjectID id)

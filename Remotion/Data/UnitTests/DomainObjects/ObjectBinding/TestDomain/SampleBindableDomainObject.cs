@@ -17,6 +17,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
 {
@@ -27,12 +28,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   {
     public static SampleBindableDomainObject NewObject ()
     {
-      return NewObject<SampleBindableDomainObject> ().With ();
+      return NewObject<SampleBindableDomainObject> ();
     }
 
     public static SampleBindableDomainObject NewObject (IBindableDomainObjectImplementation implementation)
     {
-      return NewObject<SampleBindableDomainObject> ().With (implementation);
+      return NewObject<SampleBindableDomainObject> (ParamList.Create (implementation));
     }
 
     public static SampleBindableDomainObject GetObject (ObjectID id)

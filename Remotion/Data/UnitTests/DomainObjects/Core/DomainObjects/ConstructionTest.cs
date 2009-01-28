@@ -17,6 +17,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
@@ -42,12 +43,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       public static DomainObjectWithSpecialConstructor NewObject (string s)
       {
-        return NewObject<DomainObjectWithSpecialConstructor>().With(s);
+        return NewObject<DomainObjectWithSpecialConstructor>(ParamList.Create(s));
       }
 
       public static DomainObjectWithSpecialConstructor NewObject (object o)
       {
-        return NewObject<DomainObjectWithSpecialConstructor> ().With (o);
+        return NewObject<DomainObjectWithSpecialConstructor> (ParamList.Create (o));
       }
     }
 

@@ -75,7 +75,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     internal static Group NewObject ()
     {
-      return NewObject<Group>().With();
+      return NewObject<Group>();
     }
 
     public new static Group GetObject (ObjectID id)

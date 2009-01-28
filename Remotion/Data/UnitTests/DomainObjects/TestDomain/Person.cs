@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public static Person NewObject ()
     {
-      return NewObject<Person>().With();
+      return NewObject<Person>();
     }
 
     public new static Person GetObject (ObjectID id)

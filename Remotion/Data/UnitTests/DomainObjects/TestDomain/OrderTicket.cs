@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
@@ -27,13 +28,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public static OrderTicket NewObject ()
     {
-      return NewObject<OrderTicket> ().With();
+      return NewObject<OrderTicket> ();
     }
 
     // New OrderTickets need an associated order for correct initialization.
     public static OrderTicket NewObject (Order order)
     {
-      OrderTicket orderTicket = NewObject<OrderTicket>().With (order);
+      OrderTicket orderTicket = NewObject<OrderTicket>(ParamList.Create (order));
       return orderTicket;
     }
 

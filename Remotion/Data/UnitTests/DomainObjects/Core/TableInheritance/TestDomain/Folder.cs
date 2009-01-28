@@ -25,7 +25,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain
   {
     public static Folder NewObject()
     {
-      return NewObject<Folder>().With();
+      return NewObject<Folder>();
     }
 
     public static Folder GetObject (ObjectID id)

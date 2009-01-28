@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   {
     public static ClassDerivedFromBindableDomainObjectOverridingMixinMethod NewObject ()
     {
-      return NewObject<ClassDerivedFromBindableDomainObjectOverridingMixinMethod> ().With ();
+      return NewObject<ClassDerivedFromBindableDomainObjectOverridingMixinMethod> ();
     }
 
     public virtual string String { get; set; }

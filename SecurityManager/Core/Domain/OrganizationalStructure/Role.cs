@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     public static Role NewObject ()
     {
-      return NewObject<Role>().With();
+      return NewObject<Role>();
     }
 
     protected Role ()

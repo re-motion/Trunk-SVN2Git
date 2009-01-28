@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 using Remotion.Security;
 
 namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
@@ -25,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
   {
     public static SecurableBindableMixinDomainObjectWithOverriddenDisplayName NewObject (IObjectSecurityStrategy objectSecurityStrategy)
     {
-      return NewObject<SecurableBindableMixinDomainObjectWithOverriddenDisplayName> ().With (objectSecurityStrategy);
+      return NewObject<SecurableBindableMixinDomainObjectWithOverriddenDisplayName> (ParamList.Create (objectSecurityStrategy));
     }
 
     public static new SecurableBindableMixinDomainObjectWithOverriddenDisplayName GetObject (ObjectID id)

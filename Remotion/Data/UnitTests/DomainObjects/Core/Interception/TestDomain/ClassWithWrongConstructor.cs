@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
 {
@@ -24,12 +25,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain
   {
     public static ClassWithWrongConstructor NewObject ()
     {
-      return NewObject<ClassWithWrongConstructor> ().With();
+      return NewObject<ClassWithWrongConstructor> ();
     }
 
     public static ClassWithWrongConstructor NewObject (double d)
     {
-      return NewObject<ClassWithWrongConstructor> ().With (d);
+      return NewObject<ClassWithWrongConstructor> (ParamList.Create (d));
     }
 
     public ClassWithWrongConstructor (string s)

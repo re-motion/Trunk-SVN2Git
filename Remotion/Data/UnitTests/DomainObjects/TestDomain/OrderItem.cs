@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
@@ -27,17 +28,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   {
     public static OrderItem NewObject ()
     {
-      return NewObject<OrderItem> ().With();
+      return NewObject<OrderItem> ();
     }
 
     public static OrderItem NewObject (Order order)
     {
-      return NewObject<OrderItem> ().With (order);
+      return NewObject<OrderItem> (ParamList.Create (order));
     }
 
     public static OrderItem NewObject (string product)
     {
-      return NewObject<OrderItem> ().With (product);
+      return NewObject<OrderItem> (ParamList.Create (product));
     }
 
     public new static OrderItem GetObject (ObjectID id)

@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.UnitTests.TestDomain
   {
     public static OrderItem NewObject ()
     {
-      return NewObject<OrderItem> ().With ();
+      return DomainObject.NewObject<OrderItem> ();
     }
 
     protected OrderItem ()

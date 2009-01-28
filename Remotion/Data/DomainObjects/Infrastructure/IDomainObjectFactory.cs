@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Public interface for a factory creating instances of domain objects.
   /// </summary>
   /// <remarks>
-  /// This interface is used internally by <see cref="DomainObject.NewObject"/> and will likely not be used directly.
+  /// This interface is used internally by <see cref="DomainObject.NewObject{T}"/> and will likely not be used directly.
   /// If a factory does need to be accessed directly,
   /// <see cref="Remotion.Data.DomainObjects.Configuration.DomainObjectsConfiguration"/> can be used to access the currently used implementation
   /// of this interface.

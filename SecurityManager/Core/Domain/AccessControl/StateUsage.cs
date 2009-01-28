@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   {
     public static StateUsage NewObject ()
     {
-      return NewObject<StateUsage> ().With ();
+      return NewObject<StateUsage> ();
     }
 
     protected StateUsage ()

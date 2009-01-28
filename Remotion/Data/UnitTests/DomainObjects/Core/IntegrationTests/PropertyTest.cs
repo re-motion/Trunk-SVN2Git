@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void EnumNotDefiningZero ()
     {
-      var instance = ClassWithEnumNotDefiningZero.NewObject ().With();
+      var instance = ClassWithEnumNotDefiningZero.NewObject ();
       Assert.That (instance.EnumValue, Is.EqualTo (TestDomain.EnumNotDefiningZero.First));
     }
 
