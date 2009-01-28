@@ -99,6 +99,8 @@
   <ItemGroup>
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
     <Compile Include="BridgeImplementations\AssemblyFinderTypeDiscoveryServiceImplementation.cs" />
+    <Compile Include="BridgeImplementations\ParamListCreateImplementation.generated.cs" />
+    <Compile Include="BridgeImplementations\ParamListCreateImplementation.template.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapper.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
@@ -184,11 +186,9 @@
     <Compile Include="Reflection\CodeGeneration\IClassEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\IMethodEmitter.cs" />
     <Compile Include="Reflection\ConstructorLookupInfo.cs" />
-    <Compile Include="Reflection\DynamicParamListImplementation.cs" />
+    <Compile Include="Reflection\DynamicParamList.cs" />
     <Compile Include="Reflection\MemberLookupInfo.cs" />
     <Compile Include="Reflection\MethodLookupInfo.cs" />
-    <Compile Include="Reflection\ParamList.generated.cs" />
-    <Compile Include="Reflection\ParamList.template.cs" />
     <Compile Include="Reflection\ParamListImplementation.generated.cs" />
     <Compile Include="Reflection\ParamListImplementation.template.cs" />
     <Compile Include="Reflection\Properties.cs" />

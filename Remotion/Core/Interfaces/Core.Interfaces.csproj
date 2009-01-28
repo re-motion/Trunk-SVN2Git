@@ -51,6 +51,8 @@
     <Compile Include="BridgeInterfaces\IBoostrapStorageProvider.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementation.cs" />
     <Compile Include="BridgeInterfaces\ICallContextStorageProvider.cs" />
+    <Compile Include="BridgeInterfaces\IParamListCreateImplementation.generated.cs" />
+    <Compile Include="BridgeInterfaces\IParamListCreateImplementation.template.cs" />
     <Compile Include="Collections\ICache.cs" />
     <Compile Include="Collections\IDataStore.cs" />
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
@@ -103,6 +105,9 @@
     <Compile Include="Reflection\FuncInvoker.template.cs" />
     <Compile Include="Reflection\ActionInvoker.generated.cs" />
     <Compile Include="Reflection\ActionInvoker.template.cs" />
+    <Compile Include="Reflection\IConstructorLookupInfo.cs" />
+    <Compile Include="Reflection\ParamList.generated.cs" />
+    <Compile Include="Reflection\ParamList.template.cs" />
     <Compile Include="StandardDelegates.cs" />
     <Compile Include="SuppressAttributesAttribute.cs" />
     <Compile Include="Utilities\ArgumentEmptyException.cs" />
