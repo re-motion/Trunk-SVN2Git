@@ -26,6 +26,7 @@ using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web;
 
@@ -75,7 +76,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         var result = referenceProperty.SearchAvailableObjects (
-            (IBusinessObject) RepositoryAccessor.NewObject (type).With(), new DefaultSearchArguments (args));
+            (IBusinessObject) RepositoryAccessor.NewObject (type, ParamList.Empty), new DefaultSearchArguments (args));
         if (completionSetCount.HasValue)
           result.Take (completionSetCount.Value);
         return result.Cast<IBusinessObjectWithIdentity>().Select (o => new BusinessObjectWithIdentityProxy (o)).ToArray();
