@@ -15,9 +15,9 @@
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
 <project xmlns="nant-schema">
-  <property name="text.copyright.Remotion" value="(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu" />
-  <property name="text.copyright.Dms" value="(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu" />
-  <property name="text.copyright.SecurityManager" value="(c) 2005 - 2008 rubicon informationstechnologie gmbh, www.rubicon.eu" />
+  <property name="text.copyright.Remotion" value="(c) 2005 - 2009 rubicon informationstechnologie gmbh, www.rubicon.eu" />
+  <property name="text.copyright.Dms" value="(c) 2005 - 2009 rubicon informationstechnologie gmbh, www.rubicon.eu" />
+  <property name="text.copyright.SecurityManager" value="(c) 2005 - 2009 rubicon informationstechnologie gmbh, www.rubicon.eu" />
 
   <property name="text.companyname" value="rubicon informationstechnologie gmbh" />
   <property name="text.companyurl" value="http://www.rubicon.eu" />

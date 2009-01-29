@@ -17,7 +17,7 @@
 <project name="Remotion-Documentation" xmlns="nant-schema">
   
   <target name="preparedoc">
-    <property name="doc.core" value="${solution.basedir}/Core/Core/Doc" />
+    <property name="doc.core" value="${solution.basedir}/Remotion/Core/Core/Doc" />
 
     <copy file="${doc.core}/include/GettingStartedTemplate.html"  
           tofile="${doc.core}/include/GettingStarted.html" 
@@ -26,8 +26,8 @@
     <replace>
       <filterset>
         <filter token="companyurl" value="${text.companyurl}" />
-        <filter token="copyright" value="${text.copyright}" />
-        <filter token="productname" value="${text.productname}" />
+        <filter token="copyright" value="${text.copyright.Remotion}" />
+        <filter token="productname" value="${text.productname.Remotion}" />
         <filter token="versionnumber" value="${build.version}" />
       </filterset>
       <fileset>
@@ -60,11 +60,11 @@
     </fileset>
 
     <fileset id="doc.summaries" basedir="${solution.basedir}" failonempty="true">
-      <include name="Core/Core/Doc/include/NamespaceDoc.xml"/>
-      <include name="Web/Core/Doc/include/NamespaceDoc.xml"/>
-      <include name="ObjectBinding/Core/Doc/include/NamespaceDoc.xml"/>
-      <include name="ObjectBinding/Web/Doc/include/NamespaceDoc.xml"/>
-      <include name="Data/DomainObjects/Doc/include/NamespaceDoc.xml"/>
+      <include name="Remotion/Core/Core/Doc/include/NamespaceDoc.xml"/>
+      <include name="Remotion/Web/Core/Doc/include/NamespaceDoc.xml"/>
+      <include name="Remotion/ObjectBinding/Core/Doc/include/NamespaceDoc.xml"/>
+      <include name="Remotion/ObjectBinding/Web/Doc/include/NamespaceDoc.xml"/>
+      <include name="Remotion/Data/DomainObjects/Doc/include/NamespaceDoc.xml"/>
     </fileset>
   </target>
 
@@ -86,15 +86,15 @@
           <!-- Global -->
           <!-- Documentation Main Settings -->
           <property name="CopyrightHref" value="${text.companyurl}" />
-          <property name="CopyrightText" value="${text.copyright}" />
+          <property name="CopyrightText" value="${text.copyright.Remotion}" />
           <property name="HtmlHelpName" value="${doc.filebase}" />
           <property name="OutputDirectory" value="${doc.tempdir}" />
           <property name="SdkDocVersion" value="${doc.sdkdocversion}" />
           <property name="ShowVisualBasic" value="True" />
-          <property name="Title" value="${text.productname}" />
+          <property name="Title" value="${text.productname.Remotion}" />
           <!-- Extensibility -->
           <!-- HTML Help Options -->
-          <property name="FooterHtml" value="&lt;p&gt;&lt;a href=&quot;${text.companyurl}&quot;&gt;${text.copyright}&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Version: ${build.version}&lt;/p&gt;"/>
+          <property name="FooterHtml" value="&lt;p&gt;&lt;a href=&quot;${text.companyurl}&quot;&gt;${text.copyright.Remotion}&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Version: ${build.version}&lt;/p&gt;"/>
           <property name="RootPageFileName" value="${doc.core}/include/GettingStarted.html" />
           <property name="RootPageTOCName" value="Getting Started" />
           <!-- Show Attributes -->
@@ -138,15 +138,15 @@
           <!-- Global -->
           <!-- Documentation Main Settings -->
           <property name="CopyrightHref" value="${text.companyurl}" />
-          <property name="CopyrightText" value="${text.copyright}" />
+          <property name="CopyrightText" value="${text.copyright.Remotion}" />
           <property name="HtmlHelpName" value="${doc.filebase}" />
           <property name="OutputDirectory" value="${doc.tempdir}" />
           <property name="SdkDocVersion" value="${doc.sdkdocversion}" />
           <property name="ShowVisualBasic" value="False" />
-          <property name="Title" value="${text.productname}" />
+          <property name="Title" value="${text.productname.Remotion}" />
           <!-- Extensibility -->
           <!-- HTML Help Options -->
-          <property name="FooterHtml" value="&lt;p&gt;&lt;a href=&quot;${text.companyurl}&quot;&gt;${text.copyright}&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Version: ${build.version}&lt;/p&gt;"/>
+          <property name="FooterHtml" value="&lt;p&gt;&lt;a href=&quot;${text.companyurl}&quot;&gt;${text.copyright.Remotion}&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Version: ${build.version}&lt;/p&gt;"/>
           <property name="RootPageFileName" value="${doc.core}/include/GettingStarted.html" />
           <property name="RootPageTOCName" value="Getting Started" />
           <property name="SdkLinksOnWeb" value="False" />          
