@@ -16,6 +16,7 @@
 using System;
 using Remotion.Mixins;
 using Remotion.Utilities;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -44,7 +45,7 @@ namespace Remotion.ObjectBinding.BindableObject
   {
     public static BindableObjectServiceFactory Create ()
     {
-      return ObjectFactory.Create<BindableObjectServiceFactory> (true).With();
+      return ObjectFactory.Create<BindableObjectServiceFactory> (true, ParamList.Empty);
     }
 
     protected BindableObjectServiceFactory ()

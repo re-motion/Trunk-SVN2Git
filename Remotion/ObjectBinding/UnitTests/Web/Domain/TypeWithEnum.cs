@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Domain
 {
@@ -23,7 +24,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Domain
   {
     public static TypeWithEnum Create ()
     {
-      return ObjectFactory.Create<TypeWithEnum> (true).With ();
+      return ObjectFactory.Create<TypeWithEnum> (true, ParamList.Empty);
     }
 
     private TestEnum _enumValue;

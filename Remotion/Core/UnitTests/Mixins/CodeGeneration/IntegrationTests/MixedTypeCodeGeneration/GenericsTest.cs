@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void GenericMixinsAreSpecialized ()
     {
-      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin3<,>)).With ();
+      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin3<,>));
       object mixin = Mixin.Get (typeof (BT3Mixin3<,>), bt3);
       Assert.IsNotNull (mixin);
 
@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 #endif
     public void MuchGenericityWithoutOverriding ()
     {
-      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (VeryGenericMixin<,>), typeof (BT3Mixin4)).With ();
+      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (VeryGenericMixin<,>), typeof (BT3Mixin4));
       var m = bt3 as IVeryGenericMixin;
       Assert.IsNotNull (m);
       Assert.AreEqual ("IVeryGenericMixin.GenericIfcMethod-5", m.GetMessage ("5"));
@@ -64,8 +64,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 #endif
     public void MuchGenericityWithOverriding ()
     {
-      ClassOverridingUltraGenericStuff cougs = CreateMixedObject<ClassOverridingUltraGenericStuff> (typeof (AbstractDerivedUltraGenericMixin<,>),
-          typeof (BT3Mixin4)).With ();
+      var cougs = CreateMixedObject<ClassOverridingUltraGenericStuff> (typeof (AbstractDerivedUltraGenericMixin<,>), typeof (BT3Mixin4));
       var m = cougs as IUltraGenericMixin;
       Assert.IsNotNull (m);
       Assert.AreEqual ("String-IVeryGenericMixin.GenericIfcMethod-5", m.GetMessage ("5"));

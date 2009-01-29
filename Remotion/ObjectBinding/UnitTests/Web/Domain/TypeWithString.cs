@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Domain
 {
@@ -23,12 +24,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Domain
   {
     public static TypeWithString Create ()
     {
-      return ObjectFactory.Create<TypeWithString> (true).With ();
+      return ObjectFactory.Create<TypeWithString> (true, ParamList.Empty);
     }
 
     public static TypeWithString Create (string firstValue, string secondValue)
     {
-      return ObjectFactory.Create<TypeWithString> (true).With (firstValue, secondValue);
+      return ObjectFactory.Create<TypeWithString> (true, ParamList.Create (firstValue, secondValue));
     }
 
     private string _stringValue;

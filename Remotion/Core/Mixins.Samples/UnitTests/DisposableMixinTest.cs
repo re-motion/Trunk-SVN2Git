@@ -15,6 +15,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Reflection;
 
 namespace Remotion.Mixins.Samples.UnitTests
 {
@@ -48,7 +49,7 @@ namespace Remotion.Mixins.Samples.UnitTests
     [Test]
     public void DisposeCallsAllCleanupMethods()
     {
-      C c = ObjectFactory.Create<C>().With();
+      C c = ObjectFactory.Create<C>(ParamList.Empty);
       Data data = c.Data;
 
       Assert.IsFalse (data.ManagedCalled);
@@ -67,7 +68,7 @@ namespace Remotion.Mixins.Samples.UnitTests
     [Test]
     public void GCCallsAllUnmanagedCleanup ()
     {
-      C c = ObjectFactory.Create<C> ().With ();
+      C c = ObjectFactory.Create<C> (ParamList.Empty);
       Data data = c.Data;
 
       Assert.IsFalse (data.ManagedCalled);

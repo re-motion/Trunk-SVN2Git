@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void SerializationOfMixinThisWorks ()
     {
-      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin2), typeof (BT3Mixin2B)).With ();
+      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin2), typeof (BT3Mixin2B));
       var mixin = Mixin.Get<BT3Mixin2> (bt3);
       Assert.AreSame (bt3, mixin.This);
 
@@ -50,7 +50,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void SerializationOfMixinBaseWorks ()
     {
-      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin1), typeof (BT3Mixin1B)).With ();
+      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin1), typeof (BT3Mixin1B));
       var mixin = Mixin.Get<BT3Mixin1> (bt3);
       Assert.IsNotNull (mixin.Base);
       Assert.AreSame (bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance).FieldType, mixin.Base.GetType ());
@@ -74,7 +74,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void GeneratedTypeIsSerializable ()
     {
-      ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers)).With ();
+      ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
       var mixin = Mixin.Get<MixinWithAbstractMembers> (targetInstance);
       Assert.IsTrue (mixin.GetType ().IsSerializable);
       Serializer.Serialize (targetInstance);
@@ -83,7 +83,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void GeneratedTypeIsDeserializable ()
     {
-      ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers)).With ();
+      ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
       var mixin = Mixin.Get<MixinWithAbstractMembers> (targetInstance);
 
       mixin.I = 13;
@@ -96,7 +96,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void GeneratedTypeCorrectlySerializesThisAndBase()
     {
-      ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers)).With ();
+      ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
       var mixin = Mixin.Get<MixinWithAbstractMembers> (targetInstance);
 
       Assert.AreEqual (targetInstance, MixinReflector.GetTargetProperty (mixin.GetType()).GetValue (mixin, null));
@@ -115,7 +115,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     public void RespectsISerializable ()
     {
       ClassOverridingMixinMembers targetInstance =
-          CreateMixedObject<ClassOverridingMixinMembers> (typeof (AbstractMixinImplementingISerializable)).With ();
+          CreateMixedObject<ClassOverridingMixinMembers> (typeof (AbstractMixinImplementingISerializable));
       var mixin = Mixin.Get<AbstractMixinImplementingISerializable> (targetInstance);
 
       mixin.I = 15;
@@ -130,7 +130,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     public void ThrowsIfAbstractMixinTypeNotSerializable()
     {
       ClassOverridingMixinMembers targetInstance =
-          CreateMixedObject<ClassOverridingMixinMembers> (typeof (NotSerializableMixin)).With ();
+          CreateMixedObject<ClassOverridingMixinMembers> (typeof (NotSerializableMixin));
 
       Serializer.SerializeAndDeserialize (targetInstance);
     }
@@ -138,14 +138,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void AllowsAbstractMixinTypeNotSerializableWithISerializable ()
     {
-      ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (NotSerializableMixinWithISerializable)).With ();
+      ClassOverridingMixinMembers targetInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (NotSerializableMixinWithISerializable));
       Serializer.SerializeAndDeserialize (targetInstance);
     }
 
     [Test]
     public void SerializationOfGeneratedMixinWorks ()
     {
-      ClassOverridingSingleMixinMethod com = CreateMixedObject<ClassOverridingSingleMixinMethod> (typeof (MixinOverridingClassMethod)).With ();
+      ClassOverridingSingleMixinMethod com = CreateMixedObject<ClassOverridingSingleMixinMethod> (typeof (MixinOverridingClassMethod));
       var comAsIfc = com as IMixinOverridingClassMethod;
       Assert.IsNotNull (Mixin.Get<MixinOverridingClassMethod> (com));
 

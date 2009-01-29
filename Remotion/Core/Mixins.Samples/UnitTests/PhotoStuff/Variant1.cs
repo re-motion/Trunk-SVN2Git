@@ -18,6 +18,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins.Samples.PhotoStuff;
 using Remotion.Mixins.Samples.PhotoStuff.Variant1;
+using Remotion.Reflection;
 
 namespace Remotion.Mixins.Samples.UnitTests.PhotoStuff
 {
@@ -27,7 +28,7 @@ namespace Remotion.Mixins.Samples.UnitTests.PhotoStuff
     [Test]
     public void StoredMembers()
     {
-      Photo photo = ObjectFactory.Create<Photo>().With();
+      Photo photo = ObjectFactory.Create<Photo>(ParamList.Empty);
       Assert.IsNotNull (photo.Document);
       PropertyInfo[] properties = Array.FindAll (photo.GetType ().GetProperties (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance),
           delegate (PropertyInfo pi)
@@ -43,7 +44,7 @@ namespace Remotion.Mixins.Samples.UnitTests.PhotoStuff
     {
       Document doc = new Document();
       doc.CreatedAt = new DateTime (2006, 01, 01);
-      Photo photo = ObjectFactory.Create<Photo> (doc).With ();
+      Photo photo = ObjectFactory.Create<Photo> (ParamList.Empty, doc);
       Assert.IsNotNull (photo.Document);
       Assert.AreEqual (new DateTime (2006, 01, 01), photo.Document.CreatedAt);
     }

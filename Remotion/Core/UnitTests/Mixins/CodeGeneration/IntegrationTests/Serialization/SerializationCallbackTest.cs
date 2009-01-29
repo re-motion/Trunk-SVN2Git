@@ -17,6 +17,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization
 {
@@ -28,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [SetUp]
     public void SetUp ()
     {
-      _instance = ObjectFactory.Create<TargetTypeWithSerializationCallbacks> ().With ();
+      _instance = ObjectFactory.Create<TargetTypeWithSerializationCallbacks> (ParamList.Empty);
     }
 
     [Test]
@@ -69,7 +70,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     public void SerializationCallbacks_AreInvokedOnGeneratedMixinClass ()
     {
       TargetClassForAbstractMixinWithSerializationCallbacks instance =
-          ObjectFactory.Create<TargetClassForAbstractMixinWithSerializationCallbacks> ().With ();
+          ObjectFactory.Create<TargetClassForAbstractMixinWithSerializationCallbacks> (ParamList.Empty);
       new SerializationCallbackTester<TargetClassForAbstractMixinWithSerializationCallbacks> (new RhinoMocksRepositoryAdapter (), instance, AbstractMixinWithSerializationCallbacks.SetStaticReceiver)
           .Test_SerializationCallbacks ();
     }
@@ -78,7 +79,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     public void DeserializationCallbacks_AreInvokedOnGeneratedMixinClass ()
     {
       TargetClassForAbstractMixinWithSerializationCallbacks instance =
-          ObjectFactory.Create<TargetClassForAbstractMixinWithSerializationCallbacks> ().With ();
+          ObjectFactory.Create<TargetClassForAbstractMixinWithSerializationCallbacks> (ParamList.Empty);
       new SerializationCallbackTester<TargetClassForAbstractMixinWithSerializationCallbacks> (new RhinoMocksRepositoryAdapter (), instance, AbstractMixinWithSerializationCallbacks.SetStaticReceiver)
           .Test_DeserializationCallbacks ();
     }

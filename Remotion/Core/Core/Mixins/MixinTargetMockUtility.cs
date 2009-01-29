@@ -17,6 +17,7 @@ using System;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins
@@ -159,7 +160,7 @@ namespace Remotion.Mixins
       else
         mixinType = typeof (TMixin);
 
-      return (TMixin) ObjectFactory.Create (true, mixinType).Invoke (args);
+      return (TMixin) ObjectFactory.Create (true, mixinType, ParamList.CreateDynamic (args));
     }
 
     public static void SignalOnDeserialization<TThis> (Mixin<TThis> mixin, TThis thisMock) 

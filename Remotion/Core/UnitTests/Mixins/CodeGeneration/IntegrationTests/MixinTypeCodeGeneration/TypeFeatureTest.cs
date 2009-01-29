@@ -157,7 +157,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void AbstractMixinWithoutAbstractMembers()
     {
-      var instance = CreateMixedObject<NullTarget> (typeof (AbstractMixinWithoutAbstractMembers)).With();
+      var instance = CreateMixedObject<NullTarget> (typeof (AbstractMixinWithoutAbstractMembers));
       var m1 = Mixin.Get<AbstractMixinWithoutAbstractMembers> (instance);
       Assert.That (m1, Is.Not.Null);
       Assert.That (m1, Is.InstanceOfType (typeof (AbstractMixinWithoutAbstractMembers)));

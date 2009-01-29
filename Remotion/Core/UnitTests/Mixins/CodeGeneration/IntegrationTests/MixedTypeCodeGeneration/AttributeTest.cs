@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void AttributesReplicatedFromMixinViaIntroduction()
     {
-      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithPropsEventAtts)).With();
+      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithPropsEventAtts));
 
       Assert.IsFalse (bt1.GetType().IsDefined (typeof (BT1Attribute), false));
       Assert.IsTrue (bt1.GetType().IsDefined (typeof (BT1Attribute), true), "Attribute is inherited");

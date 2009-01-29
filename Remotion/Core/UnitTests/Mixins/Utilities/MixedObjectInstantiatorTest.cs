@@ -18,6 +18,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.BridgeImplementations;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.Utilities
@@ -66,8 +67,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     {
       using (MixinConfiguration.BuildNew ().ForClass (typeof (TestServiceProvider)).AddCompleteInterface (typeof (IServiceProvider)).EnterScope ())
       {
-        object instance = _instantiator.CreateConstructorInvoker<object> (typeof (IServiceProvider), GenerationPolicy.GenerateOnlyIfConfigured, false)
-            .With ();
+        object instance = _instantiator.CreateInstance (false, typeof (IServiceProvider), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
         Assert.That (instance, Is.InstanceOfType (typeof (TestServiceProvider)));
       }
     }
@@ -75,7 +75,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     [Test]
     public void CreateConstructorInvoker_UsesConcreteType ()
     {
-      object instance = _instantiator.CreateConstructorInvoker<object> (typeof (BaseType1), GenerationPolicy.GenerateOnlyIfConfigured, false).With ();
+      object instance = _instantiator.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
       Assert.That (instance, Is.Not.SameAs (typeof (BaseType1)));
       Assert.That (instance, Is.InstanceOfType (typeof (BaseType1)));
       Assert.That (instance, Is.InstanceOfType (TypeFactory.GetConcreteType (typeof (BaseType1))));
@@ -84,7 +84,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     [Test]
     public void CreateConstructorInvoker_UsesTargetType_ForUnmixedType ()
     {
-      object instance = _instantiator.CreateConstructorInvoker<object> (typeof (object), GenerationPolicy.GenerateOnlyIfConfigured, false).With ();
+      object instance = _instantiator.CreateInstance (false, typeof (object), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
       Assert.That (instance.GetType(), Is.SameAs (typeof (object)));
     }
 
@@ -92,7 +92,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     public void CreateConstructorInvoker_PassesPreparedMixinInstances ()
     {
       BT1Mixin1 mixin = new BT1Mixin1();
-      object instance = _instantiator.CreateConstructorInvoker<object> (typeof (BaseType1), GenerationPolicy.GenerateOnlyIfConfigured, false, mixin).With ();
+      object instance = _instantiator.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, mixin);
 
       Assert.That (Mixin.Get<BT1Mixin1> (instance), Is.SameAs (mixin));
     }
@@ -103,7 +103,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     public void CreateConstructorInvoker_InvalidPreparedMixinInstances ()
     {
       object mixin = new object ();
-      _instantiator.CreateConstructorInvoker<object> (typeof (BaseType1), GenerationPolicy.GenerateOnlyIfConfigured, false, mixin).With ();
+      _instantiator.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, mixin);
     }
 
     [Test]
@@ -112,7 +112,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     public void CreateConstructorInvoker_InvalidPreparedMixinInstances_UnmixedObject ()
     {
       object mixin = new object ();
-      _instantiator.CreateConstructorInvoker<object> (typeof (object), GenerationPolicy.GenerateOnlyIfConfigured, false, mixin);
+      _instantiator.CreateInstance (false, typeof (object), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, false, mixin);
     }
 
     public class TestServiceProvider : IServiceProvider

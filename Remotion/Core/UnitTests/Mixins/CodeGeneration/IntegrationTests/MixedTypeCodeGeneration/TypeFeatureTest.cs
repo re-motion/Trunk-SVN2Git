@@ -23,6 +23,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -52,38 +53,38 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       t = TypeFactory.GetConcreteType (typeof (BaseType5));
       Assert.IsTrue (typeof (BaseType5).IsAssignableFrom (t));
 
-      Assert.IsNotNull (ObjectFactory.Create<BaseType1> ());
-      Assert.IsNotNull (ObjectFactory.Create<BaseType2> ());
-      Assert.IsNotNull (ObjectFactory.Create<BaseType3> ());
-      Assert.IsNotNull (ObjectFactory.Create<BaseType4> ());
-      Assert.IsNotNull (ObjectFactory.Create<BaseType5> ());
+      Assert.IsNotNull (ObjectFactory.Create<BaseType1> (ParamList.Empty));
+      Assert.IsNotNull (ObjectFactory.Create<BaseType2> (ParamList.Empty));
+      Assert.IsNotNull (ObjectFactory.Create<BaseType3> (ParamList.Empty));
+      Assert.IsNotNull (ObjectFactory.Create<BaseType4> (ParamList.Empty));
+      Assert.IsNotNull (ObjectFactory.Create<BaseType5> (ParamList.Empty));
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "constructor with signature", MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "constructor with the following signature", MatchType = MessageMatch.Contains)]
     public void ConstructorsAreReplicated1 ()
     {
-      ObjectFactory.Create<ClassWithCtors> ().With ();
+      ObjectFactory.Create<ClassWithCtors> (ParamList.Empty);
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "constructor with signature", MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "constructor with the following signature", MatchType = MessageMatch.Contains)]
     public void ConstructorsAreReplicated2 ()
     {
-      ObjectFactory.Create<ClassWithCtors> ().With (2.0);
+      ObjectFactory.Create<ClassWithCtors> (ParamList.Create (2.0));
     }
 
     [Test]
     public void ConstructorsAreReplicated3 ()
     {
-      ClassWithCtors c = ObjectFactory.Create<ClassWithCtors> ().With (3);
+      ClassWithCtors c = ObjectFactory.Create<ClassWithCtors> (ParamList.Create (3));
       Assert.AreEqual (3, c.O);
     }
 
     [Test]
     public void ConstructorsAreReplicated4 ()
     {
-      ClassWithCtors c = ObjectFactory.Create<ClassWithCtors> ().With ("a");
+      ClassWithCtors c = ObjectFactory.Create<ClassWithCtors> (ParamList.Create ("a"));
       Assert.AreEqual ("a", c.O);
     }
 
@@ -91,7 +92,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void ConstructorsAreReplicated5 ()
     {
       var nullMixin = new NullMixin ();
-      ClassWithCtors c = ObjectFactory.Create<ClassWithCtors> (nullMixin).With ("a");
+      ClassWithCtors c = ObjectFactory.Create<ClassWithCtors> (ParamList.Create ("a"), nullMixin);
       Assert.AreEqual ("a", c.O);
       Assert.AreSame (nullMixin, Mixin.Get<NullMixin> (c));
     }

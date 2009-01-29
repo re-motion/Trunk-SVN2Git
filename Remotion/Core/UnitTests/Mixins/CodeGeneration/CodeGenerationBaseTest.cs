@@ -58,10 +58,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         return TypeFactory.GetConcreteType (targetType, GenerationPolicy.ForceGeneration);
     }
 
-    public FuncInvokerWrapper<T> CreateMixedObject<T> (params Type[] mixinTypes)
+    public T CreateMixedObject<T> (params Type[] mixinTypes)
     {
       using (MixinConfiguration.BuildNew().ForClass<T> ().AddMixins (mixinTypes).EnterScope())
-        return ObjectFactory.Create<T>(GenerationPolicy.ForceGeneration);
+        return ObjectFactory.Create<T> (ParamList.Empty, GenerationPolicy.ForceGeneration);
     }
   }
 }

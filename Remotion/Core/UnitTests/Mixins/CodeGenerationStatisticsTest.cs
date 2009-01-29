@@ -23,6 +23,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins
@@ -58,7 +59,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void CurrentUnsignedAssemblyBuilder_NotNull ()
     {
-      ObjectFactory.Create<BaseType1>().With();
+      ObjectFactory.Create<BaseType1>(ParamList.Empty);
       Assert.That (CodeGenerationStatistics.CurrentUnsignedAssemblyBuilder, Is.Not.Null);
       Assert.That (CodeGenerationStatistics.CurrentUnsignedAssemblyBuilder, 
           Is.SameAs (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.WeakNamedModule.Assembly));
@@ -80,7 +81,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void CurrentSignedAssemblyBuilder_NotNull ()
     {
-      ObjectFactory.Create<object> (GenerationPolicy.ForceGeneration).With ();
+      ObjectFactory.Create<object> (ParamList.Empty, GenerationPolicy.ForceGeneration);
       Assert.That (CodeGenerationStatistics.CurrentSignedAssemblyBuilder, Is.Not.Null);
       Assert.That (CodeGenerationStatistics.CurrentSignedAssemblyBuilder,
           Is.SameAs (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.StrongNamedModule.Assembly));

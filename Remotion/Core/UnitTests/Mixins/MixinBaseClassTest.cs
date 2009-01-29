@@ -57,17 +57,17 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void ThisAccessInCtorAndInitialize()
     {
-      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithOnInitialize1)).With();
+      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithOnInitialize1));
       MixinWithOnInitialize1 mixin = Mixin.Get<MixinWithOnInitialize1> (bt1);
       Assert.IsNotNull (mixin);
       Assert.IsNotNull (mixin.ThisValue);
     }
 
-    private FuncInvokerWrapper<TTargetType> CreateMixedObject<TTargetType> (params Type[] types)
+    private TTargetType CreateMixedObject<TTargetType> (params Type[] types)
     {
       using (MixinConfiguration.BuildNew ().ForClass<TTargetType> ().AddMixins (types).EnterScope ())
       {
-        return ObjectFactory.Create<TTargetType> ();
+        return ObjectFactory.Create<TTargetType> (ParamList.Empty);
       }
     }
 
@@ -123,7 +123,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void BaseAccessInCtorAndInitialize ()
     {
-      BaseType2 bt2 = CreateMixedObject<BaseType2> (typeof (MixinWithOnInitialize2)).With ();
+      BaseType2 bt2 = CreateMixedObject<BaseType2> (typeof (MixinWithOnInitialize2));
       MixinWithOnInitialize2 mixin = Mixin.Get<MixinWithOnInitialize2> (bt2);
       Assert.IsNotNull (mixin);
       Assert.IsNotNull (mixin.ThisValue);

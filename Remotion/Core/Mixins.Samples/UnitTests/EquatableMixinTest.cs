@@ -15,6 +15,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Reflection;
 
 namespace Remotion.Mixins.Samples.UnitTests
 {
@@ -35,15 +36,15 @@ namespace Remotion.Mixins.Samples.UnitTests
       C c = new C();
       Assert.IsFalse (c is IEquatable<C>);
 
-      C c2 = ObjectFactory.Create<C>().With();
+      C c2 = ObjectFactory.Create<C>(ParamList.Empty);
       Assert.IsTrue (c2 is IEquatable<C>);
     }
 
     [Test]
     public void EqualsRespectsMembers ()
     {
-      C c = ObjectFactory.Create<C> ().With ();
-      C c2 = ObjectFactory.Create<C> ().With ();
+      C c = ObjectFactory.Create<C> (ParamList.Empty);
+      C c2 = ObjectFactory.Create<C> (ParamList.Empty);
       Assert.AreEqual (c, c2);
 
       c2.S = "foo";
@@ -62,8 +63,8 @@ namespace Remotion.Mixins.Samples.UnitTests
     [Test]
     public void GetHashCodeRespectsMembers ()
     {
-      C c = ObjectFactory.Create<C> ().With ();
-      C c2 = ObjectFactory.Create<C> ().With ();
+      C c = ObjectFactory.Create<C> (ParamList.Empty);
+      C c2 = ObjectFactory.Create<C> (ParamList.Empty);
       Assert.AreEqual (c.GetHashCode(), c2.GetHashCode());
 
       c2.S = "foo";

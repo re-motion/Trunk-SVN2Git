@@ -24,6 +24,7 @@ using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Samples.DynamicMixinBuilding;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Samples.UnitTests
@@ -155,7 +156,7 @@ namespace Remotion.Mixins.Samples.UnitTests
 
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (SampleTarget)).Clear().AddMixins (t).EnterScope())
       {
-        SampleTarget target = ObjectFactory.Create<SampleTarget> ().With();
+        SampleTarget target = ObjectFactory.Create<SampleTarget> (ParamList.Empty);
         target.StringMethod (4);
         Assert.IsTrue (_calls.Count == 1);
       }
@@ -169,7 +170,7 @@ namespace Remotion.Mixins.Samples.UnitTests
 
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (SampleTarget)).Clear().AddMixins (t).EnterScope())
       {
-        SampleTarget target = ObjectFactory.Create<SampleTarget> ().With ();
+        SampleTarget target = ObjectFactory.Create<SampleTarget> (ParamList.Empty);
         target.StringMethod (4);
 
         Tuple<object, MethodInfo, object[], object> callInfo = _calls[0];
@@ -187,7 +188,7 @@ namespace Remotion.Mixins.Samples.UnitTests
 
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (SampleTarget)).Clear().AddMixins (t).EnterScope())
       {
-        SampleTarget target = ObjectFactory.Create<SampleTarget> ().With ();
+        SampleTarget target = ObjectFactory.Create<SampleTarget> (ParamList.Empty);
         target.StringMethod (4);
 
         Tuple<object, MethodInfo, object[], object> callInfo = _calls[0];
@@ -203,7 +204,7 @@ namespace Remotion.Mixins.Samples.UnitTests
 
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (SampleTarget)).Clear().AddMixins (t).EnterScope())
       {
-        SampleTarget target = ObjectFactory.Create<SampleTarget> ().With ();
+        SampleTarget target = ObjectFactory.Create<SampleTarget> (ParamList.Empty);
         string result = target.StringMethod (4);
         Assert.AreEqual ("Intercepted: SampleTarget.StringMethod (4)", result);
       }
@@ -217,7 +218,7 @@ namespace Remotion.Mixins.Samples.UnitTests
 
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (SampleTarget)).Clear().AddMixins (t).EnterScope())
       {
-        SampleTarget target = ObjectFactory.Create<SampleTarget> ().With ();
+        SampleTarget target = ObjectFactory.Create<SampleTarget> (ParamList.Empty);
         target.VoidMethod ();
         Assert.IsTrue (target.VoidMethodCalled);
 

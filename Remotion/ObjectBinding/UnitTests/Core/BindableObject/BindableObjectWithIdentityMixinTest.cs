@@ -20,6 +20,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -30,7 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void InstantiateMixedType ()
     {
       Assert.That (
-          ObjectFactory.Create<ClassWithIdentity>().With ("TheUniqueIdentifier"),
+          ObjectFactory.Create<ClassWithIdentity>(ParamList.Create ("TheUniqueIdentifier")),
           Is.InstanceOfType (typeof (IBusinessObjectWithIdentity)));
     }
 
@@ -38,7 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetUniqueIdentifier ()
     {
       BindableObjectWithIdentityMixin mixin =
-          Mixin.Get<BindableObjectWithIdentityMixin> (ObjectFactory.Create<ClassWithIdentity>().With ("TheUniqueIdentifier"));
+          Mixin.Get<BindableObjectWithIdentityMixin> (ObjectFactory.Create<ClassWithIdentity>(ParamList.Create ("TheUniqueIdentifier")));
       IBusinessObjectWithIdentity businessObjectWithIdentity = mixin;
 
       Assert.That (businessObjectWithIdentity.UniqueIdentifier, Is.SameAs ("TheUniqueIdentifier"));
@@ -48,7 +49,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void DisplayName ()
     {
       BindableObjectWithIdentityMixin mixin =
-          Mixin.Get<BindableObjectWithIdentityMixin> (ObjectFactory.Create<ClassWithIdentityAndDisplayName> ().With ("TheUniqueIdentifier"));
+          Mixin.Get<BindableObjectWithIdentityMixin> (ObjectFactory.Create<ClassWithIdentityAndDisplayName> (ParamList.Create ("TheUniqueIdentifier")));
       IBusinessObjectWithIdentity businessObjectWithIdentity = mixin;
 
       Assert.That (businessObjectWithIdentity.DisplayName, Is.SameAs ("TheUniqueIdentifier"));
@@ -68,7 +69,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void SerializeAndDeserialize ()
     {
-      ClassWithIdentity value = ObjectFactory.Create<ClassWithIdentity> ().With ();
+      ClassWithIdentity value = ObjectFactory.Create<ClassWithIdentity> (ParamList.Empty);
       value.String = "TheString";
       ClassWithIdentity deserialized = Serializer.SerializeAndDeserialize (value);
 
@@ -79,7 +80,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void SerializeAndDeserialize_WithNewBindableObjectProvider ()
     {
-      ClassWithIdentity value = ObjectFactory.Create<ClassWithIdentity> ().With ();
+      ClassWithIdentity value = ObjectFactory.Create<ClassWithIdentity> (ParamList.Empty);
       byte[] serialized = Serializer.Serialize (value);
       BusinessObjectProvider.SetProvider (typeof (BindableObjectWithIdentityProviderAttribute), null);
       ClassWithIdentity deserialized = (ClassWithIdentity) Serializer.Deserialize (serialized);

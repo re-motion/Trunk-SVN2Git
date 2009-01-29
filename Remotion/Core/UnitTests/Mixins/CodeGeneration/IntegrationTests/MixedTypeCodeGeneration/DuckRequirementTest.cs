@@ -15,6 +15,7 @@
 // 
 using NUnit.Framework;
 using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
@@ -25,7 +26,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void GeneratedTypeImplementsRequiredDuckInterfaces ()
     {
-      ClassFulfillingAllMemberRequirementsDuck cfrd = ObjectFactory.Create<ClassFulfillingAllMemberRequirementsDuck> ().With ();
+      ClassFulfillingAllMemberRequirementsDuck cfrd = ObjectFactory.Create<ClassFulfillingAllMemberRequirementsDuck> (ParamList.Empty);
       Assert.IsTrue (cfrd is IMixinRequiringAllMembersRequirements);
       var mixin = Mixin.Get<MixinRequiringAllMembersFace> (cfrd);
       Assert.IsNotNull (mixin);
@@ -35,7 +36,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void RequiredFaceInterfaceViaDuck ()
     {
-      ClassFulfillingAllMemberRequirementsExplicitly cfamre = ObjectFactory.Create<ClassFulfillingAllMemberRequirementsExplicitly> ().With ();
+      ClassFulfillingAllMemberRequirementsExplicitly cfamre = ObjectFactory.Create<ClassFulfillingAllMemberRequirementsExplicitly> (ParamList.Empty);
       var mixin = Mixin.Get<MixinRequiringAllMembersFace> (cfamre);
       Assert.IsNotNull (mixin);
       Assert.AreEqual (37, mixin.PropertyViaThis);
@@ -44,7 +45,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void RequiredBaseInterfaceViaDuck ()
     {
-      ClassFulfillingAllMemberRequirements cfamr = ObjectFactory.Create<ClassFulfillingAllMemberRequirements> ().With ();
+      ClassFulfillingAllMemberRequirements cfamr = ObjectFactory.Create<ClassFulfillingAllMemberRequirements> (ParamList.Empty);
       var mixin = Mixin.Get<MixinRequiringAllMembersBase> (cfamr);
       Assert.IsNotNull (mixin);
       Assert.AreEqual (11, mixin.PropertyViaBase);
@@ -53,7 +54,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void ThisCallToDuckInterface ()
     {
-      BaseTypeWithDuckFaceMixin duckFace = ObjectFactory.Create<BaseTypeWithDuckFaceMixin> ().With ();
+      BaseTypeWithDuckFaceMixin duckFace = ObjectFactory.Create<BaseTypeWithDuckFaceMixin> (ParamList.Empty);
       Assert.AreEqual ("DuckFaceMixin.CallMethodsOnThis-DuckFaceMixin.MethodImplementedOnBase-BaseTypeWithDuckFaceMixin.ProtectedMethodImplementedOnBase",
           Mixin.Get<DuckFaceMixin> (duckFace).CallMethodsOnThis ());
     }

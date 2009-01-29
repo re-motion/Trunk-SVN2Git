@@ -16,6 +16,7 @@
 using System;
 using Remotion.Mixins.Samples.Aktology.Akten;
 using Remotion.Mixins.Samples.Aktology.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Mixins.Samples.Aktology
 {
@@ -77,7 +78,7 @@ namespace Remotion.Mixins.Samples.Aktology
     {
       using (MixinConfiguration.BuildNew().ForClass<TBaseType>().AddMixin<TMixin>().AddCompleteInterface<TInterface>().EnterScope())
       {
-        return ObjectFactory.Create<TInterface>().With();
+        return ObjectFactory.Create<TInterface>(ParamList.Empty);
       }
     }
   }

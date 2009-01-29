@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       {
         Type[] parameterTypes = GetParameterTypes (delegateType);
         string message = string.Format ("Type {0} does not support the requested constructor with signature ({1}).",
-                                        _publicDomainObjectType.FullName, SeparatedStringBuilder.Build (", ", parameterTypes, delegate (Type t) { return t.FullName; })); 
+                                        _publicDomainObjectType.FullName, SeparatedStringBuilder.Build (", ", parameterTypes, t => t.FullName)); 
         throw new MissingMethodException (message, ex);
       }
     }

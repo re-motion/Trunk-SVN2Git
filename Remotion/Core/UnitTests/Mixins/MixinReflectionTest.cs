@@ -21,6 +21,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins
@@ -31,7 +32,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void MixinGet_FindsMixinInstanceInTarget ()
     {
-      BaseType3 bt3 = ObjectFactory.Create<BaseType3>().With();
+      BaseType3 bt3 = ObjectFactory.Create<BaseType3>(ParamList.Empty);
       BT3Mixin2 mixin = Mixin.Get<BT3Mixin2> ((object) bt3);
       Assert.That (mixin, Is.Not.Null);
     }
@@ -46,7 +47,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void MixinGet_FindsMixinWithAssignableMatch ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1>().With();
+      BaseType1 bt1 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
       IBT1Mixin1 mixin = Mixin.Get<IBT1Mixin1> (bt1);
       Assert.That (mixin, Is.Not.Null);
       Assert.That (mixin, Is.InstanceOfType (typeof (BT1Mixin1)));
@@ -59,7 +60,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<DerivedNullMixin> ().AddMixin<DerivedDerivedNullMixin> ().EnterScope ())
       {
-        NullTarget instance = ObjectFactory.Create<NullTarget> ().With ();
+        NullTarget instance = ObjectFactory.Create<NullTarget> (ParamList.Empty);
         Mixin.Get<NullMixin> (instance);
       }
     }
@@ -71,7 +72,7 @@ namespace Remotion.UnitTests.Mixins
 
       using (context.EnterScope())
       {
-        BaseType1 bt1 = ObjectFactory.Create<BaseType1>().With();
+        BaseType1 bt1 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
         IMixinTarget mixinTarget = bt1 as IMixinTarget;
         Assert.That (mixinTarget, Is.Not.Null);
 
@@ -151,7 +152,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void GetMixinBaseCallProxyType ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1>().With();
+      BaseType1 bt1 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
       Type bcpt = MixinReflector.GetBaseCallProxyType (bt1);
       Assert.That (bcpt, Is.Not.Null);
       Assert.That (bcpt, Is.EqualTo (bt1.GetType().GetNestedType ("BaseCallProxy")));
@@ -170,7 +171,7 @@ namespace Remotion.UnitTests.Mixins
       MixinDefinition expected1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
       MixinDefinition expected2 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin2)];
 
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1>().With();
+      BaseType1 bt1 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
       BT1Mixin1 mixin1 = Mixin.Get<BT1Mixin1> (bt1);
       BT1Mixin2 mixin2 = Mixin.Get<BT1Mixin2> (bt1);
       Assert.That (MixinReflector.GetMixinConfiguration (mixin1, bt1), Is.SameAs (expected1));
@@ -183,7 +184,7 @@ namespace Remotion.UnitTests.Mixins
       MixinDefinition expected1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
       MixinDefinition expected2 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin2)];
 
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1>().With();
+      BaseType1 bt1 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
       BT1Mixin1 mixin1 = Mixin.Get<BT1Mixin1> (bt1);
       BT1Mixin2 mixin2 = Mixin.Get<BT1Mixin2> (bt1);
 
@@ -199,7 +200,7 @@ namespace Remotion.UnitTests.Mixins
         ExpectedMessage = "The given mixin is not a part of the given instance.\r\nParameter name: mixin")]
     public void GetMixinConfiguration_InvalidMixin ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1>().With();
+      BaseType1 bt1 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
       object mixin = new object();
       MixinReflector.GetMixinConfiguration (mixin, bt1);
     }

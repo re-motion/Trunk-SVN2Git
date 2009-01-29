@@ -15,6 +15,7 @@
 // 
 using NUnit.Framework;
 using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
@@ -29,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
           .ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithCircularThisDependency1), typeof (MixinWithCircularThisDependency2))
           .EnterScope())
       {
-        object o = ObjectFactory.Create<NullTarget> ().With ();
+        object o = ObjectFactory.Create<NullTarget> (ParamList.Empty);
         var c1 = (ICircular2) o;
         Assert.AreEqual ("MixinWithCircularThisDependency2.Circular12-MixinWithCircularThisDependency1.Circular1-"
             + "MixinWithCircularThisDependency2.Circular2", c1.Circular12 ());
@@ -39,7 +40,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void ThisCallToClassImplementingInternalInterface ()
     {
-      ClassImplementingInternalInterface ciii = ObjectFactory.Create<ClassImplementingInternalInterface> ().With ();
+      ClassImplementingInternalInterface ciii = ObjectFactory.Create<ClassImplementingInternalInterface> (ParamList.Empty);
       var mixin = Mixin.Get<MixinWithClassFaceImplementingInternalInterface> (ciii);
       Assert.AreEqual ("ClassImplementingInternalInterface.Foo", mixin.GetStringViaThis ());
     }
@@ -47,7 +48,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void ThisCallsToIndirectlyRequiredInterfaces ()
     {
-      ClassImplementingIndirectRequirements ciir = ObjectFactory.Create<ClassImplementingIndirectRequirements> ().With ();
+      ClassImplementingIndirectRequirements ciir = ObjectFactory.Create<ClassImplementingIndirectRequirements> (ParamList.Empty);
       var mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir);
       Assert.AreEqual ("ClassImplementingIndirectRequirements.Method1-ClassImplementingIndirectRequirements.BaseMethod1-"
           + "ClassImplementingIndirectRequirements.Method3", mixin.GetStuffViaThis ());

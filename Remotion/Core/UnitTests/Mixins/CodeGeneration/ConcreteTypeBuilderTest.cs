@@ -25,6 +25,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Definitions;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Utilities;
@@ -71,8 +72,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void CacheEvenWorksForSerialization()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1>().With();
-      BaseType1 bt2 = ObjectFactory.Create<BaseType1>().With();
+      BaseType1 bt1 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
+      BaseType1 bt2 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
 
       Assert.AreSame (bt1.GetType(), bt2.GetType());
 
@@ -84,8 +85,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GeneratedMixinTypesAreCached()
     {
-      ClassOverridingMixinMembers c1 = ObjectFactory.Create<ClassOverridingMixinMembers>().With();
-      ClassOverridingMixinMembers c2 = ObjectFactory.Create<ClassOverridingMixinMembers>().With();
+      ClassOverridingMixinMembers c1 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
+      ClassOverridingMixinMembers c2 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
 
       Assert.AreSame (Mixin.Get<MixinWithAbstractMembers> (c1).GetType(), Mixin.Get<MixinWithAbstractMembers> (c2).GetType());
     }
@@ -93,9 +94,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void MixinTypeCacheIsBoundToConcreteTypeBuilder()
     {
-      ClassOverridingMixinMembers c1 = ObjectFactory.Create<ClassOverridingMixinMembers>().With();
+      ClassOverridingMixinMembers c1 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
       ConcreteTypeBuilder.SetCurrent (AlternativeTypeBuilder);
-      ClassOverridingMixinMembers c2 = ObjectFactory.Create<ClassOverridingMixinMembers>().With();
+      ClassOverridingMixinMembers c2 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
 
       Assert.AreNotSame (Mixin.Get<MixinWithAbstractMembers> (c1).GetType(), Mixin.Get<MixinWithAbstractMembers> (c2).GetType());
     }
@@ -103,8 +104,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void MixinTypeCacheEvenWorksForSerialization()
     {
-      ClassOverridingMixinMembers c1 = ObjectFactory.Create<ClassOverridingMixinMembers>().With();
-      ClassOverridingMixinMembers c2 = ObjectFactory.Create<ClassOverridingMixinMembers>().With();
+      ClassOverridingMixinMembers c1 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
+      ClassOverridingMixinMembers c2 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
 
       Assert.AreSame (Mixin.Get<MixinWithAbstractMembers> (c1).GetType(), Mixin.Get<MixinWithAbstractMembers> (c2).GetType());
 
@@ -355,7 +356,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         Assert.IsNotNull (t);
         Assert.IsTrue (typeof (MixinWithOverridableMember).IsAssignableFrom (t));
 
-        TargetClassOverridingMixinMember instance = ObjectFactory.Create<TargetClassOverridingMixinMember>().With();
+        TargetClassOverridingMixinMember instance = ObjectFactory.Create<TargetClassOverridingMixinMember>(ParamList.Empty);
         Assert.AreSame (t, Mixin.Get<MixinWithOverridableMember> (instance).GetType());
       }
     }

@@ -34,7 +34,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.BaseCallProx
     [Test]
     public void InstantiatedSubclassProxyHasBaseCallProxy ()
     {
-      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin3<,>)).With ();
+      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin3<,>));
       FieldInfo firstField = bt3.GetType ().GetField ("__first", BindingFlags.NonPublic | BindingFlags.Instance);
       Assert.IsNotNull (firstField.GetValue (bt3));
     }

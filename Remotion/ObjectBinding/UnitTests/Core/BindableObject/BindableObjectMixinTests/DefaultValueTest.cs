@@ -19,6 +19,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMixinTests
 {
@@ -37,7 +38,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     [Test]
     public void GetProperty_NormallyReturnsNonNull ()
     {
-      ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> ().With ();
+      ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> (ParamList.Empty);
       IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
 
       Assert.IsNotNull (instanceAsIBusinessObject.GetProperty ("Scalar"));
@@ -49,7 +50,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (BindableObjectMixin)).AddMixins (typeof (DefaultValueTrueMixin)).EnterScope())
       {
-        ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>>().With();
+        ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> (ParamList.Empty);
         IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
 
         Assert.IsNull (instanceAsIBusinessObject.GetProperty ("Scalar"));
@@ -61,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (BindableObjectMixin)).AddMixins (typeof (DefaultValueTrueMixin)).EnterScope())
       {
-        ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> ().With ();
+        ClassWithValueType<int> instance = ObjectFactory.Create<ClassWithValueType<int>> (ParamList.Empty);
         IBusinessObject instanceAsIBusinessObject = (IBusinessObject) instance;
 
         Assert.IsNotNull (instanceAsIBusinessObject.GetProperty ("List"));

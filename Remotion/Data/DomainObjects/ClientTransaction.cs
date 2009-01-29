@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -57,7 +58,7 @@ public abstract class ClientTransaction
   /// <see cref="ExtendsAttribute"/> instance for <see cref="ClientTransaction"/> or <see cref="RootClientTransaction"/> to a mixin class.</remarks>
   public static ClientTransaction CreateRootTransaction ()
   {
-    return ObjectFactory.Create<RootClientTransaction> (true).With();
+    return ObjectFactory.Create<RootClientTransaction> (true, ParamList.Empty);
   }
 
   /// <summary>
@@ -77,7 +78,7 @@ public abstract class ClientTransaction
   /// </remarks>
   public static ClientTransaction CreateBindingTransaction ()
   {
-    return ObjectFactory.Create<BindingClientTransaction> (true).With ();
+    return ObjectFactory.Create<BindingClientTransaction> (true, ParamList.Empty);
   }
 
   /// <summary>
@@ -730,7 +731,7 @@ public abstract class ClientTransaction
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction ()
   {
-    ClientTransaction subTransaction = ObjectFactory.Create<SubClientTransaction> (true).With (this);
+    ClientTransaction subTransaction = ObjectFactory.Create<SubClientTransaction> (true, ParamList.Create (this));
     return subTransaction;
   }
 

@@ -17,6 +17,7 @@ using System;
 using System.Data;
 using System.Text;
 using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -29,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public static WhereClauseBuilder Create (CommandBuilder builder, IDbCommand command)
     {
-      return ObjectFactory.Create<WhereClauseBuilder>().With (builder, command);
+      return ObjectFactory.Create<WhereClauseBuilder>(ParamList.Create (builder, command));
     }
 
     // member fields

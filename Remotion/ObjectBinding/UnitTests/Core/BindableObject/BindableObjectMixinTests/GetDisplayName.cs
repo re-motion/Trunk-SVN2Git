@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Reflection;
 using Rhino.Mocks;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
@@ -48,7 +49,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     [Test]
     public void DisplayName ()
     {
-      BindableObjectMixin bindableObjectMixin = Mixin.Get<BindableObjectMixin> (ObjectFactory.Create<SimpleBusinessObjectClass>().With());
+      BindableObjectMixin bindableObjectMixin = Mixin.Get<BindableObjectMixin> (ObjectFactory.Create<SimpleBusinessObjectClass>(ParamList.Empty));
 
       Assert.That (
           ((IBusinessObject) bindableObjectMixin).DisplayName,
@@ -58,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     [Test]
     public void OverriddenDisplayName ()
     {
-      IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithOverriddenDisplayName>().With();
+      IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithOverriddenDisplayName> (ParamList.Empty);
 
       Assert.That (
           businessObject.DisplayName,
@@ -69,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     public void DisplayNameSafe_WithOverriddenDisplayNameAndAccessGranted ()
     {
       IObjectSecurityStrategy stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy>();
-      ISecurableObject securableObject = ObjectFactory.Create<SecurableClassWithOverriddenDisplayName>().With (stubSecurityStrategy);
+      ISecurableObject securableObject = ObjectFactory.Create<SecurableClassWithOverriddenDisplayName>(ParamList.Create (stubSecurityStrategy));
       BindableObjectMixin bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
       Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, "DisplayName")).Return (true);
       _mockRepository.ReplayAll();
@@ -84,7 +85,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     public void DisplayNameSafe_WithOverriddenDisplayNameAndWithAccessDenied ()
     {
       IObjectSecurityStrategy stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy>();
-      ISecurableObject securableObject = ObjectFactory.Create<SecurableClassWithOverriddenDisplayName>().With (stubSecurityStrategy);
+      ISecurableObject securableObject = ObjectFactory.Create<SecurableClassWithOverriddenDisplayName>(ParamList.Create (stubSecurityStrategy));
       BindableObjectMixin bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
       Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, "DisplayName")).Return (false);
       _mockRepository.ReplayAll();
@@ -99,7 +100,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     public void DisplayNameSafe_WithoutOverriddenDisplayName ()
     {
       IObjectSecurityStrategy stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy> ();
-      ISecurableObject securableObject = ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>> ().With (stubSecurityStrategy);
+      ISecurableObject securableObject = ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>> (ParamList.Create (stubSecurityStrategy));
       BindableObjectMixin bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
       _mockRepository.ReplayAll ();
 

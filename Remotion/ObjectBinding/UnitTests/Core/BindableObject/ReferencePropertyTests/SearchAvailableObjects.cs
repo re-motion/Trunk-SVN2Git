@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Reflection;
 using Rhino.Mocks;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
@@ -95,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
         + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithBusinessObjectProperties, Remotion.ObjectBinding.UnitTests'.")]
     public void Search_WithSearchNotSupported ()
     {
-      IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithBusinessObjectProperties> ().With ();
+      IBusinessObject businessObject = (IBusinessObject) ObjectFactory.Create<ClassWithBusinessObjectProperties> (ParamList.Empty);
       ISearchServiceOnProperty mockService = _mockRepository.StrictMock<ISearchServiceOnProperty> ();
       IBusinessObjectReferenceProperty property = CreateProperty ("SearchServiceFromPropertyDeclaration");
       ISearchAvailableObjectsArguments _searchArgumentsStub = _mockRepository.Stub<ISearchAvailableObjectsArguments> ();

@@ -16,6 +16,7 @@
 using System;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.ObjectBinding.BindableObject.Properties;
 
@@ -28,7 +29,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   {
     public static BindableDomainObjectMetadataFactory Create ()
     {
-      return ObjectFactory.Create<BindableDomainObjectMetadataFactory> (true).With();
+      return ObjectFactory.Create<BindableDomainObjectMetadataFactory> (true, ParamList.Empty);
     }
 
     protected BindableDomainObjectMetadataFactory ()

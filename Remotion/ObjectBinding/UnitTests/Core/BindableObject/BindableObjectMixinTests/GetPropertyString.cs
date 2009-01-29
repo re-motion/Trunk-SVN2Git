@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Reflection;
 using Rhino.Mocks;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
@@ -40,8 +41,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
       BindableObjectProvider provider = new BindableObjectProvider();
       provider.AddService (typeof (IBusinessObjectStringFormatterService), _mockStringFormatterService);
       BusinessObjectProvider.SetProvider(typeof (BindableObjectProviderAttribute), provider);
-      
-      _businessObject = (IBusinessObject) ObjectFactory.Create<SimpleBusinessObjectClass> ().With();
+
+      _businessObject = (IBusinessObject) ObjectFactory.Create<SimpleBusinessObjectClass> (ParamList.Empty);
 
       _property = _businessObject.BusinessObjectClass.GetPropertyDefinition ("String");
       Assert.That (

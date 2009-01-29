@@ -122,7 +122,7 @@ namespace Remotion.ObjectBinding
 
     private static IBusinessObjectProvider CreateBusinessObjectProvider (Type businessObjectProviderType)
     {
-      return (IBusinessObjectProvider) ObjectFactory.Create (businessObjectProviderType).With();
+      return (IBusinessObjectProvider) ObjectFactory.Create (businessObjectProviderType, ParamList.Empty);
     }
 
     private readonly IBusinessObjectServiceFactory _serviceFactory;

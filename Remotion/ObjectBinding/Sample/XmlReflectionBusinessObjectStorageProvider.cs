@@ -21,6 +21,7 @@ using System.Xml.Serialization;
 using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Sample
@@ -156,7 +157,7 @@ namespace Remotion.ObjectBinding.Sample
 
     protected BindableXmlObject CreateObject (Type type, Guid id)
     {
-      BindableXmlObject obj = (BindableXmlObject) ObjectFactory.Create (true, type).With();
+      BindableXmlObject obj = (BindableXmlObject) ObjectFactory.Create (true, type, ParamList.Empty);
       obj._id = id;
       AddToIdentityMap (obj);
       return obj;

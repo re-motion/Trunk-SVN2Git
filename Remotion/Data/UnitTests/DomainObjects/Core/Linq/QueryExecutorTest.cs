@@ -28,6 +28,7 @@ using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -249,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var queryModel = GetParsedSimpleQuery ();
-        var executor = ObjectFactory.Create<QueryExecutor<Order>>().With (new SqlServerGenerator (DatabaseInfo.Instance));
+        var executor = ObjectFactory.Create<QueryExecutor<Order>>(ParamList.Create (new SqlServerGenerator (DatabaseInfo.Instance)));
 
         executor.CreateQuery ("<dynamic query>", queryModel);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);

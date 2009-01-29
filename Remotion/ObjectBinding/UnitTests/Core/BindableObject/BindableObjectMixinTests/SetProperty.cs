@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMixinTests
 {
@@ -34,7 +35,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     {
       base.SetUp();
 
-      _bindableObject = ObjectFactory.Create<SimpleBusinessObjectClass>().With();
+      _bindableObject = ObjectFactory.Create<SimpleBusinessObjectClass> (ParamList.Empty);
       _bindableObjectMixin = Mixin.Get<BindableObjectMixin> (_bindableObject);
       _businessObject = _bindableObjectMixin;
     }
@@ -61,7 +62,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     [Ignore ("TODO: discuss desired behavior")]
     public void WithoutSetter ()
     {
-      IBusinessObject businessObject = Mixin.Get<BindableObjectMixin> (ObjectFactory.Create<SimpleBusinessObjectClass>().With());
+      IBusinessObject businessObject = Mixin.Get<BindableObjectMixin> (ObjectFactory.Create<SimpleBusinessObjectClass>(ParamList.Empty));
       businessObject.SetProperty ("StringWithoutSetter", null);
     }
   }

@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Domain
 {
@@ -23,7 +24,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Domain
   {
     public static TypeWithDateTime Create ()
     {
-      return ObjectFactory.Create<TypeWithDateTime> (true).With ();
+      return ObjectFactory.Create<TypeWithDateTime> (true, ParamList.Empty);
     }
 
     private DateTime _dateTimeValue;

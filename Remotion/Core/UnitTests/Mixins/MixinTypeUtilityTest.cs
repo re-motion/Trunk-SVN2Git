@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -48,14 +49,14 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void IsGeneratedConcreteMixedType_OnBaseCallProxy ()
     {
-      Type baseCallProxy = MixinReflector.GetBaseCallProxyType (ObjectFactory.Create<BaseType1>().With());
+      Type baseCallProxy = MixinReflector.GetBaseCallProxyType (ObjectFactory.Create<BaseType1>(ParamList.Empty));
       Assert.IsFalse (MixinTypeUtility.IsGeneratedConcreteMixedType (baseCallProxy));
     }
 
     [Test]
     public void IsGeneratedConcreteMixedType_OnGeneratedMixinType ()
     {
-      ClassOverridingMixinMembers mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> ().With ();
+      ClassOverridingMixinMembers mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty);
       Type mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance).GetType();
       Assert.IsFalse (MixinTypeUtility.IsGeneratedConcreteMixedType (mixinType));
     }
@@ -80,14 +81,14 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void IsGeneratedByMixinEngine_OnBaseCallProxy ()
     {
-      Type baseCallProxy = MixinReflector.GetBaseCallProxyType (ObjectFactory.Create<BaseType1> ().With ());
+      Type baseCallProxy = MixinReflector.GetBaseCallProxyType (ObjectFactory.Create<BaseType1> (ParamList.Empty));
       Assert.IsTrue (MixinTypeUtility.IsGeneratedByMixinEngine (baseCallProxy));
     }
 
     [Test]
     public void IsIsGeneratedByMixinEngine_OnGeneratedMixinType ()
     {
-      ClassOverridingMixinMembers mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> ().With ();
+      ClassOverridingMixinMembers mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty);
       Type mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance).GetType ();
       Assert.IsTrue (MixinTypeUtility.IsGeneratedByMixinEngine (mixinType));
     }

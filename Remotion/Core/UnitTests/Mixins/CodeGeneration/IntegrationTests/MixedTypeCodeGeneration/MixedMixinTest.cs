@@ -15,6 +15,7 @@
 // 
 using NUnit.Framework;
 using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -26,14 +27,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void DoubleMixinOverrides_CreateMixinInstance ()
     {
-      MixinMixingClass instance = ObjectFactory.Create<MixinMixingClass> ().With ();
+      MixinMixingClass instance = ObjectFactory.Create<MixinMixingClass> (ParamList.Empty);
       Assert.IsNotNull (Mixin.Get<MixinMixingMixin> (instance));
     }
 
     [Test]
     public void DoubleMixinOverrides_CreateClassInstance ()
     {
-      ClassWithMixedMixin instance = ObjectFactory.Create<ClassWithMixedMixin> ().With();
+      ClassWithMixedMixin instance = ObjectFactory.Create<ClassWithMixedMixin> (ParamList.Empty);
       Assert.IsNotNull (Mixin.Get<MixinMixingClass> (instance));
       Assert.IsNotNull (Mixin.Get<MixinMixingMixin> (Mixin.Get<MixinMixingClass> (instance)));
 
@@ -48,7 +49,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
           .ForClass<MixinWithOverridableMember>().AddMixin<MixinOverridingToString>()
           .EnterScope())
       {
-        var instance = ObjectFactory.Create<TargetClassOverridingMixinMember>().With();
+        var instance = ObjectFactory.Create<TargetClassOverridingMixinMember>(ParamList.Empty);
         Assert.That (Mixin.Get<MixinWithOverridableMember> (instance).ToString(), NUnit.Framework.SyntaxHelpers.Text.StartsWith ("Overridden: "));
       }
     }

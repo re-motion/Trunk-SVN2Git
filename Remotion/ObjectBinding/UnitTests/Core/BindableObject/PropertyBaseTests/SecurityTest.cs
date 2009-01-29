@@ -21,6 +21,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Security;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
 {
@@ -47,10 +48,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
 
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), _mockObjectSecurityAdapter);
 
-      _securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>>()
-                                               .With (_mocks.StrictMock<IObjectSecurityStrategy>());
+      _securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>>(ParamList.Create (_mocks.StrictMock<IObjectSecurityStrategy>()));
 
-      _nonSecurableObject = (IBusinessObject) ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>>().With();
+      _nonSecurableObject = (IBusinessObject) ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
 
       _securableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (

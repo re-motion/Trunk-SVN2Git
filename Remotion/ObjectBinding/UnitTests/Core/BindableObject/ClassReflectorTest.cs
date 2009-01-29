@@ -17,6 +17,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
+using Remotion.Reflection;
 using Rhino.Mocks;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -135,7 +136,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
       var bindableObjectClass = classReflector.GetMetadata ();
-      var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> ().With();
+      var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
 
       ((BaseBusinessObjectClass) derivedBusinessObject).Public = "p";
       var propertyDefinition = bindableObjectClass.GetPropertyDefinition ("Public");
@@ -153,7 +154,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       {
         var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
         var bindableObjectClass = classReflector.GetMetadata();
-        var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass>().With();
+        var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
 
         Assert.That (derivedBusinessObject, Is.InstanceOfType (typeof (IMixinAddingProperty)));
 
@@ -174,7 +175,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       {
         var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
         var bindableObjectClass = classReflector.GetMetadata ();
-        var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> ().With ();
+        var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
 
         ((IMixinAddingProperty) derivedBusinessObject).MixedProperty = "p";
         var propertyDefinition = bindableObjectClass.GetPropertyDefinition ("MixedProperty");
@@ -196,7 +197,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       {
         var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
         var bindableObjectClass = classReflector.GetMetadata ();
-        var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> ().With ();
+        var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
 
         derivedBusinessObject.Public = "p";
         Mixin.Get<MixinOverridingProperty> (derivedBusinessObject).Public += "q";

@@ -20,6 +20,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -31,7 +32,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void IntroducedInterfacesAreImplementedViaDelegation ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1> ().With ();
+      BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
       var bt1AsMixedIface = bt1 as IBT1Mixin1;
       Assert.IsNotNull (bt1AsMixedIface);
       Assert.AreEqual ("BT1Mixin1.IntroducedMethod", bt1AsMixedIface.IntroducedMethod ());
@@ -40,7 +41,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void MixinCanImplementMethodsExplicitly ()
     {
-      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithExplicitImplementation)).With ();
+      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithExplicitImplementation));
       var explicito = bt1 as IExplicit;
       Assert.IsNotNull (explicito);
       Assert.AreEqual ("XXX", explicito.Explicit ());
@@ -52,7 +53,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 #endif
     public void MixinCanIntroduceGenericInterface ()
     {
-      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingGenericInterface<>)).With ();
+      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingGenericInterface<>));
       var generic = bt1 as IGeneric<BaseType1>;
       Assert.IsNotNull (generic);
       Assert.AreEqual ("Generic", generic.Generic (bt1));
@@ -61,7 +62,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void InheritedIntroducedInterfaces ()
     {
-      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingInheritedInterface)).With ();
+      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingInheritedInterface));
       Assert.AreEqual ("MixinIntroducingInheritedInterface.Method1", ((IMixinIII1) bt1).Method1 ());
       Assert.AreEqual ("MixinIntroducingInheritedInterface.Method1", ((IMixinIII2) bt1).Method1 ());
       Assert.AreEqual ("MixinIntroducingInheritedInterface.Method2", ((IMixinIII2) bt1).Method2 ());
@@ -75,7 +76,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinImplementingFullPropertiesWithPartialIntroduction)).EnterScope())
       {
-        BaseType1 bt1 = ObjectFactory.Create<BaseType1> ().With ();
+        BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
         MethodInfo[] allMethods = bt1.GetType ().GetMethods (BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         string[] allMethodNames = Array.ConvertAll (allMethods, mi => mi.Name);
         Assert.That (allMethodNames, List.Contains ("Remotion.UnitTests.Mixins.SampleTypes.InterfaceWithPartialProperties.get_Prop1"));
@@ -89,7 +90,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void ExplicitlyNonIntroducedInterface ()
     {
-      object o = CreateMixedObject<NullTarget> (typeof (MixinNonIntroducingSimpleInterface)).With();
+      object o = CreateMixedObject<NullTarget> (typeof (MixinNonIntroducingSimpleInterface));
       Assert.IsFalse (o is ISimpleInterface);
       Assert.That (Mixin.Get<MixinNonIntroducingSimpleInterface> (o), Is.InstanceOfType (typeof (ISimpleInterface)));
     }
@@ -97,7 +98,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void ImplicitlyNonIntroducedInterface ()
     {
-      ClassImplementingSimpleInterface o = CreateMixedObject<ClassImplementingSimpleInterface> (typeof (MixinImplementingSimpleInterface)).With();
+      ClassImplementingSimpleInterface o = CreateMixedObject<ClassImplementingSimpleInterface> (typeof (MixinImplementingSimpleInterface));
       Assert.That (o, Is.InstanceOfType (typeof (ISimpleInterface)));
       Assert.AreEqual ("ClassImplementingSimpleInterface.Method", o.Method ());
     }
@@ -105,7 +106,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void MultipleSimilarInterfaces ()
     {
-      object o = CreateMixedObject<NullTarget> (typeof (List<>)).With ();
+      object o = CreateMixedObject<NullTarget> (typeof (List<>));
       Assert.IsTrue (o is IList<NullTarget>);
       Assert.IsTrue (o is ICollection<NullTarget>);
       Assert.IsTrue (o is IEnumerable<NullTarget>);

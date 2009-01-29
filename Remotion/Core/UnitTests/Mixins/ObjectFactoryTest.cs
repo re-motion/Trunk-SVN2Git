@@ -18,6 +18,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes;
 
@@ -29,7 +30,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void MixedObjectsCanBeCreated ()
     {
-      object o = ObjectFactory.Create<BaseType3> ().With();
+      object o = ObjectFactory.Create<BaseType3> (ParamList.Empty);
       Assert.IsNotNull (o);
       Assert.IsTrue (o is BaseType3);
       Assert.IsTrue (o is IMixinTarget);
@@ -40,7 +41,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void MixedObjectsCanBeCreatedFromType ()
     {
-      object o = ObjectFactory.Create (typeof (BaseType3)).With ();
+      object o = ObjectFactory.Create (typeof (BaseType3), ParamList.Empty);
       Assert.IsNotNull (o);
       Assert.IsTrue (o is IMixinTarget);
       Assert.IsNotNull (((IMixinTarget) o).Mixins[0]);
@@ -50,7 +51,7 @@ namespace Remotion.UnitTests.Mixins
     public void MixedObjectsCanBeCreatedWithMixinInstances ()
     {
       BT1Mixin1 m1 = new BT1Mixin1 ();
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1> (m1).With ();
+      BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty, m1);
 
       Assert.IsNotNull (Mixin.Get<BT1Mixin1> (bt1));
       Assert.AreSame (m1, Mixin.Get<BT1Mixin1> (bt1));
@@ -62,7 +63,7 @@ namespace Remotion.UnitTests.Mixins
     public void MixedObjectsWithMixinInstancesCanBeCreatedFromType ()
     {
       BT1Mixin1 m1 = new BT1Mixin1 ();
-      BaseType1 bt1 = (BaseType1) ObjectFactory.Create (typeof (BaseType1), m1).With ();
+      BaseType1 bt1 = (BaseType1) ObjectFactory.Create (typeof (BaseType1), ParamList.Empty, m1);
 
       Assert.IsNotNull (Mixin.Get<BT1Mixin1> (bt1));
       Assert.AreSame (m1, Mixin.Get<BT1Mixin1> (bt1));
@@ -76,7 +77,7 @@ namespace Remotion.UnitTests.Mixins
     public void ThrowsOnWrongMixinInstances ()
     {
       BT2Mixin1 m1 = new BT2Mixin1 ();
-      ObjectFactory.Create<BaseType3> (m1).With ();
+      ObjectFactory.Create<BaseType3> (ParamList.Empty, m1);
     }
 
     [Test]
@@ -85,7 +86,7 @@ namespace Remotion.UnitTests.Mixins
     public void ThrowsOnWrongMixinInstancesWithType ()
     {
       BT2Mixin1 m1 = new BT2Mixin1 ();
-      ObjectFactory.Create (typeof (BaseType3), m1).With ();
+      ObjectFactory.Create (typeof (BaseType3), ParamList.Empty, m1);
     }
 
     [Test]
@@ -96,7 +97,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinWithProtectedOverrider)).EnterScope())
       {
-        BaseType1 bt1 = ObjectFactory.Create<BaseType1> (new MixinWithProtectedOverrider ()).With();
+        BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty, new MixinWithProtectedOverrider ());
         bt1.VirtualMethod ();
       }
     }
@@ -108,7 +109,7 @@ namespace Remotion.UnitTests.Mixins
       Type generatedMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (configuration.Mixins[typeof (MixinWithAbstractMembers)]).GeneratedType;
       object mixinInstance = Activator.CreateInstance (generatedMixinType);
 
-      ClassOverridingMixinMembers classInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (mixinInstance).With ();
+      ClassOverridingMixinMembers classInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty, mixinInstance);
       Assert.AreSame (mixinInstance, Mixin.Get<MixinWithAbstractMembers> (classInstance));
     }
 
@@ -120,7 +121,7 @@ namespace Remotion.UnitTests.Mixins
         TargetClassDefinition configuration = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
         Type mixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (configuration.Mixins[0]).GeneratedType;
         object mixinInstance = Activator.CreateInstance (mixinType);
-        BaseType1 bt1 = ObjectFactory.Create<BaseType1> (mixinInstance).With ();
+        BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty, mixinInstance);
         bt1.VirtualMethod ();
         Assert.AreSame (mixinInstance, Mixin.Get<MixinWithProtectedOverrider> (bt1));
       }
@@ -131,7 +132,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType3> ().Clear().AddMixins (typeof (BT3Mixin2)).EnterScope())
       {
-        BaseType3 bt3 = ObjectFactory.Create<BaseType3> ().With ();
+        BaseType3 bt3 = ObjectFactory.Create<BaseType3> (ParamList.Empty);
         BT3Mixin2 mixin = Mixin.Get<BT3Mixin2> (bt3);
         Assert.IsNotNull (mixin);
         Assert.AreSame (bt3, mixin.This);
@@ -143,7 +144,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType3> ().Clear().AddMixins (typeof (BT3Mixin1)).EnterScope())
       {
-        BaseType3 bt3 = ObjectFactory.Create<BaseType3> ().With ();
+        BaseType3 bt3 = ObjectFactory.Create<BaseType3> (ParamList.Empty);
         BT3Mixin1 mixin = Mixin.Get<BT3Mixin1> (bt3);
         Assert.IsNotNull (mixin);
         Assert.AreSame (bt3, mixin.This);
@@ -157,7 +158,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType3> ().Clear().AddMixins (typeof (BT3Mixin7Face), typeof (BT3Mixin4)).EnterScope())
       {
-        ICBaseType3BT3Mixin4 complete = ObjectFactory.Create<BaseType3>().With() as ICBaseType3BT3Mixin4;
+        ICBaseType3BT3Mixin4 complete = ObjectFactory.Create<BaseType3>(ParamList.Empty) as ICBaseType3BT3Mixin4;
 
         Assert.IsNotNull (complete);
         Assert.AreEqual ("BaseType3.IfcMethod", ((IBaseType33) complete).IfcMethod());
@@ -170,7 +171,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void CompleteFaceInterfacesAddedExplicitly ()
     {
-      object complete = ObjectFactory.Create<BaseType6> ().With ();
+      object complete = ObjectFactory.Create<BaseType6> (ParamList.Empty);
 
       Assert.IsNotNull (complete);
       Assert.IsTrue (complete is BaseType6);
@@ -182,7 +183,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void CompleteFaceInterfaceAsTypeArgument ()
     {
-      ICBT6Mixin1 complete = ObjectFactory.Create<ICBT6Mixin1> ().With ();
+      ICBT6Mixin1 complete = ObjectFactory.Create<ICBT6Mixin1> (ParamList.Empty);
 
       Assert.IsNotNull (complete);
       Assert.IsTrue (complete is BaseType6);
@@ -200,7 +201,7 @@ namespace Remotion.UnitTests.Mixins
           .ForClass (typeof (BaseType6)).AddCompleteInterface (typeof (IEmptyInterface))
           .EnterScope ())
       {
-        IEmptyInterface complete = ObjectFactory.Create<IEmptyInterface> ().With ();
+        IEmptyInterface complete = ObjectFactory.Create<IEmptyInterface> (ParamList.Empty);
 
         Assert.IsNotNull (complete);
         Assert.IsTrue (complete is BaseType6);
@@ -211,7 +212,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void CompleteFaceInterfaceAsTypeArgumentWithMixins ()
     {
-      ICBT6Mixin1 complete = ObjectFactory.Create<ICBT6Mixin1> (new BT6Mixin1 ()).With ();
+      ICBT6Mixin1 complete = ObjectFactory.Create<ICBT6Mixin1> (ParamList.Empty, new BT6Mixin1 ());
 
       Assert.IsNotNull (complete);
       Assert.IsTrue (complete is BaseType6);
@@ -225,7 +226,7 @@ namespace Remotion.UnitTests.Mixins
         MatchType = MessageMatch.Contains)]
     public void InterfaceAsTypeArgumentWithoutCompleteness ()
     {
-      ObjectFactory.Create<IBaseType2> ().With ();
+      ObjectFactory.Create<IBaseType2> (ParamList.Empty);
     }
 
     [Test]
@@ -233,7 +234,7 @@ namespace Remotion.UnitTests.Mixins
         MatchType = MessageMatch.Regex)]
     public void InterfaceAsTypeArgumentWithoutCompletenessWithMixins ()
     {
-      ObjectFactory.Create<IBaseType2> ().With ();
+      ObjectFactory.Create<IBaseType2> (ParamList.Empty);
     }
 
     [Test]
@@ -242,7 +243,7 @@ namespace Remotion.UnitTests.Mixins
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithPrivateCtorAndVirtualMethod)).EnterScope())
       {
         MixinWithPrivateCtorAndVirtualMethod mixin = MixinWithPrivateCtorAndVirtualMethod.Create ();
-        object o = ObjectFactory.Create<NullTarget> (mixin).With ();
+        object o = ObjectFactory.Create<NullTarget> (ParamList.Empty, mixin);
         Assert.IsNotNull (o);
         Assert.IsNotNull (Mixin.Get<MixinWithPrivateCtorAndVirtualMethod> (o));
         Assert.AreSame (mixin, Mixin.Get<MixinWithPrivateCtorAndVirtualMethod> (o));
@@ -256,28 +257,28 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithPrivateCtorAndVirtualMethod)).EnterScope())
       {
-        ObjectFactory.Create<NullTarget> ().With ();
+        ObjectFactory.Create<NullTarget> (ParamList.Empty);
       }
     }
 
     [Test]
     public void GenerationPolicyOnlyIfNecessary ()
     {
-      object o = ObjectFactory.Create (typeof (object), GenerationPolicy.GenerateOnlyIfConfigured).With();
+      object o = ObjectFactory.Create (typeof (object), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
       Assert.AreEqual (typeof (object), o.GetType ());
 
-      o = ObjectFactory.Create<object> (GenerationPolicy.GenerateOnlyIfConfigured).With ();
+      o = ObjectFactory.Create<object> (ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
       Assert.AreEqual (typeof (object), o.GetType ());
     }
 
     [Test]
     public void GenerationPolicyForce ()
     {
-      object o = ObjectFactory.Create (typeof (object), GenerationPolicy.ForceGeneration).With ();
+      object o = ObjectFactory.Create (typeof (object), ParamList.Empty, GenerationPolicy.ForceGeneration);
       Assert.AreNotEqual (typeof (object), o.GetType ());
       Assert.AreEqual (typeof (object), o.GetType ().BaseType);
 
-      o = ObjectFactory.Create<object> (GenerationPolicy.ForceGeneration).With ();
+      o = ObjectFactory.Create<object> (ParamList.Empty, GenerationPolicy.ForceGeneration);
       Assert.AreNotEqual (typeof (object), o.GetType ());
       Assert.AreEqual (typeof (object), o.GetType ().BaseType);
     }
@@ -285,10 +286,10 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void DefaultPolicyIsOnlyIfNecessary ()
     {
-      object o = ObjectFactory.Create (typeof (object)).With ();
+      object o = ObjectFactory.Create (typeof (object), ParamList.Empty);
       Assert.AreEqual (typeof (object), o.GetType ());
 
-      o = ObjectFactory.Create<object> ().With ();
+      o = ObjectFactory.Create<object> (ParamList.Empty);
       Assert.AreEqual (typeof (object), o.GetType ());
     }
 
@@ -297,7 +298,7 @@ namespace Remotion.UnitTests.Mixins
         + "must be specified.", MatchType = MessageMatch.Regex)]
     public void ThrowsOnMixinInstancesWhenNoGeneration ()
     {
-      ObjectFactory.Create (typeof (object), new object()).With ();
+      ObjectFactory.Create (typeof (object), ParamList.Empty, new object ());
     }
 
     public class MixinThrowingInOnInitialized : Mixin<object>
@@ -314,7 +315,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinThrowingInOnInitialized)).EnterScope())
       {
-        ObjectFactory.Create<NullTarget> ().With ();
+        ObjectFactory.Create<NullTarget> (ParamList.Empty);
       }
     }
 
@@ -332,7 +333,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinThrowingInCtor)).EnterScope())
       {
-        ObjectFactory.Create<NullTarget> ().With ();
+        ObjectFactory.Create<NullTarget> (ParamList.Empty);
       }
     }
 
@@ -349,45 +350,49 @@ namespace Remotion.UnitTests.Mixins
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.UnitTests.Mixins.ObjectFactoryTest+"
-        + "TargetClassWithProtectedCtors does not contain a constructor with signature () (allowNonPublic: False).")]
+        + "TargetClassWithProtectedCtors contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
+        + "not set).")]
     public void ProtectedDefaultConstructor_Mixed ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<TargetClassWithProtectedCtors> ().Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
-        ObjectFactory.Create<TargetClassWithProtectedCtors> ().With ();
+        ObjectFactory.Create<TargetClassWithProtectedCtors> (ParamList.Empty);
       }
     }
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.UnitTests.Mixins.ObjectFactoryTest+"
-        + "TargetClassWithProtectedCtors does not contain a constructor with signature (System.Int32) (allowNonPublic: False).")]
+        + "TargetClassWithProtectedCtors contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
+        + "not set).")]
     public void ProtectedNonDefaultConstructor_Mixed ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<TargetClassWithProtectedCtors> ().Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
-        ObjectFactory.Create<TargetClassWithProtectedCtors> ().With (1);
+        ObjectFactory.Create<TargetClassWithProtectedCtors> (ParamList.Create (1));
       }
     }
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.UnitTests.Mixins.ObjectFactoryTest+"
-        + "TargetClassWithProtectedCtors does not contain a constructor with signature () (allowNonPublic: False).")]
+        + "TargetClassWithProtectedCtors contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
+        + "not set).")]
     public void ProtectedDefaultConstructor_NonMixed ()
     {
       using (MixinConfiguration.BuildNew().EnterScope ())
       {
-        ObjectFactory.Create<TargetClassWithProtectedCtors> ().With ();
+        ObjectFactory.Create<TargetClassWithProtectedCtors> (ParamList.Empty);
       }
     }
 
     [Test]
     [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.UnitTests.Mixins.ObjectFactoryTest+"
-        + "TargetClassWithProtectedCtors does not contain a constructor with signature (System.Int32) (allowNonPublic: False).")]
+        + "TargetClassWithProtectedCtors contains a constructor with the required signature, but it is not public (and the allowNonPublic flag is "
+        + "not set).")]
     public void ProtectedNonDefaultConstructor_NonMixed ()
     {
       using (MixinConfiguration.BuildNew().EnterScope ())
       {
-        ObjectFactory.Create<TargetClassWithProtectedCtors> ().With (1);
+        ObjectFactory.Create<TargetClassWithProtectedCtors> (ParamList.Create (1));
       }
     }
 
@@ -396,7 +401,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildFromActive ().ForClass<TargetClassWithProtectedCtors> ().Clear ().AddMixins (typeof (NullMixin)).EnterScope ())
       {
-        Assert.IsNotNull (ObjectFactory.Create<TargetClassWithProtectedCtors> (true).With ());
+        Assert.IsNotNull (ObjectFactory.Create<TargetClassWithProtectedCtors> (true, ParamList.Empty));
       }
     }
 
@@ -405,7 +410,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildFromActive ().ForClass<TargetClassWithProtectedCtors> ().Clear ().AddMixins (typeof (NullMixin)).EnterScope ())
       {
-        Assert.IsNotNull (ObjectFactory.Create<TargetClassWithProtectedCtors> (true).With (1));
+        Assert.IsNotNull (ObjectFactory.Create<TargetClassWithProtectedCtors> (true, ParamList.Create (1)));
       }
     }
 
@@ -414,7 +419,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildNew ().EnterScope ())
       {
-        Assert.IsNotNull (ObjectFactory.Create<TargetClassWithProtectedCtors> (true).With ());
+        Assert.IsNotNull (ObjectFactory.Create<TargetClassWithProtectedCtors> (true, ParamList.Empty));
       }
     }
 
@@ -423,7 +428,7 @@ namespace Remotion.UnitTests.Mixins
     {
       using (MixinConfiguration.BuildNew ().EnterScope ())
       {
-        Assert.IsNotNull (ObjectFactory.Create<TargetClassWithProtectedCtors> (true).With (1));
+        Assert.IsNotNull (ObjectFactory.Create<TargetClassWithProtectedCtors> (true, ParamList.Create (1)));
       }
     }
   }

@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.QueryProviderImplementation;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 
 namespace Remotion.Data.DomainObjects.Linq
@@ -57,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </para>
     /// </remarks>
     public DomainObjectQueryable (ISqlGenerator sqlGenerator)
-      : base (new QueryProvider(ObjectFactory.Create<QueryExecutor<T>>().With(sqlGenerator)))
+      : base (new QueryProvider(ObjectFactory.Create<QueryExecutor<T>>(ParamList.Create (sqlGenerator))))
     {
     }
 

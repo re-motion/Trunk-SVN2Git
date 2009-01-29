@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration.TestDomain;
 
@@ -38,7 +39,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
       using (MixinConfiguration.BuildFromActive().ForClass<ClassOverridingMixinMethod> ().Clear().AddMixins (generatedType).EnterScope())
       {
-        object instance = ObjectFactory.Create (typeof (ClassOverridingMixinMethod)).With ();
+        object instance = ObjectFactory.Create (typeof (ClassOverridingMixinMethod), ParamList.Empty);
         Assert.AreEqual ("Overridden!", Mixin.Get (generatedType, instance).ToString ());
       }
     }
@@ -56,7 +57,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
       using (MixinConfiguration.BuildFromActive().ForClass (generatedType).Clear().AddMixins (typeof (SimpleMixin)).EnterScope())
       {
-        object instance = ObjectFactory.Create (generatedType).With ();
+        object instance = ObjectFactory.Create (generatedType, ParamList.Empty);
         Assert.AreEqual ("Generated _and_ overridden", Mixin.Get<SimpleMixin> (instance).ToString ());
       }
     }

@@ -18,6 +18,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -35,7 +36,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget>().Clear().AddMixins (generatedType).EnterScope())
       {
-        object instance = ObjectFactory.Create (typeof (NullTarget)).With();
+        object instance = ObjectFactory.Create (typeof (NullTarget), ParamList.Empty);
         Assert.IsNotNull (Mixin.Get (generatedType, instance));
       }
     }
@@ -49,7 +50,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 
       using (MixinConfiguration.BuildFromActive().ForClass (generatedType).Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
-        object instance = ObjectFactory.Create (generatedType).With();
+        object instance = ObjectFactory.Create (generatedType, ParamList.Empty);
         Assert.IsNotNull (Mixin.Get (typeof (NullMixin), instance));
       }
     }

@@ -20,6 +20,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
@@ -32,7 +33,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   {
     public static BindableDomainObjectPropertyReflector Create (Type concreteType, IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
     {
-      return ObjectFactory.Create <BindableDomainObjectPropertyReflector> (true).With (concreteType, propertyInfo, businessObjectProvider);
+      return ObjectFactory.Create <BindableDomainObjectPropertyReflector> (true, ParamList.Create (concreteType, propertyInfo, businessObjectProvider));
     }
 
     private PropertyDefinition _propertyDefinition;

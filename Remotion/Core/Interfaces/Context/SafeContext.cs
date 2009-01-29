@@ -18,6 +18,7 @@ using System.Runtime.Remoting.Messaging;
 using Remotion.BridgeInterfaces;
 using Remotion.Implementation;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Context
 {
@@ -39,7 +40,7 @@ namespace Remotion.Context
             _instance = bootstrapStorageProvider;
             
             // then determine the actual context to be used
-            _instance = ObjectFactory.Create<SafeContext>().With().GetDefaultInstance();
+            _instance = ObjectFactory.Create<SafeContext> (ParamList.Empty).GetDefaultInstance();
           }
           return _instance;
         }

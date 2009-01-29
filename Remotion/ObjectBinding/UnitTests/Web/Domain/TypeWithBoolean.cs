@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Domain
 {
@@ -23,7 +24,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Domain
   {
     public static TypeWithBoolean Create ()
     {
-      return ObjectFactory.Create<TypeWithBoolean> (true).With ();
+      return ObjectFactory.Create<TypeWithBoolean> (true, ParamList.Empty);
     }
 
     private bool _booleanValue;

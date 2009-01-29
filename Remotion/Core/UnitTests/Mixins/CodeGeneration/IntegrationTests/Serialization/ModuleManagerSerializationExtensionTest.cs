@@ -18,6 +18,7 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Utilities;
 
@@ -39,7 +40,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void BeginDeserialization_Transformer ()
     {
-      NullTarget mixedObject = ObjectFactory.Create<NullTarget> (GenerationPolicy.ForceGeneration).With ();
+      NullTarget mixedObject = ObjectFactory.Create<NullTarget> (ParamList.Empty, GenerationPolicy.ForceGeneration);
       SerializationInfo info = new SerializationInfo (mixedObject.GetType (), new FormatterConverter ());
       StreamingContext context = new StreamingContext ();
 
@@ -63,7 +64,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
             + "Remotion.UnitTests.Mixins.SampleTypes.BaseType1.\r\nParameter name: typeTransformer")]
     public void BeginDeserialization_InvalidTransformer ()
     {
-      BaseType1 mixedObject = ObjectFactory.Create<BaseType1> ().With ();
+      BaseType1 mixedObject = ObjectFactory.Create<BaseType1> (ParamList.Empty);
       SerializationInfo info = new SerializationInfo (mixedObject.GetType (), new FormatterConverter ());
       StreamingContext context = new StreamingContext ();
 
@@ -81,7 +82,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void BeginDeserialization_DoesNotFillUpData ()
     {
-      BaseType1 mixedObject = ObjectFactory.Create<BaseType1> ().With ();
+      BaseType1 mixedObject = ObjectFactory.Create<BaseType1> (ParamList.Empty);
       mixedObject.I = 50;
       SerializationInfo info = new SerializationInfo (mixedObject.GetType (), new FormatterConverter ());
       StreamingContext context = new StreamingContext ();
@@ -160,7 +161,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void FinishDeserialization_FillsUpDataAndMixins ()
     {
-      BaseType1 mixedObject = ObjectFactory.Create<BaseType1> ().With ();
+      BaseType1 mixedObject = ObjectFactory.Create<BaseType1> (ParamList.Empty);
       mixedObject.I = 50;
       Mixin.Get<BT1Mixin1> (mixedObject).BackingField = "Data";
 

@@ -23,6 +23,7 @@ using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
@@ -104,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
 
     public void ResetLinqSqlGenerator ()
     {
-      _linqSqlGenerator = ObjectFactory.Create<SqlServerGenerator> ().With (DatabaseInfo.Instance);
+      _linqSqlGenerator = ObjectFactory.Create<SqlServerGenerator> (ParamList.Create (DatabaseInfo.Instance));
 
       WhereConditionParserRegistry whereConditionParserRegistry = _linqSqlGenerator.DetailParserRegistries.WhereConditionParser;
       whereConditionParserRegistry.RegisterParser (typeof (MethodCallExpression), new ContainsObjectParser (whereConditionParserRegistry));

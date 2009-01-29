@@ -18,6 +18,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -72,14 +73,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.BaseCallProx
     [Test]
     public void BaseCallMethodToThis ()
     {
-      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (MixinWithThisAsBase)).With ();
+      BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (MixinWithThisAsBase));
       Assert.AreEqual ("MixinWithThisAsBase.IfcMethod-BaseType3.IfcMethod", bt3.IfcMethod ());
     }
 
     [Test]
     public void BaseCallMethodToDuckInterface ()
     {
-      BaseTypeWithDuckBaseMixin duckBase = ObjectFactory.Create<BaseTypeWithDuckBaseMixin> ().With ();
+      BaseTypeWithDuckBaseMixin duckBase = ObjectFactory.Create<BaseTypeWithDuckBaseMixin> (ParamList.Empty);
       Assert.AreEqual ("DuckBaseMixin.MethodImplementedOnBase-BaseTypeWithDuckBaseMixin.MethodImplementedOnBase-"
                        + "DuckBaseMixin.ProtectedMethodImplementedOnBase-BaseTypeWithDuckBaseMixin.ProtectedMethodImplementedOnBase",
           duckBase.MethodImplementedOnBase ());
@@ -88,7 +89,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.BaseCallProx
     [Test]
     public void BaseCallsToIndirectlyRequiredInterfaces ()
     {
-      ClassImplementingIndirectRequirements ciir = ObjectFactory.Create<ClassImplementingIndirectRequirements> ().With ();
+      ClassImplementingIndirectRequirements ciir = ObjectFactory.Create<ClassImplementingIndirectRequirements> (ParamList.Empty);
       MixinWithIndirectRequirements mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir);
       Assert.AreEqual ("ClassImplementingIndirectRequirements.Method1-ClassImplementingIndirectRequirements.BaseMethod1-"
                        + "ClassImplementingIndirectRequirements.Method3", mixin.GetStuffViaBase ());
@@ -99,7 +100,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.BaseCallProx
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType3> ().Clear().AddMixins (typeof (BT3Mixin7Base), typeof (BT3Mixin4)).EnterScope())
       {
-        BaseType3 bt3 = ObjectFactory.Create<BaseType3> ().With ();
+        BaseType3 bt3 = ObjectFactory.Create<BaseType3> (ParamList.Empty);
         Assert.AreEqual ("BT3Mixin7Base.IfcMethod-BT3Mixin4.Foo-BaseType3.IfcMethod-BaseType3.IfcMethod2", bt3.IfcMethod ());
       }
     }
@@ -109,7 +110,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.BaseCallProx
     {
       using (MixinConfiguration.BuildFromActive().ForClass<ClassOverridingToString>().Clear().AddMixins(typeof(MixinOverridingToString)).EnterScope())
       {
-        object instance = ObjectFactory.Create<ClassOverridingToString>().With();
+        object instance = ObjectFactory.Create<ClassOverridingToString>(ParamList.Empty);
         Assert.AreEqual("Overridden: ClassOverridingToString", instance.ToString());
       }
     }

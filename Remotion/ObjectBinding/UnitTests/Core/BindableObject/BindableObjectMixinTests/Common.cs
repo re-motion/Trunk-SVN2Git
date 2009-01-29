@@ -20,6 +20,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMixinTests
 {
@@ -29,13 +30,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     [Test]
     public void InstantiateMixedType ()
     {
-      Assert.That (ObjectFactory.Create<SimpleBusinessObjectClass>().With(), Is.InstanceOfType (typeof (IBusinessObject)));
+      Assert.That (ObjectFactory.Create<SimpleBusinessObjectClass>(ParamList.Empty), Is.InstanceOfType (typeof (IBusinessObject)));
     }
 
     [Test]
     public void DisplayName ()
     {
-      BindableObjectMixin mixin = Mixin.Get<BindableObjectMixin> (ObjectFactory.Create<SimpleBusinessObjectClass>().With());
+      BindableObjectMixin mixin = Mixin.Get<BindableObjectMixin> (ObjectFactory.Create<SimpleBusinessObjectClass>(ParamList.Empty));
       IBusinessObject businessObject = mixin;
 
       Assert.That (
@@ -57,7 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     [Test]
     public void SerializeAndDeserialize ()
     {
-      SimpleBusinessObjectClass value = ObjectFactory.Create<SimpleBusinessObjectClass>().With();
+      SimpleBusinessObjectClass value = ObjectFactory.Create<SimpleBusinessObjectClass> (ParamList.Empty);
       value.String = "TheString";
       SimpleBusinessObjectClass deserialized = Serializer.SerializeAndDeserialize (value);
 
@@ -68,7 +69,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
     [Test]
     public void SerializeAndDeserialize_WithNewBindableObjectProvider ()
     {
-      SimpleBusinessObjectClass value = ObjectFactory.Create<SimpleBusinessObjectClass> ().With ();
+      SimpleBusinessObjectClass value = ObjectFactory.Create<SimpleBusinessObjectClass> (ParamList.Empty);
       byte[] serialized = Serializer.Serialize (value);
       BusinessObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), null);
       SimpleBusinessObjectClass deserialized = (SimpleBusinessObjectClass) Serializer.Deserialize (serialized);

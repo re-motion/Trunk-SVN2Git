@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Domain
 {
@@ -23,7 +24,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Domain
   {
     public static TypeWithNumber Create ()
     {
-      return ObjectFactory.Create<TypeWithNumber> (true).With ();
+      return ObjectFactory.Create<TypeWithNumber> (true, ParamList.Empty);
     }
 
     private int _int32Value;

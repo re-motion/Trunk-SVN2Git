@@ -16,6 +16,7 @@
 using System;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
@@ -106,7 +107,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       {
         try
         {
-          mixinInstance = ObjectFactory.Create (mixinType).With();
+          mixinInstance = ObjectFactory.Create (mixinType, ParamList.Empty);
         }
         catch (MissingMethodException ex)
         {

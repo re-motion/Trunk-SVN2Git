@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
@@ -31,7 +32,7 @@ namespace Remotion.ObjectBinding.BindableObject
   {
     public static PropertyReflector Create (IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
     {
-      return ObjectFactory.Create<PropertyReflector> (true).With (propertyInfo, businessObjectProvider);
+      return ObjectFactory.Create<PropertyReflector> (true, ParamList.Create (propertyInfo, businessObjectProvider));
     }
 
     private readonly IPropertyInformation _propertyInfo;

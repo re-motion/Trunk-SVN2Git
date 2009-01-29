@@ -19,6 +19,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Context;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.UnitTests.Context
 {
@@ -69,7 +70,7 @@ namespace Remotion.UnitTests.Context
     {
       using (MixinConfiguration.BuildNew ().ForClass<SafeContext> ().AddMixin<TestSafeContextMixin> ().EnterScope ())
       {
-        Assert.That (ObjectFactory.Create<SafeContext>().With().GetDefaultInstance(), Is.SameAs (TestSafeContextMixin.NewDefaultInstance));
+        Assert.That (ObjectFactory.Create<SafeContext>(ParamList.Empty).GetDefaultInstance(), Is.SameAs (TestSafeContextMixin.NewDefaultInstance));
       }
     }
 

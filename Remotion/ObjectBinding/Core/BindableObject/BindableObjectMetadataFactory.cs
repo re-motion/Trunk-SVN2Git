@@ -16,6 +16,7 @@
 using System;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
@@ -28,7 +29,7 @@ namespace Remotion.ObjectBinding.BindableObject
   {
     public static BindableObjectMetadataFactory Create ()
     {
-      return ObjectFactory.Create<BindableObjectMetadataFactory> (true).With();
+      return ObjectFactory.Create<BindableObjectMetadataFactory> (true, ParamList.Empty);
     }
 
     protected BindableObjectMetadataFactory ()

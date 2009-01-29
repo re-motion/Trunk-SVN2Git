@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
@@ -90,7 +91,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<ClassOverridingToString> ().Clear().AddMixins (typeof (MixinOverridingToString)).EnterScope())
       {
-        object instance = ObjectFactory.Create<ClassOverridingToString>().With();
+        object instance = ObjectFactory.Create<ClassOverridingToString>(ParamList.Empty);
         Assert.AreEqual ("Overridden: ClassOverridingToString", instance.ToString());
       }
     }

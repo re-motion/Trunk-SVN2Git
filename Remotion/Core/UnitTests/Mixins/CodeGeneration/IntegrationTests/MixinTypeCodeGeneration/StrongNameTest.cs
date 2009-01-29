@@ -21,6 +21,7 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Samples;
 using Remotion.Mixins.Utilities;
+using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration
@@ -60,7 +61,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
         Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
         Assert.IsFalse (ReflectionUtility.IsAssemblySigned (generatedType.Assembly));
 
-        Assert.AreEqual ("Overridden", Mixin.Get<EquatableMixin<UnsignedClass>> (ObjectFactory.Create<UnsignedClass>().With()).ToString());
+        Assert.AreEqual ("Overridden", Mixin.Get<EquatableMixin<UnsignedClass>> (ObjectFactory.Create<UnsignedClass>(ParamList.Empty)).ToString());
       }
     }
 
@@ -73,7 +74,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
         Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
         Assert.IsFalse (ReflectionUtility.IsAssemblySigned (generatedType.Assembly));
 
-        Assert.AreEqual ("Overridden", ObjectFactory.Create<NullTarget>().With().ToString());
+        Assert.AreEqual ("Overridden", ObjectFactory.Create<NullTarget>(ParamList.Empty).ToString());
       }
     }
   }

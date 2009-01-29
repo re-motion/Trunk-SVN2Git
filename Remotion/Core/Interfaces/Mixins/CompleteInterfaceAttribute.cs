@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Implementation;
+using Remotion.Reflection;
 
 namespace Remotion.Mixins
 {
@@ -37,7 +38,7 @@ namespace Remotion.Mixins
   /// <para>
   /// When the default mixin configuration is built via analysis of the declarative attributes, all complete interfaces
   /// are automatically registered with the active mixin configuration. This means that in the default mixin configuration,
-  /// <see cref="ObjectFactory.Create{T}(object[])"/> will be able to create instances from these
+  /// <see cref="ObjectFactory.Create{T}(ParamList,object[])"/> will be able to create instances from these
   /// interfaces.
   /// </para>
   /// </remarks>

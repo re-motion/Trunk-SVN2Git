@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.Domain
 {
@@ -23,17 +24,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Domain
   {
     public static TypeWithReference Create ()
     {
-      return ObjectFactory.Create<TypeWithReference> (true).With ();
+      return ObjectFactory.Create<TypeWithReference> (true, ParamList.Empty);
     }
 
     public static TypeWithReference Create (TypeWithReference firstValue, TypeWithReference secondValue)
     {
-      return ObjectFactory.Create<TypeWithReference> (true).With (firstValue, secondValue);
+      return ObjectFactory.Create<TypeWithReference> (true, ParamList.Create (firstValue, secondValue));
     }
 
     public static TypeWithReference Create (string displayName)
     {
-      return ObjectFactory.Create<TypeWithReference> (true).With (displayName);
+      return ObjectFactory.Create<TypeWithReference> (true, ParamList.Create (displayName));
     }
 
     private TypeWithReference _referenceValue;
