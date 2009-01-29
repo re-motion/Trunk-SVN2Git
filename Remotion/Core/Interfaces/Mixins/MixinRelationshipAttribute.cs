@@ -19,6 +19,10 @@ using System.Linq;
 
 namespace Remotion.Mixins
 {
+  /// <summary>
+  /// Acts as a common base class for attributes used in declaratively specifying the mixin configuration by expressing the relationship between a
+  /// mixin and its target class, eg. <see cref="ExtendsAttribute"/>, <see cref="UsesAttribute"/>, <see cref="MixAttribute"/>
+  /// </summary>
   public abstract class MixinRelationshipAttribute : Attribute
   {
     private Type[] _additionalDependencies = Type.EmptyTypes;

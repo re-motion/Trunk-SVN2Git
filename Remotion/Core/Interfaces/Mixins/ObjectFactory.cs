@@ -25,13 +25,13 @@ namespace Remotion.Mixins
   /// </summary>
   /// <remarks>
   /// <para>
-  /// When a target class should be combined with mixins, the target class (and sometimes also the mixin types) cannot be instantiated as
-  /// is. Instead, a concrete type has to be created which incorporates the necessary delegation code, and this type is then instantiated.
-  /// The <see cref="ObjectFactory"/> class provides a simple API to creating and instantiating these mixed types. If a mixed type should be
-  /// created without being instantiated, refer to the <see cref="TypeFactory"/> class.
+  /// When a target class ist combined with mixins, the target class cannot be instantiated by an ordinary constructor call. 
+  /// Instead, a mixed type has to be created first, and this type is then instantiated.
+  /// The <see cref="ObjectFactory"/> class provides a simple API to creating and instantiating mixed types. (To create a mixed type
+  /// without instantiating it, use the <see cref="TypeFactory"/> class.)
   /// </para>
   /// <para>
-  /// The <see cref="ObjectFactory"/> class uses the mixin configuration currently active on the current thread. Use the 
+  /// The <see cref="ObjectFactory"/> class uses the mixin configuration active on the current thread. Use the 
   /// <c>MixinConfiguration</c> class if the configuration needs to be adapted.
   /// </para>
   /// </remarks>
@@ -40,7 +40,7 @@ namespace Remotion.Mixins
   {
     #region Public construction
     /// <summary>
-    /// Creates a mixed instance of the given base type <typeparamref name="T"/> with a public constructor.
+    /// Creates a mixed instance of the given type <typeparamref name="T"/> with a public constructor.
     /// </summary>
     /// <typeparam name="T">The target type a mixed instance of which should be created.</typeparam>
     /// <param name="constructorParameters">A <see cref="ParamList"/> object holding the parameters to be passed to the constructor.</param>
@@ -48,18 +48,25 @@ namespace Remotion.Mixins
     /// of the mixins currently configured with <typeparamref name="T"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>A mixed instance of a type derived from <typeparamref name="T"/>.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
-    /// that make generation of a target class definition object impossible.</para>
-    /// <para>- or -</para><para>The current mixin configuration for 
-    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible.</para></exception>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
-    /// that make generation of a target class definition object impossible.</para>
-    /// <para>- or -</para><para>The current mixin configuration for 
-    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible.</para></exception>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// <para>
-    /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
-    /// to instantiate.
+    /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class to instantiate.
     /// </para>
     /// <para>
     /// -or-
@@ -97,9 +104,22 @@ namespace Remotion.Mixins
     /// of the mixins currently configured with <typeparamref name="T"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>A mixed instance of a type derived from <typeparamref name="T"/>.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
-    /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// <para>
     /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
@@ -115,7 +135,7 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. Note that this means that mixed types might
+    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. This means that mixed types might
     /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
     /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
     /// non-mixed objects with this policy.
@@ -139,9 +159,22 @@ namespace Remotion.Mixins
     /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>A mixed instance of a type derived from <paramref name="targetOrConcreteType"/>.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe configuration problems 
-    /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetOrConcreteType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
@@ -187,9 +220,22 @@ namespace Remotion.Mixins
     /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>A mixed instance of a type derived from <paramref name="targetOrConcreteType"/>.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe configuration problems 
-    /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetOrConcreteType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
@@ -206,7 +252,7 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. Note that this means that mixed types might
+    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. This means that mixed types might
     /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
     /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
     /// non-mixed objects with this policy.
@@ -240,9 +286,22 @@ namespace Remotion.Mixins
     /// of the mixins currently configured with <typeparamref name="T"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>A mixed instance of a type derived from <typeparamref name="T"/>.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
-    /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// <para>
     /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
@@ -286,9 +345,22 @@ namespace Remotion.Mixins
     /// of the mixins currently configured with <typeparamref name="T"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>A mixed instance of a type derived from <typeparamref name="T"/>.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <typeparamref name="T"/> contains severe configuration problems 
-    /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <typeparamref name="T"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// <para>
     /// The base type <typeparamref name="T"/> is an interface and it cannot be determined which class
@@ -304,7 +376,7 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. Note that this means that mixed types might
+    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. This means that mixed types might
     /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
     /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
     /// non-mixed objects with this policy.
@@ -330,9 +402,22 @@ namespace Remotion.Mixins
     /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>A mixed instance of a type derived from <paramref name="targetOrConcreteType"/>.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe configuration problems 
-    /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetOrConcreteType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
@@ -380,9 +465,22 @@ namespace Remotion.Mixins
     /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
     /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
     /// <returns>A mixed instance of a type derived from <paramref name="targetOrConcreteType"/>.</returns>
-    /// <exception cref="Exception"><para>The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe configuration problems 
-    /// that make generation of a target class definition object impossible.</para><para>- or -</para><para>The current mixin configuration for 
-    /// the <paramref name="targetOrConcreteType"/> violates at least one validation rule, which makes code generation impossible.</para> </exception>
+    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
+    /// <para>
+    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
+    /// a mixed type.
+    /// </para>
+    /// </exception>
+    /// <exception cref="Exception">
+    /// <para>
+    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
+    /// target class definition object impossible.
+    /// </para>
+    /// <para>- or -</para>
+    /// <para>
+    /// The constructor of the mixed object threw an exception.
+    /// </para>
+    /// </exception>
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <para>
@@ -399,7 +497,7 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. Note that this means that mixed types might
+    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. This means that mixed types might
     /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
     /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
     /// non-mixed objects with this policy.

@@ -149,6 +149,7 @@
     <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificTypeHandlerWrapper.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificInterfaceHandlerWrapper.cs" />
+    <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationTimer.cs" />
@@ -487,7 +488,7 @@
     <Compile Include="Reflection\MethodCaller.cs" />
     <Compile Include="Reflection\InheritanceHierarchyFilter.cs" />
     <Compile Include="Reflection\TypesafeActivator.cs" />
-    <Compile Include="StandardDelegates.cs" />
+    <Compile Include="Utilities\ActionUtility.cs" />
     <Compile Include="Text\CommandLine\CommandLineArgument.cs">
       <SubType>Code</SubType>
     </Compile>

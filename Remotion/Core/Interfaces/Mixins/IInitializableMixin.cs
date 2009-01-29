@@ -15,6 +15,9 @@
 // 
 namespace Remotion.Mixins
 {
+  /// <summary>
+  /// Denotes a mixin that can be initialized. This interface is used by the infrastructure and should not be applied by user code.
+  /// </summary>
   public interface IInitializableMixin
   {
     void Initialize (object @this, object @base, bool deserialization);

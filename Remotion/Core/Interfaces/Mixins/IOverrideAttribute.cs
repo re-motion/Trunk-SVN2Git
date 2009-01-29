@@ -17,6 +17,9 @@ using System;
 
 namespace Remotion.Mixins
 {
+  /// <summary>
+  /// Common interface for attributes specifying member overrides. This interface is used by the infrastructure and should not be applied by user code.
+  /// </summary>
   public interface IOverrideAttribute
   {
     Type OverriddenType { get; }

@@ -17,16 +17,28 @@ using System;
 
 namespace Remotion.Mixins
 {
+  /// <summary>
+  /// When applied to an interface member, defines the visibility of that member when it is introduced into a mixed type. This overrides the value
+  /// specified via <see cref="MixinRelationshipAttribute.IntroducedMemberVisibility"/>.
+  /// </summary>
   [AttributeUsage (AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Event, AllowMultiple = false, Inherited = false)]
   public class MemberVisibilityAttribute : Attribute
   {
     private readonly MemberVisibility _visibility;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MemberVisibilityAttribute"/> class.
+    /// </summary>
+    /// <param name="visibility">The visibility to be used for the attributed member.</param>
     public MemberVisibilityAttribute (MemberVisibility visibility)
     {
       _visibility = visibility;
     }
 
+    /// <summary>
+    /// Gets the visibility set to be used for the attributed member.
+    /// </summary>
+    /// <value>The visibility to be used.</value>
     public MemberVisibility Visibility
     {
       get { return _visibility; }

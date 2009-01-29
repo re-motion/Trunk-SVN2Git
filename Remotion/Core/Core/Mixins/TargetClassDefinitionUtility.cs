@@ -22,6 +22,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins
 {
+  /// <summary>
+  /// Provides common functionality for retrieving <see cref="TargetClassDefinition"/> metadata objects.
+  /// </summary>
   public class TargetClassDefinitionUtility
   {
     /// <summary>
