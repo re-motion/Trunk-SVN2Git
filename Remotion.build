@@ -32,6 +32,9 @@
   <property name="build.temp.outputdir" value="${build.temp.basedir}/${nant.settings.currentframework}/${project.config}" dynamic="true" />
   <property name="build.test.outputdir" value="${build.temp.basedir}/${nant.settings.currentframework}/tests/${project.config}" dynamic="true" />
   <property name="build.update.assembly-info" value="true" overwrite="false" />
+  <property name="build.temp.root" value="" overwrite="false" />
+  <property name="build.username" value="" overwrite="false" />
+  <property name="build.password" value="" overwrite="false" />
   <property name="doc.targetdir" value="${build.basedir}/${nant.settings.currentframework}/doc" dynamic="true" />
 
   <property name="svn.exe" value="C:\Program Files\Subversion\bin\svn.exe" overwrite="false"/>
