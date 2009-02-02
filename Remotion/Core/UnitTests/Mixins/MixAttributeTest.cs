@@ -26,6 +26,13 @@ namespace Remotion.UnitTests.Mixins
   public class MixAttributeTest
   {
     [Test]
+    public void Default_MixinKind_IsExtending ()
+    {
+      var attribute1 = new MixAttribute (typeof (string), typeof (object));
+      Assert.That (attribute1.MixinKind, Is.EqualTo (MixinKind.Extending));
+    }
+
+    [Test]
     public void Equals_True ()
     {
       var attribute1 = new MixAttribute (typeof (string), typeof (object))

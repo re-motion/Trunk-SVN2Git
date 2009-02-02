@@ -32,12 +32,22 @@ namespace Remotion.Mixins.Samples.Tutorial.T01_Configuration
     {
     }
 
+    public class CarFile : File
+    {
+    }
+
+    public class PersonFile : File
+    {
+    }
+
     [Extends (typeof (File))]
     public class NumberedFileMixin : INumberedFile
     {
+      private readonly string _id = Guid.NewGuid ().ToString();
+      
       public string GetFileNumber ()
       {
-        return Guid.NewGuid ().ToString();
+        return _id;
       }
     }
 

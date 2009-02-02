@@ -81,6 +81,7 @@
       <Link>remotion.snk</Link>
     </None>
     <Compile Include="Tutorial\T01_Configuration\ExtendsSamples.cs" />
+    <Compile Include="Tutorial\T01_Configuration\MixSamples.cs" />
     <Compile Include="Tutorial\T01_Configuration\UsesSamples.cs" />
     <Compile Include="UnitTests\Aktology\AktenTest.cs" />
     <Compile Include="UnitTests\DisposableMixinTest.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="UnitTests\PhotoStuff\Variant2.cs" />
     <Compile Include="UnitTests\PhotoStuff\Variant1.cs" />
     <Compile Include="UnitTests\Tutorial\T01_Configuration\ExtendsSamplesTest.cs" />
+    <Compile Include="UnitTests\Tutorial\T01_Configuration\MixSamplesTest.cs" />
     <Compile Include="UnitTests\Tutorial\T01_Configuration\UsesSamplesTest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -13,23 +13,51 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this framework; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-using Remotion.Mixins.Samples.Tutorial.T01_Configuration;
-using Remotion.Mixins.Samples.Tutorial.T01_Configuration.UsesSamples;
-using Remotion.Reflection;
 
-namespace Remotion.Mixins.Samples.UnitTests.Tutorial.T01_Configuration
+using System;
+using Remotion.Mixins;
+using Remotion.Mixins.Samples.Tutorial.T01_Configuration.MixSamples;
+
+[assembly: Mix (typeof (MyClass), typeof (MyMixin))]
+[assembly: Mix (typeof (File), typeof (IdentifiedObjectMixin))]
+
+namespace Remotion.Mixins.Samples.Tutorial.T01_Configuration
 {
-  [TestFixture]
-  public class UsesSamplesTest
+  namespace MixSamples
   {
-    [Test]
-    public void MyCloneableClass_IsICloneable ()
+    public class MyMixin
     {
-      var instance = ObjectFactory.Create<MyCloneableClass> (ParamList.Empty);
-      Assert.That (instance, Is.InstanceOfType (typeof (ICloneable)));
+    }
+
+    public class MyClass
+    {
+    }
+
+    public class File
+    {
+    }
+
+    public class CarFile : File
+    {
+    }
+
+    public class PersonFile : File
+    {
+    }
+
+    public class IdentifiedObjectMixin : IIdentifiedObject
+    {
+      private readonly string _id = Guid.NewGuid ().ToString ();
+
+      public string GetObjectID ()
+      {
+        return _id;
+      }
+    }
+
+    public interface IIdentifiedObject
+    {
+      string GetObjectID ();
     }
   }
 }

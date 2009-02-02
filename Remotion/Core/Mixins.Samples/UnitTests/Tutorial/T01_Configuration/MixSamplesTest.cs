@@ -16,20 +16,24 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Mixins.Samples.Tutorial.T01_Configuration;
-using Remotion.Mixins.Samples.Tutorial.T01_Configuration.UsesSamples;
+using Remotion.Mixins.Samples.Tutorial.T01_Configuration.MixSamples;
 using Remotion.Reflection;
 
 namespace Remotion.Mixins.Samples.UnitTests.Tutorial.T01_Configuration
 {
   [TestFixture]
-  public class UsesSamplesTest
+  public class MixSamplesTest
   {
     [Test]
-    public void MyCloneableClass_IsICloneable ()
+    public void File_HasID ()
     {
-      var instance = ObjectFactory.Create<MyCloneableClass> (ParamList.Empty);
-      Assert.That (instance, Is.InstanceOfType (typeof (ICloneable)));
+      var numberedFile = (IIdentifiedObject) ObjectFactory.Create<File> (ParamList.Empty);
+      var numberedCarFile = (IIdentifiedObject) ObjectFactory.Create<CarFile> (ParamList.Empty);
+      var numberedPersonFile = (IIdentifiedObject) ObjectFactory.Create<PersonFile> (ParamList.Empty);
+
+      Assert.That (numberedFile.GetObjectID(), NUnit.Framework.SyntaxHelpers.Text.Matches ("........-....-....-....-............"));
+      Assert.That (numberedCarFile.GetObjectID(), NUnit.Framework.SyntaxHelpers.Text.Matches ("........-....-....-....-............"));
+      Assert.That (numberedPersonFile.GetObjectID(), NUnit.Framework.SyntaxHelpers.Text.Matches ("........-....-....-....-............"));
     }
   }
 }

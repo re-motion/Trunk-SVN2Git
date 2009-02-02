@@ -36,7 +36,6 @@ namespace Remotion.Mixins
   {
     private readonly Type _targetType;
     private readonly Type _mixinType;
-    private MixinKind _mixinKind;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MixAttribute"/> class.
@@ -50,14 +49,11 @@ namespace Remotion.Mixins
     }
 
     /// <summary>
-    /// Gets or sets the kind of relationship between the mixin and its target class. For more information see <see cref="Mixins.MixinKind"/>.
+    /// Gets or sets the kind of relationship between the mixin and its target class. For more information see <see cref="Mixins.MixinKind"/>. If not
+    /// explicitly specified, <see cref="Mixins.MixinKind.Extending"/> is assumed.
     /// </summary>
     /// <value>The mixin kind.</value>
-    public MixinKind MixinKind
-    {
-      get { return _mixinKind; }
-      set { _mixinKind = value; }
-    }
+    public MixinKind MixinKind { get; set; }
 
 
     /// <summary>
