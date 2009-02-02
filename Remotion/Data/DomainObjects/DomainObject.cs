@@ -243,8 +243,9 @@ namespace Remotion.Data.DomainObjects
     {
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
       PerformConstructorCheck ();
-      Type publicDomainObjectType = GetPublicDomainObjectType();
 // ReSharper restore DoNotCallOverridableMethodsInConstructor
+
+      Type publicDomainObjectType = GetPublicDomainObjectType ();
 
       ClientTransactionScope.CurrentTransaction.TransactionEventSink.NewObjectCreating (publicDomainObjectType, this);
       DataContainer firstDataContainer = ClientTransactionScope.CurrentTransaction.CreateNewDataContainer (publicDomainObjectType);
@@ -481,7 +482,7 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Implements the functionality required by <see cref="GetPublicDomainObjectType"/>. This is a separate method to avoid having to make the 
-    /// virtual call in the constructor.
+    /// virtual call in the constructor. The implementation of this class must expect calls from the constructor of a base class.
     /// </summary>
     /// <returns>The public type representation of this domain object.</returns>
     /// <remarks>A domain object should override this method if it wants to impersonate one of its base types. The framework will handle this object
