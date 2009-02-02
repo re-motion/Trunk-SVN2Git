@@ -118,7 +118,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       {
         //TODO COMMONS-783: Test exception
         if (defaultStorageProviderDefinition == null)
-          throw new InvalidOperationException ("Missing default storage provider.\r\nFile: " + ConfigurationFile);
+          throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException ("File: " + ConfigurationFile);
         return defaultStorageProviderDefinition.Name;
       }
 
@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.XmlBasedConfigurationL
       {
         //TODO COMMONS-783: Test exception
         if (defaultStorageProviderDefinition == null)
-          throw new InvalidOperationException ("Missing default storage provider.\r\nFile: " + ConfigurationFile);
+          throw DomainObjectsConfiguration.Current.Storage.CreateMissingDefaultProviderException ("File: " + ConfigurationFile);
         return defaultStorageProviderDefinition.Name;
       }
       return storageGroup.StorageProviderName;

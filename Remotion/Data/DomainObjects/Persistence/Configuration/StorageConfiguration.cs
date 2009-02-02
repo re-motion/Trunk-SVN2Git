@@ -83,6 +83,40 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       _providerHelpers.ForEach (current => current.PostDeserialze());
     }
 
+    public ConfigurationException CreateMissingDefaultProviderException (string context)
+    {
+      return new ConfigurationException (
+          "Missing default storage provider. " 
+          + context 
+          + Environment.NewLine
+          + "Please add an application or Web configuration file to your application, declare the "
+          + "remotion.data.domainObjects section group, and add the storage element to configure the default storage provider. Alternatively, "
+          + "explicitly assign all storage groups and queries to specific storage providers." 
+          + Environment.NewLine + Environment.NewLine
+          + "Configuration File Example:" 
+          + Environment.NewLine +
+          @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<configuration>
+  <configSections>
+    <sectionGroup name=""remotion.data.domainObjects"" type=""Remotion.Data.DomainObjects.Configuration.DomainObjectsConfiguration, Remotion.Data.DomainObjects"">
+      <section name=""storage"" type=""Remotion.Data.DomainObjects.Persistence.Configuration.StorageConfiguration, Remotion.Data.DomainObjects"" />
+    </sectionGroup>
+  </configSections>
+
+  <remotion.data.domainObjects xmlns=""http://www.re-motion.org/Data/DomainObjects/Configuration/2.0"">
+    <storage defaultProviderDefinition=""Default"">
+      <providerDefinitions>
+        <add type=""Remotion.Data.DomainObjects::Persistence.Rdbms.RdbmsProviderDefinition"" name=""Default"" providerType=""Remotion.Data.DomainObjects::Persistence.Rdbms.SqlProvider"" connectionString=""DefaultConnection"" />
+      </providerDefinitions>
+    </storage>
+  </remotion.data.domainObjects>
+
+  <connectionStrings>
+    <add name=""DefaultConnection"" connectionString=""Integrated Security=SSPI;Initial Catalog=TestDatabase;Data Source=localhost"" />
+  </connectionStrings>
+</configuration>");
+    }
+
     protected override ConfigurationPropertyCollection Properties
     {
       get { return _properties; }
