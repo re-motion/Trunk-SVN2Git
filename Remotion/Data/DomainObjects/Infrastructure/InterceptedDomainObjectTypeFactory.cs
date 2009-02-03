@@ -17,16 +17,14 @@ using System;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection;
 using Remotion.Utilities;
-using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
   /// Provides functionality for creating instances of DomainObjects which intercept property calls.
   /// </summary>
-  public class InterceptedDomainObjectFactory : IDomainObjectFactory
+  public class InterceptedDomainObjectTypeFactory
   {
     private struct CodeGenerationKeys
     {
@@ -47,19 +45,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private readonly InterlockedCache<CodeGenerationKeys, Type> _typeCache = new InterlockedCache<CodeGenerationKeys, Type> ();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InterceptedDomainObjectFactory"/> class.
+    /// Initializes a new instance of the <see cref="InterceptedDomainObjectTypeFactory"/> class.
     /// </summary>
-    public InterceptedDomainObjectFactory ()
+    public InterceptedDomainObjectTypeFactory ()
         : this (Environment.CurrentDirectory)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InterceptedDomainObjectFactory"/> class.
+    /// Initializes a new instance of the <see cref="InterceptedDomainObjectTypeFactory"/> class.
     /// </summary>
     /// <param name="assemblyDirectory">The directory to save the generated assemblies to. This directory is only used when
     /// <see cref="SaveGeneratedAssemblies"/> is used.</param>
-    public InterceptedDomainObjectFactory (string assemblyDirectory)
+    public InterceptedDomainObjectTypeFactory (string assemblyDirectory)
     {
       _scope = new ModuleManager (assemblyDirectory);
     }
@@ -118,6 +116,36 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return GetConcreteDomainObjectType(baseTypeClassDefinition, concreteBaseType, "baseTypeClassDefinition");
     }
 
+    /// <summary>
+    /// Checkes whether a given domain object type was created by this factory implementation (but not necessarily the same factory instance).
+    /// </summary>
+    /// <param name="type">The type to be checked.</param>
+    /// <returns>True if <paramref name="type"/> was created by an instance of the <see cref="InterceptedDomainObjectTypeFactory"/>; false otherwise.</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="type"/> parameter was null.</exception>
+    public bool WasCreatedByFactory (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      return typeof (IInterceptedDomainObject).IsAssignableFrom (type);
+    }
+
+    /// <summary>
+    /// Prepares an instance which has not been created via an ordinary constructor callfor use.
+    /// </summary>
+    /// <param name="instance">The instance to be prepared</param>
+    /// <exception cref="ArgumentNullException">The <paramref name="instance"/> argument is null.</exception>
+    /// <exception cref="ArgumentException"><paramref name="instance"/> is not of a type created by this kind of factory.</exception>
+    public void PrepareUnconstructedInstance (DomainObject instance)
+    {
+      ArgumentUtility.CheckNotNull ("instance", instance);
+      Type type = ((object)instance).GetType ();
+      if (!WasCreatedByFactory (type))
+        throw new ArgumentException (
+            string.Format ("The domain object's type {0} was not created by InterceptedDomainObjectTypeFactory.GetConcreteDomainObjectType.",
+              type.FullName), "instance");
+
+      DomainObjectMixinCodeGenerationBridge.PrepareUnconstructedInstance (instance);
+    }
+
     private Type GetConcreteDomainObjectType (ClassDefinition baseTypeClassDefinition, Type concreteBaseType, string argumentNameForExceptions)
     {
       if (baseTypeClassDefinition.IsAbstract)
@@ -143,36 +171,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       TypeGenerator generator = _scope.CreateTypeGenerator (codeGenerationData.PublicDomainObjectType, codeGenerationData.TypeToDeriveFrom);
       return generator.BuildType ();
-    }
-
-    /// <summary>
-    /// Checkes whether a given domain object type was created by this factory implementation (but not necessarily the same factory instance).
-    /// </summary>
-    /// <param name="type">The type to be checked.</param>
-    /// <returns>True if <paramref name="type"/> was created by an instance of the <see cref="InterceptedDomainObjectFactory"/>; false otherwise.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="type"/> parameter was null.</exception>
-    public bool WasCreatedByFactory (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      return typeof (IInterceptedDomainObject).IsAssignableFrom (type);
-    }
-
-    /// <summary>
-    /// Prepares an instance which has not been created via an ordinary constructor callfor use.
-    /// </summary>
-    /// <param name="instance">The instance to be prepared</param>
-    /// <exception cref="ArgumentNullException">The <paramref name="instance"/> argument is null.</exception>
-    /// <exception cref="ArgumentException"><paramref name="instance"/> is not of a type created by this kind of factory.</exception>
-    public void PrepareUnconstructedInstance (DomainObject instance)
-    {
-      ArgumentUtility.CheckNotNull ("instance", instance);
-      Type type = ((object)instance).GetType ();
-      if (!WasCreatedByFactory (type))
-        throw new ArgumentException (
-            string.Format ("The domain object's type {0} was not created by InterceptedDomainObjectFactory.GetConcreteDomainObjectType.",
-              type.FullName), "instance");
-
-      DomainObjectMixinCodeGenerationBridge.PrepareUnconstructedInstance (instance);
     }
   }
 }

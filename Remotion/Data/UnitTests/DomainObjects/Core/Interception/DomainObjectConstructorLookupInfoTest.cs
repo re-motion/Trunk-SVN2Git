@@ -16,7 +16,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
   [TestFixture]
   public class DomainObjectConstructorLookupInfoTest : ClientTransactionBaseTest
   {
-    public InterceptedDomainObjectFactory Factory
+    public InterceptedDomainObjectTypeFactory Factory
     {
       get { return SetUpFixture.Factory; }
     }

@@ -17,7 +17,6 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Reflection.CodeGeneration;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Mixins;
 using Remotion.Utilities;
@@ -68,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
       
-      IMixinTarget instanceAsMixinTarget = instance as IMixinTarget;
+      var instanceAsMixinTarget = instance as IMixinTarget;
       if (instanceAsMixinTarget != null)
         TypeFactory.InitializeUnconstructedInstance (instanceAsMixinTarget);
     }
@@ -89,16 +88,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       bool containsMixins = info.GetBoolean ("IsMixed");
       if (!containsMixins)
       {
-        Type concreteType = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (publicDomainObjectType);
+        Type concreteType = InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (publicDomainObjectType);
         objectReference = new DummyObjectReference (concreteType, info, context);
       }
       else
       {
         ClassDefinition baseTypeClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (publicDomainObjectType);
-        Func<Type, Type> transformer = delegate (Type mixedType)
-        {
-          return DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (baseTypeClassDefinition, mixedType);
-        };
+        Func<Type, Type> transformer =
+            mixedType => InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (baseTypeClassDefinition, mixedType);
 
         objectReference = Mixins.CodeGeneration.ConcreteTypeBuilder.Current.BeginDeserialization (transformer, info, context);
       }
@@ -129,12 +126,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private static void NotifyDomainObjectMixins (DomainObject instance, Action<IDomainObjectMixin> notifier)
     {
-      IMixinTarget instanceAsMixinTarget = instance as IMixinTarget;
+      var instanceAsMixinTarget = instance as IMixinTarget;
       if (instanceAsMixinTarget != null)
       {
         foreach (object mixin in instanceAsMixinTarget.Mixins)
         {
-          IDomainObjectMixin mixinAsDomainObjectMixin = mixin as IDomainObjectMixin;
+          var mixinAsDomainObjectMixin = mixin as IDomainObjectMixin;
           if (mixinAsDomainObjectMixin != null)
             notifier (mixinAsDomainObjectMixin);
         }

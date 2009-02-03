@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [ExpectedException (typeof (ArgumentTypeException))]
     public void NonDomainCannotBeInstantiated ()
     {
-      DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (NonInstantiableNonDomainClass));
+      InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (NonInstantiableNonDomainClass));
     }
 
     [Test]
@@ -403,7 +403,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
     private bool WasCreatedByFactory (object o)
     {
-      return DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.WasCreatedByFactory (o.GetType ());
+      return InterceptedDomainObjectCreator.Instance.Factory.WasCreatedByFactory (o.GetType ());
     }
   }
 }

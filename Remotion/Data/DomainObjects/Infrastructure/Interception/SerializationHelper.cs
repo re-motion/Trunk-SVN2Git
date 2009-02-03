@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       _baseMemberValues = (object[]) info.GetValue ("baseMemberValues", typeof (object[]));
       _publicDomainObjectType = ContextAwareTypeDiscoveryUtility.GetType (publicDomainObjectTypeName, true);
 
-      IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
+      var factory = InterceptedDomainObjectCreator.Instance.Factory;
 
       // Usually, instantiate a deserialized object using GetSafeUninitializedObject.
       // However, _baseMemberValues being null means that the object itself manages its member deserialization via ISerializable. In such a case, we

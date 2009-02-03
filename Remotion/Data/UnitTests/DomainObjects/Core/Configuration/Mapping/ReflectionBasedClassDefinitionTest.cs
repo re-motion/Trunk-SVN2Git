@@ -19,6 +19,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -878,10 +879,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     [Test]
     public void CreatorIsFactoryBasedCreator ()
     {
-      object creatorInstance = PrivateInvoke.GetPublicStaticField (
-          typeof (ReflectionBasedClassDefinition).Assembly.GetType ("Remotion.Data.DomainObjects.Infrastructure.FactoryBasedDomainObjectCreator", true),
-          "Instance");
-      Assert.AreEqual (creatorInstance, _orderClass.GetDomainObjectCreator());
+      Assert.AreEqual (InterceptedDomainObjectCreator.Instance, _orderClass.GetDomainObjectCreator());
     }
 
     [Test]

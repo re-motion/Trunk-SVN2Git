@@ -26,15 +26,18 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Creates new domain object instances via the <see cref="InterceptedDomainObjectFactory"/>.
+  /// Creates new domain object instances via the <see cref="InterceptedDomainObjectTypeFactory"/>.
   /// </summary>
-  public class FactoryBasedDomainObjectCreator : IDomainObjectCreator
+  public class InterceptedDomainObjectCreator : IDomainObjectCreator
   {
-    public static readonly FactoryBasedDomainObjectCreator Instance = new FactoryBasedDomainObjectCreator ();
+    public static readonly InterceptedDomainObjectCreator Instance = new InterceptedDomainObjectCreator ();
 
-    private FactoryBasedDomainObjectCreator ()
+    private InterceptedDomainObjectCreator ()
     {
+      Factory = new InterceptedDomainObjectTypeFactory ();
     }
+
+    public InterceptedDomainObjectTypeFactory Factory { get; set; }
 
     public DomainObject CreateWithDataContainer (DataContainer dataContainer)
     {
@@ -42,11 +45,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       dataContainer.ClassDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
 
-      IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
-      Type concreteType = factory.GetConcreteDomainObjectType(dataContainer.DomainObjectType);
+      Type concreteType = Factory.GetConcreteDomainObjectType(dataContainer.DomainObjectType);
 
       var instance = (DomainObject) FormatterServices.GetSafeUninitializedObject (concreteType);
-      factory.PrepareUnconstructedInstance (instance);
+      Factory.PrepareUnconstructedInstance (instance);
       dataContainer.SetDomainObject (instance);
       instance.Initialize (dataContainer.ID, dataContainer.ClientTransaction);
       return instance;
@@ -59,8 +61,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType);
       classDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
 
-      IDomainObjectFactory factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
-      Type concreteType = factory.GetConcreteDomainObjectType (domainObjectType);
+      Type concreteType = Factory.GetConcreteDomainObjectType (domainObjectType);
       return new DomainObjectConstructorLookupInfo (domainObjectType, concreteType, 
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }

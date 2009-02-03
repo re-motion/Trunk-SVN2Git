@@ -56,28 +56,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
 
       Assert.IsInstanceOfType (typeof (MappingReflector), _configuration.CreateMappingLoader());
     }
-
-    [Test]
-    public void Deserialize_WithCustomDomainObjectFactory ()
-    {
-      string xmlFragment =
-          @"<mapping>
-            <domainObjectFactory type=""Remotion.Data.UnitTests::DomainObjects.Core.Configuration.Mapping.FakeDomainObjectFactory""/>
-          </mapping>";
-
-      ConfigurationHelper.DeserializeSection (_configuration, xmlFragment);
-
-      Assert.IsInstanceOfType (typeof (FakeDomainObjectFactory), _configuration.DomainObjectFactory);
-    }
-
-    [Test]
-    public void Deserialize_WithDefaultDomainObjectFactory()
-    {
-      string xmlFragment = @"<mapping />";
-
-      ConfigurationHelper.DeserializeSection (_configuration, xmlFragment);
-
-      Assert.IsInstanceOfType (typeof (InterceptedDomainObjectFactory), _configuration.DomainObjectFactory);
-    }
   }
 }

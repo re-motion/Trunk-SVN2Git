@@ -18,11 +18,9 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
-using Remotion.Data.UnitTests.DomainObjects.Core.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
@@ -963,7 +961,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Initialize_WithEmptyHull_SetsID ()
     {
-      var type = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (OrderItem));
+      var type = InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (OrderItem));
       var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
       orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
 
@@ -973,7 +971,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Initialize_WithEmptyHull_EnlistsObject ()
     {
-      var type = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (OrderItem));
+      var type = InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (OrderItem));
       var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
       orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);
 
@@ -984,7 +982,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void Initialize_WithEmptyHull_TriggersEvent ()
     {
-      var type = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (OrderItem));
+      var type = InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (OrderItem));
       var orderItem = (OrderItem) FormatterServices.GetSafeUninitializedObject (type);
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();

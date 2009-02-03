@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     private SerializableClassImplementingISerializableNotCallingBaseCtor _serializableInstanceImplementingISerializableNotCallingBaseCtor;
     private SerializableClassImplementingISerializableNotCallingBaseGetObjectData _serializableInstanceImplementingISerializableNotCallingGetObjectData;
 
-    public InterceptedDomainObjectFactory Factory
+    public InterceptedDomainObjectTypeFactory Factory
     {
       get { return SetUpFixture.Factory; }
     }
@@ -195,7 +195,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstance, true);
       var helper = new SerializationHelper (_info, _context);
-      Assert.AreSame (DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory.GetConcreteDomainObjectType (typeof (SerializableClass)),
+      Assert.AreSame (InterceptedDomainObjectCreator.Instance.Factory.GetConcreteDomainObjectType (typeof (SerializableClass)),
           helper.GetRealObject (_context).GetType ());
     }
   }

@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       get { return SetUpFixture.AssemblyDirectory; }
     }
 
-    private InterceptedDomainObjectFactory Factory
+    private InterceptedDomainObjectTypeFactory Factory
     {
       get { return SetUpFixture.Factory; }
     }
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     public void EachGeneratedTypeHasDifferentName ()
     {
       Type type1 = CreateTypeGenerator (typeof (DOWithVirtualProperties)).BuildType();
-      Type type2 = new InterceptedDomainObjectFactory(Environment.CurrentDirectory).GetConcreteDomainObjectType (typeof (DOWithVirtualProperties));
+      Type type2 = new InterceptedDomainObjectTypeFactory(Environment.CurrentDirectory).GetConcreteDomainObjectType (typeof (DOWithVirtualProperties));
       Assert.AreNotSame (type1, type2);
       Assert.AreNotEqual (type1.Name, type2.Name);
     }

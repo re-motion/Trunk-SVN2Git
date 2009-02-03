@@ -110,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     public override IDomainObjectCreator GetDomainObjectCreator ()
     {
-      return FactoryBasedDomainObjectCreator.Instance;
+      return InterceptedDomainObjectCreator.Instance;
     }
   }
 }

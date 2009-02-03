@@ -25,13 +25,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
   public class SetUpFixture
   {
     private static string s_assemblyDirectory;
-    private static InterceptedDomainObjectFactory s_factory;
+    private static InterceptedDomainObjectTypeFactory s_factory;
 
     [SetUp]
     public void SetUp()
     {
       s_assemblyDirectory = Path.Combine (Environment.CurrentDirectory, "Interception.TestDlls");
-      s_factory = new InterceptedDomainObjectFactory (s_assemblyDirectory);
+      s_factory = new InterceptedDomainObjectTypeFactory (s_assemblyDirectory);
     }
 
     [TearDown]
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       }
     }
 
-    public static InterceptedDomainObjectFactory Factory
+    public static InterceptedDomainObjectTypeFactory Factory
     {
       get
       {

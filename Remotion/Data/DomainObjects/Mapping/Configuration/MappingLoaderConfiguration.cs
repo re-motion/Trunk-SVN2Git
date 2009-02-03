@@ -29,7 +29,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration
     private readonly ConfigurationProperty _mappingLoaderProperty;
 
     private readonly ConfigurationProperty _domainObjectFactoryProperty;
-    private readonly DoubleCheckedLockingContainer<IDomainObjectFactory> _domainObjectFactory;
 
     public MappingLoaderConfiguration()
     {
@@ -39,16 +38,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration
           null,
           ConfigurationPropertyOptions.None);
 
-      _domainObjectFactory =
-          new DoubleCheckedLockingContainer<IDomainObjectFactory> (delegate { return DomainObjectFactoryElement.CreateInstance(); });
-      _domainObjectFactoryProperty = new ConfigurationProperty (
-          "domainObjectFactory",
-          typeof (TypeElement<IDomainObjectFactory, InterceptedDomainObjectFactory>),
-          null,
-          ConfigurationPropertyOptions.None);
-
       _properties.Add (_mappingLoaderProperty);
-      _properties.Add (_domainObjectFactoryProperty);
     }
 
     protected override ConfigurationPropertyCollection Properties
@@ -70,17 +60,6 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration
     protected TypeElement<IMappingLoader> MappingLoaderElement
     {
       get { return (TypeElement<IMappingLoader>) this[_mappingLoaderProperty]; }
-    }
-
-    public IDomainObjectFactory DomainObjectFactory
-    {
-      get { return _domainObjectFactory.Value; }
-      set { _domainObjectFactory.Value = value; }
-    }
-
-    protected TypeElement<IDomainObjectFactory> DomainObjectFactoryElement
-    {
-      get { return (TypeElement<IDomainObjectFactory>) this[_domainObjectFactoryProperty]; }
     }
   }
 }

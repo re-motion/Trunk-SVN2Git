@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
       get { return SetUpFixture.AssemblyDirectory; }
     }
 
-    public InterceptedDomainObjectFactory Factory
+    public InterceptedDomainObjectTypeFactory Factory
     {
       get { return SetUpFixture.Factory; }
     }
@@ -181,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The domain object's type Remotion.Data.UnitTests.DomainObjects.Core.Interception."
         + "TestDomain.DirectlyInstantiableDO was not created by "
-        + "InterceptedDomainObjectFactory.GetConcreteDomainObjectType.\r\nParameter name: instance")]
+        + "InterceptedDomainObjectTypeFactory.GetConcreteDomainObjectType.\r\nParameter name: instance")]
     public void PrepareUnconstructedInstanceThrowsOnTypeNotCreatedByFactory ()
     {
       Factory.PrepareUnconstructedInstance (new DirectlyInstantiableDO());

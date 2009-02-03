@@ -240,7 +240,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectTransactionContextIndexerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectTransactionContextTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectCheckUtilityTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\FactoryBasedDomainObjectCreatorTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\InterceptedDomainObjectCreatorTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransaction.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PropertyTest.cs" />
@@ -361,7 +361,6 @@
     </Compile>
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyReflectorTests\StringProperty.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\PropertyReflectorTests\ValueTypes.cs" />
-    <Compile Include="DomainObjects\Core\Configuration\Mapping\FakeDomainObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\FakeMappingLoader.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MappingLoaderConfigurationTest.cs" />
     <Compile Include="DomainObjects\Core\Configuration\Mapping\MappingReflectorTest.cs" />

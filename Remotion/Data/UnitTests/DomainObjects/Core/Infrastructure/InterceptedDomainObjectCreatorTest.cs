@@ -5,8 +5,6 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
@@ -19,15 +17,15 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class FactoryBasedDomainObjectCreatorTest : ClientTransactionBaseTest
+  public class InterceptedDomainObjectCreatorTest : ClientTransactionBaseTest
   {
     [Test]
     public void CreateWithDataContainer_UsesFactoryGeneratedType ()
     {
       var dataContainer = CreateDataContainer (typeof (Order));
-      var order = FactoryBasedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
+      var order = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
       Assert.That (order, Is.InstanceOfType (typeof (Order)));
-      var factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
+      var factory = InterceptedDomainObjectCreator.Instance.Factory;
       Assert.That (factory.WasCreatedByFactory ((((object) order).GetType ())), Is.True);
     }
 
@@ -35,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateWithDataContainer_CallsNoCtor ()
     {
       var dataContainer = CreateDataContainer (typeof (Order));
-      var order = (Order) FactoryBasedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
+      var order = (Order) InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
       Assert.That (order.CtorCalled, Is.False);
     }
 
@@ -43,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateWithDataContainer_PreparesMixins ()
     {
       var dataContainer = CreateDataContainer (typeof (TargetClassForPersistentMixin));
-      var instance = FactoryBasedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
+      var instance = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
       Assert.That (Mixin.Get <MixinAddingPersistentProperties>(instance), Is.Not.Null);
     }
 
@@ -51,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateWithDataContainer_SetsDataContainerDomainObject ()
     {
       var dataContainer = CreateDataContainer (typeof (Order));
-      var instance = FactoryBasedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
+      var instance = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
       Assert.That (dataContainer.DomainObject, Is.SameAs (instance));
     }
 
@@ -59,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateWithDataContainer_InitializesDomainObject ()
     {
       var dataContainer = CreateDataContainer (typeof (Order));
-      var instance = FactoryBasedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
+      var instance = InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
       Assert.That (instance.ID, Is.EqualTo(dataContainer.ID));
     }
 
@@ -70,29 +68,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var dataContainer = CreateDataContainer (typeof (TargetClassForPersistentMixin));
       using (MixinConfiguration.BuildNew ().EnterScope ())
       {
-        FactoryBasedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
+        InterceptedDomainObjectCreator.Instance.CreateWithDataContainer (dataContainer);
       }
     }
 
     [Test]
     public void GetConstructorLookupInfo_UsesFactoryGeneratedType ()
     {
-      var info = FactoryBasedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
-      var factory = DomainObjectsConfiguration.Current.MappingLoader.DomainObjectFactory;
+      var info = InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
+      var factory = InterceptedDomainObjectCreator.Instance.Factory;
       Assert.That (factory.WasCreatedByFactory (info.DefiningType), Is.True);
     }
 
     [Test]
     public void GetConstructorLookupInfo_SpecifiesCorrectPublicType ()
     {
-      var info = (DomainObjectConstructorLookupInfo) FactoryBasedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
+      var info = (DomainObjectConstructorLookupInfo) InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
       Assert.That (info.PublicDomainObjectType, Is.EqualTo (typeof (Order)));
     }
 
     [Test]
     public void GetConstructorLookupInfo_BindingFlags ()
     {
-      var info = FactoryBasedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
+      var info = InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
       Assert.That (info.BindingFlags, Is.EqualTo (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
     }
 
@@ -102,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       using (MixinConfiguration.BuildNew ().EnterScope ())
       {
-        FactoryBasedDomainObjectCreator.Instance.GetConstructorLookupInfo(typeof (TargetClassForPersistentMixin));
+        InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo(typeof (TargetClassForPersistentMixin));
       }
     }
 

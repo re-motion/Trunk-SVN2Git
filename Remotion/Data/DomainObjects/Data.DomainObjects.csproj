@@ -229,7 +229,7 @@
     <Compile Include="Infrastructure\DomainObjectMixinCodeGenerationBridge.cs" />
     <Compile Include="Infrastructure\ExtensionClientTransactionListener.cs" />
     <Compile Include="Infrastructure\IClientTransactionListener.cs" />
-    <Compile Include="Infrastructure\InterceptedDomainObjectFactory.cs" />
+    <Compile Include="Infrastructure\InterceptedDomainObjectTypeFactory.cs" />
     <Compile Include="Infrastructure\Interception\IInterceptedDomainObject.cs" />
     <Compile Include="Infrastructure\Interception\InterceptedPropertyCollector.cs" />
     <Compile Include="Infrastructure\Interception\SerializationHelper.cs" />
@@ -294,9 +294,8 @@
     <Compile Include="Configuration\DomainObjectsConfiguration.cs" />
     <Compile Include="ObjectList.cs" />
     <Compile Include="Infrastructure\IDomainObjectCreator.cs" />
-    <Compile Include="Infrastructure\IDomainObjectFactory.cs" />
     <Compile Include="Mapping\Configuration\MappingLoaderConfiguration.cs" />
-    <Compile Include="Infrastructure\FactoryBasedDomainObjectCreator.cs" />
+    <Compile Include="Infrastructure\InterceptedDomainObjectCreator.cs" />
     <Compile Include="Persistence\Configuration\StorageConfiguration.cs" />
     <Compile Include="Persistence\Configuration\StorageProviderDefinitionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
