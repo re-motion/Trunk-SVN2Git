@@ -643,7 +643,7 @@
     <Compile Include="Mixins\UnvalidatedDefinitionBuilder.cs" />
     <Compile Include="Mixins\Utilities\DependencySortTest.cs" />
     <Compile Include="Mixins\Utilities\GenericTypeInstantiatorTest.cs" />
-    <Compile Include="Mixins\Utilities\MixedObjectInstantiatorTest.cs" />
+    <Compile Include="Mixins\Utilities\ObjectFactoryImplementationTest.cs" />
     <Compile Include="Mixins\Utilities\MixedTypeConstructorLookupInfoTest.cs" />
     <Compile Include="Mixins\Utilities\MixinTypeInstantiatorTest.cs" />
     <Compile Include="Mixins\Utilities\NameAndSignatureEqualityComparerTest.cs" />

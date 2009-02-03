@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.Interfaces.Implementation
     [Test]
     public void Retrieve_FromRootAssembly ()
     {
-      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (new Assembly[] {typeof (MixedObjectInstantiator).Assembly});
+      FrameworkVersionRetriever retriever = new FrameworkVersionRetriever (new Assembly[] {typeof (ObjectFactoryImplementation).Assembly});
       Assert.AreEqual (typeof (INullObject).Assembly.GetName().Version, retriever.RetrieveVersion());
     }
 

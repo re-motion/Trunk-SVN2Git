@@ -22,7 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.BridgeImplementations
 {
-  public class MixedObjectInstantiator : IMixedObjectInstantiator
+  public class ObjectFactoryImplementation : IObjectFactoryImplementation
   {
     public Type ResolveType (Type baseType)
     {

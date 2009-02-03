@@ -514,7 +514,7 @@ namespace Remotion.Mixins
     /// </remarks>
     public static object Create (bool allowNonPublicConstructors, Type targetOrConcreteType, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
     {
-      return VersionDependentImplementationBridge<IMixedObjectInstantiator>.Implementation
+      return VersionDependentImplementationBridge<IObjectFactoryImplementation>.Implementation
           .CreateInstance (allowNonPublicConstructors, targetOrConcreteType, constructorParameters, generationPolicy, preparedMixins);
     }
     #endregion

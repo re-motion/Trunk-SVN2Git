@@ -379,7 +379,7 @@
     <Compile Include="Mixins\Utilities\GenericTypeInstantiator.cs" />
     <Compile Include="Mixins\Utilities\MethodNameAndSignatureEqualityComparer.cs" />
     <Compile Include="Mixins\Utilities\MethodSignatureEqualityComparer.cs" />
-    <Compile Include="Mixins\BridgeImplementations\MixedObjectInstantiator.cs" />
+    <Compile Include="Mixins\BridgeImplementations\ObjectFactoryImplementation.cs" />
     <Compile Include="Mixins\Utilities\MixedTypeConstructorLookupInfo.cs" />
     <Compile Include="Mixins\BridgeImplementations\MixinImplementation.cs" />
     <Compile Include="Mixins\Utilities\MixinReflector.cs" />

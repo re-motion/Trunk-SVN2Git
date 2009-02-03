@@ -72,7 +72,7 @@
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Mixins\AcceptsAlphabeticOrderingAttribute.cs" />
-    <Compile Include="Mixins\BridgeInterfaces\IMixedObjectInstantiator.cs" />
+    <Compile Include="Mixins\BridgeInterfaces\IObjectFactoryImplementation.cs" />
     <Compile Include="Mixins\CompleteInterfaceAttribute.cs" />
     <Compile Include="Mixins\CopyCustomAttributesAttribute.cs" />
     <Compile Include="Mixins\ExtendsAttribute.cs" />
