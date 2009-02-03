@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Cloning
       Type classType = source.ID.ClassDefinition.ClassType;
       // Use NewObjectFromDataContainer in order to avoid calling a ctor
       DataContainer cloneDataContainer = CloneTransaction.CreateNewDataContainer (classType);
-      return (T) RepositoryAccessor.NewObjectFromDataContainer (cloneDataContainer);
+      return (T) CloneTransaction.GetObjectForDataContainer (cloneDataContainer);
     }
 
     /// <summary>

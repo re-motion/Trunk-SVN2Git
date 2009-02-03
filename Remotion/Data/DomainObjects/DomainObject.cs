@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -96,8 +97,9 @@ namespace Remotion.Data.DomainObjects
     protected static T NewObject<T> (ParamList constructorParameters) where T : DomainObject
     {
       ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
-      
-      var info = RepositoryAccessor.GetCreator (typeof (T)).GetConstructorLookupInfo (typeof (T));
+
+      var creator = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T)).GetDomainObjectCreator ();
+      var info = creator.GetConstructorLookupInfo (typeof (T));
       var domainObject = (T) constructorParameters.InvokeConstructor (info);
       DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (domainObject);
       return domainObject;

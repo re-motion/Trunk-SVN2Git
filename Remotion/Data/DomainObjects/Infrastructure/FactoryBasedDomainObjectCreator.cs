@@ -32,10 +32,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     public static readonly FactoryBasedDomainObjectCreator Instance = new FactoryBasedDomainObjectCreator ();
 
+    private FactoryBasedDomainObjectCreator ()
+    {
+    }
+
     public DomainObject CreateWithDataContainer (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      Assertion.IsTrue (dataContainer.ClassDefinition is ReflectionBasedClassDefinition);
 
       dataContainer.ClassDefinition.GetValidator ().ValidateCurrentMixinConfiguration ();
 

@@ -56,7 +56,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public static DomainObject NewObject (Type domainObjectType, ParamList constructorParameters)
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
-      var ctorInfo = GetCreator (domainObjectType).GetConstructorLookupInfo (domainObjectType);
+
+      var creator = MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType).GetDomainObjectCreator ();
+      var ctorInfo = creator.GetConstructorLookupInfo (domainObjectType);
       return (DomainObject) constructorParameters.InvokeConstructor (ctorInfo);
     }
 
@@ -96,31 +98,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       DomainObjectCheckUtility.CheckIfObjectIsDiscarded (objectToBeDeleted, transaction);
       DomainObjectCheckUtility.CheckIfRightTransaction (objectToBeDeleted, transaction);
       transaction.Delete (objectToBeDeleted);
-    }
-
-    internal static IDomainObjectCreator GetCreator (Type domainObjectType)
-    {
-      return MappingConfiguration.Current.ClassDefinitions.GetMandatory (domainObjectType).GetDomainObjectCreator ();
-    }
-
-    /// <summary>
-    /// Creates a <see cref="DomainObject"/> from a given data container.
-    /// </summary>
-    /// <param name="dataContainer">The data container for the new domain object.</param>
-    /// <returns>A new <see cref="DomainObject"/> for the given data container.</returns>
-    /// <remarks>
-    /// <para>This method is used by the <see cref="DataContainer"/> class when it is asked to load an object. It requires an infrastructure
-    /// constructor taking a single <see cref="DataContainer"/> argument on the domain object's class (see <see cref="DomainObject"/>).
-    /// </para>
-    /// </remarks>
-    /// <exception cref="ArgumentNullException">The <paramref name="dataContainer"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="MissingMethodException">The instantiated type does not implement the required public or protected constructor
-    /// (see Remarks section).</exception>
-    /// <exception cref="Exception">Any exception thrown by the constructor is propagated to the caller.</exception>
-    internal static DomainObject NewObjectFromDataContainer (DataContainer dataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      return RepositoryAccessor.GetCreator (dataContainer.DomainObjectType).CreateWithDataContainer (dataContainer);
     }
   }
 }

@@ -797,7 +797,10 @@ public abstract class ClientTransaction
     if (enlistedObject != null)
       return enlistedObject;
     else
-      return RepositoryAccessor.NewObjectFromDataContainer (dataContainer);
+    {
+      var creator = MappingConfiguration.Current.ClassDefinitions.GetMandatory (dataContainer.DomainObjectType).GetDomainObjectCreator ();
+      return creator.CreateWithDataContainer (dataContainer);
+    }
   }
 
   /// <summary>
