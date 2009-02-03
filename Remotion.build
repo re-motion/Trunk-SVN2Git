@@ -170,7 +170,7 @@
   <target name="all" depends="prereq,
       Core.Interfaces, Core.Core, Core.Mixins.MixerTool.Console, 
       Development.CodeDom, Development.Core, Development.Data, 
-      Dms.Shared, Dms.Clients.Windows.Tray, Dms.Clients.Windows.WebBrowserControl, Dms.DesktopConnector,
+      Dms.Shared, Dms.Clients.Windows.Tray, Dms.DesktopConnector,
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
       ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, ObjectBinding.Web.Preview, 
       ObjectBinding.Web.CodeGenerator, ObjectBinding.Web.CodeGenerator.Templates, 
@@ -267,19 +267,11 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Dms.Clients.Windows.Tray" depends="Dms.DesktopConnector,Dms.Clients.Windows.WebBrowserControl">
+  <target name="Dms.Clients.Windows.Tray" depends="Dms.DesktopConnector">
     <property name="project.name" value="Dms.Clients.Windows.Tray" />
     <property name="project.dir" value="Dms/Clients.Windows.Tray" />
     <property name="project.output" value="DmsTray" />
     <property name="project.extension" value="exe" />
-    <call target="execute-buildstep" />
-  </target>
-
-  <target name="Dms.Clients.Windows.WebBrowserControl">
-    <property name="project.name" value="Dms.Clients.Windows.WebBrowserControl" />
-    <property name="project.dir" value="Dms/Clients.Windows.WebBrowserControl" />
-    <property name="project.output" value="Remotion.Dms.Clients.Windows.WebBrowserControl" />
-    <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
   </target>
 
