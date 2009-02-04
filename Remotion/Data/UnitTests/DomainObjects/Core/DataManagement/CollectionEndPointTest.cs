@@ -86,21 +86,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (DataManagementException), ExpectedMessage = "Internal error: CollectionEndPoint must have an ILinkChangeDelegate registered.")]
     public void RemoveFromOppositeDomainObjects ()
     {
-      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _freeOrders);
+      var changeDelegateMock = MockRepository.GenerateMock<ICollectionEndPointChangeDelegate> ();
+      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _freeOrders, changeDelegateMock);
+
       collectionEndPoint.OppositeDomainObjects.Remove (_order1.ID);
+      
+      changeDelegateMock.AssertWasCalled (mock => mock.PerformRemove (collectionEndPoint, _order1));
     }
 
     [Test]
-    [ExpectedException (typeof (DataManagementException), ExpectedMessage = "Internal error: CollectionEndPoint must have an ILinkChangeDelegate registered.")]
     public void AddToOppositeDomainObjects ()
     {
-      var newOrder = Order.GetObject (DomainObjectIDs.Order2);
+      var changeDelegateMock = MockRepository.GenerateMock<ICollectionEndPointChangeDelegate> ();
+      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _freeOrders, changeDelegateMock);
+      var newOrder = Order.NewObject ();
 
-      var collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _customerEndPointID, _freeOrders);
       collectionEndPoint.OppositeDomainObjects.Add (newOrder);
+
+      changeDelegateMock.AssertWasCalled (mock => mock.PerformInsert(collectionEndPoint, newOrder, _freeOrders.Count));
     }
 
     [Test]
@@ -315,7 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreSame (item1, endPoint.OriginalOppositeDomainObjects[0]);
       Assert.AreSame (item2, endPoint.OriginalOppositeDomainObjects[1]);
 
-      var clone = (CollectionEndPoint) endPoint.Clone ();
+      var clone = (CollectionEndPoint) endPoint.Clone (endPoint.ClientTransaction);
 
       Assert.IsNotNull (clone);
 
@@ -362,7 +367,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreSame (originalItem1, endPoint.OriginalOppositeDomainObjects[0]);
       Assert.AreSame (originalItem2, endPoint.OriginalOppositeDomainObjects[1]);
 
-      var clone = (CollectionEndPoint) endPoint.Clone ();
+      var clone = (CollectionEndPoint) endPoint.Clone (endPoint.ClientTransaction);
       Assert.IsNotNull (clone);
       CheckIfRelationEndPointsAreEqual (endPoint, clone);
     }
@@ -763,8 +768,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var mockRepository = new MockRepository ();
       var changeDelegateMock = mockRepository.StrictMock<ICollectionEndPointChangeDelegate> ();
       var oldOpposites = new OrderCollection { _order1 };
-      var endPoint = CreateCollectionEndPoint (_customerEndPointID, oldOpposites);
-      endPoint.ChangeDelegate = changeDelegateMock;
+      var endPoint = new CollectionEndPoint(ClientTransactionMock, _customerEndPointID, oldOpposites, changeDelegateMock);
 
       changeDelegateMock.PerformRemove (endPoint, _order1); // expectation
       changeDelegateMock.PerformInsert (endPoint, _order2, 1); // expectation

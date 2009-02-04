@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           DomainObjectIDs.Order1,
           MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderItems"));
 
-      _endPointMock = _mockRepository.StrictMock<CollectionEndPoint> (ClientTransactionMock, _id, new DomainObjectCollection());
+      _endPointMock = _mockRepository.StrictMock<CollectionEndPoint> (ClientTransactionMock, _id, new DomainObjectCollection(), ClientTransactionMock.DataManager.RelationEndPointMap);
       _oldEndPointMock = _mockRepository.Stub<IEndPoint>();
       _newEndPointMock = _mockRepository.Stub<IEndPoint>();
       _changeAgentMock = _mockRepository.StrictMock<CollectionEndPointChangeAgent>(new DomainObjectCollection(), _oldEndPointMock, _newEndPointMock,
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialization_FromEndPoint_Add ()
     {
-      RelationEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection());
+      RelationEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
       CollectionEndPointModification modification = (CollectionEndPointModification) endPoint.CreateModification (RelationEndPoint.CreateNullRelationEndPoint (_id.Definition), _newEndPointMock);
       Assert.AreSame (endPoint, modification.AffectedEndPoint);
       Assert.AreSame (_newEndPointMock, modification.NewEndPoint);
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialization_FromEndPoint_Remove ()
     {
-      RelationEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection ());
+      RelationEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
       CollectionEndPointModification modification = (CollectionEndPointModification) endPoint.CreateModification (_oldEndPointMock, RelationEndPoint.CreateNullRelationEndPoint (_id.Definition));
       Assert.AreSame (endPoint, modification.AffectedEndPoint);
       Assert.AreSame (_oldEndPointMock, modification.OldEndPoint);
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialization_FromEndPoint_Insert ()
     {
-      CollectionEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection ());
+      CollectionEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
       CollectionEndPointModification modification = (CollectionEndPointModification) endPoint.CreateInsertModification (_oldEndPointMock, _newEndPointMock, 3);
       Assert.AreSame (endPoint, modification.AffectedEndPoint);
       Assert.AreSame (_oldEndPointMock, modification.OldEndPoint);
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialization_FromEndPoint_Replace ()
     {
-      CollectionEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection ());
+      CollectionEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
       CollectionEndPointModification modification = (CollectionEndPointModification) endPoint.CreateReplaceModification (_oldEndPointMock, _newEndPointMock);
       Assert.AreSame (endPoint, modification.AffectedEndPoint);
       Assert.AreSame (_oldEndPointMock, modification.OldEndPoint);

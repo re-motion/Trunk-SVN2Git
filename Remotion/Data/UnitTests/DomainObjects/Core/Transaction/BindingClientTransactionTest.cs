@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
@@ -32,24 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       base.SetUp();
       _bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-    }
-
-    private T NewBound<T> (params object[] args)
-        where T : DomainObject
-    {
-      using (_bindingTransaction.EnterNonDiscardingScope ())
-      {
-        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.CreateDynamic (args));
-      }
-    }
-
-    private T GetBound<T> (ObjectID id)
-        where T : DomainObject
-    {
-      using (_bindingTransaction.EnterNonDiscardingScope ())
-      {
-        return (T) RepositoryAccessor.GetObject (id, true);
-      }
     }
 
     [Test]
@@ -126,6 +109,119 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
       _bindingTransaction.EnlistDomainObject (order);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot insert DomainObject 'OrderItem|.*' at position 0 into " 
+        + "collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order|.*'. The objects do not "
+        + "belong to the same ClientTransaction. The OrderItem object to be inserted is bound to a BindingClientTransaction.", 
+        MatchType = MessageMatch.Regex)]
+    public void InsertBoundObject_IntoCollectionOfUnboundObject ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        var orderItem = NewBound<OrderItem>();
+        var order = Order.NewObject();
+        order.OrderItems.Add (orderItem);
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot insert DomainObject 'OrderItem|.*' at position 0 into "
+        + "collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order|.*'. The objects do not "
+        + "belong to the same ClientTransaction. The Order object owning the collection is bound to a BindingClientTransaction.", 
+        MatchType = MessageMatch.Regex)]
+    public void InsertUnboundObject_IntoCollectionOfBoundObject ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        var order = NewBound<Order> ();
+        var orderItem = OrderItem.NewObject ();
+        order.OrderItems.Add (orderItem);
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Cannot insert DomainObject 'OrderItem|.*' at position 0 into "
+        + "collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject 'Order|.*'. The objects do not "
+        + "belong to the same ClientTransaction. The OrderItem object owning the collection is bound to a BindingClientTransaction. The Order object "
+        + "owning the collection is also bound, but to a BindingClientTransaction.",
+        MatchType = MessageMatch.Regex)]
+    public void InsertBoundObject_IntoCollectionOfBoundObject_InOtherTx ()
+    {
+      var order = NewBound<Order> ();
+      var orderItem = NewObject<OrderItem> (ClientTransaction.CreateBindingTransaction ());
+      order.OrderItems.Add (orderItem);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Property 'Remotion.Data.UnitTests.DomainObjects.TestDomain."
+        + "Order.Official' of DomainObject 'Order|.*' cannot be set to DomainObject 'Official|.*'. The objects do not belong to "
+        + "the same ClientTransaction. The Official object to be set into the property is bound to a BindingClientTransaction.",
+        MatchType = MessageMatch.Regex)]
+    public void SetBoundObject_IntoRelationOfUnboundObject ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        var official = NewBound<Official> ();
+        var order = Order.NewObject ();
+        order.Official = official;
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Property 'Remotion.Data.UnitTests.DomainObjects.TestDomain."
+        + "Order.Official' of DomainObject 'Order|.*' cannot be set to DomainObject 'Official|.*'. The objects do not belong to "
+        + "the same ClientTransaction. The Official object to be set into the property is bound to a BindingClientTransaction.",
+        MatchType = MessageMatch.Regex)]
+    public void SetUnboundObject_IntoRelationOfBoundObject ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        var official = Official.NewObject ();
+        var order = NewBound<Order> ();
+        order.Official = official;
+      }
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException), ExpectedMessage = "Property 'Remotion.Data.UnitTests.DomainObjects.TestDomain."
+        + "Order.Official' of DomainObject 'Order|.*' cannot be set to DomainObject 'Official|.*'. The objects do not belong to "
+        + "the same ClientTransaction. The Order object to be set into the property is bound to a BindingClientTransaction. The Official object "
+        + "owning the property is also bound, but to a different BindingClientTransaction.",
+        MatchType = MessageMatch.Regex)]
+    public void SetBoundObject_IntoRelationOfBoundObject_InOtherTx ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      {
+        var official = NewBound<Official>();
+        var order = NewObject<Order> (ClientTransaction.CreateBindingTransaction());
+        order.Official = official;
+      }
+    }
+
+    private T NewBound<T> (params object[] args)
+        where T : DomainObject
+    {
+      return NewObject<T> (_bindingTransaction, args);
+    }
+
+    private T NewObject<T> (ClientTransaction creatingTransaction, params object[] args)
+        where T : DomainObject
+    {
+      using (creatingTransaction.EnterNonDiscardingScope ())
+      {
+        return (T) RepositoryAccessor.NewObject (typeof (T), ParamList.CreateDynamic (args));
+      }
+    }
+
+    private T GetBound<T> (ObjectID id)
+        where T : DomainObject
+    {
+      using (_bindingTransaction.EnterNonDiscardingScope ())
+      {
+        return (T) RepositoryAccessor.GetObject (id, true);
+      }
     }
   }
 }

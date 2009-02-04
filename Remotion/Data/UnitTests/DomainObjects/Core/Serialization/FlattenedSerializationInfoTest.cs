@@ -301,32 +301,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.IsNull (deserializedStub2.Data3);
     }
 
-    //[Test]
-    //[Ignore ("TODO: FS - doesn't work at the moment, decide whether we need this later")]
-    //public void FlattenedSerializableHandles_RecursiveHandles ()
-    //{
-    //  FlattenedSerializableStub stub1 = new FlattenedSerializableStub ("begone, foul fiend", 123);
-    //  FlattenedSerializableStub stub2 = new FlattenedSerializableStub ("befoul, gone fiend", 125);
-    //  stub1.Data3 = stub2;
-    //  stub2.Data3 = stub1;
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The serialized data contains a cycle, this is not supported.")]
+    public void FlattenedSerializableHandles_RecursiveHandles ()
+    {
+      FlattenedSerializableStub stub1 = new FlattenedSerializableStub ("begone, foul fiend", 123);
+      FlattenedSerializableStub stub2 = new FlattenedSerializableStub ("befoul, gone fiend", 125);
+      stub1.Data3 = stub2;
+      stub2.Data3 = stub1;
 
-    //  FlattenedSerializationInfo serializationInfo = new FlattenedSerializationInfo ();
-    //  serializationInfo.AddHandle (stub1);
-    //  object[] data = serializationInfo.GetData ();
+      FlattenedSerializationInfo serializationInfo = new FlattenedSerializationInfo ();
+      serializationInfo.AddHandle (stub1);
+      object[] data = serializationInfo.GetData ();
 
-    //  FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
-    //  FlattenedSerializableStub deserializedStub1 = deserializationInfo.GetValueForHandle<FlattenedSerializableStub> ();
-    //  FlattenedSerializableStub deserializedStub2 = deserializedStub1.Data3;
+      FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
+      deserializationInfo.GetValueForHandle<FlattenedSerializableStub> ();
+      // The following would be expected if this worked
+      //FlattenedSerializableStub deserializedStub1 = deserializationInfo.GetValueForHandle<FlattenedSerializableStub> ();
+      //FlattenedSerializableStub deserializedStub2 = deserializedStub1.Data3;
 
-    //  Assert.AreNotSame (deserializedStub1, deserializedStub2);
-    //  Assert.AreEqual ("begone, foul fiend", deserializedStub1.Data1);
-    //  Assert.AreEqual (123, deserializedStub1.Data2);
-    //  Assert.AreSame (deserializedStub2, deserializedStub1.Data3);
+      //Assert.AreNotSame (deserializedStub1, deserializedStub2);
+      //Assert.AreEqual ("begone, foul fiend", deserializedStub1.Data1);
+      //Assert.AreEqual (123, deserializedStub1.Data2);
+      //Assert.AreSame (deserializedStub2, deserializedStub1.Data3);
 
-    //  Assert.AreEqual ("befoul, gone fiend", deserializedStub2.Data1);
-    //  Assert.AreEqual (125, deserializedStub2.Data2);
-    //  Assert.AreSame (deserializedStub1, deserializedStub2.Data3);
-    //}
+      //Assert.AreEqual ("befoul, gone fiend", deserializedStub2.Data1);
+      //Assert.AreEqual (125, deserializedStub2.Data2);
+      //Assert.AreSame (deserializedStub1, deserializedStub2.Data3);
+    }
 
     [Test]
     public void FlattenedSerializableArray ()

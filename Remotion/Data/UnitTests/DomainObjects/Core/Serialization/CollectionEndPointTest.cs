@@ -89,6 +89,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
+    public void CollectionEndPoint_ClientTransaction ()
+    {
+      CollectionEndPoint deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
+      Assert.IsNotNull (deserializedEndPoint.ClientTransaction);
+    }
+
+    [Test]
     public void CollectionEndPoint_ReplacedCollection ()
     {
       var newOpposites = _endPoint.OppositeDomainObjects.Clone();
@@ -124,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void CollectionEndPoint_ChangeDelegates ()
+    public void CollectionEndPoint_CollectionChangeDelegates ()
     {
       var industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector1);
       var oldOpposites = industrialSector.Companies;
@@ -142,6 +149,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
         ClientTransaction.Current.Rollback ();
         Assert.That (deserializedTuple.B.Companies.ChangeDelegate, Is.SameAs (endPoint));
       }
+    }
+
+    [Test]
+    public void Serialization_IntegrationWithRelationEndPointMap ()
+    {
+      Assert.That (_endPoint.ChangeDelegate, Is.SameAs (ClientTransactionMock.DataManager.RelationEndPointMap));
+
+      var deserializedTransactionMock = Serializer.SerializeAndDeserialize (ClientTransactionMock);
+      var deserializedMap = deserializedTransactionMock.DataManager.RelationEndPointMap;
+      var deserializedCollectionEndPoint = (CollectionEndPoint) deserializedMap.GetRelationEndPointWithLazyLoad (_endPoint.ID);
+      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.SameAs (deserializedMap));
     }
   }
 }

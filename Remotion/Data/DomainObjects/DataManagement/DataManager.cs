@@ -319,7 +319,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     _clientTransaction = doInfo.GetValueForHandle<ClientTransaction> ();
     _transactionEventSink = _clientTransaction.TransactionEventSink;
     _dataContainerMap = doInfo.GetValue<DataContainerMap> ();
-    _relationEndPointMap = doInfo.GetValue<RelationEndPointMap> ();
+    _relationEndPointMap = doInfo.GetValueForHandle<RelationEndPointMap> ();
     _discardedDataContainers = new Dictionary<ObjectID, DataContainer> ();
 
     ObjectID[] discardedIDs = doInfo.GetArray<ObjectID> ();
@@ -339,7 +339,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     FlattenedSerializationInfo doInfo = new FlattenedSerializationInfo();
     doInfo.AddHandle (_clientTransaction);
     doInfo.AddValue (_dataContainerMap);
-    doInfo.AddValue (_relationEndPointMap);
+    doInfo.AddHandle (_relationEndPointMap);
 
     ObjectID[] discardedIDs = new ObjectID[_discardedDataContainers.Count];
     _discardedDataContainers.Keys.CopyTo (discardedIDs, 0);

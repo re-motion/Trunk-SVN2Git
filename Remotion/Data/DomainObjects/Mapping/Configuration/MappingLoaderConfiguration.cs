@@ -25,10 +25,7 @@ namespace Remotion.Data.DomainObjects.Mapping.Configuration
   public class MappingLoaderConfiguration: ExtendedConfigurationSection
   {
     private readonly ConfigurationPropertyCollection _properties = new ConfigurationPropertyCollection();
-
     private readonly ConfigurationProperty _mappingLoaderProperty;
-
-    private readonly ConfigurationProperty _domainObjectFactoryProperty;
 
     public MappingLoaderConfiguration()
     {

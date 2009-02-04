@@ -34,7 +34,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
 
-    public override RelationEndPoint Clone ()
+    protected override void RegisterWithMap (RelationEndPointMap map)
+    {
+      throw new System.NotImplementedException();
+    }
+
+    public override RelationEndPoint Clone (ClientTransaction clientTransaction)
     {
       throw new NotImplementedException();
     }
@@ -45,11 +50,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     protected override void TakeOverCommittedData (RelationEndPoint source)
-    {
-      throw new NotImplementedException();
-    }
-
-    protected override void RegisterWithMap (RelationEndPointMap map)
     {
       throw new NotImplementedException();
     }

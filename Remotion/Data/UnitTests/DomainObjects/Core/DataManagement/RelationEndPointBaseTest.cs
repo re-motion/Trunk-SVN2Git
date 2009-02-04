@@ -16,6 +16,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -25,11 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         RelationEndPointID endPointID,
         DomainObjectCollection domainObjects)
     {
-      CollectionEndPoint newCollectionEndPoint = new CollectionEndPoint (
-          ClientTransactionMock, endPointID, domainObjects);
-
-      newCollectionEndPoint.ChangeDelegate = ClientTransactionMock.DataManager.RelationEndPointMap;
-
+      var newCollectionEndPoint = new CollectionEndPoint (ClientTransactionMock, endPointID, domainObjects, ClientTransactionMock.DataManager.RelationEndPointMap);
       return newCollectionEndPoint;
     }
 

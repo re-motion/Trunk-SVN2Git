@@ -80,9 +80,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // methods and properties
 
-    public override RelationEndPoint Clone ()
+    protected internal override void RegisterWithMap (RelationEndPointMap map)
     {
-      ObjectEndPoint clone = new ObjectEndPoint (ClientTransaction, ID, null);
+      // Nothing to do here.
+    }
+
+    public override RelationEndPoint Clone (ClientTransaction clientTransaction)
+    {
+      var clone = new ObjectEndPoint (clientTransaction, ID, null);
       clone.AssumeSameState (this);
       return clone;
     }
@@ -106,11 +111,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _oppositeObjectID = sourceObjectEndPoint._oppositeObjectID;
       _hasBeenTouched |= sourceObjectEndPoint._hasBeenTouched || HasChanged; // true if: we have been touched/source has been touched/we have changed
-    }
-
-    protected internal override void RegisterWithMap (RelationEndPointMap map)
-    {
-      // nothing to do here
     }
 
     public override void Commit ()

@@ -108,10 +108,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // abstract methods and properties
 
-    public abstract RelationEndPoint Clone ();
+    protected internal abstract void RegisterWithMap (RelationEndPointMap map); // TODO: Get rid of this method.
+    public abstract RelationEndPoint Clone (ClientTransaction clientTransaction);
     protected internal abstract void AssumeSameState (RelationEndPoint source);
     protected internal abstract void TakeOverCommittedData (RelationEndPoint source);
-    protected internal abstract void RegisterWithMap (RelationEndPointMap map);
     public abstract bool HasChanged { get; }
     public abstract bool HasBeenTouched { get; }
     protected internal abstract void Touch ();
@@ -126,7 +126,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public RelationEndPointModification CreateModification (IEndPoint oldEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
-      return CreateModification (oldEndPoint, RelationEndPoint.CreateNullRelationEndPoint (oldEndPoint.Definition));
+      return CreateModification (oldEndPoint, CreateNullRelationEndPoint (oldEndPoint.Definition));
     }
 
     public virtual void NotifyClientTransactionOfBeginRelationChange (IEndPoint oldEndPoint, IEndPoint newEndPoint)
@@ -195,13 +195,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ClientTransaction ClientTransaction
     {
       get { return _clientTransaction; }
-    }
-
-    internal void SetClientTransaction (ClientTransaction clientTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
-      _clientTransaction = clientTransaction;
     }
 
     protected MandatoryRelationNotSetException CreateMandatoryRelationNotSetException (

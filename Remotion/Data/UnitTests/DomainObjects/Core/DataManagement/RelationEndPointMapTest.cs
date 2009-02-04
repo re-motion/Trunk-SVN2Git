@@ -153,8 +153,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "SetRelatedObject can only be called for end points with a cardinality of 'One'.\r\nParameter name: endPointID")]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "SetRelatedObject can only be called for end points with a cardinality of 'One'.")]
     public void SetRelatedObjectWithEndPointIDOfWrongCardinality ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);

@@ -296,6 +296,13 @@ namespace Remotion.Development.UnitTesting
       SetPropertyInternal (target, target.GetType(), BindingFlags.Instance | BindingFlags.NonPublic, propertyName, value);
     }
 
+    public static void SetNonPublicProperty (object target, Type declaringType, string propertyName, object value)
+    {
+      if (target == null)
+        throw new ArgumentNullException ("target");
+      SetPropertyInternal (target, declaringType, BindingFlags.Instance | BindingFlags.NonPublic, propertyName, value);
+    }
+
     public static void SetPublicStaticProperty (Type type, string propertyName, object value)
     {
       if (type == null) throw new ArgumentNullException ("type");

@@ -285,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreEqual (endPoint.OppositeObjectID, endPoint.OriginalOppositeObjectID);
       Assert.AreEqual (order.Official.ID, endPoint.OriginalOppositeObjectID);
 
-      ObjectEndPoint clone = (ObjectEndPoint) endPoint.Clone ();
+      ObjectEndPoint clone = (ObjectEndPoint) endPoint.Clone (ClientTransactionMock);
 
       Assert.IsNotNull (endPoint);
 
@@ -314,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreNotEqual (endPoint.OppositeObjectID, endPoint.OriginalOppositeObjectID);
       Assert.AreEqual (originalEmployee.ID, endPoint.OriginalOppositeObjectID);
 
-      ObjectEndPoint clone = (ObjectEndPoint) endPoint.Clone ();
+      ObjectEndPoint clone = (ObjectEndPoint) endPoint.Clone (ClientTransactionMock);
 
       Assert.IsNotNull (endPoint);
 

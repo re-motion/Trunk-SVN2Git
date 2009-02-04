@@ -14,10 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -51,25 +49,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
-        DomainObjectCollection oppositeDomainObjects)
-        : this (clientTransaction, id, oppositeDomainObjects, CloneDomainObjectCollection (oppositeDomainObjects, true))
-    {
-    }
-
-    private CollectionEndPoint (
-        ClientTransaction clientTransaction,
-        RelationEndPointID id,
         DomainObjectCollection oppositeDomainObjects,
-        DomainObjectCollection originalOppositeDomainObjects)
-        : base (clientTransaction, id)
+        ICollectionEndPointChangeDelegate changeDelegate)
+        : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))  
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      ArgumentUtility.CheckNotNull ("originalOppositeDomainObjects", originalOppositeDomainObjects);
+      ArgumentUtility.CheckNotNull ("changeDelegate", changeDelegate);
 
-      _originalOppositeDomainObjects = originalOppositeDomainObjects;
-      PerformReplaceOppositeCollection(oppositeDomainObjects);
+      _originalOppositeDomainObjects = CloneDomainObjectCollection (oppositeDomainObjects, true);
+      PerformReplaceOppositeCollection (oppositeDomainObjects);
       _originalOppositeDomainObjectsReference = oppositeDomainObjects;
       _hasBeenTouched = false;
+      _changeDelegate = changeDelegate;
     }
 
     protected CollectionEndPoint (IRelationEndPointDefinition definition)
@@ -97,6 +88,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // temporarily set a clone of the old collection; that way, we can keep the old collection unmodified while synchronizing
       _oppositeDomainObjects = oldOpposites.Clone (false);
       _oppositeDomainObjects.ChangeDelegate = this;
+
       SynchronizeWithNewOppositeObjects (oppositeDomainObjects);
 
       PerformReplaceOppositeCollection (oppositeDomainObjects);
@@ -129,13 +121,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _oppositeDomainObjects.Add (opposite);
     }
 
-    public override RelationEndPoint Clone ()
+    public override RelationEndPoint Clone (ClientTransaction clientTransaction)
     {
-      CollectionEndPoint clone = new CollectionEndPoint (
-          ClientTransaction, ID, DomainObjectCollection.Create (_oppositeDomainObjects.GetType(), _oppositeDomainObjects.RequiredItemType));
+      var cloneOppositeDomainObjects = DomainObjectCollection.Create (_oppositeDomainObjects.GetType(), _oppositeDomainObjects.RequiredItemType);
+      var clone = new CollectionEndPoint (clientTransaction, ID, cloneOppositeDomainObjects, clientTransaction.DataManager.RelationEndPointMap);
       clone.AssumeSameState (this);
-      clone.ChangeDelegate = ChangeDelegate;
-
       return clone;
     }
 
@@ -274,44 +264,36 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ICollectionEndPointChangeDelegate ChangeDelegate
     {
       get { return _changeDelegate; }
-      set { _changeDelegate = value; }
+      set
+      {
+        ArgumentUtility.CheckNotNull ("value", value);
+        _changeDelegate = value;
+      }
     }
 
     #region ICollectionChangeDelegate Members
 
     void ICollectionChangeDelegate.PerformInsert (DomainObjectCollection collection, DomainObject domainObject, int index)
     {
-      if (_changeDelegate == null)
-        throw new DataManagementException ("Internal error: CollectionEndPoint must have an ILinkChangeDelegate registered.");
-
-      _changeDelegate.PerformInsert (this, domainObject, index);
+      ChangeDelegate.PerformInsert (this, domainObject, index);
       _hasBeenTouched = true;
     }
 
     void ICollectionChangeDelegate.PerformReplace (DomainObjectCollection collection, DomainObject domainObject, int index)
     {
-      if (_changeDelegate == null)
-        throw new DataManagementException ("Internal error: CollectionEndPoint must have an ILinkChangeDelegate registered.");
-
-      _changeDelegate.PerformReplace (this, domainObject, index);
+      ChangeDelegate.PerformReplace (this, domainObject, index);
       _hasBeenTouched = true;
     }
 
     void ICollectionChangeDelegate.PerformSelfReplace (DomainObjectCollection collection, DomainObject domainObject, int index)
     {
-      if (_changeDelegate == null)
-        throw new DataManagementException ("Internal error: CollectionEndPoint must have an ILinkChangeDelegate registered.");
-
-      _changeDelegate.PerformSelfReplace (this, domainObject, index);
+      ChangeDelegate.PerformSelfReplace (this, domainObject, index);
       _hasBeenTouched = true;
     }
 
     void ICollectionChangeDelegate.PerformRemove (DomainObjectCollection collection, DomainObject domainObject)
     {
-      if (_changeDelegate == null)
-        throw new DataManagementException ("Internal error: CollectionEndPoint must have an ILinkChangeDelegate registered.");
-
-      _changeDelegate.PerformRemove (this, domainObject);
+      ChangeDelegate.PerformRemove (this, domainObject);
       _hasBeenTouched = true;
     }
 
@@ -332,7 +314,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection> ();
       _oppositeDomainObjects.ChangeDelegate = this;
       _originalOppositeDomainObjectsReference = info.GetValueForHandle<DomainObjectCollection> ();
-
       _hasBeenTouched = info.GetBoolValue ();
     }
 

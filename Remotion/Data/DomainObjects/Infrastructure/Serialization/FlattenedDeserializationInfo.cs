@@ -128,6 +128,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
         object objectValue;
         if (!_handleMap.TryGetValue (handle, out objectValue))
         {
+          if (handle < _handleMap.Count)
+            throw new NotSupportedException ("The serialized data contains a cycle, this is not supported.");
+
           T value = GetValue<T> ();
           _handleMap.Add (handle, value);
           return value;
