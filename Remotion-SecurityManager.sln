@@ -161,8 +161,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Clients.Windows.Tray", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.UnitTests", "Dms\UnitTests\Dms.UnitTests.csproj", "{1763F21F-531C-4E86-ACFC-9A8BF903F945}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Clients.Windows.WebBrowserControl", "Dms\Clients.Windows.WebBrowserControl\Dms.Clients.Windows.WebBrowserControl.csproj", "{70725EB2-AEBD-4167-9D6B-608EFEAAA032}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.DesktopConnector", "Dms\DesktopConnector\Dms.DesktopConnector.csproj", "{F3AB6F46-3776-4562-8BB2-FFFDE7E62BE0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Documentation", "Core.Documentation\Core.Documentation.csproj", "{15EF21FE-5234-42AD-8B70-0F04C0D7AC7F}"
@@ -182,6 +180,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Documentation", "Core.
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityManager.AclTools.Expander", "SecurityManager\AclTools.Expander\SecurityManager.AclTools.Expander.csproj", "{3214FB15-2359-48EC-A926-2CAA47E4D826}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Shared", "Dms\Shared\Dms.Shared.csproj", "{B79940B8-1949-406D-9CCA-E6349898E11A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -385,10 +385,6 @@ Global
 		{1763F21F-531C-4E86-ACFC-9A8BF903F945}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1763F21F-531C-4E86-ACFC-9A8BF903F945}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1763F21F-531C-4E86-ACFC-9A8BF903F945}.Release|Any CPU.Build.0 = Release|Any CPU
-		{70725EB2-AEBD-4167-9D6B-608EFEAAA032}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70725EB2-AEBD-4167-9D6B-608EFEAAA032}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70725EB2-AEBD-4167-9D6B-608EFEAAA032}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70725EB2-AEBD-4167-9D6B-608EFEAAA032}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F3AB6F46-3776-4562-8BB2-FFFDE7E62BE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F3AB6F46-3776-4562-8BB2-FFFDE7E62BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3AB6F46-3776-4562-8BB2-FFFDE7E62BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -400,6 +396,10 @@ Global
 		{3214FB15-2359-48EC-A926-2CAA47E4D826}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3214FB15-2359-48EC-A926-2CAA47E4D826}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3214FB15-2359-48EC-A926-2CAA47E4D826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B79940B8-1949-406D-9CCA-E6349898E11A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B79940B8-1949-406D-9CCA-E6349898E11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B79940B8-1949-406D-9CCA-E6349898E11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B79940B8-1949-406D-9CCA-E6349898E11A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -456,8 +456,8 @@ Global
 		{3214FB15-2359-48EC-A926-2CAA47E4D826} = {E1B271E4-22E6-4936-80A5-F0340AAB20A8}
 		{B5CBF254-BC60-4018-A772-DAD5DE4C96EE} = {41F62020-3A67-4A33-B82A-9442510269E3}
 		{1763F21F-531C-4E86-ACFC-9A8BF903F945} = {41F62020-3A67-4A33-B82A-9442510269E3}
-		{70725EB2-AEBD-4167-9D6B-608EFEAAA032} = {41F62020-3A67-4A33-B82A-9442510269E3}
 		{F3AB6F46-3776-4562-8BB2-FFFDE7E62BE0} = {41F62020-3A67-4A33-B82A-9442510269E3}
+		{B79940B8-1949-406D-9CCA-E6349898E11A} = {41F62020-3A67-4A33-B82A-9442510269E3}
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1
