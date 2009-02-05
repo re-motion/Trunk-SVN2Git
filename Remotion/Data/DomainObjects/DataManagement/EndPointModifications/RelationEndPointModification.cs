@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     private readonly IEndPoint _oldEndPoint;
     private readonly IEndPoint _newEndPoint;
 
-    public RelationEndPointModification (RelationEndPoint affectedEndPoint, IEndPoint oldEndPoint, IEndPoint newEndPoint)
+    protected RelationEndPointModification (RelationEndPoint affectedEndPoint, IEndPoint oldEndPoint, IEndPoint newEndPoint)
     {
       ArgumentUtility.CheckNotNull ("affectedEndPoint", affectedEndPoint);
       ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);

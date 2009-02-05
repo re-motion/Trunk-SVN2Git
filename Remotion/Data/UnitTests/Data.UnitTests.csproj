@@ -234,6 +234,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\EventRaisingCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\ReadOnlyCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionDataManagement\TypeCheckingCollectionDataDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointRemoveModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CurrentPropertyManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectEventManagerTest.cs" />
