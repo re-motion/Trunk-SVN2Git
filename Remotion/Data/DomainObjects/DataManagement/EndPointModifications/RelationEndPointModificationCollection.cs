@@ -15,9 +15,10 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   public class RelationEndPointModificationCollection
   {

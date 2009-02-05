@@ -14,10 +14,11 @@
 // along with this framework; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   public class RelationEndPointModifier : ICollectionEndPointChangeDelegate
   {
@@ -41,7 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (endPointID.Definition.Cardinality != CardinalityType.One)
       {
         throw new InvalidOperationException (string.Format ("{0} can only be called for end points with a cardinality of '{1}'.",
-            "SetRelatedObject", CardinalityType.One));
+                                                            "SetRelatedObject", CardinalityType.One));
       }
 
       CheckClientTransactionForObjectEndPoint (endPointID, newRelatedObject);
@@ -88,14 +89,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckDeleted (domainObject);
 
       var newEndPoint = (ObjectEndPoint) GetRelationEndPoint (
-          domainObject, endPoint.OppositeEndPointDefinition);
+                                             domainObject, endPoint.OppositeEndPointDefinition);
 
       var oldEndPoint = (ObjectEndPoint) GetRelationEndPoint (
-          endPoint.OppositeDomainObjects[index], endPoint.OppositeEndPointDefinition);
+                                             endPoint.OppositeDomainObjects[index], endPoint.OppositeEndPointDefinition);
 
       var oldEndPointOfNewEndPoint = (CollectionEndPoint) GetRelationEndPoint (
-          _relationEndPointMap.GetRelatedObject (newEndPoint.ID, false),
-          newEndPoint.OppositeEndPointDefinition);
+                                                              _relationEndPointMap.GetRelatedObject (newEndPoint.ID, false),
+                                                              newEndPoint.OppositeEndPointDefinition);
 
       var modifications = new RelationEndPointModificationCollection (
           oldEndPoint.CreateModification (endPoint),
@@ -154,11 +155,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         var endPointObject = ClientTransaction.GetObject (endPointID.ObjectID);
         string additionalInfo = GetAdditionalInfoForMismatchingClientTransactions ("to be set into the property", endPointObject,
-            "owning the property", newRelatedObject);
+                                                                                   "owning the property", newRelatedObject);
 
         throw CreateClientTransactionsDifferException (
             "Property '{0}' of DomainObject '{1}' cannot be set to DomainObject '{2}'."
-                + " The objects do not belong to the same ClientTransaction.{3}",
+            + " The objects do not belong to the same ClientTransaction.{3}",
             endPointID.PropertyName,
             endPointID.ObjectID,
             newRelatedObject.ID,
@@ -176,7 +177,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         throw CreateClientTransactionsDifferException (
             "Cannot insert DomainObject '{0}' at position {1} into collection of property '{2}' of DomainObject '{3}'."
-                + " The objects do not belong to the same ClientTransaction.{4}",
+            + " The objects do not belong to the same ClientTransaction.{4}",
             newRelatedObject.ID,
             index,
             endPoint.PropertyName,
@@ -191,7 +192,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         throw CreateClientTransactionsDifferException (
             "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}',"
-                + " because the objects do not belong to the same ClientTransaction.",
+            + " because the objects do not belong to the same ClientTransaction.",
             relatedObject.ID,
             endPointID.PropertyName,
             endPointID.ObjectID);
@@ -204,8 +205,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         throw CreateClientTransactionsDifferException (
             "Cannot replace DomainObject at position {0} with DomainObject '{1}'"
-                + " in collection of property '{2}' of DomainObject '{3}',"
-                    + " because the objects do not belong to the same ClientTransaction.",
+            + " in collection of property '{2}' of DomainObject '{3}',"
+            + " because the objects do not belong to the same ClientTransaction.",
             index,
             newRelatedObject.ID,
             endPointID.PropertyName,
@@ -261,10 +262,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (!endPointID.OppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
       {
         var message = string.Format ("DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible "
-            + "with the type of the property.", 
-            newRelatedObject.ID,
-            endPointID.PropertyName,
-            endPointID.ObjectID);
+                                     + "with the type of the property.", 
+                                     newRelatedObject.ID,
+                                     endPointID.PropertyName,
+                                     endPointID.ObjectID);
         throw new DataManagementException (message);
       }
     }
@@ -336,7 +337,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         ObjectEndPoint oldRelatedEndPoint)
     {
       var oldRelatedEndPointOfNewRelatedEndPoint = (ObjectEndPoint)
-          RelationEndPoint.CreateNullRelationEndPoint (endPoint.Definition);
+                                                   RelationEndPoint.CreateNullRelationEndPoint (endPoint.Definition);
 
       if (!newRelatedEndPoint.IsNull)
       {
@@ -354,9 +355,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     private void SetRelatedObjectForOneToManyRelation (
-    ObjectEndPoint endPoint,
-    RelationEndPoint newRelatedEndPoint,
-    RelationEndPoint oldRelatedEndPoint)
+        ObjectEndPoint endPoint,
+        RelationEndPoint newRelatedEndPoint,
+        RelationEndPoint oldRelatedEndPoint)
     {
       if (!newRelatedEndPoint.IsNull)
       {

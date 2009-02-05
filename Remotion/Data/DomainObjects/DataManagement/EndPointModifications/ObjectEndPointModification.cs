@@ -15,40 +15,21 @@
 // 
 using System;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
-  public class CollectionEndPointModification : RelationEndPointModification
+  public class ObjectEndPointModification : RelationEndPointModification
   {
-    private readonly CollectionEndPointChangeAgent _changeAgent;
-    private readonly CollectionEndPoint _affectedEndPoint;
+    private readonly ObjectEndPoint _affectedEndPoint;
 
-    public CollectionEndPointModification (CollectionEndPoint affectedEndPoint, CollectionEndPointChangeAgent changeAgent)
-      : base (affectedEndPoint, changeAgent.OldEndPoint, changeAgent.NewEndPoint)
+    public ObjectEndPointModification (ObjectEndPoint affectedEndPoint, IEndPoint oldEndPoint, IEndPoint newEndPoint)
+        : base (affectedEndPoint, oldEndPoint, newEndPoint)
     {
       _affectedEndPoint = affectedEndPoint;
-      _changeAgent = changeAgent;
-    }
-
-    public CollectionEndPointChangeAgent ChangeAgent
-    {
-      get { return _changeAgent; }
-    }
-
-    public override void Begin ()
-    {
-      _changeAgent.BeginRelationChange();
-      base.Begin();
     }
 
     public override void Perform ()
     {
-      _affectedEndPoint.PerformRelationChange (this);
-    }
-
-    public override void End ()
-    {
-      _changeAgent.EndRelationChange();
-      base.End();
+      _affectedEndPoint.SetOppositeObjectID (this);
     }
   }
 }

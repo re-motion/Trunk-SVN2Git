@@ -17,11 +17,12 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
   public class NullEndPointModificationTest : ClientTransactionBaseTest

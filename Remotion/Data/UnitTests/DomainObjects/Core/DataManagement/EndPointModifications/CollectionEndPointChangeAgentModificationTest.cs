@@ -17,22 +17,23 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
-  public class CollectionEndPointModificationTest : ClientTransactionBaseTest
+  public class CollectionEndPointChangeAgentModificationTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
     private CollectionEndPoint _endPointMock;
     private IEndPoint _oldEndPointMock;
     private IEndPoint _newEndPointMock;
-    private CollectionEndPointModification _modification;
+    private CollectionEndPointChangeAgentModification _modification;
     private RelationEndPointID _id;
     private CollectionEndPointChangeAgent _changeAgentMock;
 
@@ -48,9 +49,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _oldEndPointMock = _mockRepository.Stub<IEndPoint>();
       _newEndPointMock = _mockRepository.Stub<IEndPoint>();
       _changeAgentMock = _mockRepository.StrictMock<CollectionEndPointChangeAgent>(new DomainObjectCollection(), _oldEndPointMock, _newEndPointMock,
-          CollectionEndPointChangeAgent.OperationType.Add, 0);
+                                                                                   CollectionEndPointChangeAgent.OperationType.Add, 0);
 
-      _modification = new CollectionEndPointModification (_endPointMock, _changeAgentMock);
+      _modification = new CollectionEndPointChangeAgentModification (_endPointMock, _changeAgentMock);
     }
 
     [Test]
@@ -66,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Initialization_FromEndPoint_Add ()
     {
       RelationEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
-      CollectionEndPointModification modification = (CollectionEndPointModification) endPoint.CreateModification (RelationEndPoint.CreateNullRelationEndPoint (_id.Definition), _newEndPointMock);
+      CollectionEndPointChangeAgentModification modification = (CollectionEndPointChangeAgentModification) endPoint.CreateModification (RelationEndPoint.CreateNullRelationEndPoint (_id.Definition), _newEndPointMock);
       Assert.AreSame (endPoint, modification.AffectedEndPoint);
       Assert.AreSame (_newEndPointMock, modification.NewEndPoint);
       Assert.AreSame (modification.NewEndPoint, modification.ChangeAgent.NewEndPoint);
@@ -79,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Initialization_FromEndPoint_Remove ()
     {
       RelationEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
-      CollectionEndPointModification modification = (CollectionEndPointModification) endPoint.CreateModification (_oldEndPointMock, RelationEndPoint.CreateNullRelationEndPoint (_id.Definition));
+      CollectionEndPointChangeAgentModification modification = (CollectionEndPointChangeAgentModification) endPoint.CreateModification (_oldEndPointMock, RelationEndPoint.CreateNullRelationEndPoint (_id.Definition));
       Assert.AreSame (endPoint, modification.AffectedEndPoint);
       Assert.AreSame (_oldEndPointMock, modification.OldEndPoint);
       Assert.AreSame (modification.OldEndPoint, modification.ChangeAgent.OldEndPoint);
@@ -92,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Initialization_FromEndPoint_Insert ()
     {
       CollectionEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
-      CollectionEndPointModification modification = (CollectionEndPointModification) endPoint.CreateInsertModification (_oldEndPointMock, _newEndPointMock, 3);
+      CollectionEndPointChangeAgentModification modification = (CollectionEndPointChangeAgentModification) endPoint.CreateInsertModification (_oldEndPointMock, _newEndPointMock, 3);
       Assert.AreSame (endPoint, modification.AffectedEndPoint);
       Assert.AreSame (_oldEndPointMock, modification.OldEndPoint);
       Assert.AreSame (modification.OldEndPoint, modification.ChangeAgent.OldEndPoint);
@@ -106,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void Initialization_FromEndPoint_Replace ()
     {
       CollectionEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
-      CollectionEndPointModification modification = (CollectionEndPointModification) endPoint.CreateReplaceModification (_oldEndPointMock, _newEndPointMock);
+      CollectionEndPointChangeAgentModification modification = (CollectionEndPointChangeAgentModification) endPoint.CreateReplaceModification (_oldEndPointMock, _newEndPointMock);
       Assert.AreSame (endPoint, modification.AffectedEndPoint);
       Assert.AreSame (_oldEndPointMock, modification.OldEndPoint);
       Assert.AreSame (modification.OldEndPoint, modification.ChangeAgent.OldEndPoint);
@@ -198,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void ExecuteAllSteps ()
     {
-      CollectionEndPointModification modificationMock = _mockRepository.StrictMock<CollectionEndPointModification> (_endPointMock, _changeAgentMock);
+      CollectionEndPointChangeAgentModification modificationMock = _mockRepository.StrictMock<CollectionEndPointChangeAgentModification> (_endPointMock, _changeAgentMock);
 
       modificationMock.NotifyClientTransactionOfBegin ();
       modificationMock.Begin ();

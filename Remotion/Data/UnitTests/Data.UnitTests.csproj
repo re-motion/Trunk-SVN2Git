@@ -333,9 +333,9 @@
     <Compile Include="DomainObjects\Security\TestDomain\SecurableObject.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\StubStorageProvider.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\TestAccessTypes.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointModificationTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\NullEndPointModificationTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\ObjectEndPointModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointChangeAgentModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\NullEndPointModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\RepositoryAccessorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectGraphTraverserTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\MultiTransactionTest.cs" />
@@ -472,7 +472,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\UpdateCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InsertCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\QueryCommandBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPointModificationCollectionTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\RelationEndPointModificationCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\RhinoMocksRepositoryAdapter.cs" />
     <Compile Include="DomainObjects\Core\Serialization\CollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\DomainObjectCollectionTest.cs" />

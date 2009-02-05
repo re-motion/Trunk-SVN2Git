@@ -17,7 +17,7 @@ using System;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   public abstract class RelationEndPointModification
   {

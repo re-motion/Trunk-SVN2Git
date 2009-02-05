@@ -149,13 +149,13 @@
     <Compile Include="DataManagement\CollectionDataManagement\IDomainObjectCollectionEventRaiser.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\ReadOnlyCollectionDataDecorator.cs" />
     <Compile Include="DataManagement\CollectionDataManagement\TypeCheckingCollectionDataDecorator.cs" />
-    <Compile Include="DataManagement\RelationEndPointModifier.cs" />
+    <Compile Include="DataManagement\EndPointModifications\RelationEndPointModifier.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
-    <Compile Include="DataManagement\CollectionEndPointModification.cs" />
-    <Compile Include="DataManagement\RelationEndPointModificationCollection.cs" />
-    <Compile Include="DataManagement\NullEndPointModification.cs" />
-    <Compile Include="DataManagement\ObjectEndPointModification.cs" />
-    <Compile Include="DataManagement\RelationEndPointModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\CollectionEndPointChangeAgentModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\RelationEndPointModificationCollection.cs" />
+    <Compile Include="DataManagement\EndPointModifications\NullEndPointModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\ObjectEndPointModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\RelationEndPointModification.cs" />
     <Compile Include="DBStorageGroupAttribute.cs" />
     <Compile Include="Design\DomainObjectsDesignModeHelper.cs">
       <SubType>Code</SubType>
@@ -342,7 +342,7 @@
     <Compile Include="DataManagement\CollectionEndPoint.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataManagement\CollectionEndPointChangeAgent.cs">
+    <Compile Include="DataManagement\EndPointModifications\CollectionEndPointChangeAgent.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataManagement\DataContainerCollection.cs">

@@ -15,21 +15,38 @@
 // 
 using System;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
-  public class ObjectEndPointModification : RelationEndPointModification
+  public class NullEndPointModification : RelationEndPointModification
   {
-    private readonly ObjectEndPoint _affectedEndPoint;
-
-    public ObjectEndPointModification (ObjectEndPoint affectedEndPoint, IEndPoint oldEndPoint, IEndPoint newEndPoint)
+    public NullEndPointModification (RelationEndPoint affectedEndPoint, IEndPoint oldEndPoint, IEndPoint newEndPoint)
         : base (affectedEndPoint, oldEndPoint, newEndPoint)
     {
-      _affectedEndPoint = affectedEndPoint;
+    }
+
+    public override void Begin ()
+    {
+      // do nothing
     }
 
     public override void Perform ()
     {
-      _affectedEndPoint.SetOppositeObjectID (this);
+      // do nothing
+    }
+
+    public override void End ()
+    {
+      // do nothing
+    }
+
+    public override void NotifyClientTransactionOfBegin ()
+    {
+      // do nothing
+    }
+
+    public override void NotifyClientTransactionOfEnd ()
+    {
+      // do nothing
     }
   }
 }

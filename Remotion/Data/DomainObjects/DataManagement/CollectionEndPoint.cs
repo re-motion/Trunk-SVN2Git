@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -207,27 +208,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override RelationEndPointModification CreateModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
     {
-      return new CollectionEndPointModification (
+      return new CollectionEndPointChangeAgentModification (
           this,
           CollectionEndPointChangeAgent.CreateForAddOrRemove (_oppositeDomainObjects, oldEndPoint, newEndPoint));
     }
 
     public virtual RelationEndPointModification CreateInsertModification (IEndPoint oldEndPoint, IEndPoint newEndPoint, int index)
     {
-      return new CollectionEndPointModification (
+      return new CollectionEndPointChangeAgentModification (
           this,
           CollectionEndPointChangeAgent.CreateForInsert (_oppositeDomainObjects, oldEndPoint, newEndPoint, index));
     }
 
     public virtual RelationEndPointModification CreateReplaceModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
     {
-      return new CollectionEndPointModification (
+      return new CollectionEndPointChangeAgentModification (
           this,
           CollectionEndPointChangeAgent.CreateForReplace (
               _oppositeDomainObjects, oldEndPoint, newEndPoint, _oppositeDomainObjects.IndexOf (oldEndPoint.GetDomainObject())));
     }
 
-    public virtual void PerformRelationChange (CollectionEndPointModification modification)
+    public virtual void PerformRelationChange (CollectionEndPointChangeAgentModification modification)
     {
       ArgumentUtility.CheckNotNull ("modification", modification);
 
