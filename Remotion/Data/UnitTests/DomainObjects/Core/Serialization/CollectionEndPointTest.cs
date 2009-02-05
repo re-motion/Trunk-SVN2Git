@@ -77,8 +77,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjects.Contains (DomainObjectIDs.OrderItem2));
       Assert.IsTrue (deserializedEndPoint.OriginalOppositeDomainObjects.IsReadOnly);
       Assert.AreSame (deserializedEndPoint, deserializedEndPoint.OriginalOppositeDomainObjects.ChangeDelegate);
-
-      Assert.IsNull (deserializedEndPoint.ChangeDelegate);
     }
 
     [Test]
@@ -160,6 +158,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var deserializedMap = deserializedTransactionMock.DataManager.RelationEndPointMap;
       var deserializedCollectionEndPoint = (CollectionEndPoint) deserializedMap.GetRelationEndPointWithLazyLoad (_endPoint.ID);
       Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.SameAs (deserializedMap));
+    }
+
+    [Test]
+    public void Serialization_WithCustomChangeDelegate ()
+    {
+      var endPoint = new CollectionEndPoint (ClientTransactionMock, _endPoint.ID, new DomainObjectCollection(), new FakeChangeDelegate ());
+
+      var deserializedCollectionEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
+      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.Not.Null);
+      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.Not.InstanceOfType (typeof (RelationEndPointMap)));
+      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.InstanceOfType (typeof (FakeChangeDelegate)));
+    }
+
+    [Test]
+    public void Serialization_IntegrationWithRelationEndPointMap_WithCustomChangeDelegate ()
+    {
+      PrivateInvoke.SetNonPublicField (_endPoint, "_changeDelegate", new FakeChangeDelegate ());
+
+      var deserializedTransactionMock = Serializer.SerializeAndDeserialize (ClientTransactionMock);
+      var deserializedMap = deserializedTransactionMock.DataManager.RelationEndPointMap;
+      var deserializedCollectionEndPoint = (CollectionEndPoint) deserializedMap.GetRelationEndPointWithLazyLoad (_endPoint.ID);
+      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.Not.SameAs (deserializedMap));
+      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.Not.Null);
+      Assert.That (deserializedCollectionEndPoint.ChangeDelegate, Is.InstanceOfType (typeof (FakeChangeDelegate)));
     }
   }
 }

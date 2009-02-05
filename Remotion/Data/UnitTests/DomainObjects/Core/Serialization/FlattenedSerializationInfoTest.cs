@@ -369,5 +369,71 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual ("'twas brillig, and the slithy toves", ((FlattenedSerializableStub) deserializedStubs[1]).Data1);
       Assert.AreEqual (124, ((FlattenedSerializableStub) deserializedStubs[1]).Data2);
     }
+
+    [Test]
+    public void SignalDeserializationFinished ()
+    {
+      var serializationInfo = new FlattenedSerializationInfo ();
+      serializationInfo.AddValue (1);
+      serializationInfo.AddValue (2);
+      serializationInfo.AddValue ("three");
+
+      bool deserializationFinishedCalled = false;
+      object deserializationFinishedSender = null;
+
+      var deserializationInfo = new FlattenedDeserializationInfo (serializationInfo.GetData ());
+      deserializationInfo.DeserializationFinished += (sender, args) => { deserializationFinishedCalled = true; deserializationFinishedSender = sender; };
+
+      var o = deserializationInfo.GetValue<object> ();
+      Assert.That (o, Is.EqualTo (1));
+
+      o = deserializationInfo.GetValue<object> ();
+      Assert.That (o, Is.EqualTo (2));
+
+      o = deserializationInfo.GetValue<object> ();
+      Assert.That (o, Is.EqualTo ("three"));
+      Assert.That (deserializationFinishedCalled, Is.False);
+
+      deserializationInfo.SignalDeserializationFinished ();
+
+      Assert.That (deserializationFinishedCalled, Is.True);
+      Assert.That (deserializationFinishedSender, Is.SameAs (deserializationInfo));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot signal DeserializationFinished when there is still integer data"
+        + " left to deserialize.")]
+    public void SignalDeserializationFinished_BeforeIntStreamFinished ()
+    {
+      var serializationInfo = new FlattenedSerializationInfo ();
+      serializationInfo.AddIntValue (1);
+
+      var deserializationInfo = new FlattenedDeserializationInfo (serializationInfo.GetData ());
+      deserializationInfo.SignalDeserializationFinished ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot signal DeserializationFinished when there is still boolean data"
+        + " left to deserialize.")]
+    public void SignalDeserializationFinished_BeforeBoolStreamFinished ()
+    {
+      var serializationInfo = new FlattenedSerializationInfo ();
+      serializationInfo.AddBoolValue (true);
+
+      var deserializationInfo = new FlattenedDeserializationInfo (serializationInfo.GetData ());
+      deserializationInfo.SignalDeserializationFinished ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot signal DeserializationFinished when there is still object data"
+        + " left to deserialize.")]
+    public void SignalDeserializationFinished_BeforeObjectStreamFinished ()
+    {
+      var serializationInfo = new FlattenedSerializationInfo ();
+      serializationInfo.AddValue (DateTime.Now);
+
+      var deserializationInfo = new FlattenedDeserializationInfo (serializationInfo.GetData ());
+      deserializationInfo.SignalDeserializationFinished ();
+    }
   }
 }

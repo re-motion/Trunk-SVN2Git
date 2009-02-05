@@ -332,6 +332,7 @@ public class DataManager : ISerializable, IDeserializationCallback
       _discardedDataContainers.Add (discardedIDs[i], discardedContainers[i]);
 
     _deserializedData = null;
+    doInfo.SignalDeserializationFinished ();
   }
 
   void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)

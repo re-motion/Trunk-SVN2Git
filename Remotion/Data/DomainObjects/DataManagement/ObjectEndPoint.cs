@@ -80,11 +80,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // methods and properties
 
-    protected internal override void RegisterWithMap (RelationEndPointMap map)
-    {
-      // Nothing to do here.
-    }
-
     public override RelationEndPoint Clone (ClientTransaction clientTransaction)
     {
       var clone = new ObjectEndPoint (clientTransaction, ID, null);

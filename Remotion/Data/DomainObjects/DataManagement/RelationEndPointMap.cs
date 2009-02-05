@@ -203,7 +203,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
       var collectionEndPoint = new CollectionEndPoint (_clientTransaction, endPointID, domainObjects, this);
-      collectionEndPoint.RegisterWithMap (this);
       Add (collectionEndPoint);
     }
 
@@ -410,6 +409,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     #region Serialization
 
+    // Note: RelationEndPointMap should never be serialized on its own; always start from the DataManager.
     protected RelationEndPointMap (FlattenedDeserializationInfo info)
         : this (info.GetValueForHandle<ClientTransaction>())
     {
@@ -418,10 +418,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         RelationEndPoint[] endPointArray = info.GetArray<RelationEndPoint>();
         foreach (RelationEndPoint endPoint in endPointArray)
-        {
-          endPoint.RegisterWithMap (this);
           _relationEndPoints.Add (endPoint);
-        }
       }
     }
 

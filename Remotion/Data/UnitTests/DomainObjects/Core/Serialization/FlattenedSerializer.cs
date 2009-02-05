@@ -31,30 +31,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public static T Deserialize<T> (object[] data) where T : IFlattenedSerializable
     {
       FlattenedDeserializationInfo info = new FlattenedDeserializationInfo (data);
-      return info.GetValue<T>();
+      var value = info.GetValue<T>();
+      info.SignalDeserializationFinished ();
+      return value;
     }
 
     public static T SerializeAndDeserialize<T> (T serializable) where T : IFlattenedSerializable
     {
       return Deserialize<T> (Serialize (serializable));
-    }
-
-    public static object[] SerializeHandle (IFlattenedSerializable serializable)
-    {
-      FlattenedSerializationInfo info = new FlattenedSerializationInfo ();
-      info.AddHandle (serializable);
-      return info.GetData ();
-    }
-
-    public static T DeserializeHandle<T> (object[] data) where T : IFlattenedSerializable
-    {
-      FlattenedDeserializationInfo info = new FlattenedDeserializationInfo (data);
-      return info.GetValueForHandle<T> ();
-    }
-
-    public static T SerializeAndDeserializeHandle<T> (T serializable) where T : IFlattenedSerializable
-    {
-      return DeserializeHandle<T>(SerializeHandle(serializable));
     }
   }
 }

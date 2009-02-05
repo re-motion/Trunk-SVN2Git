@@ -15,6 +15,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
@@ -60,6 +61,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (2, reader.ReadValue ());
       Assert.AreEqual (3, reader.ReadValue ());
       reader.ReadValue ();
+    }
+
+    [Test]
+    public void EndReached_False ()
+    {
+      FlattenedSerializationReader<int> reader = new FlattenedSerializationReader<int> (new int[] { 1, 2, 3 });
+      Assert.That (reader.EndReached, Is.False);
+      reader.ReadValue ();
+      Assert.That (reader.EndReached, Is.False);
+      reader.ReadValue ();
+      Assert.That (reader.EndReached, Is.False);
+    }
+
+    [Test]
+    public void EndReached_True ()
+    {
+      FlattenedSerializationReader<int> reader = new FlattenedSerializationReader<int> (new int[] { 1, 2, 3 });
+      reader.ReadValue ();
+      reader.ReadValue ();
+      reader.ReadValue ();
+      Assert.That (reader.EndReached, Is.True);
+    }
+
+    [Test]
+    public void EndReached_Empty ()
+    {
+      FlattenedSerializationReader<int> reader = new FlattenedSerializationReader<int> (new int[0]);
+      Assert.That (reader.EndReached, Is.True);
     }
   }
 }

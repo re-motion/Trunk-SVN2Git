@@ -16,6 +16,7 @@
 using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -52,14 +53,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       Assert.AreEqual (5, map.Count);
 
-      RelationEndPointMap deserializedMap = FlattenedSerializer.SerializeAndDeserialize (map);
-      Assert.AreEqual (ClientTransactionMock, PrivateInvoke.GetNonPublicField (deserializedMap, "_clientTransaction"));
-      Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedMap, "_transactionEventSink"));
+      var deserializedMap = Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager).RelationEndPointMap;
+
+      Assert.That (deserializedMap.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedMap.ClientTransaction, Is.InstanceOfType (typeof (ClientTransactionMock)));
+      Assert.That (deserializedMap.ClientTransaction, Is.Not.SameAs (ClientTransactionMock));
+      Assert.That (PrivateInvoke.GetNonPublicField (deserializedMap, "_transactionEventSink"), 
+          Is.SameAs (PrivateInvoke.GetNonPublicProperty (deserializedMap.ClientTransaction, "TransactionEventSink")));
       Assert.AreEqual (5, deserializedMap.Count);
 
-      CollectionEndPoint collectionEndPoint = (CollectionEndPoint)
+      var collectionEndPoint = (CollectionEndPoint)
           deserializedMap[new RelationEndPointID (DomainObjectIDs.Order1, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Order), "OrderItems"))];
-      Assert.AreSame (deserializedMap, collectionEndPoint.ChangeDelegate);
+
+      Assert.That (collectionEndPoint.ClientTransaction, Is.SameAs (deserializedMap.ClientTransaction));
+      Assert.That (collectionEndPoint.ChangeDelegate, Is.SameAs (deserializedMap));
     }
   }
 }

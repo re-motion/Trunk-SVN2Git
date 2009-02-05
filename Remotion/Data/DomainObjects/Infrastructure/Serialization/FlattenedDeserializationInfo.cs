@@ -24,6 +24,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 {
   public class FlattenedDeserializationInfo
   {
+    public event EventHandler DeserializationFinished;
+
     private readonly FlattenedSerializationReader<object> _objectReader;
     private readonly FlattenedSerializationReader<int> _intReader;
     private readonly FlattenedSerializationReader<bool> _boolReader;
@@ -138,6 +140,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
         else
           return CastValue<T> (objectValue, _objectReader.ReadPosition, "Object");
       }
+    }
+
+    public void SignalDeserializationFinished ()
+    {
+      if (!_intReader.EndReached)
+        throw new InvalidOperationException ("Cannot signal DeserializationFinished when there is still integer data left to deserialize.");
+      if (!_boolReader.EndReached)
+        throw new InvalidOperationException ("Cannot signal DeserializationFinished when there is still boolean data left to deserialize.");
+      if (!_objectReader.EndReached)
+        throw new InvalidOperationException ("Cannot signal DeserializationFinished when there is still object data left to deserialize.");
+
+      if (DeserializationFinished != null)
+        DeserializationFinished (this, EventArgs.Empty);
     }
   }
 }

@@ -108,7 +108,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // abstract methods and properties
 
-    protected internal abstract void RegisterWithMap (RelationEndPointMap map); // TODO: Get rid of this method.
     public abstract RelationEndPoint Clone (ClientTransaction clientTransaction);
     protected internal abstract void AssumeSameState (RelationEndPoint source);
     protected internal abstract void TakeOverCommittedData (RelationEndPoint source);

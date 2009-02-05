@@ -35,6 +35,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
       get { return _readPosition; }
     }
 
+    public bool EndReached
+    {
+      get { return _readPosition == _data.Length; }
+    }
+
     public T ReadValue ()
     {
       if (_readPosition >= _data.Length)

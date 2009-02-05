@@ -150,11 +150,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched |= sourceCollectionEndPoint._hasBeenTouched || HasChanged;
     }
 
-    protected internal override void RegisterWithMap (RelationEndPointMap map)
-    {
-      ChangeDelegate = map;
-    }
-
     public override void Commit ()
     {
       if (HasChanged)
@@ -264,11 +259,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public ICollectionEndPointChangeDelegate ChangeDelegate
     {
       get { return _changeDelegate; }
-      set
-      {
-        ArgumentUtility.CheckNotNull ("value", value);
-        _changeDelegate = value;
-      }
     }
 
     #region ICollectionChangeDelegate Members
@@ -315,6 +305,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _oppositeDomainObjects.ChangeDelegate = this;
       _originalOppositeDomainObjectsReference = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue ();
+      _changeDelegate = info.GetValueForHandle<ICollectionEndPointChangeDelegate> ();
+
+      // if _changeDelegate == null, we didn't serialize the back-reference to the RelationEndPointMap, so get it from the ClientTransaction
+      // only do that after deserialization has finished
+      if (_changeDelegate == null)
+        info.DeserializationFinished += ((sender, args) => _changeDelegate = ClientTransaction.DataManager.RelationEndPointMap);
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -323,6 +319,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_oppositeDomainObjects);
       info.AddHandle (_originalOppositeDomainObjectsReference);
       info.AddBoolValue (_hasBeenTouched);
+
+      // cannot serialize back-references, therefore, we only add the ChangeDelegate if it is not the (default) back-reference to 
+      // ClientTransaction.DataManager.RelationEndPointMap
+      info.AddHandle (_changeDelegate == ClientTransaction.DataManager.RelationEndPointMap ? null : _changeDelegate);
     }
 
     #endregion
