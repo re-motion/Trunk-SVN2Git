@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.IsFalse (_endPoint.HasBeenTouched);
       _endPoint.SetOppositeObjectID (
-          (ObjectEndPointModification) _endPoint.CreateModification (new NullObjectEndPoint (_endPoint.OppositeEndPointDefinition)));
+          (ObjectEndPointModification) _endPoint.CreateDeleteModification (new NullObjectEndPoint (_endPoint.OppositeEndPointDefinition)));
       Assert.IsTrue (_endPoint.HasBeenTouched);
     }
 
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _endPoint.OppositeObjectID = DomainObjectIDs.Order1;
       Assert.IsNotNull (_endPoint.OppositeObjectID);
-      _endPoint.CreateModification (ObjectEndPoint.CreateNullRelationEndPoint (_endPoint.OppositeEndPointDefinition)).Perform();
+      _endPoint.CreateDeleteModification (ObjectEndPoint.CreateNullRelationEndPoint (_endPoint.OppositeEndPointDefinition)).Perform();
       Assert.IsNull (_endPoint.OppositeObjectID);
     }
 

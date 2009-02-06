@@ -157,13 +157,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override RelationEndPointModification CreateModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
     {
-      return new ObjectEndPointModification (this, oldEndPoint, newEndPoint);
+      ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
+      ArgumentUtility.CheckNotNull ("newEndPoint", newEndPoint);
+
+      return new ObjectEndPointModification (this, oldEndPoint.GetDomainObject (), newEndPoint.GetDomainObject ());
+    }
+
+    public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)
+    {
+      ArgumentUtility.CheckNotNull ("endPointBeingDeleted", endPointBeingDeleted);
+      return new ObjectEndPointModification (this, endPointBeingDeleted.GetDomainObject (), null);
     }
 
     public virtual void SetOppositeObjectID (ObjectEndPointModification modification)
     {
       ArgumentUtility.CheckNotNull ("modification", modification);
-      SetOppositeObjectID (modification.NewEndPoint.ObjectID);
+      var id = modification.NewRelatedObject == null ? null : modification.NewRelatedObject.ID;
+      SetOppositeObjectID (id);
     }
 
     public override void PerformDelete ()

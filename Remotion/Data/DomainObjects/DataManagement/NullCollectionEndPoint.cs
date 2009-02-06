@@ -40,23 +40,26 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override RelationEndPointModification CreateModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
     {
-      return new NullEndPointModification (this, oldEndPoint, newEndPoint);
+      return new NullEndPointModification (this, oldEndPoint.GetDomainObject (), newEndPoint.GetDomainObject ());
+    }
+
+    public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)
+    {
+      return new NullEndPointModification (this, endPointBeingDeleted.GetDomainObject (), null);
     }
 
     public override RelationEndPointModification CreateInsertModification (IEndPoint oldEndPoint, IEndPoint newEndPoint, int index)
     {
-      return new NullEndPointModification (this, oldEndPoint, newEndPoint);
+      return new NullEndPointModification (this, oldEndPoint.GetDomainObject (), newEndPoint.GetDomainObject ());
     }
 
     public override RelationEndPointModification CreateReplaceModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
     {
-      return new NullEndPointModification (this, oldEndPoint, newEndPoint);
+      return new NullEndPointModification (this, oldEndPoint.GetDomainObject (), newEndPoint.GetDomainObject ());
     }
 
-    public override void NotifyClientTransactionOfBeginRelationChange (IEndPoint oldEndPoint, IEndPoint newEndPoint)
+    public override void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
-      ArgumentUtility.CheckNotNull ("newEndPoint", newEndPoint);
     }
 
     public override void NotifyClientTransactionOfEndRelationChange ()

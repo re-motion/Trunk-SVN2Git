@@ -18,13 +18,14 @@ using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  // TODO: Remove this class.
   public class CollectionEndPointChangeAgentModification : RelationEndPointModification
   {
     private readonly CollectionEndPointChangeAgent _changeAgent;
     private readonly CollectionEndPoint _affectedEndPoint;
 
     public CollectionEndPointChangeAgentModification (CollectionEndPoint affectedEndPoint, CollectionEndPointChangeAgent changeAgent)
-        : base (affectedEndPoint, changeAgent.OldEndPoint, changeAgent.NewEndPoint)
+        : base (affectedEndPoint, changeAgent.OldEndPoint.GetDomainObject (), changeAgent.NewEndPoint.GetDomainObject ())
     {
       _affectedEndPoint = affectedEndPoint;
       _changeAgent = changeAgent;

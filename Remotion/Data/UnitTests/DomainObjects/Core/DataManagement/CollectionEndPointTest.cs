@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.AreEqual (_customerEndPoint.OriginalOppositeDomainObjects.Count, _customerEndPoint.OppositeDomainObjects.Count);
 
-      var modification = _customerEndPoint.CreateModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
+      var modification = _customerEndPoint.CreateDeleteModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
       modification.Begin ();
       modification.Perform ();
       modification.End ();
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreEqual (_customerEndPoint.OriginalOppositeDomainObjects.Count, _customerEndPoint.OppositeDomainObjects.Count);
 
       var modification =
-          _customerEndPoint.CreateModification (
+          _customerEndPoint.CreateDeleteModification (
               CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
       modification.Perform();
 
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.AreEqual (_customerEndPoint.OriginalOppositeDomainObjects.Count, _customerEndPoint.OppositeDomainObjects.Count);
 
-      var modification = _customerEndPoint.CreateModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
+      var modification = _customerEndPoint.CreateDeleteModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
       modification.Begin ();
       _customerEndPoint.PerformDelete ();
       modification.End ();

@@ -17,10 +17,11 @@ using System;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
+  // TODO: check for usages 
   public class NullEndPointModification : RelationEndPointModification
   {
-    public NullEndPointModification (RelationEndPoint affectedEndPoint, IEndPoint oldEndPoint, IEndPoint newEndPoint)
-        : base (affectedEndPoint, oldEndPoint, newEndPoint)
+    public NullEndPointModification (RelationEndPoint affectedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+        : base (affectedEndPoint, oldRelatedObject, newRelatedObject)
     {
     }
 

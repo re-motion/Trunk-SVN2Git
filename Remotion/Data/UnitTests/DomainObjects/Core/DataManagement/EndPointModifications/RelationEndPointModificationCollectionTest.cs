@@ -29,11 +29,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
   {
     private MockRepository _mockRepository;
     private ObjectEndPoint _endPointMock;
-    private IEndPoint _oldEndPointMock;
-    private IEndPoint _newEndPointMock;
     private RelationEndPointModification _modificationMock1;
     private RelationEndPointModification _modificationMock2;
     private RelationEndPointModification _modificationMock3;
+    private Order _oldRelatedObject;
+    private Order _newRelatedObject;
     private RelationEndPointModificationCollection _collection;
     private RelationEndPointID _id;
 
@@ -46,12 +46,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
           MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
 
       _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
-      _oldEndPointMock = _mockRepository.StrictMock<IEndPoint> ();
-      _newEndPointMock = _mockRepository.StrictMock<IEndPoint> ();
 
-      _modificationMock1 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
-      _modificationMock2 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
-      _modificationMock3 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
+      _oldRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
+      _newRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
+
+      _modificationMock1 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
+      _modificationMock2 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
+      _modificationMock3 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
 
       _collection = new RelationEndPointModificationCollection (_modificationMock1, _modificationMock2, _modificationMock3);
     }

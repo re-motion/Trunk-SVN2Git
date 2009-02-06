@@ -21,10 +21,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   {
     private readonly ObjectEndPoint _affectedEndPoint;
 
-    public ObjectEndPointModification (ObjectEndPoint affectedEndPoint, IEndPoint oldEndPoint, IEndPoint newEndPoint)
-        : base (affectedEndPoint, oldEndPoint, newEndPoint)
+    public ObjectEndPointModification (ObjectEndPoint modifiedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+        : base (modifiedEndPoint, oldRelatedObject, newRelatedObject)
     {
-      _affectedEndPoint = affectedEndPoint;
+      if (modifiedEndPoint.IsNull)
+        throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
+
+      _affectedEndPoint = modifiedEndPoint;
     }
 
     public override void Perform ()

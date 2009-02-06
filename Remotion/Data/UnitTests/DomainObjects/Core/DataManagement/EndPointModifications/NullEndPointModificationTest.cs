@@ -29,8 +29,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
   {
     private MockRepository _mockRepository;
     private ObjectEndPoint _endPointMock;
-    private IEndPoint _oldEndPointMock;
-    private IEndPoint _newEndPointMock;
+    private IEndPoint _oldEndPointStub;
+    private IEndPoint _newEndPointStub;
+    private Order _oldRelatedObject;
+    private Order _newRelatedObject;
     private NullEndPointModification _modification;
     private RelationEndPointID _id;
 
@@ -43,45 +45,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
           MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
 
       _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
-      _oldEndPointMock = _mockRepository.StrictMock<IEndPoint> ();
-      _newEndPointMock = _mockRepository.StrictMock<IEndPoint> ();
 
-      _modification = new NullEndPointModification (_endPointMock, _oldEndPointMock, _newEndPointMock);
+      _oldRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
+      _newRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
+
+      _oldEndPointStub = _mockRepository.Stub<IEndPoint> ();
+      _newEndPointStub = _mockRepository.Stub<IEndPoint> ();
+      _oldEndPointStub.Stub (stub => stub.GetDomainObject ()).Return (_oldRelatedObject);
+      _newEndPointStub.Stub (stub => stub.GetDomainObject ()).Return (_newRelatedObject);
+      _oldEndPointStub.Replay ();
+      _newEndPointStub.Replay ();
+
+      _modification = new NullEndPointModification (_endPointMock, _oldRelatedObject, _newRelatedObject);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.AreSame (_endPointMock, _modification.AffectedEndPoint);
-      Assert.AreSame (_oldEndPointMock, _modification.OldEndPoint);
-      Assert.AreSame (_newEndPointMock, _modification.NewEndPoint);
+      Assert.AreSame (_endPointMock, _modification.ModifiedEndPoint);
+      Assert.AreSame (_oldRelatedObject, _modification.OldRelatedObject);
+      Assert.AreSame (_newRelatedObject, _modification.NewRelatedObject);
     }
 
     [Test]
     public void Initialization_FromNullObjectEndPoint ()
     {
       RelationEndPoint endPoint = new NullObjectEndPoint (_id.Definition);
-      RelationEndPointModification modification = endPoint.CreateModification (_oldEndPointMock, _newEndPointMock);
+      RelationEndPointModification modification = endPoint.CreateModification (_oldEndPointStub, _newEndPointStub);
       Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
-      Assert.AreSame (endPoint, modification.AffectedEndPoint);
-      Assert.AreSame (_oldEndPointMock, modification.OldEndPoint);
-      Assert.AreSame (_newEndPointMock, modification.NewEndPoint);
+      Assert.AreSame (endPoint, modification.ModifiedEndPoint);
+      Assert.AreSame (_oldRelatedObject, modification.OldRelatedObject);
+      Assert.AreSame (_newRelatedObject, modification.NewRelatedObject);
     }
 
     [Test]
     public void Initialization_FromNullCollectionEndPoint ()
     {
       NullCollectionEndPoint endPoint = new NullCollectionEndPoint (_id.Definition);
-      RelationEndPointModification modification = endPoint.CreateModification (_oldEndPointMock, _newEndPointMock);
+      RelationEndPointModification modification = endPoint.CreateModification (_oldEndPointStub, _newEndPointStub);
       Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
-      Assert.AreSame (endPoint, modification.AffectedEndPoint);
-      Assert.AreSame (_oldEndPointMock, modification.OldEndPoint);
-      Assert.AreSame (_newEndPointMock, modification.NewEndPoint);
+      Assert.AreSame (endPoint, modification.ModifiedEndPoint);
+      Assert.AreSame (_oldRelatedObject, modification.OldRelatedObject);
+      Assert.AreSame (_newRelatedObject, modification.NewRelatedObject);
 
-      modification = endPoint.CreateInsertModification (_oldEndPointMock, _newEndPointMock, 0);
+      modification = endPoint.CreateInsertModification (_oldEndPointStub, _newEndPointStub, 0);
       Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
 
-      modification = endPoint.CreateReplaceModification (_oldEndPointMock, _newEndPointMock);
+      modification = endPoint.CreateReplaceModification (_oldEndPointStub, _newEndPointStub);
       Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
     }
 
@@ -138,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void ExecuteAllSteps ()
     {
-      NullEndPointModification modificationMock = _mockRepository.StrictMock<NullEndPointModification> (_endPointMock, _oldEndPointMock, _newEndPointMock);
+      NullEndPointModification modificationMock = _mockRepository.StrictMock<NullEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
 
       modificationMock.NotifyClientTransactionOfBegin ();
       modificationMock.Begin ();

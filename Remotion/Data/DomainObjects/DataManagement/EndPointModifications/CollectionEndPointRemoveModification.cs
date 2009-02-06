@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this framework; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement;
 using Remotion.Utilities;
 
@@ -20,25 +21,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   public class CollectionEndPointRemoveModification : RelationEndPointModification
   {
-    private readonly CollectionEndPoint _collectionEndPoint;
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
-    private readonly DomainObject _removedObject;
     private readonly DomainObjectCollection _modifiedCollection;
 
-    public CollectionEndPointRemoveModification (CollectionEndPoint collectionEndPoint, IEndPoint endPointOfRemovedObject, IDomainObjectCollectionData collectionData)
-        : base (ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint),
-                ArgumentUtility.CheckNotNull ("endPointOfRemovedObject", endPointOfRemovedObject),
-                new NullObjectEndPoint(endPointOfRemovedObject.Definition))
+    public CollectionEndPointRemoveModification (CollectionEndPoint modifiedEndPoint, DomainObject removedObject, IDomainObjectCollectionData collectionData)
+        : base (
+            ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
+            ArgumentUtility.CheckNotNull ("removedObject", removedObject),
+            null)
     {
-      _collectionEndPoint = collectionEndPoint;
+      if (modifiedEndPoint.IsNull)
+        throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
+
       _modifiedCollectionData = collectionData;
-      _removedObject = OldEndPoint.GetDomainObject ();
-      _modifiedCollection = _collectionEndPoint.OppositeDomainObjects;
+      _modifiedCollection = modifiedEndPoint.OppositeDomainObjects;
     }
 
     public DomainObject RemovedObject
     {
-      get { return _removedObject; }
+      get { return OldRelatedObject; }
     }
 
     public DomainObjectCollection ModifiedCollection

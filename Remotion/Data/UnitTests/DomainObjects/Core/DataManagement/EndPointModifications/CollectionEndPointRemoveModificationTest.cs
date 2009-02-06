@@ -20,13 +20,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
   public class CollectionEndPointRemoveModificationTest : ClientTransactionBaseTest
   {
     private CollectionEndPoint _collectionEndPoint;
-    private IEndPoint _removedEndPointStub;
     private IDomainObjectCollectionData _collectionDataMock;
 
     private Customer _affectedObject;
     private Order _removedRelatedObject;
     private CollectionEndPointRemoveModification _modification;
     private DomainObjectCollectionEventReceiver _oppositeDomainObjectsEventReceiver;
+    private RelationEndPointID _id;
 
     public override void SetUp ()
     {
@@ -34,38 +34,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _affectedObject = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      var id = new RelationEndPointID (_affectedObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+      _id = new RelationEndPointID (_affectedObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       var oppositeDomainObjects = new DomainObjectCollection ();
       _oppositeDomainObjectsEventReceiver = new DomainObjectCollectionEventReceiver (oppositeDomainObjects);
-      _collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, id, oppositeDomainObjects, new FakeChangeDelegate ());
+      _collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _id, oppositeDomainObjects, new FakeChangeDelegate ());
 
       _removedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
-
-      _removedEndPointStub = MockRepository.GenerateStub<IEndPoint> ();
-      _removedEndPointStub.Stub (stub => stub.GetDomainObject ()).Return (_removedRelatedObject);
-
-      var relationEndPointDefinition = new RelationEndPointDefinition (
-          _removedRelatedObject.ID.ClassDefinition,
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", 
-          false);
-      _removedEndPointStub.Stub (stub => stub.Definition).Return (relationEndPointDefinition);
 
       _collectionDataMock = new MockRepository().StrictMock<IDomainObjectCollectionData> ();
       _collectionDataMock.Replay ();
 
-      _modification = new CollectionEndPointRemoveModification (_collectionEndPoint, _removedEndPointStub, _collectionDataMock);
+      _modification = new CollectionEndPointRemoveModification (_collectionEndPoint, _removedRelatedObject, _collectionDataMock);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_modification.AffectedEndPoint, Is.SameAs (_collectionEndPoint));
-      Assert.That (_modification.OldEndPoint, Is.SameAs (_removedEndPointStub));
+      Assert.That (_modification.ModifiedEndPoint, Is.SameAs (_collectionEndPoint));
+      Assert.That (_modification.OldRelatedObject, Is.SameAs (_removedRelatedObject));
       Assert.That (_modification.RemovedObject, Is.SameAs (_removedRelatedObject));
-      Assert.That (_modification.NewEndPoint.IsNull, Is.True);
-      Assert.That (_modification.NewEndPoint.Definition, Is.EqualTo (_removedEndPointStub.Definition));
+      Assert.That (_modification.NewRelatedObject, Is.Null);
       Assert.That (_modification.ModifiedCollection, Is.SameAs (_collectionEndPoint.OppositeDomainObjects));
       Assert.That (_modification.ModifiedCollectionData, Is.SameAs (_collectionDataMock));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModification is needed.\r\n"
+        + "Parameter name: modifiedEndPoint")]
+    public void Initialization_FromNullEndPoint ()
+    {
+      var endPoint = new NullCollectionEndPoint (_id.Definition);
+      new CollectionEndPointRemoveModification (endPoint, _removedRelatedObject, _collectionDataMock);
     }
 
     [Test]

@@ -89,6 +89,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new NotImplementedException();
     }
 
+    public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)
+    {
+      throw new System.NotImplementedException();
+    }
+
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
     }

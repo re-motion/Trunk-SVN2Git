@@ -120,25 +120,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public abstract void CheckMandatory ();
     public abstract void PerformDelete ();
     public abstract RelationEndPointModification CreateModification (IEndPoint oldEndPoint, IEndPoint newEndPoint);
+    public abstract RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted);
 
     // methods and properties
 
-    public RelationEndPointModification CreateModification (IEndPoint oldEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
-      return CreateModification (oldEndPoint, CreateNullRelationEndPoint (oldEndPoint.Definition));
-    }
 
-    public virtual void NotifyClientTransactionOfBeginRelationChange (IEndPoint oldEndPoint, IEndPoint newEndPoint)
+    public virtual void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
-      ArgumentUtility.CheckNotNull ("newEndPoint", newEndPoint);
-
-      _clientTransaction.TransactionEventSink.RelationChanging (
-          GetDomainObject(),
-          _definition.PropertyName,
-          oldEndPoint.GetDomainObject(),
-          newEndPoint.GetDomainObject());
+      _clientTransaction.TransactionEventSink.RelationChanging (GetDomainObject(), _definition.PropertyName, oldRelatedObject, newRelatedObject);
     }
 
     public virtual void NotifyClientTransactionOfEndRelationChange ()
