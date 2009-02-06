@@ -210,7 +210,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var changeAgent = CollectionEndPointChangeAgent.CreateForAddOrRemove (_oppositeDomainObjects, oldEndPoint, newEndPoint);
 
-      //TODO: Assertion.IsFalse (changeAgent.Operation == CollectionEndPointChangeAgent.OperationType.Remove);
+      Assertion.IsFalse (changeAgent.Operation == CollectionEndPointChangeAgent.OperationType.Remove); // TODO: This operation kind was moved to CreateDeleteModification, refactor this method.
 
       return new CollectionEndPointChangeAgentModification (
           this,
@@ -219,8 +219,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)
     {
-      return CreateModification (endPointBeingDeleted, RelationEndPoint.CreateNullRelationEndPoint (endPointBeingDeleted.Definition));
-      // TODO: return new CollectionEndPointRemoveModification (this, endPointBeingDeleted.GetDomainObject(), _oppositeDomainObjects._data);
+      return new CollectionEndPointRemoveModification (this, endPointBeingDeleted.GetDomainObject(), _oppositeDomainObjects._data);
     }
 
     public virtual RelationEndPointModification CreateInsertModification (IEndPoint oldEndPoint, IEndPoint newEndPoint, int index)

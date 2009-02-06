@@ -18,6 +18,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -792,6 +794,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (oldOpposites, Is.EqualTo (new[] { _order1 }));
       Assert.That (newOpposites, Is.EqualTo (new[] { _order2 }));
+    }
+
+    [Test]
+    public void CreateDeleteModification ()
+    {
+      var deletedEndPointStub = MockRepository.GenerateMock<IEndPoint> ();
+      deletedEndPointStub.Stub (stub => stub.IsNull).Return (false);
+      deletedEndPointStub.Stub (stub => stub.GetDomainObject()).Return (_order1);
+
+      var modification = _customerEndPoint.CreateDeleteModification (deletedEndPointStub);
+      Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (((CollectionEndPointRemoveModification) modification).RemovedObject, Is.SameAs (_order1));
+      Assert.That (((CollectionEndPointRemoveModification) modification).ModifiedCollectionData, 
+          Is.SameAs (PrivateInvoke.GetNonPublicField (_orders, typeof (DomainObjectCollection), "_data")));
     }
   }
 }

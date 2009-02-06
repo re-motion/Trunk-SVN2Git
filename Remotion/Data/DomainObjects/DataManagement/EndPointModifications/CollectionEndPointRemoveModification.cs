@@ -61,6 +61,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     public override void Perform ()
     {
       ModifiedCollectionData.Remove (RemovedObject.ID);
+      ModifiedEndPoint.Touch ();
     }
 
     public override void End ()

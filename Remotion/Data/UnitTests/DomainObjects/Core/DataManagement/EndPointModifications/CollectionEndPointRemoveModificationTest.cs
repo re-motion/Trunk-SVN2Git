@@ -22,7 +22,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     private CollectionEndPoint _collectionEndPoint;
     private IDomainObjectCollectionData _collectionDataMock;
 
-    private Customer _affectedObject;
+    private Customer _removedObject;
     private Order _removedRelatedObject;
     private CollectionEndPointRemoveModification _modification;
     private DomainObjectCollectionEventReceiver _oppositeDomainObjectsEventReceiver;
@@ -32,9 +32,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     {
       base.SetUp ();
 
-      _affectedObject = Customer.GetObject (DomainObjectIDs.Customer1);
+      _removedObject = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      _id = new RelationEndPointID (_affectedObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
+      _id = new RelationEndPointID (_removedObject.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       var oppositeDomainObjects = new DomainObjectCollection ();
       _oppositeDomainObjectsEventReceiver = new DomainObjectCollectionEventReceiver (oppositeDomainObjects);
       _collectionEndPoint = new CollectionEndPoint (ClientTransactionMock, _id, oppositeDomainObjects, new FakeChangeDelegate ());
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       bool relationChangingCalled = false;
       bool relationChangedCalled = false;
 
-      _affectedObject.RelationChanging += (sender, args) =>
+      _removedObject.RelationChanging += (sender, args) =>
       {
         relationChangingCalled = true;
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
         Assert.That (_oppositeDomainObjectsEventReceiver.RemovingDomainObjects, Is.EqualTo (new[] { _removedRelatedObject })); // collection got event first
       };
-      _affectedObject.RelationChanged += (sender, args) => relationChangedCalled = true;
+      _removedObject.RelationChanged += (sender, args) => relationChangedCalled = true;
       
       _modification.Begin ();
 
@@ -98,8 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       bool relationChangingCalled = false;
       bool relationChangedCalled = false;
 
-      _affectedObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      _affectedObject.RelationChanged += (sender, args) =>
+      _removedObject.RelationChanging += (sender, args) => relationChangingCalled = true;
+      _removedObject.RelationChanged += (sender, args) =>
       {
         relationChangedCalled = true;
 
@@ -120,8 +120,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       bool relationChangingCalled = false;
       bool relationChangedCalled = false;
 
-      _affectedObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      _affectedObject.RelationChanged += (sender, args) => relationChangedCalled = true;
+      _removedObject.RelationChanging += (sender, args) => relationChangingCalled = true;
+      _removedObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
       _collectionDataMock.BackToRecord();
       _collectionDataMock.Expect (mock => mock.Remove (_removedRelatedObject.ID));
@@ -135,6 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
       Assert.That (_oppositeDomainObjectsEventReceiver.RemovingDomainObjects, Is.Empty); // operation was not started
       Assert.That (_oppositeDomainObjectsEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
+      Assert.That (_collectionEndPoint.HasBeenTouched, Is.True);
     }
 
   }
