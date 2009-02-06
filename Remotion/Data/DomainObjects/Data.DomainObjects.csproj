@@ -155,7 +155,7 @@
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointChangeAgentModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModificationCollection.cs" />
     <Compile Include="DataManagement\EndPointModifications\NullEndPointModification.cs" />
-    <Compile Include="DataManagement\EndPointModifications\ObjectEndPointModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModification.cs" />
     <Compile Include="DBStorageGroupAttribute.cs" />
     <Compile Include="Design\DomainObjectsDesignModeHelper.cs">

@@ -81,29 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void Initialization_FromEndPoint_Add ()
-    {
-      RelationEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
-      CollectionEndPointChangeAgentModification modification = (CollectionEndPointChangeAgentModification) endPoint.CreateModification (RelationEndPoint.CreateNullRelationEndPoint (_id.Definition), _newEndPointStub);
-      Assert.AreSame (endPoint, modification.ModifiedEndPoint);
-      Assert.AreSame (_newRelatedObject, modification.NewRelatedObject);
-      Assert.That (modification.OldRelatedObject, Is.Null);
-      Assert.AreEqual (CollectionEndPointChangeAgent.OperationType.Add, modification.ChangeAgent.Operation);
-    }
-
-    [Test]
-    [Ignore ("Fails as part of refactoring COMMONS-997")]
-    public void Initialization_FromEndPoint_Remove ()
-    {
-      RelationEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
-      CollectionEndPointChangeAgentModification modification = (CollectionEndPointChangeAgentModification) endPoint.CreateModification (_oldEndPointStub, RelationEndPoint.CreateNullRelationEndPoint (_id.Definition));
-      Assert.AreSame (endPoint, modification.ModifiedEndPoint);
-      Assert.AreSame (_oldRelatedObject, modification.OldRelatedObject);
-      Assert.That (modification.NewRelatedObject, Is.Null);
-      Assert.AreEqual (CollectionEndPointChangeAgent.OperationType.Remove, modification.ChangeAgent.Operation);
-    }
-
-    [Test]
     public void Initialization_FromEndPoint_Insert ()
     {
       CollectionEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);

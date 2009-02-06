@@ -37,9 +37,9 @@ public class NullObjectEndPoint : ObjectEndPoint
 
   // methods and properties
 
-  public override RelationEndPointModification CreateModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
+  public override RelationEndPointModification CreateSetModification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
   {
-    return new NullEndPointModification (this, oldEndPoint.GetDomainObject (), newEndPoint.GetDomainObject ());
+    return new NullEndPointModification (this, oldRelatedObject, newRelatedObject);
   }
 
   public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)

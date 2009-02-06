@@ -84,11 +84,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new NotImplementedException();
     }
 
-    public override RelationEndPointModification CreateModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
     public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)
     {
       throw new System.NotImplementedException();

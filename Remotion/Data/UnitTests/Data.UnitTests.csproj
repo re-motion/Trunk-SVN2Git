@@ -336,7 +336,7 @@
     <Compile Include="DomainObjects\Security\TestDomain\TestAccessTypes.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointChangeAgentModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\NullEndPointModificationTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\RepositoryAccessorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectGraphTraverserTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\MultiTransactionTest.cs" />

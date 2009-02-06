@@ -70,29 +70,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void Initialization_FromNullObjectEndPoint ()
     {
-      RelationEndPoint endPoint = new NullObjectEndPoint (_id.Definition);
-      RelationEndPointModification modification = endPoint.CreateModification (_oldEndPointStub, _newEndPointStub);
+      var endPoint = new NullObjectEndPoint (_id.Definition);
+      RelationEndPointModification modification = endPoint.CreateSetModification (_oldEndPointStub.GetDomainObject (), _newEndPointStub.GetDomainObject ());
       Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
       Assert.AreSame (endPoint, modification.ModifiedEndPoint);
       Assert.AreSame (_oldRelatedObject, modification.OldRelatedObject);
       Assert.AreSame (_newRelatedObject, modification.NewRelatedObject);
-    }
-
-    [Test]
-    public void Initialization_FromNullCollectionEndPoint ()
-    {
-      NullCollectionEndPoint endPoint = new NullCollectionEndPoint (_id.Definition);
-      RelationEndPointModification modification = endPoint.CreateModification (_oldEndPointStub, _newEndPointStub);
-      Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
-      Assert.AreSame (endPoint, modification.ModifiedEndPoint);
-      Assert.AreSame (_oldRelatedObject, modification.OldRelatedObject);
-      Assert.AreSame (_newRelatedObject, modification.NewRelatedObject);
-
-      modification = endPoint.CreateInsertModification (_oldEndPointStub, _newEndPointStub, 0);
-      Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
-
-      modification = endPoint.CreateReplaceModification (_oldEndPointStub, _newEndPointStub);
-      Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
     }
 
     [Test]

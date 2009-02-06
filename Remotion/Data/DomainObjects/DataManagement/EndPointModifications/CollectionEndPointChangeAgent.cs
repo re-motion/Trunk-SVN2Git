@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// usually the  <see cref="RelationEndPointMap"/>.
   /// </para>
   /// <para>
-  /// The <see cref="RelationEndPointMap"/> creates one instance of  <see cref="ObjectEndPointModification"/> and 
+  /// The <see cref="RelationEndPointMap"/> creates one instance of  <see cref="ObjectEndPointSetModification"/> and 
   /// <see cref="CollectionEndPointChangeAgentModification"/> each; these objects contain the exact parameters 
   /// about how to change the individual end points, and they know which events to notify at which stage in the modification process. The 
   /// <see cref="CollectionEndPointChangeAgentModification"/> then creates a <see cref="CollectionEndPointChangeAgent"/>, and this agent finally performs the

@@ -38,11 +38,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     // methods and properties
 
-    public override RelationEndPointModification CreateModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
-    {
-      return new NullEndPointModification (this, oldEndPoint.GetDomainObject (), newEndPoint.GetDomainObject ());
-    }
-
     public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)
     {
       return new NullEndPointModification (this, endPointBeingDeleted.GetDomainObject (), null);
