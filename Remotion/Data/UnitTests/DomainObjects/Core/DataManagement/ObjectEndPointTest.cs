@@ -15,6 +15,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
@@ -179,8 +180,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void HasBeenTouchedWithPerformRelationChange ()
     {
       Assert.IsFalse (_endPoint.HasBeenTouched);
-      _endPoint.SetOppositeObjectID (
-          (ObjectEndPointSetModification) _endPoint.CreateDeleteModification (new NullObjectEndPoint (_endPoint.OppositeEndPointDefinition)));
+      var removedRelatedObject = Order.NewObject ();
+      _endPoint.SetOppositeObjectID ((ObjectEndPointSetModification) _endPoint.CreateRemoveModification (removedRelatedObject));
       Assert.IsTrue (_endPoint.HasBeenTouched);
     }
 
@@ -189,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _endPoint.OppositeObjectID = DomainObjectIDs.Order1;
       Assert.IsNotNull (_endPoint.OppositeObjectID);
-      _endPoint.CreateDeleteModification (ObjectEndPoint.CreateNullRelationEndPoint (_endPoint.OppositeEndPointDefinition)).Perform();
+      _endPoint.CreateRemoveModification (Order.GetObject (DomainObjectIDs.Order1)).Perform();
       Assert.IsNull (_endPoint.OppositeObjectID);
     }
 
@@ -455,6 +456,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.IsFalse (endPoint2.HasBeenTouched);
       Assert.AreEqual (_endPoint.OppositeObjectID, endPoint2.OppositeObjectID);
       Assert.AreEqual (_endPoint.OppositeObjectID, endPoint2.OriginalOppositeObjectID);
+    }
+
+    [Test]
+    public void CreateRemoveModification ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var modification = _endPoint.CreateRemoveModification (order1);
+      Assert.That (modification, Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
+      Assert.That (modification.OldRelatedObject, Is.SameAs (order1));
+      Assert.That (modification.NewRelatedObject, Is.Null);
     }
   }
 }

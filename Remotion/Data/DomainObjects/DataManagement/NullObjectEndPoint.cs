@@ -42,9 +42,9 @@ public class NullObjectEndPoint : ObjectEndPoint
     return new NullEndPointModification (this, oldRelatedObject, newRelatedObject);
   }
 
-  public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)
+  public override RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
   {
-    return new NullEndPointModification (this, endPointBeingDeleted.GetDomainObject (), null);
+    return new NullEndPointModification (this, removedRelatedObject, null);
   }
 
   public override void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)

@@ -155,15 +155,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    public override RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
+    {
+      ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
+      return new ObjectEndPointSetModification (this, removedRelatedObject, null);
+    }
+
     public virtual RelationEndPointModification CreateSetModification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       return new ObjectEndPointSetModification (this, oldRelatedObject, newRelatedObject);
-    }
-
-    public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)
-    {
-      ArgumentUtility.CheckNotNull ("endPointBeingDeleted", endPointBeingDeleted);
-      return new ObjectEndPointSetModification (this, endPointBeingDeleted.GetDomainObject (), null);
     }
 
     public virtual void SetOppositeObjectID (ObjectEndPointSetModification modification)

@@ -226,7 +226,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.AreEqual (_customerEndPoint.OriginalOppositeDomainObjects.Count, _customerEndPoint.OppositeDomainObjects.Count);
 
-      var modification = _customerEndPoint.CreateDeleteModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
+      IEndPoint endPointOfObjectBeingRemoved = CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID);
+      var modification = _customerEndPoint.CreateRemoveModification (endPointOfObjectBeingRemoved.GetDomainObject());
       modification.Begin ();
       modification.Perform ();
       modification.End ();
@@ -239,9 +240,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.AreEqual (_customerEndPoint.OriginalOppositeDomainObjects.Count, _customerEndPoint.OppositeDomainObjects.Count);
 
+      IEndPoint endPointOfObjectBeingRemoved = CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID);
       var modification =
-          _customerEndPoint.CreateDeleteModification (
-              CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
+          _customerEndPoint.CreateRemoveModification (endPointOfObjectBeingRemoved.GetDomainObject());
       modification.Perform();
 
       Assert.IsTrue (_customerEndPoint.OriginalOppositeDomainObjects.Count != _customerEndPoint.OppositeDomainObjects.Count);
@@ -252,7 +253,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.AreEqual (_customerEndPoint.OriginalOppositeDomainObjects.Count, _customerEndPoint.OppositeDomainObjects.Count);
 
-      var modification = _customerEndPoint.CreateDeleteModification (CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID));
+      IEndPoint endPointOfObjectBeingRemoved = CreateObjectEndPoint (_order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer", _customerEndPoint.ObjectID);
+      var modification = _customerEndPoint.CreateRemoveModification (endPointOfObjectBeingRemoved.GetDomainObject());
       modification.Begin ();
       _customerEndPoint.PerformDelete ();
       modification.End ();
@@ -797,13 +799,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateDeleteModification ()
+    public void CreateRemoveModification ()
     {
-      var deletedEndPointStub = MockRepository.GenerateMock<IEndPoint> ();
-      deletedEndPointStub.Stub (stub => stub.IsNull).Return (false);
-      deletedEndPointStub.Stub (stub => stub.GetDomainObject()).Return (_order1);
-
-      var modification = _customerEndPoint.CreateDeleteModification (deletedEndPointStub);
+      var modification = _customerEndPoint.CreateRemoveModification (_order1);
       Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (((CollectionEndPointRemoveModification) modification).RemovedObject, Is.SameAs (_order1));

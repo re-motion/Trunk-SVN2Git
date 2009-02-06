@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       var modifications = new RelationEndPointModificationCollection (
           addingEndPoint.CreateSetModification (((IEndPoint) oldRelatedOfAddingEndPoint).GetDomainObject (), ((IEndPoint) endPoint).GetDomainObject ()),
           endPoint.CreateInsertModification (oldRelatedNullEndPoint, addingEndPoint, index),
-          oldRelatedOfAddingEndPoint.CreateDeleteModification (addingEndPoint));
+          oldRelatedOfAddingEndPoint.CreateRemoveModification (((IEndPoint) addingEndPoint).GetDomainObject()));
 
       modifications.ExecuteAllSteps ();
     }
@@ -99,10 +99,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
                                                               newEndPoint.OppositeEndPointDefinition);
 
       var modifications = new RelationEndPointModificationCollection (
-          oldEndPoint.CreateDeleteModification (endPoint),
+          oldEndPoint.CreateRemoveModification (((IEndPoint) endPoint).GetDomainObject()),
           newEndPoint.CreateSetModification (((IEndPoint) oldEndPointOfNewEndPoint).GetDomainObject (), ((IEndPoint) endPoint).GetDomainObject ()),
           endPoint.CreateReplaceModification (oldEndPoint, newEndPoint),
-          oldEndPointOfNewEndPoint.CreateDeleteModification (newEndPoint));
+          oldEndPointOfNewEndPoint.CreateRemoveModification (((IEndPoint) newEndPoint).GetDomainObject()));
 
       modifications.ExecuteAllSteps ();
     }
@@ -125,8 +125,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       var removedEndPoint = (ObjectEndPoint) GetRelationEndPoint (domainObject, endPoint.OppositeEndPointDefinition);
 
       var modifications = new RelationEndPointModificationCollection (
-          removedEndPoint.CreateDeleteModification (endPoint),
-          endPoint.CreateDeleteModification (removedEndPoint));
+          removedEndPoint.CreateRemoveModification (((IEndPoint) endPoint).GetDomainObject()),
+          endPoint.CreateRemoveModification (((IEndPoint) removedEndPoint).GetDomainObject()));
 
       modifications.ExecuteAllSteps ();
     }
@@ -145,7 +145,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
         IRelationEndPointDefinition endPointDefinition = oppositeEndPoint.OppositeEndPointDefinition;
         RelationEndPoint oldEndPoint = allAffectedRelationEndPoints[new RelationEndPointID (domainObject.ID, endPointDefinition)];
 
-        modifications.Add (oppositeEndPoint.CreateDeleteModification (oldEndPoint));
+        modifications.Add (oppositeEndPoint.CreateRemoveModification (((IEndPoint) oldEndPoint).GetDomainObject()));
       }
       return modifications;
     }
@@ -348,9 +348,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       var modifications = new RelationEndPointModificationCollection (
           endPoint.CreateSetModification (((IEndPoint) oldRelatedEndPoint).GetDomainObject (), ((IEndPoint) newRelatedEndPoint).GetDomainObject ()),
-          oldRelatedEndPoint.CreateDeleteModification (endPoint),
+          oldRelatedEndPoint.CreateRemoveModification (((IEndPoint) endPoint).GetDomainObject()),
           newRelatedEndPoint.CreateSetModification (((IEndPoint) oldRelatedEndPointOfNewRelatedEndPoint).GetDomainObject (), ((IEndPoint) endPoint).GetDomainObject ()),
-          oldRelatedEndPointOfNewRelatedEndPoint.CreateDeleteModification (newRelatedEndPoint));
+          oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveModification (((IEndPoint) newRelatedEndPoint).GetDomainObject()));
 
       modifications.ExecuteAllSteps ();
     }

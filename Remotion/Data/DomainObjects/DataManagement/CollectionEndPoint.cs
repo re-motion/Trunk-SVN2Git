@@ -206,9 +206,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public override RelationEndPointModification CreateDeleteModification (IEndPoint endPointBeingDeleted)
+    public override RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
-      return new CollectionEndPointRemoveModification (this, endPointBeingDeleted.GetDomainObject(), _oppositeDomainObjects._data);
+      ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
+      return new CollectionEndPointRemoveModification (this, removedRelatedObject, _oppositeDomainObjects._data);
     }
 
     public virtual RelationEndPointModification CreateInsertModification (IEndPoint oldEndPoint, IEndPoint newEndPoint, int index)
