@@ -43,9 +43,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new NullEndPointModification (this, removedRelatedObject, null);
     }
 
-    public override RelationEndPointModification CreateInsertModification (IEndPoint oldEndPoint, IEndPoint newEndPoint, int index)
+    public override RelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
-      return new NullEndPointModification (this, oldEndPoint.GetDomainObject (), newEndPoint.GetDomainObject ());
+      return new NullEndPointModification (this, null, insertedRelatedObject);
     }
 
     public override RelationEndPointModification CreateReplaceModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)

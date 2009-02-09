@@ -81,18 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void Initialization_FromEndPoint_Insert ()
-    {
-      CollectionEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);
-      CollectionEndPointChangeAgentModification modification = (CollectionEndPointChangeAgentModification) endPoint.CreateInsertModification (_oldEndPointStub, _newEndPointStub, 3);
-      Assert.AreSame (endPoint, modification.ModifiedEndPoint);
-      Assert.AreSame (_oldRelatedObject, modification.OldRelatedObject);
-      Assert.AreSame (_newRelatedObject, modification.NewRelatedObject);
-      Assert.AreEqual (CollectionEndPointChangeAgent.OperationType.Insert, modification.ChangeAgent.Operation);
-      Assert.AreEqual (3, PrivateInvoke.GetNonPublicField (modification.ChangeAgent, "_collectionIndex"));
-    }
-
-    [Test]
     public void Initialization_FromEndPoint_Replace ()
     {
       CollectionEndPoint endPoint = new CollectionEndPoint (ClientTransactionMock, _id, new DomainObjectCollection (), ClientTransactionMock.DataManager.RelationEndPointMap);

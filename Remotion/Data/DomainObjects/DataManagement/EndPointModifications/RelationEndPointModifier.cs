@@ -74,11 +74,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       var oldRelatedEndPointOfNewObject = 
           (CollectionEndPoint) GetRelationEndPoint (oldRelatedObjectOfNewObject, endPointOfNewObject.OppositeEndPointDefinition);
 
-      RelationEndPoint oldRelatedNullEndPoint = RelationEndPoint.CreateNullRelationEndPoint (endPointOfNewObject.Definition);
-
       var modifications = new RelationEndPointModificationCollection (
+          // link the new related object
           endPointOfNewObject.CreateSetModification (oldRelatedObjectOfNewObject, endPoint.GetDomainObject ()),
-          endPoint.CreateInsertModification (oldRelatedNullEndPoint, endPointOfNewObject, index), // TODO: simplify!
+          // insert the object into the collection
+          endPoint.CreateInsertModification (newRelatedObject, index),
+        // unlink the object previously related to the new related object
           oldRelatedEndPointOfNewObject.CreateRemoveModification (newRelatedObject));
 
       modifications.ExecuteAllSteps ();

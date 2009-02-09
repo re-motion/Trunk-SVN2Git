@@ -55,67 +55,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     // static members and constants
 
-    public static CollectionEndPointChangeAgent CreateForAddOrRemove (DomainObjectCollection oppositeDomainObjects, IEndPoint oldEndPoint,
-                                                                      IEndPoint newEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
-      ArgumentUtility.CheckNotNull ("newEndPoint", newEndPoint);
-
-      if (oldEndPoint.IsNull && newEndPoint.IsNull)
-        throw new ArgumentException ("Both endPoints cannot be NullEndPoints.", "oldEndPoint, newEndPoint");
-      else if (!oldEndPoint.IsNull && !newEndPoint.IsNull)
-        throw new ArgumentException ("One endPoint must be a NullEndPoint.", "oldEndPoint, newEndPoint");
-      else if (!oldEndPoint.IsNull && newEndPoint.IsNull)
-        return CollectionEndPointChangeAgent.CreateForRemove (oppositeDomainObjects, oldEndPoint, newEndPoint);
-      else
-      {
-        Assertion.IsTrue (!newEndPoint.IsNull && oldEndPoint.IsNull);
-        return CollectionEndPointChangeAgent.CreateForAdd (oppositeDomainObjects, oldEndPoint, newEndPoint);
-      }
-    }
-
-    public static CollectionEndPointChangeAgent CreateForAdd (
-        DomainObjectCollection oppositeDomainObjects,
-        IEndPoint oldEndPoint, 
-        IEndPoint newEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
-      ArgumentUtility.CheckNotNull ("newEndPoint", newEndPoint);
-
-      return new CollectionEndPointChangeAgent (
-          oppositeDomainObjects, oldEndPoint, newEndPoint, OperationType.Add, oppositeDomainObjects.Count);
-    }
-
-    public static CollectionEndPointChangeAgent CreateForRemove (
-        DomainObjectCollection oppositeDomainObjects,
-        IEndPoint oldEndPoint, 
-        IEndPoint newEndPoint)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
-      ArgumentUtility.CheckNotNull ("newEndPoint", newEndPoint);
-
-      return new CollectionEndPointChangeAgent (
-          oppositeDomainObjects, oldEndPoint, newEndPoint, 
-          OperationType.Remove, oppositeDomainObjects.IndexOf (oldEndPoint.ObjectID));
-    }
-
-    public static CollectionEndPointChangeAgent CreateForInsert (
-        DomainObjectCollection oppositeDomainObjects,
-        IEndPoint oldEndPoint, 
-        IEndPoint newEndPoint, 
-        int insertIndex)
-    {
-      ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
-      ArgumentUtility.CheckNotNull ("oldEndPoint", oldEndPoint);
-      ArgumentUtility.CheckNotNull ("newEndPoint", newEndPoint);
-
-      return new CollectionEndPointChangeAgent (
-          oppositeDomainObjects, oldEndPoint, newEndPoint, OperationType.Insert, insertIndex);
-    }
-
     public static CollectionEndPointChangeAgent CreateForReplace (
         DomainObjectCollection oppositeDomainObjects,
         IEndPoint oldEndPoint, 

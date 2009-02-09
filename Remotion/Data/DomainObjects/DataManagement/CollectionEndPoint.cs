@@ -212,11 +212,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new CollectionEndPointRemoveModification (this, removedRelatedObject, _oppositeDomainObjects._data);
     }
 
-    public virtual RelationEndPointModification CreateInsertModification (IEndPoint oldEndPoint, IEndPoint newEndPoint, int index)
+    public virtual RelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
-      return new CollectionEndPointChangeAgentModification (
-          this,
-          CollectionEndPointChangeAgent.CreateForInsert (_oppositeDomainObjects, oldEndPoint, newEndPoint, index));
+      return new CollectionEndPointInsertModification (this, insertedRelatedObject, index, _oppositeDomainObjects._data);
     }
 
     public virtual RelationEndPointModification CreateReplaceModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
