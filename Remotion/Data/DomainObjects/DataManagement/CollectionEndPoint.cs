@@ -269,9 +269,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = true;
     }
 
-    void ICollectionChangeDelegate.PerformReplace (DomainObjectCollection collection, DomainObject domainObject, int index)
+    void ICollectionChangeDelegate.PerformReplace (DomainObjectCollection collection, DomainObject newDomainObject, int index)
     {
-      ChangeDelegate.PerformReplace (this, domainObject, index);
+      ChangeDelegate.PerformReplace (this, newDomainObject, index);
       _hasBeenTouched = true;
     }
 

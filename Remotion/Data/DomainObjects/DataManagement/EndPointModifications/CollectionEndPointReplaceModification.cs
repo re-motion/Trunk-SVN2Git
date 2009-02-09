@@ -19,16 +19,17 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
-  public class CollectionEndPointRemoveModification : RelationEndPointModification
+  public class CollectionEndPointReplaceModification : RelationEndPointModification
   {
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
 
-    public CollectionEndPointRemoveModification (CollectionEndPoint modifiedEndPoint, DomainObject removedObject, IDomainObjectCollectionData collectionData)
+    public CollectionEndPointReplaceModification (
+        CollectionEndPoint modifiedEndPoint, DomainObject replacedObject, DomainObject replacementObject, IDomainObjectCollectionData collectionData)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
-            ArgumentUtility.CheckNotNull ("removedObject", removedObject),
-            null)
+            ArgumentUtility.CheckNotNull ("replacedObject", replacedObject),
+            ArgumentUtility.CheckNotNull ("replacementObject", replacementObject))
     {
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
@@ -50,18 +51,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     public override void Begin ()
     {
       ModifiedCollection.BeginRemove (OldRelatedObject);
+      ModifiedCollection.BeginAdd (NewRelatedObject);
       base.Begin ();
     }
 
     public override void Perform ()
     {
-      ModifiedCollectionData.Remove (OldRelatedObject.ID);
+      ModifiedCollectionData.Replace (OldRelatedObject.ID, NewRelatedObject);
       ModifiedEndPoint.Touch ();
     }
 
     public override void End ()
     {
       ModifiedCollection.EndRemove (OldRelatedObject);
+      ModifiedCollection.EndAdd (NewRelatedObject);
       base.End ();
     }
   }

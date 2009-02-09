@@ -19,22 +19,30 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
-  public class CollectionEndPointRemoveModification : RelationEndPointModification
+  public class CollectionEndPointInsertModification : RelationEndPointModification
   {
+    private readonly int _index;
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly DomainObjectCollection _modifiedCollection;
 
-    public CollectionEndPointRemoveModification (CollectionEndPoint modifiedEndPoint, DomainObject removedObject, IDomainObjectCollectionData collectionData)
+    public CollectionEndPointInsertModification (
+        CollectionEndPoint modifiedEndPoint, DomainObject insertedObject, int index, IDomainObjectCollectionData collectionData)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
-            ArgumentUtility.CheckNotNull ("removedObject", removedObject),
-            null)
+            null,
+            ArgumentUtility.CheckNotNull ("insertedObject", insertedObject))
     {
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
 
+      _index = index;
       _modifiedCollectionData = collectionData;
       _modifiedCollection = modifiedEndPoint.OppositeDomainObjects;
+    }
+
+    public int Index
+    {
+      get { return _index; }
     }
 
     public DomainObjectCollection ModifiedCollection
@@ -49,19 +57,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override void Begin ()
     {
-      ModifiedCollection.BeginRemove (OldRelatedObject);
+      ModifiedCollection.BeginAdd (NewRelatedObject);
       base.Begin ();
     }
 
     public override void Perform ()
     {
-      ModifiedCollectionData.Remove (OldRelatedObject.ID);
+      ModifiedCollectionData.Insert (Index, NewRelatedObject);
       ModifiedEndPoint.Touch ();
     }
 
     public override void End ()
     {
-      ModifiedCollection.EndRemove (OldRelatedObject);
+      ModifiedCollection.EndAdd (NewRelatedObject);
       base.End ();
     }
   }

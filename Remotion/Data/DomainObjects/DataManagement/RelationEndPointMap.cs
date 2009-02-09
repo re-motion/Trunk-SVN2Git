@@ -388,14 +388,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    void ICollectionEndPointChangeDelegate.PerformInsert (CollectionEndPoint endPoint, DomainObject domainObject, int index)
+    void ICollectionEndPointChangeDelegate.PerformInsert (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)
     {
-      _modifier.PerformInsert (endPoint, domainObject, index);
+      _modifier.PerformInsert (endPoint, newRelatedObject, index);
     }
 
-    void ICollectionEndPointChangeDelegate.PerformReplace (CollectionEndPoint endPoint, DomainObject domainObject, int index)
+    void ICollectionEndPointChangeDelegate.PerformReplace (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)
     {
-      _modifier.PerformReplace (endPoint, domainObject, index);
+      _modifier.PerformReplace (endPoint, newRelatedObject, index);
     }
 
     void ICollectionEndPointChangeDelegate.PerformSelfReplace (CollectionEndPoint endPoint, DomainObject domainObject, int index)
@@ -403,9 +403,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _modifier.PerformSelfReplace (endPoint, domainObject, index);
     }
 
-    void ICollectionEndPointChangeDelegate.PerformRemove (CollectionEndPoint endPoint, DomainObject domainObject)
+    void ICollectionEndPointChangeDelegate.PerformRemove (CollectionEndPoint endPoint, DomainObject removedRelatedObject)
     {
-      _modifier.PerformRemove (endPoint, domainObject);
+      _modifier.PerformRemove (endPoint, removedRelatedObject);
     }
 
     #region Serialization

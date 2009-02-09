@@ -18,30 +18,35 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
-using Rhino.Mocks;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
-  public class CollectionEndPointRemoveModificationTest : CollectionEndPointModificationTestBase
+  public class CollectionEndPointReplaceModificationTest : CollectionEndPointModificationTestBase
   {
-    private Order _removedRelatedObject;
-    private CollectionEndPointRemoveModification _modification;
+    private CollectionEndPointReplaceModification _modification;
+    private Order _replacedRelatedObject;
+    private Order _replacementRelatedObject;
 
     public override void SetUp ()
     {
       base.SetUp();
-      _removedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
-      _modification = new CollectionEndPointRemoveModification (CollectionEndPoint, _removedRelatedObject, CollectionDataMock);
+
+      _replacedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
+      _replacementRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
+
+      _modification = 
+          new CollectionEndPointReplaceModification (CollectionEndPoint, _replacedRelatedObject, _replacementRelatedObject, CollectionDataMock);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_modification.ModifiedEndPoint, Is.SameAs (CollectionEndPoint));
-      Assert.That (_modification.OldRelatedObject, Is.SameAs (_removedRelatedObject));
-      Assert.That (_modification.NewRelatedObject, Is.Null);
+      Assert.That (_modification.OldRelatedObject, Is.SameAs (_replacedRelatedObject));
+      Assert.That (_modification.NewRelatedObject, Is.SameAs (_replacementRelatedObject));
       Assert.That (_modification.ModifiedCollection, Is.SameAs (CollectionEndPoint.OppositeDomainObjects));
       Assert.That (_modification.ModifiedCollectionData, Is.SameAs (CollectionDataMock));
     }
@@ -52,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (RelationEndPointID.Definition);
-      new CollectionEndPointRemoveModification (endPoint, _removedRelatedObject, CollectionDataMock);
+      new CollectionEndPointReplaceModification (endPoint, _replacedRelatedObject, _replacementRelatedObject, CollectionDataMock);
     }
 
     [Test]
@@ -66,18 +71,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
         relationChangingCalled = true;
 
         Assert.That (args.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
-        Assert.That (args.NewRelatedObject, Is.Null);
-        Assert.That (args.OldRelatedObject, Is.SameAs (_removedRelatedObject));
+        Assert.That (args.NewRelatedObject, Is.SameAs (_replacementRelatedObject));
+        Assert.That (args.OldRelatedObject, Is.SameAs (_replacedRelatedObject));
 
-        Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.EqualTo (new[] { _removedRelatedObject }));
-        // collection got event first
+        Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.EqualTo (new[] { _replacedRelatedObject })); // collection got event first
+        Assert.That (CollectionEventReceiver.AddingDomainObject, Is.SameAs (_replacementRelatedObject)); // collection got event first
       };
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      _modification.Begin();
+      _modification.Begin ();
 
       Assert.That (relationChangingCalled, Is.True); // operation was started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
+      Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
     }
 
@@ -93,15 +99,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
         relationChangedCalled = true;
 
         Assert.That (args.PropertyName, Is.EqualTo (CollectionEndPoint.PropertyName));
-        Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.EqualTo (new[] { _removedRelatedObject }));
-        // collection got event first
+        Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.EqualTo (new[] { _replacedRelatedObject })); // collection got event first
+        Assert.That (CollectionEventReceiver.AddedDomainObject, Is.SameAs (_replacementRelatedObject)); // collection got event first
       };
 
-      _modification.End();
+      _modification.End ();
 
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.True); // operation was finished
       Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty); // operation was not started
+      Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null); // operation was not started
     }
 
     [Test]
@@ -113,16 +120,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      CollectionDataMock.BackToRecord();
-      CollectionDataMock.Expect (mock => mock.Remove (_removedRelatedObject.ID));
-      CollectionDataMock.Replay();
+      CollectionDataMock.BackToRecord ();
+      CollectionDataMock.Expect (mock => mock.Replace(_replacedRelatedObject.ID, _replacementRelatedObject));
+      CollectionDataMock.Replay ();
 
-      _modification.Perform();
+      _modification.Perform ();
 
-      CollectionDataMock.VerifyAllExpectations();
+      CollectionDataMock.VerifyAllExpectations ();
 
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
+      Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null); // operation was not started
+      Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
       Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty); // operation was not started
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);

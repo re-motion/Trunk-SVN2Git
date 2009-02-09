@@ -22,12 +22,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
   [Serializable]
   public class FakeChangeDelegate : ICollectionEndPointChangeDelegate
   {
-    public void PerformInsert (CollectionEndPoint endPoint, DomainObject domainObject, int index)
+    public void PerformInsert (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)
     {
       throw new System.NotImplementedException();
     }
 
-    public void PerformReplace (CollectionEndPoint endPoint, DomainObject domainObject, int index)
+    public void PerformReplace (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)
     {
       throw new System.NotImplementedException();
     }
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new System.NotImplementedException();
     }
 
-    public void PerformRemove (CollectionEndPoint endPoint, DomainObject domainObject)
+    public void PerformRemove (CollectionEndPoint endPoint, DomainObject removedRelatedObject)
     {
       throw new System.NotImplementedException();
     }
