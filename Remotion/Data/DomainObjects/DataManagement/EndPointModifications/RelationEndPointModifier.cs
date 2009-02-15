@@ -109,7 +109,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
           // link the new related object
           endPointOfNewObject.CreateSetModification (oldRelatedObjectOfNewObject, endPoint.GetDomainObject ()),
           // replace the objects in the collection
-          endPoint.CreateReplaceModification (endPointOfOldObject, endPointOfNewObject),
+          endPoint.CreateReplaceModification (((IEndPoint) endPointOfOldObject).GetDomainObject(), ((IEndPoint) endPointOfNewObject).GetDomainObject()),
           // unlink the object previously related to the new related object
           oldRelatedEndPointOfNewObject.CreateRemoveModification (newRelatedObject));
 

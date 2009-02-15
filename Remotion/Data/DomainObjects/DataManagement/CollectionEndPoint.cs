@@ -217,12 +217,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new CollectionEndPointInsertModification (this, insertedRelatedObject, index, _oppositeDomainObjects._data);
     }
 
-    public virtual RelationEndPointModification CreateReplaceModification (IEndPoint oldEndPoint, IEndPoint newEndPoint)
+    public virtual RelationEndPointModification CreateReplaceModification (DomainObject replacedRelatedObject, DomainObject newRelatedObject)
     {
-      return new CollectionEndPointChangeAgentModification (
-          this,
-          CollectionEndPointChangeAgent.CreateForReplace (
-              _oppositeDomainObjects, oldEndPoint, newEndPoint, _oppositeDomainObjects.IndexOf (oldEndPoint.GetDomainObject())));
+      return new CollectionEndPointReplaceModification (this, replacedRelatedObject, newRelatedObject, _oppositeDomainObjects._data);
     }
 
     public virtual void PerformRelationChange (CollectionEndPointChangeAgentModification modification)
