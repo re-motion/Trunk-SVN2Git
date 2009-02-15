@@ -222,14 +222,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new CollectionEndPointReplaceModification (this, replacedRelatedObject, newRelatedObject, _oppositeDomainObjects._data);
     }
 
-    public virtual void PerformRelationChange (CollectionEndPointChangeAgentModification modification)
-    {
-      ArgumentUtility.CheckNotNull ("modification", modification);
-
-      modification.ChangeAgent.PerformRelationChange();
-      _hasBeenTouched = true;
-    }
-
     public override void PerformDelete ()
     {
       _oppositeDomainObjects.PerformDelete();

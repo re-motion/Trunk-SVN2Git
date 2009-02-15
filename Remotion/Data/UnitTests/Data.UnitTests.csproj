@@ -337,7 +337,6 @@
     <Compile Include="DomainObjects\Security\TestDomain\SecurableObject.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\StubStorageProvider.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\TestAccessTypes.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointChangeAgentModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\NullEndPointModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\RepositoryAccessorTest.cs" />

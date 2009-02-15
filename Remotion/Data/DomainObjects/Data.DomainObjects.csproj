@@ -154,7 +154,6 @@
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModifier.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
-    <Compile Include="DataManagement\EndPointModifications\CollectionEndPointChangeAgentModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModificationCollection.cs" />
     <Compile Include="DataManagement\EndPointModifications\NullEndPointModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetModification.cs" />
@@ -343,9 +342,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataManagement\CollectionEndPoint.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DataManagement\EndPointModifications\CollectionEndPointChangeAgent.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataManagement\DataContainerCollection.cs">
