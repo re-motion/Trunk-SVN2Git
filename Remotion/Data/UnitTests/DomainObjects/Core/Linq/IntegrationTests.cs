@@ -74,6 +74,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (computers, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3);
     }
 
+    [Test]
+    public void QueryWithBase ()
+    {
+      Company partner = Company.GetObject (DomainObjectIDs.Partner1);
+      IQueryable<Company> result;
+      result = (from c in QueryFactory.CreateLinqQuery<Company> ()
+                where c.ID == partner.ID
+                select c);
+      //var result =
+      //    from c in QueryFactory.CreateLinqQuery<Company>()
+      //    where c.ID.Value == "5587a9c0-be53-477d-8c0a-4803c7fae1a9"
+      //    select c;
+      CheckQueryResult (result, DomainObjectIDs.Partner1);
+    }
+
+
     //[Test]
     //public void QueryWithWhereAndNullWithOr ()
     //{
@@ -692,6 +708,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           select oi;
       CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
+
+    ///////////////////////////////////////////////////////////////////////
+
+    //spike for fetching (2 queries)
+    [Test]
+    public void SimpleQueryBased ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Customer>();
+      var result = from c in query
+                   where c.Name == "Kunde 3"
+                   select c;
+      CheckQueryResult (result, DomainObjectIDs.Customer3);
+    }
+
+    [Test]
+    public void ExtendSimpleQueryWithAdditionalFrom ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Customer> ();
+      var result = from c in query
+                   from o in c.Orders
+                   where c.Name == "Kunde 3"
+                   select o;
+      CheckQueryResult (result, DomainObjectIDs.Order2);
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////
 
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : TestDomainBase

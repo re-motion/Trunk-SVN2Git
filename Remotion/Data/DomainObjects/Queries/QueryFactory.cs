@@ -163,6 +163,7 @@ namespace Remotion.Data.DomainObjects.Queries
       return queryExecutor.CreateQuery (id, queryModel);
     }
 
+
     /// <summary>
     /// Creates a new query object, loading its data from the <see cref="QueryConfiguration"/>.
     /// </summary>

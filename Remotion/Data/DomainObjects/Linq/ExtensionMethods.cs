@@ -13,8 +13,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Parsing.Structure;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -27,6 +32,16 @@ namespace Remotion.Data.DomainObjects.Linq
       foreach (T item in source)
         result.Add (item);
       return result;
+    }
+    
+    public static QueryModel Fetch<T, TR> (this IEnumerable<T> source, Expression<Func<T, TR>> selector) where T : DomainObject
+    {
+      var ex = ((IQueryable) source).Expression;
+      QueryParser parser = new QueryParser (ex);
+      FromExpressionData expressionData = new FromExpressionData (selector, selector.Parameters[0]);
+      QueryModel model = parser.GetParsedQueryFetch (expressionData);
+      //QueryModel model = parser.GetParsedQuery();
+      return model;
     }
   }
 }
