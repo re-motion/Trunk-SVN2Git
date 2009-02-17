@@ -18,6 +18,7 @@
 using System;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
 using Remotion.Security.Configuration;
@@ -27,9 +28,20 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Domain
 {
   /// <summary>
-  /// The <see cref="SecurityManagerPrincipal"/> type is represent the current <see cref="Tenant"/>, <see cref="User"/>, 
+  /// The <see cref="SecurityManagerPrincipal"/> type represents the current <see cref="Tenant"/>, <see cref="User"/>, 
   /// and optional <see cref="Substitution"/>.
   /// </summary>
+  /// <remarks>
+  /// <para>
+  /// The <see cref="Current"/> <see cref="SecurityManagerPrincipal"/> is hosted by the <see cref="SafeContext"/>, ie. it is thread-local in ordinary 
+  /// applications and request-local (HttpContext) in applications using Remotion.Web.
+  /// </para>
+  /// <para>
+  /// The domain objects held by a <see cref="SecurityManagerPrincipal"/> instance are stored in a dedicated <see cref="BindingClientTransaction"/>.
+  /// Changes made to those objects are only saved when that transaction is committed, eg. via 
+  /// <code>SecurityManagerPrincipal.Current.User.BindingTransaction.Commit()</code>.
+  /// </para>
+  /// </remarks>
   [Serializable]
   public class SecurityManagerPrincipal : ISecurityManagerPrincipal
   {
