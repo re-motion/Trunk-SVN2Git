@@ -93,14 +93,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public void PerformDelete (DomainObject domainObject, RelationEndPointModificationCollection oppositeEndPointModifications)
+    public void PerformDelete (DomainObject domainObject, BidirectionalEndPointsModification oppositeEndPointModifications)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointModifications", oppositeEndPointModifications);
 
       if (!domainObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
       {
-        var message = string.Format ("Cannot remove DomainObject '{0}' from RelationEndPointMap, because it belongs to a different ClientTransaction.", 
+        var message = String.Format ("Cannot remove DomainObject '{0}' from RelationEndPointMap, because it belongs to a different ClientTransaction.", 
             domainObject.ID);
         throw new ClientTransactionsDifferException(message);
       }
@@ -120,7 +120,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public RelationEndPointModificationCollection GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
+    public BidirectionalEndPointsModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       return _modifier.GetOppositeEndPointModificationsForDelete (domainObject);
@@ -319,6 +319,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public RelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
     {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
       if (_relationEndPoints.Contains (endPointID))
         return _relationEndPoints[endPointID];
 
@@ -328,6 +330,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _clientTransaction.LoadRelatedObjects (endPointID);
 
       return _relationEndPoints[endPointID];
+    }
+
+    public RelationEndPoint GetRelationEndPointWithLazyLoad (DomainObject domainObject, IRelationEndPointDefinition definition)
+    {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
+      if (domainObject != null)
+        return GetRelationEndPointWithLazyLoad (new RelationEndPointID (domainObject.ID, definition));
+      else
+        return RelationEndPoint.CreateNullRelationEndPoint (definition);
     }
 
     private void Add (RelationEndPoint endPoint)
@@ -381,16 +393,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       if (endPointID.Definition.Cardinality != expectedCardinality)
       {
-        throw new ArgumentException (string.Format (
+        throw new ArgumentException (String.Format (
             "{0} can only be called for end points with a cardinality of '{1}'.",
             methodName,
             expectedCardinality), argumentName);
       }
     }
 
-    void ICollectionEndPointChangeDelegate.PerformInsert (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)
+    void ICollectionEndPointChangeDelegate.PerformInsert (CollectionEndPoint collectionEndPoint, DomainObject insertedObject, int index)
     {
-      _modifier.PerformInsert (endPoint, newRelatedObject, index);
+      _modifier.PerformInsert (collectionEndPoint, insertedObject, index);
     }
 
     void ICollectionEndPointChangeDelegate.PerformReplace (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)

@@ -154,7 +154,7 @@
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModifier.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
-    <Compile Include="DataManagement\EndPointModifications\RelationEndPointModificationCollection.cs" />
+    <Compile Include="DataManagement\EndPointModifications\BidirectionalEndPointsModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\NullEndPointModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModification.cs" />

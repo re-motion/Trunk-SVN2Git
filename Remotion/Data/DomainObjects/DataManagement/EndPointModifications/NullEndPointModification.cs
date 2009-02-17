@@ -49,5 +49,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       // do nothing
     }
+
+    public override BidirectionalEndPointsModification CreateBidirectionalModification ()
+    {
+#warning TODO FS: Throw sensible exception.
+      throw new System.NotImplementedException ();
+    }
   }
 }

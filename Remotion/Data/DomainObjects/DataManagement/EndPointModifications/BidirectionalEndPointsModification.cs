@@ -14,17 +14,28 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
-  public class RelationEndPointModificationCollection
+  /// <summary>
+  /// Represents all modification steps needed to change a bidirectional relation.
+  /// </summary>
+  /// <remarks>
+  /// Bidirectional relation modifications always comprise multiple steps: they need to be performed on either side of the relation being changed, 
+  /// and usually they also invole one "previous" or "new" related object. (Eg. an insert modificaton has a previous related object (possibly null),
+  /// a remove modification has a new related object (null).) This class aggregates these modification steps and allows executing them all at once,
+  /// with events being raised before and after the full operation.
+  /// </remarks>
+  public class BidirectionalEndPointsModification
   {
     private readonly List<RelationEndPointModification> _modifications;
 
-    public RelationEndPointModificationCollection (params RelationEndPointModification[] modifications)
+    public BidirectionalEndPointsModification (params RelationEndPointModification[] modifications)
     {
       ArgumentUtility.CheckNotNull ("modifications", modifications);
       _modifications = new List<RelationEndPointModification>(modifications);
@@ -73,6 +84,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       Perform ();
       NotifyClientTransactionOfEnd ();
       End ();
+    }
+
+    public ReadOnlyCollection<RelationEndPointModification> GetEndPointModifications ()
+    {
+      return _modifications.AsReadOnly();
     }
   }
 }

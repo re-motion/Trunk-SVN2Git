@@ -24,6 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -34,8 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private DomainObjectCollection _orders;
     private DomainObjectCollection _freeOrders;
     private CollectionEndPoint _customerEndPoint;
-    private DomainObject _order1;
-    private DomainObject _order2;
+    private Order _order1;
+    private Order _order2;
 
     public override void SetUp ()
     {

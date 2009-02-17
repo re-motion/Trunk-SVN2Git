@@ -67,5 +67,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       ModifiedCollection.EndAdd (NewRelatedObject);
       base.End ();
     }
+
+    /// <summary>
+    /// Creates all modifications needed to perform a bidirectional replace operation within this collection end point.
+    /// </summary>
+    /// <remarks>
+    /// A replace operation of the form "customer.Orders[index] = newOrder" needs four steps:
+    /// <list type="bullet">
+    ///   <item>customer.Order[index].Customer = null.</item>
+    ///   <item>newOrder.Customer = customer,</item>
+    ///   <item>customer.Orders[index] = newOrder,</item>
+    ///   <item>oldCustomer.Orders.Remove (insertedOrder) - with oldCustomer being the old customer of the new order (if non-null).</item>
+    /// </list>
+    /// </remarks>
+    public override BidirectionalEndPointsModification CreateBidirectionalModification ()
+    {
+#warning TODO FS: Implement
+      throw new System.NotImplementedException();
+    }
   }
 }

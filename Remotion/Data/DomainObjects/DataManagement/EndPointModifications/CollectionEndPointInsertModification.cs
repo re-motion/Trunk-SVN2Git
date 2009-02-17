@@ -58,19 +58,53 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     public override void Begin ()
     {
       ModifiedCollection.BeginAdd (NewRelatedObject);
-      base.Begin ();
+      base.Begin();
     }
 
     public override void Perform ()
     {
       ModifiedCollectionData.Insert (Index, NewRelatedObject);
-      ModifiedEndPoint.Touch ();
+      ModifiedEndPoint.Touch();
     }
 
     public override void End ()
     {
       ModifiedCollection.EndAdd (NewRelatedObject);
-      base.End ();
+      base.End();
+    }
+
+    /// <summary>
+    /// Creates all modifications needed to perform a bidirectional insert operation into this collection end point.
+    /// </summary>
+    /// <remarks>
+    /// An insert operation of the form "customer.Orders.Insert (insertedOrder, index)" needs three steps:
+    /// <list type="bullet">
+    ///   <item>insertedOrder.Customer = customer,</item>
+    ///   <item>customer.Orders.Insert (insertedOrder, index), and</item>
+    ///   <item>oldCustomer.Orders.Remove (insertedOrder) - with oldCustomer being the old customer of the inserted order (if non-null).</item>
+    /// </list>
+    /// </remarks>
+    public override BidirectionalEndPointsModification CreateBidirectionalModification ()
+    {
+      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
+
+      // the end point that will be linked to the collection end point after the operation
+      var insertedObjectEndPoint =
+          (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+      // the object that was linked to the new related object before the operation
+      var oldRelatedObjectOfInsertedObject = relationEndPointMap.GetRelatedObject (insertedObjectEndPoint.ID, false);
+      // the end point that was linked to the new related object before the operation
+      var oldRelatedEndPointOfInsertedObject =
+          (CollectionEndPoint)
+          relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObjectOfInsertedObject, insertedObjectEndPoint.OppositeEndPointDefinition);
+
+      return new BidirectionalEndPointsModification (
+          // insertedOrder.Customer = customer (previously oldCustomer)
+          insertedObjectEndPoint.CreateSetModification (oldRelatedObjectOfInsertedObject, ModifiedEndPoint.GetDomainObject()),
+          // customer.Orders.Insert (insertedOrder, index)
+          this,
+          // oldCustomer.Orders.Remove (insertedOrder)
+          oldRelatedEndPointOfInsertedObject.CreateRemoveModification (NewRelatedObject));
     }
   }
 }

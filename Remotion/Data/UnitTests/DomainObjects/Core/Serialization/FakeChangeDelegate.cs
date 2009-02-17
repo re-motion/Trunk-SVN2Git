@@ -22,7 +22,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
   [Serializable]
   public class FakeChangeDelegate : ICollectionEndPointChangeDelegate
   {
-    public void PerformInsert (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)
+    public void PerformInsert (CollectionEndPoint collectionEndPoint, DomainObject insertedObject, int index)
     {
       throw new System.NotImplementedException();
     }

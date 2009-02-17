@@ -64,5 +64,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       ModifiedCollection.EndRemove (OldRelatedObject);
       base.End ();
     }
+
+    /// <summary>
+    /// Creates all modifications needed to perform a bidirectional remove operation from this collection end point.
+    /// </summary>
+    /// <remarks>
+    /// A remove operation of the form "customer.Orders.Remove (RemovedOrder)" needs two steps:
+    /// <list type="bullet">
+    ///   <item>RemovedOrder.Customer = null and</item>
+    ///   <item>customer.Orders.Remove (removedOrder).</item>
+    /// </list>
+    /// </remarks>
+    public override BidirectionalEndPointsModification CreateBidirectionalModification ()
+    {
+#warning TODO FS: Implement
+      throw new System.NotImplementedException ();
+    }
   }
 }

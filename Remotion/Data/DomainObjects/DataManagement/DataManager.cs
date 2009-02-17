@@ -179,7 +179,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     if (domainObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
       return;
 
-    RelationEndPointModificationCollection oppositeEndPointModifications =
+    BidirectionalEndPointsModification oppositeEndPointModifications =
         _relationEndPointMap.GetOppositeEndPointModificationsForDelete (domainObject);
 
     BeginDelete (domainObject, oppositeEndPointModifications);
@@ -187,7 +187,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     EndDelete (domainObject, oppositeEndPointModifications);
   }
 
-  internal void PerformDelete (DomainObject domainObject, RelationEndPointModificationCollection oppositeEndPointModifications)
+  internal void PerformDelete (DomainObject domainObject, BidirectionalEndPointsModification oppositeEndPointModifications)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     ArgumentUtility.CheckNotNull ("oppositeEndPointModifications", oppositeEndPointModifications);
@@ -202,7 +202,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     dataContainer.Delete ();
   }
 
-  private void BeginDelete (DomainObject domainObject, RelationEndPointModificationCollection oppositeEndPointModifications)
+  private void BeginDelete (DomainObject domainObject, BidirectionalEndPointsModification oppositeEndPointModifications)
   {
     _transactionEventSink.ObjectDeleting (domainObject);
     oppositeEndPointModifications.NotifyClientTransactionOfBegin();
@@ -211,7 +211,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     oppositeEndPointModifications.Begin();
   }
 
-  private void EndDelete (DomainObject domainObject, RelationEndPointModificationCollection oppositeEndPointModifications)
+  private void EndDelete (DomainObject domainObject, BidirectionalEndPointsModification oppositeEndPointModifications)
   {
     oppositeEndPointModifications.NotifyClientTransactionOfEnd();
     _transactionEventSink.ObjectDeleted (domainObject);

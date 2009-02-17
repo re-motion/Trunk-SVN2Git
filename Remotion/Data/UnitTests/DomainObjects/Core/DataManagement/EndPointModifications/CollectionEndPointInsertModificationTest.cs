@@ -127,5 +127,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
+
+    [Test]
+    public void CreateBidirectionalModification ()
+    {
+      var modification = _modification.CreateBidirectionalModification ().GetEndPointModifications ();
+      Assert.That (modification.Count, Is.EqualTo (3));
+
+      var oldCustomer = _insertedRelatedObject.Customer;
+
+      // _insertedRelatedObject.Customer = DomainObject (previously oldCustomer)
+      Assert.That (modification[0], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (modification[0].OldRelatedObject, Is.SameAs (oldCustomer));
+      Assert.That (modification[0].NewRelatedObject, Is.SameAs (DomainObject));
+
+      // DomainObject.Orders.Insert (_insertedRelatedObject, 12)
+      Assert.That (modification[1], Is.InstanceOfType (typeof (CollectionEndPointInsertModification)));
+      Assert.That (modification[1].ModifiedEndPoint, Is.SameAs (CollectionEndPoint));
+      Assert.That (modification[1].NewRelatedObject, Is.SameAs (_insertedRelatedObject));
+      Assert.That (((CollectionEndPointInsertModification) modification[1]).Index, Is.EqualTo (12));
+
+      // oldCustomer.Orders.Remove (_insertedRelatedObject)
+      Assert.That (modification[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
+      Assert.That (modification[2].OldRelatedObject, Is.SameAs (_insertedRelatedObject));
+    }
   }
 }

@@ -34,5 +34,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       _affectedEndPoint.SetOppositeObjectID (this);
     }
+
+    public override BidirectionalEndPointsModification CreateBidirectionalModification ()
+    {
+#warning TODO FS: Decide what to do here.
+      throw new System.NotImplementedException ();
+    }
   }
 }

@@ -475,7 +475,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\UpdateCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\InsertCommandBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\QueryCommandBuilderTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\RelationEndPointModificationCollectionTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\BidirectionalEndPointsModificationTest.cs" />
     <Compile Include="DomainObjects\Core\RhinoMocksRepositoryAdapter.cs" />
     <Compile Include="DomainObjects\Core\Serialization\CollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Serialization\DomainObjectCollectionTest.cs" />

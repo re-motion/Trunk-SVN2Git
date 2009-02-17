@@ -5,13 +5,13 @@
 // and/or modify it under the terms of the GNU Lesser General Public License 
 // version 3.0 as published by the Free Software Foundation.
 // 
-// re-motion is distributed in the hope that it will be useful, 
+// This framework is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of 
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with re-motion; if not, see http://www.gnu.org/licenses.
+// along with this framework; if not, see http://www.gnu.org/licenses.
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         RelationEndPointID id,
         DomainObjectCollection oppositeDomainObjects,
         ICollectionEndPointChangeDelegate changeDelegate)
-        : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))  
+        : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("oppositeDomainObjects", oppositeDomainObjects);
       ArgumentUtility.CheckNotNull ("changeDelegate", changeDelegate);
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return;
       }
 
-      CheckNewOppositeCollection(oppositeDomainObjects);
+      CheckNewOppositeCollection (oppositeDomainObjects);
 
       DomainObjectCollection oldOpposites = _oppositeDomainObjects;
       oldOpposites.ChangeDelegate = null;
@@ -101,10 +101,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (oppositeDomainObjects.ChangeDelegate != null)
         throw new InvalidOperationException ("The new opposite collection is already associated with another relation property.");
 
-      if (_oppositeDomainObjects.GetType () != oppositeDomainObjects.GetType ())
+      if (_oppositeDomainObjects.GetType() != oppositeDomainObjects.GetType())
       {
-        string message = string.Format ("The new opposite collection must have the same type as the old collection ('{0}'), but its type is '{1}'.", 
-            _oppositeDomainObjects.GetType ().FullName, oppositeDomainObjects.GetType ().FullName);
+        string message = string.Format (
+            "The new opposite collection must have the same type as the old collection ('{0}'), but its type is '{1}'.",
+            _oppositeDomainObjects.GetType().FullName,
+            oppositeDomainObjects.GetType().FullName);
         throw new InvalidOperationException (message);
       }
     }
@@ -117,7 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private void SynchronizeWithNewOppositeObjects (DomainObjectCollection newOppositeObjects)
     {
-      _oppositeDomainObjects.Clear ();
+      _oppositeDomainObjects.Clear();
       foreach (DomainObject opposite in newOppositeObjects)
         _oppositeDomainObjects.Add (opposite);
     }
@@ -179,7 +181,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get
       {
         return OppositeDomainObjects != OriginalOppositeDomainObjectsReference
-            || ClientTransaction.HasCollectionEndPointDataChanged (OppositeDomainObjects, OriginalOppositeDomainObjects);
+               || ClientTransaction.HasCollectionEndPointDataChanged (OppositeDomainObjects, OriginalOppositeDomainObjects);
       }
     }
 
@@ -286,13 +288,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      _originalOppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection> ();
+      _originalOppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection>();
       _originalOppositeDomainObjects.ChangeDelegate = this;
-      _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection> ();
+      _oppositeDomainObjects = info.GetValueForHandle<DomainObjectCollection>();
       _oppositeDomainObjects.ChangeDelegate = this;
-      _originalOppositeDomainObjectsReference = info.GetValueForHandle<DomainObjectCollection> ();
-      _hasBeenTouched = info.GetBoolValue ();
-      _changeDelegate = info.GetValueForHandle<ICollectionEndPointChangeDelegate> ();
+      _originalOppositeDomainObjectsReference = info.GetValueForHandle<DomainObjectCollection>();
+      _hasBeenTouched = info.GetBoolValue();
+      _changeDelegate = info.GetValueForHandle<ICollectionEndPointChangeDelegate>();
 
       // if _changeDelegate == null, we didn't serialize the back-reference to the RelationEndPointMap, so get it from the ClientTransaction
       // only do that after deserialization has finished

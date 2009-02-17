@@ -25,7 +25,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
-  public class RelationEndPointModificationCollectionTest : ClientTransactionBaseTest
+  public class BidirectionalEndPointsModificationTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
     private ObjectEndPoint _endPointMock;
@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     private RelationEndPointModification _modificationMock3;
     private Order _oldRelatedObject;
     private Order _newRelatedObject;
-    private RelationEndPointModificationCollection _collection;
+    private BidirectionalEndPointsModification _collection;
     private RelationEndPointID _id;
 
     public override void SetUp ()
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _modificationMock2 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
       _modificationMock3 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
 
-      _collection = new RelationEndPointModificationCollection (_modificationMock1, _modificationMock2, _modificationMock3);
+      _collection = new BidirectionalEndPointsModification (_modificationMock1, _modificationMock2, _modificationMock3);
     }
 
     [Test]
