@@ -127,5 +127,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
+
+    [Test]
+    public void CreateBidirectionalModification ()
+    {
+      // DomainObject.Orders.Remove (_removedRelatedObject)
+      var modification = _modification.CreateBidirectionalModification ().GetEndPointModifications ();
+      Assert.That (modification.Count, Is.EqualTo (2));
+
+      // _removedRelatedObject.Customer = null
+      Assert.That (modification[0], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (modification[0].OldRelatedObject, Is.SameAs (DomainObject));
+      Assert.That (modification[0].NewRelatedObject, Is.Null);
+
+      // DomainObject.Orders.Remove (_removedRelatedObject)
+      Assert.That (modification[1], Is.SameAs (_modification));
+    }
   }
 }

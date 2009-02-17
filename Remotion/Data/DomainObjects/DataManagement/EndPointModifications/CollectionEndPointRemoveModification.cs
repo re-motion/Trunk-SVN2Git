@@ -77,8 +77,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override BidirectionalEndPointsModification CreateBidirectionalModification ()
     {
-#warning TODO FS: Implement
-      throw new System.NotImplementedException ();
+      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
+      var removedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+      return new BidirectionalEndPointsModification (
+          removedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()),
+          this);
     }
   }
 }

@@ -125,13 +125,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       CheckDeleted (endPoint);
       CheckDeleted (removedRelatedObject);
 
-      var removedEndPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (removedRelatedObject, endPoint.OppositeEndPointDefinition);
-
-     var modifications = new BidirectionalEndPointsModification (
-          removedEndPoint.CreateRemoveModification (endPoint.GetDomainObject()),
-          endPoint.CreateRemoveModification (removedRelatedObject));
-
-      modifications.ExecuteAllSteps ();
+      var removeModification = endPoint.CreateRemoveModification (removedRelatedObject);
+      var bidirectionalModification = removeModification.CreateBidirectionalModification ();
+      bidirectionalModification.ExecuteAllSteps ();
     }
 
     // TODO: Check this after 997

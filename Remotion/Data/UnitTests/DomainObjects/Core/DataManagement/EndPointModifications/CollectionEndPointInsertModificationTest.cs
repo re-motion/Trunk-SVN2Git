@@ -131,6 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void CreateBidirectionalModification ()
     {
+      // DomainObject.Orders.Insert (_insertedRelatedObject, 12)
       var modification = _modification.CreateBidirectionalModification ().GetEndPointModifications ();
       Assert.That (modification.Count, Is.EqualTo (3));
 
@@ -142,10 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (modification[0].NewRelatedObject, Is.SameAs (DomainObject));
 
       // DomainObject.Orders.Insert (_insertedRelatedObject, 12)
-      Assert.That (modification[1], Is.InstanceOfType (typeof (CollectionEndPointInsertModification)));
-      Assert.That (modification[1].ModifiedEndPoint, Is.SameAs (CollectionEndPoint));
-      Assert.That (modification[1].NewRelatedObject, Is.SameAs (_insertedRelatedObject));
-      Assert.That (((CollectionEndPointInsertModification) modification[1]).Index, Is.EqualTo (12));
+      Assert.That (modification[1], Is.SameAs (_modification));
 
       // oldCustomer.Orders.Remove (_insertedRelatedObject)
       Assert.That (modification[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
