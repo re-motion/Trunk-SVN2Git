@@ -275,7 +275,7 @@ namespace Remotion.Data.DomainObjects
     /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event DomainObjectCollectionChangeEventHandler Removed;
 
-    internal IDomainObjectCollectionData _data; // TODO: Make private as soon as CollectionEndPoint manages the real data of managed DOCollections.
+    internal IDomainObjectCollectionData _data; // TODO 1033: Make private as soon as CollectionEndPoint manages the real data of managed DOCollections.
     private Type _requiredItemType;
     
     [NonSerialized]

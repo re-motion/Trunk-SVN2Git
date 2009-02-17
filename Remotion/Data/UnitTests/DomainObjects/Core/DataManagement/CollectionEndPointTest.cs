@@ -825,7 +825,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateReplaceModification ()
     {
-      var modification = _customerEndPoint.CreateReplaceModification(_order1, _order2);
+      var modification = _customerEndPoint.CreateReplaceModification(0, _order2);
       Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointReplaceModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));

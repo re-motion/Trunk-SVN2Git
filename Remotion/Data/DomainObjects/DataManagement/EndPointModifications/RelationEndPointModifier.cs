@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       bidirectionalModification.ExecuteAllSteps ();
     }
 
-    public void PerformReplace (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)
+    public void PerformReplace (CollectionEndPoint endPoint, int index, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("newRelatedObject", newRelatedObject);
@@ -81,31 +81,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       CheckDeleted (endPoint);
       CheckDeleted (newRelatedObject);
 
-      // the end point that will be linked to the collection end point after the operation
-      var endPointOfNewObject = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
-      // the object that will be replaced
-      var oldRelatedObject = endPoint.OppositeDomainObjects[index];
-      // the end point that was linked to the collection end point before the operation
-      Assertion.IsNotNull (endPoint.OppositeDomainObjects[index]);
-      var endPointOfOldObject = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (endPoint.OppositeDomainObjects[index], endPoint.OppositeEndPointDefinition);
-      // the object that was linked to the new related object before the operation
-      var oldRelatedObjectOfNewObject = _relationEndPointMap.GetRelatedObject (endPointOfNewObject.ID, false);
-      // the end point that was linked to the new related object before the operation
-      var oldRelatedEndPointOfNewObject = 
-          (CollectionEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObjectOfNewObject, endPointOfNewObject.OppositeEndPointDefinition);
+      var replaceModification = endPoint.CreateReplaceModification (index, newRelatedObject);
+      var bidirectionalModification = replaceModification.CreateBidirectionalModification ();
 
-#warning TODO FS
-      var modifications = new BidirectionalEndPointsModification (
-          // unlink the old related object
-          endPointOfOldObject.CreateRemoveModification (endPoint.GetDomainObject ()),
-          // link the new related object
-          endPointOfNewObject.CreateSetModification (oldRelatedObjectOfNewObject, endPoint.GetDomainObject ()),
-          // replace the objects in the collection
-          endPoint.CreateReplaceModification (oldRelatedObject, newRelatedObject),
-          // unlink the object previously related to the new related object
-          oldRelatedEndPointOfNewObject.CreateRemoveModification (newRelatedObject));
-
-      modifications.ExecuteAllSteps ();
+      bidirectionalModification.ExecuteAllSteps ();
     }
 
     public void PerformSelfReplace (CollectionEndPoint endPoint, DomainObject domainObject, int index)

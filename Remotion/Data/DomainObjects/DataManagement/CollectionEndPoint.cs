@@ -216,12 +216,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public virtual RelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
+      ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
       return new CollectionEndPointInsertModification (this, insertedRelatedObject, index, _oppositeDomainObjects._data);
     }
 
-    public virtual RelationEndPointModification CreateReplaceModification (DomainObject replacedRelatedObject, DomainObject newRelatedObject)
+    public virtual RelationEndPointModification CreateReplaceModification (int index, DomainObject newRelatedObject)
     {
-      return new CollectionEndPointReplaceModification (this, replacedRelatedObject, newRelatedObject, _oppositeDomainObjects._data);
+      return new CollectionEndPointReplaceModification (this, OppositeDomainObjects[index], newRelatedObject, _oppositeDomainObjects._data);
     }
 
     public override void PerformDelete ()
@@ -260,7 +261,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     void ICollectionChangeDelegate.PerformReplace (DomainObjectCollection collection, DomainObject newDomainObject, int index)
     {
-      ChangeDelegate.PerformReplace (this, newDomainObject, index);
+      ChangeDelegate.PerformReplace (this, index, newDomainObject);
       _hasBeenTouched = true;
     }
 

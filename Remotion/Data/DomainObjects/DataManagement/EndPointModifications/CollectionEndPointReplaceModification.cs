@@ -52,20 +52,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       ModifiedCollection.BeginRemove (OldRelatedObject);
       ModifiedCollection.BeginAdd (NewRelatedObject);
-      base.Begin ();
+      base.Begin();
     }
 
     public override void Perform ()
     {
       ModifiedCollectionData.Replace (OldRelatedObject.ID, NewRelatedObject);
-      ModifiedEndPoint.Touch ();
+      ModifiedEndPoint.Touch();
     }
 
     public override void End ()
     {
       ModifiedCollection.EndRemove (OldRelatedObject);
       ModifiedCollection.EndAdd (NewRelatedObject);
-      base.End ();
+      base.End();
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// <remarks>
     /// A replace operation of the form "customer.Orders[index] = newOrder" needs four steps:
     /// <list type="bullet">
-    ///   <item>customer.Order[index].Customer = null.</item>
+    ///   <item>customer.Order[index].Customer = null,</item>
     ///   <item>newOrder.Customer = customer,</item>
     ///   <item>customer.Orders[index] = newOrder,</item>
     ///   <item>oldCustomer.Orders.Remove (insertedOrder) - with oldCustomer being the old customer of the new order (if non-null).</item>
@@ -82,8 +82,30 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// </remarks>
     public override BidirectionalEndPointsModification CreateBidirectionalModification ()
     {
-#warning TODO FS: Implement
-      throw new System.NotImplementedException();
+      var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
+
+      // the end point that will be linked to the collection end point after the operation
+      var endPointOfNewObject =
+          (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+      // the end point that was linked to the collection end point before the operation
+      var endPointOfOldObject =
+          (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+      // the object that was linked to the new related object before the operation
+      var oldRelatedObjectOfNewObject = relationEndPointMap.GetRelatedObject (endPointOfNewObject.ID, false);
+      // the end point that was linked to the new related object before the operation
+      var oldRelatedEndPointOfNewObject =
+          (CollectionEndPoint)
+          relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObjectOfNewObject, endPointOfNewObject.OppositeEndPointDefinition);
+
+      return new BidirectionalEndPointsModification (
+          // customer.Order[index].Customer = null
+          endPointOfOldObject.CreateRemoveModification (ModifiedEndPoint.GetDomainObject()),
+          // newOrder.Customer = customer
+          endPointOfNewObject.CreateSetModification (oldRelatedObjectOfNewObject, ModifiedEndPoint.GetDomainObject()),
+          // customer.Orders[index] = newOrder
+          this,
+          // oldCustomer.Orders.Remove (insertedOrder)
+          oldRelatedEndPointOfNewObject.CreateRemoveModification (NewRelatedObject));
     }
   }
 }

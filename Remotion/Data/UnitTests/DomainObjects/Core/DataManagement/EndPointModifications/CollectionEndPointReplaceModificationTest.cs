@@ -136,5 +136,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
+
+    [Test]
+    public void CreateBidirectionalModification ()
+    {
+      // DomainObject.Orders[indexof (_replacedRelatedObject)] = _replacementRelatedObject
+      var steps = _modification.CreateBidirectionalModification ().GetEndPointModifications ();
+      Assert.That (steps.Count, Is.EqualTo (4));
+
+      var oldCustomer = _replacementRelatedObject.Customer;
+
+      // DomainObject.Orders[...].Customer = null
+      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (steps[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order) + ".Customer"));
+      Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_replacedRelatedObject.ID));
+      Assert.That (steps[0].OldRelatedObject, Is.SameAs (DomainObject));
+      Assert.That (steps[0].NewRelatedObject, Is.Null);
+
+      // _replacementRelatedObject.Customer = DomainObject
+      Assert.That (steps[1], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (steps[1].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order) + ".Customer"));
+      Assert.That (steps[1].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_replacementRelatedObject.ID));
+      Assert.That (steps[1].OldRelatedObject, Is.SameAs (oldCustomer));
+      Assert.That (steps[1].NewRelatedObject, Is.SameAs (DomainObject));
+
+      // DomainObject.Orders[...] = _replacementRelatedObject
+      Assert.That (steps[2], Is.SameAs (_modification));
+
+      // oldCustomer.Orders.Remove (_replacementRelatedObject)
+      Assert.That (steps[3], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
+      Assert.That (steps[3].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Customer) + ".Orders"));
+      Assert.That (steps[3].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
+      Assert.That (steps[3].OldRelatedObject, Is.SameAs (_replacementRelatedObject));
+    }
   }
 }

@@ -137,6 +137,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       // _removedRelatedObject.Customer = null
       Assert.That (modification[0], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (modification[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order) + ".Customer"));
+      Assert.That (modification[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_removedRelatedObject.ID));
       Assert.That (modification[0].OldRelatedObject, Is.SameAs (DomainObject));
       Assert.That (modification[0].NewRelatedObject, Is.Null);
 

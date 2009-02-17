@@ -27,7 +27,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new System.NotImplementedException();
     }
 
-    public void PerformReplace (CollectionEndPoint endPoint, DomainObject newRelatedObject, int index)
+    public void PerformReplace (CollectionEndPoint endPoint, int index, DomainObject newRelatedObject)
     {
       throw new System.NotImplementedException();
     }
