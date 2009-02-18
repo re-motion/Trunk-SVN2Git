@@ -135,6 +135,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Touch ()
+    {
+      Assert.IsFalse (_customerEndPoint.HasBeenTouched);
+      _customerEndPoint.Touch ();
+      Assert.IsTrue (_customerEndPoint.HasBeenTouched);
+    }
+
+    [Test]
     public void HasBeenTouchedAddAndRemove_LeavingSameElements ()
     {
       Assert.IsFalse (_customerEndPoint.HasBeenTouched);

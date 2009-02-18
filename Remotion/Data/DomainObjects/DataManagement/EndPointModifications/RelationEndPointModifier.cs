@@ -59,16 +59,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       //if (ReferenceEquals (oldRelatedObject, newRelatedObject))
       //{
-      //  var newRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
-      //  Assertion.IsTrue (!endPoint.OppositeEndPointDefinition.IsNull || newRelatedEndPoint == null, 
-      //      "unidirectional relation end points return null here");
-      //  SetRelatedObjectForEqualObjects (endPoint, newRelatedEndPoint);
-      //}
+      //  var setModification = endPoint.CreateSetModification (oldRelatedObject, newRelatedObject);
+      //  var bidirectionalModification = setModification.CreateBidirectionalModification ();
+      //  bidirectionalModification.ExecuteAllSteps ();
 
-      if (endPoint.OppositeEndPointDefinition.IsAnonymous)
-        SetRelatedObjectForUnidirectionalRelation (endPoint, newRelatedObject);
-      else
-        SetRelatedObjectForBidirectionalRelation (endPoint, newRelatedObject);
+      //  //  var newRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
+      //  //  Assertion.IsTrue (!endPoint.OppositeEndPointDefinition.IsNull || newRelatedEndPoint == null, 
+      //  //      "unidirectional relation end points return null here");
+      //  //  SetRelatedObjectForEqualObjects (endPoint, newRelatedEndPoint);
+      //}
+      //else
+      {
+        if (endPoint.OppositeEndPointDefinition.IsAnonymous)
+          SetRelatedObjectForUnidirectionalRelation (endPoint, newRelatedObject);
+        else
+          SetRelatedObjectForBidirectionalRelation (endPoint, newRelatedObject);
+      }
     }
 
     public void PerformInsert (CollectionEndPoint collectionEndPoint, DomainObject insertedObject, int index)
@@ -286,10 +292,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       if (virtualEndPoint != null) // bidirectional?
         virtualEndPoint.Touch ();
-
-      // touch foreign key property
-      if (!realEndPoint.IsNull) // null end points have no data container, so no foreign key needs to be touched
-        realEndPoint.GetDataContainer ().PropertyValues[realEndPoint.PropertyName].Touch ();
     }
 
     private void SetRelatedObjectForBidirectionalRelation (ObjectEndPoint endPoint, DomainObject newRelatedObject)

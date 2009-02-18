@@ -258,6 +258,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    // TODO 1032: Remove
     internal void Touch ()
     {
       _hasBeenTouched = true;

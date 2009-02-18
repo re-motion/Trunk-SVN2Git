@@ -15,6 +15,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
@@ -22,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
@@ -111,15 +113,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void PerformInvokesPerformRelationChange ()
+    public void Perform_InvokesPerformRelationChange ()
     {
-      _endPointMock.SetOppositeObjectID (_modification);
+      _endPointMock.Expect (mock => mock.SetOppositeObjectID (_modification));
 
       _mockRepository.ReplayAll();
 
       _modification.Perform();
 
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void Perform_TouchesEndPoint ()
+    {
+      var endPoint = new ObjectEndPoint(ClientTransactionMock, _id, DomainObjectIDs.Employee3);
+      Assert.That (endPoint.HasBeenTouched, Is.False);
+
+      var modification = new ObjectEndPointSetModification (endPoint, _oldRelatedObject, _newRelatedObject);
+
+      modification.Perform ();
+
+      Assert.That (endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]

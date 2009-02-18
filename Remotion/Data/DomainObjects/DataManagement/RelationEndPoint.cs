@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     protected internal abstract void TakeOverCommittedData (RelationEndPoint source);
     public abstract bool HasChanged { get; }
     public abstract bool HasBeenTouched { get; }
-    protected internal abstract void Touch ();
+    public abstract void Touch ();
     public abstract void Commit ();
     public abstract void Rollback ();
     public abstract void CheckMandatory ();
@@ -139,6 +139,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _clientTransaction.GetObject (ObjectID, true);
     }
 
+    // TODO 1032: Consider removing this method.
     public virtual DataContainer GetDataContainer ()
     {
       DomainObject domainObject = GetDomainObject();

@@ -186,6 +186,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Touch_AlsoTouchesForeignKey ()
+    {
+      Assert.That (_endPoint.IsVirtual, Is.False);
+      Assert.That (_endPoint.HasBeenTouched, Is.False);
+      Assert.That (_endPoint.GetDataContainer ().PropertyValues[_endPoint.PropertyName].HasBeenTouched, Is.False);
+
+      _endPoint.Touch();
+      Assert.That (_endPoint.HasBeenTouched, Is.True);
+      Assert.That (_endPoint.GetDataContainer ().PropertyValues[_endPoint.PropertyName].HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void Touch_WorksIfNoForeignKey ()
+    {
+      var virtualEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
+      var oppositeID = DomainObjectIDs.OrderTicket1;
+      var virtualEndPoint = CreateObjectEndPoint (virtualEndPointID, oppositeID);
+
+      Assert.That (virtualEndPoint.IsVirtual, Is.True);
+      Assert.That (virtualEndPoint.HasBeenTouched, Is.False);
+      Assert.That (virtualEndPoint.GetDataContainer ().PropertyValues.Contains (virtualEndPoint.PropertyName), Is.False);
+
+      virtualEndPoint.Touch();
+      Assert.That (virtualEndPoint.HasBeenTouched, Is.True);
+    }
+
+    [Test]
     public void PerformWithoutBegin ()
     {
       _endPoint.OppositeObjectID = DomainObjectIDs.Order1;

@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       get { throw new NotImplementedException(); }
     }
 
-    protected override void Touch ()
+    public override void Touch ()
     {
       throw new NotImplementedException();
     }

@@ -190,7 +190,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenTouched; }
     }
 
-    protected internal override void Touch ()
+    public override void Touch ()
     {
       _hasBeenTouched = true;
     }

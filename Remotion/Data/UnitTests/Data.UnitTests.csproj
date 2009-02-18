@@ -238,6 +238,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointInsertModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointModificationTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointReplaceModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\NullObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CurrentPropertyManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectEventManagerTest.cs" />
