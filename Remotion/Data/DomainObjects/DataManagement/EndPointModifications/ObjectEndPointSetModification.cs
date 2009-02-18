@@ -37,8 +37,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override BidirectionalEndPointsModification CreateBidirectionalModification ()
     {
-#warning TODO FS: Decide what to do here.
-      throw new System.NotImplementedException ();
+      // order.Customer = newCustomer (1:n) 
+      // => oldCustomer.Orders.Remove (order) (remove)
+      // => newCustomer.Orders.Add (order)
+      // => order.Customer = newCustomer
+
+      // order.OrderTicket = newTicket (1:1) => SetRelatedObjectForOneToOneRelation
+      // => order.OrderTicket = newTicket
+      // => oldTicket.Order = null (remove)
+      // => newTicket.Order = order
+      // => oldOrderOfNewTicket.OrderTicket = null (remove)
+
+      // person.Address = newAddress (1:1 uni) => SetRelatedObjectForUnidirectionalRelation
+      // => person.Address = newAddress
+
+      // for equal objects: don't forget to touch the foreign key property; should probably be done in ObjectEndPoint.SetOppositeID...
+
+      throw new NotImplementedException ();
     }
   }
 }

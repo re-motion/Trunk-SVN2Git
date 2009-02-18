@@ -14,7 +14,6 @@
 // along with this framework; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -51,6 +50,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       var endPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
       CheckDeleted (endPoint);
+
+      // TODO FS: 1032
+      //var oldRelatedObject = _relationEndPointMap.GetRelatedObject (endPointID, false);
+      //var setModification = endPoint.CreateSetModification (oldRelatedObject, newRelatedObject);
+      //var bidirectionalModification = setModification.CreateBidirectionalModification ();
+      //bidirectionalModification.ExecuteAllSteps ();
+
 
       if (endPoint.OppositeEndPointDefinition.IsNull)
         SetRelatedObjectForUnidirectionalRelation (endPoint, newRelatedObject);
@@ -250,18 +256,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       DomainObject oldRelatedObject = _relationEndPointMap.GetRelatedObject (unidirectionalObjectEndPoint.ID, true);
 
-      AnonymousEndPoint newRelatedEndPoint = GetAnonymousEndPoint (newRelatedObject, unidirectionalObjectEndPoint.RelationDefinition);
-      AnonymousEndPoint oldRelatedEndPoint = GetAnonymousEndPoint (oldRelatedObject, unidirectionalObjectEndPoint.RelationDefinition);
-
-      if (ReferenceEquals (newRelatedEndPoint.GetDomainObject (), oldRelatedEndPoint.GetDomainObject ()))
+      if (ReferenceEquals (newRelatedObject, oldRelatedObject))
         SetRelatedObjectForEqualObjects (unidirectionalObjectEndPoint, null);
       else
       {
-        RelationEndPointModification modification = unidirectionalObjectEndPoint.CreateSetModification (((IEndPoint) oldRelatedEndPoint).GetDomainObject (), ((IEndPoint) newRelatedEndPoint).GetDomainObject ());
+        RelationEndPointModification modification = 
+            unidirectionalObjectEndPoint.CreateSetModification (oldRelatedObject, newRelatedObject);
         modification.ExecuteAllSteps ();
       }
     }
 
+    // TODO 1032: use the other set methods instead
     private void SetRelatedObjectForEqualObjects (RelationEndPoint endPoint, RelationEndPoint oppositeEndPoint)
     {
       Assertion.IsNotNull (endPoint);
@@ -290,7 +295,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       if (ReferenceEquals (newRelatedEndPoint.GetDomainObject (), oldRelatedEndPoint.GetDomainObject ()))
         SetRelatedObjectForEqualObjects (endPoint, newRelatedEndPoint);
       else if (newRelatedEndPoint.Definition.Cardinality == CardinalityType.One)
-        SetRelatedObjectForOneToOneRelation (endPoint, (ObjectEndPoint) newRelatedEndPoint, (ObjectEndPoint) oldRelatedEndPoint);
+        SetRelatedObjectForOneToOneRelation (endPoint, oldRelatedObject, newRelatedObject);
       else
         SetRelatedObjectForOneToManyRelation (endPoint, newRelatedEndPoint, oldRelatedEndPoint);
     }
@@ -298,23 +303,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     // TODO refactor: Unify SetRelatedObject*-methods to one single method => add *RelationChange-methods to IEndPoint
     private void SetRelatedObjectForOneToOneRelation (
         ObjectEndPoint endPoint,
-        ObjectEndPoint newRelatedEndPoint,
-        ObjectEndPoint oldRelatedEndPoint)
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject)
     {
-      var oldRelatedEndPointOfNewRelatedEndPoint = (ObjectEndPoint)
-                                                   RelationEndPoint.CreateNullRelationEndPoint (endPoint.Definition);
+      var newRelatedEndPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
+      var oldRelatedEndPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObject, newRelatedEndPoint.Definition);
 
-      if (!newRelatedEndPoint.IsNull)
-      {
-        DomainObject oldRelatedObject = _relationEndPointMap.GetRelatedObject (newRelatedEndPoint.ID, false);
-        oldRelatedEndPointOfNewRelatedEndPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObject, endPoint.Definition);
-      }
+      var oldRelatedObjectOfNewRelatedObject = newRelatedObject == null ? null : _relationEndPointMap.GetRelatedObject (newRelatedEndPoint.ID, true);
+      var oldRelatedEndPointOfNewRelatedEndPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObjectOfNewRelatedObject, endPoint.Definition);
 
+      Assertion.IsTrue (newRelatedObject != null || oldRelatedEndPointOfNewRelatedEndPoint.IsNull, 
+          "a null newRelatedObject will cause oldRelatedEndPointOfNewRelatedEndPoint to be a null end point");
+
+      // TODO 1032: use Set to null instead
       var modifications = new BidirectionalEndPointsModification (
-          endPoint.CreateSetModification (((IEndPoint) oldRelatedEndPoint).GetDomainObject (), ((IEndPoint) newRelatedEndPoint).GetDomainObject ()), // TODO: simplify
-          oldRelatedEndPoint.CreateRemoveModification (((IEndPoint) endPoint).GetDomainObject ()), // TODO: simplify
-          newRelatedEndPoint.CreateSetModification (((IEndPoint) oldRelatedEndPointOfNewRelatedEndPoint).GetDomainObject (), ((IEndPoint) endPoint).GetDomainObject ()), // TODO: simplify
-          oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveModification (((IEndPoint) newRelatedEndPoint).GetDomainObject ())); // TODO: simplify
+          endPoint.CreateSetModification (oldRelatedObject, newRelatedObject),
+          oldRelatedEndPoint.CreateRemoveModification (endPoint.GetDomainObject ()),
+          newRelatedEndPoint.CreateSetModification (oldRelatedObjectOfNewRelatedObject, endPoint.GetDomainObject ()),
+          oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveModification (newRelatedObject));
 
       modifications.ExecuteAllSteps ();
     }
@@ -324,6 +330,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
         RelationEndPoint newRelatedEndPoint,
         RelationEndPoint oldRelatedEndPoint)
     {
+      // TODO 1032: create modifications instead
       if (!newRelatedEndPoint.IsNull)
       {
         DomainObjectCollection collection = _relationEndPointMap.GetRelatedObjects (newRelatedEndPoint.ID);
