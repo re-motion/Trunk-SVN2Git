@@ -52,15 +52,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetDataContainerUsesStoredTransaction ()
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        Assert.AreSame (ClientTransactionMock, _endPoint.GetDataContainer().ClientTransaction);
-      }
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void InitializeWithInvalidRelationEndPointID ()
     {
@@ -80,11 +71,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void ChangeOppositeObjectID ()
     {
-      ObjectID newObjectID = new ObjectID ("Order", Guid.NewGuid ());
+      var newObjectID = new ObjectID ("Order", Guid.NewGuid ());
       _endPoint.OppositeObjectID = newObjectID;
 
-      Assert.AreSame (newObjectID, _endPoint.OppositeObjectID);
-      Assert.AreEqual (_oppositeObjectID, _endPoint.OriginalOppositeObjectID);
+      Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (newObjectID));
+      Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (_oppositeObjectID));
+      Assert.That (((OrderItem)_endPoint.GetDomainObject()).InternalDataContainer.PropertyValues[_endPoint.PropertyName].Value,
+          Is.EqualTo (newObjectID));
     }
 
     [Test]
@@ -181,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.IsFalse (_endPoint.HasBeenTouched);
       var removedRelatedObject = Order.NewObject ();
-      _endPoint.SetOppositeObjectID ((ObjectEndPointSetModification) _endPoint.CreateRemoveModification (removedRelatedObject));
+      _endPoint.CreateRemoveModification (removedRelatedObject).Perform ();
       Assert.IsTrue (_endPoint.HasBeenTouched);
     }
 
@@ -190,11 +183,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_endPoint.IsVirtual, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.False);
-      Assert.That (_endPoint.GetDataContainer ().PropertyValues[_endPoint.PropertyName].HasBeenTouched, Is.False);
+      Assert.That (((OrderItem)_endPoint.GetDomainObject()).InternalDataContainer.PropertyValues[_endPoint.PropertyName].HasBeenTouched, Is.False);
 
       _endPoint.Touch();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
-      Assert.That (_endPoint.GetDataContainer ().PropertyValues[_endPoint.PropertyName].HasBeenTouched, Is.True);
+      Assert.That (((OrderItem) _endPoint.GetDomainObject ()).InternalDataContainer.PropertyValues[_endPoint.PropertyName].HasBeenTouched, Is.True);
     }
 
     [Test]
@@ -206,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (virtualEndPoint.IsVirtual, Is.True);
       Assert.That (virtualEndPoint.HasBeenTouched, Is.False);
-      Assert.That (virtualEndPoint.GetDataContainer ().PropertyValues.Contains (virtualEndPoint.PropertyName), Is.False);
+      Assert.That (((Order) virtualEndPoint.GetDomainObject ()).InternalDataContainer.PropertyValues.Contains (virtualEndPoint.PropertyName), Is.False);
 
       virtualEndPoint.Touch();
       Assert.That (virtualEndPoint.HasBeenTouched, Is.True);
@@ -486,14 +479,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void CreateSetModification ()
+    {
+      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+      var modification = _endPoint.CreateSetModification (Order.GetObject (_endPoint.OppositeObjectID), order2);
+      Assert.That (modification.GetType(), Is.EqualTo (typeof (ObjectEndPointSetModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
+      Assert.That (modification.OldRelatedObject, Is.SameAs (Order.GetObject (_endPoint.OppositeObjectID)));
+      Assert.That (modification.NewRelatedObject, Is.SameAs (order2));
+    }
+
+    [Test]
+    public void CreateSetModification_Same ()
+    {
+      var order = Order.GetObject (_endPoint.OppositeObjectID);
+      var modification = _endPoint.CreateSetModification (order, order);
+      Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetSameModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
+      Assert.That (modification.OldRelatedObject, Is.SameAs (order));
+      Assert.That (modification.NewRelatedObject, Is.SameAs (order));
+    }
+
+    [Test]
     public void CreateRemoveModification ()
     {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var modification = _endPoint.CreateRemoveModification (order1);
+      var order = Order.GetObject (_endPoint.OppositeObjectID);
+      var modification = _endPoint.CreateRemoveModification (order);
       Assert.That (modification, Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (order1));
+      Assert.That (modification.OldRelatedObject, Is.SameAs (order));
       Assert.That (modification.NewRelatedObject, Is.Null);
     }
+
   }
 }

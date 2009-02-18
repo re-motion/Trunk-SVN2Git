@@ -30,5 +30,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _realEndPoint.Touch ();
       Assert.That (_realEndPoint.HasBeenTouched, Is.True);
     }
+
+    [Test]
+    public void SetOppositeObjectID ()
+    {
+      Assert.That (_realEndPoint.OppositeObjectID, Is.Null);
+      _realEndPoint.OppositeObjectID = DomainObjectIDs.Order3;
+      Assert.That (_realEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order3));
+    }
   }
 }

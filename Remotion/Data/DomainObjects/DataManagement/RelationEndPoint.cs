@@ -139,13 +139,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _clientTransaction.GetObject (ObjectID, true);
     }
 
-    // TODO 1032: Consider removing this method.
-    public virtual DataContainer GetDataContainer ()
-    {
-      DomainObject domainObject = GetDomainObject();
-      return _clientTransaction.GetDataContainer(domainObject);
-    }
-
     public virtual ObjectID ObjectID
     {
       get { return _id.ObjectID; }

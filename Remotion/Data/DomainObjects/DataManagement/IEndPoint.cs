@@ -22,7 +22,6 @@ public interface IEndPoint : INullObject
 {
   ClientTransaction ClientTransaction { get; }
   DomainObject GetDomainObject ();
-  DataContainer GetDataContainer ();
   ObjectID ObjectID { get; }
 
   RelationDefinition RelationDefinition { get; }

@@ -83,11 +83,6 @@ public class NullObjectEndPoint : ObjectEndPoint
     get { return false; }
   }
 
-  public override DataContainer GetDataContainer ()
-  {
-    return null;
-  }
-
   public override DomainObject GetDomainObject ()
   {
     return null;
@@ -114,6 +109,11 @@ public class NullObjectEndPoint : ObjectEndPoint
   }
 
   protected override void TouchForeignKeyProperty ()
+  {
+    // do nothing, null objects have no foreign key properties...
+  }
+
+  protected override void SetForeignKeyProperty ()
   {
     // do nothing, null objects have no foreign key properties...
   }

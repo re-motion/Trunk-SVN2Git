@@ -19,20 +19,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   public class ObjectEndPointSetModification : RelationEndPointModification
   {
-    private readonly ObjectEndPoint _affectedEndPoint;
+    private readonly ObjectEndPoint _modifiedEndPoint;
 
+    // TODO 1032: remove oldRelatedObject parameter, can be inferred from modifiedEndPoint
     public ObjectEndPointSetModification (ObjectEndPoint modifiedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
         : base (modifiedEndPoint, oldRelatedObject, newRelatedObject)
     {
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");
 
-      _affectedEndPoint = modifiedEndPoint;
+      _modifiedEndPoint = modifiedEndPoint;
     }
 
     public override void Perform ()
     {
-      _affectedEndPoint.SetOppositeObjectID (this);
+      var id = NewRelatedObject == null ? null : NewRelatedObject.ID;
+      _modifiedEndPoint.OppositeObjectID = id;
     }
 
     public override BidirectionalEndPointsModification CreateBidirectionalModification ()

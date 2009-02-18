@@ -89,11 +89,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return false; }
     }
 
-    public override DataContainer GetDataContainer ()
-    {
-      return null;
-    }
-
     public override DomainObject GetDomainObject ()
     {
       return null;

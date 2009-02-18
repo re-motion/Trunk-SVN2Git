@@ -34,10 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     private ObjectEndPoint _endPointMock;
     private ObjectEndPointSetModification _modification;
     private RelationEndPointID _id;
-    private Order _oldRelatedObject;
-    private Order _newRelatedObject;
-    private IEndPoint _oldEndPointStub;
-    private IEndPoint _newEndPointStub;
+    private Employee _oldRelatedObject;
+    private Employee _newRelatedObject;
 
     public override void SetUp ()
     {
@@ -47,17 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
           DomainObjectIDs.Computer1,
           MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "Employee"));
 
-      _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
+      _oldRelatedObject = Employee.GetObject (DomainObjectIDs.Employee3);
+      _newRelatedObject = Employee.GetObject (DomainObjectIDs.Employee4);
 
-      _oldRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
-      _newRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
-
-      _oldEndPointStub = _mockRepository.Stub<IEndPoint> ();
-      _newEndPointStub = _mockRepository.Stub<IEndPoint> ();
-      _oldEndPointStub.Stub (stub => stub.GetDomainObject ()).Return (_oldRelatedObject);
-      _newEndPointStub.Stub (stub => stub.GetDomainObject ()).Return (_newRelatedObject);
-      _oldEndPointStub.Replay ();
-      _newEndPointStub.Replay ();
+      _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, _id, _oldRelatedObject.ID);
 
       _endPointMock.Expect (mock => mock.IsNull).Return (false);
       _endPointMock.Replay ();
@@ -73,12 +64,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.AreSame (_newRelatedObject, _modification.NewRelatedObject);
     }
 
-
     [Test]
     public void Initialization_FromEndPoint ()
     {
       var endPoint = new ObjectEndPoint (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
-      RelationEndPointModification modification = endPoint.CreateSetModification (_oldEndPointStub.GetDomainObject (), _newEndPointStub.GetDomainObject ());
+      RelationEndPointModification modification = endPoint.CreateSetModification (_oldRelatedObject, _newRelatedObject);
       Assert.IsInstanceOfType (typeof (ObjectEndPointSetModification), modification);
       Assert.AreSame (endPoint, modification.ModifiedEndPoint);
       Assert.AreSame (_oldRelatedObject, modification.OldRelatedObject);
@@ -115,13 +105,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void Perform_InvokesPerformRelationChange ()
     {
-      _endPointMock.Expect (mock => mock.SetOppositeObjectID (_modification));
-
-      _mockRepository.ReplayAll();
-
-      _modification.Perform();
-
-      _mockRepository.VerifyAll();
+      Assert.That (_endPointMock.OppositeObjectID, Is.EqualTo (_oldRelatedObject.ID));
+      _modification.Perform ();
+      Assert.That (_endPointMock.OppositeObjectID, Is.EqualTo (_newRelatedObject.ID));
     }
 
     [Test]

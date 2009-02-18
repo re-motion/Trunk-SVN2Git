@@ -137,16 +137,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenTouched; }
     }
 
+    // TODO 1032: consider removing this method
     public override void Touch ()
     {
       _hasBeenTouched = true;
       TouchForeignKeyProperty();
-    }
-
-    protected virtual void TouchForeignKeyProperty ()
-    {
-      if (!IsVirtual)
-        GetDataContainer ().PropertyValues[PropertyName].Touch ();
     }
 
     public override void CheckMandatory ()
@@ -170,30 +165,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public virtual RelationEndPointModification CreateSetModification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      return new ObjectEndPointSetModification (this, oldRelatedObject, newRelatedObject);
-    }
-
-    public virtual void SetOppositeObjectID (ObjectEndPointSetModification modification)
-    {
-      ArgumentUtility.CheckNotNull ("modification", modification);
-      var id = modification.NewRelatedObject == null ? null : modification.NewRelatedObject.ID;
-      SetOppositeObjectID (id);
+      if (ReferenceEquals (oldRelatedObject, newRelatedObject))
+        return new ObjectEndPointSetSameModification (this);
+      else
+        return new ObjectEndPointSetModification (this, oldRelatedObject, newRelatedObject);
     }
 
     public override void PerformDelete ()
     {
-      SetOppositeObjectID ((ObjectID) null);
-    }
-
-    private void SetOppositeObjectID (ObjectID newObjectID)
-    {
-      OppositeObjectID = newObjectID;
-
-      if (!IsVirtual)
-      {
-        DataContainer dataContainer = GetDataContainer ();
-        dataContainer.PropertyValues[PropertyName].SetRelationValue (newObjectID);
-      }
+      OppositeObjectID = null;
     }
 
     public ObjectID OriginalOppositeObjectID
@@ -208,7 +188,33 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         _oppositeObjectID = value;
         _hasBeenTouched = true;
+
+        SetForeignKeyProperty();
       }
+    }
+
+    protected virtual void TouchForeignKeyProperty ()
+    {
+      if (!IsVirtual)
+      {
+        PropertyValue foreignKeyProperty = GetForeignKeyProperty ();
+        foreignKeyProperty.Touch ();
+      }
+    }
+
+    protected virtual void SetForeignKeyProperty ()
+    {
+      if (!IsVirtual)
+      {
+        var foreignKeyProperty = GetForeignKeyProperty ();
+        foreignKeyProperty.SetRelationValue (_oppositeObjectID);
+      }
+    }
+
+    private PropertyValue GetForeignKeyProperty ()
+    {
+      var dataContainer = ClientTransaction.GetDataContainer (GetDomainObject ());
+      return dataContainer.PropertyValues[PropertyName];
     }
 
     #region Serialization
