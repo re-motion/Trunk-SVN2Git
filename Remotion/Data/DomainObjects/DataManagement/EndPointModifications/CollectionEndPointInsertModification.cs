@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       return new BidirectionalEndPointsModification (
           // insertedOrder.Customer = customer (previously oldCustomer)
-          insertedObjectEndPoint.CreateSetModification (oldRelatedObjectOfInsertedObject, ModifiedEndPoint.GetDomainObject()),
+          insertedObjectEndPoint.CreateSetModification (ModifiedEndPoint.GetDomainObject()),
           // customer.Orders.Insert (insertedOrder, index)
           this,
           // oldCustomer.Orders.Remove (insertedOrder)

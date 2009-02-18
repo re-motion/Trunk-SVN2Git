@@ -21,9 +21,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   {
     private readonly ObjectEndPoint _modifiedEndPoint;
 
-    // TODO 1032: remove oldRelatedObject parameter, can be inferred from modifiedEndPoint
-    public ObjectEndPointSetModification (ObjectEndPoint modifiedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
-        : base (modifiedEndPoint, oldRelatedObject, newRelatedObject)
+    public ObjectEndPointSetModification (ObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
+      : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(true), newRelatedObject)
     {
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModification is needed.", "modifiedEndPoint");

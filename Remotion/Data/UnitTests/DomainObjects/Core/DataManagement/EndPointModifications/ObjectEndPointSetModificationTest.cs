@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _endPointMock.Expect (mock => mock.IsNull).Return (false);
       _endPointMock.Replay ();
-      _modification = new ObjectEndPointSetModification (_endPointMock, _oldRelatedObject, _newRelatedObject);
+      _modification = new ObjectEndPointSetModification (_endPointMock, _newRelatedObject);
       _endPointMock.BackToRecord();
     }
 
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     public void Initialization_FromEndPoint ()
     {
       var endPoint = new ObjectEndPoint (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
-      RelationEndPointModification modification = endPoint.CreateSetModification (_oldRelatedObject, _newRelatedObject);
+      RelationEndPointModification modification = endPoint.CreateSetModification (_newRelatedObject);
       Assert.IsInstanceOfType (typeof (ObjectEndPointSetModification), modification);
       Assert.AreSame (endPoint, modification.ModifiedEndPoint);
       Assert.AreSame (_oldRelatedObject, modification.OldRelatedObject);
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (_id.Definition);
-      new ObjectEndPointSetModification (endPoint, _oldRelatedObject, _newRelatedObject);
+      new ObjectEndPointSetModification (endPoint, _newRelatedObject);
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var endPoint = new ObjectEndPoint(ClientTransactionMock, _id, DomainObjectIDs.Employee3);
       Assert.That (endPoint.HasBeenTouched, Is.False);
 
-      var modification = new ObjectEndPointSetModification (endPoint, _oldRelatedObject, _newRelatedObject);
+      var modification = new ObjectEndPointSetModification (endPoint, _newRelatedObject);
 
       modification.Perform ();
 
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _endPointMock.Expect (mock => mock.IsNull).Return (false);
       _endPointMock.Replay ();
 
-      var modificationMock = _mockRepository.StrictMock<ObjectEndPointSetModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
+      var modificationMock = _mockRepository.StrictMock<ObjectEndPointSetModification> (_endPointMock, _newRelatedObject);
 
       modificationMock.NotifyClientTransactionOfBegin ();
       modificationMock.Begin ();

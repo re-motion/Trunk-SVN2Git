@@ -40,14 +40,14 @@ public class NullObjectEndPoint : ObjectEndPoint
 
   // methods and properties
 
-  public override RelationEndPointModification CreateSetModification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
-  {
-    return new NullEndPointModification (this, oldRelatedObject, newRelatedObject);
-  }
-
   public override RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
   {
     return new NullEndPointModification (this, removedRelatedObject, null);
+  }
+
+  public override RelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
+  {
+    return new NullEndPointModification (this, GetOppositeObject(true), newRelatedObject);
   }
 
   public override void NotifyClientTransactionOfBeginRelationChange (DomainObject oldRelatedObject, DomainObject newRelatedObject)

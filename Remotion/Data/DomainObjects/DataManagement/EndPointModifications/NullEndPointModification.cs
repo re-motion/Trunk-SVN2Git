@@ -52,8 +52,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override BidirectionalEndPointsModification CreateBidirectionalModification ()
     {
-#warning TODO FS: Throw sensible exception.
-      throw new System.NotImplementedException ();
+      throw new NotSupportedException ("Null end points cannot be the starting point for a bidirectional modification.");
     }
   }
 }

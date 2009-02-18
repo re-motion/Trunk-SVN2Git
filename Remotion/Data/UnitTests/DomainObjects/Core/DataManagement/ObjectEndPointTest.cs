@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -78,6 +79,67 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (_oppositeObjectID));
       Assert.That (((OrderItem)_endPoint.GetDomainObject()).InternalDataContainer.PropertyValues[_endPoint.PropertyName].Value,
           Is.EqualTo (newObjectID));
+    }
+
+    [Test]
+    public void GetOppositeObject ()
+    {
+      var oppositeObject = _endPoint.GetOppositeObject (true);
+      Assert.That (oppositeObject, Is.SameAs (Order.GetObject (_endPoint.OppositeObjectID)));
+    }
+
+    [Test]
+    public void GetOppositeObject_Deleted ()
+    {
+      var oppositeObject = (Order) _endPoint.GetOppositeObject (true);
+      oppositeObject.Delete ();
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Deleted));
+
+      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectDeletedException))]
+    public void GetOppositeObject_Deleted_NoDeleted ()
+    {
+      var oppositeObject = (Order) _endPoint.GetOppositeObject (true);
+      oppositeObject.Delete ();
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Deleted));
+
+      _endPoint.GetOppositeObject (false);
+    }
+
+    [Test]
+    public void GetOppositeObject_Discarded ()
+    {
+      var oppositeObject = Order.NewObject ();
+      _endPoint.OppositeObjectID = oppositeObject.ID;
+
+      oppositeObject.Delete ();
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Discarded));
+
+      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectNotFoundException))]
+    public void GetOppositeObject_Discarded_NoDeleted ()
+    {
+      var oppositeObject = Order.NewObject ();
+      _endPoint.OppositeObjectID = oppositeObject.ID;
+
+      oppositeObject.Delete ();
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Discarded));
+
+      _endPoint.GetOppositeObject (false);
+    }
+
+    [Test]
+    public void GetOppositeObject_Null ()
+    {
+      _endPoint.OppositeObjectID = null;
+      var oppositeObject = _endPoint.GetOppositeObject (false);
+      Assert.That (oppositeObject, Is.Null);
     }
 
     [Test]
@@ -172,8 +234,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void HasBeenTouchedWithPerformRelationChange ()
     {
+      var removedRelatedObject = _endPoint.GetOppositeObject (false);
       Assert.IsFalse (_endPoint.HasBeenTouched);
-      var removedRelatedObject = Order.NewObject ();
       _endPoint.CreateRemoveModification (removedRelatedObject).Perform ();
       Assert.IsTrue (_endPoint.HasBeenTouched);
     }
@@ -482,7 +544,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateSetModification ()
     {
       var order2 = Order.GetObject (DomainObjectIDs.Order2);
-      var modification = _endPoint.CreateSetModification (Order.GetObject (_endPoint.OppositeObjectID), order2);
+      var modification = _endPoint.CreateSetModification (order2);
       Assert.That (modification.GetType(), Is.EqualTo (typeof (ObjectEndPointSetModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (Order.GetObject (_endPoint.OppositeObjectID)));
@@ -493,7 +555,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void CreateSetModification_Same ()
     {
       var order = Order.GetObject (_endPoint.OppositeObjectID);
-      var modification = _endPoint.CreateSetModification (order, order);
+      var modification = _endPoint.CreateSetModification (order);
       Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetSameModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (order));
@@ -509,6 +571,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (order));
       Assert.That (modification.NewRelatedObject, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot remove object "
+        + "'Order|90e26c86-611f-4735-8d1b-e1d0918515c2|System.Guid' from object end point "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' - it currently holds object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
+    public void CreateRemoveModification_InvalidID ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order4);
+      _endPoint.CreateRemoveModification (order);
+      Assert.Fail ("Expected exception.");
     }
 
   }

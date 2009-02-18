@@ -58,6 +58,7 @@ public class DataContainerMap : IEnumerable, IFlattenedSerializable
 
   public DomainObject GetObjectWithoutLoading (ObjectID id, bool includeDeleted)
   {
+    ArgumentUtility.CheckNotNull ("id", id);
     if (_dataContainers.Contains (id))
     {
       DataContainer dataContainer = this[id];

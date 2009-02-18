@@ -71,10 +71,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     public void Initialization_FromNullObjectEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (_id.Definition);
-      RelationEndPointModification modification = endPoint.CreateSetModification (_oldEndPointStub.GetDomainObject (), _newEndPointStub.GetDomainObject ());
+      RelationEndPointModification modification = endPoint.CreateSetModification (_newRelatedObject);
       Assert.IsInstanceOfType (typeof (NullEndPointModification), modification);
       Assert.AreSame (endPoint, modification.ModifiedEndPoint);
-      Assert.AreSame (_oldRelatedObject, modification.OldRelatedObject);
+      Assert.IsNull (modification.OldRelatedObject);
       Assert.AreSame (_newRelatedObject, modification.NewRelatedObject);
     }
 

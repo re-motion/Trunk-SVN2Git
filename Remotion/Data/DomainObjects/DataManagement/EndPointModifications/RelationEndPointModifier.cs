@@ -274,7 +274,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       else
       {
         RelationEndPointModification modification = 
-            unidirectionalObjectEndPoint.CreateSetModification (oldRelatedObject, newRelatedObject);
+            unidirectionalObjectEndPoint.CreateSetModification (newRelatedObject);
         modification.ExecuteAllSteps ();
       }
     }
@@ -326,9 +326,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       // TODO 1032: use Set to null instead
       var modifications = new BidirectionalEndPointsModification (
-          endPoint.CreateSetModification (oldRelatedObject, newRelatedObject),
+          endPoint.CreateSetModification (newRelatedObject),
           oldRelatedEndPoint.CreateRemoveModification (endPoint.GetDomainObject ()),
-          newRelatedEndPoint.CreateSetModification (oldRelatedObjectOfNewRelatedObject, endPoint.GetDomainObject ()),
+          newRelatedEndPoint.CreateSetModification (endPoint.GetDomainObject ()),
           oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveModification (newRelatedObject));
 
       modifications.ExecuteAllSteps ();

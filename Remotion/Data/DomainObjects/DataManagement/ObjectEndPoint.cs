@@ -160,15 +160,29 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override RelationEndPointModification CreateRemoveModification (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return new ObjectEndPointSetModification (this, removedRelatedObject, null);
+
+      var currentRelatedObject = GetOppositeObject (true);
+      if (removedRelatedObject != currentRelatedObject)
+      {
+        string removedID = removedRelatedObject.ID.ToString ();
+        string currentID = currentRelatedObject != null ? currentRelatedObject.ID.ToString () : "<null>";
+
+        var message = string.Format ("Cannot remove object '{0}' from object end point '{1}' - it currently holds object '{2}'.", 
+            removedID, PropertyName, currentID);
+        throw new InvalidOperationException (message);
+      }
+
+      return CreateSetModification (null);
     }
 
-    public virtual RelationEndPointModification CreateSetModification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public virtual RelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
     {
-      if (ReferenceEquals (oldRelatedObject, newRelatedObject))
+      var newRelatedObjectID = newRelatedObject == null ? null : newRelatedObject.ID;
+      
+      if (OppositeObjectID == newRelatedObjectID)
         return new ObjectEndPointSetSameModification (this);
       else
-        return new ObjectEndPointSetModification (this, oldRelatedObject, newRelatedObject);
+        return new ObjectEndPointSetModification (this, newRelatedObject);
     }
 
     public override void PerformDelete ()
@@ -191,6 +205,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         SetForeignKeyProperty();
       }
+    }
+
+    public DomainObject GetOppositeObject (bool includeDeleted)
+    {
+      if (OppositeObjectID == null)
+        return null;
+      else if (includeDeleted && ClientTransaction.DataManager.IsDiscarded (OppositeObjectID))
+        return ClientTransaction.DataManager.GetDiscardedDataContainer (OppositeObjectID).DomainObject;
+      else
+        return ClientTransaction.GetObject (OppositeObjectID, includeDeleted);
     }
 
     protected virtual void TouchForeignKeyProperty ()

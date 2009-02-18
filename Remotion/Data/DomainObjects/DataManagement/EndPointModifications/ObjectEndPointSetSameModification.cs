@@ -23,9 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   public class ObjectEndPointSetSameModification : ObjectEndPointSetModification
   {
     public ObjectEndPointSetSameModification (ObjectEndPoint modifiedEndPoint)
-        : base (modifiedEndPoint,
-                modifiedEndPoint.ClientTransaction.GetObject (modifiedEndPoint.OppositeObjectID, true),
-                modifiedEndPoint.ClientTransaction.GetObject (modifiedEndPoint.OppositeObjectID, true))
+        : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject (true))
     {
     }
 

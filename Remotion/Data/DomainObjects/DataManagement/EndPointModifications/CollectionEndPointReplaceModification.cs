@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
           // customer.Order[index].Customer = null
           endPointOfOldObject.CreateRemoveModification (ModifiedEndPoint.GetDomainObject()),
           // newOrder.Customer = customer
-          endPointOfNewObject.CreateSetModification (oldRelatedObjectOfNewObject, ModifiedEndPoint.GetDomainObject()),
+          endPointOfNewObject.CreateSetModification (ModifiedEndPoint.GetDomainObject()),
           // customer.Orders[index] = newOrder
           this,
           // oldCustomer.Orders.Remove (insertedOrder)

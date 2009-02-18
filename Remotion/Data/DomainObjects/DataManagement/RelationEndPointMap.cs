@@ -134,13 +134,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var objectEndPoint = (ObjectEndPoint) _relationEndPoints[endPointID];
       if (objectEndPoint == null) // the relation hasn't been loaded yet
         return _clientTransaction.LoadRelatedObject (endPointID);
-      else if (objectEndPoint.OppositeObjectID == null) // the relation points to a null value
-        return null;
-      else if (includeDeleted && _clientTransaction.DataManager.IsDiscarded (objectEndPoint.OppositeObjectID))
-          // the relation points to a discarded value
-        return _clientTransaction.DataManager.GetDiscardedDataContainer (objectEndPoint.OppositeObjectID).DomainObject;
-      else // the relation points to an ordinary, known object
-        return _clientTransaction.GetObject (objectEndPoint.OppositeObjectID, includeDeleted);
+      else
+        return objectEndPoint.GetOppositeObject (includeDeleted);
     }
 
     public DomainObject GetOriginalRelatedObject (RelationEndPointID endPointID)
