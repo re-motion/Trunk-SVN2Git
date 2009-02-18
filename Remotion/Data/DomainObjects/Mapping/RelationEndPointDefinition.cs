@@ -20,6 +20,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
+  /// <summary>
+  /// Represents the non-anonymous, foreign-key side of a bidirectional or unidirectional relationship.
+  /// </summary>
   [Serializable]
   [DebuggerDisplay ("{GetType().Name}: {PropertyName}, Cardinality: {Cardinality}")]
   public class RelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
@@ -78,17 +81,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     // methods and properties
-
-    #region INullObject Members
-
-    public bool IsNull
-    {
-      get { return false; }
-    }
-
-    #endregion
-
-    #region IRelationEndPointDefinition Members
 
     public bool CorrespondsTo (string classID, string propertyName)
     {
@@ -155,7 +147,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return false; }
     }
 
-    #endregion
+    public bool IsAnonymous
+    {
+      get { return false; }
+    }
 
     public PropertyDefinition PropertyDefinition
     {

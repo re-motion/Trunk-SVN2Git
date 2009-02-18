@@ -269,7 +269,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         RelationEndPoint endPoint = GetRelationEndPointWithLazyLoad (endPointID);
 
-        if (endPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.Many && !endPoint.OppositeEndPointDefinition.IsNull)
+        if (endPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.Many && !endPoint.OppositeEndPointDefinition.IsAnonymous)
         {
           var objectEndPoint = (ObjectEndPoint) endPoint;
           if (objectEndPoint.OppositeObjectID != null)
@@ -335,6 +335,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public RelationEndPoint GetRelationEndPointWithLazyLoad (DomainObject domainObject, IRelationEndPointDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
+
+      if (definition.IsAnonymous)
+      {
+        throw new InvalidOperationException (
+            "Cannot get a RelationEndPoint for an anonymous end point definition. There are no end points for the non-existing side of unidirectional "
+            + "relations.");
+      }
 
       if (domainObject != null)
         return GetRelationEndPointWithLazyLoad (new RelationEndPointID (domainObject.ID, definition));

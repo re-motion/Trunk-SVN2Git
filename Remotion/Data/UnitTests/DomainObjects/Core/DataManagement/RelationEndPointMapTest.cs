@@ -15,9 +15,11 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -351,6 +353,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.AreNotSame (sourceMap[officialID], destinationMap[officialID]);
 
       Assert.AreSame (destinationTransaction, destinationMap[officialID].ClientTransaction);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot get a RelationEndPoint for an anonymous end point definition. " 
+        + "There are no end points for the non-existing side of unidirectional relations.")]
+    public void GetRelationEndPointWithLazyLoad_DoesNotSupportAnonymousEndPoints ()
+    {
+      var client = Client.GetObject (DomainObjectIDs.Client2);
+      var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
+      var unidirectionalEndPoint = _map.GetRelationEndPointWithLazyLoad (client, parentClientEndPointDefinition);
+
+      var parentClient = client.ParentClient;
+      Assert.That (parentClient, Is.Not.Null);
+
+      _map.GetRelationEndPointWithLazyLoad (parentClient, unidirectionalEndPoint.OppositeEndPointDefinition);
+      //Assert.That (anonymousEndPoint, Is.InstanceOfType (typeof (AnonymousEndPoint)));
+      //Assert.That (anonymousEndPoint.Definition, Is.SameAs (unidirectionalEndPoint.OppositeEndPointDefinition));
+      //Assert.That (anonymousEndPoint.ObjectID, Is.EqualTo (parentClient.ID));
     }
   }
 }

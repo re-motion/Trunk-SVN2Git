@@ -52,13 +52,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       CheckDeleted (endPoint);
 
       // TODO FS: 1032
-      //var oldRelatedObject = _relationEndPointMap.GetRelatedObject (endPointID, false);
+      //var oldRelatedObject = _relationEndPointMap.GetRelatedObject (endPointID, true);
       //var setModification = endPoint.CreateSetModification (oldRelatedObject, newRelatedObject);
       //var bidirectionalModification = setModification.CreateBidirectionalModification ();
       //bidirectionalModification.ExecuteAllSteps ();
 
+      //if (ReferenceEquals (oldRelatedObject, newRelatedObject))
+      //{
+      //  var newRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
+      //  Assertion.IsTrue (!endPoint.OppositeEndPointDefinition.IsNull || newRelatedEndPoint == null, 
+      //      "unidirectional relation end points return null here");
+      //  SetRelatedObjectForEqualObjects (endPoint, newRelatedEndPoint);
+      //}
 
-      if (endPoint.OppositeEndPointDefinition.IsNull)
+      if (endPoint.OppositeEndPointDefinition.IsAnonymous)
         SetRelatedObjectForUnidirectionalRelation (endPoint, newRelatedObject);
       else
         SetRelatedObjectForBidirectionalRelation (endPoint, newRelatedObject);
@@ -292,7 +299,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       RelationEndPoint newRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
       RelationEndPoint oldRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObject, newRelatedEndPoint.Definition);
 
-      if (ReferenceEquals (newRelatedEndPoint.GetDomainObject (), oldRelatedEndPoint.GetDomainObject ()))
+      if (ReferenceEquals (newRelatedObject, oldRelatedObject))
         SetRelatedObjectForEqualObjects (endPoint, newRelatedEndPoint);
       else if (newRelatedEndPoint.Definition.Cardinality == CardinalityType.One)
         SetRelatedObjectForOneToOneRelation (endPoint, oldRelatedObject, newRelatedObject);

@@ -66,10 +66,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     }
 
     [Test]
-    public void IsNull ()
+    public void IsAnonymous ()
     {
-      Assert.IsNotNull (_customerEndPoint as INullObject);
-      Assert.IsFalse (_customerEndPoint.IsNull);
+      Assert.IsFalse (_customerEndPoint.IsAnonymous);
     }
 
     [Test]

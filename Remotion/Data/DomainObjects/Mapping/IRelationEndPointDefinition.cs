@@ -17,7 +17,7 @@ using System;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-public interface IRelationEndPointDefinition : INullObject
+public interface IRelationEndPointDefinition
 {
   RelationDefinition RelationDefinition { get; }
   ClassDefinition ClassDefinition { get; }
@@ -28,6 +28,7 @@ public interface IRelationEndPointDefinition : INullObject
   bool IsMandatory { get; }
   CardinalityType Cardinality { get; }
   bool IsVirtual { get; }
+  bool IsAnonymous { get; }
 
   bool CorrespondsTo (string classID, string propertyName);
   void SetRelationDefinition (RelationDefinition relationDefinition);

@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       RelationEndPointCollection oppositeEndPoints = new RelationEndPointCollection (_clientTransaction);
 
-      if (endPoint.OppositeEndPointDefinition.IsNull)
+      if (endPoint.OppositeEndPointDefinition.IsAnonymous)
         return oppositeEndPoints;
 
       if (endPoint.Definition.Cardinality == CardinalityType.One)

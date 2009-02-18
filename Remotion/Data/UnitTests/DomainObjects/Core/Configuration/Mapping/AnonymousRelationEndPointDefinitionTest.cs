@@ -40,7 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
     {
 
       Assert.IsNotNull (_definition as IRelationEndPointDefinition);
-      Assert.IsNotNull (_definition as INullObject);
       Assert.AreSame (_clientDefinition, _definition.ClassDefinition);
       Assert.AreEqual (CardinalityType.Many, _definition.Cardinality);
       Assert.AreEqual (false, _definition.IsMandatory);
@@ -49,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.Mapping
       Assert.IsNull (_definition.PropertyType);
       Assert.AreEqual (_clientDefinition.IsClassTypeResolved, _definition.IsPropertyTypeResolved);
       Assert.IsNull (_definition.PropertyTypeName);
-      Assert.IsTrue (_definition.IsNull);
+      Assert.IsTrue (_definition.IsAnonymous);
     }
 
     [Test]

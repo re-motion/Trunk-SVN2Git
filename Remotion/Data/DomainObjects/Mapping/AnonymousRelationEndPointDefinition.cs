@@ -20,6 +20,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
+  /// <summary>
+  /// Represents the non-existing side of a unidirectional relationship.
+  /// </summary>
   [Serializable]
   [DebuggerDisplay ("{GetType().Name}: Cardinality: {Cardinality}")]
   public class AnonymousRelationEndPointDefinition : SerializableMappingObject, IRelationEndPointDefinition
@@ -51,17 +54,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     // methods and properties
-
-    #region INullObject Members
-
-    public bool IsNull
-    {
-      get { return true; }
-    }
-
-    #endregion
-
-    #region IRelationEndPointDefinition Members
 
     public RelationDefinition RelationDefinition
     {
@@ -108,6 +100,11 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return true; }
     }
 
+    public bool IsAnonymous
+    {
+      get { return true; }
+    }
+
     public bool CorrespondsTo (string classID, string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
@@ -123,14 +120,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       _serializedRelationID = _relationDefinition.ID;
     }
 
-    #endregion
-
     #region Serialization
 
     public override object GetRealObject (StreamingContext context)
     {
       RelationDefinition relationDefinition = MappingConfiguration.Current.RelationDefinitions.GetMandatory (_serializedRelationID);
-      if (relationDefinition.EndPointDefinitions[0].IsNull)
+      if (relationDefinition.EndPointDefinitions[0].IsAnonymous)
         return relationDefinition.EndPointDefinitions[0];
       else
         return relationDefinition.EndPointDefinitions[1];

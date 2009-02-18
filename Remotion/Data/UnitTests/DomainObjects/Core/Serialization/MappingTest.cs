@@ -356,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.AreEqual (expected.Cardinality, actual.Cardinality);
       Assert.AreEqual (expected.ClassDefinition.ID, actual.ClassDefinition.ID);
       Assert.AreEqual (expected.IsMandatory, actual.IsMandatory);
-      Assert.AreEqual (expected.IsNull, actual.IsNull);
+      Assert.AreEqual (expected.IsAnonymous, actual.IsAnonymous);
       Assert.AreEqual (expected.IsVirtual, actual.IsVirtual);
       Assert.AreEqual (expected.PropertyName, actual.PropertyName);
       Assert.AreEqual (expected.PropertyType, actual.PropertyType);

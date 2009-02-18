@@ -164,10 +164,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       IRelationEndPointDefinition endPoint1 = relationDefinition.EndPointDefinitions[0];
       IRelationEndPointDefinition endPoint2 = relationDefinition.EndPointDefinitions[1];
 
-      if (!endPoint1.IsNull)
+      if (!endPoint1.IsAnonymous)
         endPoint1.ClassDefinition.MyRelationDefinitions.Add (relationDefinition);
 
-      if (endPoint1.ClassDefinition != endPoint2.ClassDefinition && !endPoint2.IsNull)
+      if (endPoint1.ClassDefinition != endPoint2.ClassDefinition && !endPoint2.IsAnonymous)
         endPoint2.ClassDefinition.MyRelationDefinitions.Add (relationDefinition);
     }
 

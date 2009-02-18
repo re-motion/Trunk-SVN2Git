@@ -77,8 +77,8 @@ namespace Remotion.Data.DomainObjects.Mapping
         IRelationEndPointDefinition endPointDefinition1,
         IRelationEndPointDefinition endPointDefinition2)
     {
-      if (endPointDefinition1.IsNull && endPointDefinition2.IsNull)
-        throw CreateMappingException ("Relation '{0}' cannot have two null end points.", id);
+      if (endPointDefinition1.IsAnonymous && endPointDefinition2.IsAnonymous)
+        throw CreateMappingException ("Relation '{0}' cannot have two anonymous end points.", id);
 
       if (endPointDefinition1.IsVirtual && endPointDefinition2.IsVirtual)
         throw CreateMappingException ("Relation '{0}' cannot have two virtual end points.", id);

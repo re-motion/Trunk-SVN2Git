@@ -21,6 +21,9 @@ using FlattenedSerializationInfo=Remotion.Data.DomainObjects.Infrastructure.Seri
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
+  /// <summary>
+  /// Represents an object end point (with a specific <see cref="RelationEndPointDefinition"/>) for a <see langword="null"/> object.
+  /// </summary>
 public class NullObjectEndPoint : ObjectEndPoint
 {
   // types

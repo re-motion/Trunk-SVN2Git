@@ -312,7 +312,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      return (relationEndPointDefinition.ClassDefinition == this && !relationEndPointDefinition.IsNull);
+      return (relationEndPointDefinition.ClassDefinition == this && !relationEndPointDefinition.IsAnonymous);
     }
 
     public bool IsRelationEndPoint (IRelationEndPointDefinition relationEndPointDefinition)

@@ -60,7 +60,7 @@ public class AnonymousEndPoint : IEndPoint
   {
     foreach (IRelationEndPointDefinition endPointDefinition in relationDefinition.EndPointDefinitions)
     {
-      if (endPointDefinition.IsNull)
+      if (endPointDefinition.IsAnonymous)
         return (AnonymousRelationEndPointDefinition) endPointDefinition;
     }
 
