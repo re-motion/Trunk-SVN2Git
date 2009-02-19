@@ -93,7 +93,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public void PerformDelete (DomainObject domainObject, BidirectionalEndPointsModification oppositeEndPointModifications)
+    // TODO 1034: This is only one step in the process of deletion, the other parts are done by DataManager.
+    public void PerformDelete (DomainObject domainObject, BidirectionalRelationModification oppositeEndPointModifications)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointModifications", oppositeEndPointModifications);
@@ -108,11 +109,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       RelationEndPointID[] relationEndPointIDs = ClientTransaction.GetDataContainer (domainObject).RelationEndPointIDs;
       _transactionEventSink.RelationEndPointMapPerformingDelete (relationEndPointIDs);
 
+      oppositeEndPointModifications.Perform ();
       foreach (RelationEndPointID endPointID in relationEndPointIDs)
       {
         RelationEndPoint endPoint = GetRelationEndPointWithLazyLoad (endPointID);
-
-        oppositeEndPointModifications.Perform ();
+        // TODO 1034: Check why it is not necessary to call modification Begin/End methods for these relation end points.
         endPoint.PerformDelete ();
 
         if (domainObject.TransactionContext[ClientTransaction].State == StateType.New)
@@ -120,7 +121,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    public BidirectionalEndPointsModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
+    public BidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       return _modifier.GetOppositeEndPointModificationsForDelete (domainObject);

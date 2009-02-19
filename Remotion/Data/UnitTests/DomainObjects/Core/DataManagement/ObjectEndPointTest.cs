@@ -556,10 +556,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var order = Order.GetObject (_endPoint.OppositeObjectID);
       var modification = _endPoint.CreateSetModification (order);
-      Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetSameModification)));
+      Assert.That (modification.GetType (), Is.EqualTo (typeof (RelationEndPointTouchModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (order));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (order));
+      Assert.That (modification.OldRelatedObject, Is.Null);
+      Assert.That (modification.NewRelatedObject, Is.Null);
+    }
+
+    [Test]
+    public void CreateSetModification_Same_Unidirectional ()
+    {
+      var client = Client.GetObject (DomainObjectIDs.Client2);
+      var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client) + ".ParentClient");
+      var unidirectionalEndPoint = (ObjectEndPoint) 
+          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (client, parentClientEndPointDefinition);
+      Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
+
+      var modification = unidirectionalEndPoint.CreateSetModification (client.ParentClient);
+      Assert.That (modification.GetType (), Is.EqualTo (typeof (RelationEndPointTouchModification)));
+      Assert.That (((RelationEndPointTouchModification)modification).OppositeEndPoints, Is.Empty);
+    }
+
+    [Test]
+    public void CreateSetModification_Same_Bidirectional ()
+    {
+      var order = Order.GetObject (_endPoint.OppositeObjectID);
+      var modification = _endPoint.CreateSetModification (order);
+
+      var oppositeEndPoint = 
+          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (order, _endPoint.OppositeEndPointDefinition);
+
+      Assert.That (modification.GetType (), Is.EqualTo (typeof (RelationEndPointTouchModification)));
+      Assert.That (((RelationEndPointTouchModification) modification).OppositeEndPoints, Is.EqualTo (new[] { oppositeEndPoint }));
     }
 
     [Test]

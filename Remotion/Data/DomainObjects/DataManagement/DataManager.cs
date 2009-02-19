@@ -179,7 +179,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     if (domainObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
       return;
 
-    BidirectionalEndPointsModification oppositeEndPointModifications =
+    BidirectionalRelationModification oppositeEndPointModifications =
         _relationEndPointMap.GetOppositeEndPointModificationsForDelete (domainObject);
 
     BeginDelete (domainObject, oppositeEndPointModifications);
@@ -187,7 +187,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     EndDelete (domainObject, oppositeEndPointModifications);
   }
 
-  internal void PerformDelete (DomainObject domainObject, BidirectionalEndPointsModification oppositeEndPointModifications)
+  internal void PerformDelete (DomainObject domainObject, BidirectionalRelationModification oppositeEndPointModifications)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     ArgumentUtility.CheckNotNull ("oppositeEndPointModifications", oppositeEndPointModifications);
@@ -202,7 +202,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     dataContainer.Delete ();
   }
 
-  private void BeginDelete (DomainObject domainObject, BidirectionalEndPointsModification oppositeEndPointModifications)
+  private void BeginDelete (DomainObject domainObject, BidirectionalRelationModification oppositeEndPointModifications)
   {
     _transactionEventSink.ObjectDeleting (domainObject);
     oppositeEndPointModifications.NotifyClientTransactionOfBegin();
@@ -211,7 +211,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     oppositeEndPointModifications.Begin();
   }
 
-  private void EndDelete (DomainObject domainObject, BidirectionalEndPointsModification oppositeEndPointModifications)
+  private void EndDelete (DomainObject domainObject, BidirectionalRelationModification oppositeEndPointModifications)
   {
     oppositeEndPointModifications.NotifyClientTransactionOfEnd();
     _transactionEventSink.ObjectDeleted (domainObject);

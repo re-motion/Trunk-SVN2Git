@@ -288,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         order1 = Order.GetObject (DomainObjectIDs.Order1);
       }
 
-      _map.PerformDelete (order1, new BidirectionalEndPointsModification());
+      _map.PerformDelete (order1, new BidirectionalRelationModification());
     }
 
     [Test]
@@ -368,9 +368,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (parentClient, Is.Not.Null);
 
       _map.GetRelationEndPointWithLazyLoad (parentClient, unidirectionalEndPoint.OppositeEndPointDefinition);
-      //Assert.That (anonymousEndPoint, Is.InstanceOfType (typeof (AnonymousEndPoint)));
-      //Assert.That (anonymousEndPoint.Definition, Is.SameAs (unidirectionalEndPoint.OppositeEndPointDefinition));
-      //Assert.That (anonymousEndPoint.ObjectID, Is.EqualTo (parentClient.ID));
     }
   }
 }

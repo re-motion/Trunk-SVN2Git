@@ -137,7 +137,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenTouched; }
     }
 
-    // TODO 1032: consider removing this method
     public override void Touch ()
     {
       _hasBeenTouched = true;
@@ -178,11 +177,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public virtual RelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
     {
       var newRelatedObjectID = newRelatedObject == null ? null : newRelatedObject.ID;
-      
       if (OppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameModification (this);
+        return CreateSetSameModification(newRelatedObject);
       else
         return new ObjectEndPointSetModification (this, newRelatedObject);
+    }
+
+    private RelationEndPointModification CreateSetSameModification (DomainObject newRelatedObject)
+    {
+      if (OppositeEndPointDefinition.IsAnonymous)
+        return new RelationEndPointTouchModification (this);
+      else
+      {
+        // for bidirectional modifications, we add the opposite end point to be touched as well as this end point
+
+        var relationEndPointMap = ClientTransaction.DataManager.RelationEndPointMap;
+        var oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, OppositeEndPointDefinition);
+        return new RelationEndPointTouchModification (this, oppositeEndPoint);
+      }
     }
 
     public override void PerformDelete ()

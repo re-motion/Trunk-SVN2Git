@@ -31,11 +31,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// a remove modification has a new related object (null).) This class aggregates these modification steps and allows executing them all at once,
   /// with events being raised before and after the full operation.
   /// </remarks>
-  public class BidirectionalEndPointsModification
+  public class BidirectionalRelationModification
   {
     private readonly List<RelationEndPointModification> _modifications;
 
-    public BidirectionalEndPointsModification (params RelationEndPointModification[] modifications)
+    public BidirectionalRelationModification (params RelationEndPointModification[] modifications)
     {
       ArgumentUtility.CheckNotNull ("modifications", modifications);
       _modifications = new List<RelationEndPointModification>(modifications);

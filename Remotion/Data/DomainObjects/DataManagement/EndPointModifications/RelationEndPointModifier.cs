@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       //if (ReferenceEquals (oldRelatedObject, newRelatedObject))
       //{
-      //  var setModification = endPoint.CreateSetModification (oldRelatedObject, newRelatedObject);
+      //  var setModification = endPoint.CreateSetModification (newRelatedObject);
       //  var bidirectionalModification = setModification.CreateBidirectionalModification ();
       //  bidirectionalModification.ExecuteAllSteps ();
 
@@ -129,14 +129,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     }
 
     // TODO: Check this after 997
-    public BidirectionalEndPointsModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
+    public BidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       RelationEndPointCollection allAffectedRelationEndPoints = _relationEndPointMap.GetAllRelationEndPointsWithLazyLoad (domainObject);
       RelationEndPointCollection allOppositeRelationEndPoints = allAffectedRelationEndPoints.GetOppositeRelationEndPoints (domainObject);
 
-      var modifications = new BidirectionalEndPointsModification ();
+      var modifications = new BidirectionalRelationModification ();
       foreach (RelationEndPoint oppositeEndPoint in allOppositeRelationEndPoints)
         modifications.Add (oppositeEndPoint.CreateRemoveModification (domainObject));
 
@@ -325,7 +325,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
           "a null newRelatedObject will cause oldRelatedEndPointOfNewRelatedEndPoint to be a null end point");
 
       // TODO 1032: use Set to null instead
-      var modifications = new BidirectionalEndPointsModification (
+      var modifications = new BidirectionalRelationModification (
           endPoint.CreateSetModification (newRelatedObject),
           oldRelatedEndPoint.CreateRemoveModification (endPoint.GetDomainObject ()),
           newRelatedEndPoint.CreateSetModification (endPoint.GetDomainObject ()),

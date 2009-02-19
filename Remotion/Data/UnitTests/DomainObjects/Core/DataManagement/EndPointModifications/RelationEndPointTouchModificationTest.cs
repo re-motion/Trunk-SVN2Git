@@ -12,11 +12,11 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
-  public class ObjectEndPointSetSameModificationTest : ClientTransactionBaseTest
+  public class RelationEndPointTouchModificationTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _id;
     private ObjectEndPoint _modifiedEndPoint;
-    private ObjectEndPointSetSameModification _modification;
+    private RelationEndPointTouchModification _modification;
     private Employee _relatedObject;
     private Computer _domainObject;
 
@@ -30,15 +30,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
 
       _relatedObject = Employee.GetObject (DomainObjectIDs.Employee3);
       _modifiedEndPoint = new ObjectEndPoint (ClientTransactionMock, _id, _relatedObject.ID);
-      _modification = new ObjectEndPointSetSameModification (_modifiedEndPoint);
+      _modification = new RelationEndPointTouchModification (_modifiedEndPoint);
     }
 
     [Test]
     public void Initialization ()
     {
       Assert.That (_modification.ModifiedEndPoint, Is.SameAs (_modifiedEndPoint));
-      Assert.That (_modification.OldRelatedObject, Is.SameAs (_relatedObject));
-      Assert.That (_modification.NewRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (_modification.OldRelatedObject, Is.Null);
+      Assert.That (_modification.NewRelatedObject, Is.Null);
     }
 
     [Test]
@@ -79,6 +79,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (_modifiedEndPoint.OppositeObjectID, Is.EqualTo (_relatedObject.ID));
       Assert.That (_modifiedEndPoint.HasBeenTouched, Is.True);
       Assert.That (_domainObject.InternalDataContainer.PropertyValues[_modifiedEndPoint.PropertyName].HasBeenTouched, Is.True);
+    }
+
+    [Test]
+    public void CreateBidirectionalModification_WithoutOppositeEndPoints ()
+    {
+      var modification = new RelationEndPointTouchModification (_modifiedEndPoint);
+
+      var steps = modification.CreateBidirectionalModification ().GetEndPointModifications ();
+      Assert.That (steps.Count, Is.EqualTo (1));
+
+      Assert.That (steps[0], Is.SameAs (modification));
+    }
+
+    [Test]
+    public void CreateBidirectionalModification_WithOppositeEndPoints ()
+    {
+      var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+          _relatedObject, _modifiedEndPoint.OppositeEndPointDefinition);
+      var modification = new RelationEndPointTouchModification (_modifiedEndPoint, oppositeEndPoint);
+      
+      var steps = modification.CreateBidirectionalModification ().GetEndPointModifications ();
+      Assert.That (steps.Count, Is.EqualTo (2));
+
+      Assert.That (steps[0], Is.SameAs (modification));
+
+      Assert.That (steps[1], Is.InstanceOfType (typeof (RelationEndPointTouchModification)));
+      Assert.That (steps[1].ModifiedEndPoint, Is.SameAs (oppositeEndPoint));
+      Assert.That (((RelationEndPointTouchModification) steps[1]).OppositeEndPoints, Is.Empty);
     }
   }
 }
