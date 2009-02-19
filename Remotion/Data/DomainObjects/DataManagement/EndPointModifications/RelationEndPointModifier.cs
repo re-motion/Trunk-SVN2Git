@@ -351,13 +351,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
         collection.Remove (endPoint.GetDomainObject ());
       }
     }
-
-    private AnonymousEndPoint GetAnonymousEndPoint (DomainObject domainObject, RelationDefinition relationDefinition)
-    {
-      if (domainObject != null)
-        return new AnonymousEndPoint (ClientTransaction, domainObject, relationDefinition);
-      else
-        return new NullAnonymousEndPoint (relationDefinition);
-    }
   }
 }

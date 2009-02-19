@@ -747,9 +747,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Database\StandardMappingDatabaseAgent.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\AnonymousEndPointTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\CollectionEndPointTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -763,9 +760,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\DataManagerTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DomainObjects\Core\DataManagement\NullAnonymousEndPointTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\ObjectDeletedExceptionTest.cs">

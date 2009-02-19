@@ -336,9 +336,6 @@
     <Compile Include="DataManagement\DataContainer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataManagement\AnonymousEndPoint.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DataManagement\ClientTransactionsDifferException.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -367,9 +364,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataManagement\MandatoryRelationNotSetException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DataManagement\NullAnonymousEndPoint.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataManagement\NullCollectionEndPoint.cs">
