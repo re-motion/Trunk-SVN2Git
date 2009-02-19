@@ -86,6 +86,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     /// Creates all modification steps needed to perform a bidirectional operation. One of the steps is this modification, the other 
     /// steps are the opposite modifications on the new/old related objects.
     /// </summary>
-    public abstract BidirectionalRelationModification CreateBidirectionalModification ();
+    public abstract BidirectionalRelationModificationBase CreateBidirectionalModification ();
   }
 }

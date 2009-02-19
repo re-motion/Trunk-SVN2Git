@@ -31,64 +31,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// a remove modification has a new related object (null).) This class aggregates these modification steps and allows executing them all at once,
   /// with events being raised before and after the full operation.
   /// </remarks>
-  public class BidirectionalRelationModification
+  public abstract class BidirectionalRelationModificationBase
   {
     private readonly List<RelationEndPointModification> _modifications;
 
-    public BidirectionalRelationModification (params RelationEndPointModification[] modifications)
+    protected BidirectionalRelationModificationBase (params RelationEndPointModification[] modifications)
     {
       ArgumentUtility.CheckNotNull ("modifications", modifications);
       _modifications = new List<RelationEndPointModification>(modifications);
     }
 
-    public void Add (RelationEndPointModification modification)
+    public ReadOnlyCollection<RelationEndPointModification> GetModificationSteps ()
+    {
+      return _modifications.AsReadOnly ();
+    }
+
+    public void AddModificationStep (RelationEndPointModification modification)
     {
       ArgumentUtility.CheckNotNull ("modification", modification);
       _modifications.Add (modification);
     }
 
-    public void Begin ()
-    {
-      foreach (RelationEndPointModification modification in _modifications)
-        modification.Begin();
-    }
-
-    public void Perform ()
-    {
-      foreach (RelationEndPointModification modification in _modifications)
-        modification.Perform ();
-    }
-
-    public void End ()
-    {
-      foreach (RelationEndPointModification modification in _modifications)
-        modification.End ();
-    }
-
-    public void NotifyClientTransactionOfBegin ()
-    {
-      foreach (RelationEndPointModification modification in _modifications)
-        modification.NotifyClientTransactionOfBegin();
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
-      foreach (RelationEndPointModification modification in _modifications)
-        modification.NotifyClientTransactionOfEnd ();
-    }
-
-    public void ExecuteAllSteps ()
-    {
-      NotifyClientTransactionOfBegin ();
-      Begin ();
-      Perform ();
-      NotifyClientTransactionOfEnd ();
-      End ();
-    }
-
-    public ReadOnlyCollection<RelationEndPointModification> GetEndPointModifications ()
-    {
-      return _modifications.AsReadOnly();
-    }
+    public abstract void ExecuteAllSteps ();
   }
 }

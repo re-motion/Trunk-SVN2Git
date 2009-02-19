@@ -179,7 +179,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     if (domainObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
       return;
 
-    BidirectionalRelationModification oppositeEndPointModifications =
+    NotifyingBidirectionalRelationModification oppositeEndPointModifications =
         _relationEndPointMap.GetOppositeEndPointModificationsForDelete (domainObject);
 
     BeginDelete (domainObject, oppositeEndPointModifications);
@@ -187,7 +187,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     EndDelete (domainObject, oppositeEndPointModifications);
   }
 
-  internal void PerformDelete (DomainObject domainObject, BidirectionalRelationModification oppositeEndPointModifications)
+  internal void PerformDelete (DomainObject domainObject, NotifyingBidirectionalRelationModification oppositeEndPointModifications)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     ArgumentUtility.CheckNotNull ("oppositeEndPointModifications", oppositeEndPointModifications);
@@ -202,7 +202,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     dataContainer.Delete ();
   }
 
-  private void BeginDelete (DomainObject domainObject, BidirectionalRelationModification oppositeEndPointModifications)
+  private void BeginDelete (DomainObject domainObject, NotifyingBidirectionalRelationModification oppositeEndPointModifications)
   {
     _transactionEventSink.ObjectDeleting (domainObject);
     oppositeEndPointModifications.NotifyClientTransactionOfBegin();
@@ -211,7 +211,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     oppositeEndPointModifications.Begin();
   }
 
-  private void EndDelete (DomainObject domainObject, BidirectionalRelationModification oppositeEndPointModifications)
+  private void EndDelete (DomainObject domainObject, NotifyingBidirectionalRelationModification oppositeEndPointModifications)
   {
     oppositeEndPointModifications.NotifyClientTransactionOfEnd();
     _transactionEventSink.ObjectDeleted (domainObject);

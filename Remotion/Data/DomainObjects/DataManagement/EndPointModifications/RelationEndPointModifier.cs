@@ -128,17 +128,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       bidirectionalModification.ExecuteAllSteps ();
     }
 
-    // TODO: Check this after 997
-    public BidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
+    public NotifyingBidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       RelationEndPointCollection allAffectedRelationEndPoints = _relationEndPointMap.GetAllRelationEndPointsWithLazyLoad (domainObject);
       RelationEndPointCollection allOppositeRelationEndPoints = allAffectedRelationEndPoints.GetOppositeRelationEndPoints (domainObject);
 
-      var modifications = new BidirectionalRelationModification ();
+      var modifications = new NotifyingBidirectionalRelationModification ();
       foreach (RelationEndPoint oppositeEndPoint in allOppositeRelationEndPoints)
-        modifications.Add (oppositeEndPoint.CreateRemoveModification (domainObject));
+        modifications.AddModificationStep (oppositeEndPoint.CreateRemoveModification (domainObject));
 
       return modifications;
     }
@@ -324,8 +323,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       Assertion.IsTrue (newRelatedObject != null || oldRelatedEndPointOfNewRelatedEndPoint.IsNull, 
           "a null newRelatedObject will cause oldRelatedEndPointOfNewRelatedEndPoint to be a null end point");
 
-      // TODO 1032: use Set to null instead
-      var modifications = new BidirectionalRelationModification (
+      var modifications = new NotifyingBidirectionalRelationModification (
           endPoint.CreateSetModification (newRelatedObject),
           oldRelatedEndPoint.CreateRemoveModification (endPoint.GetDomainObject ()),
           newRelatedEndPoint.CreateSetModification (endPoint.GetDomainObject ()),

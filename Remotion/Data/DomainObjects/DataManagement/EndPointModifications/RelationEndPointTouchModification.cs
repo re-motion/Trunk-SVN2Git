@@ -50,12 +50,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // do not issue any change notifications, a touch is not a change
     }
 
-    public override BidirectionalRelationModification CreateBidirectionalModification ()
+    public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
-      var bidirectionalModification = new BidirectionalRelationModification (this);
+      var bidirectionalModification = new NonNotifyingBidirectionalRelationModification (this);
 
       foreach (var oppositeEndPoint in _oppositeEndPoints)
-        bidirectionalModification.Add (new RelationEndPointTouchModification (oppositeEndPoint));
+        bidirectionalModification.AddModificationStep (new RelationEndPointTouchModification (oppositeEndPoint));
       
       return bidirectionalModification;
       

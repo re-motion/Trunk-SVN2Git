@@ -131,27 +131,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void CreateBidirectionalModification ()
     {
+      var bidirectionalModification = _modification.CreateBidirectionalModification ();
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NotifyingBidirectionalRelationModification)));
+
       // DomainObject.Orders.Insert (_insertedRelatedObject, 12)
-      var modification = _modification.CreateBidirectionalModification ().GetEndPointModifications ();
-      Assert.That (modification.Count, Is.EqualTo (3));
+      var steps = bidirectionalModification.GetModificationSteps ();
+      Assert.That (steps.Count, Is.EqualTo (3));
 
       var oldCustomer = _insertedRelatedObject.Customer;
 
       // _insertedRelatedObject.Customer = DomainObject (previously oldCustomer)
-      Assert.That (modification[0], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
-      Assert.That (modification[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
-      Assert.That (modification[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_insertedRelatedObject.ID));
-      Assert.That (modification[0].OldRelatedObject, Is.SameAs (oldCustomer));
-      Assert.That (modification[0].NewRelatedObject, Is.SameAs (DomainObject));
+      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (steps[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
+      Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_insertedRelatedObject.ID));
+      Assert.That (steps[0].OldRelatedObject, Is.SameAs (oldCustomer));
+      Assert.That (steps[0].NewRelatedObject, Is.SameAs (DomainObject));
 
       // DomainObject.Orders.Insert (_insertedRelatedObject, 12)
-      Assert.That (modification[1], Is.SameAs (_modification));
+      Assert.That (steps[1], Is.SameAs (_modification));
 
       // oldCustomer.Orders.Remove (_insertedRelatedObject)
-      Assert.That (modification[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
-      Assert.That (modification[2].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
-      Assert.That (modification[2].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
-      Assert.That (modification[2].OldRelatedObject, Is.SameAs (_insertedRelatedObject));
+      Assert.That (steps[2], Is.InstanceOfType (typeof (CollectionEndPointRemoveModification)));
+      Assert.That (steps[2].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
+      Assert.That (steps[2].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
+      Assert.That (steps[2].OldRelatedObject, Is.SameAs (_insertedRelatedObject));
     }
   }
 }

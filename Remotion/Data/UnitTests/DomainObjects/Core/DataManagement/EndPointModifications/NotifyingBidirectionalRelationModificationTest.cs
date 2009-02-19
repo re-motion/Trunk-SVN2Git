@@ -15,7 +15,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
@@ -25,7 +24,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModifications
 {
   [TestFixture]
-  public class BidirectionalRelationModificationTest : ClientTransactionBaseTest
+  public class NotifyingBidirectionalRelationModificationTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
     private ObjectEndPoint _endPointMock;
@@ -34,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     private RelationEndPointModification _modificationMock3;
     private Order _oldRelatedObject;
     private Order _newRelatedObject;
-    private BidirectionalRelationModification _collection;
+    private NotifyingBidirectionalRelationModification _collection;
     private RelationEndPointID _id;
 
     public override void SetUp ()
@@ -54,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _modificationMock2 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
       _modificationMock3 = _mockRepository.StrictMock<RelationEndPointModification> (_endPointMock, _oldRelatedObject, _newRelatedObject);
 
-      _collection = new BidirectionalRelationModification (_modificationMock1, _modificationMock2, _modificationMock3);
+      _collection = new NotifyingBidirectionalRelationModification (_modificationMock1, _modificationMock2, _modificationMock3);
     }
 
     [Test]
@@ -130,25 +129,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void ExecuteAllSteps ()
     {
-      _modificationMock1.NotifyClientTransactionOfBegin ();
-      _modificationMock2.NotifyClientTransactionOfBegin ();
-      _modificationMock3.NotifyClientTransactionOfBegin ();
+      _modificationMock1.Expect (mock => mock.NotifyClientTransactionOfBegin ());
+      _modificationMock2.Expect (mock => mock.NotifyClientTransactionOfBegin ());
+      _modificationMock3.Expect (mock => mock.NotifyClientTransactionOfBegin ());
 
-      _modificationMock1.Begin ();
-      _modificationMock2.Begin ();
-      _modificationMock3.Begin ();
+      _modificationMock1.Expect (mock => mock.Begin ());
+      _modificationMock2.Expect (mock => mock.Begin ());
+      _modificationMock3.Expect (mock => mock.Begin ());
 
-      _modificationMock1.Perform();
-      _modificationMock2.Perform ();
-      _modificationMock3.Perform ();
+      _modificationMock1.Expect (mock => mock.Perform());
+      _modificationMock2.Expect (mock => mock.Perform ());
+      _modificationMock3.Expect (mock => mock.Perform ());
 
-      _modificationMock1.NotifyClientTransactionOfEnd ();
-      _modificationMock2.NotifyClientTransactionOfEnd ();
-      _modificationMock3.NotifyClientTransactionOfEnd ();
+      _modificationMock1.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+      _modificationMock2.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+      _modificationMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ());
 
-      _modificationMock1.End ();
-      _modificationMock2.End ();
-      _modificationMock3.End ();
+      _modificationMock1.Expect (mock => mock.End ());
+      _modificationMock2.Expect (mock => mock.End ());
+      _modificationMock3.Expect (mock => mock.End ());
 
       _mockRepository.ReplayAll ();
 

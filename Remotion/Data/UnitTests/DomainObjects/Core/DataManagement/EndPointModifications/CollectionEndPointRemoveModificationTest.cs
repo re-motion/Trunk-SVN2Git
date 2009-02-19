@@ -131,19 +131,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void CreateBidirectionalModification ()
     {
+      var bidirectionalModification = _modification.CreateBidirectionalModification ();
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NotifyingBidirectionalRelationModification)));
+
       // DomainObject.Orders.Remove (_removedRelatedObject)
-      var modification = _modification.CreateBidirectionalModification ().GetEndPointModifications ();
-      Assert.That (modification.Count, Is.EqualTo (2));
+      var steps = bidirectionalModification.GetModificationSteps ();
+      Assert.That (steps.Count, Is.EqualTo (2));
 
       // _removedRelatedObject.Customer = null
-      Assert.That (modification[0], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
-      Assert.That (modification[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
-      Assert.That (modification[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_removedRelatedObject.ID));
-      Assert.That (modification[0].OldRelatedObject, Is.SameAs (DomainObject));
-      Assert.That (modification[0].NewRelatedObject, Is.Null);
+      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (steps[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
+      Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_removedRelatedObject.ID));
+      Assert.That (steps[0].OldRelatedObject, Is.SameAs (DomainObject));
+      Assert.That (steps[0].NewRelatedObject, Is.Null);
 
       // DomainObject.Orders.Remove (_removedRelatedObject)
-      Assert.That (modification[1], Is.SameAs (_modification));
+      Assert.That (steps[1], Is.SameAs (_modification));
     }
   }
 }

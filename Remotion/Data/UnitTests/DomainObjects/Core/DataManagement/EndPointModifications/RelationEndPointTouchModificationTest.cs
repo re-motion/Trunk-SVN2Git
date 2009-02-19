@@ -82,11 +82,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
+    public void CreateBidirectionalModification ()
+    {
+      var bidirectionalModification = _modification.CreateBidirectionalModification ();
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NonNotifyingBidirectionalRelationModification)));
+    }
+
+    [Test]
     public void CreateBidirectionalModification_WithoutOppositeEndPoints ()
     {
       var modification = new RelationEndPointTouchModification (_modifiedEndPoint);
 
-      var steps = modification.CreateBidirectionalModification ().GetEndPointModifications ();
+      var steps = modification.CreateBidirectionalModification ().GetModificationSteps ();
       Assert.That (steps.Count, Is.EqualTo (1));
 
       Assert.That (steps[0], Is.SameAs (modification));
@@ -99,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
           _relatedObject, _modifiedEndPoint.OppositeEndPointDefinition);
       var modification = new RelationEndPointTouchModification (_modifiedEndPoint, oppositeEndPoint);
       
-      var steps = modification.CreateBidirectionalModification ().GetEndPointModifications ();
+      var steps = modification.CreateBidirectionalModification ().GetModificationSteps ();
       Assert.That (steps.Count, Is.EqualTo (2));
 
       Assert.That (steps[0], Is.SameAs (modification));

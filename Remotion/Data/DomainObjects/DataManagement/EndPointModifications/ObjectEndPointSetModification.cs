@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       _modifiedEndPoint.OppositeObjectID = id;
     }
 
-    public override BidirectionalRelationModification CreateBidirectionalModification ()
+    public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
       // order.Customer = newCustomer (1:n) 
       // => oldCustomer.Orders.Remove (order) (remove)

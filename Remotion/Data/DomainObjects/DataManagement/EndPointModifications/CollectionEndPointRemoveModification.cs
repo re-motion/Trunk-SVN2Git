@@ -75,11 +75,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     ///   <item>customer.Orders.Remove (removedOrder).</item>
     /// </list>
     /// </remarks>
-    public override BidirectionalRelationModification CreateBidirectionalModification ()
+    public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
       var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
       var removedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
-      return new BidirectionalRelationModification (removedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()), this);
+      return new NotifyingBidirectionalRelationModification (removedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()), this);
     }
   }
 }
