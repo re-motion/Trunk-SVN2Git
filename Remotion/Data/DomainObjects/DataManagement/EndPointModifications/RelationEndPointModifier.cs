@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       // TODO FS: 1032
       var oldRelatedObject = _relationEndPointMap.GetRelatedObject (endPointID, true);
-      if (ReferenceEquals (oldRelatedObject, newRelatedObject))
+      if (ReferenceEquals (oldRelatedObject, newRelatedObject) || endPoint.OppositeEndPointDefinition.IsAnonymous)
       {
         var setModification = endPoint.CreateSetModification (newRelatedObject);
         var bidirectionalModification = setModification.CreateBidirectionalModification ();
@@ -61,10 +61,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       }
       else
       {
-        if (endPoint.OppositeEndPointDefinition.IsAnonymous)
-          SetRelatedObjectForUnidirectionalRelation (endPoint, newRelatedObject);
-        else
-          SetRelatedObjectForBidirectionalRelation (endPoint, newRelatedObject);
+        SetRelatedObjectForBidirectionalRelation (endPoint, newRelatedObject);
       }
     }
 
@@ -257,16 +254,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       }
     }
 
-
-    private void SetRelatedObjectForUnidirectionalRelation (ObjectEndPoint unidirectionalObjectEndPoint, DomainObject newRelatedObject)
-    {
-      DomainObject oldRelatedObject = _relationEndPointMap.GetRelatedObject (unidirectionalObjectEndPoint.ID, true);
-
-      Assertion.IsFalse (ReferenceEquals (newRelatedObject, oldRelatedObject));
-      RelationEndPointModification modification = 
-          unidirectionalObjectEndPoint.CreateSetModification (newRelatedObject);
-      modification.ExecuteAllSteps ();
-    }
 
     private void SetRelatedObjectForBidirectionalRelation (ObjectEndPoint endPoint, DomainObject newRelatedObject)
     {

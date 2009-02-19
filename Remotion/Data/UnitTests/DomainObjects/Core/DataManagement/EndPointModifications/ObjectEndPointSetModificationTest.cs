@@ -229,5 +229,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       Assert.That (steps[1], Is.InstanceOfType (typeof (RelationEndPointTouchModification)));
       Assert.That (steps[1].ModifiedEndPoint, Is.SameAs (oppositeEndPoint));
     }
+
+    [Test]
+    public void CreateBidirectionalModification_SetDifferent_Unidirectional ()
+    {
+      var client = Client.GetObject (DomainObjectIDs.Client2);
+      var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
+      var unidirectionalEndPoint = (ObjectEndPoint)
+          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (client, parentClientEndPointDefinition);
+      Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
+      var newClient = Client.NewObject ();
+
+      var setDifferentModification = new ObjectEndPointSetModification (unidirectionalEndPoint, newClient);
+      var bidirectionalModification = setDifferentModification.CreateBidirectionalModification ();
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NotifyingBidirectionalRelationModification)));
+
+      var steps = bidirectionalModification.GetModificationSteps ();
+      Assert.That (steps.Count, Is.EqualTo (1));
+
+      Assert.That (steps[0], Is.SameAs (setDifferentModification));
+    }
   }
 }

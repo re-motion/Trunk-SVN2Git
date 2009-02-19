@@ -38,6 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
+      // TODO 1032: Replace with polymorphism.
       if (OldRelatedObject == NewRelatedObject)
       {
         var bidirectionalModification = new NonNotifyingBidirectionalRelationModification (this);
@@ -48,6 +49,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
           bidirectionalModification.AddModificationStep (new RelationEndPointTouchModification (oppositeEndPoint));
         }
         return bidirectionalModification;
+      }
+      else if (_modifiedEndPoint.OppositeEndPointDefinition.IsAnonymous)
+      {
+        return new NotifyingBidirectionalRelationModification (this);
       }
 
       // order.Customer = newCustomer (1:n) 
