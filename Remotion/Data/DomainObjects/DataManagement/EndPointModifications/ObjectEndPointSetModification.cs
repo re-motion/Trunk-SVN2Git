@@ -38,6 +38,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
+      if (OldRelatedObject == NewRelatedObject)
+      {
+        var bidirectionalModification = new NonNotifyingBidirectionalRelationModification (this);
+        if (!_modifiedEndPoint.OppositeEndPointDefinition.IsAnonymous)
+        {
+          var relationEndPointMap = _modifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
+          var oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, _modifiedEndPoint.OppositeEndPointDefinition);
+          bidirectionalModification.AddModificationStep (new RelationEndPointTouchModification (oppositeEndPoint));
+        }
+        return bidirectionalModification;
+      }
+
       // order.Customer = newCustomer (1:n) 
       // => oldCustomer.Orders.Remove (order) (remove)
       // => newCustomer.Orders.Add (order)

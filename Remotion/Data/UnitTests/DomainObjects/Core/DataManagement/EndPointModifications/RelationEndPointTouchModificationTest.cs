@@ -82,38 +82,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException))]
     public void CreateBidirectionalModification ()
     {
-      var bidirectionalModification = _modification.CreateBidirectionalModification ();
-      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NonNotifyingBidirectionalRelationModification)));
-    }
-
-    [Test]
-    public void CreateBidirectionalModification_WithoutOppositeEndPoints ()
-    {
-      var modification = new RelationEndPointTouchModification (_modifiedEndPoint);
-
-      var steps = modification.CreateBidirectionalModification ().GetModificationSteps ();
-      Assert.That (steps.Count, Is.EqualTo (1));
-
-      Assert.That (steps[0], Is.SameAs (modification));
-    }
-
-    [Test]
-    public void CreateBidirectionalModification_WithOppositeEndPoints ()
-    {
-      var oppositeEndPoint = ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
-          _relatedObject, _modifiedEndPoint.OppositeEndPointDefinition);
-      var modification = new RelationEndPointTouchModification (_modifiedEndPoint, oppositeEndPoint);
-      
-      var steps = modification.CreateBidirectionalModification ().GetModificationSteps ();
-      Assert.That (steps.Count, Is.EqualTo (2));
-
-      Assert.That (steps[0], Is.SameAs (modification));
-
-      Assert.That (steps[1], Is.InstanceOfType (typeof (RelationEndPointTouchModification)));
-      Assert.That (steps[1].ModifiedEndPoint, Is.SameAs (oppositeEndPoint));
-      Assert.That (((RelationEndPointTouchModification) steps[1]).OppositeEndPoints, Is.Empty);
+      _modification.CreateBidirectionalModification ();
     }
   }
 }

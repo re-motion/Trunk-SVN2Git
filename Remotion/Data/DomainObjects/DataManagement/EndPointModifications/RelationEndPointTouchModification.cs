@@ -22,17 +22,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
   /// </summary>
   public class RelationEndPointTouchModification : RelationEndPointModification
   {
-    private readonly RelationEndPoint[] _oppositeEndPoints;
-
-    public RelationEndPointTouchModification (RelationEndPoint endPointBeingModified, params RelationEndPoint[] oppositeEndPoints)
+    public RelationEndPointTouchModification (RelationEndPoint endPointBeingModified)
         : base (endPointBeingModified, null, null)
     {
-      _oppositeEndPoints = oppositeEndPoints;
-    }
-
-    public RelationEndPoint[] OppositeEndPoints
-    {
-      get { return _oppositeEndPoints; }
     }
 
     public override void Begin ()
@@ -52,23 +44,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
-      var bidirectionalModification = new NonNotifyingBidirectionalRelationModification (this);
-
-      foreach (var oppositeEndPoint in _oppositeEndPoints)
-        bidirectionalModification.AddModificationStep (new RelationEndPointTouchModification (oppositeEndPoint));
-      
-      return bidirectionalModification;
-      
-      //if (oppositeEndPointDefinition.IsAnonymous)
-      //{
-      //  return ;
-      //}
-      //else
-      //{
-      //  var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
-      //  var oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, oppositeEndPointDefinition);
-      //  return new BidirectionalRelationModification (this, new RelationEndPointTouchModification (oppositeEndPoint));
-      //}
+      throw new NotSupportedException ("Touch modifications cannot be the starting point for a bidirectional modification.");
     }
   }
 }
