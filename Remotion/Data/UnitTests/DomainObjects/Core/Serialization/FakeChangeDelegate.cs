@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       throw new System.NotImplementedException();
     }
 
-    public void PerformSelfReplace (CollectionEndPoint endPoint, DomainObject domainObject, int index)
+    public void PerformSelfReplace (CollectionEndPoint endPoint, DomainObject selfReplacedObject, int index)
     {
       throw new System.NotImplementedException();
     }

@@ -413,9 +413,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _modifier.PerformReplace (endPoint, index, newRelatedObject);
     }
 
-    void ICollectionEndPointChangeDelegate.PerformSelfReplace (CollectionEndPoint endPoint, DomainObject domainObject, int index)
+    void ICollectionEndPointChangeDelegate.PerformSelfReplace (CollectionEndPoint endPoint, DomainObject selfReplacedObject, int index)
     {
-      _modifier.PerformSelfReplace (endPoint, domainObject, index);
+      _modifier.PerformSelfReplace (endPoint, selfReplacedObject, index);
     }
 
     void ICollectionEndPointChangeDelegate.PerformRemove (CollectionEndPoint endPoint, DomainObject removedRelatedObject)

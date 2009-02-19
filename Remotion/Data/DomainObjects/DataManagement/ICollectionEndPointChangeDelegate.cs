@@ -21,7 +21,7 @@ public interface ICollectionEndPointChangeDelegate
 {
   void PerformInsert (CollectionEndPoint collectionEndPoint, DomainObject insertedObject, int index);
   void PerformReplace (CollectionEndPoint endPoint, int index, DomainObject newRelatedObject);
-  void PerformSelfReplace (CollectionEndPoint endPoint, DomainObject domainObject, int index);
+  void PerformSelfReplace (CollectionEndPoint endPoint, DomainObject selfReplacedObject, int index);
   void PerformRemove (CollectionEndPoint endPoint, DomainObject removedRelatedObject);
 }
 }

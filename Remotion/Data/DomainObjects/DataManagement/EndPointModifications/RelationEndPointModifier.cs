@@ -52,23 +52,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       CheckDeleted (endPoint);
 
       // TODO FS: 1032
-      //var oldRelatedObject = _relationEndPointMap.GetRelatedObject (endPointID, true);
-      //var setModification = endPoint.CreateSetModification (oldRelatedObject, newRelatedObject);
-      //var bidirectionalModification = setModification.CreateBidirectionalModification ();
-      //bidirectionalModification.ExecuteAllSteps ();
-
-      //if (ReferenceEquals (oldRelatedObject, newRelatedObject))
-      //{
-      //  var setModification = endPoint.CreateSetModification (newRelatedObject);
-      //  var bidirectionalModification = setModification.CreateBidirectionalModification ();
-      //  bidirectionalModification.ExecuteAllSteps ();
-
-      //  //  var newRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
-      //  //  Assertion.IsTrue (!endPoint.OppositeEndPointDefinition.IsNull || newRelatedEndPoint == null, 
-      //  //      "unidirectional relation end points return null here");
-      //  //  SetRelatedObjectForEqualObjects (endPoint, newRelatedEndPoint);
-      //}
-      //else
+      var oldRelatedObject = _relationEndPointMap.GetRelatedObject (endPointID, true);
+      if (ReferenceEquals (oldRelatedObject, newRelatedObject))
+      {
+        var setModification = endPoint.CreateSetModification (newRelatedObject);
+        var bidirectionalModification = setModification.CreateBidirectionalModification ();
+        bidirectionalModification.ExecuteAllSteps ();
+      }
+      else
       {
         if (endPoint.OppositeEndPointDefinition.IsAnonymous)
           SetRelatedObjectForUnidirectionalRelation (endPoint, newRelatedObject);
@@ -106,12 +97,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       bidirectionalModification.ExecuteAllSteps ();
     }
 
-    public void PerformSelfReplace (CollectionEndPoint endPoint, DomainObject domainObject, int index)
+    public void PerformSelfReplace (CollectionEndPoint endPoint, DomainObject selfReplacedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("selfReplacedObject", selfReplacedObject);
 
-      SetRelatedObjectForEqualObjects (endPoint, _relationEndPointMap.GetRelationEndPointWithLazyLoad (domainObject, endPoint.OppositeEndPointDefinition));
+      // Simulate self-replace by setting opposite object to its current value.
+      // TODO 1032: Consider creating a CollectionEndPointSelfReplaceModification instead
+      var oppositeEndPointID = new RelationEndPointID (selfReplacedObject.ID, endPoint.OppositeEndPointDefinition);
+      SetRelatedObject (oppositeEndPointID, endPoint.GetDomainObject());
     }
 
     public void PerformRemove (CollectionEndPoint endPoint, DomainObject removedRelatedObject)
@@ -268,29 +262,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       DomainObject oldRelatedObject = _relationEndPointMap.GetRelatedObject (unidirectionalObjectEndPoint.ID, true);
 
-      if (ReferenceEquals (newRelatedObject, oldRelatedObject))
-        SetRelatedObjectForEqualObjects (unidirectionalObjectEndPoint, null);
-      else
-      {
-        RelationEndPointModification modification = 
-            unidirectionalObjectEndPoint.CreateSetModification (newRelatedObject);
-        modification.ExecuteAllSteps ();
-      }
-    }
-
-    // TODO 1032: use the other set methods instead
-    private void SetRelatedObjectForEqualObjects (RelationEndPoint endPoint, RelationEndPoint oppositeEndPoint)
-    {
-      Assertion.IsNotNull (endPoint);
-
-      RelationEndPoint realEndPoint = endPoint.Definition.IsVirtual ? oppositeEndPoint : endPoint;
-      RelationEndPoint virtualEndPoint = endPoint.Definition.IsVirtual ? endPoint : oppositeEndPoint;
-
-      Assertion.IsNotNull (realEndPoint);
-      realEndPoint.Touch ();
-
-      if (virtualEndPoint != null) // bidirectional?
-        virtualEndPoint.Touch ();
+      Assertion.IsFalse (ReferenceEquals (newRelatedObject, oldRelatedObject));
+      RelationEndPointModification modification = 
+          unidirectionalObjectEndPoint.CreateSetModification (newRelatedObject);
+      modification.ExecuteAllSteps ();
     }
 
     private void SetRelatedObjectForBidirectionalRelation (ObjectEndPoint endPoint, DomainObject newRelatedObject)
@@ -300,9 +275,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       RelationEndPoint newRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
       RelationEndPoint oldRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObject, newRelatedEndPoint.Definition);
 
-      if (ReferenceEquals (newRelatedObject, oldRelatedObject))
-        SetRelatedObjectForEqualObjects (endPoint, newRelatedEndPoint);
-      else if (newRelatedEndPoint.Definition.Cardinality == CardinalityType.One)
+      Assertion.IsFalse (ReferenceEquals (newRelatedObject, oldRelatedObject));
+
+      if (newRelatedEndPoint.Definition.Cardinality == CardinalityType.One)
         SetRelatedObjectForOneToOneRelation (endPoint, oldRelatedObject, newRelatedObject);
       else
         SetRelatedObjectForOneToManyRelation (endPoint, newRelatedEndPoint, oldRelatedEndPoint);
