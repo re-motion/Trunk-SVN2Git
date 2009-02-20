@@ -151,20 +151,69 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeAnalyzers
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The ExtendsAttribute for target class System.Object applied to mixin type"
-        + " System.Collections.Generic.List`1 specified invalid generic type arguments.")]
-    public void AnalyzeExtendsAttribute_InvalidGenericArguments ()
+        + " System.Collections.Generic.List`1 specified 2 generic type argument(s) when 1 argument(s) were expected.")]
+    public void AnalyzeExtendsAttribute_WrongNumberOfGenericArguments ()
     {
-      ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));
-      attribute.MixinTypeArguments = new Type[] { typeof (double), typeof (string) };
+      var attribute = new ExtendsAttribute (typeof (object));
+      attribute.MixinTypeArguments = new[] { typeof (double), typeof (string) };
 
-      _analyzer.AnalyzeExtendsAttribute (_extenderType, attribute);
+      _analyzer.AnalyzeExtendsAttribute (typeof (List<>), attribute);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The ExtendsAttribute for target class System.Object applied to mixin type"
+        + " System.Object specified 2 generic type argument(s) when 0 argument(s) were expected.")]
+    public void AnalyzeExtendsAttribute_WrongNumberOfGenericArguments_NoneExpected ()
+    {
+      var attribute = new ExtendsAttribute (typeof (object));
+      attribute.MixinTypeArguments = new[] { typeof (double), typeof (string) };
+
+      _analyzer.AnalyzeExtendsAttribute (typeof (object), attribute);
+    }
+
+    [Test]
+    public void AnalyzeExtendsAttribute_GenericArgumentsPossible_NoneGiven ()
+    {
+      var attribute = new ExtendsAttribute (typeof (object));
+      
+      Expect
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, typeof (object), typeof(List<>), MemberVisibility.Private, attribute.AdditionalDependencies,
+                attribute.SuppressedMixins))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      _analyzer.AnalyzeExtendsAttribute (typeof (List<>), attribute);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The ExtendsAttribute for target class System.Object applied to mixin type"
+        + " System.Nullable`1 specified invalid generic type arguments: GenericArguments[0], 'System.String', on 'System.Nullable`1[T]' violates the constraint of type 'T'.")]
+    public void AnalyzeExtendsAttribute_WrongKindOfGenericArguments ()
+    {
+      var attribute = new ExtendsAttribute (typeof (object));
+      attribute.MixinTypeArguments = new[] { typeof (string) };
+
+      _analyzer.AnalyzeExtendsAttribute (typeof (Nullable<>), attribute);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The ExtendsAttribute for target class System.Object applied to mixin type "
+        + "System.Collections.Generic.List`1[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] specified "
+        + "generic type arguments, but the mixin type already has type arguments specified.")]
+    public void AnalyzeExtendsAttribute_GenericArgumentsAlreadyGiven ()
+    {
+      var attribute = new ExtendsAttribute (typeof (object));
+      attribute.MixinTypeArguments = new[] { typeof (string) };
+
+      _analyzer.AnalyzeExtendsAttribute (typeof (List<string>), attribute);
     }
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Foofa.")]
     public void AnalyzeExtendsAttribute_InvalidOperation ()
     {
-      ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));
+      var attribute = new ExtendsAttribute (typeof (object));
 
       Expect
           .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Extending, null, null, MemberVisibility.Private, null, null))

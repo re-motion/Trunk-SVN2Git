@@ -38,21 +38,53 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 
     private Type ApplyMixinTypeArguments (Type targetType, Type mixinType, Type[] typeArguments)
     {
-      try
+      if (typeArguments.Length > 0)
       {
-        if (typeArguments.Length > 0)
+        CheckNumberOfTypeArguments(targetType, mixinType, typeArguments);
+        CheckMixinIsOpenGeneric(targetType, mixinType);
+
+        try
+        {
           return mixinType.MakeGenericType (typeArguments);
-        else
-          return mixinType;
+        }
+        catch (ArgumentException ex)
+        {
+          string message = string.Format (
+              "The ExtendsAttribute for target class {0} applied to mixin type {1} specified invalid generic type arguments: {2}",
+              targetType.FullName,
+              mixinType.FullName,
+              ex.Message);
+          throw new ConfigurationException (message, ex);
+        }
       }
-      catch (Exception ex)
+      else
+        return mixinType;
+    }
+
+    private void CheckMixinIsOpenGeneric (Type targetType, Type mixinType)
+    {
+      if (!mixinType.IsGenericTypeDefinition)
       {
         string message = string.Format (
-            "The ExtendsAttribute for target class {0} applied to mixin type {1} specified invalid generic type "
-                + "arguments.",
+            "The ExtendsAttribute for target class {0} applied to mixin type {1} specified generic type arguments, but the mixin type already has type arguments specified.",
             targetType.FullName,
             mixinType.FullName);
-        throw new ConfigurationException (message, ex);
+        throw new ConfigurationException (message);
+      }
+    }
+
+    private void CheckNumberOfTypeArguments (Type targetType, Type mixinType, Type[] typeArguments)
+    {
+      int expectedTypeArgumentLength = mixinType.IsGenericType ? mixinType.GetGenericArguments ().Length : 0;
+      if (typeArguments.Length != expectedTypeArgumentLength)
+      {
+        string message = string.Format (
+            "The ExtendsAttribute for target class {0} applied to mixin type {1} specified {2} generic type argument(s) when {3} argument(s) were expected.",
+            targetType.FullName,
+            mixinType.FullName,
+            typeArguments.Length,
+            expectedTypeArgumentLength);
+        throw new ConfigurationException (message);
       }
     }
   }
