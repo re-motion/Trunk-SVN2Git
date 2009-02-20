@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
@@ -54,17 +55,32 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       {
         return new NotifyingBidirectionalRelationModification (this);
       }
+      else if (_modifiedEndPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.One)
+      {
+        var relationEndPointMap = _modifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
+        var newRelatedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+        var oldRelatedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, newRelatedEndPoint.Definition);
+
+        var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : relationEndPointMap.GetRelatedObject (newRelatedEndPoint.ID, true);
+        var oldRelatedEndPointOfNewRelatedEndPoint = (ObjectEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObjectOfNewRelatedObject, ModifiedEndPoint.Definition);
+
+        var bidirectionalModification = new NotifyingBidirectionalRelationModification (
+          // => order.OrderTicket = newTicket
+          this,
+          // => oldTicket.Order = null (remove)
+          oldRelatedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()),
+          // => newTicket.Order = order
+          newRelatedEndPoint.CreateSetModification (ModifiedEndPoint.GetDomainObject ()),
+          // => oldOrderOfNewTicket.OrderTicket = null (remove)
+          oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveModification (NewRelatedObject));
+
+        return bidirectionalModification;
+      }
 
       // order.Customer = newCustomer (1:n) 
       // => oldCustomer.Orders.Remove (order) (remove)
       // => newCustomer.Orders.Add (order)
       // => order.Customer = newCustomer
-
-      // order.OrderTicket = newTicket (1:1) => SetRelatedObjectForOneToOneRelation
-      // => order.OrderTicket = newTicket
-      // => oldTicket.Order = null (remove)
-      // => newTicket.Order = order
-      // => oldOrderOfNewTicket.OrderTicket = null (remove)
 
       throw new NotImplementedException ();
     }

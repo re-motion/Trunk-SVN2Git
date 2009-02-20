@@ -5,13 +5,13 @@
 // and/or modify it under the terms of the GNU Lesser General Public License 
 // version 3.0 as published by the Free Software Foundation.
 // 
-// re-motion is distributed in the hope that it will be useful, 
+// This framework is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of 
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with re-motion; if not, see http://www.gnu.org/licenses.
+// along with this framework; if not, see http://www.gnu.org/licenses.
 // 
 using System;
 using NUnit.Framework;
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       _endPointMock = _mockRepository.StrictMock<ObjectEndPoint> (ClientTransactionMock, _id, _oldRelatedObject.ID);
 
       _endPointMock.Expect (mock => mock.IsNull).Return (false);
-      _endPointMock.Replay ();
+      _endPointMock.Replay();
       _modification = new ObjectEndPointSetModification (_endPointMock, _newRelatedObject);
       _endPointMock.BackToRecord();
     }
@@ -76,8 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModification is needed.\r\n" 
-        + "Parameter name: modifiedEndPoint")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Modified end point is null, a NullEndPointModification is needed.\r\n"
+                                                                      + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (_id.Definition);
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     {
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
-      
+
       Expect.Call (_endPointMock.GetDomainObject()).Return (domainObject);
 
       _mockRepository.ReplayAll();
@@ -106,19 +106,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     public void Perform_InvokesPerformRelationChange ()
     {
       Assert.That (_endPointMock.OppositeObjectID, Is.EqualTo (_oldRelatedObject.ID));
-      _modification.Perform ();
+      _modification.Perform();
       Assert.That (_endPointMock.OppositeObjectID, Is.EqualTo (_newRelatedObject.ID));
     }
 
     [Test]
     public void Perform_TouchesEndPoint ()
     {
-      var endPoint = new ObjectEndPoint(ClientTransactionMock, _id, DomainObjectIDs.Employee3);
+      var endPoint = new ObjectEndPoint (ClientTransactionMock, _id, DomainObjectIDs.Employee3);
       Assert.That (endPoint.HasBeenTouched, Is.False);
 
       var modification = new ObjectEndPointSetModification (endPoint, _newRelatedObject);
 
-      modification.Perform ();
+      modification.Perform();
 
       Assert.That (endPoint.HasBeenTouched, Is.True);
     }
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
 
-      Expect.Call (_endPointMock.GetDomainObject ()).Return (domainObject);
+      Expect.Call (_endPointMock.GetDomainObject()).Return (domainObject);
 
       _mockRepository.ReplayAll();
 
@@ -156,27 +156,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      _endPointMock.NotifyClientTransactionOfEndRelationChange ();
+      _endPointMock.NotifyClientTransactionOfEndRelationChange();
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      _modification.NotifyClientTransactionOfEnd ();
+      _modification.NotifyClientTransactionOfEnd();
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void ExecuteAllSteps ()
     {
       _endPointMock.Expect (mock => mock.IsNull).Return (false);
-      _endPointMock.Replay ();
+      _endPointMock.Replay();
 
       var modificationMock = _mockRepository.StrictMock<ObjectEndPointSetModification> (_endPointMock, _newRelatedObject);
 
-      modificationMock.NotifyClientTransactionOfBegin ();
-      modificationMock.Begin ();
-      modificationMock.Perform ();
-      modificationMock.NotifyClientTransactionOfEnd ();
+      modificationMock.NotifyClientTransactionOfBegin();
+      modificationMock.Begin();
+      modificationMock.Perform();
+      modificationMock.NotifyClientTransactionOfEnd();
       modificationMock.End();
 
       _mockRepository.ReplayAll();
@@ -191,15 +191,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     {
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
-      var unidirectionalEndPoint = (ObjectEndPoint) 
-          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (client, parentClientEndPointDefinition);
+      var unidirectionalEndPoint = (ObjectEndPoint)
+                                   ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+                                       client, parentClientEndPointDefinition);
       Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
 
       var setSameModification = new ObjectEndPointSetModification (unidirectionalEndPoint, unidirectionalEndPoint.GetOppositeObject (true));
-      var bidirectionalModification = setSameModification.CreateBidirectionalModification ();
+      var bidirectionalModification = setSameModification.CreateBidirectionalModification();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NonNotifyingBidirectionalRelationModification)));
 
-      var steps = bidirectionalModification.GetModificationSteps ();
+      var steps = bidirectionalModification.GetModificationSteps();
       Assert.That (steps.Count, Is.EqualTo (1));
 
       Assert.That (steps[0], Is.SameAs (setSameModification));
@@ -211,17 +212,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
       var bidirectionalEndPoint = (ObjectEndPoint)
-          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (order, orderTicketEndPointDefinition);
+                                  ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+                                      order, orderTicketEndPointDefinition);
 
-      var oppositeEndPoint = 
-          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (bidirectionalEndPoint.GetOppositeObject(true),
-          bidirectionalEndPoint.OppositeEndPointDefinition);
+      var oppositeEndPoint =
+          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+              bidirectionalEndPoint.GetOppositeObject (true),
+              bidirectionalEndPoint.OppositeEndPointDefinition);
       var setSameModification = new ObjectEndPointSetModification (bidirectionalEndPoint, bidirectionalEndPoint.GetOppositeObject (true));
 
-      var bidirectionalModification = setSameModification.CreateBidirectionalModification ();
+      var bidirectionalModification = setSameModification.CreateBidirectionalModification();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NonNotifyingBidirectionalRelationModification)));
 
-      var steps = bidirectionalModification.GetModificationSteps ();
+      var steps = bidirectionalModification.GetModificationSteps();
       Assert.That (steps.Count, Is.EqualTo (2));
 
       Assert.That (steps[0], Is.SameAs (setSameModification));
@@ -236,18 +239,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
       var unidirectionalEndPoint = (ObjectEndPoint)
-          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (client, parentClientEndPointDefinition);
+                                   ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+                                       client, parentClientEndPointDefinition);
       Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
-      var newClient = Client.NewObject ();
+      var newClient = Client.NewObject();
 
       var setDifferentModification = new ObjectEndPointSetModification (unidirectionalEndPoint, newClient);
-      var bidirectionalModification = setDifferentModification.CreateBidirectionalModification ();
+      var bidirectionalModification = setDifferentModification.CreateBidirectionalModification();
       Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NotifyingBidirectionalRelationModification)));
 
-      var steps = bidirectionalModification.GetModificationSteps ();
+      var steps = bidirectionalModification.GetModificationSteps();
       Assert.That (steps.Count, Is.EqualTo (1));
 
       Assert.That (steps[0], Is.SameAs (setDifferentModification));
+    }
+
+    [Test]
+    public void CreateBidirectionalModification_SetDifferent_BidirectionalOneOne ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+      var bidirectionalEndPoint = (ObjectEndPoint)
+                                  ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+                                      order, orderTicketEndPointDefinition);
+
+      // order.OrderTicket = newOrderTicket;
+      var newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+      var setDifferentModification = new ObjectEndPointSetModification (bidirectionalEndPoint, newOrderTicket);
+
+      var bidirectionalModification = setDifferentModification.CreateBidirectionalModification();
+      Assert.That (bidirectionalModification, Is.InstanceOfType (typeof (NotifyingBidirectionalRelationModification)));
+
+      var steps = bidirectionalModification.GetModificationSteps();
+      Assert.That (steps.Count, Is.EqualTo (4));
+
+      // order.OrderTicket = newOrderTicket;
+      Assert.That (steps[0], Is.SameAs (setDifferentModification));
+
+      // oldOrderTicket.Order = null;
+
+      var orderOfOldOrderTicketEndPoint =
+          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+              bidirectionalEndPoint.GetOppositeObject (true),
+              bidirectionalEndPoint.OppositeEndPointDefinition);
+
+      Assert.That (steps[1], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (steps[1].ModifiedEndPoint, Is.SameAs (orderOfOldOrderTicketEndPoint));
+      Assert.That (steps[1].OldRelatedObject, Is.SameAs (order));
+      Assert.That (steps[1].NewRelatedObject, Is.Null);
+
+      // newOrderTicket.Order = order;
+
+      var orderOfNewOrderTicketEndPoint =
+          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+              newOrderTicket,
+              bidirectionalEndPoint.OppositeEndPointDefinition);
+
+      Assert.That (steps[2], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (steps[2].ModifiedEndPoint, Is.SameAs (orderOfNewOrderTicketEndPoint));
+      Assert.That (steps[2].OldRelatedObject, Is.SameAs (newOrderTicket.Order));
+      Assert.That (steps[2].NewRelatedObject, Is.SameAs (order));
+
+      // oldOrderOfNewOrderTicket.OrderTicket = null
+
+      var orderTicketOfOldOrderOfNewOrderTicketEndPoint =
+          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+              newOrderTicket.Order,
+              bidirectionalEndPoint.Definition);
+
+      Assert.That (steps[3], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (steps[3].ModifiedEndPoint, Is.SameAs (orderTicketOfOldOrderOfNewOrderTicketEndPoint));
+      Assert.That (steps[3].OldRelatedObject, Is.SameAs (newOrderTicket));
+      Assert.That (steps[3].NewRelatedObject, Is.SameAs (null));
     }
   }
 }

@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       // TODO FS: 1032
       var oldRelatedObject = _relationEndPointMap.GetRelatedObject (endPointID, true);
-      if (ReferenceEquals (oldRelatedObject, newRelatedObject) || endPoint.OppositeEndPointDefinition.IsAnonymous)
+      if (ReferenceEquals (oldRelatedObject, newRelatedObject) || endPoint.OppositeEndPointDefinition.IsAnonymous || endPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.One)
       {
         var setModification = endPoint.CreateSetModification (newRelatedObject);
         var bidirectionalModification = setModification.CreateBidirectionalModification ();
@@ -263,11 +263,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       RelationEndPoint oldRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObject, newRelatedEndPoint.Definition);
 
       Assertion.IsFalse (ReferenceEquals (newRelatedObject, oldRelatedObject));
+      Assertion.IsFalse (newRelatedEndPoint.Definition.Cardinality == CardinalityType.One);
 
-      if (newRelatedEndPoint.Definition.Cardinality == CardinalityType.One)
-        SetRelatedObjectForOneToOneRelation (endPoint, oldRelatedObject, newRelatedObject);
-      else
-        SetRelatedObjectForOneToManyRelation (endPoint, (CollectionEndPoint) newRelatedEndPoint, (CollectionEndPoint) oldRelatedEndPoint);
+      SetRelatedObjectForOneToManyRelation (endPoint, (CollectionEndPoint) newRelatedEndPoint, (CollectionEndPoint) oldRelatedEndPoint);
     }
 
     // TODO refactor: Unify SetRelatedObject*-methods to one single method => add *RelationChange-methods to IEndPoint
