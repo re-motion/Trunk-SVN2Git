@@ -267,7 +267,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       if (newRelatedEndPoint.Definition.Cardinality == CardinalityType.One)
         SetRelatedObjectForOneToOneRelation (endPoint, oldRelatedObject, newRelatedObject);
       else
-        SetRelatedObjectForOneToManyRelation (endPoint, newRelatedEndPoint, oldRelatedEndPoint);
+        SetRelatedObjectForOneToManyRelation (endPoint, (CollectionEndPoint) newRelatedEndPoint, (CollectionEndPoint) oldRelatedEndPoint);
     }
 
     // TODO refactor: Unify SetRelatedObject*-methods to one single method => add *RelationChange-methods to IEndPoint
@@ -296,20 +296,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
     private void SetRelatedObjectForOneToManyRelation (
         ObjectEndPoint endPoint,
-        RelationEndPoint newRelatedEndPoint,
-        RelationEndPoint oldRelatedEndPoint)
+        CollectionEndPoint newRelatedEndPoint,
+        CollectionEndPoint oldRelatedEndPoint)
     {
-      // TODO 1032: create modifications instead
-      if (!newRelatedEndPoint.IsNull)
-      {
-        DomainObjectCollection collection = _relationEndPointMap.GetRelatedObjects (newRelatedEndPoint.ID);
-        collection.Add (endPoint.GetDomainObject ());
-      }
-      else
-      {
-        DomainObjectCollection collection = _relationEndPointMap.GetRelatedObjects (oldRelatedEndPoint.ID);
-        collection.Remove (endPoint.GetDomainObject ());
-      }
+      var modifications = new NotifyingBidirectionalRelationModification (
+          endPoint.CreateSetModification (newRelatedEndPoint.GetDomainObject ()),
+          newRelatedEndPoint.CreateAddModification (endPoint.GetDomainObject ()),
+          oldRelatedEndPoint.CreateRemoveModification (endPoint.GetDomainObject ()));
+      modifications.ExecuteAllSteps ();
     }
   }
 }

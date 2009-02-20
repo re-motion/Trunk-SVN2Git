@@ -220,6 +220,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new CollectionEndPointInsertModification (this, insertedRelatedObject, index, _oppositeDomainObjects._data);
     }
 
+    public virtual RelationEndPointModification CreateAddModification (DomainObject addedRelatedObject)
+    {
+      ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
+      return CreateInsertModification (addedRelatedObject, OppositeDomainObjects.Count);
+    }
+
     public virtual RelationEndPointModification CreateReplaceModification (int index, DomainObject newRelatedObject)
     {
       return new CollectionEndPointReplaceModification (this, OppositeDomainObjects[index], newRelatedObject, _oppositeDomainObjects._data);

@@ -66,11 +66,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       // => newTicket.Order = order
       // => oldOrderOfNewTicket.OrderTicket = null (remove)
 
-      // person.Address = newAddress (1:1 uni) => SetRelatedObjectForUnidirectionalRelation
-      // => person.Address = newAddress
-
-      // for equal objects: don't forget to touch the foreign key property; should probably be done in ObjectEndPoint.SetOppositeID...
-
       throw new NotImplementedException ();
     }
   }
