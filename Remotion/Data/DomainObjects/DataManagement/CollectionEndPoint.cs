@@ -214,6 +214,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return new CollectionEndPointRemoveModification (this, removedRelatedObject, _oppositeDomainObjects._data);
     }
 
+    public override RelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
+    {
+      ArgumentUtility.CheckNotNull ("selfReplaceRelatedObject", selfReplaceRelatedObject);
+      return new CollectionEndPointSelfReplaceModification (this, selfReplaceRelatedObject, _oppositeDomainObjects._data);
+    }
+
     public virtual RelationEndPointModification CreateInsertModification (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);

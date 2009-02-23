@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       return new NonNotifyingBidirectionalRelationModification (
           this,
-          new RelationEndPointTouchModification (endPointOfRelatedObject));
+          endPointOfRelatedObject.CreateSelfReplaceModification (ModifiedEndPoint.GetDomainObject()));
     }
   }
 }

@@ -174,6 +174,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateSetModification (null);
     }
 
+    public override RelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
+    {
+      ArgumentUtility.CheckNotNull ("selfReplaceRelatedObject", selfReplaceRelatedObject);
+      var currentRelatedObject = GetOppositeObject (true);
+      if (selfReplaceRelatedObject != currentRelatedObject)
+      {
+        string removedID = selfReplaceRelatedObject.ID.ToString ();
+        string currentID = currentRelatedObject != null ? currentRelatedObject.ID.ToString () : "<null>";
+
+        var message = string.Format ("Cannot replace '{0}' from object end point '{1}' - it currently holds object '{2}'.",
+            removedID, PropertyName, currentID);
+        throw new InvalidOperationException (message);
+      }
+
+      return new ObjectEndPointSetSameModification (this);
+    }
+
     public virtual RelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
     {
       var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;

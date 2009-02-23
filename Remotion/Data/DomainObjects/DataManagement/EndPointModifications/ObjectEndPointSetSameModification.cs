@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       {
         var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
         var oppositeEndPoint = relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
-        bidirectionalModification.AddModificationStep (new RelationEndPointTouchModification (oppositeEndPoint));
+        bidirectionalModification.AddModificationStep (oppositeEndPoint.CreateSelfReplaceModification(ModifiedEndPoint.GetDomainObject()));
       }
       return bidirectionalModification;
     }

@@ -620,7 +620,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var order = Order.GetObject (DomainObjectIDs.Order4);
       _endPoint.CreateRemoveModification (order);
-      Assert.Fail ("Expected exception.");
+    }
+
+    [Test]
+    public void CreateSelfReplaceModification ()
+    {
+      var order = Order.GetObject (_endPoint.OppositeObjectID);
+      var modification = _endPoint.CreateSelfReplaceModification (order);
+      Assert.That (modification, Is.InstanceOfType (typeof (ObjectEndPointSetSameModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
+      Assert.That (modification.OldRelatedObject, Is.SameAs (order));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot replace "
+        + "'Order|90e26c86-611f-4735-8d1b-e1d0918515c2|System.Guid' from object end point "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' - it currently holds object "
+        + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'.")]
+    public void CreateSelfReplaceModification_InvalidID ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order4);
+      _endPoint.CreateSelfReplaceModification (order);
     }
 
   }

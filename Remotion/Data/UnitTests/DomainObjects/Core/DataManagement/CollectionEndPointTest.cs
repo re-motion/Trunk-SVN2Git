@@ -19,12 +19,10 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -853,6 +851,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));
       Assert.That (modification.NewRelatedObject, Is.SameAs (_order1));
+    }
+
+    [Test]
+    public void CreateSelfReplaceModification ()
+    {
+      var modification = _customerEndPoint.CreateSelfReplaceModification (_order2);
+      Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointSelfReplaceModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (modification.OldRelatedObject, Is.SameAs (_order2));
+      Assert.That (((CollectionEndPointSelfReplaceModification) modification).ModifiedCollectionData,
+          Is.SameAs (PrivateInvoke.GetNonPublicField (_orders, typeof (DomainObjectCollection), "_data")));
     }
   }
 }

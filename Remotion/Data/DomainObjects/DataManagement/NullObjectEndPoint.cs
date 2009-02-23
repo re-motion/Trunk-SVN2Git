@@ -45,6 +45,11 @@ public class NullObjectEndPoint : ObjectEndPoint
     return new NullEndPointModification (this, removedRelatedObject, null);
   }
 
+  public override RelationEndPointModification CreateSelfReplaceModification (DomainObject selfReplaceRelatedObject)
+  {
+    return new NullEndPointModification (this, selfReplaceRelatedObject, selfReplaceRelatedObject);
+  }
+
   public override RelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
   {
     return new NullEndPointModification (this, GetOppositeObject(true), newRelatedObject);
