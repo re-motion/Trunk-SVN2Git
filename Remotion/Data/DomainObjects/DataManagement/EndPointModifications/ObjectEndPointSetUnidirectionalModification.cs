@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this framework; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   public class ObjectEndPointSetUnidirectionalModification : ObjectEndPointSetModificationBase
@@ -20,6 +22,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     public ObjectEndPointSetUnidirectionalModification (ObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
         : base(modifiedEndPoint, newRelatedObject)
     {
+      if (!modifiedEndPoint.OppositeEndPointDefinition.IsAnonymous)
+      {
+        var message = string.Format ("EndPoint '{0}' is from a bidirectional relation - use a ObjectEndPointSetOneOneModification or ObjectEndPointSetOneManyModification instead.",
+            modifiedEndPoint.Definition.PropertyName);
+        throw new ArgumentException (message, "modifiedEndPoint");
+      }
+
+      if (newRelatedObject == modifiedEndPoint.GetOppositeObject (true))
+      {
+        var message = string.Format ("New related object for EndPoint '{0}' is the same as its old value - use a ObjectEndPointSetSameModification instead.",
+            modifiedEndPoint.Definition.PropertyName);
+        throw new ArgumentException (message, "newRelatedObject");
+      }
     }
 
     public override BidirectionalRelationModificationBase CreateBidirectionalModification ()

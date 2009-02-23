@@ -19,6 +19,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -50,6 +51,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     protected override ObjectEndPointSetModificationBase CreateModificationMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject)
     {
       return repository.StrictMock<ObjectEndPointSetUnidirectionalModification> (endPoint, newRelatedObject);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "EndPoint 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order' "
+        + "is from a bidirectional relation - use a ObjectEndPointSetOneOneModification or ObjectEndPointSetOneManyModification instead.\r\nParameter name: modifiedEndPoint")]
+    public void Initialization_Bidirectional_OneMany ()
+    {
+      var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem))
+          .GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
+      var endPoint = (ObjectEndPoint)
+          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (OrderItem.GetObject (DomainObjectIDs.OrderItem1), definition);
+      new ObjectEndPointSetUnidirectionalModification (endPoint, Order.NewObject ());
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "EndPoint 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' "
+        + "is from a bidirectional relation - use a ObjectEndPointSetOneOneModification or ObjectEndPointSetOneManyModification instead.\r\nParameter name: modifiedEndPoint")]
+    public void Initialization_Bidirectional_OneOne ()
+    {
+      var definition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderTicket))
+          .GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
+      var endPoint = (ObjectEndPoint)
+          ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1), definition);
+      new ObjectEndPointSetUnidirectionalModification (endPoint, Order.NewObject ());
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "New related object for EndPoint "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Client.ParentClient' is the same as its old value - use a ObjectEndPointSetSameModification "
+        + "instead.\r\nParameter name: newRelatedObject")]
+    public void Initialization_Same ()
+    {
+      var endPoint = new ObjectEndPoint (ClientTransactionMock, GetRelationEndPointID (), OldRelatedObject.ID);
+      new ObjectEndPointSetUnidirectionalModification (endPoint, OldRelatedObject);
     }
 
     [Test]

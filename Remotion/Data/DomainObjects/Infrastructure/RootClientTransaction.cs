@@ -203,7 +203,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       using (var persistenceManager = new PersistenceManager())
       {
         relatedDataContainer = persistenceManager.LoadRelatedDataContainer (GetDataContainer (domainObject), relationEndPointID);
-        Assertion.IsTrue (relatedDataContainer == null || DataManager.DataContainerMap[relatedDataContainer.ID] == null);
+        
+        // This assertion is only true if single related objects are never loaded lazily; otherwise, a "merge" would be necessary.
+        // (Like in MergeLoadedDomainObjects.)
+        Assertion.IsTrue (relatedDataContainer == null || DataManager.DataContainerMap[relatedDataContainer.ID] == null, 
+            "ObjectEndPoints are created eagerly, so this related object can't have been loaded so far. "
+            + "(Otherwise LoadRelatedDataContainer wouldn't have been called.)");
         if (relatedDataContainer != null)
           TransactionEventSink.ObjectLoading (relatedDataContainer.ID);
       }

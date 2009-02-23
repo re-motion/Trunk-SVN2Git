@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this framework; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using Remotion.Data.DomainObjects.Mapping;
+
 namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 {
   public class ObjectEndPointSetOneManyModification : ObjectEndPointSetModificationBase
@@ -20,6 +23,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     public ObjectEndPointSetOneManyModification (ObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject)
         : base(modifiedEndPoint, newRelatedObject)
     {
+      if (modifiedEndPoint.OppositeEndPointDefinition.IsAnonymous)
+      {
+        var message = string.Format("EndPoint '{0}' is from a unidirectional relation - use a ObjectEndPointSetUnidirectionalModification instead.", 
+            modifiedEndPoint.Definition.PropertyName);
+        throw new ArgumentException (message, "modifiedEndPoint");
+      }
+
+      if (modifiedEndPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.One)
+      {
+        var message = string.Format ("EndPoint '{0}' is from a 1:1 relation - use a ObjectEndPointSetOneOneModification instead.",
+            modifiedEndPoint.Definition.PropertyName);
+        throw new ArgumentException (message, "modifiedEndPoint");
+      }
+
+      if (newRelatedObject == modifiedEndPoint.GetOppositeObject (true))
+      {
+        var message = string.Format ("New related object for EndPoint '{0}' is the same as its old value - use a ObjectEndPointSetSameModification instead.",
+            modifiedEndPoint.Definition.PropertyName);
+        throw new ArgumentException (message, "newRelatedObject");
+      }
     }
 
     /// <summary>
