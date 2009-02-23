@@ -226,9 +226,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return CreateInsertModification (addedRelatedObject, OppositeDomainObjects.Count);
     }
 
-    public virtual RelationEndPointModification CreateReplaceModification (int index, DomainObject newRelatedObject)
+    public virtual RelationEndPointModification CreateReplaceModification (int index, DomainObject replacementObject)
     {
-      return new CollectionEndPointReplaceModification (this, OppositeDomainObjects[index], newRelatedObject, _oppositeDomainObjects._data);
+      var replacedObject = OppositeDomainObjects[index];
+      if (replacedObject == replacementObject)
+        return new CollectionEndPointSelfReplaceModification (this, replacedObject, _oppositeDomainObjects._data);
+      else
+        return new CollectionEndPointReplaceModification (this, replacedObject, replacementObject, _oppositeDomainObjects._data);
     }
 
     public override void PerformDelete ()

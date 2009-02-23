@@ -7,6 +7,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -38,6 +39,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     protected override ObjectEndPointSetModificationBase CreateModificationMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject)
     {
       return repository.StrictMock<ObjectEndPointSetSameModification> (endPoint);
+    }
+
+    public override void Begin ()
+    {
+      DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      var eventReceiver = new DomainObjectEventReceiver (domainObject);
+
+      MockRepository.ReplayAll ();
+      Modification.Begin ();
+      MockRepository.VerifyAll ();
+
+      Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
+      Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
+    }
+
+    public override void End ()
+    {
+      DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
+      var eventReceiver = new DomainObjectEventReceiver (domainObject);
+
+      MockRepository.ReplayAll ();
+      Modification.End ();
+      MockRepository.VerifyAll ();
+
+      Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
+      Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
     }
 
     [Test]

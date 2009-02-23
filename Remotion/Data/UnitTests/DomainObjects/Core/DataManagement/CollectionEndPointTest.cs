@@ -844,5 +844,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (((CollectionEndPointReplaceModification) modification).ModifiedCollectionData,
           Is.SameAs (PrivateInvoke.GetNonPublicField (_orders, typeof (DomainObjectCollection), "_data")));
     }
+
+    [Test]
+    public void CreateReplaceModification_SelfReplace ()
+    {
+      var modification = _customerEndPoint.CreateReplaceModification (0, _orders[0]);
+      Assert.That (modification, Is.InstanceOfType (typeof (CollectionEndPointSelfReplaceModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (_customerEndPoint));
+      Assert.That (modification.OldRelatedObject, Is.SameAs (_order1));
+      Assert.That (modification.NewRelatedObject, Is.SameAs (_order1));
+    }
   }
 }

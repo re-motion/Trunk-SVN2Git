@@ -89,10 +89,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("selfReplacedObject", selfReplacedObject);
 
-      // Simulate self-replace by setting opposite object to its current value.
-      // TODO 1032: Consider creating a CollectionEndPointSelfReplaceModification instead
-      var oppositeEndPointID = new RelationEndPointID (selfReplacedObject.ID, endPoint.OppositeEndPointDefinition);
-      SetRelatedObject (oppositeEndPointID, endPoint.GetDomainObject());
+      var replaceModification = endPoint.CreateReplaceModification (index, selfReplacedObject);
+      var bidirectionalModification = replaceModification.CreateBidirectionalModification ();
+      bidirectionalModification.ExecuteAllSteps ();
     }
 
     public void PerformRemove (CollectionEndPoint endPoint, DomainObject removedRelatedObject)

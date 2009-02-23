@@ -22,6 +22,28 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
     }
 
+    public override void Begin ()
+    {
+      // do not issue any change notifications, a same-set is not a change
+    }
+
+    public override void End ()
+    {
+      // do not issue any change notifications, a same-set is not a change
+    }
+
+    /// <summary>
+    /// Creates all modification steps needed to perform a bidirectional set-same operation on this <see cref="ObjectEndPoint"/>. One of the steps is 
+    /// this modification, the other steps are the opposite modifications on the new/old related objects.
+    /// </summary>
+    /// <remarks>
+    /// A same-set operation of the form "order.OrderTicket = order.OrderTicket" needs two steps:
+    /// <list type="bullet">
+    ///   <item>order.Touch()1 and</item>
+    ///   <item>order.OrderTicket.Touch.</item>
+    /// </list>
+    /// No change notifications are sent for this operation.
+    /// </remarks>
     public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
       var bidirectionalModification = new NonNotifyingBidirectionalRelationModification (this);

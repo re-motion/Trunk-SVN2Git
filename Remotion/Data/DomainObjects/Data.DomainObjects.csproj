@@ -152,6 +152,7 @@
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointRemoveModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointInsertModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\CollectionEndPointSelfReplaceModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\NonNotifyingBidirectionalRelationModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\NotifyingBidirectionalRelationModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetOneManyModification.cs" />

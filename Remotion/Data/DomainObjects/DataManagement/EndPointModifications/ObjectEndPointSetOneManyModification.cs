@@ -22,6 +22,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
     }
 
+    /// <summary>
+    /// Creates all modification steps needed to perform a bidirectional 1:n set operation on this <see cref="ObjectEndPoint"/>. One of the steps is 
+    /// this modification, the other steps are the opposite modifications on the new/old related objects.
+    /// </summary>
+    /// <remarks>
+    /// A 1:n set operation of the form "order.Customer = newCustomer" needs three steps:
+    /// <list type="bullet">
+    ///   <item>order.Customer = newCustomer,</item>
+    ///   <item>newCustomer.Orders.Add (order), and</item>
+    ///   <item>oldCustomer.Orders.Remove (order).</item>
+    /// </list>
+    /// </remarks>
     public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
       var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;

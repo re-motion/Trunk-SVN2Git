@@ -22,6 +22,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
     }
 
+    /// <summary>
+    /// Creates all modification steps needed to perform a bidirectional 1:1 set operation on this <see cref="ObjectEndPoint"/>. One of the steps is 
+    /// this modification, the other steps are the opposite modifications on the new/old related objects.
+    /// </summary>
+    /// <remarks>
+    /// A 1:1 set operation of the form "order.OrderTicket = newTicket" needs four steps:
+    /// <list type="bullet">
+    ///   <item>order.OrderTicket = newTicket,</item>
+    ///   <item>oldTicket.Order = null, </item>
+    ///   <item>newTicket.Order = order, and</item>
+    ///   <item>oldOrderOfNewTicket.OrderTicket = null.</item>
+    /// </list>
+    /// </remarks>
     public override BidirectionalRelationModificationBase CreateBidirectionalModification ()
     {
       var relationEndPointMap = ModifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;

@@ -52,6 +52,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     protected abstract ObjectEndPointSetModificationBase CreateModification (ObjectEndPoint endPoint, DomainObject newRelatedObject);
     protected abstract ObjectEndPointSetModificationBase CreateModificationMock (MockRepository repository, ObjectEndPoint endPoint, DomainObject newRelatedObject);
 
+    public MockRepository MockRepository
+    {
+      get { return _mockRepository; }
+    }
+
+    public ObjectEndPoint EndPointMock
+    {
+      get { return _endPointMock; }
+    }
+
+    public ObjectEndPointSetModificationBase Modification
+    {
+      get { return _modification; }
+    }
+
     [Test]
     public void Initialization ()
     {
@@ -70,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void BeginInvokesBeginRelationChange_OnDomainObject ()
+    public virtual void Begin ()
     {
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);
@@ -109,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
     }
 
     [Test]
-    public void EndInvokesEndRelationChange_OnDomainObject ()
+    public virtual void End ()
     {
       DomainObject domainObject = Order.GetObject (DomainObjectIDs.Order1);
       var eventReceiver = new DomainObjectEventReceiver (domainObject);

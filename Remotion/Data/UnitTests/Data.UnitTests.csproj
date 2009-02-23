@@ -238,6 +238,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointInsertModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointModificationTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointReplaceModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointSelfReplaceModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\NonNotifyingBidirectionalRelationModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetOneManyModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetOneOneModificationTest.cs" />
