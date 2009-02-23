@@ -76,13 +76,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
         return bidirectionalModification;
       }
+      else
+      {
+        var relationEndPointMap = _modifiedEndPoint.ClientTransaction.DataManager.RelationEndPointMap;
+        var newRelatedEndPoint = (CollectionEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (NewRelatedObject, ModifiedEndPoint.OppositeEndPointDefinition);
+        var oldRelatedEndPoint = (CollectionEndPoint) relationEndPointMap.GetRelationEndPointWithLazyLoad (OldRelatedObject, newRelatedEndPoint.Definition);
 
-      // order.Customer = newCustomer (1:n) 
-      // => oldCustomer.Orders.Remove (order) (remove)
-      // => newCustomer.Orders.Add (order)
-      // => order.Customer = newCustomer
-
-      throw new NotImplementedException ();
+        var bidirectionalModification = new NotifyingBidirectionalRelationModification (
+          // => order.Customer = newCustomer
+            this,
+          // => newCustomer.Orders.Add (order)
+            newRelatedEndPoint.CreateAddModification (ModifiedEndPoint.GetDomainObject ()),
+          // => oldCustomer.Orders.Remove (order) (remove)
+            oldRelatedEndPoint.CreateRemoveModification (ModifiedEndPoint.GetDomainObject ()));
+        return bidirectionalModification;
+      }
     }
   }
 }

@@ -49,20 +49,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       CheckType (endPointID, newRelatedObject);
 
       var endPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
-      CheckDeleted (endPoint);
+      CheckDeleted (endPoint.GetDomainObject ());
 
-      // TODO FS: 1032
-      var oldRelatedObject = _relationEndPointMap.GetRelatedObject (endPointID, true);
-      if (ReferenceEquals (oldRelatedObject, newRelatedObject) || endPoint.OppositeEndPointDefinition.IsAnonymous || endPoint.OppositeEndPointDefinition.Cardinality == CardinalityType.One)
-      {
-        var setModification = endPoint.CreateSetModification (newRelatedObject);
-        var bidirectionalModification = setModification.CreateBidirectionalModification ();
-        bidirectionalModification.ExecuteAllSteps ();
-      }
-      else
-      {
-        SetRelatedObjectForBidirectionalRelation (endPoint, newRelatedObject);
-      }
+      var setModification = endPoint.CreateSetModification (newRelatedObject);
+      var bidirectionalModification = setModification.CreateBidirectionalModification ();
+      bidirectionalModification.ExecuteAllSteps ();
     }
 
     public void PerformInsert (CollectionEndPoint collectionEndPoint, DomainObject insertedObject, int index)
@@ -71,7 +62,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       ArgumentUtility.CheckNotNull ("insertedObject", insertedObject);
 
       CheckClientTransactionForInsertionIntoCollectionEndPoint (collectionEndPoint, insertedObject, index);
-      CheckDeleted (collectionEndPoint);
+      CheckDeleted (collectionEndPoint.GetDomainObject ());
       CheckDeleted (insertedObject);
 
       var insertModification = collectionEndPoint.CreateInsertModification (insertedObject, index);
@@ -85,12 +76,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       ArgumentUtility.CheckNotNull ("newRelatedObject", newRelatedObject);
 
       CheckClientTransactionForReplacementInCollectionEndPoint (endPoint.ID, newRelatedObject, index);
-      CheckDeleted (endPoint);
+      CheckDeleted (endPoint.GetDomainObject ());
       CheckDeleted (newRelatedObject);
 
       var replaceModification = endPoint.CreateReplaceModification (index, newRelatedObject);
       var bidirectionalModification = replaceModification.CreateBidirectionalModification ();
-
       bidirectionalModification.ExecuteAllSteps ();
     }
 
@@ -111,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
       CheckClientTransactionForRemovalFromCollectionEndPoint (endPoint.ID, removedRelatedObject);
-      CheckDeleted (endPoint);
+      CheckDeleted (endPoint.GetDomainObject ());
       CheckDeleted (removedRelatedObject);
 
       var removeModification = endPoint.CreateRemoveModification (removedRelatedObject);
@@ -227,11 +217,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       return new ClientTransactionsDifferException (string.Format (message, args));
     }
 
-    private void CheckDeleted (RelationEndPoint endPoint)
-    {
-      CheckDeleted (endPoint.GetDomainObject ());
-    }
-
     private void CheckDeleted (DomainObject domainObject)
     {
       if (domainObject != null && domainObject.TransactionContext[ClientTransaction].State == StateType.Deleted)
@@ -252,56 +237,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
                                      endPointID.ObjectID);
         throw new DataManagementException (message);
       }
-    }
-
-
-    private void SetRelatedObjectForBidirectionalRelation (ObjectEndPoint endPoint, DomainObject newRelatedObject)
-    {
-      DomainObject oldRelatedObject = _relationEndPointMap.GetRelatedObject (endPoint.ID, false);
-
-      RelationEndPoint newRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
-      RelationEndPoint oldRelatedEndPoint = _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObject, newRelatedEndPoint.Definition);
-
-      Assertion.IsFalse (ReferenceEquals (newRelatedObject, oldRelatedObject));
-      Assertion.IsFalse (newRelatedEndPoint.Definition.Cardinality == CardinalityType.One);
-
-      SetRelatedObjectForOneToManyRelation (endPoint, (CollectionEndPoint) newRelatedEndPoint, (CollectionEndPoint) oldRelatedEndPoint);
-    }
-
-    // TODO refactor: Unify SetRelatedObject*-methods to one single method => add *RelationChange-methods to IEndPoint
-    private void SetRelatedObjectForOneToOneRelation (
-        ObjectEndPoint endPoint,
-        DomainObject oldRelatedObject,
-        DomainObject newRelatedObject)
-    {
-      var newRelatedEndPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (newRelatedObject, endPoint.OppositeEndPointDefinition);
-      var oldRelatedEndPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObject, newRelatedEndPoint.Definition);
-
-      var oldRelatedObjectOfNewRelatedObject = newRelatedObject == null ? null : _relationEndPointMap.GetRelatedObject (newRelatedEndPoint.ID, true);
-      var oldRelatedEndPointOfNewRelatedEndPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (oldRelatedObjectOfNewRelatedObject, endPoint.Definition);
-
-      Assertion.IsTrue (newRelatedObject != null || oldRelatedEndPointOfNewRelatedEndPoint.IsNull, 
-          "a null newRelatedObject will cause oldRelatedEndPointOfNewRelatedEndPoint to be a null end point");
-
-      var modifications = new NotifyingBidirectionalRelationModification (
-          endPoint.CreateSetModification (newRelatedObject),
-          oldRelatedEndPoint.CreateRemoveModification (endPoint.GetDomainObject ()),
-          newRelatedEndPoint.CreateSetModification (endPoint.GetDomainObject ()),
-          oldRelatedEndPointOfNewRelatedEndPoint.CreateRemoveModification (newRelatedObject));
-
-      modifications.ExecuteAllSteps ();
-    }
-
-    private void SetRelatedObjectForOneToManyRelation (
-        ObjectEndPoint endPoint,
-        CollectionEndPoint newRelatedEndPoint,
-        CollectionEndPoint oldRelatedEndPoint)
-    {
-      var modifications = new NotifyingBidirectionalRelationModification (
-          endPoint.CreateSetModification (newRelatedEndPoint.GetDomainObject ()),
-          newRelatedEndPoint.CreateAddModification (endPoint.GetDomainObject ()),
-          oldRelatedEndPoint.CreateRemoveModification (endPoint.GetDomainObject ()));
-      modifications.ExecuteAllSteps ();
     }
   }
 }
