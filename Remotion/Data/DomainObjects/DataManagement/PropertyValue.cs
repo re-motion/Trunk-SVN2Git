@@ -258,12 +258,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    // TODO 1032: Remove
-    internal void Touch ()
-    {
-      _hasBeenTouched = true;
-    }
-
     /// <summary>
     /// Determines whether the specified <see cref="PropertyValue"/> is equal to the current <b>PropertyValue</b>.
     /// </summary>

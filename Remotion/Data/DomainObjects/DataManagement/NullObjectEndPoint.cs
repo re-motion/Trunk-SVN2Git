@@ -108,11 +108,6 @@ public class NullObjectEndPoint : ObjectEndPoint
     throw new InvalidOperationException ("Rollback cannot be called on a NullCollectionEndPoint.");
   }
 
-  protected override void TouchForeignKeyProperty ()
-  {
-    // do nothing, null objects have no foreign key properties...
-  }
-
   protected override void SetForeignKeyProperty ()
   {
     // do nothing, null objects have no foreign key properties...

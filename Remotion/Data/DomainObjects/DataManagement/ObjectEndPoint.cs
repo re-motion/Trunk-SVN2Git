@@ -140,7 +140,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public override void Touch ()
     {
       _hasBeenTouched = true;
-      TouchForeignKeyProperty();
+      SetForeignKeyProperty (); // set foreign key property to the same value in order to touch it
     }
 
     public override void CheckMandatory ()
@@ -219,28 +219,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return ClientTransaction.GetObject (OppositeObjectID, includeDeleted);
     }
 
-    protected virtual void TouchForeignKeyProperty ()
-    {
-      if (!IsVirtual)
-      {
-        PropertyValue foreignKeyProperty = GetForeignKeyProperty ();
-        foreignKeyProperty.Touch ();
-      }
-    }
-
     protected virtual void SetForeignKeyProperty ()
     {
       if (!IsVirtual)
       {
-        var foreignKeyProperty = GetForeignKeyProperty ();
+        var dataContainer = ClientTransaction.GetDataContainer (GetDomainObject ());
+        var foreignKeyProperty = dataContainer.PropertyValues[PropertyName];
         foreignKeyProperty.SetRelationValue (_oppositeObjectID);
       }
-    }
-
-    private PropertyValue GetForeignKeyProperty ()
-    {
-      var dataContainer = ClientTransaction.GetDataContainer (GetDomainObject ());
-      return dataContainer.PropertyValues[PropertyName];
     }
 
     #region Serialization
