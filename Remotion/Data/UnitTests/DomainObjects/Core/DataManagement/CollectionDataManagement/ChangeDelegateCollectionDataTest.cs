@@ -202,7 +202,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       _changeDelegateMock.Expect (
         mock =>
-        mock.PerformSelfReplace (Arg<DomainObjectCollection>.Is.Same (_parentCollection), Arg<DomainObject>.Is.Same (_order2), Arg<int>.Is.Equal (1)));
+        mock.PerformReplace (Arg<DomainObjectCollection>.Is.Same (_parentCollection), Arg<DomainObject>.Is.Same (_order2), Arg<int>.Is.Equal (1)));
 
       _changeDelegateMock.Replay ();
       _eventRaiserMock.Replay ();
@@ -310,8 +310,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _changeDelegateMock.AssertWasNotCalled (
           mock => mock.PerformReplace (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
-      _changeDelegateMock.AssertWasNotCalled (
-          mock => mock.PerformSelfReplace (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
@@ -327,8 +325,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _changeDelegateMock.AssertWasNotCalled (
           mock => mock.PerformReplace (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
-      _changeDelegateMock.AssertWasNotCalled (
-          mock => mock.PerformSelfReplace (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
@@ -350,8 +346,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       _changeDelegateMock.AssertWasNotCalled (
           mock => mock.PerformReplace (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
-      _changeDelegateMock.AssertWasNotCalled (
-          mock => mock.PerformSelfReplace (Arg<DomainObjectCollection>.Is.Anything, Arg<DomainObject>.Is.Anything, Arg<int>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }

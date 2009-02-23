@@ -536,22 +536,15 @@ namespace Remotion.Data.DomainObjects
 
         CheckItemType (value, "value");
 
-        // If old and new objects are the same: Perform no operation
-        if (ReferenceEquals (this[index], value))
+        if (Contains (value.ID) && !ReferenceEquals (this[index], value))
+          throw CreateInvalidOperationException ("The object '{0}' is already part of this collection.", value.ID);
+        else if (_changeDelegate != null)
+          _changeDelegate.PerformReplace (this, value, index);
+        else if (ReferenceEquals (this[index], value)) // If old and new objects are the same: Perform no operation
         {
-          if (_changeDelegate != null)
-            _changeDelegate.PerformSelfReplace (this, value, index);
-          else
-            Touch ();
-
+          Touch ();
           return;
         }
-        
-        if (Contains (value.ID))
-          throw CreateInvalidOperationException ("The object '{0}' is already part of this collection.", value.ID);
-
-        if (_changeDelegate != null)
-          _changeDelegate.PerformReplace (this, value, index);
         else
         {
           DomainObject oldObject = this[index];

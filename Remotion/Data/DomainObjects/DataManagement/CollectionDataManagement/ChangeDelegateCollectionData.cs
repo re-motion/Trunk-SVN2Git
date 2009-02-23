@@ -116,10 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionDataManagement
       ArgumentUtility.CheckNotNull ("oldDomainObjectID", oldDomainObjectID);
       ArgumentUtility.CheckNotNull ("newDomainObject", newDomainObject);
 
-      if (newDomainObject == GetObject (oldDomainObjectID))
-        _changeDelegate.PerformSelfReplace (_parentCollection, newDomainObject, IndexOf (oldDomainObjectID));
-      else
-        _changeDelegate.PerformReplace (_parentCollection, newDomainObject, IndexOf (oldDomainObjectID));
+      _changeDelegate.PerformReplace (_parentCollection, newDomainObject, IndexOf (oldDomainObjectID));
     }
 
     public void RaiseBeginAddEvent (int index, DomainObject domainObject)

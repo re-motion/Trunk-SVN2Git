@@ -275,12 +275,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = true;
     }
 
-    void ICollectionChangeDelegate.PerformSelfReplace (DomainObjectCollection collection, DomainObject domainObject, int index)
-    {
-      ChangeDelegate.PerformSelfReplace (this, domainObject, index);
-      _hasBeenTouched = true;
-    }
-
     void ICollectionChangeDelegate.PerformRemove (DomainObjectCollection collection, DomainObject domainObject)
     {
       ChangeDelegate.PerformRemove (this, domainObject);

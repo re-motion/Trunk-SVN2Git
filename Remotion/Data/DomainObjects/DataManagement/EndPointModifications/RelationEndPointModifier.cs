@@ -84,16 +84,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       bidirectionalModification.ExecuteAllSteps ();
     }
 
-    public void PerformSelfReplace (CollectionEndPoint endPoint, DomainObject selfReplacedObject, int index)
-    {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
-      ArgumentUtility.CheckNotNull ("selfReplacedObject", selfReplacedObject);
-
-      var replaceModification = endPoint.CreateReplaceModification (index, selfReplacedObject);
-      var bidirectionalModification = replaceModification.CreateBidirectionalModification ();
-      bidirectionalModification.ExecuteAllSteps ();
-    }
-
     public void PerformRemove (CollectionEndPoint endPoint, DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
