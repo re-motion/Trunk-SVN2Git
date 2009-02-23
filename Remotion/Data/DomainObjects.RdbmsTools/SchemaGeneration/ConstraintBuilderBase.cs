@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration
 
     private string GetConstraint (ClassDefinition tableRootClassDefinition, IRelationEndPointDefinition relationEndPoint)
     {
-      if (relationEndPoint.IsNull)
+      if (relationEndPoint.IsAnonymous)
         return null;
 
       ClassDefinition oppositeClassDefinition = relationEndPoint.ClassDefinition.GetMandatoryOppositeClassDefinition (relationEndPoint.PropertyName);
