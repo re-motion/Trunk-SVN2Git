@@ -165,9 +165,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The ExtendsAttribute for target class "
-        + ".*ExtendsTargetBase applied to mixin type "
-            + ".*InvalidGenericMixin`2 specified invalid generic type arguments.", MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "generic type argument", MatchType = MessageMatch.Contains)]
     public void InvalidTypeParametersThrowConfigurationException ()
     {
       new DeclarativeConfigurationBuilder (null).AddType (typeof (InvalidGenericMixin<,>)).BuildConfiguration ();
