@@ -19,9 +19,11 @@ using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.SqlGeneration.SqlServer.MethodCallGenerators;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Customer=Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer;
@@ -709,33 +711,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
 
+    [Test]
+    public void QueryWithConvertToString ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<OrderItem> ()
+          where Convert.ToString (o.Position).Contains ("2")
+          select o;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem2);
+    }
+
+    //[Test]
+    //public void QueryTransparentIdentifiers ()
+    //{
+    //  //gets an anonymouse type
+    //  var query = from o in QueryFactory.CreateLinqQuery<Order>()
+    //              select new { OrderItems = from oi in o.OrderItems select oi };
+    //  //CheckQueryResult (query, DomainObjectIDs.OrderItem2);
+    //}
+
     ///////////////////////////////////////////////////////////////////////
 
     //spike for fetching (2 queries)
-    [Test]
-    public void SimpleQueryBased ()
-    {
-      var query = QueryFactory.CreateLinqQuery<Customer>();
-      var result = from c in query
-                   where c.Name == "Kunde 3"
-                   select c;
-      CheckQueryResult (result, DomainObjectIDs.Customer3);
-    }
+    //[Test]
+    //public void SimpleQueryBased ()
+    //{
+    //  var query = QueryFactory.CreateLinqQuery<Customer>();
+    //  var result = from c in query
+    //               where c.Name == "Kunde 3"
+    //               select c;
+    //  CheckQueryResult (result, DomainObjectIDs.Customer3);
+    //}
+
+    //[Test]
+    //public void ExtendSimpleQueryWithAdditionalFrom ()
+    //{
+    //  var query = QueryFactory.CreateLinqQuery<Customer> ();
+    //  var result = from c in query
+    //               from o in c.Orders
+    //               where c.Name == "Kunde 3"
+    //               select o;
+    //  CheckQueryResult (result, DomainObjectIDs.Order2);
+    //}
 
     [Test]
-    public void ExtendSimpleQueryWithAdditionalFrom ()
+    public void QueryWithSubString ()
     {
-      var query = QueryFactory.CreateLinqQuery<Customer> ();
-      var result = from c in query
-                   from o in c.Orders
-                   where c.Name == "Kunde 3"
-                   select o;
-      CheckQueryResult (result, DomainObjectIDs.Order2);
+      var query = from c in QueryFactory.CreateLinqQuery<Customer> ()
+                  where c.Name.Substring (2, 3).Contains ("und")
+                  select c;
+      CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
     }
-
-
-    ///////////////////////////////////////////////////////////////////////
-
+    
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : TestDomainBase
     {
