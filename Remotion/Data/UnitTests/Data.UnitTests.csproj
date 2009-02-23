@@ -239,6 +239,10 @@
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointModificationTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\CollectionEndPointReplaceModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\NonNotifyingBidirectionalRelationModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetOneManyModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetOneOneModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetSameModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetUnidirectionalModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\RelationEndPointTouchModificationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullCollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullObjectEndPointTest.cs" />
@@ -342,7 +346,7 @@
     <Compile Include="DomainObjects\Security\TestDomain\StubStorageProvider.cs" />
     <Compile Include="DomainObjects\Security\TestDomain\TestAccessTypes.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\NullEndPointModificationTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetModificationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\EndPointModifications\ObjectEndPointSetModificationBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\RepositoryAccessorTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectGraphTraverserTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\MultiTransactionTest.cs" />

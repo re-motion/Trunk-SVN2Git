@@ -154,12 +154,16 @@
     <Compile Include="DataManagement\EndPointModifications\CollectionEndPointReplaceModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\NonNotifyingBidirectionalRelationModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\NotifyingBidirectionalRelationModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetOneManyModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetOneOneModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetSameModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetUnidirectionalModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModifier.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointTouchModification.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
     <Compile Include="DataManagement\EndPointModifications\BidirectionalRelationModificationBase.cs" />
     <Compile Include="DataManagement\EndPointModifications\NullEndPointModification.cs" />
-    <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetModification.cs" />
+    <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetModificationBase.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModification.cs" />
     <Compile Include="DBStorageGroupAttribute.cs" />
     <Compile Include="Design\DomainObjectsDesignModeHelper.cs">

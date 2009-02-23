@@ -541,14 +541,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateSetModification ()
+    public void CreateSetModification_Same ()
     {
-      var order2 = Order.GetObject (DomainObjectIDs.Order2);
-      var modification = _endPoint.CreateSetModification (order2);
-      Assert.That (modification.GetType(), Is.EqualTo (typeof (ObjectEndPointSetModification)));
+      var modification = _endPoint.CreateSetModification (_endPoint.GetOppositeObject (true));
+      Assert.That (modification.GetType(), Is.EqualTo (typeof (ObjectEndPointSetSameModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
-      Assert.That (modification.OldRelatedObject, Is.SameAs (Order.GetObject (_endPoint.OppositeObjectID)));
-      Assert.That (modification.NewRelatedObject, Is.SameAs (order2));
+    }
+
+    [Test]
+    public void CreateSetModification_Unidirectional ()
+    {
+      var client = Client.GetObject (DomainObjectIDs.Client2);
+      var parentClientEndPointDefinition = client.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Client).FullName + ".ParentClient");
+      var unidirectionalEndPoint = (ObjectEndPoint)
+                                   ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+                                       client, parentClientEndPointDefinition);
+      Assert.That (unidirectionalEndPoint.OppositeEndPointDefinition.IsAnonymous, Is.True);
+      var newClient = Client.NewObject ();
+
+      var modification = unidirectionalEndPoint.CreateSetModification (newClient);
+      Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetUnidirectionalModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (unidirectionalEndPoint));
+      Assert.That (modification.NewRelatedObject, Is.SameAs (newClient));
+    }
+
+    [Test]
+    public void CreateSetModification_OneOne ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderTicketEndPointDefinition = order.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+      var bidirectionalEndPoint = (ObjectEndPoint)
+                                  ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+                                      order, orderTicketEndPointDefinition);
+
+      var newOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
+
+      var modification = bidirectionalEndPoint.CreateSetModification (newOrderTicket);
+      Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneOneModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (bidirectionalEndPoint));
+      Assert.That (modification.NewRelatedObject, Is.SameAs (newOrderTicket));
+    }
+
+    [Test]
+    public void CreateSetModification_OneMany ()
+    {
+      var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
+      var orderEndPointDefinition = orderItem.ID.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
+      var bidirectionalEndPoint = (ObjectEndPoint)
+                                  ClientTransactionMock.DataManager.RelationEndPointMap.GetRelationEndPointWithLazyLoad (
+                                      orderItem, orderEndPointDefinition);
+
+      // orderItem.Order = newOrder;
+      var newOrder = Order.GetObject (DomainObjectIDs.Order2);
+
+      var modification = bidirectionalEndPoint.CreateSetModification (newOrder);
+      Assert.That (modification.GetType (), Is.EqualTo (typeof (ObjectEndPointSetOneManyModification)));
+      Assert.That (modification.ModifiedEndPoint, Is.SameAs (bidirectionalEndPoint));
+      Assert.That (modification.NewRelatedObject, Is.SameAs (newOrder));
     }
 
     [Test]
@@ -556,7 +605,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var order = Order.GetObject (_endPoint.OppositeObjectID);
       var modification = _endPoint.CreateRemoveModification (order);
-      Assert.That (modification, Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (modification, Is.InstanceOfType (typeof (ObjectEndPointSetOneManyModification)));
       Assert.That (modification.ModifiedEndPoint, Is.SameAs (_endPoint));
       Assert.That (modification.OldRelatedObject, Is.SameAs (order));
       Assert.That (modification.NewRelatedObject, Is.Null);

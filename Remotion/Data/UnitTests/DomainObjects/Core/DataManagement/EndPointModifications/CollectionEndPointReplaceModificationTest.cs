@@ -150,14 +150,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.EndPointModi
       var oldCustomer = _replacementRelatedObject.Customer;
 
       // DomainObject.Orders[...].Customer = null
-      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (steps[0], Is.InstanceOfType (typeof (ObjectEndPointSetModificationBase)));
       Assert.That (steps[0].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
       Assert.That (steps[0].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_replacedRelatedObject.ID));
       Assert.That (steps[0].OldRelatedObject, Is.SameAs (DomainObject));
       Assert.That (steps[0].NewRelatedObject, Is.Null);
 
       // _replacementRelatedObject.Customer = DomainObject
-      Assert.That (steps[1], Is.InstanceOfType (typeof (ObjectEndPointSetModification)));
+      Assert.That (steps[1], Is.InstanceOfType (typeof (ObjectEndPointSetModificationBase)));
       Assert.That (steps[1].ModifiedEndPoint.ID.PropertyName, Is.EqualTo (typeof (Order).FullName + ".Customer"));
       Assert.That (steps[1].ModifiedEndPoint.ID.ObjectID, Is.EqualTo (_replacementRelatedObject.ID));
       Assert.That (steps[1].OldRelatedObject, Is.SameAs (oldCustomer));

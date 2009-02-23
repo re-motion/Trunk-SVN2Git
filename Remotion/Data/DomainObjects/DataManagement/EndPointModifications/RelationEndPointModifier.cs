@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
 
       CheckClientTransactionForObjectEndPoint (endPointID, newRelatedObject);
       CheckDeleted (newRelatedObject);
-      CheckType (endPointID, newRelatedObject);
+      CheckNewRelatedObjectType (endPointID, newRelatedObject);
 
       var endPoint = (ObjectEndPoint) _relationEndPointMap.GetRelationEndPointWithLazyLoad (endPointID);
       CheckDeleted (endPoint.GetDomainObject ());
@@ -109,6 +109,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       bidirectionalModification.ExecuteAllSteps ();
     }
 
+    // TODO: Refactor in COMMONS-1034
     public NotifyingBidirectionalRelationModification GetOppositeEndPointModificationsForDelete (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
@@ -121,6 +122,28 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
         modifications.AddModificationStep (oppositeEndPoint.CreateRemoveModification (domainObject));
 
       return modifications;
+    }
+
+    private void CheckDeleted (DomainObject domainObject)
+    {
+      if (domainObject != null && domainObject.TransactionContext[ClientTransaction].State == StateType.Deleted)
+        throw new ObjectDeletedException (domainObject.ID);
+    }
+
+    private void CheckNewRelatedObjectType (RelationEndPointID endPointID, DomainObject newRelatedObject)
+    {
+      if (newRelatedObject == null)
+        return;
+
+      if (!endPointID.OppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
+      {
+        var message = string.Format ("DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible "
+                                     + "with the type of the property.",
+                                     newRelatedObject.ID,
+                                     endPointID.PropertyName,
+                                     endPointID.ObjectID);
+        throw new DataManagementException (message);
+      }
     }
 
     private void CheckClientTransactionForObjectEndPoint (RelationEndPointID endPointID, DomainObject newRelatedObject)
@@ -215,28 +238,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
     {
       return new ClientTransactionsDifferException (string.Format (message, args));
-    }
-
-    private void CheckDeleted (DomainObject domainObject)
-    {
-      if (domainObject != null && domainObject.TransactionContext[ClientTransaction].State == StateType.Deleted)
-        throw new ObjectDeletedException (domainObject.ID);
-    }
-
-    private void CheckType (RelationEndPointID endPointID, DomainObject newRelatedObject)
-    {
-      if (newRelatedObject == null)
-        return;
-
-      if (!endPointID.OppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
-      {
-        var message = string.Format ("DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible "
-                                     + "with the type of the property.", 
-                                     newRelatedObject.ID,
-                                     endPointID.PropertyName,
-                                     endPointID.ObjectID);
-        throw new DataManagementException (message);
-      }
     }
   }
 }

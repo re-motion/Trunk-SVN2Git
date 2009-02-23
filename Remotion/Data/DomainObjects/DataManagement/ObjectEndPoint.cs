@@ -176,7 +176,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public virtual RelationEndPointModification CreateSetModification (DomainObject newRelatedObject)
     {
-      return new ObjectEndPointSetModification (this, newRelatedObject);
+      var newRelatedObjectID = newRelatedObject != null ? newRelatedObject.ID : null;
+      if (_oppositeObjectID == newRelatedObjectID)
+        return new ObjectEndPointSetSameModification (this);
+      else if (OppositeEndPointDefinition.IsAnonymous)
+        return new ObjectEndPointSetUnidirectionalModification (this, newRelatedObject);
+      else if (OppositeEndPointDefinition.Cardinality == CardinalityType.One)
+        return new ObjectEndPointSetOneOneModification (this, newRelatedObject);
+      else 
+        return new ObjectEndPointSetOneManyModification (this, newRelatedObject);
     }
 
     public override void PerformDelete ()
