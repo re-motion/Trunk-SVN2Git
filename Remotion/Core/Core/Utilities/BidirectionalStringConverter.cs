@@ -49,10 +49,16 @@ public class BidirectionalStringConverter: TypeConverter
   ///   The <see cref="Type"/> of the value to be converted into a <see cref="String"/>.
   /// </param>
   /// <returns> <see langword="true"/> if the conversion is supported. </returns>
+  /// <remarks>
+  /// In theory, every object can be converted to a string because every object has a <see cref="object.ToString"/> method. The 
+  /// <see cref="BidirectionalStringConverter"/>, however, only supports objects for which round-tripping is supported. This method therefore only
+  /// returns <see langword="true"/> for types whose values can be converted both into and back from a string.
+  /// </remarks>
   public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
   {
     if (sourceType == null)
       return false;
+    // check whether we can _parse_ the source type; only then, we can perform round-tripping
     return StringUtility.CanParse (sourceType);
   }
 
