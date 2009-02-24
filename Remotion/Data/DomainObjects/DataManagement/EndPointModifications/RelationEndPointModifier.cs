@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("newRelatedObject", newRelatedObject);
 
-      CheckClientTransactionForReplacementInCollectionEndPoint (endPoint.ID, newRelatedObject, index);
+      CheckClientTransactionForReplacementInCollectionEndPoint (endPoint, newRelatedObject, index);
       CheckDeleted (endPoint.GetDomainObject ());
       CheckDeleted (newRelatedObject);
 
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
-      CheckClientTransactionForRemovalFromCollectionEndPoint (endPoint.ID, removedRelatedObject);
+      CheckClientTransactionForRemovalFromCollectionEndPoint (endPoint, removedRelatedObject);
       CheckDeleted (endPoint.GetDomainObject ());
       CheckDeleted (removedRelatedObject);
 
@@ -140,8 +140,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       if (newRelatedObject != null && !newRelatedObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
       {
         var endPointObject = ClientTransaction.GetObject (endPointID.ObjectID);
-        string additionalInfo = GetAdditionalInfoForMismatchingClientTransactions ("to be set into the property", endPointObject,
-                                                                                   "owning the property", newRelatedObject);
+        string additionalInfo = GetAdditionalInfoForMismatchingClientTransactions ("owning the property", endPointObject,
+                                                                                   "to be set into the property", newRelatedObject);
 
         throw CreateClientTransactionsDifferException (
             "Property '{0}' of DomainObject '{1}' cannot be set to DomainObject '{2}'."
@@ -159,7 +159,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       {
         var endPointObject = endPoint.GetDomainObject ();
         string additionalInfo = GetAdditionalInfoForMismatchingClientTransactions (
-            "to be inserted", endPointObject, "owning the collection", newRelatedObject);
+            "owning the collection", endPointObject, "to be inserted", newRelatedObject);
 
         throw CreateClientTransactionsDifferException (
             "Cannot insert DomainObject '{0}' at position {1} into collection of property '{2}' of DomainObject '{3}'."
@@ -172,31 +172,41 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       }
     }
 
-    private void CheckClientTransactionForRemovalFromCollectionEndPoint (RelationEndPointID endPointID, DomainObject relatedObject)
+    private void CheckClientTransactionForRemovalFromCollectionEndPoint (RelationEndPoint endPoint, DomainObject relatedObject)
     {
       if (relatedObject != null && !relatedObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
       {
+        var endPointObject = endPoint.GetDomainObject ();
+        string additionalInfo = GetAdditionalInfoForMismatchingClientTransactions (
+            "owning the collection", endPointObject, "to be removed", relatedObject);
+
         throw CreateClientTransactionsDifferException (
-            "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}',"
-            + " because the objects do not belong to the same ClientTransaction.",
+            "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'."
+            + " The objects do not belong to the same ClientTransaction.{3}",
             relatedObject.ID,
-            endPointID.PropertyName,
-            endPointID.ObjectID);
+            endPoint.ID.PropertyName,
+            endPoint.ID.ObjectID,
+            additionalInfo);
       }
     }
 
-    private void CheckClientTransactionForReplacementInCollectionEndPoint (RelationEndPointID endPointID, DomainObject newRelatedObject, int index)
+    private void CheckClientTransactionForReplacementInCollectionEndPoint (RelationEndPoint endPoint, DomainObject newRelatedObject, int index)
     {
       if (newRelatedObject != null && !newRelatedObject.TransactionContext[ClientTransaction].CanBeUsedInTransaction)
       {
+        var endPointObject = endPoint.GetDomainObject ();
+        string additionalInfo = GetAdditionalInfoForMismatchingClientTransactions (
+            "owning the collection", endPointObject, "to be inserted", newRelatedObject);
+
         throw CreateClientTransactionsDifferException (
             "Cannot replace DomainObject at position {0} with DomainObject '{1}'"
-            + " in collection of property '{2}' of DomainObject '{3}',"
-            + " because the objects do not belong to the same ClientTransaction.",
+            + " in collection of property '{2}' of DomainObject '{3}'."
+            + " The objects do not belong to the same ClientTransaction.{4}",
             index,
             newRelatedObject.ID,
-            endPointID.PropertyName,
-            endPointID.ObjectID);
+            endPoint.ID.PropertyName,
+            endPoint.ID.ObjectID,
+            additionalInfo);
       }
     }
 
@@ -208,18 +218,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
       if (newRelatedObject.BindingTransaction != null)
       {
         additionalInfo += string.Format (
-            " The {0} object {1} is bound to a BindingClientTransaction.", newRelatedObject.GetPublicDomainObjectType ().Name, endPointObjectRole);
+            " The {0} object {1} is bound to a BindingClientTransaction.", newRelatedObject.GetPublicDomainObjectType ().Name, newRelatedObjectRole);
         if (endPointObject.BindingTransaction != null)
         {
           additionalInfo += string.Format (
               " The {0} object {1} is also bound, but to a different BindingClientTransaction.",
-              endPointObject.GetPublicDomainObjectType ().Name, newRelatedObjectRole);
+              endPointObject.GetPublicDomainObjectType ().Name, endPointObjectRole);
         }
       }
       else if (endPointObject.BindingTransaction != null)
       {
         additionalInfo += string.Format (
-            " The {0} object {1} is bound to a BindingClientTransaction.", endPointObject.GetPublicDomainObjectType ().Name, newRelatedObjectRole);
+            " The {0} object {1} is bound to a BindingClientTransaction.", endPointObject.GetPublicDomainObjectType ().Name, endPointObjectRole);
       }
       return additionalInfo;
     }

@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -245,6 +246,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       collection.Remove (customer);
 
       // expectation: no exception
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The object to be removed has the same ID as an object in this collection, but " 
+        + "is a different object reference.\r\nParameter name: domainObject")]
+    public void RemoveObjectFromOtherTransaction_WhoseIDIsInCollection ()
+    {
+      var collection = new DomainObjectCollection (typeof (Customer));
+      var customer = Customer.GetObject (DomainObjectIDs.Customer1);
+      collection.Add (customer);
+
+      Customer customerInOtherTx;
+      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope())
+      {
+        customerInOtherTx = Customer.GetObject (customer.ID);
+      }
+
+      collection.Remove (customerInOtherTx);
+
+      Assert.That (collection.ContainsObject (customer), Is.True);
     }
 
     [Test]

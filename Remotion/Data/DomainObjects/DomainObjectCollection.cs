@@ -690,6 +690,8 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     /// <param name="domainObject">The <see cref="DomainObject"/> to remove. Must not be <see langword="null"/>.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="domainObject"/> is <see langword="null"/>.</exception>
+    /// <exception cref="System.ArgumentException"><paramref name="domainObject"/> has the same <see cref="ObjectID"/> as an object in this collection, but it is a 
+    /// different object reference. You can use <see cref="Remove(ObjectID)"/> to remove an object if you only know its <see cref="ObjectID"/>.</exception>
     /// <exception cref="System.NotSupportedException">The collection is read-only.</exception>
     /// <exception cref="DataManagement.ClientTransactionsDifferException">
     ///   <paramref name="domainObject"/> belongs to a <see cref="ClientTransaction"/> that is different from the <see cref="ClientTransaction"/> 
@@ -708,8 +710,12 @@ namespace Remotion.Data.DomainObjects
         Touch();
         return false;
       }
-
-      if (_changeDelegate != null)
+      else if (this[domainObject.ID] != domainObject)
+      {
+        var message = "The object to be removed has the same ID as an object in this collection, but is a different object reference.";
+        throw new ArgumentException (message, "domainObject");
+      } 
+      else if (_changeDelegate != null)
         _changeDelegate.PerformRemove (this, domainObject);
       else
       {

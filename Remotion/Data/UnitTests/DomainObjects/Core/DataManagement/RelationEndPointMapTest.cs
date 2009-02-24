@@ -246,7 +246,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       }
 
-      order1.OrderItems.Remove (orderItem1);
+      var changeDelegate = order1.OrderItems.ChangeDelegate;
+      changeDelegate.PerformRemove (order1.OrderItems, orderItem1);
     }
 
     [Test]
@@ -271,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       {
         string expectedMessage = "Cannot replace DomainObject at position 1 with DomainObject 'OrderItem|0d7196a5-8161-4048-820d-b1bbdabe3293|"
             + "System.Guid' in collection of property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' of DomainObject "
-            + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', because the objects do not belong to the same ClientTransaction.";
+            + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. The objects do not belong to the same ClientTransaction.";
         Assert.AreEqual (expectedMessage, ex.Message);
       }
     }
