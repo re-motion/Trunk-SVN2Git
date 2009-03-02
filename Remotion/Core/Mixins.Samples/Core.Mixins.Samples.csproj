@@ -45,6 +45,9 @@
       <HintPath>..\..\..\prereq\Assemblies\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -83,6 +86,8 @@
     <Compile Include="Tutorial\T01_Configuration\ExtendsSamples.cs" />
     <Compile Include="Tutorial\T01_Configuration\MixSamples.cs" />
     <Compile Include="Tutorial\T01_Configuration\UsesSamples.cs" />
+    <Compile Include="Tutorial\T02_ParamList\TheObjectFactory.cs" />
+    <Compile Include="Tutorial\T02_ParamList\TheClass.cs" />
     <Compile Include="UnitTests\Aktology\AktenTest.cs" />
     <Compile Include="UnitTests\DisposableMixinTest.cs" />
     <Compile Include="UnitTests\DynamicMixinBuilderTest.cs" />
@@ -93,6 +98,7 @@
     <Compile Include="UnitTests\Tutorial\T01_Configuration\ExtendsSamplesTest.cs" />
     <Compile Include="UnitTests\Tutorial\T01_Configuration\MixSamplesTest.cs" />
     <Compile Include="UnitTests\Tutorial\T01_Configuration\UsesSamplesTest.cs" />
+    <Compile Include="UnitTests\Tutorial\T02_ParamList\CtorCallTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
