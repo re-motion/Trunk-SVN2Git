@@ -1,4 +1,3 @@
-
 // This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2008 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
