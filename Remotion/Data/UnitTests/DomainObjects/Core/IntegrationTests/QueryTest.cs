@@ -15,9 +15,11 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -25,12 +27,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
   public class QueryTest : ClientTransactionBaseTest
   {
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
+    [Ignore ("TODO 545")]
     public void GetCollectionWithNullValues ()
     {
       IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
-      var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithNullValues");
-      queryManager.GetCollection (query);
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageProviderID,
+          "SELECT [Employee].* FROM [Computer] LEFT OUTER JOIN [Employee] ON [Computer].[EmployeeID] = [Employee].[ID] "
+          + "WHERE [Computer].[ID] IN (@1, @2, @3) "
+          + "ORDER BY [Computer].[ID] asc",
+          new QueryParameterCollection(), typeof (DomainObjectCollection));
+      
+      query.Parameters.Add ("@1", DomainObjectIDs.Computer5); // no employee
+      query.Parameters.Add ("@2", DomainObjectIDs.Computer1); // employee 1
+      query.Parameters.Add ("@3", DomainObjectIDs.Computer4); // no employee
+      
+      var result = queryManager.GetCollection (query);
+      Assert.That (result.ContainsNulls (), Is.True);
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { null, Employee.GetObject (DomainObjectIDs.Employee1), null }));
     }
 
     [Test]
@@ -39,7 +52,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     public void GetCollectionWithDuplicates ()
     {
       IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
-      var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithDuplicates");
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageProviderID,
+          "SELECT [Order].* FROM [OrderItem] INNER JOIN [Order] ON [OrderItem].[OrderID] = [Order].[ID] WHERE [Order].[OrderNo] = 1",
+          new QueryParameterCollection (), typeof (DomainObjectCollection));
       queryManager.GetCollection (query);
     }
 

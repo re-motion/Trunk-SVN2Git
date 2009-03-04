@@ -92,8 +92,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         using (IDataReader reader = Provider.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          DataContainerFactory dataContainerFactory = new DataContainerFactory (Provider, reader);
-          return dataContainerFactory.CreateCollection ();
+          var dataContainerFactory = new DataContainerFactory (Provider, reader);
+          return new DataContainerCollection  (dataContainerFactory.CreateCollection (false), false);
         }
       }
     }
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return objectIDsPerEntityName;
     }
 
-    public DataContainerCollection LoadDataContainersFromCommandBuilder (CommandBuilder commandBuilder)
+    public DataContainer[] LoadDataContainersFromCommandBuilder (CommandBuilder commandBuilder, bool allowNulls)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
@@ -121,7 +121,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         using (IDataReader dataReader = Provider.ExecuteReader (command, CommandBehavior.SingleResult))
         {
           DataContainerFactory dataContainerFactory = new DataContainerFactory (Provider, dataReader);
-          return dataContainerFactory.CreateCollection ();
+          return dataContainerFactory.CreateCollection (allowNulls);
         }
       }
     }
@@ -142,7 +142,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         SelectCommandBuilder commandBuilder = _loaderHelper.GetSelectCommandBuilderForRelatedIDLookup (
             Provider, classDefinition.GetEntityName(), propertyDefinition, relatedID);
-        return Provider.LoadDataContainers (commandBuilder);
+        return new DataContainerCollection (Provider.LoadDataContainers (commandBuilder, false), false);
       }
       else
       {

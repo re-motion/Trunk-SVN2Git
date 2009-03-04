@@ -14,11 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -31,11 +35,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
 
-      DataContainerCollection orderContainers = Provider.ExecuteCollectionQuery (query);
+      var orderContainerIDs = Provider.ExecuteCollectionQuery (query).Select (dc => dc.ID).ToArray();
 
-      Assert.IsNotNull (orderContainers);
-      Assert.IsTrue (orderContainers.Contains (DomainObjectIDs.Order1));
-      Assert.IsTrue (orderContainers.Contains (DomainObjectIDs.OrderWithoutOrderItem));
+      Assert.IsTrue (orderContainerIDs.Contains (DomainObjectIDs.Order1));
+      Assert.IsTrue (orderContainerIDs.Contains (DomainObjectIDs.OrderWithoutOrderItem));
+    }
+
+    [Test]
+    [Ignore ("TODO 545")]
+    public void ExecuteCollectionQuery_WithNullIDs ()
+    {
+      var query = QueryFactory.CreateCollectionQuery (
+          "test",
+          Provider.ID,
+          "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+
+      var orderContainers = Provider.ExecuteCollectionQuery (query);
+      Assert.That (orderContainers, Is.EqualTo (new DataContainer[] { null, null }));
     }
 
     [Test]
@@ -90,10 +108,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       query.Parameters.Add ("@naSingleWithNullValue", null);
       query.Parameters.Add ("@stringWithNullValue", null);
 
-      DataContainerCollection actualContainers = Provider.ExecuteCollectionQuery (query);
+      var actualContainers = Provider.ExecuteCollectionQuery (query);
 
       Assert.IsNotNull (actualContainers);
-      Assert.AreEqual (1, actualContainers.Count);
+      Assert.AreEqual (1, actualContainers.Length);
 
       DataContainer expectedContainer = TestDataContainerFactory.CreateClassWithAllDataTypesDataContainer ();
       var checker = new DataContainerChecker ();
@@ -126,11 +144,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1);
 
-      DataContainerCollection orderContainers = Provider.ExecuteCollectionQuery (query);
+      var orderContainerIDs = Provider.ExecuteCollectionQuery (query).Select (dc => dc.ID);
 
-      Assert.IsNotNull (orderContainers);
-      Assert.IsTrue (orderContainers.Contains (DomainObjectIDs.Order1));
-      Assert.IsTrue (orderContainers.Contains (DomainObjectIDs.OrderWithoutOrderItem));
+      Assert.That (orderContainerIDs.ToArray(), Is.EquivalentTo (new[] {DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem}));
     }
 
     [Test]
@@ -139,15 +155,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderByOfficialQuery");
       query.Parameters.Add ("@officialID", DomainObjectIDs.Official1);
 
-      DataContainerCollection orderContainers = Provider.ExecuteCollectionQuery (query);
+      var orderContainerIDs = Provider.ExecuteCollectionQuery (query).Select (dc => dc.ID);
 
-      Assert.IsNotNull (orderContainers);
-      Assert.AreEqual (5, orderContainers.Count);
-      Assert.IsTrue (orderContainers.Contains (DomainObjectIDs.Order1));
-      Assert.IsTrue (orderContainers.Contains (DomainObjectIDs.Order2));
-      Assert.IsTrue (orderContainers.Contains (DomainObjectIDs.Order3));
-      Assert.IsTrue (orderContainers.Contains (DomainObjectIDs.Order4));
-      Assert.IsTrue (orderContainers.Contains (DomainObjectIDs.OrderWithoutOrderItem));
+      Assert.That (orderContainerIDs.ToArray(), Is.EquivalentTo (
+          new[] { 
+              DomainObjectIDs.Order1, 
+              DomainObjectIDs.Order2, 
+              DomainObjectIDs.Order3, 
+              DomainObjectIDs.Order4, 
+              DomainObjectIDs.OrderWithoutOrderItem}));
 
     }
   }

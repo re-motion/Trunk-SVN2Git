@@ -184,7 +184,7 @@ public class RootQueryManager : IQueryManager
       using (var storageProviderManager = new StorageProviderManager ())
       {
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
-        DataContainerCollection dataContainers = provider.ExecuteCollectionQuery (query);
+        DataContainerCollection dataContainers = new DataContainerCollection (provider.ExecuteCollectionQuery (query), false);
 
         DomainObjectCollection queryResult = _clientTransaction.MergeLoadedDomainObjects (dataContainers, collectionType, typeof (T));
         _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult, query);

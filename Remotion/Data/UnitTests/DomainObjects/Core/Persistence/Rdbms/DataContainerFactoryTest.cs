@@ -16,6 +16,7 @@
 using System;
 using System.Data;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
@@ -49,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void CreateDataContainer ()
     {
-      DataContainerFactory factory = new DataContainerFactory (Provider, _readerMock);
+      var factory = new DataContainerFactory (Provider, _readerMock);
       SetupOrderTicket(DomainObjectIDs.OrderTicket1, 123, "flop", DomainObjectIDs.Order1, true);
       _mockRepository.ReplayAll();
 
@@ -60,10 +61,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
+    public void CreateDataContainer_WithNoData ()
+    {
+      var factory = new DataContainerFactory (Provider, _readerMock);
+      _readerMock.Expect (mock => mock.Read ()).Return (false);
+      _mockRepository.ReplayAll ();
+
+      var result = factory.CreateDataContainer ();
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
     public void CreateDataContainer_WithNullID ()
     {
-      DataContainerFactory factory = new DataContainerFactory (Provider, _readerMock);
+      var factory = new DataContainerFactory (Provider, _readerMock);
       SetupOrderTicket (null, 123, "flop", DomainObjectIDs.Order1, true);
       _mockRepository.ReplayAll ();
 
@@ -85,8 +97,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository.ReplayAll ();
 
-      DataContainerCollection dataContainers = factory.CreateCollection();
-      Assert.AreEqual (3, dataContainers.Count);
+      var dataContainers = factory.CreateCollection (false);
+      Assert.AreEqual (3, dataContainers.Length);
       CheckTicketContainer (dataContainers[0], DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1);
       CheckTicketContainer (dataContainers[1], DomainObjectIDs.OrderTicket2, 124, "flop", DomainObjectIDs.Order2);
       CheckTicketContainer (dataContainers[2], DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3);
@@ -96,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     [Test]
     [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
-    public void CreateCollection_WithNullID ()
+    public void CreateCollection_WithNullID_AllowNullsFalse ()
     {
       DataContainerFactory factory = new DataContainerFactory (Provider, _readerMock);
 
@@ -110,7 +122,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository.ReplayAll ();
 
-      factory.CreateCollection ();
+      factory.CreateCollection (false);
+    }
+
+    [Test]
+    [Ignore ("TODO 545")]
+    public void CreateCollection_WithNullID_AllowNullsTrue ()
+    {
+      var factory = new DataContainerFactory (Provider, _readerMock);
+
+      using (_mockRepository.Ordered ())
+      {
+        SetupOrderTicket (DomainObjectIDs.OrderTicket1, 123, "flip", DomainObjectIDs.Order1, true);
+        SetupOrderTicket (null, 124, "flop", DomainObjectIDs.Order2, false);
+        SetupOrderTicket (DomainObjectIDs.OrderTicket3, 125, "flap", DomainObjectIDs.Order3, false);
+        Expect.Call (_readerMock.Read ()).Return (false);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      var collection = factory.CreateCollection (true);
+      Assert.That (collection.Length, Is.EqualTo (3));
+      Assert.That (collection[0].ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
+      Assert.That (collection[1], Is.Null);
+      Assert.That (collection[2].ID, Is.EqualTo (DomainObjectIDs.OrderTicket3));
     }
 
     [Test]
@@ -129,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository.ReplayAll ();
 
-      factory.CreateCollection ();
+      factory.CreateCollection (false);
 
       _mockRepository.VerifyAll ();
     }

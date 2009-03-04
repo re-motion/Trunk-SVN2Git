@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         throw new NotImplementedException();
     }
 
-    public override DataContainerCollection ExecuteCollectionQuery (IQuery query)
+    public override DataContainer[] ExecuteCollectionQuery (IQuery query)
     {
       if (InnerProvider != null)
         return InnerProvider.ExecuteCollectionQuery (query);

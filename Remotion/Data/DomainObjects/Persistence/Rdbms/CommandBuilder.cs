@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     }
 
     /// <remarks>
-    /// This method cannot be used for binary (BLOB) <paramref name="parameterValues"/>. Use the overload with a <see cref="PropertyValue"/> instead.
+    /// This method cannot be used for binary (BLOB) <paramref name="parameterValue"/>. Use the overload with a <see cref="PropertyValue"/> instead.
     /// </remarks>
     public IDataParameter AddCommandParameter (IDbCommand command, string parameterName, object parameterValue)
     {

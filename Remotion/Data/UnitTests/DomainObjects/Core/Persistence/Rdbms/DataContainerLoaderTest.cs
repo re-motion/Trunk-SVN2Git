@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -23,6 +24,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -180,13 +182,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
+    public void LoadDataContainersFromIDs_NullIDs ()
+    {
+      var readerMock = MockRepository.GenerateMock<IDataReader> ();
+      using (readerMock.GetMockRepository ().Ordered ())
+      {
+        readerMock.Expect (mock => mock.Read ()).Return (true);
+        readerMock.Expect (mock => mock.GetOrdinal ("ID")).Return (0);
+        readerMock.Expect (mock => mock.GetValue(0)).Return (DBNull.Value);
+        readerMock.Expect (mock => mock.Read()).Return (false);
+      }
+
+      CreateLoaderAndExpectProviderCall (
+          loader =>
+          {
+            loader.Provider.Connect();
+            loader.LoadDataContainersFromIDs (new[] { DomainObjectIDs.OrderItem1 });
+          },
+          providerMock => providerMock
+              .Expect (mock => mock.ExecuteReader (Arg<IDbCommand>.Is.Anything, Arg<CommandBehavior>.Is.Anything))
+              .Return (readerMock));
+    }
+
+    [Test]
     public void LoadDataContainersFromCommandBuilder ()
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
       SelectCommandBuilder builder =
           SelectCommandBuilder.CreateForIDLookup (Provider, "OrderItem", new ObjectID[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
-      
-      List<DataContainer> sortedContainers = GetSortedContainers(_loader.LoadDataContainersFromCommandBuilder (builder));
+
+      List<DataContainer> sortedContainers = GetSortedContainers (_loader.LoadDataContainersFromCommandBuilder (builder, false));
 
       Assert.AreEqual (2, sortedContainers.Count);
       Assert.AreEqual (DomainObjectIDs.OrderItem1, sortedContainers[0].ID);
@@ -207,8 +233,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
             SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (loader.Provider, "OrderItem",
               new ObjectID[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
 
-            loader.LoadDataContainersFromCommandBuilder (builder);
+            loader.LoadDataContainersFromCommandBuilder (builder, false);
           });
+    }
+
+    [Test]
+    [Ignore ("TODO: 545")]
+    public void LoadDataContainersFromCommandBuilder_NullIDs_AllowNullsTrue ()
+    {
+      var query = QueryFactory.CreateCollectionQuery (
+          "test",
+          Provider.ID,
+          "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+      var builder = new QueryCommandBuilder (Provider, query);
+
+      var dcs = _loader.LoadDataContainersFromCommandBuilder (builder, true);
+
+      Assert.That (dcs, Is.EqualTo (new DataContainer[] { null, null }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = "An object returned from the database had a NULL ID, which is not supported.")]
+    public void LoadDataContainersFromCommandBuilder_NullIDs_AllowNullsFalse ()
+    {
+      var query = QueryFactory.CreateCollectionQuery (
+          "test",
+          Provider.ID,
+          "SELECT NULL AS [ID] FROM [Order] WHERE [Order].[OrderNo] IN (1, 2)",
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+      var builder = new QueryCommandBuilder (Provider, query);
+
+      _loader.LoadDataContainersFromCommandBuilder (builder, false);
     }
 
     [Test]
@@ -219,7 +277,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       DataContainerCollection dataContainers = _loader.LoadDataContainersByRelatedID (
           classDefinition, MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (OrderItem), "Order"), DomainObjectIDs.Order1);
-      List<DataContainer> sortedContainers = GetSortedContainers (dataContainers);
+      List<DataContainer> sortedContainers = GetSortedContainers (dataContainers.Cast<DataContainer>());
 
       Assert.AreEqual (2, sortedContainers.Count);
       Assert.AreEqual (DomainObjectIDs.OrderItem1, sortedContainers[0].ID);
@@ -231,7 +289,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    public void LoadDataContainersByRelatedID_WithEntityName_CallsProviderLoadDataContainers ()
+    public void LoadDataContainersByRelatedID_WithEntityName_CallsProviderLoadDataContainers_WithAllowNullsFalse ()
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
       Assert.IsNotNull (classDefinition.GetEntityName ());
@@ -246,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           },
           delegate (RdbmsProvider provider)
           {
-            Expect.Call (PrivateInvoke.InvokeNonPublicMethod (provider, "LoadDataContainers", new object[] { null }))
+            Expect.Call (PrivateInvoke.InvokeNonPublicMethod (provider, "LoadDataContainers", new object[] { null, false }))
                 .IgnoreArguments ().CallOriginalMethod (OriginalCallOptions.CreateExpectation);
           });
     }
@@ -373,12 +431,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       });
     }
 
-    private List<DataContainer> GetSortedContainers (DataContainerCollection dataContainers)
+    private List<DataContainer> GetSortedContainers (IEnumerable<DataContainer> dataContainers)
     {
-      List<DataContainer> sortedContainers = new List<DataContainer> ();
-      foreach (DataContainer dc in dataContainers)
-        sortedContainers.Add (dc);
-      sortedContainers.Sort (delegate (DataContainer one, DataContainer two) { return one.ID.Value.ToString ().CompareTo (two.ID.Value.ToString ()); });
+      List<DataContainer> sortedContainers = new List<DataContainer> (dataContainers);
+      sortedContainers.Sort ((one, two) => one.ID.Value.ToString().CompareTo (two.ID.Value.ToString()));
       return sortedContainers;
     }
   }

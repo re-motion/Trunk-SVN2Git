@@ -52,15 +52,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       throw new NotImplementedException ();
     }
 
-    public override DataContainerCollection ExecuteCollectionQuery (IQuery query)
+    public override DataContainer[] ExecuteCollectionQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      DataContainerCollection collection = new DataContainerCollection ();
+      List<DataContainer> collection = new List<DataContainer> ();
       if (query.ID == "GetSecurableObjects")
         collection.Add (DataContainer.CreateNew (CreateNewObjectID  (MappingConfiguration.Current.ClassDefinitions[typeof (SecurableObject)])));
 
-      return collection;
+      return collection.ToArray ();
+      ;
     }
 
     public override object ExecuteScalarQuery (IQuery query)

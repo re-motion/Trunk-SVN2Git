@@ -190,7 +190,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    public override DataContainerCollection ExecuteCollectionQuery (IQuery query)
+    public override DataContainer[] ExecuteCollectionQuery (IQuery query)
     {
       CheckDisposed();
       CheckQuery (query, QueryType.Collection, "query");
@@ -198,7 +198,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       Connect();
 
       QueryCommandBuilder commandBuilder = new QueryCommandBuilder (this, query);
-      return LoadDataContainers (commandBuilder);
+      return LoadDataContainers (commandBuilder, true);
     }
 
     public override object ExecuteScalarQuery (IQuery query)
@@ -247,12 +247,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return _dataContainerLoader.LoadDataContainersFromIDs (ids);
     }
 
-    protected internal virtual DataContainerCollection LoadDataContainers (CommandBuilder commandBuilder)
+    // TODO 545: Consider removing
+    protected internal virtual DataContainer[] LoadDataContainers (CommandBuilder commandBuilder, bool allowNulls)
     {
       CheckDisposed ();
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
-      return _dataContainerLoader.LoadDataContainersFromCommandBuilder (commandBuilder);
+      return _dataContainerLoader.LoadDataContainersFromCommandBuilder (commandBuilder, allowNulls);
     }
 
     public override DataContainerCollection LoadDataContainersByRelatedID (ClassDefinition classDefinition, string propertyName, ObjectID relatedID)

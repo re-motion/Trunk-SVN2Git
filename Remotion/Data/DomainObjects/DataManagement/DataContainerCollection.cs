@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
@@ -49,7 +50,7 @@ public class DataContainerCollection : CommonCollection
   }
 
   // standard constructor for collections
-  public DataContainerCollection (DataContainerCollection collection, bool makeCollectionReadOnly)
+  public DataContainerCollection (IEnumerable collection, bool makeCollectionReadOnly)
   {
     ArgumentUtility.CheckNotNull ("collection", collection);
 

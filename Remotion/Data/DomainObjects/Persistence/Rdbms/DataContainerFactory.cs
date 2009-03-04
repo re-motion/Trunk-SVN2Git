@@ -14,8 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -44,9 +44,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return null;
     }
 
-    public virtual DataContainerCollection CreateCollection ()
+    public virtual DataContainer[] CreateCollection (bool allowNulls)
     {
-      DataContainerCollection dataContainerCollection = new DataContainerCollection ();
+      var dataContainerCollection = new DataContainerCollection ();
 
       while (_dataReader.Read ())
       {
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         dataContainerCollection.Add (dataContainer);
       }
 
-      return dataContainerCollection;
+      return dataContainerCollection.Cast<DataContainer>().ToArray();
     }
 
     protected virtual DataContainer CreateDataContainerFromReader ()

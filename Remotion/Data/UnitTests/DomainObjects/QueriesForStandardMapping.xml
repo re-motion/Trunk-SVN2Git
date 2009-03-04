@@ -67,11 +67,6 @@
     <statement>select * from [Company] where [CustomerType] = @customerType order by [Name] asc;</statement>
   </query>
 
-  <query id="QueryWithNullValues" type="collection">
-    <storageGroupType>Remotion.Data.UnitTests::DomainObjects.TestDomain.TestDomainAttribute</storageGroupType>
-    <statement>SELECT [Employee].* FROM [Computer] LEFT OUTER JOIN [Employee] ON [Computer].[EmployeeID] = [Employee].[ID] ORDER BY [Employee].[ID] asc;</statement>
-  </query>
-
   <query id="QueryWithDuplicates" type="collection">
     <storageGroupType>Remotion.Data.UnitTests::DomainObjects.TestDomain.TestDomainAttribute</storageGroupType>
     <statement>SELECT [Order].* FROM [OrderItem] INNER JOIN [Order] ON [OrderItem].[OrderID] = [Order].[ID] WHERE [Order].[OrderNo] = 1;</statement>
