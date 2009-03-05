@@ -128,7 +128,7 @@ namespace Remotion.Mixins
     private TBase _base;
 
     /// <summary>
-    /// Gets an object reference for performing base calls from overridden methods.
+    /// Gets an object reference for performing base calls from member overrides.
     /// </summary>
     /// <value>The base call object reference.</value>
     /// <exception cref="InvalidOperationException">The mixin has not been initialized yet, probably because the property is accessed from the mixin's
@@ -140,7 +140,9 @@ namespace Remotion.Mixins
     /// </para>
     /// <para>
     /// This property is only for performing base calls from overridden methods. It should not be used to access arbitrary methods of the mixin's 
-    /// target object, use the <see cref="Mixin{TThis}.This"/> property for instead.
+    /// target object, use the <see cref="Mixin{TThis}.This"/> property for instead. If the <see cref="Base"/> property is used other than to perform
+    /// base calls from member overrides and more than one mixin is applied to the target object, unexpected behavior may arise because the 
+    /// <see cref="Base"/> property will represent the target object together with only a subset, but not all of its mixins.
     /// </para>
     /// </remarks>
     protected TBase Base
