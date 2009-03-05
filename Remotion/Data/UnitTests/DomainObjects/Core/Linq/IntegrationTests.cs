@@ -722,6 +722,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, DomainObjectIDs.OrderItem2);
     }
 
+    [Test]
+    public void QueryWithArithmeticOperations ()
+    {
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem>()
+                  where (oi.Position + oi.Position) == 4
+                  select oi;
+      CheckQueryResult (query, DomainObjectIDs.OrderItem2);
+    }
+
     //[Test]
     //public void QueryTransparentIdentifiers ()
     //{
