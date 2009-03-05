@@ -247,7 +247,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return _dataContainerLoader.LoadDataContainersFromIDs (ids);
     }
 
-    // TODO 545: Consider removing
     protected internal virtual DataContainer[] LoadDataContainers (CommandBuilder commandBuilder, bool allowNulls)
     {
       CheckDisposed ();
