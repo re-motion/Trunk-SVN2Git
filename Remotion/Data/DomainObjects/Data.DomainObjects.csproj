@@ -225,6 +225,7 @@
     <Compile Include="Persistence\Rdbms\IDataContainerLoaderHelper.cs" />
     <Compile Include="Persistence\Rdbms\ObjectIDLoader.cs" />
     <Compile Include="Persistence\Rdbms\OppositeClassDefinitionRetriever.cs" />
+    <Compile Include="Queries\UnexpectedQueryResultException.cs" />
     <Compile Include="Queries\QueryResult.cs" />
     <Compile Include="Queries\IQueryResult.cs" />
     <Compile Include="Queries\QueryCache.cs" />

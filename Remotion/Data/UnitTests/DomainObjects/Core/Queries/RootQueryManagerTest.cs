@@ -100,8 +100,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidTypeException), ExpectedMessage = "The query returned an object of type "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer, which cannot be added to an ObjectList<Order>.")]
+    [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "The query returned an object of type " 
+        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer, but a query result of type "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' was expected.")]
     public void GetCollectionWithObjectListThrowsWhenInvalidT ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
@@ -111,13 +112,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidTypeException), ExpectedMessage = "The query definition specifies a collection type of "
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.SpecificOrderCollection, which is not compatible with ObjectList<Order>.")]
-    public void GetCollectionWithObjectListThrowsWhenUnassignableCollectionType ()
+    public void GetCollectionWithObjectList_WorksWhenUnassignableCollectionType ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType");
 
-      _queryManager.GetCollection<Order> (query);
+      var result = _queryManager.GetCollection<Order> (query);
+      Assert.That (result.Count, Is.GreaterThan (0));
     }
 
     [Test]

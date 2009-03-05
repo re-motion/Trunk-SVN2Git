@@ -24,14 +24,57 @@ namespace Remotion.Utilities
   [Serializable]
   public class ArgumentItemTypeException : ArgumentException
   {
+    private readonly string _argumentName;
+    private readonly int _index;
+    private readonly Type _expectedType;
+    private readonly Type _actualType;
+
     public ArgumentItemTypeException (string argumentName, int index, Type expectedType, Type actualType)
         : base ( FormatMessage (argumentName, index, expectedType, actualType))
     {
+      _argumentName = argumentName;
+      _index = index;
+      _expectedType = expectedType;
+      _actualType = actualType;
     }
 
     public ArgumentItemTypeException (SerializationInfo info, StreamingContext context)
         : base (info, context)
     {
+      _argumentName = info.GetString ("_argumentName");
+      _index = info.GetInt32 ("_index");
+      _expectedType = (Type) info.GetValue ("_expectedType", typeof (Type));
+      _actualType = (Type) info.GetValue ("_actualType", typeof (Type));
+    }
+
+    public string ArgumentName
+    {
+      get { return _argumentName; }
+    }
+
+    public int Index
+    {
+      get { return _index; }
+    }
+
+    public Type ExpectedType
+    {
+      get { return _expectedType; }
+    }
+
+    public Type ActualType
+    {
+      get { return _actualType; }
+    }
+
+    public override void GetObjectData (SerializationInfo info, StreamingContext context)
+    {
+      base.GetObjectData (info, context);
+
+      info.AddValue ("_argumentName", _argumentName);
+      info.AddValue ("_index", _index);
+      info.AddValue ("_expectedType", _expectedType);
+      info.AddValue ("_actualType", _actualType);
     }
 
     private static string FormatMessage (string argumentName, int index, Type expectedType, Type actualType)

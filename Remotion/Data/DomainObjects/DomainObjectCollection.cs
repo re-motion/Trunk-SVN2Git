@@ -176,10 +176,7 @@ namespace Remotion.Data.DomainObjects
 
       var domainObjects = (DomainObjectCollection) ReflectionUtility.CreateObject (collectionType);
       domainObjects._requiredItemType = requiredItemType;
-
-      foreach (DataContainer dataContainer in dataContainers)
-        domainObjects.Add (dataContainer.DomainObject);
-
+      domainObjects.AddRange (dataContainers.Cast<DataContainer>().Select (dc => dc.DomainObject));
       return domainObjects;
     }
 

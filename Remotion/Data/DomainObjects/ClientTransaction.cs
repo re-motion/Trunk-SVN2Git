@@ -1206,7 +1206,11 @@ public abstract class ClientTransaction
     ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
     DataContainerCollection relatedDataContainers = LoadRelatedDataContainers (relationEndPointID);
-    return MergeLoadedDomainObjects (relatedDataContainers, relationEndPointID);
+    return MergeLoadedDomainObjects (
+        relatedDataContainers,
+        relationEndPointID.Definition.PropertyType,
+        relationEndPointID.OppositeEndPointDefinition.ClassDefinition.ClassType,
+        relationEndPointID);
   }
 
   /// <summary>
@@ -1258,44 +1262,6 @@ public abstract class ClientTransaction
       var loadedDomainObjects = new DomainObjectCollection (new[] { dataContainer.DomainObject }, true);
       OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
     }
-  }
-
-  /// <summary>
-  /// Creates a new <see cref="DomainObjectCollection"/>, registers the <see cref="DataContainer"/>s with this <b>ClientTransaction</b>, discards already loaded <see cref="DataContainer"/>s, raises the <see cref="Loaded"/> event and optionally registers the relation with the specified <see cref="DataManagement.RelationEndPointID"/>.
-  /// </summary>
-  /// <param name="dataContainers">The newly loaded <see cref="DataContainer"/>s.</param>
-  /// <param name="relationEndPointID">The <see cref="DataManagement.RelationEndPointID"/> that should be evaluated. <paramref name="relationEndPointID"/> must refer to a <see cref="CollectionEndPoint"/>.</param>
-  /// <returns>A <see cref="DomainObjectCollection"/>.</returns>
-  /// <exception cref="System.InvalidCastException">The relation property's type cannot be cast to <see cref="DomainObjectCollection"/>.</exception>
-  internal DomainObjectCollection MergeLoadedDomainObjects (
-      DataContainerCollection dataContainers, 
-      RelationEndPointID relationEndPointID)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-    ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-    return MergeLoadedDomainObjects (
-        dataContainers,
-        relationEndPointID.Definition.PropertyType,
-        relationEndPointID.OppositeEndPointDefinition.ClassDefinition.ClassType,
-        relationEndPointID);
-  }
-
-  /// <summary>
-  /// Creates a new <see cref="DomainObjectCollection"/> with the specified <paramref name="collectionType"/>, registers the <see cref="DataContainer"/>s with this <b>ClientTransaction</b>, discards already loaded <see cref="DataContainer"/>s and raises the <see cref="Loaded"/> event.
-  /// </summary>
-  /// <param name="dataContainers">The newly loaded <see cref="DataContainer"/>s.</param>
-  /// <param name="collectionType">The <see cref="Type"/> of the new collection that should be instantiated.</param>
-  /// <param name="requiredItemType">If not <see langword="null"/>, the created collection will only accept items of this type.</param>
-  /// <returns>A <see cref="DomainObjectCollection"/>.</returns>
-  /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
-  internal DomainObjectCollection MergeLoadedDomainObjects (
-      DataContainerCollection dataContainers, 
-      Type collectionType,
-      Type requiredItemType)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
-    ArgumentUtility.CheckNotNull ("collectionType", collectionType);
-    return MergeLoadedDomainObjects (dataContainers, collectionType, requiredItemType, null);
   }
 
   /// <summary>

@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot create an ObjectList for the query result: Item 3 of "
+    [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "Cannot create an ObjectList for the query result: Item 3 of "
         + "argument domainObjects is null.")]
     public void ToObjectList_WithNull ()
     {
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot create an ObjectList for the query result: Item 3 of "
+    [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "Cannot create an ObjectList for the query result: Item 3 of "
         + "argument domainObjects is a duplicate ('Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid').")]
     public void ToObjectList_WithDuplicates ()
     {
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot create a custom collection of type 'DomainObjectCollection' for the "
+    [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "Cannot create a custom collection of type 'DomainObjectCollection' for the "
         + "query result: Item 3 of argument domainObjects is null.")]
     public void ToCustomCollection_WithNull ()
     {
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot create a custom collection of type 'DomainObjectCollection' for the "
+    [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "Cannot create a custom collection of type 'DomainObjectCollection' for the "
         + "query result: Item 3 of argument domainObjects is a duplicate ('Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid').")]
     public void ToCustomCollection_WithDuplicates ()
     {

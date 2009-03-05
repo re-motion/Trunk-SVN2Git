@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <returns>
     /// An instance of <see cref="ObjectList{T}"/> containing the <see cref="DomainObject"/> instances yielded by the query.
     /// </returns>
-    /// <exception cref="InvalidOperationException">The query contains <see langword="null"/> values or duplicates.</exception>
+    /// <exception cref="UnexpectedQueryResultException">The query contains <see langword="null"/> values or duplicates.</exception>
     public ObjectList<T> ToObjectList ()
     {
       return ToObjectList (_queryResult);
@@ -167,7 +167,7 @@ namespace Remotion.Data.DomainObjects.Queries
     }
 
     /// <summary>
-    /// Returns the query result set as the custom collection specified by the query <see cref="ObjectList{T}"/>. If the result set contains
+    /// Returns the query result set as the custom collection as specified by <see cref="IQuery.CollectionType"/>. If the result set contains
     /// duplicates or <see langword="null"/> values, this method throws an exception. If no custom collection was specified, a standard
     /// <see cref="DomainObjectCollection"/> is returned.
     /// </summary>
@@ -175,7 +175,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// An instance of <see cref="DomainObjectCollection"/> containing the <see cref="DomainObject"/> instances yielded by the query. The
     /// concrete type of this collection is determined by the <see cref="IQuery.CollectionType"/> property of the query used.
     /// </returns>
-    /// <exception cref="InvalidOperationException">The query contains <see langword="null"/> values or duplicates.</exception>
+    /// <exception cref="UnexpectedQueryResultException">The query contains <see langword="null"/> values or duplicates.</exception>
     public DomainObjectCollection ToCustomCollection ()
     {
       var collectionType = Query.CollectionType ?? typeof (DomainObjectCollection);
@@ -186,7 +186,7 @@ namespace Remotion.Data.DomainObjects.Queries
       }
       catch (Exception ex)
       {
-        throw new InvalidOperationException (string.Format ("Cannot create a custom collection of type '{0}' for the query result: {1}", 
+        throw new UnexpectedQueryResultException (string.Format ("Cannot create a custom collection of type '{0}' for the query result: {1}", 
             collectionType.Name, ex.Message), ex);
       }
       return collection;
@@ -201,7 +201,7 @@ namespace Remotion.Data.DomainObjects.Queries
       }
       catch (Exception ex)
       {
-        throw new InvalidOperationException ("Cannot create an ObjectList for the query result: " + ex.Message, ex);
+        throw new UnexpectedQueryResultException ("Cannot create an ObjectList for the query result: " + ex.Message, ex);
       }
     }
   }

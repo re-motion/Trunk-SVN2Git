@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// method throws an exception.
     /// </summary>
     /// <returns>An instance of <see cref="ObjectList{T}"/> containing the <see cref="DomainObject"/> instances yielded by the query.</returns>
-    /// <exception cref="InvalidOperationException">The query contains <see langword="null"/> values or duplicates.</exception>
+    /// <exception cref="UnexpectedQueryResultException">The query contains <see langword="null"/> values or duplicates.</exception>
     ObjectList<DomainObject> ToObjectList ();
     /// <summary>
     /// Returns the query result set as the custom collection specified by the query <see cref="ObjectList{T}"/>. If the result set contains
@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </summary>
     /// <returns>An instance of <see cref="DomainObjectCollection"/> containing the <see cref="DomainObject"/> instances yielded by the query. The 
     /// concrete type of this collection is determined by the <see cref="IQuery.CollectionType"/> property of the query used.</returns>
-    /// <exception cref="InvalidOperationException">The query contains <see langword="null"/> values or duplicates.</exception>
+    /// <exception cref="UnexpectedQueryResultException">The query contains <see langword="null"/> values or duplicates.</exception>
     DomainObjectCollection ToCustomCollection ();
   }
 }
