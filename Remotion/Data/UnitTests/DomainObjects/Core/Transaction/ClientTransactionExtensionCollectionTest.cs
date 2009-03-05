@@ -15,9 +15,12 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
@@ -400,20 +403,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void FilterQueryResult ()
     {
-      DomainObjectCollection domainObjects = new DomainObjectCollection ();
-      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+      var originalResult = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new Order[0]);
+      var newResult1 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order1) });
+      var newResult2 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order2) });
 
-      using (_mockRepository.Ordered ())
-      {
-        _extension1.FilterQueryResult (ClientTransactionMock, domainObjects, query);
-        _extension2.FilterQueryResult (ClientTransactionMock, domainObjects, query);
-      }
+      _extension1.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, originalResult)).Return (newResult1);
+      _extension2.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, newResult1)).Return (newResult2);
 
-      _mockRepository.ReplayAll ();
+      _extension1.Replay ();
+      _extension2.Replay ();
 
-      _collectionWithExtensions.FilterQueryResult (ClientTransactionMock, domainObjects, query);
+      var finalResult = _collectionWithExtensions.FilterQueryResult (ClientTransactionMock, originalResult);
+      Assert.That (finalResult, Is.SameAs (newResult2));
 
-      _mockRepository.VerifyAll ();
+      _extension1.VerifyAllExpectations ();
+      _extension2.VerifyAllExpectations ();
     }
 
     [Test]

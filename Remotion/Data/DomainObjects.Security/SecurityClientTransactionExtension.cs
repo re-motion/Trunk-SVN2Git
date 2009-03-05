@@ -14,7 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Security;
@@ -36,10 +36,6 @@ namespace Remotion.Data.DomainObjects.Security
     private SecurityClient _securityClient;
 
     // construction and disposing
-
-    public SecurityClientTransactionExtension ()
-    {
-    }
 
     // methods and properties
 
@@ -96,21 +92,23 @@ namespace Remotion.Data.DomainObjects.Security
 
     #endregion
 
-    public virtual void FilterQueryResult (ClientTransaction clientTransaction, DomainObjectCollection queryResult, IQuery query)
+    public virtual QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("queryResult", queryResult);
 
       if (_isActive)
-        return;
+        return queryResult;
 
       if (SecurityFreeSection.IsActive)
-        return;
+        return queryResult;
+
+      var queryResultList = new List<T> (queryResult.AsEnumerable());
 
       SecurityClient securityClient = GetSecurityClient ();
 
-      for (int i = queryResult.Count - 1; i >= 0; i--)
+      for (int i = queryResultList.Count - 1; i >= 0; i--)
       {
-        ISecurableObject securableObject = queryResult[i] as ISecurableObject;
+        var securableObject = queryResultList[i] as ISecurableObject;
         if (securableObject == null)
           continue;
 
@@ -125,8 +123,13 @@ namespace Remotion.Data.DomainObjects.Security
           _isActive = false;
         }
         if (!hasAccess)
-          queryResult.RemoveAt (i);
+          queryResultList.RemoveAt (i);
       }
+
+      if (queryResultList.Count != queryResult.Count)
+        return new QueryResult<T> (queryResult.Query, queryResultList.ToArray ());
+      else
+        return queryResult;
     }
 
     public void SubTransactionCreating (ClientTransaction parentClientTransaction)

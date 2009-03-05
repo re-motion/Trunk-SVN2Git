@@ -16,6 +16,7 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
@@ -122,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod (
               "RelationRead",
-              new Type[]
+              new[]
                   {
                       typeof (DomainObject), typeof (string),
                       typeof (DomainObject), typeof (ValueAccess)
@@ -131,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod (
               "RelationRead",
-              new Type[]
+              new[]
                   {
                       typeof (DomainObject), typeof (string),
                       typeof (DomainObjectCollection), typeof (ValueAccess)
@@ -145,14 +146,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationChanging"), new object[] {order, "Fred?", order, order2});
       CheckNotification (typeof (IClientTransactionListener).GetMethod ("RelationChanged"), new object[] {order, "Baz"});
-
-      CheckNotification (
-          typeof (IClientTransactionListener).GetMethod ("FilterQueryResult"),
-          new object[]
-              {
-                  new DomainObjectCollection(),
-                  QueryFactory.CreateQuery(TestQueryFactory.CreateOrderQueryWithCustomCollectionType())
-              });
 
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("TransactionCommitting"),
@@ -206,6 +199,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       CheckNotification (
           typeof (IClientTransactionListener).GetMethod ("DataContainerMapCopyingTo"),
           new object[] { ClientTransactionMock.DataManager.DataContainerMap });
+    }
+
+    [Test]
+    public void FilterQueryResult ()
+    {
+      var listenerMock1 = MockRepository.GenerateMock<IClientTransactionListener> ();
+      var listenerMock2 = MockRepository.GenerateMock<IClientTransactionListener> ();
+
+      var compoundListener = new CompoundClientTransactionListener ();
+      compoundListener.AddListener (listenerMock1);
+      compoundListener.AddListener (listenerMock2);
+
+      var originalResult = new QueryResult<Order> (QueryFactory.CreateQuery(TestQueryFactory.CreateOrderQueryWithCustomCollectionType()), new Order[0]);
+      var newResult1 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order1) });
+      var newResult2 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order2) });
+
+      listenerMock1.Expect (mock => mock.FilterQueryResult (originalResult)).Return (newResult1);
+      listenerMock2.Expect (mock => mock.FilterQueryResult (newResult1)).Return (newResult2);
+
+      var finalResult = compoundListener.FilterQueryResult (originalResult);
+      Assert.That (finalResult, Is.SameAs (newResult2));
     }
   }
 }

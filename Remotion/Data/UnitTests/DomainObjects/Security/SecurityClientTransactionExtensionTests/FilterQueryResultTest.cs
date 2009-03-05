@@ -15,8 +15,8 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Security.TestDomain;
@@ -52,50 +52,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     public void Test_WithOneAllowedObject ()
     {
       SecurableObject allowedObject = _testHelper.CreateSecurableObject ();
-      DomainObjectCollection collection = new DomainObjectCollection ();
-      collection.Add (allowedObject);
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { allowedObject });
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
+      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
 
       _testHelper.VerifyAll ();
-      Assert.AreEqual (1, collection.Count);
-      Assert.Contains (allowedObject, collection);
+      Assert.That (finalResult, Is.SameAs (queryResult));
     }
 
     [Test]
     public void Test_WithNoObjects ()
     {
       _extension = new SecurityClientTransactionExtension ();
-      DomainObjectCollection collection = new DomainObjectCollection ();
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[0]);
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
+      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
 
       _testHelper.VerifyAll ();
-      Assert.AreEqual (0, collection.Count);
+      Assert.That (finalResult, Is.SameAs (queryResult));
+      Assert.AreEqual (0, finalResult.Count);
     }
 
     [Test]
     public void Test_WithOneDeniedObject ()
     {
       SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
-      DomainObjectCollection collection = new DomainObjectCollection ();
-      collection.Add (deniedObject);
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { deniedObject });
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
+      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
 
       _testHelper.VerifyAll ();
-      Assert.AreEqual (0, collection.Count);
+      Assert.That (finalResult, Is.Not.SameAs (queryResult));
+      Assert.AreEqual (0, finalResult.Count);
     }
 
     [Test]
@@ -103,37 +102,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject allowedObject = _testHelper.CreateSecurableObject ();
       SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
-      DomainObjectCollection collection = new DomainObjectCollection ();
-      collection.Add (allowedObject);
-      collection.Add (deniedObject);
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { allowedObject, deniedObject });
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
+      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
 
       _testHelper.VerifyAll ();
-      Assert.AreEqual (1, collection.Count);
-      Assert.Contains (allowedObject, collection);
+      Assert.That (finalResult, Is.Not.SameAs (queryResult));
+      Assert.AreEqual (1, finalResult.Count);
+      Assert.Contains (allowedObject, finalResult.ToArray());
     }
 
     [Test]
     public void Test_WithNonSecurableObject ()
     {
       NonSecurableObject nonSecurableObject = _testHelper.CreateNonSecurableObject ();
-      DomainObjectCollection collection = new DomainObjectCollection ();
-      collection.Add (nonSecurableObject);
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { nonSecurableObject });
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
+      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
 
       _testHelper.VerifyAll ();
-      Assert.AreEqual (1, collection.Count);
-      Assert.Contains (nonSecurableObject, collection);
+      Assert.That (finalResult, Is.SameAs (queryResult));
+      Assert.AreEqual (1, finalResult.Count);
+      Assert.Contains (nonSecurableObject, finalResult.ToArray());
     }
 
     [Test]
@@ -141,31 +139,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       SecurableObject allowedObject = _testHelper.CreateSecurableObject ();
       SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
-      DomainObjectCollection collection = new DomainObjectCollection ();
-      collection.Add (allowedObject);
-      collection.Add (deniedObject);
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { allowedObject, deniedObject });
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
+      QueryResult<DomainObject> finalResult;
       using (new SecurityFreeSection ())
       {
-        _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
+        finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
       }
 
       _testHelper.VerifyAll ();
-      Assert.AreEqual (2, collection.Count);
-      Assert.Contains (allowedObject, collection);
-      Assert.Contains (deniedObject, collection);
+      Assert.That (finalResult, Is.SameAs (queryResult));
+      Assert.AreEqual (2, queryResult.Count);
+      Assert.Contains (allowedObject, queryResult.ToArray());
+      Assert.Contains (deniedObject, queryResult.ToArray ());
     }
 
     [Test]
     public void Test_RecursiveSecurity ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      DomainObjectCollection collection = new DomainObjectCollection ();
-      collection.Add (securableObject);
       IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { securableObject });
       _testHelper.AddExtension (_extension);
       HasAccessDelegate hasAccess = delegate
       {
@@ -175,9 +172,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Find, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), collection, query);
+      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
 
       _testHelper.VerifyAll ();
+
+      Assert.That (finalResult, Is.SameAs (queryResult));
     }
 
     [Test]

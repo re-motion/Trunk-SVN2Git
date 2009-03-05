@@ -91,10 +91,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
     }
 
-    public virtual void FilterQueryResult (ClientTransaction clientTransaction, DomainObjectCollection queryResult, IQuery query)
+    public virtual QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject
     {
-      if (queryResult.Count >0)
-        queryResult.Remove (queryResult[0]);
+      if (queryResult.Count > 0)
+      {
+        var queryResultList = queryResult.ToObjectList ();
+        queryResultList.RemoveAt (0);
+        return new QueryResult<T> (queryResult.Query, queryResultList.ToArray());
+      }
+      return queryResult;
     }
 
     public virtual void Committing (ClientTransaction clientTransaction, DomainObjectCollection changedDomainObjects)

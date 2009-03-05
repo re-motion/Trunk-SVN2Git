@@ -18,6 +18,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
@@ -42,11 +43,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
       foreach (MethodInfo method in methods)
       {
-        object[] arguments =
-            Array.ConvertAll<ParameterInfo, object> (method.GetParameters(), delegate (ParameterInfo p) { return GetDefaultValue (p.ParameterType); });
+        var concreteMethod = method.Name == "FilterQueryResult" ? method.MakeGenericMethod (typeof (Order)) : method;
+
+        object[] arguments = Array.ConvertAll (concreteMethod.GetParameters(), p => GetDefaultValue (p.ParameterType));
 
         ExpectException (typeof (InvalidOperationException), "The transaction can no longer be used because it has been discarded.",
-            listener, method, arguments);
+            listener, concreteMethod, arguments);
       }
     }
 

@@ -133,9 +133,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Extensions.RelationChanged (_clientTransaction, domainObject, propertyName);
     }
 
-    public void FilterQueryResult (DomainObjectCollection queryResult, IQuery query)
+    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject
     {
-      Extensions.FilterQueryResult (_clientTransaction, queryResult, query);
+      return Extensions.FilterQueryResult (_clientTransaction, queryResult);
     }
 
     public void TransactionCommitting (DomainObjectCollection domainObjects)

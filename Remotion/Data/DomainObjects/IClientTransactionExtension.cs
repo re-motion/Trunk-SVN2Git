@@ -313,16 +313,21 @@ namespace Remotion.Data.DomainObjects
     /// This method is invoked after a collection query was executed by <see cref="RootQueryManager.GetCollection"/>.
     /// The <see cref="IClientTransactionExtension"/> may change the result at this point.
     /// </summary>
+    /// <typeparam name="T">The type of <see cref="DomainObject"/>s in the result collection.</typeparam>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <param name="queryResult">A writable <see cref="DomainObjectCollection"/> holding the result of the query. The collection may be modified.</param>
-    /// <param name="query">The query that was executed.</param>
+    /// <param name="queryResult">The <see cref="QueryResult{T}"/> representing the objects returned by the query. This object should be returned
+    /// if the query result should not be changed. Access <see cref="QueryResult{T}.Query"/> to inspect the query being executed.</param>
+    /// <returns>
+    /// The value of the parameter <paramref name="queryResult"/> if the result should not be changed, or a different instance of 
+    /// <see cref="QueryResult{T}"/> if the result should be changed.
+    /// </returns>
     /// <remarks>
     ///   <para>
     ///     If some objects that were returned by the query were not loaded yet, <see cref="ObjectsLoaded"/> is invoked before this method.
     ///   </para>
     /// <note type="inotes">The implementation of this method must not throw an exception.</note>
     /// </remarks>
-    void FilterQueryResult (ClientTransaction clientTransaction, DomainObjectCollection queryResult, IQuery query);
+    QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject;
 
     /// <summary>
     /// This method is invoked before a <see cref="ClientTransaction"/> is committed.

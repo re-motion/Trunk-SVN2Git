@@ -35,13 +35,6 @@ namespace Remotion.Data.DomainObjects
 
     // construction and disposing
 
-    /// <summary>
-    /// Creates a new object.
-    /// </summary>
-    public ClientTransactionExtensionCollection ()
-    {
-    }
-
     // methods and properties
 
     /// <summary>
@@ -295,13 +288,13 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void FilterQueryResult (ClientTransaction clientTransaction, DomainObjectCollection queryResult, IQuery query)
+    public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject
     {
-      ArgumentUtility.CheckNotNull ("queryResult", query);
-      ArgumentUtility.CheckNotNull ("queryResult", query);
+      ArgumentUtility.CheckNotNull ("queryResult", queryResult);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.FilterQueryResult (clientTransaction, queryResult, query);
+        queryResult = extension.FilterQueryResult (clientTransaction, queryResult);
+      return queryResult;
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

@@ -186,12 +186,14 @@ public class RootQueryManager : IQueryManager
         StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
         DataContainerCollection dataContainers = new DataContainerCollection (provider.ExecuteCollectionQuery (query), false);
 
-        DomainObjectCollection queryResult = _clientTransaction.MergeLoadedDomainObjects (dataContainers, collectionType, typeof (T));
-        _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult, query);
+        DomainObjectCollection resultCollection = _clientTransaction.MergeLoadedDomainObjects (dataContainers, collectionType, typeof (T));
 
-        var resultArray = new T[queryResult.Count];
-        queryResult.CopyTo (resultArray, 0);
-        return new QueryResult<T> (query, resultArray);
+        var resultArray = new T[resultCollection.Count];
+        resultCollection.CopyTo (resultArray, 0);
+
+        var queryResult = new QueryResult<T> (query, resultArray);
+        return _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult);
+
       }
     }
   }

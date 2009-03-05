@@ -126,9 +126,9 @@ namespace Remotion.Data.DomainObjects.Transport
       
     }
 
-    public void FilterQueryResult (DomainObjectCollection queryResult, IQuery query)
+    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T : DomainObject
     {
-      
+      return queryResult;
     }
 
     public void TransactionCommitting (DomainObjectCollection domainObjects)

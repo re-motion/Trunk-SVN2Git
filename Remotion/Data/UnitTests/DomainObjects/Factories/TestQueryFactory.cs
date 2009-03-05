@@ -15,6 +15,9 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -59,6 +62,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
           "TestDomain",
           "select sum(quantity) from [Order] where [CustomerID] = @customerID;",
           QueryType.Scalar);
+    }
+
+    public static QueryResult<T> CreateTestQueryResult<T> () where T : DomainObject
+    {
+      var collection = new T[0];
+      return CreateTestQueryResult(collection);
+    }
+
+    public static QueryResult<T> CreateTestQueryResult<T> (T[] collection) where T: DomainObject
+    {
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions[typeof (T)];
+      var storageProviderID = classDefinition != null
+                                  ? classDefinition.StorageProviderID
+                                  : DomainObjectsConfiguration.Current.Storage.DefaultStorageProviderDefinition.Name;
+      var query = QueryFactory.CreateCollectionQuery ("test", storageProviderID, "TEST", new QueryParameterCollection (), typeof (DomainObjectCollection));
+      return CreateTestQueryResult (query, collection);
+    }
+
+    public static QueryResult<T> CreateTestQueryResult<T> (IQuery query) where T : DomainObject
+    {
+      var collection = new T[0];
+      return CreateTestQueryResult (query, collection);
+    }
+
+    public static QueryResult<T> CreateTestQueryResult<T> (IQuery query, T[] collection) where T : DomainObject
+    {
+      return new QueryResult<T> (query, collection);
     }
   }
 }

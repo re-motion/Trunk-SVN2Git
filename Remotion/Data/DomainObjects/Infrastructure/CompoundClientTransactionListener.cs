@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -139,10 +138,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationChanged (domainObject, propertyName);
     }
 
-    public void FilterQueryResult (DomainObjectCollection queryResult, IQuery query)
+    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject
     {
       foreach (IClientTransactionListener listener in _listeners)
-        listener.FilterQueryResult (queryResult, query);
+        queryResult = listener.FilterQueryResult (queryResult);
+      return queryResult;
     }
 
     public void TransactionCommitting (DomainObjectCollection domainObjects)

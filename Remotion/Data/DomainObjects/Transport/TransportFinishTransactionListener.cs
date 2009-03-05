@@ -130,9 +130,10 @@ namespace Remotion.Data.DomainObjects.Transport
       // not handled by this listener
     }
 
-    public void FilterQueryResult (DomainObjectCollection queryResult, IQuery query)
+    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T : DomainObject
     {
       // not handled by this listener
+      return queryResult;
     }
 
     public void TransactionCommitted (DomainObjectCollection domainObjects)

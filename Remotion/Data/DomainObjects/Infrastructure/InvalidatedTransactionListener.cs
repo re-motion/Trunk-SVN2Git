@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void FilterQueryResult (DomainObjectCollection queryResult, IQuery query)
+    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T : DomainObject
     {
       throw CreateException();
     }

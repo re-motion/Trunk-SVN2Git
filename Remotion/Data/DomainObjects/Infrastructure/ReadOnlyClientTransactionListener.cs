@@ -127,8 +127,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsFalse (_clientTransaction.IsReadOnly);
     }
 
-    public virtual void FilterQueryResult (DomainObjectCollection queryResult, IQuery query)
+    public QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject
     {
+      return queryResult;
     }
 
     public virtual void TransactionCommitting (DomainObjectCollection domainObjects)

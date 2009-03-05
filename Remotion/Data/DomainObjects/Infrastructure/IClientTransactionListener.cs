@@ -55,8 +55,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void RelationChanging (DomainObject domainObject, string propertyName, DomainObject oldRelatedObject, DomainObject newRelatedObject);
     void RelationChanged (DomainObject domainObject, string propertyName);
 
-    void FilterQueryResult (DomainObjectCollection queryResult, IQuery query);
-    // QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject;
+    QueryResult<T> FilterQueryResult<T> (QueryResult<T> queryResult) where T: DomainObject;
 
     void TransactionCommitting (DomainObjectCollection domainObjects);
     void TransactionCommitted (DomainObjectCollection domainObjects);

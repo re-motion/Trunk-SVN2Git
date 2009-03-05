@@ -17,8 +17,11 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
 
@@ -158,8 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void FilterQueryResultCalledInCorrectScope ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      IClientTransactionExtension extensionMock = mockRepository.Stub<IClientTransactionExtension> ();
+      var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
 
       ClientTransactionMock.Extensions.Add ("mock", extensionMock);
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
@@ -167,43 +169,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
         query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);
 
-        extensionMock.FilterQueryResult (null, null, null); // expectation
-        LastCall.Constraints (Mocks_Is.Same (ClientTransactionMock), Mocks_Is.Anything (), Mocks_Is.Anything ());
-        LastCall.Do ((Action<ClientTransaction, DomainObjectCollection, IQuery>) delegate
-        {
-          Assert.AreSame (ClientTransactionMock, ClientTransaction.Current);
-        });
+        var newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
+        extensionMock
+            .Expect (mock => mock.FilterQueryResult (Arg.Is (ClientTransactionMock), Arg<QueryResult<DomainObject>>.Is.Anything))
+            .Do (mi => Assert.AreSame (ClientTransactionMock, ClientTransaction.Current))
+            .Return (newQueryResult);
 
-        mockRepository.ReplayAll ();
+        extensionMock.Replay ();
         ClientTransaction.Current.QueryManager.GetCollection (query);
-        mockRepository.VerifyAll ();
+        extensionMock.VerifyAllExpectations ();
       }
     }
 
     [Test]
     public void AccessObjectInFilterQueryResult ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      IClientTransactionExtension extensionMock = mockRepository.Stub<IClientTransactionExtension> ();
-
-      Order.GetObject (DomainObjectIDs.Order1);
-
-      ClientTransactionMock.Extensions.Add ("mock", extensionMock);
       using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension> ();
+
+        Order.GetObject (DomainObjectIDs.Order1);
+        ClientTransactionMock.Extensions.Add ("stub", extensionMock);
+
         var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
         query.Parameters.Add ("@customerID", DomainObjectIDs.Customer3);
 
-        extensionMock.FilterQueryResult (null, null, null); // expectation
-        LastCall.IgnoreArguments();
-        LastCall.Do ((Action<ClientTransaction, DomainObjectCollection, IQuery>) delegate
-        {
-          Order.GetObject (DomainObjectIDs.Order1);
-        });
+        var newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
 
-        mockRepository.ReplayAll ();
+        extensionMock
+            .Expect (mock => mock.FilterQueryResult (Arg<ClientTransaction>.Is.Anything, Arg<QueryResult<DomainObject>>.Is.Anything))
+            .Do (mi => Order.GetObject (DomainObjectIDs.Order1))
+            .Return (newQueryResult);
+
+        extensionMock.Replay ();
         ClientTransaction.Current.QueryManager.GetCollection (query);
-        mockRepository.VerifyAll ();
+        extensionMock.VerifyAllExpectations ();
+      }
+    }
+
+    [Test]
+    public void QueryInSubtransaction_DoesntPreloadObjectsInSubtransaction ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer4);
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var finalResult = ClientTransaction.Current.QueryManager.GetCollection (query);
+        var loadedObjects = finalResult.ToArray ();
+        Assert.That (loadedObjects.Length, Is.GreaterThan (0));
+        var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (ClientTransaction.Current, typeof (ClientTransaction), "DataManager");
+        Assert.That (dataManager.DataContainerMap[loadedObjects[0].ID], Is.Null);
+
+        Dev.Null = ((Order) loadedObjects[0]).InternalDataContainer;
+
+        Assert.That (dataManager.DataContainerMap[loadedObjects[0].ID], Is.Not.Null);
       }
     }
   }

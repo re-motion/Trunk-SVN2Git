@@ -19,10 +19,13 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Mock_Is = Rhino.Mocks.Constraints.Is;
 using Mock_Property = Rhino.Mocks.Constraints.Property;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 {
@@ -30,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
   public class ClientTransactionListenerTest : ClientTransactionBaseTest
   {
     private MockRepository _mockRepository;
-    private IClientTransactionListener _listener;
+    private IClientTransactionListener _stricktListenerMock;
 
     [SetUp]
     public override void SetUp ()
@@ -38,65 +41,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       base.SetUp();
 
       _mockRepository = new MockRepository ();
-      
-      _listener = _mockRepository.StrictMock<IClientTransactionListener> ();
-
-      ClientTransactionMock.AddListener (_listener);
-    }
-
-    private void Expect (Action expectation, Action triggeringCode)
-    {
-      _mockRepository.BackToRecordAll ();
-
-      using (_mockRepository.Ordered ())
-      {
-        expectation();
-      }
-
-      _mockRepository.ReplayAll ();
-
-      triggeringCode ();
-
-      _mockRepository.VerifyAll ();
+      _stricktListenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
     }
 
     [Test]
     public void NewObjectCreating ()
     {
-      Expect (delegate
-        {
-          _listener.NewObjectCreating (typeof (ClassWithAllDataTypes), null);
-          LastCall.Constraints (
-              Mock_Is.Equal (typeof (ClassWithAllDataTypes)), Mock_Is.NotNull() & Mock_Property.ValueConstraint ("ID", Mock_Is.Null()));
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.NewObjectCreating (typeof (ClassWithAllDataTypes), null);
+        LastCall.Constraints (
+            Mock_Is.Equal (typeof (ClassWithAllDataTypes)), Mock_Is.NotNull() & Mock_Property.ValueConstraint ("ID", Mock_Is.Null()));
 
-          _listener.DataContainerMapRegistering (null);
-          LastCall.IgnoreArguments ();
+        _stricktListenerMock.DataContainerMapRegistering (null);
+        LastCall.IgnoreArguments ();
 
-          _listener.ObjectGotID (null, null);
-          LastCall.IgnoreArguments ();
-        },
-        delegate { ClassWithAllDataTypes.NewObject (); });
+        _stricktListenerMock.ObjectGotID (null, null);
+        LastCall.IgnoreArguments ();
+      }, delegate { ClassWithAllDataTypes.NewObject (); });
     }
 
     [Test]
     public void ObjectsLoadingInitializedObjectsLoaded ()
     {
-      Expect (delegate
-        {
-          _listener.ObjectLoading (DomainObjectIDs.ClassWithAllDataTypes1);
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.ObjectLoading (DomainObjectIDs.ClassWithAllDataTypes1);
 
-          _listener.ObjectGotID (null, null);
-          LastCall.Constraints (
-              Mock_Is.NotNull() & Mock_Property.ValueConstraint ("ID", Mock_Is.NotNull()),
-              Mock_Is.Equal (DomainObjectIDs.ClassWithAllDataTypes1));
+        _stricktListenerMock.ObjectGotID (null, null);
+        LastCall.Constraints (
+            Mock_Is.NotNull() & Mock_Property.ValueConstraint ("ID", Mock_Is.NotNull()),
+            Mock_Is.Equal (DomainObjectIDs.ClassWithAllDataTypes1));
 
-          _listener.DataContainerMapRegistering (null);
-          LastCall.IgnoreArguments ();
+        _stricktListenerMock.DataContainerMapRegistering (null);
+        LastCall.IgnoreArguments ();
 
-          _listener.ObjectsLoaded (null);
-          LastCall.Constraints (Mock_Property.Value ("Count", 1));
-        },
-        delegate { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1); });
+        _stricktListenerMock.ObjectsLoaded (null);
+        LastCall.Constraints (Mock_Property.Value ("Count", 1));
+      }, delegate { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1); });
     }
 
     [Test]
@@ -104,16 +86,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
 
-      Expect (delegate
-        {
-          _listener.ObjectDeleting (cwadt);
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.ObjectDeleting (cwadt);
 
-          _listener.RelationEndPointMapPerformingDelete (null);
-          LastCall.Constraints (Mock_Property.Value ("Length", 0));
+        _stricktListenerMock.RelationEndPointMapPerformingDelete (null);
+        LastCall.Constraints (Mock_Property.Value ("Length", 0));
 
-          _listener.ObjectDeleted (cwadt);
-        },
-        delegate { cwadt.Delete (); });
+        _stricktListenerMock.ObjectDeleted (cwadt);
+      }, delegate { cwadt.Delete (); });
     }
 
     [Test]
@@ -122,14 +103,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       int orderNumber = order.OrderNumber;
 
-      Expect (delegate
-        {
-          _listener.PropertyValueReading (order.InternalDataContainer,
-              order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"], ValueAccess.Current);
-          _listener.PropertyValueRead (order.InternalDataContainer,
-              order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"], orderNumber, ValueAccess.Current);
-        },
-        delegate { int i = order.OrderNumber; });
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.PropertyValueReading (order.InternalDataContainer,
+                                                   order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"], ValueAccess.Current);
+        _stricktListenerMock.PropertyValueRead (order.InternalDataContainer,
+                                                order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"], orderNumber, ValueAccess.Current);
+      }, delegate { int i = order.OrderNumber; });
     }
 
     [Test]
@@ -138,14 +118,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       int orderNumber = order.OrderNumber;
 
-      Expect (delegate
-        {
-          _listener.PropertyValueChanging (order.InternalDataContainer,
-              order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"], orderNumber, 43);
-          _listener.PropertyValueChanged (order.InternalDataContainer,
-              order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"], orderNumber, 43);
-        },
-        delegate { order.OrderNumber = 43; });
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.PropertyValueChanging (order.InternalDataContainer,
+                                                    order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"], orderNumber, 43);
+        _stricktListenerMock.PropertyValueChanged (order.InternalDataContainer,
+                                                   order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"], orderNumber, 43);
+      }, delegate { order.OrderNumber = 43; });
     }
 
     [Test]
@@ -155,21 +134,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Customer customer = order.Customer;
       ObjectList<OrderItem> orderItems = order.OrderItems;
 
-      Expect (delegate
-        {
-          _listener.RelationReading (order, typeof (Order).FullName + ".Customer", ValueAccess.Current);
-          _listener.RelationRead (order, typeof (Order).FullName + ".Customer", customer, ValueAccess.Current);
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.RelationReading (order, typeof (Order).FullName + ".Customer", ValueAccess.Current);
+        _stricktListenerMock.RelationRead (order, typeof (Order).FullName + ".Customer", customer, ValueAccess.Current);
 
-          _listener.RelationReading (order, typeof (Order).FullName + ".OrderItems", ValueAccess.Current);
-          _listener.RelationRead (order, typeof (Order).FullName + ".OrderItems", orderItems, ValueAccess.Current);
-          LastCall.Constraints (Mock_Is.Equal (order), Mock_Is.Equal (typeof (Order).FullName + ".OrderItems"),
-              Mock_Property.Value ("Count", orderItems.Count), Mock_Is.Equal (ValueAccess.Current));
-        },
-        delegate
-        {
-          Customer c = order.Customer;
-          ObjectList<OrderItem> i = order.OrderItems;
-        });
+        _stricktListenerMock.RelationReading (order, typeof (Order).FullName + ".OrderItems", ValueAccess.Current);
+        _stricktListenerMock.RelationRead (order, typeof (Order).FullName + ".OrderItems", orderItems, ValueAccess.Current);
+        LastCall.Constraints (Mock_Is.Equal (order), Mock_Is.Equal (typeof (Order).FullName + ".OrderItems"),
+                              Mock_Property.Value ("Count", orderItems.Count), Mock_Is.Equal (ValueAccess.Current));
+      }, delegate
+      {
+        Customer c = order.Customer;
+        ObjectList<OrderItem> i = order.OrderItems;
+      });
     }
 
     [Test]
@@ -179,65 +157,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Customer customer = order.Customer;
       Customer newCustomer = Customer.NewObject();
 
-      Expect (delegate
-        {
-          _listener.ObjectLoading (null);
-          LastCall.IgnoreArguments().Repeat.Any ();
-          _listener.ObjectsLoaded (null);
-          LastCall.IgnoreArguments ().Repeat.Any ();
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.ObjectLoading (null);
+        LastCall.IgnoreArguments().Repeat.Any ();
+        _stricktListenerMock.ObjectsLoaded (null);
+        LastCall.IgnoreArguments ().Repeat.Any ();
 
-          _listener.ObjectGotID (null, null);
-          LastCall.IgnoreArguments ();
+        _stricktListenerMock.ObjectGotID (null, null);
+        LastCall.IgnoreArguments ();
 
-          _listener.DataContainerMapRegistering (null);
-          LastCall.IgnoreArguments ();
+        _stricktListenerMock.DataContainerMapRegistering (null);
+        LastCall.IgnoreArguments ();
 
-          _listener.RelationEndPointMapRegistering (null);
-          LastCall.IgnoreArguments ().Repeat.Any();
+        _stricktListenerMock.RelationEndPointMapRegistering (null);
+        LastCall.IgnoreArguments ().Repeat.Any();
 
-          _listener.RelationChanging (order, typeof (Order).FullName + ".Customer", customer, newCustomer);
-          _listener.RelationChanging (newCustomer, typeof (Customer).FullName + ".Orders", null, order);
-          _listener.RelationChanging (customer, typeof (Customer).FullName + ".Orders", order, null);
-          _listener.PropertyValueChanging (
-              order.InternalDataContainer,
-              order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
-              customer.ID,
-              newCustomer.ID);
-          _listener.PropertyValueChanged (
-              order.InternalDataContainer,
-              order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
-              customer.ID,
-              newCustomer.ID);
-          _listener.RelationChanged (order, typeof (Order).FullName + ".Customer");
-          _listener.RelationChanged (newCustomer, typeof (Customer).FullName + ".Orders");
-          _listener.RelationChanged (customer, typeof (Customer).FullName + ".Orders");
-        },
-        delegate
-        {
-          order.Customer = newCustomer;
-        });
+        _stricktListenerMock.RelationChanging (order, typeof (Order).FullName + ".Customer", customer, newCustomer);
+        _stricktListenerMock.RelationChanging (newCustomer, typeof (Customer).FullName + ".Orders", null, order);
+        _stricktListenerMock.RelationChanging (customer, typeof (Customer).FullName + ".Orders", order, null);
+        _stricktListenerMock.PropertyValueChanging (
+            order.InternalDataContainer,
+            order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
+            customer.ID,
+            newCustomer.ID);
+        _stricktListenerMock.PropertyValueChanged (
+            order.InternalDataContainer,
+            order.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"],
+            customer.ID,
+            newCustomer.ID);
+        _stricktListenerMock.RelationChanged (order, typeof (Order).FullName + ".Customer");
+        _stricktListenerMock.RelationChanged (newCustomer, typeof (Customer).FullName + ".Orders");
+        _stricktListenerMock.RelationChanged (customer, typeof (Customer).FullName + ".Orders");
+      }, delegate
+      {
+        order.Customer = newCustomer;
+      });
     }
 
     [Test]
     public void FilterQueryResult ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
-      OrderCollection orders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
+      var orders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection ();
 
-      Expect (delegate
-        {
-          _listener.ObjectLoading (null);
-          LastCall.IgnoreArguments ().Repeat.Any ();
-          _listener.ObjectsLoaded (null);
-          LastCall.IgnoreArguments ().Repeat.Any ();
+      ClientTransactionMock.AddListener (_stricktListenerMock);
 
-          _listener.FilterQueryResult (null, null);
-          LastCall.Constraints (Mock_Property.Value ("Count", orders.Count), Mock_Is.Equal (query));
-        },
-        delegate
-        {
-          ClientTransactionMock.QueryManager.GetCollection (query);
-        });
+      var newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject>();
+      _stricktListenerMock
+          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Matches (qr => qr.Count == orders.Count)))
+          .Return (newQueryResult);
+
+      _stricktListenerMock.Replay ();
+
+      var result = ClientTransactionMock.QueryManager.GetCollection (query);
+      Assert.That (result, Is.SameAs (newQueryResult));
+
+      _mockRepository.VerifyAll ();
     }
 
 
@@ -248,17 +224,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ++order.OrderNumber;
 
-      Expect (delegate
-        {
-          _listener.TransactionCommitting (null);
-          LastCall.Constraints (Mock_Property.Value ("Count", 1));
-          _listener.TransactionCommitted (null);
-          LastCall.Constraints (Mock_Property.Value ("Count", 1));
-        },
-        delegate
-        {
-          ClientTransactionMock.Commit ();
-        });
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.TransactionCommitting (null);
+        LastCall.Constraints (Mock_Property.Value ("Count", 1));
+        _stricktListenerMock.TransactionCommitted (null);
+        LastCall.Constraints (Mock_Property.Value ("Count", 1));
+      }, delegate
+      {
+        ClientTransactionMock.Commit ();
+      });
     }
 
     [Test]
@@ -267,48 +242,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ++order.OrderNumber;
 
-      Expect (delegate
-        {
-          _listener.TransactionRollingBack (null);
-          LastCall.Constraints (Mock_Property.Value ("Count", 1));
-          _listener.TransactionRolledBack (null);
-          LastCall.Constraints (Mock_Property.Value ("Count", 1));
-        },
-        delegate
-        {
-          ClientTransactionMock.Rollback ();
-        });
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.TransactionRollingBack (null);
+        LastCall.Constraints (Mock_Property.Value ("Count", 1));
+        _stricktListenerMock.TransactionRolledBack (null);
+        LastCall.Constraints (Mock_Property.Value ("Count", 1));
+      }, delegate
+      {
+        ClientTransactionMock.Rollback ();
+      });
     }
 
     [Test]
     public void RelationEndPointMapRegistering ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      Expect (delegate
-        {
-          _listener.RelationReading (null, null, ValueAccess.Current);
-          LastCall.IgnoreArguments ();
-          _listener.ObjectLoading (null);
-          LastCall.IgnoreArguments ();
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.RelationReading (null, null, ValueAccess.Current);
+        LastCall.IgnoreArguments ();
+        _stricktListenerMock.ObjectLoading (null);
+        LastCall.IgnoreArguments ();
 
-          _listener.ObjectGotID (null, null);
-          LastCall.IgnoreArguments ();
+        _stricktListenerMock.ObjectGotID (null, null);
+        LastCall.IgnoreArguments ();
           
-          _listener.DataContainerMapRegistering (null);
-          LastCall.IgnoreArguments ();
+        _stricktListenerMock.DataContainerMapRegistering (null);
+        LastCall.IgnoreArguments ();
 
-          _listener.RelationEndPointMapRegistering (null);
-          LastCall.Constraints (Mock_Property.Value ("ObjectID", DomainObjectIDs.Customer1));
+        _stricktListenerMock.RelationEndPointMapRegistering (null);
+        LastCall.Constraints (Mock_Property.Value ("ObjectID", DomainObjectIDs.Customer1));
 
-          _listener.ObjectsLoaded (null);
-          LastCall.IgnoreArguments ();
-          _listener.RelationRead (null, null, (DomainObject) null, ValueAccess.Current);
-          LastCall.IgnoreArguments ();
-        },
-        delegate
-        {
-          Customer customer = order.Customer;
-        });
+        _stricktListenerMock.ObjectsLoaded (null);
+        LastCall.IgnoreArguments ();
+        _stricktListenerMock.RelationRead (null, null, (DomainObject) null, ValueAccess.Current);
+        LastCall.IgnoreArguments ();
+      }, delegate
+      {
+        Dev.Null = order.Customer;
+      });
     }
 
     [Test]
@@ -316,50 +289,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       Order order = Order.NewObject ();
 
-      Expect (delegate
-        {
-          _listener.ObjectDeleting (null);
-          LastCall.IgnoreArguments ();
-          _listener.RelationEndPointMapPerformingDelete (null);
-          LastCall.IgnoreArguments ();
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.ObjectDeleting (null);
+        LastCall.IgnoreArguments ();
+        _stricktListenerMock.RelationEndPointMapPerformingDelete (null);
+        LastCall.IgnoreArguments ();
 
-          _listener.RelationEndPointMapUnregistering (null);
-          LastCall.Constraints (Mock_Property.Value ("ObjectID", order.ID)).Repeat.Times (4); // four related objects/object collections in Order
+        _stricktListenerMock.RelationEndPointMapUnregistering (null);
+        LastCall.Constraints (Mock_Property.Value ("ObjectID", order.ID)).Repeat.Times (4); // four related objects/object collections in Order
 
-          _listener.DataContainerMapUnregistering (order.InternalDataContainer);
+        _stricktListenerMock.DataContainerMapUnregistering (order.InternalDataContainer);
 
-          _listener.DataManagerMarkingObjectDiscarded (order.ID);
+        _stricktListenerMock.DataManagerMarkingObjectDiscarded (order.ID);
 
-          _listener.ObjectDeleted (null);
-          LastCall.IgnoreArguments ();
-        },
-        delegate
-        {
-          order.Delete ();
-        });
+        _stricktListenerMock.ObjectDeleted (null);
+        LastCall.IgnoreArguments ();
+      }, delegate
+      {
+        order.Delete ();
+      });
     }
 
     [Test]
     public void DataContainerMapRegistering ()
     {
-      Expect (delegate
-        {
-          _listener.ObjectLoading (null);
-          LastCall.IgnoreArguments ();
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.ObjectLoading (null);
+        LastCall.IgnoreArguments ();
 
-          _listener.ObjectGotID (null, null);
-          LastCall.IgnoreArguments ();
+        _stricktListenerMock.ObjectGotID (null, null);
+        LastCall.IgnoreArguments ();
 
-          _listener.DataContainerMapRegistering (null);
-          LastCall.Constraints (Mock_Property.Value ("ID", DomainObjectIDs.ClassWithAllDataTypes1));
+        _stricktListenerMock.DataContainerMapRegistering (null);
+        LastCall.Constraints (Mock_Property.Value ("ID", DomainObjectIDs.ClassWithAllDataTypes1));
 
-          _listener.ObjectsLoaded (null);
-          LastCall.IgnoreArguments ();
-        },
-        delegate
-        {
-          ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-        });
+        _stricktListenerMock.ObjectsLoaded (null);
+        LastCall.IgnoreArguments ();
+      }, delegate
+      {
+        ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      });
     }
 
     [Test]
@@ -370,39 +341,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       DataManager managerOne = transactionOne.DataManager;
       DataManager managerTwo = transactionTwo.DataManager;
 
-      transactionOne.AddListener (_listener);
-      transactionTwo.AddListener (_listener);
+      transactionOne.AddListener (_stricktListenerMock);
+      transactionTwo.AddListener (_stricktListenerMock);
 
-      Expect (delegate
-        {
-          _listener.DataManagerCopyingFrom (managerOne);
-          _listener.DataManagerCopyingTo (managerTwo);
-          _listener.DataContainerMapCopyingFrom (managerOne.DataContainerMap);
-          _listener.DataContainerMapCopyingTo (managerTwo.DataContainerMap);
-          _listener.RelationEndPointMapCopyingFrom (managerOne.RelationEndPointMap);
-          _listener.RelationEndPointMapCopyingTo (managerTwo.RelationEndPointMap);
-        },
-        delegate
-        {
-          managerTwo.CopyFrom (managerOne);
-        });
+      Expect (_stricktListenerMock, delegate
+      {
+        _stricktListenerMock.DataManagerCopyingFrom (managerOne);
+        _stricktListenerMock.DataManagerCopyingTo (managerTwo);
+        _stricktListenerMock.DataContainerMapCopyingFrom (managerOne.DataContainerMap);
+        _stricktListenerMock.DataContainerMapCopyingTo (managerTwo.DataContainerMap);
+        _stricktListenerMock.RelationEndPointMapCopyingFrom (managerOne.RelationEndPointMap);
+        _stricktListenerMock.RelationEndPointMapCopyingTo (managerTwo.RelationEndPointMap);
+      }, delegate
+      {
+        managerTwo.CopyFrom (managerOne);
+      });
     }
 
     [Test]
     public void SubTransactionCreatingSubTransactionCreated ()
     {
-      Expect(delegate
+      Expect(_stricktListenerMock, delegate
       {
-        _listener.SubTransactionCreating ();
+        _stricktListenerMock.SubTransactionCreating ();
 
-        _listener.SubTransactionCreated (null);
+        _stricktListenerMock.SubTransactionCreated (null);
         LastCall.Constraints (Mock_Is.NotNull () && Mock_Is.NotSame (ClientTransactionMock)
-          && Mock_Property.Value ("ParentTransaction", ClientTransactionMock));
-      },
-      delegate
+                              && Mock_Property.Value ("ParentTransaction", ClientTransactionMock));
+      }, delegate
       {
         ClientTransactionMock.CreateSubTransaction();
       });
     }
+
+    private void Expect (IClientTransactionListener listenerMock, Action expectation, Action triggeringCode)
+    {
+      ClientTransactionMock.AddListener (listenerMock);
+
+      _mockRepository.BackToRecordAll ();
+
+      using (_mockRepository.Ordered ())
+      {
+        expectation ();
+      }
+
+      _mockRepository.ReplayAll ();
+
+      triggeringCode ();
+
+      _mockRepository.VerifyAll ();
+    }
+
   }
 }
