@@ -33,6 +33,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void SubTransactionCreating ();
     void SubTransactionCreated (ClientTransaction subTransaction);
 
+    /// <summary>
+    /// Indicates a new <see cref="DomainObject"/> instance is being created. This event is called while the <see cref="DomainObject"/> base 
+    /// constructor is executing before the subclass constructors have run and before the object has got its <see cref="ObjectID"/> or 
+    /// <see cref="DataContainer"/>. If this method throws an exception, the object construction will be canceled and no side effects will remain.
+    /// </summary>
     void NewObjectCreating (Type type, DomainObject instance);
 
     void ObjectLoading (ObjectID id);
