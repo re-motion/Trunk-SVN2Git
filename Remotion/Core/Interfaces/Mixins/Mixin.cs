@@ -133,8 +133,16 @@ namespace Remotion.Mixins
     /// <value>The base call object reference.</value>
     /// <exception cref="InvalidOperationException">The mixin has not been initialized yet, probably because the property is accessed from the mixin's
     /// constructor.</exception>
-    /// <remarks>This property must not be accessed from the mixin's constructor; if you need to initialize the mixin by accessing the <see cref="Base"/>
-    /// property, override the <see cref="Mixin{TThis}.OnInitialized"/> method.</remarks>
+    /// <remarks>
+    /// <para>
+    /// This property must not be accessed from the mixin's constructor; if you need to initialize the mixin by accessing the <see cref="Base"/>
+    /// property, override the <see cref="Mixin{TThis}.OnInitialized"/> method.
+    /// </para>
+    /// <para>
+    /// This property is only for performing base calls from overridden methods. It should not be used to access arbitrary methods of the mixin's 
+    /// target object, use the <see cref="Mixin{TThis}.This"/> property for instead.
+    /// </para>
+    /// </remarks>
     protected TBase Base
     {
       [DebuggerStepThrough]
