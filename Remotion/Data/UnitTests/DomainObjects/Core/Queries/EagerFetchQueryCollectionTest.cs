@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using System.Linq;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
@@ -32,6 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     private EagerFetchQueryCollection _collection;
     private IRelationEndPointDefinition _endPointDefinition1;
     private IRelationEndPointDefinition _endPointDefinition2;
+    private IRelationEndPointDefinition _objectEndPointDefinition;
 
     public override void SetUp ()
     {
@@ -40,8 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _query1 = QueryFactory.CreateQuery (TestQueryFactory.CreateOrderSumQueryDefinition ());
       _query2 = QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType());
 
-      _endPointDefinition1 = DomainObjectIDs.Order1.ClassDefinition.GetRelationEndPointDefinitions ()[0];
-      _endPointDefinition2 = DomainObjectIDs.Order1.ClassDefinition.GetRelationEndPointDefinitions ()[1];
+      _endPointDefinition1 = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+      _endPointDefinition2 = DomainObjectIDs.Customer1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
+      
+      _objectEndPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
 
       _collection = new EagerFetchQueryCollection ();
     }
@@ -65,11 +69,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "There is already an eager fetch query for relation end point " 
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official'.")]
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems'.")]
     public void Add_Twice ()
     {
       _collection.Add (_endPointDefinition1, _query1);
       _collection.Add (_endPointDefinition1, _query2);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Eager fetching is only supported for collection-valued relation properties, but "
+        + "relation end point 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' has a cardinality of 'One'.\r\n"
+        + "Parameter name: relationEndPointDefinition")]
+    public void Add_ForObjectEndPoint ()
+    {
+      _collection.Add (_objectEndPointDefinition, _query1);
     }
 
     [Test]

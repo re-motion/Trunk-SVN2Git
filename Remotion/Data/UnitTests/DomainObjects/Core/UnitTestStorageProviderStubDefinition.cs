@@ -16,6 +16,7 @@
 using System;
 using System.Xml;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
@@ -55,6 +56,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       // Note: UnitTestStorageProviderStubDefinition supports all identity types for testing purposes.
       return true;
     }
-
   }
 }

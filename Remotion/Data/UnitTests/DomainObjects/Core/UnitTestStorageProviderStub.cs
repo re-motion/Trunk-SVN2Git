@@ -23,26 +23,50 @@ using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
+  // Used by the Official class definition.
   public class UnitTestStorageProviderStub : StorageProvider
   {
-    // types
+    class MockStorageProviderScope : IDisposable
+    {
+      private readonly StorageProvider _previous;
+      private bool _disposed = false;
 
-    // static members and constants
+      public MockStorageProviderScope (StorageProvider previous)
+      {
+        _previous = previous;
+      }
 
-    // member fields
+      public void Dispose ()
+      {
+        if (!_disposed)
+        {
+          _innerMockStorageProvider.SetCurrent (_previous);
+          _disposed = true;
+        }
+      }
+    }
 
     private static int s_nextID = 0;
 
-    // construction and disposing
+    private static readonly SafeContextSingleton<StorageProvider> _innerMockStorageProvider = 
+        new SafeContextSingleton<StorageProvider> (typeof (UnitTestStorageProviderStub) + "._innerMockStorageProvider", () => null);
+
+    public static IDisposable EnterMockStorageProviderScope (StorageProvider mock)
+    {
+      var previous = _innerMockStorageProvider.Current;
+      _innerMockStorageProvider.SetCurrent (mock);
+      return new MockStorageProviderScope (previous);
+    }
 
     public UnitTestStorageProviderStub (UnitTestStorageProviderStubDefinition definition)
         : base (definition)
     {
     }
 
-    public StorageProvider InnerProvider;
-
-    // methods and properties
+    public StorageProvider InnerProvider
+    {
+      get { return _innerMockStorageProvider.Current; }
+    }
 
     public override DataContainer LoadDataContainer (ObjectID id)
     {

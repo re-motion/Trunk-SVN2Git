@@ -45,18 +45,25 @@ namespace Remotion.Data.DomainObjects.Queries
       return GetEnumerator();
     }
 
-    public void Add (IRelationEndPointDefinition IRelationEndPointDefinition, IQuery fetchQuery)
+    public void Add (IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery)
     {
-      ArgumentUtility.CheckNotNull ("IRelationEndPointDefinition", IRelationEndPointDefinition);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
 
-      if (_fetchQueries.ContainsKey (IRelationEndPointDefinition))
+      if (relationEndPointDefinition.Cardinality != CardinalityType.Many)
       {
-        var message = string.Format ("There is already an eager fetch query for relation end point '{0}'.", IRelationEndPointDefinition.PropertyName);
+        var message = string.Format ("Eager fetching is only supported for collection-valued relation properties, but relation end point '{0}' has " 
+            + "a cardinality of 'One'.", relationEndPointDefinition.PropertyName);
+        throw new ArgumentException (message, "relationEndPointDefinition");
+      }
+
+      if (_fetchQueries.ContainsKey (relationEndPointDefinition))
+      {
+        var message = string.Format ("There is already an eager fetch query for relation end point '{0}'.", relationEndPointDefinition.PropertyName);
         throw new InvalidOperationException (message);
       }
 
-      _fetchQueries.Add (IRelationEndPointDefinition, fetchQuery);
+      _fetchQueries.Add (relationEndPointDefinition, fetchQuery);
     }
   }
 }

@@ -73,11 +73,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       mockRepository.ReplayAll();
 
-      officialStorageProvider.InnerProvider = mockProvider;
-
-      DataContainerCollection actualDataContainers =
-          _persistenceManager.LoadDataContainers (new ObjectID[] { DomainObjectIDs.Order1, DomainObjectIDs.Official1, DomainObjectIDs.Order2,
-              DomainObjectIDs.Official2 }, true);
+      DataContainerCollection actualDataContainers;
+      using (UnitTestStorageProviderStub.EnterMockStorageProviderScope (mockProvider))
+      {
+        actualDataContainers = _persistenceManager.LoadDataContainers (
+            new[]
+            {
+                DomainObjectIDs.Order1, DomainObjectIDs.Official1, DomainObjectIDs.Order2,
+                DomainObjectIDs.Official2
+            },
+            true);
+      }
 
       mockRepository.VerifyAll ();
 

@@ -17,8 +17,13 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
@@ -26,12 +31,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
   public class RootQueryManagerTest : ClientTransactionBaseTest
   {
     private RootQueryManager _queryManager;
+    private string _unitTestStorageProviderStubID;
+    private UnitTestStorageProviderStubDefinition _unitTestStorageProviderStubDefinition;
+    private DataContainer _official1DataContainer;
+    private DataContainer _official2DataContainer;
+    private IQuery _officialTestQuery;
+    private IQuery _officialFetchTestQuery;
+    private IRelationEndPointDefinition _officialOrdersRelationEndPointDefinition;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _queryManager = new RootQueryManager (ClientTransactionMock);
+
+      _unitTestStorageProviderStubID = DomainObjectIDs.Official1.StorageProviderID;
+      _unitTestStorageProviderStubDefinition = (UnitTestStorageProviderStubDefinition)
+          DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (_unitTestStorageProviderStubID);
+
+      _official1DataContainer = DataContainer.CreateNew (DomainObjectIDs.Official1);
+      _official2DataContainer = DataContainer.CreateNew (DomainObjectIDs.Official2);
+
+      _officialTestQuery = QueryFactory.CreateCollectionQuery ("test query", _unitTestStorageProviderStubID, "TEST QUERY", new QueryParameterCollection (), typeof (DomainObjectCollection));
+      _officialFetchTestQuery = QueryFactory.CreateCollectionQuery ("fetch query", _unitTestStorageProviderStubID, "FETCH QUERY", new QueryParameterCollection (), typeof (DomainObjectCollection));
+      _officialOrdersRelationEndPointDefinition = DomainObjectIDs.Official1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Official).FullName + ".Orders");
     }
 
     [Test]
@@ -130,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void GetStoredProcedureResult ()
     {
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
+      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
 
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
@@ -143,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQueryWithParameter");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (query).ToCustomCollection();
+      var orders = (OrderCollection) _queryManager.GetCollection (query).ToCustomCollection();
 
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
@@ -156,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in transaction
 
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
+      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
       Assert.AreEqual (2, orders.Count, "Order count");
 
       foreach (Order order in orders)
@@ -174,13 +197,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' already exists in this transaction.")]
     public void QueriedObjectsMightNotBeEnlistableInOtherTransaction ()
     {
-      ClientTransactionMock newTransaction = new ClientTransactionMock ();
+      var newTransaction = new ClientTransactionMock ();
       using (newTransaction.EnterDiscardingScope ())
       {
         Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in newTransaction
       }
 
-      OrderCollection orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
+      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection();
       Assert.AreEqual (2, orders.Count, "Order count");
 
       using (newTransaction.EnterDiscardingScope ())
@@ -191,6 +214,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
             newTransaction.EnlistDomainObject (order);  // this throws because there is already _another_ instance of Order1 enlisted
         }
       }
+    }
+
+    [Test]
+    public void GetCollection_ExecutesFetchQueries ()
+    {
+      _officialTestQuery.EagerFetchQueries.Add (_officialOrdersRelationEndPointDefinition, _officialFetchTestQuery);
+
+      var mainResult = new[] { _official1DataContainer, _official2DataContainer };
+      var fetchResult = new DataContainer[0];
+
+      var storageProviderMock = MockRepository.GenerateMock<StorageProvider> (_unitTestStorageProviderStubDefinition);
+      storageProviderMock.Expect (mock => mock.ExecuteCollectionQuery (_officialTestQuery)).Return (mainResult);
+      storageProviderMock.Expect (mock => mock.ExecuteCollectionQuery (_officialFetchTestQuery)).Return (fetchResult);
+
+      using (UnitTestStorageProviderStub.EnterMockStorageProviderScope (storageProviderMock))
+      {
+        _queryManager.GetCollection<Official> (_officialTestQuery);
+      }
+
+      storageProviderMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void GetCollection_DoesNotExecuteFetchQueries_WhenQueryResultEmpty ()
+    {
+      _officialTestQuery.EagerFetchQueries.Add (_officialOrdersRelationEndPointDefinition, _officialFetchTestQuery);
+
+      var mainResult = new DataContainer[0];
+
+      var storageProviderMock = MockRepository.GenerateMock<StorageProvider> (_unitTestStorageProviderStubDefinition);
+      storageProviderMock.Expect (mock => mock.ExecuteCollectionQuery (_officialTestQuery)).Return (mainResult);
+
+      using (UnitTestStorageProviderStub.EnterMockStorageProviderScope (storageProviderMock))
+      {
+        _queryManager.GetCollection<Official> (_officialTestQuery);
+      }
+
+      storageProviderMock.AssertWasNotCalled (mock => mock.ExecuteCollectionQuery (_officialFetchTestQuery));
     }
   }
 }

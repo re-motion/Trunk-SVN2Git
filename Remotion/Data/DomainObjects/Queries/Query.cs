@@ -117,5 +117,10 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       get { return _eagerFetchQueries; }
     }
+
+    public override string ToString ()
+    {
+      return string.Format ("Query '{0}': {1}", ID, Statement);
+    }
   }
 }
