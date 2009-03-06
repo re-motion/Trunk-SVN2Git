@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
 
       commandBuilder.Append ("(");
-      commandBuilder.AppendEvaluation (methodCall.EvaluationArguments[0]);
+      commandBuilder.AppendEvaluation (methodCall.Arguments[0]);
       commandBuilder.Append (")");
     }
   }
