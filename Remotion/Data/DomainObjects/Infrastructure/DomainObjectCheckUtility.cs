@@ -24,17 +24,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class DomainObjectCheckUtility
   {
     /// <summary>
-    /// Returns the <see cref="DomainObject.BindingTransaction"/> of the given <see cref="DomainObject"/>, or the 
+    /// Returns the binding transaction of the given <see cref="DomainObject"/>, or the 
     /// <see cref="ClientTransaction.Current"/> if the object has not been bound. If there are neither binding nor current transaction,
     /// an exception is thrown.
     /// </summary>
     /// <param name="domainObject">The domain object to get a transaction for.</param>
-    /// <returns><see cref="DomainObject.BindingTransaction"/> or <see cref="ClientTransaction.Current"/>.</returns>
+    /// <returns>The result of <see cref="DomainObject.GetBindingTransaction"/> or <see cref="ClientTransaction.Current"/>.</returns>
     /// <exception cref="InvalidOperationException">No <see cref="ClientTransaction"/> has been associated with the current thread or this 
     /// <paramref name="domainObject"/>.</exception>
     public static ClientTransaction GetNonNullClientTransaction (DomainObject domainObject)
     {
-      ClientTransaction transaction = domainObject.BindingTransaction ?? ClientTransaction.Current;
+      ClientTransaction transaction = domainObject.HasBindingTransaction ? domainObject.GetBindingTransaction() : ClientTransaction.Current;
       if (transaction == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread or this object.");
       else

@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected internal override bool DoEnlistDomainObject (DomainObject domainObject)
     {
-      if (!domainObject.IsBoundToSpecificTransaction || domainObject.BindingTransaction != this)
+      if (!domainObject.HasBindingTransaction || domainObject.GetBindingTransaction() != this)
       {
         string message =
             string.Format (

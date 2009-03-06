@@ -68,8 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     {
       _transporter.Load (DomainObjectIDs.Computer2);
 
-      Computer source = _transporter.GetTransportedObject (DomainObjectIDs.Computer2)
-          .BindingTransaction.GetObjects<Computer> (DomainObjectIDs.Computer1)[0];
+      Computer source = _transporter.GetTransportedObject (DomainObjectIDs.Computer2).GetBindingTransaction().GetObjects<Computer> (DomainObjectIDs.Computer1)[0];
       _listener.PropertyValueChanging (source.InternalDataContainer,
           source.InternalDataContainer.PropertyValues[MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
     }
@@ -78,14 +77,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The transport transaction cannot be committed.")]
     public void CommitingTransaction ()
     {
-      _transporter.Load (DomainObjectIDs.Computer2).BindingTransaction.Commit ();
+      _transporter.Load (DomainObjectIDs.Computer2).GetBindingTransaction().Commit ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The transport transaction cannot be rolled back.")]
     public void RollingBackTransaction ()
     {
-      _transporter.Load (DomainObjectIDs.Computer2).BindingTransaction.Rollback ();
+      _transporter.Load (DomainObjectIDs.Computer2).GetBindingTransaction().Rollback ();
     }
   }
 }

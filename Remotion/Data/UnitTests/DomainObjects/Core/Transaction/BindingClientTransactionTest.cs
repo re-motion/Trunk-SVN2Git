@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
         var order = NewBound<Order> ();
-        order.OrderItems.Add (NewObject<OrderItem> (order.BindingTransaction));
+        order.OrderItems.Add (NewObject<OrderItem> (order.GetBindingTransaction()));
         var orderItem = OrderItem.NewObject ();
         order.OrderItems[0] = orderItem;
       }
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     public void ReplaceBoundObject_IntoCollectionOfBoundObject_InOtherTx ()
     {
       var order = NewBound<Order> ();
-      order.OrderItems.Add (NewObject<OrderItem> (order.BindingTransaction));
+      order.OrderItems.Add (NewObject<OrderItem> (order.GetBindingTransaction()));
       var orderItem = NewObject<OrderItem> (ClientTransaction.CreateBindingTransaction ());
       order.OrderItems[0] = orderItem;
     }

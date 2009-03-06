@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       mixin.CollectionPropertyNSide = relationTarget4;
       mixin.UnidirectionalRelationProperty = relationTarget5;
 
-      mixedInstance.BindingTransaction.Commit();
+      mixedInstance.GetBindingTransaction().Commit();
 
       TargetClassForPersistentMixin loadedInstance;
       MixinAddingPersistentProperties loadedMixin;
@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       mixin1.Computer = relationTarget1;
       mixin2.Computer = relationTarget2;
-      mixedInstance.BindingTransaction.Commit ();
+      mixedInstance.GetBindingTransaction().Commit ();
 
       TargetClassWithTwoUnidirectionalMixins loadedInstance;
       MixinAddingUnidirectionalRelation1 loadedMixin1;
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       mixin1.Computer = relationTarget1;
       mixin2.Computer = relationTarget2;
-      mixedInstance1.BindingTransaction.Commit();
+      mixedInstance1.GetBindingTransaction().Commit();
 
       TargetClassWithUnidirectionalMixin1 loadedInstance1;
       TargetClassWithUnidirectionalMixin2 loadedInstance2;

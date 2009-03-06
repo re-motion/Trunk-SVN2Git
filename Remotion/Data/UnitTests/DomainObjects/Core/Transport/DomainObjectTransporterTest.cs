@@ -293,7 +293,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     {
       _transporter.Load (DomainObjectIDs.Order1);
       Order order = (Order) _transporter.GetTransportedObject (DomainObjectIDs.Order1);
-      Assert.IsTrue (order.IsBoundToSpecificTransaction);
+      Assert.IsTrue (order.HasBindingTransaction);
     }
 
     [Test]

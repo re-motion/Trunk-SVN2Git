@@ -247,6 +247,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\NullCollectionEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\NullObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainObjectTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CurrentPropertyManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectEventManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectTransactionContextIndexerTest.cs" />

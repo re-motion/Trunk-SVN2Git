@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       IBusinessObject[] businessObjects = _property.SearchAvailableObjects (boundOrderItem, null);
 
       Assert.IsNotNull (businessObjects);
-      Assert.That (((DomainObject) businessObjects[0]).BindingTransaction, Is.SameAs (transaction));
+      Assert.That (((DomainObject) businessObjects[0]).GetBindingTransaction(), Is.SameAs (transaction));
     }
 
     [Test]

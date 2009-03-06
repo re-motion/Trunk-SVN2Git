@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var transactions = (from propertyAccessor in order.Properties.AsEnumerable ()
                           select propertyAccessor.ClientTransaction).Distinct ().ToArray ();
-      Assert.That (transactions, Is.EqualTo (new[] { order.BindingTransaction }));
+      Assert.That (transactions, Is.EqualTo (new[] { order.GetBindingTransaction() }));
     }
 
     [Test]

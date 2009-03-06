@@ -215,18 +215,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     {
       string additionalInfo = "";
 
-      if (newRelatedObject.BindingTransaction != null)
+      if (newRelatedObject.GetBindingTransaction() != null)
       {
         additionalInfo += string.Format (
             " The {0} object {1} is bound to a BindingClientTransaction.", newRelatedObject.GetPublicDomainObjectType ().Name, newRelatedObjectRole);
-        if (endPointObject.BindingTransaction != null)
+        if (endPointObject.GetBindingTransaction() != null)
         {
           additionalInfo += string.Format (
               " The {0} object {1} is also bound, but to a different BindingClientTransaction.",
               endPointObject.GetPublicDomainObjectType ().Name, endPointObjectRole);
         }
       }
-      else if (endPointObject.BindingTransaction != null)
+      else if (endPointObject.GetBindingTransaction() != null)
       {
         additionalInfo += string.Format (
             " The {0} object {1} is bound to a BindingClientTransaction.", endPointObject.GetPublicDomainObjectType ().Name, endPointObjectRole);

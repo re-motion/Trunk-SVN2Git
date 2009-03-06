@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
           typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
       var result = _service.Search (null, property, null);
       Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (((DomainObject) result[0]).BindingTransaction, Is.Null);
+      Assert.That (((DomainObject) result[0]).GetBindingTransaction(), Is.Null);
       Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.True);
     }
 
@@ -164,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
           typeof (BindableNonDomainObjectReferencingDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
       var result = _service.Search (new BindableNonDomainObjectReferencingDomainObject(), property, null);
       Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (((DomainObject) result[0]).BindingTransaction, Is.Null);
+      Assert.That (((DomainObject) result[0]).GetBindingTransaction(), Is.Null);
       Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.True);
     }
 
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
       var result = _service.Search (referencingObject, property, null);
 
       Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (((DomainObject) result[0]).BindingTransaction, Is.Null);
+      Assert.That (((DomainObject) result[0]).GetBindingTransaction(), Is.Null);
       Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.True);
     }
 
@@ -196,8 +196,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
           typeof (OppositeBidirectionalBindableDomainObject)).GetPropertyDefinition ("OppositeSampleObject");
       var result = _service.Search (referencingObject, property, null);
       Assert.That (result.Length, Is.EqualTo (2));
-      Assert.That (((DomainObject) result[0]).BindingTransaction, Is.SameAs (bindingTransaction));
-      Assert.That (((DomainObject) result[1]).BindingTransaction, Is.SameAs (bindingTransaction));
+      Assert.That (((DomainObject) result[0]).GetBindingTransaction(), Is.SameAs (bindingTransaction));
+      Assert.That (((DomainObject) result[1]).GetBindingTransaction(), Is.SameAs (bindingTransaction));
       Assert.That (((DomainObject) result[0]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.False);
       Assert.That (((DomainObject) result[1]).TransactionContext[ClientTransactionMock.Current].CanBeUsedInTransaction, Is.False);
       Assert.That (((DomainObject) result[0]).TransactionContext[bindingTransaction].CanBeUsedInTransaction, Is.True);

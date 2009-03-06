@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     /// <summary>
-    /// Deletes the given <see cref="DomainObject"/> in the default transaction, ie. the object's <see cref="DomainObject.BindingTransaction"/> or 
+    /// Deletes the given <see cref="DomainObject"/> in the default transaction, ie. the object's binding transaction or 
     /// - if none - <see cref="ClientTransaction.Current"/>.
     /// </summary>
     /// <param name="objectToBeDeleted">The object to be deleted.</param>

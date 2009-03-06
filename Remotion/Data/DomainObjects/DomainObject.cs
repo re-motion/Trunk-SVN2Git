@@ -265,7 +265,9 @@ namespace Remotion.Data.DomainObjects
     /// <param name="context">The <see cref="StreamingContext"/> coming from the .NET serialization infrastructure.</param>
     /// <remarks>Be sure to call this base constructor from the deserialization constructor of any concrete <see cref="DomainObject"/> type
     /// implementing the <see cref="ISerializable"/> interface.</remarks>
+#pragma warning disable 168
     protected DomainObject (SerializationInfo info, StreamingContext context)
+#pragma warning restore 168
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
@@ -298,21 +300,52 @@ namespace Remotion.Data.DomainObjects
     }
 
     [Obsolete ("This property has been removed because its behavior is too unintuitive. Use either BindingTransaction or ClientTransaction.Current "
-        + "instead, whichever appropriate. If you don't know which one to use, use the following expression: "
-        + "'BindingTransaction ?? ClientTransaction.Current'. (Build 1.11.17)", true)]
+        + "instead, whichever appropriate. If you don't know which one to use, find out using HasBindingTransaction: "
+        + "'HasBindingTransaction ? BindingTransaction : ClientTransaction.Current'. (Build 1.11.17, 1.11.29)", true)]
     public ClientTransaction ClientTransaction
     {
       get { throw new NotImplementedException (); }
     }
 
     /// <summary>
-    /// Gets the <see cref="DomainObjects.ClientTransaction"/> this <see cref="DomainObject"/> instance was bound to, or <see langword="null"/>
-    /// if the object has not been bound.
+    /// Gets the <see cref="DomainObjects.ClientTransaction"/> this <see cref="DomainObject"/> instance was bound to. If the object has not been 
+    /// bound, this method throws an exception. Use <see cref="HasBindingTransaction"/> to check whether the object has been boung to a 
+    /// <see cref="BindingClientTransaction"/> or not.
     /// </summary>
     /// <value>The <see cref="DomainObjects.ClientTransaction"/> this object was bound to, or <see langword="null"/>.</value>
-    public ClientTransaction BindingTransaction
+    /// <exception cref="InvalidOperationException">The object has not been bound.</exception>
+    /// <remarks>
+    /// If a <see cref="DomainObject"/> has been bound to a <see cref="BindingClientTransaction"/>, its properties are always accessed in the context of that
+    /// <see cref="BindingClientTransaction"/> instead of the <see cref="DomainObjects.ClientTransaction.Current"/> transaction. See 
+    /// <see cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/> for more information.
+    /// </remarks>
+    /// <seealso cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/>
+    public ClientTransaction GetBindingTransaction ()
     {
-      get { return _bindingTransaction; }
+      return _bindingTransaction;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is bound to specific transaction. If it is, it will always use that transaction, otherwise,
+    /// it will always use <see cref="DomainObjects.ClientTransaction.Current"/> when it is accessed.
+    /// </summary>
+    /// <value>
+    /// 	<see langword="true"/> if this instance has binding transaction; otherwise, <see langword="false"/>.
+    /// </value>
+    /// <remarks>
+    /// <para>
+    /// To bind a <see cref="DomainObject"/> to a transaction, instantiate or load it in the scope of a transaction created via
+    /// <see cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/>. Such a transaction will automatically bind all objects created or loaded
+    /// in its scope to itself.
+    /// </para>
+    /// <para>
+    /// To retrieve the transaction the object is bound to, use the <see cref="GetBindingTransaction"/> method.
+    /// </para>
+    /// <seealso cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/>
+    /// </remarks>
+    public bool HasBindingTransaction
+    {
+      get { return _bindingTransaction != null; }
     }
 
     public DomainObjectTransactionContextIndexer TransactionContext
@@ -329,28 +362,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets a value indicating whether this instance is bound to specific transaction. If it is, it will always use that transaction, otherwise,
-    /// it will always use <see cref="DomainObjects.ClientTransaction.Current"/> when it is accessed.
-    /// </summary>
-    /// <value>
-    /// True if this instance is bound to specific transaction; otherwise, false.
-    /// </value>
-    /// <remarks>
-    /// <para>
-    /// To bind a <see cref="DomainObject"/> to a transaction, instantiate or load it in the scope of a transaction created via
-    /// <see cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/>. Such a transaction will automatically bind all objects created or loaded
-    /// in its scope to itself.
-    /// </para>
-    /// <para>
-    /// To retrieve the transaction the object is bound to, use the <see cref="BindingTransaction"/> property.
-    /// </para>
-    /// </remarks>
-    public bool IsBoundToSpecificTransaction
-    {
-      get { return _bindingTransaction != null; }
-    }
-
-      /// <summary>
     /// Gets the event manager responsible for raising this object's events.
     /// </summary>
     /// <value>The event manager for this <see cref="DomainObject"/>.</value>
@@ -366,7 +377,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets a value indicating the discarded status of the object in the default transaction, ie. in the <see cref="BindingTransaction"/> or - if
+    /// Gets a value indicating the discarded status of the object in the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <remarks>
@@ -379,8 +390,8 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets the timestamp used for optimistic locking when the object is committed to the database in the default transaction, ie. in the 
-    /// <see cref="BindingTransaction"/> or - if none - <see cref="DomainObjects.ClientTransaction.Current"/>.
+    /// Gets the timestamp used for optimistic locking when the object is committed to the database in the default transaction, ie. in 
+    /// its binding transaction or - if none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <value>The timestamp of the object.</value>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
@@ -391,7 +402,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Determines whether this instance can be used in the default transaction, ie. in the <see cref="BindingTransaction"/> or - if
+    /// Determines whether this instance can be used in the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <value></value>
@@ -406,7 +417,7 @@ namespace Remotion.Data.DomainObjects
     /// Ensures that <see cref="DomainObject"/> instances are not created via constructor checks.
     /// </summary>
     /// <remarks>
-    /// The default implementation of this method throws an exception. When the runtime code generation invoked via <see cref="NewObject{T}"/>
+    /// The default implementation of this method throws an exception. When the runtime code generation invoked via <see cref="NewObject{T}()"/>
     /// generates a concrete <see cref="DomainObject"/> type, it overrides this method to disable the exception. This ensures that 
     /// <see cref="DomainObject"/> instances cannot be created simply by calling the <see cref="DomainObject"/>'s constructor.
     /// </remarks>
@@ -434,7 +445,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Initializes a new <see cref="DomainObject"/> during a call to <see cref="NewObject{T}"/> or <see cref="GetObject{T}(ObjectID)"/>. This method
+    /// Initializes a new <see cref="DomainObject"/> during a call to <see cref="NewObject{T}()"/> or <see cref="GetObject{T}(ObjectID)"/>. This method
     /// is automatically called by the framework and should not normally be invoked by user code.
     /// </summary>
     /// <param name="id">The <see cref="ObjectID"/> to associate the new <see cref="DomainObject"/> with.</param>
@@ -506,7 +517,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Marks the <see cref="DomainObject"/> as changed in the default transaction, ie. in the <see cref="BindingTransaction"/> or - if
+    /// Marks the <see cref="DomainObject"/> as changed in the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If the object's previous <see cref="State"/> was <see cref="StateType.Unchanged"/>, it
     /// will be <see cref="StateType.Changed"/> after this method has been called.
     /// </summary>
@@ -520,7 +531,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Deletes the <see cref="DomainObject"/> in the default transaction, ie. in the <see cref="BindingTransaction"/> or - if
+    /// Deletes the <see cref="DomainObject"/> in the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
     /// <exception cref="DataManagement.ObjectDiscardedException">The object is already discarded. See <see cref="DataManagement.ObjectDiscardedException"/> for further information.</exception>
@@ -539,7 +550,7 @@ namespace Remotion.Data.DomainObjects
     /// whether it is a simple value property, a related object property, or a related object collection property.
     /// </remarks>
     /// <exception cref="InvalidOperationException">The current property hasn't been initialized or there is no current property. Perhaps the domain 
-    /// object was created with the <c>new</c> operator instead of using the <see cref="NewObject{T}"/> method, or the property is not virtual.</exception>
+    /// object was created with the <c>new</c> operator instead of using the <see cref="NewObject{T}()"/> method, or the property is not virtual.</exception>
     protected PropertyAccessor CurrentProperty
     {
       get

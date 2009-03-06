@@ -38,7 +38,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
     public DataContainer GetDataContainer ()
     {
-      return (DataContainer) PrivateInvoke.InvokeNonPublicMethod (BindingTransaction ?? ClientTransaction.Current, typeof (ClientTransaction), "GetDataContainer", this);
+      var transaction = HasBindingTransaction ? GetBindingTransaction() : ClientTransaction.Current;
+      return (DataContainer) PrivateInvoke.InvokeNonPublicMethod (transaction, typeof (ClientTransaction), "GetDataContainer", this);
     }
 
     public abstract string StringProperty { get; set; }
