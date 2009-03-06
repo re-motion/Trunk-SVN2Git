@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private object _timestamp;
     private DataContainerStateType _state;
     private DomainObject _domainObject;
-    private RelationEndPointID[] _relationEndPointIDs = null;
+    private RelationEndPointID[] _associatedRelationEndPointIDs = null;
     private bool _isDiscarded = false;
     private bool _hasBeenMarkedChanged = false;
 
@@ -397,14 +397,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _isDiscarded; }
     }
 
-    internal RelationEndPointID[] RelationEndPointIDs
+    public RelationEndPointID[] AssociatedRelationEndPointIDs
     {
       get
       {
-        if (_relationEndPointIDs == null)
-          _relationEndPointIDs = RelationEndPointID.GetAllRelationEndPointIDs (this);
+        if (_associatedRelationEndPointIDs == null)
+          _associatedRelationEndPointIDs = RelationEndPointID.GetAllRelationEndPointIDs (this);
 
-        return _relationEndPointIDs;
+        return _associatedRelationEndPointIDs;
       }
     }
 
@@ -498,6 +498,34 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _domainObject = domainObject;
     }
+
+    // TODO 1051: Use state to find out whether to register a new DC or an existing one?
+    public void RegisterNewDataContainer (ClientTransaction clientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      if (_clientTransaction != null)
+        throw new InvalidOperationException ("This DataContainer has already been registered with a ClientTransaction.");
+
+      SetClientTransaction (clientTransaction);
+      clientTransaction.DataManager.RegisterNewDataContainer (this);
+    }
+
+    public void RegisterLoadedDataContainer (ClientTransaction clientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      if (_clientTransaction != null)
+        throw new InvalidOperationException ("This DataContainer has already been registered with a ClientTransaction.");
+
+      SetClientTransaction (clientTransaction);
+
+      var domainObject = clientTransaction.GetObjectForDataContainer (this);
+      SetDomainObject (domainObject);
+
+      clientTransaction.DataManager.RegisterExistingDataContainer (this);
+    }
+
 
     internal object GetFieldValue (string propertyName, ValueAccess valueAccess)
     {
@@ -628,7 +656,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     internal void AssumeSamePropertyValues (DataContainer sourceContainer)
     {
-      _relationEndPointIDs = null; // reinitialize on next use
+      _associatedRelationEndPointIDs = null; // reinitialize on next use
 
       for (int i = 0; i < _propertyValues.Count; ++i)
         _propertyValues[i].AssumeSameState (sourceContainer._propertyValues[i]);
@@ -643,7 +671,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _timestamp = sourceContainer._timestamp;
       _hasBeenMarkedChanged |= sourceContainer._hasBeenMarkedChanged;
       _domainObject = sourceContainer._domainObject;
-      _relationEndPointIDs = null; // reinitialize on next use
+      _associatedRelationEndPointIDs = null; // reinitialize on next use
 
       for (int i = 0; i < _propertyValues.Count; ++i)
         _propertyValues[i].TakeOverCommittedData (sourceContainer._propertyValues[i]);

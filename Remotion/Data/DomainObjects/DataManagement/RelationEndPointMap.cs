@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       foreach (DomainObject deletedDomainObject in deletedDomainObjects)
       {
-        foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(deletedDomainObject).RelationEndPointIDs)
+        foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(deletedDomainObject).AssociatedRelationEndPointIDs)
           Remove (endPointID);
       }
     }
@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       foreach (DomainObject newDomainObject in newDomainObjects)
       {
-        foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(newDomainObject).RelationEndPointIDs)
+        foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(newDomainObject).AssociatedRelationEndPointIDs)
           Remove (endPointID);
       }
     }
@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ClientTransactionsDifferException(message);
       }
 
-      RelationEndPointID[] relationEndPointIDs = ClientTransaction.GetDataContainer (domainObject).RelationEndPointIDs;
+      RelationEndPointID[] relationEndPointIDs = ClientTransaction.GetDataContainer (domainObject).AssociatedRelationEndPointIDs;
       _transactionEventSink.RelationEndPointMapPerformingDelete (relationEndPointIDs);
 
       oppositeEndPointModifications.Perform ();
@@ -241,7 +241,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      foreach (RelationEndPointID endPointID in dataContainer.RelationEndPointIDs)
+      foreach (RelationEndPointID endPointID in dataContainer.AssociatedRelationEndPointIDs)
       {
         if (endPointID.Definition.Cardinality == CardinalityType.One)
           RegisterObjectEndPoint (endPointID, null);
@@ -261,7 +261,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var allRelationEndPoints = new RelationEndPointCollection (_clientTransaction);
 
-      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).RelationEndPointIDs)
+      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).AssociatedRelationEndPointIDs)
       {
         RelationEndPoint endPoint = GetRelationEndPointWithLazyLoad (endPointID);
 
@@ -287,7 +287,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).RelationEndPointIDs)
+      foreach (RelationEndPointID endPointID in _clientTransaction.GetDataContainer(domainObject).AssociatedRelationEndPointIDs)
       {
         if (endPointID.Definition.IsMandatory)
         {
@@ -302,7 +302,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
 
-      foreach (RelationEndPointID endPointID in dataContainer.RelationEndPointIDs)
+      foreach (RelationEndPointID endPointID in dataContainer.AssociatedRelationEndPointIDs)
       {
         RelationEndPoint endPoint = _relationEndPoints[endPointID];
         if (endPoint != null && endPoint.HasChanged)

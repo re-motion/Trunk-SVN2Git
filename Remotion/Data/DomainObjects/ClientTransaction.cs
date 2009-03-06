@@ -912,7 +912,8 @@ public abstract class ClientTransaction
       if (idsToBeLoaded.Count > 0)
       {
         DataContainerCollection additionalDataContainers = LoadDataContainers (idsToBeLoaded, throwOnNotFound);
-        RegisterLoadedDataContainers (additionalDataContainers);
+        foreach (DataContainer additionalDataContainer in additionalDataContainers)
+          additionalDataContainer.RegisterLoadedDataContainer (this);
 
         var loadedDomainObjects = new DomainObjectCollection (additionalDataContainers, true);
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
@@ -959,7 +960,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer newDataContainer = DataContainer.CreateNew (id);
-      RegisterNewDataContainer(newDataContainer);
+      newDataContainer.RegisterNewDataContainer  (this);
       return newDataContainer;
     }
   }
@@ -1128,7 +1129,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer dataContainer = LoadDataContainer (id);
-      RegisterLoadedDataContainer (dataContainer);
+      dataContainer.RegisterLoadedDataContainer (this);
 
       Assertion.IsTrue (dataContainer.DomainObject.ID == id);
       Assertion.IsTrue (dataContainer.ClientTransaction == this);
@@ -1173,7 +1174,7 @@ public abstract class ClientTransaction
 
       if (relatedDataContainer != null)
       {
-        RegisterLoadedDataContainer (relatedDataContainer);
+        relatedDataContainer.RegisterLoadedDataContainer (this);
 
         var loadedDomainObjects = new DomainObjectCollection (new[] { relatedDataContainer.DomainObject }, true);
         OnLoaded (new ClientTransactionEventArgs (loadedDomainObjects));
@@ -1253,7 +1254,7 @@ public abstract class ClientTransaction
     using (EnterNonDiscardingScope ())
     {
       DataContainer dataContainer = LoadDataContainerForExistingObject (domainObject);
-      RegisterLoadedDataContainer (dataContainer);
+      dataContainer.RegisterLoadedDataContainer (this);
 
       Assertion.IsTrue (dataContainer.DomainObject == domainObject);
       Assertion.IsTrue (dataContainer.ClientTransaction == this);
@@ -1287,8 +1288,9 @@ public abstract class ClientTransaction
       DataContainerCollection newLoadedDataContainers = _dataManager.DataContainerMap.GetNotRegisteredDataContainers (dataContainers);
       foreach (DataContainer dataContainer in newLoadedDataContainers)
         TransactionEventSink.ObjectLoading (dataContainer.ID);
-      
-      RegisterLoadedDataContainers (newLoadedDataContainers);
+
+      foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
+        newLoadedDataContainer.RegisterLoadedDataContainer (this);
 
       var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (dataContainers);
       DomainObjectCollection domainObjects = DomainObjectCollection.Create (collectionType, mergedContainers, requiredItemType);
@@ -1579,32 +1581,6 @@ public abstract class ClientTransaction
   public virtual ITransaction ToITransation ()
   {
     return new ClientTransactionWrapper (this);
-  }
-
-  private void RegisterNewDataContainer (DataContainer newDataContainer)
-  {
-    newDataContainer.SetClientTransaction (this);
-    _dataManager.RegisterNewDataContainer (newDataContainer);
-  }
-
-  private void RegisterLoadedDataContainers (DataContainerCollection newLoadedDataContainers)
-  {
-    ArgumentUtility.CheckNotNull ("newLoadedDataContainers", newLoadedDataContainers);
-
-    foreach (DataContainer dataContainer in newLoadedDataContainers)
-      RegisterLoadedDataContainer(dataContainer);
-  }
-
-  private void RegisterLoadedDataContainer (DataContainer dataContainer)
-  {
-    ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-
-    dataContainer.SetClientTransaction (this);
-    
-    var domainObject = GetObjectForDataContainer (dataContainer);
-    dataContainer.SetDomainObject (domainObject);
-
-    DataManager.RegisterExistingDataContainer (dataContainer);
   }
 }
 }

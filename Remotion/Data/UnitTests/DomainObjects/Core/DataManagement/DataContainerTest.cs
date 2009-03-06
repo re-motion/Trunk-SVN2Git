@@ -681,6 +681,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (dc.DomainObject, Is.SameAs (domainObject));
     }
 
+    [Test]
+    public void RegisterNewDataContainer ()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      var collectionEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
+      var realEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID], Is.Null);
+      
+      dc.RegisterNewDataContainer (ClientTransactionMock);
+
+      Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dc));
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[collectionEndPointID].ObjectID, Is.EqualTo (dc.ID));
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID].ObjectID, Is.EqualTo (dc.ID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =  "This DataContainer has already been registered with a ClientTransaction.")]
+    public void RegisterNewDataContainer_Twice()
+    {
+      var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      dc.RegisterNewDataContainer (ClientTransactionMock);
+      dc.RegisterNewDataContainer (ClientTransactionMock);
+    }
+
+    [Test]
+    public void RegisterLoadedDataContainer ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Null);
+      var collectionEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".OrderItems");
+      var realEndPointID = new RelationEndPointID (DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID], Is.Null);
+
+      dc.RegisterLoadedDataContainer (ClientTransactionMock);
+
+      Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (dc.DomainObject, Is.Not.Null);
+      Assert.That (dc.DomainObject, Is.SameAs (ClientTransactionMock.GetObjectForDataContainer (dc)));
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.SameAs (dc));
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[collectionEndPointID], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[realEndPointID].ObjectID, Is.EqualTo (dc.ID));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This DataContainer has already been registered with a ClientTransaction.")]
+    public void RegisterLoadedDataContainer_Twice ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+      dc.RegisterLoadedDataContainer (ClientTransactionMock);
+      dc.RegisterLoadedDataContainer (ClientTransactionMock);
+    }
+
     private string GetStorageClassPropertyName (string shortName)
     {
       return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
