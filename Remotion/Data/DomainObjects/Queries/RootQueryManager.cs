@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
@@ -151,35 +152,49 @@ namespace Remotion.Data.DomainObjects.Queries
         using (var storageProviderManager = new StorageProviderManager())
         {
           StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
-          var dataContainers = new DataContainerCollection (provider.ExecuteCollectionQuery (query), false);
-
-          var resultArray = GetMergedResultArray<T> (dataContainers);
+          var dataContainers = provider.ExecuteCollectionQuery (query);
+          var resultArray = MergeQueryResultWithExistingObjects<T> (dataContainers);
           var queryResult = new QueryResult<T> (query, resultArray);
           return _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult);
         }
       }
     }
 
-    private T[] GetMergedResultArray<T> (DataContainerCollection dataContainers)
+    // TODO 1051: This is very similar to ClientTransaction.MergeLoadedDomainObjects, unify.
+    private T[] MergeQueryResultWithExistingObjects<T> (DataContainer[] dataContainers) where T : DomainObject
     {
-      DomainObjectCollection resultCollection;
-      try
+      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
+
+      using (ClientTransaction.EnterNonDiscardingScope ())
       {
-        resultCollection = _clientTransaction.MergeLoadedDomainObjects (dataContainers, typeof (DomainObjectCollection), typeof (T), null);
+        var newLoadedDataContainers = Array.FindAll (dataContainers, dc => ClientTransaction.DataManager.DataContainerMap[dc.ID] == null); // TODO 1052: null check
+        foreach (DataContainer dataContainer in newLoadedDataContainers)
+          ClientTransaction.TransactionEventSink.ObjectLoading (dataContainer.ID);
+
+        foreach (DataContainer newLoadedDataContainer in newLoadedDataContainers)
+          newLoadedDataContainer.RegisterLoadedDataContainer (ClientTransaction);
+
+        var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Select (dc => dc.DomainObject), true);
+        ClientTransaction.OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
+
+        return Array.ConvertAll (dataContainers, dc => GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID))); // TODO 1052: null check
       }
-      catch (ArgumentItemTypeException ex)
+    }
+
+    private T GetCastQueryResultObject<T> (DomainObject domainObject) where T : DomainObject
+    {
+      var castDomainObject = domainObject as T;
+      if (castDomainObject != null)
+        return castDomainObject;
+      else
       {
         string message = string.Format (
-            "The query returned an object of type {0}, but a query result of type '{1}' was expected.",
-            ex.ActualType.FullName,
+            "The query returned an object of type '{0}', but a query result of type '{1}' was expected.",
+            domainObject.GetPublicDomainObjectType ().FullName,
             typeof (T).FullName);
-        throw new UnexpectedQueryResultException (message, ex);
+
+        throw new UnexpectedQueryResultException (message);
       }
-
-      var resultArray = new T[resultCollection.Count];
-      resultCollection.CopyTo (resultArray, 0);
-
-      return resultArray;
     }
   }
 }

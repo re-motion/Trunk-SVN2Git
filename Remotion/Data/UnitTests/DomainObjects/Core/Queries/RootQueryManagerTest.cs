@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
     [Test]
     [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "The query returned an object of type " 
-        + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer, but a query result of type "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer', but a query result of type "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' was expected.")]
     public void GetCollectionWithObjectListThrowsWhenInvalidT ()
     {

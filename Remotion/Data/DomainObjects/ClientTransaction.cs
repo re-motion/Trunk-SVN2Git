@@ -1350,7 +1350,7 @@ public abstract class ClientTransaction
   /// Raises the <see cref="Loaded"/> event.
   /// </summary>
   /// <param name="args">A <see cref="ClientTransactionEventArgs"/> object that contains the event data.</param>
-  protected virtual void OnLoaded (ClientTransactionEventArgs args)
+  protected internal virtual void OnLoaded (ClientTransactionEventArgs args)
   {
     using (EnterNonDiscardingScope ())
     {
