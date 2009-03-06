@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <buildversion xmlns="urn:rubicon-it:nant:buildversion">
   <major>1</major>
-  <minor>11</minor>
+  <minor>12</minor>
   <build>
-    <increment currentValue="29" />
+    <increment currentValue="0" />
   </build>
   <revision>
     <map property="nant.settings.currentframework"><entry propertyvalue="net-3.5" versionvalue="00" /><default fail="true" /></map>
