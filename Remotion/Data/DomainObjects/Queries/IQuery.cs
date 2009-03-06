@@ -55,8 +55,9 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </summary>
     QueryParameterCollection Parameters { get; }
 
+    // TODO 1041: Remove "not implemented" comment below.
     /// <summary>
-    /// Gets the eager fetch queries associated with this <see cref="IQuery"/> instance.
+    /// This has not been fully implemented yet. Gets the eager fetch queries associated with this <see cref="IQuery"/> instance.
     /// </summary>
     /// <value>The eager fetch queries associated with this <see cref="IQuery"/> instance by <see cref="RelationEndPointDefinition"/>.</value>
     /// <remarks>
