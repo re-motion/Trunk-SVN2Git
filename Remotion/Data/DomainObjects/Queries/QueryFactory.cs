@@ -192,15 +192,15 @@ namespace Remotion.Data.DomainObjects.Queries
 
     /// <summary>
     /// Creates a new scalar query with the given statement, parameters, and metadata.
+    /// Note that creating queries with a hard-coded SQL statement is not very flexible and not portable at all.
+    /// Therefore, the <see cref="CreateLinqQuery{T}()"/> and <see cref="CreateQueryFromConfiguration(string)"/>
+    /// methods should usually be preferred to this method.
     /// </summary>
     /// <param name="id">A string identifying the query.</param>
     /// <param name="storageProviderID">The ID of the storage provider used to execute the query.</param>
     /// <param name="statement">The scalar query statement.</param>
     /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
-    /// <remarks>Note that creating queries with a hard-coded SQL statement is not very flexible and not portable at all.
-    /// Therefore, the <see cref="CreateLinqQuery{T}()"/> and <see cref="CreateQuery(QueryDefinition,QueryParameterCollection)"/>
-    /// methods should usually be preferred to this method.</remarks>
     public static IQuery CreateScalarQuery (string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection)
     {
       ArgumentUtility.CheckNotNull ("id", id);
@@ -214,18 +214,17 @@ namespace Remotion.Data.DomainObjects.Queries
 
     /// <summary>
     /// Creates a new collection query with the given statement, parameters, and metadata.
+    /// Note that creating queries with a hard-coded SQL statement is not very flexible and not portable at all.
+    /// Therefore, the <see cref="CreateLinqQuery{T}()"/> and <see cref="CreateQueryFromConfiguration(string)"/>
+    /// methods should usually be preferred to this method.
     /// </summary>
     /// <param name="id">A string identifying the query.</param>
     /// <param name="storageProviderID">The ID of the storage provider used to execute the query.</param>
     /// <param name="statement">The scalar query statement.</param>
     /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
     /// <param name="collectionType">The collection type to be returned from the query. Pass <see cref="DomainObjectCollection"/> if you don't care
-    /// about the collection type. Note that the type passed here can be specialized by 
-    /// <see cref="IQueryManager.GetCollection{T}"/>.</param>
+    /// about the collection type. The type passed here is used by <see cref="QueryResult{T}.ToCustomCollection"/>.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
-    /// <remarks>Note that creating queries with a hard-coded SQL statement is not very flexible and not portable at all.
-    /// Therefore, the <see cref="CreateLinqQuery{T}()"/> and <see cref="CreateQuery(QueryDefinition,QueryParameterCollection)"/>
-    /// methods should usually be preferred to this method.</remarks>
     public static IQuery CreateCollectionQuery (string id, string storageProviderID, string statement, QueryParameterCollection queryParameterCollection, Type collectionType)
     {
       ArgumentUtility.CheckNotNull ("id", id);
