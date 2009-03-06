@@ -15,11 +15,12 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
@@ -29,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void InitializeWithQueryID ()
     {
-      QueryParameterCollection parameters = new QueryParameterCollection ();
+      var parameters = new QueryParameterCollection ();
       var query = (Query) QueryFactory.CreateQueryFromConfiguration ("OrderQuery", parameters);
 
       QueryDefinition definition = DomainObjectsConfiguration.Current.Query.QueryDefinitions["OrderQuery"];
@@ -45,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     [Test]
     public void InitializeWithQueryDefinition ()
     {
-      QueryParameterCollection parameters = new QueryParameterCollection ();
+      var parameters = new QueryParameterCollection ();
 
       QueryDefinition definition = TestQueryFactory.CreateOrderQueryWithCustomCollectionType ();
       var query = new Query (definition, parameters);
@@ -53,6 +54,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.AreSame (definition, query.Definition);
       Assert.AreEqual (definition.ID, query.ID);
       Assert.AreSame (parameters, query.Parameters);
+    }
+
+    [Test]
+    public void EagerFetchQueries ()
+    {
+      QueryDefinition definition = TestQueryFactory.CreateOrderQueryWithCustomCollectionType ();
+      var query1 = new Query (definition, new QueryParameterCollection ());
+
+      Assert.That (query1.EagerFetchQueries, Is.Not.Null);
+      Assert.That (query1.EagerFetchQueries.Count, Is.EqualTo (0));
+
+      var query2 = new Query (definition, new QueryParameterCollection ());
+      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetRelationEndPointDefinitions ()[0];
+
+      query1.EagerFetchQueries.Add (endPointDefinition, query2);
+      Assert.That (query1.EagerFetchQueries.Count, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void EagerFetchQueries_Recursive ()
+    {
+      QueryDefinition definition = TestQueryFactory.CreateOrderQueryWithCustomCollectionType ();
+      var query1 = new Query (definition, new QueryParameterCollection ());
+
+      Assert.That (query1.EagerFetchQueries, Is.Not.Null);
+      Assert.That (query1.EagerFetchQueries.Count, Is.EqualTo (0));
+
+      var query2 = new Query (definition, new QueryParameterCollection ());
+      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetRelationEndPointDefinitions ()[0];
+
+      query1.EagerFetchQueries.Add (endPointDefinition, query2);
+      Assert.That (query1.EagerFetchQueries.Count, Is.EqualTo (1));
+
+      var query3 = new Query (definition, new QueryParameterCollection ());
+      query2.EagerFetchQueries.Add (endPointDefinition, query3);
+      Assert.That (query2.EagerFetchQueries.Count, Is.EqualTo (1));
+
     }
   }
 }

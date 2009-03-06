@@ -266,6 +266,7 @@
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SpecificDerivedDO.cs" />
     <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetchingSpike.cs" />
+    <Compile Include="DomainObjects\Core\Queries\EagerFetchQueryCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryResultTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryCacheTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\QueryFactoryTest.cs" />
