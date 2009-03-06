@@ -49,6 +49,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     }
 
     [Test]
+    public void Test_WithNullObject ()
+    {
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("Dummy");
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { null });
+      _testHelper.AddExtension (_extension);
+      _testHelper.ReplayAll ();
+
+      var finalResult = _extension.FilterQueryResult (ClientTransaction.CreateRootTransaction (), queryResult);
+
+      _testHelper.VerifyAll ();
+      Assert.That (finalResult, Is.SameAs (queryResult));
+    }
+
+    [Test]
     public void Test_WithOneAllowedObject ()
     {
       SecurableObject allowedObject = _testHelper.CreateSecurableObject ();
