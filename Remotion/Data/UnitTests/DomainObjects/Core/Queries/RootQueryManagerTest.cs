@@ -217,6 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    [Ignore ("TODO 1041")]
     public void GetCollection_ExecutesFetchQueries ()
     {
       _officialTestQuery.EagerFetchQueries.Add (_officialOrdersRelationEndPointDefinition, _officialFetchTestQuery);
@@ -237,6 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    [Ignore ("TODO 1041")]
     public void GetCollection_DoesNotExecuteFetchQueries_WhenQueryResultEmpty ()
     {
       _officialTestQuery.EagerFetchQueries.Add (_officialOrdersRelationEndPointDefinition, _officialFetchTestQuery);

@@ -19,6 +19,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
+  /// <summary>
+  /// Used by the <see cref="IQueryManager"/> implementations in order to perform eager fetching of collection queries.
+  /// See <see cref="IQuery.EagerFetchQueries"/> for more information on eager fetching.
+  /// </summary>
   public class EagerFetcher
   {
     private readonly IQueryManager _queryManager;
@@ -37,6 +41,8 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
+
+      throw new NotImplementedException ("Eager fetching has not been implemented yet and cannot be used in this version of re-motion.");
 
       if (relationEndPointDefinition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("Eager fetching is only supported for collection-valued relation properties.", "relationEndPointDefinition");

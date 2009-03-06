@@ -24,6 +24,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
   [TestFixture]
+  [Ignore ("TODO 1041")]
   public class EagerFetcherTest : ClientTransactionBaseTest
   {
     private IQueryManager _queryManagerMock;

@@ -57,7 +57,8 @@ namespace Remotion.Data.DomainObjects.Queries
 
     // TODO 1041: Remove "not implemented" comment below.
     /// <summary>
-    /// This has not been fully implemented yet. Gets the eager fetch queries associated with this <see cref="IQuery"/> instance.
+    /// This has not been fully implemented yet and should not be used in this version of re-motion.
+    /// Gets the eager fetch queries associated with this <see cref="IQuery"/> instance.
     /// </summary>
     /// <value>The eager fetch queries associated with this <see cref="IQuery"/> instance by <see cref="RelationEndPointDefinition"/>.</value>
     /// <remarks>
