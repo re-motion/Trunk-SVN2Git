@@ -42,7 +42,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [Ignore ("TODO 545")]
     public void ExecuteCollectionQuery_WithNullIDs ()
     {
       var query = QueryFactory.CreateCollectionQuery (

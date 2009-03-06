@@ -126,7 +126,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [Ignore ("TODO 545")]
     public void CreateCollection_WithNullID_AllowNullsTrue ()
     {
       var factory = new DataContainerFactory (Provider, _readerMock);
@@ -176,18 +175,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         Expect.Call (_readerMock.Read()).Return (true);
         Expect.Call (_readerMock.GetOrdinal ("ID")).Return (0);
         Expect.Call (_readerMock.GetValue (0)).Return (ticketID != null ? ticketID.Value : DBNull.Value);
-        Expect.Call (_readerMock.GetOrdinal ("ClassID")).Return (1);
-        Expect.Call (_readerMock.IsDBNull (1)).Return (ticketID == null);
-        Expect.Call (_readerMock.GetString (1)).Return (ticketID != null ? ticketID.ClassID : null);
-        Expect.Call (_readerMock.GetOrdinal ("Timestamp")).Return (2);
-        Expect.Call (_readerMock.GetValue (2)).Return (timestamp);
-        Expect.Call (_readerMock.GetOrdinal ("FileName")).Return (3);
-        Expect.Call (_readerMock.GetValue (3)).Return (fileName);
-        Expect.Call (_readerMock.GetOrdinal ("OrderID")).Return (4);
-        Expect.Call (_readerMock.IsDBNull (4)).Return (false);
-        if (checkOrderIDClassIDNotExists)
-          Expect.Call (_readerMock.GetOrdinal ("OrderIDClassID")).Throw (new IndexOutOfRangeException());
-        Expect.Call (_readerMock.GetValue (4)).Return (relatedOrder.Value);
+        if (ticketID != null)
+        {
+          Expect.Call (_readerMock.GetOrdinal ("ClassID")).Return (1);
+          Expect.Call (_readerMock.IsDBNull (1)).Return (false);
+          Expect.Call (_readerMock.GetString (1)).Return (ticketID.ClassID);
+          Expect.Call (_readerMock.GetOrdinal ("Timestamp")).Return (2);
+          Expect.Call (_readerMock.GetValue (2)).Return (timestamp);
+          Expect.Call (_readerMock.GetOrdinal ("FileName")).Return (3);
+          Expect.Call (_readerMock.GetValue (3)).Return (fileName);
+          Expect.Call (_readerMock.GetOrdinal ("OrderID")).Return (4);
+          Expect.Call (_readerMock.IsDBNull (4)).Return (false);
+          if (checkOrderIDClassIDNotExists)
+            Expect.Call (_readerMock.GetOrdinal ("OrderIDClassID")).Throw (new IndexOutOfRangeException());
+          Expect.Call (_readerMock.GetValue (4)).Return (relatedOrder.Value);
+        }
       }
     }
 

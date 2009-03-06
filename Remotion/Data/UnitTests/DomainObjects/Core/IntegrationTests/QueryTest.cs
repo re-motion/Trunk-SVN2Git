@@ -27,7 +27,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
   public class QueryTest : ClientTransactionBaseTest
   {
     [Test]
-    [Ignore ("TODO 545")]
+    public void GetCollectionWithExistingObjects ()
+    {
+      var computer2 = Computer.GetObject (DomainObjectIDs.Computer2);
+      var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
+
+      IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageProviderID,
+          "SELECT [Computer].* FROM [Computer] "
+          + "WHERE [Computer].[ID] IN (@1, @2, @3) "
+          + "ORDER BY [Computer].[ID] asc",
+          new QueryParameterCollection (), typeof (DomainObjectCollection));
+
+      query.Parameters.Add ("@1", DomainObjectIDs.Computer2); // preloaded
+      query.Parameters.Add ("@2", DomainObjectIDs.Computer3);
+      query.Parameters.Add ("@3", DomainObjectIDs.Computer1); // preloaded
+
+      var resultArray = queryManager.GetCollection (query).ToArray();
+      Assert.That (resultArray, Is.EqualTo (new[] {computer2, Computer.GetObject (DomainObjectIDs.Computer3), computer1}));
+    }
+
+    [Test]
     public void GetCollectionWithNullValues ()
     {
       IQueryManager queryManager = new RootQueryManager (ClientTransactionMock);
@@ -38,12 +58,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           new QueryParameterCollection(), typeof (DomainObjectCollection));
       
       query.Parameters.Add ("@1", DomainObjectIDs.Computer5); // no employee
-      query.Parameters.Add ("@2", DomainObjectIDs.Computer1); // employee 1
       query.Parameters.Add ("@3", DomainObjectIDs.Computer4); // no employee
+      query.Parameters.Add ("@2", DomainObjectIDs.Computer1); // employee 3
       
       var result = queryManager.GetCollection (query);
       Assert.That (result.ContainsNulls (), Is.True);
-      Assert.That (result.ToArray (), Is.EqualTo (new[] { null, Employee.GetObject (DomainObjectIDs.Employee1), null }));
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { null, null, Employee.GetObject (DomainObjectIDs.Employee3)}));
     }
 
     [Test]

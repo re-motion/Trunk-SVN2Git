@@ -167,7 +167,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       using (ClientTransaction.EnterNonDiscardingScope ())
       {
-        var newLoadedDataContainers = Array.FindAll (dataContainers, dc => ClientTransaction.DataManager.DataContainerMap[dc.ID] == null); // TODO 1052: null check
+        var newLoadedDataContainers = Array.FindAll (dataContainers, dc => dc != null && ClientTransaction.DataManager.DataContainerMap[dc.ID] == null);
         foreach (DataContainer dataContainer in newLoadedDataContainers)
           ClientTransaction.TransactionEventSink.ObjectLoading (dataContainer.ID);
 
@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.Queries
         var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Select (dc => dc.DomainObject), true);
         ClientTransaction.OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
-        return Array.ConvertAll (dataContainers, dc => GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID))); // TODO 1052: null check
+        return Array.ConvertAll (dataContainers, dc => dc == null ? null : GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID)));
       }
     }
 

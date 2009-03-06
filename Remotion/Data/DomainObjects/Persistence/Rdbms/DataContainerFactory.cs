@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -39,41 +40,55 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public virtual DataContainer CreateDataContainer ()
     {
       if (_dataReader.Read ())
-        return CreateDataContainerFromReader ();
+        return CreateDataContainerFromReader (false);
       else
         return null;
     }
 
     public virtual DataContainer[] CreateCollection (bool allowNulls)
     {
-      var dataContainerCollection = new DataContainerCollection ();
+      var collection = new List<DataContainer> ();
+      var loadedIDs = new HashSet<ObjectID> ();
 
       while (_dataReader.Read ())
       {
-        DataContainer dataContainer = CreateDataContainerFromReader ();
-        if (dataContainerCollection.Contains (dataContainer.ID))
-          throw _provider.CreateRdbmsProviderException (
-              "A database query returned duplicates of the domain object '{0}', which is not supported.",
-              dataContainer.ID);
-        dataContainerCollection.Add (dataContainer);
+        DataContainer dataContainer = CreateDataContainerFromReader (allowNulls);
+        if (dataContainer != null)
+        {
+          if (loadedIDs.Contains (dataContainer.ID))
+          {
+            throw _provider.CreateRdbmsProviderException (
+                "A database query returned duplicates of the domain object '{0}', which is not supported.",
+                dataContainer.ID);
+          }
+          loadedIDs.Add (dataContainer.ID);
+        }
+
+        collection.Add (dataContainer);
       }
 
-      return dataContainerCollection.Cast<DataContainer>().ToArray();
+      return collection.ToArray();
     }
 
-    protected virtual DataContainer CreateDataContainerFromReader ()
+    protected virtual DataContainer CreateDataContainerFromReader (bool allowNulls)
     {
       ValueConverter valueConverter = _provider.CreateValueConverter ();
       
       ObjectID id = valueConverter.GetID (_dataReader);
-      if (id == null)
+      if (id != null)
+      {
+        object timestamp = _dataReader.GetValue (valueConverter.GetMandatoryOrdinal (_dataReader, "Timestamp"));
+
+        DataContainer dataContainer = DataContainer.CreateForExisting (
+            id,
+            timestamp,
+            propertyDefinition => GetDataValue (propertyDefinition, id, valueConverter));
+        return dataContainer;
+      }
+      else if (allowNulls)
+        return null;
+      else
         throw _provider.CreateRdbmsProviderException ("An object returned from the database had a NULL ID, which is not supported.");
-
-      object timestamp = _dataReader.GetValue (valueConverter.GetMandatoryOrdinal (_dataReader, "Timestamp"));
-
-      DataContainer dataContainer = DataContainer.CreateForExisting (id, timestamp, 
-          delegate (PropertyDefinition propertyDefinition) { return GetDataValue (propertyDefinition, id, valueConverter); });
-      return dataContainer;
     }
 
     private object GetDataValue (PropertyDefinition propertyDefinition, ObjectID objectID, ValueConverter valueConverter)

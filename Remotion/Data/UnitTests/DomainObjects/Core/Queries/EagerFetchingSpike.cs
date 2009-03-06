@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Console.WriteLine ("Executing queries");
 
       var linqQuery = from o in QueryFactory.CreateLinqQuery<Order>()
-                      where new[] { 1, /*2,*/ 3, 4 }.Contains (o.OrderNumber)
+                      where new[] { 1, 2, 3, 4 }.Contains (o.OrderNumber)
                       select o;
       var orders = linqQuery.ToArray();
 
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
               new[]
               {
                   Order.GetObject (DomainObjectIDs.Order1),
-                  //Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem), requires NULL values
+                  Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem),
                   Order.GetObject (DomainObjectIDs.Order2),
                   Order.GetObject (DomainObjectIDs.Order3)
               }));
@@ -146,7 +146,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var order2 = Order.GetObject (DomainObjectIDs.Order2);
       var order3 = Order.GetObject (DomainObjectIDs.Order3);
-      //var orderWithoutOrderItems = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      var orderWithoutOrderItems = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
 
       Assert.That (
           order1.OrderItems,
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
               {
                   OrderItem.GetObject (DomainObjectIDs.OrderItem4)
               }));
-      //Assert.That (orderWithoutOrderItems.OrderItems, Is.Empty);
+      Assert.That (orderWithoutOrderItems.OrderItems, Is.Empty);
     }
 
     private void FetchRelatedObjects<TOriginal, TRelated> (IQueryable<TOriginal> originalQuery, IEnumerable<TOriginal> originalQueryResult, 
