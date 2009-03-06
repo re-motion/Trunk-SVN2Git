@@ -238,7 +238,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     [Test]
-    [Ignore ("TODO: 545")]
     public void LoadDataContainersFromCommandBuilder_NullIDs_AllowNullsTrue ()
     {
       var query = QueryFactory.CreateCollectionQuery (

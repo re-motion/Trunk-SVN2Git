@@ -54,31 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void UnboundObjects ()
-    {
-      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
-      {
-        Order newOrder = Order.NewObject();
-        Assert.IsFalse (newOrder.HasBindingTransaction);
-        Assert.IsNull (newOrder.GetBindingTransaction());
-
-        Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
-        Assert.IsFalse (loadedOrder.HasBindingTransaction);
-        Assert.IsNull (loadedOrder.GetBindingTransaction());
-      }
-    }
-
-    [Test]
-    public void UnboundObjects_NoCurrentTransaction ()
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        Order newOrder = Order.NewObject ();
-        Assert.IsNull (newOrder.GetBindingTransaction());
-      }
-    }
-
-    [Test]
     public void NewBoundObject ()
     {
       Order order = NewBound<Order>();

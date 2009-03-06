@@ -322,6 +322,12 @@ namespace Remotion.Data.DomainObjects
     /// <seealso cref="DomainObjects.ClientTransaction.CreateBindingTransaction"/>
     public ClientTransaction GetBindingTransaction ()
     {
+      if (!HasBindingTransaction)
+      {
+        throw new InvalidOperationException (
+            "This object has not been bound to a specific transaction, it uses the current transaction when it is "
+            + "accessed. Use HasBindingTransaction to check whether an object has been bound or not.");
+      }
       return _bindingTransaction;
     }
 

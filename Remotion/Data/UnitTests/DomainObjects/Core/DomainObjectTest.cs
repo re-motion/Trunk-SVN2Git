@@ -53,9 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The DomainObject has not been bound to a transaction, it uses "
-        + "ClientTransaction.Current to access its properties.")]
-    [Ignore ("TODO: 1045")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This object has not been bound to a specific transaction, it "
+        + "uses the current transaction when it is accessed. Use HasBindingTransaction to check whether an object has been bound or not.")]
     public void GetBindingTransaction_UnboundObject ()
     {
       var obj = Order.NewObject ();

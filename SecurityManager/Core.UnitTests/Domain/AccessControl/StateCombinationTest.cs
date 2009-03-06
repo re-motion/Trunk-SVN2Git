@@ -203,9 +203,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
     private StateType GetStateFromDataContainer (DomainObject orderClass)
     {
+      var transaction = orderClass.HasBindingTransaction ? orderClass.GetBindingTransaction () : ClientTransaction.Current;
+
       DataContainer dataContainer =
           (DataContainer)
-          PrivateInvoke.InvokeNonPublicMethod (orderClass.GetBindingTransaction() ?? ClientTransaction.Current, typeof (ClientTransaction), "GetDataContainer", orderClass);
+          PrivateInvoke.InvokeNonPublicMethod (transaction, typeof (ClientTransaction), "GetDataContainer", orderClass);
       return dataContainer.State;
     }
 
