@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <buildversion xmlns="urn:rubicon-it:nant:buildversion">
   <major>1</major>
-  <minor>12</minor>
+  <minor>13</minor>
   <build>
     <increment currentValue="0" />
   </build>
