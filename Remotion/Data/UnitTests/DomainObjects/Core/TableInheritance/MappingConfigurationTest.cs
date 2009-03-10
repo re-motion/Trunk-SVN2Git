@@ -74,7 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "Type 'Person' must be abstract, because neither class 'TI_Person' nor its base classes specify an entity name.")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Neither class 'TI_Person' nor its base classes specify an entity name. Make "
+      + "class 'Person' abstract or apply a DBTable attribute to it or one of its base classes.")]
     [Ignore( "TODO: Implement")]
     public void ConstructorValidates ()
     {

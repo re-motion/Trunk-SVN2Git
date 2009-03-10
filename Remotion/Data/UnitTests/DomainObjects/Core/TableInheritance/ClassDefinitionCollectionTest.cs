@@ -49,7 +49,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       catch (MappingException ex)
       {
         string expectedMessage = string.Format (
-            "Type '{0}' must be abstract, because neither class 'Person' nor its base classes specify an entity name.", 
+            "Neither class 'Person' nor its base classes specify an entity name. Make "
+            + "class '{0}' abstract or apply a DBTable attribute to it or one of its base classes.", 
             typeof (Person).AssemblyQualifiedName);
 
         Assert.AreEqual (expectedMessage, ex.Message);

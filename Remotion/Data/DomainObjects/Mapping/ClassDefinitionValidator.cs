@@ -48,9 +48,10 @@ namespace Remotion.Data.DomainObjects.Mapping
         if (_classDefinition.GetEntityName () == null && !_classDefinition.IsAbstract)
         {
           throw CreateMappingException (
-              "Type '{0}' must be abstract, because neither class '{1}' nor its base classes specify an entity name.",
-              _classDefinition.ClassType.AssemblyQualifiedName,
-              _classDefinition.ID);
+              "Neither class '{0}' nor its base classes specify an entity name. Make class '{1}' abstract or apply a DBTable attribute to it or "
+              + "one of its base classes.",
+              _classDefinition.ID,
+              _classDefinition.ClassType.AssemblyQualifiedName);
         }
       }
 
