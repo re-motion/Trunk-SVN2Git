@@ -24,8 +24,15 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
+  /// <summary>
+  /// The class uses re-store to execute queries.
+  /// </summary>
   public abstract class QueryExecutorBase : IQueryExecutor
   {
+    /// <summary>
+    /// Initializes a new instance of this <see cref="QueryExecutorBase"/> class.
+    /// </summary>
+    /// <param name="sqlGenerator">The sql generator <see cref="ISqlGenerator"/> which is used for querying re-store.</param>
     public QueryExecutorBase (ISqlGenerator sqlGenerator)
     {
       SqlGenerator = sqlGenerator;
@@ -33,6 +40,11 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public ISqlGenerator SqlGenerator { get; private set; }
 
+    /// <summary>
+    /// Creates and executes a given <see cref="QueryModel"/>.
+    /// </summary>
+    /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
+    /// <returns>The result of the executed query as single object.</returns>
     public object ExecuteSingle (QueryModel queryModel)
     {
       IEnumerable results = ExecuteCollection (queryModel);
@@ -48,6 +60,11 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
+    /// <summary>
+    /// Creates and executes a given <see cref="IQuery"/>.
+    /// </summary>
+    /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
+    /// <returns>The result of the executed query as <see cref="IEnumerable"/>.</returns>
     public IEnumerable ExecuteCollection (QueryModel queryModel)
     {
       if (ClientTransaction.Current == null)
@@ -57,12 +74,16 @@ namespace Remotion.Data.DomainObjects.Linq
       return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable();
     }
 
+    /// <summary>
+    /// Check to avoid choosing a column in the select projection. This is needed because re-store does not support single columns.
+    /// </summary>
+    /// <param name="evaluation"></param>
     private void CheckProjection (IEvaluation evaluation)
     {
       if (!(evaluation is Column))
       {
         string message = string.Format ("This query provider does not support the given select projection ('{0}'). The projection must select "
-                                        + "single DomainObject instances.", evaluation.GetType ().Name);
+                                        + "single DomainObject instances, because re-store does not support this kind of select projection.", evaluation.GetType ().Name);
         throw new InvalidOperationException (message);
       }
       
@@ -76,6 +97,12 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
+    /// <summary>
+    /// Creates a a <see cref="IQuery"/> object based on the given <see cref="QueryModel"/>.
+    /// </summary>
+    /// <param name="id">The identifier for the linq query.</param>
+    /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
+    /// <returns>A <see cref="IQuery"/> object.</returns>
     public virtual IQuery CreateQuery (string id, QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
@@ -89,6 +116,14 @@ namespace Remotion.Data.DomainObjects.Linq
       return CreateQuery (id, classDefinition, commandData.Statement, commandData.Parameters);
     }
 
+    /// <summary>
+    /// Creates a <see cref="IQuery"/> object.
+    /// </summary>
+    /// <param name="id">The identifier for the linq query.</param>
+    /// <param name="classDefinition">The class definition for the type of the query.</param>
+    /// <param name="statement">The sql statement of the query.</param>
+    /// <param name="commandParameters">The parameters of the sql statement.</param>
+    /// <returns>A <see cref="IQuery"/> object.</returns>
     public virtual IQuery CreateQuery(string id, ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
@@ -105,6 +140,11 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public abstract ClassDefinition GetClassDefinition ();
 
+    /// <summary>
+    /// Uses the given <see cref="ISqlGenerator"/> to generate sql code for the linq query.
+    /// </summary>
+    /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
+    /// <returns>A <see cref="CommandData"/> object for the given <see cref="QueryModel"/>.</returns>
     public virtual CommandData CreateStatement (QueryModel queryModel)
     {
       return SqlGenerator.BuildCommand (queryModel);

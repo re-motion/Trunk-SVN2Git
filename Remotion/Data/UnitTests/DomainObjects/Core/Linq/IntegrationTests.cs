@@ -589,7 +589,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support the given select projection "
-        + "('NewObject'). The projection must select single DomainObject instances.")]
+        + "('NewObject'). The projection must select single DomainObject instances, because re-store does not support this kind of select projection.")]
     public void Query_WithUnsupportedType_NewObject ()
     {
       var query =
@@ -602,7 +602,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support the given select projection "
-        + "('Constant'). The projection must select single DomainObject instances.")]
+        + "('Constant'). The projection must select single DomainObject instances, because re-store does not support this kind of select projection.")]
     public void Query_WithUnsupportedType_Constant ()
     {
       var query =
@@ -731,7 +731,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, DomainObjectIDs.OrderItem2);
     }
 
+    
     //[Test]
+    //public void QueryWithLength ()
+    //{
+    //  var query = from c in QueryFactory.CreateLinqQuery<Company>()
+    //              where c.Name.Contains("Test")
+    //              select c;
+    //  CheckQueryResult (query, DomainObjectIDs.Company1, DomainObjectIDs.Company2);
+    //}
+
+    //[Test]
+    //[Ignore("anonymous type is not supported at the moment")]
     //public void QueryTransparentIdentifiers ()
     //{
     //  //gets an anonymouse type

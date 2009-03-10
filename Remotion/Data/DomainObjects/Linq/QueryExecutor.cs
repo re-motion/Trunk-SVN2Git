@@ -18,12 +18,20 @@ using Remotion.Data.Linq.SqlGeneration;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
+  /// <summary>
+  /// Extends <see cref="QueryExecutorBase"/>.
+  /// </summary>
+  /// <typeparam name="T">The type of the linq query.</typeparam>
   public class QueryExecutor<T> : QueryExecutorBase
   {
     public QueryExecutor (ISqlGenerator sqlGenerator) : base(sqlGenerator)
     {
     }
 
+    /// <summary>
+    /// Gets ClassDefinition of current mapping configuration.
+    /// </summary>
+    /// <returns>returns <see cref="ClassDefinition"/></returns>
     public override ClassDefinition GetClassDefinition ()
     {
       return MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));

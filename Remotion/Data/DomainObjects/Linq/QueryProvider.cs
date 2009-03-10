@@ -21,6 +21,9 @@ using System;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
+  /// <summary>
+  /// The class extends <see cref="QueryProviderBase"/>.
+  /// </summary>
   public class QueryProvider : QueryProviderBase
   {
     public QueryProvider (QueryExecutorBase executor)
@@ -28,6 +31,12 @@ namespace Remotion.Data.DomainObjects.Linq
     {
     }
 
+    /// <summary>
+    /// The method returns a specific instance of <see cref="IQueryable"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the expression.</typeparam>
+    /// <param name="expression">The query as expression chain.</param>
+    /// <returns></returns>
     protected override IQueryable<T> CreateQueryable<T> (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);

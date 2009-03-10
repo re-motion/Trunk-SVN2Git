@@ -24,6 +24,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
+  /// <summary>
+  /// The implementation of <see cref="IDatabaseInfo"/>  for getting detailed information from re-store which is the underlying data source.
+  /// </summary>
   public class DatabaseInfo : IDatabaseInfo
   {
     public static readonly DatabaseInfo Instance = new DatabaseInfo();
@@ -87,6 +90,8 @@ namespace Remotion.Data.DomainObjects.Linq
       if (property.Name == "ID" && property.DeclaringType == typeof (DomainObject))
         return "ID";
 
+      //fix this if something is not in the MappingConfiguration -> go to derived classes (entity <T>) and look for property
+      //new parameter needed to get type (<T>) of entity<T>
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[property.DeclaringType];
       if (classDefinition == null)
         return null;
