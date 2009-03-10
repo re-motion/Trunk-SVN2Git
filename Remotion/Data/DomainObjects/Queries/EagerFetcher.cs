@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Queries
       _originalResults = originalResults;
     }
 
-    public void FetchRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery)
+    public void PerformEagerFetching (IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
@@ -48,8 +48,6 @@ namespace Remotion.Data.DomainObjects.Queries
         throw new ArgumentException ("Eager fetching is only supported for collection-valued relation properties.", "relationEndPointDefinition");
 
       var fetchedResult = _queryManager.GetCollection (fetchQuery);
-
-      // TODO: revursiveness, 
     }
   }
 }

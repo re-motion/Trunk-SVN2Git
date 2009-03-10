@@ -161,7 +161,7 @@ namespace Remotion.Data.DomainObjects.Queries
             var fetcher = new EagerFetcher (this, resultArray);
             foreach (var fetchQuery in query.EagerFetchQueries)
             {
-              fetcher.FetchRelatedObjects (fetchQuery.Key, fetchQuery.Value);
+              fetcher.PerformEagerFetching (fetchQuery.Key, fetchQuery.Value);
             }
           }
 
