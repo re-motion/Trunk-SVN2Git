@@ -37,6 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     private DataContainer _official2DataContainer;
     private IQuery _officialTestQuery;
     private IQuery _officialFetchTestQuery;
+    private IQuery _officialFetchTestQuery2;
     private IRelationEndPointDefinition _officialOrdersRelationEndPointDefinition;
 
     public override void SetUp ()
@@ -54,6 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _officialTestQuery = QueryFactory.CreateCollectionQuery ("test query", _unitTestStorageProviderStubID, "TEST QUERY", new QueryParameterCollection (), typeof (DomainObjectCollection));
       _officialFetchTestQuery = QueryFactory.CreateCollectionQuery ("fetch query", _unitTestStorageProviderStubID, "FETCH QUERY", new QueryParameterCollection (), typeof (DomainObjectCollection));
+      _officialFetchTestQuery2 = QueryFactory.CreateCollectionQuery ("fetch query", _unitTestStorageProviderStubID, "FETCH QUERY", new QueryParameterCollection (), typeof (DomainObjectCollection));
       _officialOrdersRelationEndPointDefinition = DomainObjectIDs.Official1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Official).FullName + ".Orders");
     }
 
@@ -254,6 +256,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       }
 
       storageProviderMock.AssertWasNotCalled (mock => mock.ExecuteCollectionQuery (_officialFetchTestQuery));
+    }
+
+    [Test]
+    [Ignore ("TODO 1041")]
+    public void GetCollection_FetchQueries_Recursive ()
+    {
+      _officialTestQuery.EagerFetchQueries.Add (_officialOrdersRelationEndPointDefinition, _officialFetchTestQuery);
+      _officialFetchTestQuery.EagerFetchQueries.Add (_officialOrdersRelationEndPointDefinition, _officialFetchTestQuery2);
+
+      var mainResult = new[] {DataContainer.CreateNew (DomainObjectIDs.Official1)};
+
+      var storageProviderMock = MockRepository.GenerateMock<StorageProvider> (_unitTestStorageProviderStubDefinition);
+      storageProviderMock.Expect (mock => mock.ExecuteCollectionQuery (_officialTestQuery)).Return (mainResult);
+      storageProviderMock.Expect (mock => mock.ExecuteCollectionQuery (_officialFetchTestQuery2)).Return (new DataContainer[0]);
+
+      using (UnitTestStorageProviderStub.EnterMockStorageProviderScope (storageProviderMock))
+      {
+        _queryManager.GetCollection<Official> (_officialTestQuery);
+      }
+
+      storageProviderMock.VerifyAllExpectations();
     }
   }
 }

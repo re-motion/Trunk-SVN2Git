@@ -973,7 +973,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void CreateWithItemType ()
     {
       DomainObjectCollection collection = DomainObjectCollection.Create (
-          typeof (DomainObjectCollection), new DataContainerCollection (), typeof (Order));
+          typeof (DomainObjectCollection), new DomainObject[0], typeof (Order));
 
       Assert.IsNotNull (collection);
       Assert.AreEqual (typeof (Order), collection.RequiredItemType);

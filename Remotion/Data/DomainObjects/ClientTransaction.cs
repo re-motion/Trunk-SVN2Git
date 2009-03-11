@@ -1293,7 +1293,10 @@ public abstract class ClientTransaction
         newLoadedDataContainer.RegisterLoadedDataContainer (this);
 
       var mergedContainers = _dataManager.DataContainerMap.MergeWithRegisteredDataContainers (dataContainers);
-      DomainObjectCollection domainObjects = DomainObjectCollection.Create (collectionType, mergedContainers, requiredItemType);
+      DomainObjectCollection domainObjects = DomainObjectCollection.Create (
+          collectionType, 
+          mergedContainers.Cast<DataContainer>().Select (dc => dc.DomainObject), 
+          requiredItemType);
 
       if (relationEndPointID != null)
         _dataManager.RelationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, domainObjects);

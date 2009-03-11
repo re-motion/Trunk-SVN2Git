@@ -14,6 +14,10 @@
 // along with this framework; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Remotion.Collections;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -27,6 +31,7 @@ namespace Remotion.Data.DomainObjects.Queries
   {
     private readonly IQueryManager _queryManager;
     private readonly DomainObject[] _originalResults;
+    private readonly RelationEndPointMap _relationEndPointMap;
 
     public EagerFetcher (IQueryManager queryManager, DomainObject[] originalResults)
     {
@@ -35,6 +40,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       _queryManager = queryManager;
       _originalResults = originalResults;
+      _relationEndPointMap = _queryManager.ClientTransaction.DataManager.RelationEndPointMap;
     }
 
     public void PerformEagerFetching (IRelationEndPointDefinition relationEndPointDefinition, IQuery fetchQuery)
@@ -42,12 +48,64 @@ namespace Remotion.Data.DomainObjects.Queries
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
 
-      throw new NotImplementedException ("Eager fetching has not been implemented yet and cannot be used in this version of re-motion.");
-
       if (relationEndPointDefinition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("Eager fetching is only supported for collection-valued relation properties.", "relationEndPointDefinition");
 
       var fetchedResult = _queryManager.GetCollection (fetchQuery);
+
+      var collatedResult = CollateRelatedObjects (fetchQuery, relationEndPointDefinition, fetchedResult.AsEnumerable ());
+      foreach (var originalObject in _originalResults)
+      {
+        if (originalObject != null)
+        {
+          var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
+          RegisterRelationResult (relationEndPointID, collatedResult[originalObject].Distinct());
+        }
+      }
+    }
+
+    private MultiDictionary<DomainObject, DomainObject> CollateRelatedObjects (IQuery fetchQuery, IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> relatedObjects)
+    {
+      var result = new MultiDictionary<DomainObject, DomainObject> ();
+
+      var oppositeEndPointDefinition = relationEndPointDefinition.RelationDefinition.GetOppositeEndPointDefinition (relationEndPointDefinition);
+      foreach (var relatedObject in relatedObjects)
+      {
+        if (relatedObject != null)
+        {
+          if (!oppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (relatedObject.ID.ClassDefinition))
+          {
+            var message = string.Format (
+                "The eager fetch query '{0}' ('{1}') returned an object of an unexpected type. For relation end point '{2}', "
+                + "an object of class '{3}' was expected, but an object of class '{4}' was returned.",
+                fetchQuery.ID,
+                fetchQuery.Statement,
+                relationEndPointDefinition.PropertyName,
+                oppositeEndPointDefinition.ClassDefinition.ID,
+                relatedObject.ID.ClassDefinition.ID);
+
+            throw new UnexpectedQueryResultException (message);
+          }
+
+          var originatingObject = _relationEndPointMap.GetRelatedObject (new RelationEndPointID (relatedObject.ID, oppositeEndPointDefinition), true);
+          if (originatingObject != null)
+            result.Add (originatingObject, relatedObject);          
+        }
+      }
+      return result;
+    }
+
+    private void RegisterRelationResult (RelationEndPointID relationEndPointID, IEnumerable<DomainObject> relatedObjects)
+    {
+      if (_relationEndPointMap[relationEndPointID] == null)
+      {
+        var domainObjectCollection = DomainObjectCollection.Create (
+            relationEndPointID.Definition.PropertyType,
+            relatedObjects,
+            relationEndPointID.OppositeEndPointDefinition.ClassDefinition.ClassType);
+
+        _relationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, domainObjectCollection);
+      }
     }
   }
 }

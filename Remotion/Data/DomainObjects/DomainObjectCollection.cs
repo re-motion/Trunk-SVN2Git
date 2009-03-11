@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
     public static DomainObjectCollection Create (Type collectionType)
     {
-      return Create (collectionType, new DataContainerCollection(), null);
+      return Create (collectionType, new DomainObject[0], null);
     }
 
     /// <summary>
@@ -135,48 +135,48 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
     public static DomainObjectCollection Create (Type collectionType, Type requiredItemType)
     {
-      return Create (collectionType, new DataContainerCollection(), requiredItemType);
+      return Create (collectionType, new DomainObject[0], requiredItemType);
     }
 
     /// <summary>
     /// Creates a <see cref="DomainObjectCollection"/> of a given <see cref="System.Type"/> and adds the <see cref="DomainObject"/>s of the given <see cref="DataContainerCollection"/>.
     /// </summary>
     /// <param name="collectionType">The <see cref="Type"/> of the new collection that should be instantiated. Must not be <see langword="null"/>.</param>
-    /// <param name="dataContainers">The <see cref="DataContainer"/>s of the <see cref="DomainObject"/>s that are added to the collection. Must not be <see langword="null"/>.</param>
+    /// <param name="contents">The <see cref="DomainObject"/>s that are added to the collection. Must not be <see langword="null"/>.</param>
     /// <returns>The new <see cref="DomainObjectCollection"/>.</returns>
     /// <exception cref="System.ArgumentNullException">
     ///   <paramref name="collectionType"/> is <see langword="null"/>.<br /> -or- <br />
-    ///   <paramref name="dataContainers"/> is <see langword="null"/>.
+    ///   <paramref name="contents"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
-    public static DomainObjectCollection Create (Type collectionType, DataContainerCollection dataContainers)
+    public static DomainObjectCollection Create (Type collectionType, IEnumerable<DomainObject> contents)
     {
-      return Create (collectionType, dataContainers, null);
+      return Create (collectionType, contents, null);
     }
 
     /// <summary>
     /// Creates a <see cref="DomainObjectCollection"/> of a given <see cref="System.Type"/> and adds the <see cref="DomainObject"/>s of the given <see cref="DataContainerCollection"/>.
     /// </summary>
     /// <param name="collectionType">The <see cref="Type"/> of the new collection that should be instantiated. Must not be <see langword="null"/>.</param>
-    /// <param name="dataContainers">The <see cref="DataContainer"/>s of the <see cref="DomainObject"/>s that are added to the collection. Must not be <see langword="null"/>.</param>
+    /// <param name="contents">The <see cref="DomainObject"/>s of that are added to the collection. Must not be <see langword="null"/>.</param>
     /// <param name="requiredItemType">The permitted <see cref="Type"/> of an item in the <see cref="DomainObjectCollection"/>. If specified only this type or derived types can be added to the <b>DomainObjectCollection</b>.</param>
     /// <returns>The new <see cref="DomainObjectCollection"/>.</returns>
     /// <exception cref="System.ArgumentNullException">
     ///   <paramref name="collectionType"/> is <see langword="null"/>.<br /> -or- <br />
-    ///   <paramref name="dataContainers"/> is <see langword="null"/>.
+    ///   <paramref name="contents"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="System.InvalidCastException"><paramref name="collectionType"/> cannot be casted to <see cref="DomainObjectCollection"/>.</exception>
     public static DomainObjectCollection Create (
         Type collectionType,
-        DataContainerCollection dataContainers,
+        IEnumerable<DomainObject> contents,
         Type requiredItemType)
     {
       ArgumentUtility.CheckNotNull ("collectionType", collectionType);
-      ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
+      ArgumentUtility.CheckNotNull ("contents", contents);
 
       var domainObjects = (DomainObjectCollection) ReflectionUtility.CreateObject (collectionType);
       domainObjects._requiredItemType = requiredItemType;
-      domainObjects.AddRange (dataContainers.Cast<DataContainer>().Select (dc => dc.DomainObject));
+      domainObjects.AddRange (contents);
       return domainObjects;
     }
 
