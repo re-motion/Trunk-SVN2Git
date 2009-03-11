@@ -20,6 +20,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
+using Remotion.Logging;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
@@ -29,6 +30,8 @@ namespace Remotion.Data.DomainObjects.Queries
   /// </summary>
   public class EagerFetcher
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (EagerFetcher));
+
     private readonly IQueryManager _queryManager;
     private readonly DomainObject[] _originalResults;
     private readonly RelationEndPointMap _relationEndPointMap;
@@ -51,51 +54,52 @@ namespace Remotion.Data.DomainObjects.Queries
       if (relationEndPointDefinition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("Eager fetching is only supported for collection-valued relation properties.", "relationEndPointDefinition");
 
-      var fetchedResult = _queryManager.GetCollection (fetchQuery);
+      s_log.DebugFormat (
+          "Eager fetching objects for {0} via query {1} ('{2}').", relationEndPointDefinition.PropertyName, fetchQuery.ID, fetchQuery.Statement);
 
-      var collatedResult = CollateRelatedObjects (fetchQuery, relationEndPointDefinition, fetchedResult.AsEnumerable ());
+      var fetchedResult = _queryManager.GetCollection (fetchQuery);
+      s_log.DebugFormat ("The eager fetch query yielded {0} related objects for {1} original objects.", fetchedResult.Count, _originalResults.Length);
+
+      var collatedResult = CollateRelatedObjects (fetchQuery, relationEndPointDefinition, fetchedResult.AsEnumerable());
       foreach (var originalObject in _originalResults)
       {
         if (originalObject != null)
         {
           var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
-          RegisterRelationResult (relationEndPointID, collatedResult[originalObject].Distinct());
+          RegisterRelationResult (fetchQuery, relationEndPointID, collatedResult[originalObject].Distinct());
         }
       }
     }
 
-    private MultiDictionary<DomainObject, DomainObject> CollateRelatedObjects (IQuery fetchQuery, IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> relatedObjects)
+    private MultiDictionary<DomainObject, DomainObject> CollateRelatedObjects (
+        IQuery fetchQuery, IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> relatedObjects)
     {
-      var result = new MultiDictionary<DomainObject, DomainObject> ();
-
+      var result = new MultiDictionary<DomainObject, DomainObject>();
       var oppositeEndPointDefinition = relationEndPointDefinition.RelationDefinition.GetOppositeEndPointDefinition (relationEndPointDefinition);
+      var loggedNullRelatedObject = false;
+
       foreach (var relatedObject in relatedObjects)
       {
         if (relatedObject != null)
         {
-          if (!oppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (relatedObject.ID.ClassDefinition))
-          {
-            var message = string.Format (
-                "The eager fetch query '{0}' ('{1}') returned an object of an unexpected type. For relation end point '{2}', "
-                + "an object of class '{3}' was expected, but an object of class '{4}' was returned.",
-                fetchQuery.ID,
-                fetchQuery.Statement,
-                relationEndPointDefinition.PropertyName,
-                oppositeEndPointDefinition.ClassDefinition.ID,
-                relatedObject.ID.ClassDefinition.ID);
-
-            throw new UnexpectedQueryResultException (message);
-          }
+          CheckClassDefinitionOfRelatedObject (fetchQuery, relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
 
           var originatingObject = _relationEndPointMap.GetRelatedObject (new RelationEndPointID (relatedObject.ID, oppositeEndPointDefinition), true);
           if (originatingObject != null)
-            result.Add (originatingObject, relatedObject);          
+            result.Add (originatingObject, relatedObject);
+          else
+            LogRelatedObjectPointingBackToNull (fetchQuery, relatedObject);
+        }
+        else if (!loggedNullRelatedObject)
+        {
+          LogNullRelatedObject (fetchQuery, relationEndPointDefinition);
+          loggedNullRelatedObject = true;
         }
       }
       return result;
     }
 
-    private void RegisterRelationResult (RelationEndPointID relationEndPointID, IEnumerable<DomainObject> relatedObjects)
+    private void RegisterRelationResult (IQuery fetchQuery, RelationEndPointID relationEndPointID, IEnumerable<DomainObject> relatedObjects)
     {
       if (_relationEndPointMap[relationEndPointID] == null)
       {
@@ -105,6 +109,62 @@ namespace Remotion.Data.DomainObjects.Queries
             relationEndPointID.OppositeEndPointDefinition.ClassDefinition.ClassType);
 
         _relationEndPointMap.RegisterCollectionEndPoint (relationEndPointID, domainObjectCollection);
+      }
+      else
+      {
+        LogRelatedObjectsAlreadyRegistered(fetchQuery, relationEndPointID, relatedObjects);
+      }
+    }
+
+    private void LogRelatedObjectsAlreadyRegistered (IQuery fetchQuery, RelationEndPointID relationEndPointID, IEnumerable<DomainObject> relatedObjects)
+    {
+      s_log.WarnFormat (
+          "The eager fetch query '{0}' ('{1}') for relation end point '{2}' returned {3} related objects for object '{4}', but that object already "
+          + "has {5} related objects.",
+          fetchQuery.ID,
+          fetchQuery.Statement,
+          relationEndPointID.PropertyName,
+          relatedObjects.Count(),
+          relationEndPointID.ObjectID,
+          ((CollectionEndPoint) _relationEndPointMap[relationEndPointID]).OppositeDomainObjects.Count);
+    }
+
+    private void LogNullRelatedObject (IQuery fetchQuery, IRelationEndPointDefinition relationEndPointDefinition)
+    {
+      s_log.WarnFormat (
+          "The eager fetch query '{0}' ('{1}') for relation end point '{2}' returned at least one null object.",
+          fetchQuery.ID,
+          fetchQuery.Statement,
+          relationEndPointDefinition.PropertyName);
+    }
+
+    private void LogRelatedObjectPointingBackToNull (IQuery fetchQuery, DomainObject relatedObject)
+    {
+      s_log.DebugFormat (
+          "The eager fetch query '{0}' ('{1}') returned related object '{2}', which has a null original object.",
+          fetchQuery.ID,
+          fetchQuery.Statement,
+          relatedObject.ID);
+    }
+
+    private void CheckClassDefinitionOfRelatedObject (
+        IQuery fetchQuery,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject relatedObject,
+        IRelationEndPointDefinition oppositeEndPointDefinition)
+    {
+      if (!oppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (relatedObject.ID.ClassDefinition))
+      {
+        var message = string.Format (
+            "The eager fetch query '{0}' ('{1}') returned an object of an unexpected type. For relation end point '{2}', "
+            + "an object of class '{3}' was expected, but an object of class '{4}' was returned.",
+            fetchQuery.ID,
+            fetchQuery.Statement,
+            relationEndPointDefinition.PropertyName,
+            oppositeEndPointDefinition.ClassDefinition.ID,
+            relatedObject.ID.ClassDefinition.ID);
+
+        throw new UnexpectedQueryResultException (message);
       }
     }
   }
