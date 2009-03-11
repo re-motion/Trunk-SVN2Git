@@ -44,6 +44,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                         DomainObjectIDs.Computer5);
     }
 
+    //[Test]
+    //public void QueryWithAdditionalFrom ()
+    //{
+    //  var query = from c in QueryFactory.CreateLinqQuery<Computer>()
+    //             from co in QueryFactory.CreateLinqQuery<Company>()
+    //             select c;
+    //  query.ToList();
+    //}
+
+    //[Test]
+    //public void QueryWithMemberFromClause ()
+    //{
+    //  var query =from o in QueryFactory.CreateLinqQuery<Order> ()
+    //             from oi in o.OrderItems
+    //            where o.OrderNumber == 1
+    //            select oi;
+    //  query.ToList();
+    //}
+
     [Test]
     public void SimpleQuery_WithRelatedEntity ()
     {
