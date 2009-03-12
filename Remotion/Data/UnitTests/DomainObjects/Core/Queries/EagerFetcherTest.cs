@@ -284,6 +284,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    [ExpectedException (typeof (UnexpectedQueryResultException), ExpectedMessage = "Eager fetching cannot be performed for query result object "
+        + "'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' and relation end point 'Remotion.Data.UnitTests.DomainObjects.TestDomain."
+        + "Order.OrderItems'. The end point belongs to an object of class 'Order' but the query result has class 'OrderItem'.")]
+    public void PerformEagerFetching_ThrowsOnInvalidOriginalType ()
+    {
+      _queryManagerMock
+        .Expect (mock => mock.GetCollection (_fetchTestQuery))
+        .Return (new QueryResult<DomainObject> (_fetchTestQuery, new DomainObject[] { _orderItem3 }));
+
+      var fetcher = new EagerFetcher (_queryManagerMock, new DomainObject[] { _orderItem1 });
+      fetcher.PerformEagerFetching (_orderOrderItemsRelationEndPointDefinition, _fetchTestQuery);
+    }
+
+    [Test]
     public void PerformEagerFetching_IgnoresResultObjectsWithoutOriginalObject ()
     {
       var id1 = new RelationEndPointID (_order1.ID, _orderOrderItemsRelationEndPointDefinition);

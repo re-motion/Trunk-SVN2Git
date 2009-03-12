@@ -65,6 +65,8 @@ namespace Remotion.Data.DomainObjects.Queries
       {
         if (originalObject != null)
         {
+          CheckClassDefinitionOfOriginalObject (relationEndPointDefinition, originalObject);
+
           var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
           RegisterRelationResult (fetchQuery, relationEndPointID, collatedResult[originalObject].Distinct());
         }
@@ -145,6 +147,22 @@ namespace Remotion.Data.DomainObjects.Queries
           fetchQuery.ID,
           fetchQuery.Statement,
           relatedObject.ID);
+    }
+
+    private void CheckClassDefinitionOfOriginalObject (IRelationEndPointDefinition relationEndPointDefinition, DomainObject originalObject)
+    {
+      if (!relationEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (originalObject.ID.ClassDefinition))
+      {
+        var message = string.Format (
+            "Eager fetching cannot be performed for query result object '{0}' and relation end point '{1}'. The end point belongs to an object of "
+            + "class '{2}' but the query result has class '{3}'.",
+            originalObject.ID,
+            relationEndPointDefinition.PropertyName,
+            relationEndPointDefinition.ClassDefinition.ID,
+            originalObject.ID.ClassDefinition.ID);
+
+        throw new UnexpectedQueryResultException (message);
+      }
     }
 
     private void CheckClassDefinitionOfRelatedObject (
