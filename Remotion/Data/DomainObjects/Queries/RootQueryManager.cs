@@ -150,25 +150,31 @@ namespace Remotion.Data.DomainObjects.Queries
 
       using (_clientTransaction.EnterNonDiscardingScope())
       {
-        using (var storageProviderManager = new StorageProviderManager())
+        T[] resultArray = ExecuteCollectionAndMergeResult<T> (query);
+        if (resultArray.Length > 0)
         {
-          StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
-          var dataContainers = provider.ExecuteCollectionQuery (query);
-          var resultArray = MergeQueryResultWithExistingObjects<T> (dataContainers);
-
-          if (resultArray.Length > 0)
+          var fetcher = new EagerFetcher (this, resultArray);
+          foreach (var fetchQuery in query.EagerFetchQueries)
           {
-            var fetcher = new EagerFetcher (this, resultArray);
-            foreach (var fetchQuery in query.EagerFetchQueries)
-            {
-              fetcher.PerformEagerFetching (fetchQuery.Key, fetchQuery.Value);
-            }
+            fetcher.PerformEagerFetching (fetchQuery.Key, fetchQuery.Value);
           }
-
-          var queryResult = new QueryResult<T> (query, resultArray);
-          return _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult);
         }
+
+        var queryResult = new QueryResult<T> (query, resultArray);
+        return _clientTransaction.TransactionEventSink.FilterQueryResult (queryResult);
       }
+    }
+
+    private T[] ExecuteCollectionAndMergeResult<T> (IQuery query) where T: DomainObject
+    {
+      T[] resultArray;
+      using (var storageProviderManager = new StorageProviderManager ())
+      {
+        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderID);
+        var dataContainers = provider.ExecuteCollectionQuery (query);
+        resultArray = MergeQueryResultWithExistingObjects<T> (dataContainers);
+      }
+      return resultArray;
     }
 
     // TODO 1051: This is very similar to ClientTransaction.MergeLoadedDomainObjects, unify.

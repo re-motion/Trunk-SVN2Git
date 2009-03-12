@@ -17,9 +17,13 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Logging;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -78,5 +82,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       queryManager.GetCollection (query);
     }
 
+    [Test]
+    public void EagerFetching ()
+    {
+      LogManager.InitializeConsole();
+
+      var ordersQuery = QueryFactory.CreateCollectionQuery (
+          "test",
+          DomainObjectIDs.Order1.StorageProviderID,
+          "SELECT * FROM [Order] WHERE OrderNo IN (1, 3)",
+          new QueryParameterCollection(),
+          typeof (DomainObjectCollection));
+
+      var relationEndPointDefinition =
+          DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+
+      var orderItemsFetchQuery = QueryFactory.CreateCollectionQuery (
+          "test fetch",
+          DomainObjectIDs.OrderItem1.StorageProviderID,
+          "SELECT oi.* FROM [Order] o LEFT OUTER JOIN OrderItem oi ON o.ID = oi.OrderID WHERE o.OrderNo IN (1, 3)",
+          new QueryParameterCollection(),
+          typeof (DomainObjectCollection));
+      ordersQuery.EagerFetchQueries.Add (relationEndPointDefinition, orderItemsFetchQuery);
+
+      var id1 = new RelationEndPointID (DomainObjectIDs.Order1, relationEndPointDefinition);
+      var id2 = new RelationEndPointID (DomainObjectIDs.Order2, relationEndPointDefinition);
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id1], Is.Null);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id2], Is.Null);
+
+      var result = ClientTransactionMock.QueryManager.GetCollection (ordersQuery);
+      Assert.That (result.ToArray(), Is.EquivalentTo (new[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2)} ));
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id1], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[id2], Is.Not.Null);
+
+      Assert.That (((CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id1]).OppositeDomainObjects,
+          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+      Assert.That (((CollectionEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[id2]).OppositeDomainObjects,
+          Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem3) }));
+    }
   }
 }

@@ -207,12 +207,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     // OrderItems: OrderItem1, OrderItem2
     // Customer: Customer1
     // Official: Official1
+    // OrderNumber: 1
     public readonly ObjectID Order1 = new ObjectID ("Order", new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}"));
 
     // OrderTicket: OrderTicket3
     // OrderItems: OrderItem3
     // Customer: Customer3
     // Official: Official1
+    // OrderNumber: 3
     public readonly ObjectID Order2 = new ObjectID ("Order", new Guid ("{83445473-844A-4d3f-A8C3-C27F8D98E8BA}"));
 
     // OrderTicket: OrderTicket2

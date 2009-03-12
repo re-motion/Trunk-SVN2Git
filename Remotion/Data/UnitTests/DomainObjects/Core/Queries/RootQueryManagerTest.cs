@@ -19,9 +19,11 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -146,6 +148,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    public void GetCollection_ClosesConnectionBeforeCallingFilterQueryResult ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      listenerMock
+          .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ())
+          .Do (mi => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+      ClientTransactionMock.AddListener (listenerMock);
+
+      var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+      query.Parameters.Add ("customerID", DomainObjectIDs.Customer1);
+      ClientTransactionMock.QueryManager.GetCollection (query);
+
+      listenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException))]
     public void GetScalarWithCollectionQuery ()
     {
@@ -219,7 +238,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [Ignore ("TODO 1041")]
     public void GetCollection_ExecutesFetchQueries ()
     {
       _officialTestQuery.EagerFetchQueries.Add (_officialOrdersRelationEndPointDefinition, _officialFetchTestQuery);
@@ -240,7 +258,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [Ignore ("TODO 1041")]
     public void GetCollection_DoesNotExecuteFetchQueries_WhenQueryResultEmpty ()
     {
       _officialTestQuery.EagerFetchQueries.Add (_officialOrdersRelationEndPointDefinition, _officialFetchTestQuery);
@@ -259,7 +276,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [Ignore ("TODO 1041")]
     public void GetCollection_FetchQueries_Recursive ()
     {
       _officialTestQuery.EagerFetchQueries.Add (_officialOrdersRelationEndPointDefinition, _officialFetchTestQuery);
@@ -269,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       var storageProviderMock = MockRepository.GenerateMock<StorageProvider> (_unitTestStorageProviderStubDefinition);
       storageProviderMock.Expect (mock => mock.ExecuteCollectionQuery (_officialTestQuery)).Return (mainResult);
-      storageProviderMock.Expect (mock => mock.ExecuteCollectionQuery (_officialFetchTestQuery2)).Return (new DataContainer[0]);
+      storageProviderMock.Expect (mock => mock.ExecuteCollectionQuery (_officialFetchTestQuery)).Return (new DataContainer[0]);
 
       using (UnitTestStorageProviderStub.EnterMockStorageProviderScope (storageProviderMock))
       {
