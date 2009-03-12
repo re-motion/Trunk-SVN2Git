@@ -76,5 +76,8 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       return (QueryExecutor<T>) Provider.Executor;
     }
+
+    
+
   }
 }

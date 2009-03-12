@@ -185,7 +185,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           from e in QueryFactory.CreateLinqQuery<Employee>()
           where e.Computer != null
           select e;
-
       CheckQueryResult (employees, DomainObjectIDs.Employee3, DomainObjectIDs.Employee4, DomainObjectIDs.Employee5);
     }
 
