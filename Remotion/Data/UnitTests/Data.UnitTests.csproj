@@ -527,7 +527,7 @@
     <Compile Include="Linq\ClausesTest\MainFromClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\MemberFromClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\OrderByClauseTest.cs" />
-    <Compile Include="Linq\ClausesTest\OrderingClauseTest.cs" />
+    <Compile Include="Linq\ClausesTest\OrderingTest.cs" />
     <Compile Include="Linq\ClausesTest\ResultModifierClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\SelectClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\SubQueryFromClauseTest.cs" />

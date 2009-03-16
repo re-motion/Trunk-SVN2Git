@@ -354,7 +354,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       throw new System.NotImplementedException();
     }
 
-    public void VisitOrderingClause (OrderingClause orderingClause)
+    public void VisitOrdering (Ordering ordering)
     {
       throw new System.NotImplementedException();
     }
