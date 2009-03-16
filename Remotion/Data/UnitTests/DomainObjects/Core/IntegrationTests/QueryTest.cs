@@ -85,8 +85,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void EagerFetching ()
     {
-      LogManager.InitializeConsole();
-
       var ordersQuery = QueryFactory.CreateCollectionQuery (
           "test",
           DomainObjectIDs.Order1.StorageProviderID,
