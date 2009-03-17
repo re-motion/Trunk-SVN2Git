@@ -197,16 +197,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void CreateEqualSubQuery_CreatesSubQuery_WithQueryModel ()
+    public void CreateEquivalentSubQuery_CreatesSubQuery_WithQueryModel ()
     {
-      SubQueryExpression subQuery = _parser.CreateEqualSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant (0));
+      SubQueryExpression subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant (0));
       Assert.That (subQuery.QueryModel, Is.Not.Null);
     }
 
     [Test]
     public void CreateExpressionForContainsParser ()
     {
-      SubQueryExpression subQueryExpression1 = _parser.CreateEqualSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant (0));
+      SubQueryExpression subQueryExpression1 = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant (0));
       Expression queryParameterExpression = Expression.Constant (null, typeof (OrderItem));
       MethodCallExpression methodCallExpression = _parser.CreateExpressionForContainsParser (subQueryExpression1, queryParameterExpression);
       Assert.That (methodCallExpression.Object, Is.Null);

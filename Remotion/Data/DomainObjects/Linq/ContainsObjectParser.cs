@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -31,9 +30,16 @@ using Remotion.Data.Linq;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
-  // source: where o.OrderItems.ContainsObject (myOrderItem)
+  // source: 
   // transformed: where (from oi in QueryFactory.CreateLinqQuery<OrderItem> () where oi.Order == o select oi).Contains (myOrderItem)
   // SQL: WHERE @1 IN (SELECT [oi].[ID] FROM [OrderItem] [oi] WHERE (([oi].[OrderID] IS NULL AND [o].[ID] IS NULL) OR [oi].[OrderID] = [o].[ID]))
+  /// <summary>
+  /// Parses expressions of the form <code>where o.OrderItems.ContainsObject (myOrderItem)</code>.
+  /// </summary>
+  /// <remarks>
+  /// This parser parses parts of where conditions that contains calls to <see cref="DomainObjectCollection.ContainsObject"/>. It does so by
+  /// constructing an equivalent subquery
+  /// </remarks>
   public class ContainsObjectParser : IWhereConditionParser
   {
     private static readonly MethodInfo s_genericContainsMethod =
@@ -65,12 +71,12 @@ namespace Remotion.Data.DomainObjects.Linq
       MethodCallExpression containsObjectCallExpression = ParserUtility.GetTypedExpression<MethodCallExpression> (
           expression, "ContainsObject parser", parseContext.ExpressionTreeRoot);
       
-      SubQueryExpression subQueryExpression = CreateEqualSubQuery (containsObjectCallExpression, parseContext.QueryModel,parseContext.ExpressionTreeRoot);
+      SubQueryExpression subQueryExpression = CreateEquivalentSubQuery (containsObjectCallExpression, parseContext.QueryModel,parseContext.ExpressionTreeRoot);
       MethodCallExpression containsExpression = CreateExpressionForContainsParser (subQueryExpression, containsObjectCallExpression.Arguments[0]);
       return _registry.GetParser (containsExpression).Parse (containsExpression, parseContext);
     }
 
-    public SubQueryExpression CreateEqualSubQuery (MethodCallExpression containsObjectCallExpression, QueryModel parentQuery, Expression expressionTreeRoot)
+    public SubQueryExpression CreateEquivalentSubQuery (MethodCallExpression containsObjectCallExpression, QueryModel parentQuery, Expression expressionTreeRoot)
     {
       ArgumentUtility.CheckNotNull ("containsObjectCallExpression", containsObjectCallExpression);
       ArgumentUtility.CheckNotNull ("parentQuery", parentQuery);
