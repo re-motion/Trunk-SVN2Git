@@ -148,7 +148,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fromIdentifier", fromIdentifier);
 
       LambdaExpression projection = Expression.Lambda(fromIdentifier);
-      return new SelectClause (whereClause, projection, null);
+      //return new SelectClause (whereClause, projection, null);
+      return new SelectClause (whereClause, projection);
     }
     
     public PropertyInfo GetForeignKeyProperty (PropertyInfo collectionProperty) // Order.OrderItems
