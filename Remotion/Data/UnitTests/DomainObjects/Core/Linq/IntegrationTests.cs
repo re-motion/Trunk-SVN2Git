@@ -20,6 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.Parsing;
@@ -28,6 +29,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Customer=Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer;
 using Order=Remotion.Data.UnitTests.DomainObjects.TestDomain.Order;
+using Remotion.Data.Linq.ExtensionMethods;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -43,25 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (computers, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3, DomainObjectIDs.Computer4,
                         DomainObjectIDs.Computer5);
     }
-
-    //[Test]
-    //public void QueryWithAdditionalFrom ()
-    //{
-    //  var query = from c in QueryFactory.CreateLinqQuery<Computer>()
-    //             from co in QueryFactory.CreateLinqQuery<Company>()
-    //             select c;
-    //  query.ToList();
-    //}
-
-    //[Test]
-    //public void QueryWithMemberFromClause ()
-    //{
-    //  var query =from o in QueryFactory.CreateLinqQuery<Order> ()
-    //             from oi in o.OrderItems
-    //            where o.OrderNumber == 1
-    //            select oi;
-    //  query.ToList();
-    //}
 
     [Test]
     public void SimpleQuery_WithRelatedEntity ()
@@ -491,7 +474,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                    select
                        (from c in QueryFactory.CreateLinqQuery<Computer>() select c);
 
-      IQueryable<Computer>[] result = orders.ToArray();
+      orders.ToArray();
     }
 
     [Test]
@@ -504,7 +487,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                    select
                        (from c in QueryFactory.CreateLinqQuery<Computer>() select c);
 
-      IQueryable<Computer>[] result = orders.ToArray ();
+      orders.ToArray ();
     }
 
     [Test]
@@ -517,7 +500,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                    select
                        (from c in QueryFactory.CreateLinqQuery<Computer>() where c == null select c);
 
-      IQueryable<Computer>[] result = orders.ToArray ();
+      orders.ToArray ();
     }
 
     [Test]
@@ -662,7 +645,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    //[Ignore]
     public void QueryWithSingleAndPredicate ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>()
@@ -800,6 +782,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                   where c.Name.Substring (2, 3).Contains ("und")
                   select c;
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2, DomainObjectIDs.Customer3, DomainObjectIDs.Customer4);
+    }
+
+    [Test]
+    [Ignore ("TODO 1089: COMMONS-1089")]
+    public void EagerFetching ()
+    {
+      var query = from c in QueryFactory.CreateLinqQuery<Customer> ()
+                  where new[] { "Kunde 1", "Kunde 2" }.Contains (c.Name)
+                  select c;
+      query.Fetch (c => c.Orders).Fetch (o => o.OrderItems);
+
+      CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
+
+      // check that related objects have been loaded
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderWithoutOrderItem], Is.Not.Null);
+
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderItem1], Is.Not.Null);
+      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderItem2], Is.Not.Null);
+
+      // check that relations have been registered
+
+      var relationEndPointDefinition1 = 
+          DomainObjectIDs.Customer1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
+      var collectionEndPoint1 = (CollectionEndPoint)
+          ClientTransactionMock.DataManager.RelationEndPointMap[new RelationEndPointID (DomainObjectIDs.Customer1, relationEndPointDefinition1)];
+      Assert.That (collectionEndPoint1, Is.Not.Null);
+      Assert.That (collectionEndPoint1.OppositeDomainObjects, 
+          Is.EqualTo (new[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem)}));
+
+      var relationEndPointDefinition2 =
+          DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+      var collectionEndPoint2 = (CollectionEndPoint)
+          ClientTransactionMock.DataManager.RelationEndPointMap[new RelationEndPointID (DomainObjectIDs.Order1, relationEndPointDefinition2)];
+      Assert.That (collectionEndPoint2, Is.Not.Null);
+      Assert.That (collectionEndPoint2.OppositeDomainObjects,
+          Is.EqualTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
     }
     
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
