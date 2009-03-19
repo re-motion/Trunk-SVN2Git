@@ -15,12 +15,17 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
+using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Utilities;
+using System.Reflection;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -103,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="id">The identifier for the linq query.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
     /// <returns>A <see cref="IQuery"/> object.</returns>
-    public virtual IQuery CreateQuery (string id, QueryModel queryModel)
+    public virtual IQuery CreateQuery (string id, QueryModel queryModel/*, IEnumerable<IFetchRequest> fetchRequests*/)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -113,8 +118,33 @@ namespace Remotion.Data.DomainObjects.Linq
       CommandData commandData = CreateStatement (queryModel);
       CheckProjection (commandData.SqlGenerationData.SelectEvaluation);
 
-      return CreateQuery (id, classDefinition, commandData.Statement, commandData.Parameters);
+      var query = CreateQuery (id, classDefinition, commandData.Statement, commandData.Parameters);
+      // CreateEagerFetchQueries (query, queryModel, classDefinition, fetchRequests);
+      return query;
     }
+
+    //private void CreateEagerFetchQueries (IQuery query, QueryModel queryModel, ClassDefinition classDefinition, IEnumerable<IFetchRequest> fetchRequests)
+    //{
+    //  foreach (var fetchRequest in fetchRequests)
+    //  {
+    //    var propertyInfo = fetchRequest.RelationMember as PropertyInfo;
+    //    if (propertyInfo == null)
+    //      throw new NotSupportedException ("Members of type " + fetchRequest.RelationMember.Name + " are not supported by this LINQ provider.");
+
+    //    var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
+    //    var relationEndPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
+
+    //    var sourceParameter = Expression.Parameter (fetchRequest.OriginatingObjectType, "transparent");
+    //    var collectionElementParameter = Expression.Parameter (fetchRequest.RelatedObjectType, "x");
+    //    var newProjectionExpression = Expression.Lambda (collectionElementParameter, sourceParameter, collectionElementParameter);
+    //    var newFromClause = new MemberFromClause (queryModel.SelectOrGroupClause.PreviousClause, collectionElementParameter, fetchRequest.RelatedObjectSelector, newProjectionExpression);
+
+    //    queryModel.AddBodyClause (newFromClause);
+
+    //    var fetchQuery = CreateQuery ("fetch query for " + propertyName, queryModel, fetchRequest.InnerFetchRequests);
+    //    query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
+    //  }
+    //}
 
     /// <summary>
     /// Creates a <see cref="IQuery"/> object.
