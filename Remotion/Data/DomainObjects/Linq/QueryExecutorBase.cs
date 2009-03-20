@@ -138,7 +138,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       ClassDefinition classDefinition = GetClassDefinition ();
-      return CreateQuery(id, queryModel, fetchRequests, classDefinition);
+      return CreateQuery(id, queryModel, fetchRequests, classDefinition, null);
     }
 
     /// <summary>
@@ -149,10 +149,11 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <param name="fetchRequests">The <see cref="IFetchRequest"/> instances to be executed together with the query.</param>
     /// <param name="classDefinitionOfResult">The class definition of the result objects to be returned by the query. This is used to obtain the
     /// storage provider to execute the query and to resolve the relation properties of the <paramref name="fetchRequests"/>.</param>
+    /// <param name="sortExpression">A SQL expression that is used in an ORDER BY clause to sort the query results.</param>
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
-    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult)
+    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult, string sortExpression)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -162,7 +163,11 @@ namespace Remotion.Data.DomainObjects.Linq
       CommandData commandData = CreateStatement (queryModel);
       CheckProjection (commandData.SqlGenerationData.SelectEvaluation);
 
-      var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, commandData.Statement, commandData.Parameters);
+      var statement = commandData.Statement;
+      if (!string.IsNullOrEmpty (sortExpression))
+        statement = "SELECT * FROM (" + statement + ") [result] ORDER BY " + sortExpression;
+
+      var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, commandData.Parameters);
       CreateEagerFetchQueries (query, queryModel, classDefinitionOfResult, fetchRequests);
       return query;
     }
@@ -178,14 +183,27 @@ namespace Remotion.Data.DomainObjects.Linq
         var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
         var relationEndPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
 
+        string sortExpression = GetSortExpressionForRelation (relationEndPointDefinition);
+
         var fetchQueryModel = fetchRequest.CreateFetchQueryModel (queryModel);
         var fetchQuery = CreateQuery (
             "<fetch query for " + propertyName + ">",
             fetchQueryModel,
             fetchRequest.InnerFetchRequests,
-            relationEndPointDefinition.GetOppositeClassDefinition());
-        query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
+            relationEndPointDefinition.GetOppositeClassDefinition(),
+            sortExpression);
+
+          query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
       }
+    }
+
+    private string GetSortExpressionForRelation (IRelationEndPointDefinition relationEndPointDefinition)
+    {
+      var virtualEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
+      if (virtualEndPointDefinition != null)
+        return virtualEndPointDefinition.SortExpression;
+      else
+        return null;
     }
 
     /// <summary>

@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       ClassDefinition GetClassDefinition ();
       IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters);
       IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests);
-      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult);
+      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult, string sortExpression);
       CommandData CreateStatement (QueryModel queryModel);
     }
 
@@ -62,10 +62,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult)
+    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult, string sortExpression)
     {
       CreateQueryFromModelWithClassDefinitionCalled = true;
-      return Base.CreateQuery (id, queryModel, fetchRequests, classDefinitionOfResult);
+      return Base.CreateQuery (id, queryModel, fetchRequests, classDefinitionOfResult, sortExpression);
     }
 
     [OverrideTarget]

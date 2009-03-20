@@ -219,6 +219,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void CreateQuery_EagerFetchQueries_WithSortExpression ()
+    {
+      var queryModel = GetParsedSimpleCustomerQuery();
+      var executor = new QueryExecutor<Customer> (new SqlServerGenerator (DatabaseInfo.Instance));
+      var fetchRequest = FetchRequest<Order>.Create<Customer> (c => c.Orders);
+
+      var query = executor.CreateQuery ("<dynamic query>", queryModel, new IFetchRequest[] { fetchRequest });
+
+      var ordersRelationEndPointDefinition =
+          DomainObjectIDs.Customer1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
+
+      Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
+      var fetchQuery = query.EagerFetchQueries.Single ();
+      Assert.That (fetchQuery.Key, Is.SameAs (ordersRelationEndPointDefinition));
+      Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
+          "SELECT * FROM (SELECT [#fetch0].* FROM [CustomerView] [c], [Order] [#fetch0] "
+          + "WHERE (([c].[Name] = @1) AND "
+          + "(([c].[ID] IS NULL AND [#fetch0].[CustomerID] IS NULL) OR [c].[ID] = [#fetch0].[CustomerID]))) [result] ORDER BY OrderNo asc"));
+      Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
+      Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
+      Assert.That (fetchQuery.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
+      Assert.That (fetchQuery.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
+    }
+
+    [Test]
     public void CreateQuery_EagerFetchQueries_Recursive ()
     {
       var queryModel = GetParsedSimpleCustomerQuery ();
@@ -237,9 +262,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fetchQuery1 = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery1.Key, Is.SameAs (ordersRelationEndPointDefinition));
       Assert.That (fetchQuery1.Value.Statement, Is.EqualTo (
-          "SELECT [#fetch0].* FROM [CustomerView] [c], [Order] [#fetch0] "
+          "SELECT * FROM (SELECT [#fetch0].* FROM [CustomerView] [c], [Order] [#fetch0] "
           + "WHERE (([c].[Name] = @1) AND "
-          +         "(([c].[ID] IS NULL AND [#fetch0].[CustomerID] IS NULL) OR [c].[ID] = [#fetch0].[CustomerID]))"));
+          +         "(([c].[ID] IS NULL AND [#fetch0].[CustomerID] IS NULL) OR [c].[ID] = [#fetch0].[CustomerID]))) [result] ORDER BY OrderNo asc"));
       Assert.That (fetchQuery1.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery1.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery1.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
