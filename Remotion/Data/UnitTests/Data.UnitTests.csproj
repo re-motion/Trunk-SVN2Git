@@ -520,6 +520,7 @@
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
     <Compile Include="Linq\ClausesTest\AdditionalFromClauseTest.cs" />
     <Compile Include="Linq\ClausesTest\ClauseFinderTest.cs" />
+    <Compile Include="Linq\EagerFetchingTest\FetchFilteringExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\EagerFetchingTest\FetchRequestCollectionTest.cs" />
     <Compile Include="Linq\ClausesTest\FromClauseBaseTest.cs" />
     <Compile Include="Linq\ClausesTest\GroupClauseTest.cs" />
@@ -543,6 +544,7 @@
     <Compile Include="Linq\DataObjectModelTest\SubQueryTest.cs" />
     <Compile Include="Linq\DataObjectModelTest\TableTest.cs" />
     <Compile Include="Linq\EagerFetchingTest\FetchRequestTest.cs" />
+    <Compile Include="Linq\EagerFetchingTest\FluentFetchRequestTest.cs" />
     <Compile Include="Linq\ExpressionHelper.cs" />
     <Compile Include="Linq\ExpressionTreeNavigator.cs" />
     <Compile Include="Linq\ExtensionMethodsTest.cs" />
@@ -625,7 +627,7 @@
     <Compile Include="Linq\QueryModelTest.cs" />
     <Compile Include="Linq\QueryModel_BodyTest.cs" />
     <Compile Include="Linq\QueryProviderBaseTest.cs" />
-    <Compile Include="Linq\QueryProviderImplementationTest\QueryableBaseTest.cs" />
+    <Compile Include="Linq\QueryableBaseTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\JoinCollectionTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\SelectedObjectActivatorTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\SqlGenerationDataTest.cs" />

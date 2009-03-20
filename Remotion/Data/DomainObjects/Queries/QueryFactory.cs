@@ -160,8 +160,12 @@ namespace Remotion.Data.DomainObjects.Queries
       }
 
       var queryExecutor = (QueryExecutorBase) provider.Executor;
-      var queryModel = provider.GenerateQueryModel (queryable.Expression);
-      return queryExecutor.CreateQuery (id, queryModel, new IFetchRequest[0]);
+      // TODO 1089: Test
+      
+      var expression = queryable.Expression;
+      var fetchRequests = provider.GetFetchRequests (ref expression);
+      var queryModel = provider.GenerateQueryModel (expression);
+      return queryExecutor.CreateQuery (id, queryModel, fetchRequests);
     }
 
 

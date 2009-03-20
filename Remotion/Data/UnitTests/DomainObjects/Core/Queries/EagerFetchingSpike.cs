@@ -30,6 +30,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Logging;
 using Remotion.Mixins;
@@ -188,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var linqSqlGenerator = relatedStorageProvider.LinqSqlGenerator;
       
       var newExecutor = ObjectFactory.Create<QueryExecutor<TRelated>> (ParamList.Create (linqSqlGenerator));
-      var relatedObjects = newExecutor.ExecuteCollection (fetchQueryModel).Cast<TRelated>();
+      var relatedObjects = newExecutor.ExecuteCollection (fetchQueryModel, new FetchRequest[0]).Cast<TRelated>();
 
       var originalClassDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (TOriginal));
       var relationMember = (PropertyInfo) ((MemberExpression) relatedObjectSelector.Body).Member;

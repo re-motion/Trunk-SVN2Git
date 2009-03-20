@@ -5,33 +5,23 @@
 // and/or modify it under the terms of the GNU Lesser General Public License 
 // version 3.0 as published by the Free Software Foundation.
 // 
-// re-motion is distributed in the hope that it will be useful, 
+// This framework is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of 
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with re-motion; if not, see http://www.gnu.org/licenses.
+// along with this framework; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using Remotion.Data.Linq;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Parsing.Structure;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 
-namespace Remotion.Data.DomainObjects.Linq
+namespace Remotion.Data.UnitTests.Linq.EagerFetchingTest
 {
-  public static class ExtensionMethods
+  [TestFixture]
+  [Ignore ("TODO 1089: Test")]
+  public class FetchFilteringExpressionTreeVisitorTest
   {
-    public static ObjectList<T> ToObjectList<T> (this IEnumerable<T> source) 
-        where T : DomainObject
-    {
-      ObjectList<T> result = new ObjectList<T>();
-      foreach (T item in source)
-        result.Add (item);
-      return result;
-    }
   }
 }

@@ -788,7 +788,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var query = from c in QueryFactory.CreateLinqQuery<Customer> ()
                   where new[] { "Kunde 1", "Kunde 2" }.Contains (c.Name)
                   select c;
-      query.Fetch (c => c.Orders).Fetch (o => o.OrderItems);
+      query = query.Fetch (c => c.Orders).ThenFetch (o => o.OrderItems);
 
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
 

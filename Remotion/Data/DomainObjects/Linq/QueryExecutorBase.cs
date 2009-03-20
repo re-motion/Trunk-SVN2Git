@@ -44,20 +44,15 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public ISqlGenerator SqlGenerator { get; private set; }
 
-    public object ExecuteSingle (QueryModel queryModel)
-    {
-      return ExecuteSingle (queryModel, new IFetchRequest[0]);
-    }
-
     /// <summary>
     /// Creates and executes a given <see cref="QueryModel"/>.
     /// </summary>
     /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
-    /// <param name="fetchRequests">The <see cref="IFetchRequest"/> instances to be executed together with the query.</param>
+    /// <param name="fetchRequests">The <see cref="FetchRequest"/> instances to be executed together with the query.</param>
     /// <returns>
     /// The result of the executed query as single object.
     /// </returns>
-    public object ExecuteSingle (QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests)
+    public object ExecuteSingle (QueryModel queryModel, IEnumerable<FetchRequest> fetchRequests)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
@@ -75,20 +70,15 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
-    public IEnumerable ExecuteCollection (QueryModel queryModel)
-    {
-      return ExecuteCollection (queryModel, new IFetchRequest[0]);
-    }
-
     /// <summary>
     /// Creates and executes a given <see cref="IQuery"/>.
     /// </summary>
     /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
-    /// <param name="fetchRequests">The <see cref="IFetchRequest"/> instances to be executed together with the query.</param>
+    /// <param name="fetchRequests">The <see cref="FetchRequest"/> instances to be executed together with the query.</param>
     /// <returns>
     /// The result of the executed query as <see cref="IEnumerable"/>.
     /// </returns>
-    public IEnumerable ExecuteCollection (QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests)
+    public IEnumerable ExecuteCollection (QueryModel queryModel, IEnumerable<FetchRequest> fetchRequests)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
@@ -128,11 +118,11 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
-    /// <param name="fetchRequests">The <see cref="IFetchRequest"/> instances to be executed together with the query.</param>
+    /// <param name="fetchRequests">The <see cref="FetchRequest"/> instances to be executed together with the query.</param>
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
-    public virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests)
+    public virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequest> fetchRequests)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -146,14 +136,14 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
-    /// <param name="fetchRequests">The <see cref="IFetchRequest"/> instances to be executed together with the query.</param>
+    /// <param name="fetchRequests">The <see cref="FetchRequest"/> instances to be executed together with the query.</param>
     /// <param name="classDefinitionOfResult">The class definition of the result objects to be returned by the query. This is used to obtain the
     /// storage provider to execute the query and to resolve the relation properties of the <paramref name="fetchRequests"/>.</param>
     /// <param name="sortExpression">A SQL expression that is used in an ORDER BY clause to sort the query results.</param>
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
-    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult, string sortExpression)
+    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult, string sortExpression)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -172,7 +162,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return query;
     }
 
-    private void CreateEagerFetchQueries (IQuery query, QueryModel queryModel, ClassDefinition classDefinition, IEnumerable<IFetchRequest> fetchRequests)
+    private void CreateEagerFetchQueries (IQuery query, QueryModel queryModel, ClassDefinition classDefinition, IEnumerable<FetchRequest> fetchRequests)
     {
       foreach (var fetchRequest in fetchRequests)
       {
