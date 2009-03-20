@@ -211,18 +211,30 @@ public abstract class ClientTransaction
   /// A <see cref="DomainObject"/> with the given <paramref name="objectID"/> previously enlisted via <see cref="DoEnlistDomainObject"/>,
   /// or <see langword="null"/> if no such object exists.
   /// </returns>
+  /// <remarks>
+  /// The <see cref="DataContainer"/> of the returned object might not have been loaded yet. In that case, it will be loaded on first
+  /// access of the object's properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
+  /// </remarks>
   protected internal abstract DomainObject GetEnlistedDomainObject (ObjectID objectID);
 
   /// <summary>
   /// Gets all domain objects enlisted in this transaction.
   /// </summary>
   /// <value>The domain objects enlisted in this transaction via <see cref="DoEnlistDomainObject"/>.</value>
+  /// <remarks>
+  /// The <see cref="DataContainer"/>s of the returned objects might not have been loaded yet. In that case, they will be loaded on first
+  /// access of the respective objects' properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
+  /// </remarks>
   protected internal abstract IEnumerable<DomainObject> EnlistedDomainObjects { get; }
 
   /// <summary>
   /// Gets the number of domain objects enlisted in this transaction.
   /// </summary>
   /// <value>The number of elements in <see cref="EnlistedDomainObjects"/>.</value>
+  /// <remarks>
+  /// Note that the <see cref="DataContainer"/>s of the returned objects might not have been loaded yet. In that case, they will be loaded on first
+  /// access of the respective objects' properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
+  /// </remarks>
   protected internal abstract int EnlistedDomainObjectCount { get; }
 
   /// <summary>
