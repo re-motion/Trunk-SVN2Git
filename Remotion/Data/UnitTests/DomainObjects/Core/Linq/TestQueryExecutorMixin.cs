@@ -16,8 +16,10 @@
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Mixins;
+using System.Collections.Generic;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -26,14 +28,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public interface IBaseCallRequirements
     {
       ClassDefinition GetClassDefinition ();
-      IQuery CreateQuery (string id, ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters);
-      IQuery CreateQuery (string id, QueryModel queryModel);
+      IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters);
+      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests);
+      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult);
       CommandData CreateStatement (QueryModel queryModel);
     }
 
     public bool GetClassDefinitionCalled = false;
     public bool CreateQueryCalled = false;
     public bool CreateQueryFromModelCalled = false;
+    public bool CreateQueryFromModelWithClassDefinitionCalled = false;
     public bool GetStatementCalled = false;
 
     [OverrideTarget]
@@ -44,17 +48,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
+    public IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters)
     {
       CreateQueryCalled = true;
-      return Base.CreateQuery (id, classDefinition, statement, commandParameters);
+      return Base.CreateQuery (id, storageProviderID, statement, commandParameters);
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, QueryModel queryModel)
+    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests)
     {
       CreateQueryFromModelCalled = true;
-      return Base.CreateQuery (id, queryModel);
+      return Base.CreateQuery (id, queryModel, fetchRequests);
+    }
+
+    [OverrideTarget]
+    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult)
+    {
+      CreateQueryFromModelWithClassDefinitionCalled = true;
+      return Base.CreateQuery (id, queryModel, fetchRequests, classDefinitionOfResult);
     }
 
     [OverrideTarget]

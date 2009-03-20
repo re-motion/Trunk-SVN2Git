@@ -158,7 +158,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (collectionProperty.DeclaringType);
       string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (collectionProperty);
       IRelationEndPointDefinition collectionEndPoint = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName); // Order.OrderItems
-      IRelationEndPointDefinition foreignKeyEndPoint = collectionEndPoint.RelationDefinition.GetOppositeEndPointDefinition (collectionEndPoint); // OrderItem.Order
+      IRelationEndPointDefinition foreignKeyEndPoint = collectionEndPoint.GetOppositeEndPointDefinition(); // OrderItem.Order
 
       return MappingConfiguration.Current.NameResolver.GetProperty (foreignKeyEndPoint.ClassDefinition.ClassType, foreignKeyEndPoint.PropertyName);
       

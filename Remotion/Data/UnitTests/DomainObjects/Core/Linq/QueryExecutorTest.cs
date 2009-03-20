@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
+using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
@@ -168,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var commandParameters = new [] { new CommandParameter("x", "y") };
       var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
       
-      var query = executor.CreateQuery ("<dynamic query>", classDefinition, statement, commandParameters);
+      var query = executor.CreateQuery ("<dynamic query>", classDefinition.StorageProviderID, statement, commandParameters);
       Assert.That (query.Statement, Is.EqualTo (statement));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("x"));
@@ -183,13 +184,79 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = GetParsedSimpleWhereQuery ();
       var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
 
-      var query = executor.CreateQuery ("<dynamic query>", queryModel);
+      var query = executor.CreateQuery ("<dynamic query>", queryModel, new IFetchRequest[0]);
       Assert.That (query.Statement, Is.EqualTo ("SELECT [order].* FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (query.Parameters[0].Value, Is.EqualTo (1));
       Assert.That (query.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order)).StorageProviderID));
       Assert.That (query.ID, Is.EqualTo ("<dynamic query>"));
+    }
+
+    [Test]
+    public void CreateQuery_EagerFetchQueries ()
+    {
+      var queryModel = GetParsedSimpleWhereQuery ();
+      var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
+      var fetchRequest = FetchRequest<OrderItem>.Create<Order> (o => o.OrderItems);
+
+      var query = executor.CreateQuery ("<dynamic query>", queryModel, new IFetchRequest[] { fetchRequest });
+
+      var orderItemsRelationEndPointDefinition = 
+          DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+
+      Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
+      var fetchQuery = query.EagerFetchQueries.Single ();
+      Assert.That (fetchQuery.Key, Is.SameAs (orderItemsRelationEndPointDefinition));
+      Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
+          "SELECT [#fetch0].* FROM [OrderView] [order], [OrderItem] [#fetch0] "
+          + "WHERE (([order].[OrderNo] = @1) AND "
+          +        "(([order].[ID] IS NULL AND [#fetch0].[OrderID] IS NULL) OR [order].[ID] = [#fetch0].[OrderID]))"));
+      Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
+      Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
+      Assert.That (fetchQuery.Value.Parameters[0].Value, Is.EqualTo (1));
+      Assert.That (fetchQuery.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
+    }
+
+    [Test]
+    public void CreateQuery_EagerFetchQueries_Recursive ()
+    {
+      var queryModel = GetParsedSimpleCustomerQuery ();
+      var executor = new QueryExecutor<Customer> (new SqlServerGenerator (DatabaseInfo.Instance));
+      var fetchRequest = FetchRequest<Order>.Create<Customer> (c => c.Orders);
+      fetchRequest.GetOrAddInnerFetchRequest (o => o.OrderItems);
+
+      var query = executor.CreateQuery ("<dynamic query>", queryModel, new IFetchRequest[] { fetchRequest });
+
+      var ordersRelationEndPointDefinition =
+          DomainObjectIDs.Customer1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
+      var orderItemsRelationEndPointDefinition =
+          DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
+
+      Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
+      var fetchQuery1 = query.EagerFetchQueries.Single ();
+      Assert.That (fetchQuery1.Key, Is.SameAs (ordersRelationEndPointDefinition));
+      Assert.That (fetchQuery1.Value.Statement, Is.EqualTo (
+          "SELECT [#fetch0].* FROM [CustomerView] [c], [Order] [#fetch0] "
+          + "WHERE (([c].[Name] = @1) AND "
+          +         "(([c].[ID] IS NULL AND [#fetch0].[CustomerID] IS NULL) OR [c].[ID] = [#fetch0].[CustomerID]))"));
+      Assert.That (fetchQuery1.Value.Parameters.Count, Is.EqualTo (1));
+      Assert.That (fetchQuery1.Value.Parameters[0].Name, Is.EqualTo ("@1"));
+      Assert.That (fetchQuery1.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
+      Assert.That (fetchQuery1.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Customer)).StorageProviderID));
+
+      Assert.That (fetchQuery1.Value.EagerFetchQueries.Count, Is.EqualTo (1));
+      var fetchQuery2 = fetchQuery1.Value.EagerFetchQueries.Single ();
+      Assert.That (fetchQuery2.Key, Is.SameAs (orderItemsRelationEndPointDefinition));
+      Assert.That (fetchQuery2.Value.Statement, Is.EqualTo (
+          "SELECT [#fetch1].* FROM [CustomerView] [c], [Order] [#fetch0], [OrderItem] [#fetch1] "
+          + "WHERE ((([c].[Name] = @1) AND "
+          +       "(([c].[ID] IS NULL AND [#fetch0].[CustomerID] IS NULL) OR [c].[ID] = [#fetch0].[CustomerID])) AND "
+          +       "(([#fetch0].[ID] IS NULL AND [#fetch1].[OrderID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[OrderID]))"));
+      Assert.That (fetchQuery2.Value.Parameters.Count, Is.EqualTo (1));
+      Assert.That (fetchQuery2.Value.Parameters[0].Name, Is.EqualTo ("@1"));
+      Assert.That (fetchQuery2.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
+      Assert.That (fetchQuery2.Value.StorageProviderID, Is.EqualTo (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem)).StorageProviderID));
     }
 
     [Test]
@@ -239,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         ClassDefinition classDefinition = executor.GetClassDefinition();
         CommandData statement = executor.CreateStatement(GetParsedSimpleQuery());
 
-        executor.CreateQuery ("<dynamic query>", classDefinition, statement.Statement, statement.Parameters);
+        executor.CreateQuery ("<dynamic query>", classDefinition.StorageProviderID, statement.Statement, statement.Parameters);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryCalled, Is.True);
       }
     }
@@ -252,8 +319,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         var queryModel = GetParsedSimpleQuery ();
         var executor = ObjectFactory.Create<QueryExecutor<Order>>(ParamList.Create (new SqlServerGenerator (DatabaseInfo.Instance)));
 
-        executor.CreateQuery ("<dynamic query>", queryModel);
+        executor.CreateQuery ("<dynamic query>", queryModel, new IFetchRequest[0]);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void CreateQueryFromModelWithClassDefinition_CanBeMixed ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (QueryExecutor<>)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
+      {
+        var queryModel = GetParsedSimpleQuery ();
+        var executor = ObjectFactory.Create<QueryExecutor<Order>> (ParamList.Create (new SqlServerGenerator (DatabaseInfo.Instance)));
+
+        executor.CreateQuery ("<dynamic query>", queryModel, new IFetchRequest[0]);
+        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
       }
     }
 
@@ -266,6 +346,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private QueryModel GetParsedSimpleWhereQuery ()
     {
       IQueryable<Order> query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
+      return new QueryParser (query.Expression).GetParsedQuery ();
+    }
+
+    private QueryModel GetParsedSimpleCustomerQuery ()
+    {
+      IQueryable<Customer> query = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
       return new QueryParser (query.Expression).GetParsedQuery ();
     }
 

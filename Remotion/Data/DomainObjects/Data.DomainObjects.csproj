@@ -202,6 +202,7 @@
     <Compile Include="Mapping\IPersistentMixinFinder.cs" />
     <Compile Include="Mapping\ReflectionBasedClassDefinitionValidator.cs" />
     <Compile Include="Mapping\ReflectionBasedNameResolver.cs" />
+    <Compile Include="Mapping\RelationEndPointDefinitionExtensions.cs" />
     <Compile Include="Mapping\RelationKindType.cs" />
     <Compile Include="Mapping\SerializableMappingObject.cs" />
     <Compile Include="ObjectBinding\BindableDomainObject.cs" />

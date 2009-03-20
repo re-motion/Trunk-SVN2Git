@@ -16,11 +16,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlGeneration;
@@ -38,21 +37,32 @@ namespace Remotion.Data.DomainObjects.Linq
     /// Initializes a new instance of this <see cref="QueryExecutorBase"/> class.
     /// </summary>
     /// <param name="sqlGenerator">The sql generator <see cref="ISqlGenerator"/> which is used for querying re-store.</param>
-    public QueryExecutorBase (ISqlGenerator sqlGenerator)
+    protected QueryExecutorBase (ISqlGenerator sqlGenerator)
     {
       SqlGenerator = sqlGenerator;
     }
 
     public ISqlGenerator SqlGenerator { get; private set; }
 
+    public object ExecuteSingle (QueryModel queryModel)
+    {
+      return ExecuteSingle (queryModel, new IFetchRequest[0]);
+    }
+
     /// <summary>
     /// Creates and executes a given <see cref="QueryModel"/>.
     /// </summary>
     /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
-    /// <returns>The result of the executed query as single object.</returns>
-    public object ExecuteSingle (QueryModel queryModel)
+    /// <param name="fetchRequests">The <see cref="IFetchRequest"/> instances to be executed together with the query.</param>
+    /// <returns>
+    /// The result of the executed query as single object.
+    /// </returns>
+    public object ExecuteSingle (QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests)
     {
-      IEnumerable results = ExecuteCollection (queryModel);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
+
+      IEnumerable results = ExecuteCollection (queryModel, fetchRequests);
       var resultList = new ArrayList();
       foreach (object o in results)
         resultList.Add (o);
@@ -65,17 +75,28 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
+    public IEnumerable ExecuteCollection (QueryModel queryModel)
+    {
+      return ExecuteCollection (queryModel, new IFetchRequest[0]);
+    }
+
     /// <summary>
     /// Creates and executes a given <see cref="IQuery"/>.
     /// </summary>
     /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
-    /// <returns>The result of the executed query as <see cref="IEnumerable"/>.</returns>
-    public IEnumerable ExecuteCollection (QueryModel queryModel)
+    /// <param name="fetchRequests">The <see cref="IFetchRequest"/> instances to be executed together with the query.</param>
+    /// <returns>
+    /// The result of the executed query as <see cref="IEnumerable"/>.
+    /// </returns>
+    public IEnumerable ExecuteCollection (QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests)
     {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
+
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      IQuery query = CreateQuery("<dynamic query>", queryModel);
+      IQuery query = CreateQuery("<dynamic query>", queryModel, fetchRequests);
       return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable();
     }
 
@@ -107,57 +128,78 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
-    /// <returns>A <see cref="IQuery"/> object.</returns>
-    public virtual IQuery CreateQuery (string id, QueryModel queryModel/*, IEnumerable<IFetchRequest> fetchRequests*/)
+    /// <param name="fetchRequests">The <see cref="IFetchRequest"/> instances to be executed together with the query.</param>
+    /// <returns>
+    /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
+    /// </returns>
+    public virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       ClassDefinition classDefinition = GetClassDefinition ();
+      return CreateQuery(id, queryModel, fetchRequests, classDefinition);
+    }
+
+    /// <summary>
+    /// Creates a a <see cref="IQuery"/> object based on the given <see cref="QueryModel"/>.
+    /// </summary>
+    /// <param name="id">The identifier for the linq query.</param>
+    /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
+    /// <param name="fetchRequests">The <see cref="IFetchRequest"/> instances to be executed together with the query.</param>
+    /// <param name="classDefinitionOfResult">The class definition of the result objects to be returned by the query. This is used to obtain the
+    /// storage provider to execute the query and to resolve the relation properties of the <paramref name="fetchRequests"/>.</param>
+    /// <returns>
+    /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
+    /// </returns>
+    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<IFetchRequest> fetchRequests, ClassDefinition classDefinitionOfResult)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
+      ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
       CommandData commandData = CreateStatement (queryModel);
       CheckProjection (commandData.SqlGenerationData.SelectEvaluation);
 
-      var query = CreateQuery (id, classDefinition, commandData.Statement, commandData.Parameters);
-      // CreateEagerFetchQueries (query, queryModel, classDefinition, fetchRequests);
+      var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, commandData.Statement, commandData.Parameters);
+      CreateEagerFetchQueries (query, queryModel, classDefinitionOfResult, fetchRequests);
       return query;
     }
 
-    //private void CreateEagerFetchQueries (IQuery query, QueryModel queryModel, ClassDefinition classDefinition, IEnumerable<IFetchRequest> fetchRequests)
-    //{
-    //  foreach (var fetchRequest in fetchRequests)
-    //  {
-    //    var propertyInfo = fetchRequest.RelationMember as PropertyInfo;
-    //    if (propertyInfo == null)
-    //      throw new NotSupportedException ("Members of type " + fetchRequest.RelationMember.Name + " are not supported by this LINQ provider.");
+    private void CreateEagerFetchQueries (IQuery query, QueryModel queryModel, ClassDefinition classDefinition, IEnumerable<IFetchRequest> fetchRequests)
+    {
+      foreach (var fetchRequest in fetchRequests)
+      {
+        var propertyInfo = fetchRequest.RelationMember as PropertyInfo;
+        if (propertyInfo == null)
+          throw new NotSupportedException ("Members of type " + fetchRequest.RelationMember.Name + " are not supported by this LINQ provider.");
 
-    //    var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
-    //    var relationEndPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
+        var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
+        var relationEndPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
 
-    //    var sourceParameter = Expression.Parameter (fetchRequest.OriginatingObjectType, "transparent");
-    //    var collectionElementParameter = Expression.Parameter (fetchRequest.RelatedObjectType, "x");
-    //    var newProjectionExpression = Expression.Lambda (collectionElementParameter, sourceParameter, collectionElementParameter);
-    //    var newFromClause = new MemberFromClause (queryModel.SelectOrGroupClause.PreviousClause, collectionElementParameter, fetchRequest.RelatedObjectSelector, newProjectionExpression);
-
-    //    queryModel.AddBodyClause (newFromClause);
-
-    //    var fetchQuery = CreateQuery ("fetch query for " + propertyName, queryModel, fetchRequest.InnerFetchRequests);
-    //    query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
-    //  }
-    //}
+        var fetchQueryModel = fetchRequest.CreateFetchQueryModel (queryModel);
+        var fetchQuery = CreateQuery (
+            "<fetch query for " + propertyName + ">",
+            fetchQueryModel,
+            fetchRequest.InnerFetchRequests,
+            relationEndPointDefinition.GetOppositeClassDefinition());
+        query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
+      }
+    }
 
     /// <summary>
     /// Creates a <see cref="IQuery"/> object.
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
-    /// <param name="classDefinition">The class definition for the type of the query.</param>
+    /// <param name="storageProviderID">The ID of the <see cref="StorageProvider"/> to be used for the query.</param>
     /// <param name="statement">The sql statement of the query.</param>
     /// <param name="commandParameters">The parameters of the sql statement.</param>
     /// <returns>A <see cref="IQuery"/> object.</returns>
-    public virtual IQuery CreateQuery(string id, ClassDefinition classDefinition, string statement, CommandParameter[] commandParameters)
+    public virtual IQuery CreateQuery(string id, string storageProviderID, string statement, CommandParameter[] commandParameters)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderID", storageProviderID);
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
 
@@ -165,7 +207,7 @@ namespace Remotion.Data.DomainObjects.Linq
       foreach (CommandParameter commandParameter in commandParameters)
         queryParameters.Add (commandParameter.Name, commandParameter.Value, QueryParameterType.Value);
 
-      return QueryFactory.CreateCollectionQuery (id, classDefinition.StorageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
+      return QueryFactory.CreateCollectionQuery (id, storageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
     }
 
     public abstract ClassDefinition GetClassDefinition ();

@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Queries
         IQuery fetchQuery, IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> relatedObjects)
     {
       var result = new MultiDictionary<DomainObject, DomainObject>();
-      var oppositeEndPointDefinition = relationEndPointDefinition.RelationDefinition.GetOppositeEndPointDefinition (relationEndPointDefinition);
+      var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
       var loggedNullRelatedObject = false;
 
       foreach (var relatedObject in relatedObjects)

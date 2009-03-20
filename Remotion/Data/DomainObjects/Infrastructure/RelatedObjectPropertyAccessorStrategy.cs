@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public Type GetPropertyType (PropertyDefinition propertyDefinition, IRelationEndPointDefinition relationEndPointDefinition)
     {
       if (relationEndPointDefinition.PropertyType.Equals (typeof (ObjectID)))
-        return relationEndPointDefinition.RelationDefinition.GetOppositeClassDefinition (relationEndPointDefinition).ClassType;
+        return relationEndPointDefinition.GetOppositeClassDefinition ().ClassType;
       else
         return relationEndPointDefinition.PropertyType;      
     }
