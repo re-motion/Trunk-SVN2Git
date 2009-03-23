@@ -20,6 +20,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
@@ -790,7 +792,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
 
-      CheckOrdersAndItemsEagerlyFetched();
+      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
+      CheckRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
 
     [Test]
@@ -808,7 +812,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                    select c1).Distinct().Fetch (x => x.Orders).ThenFetch (y => y.OrderItems);
 
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
-      CheckOrdersAndItemsEagerlyFetched ();
+      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
+      CheckRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    public void EagerFetching_FetchAfterMultipleFromsWithoutSelectClauseInCallChain ()
+    {
+      var query = (from o1 in QueryFactory.CreateLinqQuery<Order> ()
+                   from o2 in QueryFactory.CreateLinqQuery<Order> ()
+                   select o1).Fetch (x => x.OrderItems).Distinct();
+
+      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, 
+          DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+
+      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
+          DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+      CheckDataContainersRegistered (DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem3, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem5);
+
+      CheckRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem3);
+      CheckRelationRegistered (DomainObjectIDs.Order3, "OrderItems", false, DomainObjectIDs.OrderItem4);
+      CheckRelationRegistered (DomainObjectIDs.Order4, "OrderItems", false, DomainObjectIDs.OrderItem5);
+      CheckRelationRegistered (DomainObjectIDs.OrderWithoutOrderItem, "OrderItems", false);
+      CheckRelationRegistered (DomainObjectIDs.InvalidOrder, "OrderItems", false);
     }
     
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
@@ -825,33 +853,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       return (from id in expectedObjectIDs select (id == null ? null : (T) TestDomainBase.GetObject (id))).ToArray();
     }
 
-    private void CheckOrdersAndItemsEagerlyFetched ()
+    private void CheckDataContainersRegistered (params ObjectID[] objectIDs)
     {
       // check that related objects have been loaded
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.Order1], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderWithoutOrderItem], Is.Not.Null);
+      foreach (var id in objectIDs)
+        Assert.That (ClientTransactionMock.DataManager.DataContainerMap[id], Is.Not.Null);
+    }
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderItem1], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.DataContainerMap[DomainObjectIDs.OrderItem2], Is.Not.Null);
+    private void CheckRelationRegistered (ObjectID originatingObjectID, string shortPropertyName, bool checkOrdering, params ObjectID[] expectedRelatedObjectIDs)
+    {
+      var relationEndPointDefinition =
+          originatingObjectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (
+              originatingObjectID.ClassDefinition.ClassType.FullName + "." + shortPropertyName);
+      var collectionEndPoint = (CollectionEndPoint)
+                               ClientTransactionMock.DataManager.RelationEndPointMap[
+                                   new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
+      Assert.That (collectionEndPoint, Is.Not.Null);
 
-      // check that relations have been registered
-
-      var relationEndPointDefinition1 =
-          DomainObjectIDs.Customer1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
-      var collectionEndPoint1 = (CollectionEndPoint)
-                                ClientTransactionMock.DataManager.RelationEndPointMap[new RelationEndPointID (DomainObjectIDs.Customer1, relationEndPointDefinition1)];
-      Assert.That (collectionEndPoint1, Is.Not.Null);
-      Assert.That (collectionEndPoint1.OppositeDomainObjects,
-                   Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem) }));
-
-      var relationEndPointDefinition2 =
-          DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
-      var collectionEndPoint2 = (CollectionEndPoint)
-                                ClientTransactionMock.DataManager.RelationEndPointMap[new RelationEndPointID (DomainObjectIDs.Order1, relationEndPointDefinition2)];
-      Assert.That (collectionEndPoint2, Is.Not.Null);
-      Assert.That (collectionEndPoint2.OppositeDomainObjects,
-                   Is.EquivalentTo (new[] { OrderItem.GetObject (DomainObjectIDs.OrderItem1), OrderItem.GetObject (DomainObjectIDs.OrderItem2) }));
+      var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => RepositoryAccessor.GetObject (id, false)).ToArray();
+      if (checkOrdering)
+        Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EqualTo (expectedRelatedObjects));
+      else
+        Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EquivalentTo (expectedRelatedObjects));
     }
   }
 }
