@@ -159,6 +159,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private RelationEndPointID[] _associatedRelationEndPointIDs = null;
     private bool _isDiscarded = false;
     private bool _hasBeenMarkedChanged = false;
+    private bool _hasBeenChanged = false;
 
     // construction and disposing
 
@@ -458,6 +459,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckDiscarded();
 
       _hasBeenMarkedChanged = false;
+      _hasBeenChanged = false;
 
       if (_state == DataContainerStateType.Deleted)
         Discard();
@@ -475,6 +477,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckDiscarded ();
 
       _hasBeenMarkedChanged = false;
+      _hasBeenChanged = false;
 
       if (_state == DataContainerStateType.New)
         Discard();
@@ -568,6 +571,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (_clientTransaction != null)
         _clientTransaction.TransactionEventSink.PropertyValueChanged (this, args.PropertyValue, args.OldValue, args.NewValue);
+
+      if (_hasBeenChanged && !args.PropertyValue.HasChanged)
+      {
+        _hasBeenChanged = false;
+        foreach (PropertyValue propertyValue in _propertyValues)
+        {
+          if (propertyValue.HasChanged)
+          {
+            _hasBeenChanged = true;
+            break;
+          }
+        }
+      }
+      else
+      {
+        _hasBeenChanged = true;
+      }
     }
 
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)
@@ -587,18 +607,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.IsFalse (IsDiscarded);
       Assertion.IsTrue (_state == DataContainerStateType.Existing);
 
-      if (_hasBeenMarkedChanged)
+      //if (_hasBeenMarkedChanged)
+      //  return StateType.Changed;
+      //else
+      //{
+      //  foreach (PropertyValue propertyValue in _propertyValues)
+      //  {
+      //    if (propertyValue.HasChanged)
+      //      return StateType.Changed;
+      //  }
+
+      //  return StateType.Unchanged;
+      //}
+
+      if (_hasBeenMarkedChanged || _hasBeenChanged)
         return StateType.Changed;
       else
-      {
-        foreach (PropertyValue propertyValue in _propertyValues)
-        {
-          if (propertyValue.HasChanged)
-            return StateType.Changed;
-        }
-
         return StateType.Unchanged;
-      }
     }
 
     private void Discard ()
@@ -645,6 +670,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _timestamp = sourceContainer._timestamp;
       _isDiscarded = sourceContainer._isDiscarded;
       _hasBeenMarkedChanged = sourceContainer._hasBeenMarkedChanged;
+      _hasBeenChanged = sourceContainer._hasBeenChanged;
 
       Assertion.IsTrue (
           _domainObject == null || sourceContainer._domainObject == null || _domainObject == sourceContainer._domainObject,
@@ -670,6 +696,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _isDiscarded = sourceContainer._isDiscarded;
       _timestamp = sourceContainer._timestamp;
       _hasBeenMarkedChanged |= sourceContainer._hasBeenMarkedChanged;
+      _hasBeenChanged |= sourceContainer._hasBeenChanged;
       _domainObject = sourceContainer._domainObject;
       _associatedRelationEndPointIDs = null; // reinitialize on next use
 
@@ -694,6 +721,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _state = info.GetValue<DataContainerStateType> ();
       _domainObject = info.GetValueForHandle<DomainObject> ();
       _hasBeenMarkedChanged = info.GetBoolValue ();
+      _hasBeenChanged = info.GetBoolValue();
     }
 
     private void RestorePropertyValuesFromData (FlattenedDeserializationInfo info)
@@ -726,7 +754,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddHandle (_clientTransaction);
       info.AddValue (_state);
       info.AddHandle (_domainObject);
-      info.AddBoolValue (_hasBeenMarkedChanged);
+      info.AddBoolValue(_hasBeenMarkedChanged);
+      info.AddBoolValue(_hasBeenChanged);
     }
 
     #endregion Serialization

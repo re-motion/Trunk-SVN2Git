@@ -109,25 +109,39 @@ namespace Remotion.Utilities
       return (object[]) ArrayUtility.Convert (EnumerableUtility.ToArray (attributeInstances), attributeType);
     }
 
+    private static readonly InterlockedCache<Tuple<Type, bool>, AttributeWithMetadata[]> s_attributesWithMetadataCache = new InterlockedCache<Tuple<Type, bool>, AttributeWithMetadata[]>();
+
     public static AttributeWithMetadata[] GetCustomAttributesWithMetadata (Type type, bool inherit)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      List<AttributeWithMetadata> result = new List<AttributeWithMetadata> ();
+      return s_attributesWithMetadataCache.GetOrCreateValue(
+        new Tuple<Type, bool>(type, inherit), 
+        delegate(Tuple<Type, bool> tuple)
+        {
+          return GetCustomAttributesWithMetadataInternal(tuple.A, tuple.B);
+        });
+    }
+
+    private static AttributeWithMetadata[] GetCustomAttributesWithMetadataInternal(Type type, bool inherit)
+    {
+      ArgumentUtility.CheckNotNull("type", type);
+
+      List<AttributeWithMetadata> result = new List<AttributeWithMetadata>();
 
       Type currentType = type;
       do
       {
-        Attribute[] attributes = Attribute.GetCustomAttributes (currentType, false); // get attributes exactly for current type
+        Attribute[] attributes = Attribute.GetCustomAttributes(currentType, false); // get attributes exactly for current type
         foreach (Attribute attribute in attributes)
         {
-          if (type == currentType || IsAttributeInherited (attribute.GetType()))
-            result.Add (new AttributeWithMetadata (currentType, attribute));
+          if (type == currentType || IsAttributeInherited(attribute.GetType()))
+            result.Add(new AttributeWithMetadata(currentType, attribute));
         }
         currentType = currentType.BaseType;
-      } while (inherit && currentType != null && currentType != typeof (object)); // iterate unless inherit == false, stop when typeof (object) is reached
+      } while (inherit && currentType != null && currentType != typeof(object)); // iterate unless inherit == false, stop when typeof (object) is reached
 
-      return result.ToArray ();
+      return result.ToArray();
     }
 
     private static void CheckAttributeType (Type attributeType, string parameterName)
