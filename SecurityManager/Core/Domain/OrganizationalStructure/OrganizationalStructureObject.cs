@@ -84,9 +84,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
     {
       if (_securityStrategy == null)
-        _securityStrategy = new DomainObjectSecurityStrategy (RequiredSecurityForStates.None, this);
+        _securityStrategy = GetSecurityStrategyInternal();
 
       return _securityStrategy;
+    }
+
+    protected virtual DomainObjectSecurityStrategy GetSecurityStrategyInternal ()
+    {
+      return new DomainObjectSecurityStrategy (RequiredSecurityForStates.None, this);
     }
 
     Type ISecurableObject.GetSecurableType ()
