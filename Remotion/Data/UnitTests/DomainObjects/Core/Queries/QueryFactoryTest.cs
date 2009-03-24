@@ -25,6 +25,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.Linq.ExtensionMethods;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
@@ -164,6 +165,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (query.Statement, Is.EqualTo ("SELECT [o].* FROM [OrderView] [o] WHERE ([o].[OrderNo] > @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.ID, Is.EqualTo ("<dynamico queryo>"));
+    }
+
+    [Test]
+    public void CreateQuery_FromLinqQuery_WithEagerFetching ()
+    {
+      var queryable = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                      where o.OrderNumber > 1
+                      select o).Fetch (o => o.OrderItems);
+
+      IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
+      Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
+      Assert.That (query.EagerFetchQueries.Single().Key.PropertyName, Is.EqualTo (typeof (Order).FullName + ".OrderItems"));
     }
 
     [Test]
