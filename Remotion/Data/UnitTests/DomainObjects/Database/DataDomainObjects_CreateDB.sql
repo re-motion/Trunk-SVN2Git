@@ -21,4 +21,7 @@ LOG ON (
 GO
 
 ALTER DATABASE TestDomain SET RECOVERY SIMPLE
-BACKUP LOG TestDomain WITH TRUNCATE_ONLY
+
+-- WITH TRUNCATE_ONLY option is not available in SQL 2008 anymore and no replacement necessary 
+-- because the transaction log is automatically truncated when the database is using the simple recovery model 
+--BACKUP LOG TestDomain WITH TRUNCATE_ONLY
