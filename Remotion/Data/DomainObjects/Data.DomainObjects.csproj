@@ -639,7 +639,6 @@
       </SubType>
     </EmbeddedResource>
     <Content Include="Doc\How to add a new property type.txt" />
-    <Content Include="Doc\include\DomainObjects.xml" />
     <Content Include="Doc\include\NamespaceDoc.xml" />
     <Content Include="Doc\WhatsNew_Remotion.Data.DomainObjects.txt" />
   </ItemGroup>

@@ -140,13 +140,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Occurs before a <see cref="PropertyValue"/> is changed.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event PropertyChangeEventHandler PropertyChanging;
 
     /// <summary>
     /// Occurs after a <see cref="PropertyValue"/> is changed.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event PropertyChangeEventHandler PropertyChanged;
 
     private readonly ObjectID _id;
@@ -557,6 +555,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     internal void PropertyValueChanged (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)
     {
+      UpdateStateAfterPropertyValueChanged(args);
+
       if (args.PropertyValue.PropertyType != typeof (ObjectID))
       {
         OnPropertyChanged (args);
@@ -571,8 +571,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (_clientTransaction != null)
         _clientTransaction.TransactionEventSink.PropertyValueChanged (this, args.PropertyValue, args.OldValue, args.NewValue);
+    }
 
-      if (_hasBeenChanged && !args.PropertyValue.HasChanged)
+    private void UpdateStateAfterPropertyValueChanged (PropertyChangeEventArgs args)
+    {
+      if (_hasBeenChanged && !args.PropertyValue.HasChanged) // maybe we need to reset this DataContainer's state to unchanged?
       {
         _hasBeenChanged = false;
         foreach (PropertyValue propertyValue in _propertyValues)
@@ -606,19 +609,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       Assertion.IsFalse (IsDiscarded);
       Assertion.IsTrue (_state == DataContainerStateType.Existing);
-
-      //if (_hasBeenMarkedChanged)
-      //  return StateType.Changed;
-      //else
-      //{
-      //  foreach (PropertyValue propertyValue in _propertyValues)
-      //  {
-      //    if (propertyValue.HasChanged)
-      //      return StateType.Changed;
-      //  }
-
-      //  return StateType.Unchanged;
-      //}
 
       if (_hasBeenMarkedChanged || _hasBeenChanged)
         return StateType.Changed;
@@ -680,7 +670,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       AssumeSamePropertyValues(sourceContainer);
     }
 
-    internal void AssumeSamePropertyValues (DataContainer sourceContainer)
+    private void AssumeSamePropertyValues (DataContainer sourceContainer)
     {
       _associatedRelationEndPointIDs = null; // reinitialize on next use
 

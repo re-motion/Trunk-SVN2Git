@@ -14,12 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
 using Remotion.Collections;
-using Remotion.Text;
 
 namespace Remotion.Utilities
 {
@@ -81,12 +78,12 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("element", element);
       CheckAttributeType (attributeType, "attributeType");
 
-      Type elementAsType = element as Type;
+      var elementAsType = element as Type;
       if (elementAsType != null)
         return GetCustomAttributes (elementAsType, attributeType, inherit);
 
       Attribute[] attributes = Attribute.GetCustomAttributes (element, typeof (Attribute), inherit);
-      Attribute[] filteredAttributes = Array.FindAll (attributes, delegate (Attribute attribute) { return attributeType.IsInstanceOfType (attribute); });
+      Attribute[] filteredAttributes = Array.FindAll (attributes, attribute => attributeType.IsInstanceOfType (attribute));
       return (object[]) ArrayUtility.Convert (filteredAttributes, attributeType);
     }
 
@@ -116,18 +113,15 @@ namespace Remotion.Utilities
       ArgumentUtility.CheckNotNull ("type", type);
 
       return s_attributesWithMetadataCache.GetOrCreateValue(
-        new Tuple<Type, bool>(type, inherit), 
-        delegate(Tuple<Type, bool> tuple)
-        {
-          return GetCustomAttributesWithMetadataInternal(tuple.A, tuple.B);
-        });
+        new Tuple<Type, bool>(type, inherit),
+        tuple => GetCustomAttributesWithMetadataInternal (tuple.A, tuple.B));
     }
 
     private static AttributeWithMetadata[] GetCustomAttributesWithMetadataInternal(Type type, bool inherit)
     {
       ArgumentUtility.CheckNotNull("type", type);
 
-      List<AttributeWithMetadata> result = new List<AttributeWithMetadata>();
+      var result = new List<AttributeWithMetadata>();
 
       Type currentType = type;
       do
@@ -135,7 +129,7 @@ namespace Remotion.Utilities
         Attribute[] attributes = Attribute.GetCustomAttributes(currentType, false); // get attributes exactly for current type
         foreach (Attribute attribute in attributes)
         {
-          if (type == currentType || IsAttributeInherited(attribute.GetType()))
+          if (type == currentType || IsAttributeInherited (attribute.GetType()))
             result.Add(new AttributeWithMetadata(currentType, attribute));
         }
         currentType = currentType.BaseType;

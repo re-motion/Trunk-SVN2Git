@@ -98,37 +98,31 @@ public abstract class ClientTransaction
   /// <summary>
   /// Occurs when the <b>ClientTransaction</b> has created a subtransaction.
   /// </summary>
-  /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
   public event SubTransactionCreatedEventHandler SubTransactionCreated;
 
   /// <summary>
   /// Occurs after the <b>ClientTransaction</b> has loaded a new object.
   /// </summary>
-  /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
   public event ClientTransactionEventHandler Loaded;
 
   /// <summary>
   /// Occurs immediately before the <b>ClientTransaction</b> performs a <see cref="Commit"/> operation.
   /// </summary>
-  /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
   public event ClientTransactionEventHandler Committing;
 
   /// <summary>
   /// Occurs immediately after the <b>ClientTransaction</b> has successfully performed a <see cref="Commit"/> operation.
   /// </summary>
-  /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
   public event ClientTransactionEventHandler Committed;
 
   /// <summary>
   /// Occurs immediately before the <b>ClientTransaction</b> performs a <see cref="Rollback"/> operation.
   /// </summary>
-  /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
   public event ClientTransactionEventHandler RollingBack;
 
   /// <summary>
   /// Occurs immediately after the <b>ClientTransaction</b> has successfully performed a <see cref="Rollback"/> operation.
   /// </summary>
-  /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
   public event ClientTransactionEventHandler RolledBack;
 
   private readonly DataManager _dataManager;

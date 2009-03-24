@@ -241,13 +241,11 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Occurs before an object is added to the collection.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event DomainObjectCollectionChangeEventHandler Adding;
 
     /// <summary>
     /// Occurs after an object is added to the collection.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event DomainObjectCollectionChangeEventHandler Added;
 
     /// <summary>
@@ -258,7 +256,6 @@ namespace Remotion.Data.DomainObjects
     /// Either subscribe to the <see cref="DomainObject.Deleting"/> event or override the <see cref="OnDeleting"/> method to implement 
     /// business logic handling this situation.
     /// </remarks>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event DomainObjectCollectionChangeEventHandler Removing;
 
     /// <summary>
@@ -269,7 +266,6 @@ namespace Remotion.Data.DomainObjects
     /// Either subscribe to the <see cref="DomainObject.Deleted"/> event or override the <see cref="OnDeleted"/> method to implement 
     /// business logic handling this situation.
     /// </remarks>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event DomainObjectCollectionChangeEventHandler Removed;
 
     internal IDomainObjectCollectionData _data; // TODO 1033: Make private as soon as CollectionEndPoint manages the real data of managed DOCollections.

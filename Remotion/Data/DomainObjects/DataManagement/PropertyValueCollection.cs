@@ -33,12 +33,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <summary>
     /// Occurs before the <see cref="PropertyValue.Value"/> of a <see cref="PropertyValue"/> in the <see cref="PropertyValueCollection"/> is changed.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event PropertyChangeEventHandler PropertyChanging;
     /// <summary>
     /// Occurs after the <see cref="PropertyValue.Value"/> of a <see cref="PropertyValue"/> in the <see cref="PropertyValueCollection"/> is changed.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
+    /// <remarks>
+    /// When this event is raised, the associated <see cref="DataContainer"/>'s <see cref="DataContainer.State"/> has not yet been updated.
+    /// </remarks>
     public event PropertyChangeEventHandler PropertyChanged;
 
     private DataContainer _dataContainer;

@@ -157,7 +157,6 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>
     /// This event does not fire when a <see cref="PropertyValue"/> has been changed due to a relation change.
     /// </remarks>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event PropertyChangeEventHandler PropertyChanging;
 
     /// <summary>
@@ -166,55 +165,46 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>
     /// This event does not fire when a <see cref="PropertyValue"/> has been changed due to a relation change.
     /// </remarks>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event PropertyChangeEventHandler PropertyChanged;
 
     /// <summary>
     /// Occurs before a Relation of the <see cref="DomainObject"/> is changed.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event RelationChangingEventHandler RelationChanging;
 
     /// <summary>
     /// Occurs after a Relation of the <see cref="DomainObject"/> has been changed.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event RelationChangedEventHandler RelationChanged;
 
     /// <summary>
     /// Occurs before the <see cref="DomainObject"/> is deleted.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event EventHandler Deleting;
 
     /// <summary>
     /// Occurs after the <see cref="DomainObject"/> has been deleted.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event EventHandler Deleted;
 
     /// <summary>
     /// Occurs before the changes of a <see cref="DomainObject"/> are committed.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event EventHandler Committing;
 
     /// <summary>
     /// Occurs after the changes of a <see cref="DomainObject"/> are successfully committed.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event EventHandler Committed;
 
     /// <summary>
     /// Occurs before the changes of a <see cref="DomainObject"/> are rolled back.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event EventHandler RollingBack;
 
     /// <summary>
     /// Occurs after the changes of a <see cref="DomainObject"/> are successfully rolled back.
     /// </summary>
-    /// <include file='Doc\include\DomainObjects.xml' path='documentation/allEvents/remarks'/>
     public event EventHandler RolledBack;
 
     private ObjectID _id;

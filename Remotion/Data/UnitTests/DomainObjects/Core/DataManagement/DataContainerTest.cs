@@ -741,6 +741,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dc.RegisterLoadedDataContainer (ClientTransactionMock);
     }
 
+    [Test]
+    public void State_Changed_InOnPropertyChanged ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+      Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
+
+      var propertyChangingCalled = false;
+      var propertyChangedCalled = false;
+
+      dc.PropertyChanging += delegate { propertyChangingCalled = true;  Assert.That (dc.State, Is.EqualTo (StateType.Unchanged)); };
+      dc.PropertyChanged += delegate { propertyChangedCalled = true; Assert.That (dc.State, Is.EqualTo (StateType.Changed)); };
+
+      dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
+
+      Assert.That (dc.State, Is.EqualTo (StateType.Changed));
+      Assert.That (propertyChangingCalled, Is.True);
+      Assert.That (propertyChangedCalled, Is.True);
+    }
+
+    [Test]
+    public void State_Changed_InPropertyValueOnChanged ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+      Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
+
+      var propertyChangingCalled = false;
+      var propertyChangedCalled = false;
+
+      // It is documented that the DataContainer's state has not been updated in PropertyValueCollection.PropertyChanged:
+      
+      dc.PropertyValues.PropertyChanging += delegate { propertyChangingCalled = true; Assert.That (dc.State, Is.EqualTo (StateType.Unchanged)); };
+      dc.PropertyValues.PropertyChanged += delegate { propertyChangedCalled = true; Assert.That (dc.State, Is.EqualTo (StateType.Unchanged)); };
+
+      dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
+
+      Assert.That (dc.State, Is.EqualTo (StateType.Changed));
+      Assert.That (propertyChangingCalled, Is.True);
+      Assert.That (propertyChangedCalled, Is.True);
+    }
+
     private string GetStorageClassPropertyName (string shortName)
     {
       return Configuration.NameResolver.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
