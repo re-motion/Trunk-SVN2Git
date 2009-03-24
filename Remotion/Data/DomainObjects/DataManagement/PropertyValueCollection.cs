@@ -138,12 +138,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
         ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
         CheckDiscarded ();
 
-        if (!Contains (propertyName))
-        {
-          throw CreateArgumentException ("Property '{0}' does not exist.", "propertyName", propertyName);
-        }
-  
-        return (PropertyValue) BaseGetObject (propertyName); 
+        // Performancetuning: Contains is quite expensive, so it's now only called if result is null
+        PropertyValue propertyValue = (PropertyValue)BaseGetObject(propertyName);
+
+        if (propertyValue == null && !Contains(propertyName))
+          throw CreateArgumentException("Property '{0}' does not exist.", "propertyName", propertyName);
+
+        return propertyValue;
       }
     }
 
@@ -160,13 +161,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("value", value);
       CheckDiscarded ();
 
-      if (Contains (value.Name))
-        throw CreateArgumentException ("Property '{0}' already exists in collection.", "value", value.Name);
+      // Performancetuning: Contains is quite expensive, so the specific exception is now raised by catching ArgumentException and then Contains
+      try
+      {
+        int position = BaseAdd(value.Name, value);
+        value.RegisterForAccessObservation(this);
 
-      int position = BaseAdd (value.Name, value);
-      value.RegisterForAccessObservation (this);
+        return position;
+      }
+      catch (ArgumentException)
+      {
+        if (Contains(value.Name))
+          throw CreateArgumentException("Property '{0}' already exists in collection.", "value", value.Name);
 
-      return position;
+        throw;
+      }
     }
 
     #endregion

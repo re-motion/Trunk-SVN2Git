@@ -49,7 +49,12 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public static bool HasCurrentTransaction
     {
-      get { return ClientTransactionScope.ActiveScope != null && ClientTransactionScope.ActiveScope.ScopedTransaction != null; }
+      get
+      {
+        // Performancetuning: get_ActiveScope() is quite expensive, so only called once
+        ClientTransactionScope activeScope = ActiveScope;
+        return activeScope != null && activeScope.ScopedTransaction != null;
+      }
     }
 
     /// <summary>
@@ -64,10 +69,13 @@ namespace Remotion.Data.DomainObjects
     {
       get
       {
-        if (!HasCurrentTransaction)
+        // Performancetuning: get_ActiveScope() is quite expensive, so only called once
+        ClientTransactionScope activeScope = ActiveScope;
+
+        if (activeScope == null || activeScope.ScopedTransaction == null)
           throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
-        else
-          return ActiveScope.ScopedTransaction;
+        
+        return activeScope.ScopedTransaction;
       }
     }
 
