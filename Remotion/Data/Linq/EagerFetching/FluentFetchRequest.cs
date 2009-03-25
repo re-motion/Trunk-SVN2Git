@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.EagerFetching;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.ExtensionMethods
+namespace Remotion.Data.Linq.EagerFetching
 {
   /// <summary>
   /// Provides a fluent interface to recursively fetch related objects of objects which themselves are eager-fetched.
