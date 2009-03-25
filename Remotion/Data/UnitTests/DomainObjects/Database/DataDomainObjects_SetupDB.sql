@@ -3,6 +3,9 @@ GO
 
 -- Drop all views that will be created below
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_ClassWithUnidirectionalRelationView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TI_ClassWithUnidirectionalRelationView]
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TI_AddressView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[TI_AddressView]
 
@@ -1015,6 +1018,14 @@ CREATE TABLE [TableInheritance_BaseClassWithInvalidRelationClassIDColumns] (
 GO
 
 -- Create a view for every class
+
+CREATE VIEW [dbo].[TI_ClassWithUnidirectionalRelationView] ([ID], [ClassID], [Timestamp], [DomainBaseID], [DomainBaseIDClassID])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [DomainBaseID], [DomainBaseIDClassID]
+    FROM [dbo].[TableInheritance_TableWithUnidirectionalRelation]
+    WHERE [ClassID] IN ('TI_ClassWithUnidirectionalRelation')
+  WITH CHECK OPTION
+GO
 
 CREATE VIEW [dbo].[TI_AddressView] ([ID], [ClassID], [Timestamp], [Street], [Zip], [City], [Country], [PersonID], [PersonIDClassID])
   WITH SCHEMABINDING AS

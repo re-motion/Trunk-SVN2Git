@@ -139,14 +139,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void GetRelatedTable_FK_Right ()
     {
       string tableName = _databaseInfo.GetRelatedTableName (typeof (Order).GetProperty ("OrderItems"));
-      Assert.AreEqual ("OrderItem", tableName);
+      Assert.AreEqual ("OrderItemView", tableName);
     }
 
     [Test]
     public void GetRelatedTable_FK_Left ()
     {
       string tableName = _databaseInfo.GetRelatedTableName (typeof (OrderItem).GetProperty ("Order"));
-      Assert.AreEqual ("Order", tableName);
+      Assert.AreEqual ("OrderView", tableName);
     }
 
     [Test]

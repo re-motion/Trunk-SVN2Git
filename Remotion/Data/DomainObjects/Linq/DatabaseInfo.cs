@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ClassDefinition classDefinition = relationData.B;
       string propertyIdentifier = relationData.C;
 
-      return relationDefinition.GetOppositeClassDefinition (classDefinition.ID, propertyIdentifier).GetEntityName();
+      return relationDefinition.GetOppositeClassDefinition (classDefinition.ID, propertyIdentifier).GetViewName();
     }
 
     public string GetColumnName (MemberInfo member)

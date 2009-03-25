@@ -833,28 +833,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1105: Use views instead of tables")]
     public void TableInheritance_AccessingPropertyFromBaseClass ()
     {
       var query = from c in QueryFactory.CreateLinqQuery<TableInheritance.TestDomain.ClassWithUnidirectionalRelation> ()
-                  where c.DomainBase.CreatedAt == new DateTime (2006, 01, 04)
+                  where c.DomainBase.CreatedAt == new DateTime (2006, 01, 03)
                   select c;
-      query.ToArray ();
+      CheckQueryResult (query, new TableInheritance.DomainObjectIDs ().ClassWithUnidirectionalRelation);
     }
 
     [Test]
-    [Ignore ("TODO 1105: Use views instead of tables")]
     public void TableInheritance_MemberJoinViaBaseClass ()
     {
       var query = from c in QueryFactory.CreateLinqQuery<TableInheritance.TestDomain.Client> ()
                   from domainBase in c.AssignedObjects
-                  where domainBase.CreatedAt == new DateTime (2006, 01, 04)
+                  where domainBase.CreatedAt == new DateTime (2006, 01, 03)
                   select domainBase;
-      query.ToArray ();
+      
+      var domainObjectIDs = new TableInheritance.DomainObjectIDs ();
+      CheckQueryResult (query, domainObjectIDs.PersonForUnidirectionalRelationTest, domainObjectIDs.Person);
     }
     
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
-        where T : TestDomainBase
+        where T : DomainObject
     {
       T[] results = query.ToArray ();
       T[] expected = GetExpectedObjects<T> (expectedObjectIDs);
@@ -862,9 +862,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     private static T[] GetExpectedObjects<T> (params ObjectID[] expectedObjectIDs)
-        where T: TestDomainBase
+        where T: DomainObject
     {
-      return (from id in expectedObjectIDs select (id == null ? null : (T) TestDomainBase.GetObject (id))).ToArray();
+      return (from id in expectedObjectIDs select (id == null ? null : (T) RepositoryAccessor.GetObject (id, false))).ToArray();
     }
 
     private void CheckDataContainersRegistered (params ObjectID[] objectIDs)
