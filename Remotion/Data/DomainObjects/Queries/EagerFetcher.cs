@@ -51,9 +51,6 @@ namespace Remotion.Data.DomainObjects.Queries
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
 
-      if (relationEndPointDefinition.Cardinality != CardinalityType.Many)
-        throw new ArgumentException ("Eager fetching is only supported for collection-valued relation properties.", "relationEndPointDefinition");
-
       s_log.DebugFormat (
           "Eager fetching objects for {0} via query {1} ('{2}').", relationEndPointDefinition.PropertyName, fetchQuery.ID, fetchQuery.Statement);
 
@@ -67,8 +64,11 @@ namespace Remotion.Data.DomainObjects.Queries
         {
           CheckClassDefinitionOfOriginalObject (relationEndPointDefinition, originalObject);
 
-          var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
-          RegisterRelationResult (fetchQuery, relationEndPointID, collatedResult[originalObject].Distinct());
+          if (relationEndPointDefinition.Cardinality == CardinalityType.Many)
+          {
+            var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
+            RegisterRelationResult (fetchQuery, relationEndPointID, collatedResult[originalObject].Distinct());
+          }
         }
       }
     }

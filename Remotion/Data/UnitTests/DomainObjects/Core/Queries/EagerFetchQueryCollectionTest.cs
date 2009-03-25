@@ -77,12 +77,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Eager fetching is only supported for collection-valued relation properties, but "
-        + "relation end point 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' has a cardinality of 'One'.\r\n"
-        + "Parameter name: relationEndPointDefinition")]
     public void Add_ForObjectEndPoint ()
     {
       _collection.Add (_objectEndPointDefinition, _query1);
+      Assert.That (_collection.ToArray (), Is.EquivalentTo (
+          new[] {
+            new KeyValuePair<IRelationEndPointDefinition, IQuery> (_objectEndPointDefinition, _query1)
+          }));
     }
 
     [Test]

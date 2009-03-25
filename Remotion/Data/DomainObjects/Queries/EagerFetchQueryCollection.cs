@@ -50,13 +50,6 @@ namespace Remotion.Data.DomainObjects.Queries
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("fetchQuery", fetchQuery);
 
-      if (relationEndPointDefinition.Cardinality != CardinalityType.Many)
-      {
-        var message = string.Format ("Eager fetching is only supported for collection-valued relation properties, but relation end point '{0}' has " 
-            + "a cardinality of 'One'.", relationEndPointDefinition.PropertyName);
-        throw new ArgumentException (message, "relationEndPointDefinition");
-      }
-
       if (_fetchQueries.ContainsKey (relationEndPointDefinition))
       {
         var message = string.Format ("There is already an eager fetch query for relation end point '{0}'.", relationEndPointDefinition.PropertyName);
