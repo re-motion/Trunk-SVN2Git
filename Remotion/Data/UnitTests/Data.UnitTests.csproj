@@ -648,6 +648,7 @@
     <Compile Include="Linq\SqlGenerationTest\SqlServer\MethodCallGenerators\MethodCallRemoveTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\SqlServer\MethodCallGenerators\MethodCallSingleTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\SqlServer\MethodCallGenerators\MethodCallSubstringTest.cs" />
+    <Compile Include="Linq\SqlGenerationTest\SqlServer\MethodCallGenerators\MethodCallTakeTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\SqlServer\MethodCallGenerators\MethodCallUpperTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\MethodCallSqlGeneratorRegistryTest.cs" />
     <Compile Include="Linq\SqlGenerationTest\SqlServer\OrderByBuilderTest.cs" />

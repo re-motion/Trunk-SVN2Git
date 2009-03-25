@@ -852,6 +852,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var domainObjectIDs = new TableInheritance.DomainObjectIDs ();
       CheckQueryResult (query, domainObjectIDs.PersonForUnidirectionalRelationTest, domainObjectIDs.Person);
     }
+
+    [Test]
+    public void QueryWithTake ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>() select o).Take (3);
+      CheckQueryResult (query, DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order3, DomainObjectIDs.OrderWithoutOrderItem);
+    }
     
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : DomainObject
