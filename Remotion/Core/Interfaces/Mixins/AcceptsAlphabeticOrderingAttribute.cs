@@ -19,7 +19,7 @@ namespace Remotion.Mixins
 {
   /// <summary>
   /// Indicates that an ordinal name comparison can be used to determine the order between two mixins when these override the same methods
-  /// on a target object.
+  /// on a target object. Only use this if you don't care about the actual mixin order.
   /// </summary>
   /// <remarks>
   /// <para>
@@ -31,7 +31,7 @@ namespace Remotion.Mixins
   /// <para>
   /// In some situations, however, a mixin cannot and does not need to specify a specific ordering simply because any override call order would
   /// be sufficient for its purpose. Such a mixin can opt into alphabetic ordering by having this attribute applied to it. Alphabetic ordering is
-  /// only applied after all implicit or explicit dependencies have been analyzed. It is also ruled out if more than one of the mixins involved
+  /// only applied after all implicit or explicit dependencies have been analyzed. It is also ruled out if two or more of the mixins involved
   /// do not accept alphabetic ordering.
   /// </para>
   /// </remarks>
