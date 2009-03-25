@@ -1353,6 +1353,9 @@
     <Compile Include="DomainObjects\Web\WxeFunctions\NoAutoCommitTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\RemoveCurrentTransactionScopeFunction.cs" />
     <TestDomain Include="DomainObjects\Core\Design\DelaySignAssembly\PublicKey.snk" />
+    <None Include="DomainObjects\Core\TableInheritance\TestDomain\AbstractClassWithHierarchy.cd" />
+    <None Include="DomainObjects\Core\TableInheritance\TestDomain\TestDomain.cd" />
+    <None Include="DomainObjects\Core\TableInheritance\TestDomain\FileSystem.cd" />
     <None Include="DomainObjects\Database\DataDomainObjects_DropFulltextIndices.sql" />
     <None Include="DomainObjects\Database\DataDomainObjects_CreateFulltextIndices.sql" />
     <None Include="Linq\ParsingTest\ExpressionTrees\ExpressionTree_Grammar.docx" />

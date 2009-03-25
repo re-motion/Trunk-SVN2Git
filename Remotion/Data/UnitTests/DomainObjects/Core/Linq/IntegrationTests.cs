@@ -25,7 +25,6 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.Parsing;
-using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Customer=Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer;
 using Order=Remotion.Data.UnitTests.DomainObjects.TestDomain.Order;
@@ -544,7 +543,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Query_WithView ()
     {
       var domainBases =
-          from d in QueryFactory.CreateLinqQuery<DomainBase>()
+          from d in QueryFactory.CreateLinqQuery<TableInheritance.TestDomain.DomainBase>()
           select d;
 
       Assert.That (domainBases.ToArray(), Is.Not.Empty);
@@ -831,6 +830,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckRelationRegistered (DomainObjectIDs.Order4, "OrderItems", false, DomainObjectIDs.OrderItem5);
       CheckRelationRegistered (DomainObjectIDs.OrderWithoutOrderItem, "OrderItems", false);
       CheckRelationRegistered (DomainObjectIDs.InvalidOrder, "OrderItems", false);
+    }
+
+    [Test]
+    [Ignore ("TODO 1105: Use views instead of tables")]
+    public void TableInheritance_AccessingPropertyFromBaseClass ()
+    {
+      var query = from c in QueryFactory.CreateLinqQuery<TableInheritance.TestDomain.ClassWithUnidirectionalRelation> ()
+                  where c.DomainBase.CreatedAt == new DateTime (2006, 01, 04)
+                  select c;
+      query.ToArray ();
+    }
+
+    [Test]
+    [Ignore ("TODO 1105: Use views instead of tables")]
+    public void TableInheritance_MemberJoinViaBaseClass ()
+    {
+      var query = from c in QueryFactory.CreateLinqQuery<TableInheritance.TestDomain.Client> ()
+                  from domainBase in c.AssignedObjects
+                  where domainBase.CreatedAt == new DateTime (2006, 01, 04)
+                  select domainBase;
+      query.ToArray ();
     }
     
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
