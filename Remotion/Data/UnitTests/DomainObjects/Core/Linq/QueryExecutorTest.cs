@@ -221,6 +221,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMappingRelatedObjects' is not a relation end point. Fetching it is not "
+        + "supported by this LINQ provider.")]
+    public void CreateQuery_EagerFetchQueries_ForNonRelationProperty ()
+    {
+      var queryModel = GetParsedSimpleWhereQuery ();
+      var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
+      var fetchRequest = new FetchManyRequest ((Expression<Func<Order, IEnumerable<OrderItem>>>) (o => o.NotInMappingRelatedObjects));
+
+      executor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest });
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The member 'LastLoadMode' is a 'Field', which cannot be fetched by "
+        + "this LINQ provider. Only properties can be fetched.")]
+    public void CreateQuery_EagerFetchQueries_ForField ()
+    {
+      var queryModel = GetParsedSimpleWhereQuery ();
+      var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
+      var fetchRequest = new FetchOneRequest ((Expression<Func<Order, LoadMode>>) (o => o.LastLoadMode));
+
+      executor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest });
+    }
+
+    [Test]
     public void CreateQuery_EagerFetchQueries_WithSortExpression ()
     {
       var queryModel = GetParsedSimpleCustomerQuery();

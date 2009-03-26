@@ -166,24 +166,44 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       foreach (var fetchRequest in fetchRequests)
       {
-        var propertyInfo = fetchRequest.RelationMember as PropertyInfo;
-        if (propertyInfo == null)
-          throw new NotSupportedException ("Members of type " + fetchRequest.RelationMember.Name + " are not supported by this LINQ provider.");
-
-        var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
-        var relationEndPointDefinition = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
-
+        IRelationEndPointDefinition relationEndPointDefinition = GetEagerFetchRelationEndPointDefinition (fetchRequest, classDefinition);
         string sortExpression = GetSortExpressionForRelation (relationEndPointDefinition);
 
         var fetchQueryModel = fetchRequest.CreateFetchQueryModel (queryModel);
         var fetchQuery = CreateQuery (
-            "<fetch query for " + propertyName + ">",
+            "<fetch query for " + fetchRequest.RelationMember.Name + ">",
             fetchQueryModel,
             fetchRequest.InnerFetchRequests,
             relationEndPointDefinition.GetOppositeClassDefinition(),
             sortExpression);
 
           query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
+      }
+    }
+
+    private IRelationEndPointDefinition GetEagerFetchRelationEndPointDefinition (FetchRequestBase fetchRequest, ClassDefinition classDefinition)
+    {
+      var propertyInfo = fetchRequest.RelationMember as PropertyInfo;
+      if (propertyInfo == null)
+      {
+        var message = string.Format (
+            "The member '{0}' is a '{1}', which cannot be fetched by this LINQ provider. Only properties can be fetched.",
+            fetchRequest.RelationMember.Name,
+            fetchRequest.RelationMember.MemberType);
+        throw new NotSupportedException (message);
+      }
+
+      var propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (propertyInfo);
+      try
+      {
+        return classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
+      }
+      catch (MappingException ex)
+      {
+        var message = string.Format (
+            "The property '{0}' is not a relation end point. Fetching it is not supported by this LINQ provider.", 
+            propertyName);
+        throw new NotSupportedException (message, ex);
       }
     }
 

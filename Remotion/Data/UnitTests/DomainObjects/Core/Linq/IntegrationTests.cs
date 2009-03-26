@@ -888,6 +888,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckObjectRelationRegistered (DomainObjectIDs.Customer1, "Ceo", DomainObjectIDs.Ceo3);
     }
 
+    [Test]
+    [Ignore ("TODO 1115")]
+    public void EagerFetching_ObjectNotInMapping ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where o.OrderNumber == 1
+                   select o)
+                   .FetchOne (o => o.NotInMappingRelated);
+      query.ToArray ();
+    }
 
     [Test]
     public void TableInheritance_AccessingPropertyFromBaseClass ()
