@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -81,14 +80,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void QueryWithBase ()
     {
       Company partner = Company.GetObject (DomainObjectIDs.Partner1);
-      IQueryable<Company> result;
-      result = (from c in QueryFactory.CreateLinqQuery<Company> ()
-                where c.ID == partner.ID
-                select c);
-      //var result =
-      //    from c in QueryFactory.CreateLinqQuery<Company>()
-      //    where c.ID.Value == "5587a9c0-be53-477d-8c0a-4803c7fae1a9"
-      //    select c;
+      IQueryable<Company> result = (from c in QueryFactory.CreateLinqQuery<Company> ()
+                           where c.ID == partner.ID
+                           select c);
       CheckQueryResult (result, DomainObjectIDs.Partner1);
     }
 
@@ -362,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithContainsInWhere_OnCollection ()
     {
-      ObjectID[] possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 };
+      var possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 };
       var orders =
           from o in QueryFactory.CreateLinqQuery<Order>()
           where possibleItems.Contains (o.ID)
@@ -374,7 +368,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void QueryWithContainsInWhere_OnEmptyCollection ()
     {
-      ObjectID[] possibleItems = new ObjectID[] {  };
+      var possibleItems = new ObjectID[] {  };
       var orders =
           from o in QueryFactory.CreateLinqQuery<Order>()
           where possibleItems.Contains (o.ID)
@@ -777,6 +771,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void QueryWithTake ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Take (3);
+      CheckQueryResult (query, DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order3, DomainObjectIDs.OrderWithoutOrderItem);
+    }
+
+    [Test]
     public void EagerFetching ()
     {
       var query = (from c in QueryFactory.CreateLinqQuery<Customer> ()
@@ -786,14 +787,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
 
       CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-      CheckRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
-      CheckRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-    }
-
-    [Test]
-    [Ignore ("TODO 1089")]
-    public void EagerFetching_MultipleFetches ()
-    {
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
 
     [Test]
@@ -806,8 +801,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
       CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-      CheckRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
-      CheckRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
 
     [Test]
@@ -824,13 +819,75 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
       CheckDataContainersRegistered (DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem3, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem5);
 
-      CheckRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-      CheckRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem3);
-      CheckRelationRegistered (DomainObjectIDs.Order3, "OrderItems", false, DomainObjectIDs.OrderItem4);
-      CheckRelationRegistered (DomainObjectIDs.Order4, "OrderItems", false, DomainObjectIDs.OrderItem5);
-      CheckRelationRegistered (DomainObjectIDs.OrderWithoutOrderItem, "OrderItems", false);
-      CheckRelationRegistered (DomainObjectIDs.InvalidOrder, "OrderItems", false);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem3);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order3, "OrderItems", false, DomainObjectIDs.OrderItem4);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order4, "OrderItems", false, DomainObjectIDs.OrderItem5);
+      CheckCollectionRelationRegistered (DomainObjectIDs.OrderWithoutOrderItem, "OrderItems", false);
+      CheckCollectionRelationRegistered (DomainObjectIDs.InvalidOrder, "OrderItems", false);
     }
+
+    [Test]
+    [Ignore ("TODO 1115")]
+    public void EagerFetching_FetchOne ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where o.OrderNumber == 1
+                   select o).FetchOne (o => o.OrderTicket);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+
+      CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.OrderTicket1);
+      CheckObjectRelationRegistered (DomainObjectIDs.Order1, "OrderTicket", DomainObjectIDs.OrderTicket1);
+      CheckObjectRelationRegistered (DomainObjectIDs.OrderTicket1, "Order", DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    [Ignore ("TODO 1115")]
+    public void EagerFetching_ThenFetchOne ()
+    {
+      var query = (from c in QueryFactory.CreateLinqQuery<Customer> ()
+                   where new[] { "Kunde 1", "Kunde 2" }.Contains (c.Name)
+                   select c).Fetch (c => c.Orders).ThenFetchOne (o => o.OrderTicket);
+
+      CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
+
+      CheckDataContainersRegistered (
+          DomainObjectIDs.Customer1, DomainObjectIDs.Customer2,
+          DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem,
+          DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2);
+
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", false, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer2, "Orders", false);
+      CheckObjectRelationRegistered (DomainObjectIDs.Order1, "OrderTicket", DomainObjectIDs.OrderTicket1);
+      CheckObjectRelationRegistered (DomainObjectIDs.OrderWithoutOrderItem, "OrderTicket", DomainObjectIDs.OrderTicket2);
+    }
+
+    [Test]
+    [Ignore ("TODO 1115")]
+    public void EagerFetching_MultipleFetches ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where o.OrderNumber == 1
+                   select o)
+                   .Fetch (o => o.OrderItems)
+                   .FetchOne (o => o.Customer).ThenFetch (c => c.Orders).ThenFetchOne (o => o.Customer).ThenFetchOne (c => c.Ceo);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+
+      CheckDataContainersRegistered (
+          DomainObjectIDs.Order1, // the original order
+          DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderWithoutOrderItem, // their items
+          DomainObjectIDs.Customer1, // their customers
+          DomainObjectIDs.Order1, DomainObjectIDs.Order2, // their customer's orders
+          DomainObjectIDs.Customer1, // their customer's orders' customers
+          DomainObjectIDs.Ceo3); // their customer's orders' customers' ceos
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckObjectRelationRegistered (DomainObjectIDs.Order1, "Customer", DomainObjectIDs.Customer1);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
+      CheckObjectRelationRegistered (DomainObjectIDs.Customer1, "Ceo", DomainObjectIDs.Ceo3);
+    }
+
 
     [Test]
     public void TableInheritance_AccessingPropertyFromBaseClass ()
@@ -853,13 +910,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, domainObjectIDs.PersonForUnidirectionalRelationTest, domainObjectIDs.Person);
     }
 
-    [Test]
-    public void QueryWithTake ()
-    {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order>() select o).Take (3);
-      CheckQueryResult (query, DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order3, DomainObjectIDs.OrderWithoutOrderItem);
-    }
-    
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : DomainObject
     {
@@ -882,11 +932,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         Assert.That (ClientTransactionMock.DataManager.DataContainerMap[id], Is.Not.Null);
     }
 
-    private void CheckRelationRegistered (ObjectID originatingObjectID, string shortPropertyName, bool checkOrdering, params ObjectID[] expectedRelatedObjectIDs)
+    private void CheckCollectionRelationRegistered (ObjectID originatingObjectID, string shortPropertyName, bool checkOrdering, params ObjectID[] expectedRelatedObjectIDs)
     {
       var relationEndPointDefinition =
           originatingObjectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (
               originatingObjectID.ClassDefinition.ClassType.FullName + "." + shortPropertyName);
+
       var collectionEndPoint = (CollectionEndPoint)
                                ClientTransactionMock.DataManager.RelationEndPointMap[
                                    new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
@@ -897,6 +948,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EqualTo (expectedRelatedObjects));
       else
         Assert.That (collectionEndPoint.OppositeDomainObjects, Is.EquivalentTo (expectedRelatedObjects));
+    }
+
+    private void CheckObjectRelationRegistered (ObjectID originatingObjectID, string shortPropertyName, ObjectID expectedRelatedObjectID)
+    {
+      var relationEndPointDefinition =
+          originatingObjectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (
+              originatingObjectID.ClassDefinition.ClassType.FullName + "." + shortPropertyName);
+
+      var objectEndPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
+                                   new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
+      Assert.That (objectEndPoint, Is.Not.Null);
+      Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (expectedRelatedObjectID));
     }
   }
 }

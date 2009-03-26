@@ -5,26 +5,30 @@
 // and/or modify it under the terms of the GNU Lesser General Public License 
 // version 3.0 as published by the Free Software Foundation.
 // 
-// re-motion is distributed in the hope that it will be useful, 
+// This framework is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of 
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
 // GNU Lesser General Public License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public License
-// along with re-motion; if not, see http://www.gnu.org/licenses.
+// along with this framework; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections;
+using System.Linq.Expressions;
+using Remotion.Data.Linq;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.EagerFetching;
-using System.Collections.Generic;
 
-namespace Remotion.Data.Linq
+namespace Remotion.Data.UnitTests.Linq.EagerFetchingTest
 {
-  /// <summary>
-  /// The interface has to be impelemented so that a query can be executed against the used data backend.
-  /// </summary>
-  public interface IQueryExecutor
+  public class TestFetchRequest : FetchRequestBase
   {
-    object ExecuteSingle (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests);
-    IEnumerable ExecuteCollection (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests);
+    public TestFetchRequest (LambdaExpression relatedObjectSelector)
+        : base(relatedObjectSelector)
+    {
+    }
+
+    protected override void ModifyQueryModelForFetching (QueryModel fetchQueryModel, SelectClause originalSelectClause)
+    {
+    }
   }
 }

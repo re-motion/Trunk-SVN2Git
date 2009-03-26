@@ -20,10 +20,10 @@ namespace Remotion.Data.Linq.EagerFetching
 {
   public class FetchFilteringResult
   {
-    private Expression _newExpression;
-    private ReadOnlyCollection<FetchRequest> _fetchRequests;
+    private readonly Expression _newExpression;
+    private readonly ReadOnlyCollection<FetchRequestBase> _fetchRequests;
 
-    public FetchFilteringResult (Expression newExpression, ReadOnlyCollection<FetchRequest> fetchRequests)
+    public FetchFilteringResult (Expression newExpression, ReadOnlyCollection<FetchRequestBase> fetchRequests)
     {
       _newExpression = newExpression;
       _fetchRequests = fetchRequests;
@@ -34,7 +34,7 @@ namespace Remotion.Data.Linq.EagerFetching
       get { return _newExpression; }
     }
 
-    public ReadOnlyCollection<FetchRequest> FetchRequests
+    public ReadOnlyCollection<FetchRequestBase> FetchRequests
     {
       get { return _fetchRequests; }
     }
