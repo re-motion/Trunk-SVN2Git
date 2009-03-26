@@ -782,7 +782,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var query = (from c in QueryFactory.CreateLinqQuery<Customer> ()
                   where new[] { "Kunde 1", "Kunde 2" }.Contains (c.Name)
-                  select c).Fetch (c => c.Orders).ThenFetch (o => o.OrderItems);
+                  select c).FetchMany (c => c.Orders).ThenFetchMany (o => o.OrderItems);
 
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
 
@@ -797,7 +797,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var query = (from c1 in QueryFactory.CreateLinqQuery<Customer> ()
                    from c2 in QueryFactory.CreateLinqQuery<Customer> ()
                    where new[] { "Kunde 1", "Kunde 2" }.Contains (c1.Name)
-                   select c1).Distinct().Fetch (x => x.Orders).ThenFetch (y => y.OrderItems);
+                   select c1).Distinct().FetchMany (x => x.Orders).ThenFetchMany (y => y.OrderItems);
 
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
       CheckDataContainersRegistered (DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
@@ -810,7 +810,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var query = (from o1 in QueryFactory.CreateLinqQuery<Order> ()
                    from o2 in QueryFactory.CreateLinqQuery<Order> ()
-                   select o1).Fetch (x => x.OrderItems).Distinct();
+                   select o1).FetchMany (x => x.OrderItems).Distinct();
 
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, 
           DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
@@ -848,7 +848,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var query = (from c in QueryFactory.CreateLinqQuery<Customer> ()
                    where new[] { "Kunde 1", "Kunde 2" }.Contains (c.Name)
-                   select c).Fetch (c => c.Orders).ThenFetchOne (o => o.OrderTicket);
+                   select c).FetchMany (c => c.Orders).ThenFetchOne (o => o.OrderTicket);
 
       CheckQueryResult (query, DomainObjectIDs.Customer1, DomainObjectIDs.Customer2);
 
@@ -870,8 +870,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
                    where o.OrderNumber == 1
                    select o)
-                   .Fetch (o => o.OrderItems)
-                   .FetchOne (o => o.Customer).ThenFetch (c => c.Orders).ThenFetchOne (o => o.Customer).ThenFetchOne (c => c.Ceo);
+                   .FetchMany (o => o.OrderItems)
+                   .FetchOne (o => o.Customer).ThenFetchMany (c => c.Orders).ThenFetchOne (o => o.Customer).ThenFetchOne (c => c.Ceo);
 
       CheckQueryResult (query, DomainObjectIDs.Order1);
 

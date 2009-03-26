@@ -20,10 +20,6 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.Linq;
-using Remotion.Data.Linq.Parsing.Structure;
-using Remotion.Data.Linq.SqlGeneration;
-using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -40,39 +36,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       ObjectList<Order> list = queryable.ToObjectList();
       Assert.That (list, Is.EquivalentTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2) }));
     }
-
-
-
-    ///////////////////////only for testing///////////////////////////////
-    //[Test]
-    //public void ToFetch ()
-    //{
-    //  var query1 = QueryFactory.CreateLinqQuery<Customer> ();
-    //  var result1 = from c in query1
-    //               where c.Name == "Kunde 3"
-    //               select c;
-      
-    //  QueryModel fetchModel = result1.Fetch (o => o.Orders);
-
-    //  //possible sql
-    //  var provider = result1.Provider as QueryProvider;
-    //  var queryExecutor = (QueryExecutorBase) provider.Executor;
-    //  CommandData statement = queryExecutor.CreateStatement (fetchModel);
-    //  string sql = statement.Statement;
-    //  Console.WriteLine (sql);
-
-    //  //similar query model
-    //  var query = QueryFactory.CreateLinqQuery<Customer> ();
-    //  var result = from c in query
-    //               from o in c.Orders
-    //               where c.Name == "Kunde 3"
-    //               select o;
-    //  var ex = ((IQueryable) result).Expression;
-    //  QueryParser parser = new QueryParser (ex);
-    //  QueryModel queryModel = parser.GetParsedQuery(); //should be similar to fetchModel
-    //  CommandData statement1 = queryExecutor.CreateStatement (fetchModel);
-    //  Console.WriteLine (statement1.Statement);
-    //}
-    /////////////////////////////////////////////////////////////////////
   }
 }

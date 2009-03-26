@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       var queryable = (from o in QueryFactory.CreateLinqQuery<Order> ()
                       where o.OrderNumber > 1
-                      select o).Fetch (o => o.OrderItems);
+                      select o).FetchMany (o => o.OrderItems);
 
       IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
       Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
