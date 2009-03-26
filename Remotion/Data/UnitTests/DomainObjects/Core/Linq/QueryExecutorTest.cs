@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var executor = new QueryExecutor<Computer> (_sqlGenerator);
       QueryModel model = GetParsedSimpleQuery ();
 
-      object instance = executor.ExecuteSingle (model, new CollectionFetchRequest[0]);
+      object instance = executor.ExecuteSingle (model, new FetchManyRequest[0]);
       Assert.IsNotNull (instance);
       Assert.AreSame (Computer.GetObject (DomainObjectIDs.Computer5), instance);
     }
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteSingle_TooManyObjects()
     {
       var executor = new QueryExecutor<Computer> (_sqlGenerator);
-      executor.ExecuteSingle (GetParsedSimpleQuery (), new CollectionFetchRequest[0]);
+      executor.ExecuteSingle (GetParsedSimpleQuery (), new FetchManyRequest[0]);
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       using (ClientTransactionScope.EnterNullScope ())
       {
-        executor.ExecuteSingle (model, new CollectionFetchRequest[0]);
+        executor.ExecuteSingle (model, new FetchManyRequest[0]);
       }
     }
 
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var executor = new QueryExecutor<Computer> (_sqlGenerator);
       QueryModel model = GetParsedSimpleQuery();
 
-      IEnumerable computers = executor.ExecuteCollection (model, new CollectionFetchRequest[0]);
+      IEnumerable computers = executor.ExecuteCollection (model, new FetchManyRequest[0]);
 
       var computerList = new ArrayList();
       foreach (Computer computer in computers)
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection_WrongType ()
     {
       var executor = new QueryExecutor<DomainObject> (_sqlGenerator);
-      executor.ExecuteCollection (GetParsedSimpleQuery (), new CollectionFetchRequest[0]);
+      executor.ExecuteCollection (GetParsedSimpleQuery (), new FetchManyRequest[0]);
     }
 
     [Test]
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       using (ClientTransactionScope.EnterNullScope ())
       {
-        executor.ExecuteCollection (model, new CollectionFetchRequest[0]);
+        executor.ExecuteCollection (model, new FetchManyRequest[0]);
       }
     }
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var executor = new QueryExecutor<Order> (_sqlGenerator);
       QueryModel model = GetParsedSimpleWhereQuery ();
 
-      var order = (Order) executor.ExecuteSingle (model, new CollectionFetchRequest[0]);
+      var order = (Order) executor.ExecuteSingle (model, new FetchManyRequest[0]);
 
       Order expected = Order.GetObject (DomainObjectIDs.Order1);
       Assert.AreSame (expected, order);
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var executor = new QueryExecutor<Order> (_sqlGenerator);
       QueryModel model = GetParsedSimpleWhereQuery ();
 
-      IEnumerable orders = executor.ExecuteCollection (model, new CollectionFetchRequest[0]);
+      IEnumerable orders = executor.ExecuteCollection (model, new FetchManyRequest[0]);
 
       var orderList = new ArrayList ();
       foreach (Order order in orders) 
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = GetParsedSimpleWhereQuery ();
       var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
 
-      var query = executor.CreateQuery ("<dynamic query>", queryModel, new CollectionFetchRequest[0]);
+      var query = executor.CreateQuery ("<dynamic query>", queryModel, new FetchManyRequest[0]);
       Assert.That (query.Statement, Is.EqualTo ("SELECT [order].* FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var queryModel = GetParsedSimpleWhereQuery ();
       var executor = new QueryExecutor<Order> (new SqlServerGenerator (DatabaseInfo.Instance));
-      var fetchRequest = new CollectionFetchRequest ((Expression<Func<Order,IEnumerable<OrderItem>>>)  (o => o.OrderItems));
+      var fetchRequest = new FetchManyRequest ((Expression<Func<Order,IEnumerable<OrderItem>>>)  (o => o.OrderItems));
 
       var query = executor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest });
 
@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var queryModel = GetParsedSimpleCustomerQuery();
       var executor = new QueryExecutor<Customer> (new SqlServerGenerator (DatabaseInfo.Instance));
-      var fetchRequest = new CollectionFetchRequest ((Expression<Func<Customer, IEnumerable<Order>>>) (c => c.Orders));
+      var fetchRequest = new FetchManyRequest ((Expression<Func<Customer, IEnumerable<Order>>>) (c => c.Orders));
 
       var query = executor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest });
 
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var queryModel = GetParsedSimpleCustomerQuery ();
       var executor = new QueryExecutor<Customer> (new SqlServerGenerator (DatabaseInfo.Instance));
-      var fetchRequest = new CollectionFetchRequest ((Expression<Func<Customer, IEnumerable<Order>>>) (c => c.Orders));
+      var fetchRequest = new FetchManyRequest ((Expression<Func<Customer, IEnumerable<Order>>>) (c => c.Orders));
       fetchRequest.GetOrAddInnerFetchRequest ((Expression<Func<Order, IEnumerable<OrderItem>>>)(o => o.OrderItems));
 
       var query = executor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest });
@@ -346,7 +346,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         var queryModel = GetParsedSimpleQuery ();
         var executor = ObjectFactory.Create<QueryExecutor<Order>>(ParamList.Create (new SqlServerGenerator (DatabaseInfo.Instance)));
 
-        executor.CreateQuery ("<dynamic query>", queryModel, new CollectionFetchRequest[0]);
+        executor.CreateQuery ("<dynamic query>", queryModel, new FetchManyRequest[0]);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
       }
     }
@@ -359,7 +359,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         var queryModel = GetParsedSimpleQuery ();
         var executor = ObjectFactory.Create<QueryExecutor<Order>> (ParamList.Create (new SqlServerGenerator (DatabaseInfo.Instance)));
 
-        executor.CreateQuery ("<dynamic query>", queryModel, new CollectionFetchRequest[0]);
+        executor.CreateQuery ("<dynamic query>", queryModel, new FetchManyRequest[0]);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
       }
     }
