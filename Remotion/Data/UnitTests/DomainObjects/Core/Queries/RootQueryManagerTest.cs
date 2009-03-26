@@ -294,5 +294,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       storageProviderMock.VerifyAllExpectations();
     }
+
+    [Test]
+    public void GetCollection_ReturnsDeletedObjects ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.Delete (); // mark as deleted
+      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+
+      var query = QueryFactory.CreateCollectionQuery (
+          "test",
+          order1.ID.StorageProviderID,
+          "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
+          new QueryParameterCollection(),
+          typeof (DomainObjectCollection));
+      var result = ClientTransaction.Current.QueryManager.GetCollection (query);
+
+      Assert.That (result.Count, Is.EqualTo (2));
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { order1, order2 }));
+      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (order2.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void GetCollection_ReturnsDiscardedObjects ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      ClientTransactionMock.DataManager.MarkDiscarded (order1.InternalDataContainer);
+      var order2 = Order.GetObject (DomainObjectIDs.Order2);
+
+      var query = QueryFactory.CreateCollectionQuery (
+          "test",
+          order1.ID.StorageProviderID,
+          "SELECT * FROM [Order] WHERE OrderNo=1 OR OrderNo=3 ORDER BY OrderNo ASC",
+          new QueryParameterCollection (),
+          typeof (DomainObjectCollection));
+      var result = ClientTransaction.Current.QueryManager.GetCollection (query);
+
+      Assert.That (result.Count, Is.EqualTo (2));
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { order1, order2 }));
+      Assert.That (order1.State, Is.EqualTo (StateType.Discarded));
+      Assert.That (order2.State, Is.EqualTo (StateType.Unchanged));
+    }
   }
 }

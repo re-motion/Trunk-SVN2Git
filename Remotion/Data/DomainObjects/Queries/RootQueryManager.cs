@@ -194,7 +194,7 @@ namespace Remotion.Data.DomainObjects.Queries
         var newLoadedDomainObjects = new DomainObjectCollection (newLoadedDataContainers.Select (dc => dc.DomainObject), true);
         ClientTransaction.OnLoaded (new ClientTransactionEventArgs (newLoadedDomainObjects));
 
-        return Array.ConvertAll (dataContainers, dc => dc == null ? null : GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID)));
+        return Array.ConvertAll (dataContainers, dc => dc == null ? null : GetCastQueryResultObject<T> (ClientTransaction.GetObject (dc.ID, true)));
       }
     }
 
