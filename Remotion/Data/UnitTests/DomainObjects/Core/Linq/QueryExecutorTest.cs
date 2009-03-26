@@ -276,7 +276,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = GetParsedSimpleCustomerQuery ();
       var executor = new QueryExecutor<Customer> (new SqlServerGenerator (DatabaseInfo.Instance));
       var fetchRequest = new FetchManyRequest ((Expression<Func<Customer, IEnumerable<Order>>>) (c => c.Orders));
-      fetchRequest.GetOrAddInnerFetchRequest ((Expression<Func<Order, IEnumerable<OrderItem>>>)(o => o.OrderItems));
+      LambdaExpression relatedObjectSelector = (Expression<Func<Order, IEnumerable<OrderItem>>>)(o => o.OrderItems);
+      fetchRequest.GetOrAddInnerFetchRequest (new FetchManyRequest (relatedObjectSelector));
 
       var query = executor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest });
 
