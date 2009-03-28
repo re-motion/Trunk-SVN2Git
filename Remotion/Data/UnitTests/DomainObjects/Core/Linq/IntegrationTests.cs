@@ -862,7 +862,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1115: Fetching inverse of collection property not yet supported.")]
     public void EagerFetching_MultipleFetches ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -876,15 +875,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       CheckDataContainersRegistered (
           DomainObjectIDs.Order1, // the original order
-          DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderWithoutOrderItem, // their items
+          DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2, // their items
           DomainObjectIDs.Customer1, // their customers
-          DomainObjectIDs.Order1, DomainObjectIDs.Order2, // their customer's orders
+          DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, // their customer's orders
           DomainObjectIDs.Customer1, // their customer's orders' customers
           DomainObjectIDs.Ceo3); // their customer's orders' customers' ceos
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
       CheckObjectRelationRegistered (DomainObjectIDs.Order1, "Customer", DomainObjectIDs.Customer1);
       CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
-      CheckObjectRelationRegistered (DomainObjectIDs.Customer1, "Ceo", DomainObjectIDs.Ceo3);
+      CheckObjectRelationRegistered (DomainObjectIDs.Customer1, typeof (Company), "Ceo", DomainObjectIDs.Ceo3);
     }
 
     [Test]
@@ -950,12 +949,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private void CheckObjectRelationRegistered (ObjectID originatingObjectID, string shortPropertyName, ObjectID expectedRelatedObjectID)
     {
+      var declaringType = originatingObjectID.ClassDefinition.ClassType;
+      CheckObjectRelationRegistered(originatingObjectID, declaringType, shortPropertyName, expectedRelatedObjectID);
+    }
+
+    private void CheckObjectRelationRegistered (ObjectID originatingObjectID, Type declaringType, string shortPropertyName, ObjectID expectedRelatedObjectID)
+    {
+      var longPropertyName = declaringType.FullName + "." + shortPropertyName;
       var relationEndPointDefinition =
           originatingObjectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (
-              originatingObjectID.ClassDefinition.ClassType.FullName + "." + shortPropertyName);
+              longPropertyName);
 
       var objectEndPoint = (ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[
-                                   new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
+                                                new RelationEndPointID (originatingObjectID, relationEndPointDefinition)];
       Assert.That (objectEndPoint, Is.Not.Null);
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (expectedRelatedObjectID));
     }

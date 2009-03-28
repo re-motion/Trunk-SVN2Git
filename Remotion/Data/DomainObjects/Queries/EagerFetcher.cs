@@ -57,17 +57,17 @@ namespace Remotion.Data.DomainObjects.Queries
       var fetchedResult = _queryManager.GetCollection (fetchQuery);
       s_log.DebugFormat ("The eager fetch query yielded {0} related objects for {1} original objects.", fetchedResult.Count, _originalResults.Length);
 
-      var collatedResult = CollateRelatedObjects (fetchQuery, relationEndPointDefinition, fetchedResult.AsEnumerable());
-      foreach (var originalObject in _originalResults)
+      if (relationEndPointDefinition.Cardinality == CardinalityType.Many)
       {
-        if (originalObject != null)
+        var collatedResult = CollateRelatedObjects (fetchQuery, relationEndPointDefinition, fetchedResult.AsEnumerable ());
+        foreach (var originalObject in _originalResults)
         {
-          CheckClassDefinitionOfOriginalObject (relationEndPointDefinition, originalObject);
-
-          if (relationEndPointDefinition.Cardinality == CardinalityType.Many)
+          if (originalObject != null)
           {
+            CheckClassDefinitionOfOriginalObject (relationEndPointDefinition, originalObject);
+
             var relationEndPointID = new RelationEndPointID (originalObject.ID, relationEndPointDefinition);
-            RegisterRelationResult (fetchQuery, relationEndPointID, collatedResult[originalObject].Distinct());
+            RegisterRelationResult (fetchQuery, relationEndPointID, collatedResult[originalObject].Distinct ());
           }
         }
       }

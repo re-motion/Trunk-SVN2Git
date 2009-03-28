@@ -32,7 +32,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     private IQueryManager _queryManagerMock;
     private IQuery _fetchTestQuery;
     private IRelationEndPointDefinition _orderOrderItemsRelationEndPointDefinition;
-    private IRelationEndPointDefinition _objectEndPointDefinition;
+    private IRelationEndPointDefinition _objectEndPointDefinitionReal;
+    private IRelationEndPointDefinition _objectEndPointDefinitionVirtual;
+    private IRelationEndPointDefinition _objectEndPointDefinitionOneMany;
     private Order _order1;
     private Order _order2;
     private Order _order3;
@@ -52,7 +54,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var storageProviderID = DomainObjectIDs.Official1.StorageProviderID;
       _fetchTestQuery = QueryFactory.CreateCollectionQuery ("fetch query", storageProviderID, "FETCH QUERY", new QueryParameterCollection (), typeof (DomainObjectCollection));
       _orderOrderItemsRelationEndPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
-      _objectEndPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+      _objectEndPointDefinitionVirtual = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
+      _objectEndPointDefinitionReal = DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
+      _objectEndPointDefinitionOneMany = DomainObjectIDs.OrderItem1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderItem).FullName + ".Order");
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
@@ -336,29 +340,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _queryManagerMock.Expect (mock => mock.GetCollection (_fetchTestQuery)).Return (new QueryResult<DomainObject> (_fetchTestQuery, new DomainObject[0]));
 
       var fetcher = new EagerFetcher (_queryManagerMock, new DomainObject[] { _order1 });
-      fetcher.PerformEagerFetching (_objectEndPointDefinition, _fetchTestQuery);
+      fetcher.PerformEagerFetching (_objectEndPointDefinitionVirtual, _fetchTestQuery);
 
       _queryManagerMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void PerformEagerFetching_ObjectEndPoint_EndPointIsRegistered ()
+    public void PerformEagerFetching_ObjectEndPoint_Virtual_EndPointIsRegistered ()
     {
-      // Object end points are eagerly registered...
-      var endPointID = new RelationEndPointID (_order1.ID, _objectEndPointDefinition);
-      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
-      Assert.That (((ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_orderTicket1.ID));
+      var endPointID = new RelationEndPointID (_order1.ID, _objectEndPointDefinitionVirtual);
 
-      _queryManagerMock.Expect (mock => mock.GetCollection (_fetchTestQuery)).Return (new QueryResult<DomainObject> (_fetchTestQuery, new DomainObject[] { _orderTicket1 }));
+      _queryManagerMock
+          .Expect (mock => mock.GetCollection (_fetchTestQuery)).Return (
+            new QueryResult<DomainObject> (_fetchTestQuery, new DomainObject[] { _orderTicket1 }));
 
       var fetcher = new EagerFetcher (_queryManagerMock, new DomainObject[] { _order1 });
-      fetcher.PerformEagerFetching (_objectEndPointDefinition, _fetchTestQuery);
+      fetcher.PerformEagerFetching (_objectEndPointDefinitionVirtual, _fetchTestQuery);
 
-      _queryManagerMock.VerifyAllExpectations ();
+      _queryManagerMock.VerifyAllExpectations();
 
-      // ... so this part is here only for completeness (this is not done by the EagerFetcher)
       Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
       Assert.That (((ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_orderTicket1.ID));
+    }
+
+    [Test]
+    public void PerformEagerFetching_ObjectEndPoint_Real_EndPointIsRegistered ()
+    {
+      var endPointID = new RelationEndPointID (_orderTicket1.ID, _objectEndPointDefinitionReal);
+
+      _queryManagerMock.Expect (mock => mock.GetCollection (_fetchTestQuery)).Return (
+          new QueryResult<DomainObject> (_fetchTestQuery, new DomainObject[] { _order1 }));
+
+      var fetcher = new EagerFetcher (_queryManagerMock, new DomainObject[] { _orderTicket1 });
+      fetcher.PerformEagerFetching (_objectEndPointDefinitionReal, _fetchTestQuery);
+
+      _queryManagerMock.VerifyAllExpectations();
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (((ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_order1.ID));
+    }
+
+    [Test]
+    public void PerformEagerFetching_ObjectEndPoint_OneMany_EndPointIsRegistered ()
+    {
+      var endPointID = new RelationEndPointID (_orderItem1.ID, _objectEndPointDefinitionOneMany);
+
+      _queryManagerMock.Expect (mock => mock.GetCollection (_fetchTestQuery)).Return (
+          new QueryResult<DomainObject> (_fetchTestQuery, new DomainObject[] { _order1 }));
+
+      var fetcher = new EagerFetcher (_queryManagerMock, new DomainObject[] { _orderItem1 });
+      fetcher.PerformEagerFetching (_objectEndPointDefinitionOneMany, _fetchTestQuery);
+
+      _queryManagerMock.VerifyAllExpectations();
+
+      Assert.That (ClientTransactionMock.DataManager.RelationEndPointMap[endPointID], Is.Not.Null);
+      Assert.That (((ObjectEndPoint) ClientTransactionMock.DataManager.RelationEndPointMap[endPointID]).OppositeObjectID, Is.EqualTo (_order1.ID));
     }
   }
 }
