@@ -62,6 +62,10 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
     ///   An error occurred while executing the query.
     /// </exception>
+    /// <remarks>
+    /// The <see cref="QueryResult{T}"/> can contain <see langword="null"/> values and deleted items. To check whether an item has been deleted,
+    /// compare its <see cref="DomainObject.State"/> property to <see cref="StateType.Deleted"/>.
+    /// </remarks>
     QueryResult<DomainObject> GetCollection (IQuery query);
 
     /// <summary>
@@ -83,6 +87,10 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <exception cref="Remotion.Data.DomainObjects.Persistence.StorageProviderException">
     ///   An error occurred while executing the query.
     /// </exception>
+    /// <remarks>
+    /// The <see cref="QueryResult{T}"/> can contain <see langword="null"/> values and deleted items. To check whether an item has been deleted,
+    /// compare its <see cref="DomainObject.State"/> property to <see cref="StateType.Deleted"/>.
+    /// </remarks>
     QueryResult<T> GetCollection<T> (IQuery query) where T : DomainObject;
   }
 }
