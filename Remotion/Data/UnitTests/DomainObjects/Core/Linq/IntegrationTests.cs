@@ -828,7 +828,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1115")]
     public void EagerFetching_FetchOne ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -843,7 +842,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1115")]
     public void EagerFetching_ThenFetchOne ()
     {
       var query = (from c in QueryFactory.CreateLinqQuery<Customer> ()
@@ -864,12 +862,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1115")]
+    [Ignore ("TODO 1115: Fetching inverse of collection property not yet supported.")]
     public void EagerFetching_MultipleFetches ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
                    where o.OrderNumber == 1
                    select o)
+                   .Distinct()
                    .FetchMany (o => o.OrderItems)
                    .FetchOne (o => o.Customer).ThenFetchMany (c => c.Orders).ThenFetchOne (o => o.Customer).ThenFetchOne (c => c.Ceo);
 
@@ -886,17 +885,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckObjectRelationRegistered (DomainObjectIDs.Order1, "Customer", DomainObjectIDs.Customer1);
       CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
       CheckObjectRelationRegistered (DomainObjectIDs.Customer1, "Ceo", DomainObjectIDs.Ceo3);
-    }
-
-    [Test]
-    [Ignore ("TODO 1115")]
-    public void EagerFetching_ObjectNotInMapping ()
-    {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
-                   where o.OrderNumber == 1
-                   select o)
-                   .FetchOne (o => o.NotInMappingRelated);
-      query.ToArray ();
     }
 
     [Test]
