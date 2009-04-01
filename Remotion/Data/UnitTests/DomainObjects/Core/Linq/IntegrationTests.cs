@@ -237,7 +237,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           GetExpectedObjects<Order> (DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
       Assert.That (orders.ToArray (), Is.EqualTo (expected));
     }
-    
+
+    [Test]
+    public void QueryWithSeveralImplicitJoins ()
+    {
+      var orders =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          where o.Customer.Ceo.Company.IndustrialSector.Name == "Raumschiffproduktion"
+          orderby o.Customer.Name
+          select o;
+
+      Order[] expected =
+          GetExpectedObjects<Order> (DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.Order1);
+      Assert.That (orders.ToArray (), Is.EqualTo (expected));
+    }
 
     [Test]
     public void QueryWithSelectAndImplicitJoin_VirtualSide ()
@@ -676,7 +689,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void QueryWithObjectList ()
+    public void QueryWithMemberFromClause ()
     {
       var query =
           from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -687,7 +700,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void QueryWithObjectList_WithJoin ()
+    public void QueryWithMemberFromClause_WithJoin ()
     {
       var query =
           from ot in QueryFactory.CreateLinqQuery<OrderTicket> ()
@@ -695,6 +708,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           where ot.Order.OrderNumber == 1
           select oi;
       CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    [Ignore ("COMMONS-1137")]
+    public void QueryWithMemberFromClause_WithLet ()
+    {
+      var query =
+          from ot in QueryFactory.CreateLinqQuery<OrderTicket> ()
+          let x = ot.Order
+          from oi in x.OrderItems
+          where ot.Order.OrderNumber == 1
+          select oi;
+      CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    [Ignore ("COMMONS-1137")]
+    public void QueryWithLet_AndMultipleFromClauses ()
+    {
+      var query =
+          from ot in QueryFactory.CreateLinqQuery<OrderTicket> ()
+          from o in QueryFactory.CreateLinqQuery<Order>()
+          let x = ot.Order
+          where ot.Order.OrderNumber == 1
+          where o == ot.Order
+          select x;
+      CheckQueryResult (query, DomainObjectIDs.Order1);
     }
 
     [Test]
