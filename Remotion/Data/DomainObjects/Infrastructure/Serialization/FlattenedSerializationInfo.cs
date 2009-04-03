@@ -14,10 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
@@ -35,7 +32,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 
     public object[] GetData ()
     {
-      return new object[] { _objectWriter.GetData (), _intWriter.GetData (), _boolWriter.GetData() };
+      var objects = _objectWriter.GetData ();
+      var ints = _intWriter.GetData ();
+      var bools = _boolWriter.GetData ();
+
+      return new object[] { objects, ints, bools };
     }
 
     public void AddIntValue (int value)

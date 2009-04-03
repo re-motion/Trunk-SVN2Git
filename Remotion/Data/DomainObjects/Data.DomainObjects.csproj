@@ -160,6 +160,7 @@
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetSameModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\ObjectEndPointSetUnidirectionalModification.cs" />
     <Compile Include="DataManagement\EndPointModifications\RelationEndPointModifier.cs" />
+    <Compile Include="Infrastructure\Serialization\FlattenedSerializationLogger.cs" />
     <Compile Include="InvalidEnumValueException.cs" />
     <Compile Include="DataManagement\EndPointModifications\BidirectionalRelationModificationBase.cs" />
     <Compile Include="DataManagement\EndPointModifications\NullEndPointModification.cs" />

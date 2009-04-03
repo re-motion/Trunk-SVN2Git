@@ -25,17 +25,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private readonly DomainObject _domainObject;
     private readonly bool _isConstructedDomainObject;
 
-    private readonly Action<LoadMode> _onLoadedRaiser = delegate { };
-    private readonly Action<PropertyChangeEventArgs> _onPropertyChangingRaiser = delegate { };
-    private readonly Action<PropertyChangeEventArgs> _onPropertyChangedRaiser = delegate { };
-    private readonly Action<RelationChangingEventArgs> _onRelationChangingRaiser = delegate { };
-    private readonly Action<RelationChangedEventArgs> _onRelationChangedRaiser = delegate { };
-    private readonly Action<EventArgs> _onDeletingRaiser = delegate { };
-    private readonly Action<EventArgs> _onDeletedRaiser = delegate { };
-    private readonly Action<EventArgs> _onCommittingRaiser = delegate { };
-    private readonly Action<EventArgs> _onCommittedRaiser = delegate { };
-    private readonly Action<EventArgs> _onRollingBackRaiser = delegate { };
-    private readonly Action<EventArgs> _onRolledBackRaiser = delegate { };
+    private readonly Action<LoadMode> _onLoadedRaiser;
+    private readonly Action<PropertyChangeEventArgs> _onPropertyChangingRaiser;
+    private readonly Action<PropertyChangeEventArgs> _onPropertyChangedRaiser;
+    private readonly Action<RelationChangingEventArgs> _onRelationChangingRaiser;
+    private readonly Action<RelationChangedEventArgs> _onRelationChangedRaiser;
+    private readonly Action<EventArgs> _onDeletingRaiser;
+    private readonly Action<EventArgs> _onDeletedRaiser;
+    private readonly Action<EventArgs> _onCommittingRaiser;
+    private readonly Action<EventArgs> _onCommittedRaiser;
+    private readonly Action<EventArgs> _onRollingBackRaiser;
+    private readonly Action<EventArgs> _onRolledBackRaiser;
 
     private bool _needsInitialLoadEvent;
 

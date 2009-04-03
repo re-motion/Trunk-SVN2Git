@@ -162,6 +162,7 @@
     <Compile Include="TestDomain\File.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="App.config" />
     <None Include="Properties\AssemblyInfoTemplate.cs">
       <SubType>Code</SubType>
     </None>

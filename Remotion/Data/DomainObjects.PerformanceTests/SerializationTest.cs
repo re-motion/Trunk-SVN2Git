@@ -25,84 +25,83 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   // Reference system: Dell Dimension 9200, Intel Core 2 @ 2,66 GHz, 3,93 GB RAM; run in Release mode
 
   [TestFixture]
-  [Ignore]
   public class SerializationTest : DatabaseTest
   {
     [Test]
     public void SerializeRelationPropertyObjects00041 ()
     {
-      PerformSerializationTests (1, "SerializeRelationPropertyObjects00041", 6, 9, CreateAndFillRelationPropertyObject);
+      PerformSerializationTests (1, "SerializeRelationPropertyObjects00041", 6, 9, 42387, CreateAndFillRelationPropertyObject);
     }
 
     [Test]
     public void SerializeRelationPropertyObjects00410 ()
     {
-      PerformSerializationTests (10, "SerializeRelationPropertyObjects00410", 28, 59, CreateAndFillRelationPropertyObject);
+      PerformSerializationTests (10, "SerializeRelationPropertyObjects00410", 28, 59, 300489, CreateAndFillRelationPropertyObject);
     }
 
     [Test]
     public void SerializeRelationPropertyObjects01025 ()
     {
-      PerformSerializationTests (25, "SerializeRelationPropertyObjects01025", 74, 158, CreateAndFillRelationPropertyObject);
+      PerformSerializationTests (25, "SerializeRelationPropertyObjects01025", 74, 158, 730678, CreateAndFillRelationPropertyObject);
     }
 
     [Test]
     public void SerializeRelationPropertyObjects10250 ()
     {
-      PerformSerializationTests (250, "SerializeRelationPropertyObjects10205", 769, 2199, CreateAndFillRelationPropertyObject);
+      PerformSerializationTests (250, "SerializeRelationPropertyObjects10205", 769, 2199,7183228, CreateAndFillRelationPropertyObject);
     }
 
     [Test]
     public void SerializeSmallValuePropertyObjects00050 ()
     {
-      PerformSerializationTests (50, "SerializeSmallValuePropertyObjects00050", 4, 8, CreateAndFillSmallValuePropertyObject);
+      PerformSerializationTests (50, "SerializeSmallValuePropertyObjects00050", 4, 8, 53871, CreateAndFillSmallValuePropertyObject);
     }
 
     [Test]
     public void SerializeSmallValuePropertyObjects00500 ()
     {
-      PerformSerializationTests (500, "SerializeSmallValuePropertyObjects00500", 45, 89, CreateAndFillSmallValuePropertyObject);
+      PerformSerializationTests (500, "SerializeSmallValuePropertyObjects00500", 45, 89, 453471, CreateAndFillSmallValuePropertyObject);
     }
 
     [Test]
     public void SerializeSmallValuePropertyObjects01025 ()
     {
-      PerformSerializationTests (1025, "SerializeSmallValuePropertyObjects01025", 98, 175, CreateAndFillSmallValuePropertyObject);
+      PerformSerializationTests (1025, "SerializeSmallValuePropertyObjects01025", 98, 175, 919671, CreateAndFillSmallValuePropertyObject);
     }
 
     [Test]
     public void SerializeSmallValuePropertyObjects10250 ()
     {
-      PerformSerializationTests (10250, "SerializeSmallValuePropertyObjects10250", 909, 2699, CreateAndFillSmallValuePropertyObject);
+      PerformSerializationTests (10250, "SerializeSmallValuePropertyObjects10250", 909, 2699, 9111481, CreateAndFillSmallValuePropertyObject);
     }
 
     [Test]
     public void SerializeValuePropertyObjects00050 ()
     {
-      PerformSerializationTests (50, "SerializeValuePropertyObjects00050", 7, 11, CreateAndFillValuePropertyObject);
+      PerformSerializationTests (50, "SerializeValuePropertyObjects00050", 7, 11, 81917, CreateAndFillValuePropertyObject);
     }
 
     [Test]
     public void SerializeValuePropertyObjects00500 ()
     {
-      PerformSerializationTests (500, "SerializeValuePropertyObjects00500", 58, 125, CreateAndFillValuePropertyObject);
+      PerformSerializationTests (500, "SerializeValuePropertyObjects00500", 58, 125, 716417, CreateAndFillValuePropertyObject);
     }
 
     [Test]
     public void SerializeValuePropertyObjects01025 ()
     {
-      PerformSerializationTests (1025, "SerializeValuePropertyObjects01025", 110, 282, CreateAndFillValuePropertyObject);
+      PerformSerializationTests (1025, "SerializeValuePropertyObjects01025", 110, 282, 1456667, CreateAndFillValuePropertyObject);
     }
 
     [Test]
     public void SerializeValuePropertyObjects10250 ()
     {
-      PerformSerializationTests (10250, "SerializeValuePropertyObjects10250", 1168, 4231, CreateAndFillValuePropertyObject);
+      PerformSerializationTests (10250, "SerializeValuePropertyObjects10250", 1168, 4231, 14463936, CreateAndFillValuePropertyObject);
     }
 
-    private void PerformSerializationTests (int count, string nameOfTest, int serExpectedMS, int deserExpectedMS, Action objectCreator)
+    private void PerformSerializationTests (int count, string nameOfTest, int serExpectedMS, int deserExpectedMS, int expectedDataSize, Action objectCreator)
     {
-      PerformSerializationTests (nameOfTest, serExpectedMS, deserExpectedMS, delegate
+      PerformSerializationTests (nameOfTest, serExpectedMS, deserExpectedMS, expectedDataSize, delegate
       {
         using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
         {
@@ -113,13 +112,13 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       });
     }
 
-    private void PerformSerializationTests (string nameOfTest, int expectedMSSerialization, int expectedMSDeserialization,
+    private void PerformSerializationTests (string nameOfTest, int expectedMSSerialization, int expectedMSDeserialization, int expectedDataSize,
         Func<ClientTransaction> transactionInitializer)
     {
       const int numberOfTests = 10;
 
-      Console.WriteLine ("Expected average duration of {0} on reference system: ~{1} ms/~{2} ms",
-          nameOfTest, expectedMSSerialization, expectedMSDeserialization);
+      Console.WriteLine ("Expected average duration of {0} on reference system: ~{1} ms/~{2} ms; data size {3} bytes",
+          nameOfTest, expectedMSSerialization, expectedMSDeserialization, expectedDataSize.ToString ("n0"));
 
       Stopwatch serializationStopwatch = new Stopwatch ();
       Stopwatch deserializationStopwatch = new Stopwatch ();

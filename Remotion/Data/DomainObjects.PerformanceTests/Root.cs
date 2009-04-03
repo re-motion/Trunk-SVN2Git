@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using System.Reflection;
+using Remotion.Logging;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
@@ -45,6 +46,8 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [STAThread]
     public static void Main (string[] args)
     {
+      LogManager.Initialize ();
+
       //LoadObjectsTest test1 = new LoadObjectsTest();
       //test1.TestFixtureSetUp();
 
