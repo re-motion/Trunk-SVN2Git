@@ -54,13 +54,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.EndPointModifications
     public virtual void Begin ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject();
-      domainObject.EventManager.BeginRelationChange (_modifiedEndPoint.PropertyName, _oldRelatedObject, _newRelatedObject);
+      domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.PropertyName, _oldRelatedObject, _newRelatedObject));
     }
 
     public virtual void End ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
-      domainObject.EventManager.EndRelationChange (_modifiedEndPoint.PropertyName);
+      domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.PropertyName));
     }
 
     public virtual void NotifyClientTransactionOfBegin ()

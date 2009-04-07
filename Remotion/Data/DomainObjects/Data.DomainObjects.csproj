@@ -177,7 +177,6 @@
     <Compile Include="IDomainObjectTransactionContext.cs" />
     <Compile Include="Infrastructure\BindingClientTransaction.cs" />
     <Compile Include="Infrastructure\ClientTransactionWrapper.cs" />
-    <Compile Include="Infrastructure\DomainObjectEventManager.cs" />
     <Compile Include="Infrastructure\DomainObjectTransactionContextIndexer.cs" />
     <Compile Include="Infrastructure\DomainObjectCheckUtility.cs" />
     <Compile Include="Infrastructure\Interception\DomainObjectConstructorLookupInfo.cs" />

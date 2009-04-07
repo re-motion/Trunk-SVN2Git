@@ -135,8 +135,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Company company = Company.GetObject (DomainObjectIDs.Partner2);
       Assert.That (company, Is.Not.Null);
 
-      var partner = company as Partner;
-      Assert.That (partner, Is.Not.Null);
+      Assert.That (company, Is.InstanceOfType (typeof (Partner)));
+      var partner = (Partner) company;
 
       Assert.That (partner.ID, Is.EqualTo (DomainObjectIDs.Partner2), "ID");
       Assert.That (partner.Name, Is.EqualTo ("Partner 2"), "Name");
@@ -150,8 +150,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Company company = Company.GetObject (DomainObjectIDs.Supplier1);
       Assert.That (company, Is.Not.Null);
 
-      var supplier = company as Supplier;
-      Assert.That (supplier, Is.Not.Null);
+      Assert.That (company, Is.InstanceOfType (typeof (Supplier)));
+      var supplier = (Supplier) company;
 
       Assert.That (supplier.ID, Is.EqualTo (DomainObjectIDs.Supplier1));
       Assert.That (supplier.Name, Is.EqualTo ("Lieferant 1"), "Name");
@@ -814,80 +814,82 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void EventManager ()
+    public void NeedsLoadModeDataContainerOnly_True_NewObject ()
     {
       var order = Order.NewObject ();
-      var eventManager = order.EventManager;
-      Assert.That (eventManager, Is.Not.Null);
-      Assert.That (eventManager.DomainObject, Is.SameAs (order));
-
-      var eventManager2 = order.EventManager;
-      Assert.That (eventManager, Is.SameAs (eventManager2));
+      Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
     }
 
     [Test]
-    public void EventManager_ConstructedTrue ()
-    {
-      var order = Order.NewObject ();
-      var eventManager = order.EventManager;
-      Assert.That (eventManager.IsConstructedDomainObject, Is.True);
-    }
-
-    [Test]
-    public void EventManager_ConstructedFalse ()
+    public void NeedsLoadModeDataContainerOnly_True_GetObject ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      var eventManager = order.EventManager;
-      Assert.That (eventManager.IsConstructedDomainObject, Is.False);
+      Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
     }
 
     [Test]
-    public void EventManager_Serialization ()
+    public void NeedsLoadModeDataContainerOnly_False_BeforeGetObject ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      ClientTransactionMock.SetClientTransaction (dataContainer);
+      var order = (Order) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
+      Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
+    }
+
+    [Test]
+    public void NeedsLoadModeDataContainerOnly_True_AfterOnLoaded ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      ClientTransactionMock.SetClientTransaction (dataContainer);
+      var order = (Order) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
+      Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
+      PrivateInvoke.InvokeNonPublicMethod (order, typeof (DomainObject), "OnLoaded");
+      Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
+    }
+
+    [Test]
+    public void NeedsLoadModeDataContainerOnly_Serialization_True ()
     {
       var order = Order.NewObject ();
-      var eventManager = order.EventManager;
-      Assert.That (eventManager, Is.Not.Null);
+      Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
 
       var deserializedOrder = Serializer.SerializeAndDeserialize (order);
-      var newEventManager = deserializedOrder.EventManager;
-      Assert.That (newEventManager, Is.Not.Null);
-      Assert.That (newEventManager.DomainObject, Is.SameAs (deserializedOrder));
+      Assert.That (deserializedOrder.NeedsLoadModeDataContainerOnly, Is.True);
     }
 
     [Test]
-    public void EventManager_Serialization_ConstructedTrue ()
+    public void NeedsLoadModeDataContainerOnly_Serialization_False ()
     {
-      var order = Order.NewObject ();
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      ClientTransactionMock.SetClientTransaction (dataContainer);
+      var order = (Order) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
+      Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
+
       var deserializedOrder = Serializer.SerializeAndDeserialize (order);
-      var newEventManager = deserializedOrder.EventManager;
-      Assert.That (newEventManager.IsConstructedDomainObject, Is.True);
+      Assert.That (deserializedOrder.NeedsLoadModeDataContainerOnly, Is.False);
     }
 
     [Test]
-    public void EventManager_Serialization_ConstructedFalse ()
-    {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
-      var deserializedOrder = Serializer.SerializeAndDeserialize (order);
-      var newEventManager = deserializedOrder.EventManager;
-      Assert.That (newEventManager.IsConstructedDomainObject, Is.False);
-    }
-
-    [Test]
-    public void EventManager_Serialization_ISerializable_ConstructedTrue ()
+    public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_True ()
     {
       var classWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
+      Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.True);
+
       var deserializedClassWithAllDataTypes = Serializer.SerializeAndDeserialize (classWithAllDataTypes);
-      var newEventManager = deserializedClassWithAllDataTypes.EventManager;
-      Assert.That (newEventManager.IsConstructedDomainObject, Is.True);
+      Assert.That (deserializedClassWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.True);
     }
 
     [Test]
-    public void EventManager_Serialization_ISerializable_ConstructedFalse ()
+    public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_False ()
     {
-      var classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.ClassWithAllDataTypes1);
+      ClientTransactionMock.SetClientTransaction (dataContainer);
+      var classWithAllDataTypes = (ClassWithAllDataTypes) dataContainer.ClassDefinition.GetDomainObjectCreator ().CreateWithDataContainer (dataContainer);
+
+      Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.False);
+
       var deserializedClassWithAllDataTypes = Serializer.SerializeAndDeserialize (classWithAllDataTypes);
-      var newEventManager = deserializedClassWithAllDataTypes.EventManager;
-      Assert.That (newEventManager.IsConstructedDomainObject, Is.False);
+      Assert.That (deserializedClassWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.False);
     }
 
     [Test]

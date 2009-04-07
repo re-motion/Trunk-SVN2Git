@@ -543,12 +543,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (args.PropertyValue.PropertyType != typeof (ObjectID))
       {
-        // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
+        // To save memory, DomainObject does not register any event handlers with its data management infrastructure.
         // Therefore notification of DomainObject when changing property values is not organized through events.
         if (_domainObject != null)
-        {
-          _domainObject.EventManager.BeginPropertyValueChange (args.PropertyValue, args.OldValue, args.NewValue);
-        }
+          _domainObject.OnPropertyChanging (args);
+
         OnPropertyChanging (args);
       }
     }
@@ -563,9 +562,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
         if (_domainObject != null)
         {
-          // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
+          // To save memory, DomainObject does not register any event handlers with its data management infrastructure.
           // Therefore notification of DomainObject when changing property values is not organized through events.
-          _domainObject.EventManager.EndPropertyValueChange (args.PropertyValue, args.OldValue, args.NewValue);
+          _domainObject.OnPropertyChanged (args);
         }
       }
 

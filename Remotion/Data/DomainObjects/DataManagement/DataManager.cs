@@ -207,7 +207,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     _transactionEventSink.ObjectDeleting (domainObject);
     oppositeEndPointModifications.NotifyClientTransactionOfBegin();
 
-    domainObject.EventManager.BeginDelete ();
+    domainObject.OnDeleting (EventArgs.Empty);
     oppositeEndPointModifications.Begin();
   }
 
@@ -217,7 +217,7 @@ public class DataManager : ISerializable, IDeserializationCallback
     _transactionEventSink.ObjectDeleted (domainObject);
 
     oppositeEndPointModifications.End ();
-    domainObject.EventManager.EndDelete ();
+    domainObject.OnDeleted (EventArgs.Empty);
   }
 
   private void CheckClientTransactionForDeletion (DomainObject domainObject)

@@ -98,9 +98,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     }
 
     [StorageClassNone]
-    public DomainObjectEventManager EventManager
+    public bool NeedsLoadModeDataContainerOnly
     {
-      get { return (DomainObjectEventManager) PrivateInvoke.GetNonPublicProperty (this, typeof (DomainObject), "EventManager"); }
+      get { return (bool) PrivateInvoke.GetNonPublicField (this, typeof (DomainObject), "_needsLoadModeDataContainerOnly"); }
     }
   }
 }
