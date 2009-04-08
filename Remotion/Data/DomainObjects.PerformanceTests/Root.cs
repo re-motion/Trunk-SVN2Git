@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
@@ -66,19 +67,18 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       //test1.TestFixtureTearDown();
 
-      SerializationTest test2 = new SerializationTest();
+      var test2 = new SerializationTest();
       test2.TestFixtureSetUp();
 
-      MethodInfo[] methods = test2.GetType().GetMethods (BindingFlags.Public | BindingFlags.Instance);
-      Array.Sort (methods, delegate (MethodInfo one, MethodInfo two) { return one.Name.CompareTo (two.Name); });
-      foreach (MethodInfo potentialTestMethod in methods)
+      var testMethods = from m in test2.GetType().GetMethods (BindingFlags.Public | BindingFlags.Instance)
+                        where m.IsDefined (typeof (TestAttribute), true) && !m.IsDefined (typeof (IgnoreAttribute), true)
+                        orderby m.Name
+                        select m;
+      foreach (MethodInfo testMethod in testMethods)
       {
-        if (potentialTestMethod.IsDefined (typeof (TestAttribute), true) && !potentialTestMethod.IsDefined (typeof (IgnoreAttribute), true))
-        {
-          test2.SetUp ();
-          potentialTestMethod.Invoke (test2, new object[0]);
-          test2.TearDown ();
-        }
+        test2.SetUp ();
+        testMethod.Invoke (test2, new object[0]);
+        test2.TearDown ();
       }
 
       test2.TestFixtureTearDown();

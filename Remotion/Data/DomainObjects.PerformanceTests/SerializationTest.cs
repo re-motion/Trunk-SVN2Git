@@ -27,6 +27,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
   [TestFixture]
   public class SerializationTest : DatabaseTest
   {
+    public override void TestFixtureSetUp ()
+    {
+      base.TestFixtureSetUp ();
+      WriteHeadings ();
+    }
+
     [Test]
     public void SerializeRelationPropertyObjects00041 ()
     {
@@ -112,13 +118,26 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       });
     }
 
+    public void WriteHeadings ()
+    {
+      Console.Write (
+          "{0}\t{1}\t{2}\t{3}\t", "Test", "Expected serialization time (ms)", "Expected deserialization time (ms)", "Expected data size (bytes)");
+      Console.WriteLine (
+          "{0}\t{1}\t{2}\t{3}\t{4}\t{5}",
+          "Number of runs",
+          "Serialization time (ms)",
+          "Deserialization time (ms)",
+          "Data size (bytes)",
+          "Number of data containers",
+          "Number of relation end points");
+    }
+
     private void PerformSerializationTests (string nameOfTest, int expectedMSSerialization, int expectedMSDeserialization, int expectedDataSize,
         Func<ClientTransaction> transactionInitializer)
     {
       const int numberOfTests = 10;
 
-      Console.WriteLine ("Expected average duration of {0} on reference system: ~{1} ms/~{2} ms; data size {3} bytes",
-          nameOfTest, expectedMSSerialization, expectedMSDeserialization, expectedDataSize.ToString ("n0"));
+      Console.Write ("{0}\t{1}\t{2}\t{3}\t", nameOfTest, expectedMSSerialization, expectedMSDeserialization, expectedDataSize.ToString ("n0"));
 
       Stopwatch serializationStopwatch = new Stopwatch ();
       Stopwatch deserializationStopwatch = new Stopwatch ();
@@ -150,8 +169,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       double averageRelationEndPoints = ((double) relationEndPoints) / numberOfTests;
       double averageSize = ((double) dataSize) / numberOfTests;
 
-      Console.WriteLine ("{0} (executed {1}x): Average duration: serialization {2} ms, deserialization {3} ms; data size {4} bytes, "
-          + "{5} data containers, {6} relation end points", nameOfTest, numberOfTests, serAverageMilliSeconds.ToString ("n"),
+      Console.WriteLine ("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", numberOfTests, serAverageMilliSeconds.ToString ("n"),
           deserAverageMilliSeconds.ToString ("n"), averageSize.ToString ("n0"), averageDataContainers.ToString ("n0"),
           averageRelationEndPoints.ToString ("n0"));
     }
