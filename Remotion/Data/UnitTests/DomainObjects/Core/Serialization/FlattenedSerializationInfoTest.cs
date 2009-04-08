@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
@@ -253,6 +252,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Assert.AreEqual ("begone, foul fiend", deserializedStub.Data1);
       Assert.AreEqual (123, deserializedStub.Data2);
+    }
+
+    [Test]
+    public void FlattenedSerializables_Null ()
+    {
+      FlattenedSerializationInfo serializationInfo = new FlattenedSerializationInfo ();
+      serializationInfo.AddValue<FlattenedSerializableStub> (null);
+      object[] data = serializationInfo.GetData ();
+
+      FlattenedDeserializationInfo deserializationInfo = new FlattenedDeserializationInfo (data);
+      FlattenedSerializableStub deserializedStub = deserializationInfo.GetValue<FlattenedSerializableStub> ();
+
+      Assert.That (deserializedStub, Is.Null);
     }
 
     [Test]

@@ -80,9 +80,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
     private T GetFlattenedSerializable<T> ()
     {
       Type type = GetValueForHandle<Type>();
-      object instance = TypesafeActivator.CreateInstance (type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With (this);
-      var originalPosition = _objectReader.ReadPosition;
-      return CastValue<T>(instance, originalPosition, "Object");
+      if (type == null)
+        return default (T);
+      else
+      {
+        object instance = TypesafeActivator.CreateInstance (type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With (this);
+        var originalPosition = _objectReader.ReadPosition;
+        return CastValue<T> (instance, originalPosition, "Object");
+      }
     }
 
     private T CastValue<T> (object uncastValue, int originalPosition, string streamName)

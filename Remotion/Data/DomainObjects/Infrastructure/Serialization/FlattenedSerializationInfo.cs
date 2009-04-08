@@ -60,8 +60,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 
     private void AddFlattenedSerializable (IFlattenedSerializable serializable)
     {
-      AddHandle (serializable.GetType ());
-      serializable.SerializeIntoFlatStructure (this);
+      if (serializable != null)
+      {
+        AddHandle (serializable.GetType ());
+        serializable.SerializeIntoFlatStructure (this);
+      }
+      else
+      {
+        AddHandle<Type> (null);
+      }
     }
 
     public void AddArray<T> (T[] valueArray)
