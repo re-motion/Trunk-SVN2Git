@@ -15,10 +15,13 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using System.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {
@@ -97,6 +100,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           Assert.AreEqual (LoadMode.DataContainerLoadedOnly, deserializedInstance.OnLoadedLoadMode);
         }
       }
+    }
+
+    [Test]
+    public void Serialization_WithISerializable_IncludesEventHandlers ()
+    {
+      ClassWithAllDataTypes instance = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      var eventReceiver = new DomainObjectEventReceiver (instance);
+
+      var deserializedData = Serializer.SerializeAndDeserialize (Tuple.NewTuple (instance, eventReceiver));
+      AssertEventRegistered (deserializedData.A, "RelationChanging", deserializedData.B, GetEventHandlerMethod (instance, "RelationChanging"));
+      AssertEventRegistered (deserializedData.A, "RelationChanged", deserializedData.B, GetEventHandlerMethod (instance, "RelationChanged"));
+      AssertEventRegistered (deserializedData.A, "PropertyChanging", deserializedData.B, GetEventHandlerMethod (instance, "PropertyChanging"));
+      AssertEventRegistered (deserializedData.A, "PropertyChanged", deserializedData.B, GetEventHandlerMethod (instance, "PropertyChanged"));
+      AssertEventRegistered (deserializedData.A, "Deleting", deserializedData.B, GetEventHandlerMethod (instance, "Deleting"));
+      AssertEventRegistered (deserializedData.A, "Deleted", deserializedData.B, GetEventHandlerMethod (instance, "Deleted"));
+      AssertEventRegistered (deserializedData.A, "Committing", deserializedData.B, GetEventHandlerMethod (instance, "Committing"));
+      AssertEventRegistered (deserializedData.A, "Committed", deserializedData.B, GetEventHandlerMethod (instance, "Committed"));
+      AssertEventRegistered (deserializedData.A, "RollingBack", deserializedData.B, GetEventHandlerMethod (instance, "RollingBack"));
+      AssertEventRegistered (deserializedData.A, "RolledBack", deserializedData.B, GetEventHandlerMethod (instance, "RolledBack"));
+    }
+
+    private void AssertEventRegistered (DomainObject domainObject, string eventName, object receiver, MethodInfo receiverMethod)
+    {
+      var eventDelegate = (Delegate) PrivateInvoke.GetNonPublicField (domainObject, typeof (DomainObject), eventName);
+      Assert.That (eventDelegate, Is.Not.Null);
+      Assert.That (eventDelegate.Target, Is.SameAs (receiver));
+      Assert.That (eventDelegate.Method, Is.EqualTo (receiverMethod));
+    }
+
+    private MethodInfo GetEventHandlerMethod (DomainObject instance, string eventName)
+    {
+      var eventDelegate = (Delegate) PrivateInvoke.GetNonPublicField (instance, typeof (DomainObject), eventName);
+      return eventDelegate.Method;
     }
   }
 }

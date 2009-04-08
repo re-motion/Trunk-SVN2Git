@@ -209,7 +209,6 @@ namespace Remotion.Data.DomainObjects
 
     private ObjectID _id;
     private ClientTransaction _bindingTransaction; // null unless this object is bound to a fixed transaction
-
     private bool _needsLoadModeDataContainerOnly; // true if the object was created by a constructor call or OnLoaded has already been called once
 
     [NonSerialized] // required when ISerializable is not implemented by subclass
@@ -267,6 +266,17 @@ namespace Remotion.Data.DomainObjects
         _id = (ObjectID) info.GetValue ("DomainObject.ID", typeof (ObjectID));
         _bindingTransaction = (ClientTransaction) info.GetValue ("DomainObject._bindingTransaction", typeof (ClientTransaction));
         _needsLoadModeDataContainerOnly = info.GetBoolean ("DomainObject._needsLoadModeDataContainerOnly");
+
+        PropertyChanging = (PropertyChangeEventHandler) info.GetValue ("DomainObject.PropertyChanging", typeof (PropertyChangeEventHandler));
+        PropertyChanged = (PropertyChangeEventHandler) info.GetValue ("DomainObject.PropertyChanged", typeof (PropertyChangeEventHandler));
+        RelationChanging = (RelationChangingEventHandler) info.GetValue ("DomainObject.RelationChanging", typeof (RelationChangingEventHandler));
+        RelationChanged = (RelationChangedEventHandler) info.GetValue ("DomainObject.RelationChanged", typeof (RelationChangedEventHandler));
+        Deleting = (EventHandler) info.GetValue ("DomainObject.Deleting", typeof (EventHandler));
+        Deleted = (EventHandler) info.GetValue ("DomainObject.Deleted", typeof (EventHandler));
+        Committing = (EventHandler) info.GetValue ("DomainObject.Committing", typeof (EventHandler));
+        Committed = (EventHandler) info.GetValue ("DomainObject.Committed", typeof (EventHandler));
+        RollingBack = (EventHandler) info.GetValue ("DomainObject.RollingBack", typeof (EventHandler));
+        RolledBack = (EventHandler) info.GetValue ("DomainObject.RolledBack", typeof (EventHandler));
       }
       catch (SerializationException ex)
       {
@@ -424,6 +434,17 @@ namespace Remotion.Data.DomainObjects
       info.AddValue ("DomainObject.ID", ID);
       info.AddValue ("DomainObject._bindingTransaction", _bindingTransaction);
       info.AddValue ("DomainObject._needsLoadModeDataContainerOnly", _needsLoadModeDataContainerOnly);
+
+      info.AddValue ("DomainObject.PropertyChanging", PropertyChanging);
+      info.AddValue ("DomainObject.PropertyChanged", PropertyChanged);
+      info.AddValue ("DomainObject.RelationChanging", RelationChanging);
+      info.AddValue ("DomainObject.RelationChanged", RelationChanged);
+      info.AddValue ("DomainObject.Deleted", Deleted);
+      info.AddValue ("DomainObject.Deleting", Deleting);
+      info.AddValue ("DomainObject.Committing", Committing);
+      info.AddValue ("DomainObject.Committed", Committed);
+      info.AddValue ("DomainObject.RollingBack", RollingBack);
+      info.AddValue ("DomainObject.RolledBack", RolledBack);
     }
 
     /// <summary>
