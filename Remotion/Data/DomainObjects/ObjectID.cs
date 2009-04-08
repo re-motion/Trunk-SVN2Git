@@ -15,12 +15,10 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using System.Runtime.Serialization;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -31,7 +29,7 @@ namespace Remotion.Data.DomainObjects
   /// <b>ObjectID</b> supports values of type <see cref="System.Guid"/>, <see cref="System.Int32"/> and <see cref="System.String"/>.
   /// </remarks>
   [Serializable]
-  public sealed class ObjectID : IFlattenedSerializable
+  public sealed class ObjectID
   {
     // types
 
@@ -399,29 +397,5 @@ namespace Remotion.Data.DomainObjects
     {
       return new ArgumentException (string.Format (message, args), argumentName);
     }
-
-    #region Serialization
-
-    private ObjectID (FlattenedDeserializationInfo info)
-    {
-      ArgumentUtility.CheckNotNull ("info", info);
-
-      _classDefinitionID = info.GetValueForHandle<string> ();
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (_classDefinitionID);
-      object value = info.GetValue<object> ();
-
-      _classDefinition = classDefinition;
-      _value = value;
-    }
-
-    void IFlattenedSerializable.SerializeIntoFlatStructure( FlattenedSerializationInfo info)
-    {
-      ArgumentUtility.CheckNotNull ("info", info);
-
-      info.AddHandle (_classDefinitionID);
-      info.AddValue (_value);
-    }
-
-    #endregion
   }
 }

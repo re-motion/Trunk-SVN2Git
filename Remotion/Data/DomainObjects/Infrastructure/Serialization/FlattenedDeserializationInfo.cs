@@ -55,12 +55,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 
     public T GetValue<T> ()
     {
-      int originalPosition = _objectReader.ReadPosition;
-      object o = GetValue (_objectReader);
-      if (o is FlattenedSerializableMarker)
-        return GetFlattenedSerializable<T> (originalPosition);
+      if (typeof (IFlattenedSerializable).IsAssignableFrom (typeof (T)))
+        return GetFlattenedSerializable<T> ();
       else
+      {
+        var originalPosition = _objectReader.ReadPosition;
+        var o = GetValue (_objectReader);
         return CastValue<T> (o, originalPosition, "Object");
+      }
     }
 
     private T GetValue<T> (FlattenedSerializationReader<T> reader)
@@ -75,10 +77,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
       }
     }
 
-    private T GetFlattenedSerializable<T> (int originalPosition)
+    private T GetFlattenedSerializable<T> ()
     {
       Type type = GetValueForHandle<Type>();
       object instance = TypesafeActivator.CreateInstance (type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).With (this);
+      var originalPosition = _objectReader.ReadPosition;
       return CastValue<T>(instance, originalPosition, "Object");
     }
 

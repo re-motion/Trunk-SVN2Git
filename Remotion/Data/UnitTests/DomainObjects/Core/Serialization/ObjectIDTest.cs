@@ -31,19 +31,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void ObjectIDIsFlattenedSerializable ()
-    {
-      ObjectID id = DomainObjectIDs.Order1;
-      ObjectID deserializedID = FlattenedSerializer.SerializeAndDeserialize (id);
-
-      Assert.IsNotNull (deserializedID);
-    }
-
-    [Test]
     public void DeserializedContent_Value ()
     {
       ObjectID id = DomainObjectIDs.Order1;
-      ObjectID deserializedID = FlattenedSerializer.SerializeAndDeserialize (id);
+      ObjectID deserializedID = Serializer.SerializeAndDeserialize (id);
      
       Assert.AreEqual (id.Value, deserializedID.Value);
     }
@@ -52,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void DeserializedContent_ClassDefinition ()
     {
       ObjectID id = DomainObjectIDs.Order1;
-      ObjectID deserializedID = FlattenedSerializer.SerializeAndDeserialize (id);
+      ObjectID deserializedID = Serializer.SerializeAndDeserialize (id);
 
       Assert.AreEqual (id.ClassDefinition, deserializedID.ClassDefinition);
     }

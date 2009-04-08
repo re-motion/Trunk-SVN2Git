@@ -51,16 +51,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
 
     public void AddValue<T> (T value)
     {
-      IFlattenedSerializable serializable = value as IFlattenedSerializable;
-      if (serializable != null)
-        AddFlattenedSerializable (serializable);
+      if (typeof (IFlattenedSerializable).IsAssignableFrom (typeof (T)))
+        AddFlattenedSerializable ((IFlattenedSerializable) value);
       else
         _objectWriter.AddSimpleValue (value);
     }
 
     private void AddFlattenedSerializable (IFlattenedSerializable serializable)
     {
-      _objectWriter.AddSimpleValue (FlattenedSerializableMarker.Instance);
       AddHandle (serializable.GetType ());
       serializable.SerializeIntoFlatStructure (this);
     }
