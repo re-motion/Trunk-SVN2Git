@@ -49,6 +49,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Serialization
       _boolWriter.AddSimpleValue (value);
     }
 
+    // Note: This will use T to decide whether to recurse into an IFlattenedSerializable or not.
     public void AddValue<T> (T value)
     {
       if (typeof (IFlattenedSerializable).IsAssignableFrom (typeof (T)))
