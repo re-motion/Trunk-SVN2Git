@@ -300,9 +300,9 @@ namespace Remotion.Data.DomainObjects
       get { return _id; }
     }
 
-    [Obsolete ("This property has been removed because its behavior is too unintuitive. Use either BindingTransaction or ClientTransaction.Current "
+    [Obsolete ("This property has been removed because its behavior is too unintuitive. Use either GetBindingTransaction() or ClientTransaction.Current "
         + "instead, whichever appropriate. If you don't know which one to use, find out using HasBindingTransaction: "
-        + "'HasBindingTransaction ? BindingTransaction : ClientTransaction.Current'. (Build 1.11.17, 1.11.29)", true)]
+        + "'HasBindingTransaction ? GetBindingTransaction() : ClientTransaction.Current'. (Build 1.11.17, 1.11.29)", true)]
     public ClientTransaction ClientTransaction
     {
       get { throw new NotImplementedException (); }
