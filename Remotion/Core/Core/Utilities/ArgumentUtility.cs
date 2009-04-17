@@ -50,9 +50,9 @@ namespace Remotion.Utilities
   {
     public static T CheckNotNull<T> (string argumentName, T actualValue)
     {
-// ReSharper disable CompareNonConstrainedGenericWithNull
+      // ReSharper disable CompareNonConstrainedGenericWithNull
       if (actualValue == null)
-// ReSharper restore CompareNonConstrainedGenericWithNull
+          // ReSharper restore CompareNonConstrainedGenericWithNull
         throw new ArgumentNullException (argumentName);
 
       return actualValue;
@@ -112,9 +112,9 @@ namespace Remotion.Utilities
     public static T CheckNotEmpty<T> (string argumentName, T enumerable)
         where T: IEnumerable
     {
-// ReSharper disable CompareNonConstrainedGenericWithNull
+      // ReSharper disable CompareNonConstrainedGenericWithNull
       if (enumerable != null)
-// ReSharper restore CompareNonConstrainedGenericWithNull
+          // ReSharper restore CompareNonConstrainedGenericWithNull
       {
         var collection = enumerable as ICollection;
         if (collection != null)
@@ -262,9 +262,9 @@ namespace Remotion.Utilities
     public static T CheckItemsType<T> (string argumentName, T collection, Type itemType)
         where T: ICollection
     {
-// ReSharper disable CompareNonConstrainedGenericWithNull
+      // ReSharper disable CompareNonConstrainedGenericWithNull
       if (collection != null)
-// ReSharper restore CompareNonConstrainedGenericWithNull
+          // ReSharper restore CompareNonConstrainedGenericWithNull
       {
         int index = 0;
         foreach (object item in collection)
@@ -284,9 +284,9 @@ namespace Remotion.Utilities
     public static T CheckItemsNotNullAndType<T> (string argumentName, T collection, Type itemType)
         where T: ICollection
     {
-// ReSharper disable CompareNonConstrainedGenericWithNull
+      // ReSharper disable CompareNonConstrainedGenericWithNull
       if (collection != null)
-// ReSharper restore CompareNonConstrainedGenericWithNull
+          // ReSharper restore CompareNonConstrainedGenericWithNull
       {
         int index = 0;
         foreach (object item in collection)
