@@ -112,38 +112,41 @@ Additional permissions are listed in the file re-motion_exceptions.txt.
     <Naming2>
       <ExceptionName>ex</ExceptionName>
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Locals" />
-      <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="NotPublicInstanceFields" />
-      <PredefinedRule Inspect="True" Prefix="s_" Suffix="" Style="AaBb" ElementKind="NotPublicStaticFields" />
+      <PredefinedRule Inspect="False" Prefix="_" Suffix="" Style="aaBb" ElementKind="NotPublicInstanceFields" />
+      <PredefinedRule Inspect="False" Prefix="s_" Suffix="" Style="AaBb" ElementKind="NotPublicStaticFields" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Parameters" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
       <PredefinedRule Inspect="True" Prefix="I" Suffix="" Style="AaBb" ElementKind="Interfaces" />
       <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="MethodPropertyEvent" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="LocalConstants" />
-      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
-      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
-      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
+      <PredefinedRule Inspect="False" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
+      <PredefinedRule Inspect="False" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
+      <PredefinedRule Inspect="False" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
-      <UserRule Inspect="True" Prefix="" Suffix="" Style="AaBb" StaticnessKind="Static, Instance" AccessRight="Private, Protected, ProtectedInternal, Internal" Description="Public constant field">
+      <UserRule Inspect="True" Prefix="" Suffix="" Style="AaBb" StaticnessKind="Static, Instance" AccessRight="Protected, ProtectedInternal, Internal, Public" Description="Non-private fields">
         <ElementKinds>
+          <Kind Name="FIELD" />
+          <Kind Name="READONLY_FIELD" />
           <Kind Name="CONSTANT_FIELD" />
         </ElementKinds>
       </UserRule>
-      <UserRule Inspect="True" Prefix="c_" Suffix="" Style="aaBb" StaticnessKind="Static, Instance" AccessRight="Private" Description="Private constant fields">
+      <UserRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" StaticnessKind="Instance" AccessRight="Private" Description="Private instance fields">
         <ElementKinds>
-          <Kind Name="CONSTANT_FIELD" />
-          <Kind Name="CLASS" />
-        </ElementKinds>
-      </UserRule>
-      <UserRule Inspect="True" Prefix="s_" Suffix="" Style="aaBb" StaticnessKind="Static" AccessRight="Private, Protected" Description="private static readonly fields">
-        <ElementKinds>
+          <Kind Name="FIELD" />
           <Kind Name="READONLY_FIELD" />
         </ElementKinds>
       </UserRule>
-      <UserRule Inspect="True" Prefix="" Suffix="" Style="AaBb" StaticnessKind="Instance" AccessRight="Protected" Description="protected instance fields">
+      <UserRule Inspect="True" Prefix="s_" Suffix="" Style="aaBb" StaticnessKind="Static" AccessRight="Private" Description="Private static readonly fields">
         <ElementKinds>
           <Kind Name="FIELD" />
+          <Kind Name="READONLY_FIELD" />
+        </ElementKinds>
+      </UserRule>
+      <UserRule Inspect="True" Prefix="c_" Suffix="" Style="aaBb" StaticnessKind="Static" AccessRight="Private" Description="Private constant fields">
+        <ElementKinds>
+          <Kind Name="CONSTANT_FIELD" />
         </ElementKinds>
       </UserRule>
       <Abbreviation Text="ID" />
