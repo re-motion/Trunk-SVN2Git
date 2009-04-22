@@ -132,6 +132,7 @@ along with re-motion; if not, see http://www.gnu.org/licenses.
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+      <Abbreviation Text="ID" />
     </Naming2>
   </CodeStyleSettings>
 </Configuration>
