@@ -82,7 +82,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
   private static readonly object s_checkedChangedEvent = new object();
 
   private static readonly string s_scriptFileKey = typeof (BocBooleanValue).FullName + "_Script";
-  private static readonly string s_startUpScriptKey = typeof (BocBooleanValue).FullName+ "_Startup";
+  private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValue).FullName+ "_Startup_";
 
 	// member fields
   private bool? _value = null;
@@ -264,7 +264,8 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
 
       if (Enabled)
       {
-        if (!Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey + resourceSet.ResourceKey))
+        string startUpScriptKey = s_startUpScriptKeyPrefix + resourceSet.ResourceKey;
+        if (!Page.ClientScript.IsStartupScriptRegistered (startUpScriptKey))
         {
           string trueValue = true.ToString();
           string falseValue = false.ToString();
@@ -278,7 +279,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
               ScriptUtility.EscapeClientScript (resourceSet.DefaultFalseDescription), 
               ScriptUtility.EscapeClientScript (resourceSet.DefaultNullDescription),
               resourceSet.TrueIconUrl, resourceSet.FalseIconUrl, resourceSet.NullIconUrl);
-          ScriptUtility.RegisterStartupScriptBlock (Page, s_startUpScriptKey, script);
+          ScriptUtility.RegisterStartupScriptBlock (Page, startUpScriptKey, script);
         }
       }
 
