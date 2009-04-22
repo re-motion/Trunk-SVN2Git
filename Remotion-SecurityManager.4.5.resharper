@@ -140,6 +140,11 @@ Additional permissions are listed in the file re-motion_exceptions.txt.
           <Kind Name="READONLY_FIELD" />
         </ElementKinds>
       </UserRule>
+      <UserRule Inspect="True" Prefix="" Suffix="" Style="AaBb" StaticnessKind="Instance" AccessRight="Protected" Description="protected instance fields">
+        <ElementKinds>
+          <Kind Name="FIELD" />
+        </ElementKinds>
+      </UserRule>
       <Abbreviation Text="ID" />
     </Naming2>
   </CodeStyleSettings>

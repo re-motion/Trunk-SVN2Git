@@ -138,6 +138,11 @@ along with re-motion; if not, see http://www.gnu.org/licenses.
           <Kind Name="READONLY_FIELD" />
         </ElementKinds>
       </UserRule>
+      <UserRule Inspect="True" Prefix="" Suffix="" Style="AaBb" StaticnessKind="Instance" AccessRight="Protected" Description="protected instance fields">
+        <ElementKinds>
+          <Kind Name="FIELD" />
+        </ElementKinds>
+      </UserRule>
       <Abbreviation Text="ID" />
     </Naming2>
   </CodeStyleSettings>
