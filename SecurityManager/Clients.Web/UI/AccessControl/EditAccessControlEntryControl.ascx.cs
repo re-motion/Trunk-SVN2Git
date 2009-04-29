@@ -68,7 +68,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     [Browsable (false)]
     public string CssClass { get; set; }
 
-    protected bool IsCollapsed
+    public bool IsCollapsed
     {
       get { return (bool?) ViewState["IsCollapsed"] ?? CurrentAccessControlEntry.State != StateType.New; }
       set { ViewState["IsCollapsed"] = value; }

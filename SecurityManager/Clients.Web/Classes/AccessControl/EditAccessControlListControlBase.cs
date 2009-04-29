@@ -17,7 +17,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Data.DomainObjects;
@@ -49,6 +48,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
   {
     private readonly List<EditAccessControlEntryControl> _editAccessControlEntryControls = new List<EditAccessControlEntryControl>();
     private EditAccessControlEntryHeaderControl _editAccessControlEntryHeaderControl;
+    private readonly Dictionary<ObjectID, bool> _collapsedStates = new Dictionary<ObjectID, bool>();
 
     protected abstract ControlCollection GetAccessControlEntryControls ();
 
@@ -69,13 +69,19 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       CreateEditAccessControlEntryControls (CurrentAccessControlList.AccessControlEntries);
       _editAccessControlEntryHeaderControl.LoadValues (interim);
       foreach (EditAccessControlEntryControl control in _editAccessControlEntryControls)
+      {
         control.LoadValues (interim);
+        bool isCollapsed;
+        if (_collapsedStates.TryGetValue (((AccessControlEntry) control.BusinessObject).ID, out isCollapsed))
+          control.IsCollapsed = isCollapsed;
+      }
     }
 
     private void CreateEditAccessControlEntryControls (DomainObjectCollection accessControlEntries)
     {
       ControlCollection accessControlEntryControls = GetAccessControlEntryControls();
       accessControlEntryControls.Clear();
+
       _editAccessControlEntryControls.Clear();
 
       UpdatePanel updatePanel = new UpdatePanel();
@@ -100,7 +106,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
         editAccessControlEntryControl.BusinessObject = accessControlEntry;
         editAccessControlEntryControl.Delete += EditAccessControlEntryControl_Delete;
         editAccessControlEntryControl.CssClass = ((i + 1 ) % 2 == 0) ? "even" : "odd";
-
+        
         table.Controls.Add (editAccessControlEntryControl);
 
         _editAccessControlEntryControls.Add (editAccessControlEntryControl);
@@ -116,8 +122,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
 
     private void SaveAccessControlEntries (bool interim)
     {
+      _collapsedStates.Clear();
       foreach (EditAccessControlEntryControl control in _editAccessControlEntryControls)
+      {
         control.SaveValues (interim);
+        _collapsedStates.Add (((AccessControlEntry) control.BusinessObject).ID, control.IsCollapsed);
+      }
     }
 
     public override bool Validate ()
@@ -146,10 +156,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
     protected void NewAccessControlEntryButton_Click (object sender, EventArgs e)
     {
       Page.PrepareValidation();
-      bool isValid = Validate();
+      bool isValid = ValidateAccessControlEntries();
       if (!isValid)
         return;
-      SaveValues (false);
+
+      SaveAccessControlEntries (false);
       Page.IsDirty = true;
 
       CurrentAccessControlList.CreateAccessControlEntry();
