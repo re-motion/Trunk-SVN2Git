@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Data.DomainObjects;
@@ -41,6 +42,9 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       if (handler != null)
         handler (this, e);
     }
+
+    public abstract void ExpandAllAccessControlEntries ();
+    public abstract void CollapseAllAccessControlEntries ();
   }
 
   public abstract class EditAccessControlListControlBase<TAccessControlList> : EditAccessControlListControlBase
@@ -137,6 +141,18 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       return isValid;
     }
 
+    public override void ExpandAllAccessControlEntries ()
+    {
+      foreach (var control in _editAccessControlEntryControls)
+        control.IsCollapsed = false;
+    }
+
+    public override void CollapseAllAccessControlEntries ()
+    {
+      foreach (var control in _editAccessControlEntryControls)
+        control.IsCollapsed = true;
+    }
+
     private bool ValidateAccessControlEntries (params EditAccessControlEntryControl[] excludedControls)
     {
       List<EditAccessControlEntryControl> excludedControlList = new List<EditAccessControlEntryControl> (excludedControls);
@@ -161,9 +177,10 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       SaveAccessControlEntries (false);
       Page.IsDirty = true;
 
-      CurrentAccessControlList.CreateAccessControlEntry();
+      AccessControlEntry accessControlEntry = CurrentAccessControlList.CreateAccessControlEntry();
 
       LoadAccessControlEntries (false);
+      _editAccessControlEntryControls.Where (o => o.BusinessObject == accessControlEntry).Single().IsCollapsed = false;
     }
 
     private void EditAccessControlEntryControl_Delete (object sender, EventArgs e)

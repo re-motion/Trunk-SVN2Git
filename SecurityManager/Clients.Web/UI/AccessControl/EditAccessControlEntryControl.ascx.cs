@@ -70,7 +70,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     public bool IsCollapsed
     {
-      get { return (bool?) ViewState["IsCollapsed"] ?? CurrentAccessControlEntry.State != StateType.New; }
+      get { return (bool?) ViewState["IsCollapsed"] ?? true; }
       set { ViewState["IsCollapsed"] = value; }
     }
 

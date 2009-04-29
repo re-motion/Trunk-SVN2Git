@@ -235,9 +235,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       SaveAccessControlLists (false);
       IsDirty = true;
 
-      CurrentFunction.SecurableClassDefinition.CreateStatelessAccessControlList();
+      var accessControlList = CurrentFunction.SecurableClassDefinition.CreateStatelessAccessControlList();
 
       LoadAccessControlLists (false);
+      _editAccessControlListControls.Where (o => o.BusinessObject == accessControlList).Single().ExpandAllAccessControlEntries();
     }
 
     protected void NewStatefulAccessControlListButton_Click (object sender, EventArgs e)
@@ -250,9 +251,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       SaveAccessControlLists (false);
       IsDirty = true;
 
-      CurrentFunction.SecurableClassDefinition.CreateStatefulAccessControlList();
+      var accessControlList = CurrentFunction.SecurableClassDefinition.CreateStatefulAccessControlList ();
 
       LoadAccessControlLists (false);
+      _editAccessControlListControls.Where (o => o.BusinessObject == accessControlList).Single ().ExpandAllAccessControlEntries ();
     }
 
     private void EditAccessControlListControl_Delete (object sender, EventArgs e)
