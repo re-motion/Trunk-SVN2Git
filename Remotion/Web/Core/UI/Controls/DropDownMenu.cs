@@ -163,7 +163,7 @@ namespace Remotion.Web.UI.Controls
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (DropDownMenu), ResourceType.Html, "DropDownMenu.css");
         string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
-        ScriptUtility.RegisterStartupScriptBlock (Page, key, script);
+        ScriptUtility.RegisterStartupScriptBlock (this, key, script);
       }
 
       key = UniqueID;
@@ -207,7 +207,7 @@ namespace Remotion.Web.UI.Controls
         script.Append (" )"); // Close Array
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );"); // Close AddMenuInfo
-        ScriptUtility.RegisterStartupScriptBlock (Page, key, script.ToString ());
+        ScriptUtility.RegisterStartupScriptBlock (this, key, script.ToString ());
       }
     }
 

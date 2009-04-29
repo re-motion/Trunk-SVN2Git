@@ -551,7 +551,7 @@ public class BocReferenceValue:
     if (!IsDesignMode && !Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey))
     {
       const string script = "BocReferenceValue_InitializeGlobals ('" + c_nullIdentifier + "');";
-      ScriptUtility.RegisterStartupScriptBlock (Page, s_startUpScriptKey, script);
+      ScriptUtility.RegisterStartupScriptBlock (this, s_startUpScriptKey, script);
     }
 
     LoadResources (GetResourceManager());

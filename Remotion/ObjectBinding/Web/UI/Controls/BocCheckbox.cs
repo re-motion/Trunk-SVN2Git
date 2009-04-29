@@ -263,7 +263,7 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
           string script = string.Format (
               "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
               defaultTrueDescription, defaultFalseDescription);
-          ScriptUtility.RegisterStartupScriptBlock (Page, s_startUpScriptKey, script);
+          ScriptUtility.RegisterStartupScriptBlock (this, s_startUpScriptKey, script);
         }
       }
 

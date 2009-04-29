@@ -108,8 +108,8 @@ namespace Remotion.Web.Utilities
     ///   Used to register a client javascript script to be rendered  at the beginning of the HTML page.
     ///   The script is automatically surrounded by &lt;script&gt; tags.
     /// </summary>
-    /// <param name="page"> 
-    ///   The <see cref="Page"/> where the script file will be registered. Must not be <see langword="null"/>.
+    /// <param name="control"> 
+    ///   The <see cref="Control"/> which the script file will be registered. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="key"> 
     ///   The key identifying the registered script file. Must not be <see langword="null"/> or empty.
@@ -118,24 +118,24 @@ namespace Remotion.Web.Utilities
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
     /// <seealso cref="Page.RegisterClientScriptBlock"/>
-    public static void RegisterClientScriptBlock (Page page, string key, string javascript)
+    public static void RegisterClientScriptBlock (Control control, string key, string javascript)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("key", key);
       ArgumentUtility.CheckNotNull ("javascript", javascript);
 
       if (!string.IsNullOrEmpty (javascript))
         javascript += "\r\n";
-      
-      ScriptManager.RegisterClientScriptBlock (page, typeof (Page), key, javascript, true);
+
+      ScriptManager.RegisterClientScriptBlock (control, typeof (Page), key, javascript, true);
     }
 
     /// <summary>
     ///   Used to register a client javascript script to be rendered at the end of the HTML page. 
     ///   The script is automatically surrounded by &lt;script&gt; tags.
     /// </summary>
-    /// <param name="page"> 
-    ///   The <see cref="Page"/> where the script file will be registered. Must not be <see langword="null"/>.
+    /// <param name="control"> 
+    ///   The <see cref="Control"/> for which the script file will be registered. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="key"> 
     ///   The key identifying the registered script block. Must not be <see langword="null"/> or empty.
@@ -144,31 +144,32 @@ namespace Remotion.Web.Utilities
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
     /// <seealso cref="Page.RegisterStartupScript"/>
-    public static void RegisterStartupScriptBlock (Page page, string key, string javascript)
+    public static void RegisterStartupScriptBlock (Control control, string key, string javascript)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("key", key);
       ArgumentUtility.CheckNotNull ("javascript", javascript);
 
       if (!string.IsNullOrEmpty (javascript))
         javascript += "\r\n";
       
-      ScriptManager.RegisterStartupScript (page, typeof (Page), key, javascript, true);
+      ScriptManager.RegisterStartupScript (control, typeof (Page), key, javascript, true);
     }
 
-    public static void RegisterElementForBorderSpans (Page page, string elementID)
+    public static void RegisterElementForBorderSpans (Control control, string elementID)
     {
-      ArgumentUtility.CheckNotNull ("page", page);
+      ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNullOrEmpty ("elementID", elementID);
 
       ScriptUtility.RegisterStartupScriptBlock (
-         page, "BorderSpans_" + elementID, string.Format ("StyleUtility.CreateBorderSpans (document.getElementById ('{0}'));", elementID));
+         control, "BorderSpans_" + elementID, string.Format ("StyleUtility.CreateBorderSpans (document.getElementById ('{0}'));", elementID));
     }
 
     /// <summary>
     /// Gets a flag that informs the caller if the <paramref name="control"/> will be part of the rendered output. This method only works during the
     /// Render cycle.
     /// </summary>
+    [Obsolete ("The various methods for registering scripts now accept controls instead of the page, thus allowing filtering of the output by the surrounding UpdatePanel.")]
     public static bool IsPartOfRenderedOutput (Control control)
     {
       ArgumentUtility.CheckNotNull ("control", control);

@@ -1,3 +1,9 @@
+1.13.6
+======
+- ScriptUtility
+  RegisterClientScriptBlock and RegisterStartupScriptBlocknow allow passing the Control instead of the Page, 
+  allowing for better filtering of the scripts when used with UpdatePanels.
+
 1.11.15
 =======
 - WxeGen:

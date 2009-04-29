@@ -1136,7 +1136,7 @@ public class BocList:
             "BocList_InitializeGlobals ('{0}', '{1}');",
             CssClassDataRow,
             CssClassDataRowSelected);
-        ScriptUtility.RegisterStartupScriptBlock (Page, s_startUpScriptKey, script);
+        ScriptUtility.RegisterStartupScriptBlock (this, s_startUpScriptKey, script);
       }
     }
 
@@ -1784,7 +1784,7 @@ public class BocList:
       script.AppendFormat (
           "BocList_UpdateListMenu ( document.getElementById ('{0}'), document.getElementById ('{1}'));",
           ClientID, menuID);
-      ScriptUtility.RegisterStartupScriptBlock (Page, key, script.ToString ());
+      ScriptUtility.RegisterStartupScriptBlock (this, key, script.ToString ());
     }
   }
 
@@ -1980,7 +1980,7 @@ public class BocList:
           + ClientID + c_dataRowSelectorControlIDSuffix + "', "
           + count.ToString () + ","
           + (int) _selection + ");";
-      ScriptUtility.RegisterStartupScriptBlock (Page, typeof (BocList).FullName + "_" + ClientID + "_InitializeListScript", script);
+      ScriptUtility.RegisterStartupScriptBlock (this, typeof (BocList).FullName + "_" + ClientID + "_InitializeListScript", script);
     }
   }
 

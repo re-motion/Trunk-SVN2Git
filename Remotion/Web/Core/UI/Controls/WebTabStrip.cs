@@ -228,6 +228,8 @@ public class WebTabStrip :
       WebTab visibleTab = visibleTabs[i];
       if (string.IsNullOrEmpty (visibleTab.ItemID))
         visibleTab.ItemID = i.ToString ();
+
+      ScriptUtility.RegisterElementForBorderSpans (this, ClientID + "_" + visibleTab.ItemID);
     }
   }
 
@@ -329,12 +331,6 @@ public class WebTabStrip :
 
   private void RenderTab (HtmlTextWriter writer, WebTab tab, bool isLast)
   {
-    if (!ScriptUtility.IsPartOfRenderedOutput (this))
-      return;
-
-    string tabID = ClientID + "_" + tab.ItemID;
-    ScriptUtility.RegisterElementForBorderSpans (Page, tabID);
-
     if (ControlHelper.IsDesignMode (this, Context))
     {
       writer.AddStyleAttribute ("float", "left");
@@ -349,7 +345,7 @@ public class WebTabStrip :
 
     RenderSeperator (writer);
 
-    writer.AddAttribute (HtmlTextWriterAttribute.Id, tabID);
+    writer.AddAttribute (HtmlTextWriterAttribute.Id, ClientID + "_" + tab.ItemID);
     string cssClass;
     if (tab.IsSelected)
       cssClass = CssClassTabSelected;

@@ -279,7 +279,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
               ScriptUtility.EscapeClientScript (resourceSet.DefaultFalseDescription), 
               ScriptUtility.EscapeClientScript (resourceSet.DefaultNullDescription),
               resourceSet.TrueIconUrl, resourceSet.FalseIconUrl, resourceSet.NullIconUrl);
-          ScriptUtility.RegisterStartupScriptBlock (Page, startUpScriptKey, script);
+          ScriptUtility.RegisterStartupScriptBlock (this, startUpScriptKey, script);
         }
       }
 

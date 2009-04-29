@@ -384,6 +384,10 @@ namespace Remotion.Web.UI.Controls
       if (Views.Count == 0)
         Views.Add (_placeHolderTabView);
 
+      ScriptUtility.RegisterElementForBorderSpans (this, ActiveViewClientID);
+      ScriptUtility.RegisterElementForBorderSpans (this, _topControl.ClientID);
+      ScriptUtility.RegisterElementForBorderSpans (this, _bottomControl.ClientID);
+
       base.OnPreRender (e);
     }
 
@@ -402,13 +406,6 @@ namespace Remotion.Web.UI.Controls
     protected override void RenderContents (HtmlTextWriter writer)
     {
       EnsureChildControls ();
-
-      if (ScriptUtility.IsPartOfRenderedOutput (this))
-      {
-        ScriptUtility.RegisterElementForBorderSpans (Page, ActiveViewClientID);
-        ScriptUtility.RegisterElementForBorderSpans (Page, _topControl.ClientID);
-        ScriptUtility.RegisterElementForBorderSpans (Page, _bottomControl.ClientID);
-      }
 
       if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
         WcagHelper.Instance.HandleError (1, this);
