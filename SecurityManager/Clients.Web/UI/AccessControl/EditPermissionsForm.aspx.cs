@@ -109,9 +109,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         editAccessControlListControlBase.BusinessObject = accessControlList;
         editAccessControlListControlBase.Delete += EditAccessControlListControl_Delete;
 
+        UpdatePanel updatePanel = new UpdatePanel ();
+        updatePanel.ID = "UpdatePanel_" + i;
+        updatePanel.UpdateMode = UpdatePanelUpdateMode.Conditional;
+
         var div = new HtmlGenericControl ("div");
         div.Attributes.Add ("class", "accessControlListContainer");
         div.Controls.Add (editAccessControlListControlBase);
+        updatePanel.ContentTemplateContainer.Controls.Add (div);
 
         if (editAccessControlListControlBase is EditStatelessAccessControlListControl)
         {
@@ -120,7 +125,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
             statelessAccessControlListsPlaceHolder.Controls.Add (
                 CreateAccessControlListTitle (AccessControlResources.StatelessAccessControlListTitle));
           }
-          statelessAccessControlListsPlaceHolder.Controls.Add (div);
+          statelessAccessControlListsPlaceHolder.Controls.Add (updatePanel);
         }
         else if (editAccessControlListControlBase is EditStatefulAccessControlListControl)
         {
@@ -129,7 +134,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
             statefulAccessControlListsPlaceHolder.Controls.Add (
                 CreateAccessControlListTitle (AccessControlResources.StatefulAccessControlListsTitle));
           }
-          statefulAccessControlListsPlaceHolder.Controls.Add (div);
+          statefulAccessControlListsPlaceHolder.Controls.Add (updatePanel);
         }
         else
         {

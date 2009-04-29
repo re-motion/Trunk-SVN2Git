@@ -88,6 +88,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
 
       UpdatePanel updatePanel = new UpdatePanel();
       updatePanel.ID = "UpdatePanel";
+      updatePanel.UpdateMode = UpdatePanelUpdateMode.Conditional;
       accessControlEntryControls.Add (updatePanel);
 
       HtmlGenericControl table = new HtmlGenericControl ("table");
