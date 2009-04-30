@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Resources;
+using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Utilities;
 
@@ -35,7 +36,7 @@ namespace Remotion.Globalization
   ///     make sure to sort the resource managers in the order of inheritance before wrapping them.
   ///   </para>
   /// </remarks>
-  public class ResourceManagerWrapper : IResourceManager, INullObject
+  public class ResourceManagerWrapper : IResourceManager
   {
     //  static members
 
@@ -52,7 +53,9 @@ namespace Remotion.Globalization
 
     // member fields
 
-    private ResourceManager _resourceManager;
+    private readonly ResourceManager _resourceManager;
+    private readonly InterlockedCache<Tuple<CultureInfo, string>, NameValueCollection> _cachedResourceSet = 
+        new InterlockedCache<Tuple<CultureInfo, string>, NameValueCollection> ();
 
     // construction and disposing
 
@@ -104,33 +107,33 @@ namespace Remotion.Globalization
     /// <include file='doc\include\Globalization\ResourceManagerWrapper.xml' path='ResourceManagerWrapper/GetAllStrings/remarks' />
     public NameValueCollection GetAllStrings (string prefix)
     {
-      if (prefix == null || prefix == String.Empty)
-        prefix = "";
-
-      NameValueCollection result = new NameValueCollection();
-
-      //  Loop through all entries in the resource managers
-      //  Copy the resources into a collection
-
-      CultureInfo[] cultureHierarchy = GetCultureHierarchy (CultureInfo.CurrentUICulture);
-
-      // Loop from most neutral to current UICulture
-      for (int i = 0; i < cultureHierarchy.Length; i++)
-      {
-        CultureInfo culture = (CultureInfo) cultureHierarchy[i];
-        ResourceSet resourceSet = _resourceManager.GetResourceSet (culture, true, false);
-        if (resourceSet != null)
-        {
-          foreach (DictionaryEntry entry in resourceSet)
+      return _cachedResourceSet.GetOrCreateValue (
+          Tuple.NewTuple (CultureInfo.CurrentUICulture, StringUtility.NullToEmpty (prefix)),
+          key =>
           {
-            string key = (string) entry.Key;
-            if (key.StartsWith (prefix))
-              result[key] = (string) entry.Value;
-          }
-        }
-      }
+            //  Loop through all entries in the resource managers
+            CultureInfo[] cultureHierarchy = GetCultureHierarchy (key.A);
 
-      return result;
+            // Loop from most neutral to current UICulture
+            // Copy the resources into a collection
+            NameValueCollection result = new NameValueCollection ();
+            for (int i = 0; i < cultureHierarchy.Length; i++)
+            {
+              CultureInfo culture = cultureHierarchy[i];
+              ResourceSet resourceSet = _resourceManager.GetResourceSet (culture, true, false);
+              if (resourceSet != null)
+              {
+                foreach (DictionaryEntry entry in resourceSet)
+                {
+                  string entryKey = (string) entry.Key;
+                  if (entryKey.StartsWith (key.B))
+                    result[entryKey] = (string) entry.Value;
+                }
+              }
+            }
+
+            return result;
+          });
     }
 
     /// <summary>
