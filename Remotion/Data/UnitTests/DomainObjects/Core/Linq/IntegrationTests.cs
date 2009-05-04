@@ -415,6 +415,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void QueryWithSubQueryInMainFrom ()
+    {
+      var orders = from c in
+                     (from ci in QueryFactory.CreateLinqQuery<Computer> () select ci)
+                   select c;
+      
+      CheckQueryResult (orders, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3, DomainObjectIDs.Computer4, 
+          DomainObjectIDs.Computer5 );
+    }
+
+    [Test]
     public void QueryWithLet_LethWithTable ()
     {
       var orders = from o in QueryFactory.CreateLinqQuery<Order>()

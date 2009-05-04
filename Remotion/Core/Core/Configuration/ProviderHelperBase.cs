@@ -301,7 +301,7 @@ namespace Remotion.Configuration
       EnsureWellKownProviders (collection);
       InstantiateProviders (ProviderSettings, collection, typeof (ExtendedProviderBase), typeof (TProvider));
       collection.SetReadOnly();
-
+      
       return collection;
     }
 
