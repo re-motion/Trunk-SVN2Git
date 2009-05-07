@@ -24,8 +24,8 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.Renderers;
 using Remotion.ObjectBinding.Web.UI.Design;
-using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
@@ -33,7 +33,6 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using System.Collections.Generic;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -56,7 +55,6 @@ public class BocList:
     IResourceDispatchTarget
 {
   //  constants
-  private const string c_dataRowHiddenFieldIDSuffix = "_Boc_HiddenField_";
   private const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
   private const string c_titleRowSelectorControlIDSuffix = "_Boc_SelectorControl_SelectAll";
   private const string c_availableViewsListIDSuffix = "_Boc_AvailableViewsList";
@@ -75,28 +73,13 @@ public class BocList:
   private const string c_rowEditModeRequiredFieldIcon = "RequiredField.gif";
   private const string c_rowEditModeValidationErrorIcon = "ValidationError.gif";
 
-  private const string c_sortAscendingIcon = "SortAscending.gif";
-  private const string c_sortDescendingIcon = "SortDescending.gif";
   /// <summary> Prefix applied to the post back argument of the sort buttons. </summary>
   private const string c_sortCommandPrefix = "Sort=";
 
-  #region private const string c_goTo...Icon
-  private const string c_goToFirstIcon = "MoveFirst.gif";
-  private const string c_goToLastIcon = "MoveLast.gif";
-  private const string c_goToPreviousIcon = "MovePrevious.gif";
-  private const string c_goToNextIcon = "MoveNext.gif";
-  private const string c_goToFirstInactiveIcon = "MoveFirstInactive.gif";
-  private const string c_goToLastInactiveIcon = "MoveLastInactive.gif";
-  private const string c_goToPreviousInactiveIcon = "MovePreviousInactive.gif";
-  private const string c_goToNextInactiveIcon = "MoveNextInactive.gif";
-  #endregion
   private const string c_goToCommandPrefix = "GoTo=";
 
   private const string c_scriptFileUrl = "BocList.js";
-  private const string c_onCommandClickScript = "BocList_OnCommandClick();";
   private const string c_styleFileUrl = "BocList.css";
-
-  private const string c_whiteSpace = "&nbsp;";
 
   /// <summary> The key identifying a fixed column resource entry. </summary>
   private const string c_resourceKeyFixedColumns = "FixedColumns";
@@ -104,19 +87,6 @@ public class BocList:
   private const string c_resourceKeyOptionsMenuItems = "OptionsMenuItems";
   /// <summary> The key identifying a list menu item resource entry. </summary>
   private const string c_resourceKeyListMenuItems = "ListMenuItems";
-
-  private const string c_defaultMenuBlockItemOffset = "5pt";
-  private const string c_defaultMenuBlockWidth = "70pt";
-  private const string c_defaultMenuBlockOffset = "5pt";
-
-  /// <summary> 
-  ///   Text displayed when control is displayed in desinger and is read-only has no contents.
-  /// </summary>
-  private const string c_designModeEmptyContents = "#";
-  private const string c_designModeDummyColumnTitle = "Column Title {0}";
-  private const int c_designModeDummyColumnCount = 3;
-
-  private const int c_designModeAvailableViewsListWidthInPoints = 40;
 
   // types
   
@@ -174,7 +144,7 @@ public class BocList:
     Next
   }
 
-  private enum RowEditModeCommand
+  public enum RowEditModeCommand
   {
     Edit,
     Save,
@@ -1303,199 +1273,31 @@ public class BocList:
       if (_pageCount == 0)
         _pageCount = 1;
     }
- 
-    //    bool isInternetExplorer501AndHigher = true;
-    //    bool isCss21Compatible = false;
-    //    if (! IsDesignMode)
-    //    {
-    //      bool isVersionGreaterOrEqual501 = 
-    //              Context.Request.Browser.MajorVersion >= 6
-    //          ||    Context.Request.Browser.MajorVersion == 5 
-    //              && Context.Request.Browser.MinorVersion >= 0.01;
-    //      isInternetExplorer501AndHigher = 
-    //          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual501;
-    //      bool isOperaGreaterOrEqual7 = 
-    //             Context.Request.Browser.Browser == "Opera"
-    //          && Context.Request.Browser.MajorVersion >= 7;
-    //      bool isNetscapeCompatibleGreaterOrEqual5 = 
-    //             Context.Request.Browser.Browser == "Netscape"
-    //          && Context.Request.Browser.MajorVersion >= 5;
-    //      isCss21Compatible = isOperaGreaterOrEqual7 || isNetscapeCompatibleGreaterOrEqual5;
-    //    }
 
-    bool hasNavigator = _alwaysShowPageInfo || _pageCount > 1;
-    bool isReadOnly = IsReadOnly;
-    bool showForEmptyList =  isReadOnly && _showEmptyListReadOnlyMode
-                        || ! isReadOnly && _showEmptyListEditMode;
-    if (! IsDesignMode && IsEmptyList && ! showForEmptyList)
-      hasNavigator = false;
-
-    //    if (isInternetExplorer501AndHigher)
-    //      RenderContentsInternetExplorer501Compatible (writer, hasNavigator);
-    //    else if (isCss21Compatible && ! (writer is Html32TextWriter))
-    //      RenderContentsCss21Compatible (writer, hasNavigator);
-    //    else
-    RenderContentsLegacyBrowser (writer, hasNavigator);
+    BocListRendererFactory factory = new BocListRendererFactory (this, writer);
+    factory.GetRenderer().RenderContents();
   }
 
-  private void RenderContentsInternetExplorer501Compatible (HtmlTextWriter writer, bool hasNavigator)
+  public bool HasNavigator
   {
-    RenderContentsLegacyBrowser (writer, hasNavigator);
-    return;
-    //if (HasMenuBlock)
-    //{
-    //  writer.AddStyleAttribute ("display", "inline");
-    //  writer.AddStyleAttribute ("float", "right");
-    //  writer.AddStyleAttribute ("vertical-align", "top");
-    //  string menuBlockWidth = c_defaultMenuBlockWidth;
-    //  if (! _menuBlockWidth.IsEmpty)
-    //    menuBlockWidth = _menuBlockWidth.ToString();
-    //  writer.AddStyleAttribute (HtmlTextWriterStyle.Width, menuBlockWidth);      
-    //  writer.RenderBeginTag (HtmlTextWriterTag.Div);
-    //  RenderMenuBlock (writer);
-    //  writer.RenderEndTag();
-    //}
-    //
-    //writer.AddStyleAttribute ("display", "inline");
-    //writer.AddStyleAttribute ("vertical-align", "top");
-    //writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
-    //writer.RenderBeginTag (HtmlTextWriterTag.Div);
-    //RenderTableBlock (writer);
-    //writer.RenderEndTag();
-  }
-
-  private void RenderContentsCss21Compatible (HtmlTextWriter writer, bool hasNavigator)
-  {
-    RenderContentsLegacyBrowser (writer, hasNavigator);
-    return;
-    //    writer.AddStyleAttribute ("display", "table");
-    //    writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-    //    writer.RenderBeginTag (HtmlTextWriterTag.Div);  //  Begin table
-    //    
-    //    writer.AddStyleAttribute ("display", "table-row");
-    //    writer.RenderBeginTag (HtmlTextWriterTag.Div);  //  Begin table-row
-    //
-    //    writer.AddStyleAttribute ("display", "table-cell"); 
-    //    writer.AddStyleAttribute ("vertical-align", "top");
-    //    writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
-    //    writer.RenderBeginTag (HtmlTextWriterTag.Div); //  Begin table-cell
-    //    RenderTableBlock (writer);
-    //    writer.RenderEndTag();  //  End table-cell
-    //
-    //    if (HasMenuBlock)
-    //    {
-    //      writer.AddStyleAttribute ("display", "table-row");
-    //      writer.RenderBeginTag (HtmlTextWriterTag.Div);  //  Begin table-row
-    //
-    //      writer.AddStyleAttribute ("display", "table-cell");
-    //      writer.AddStyleAttribute ("vertical-align", "top");
-    //      string menuBlockWidth = c_defaultMenuBlockWidth;
-    //      if (! _menuBlockWidth.IsEmpty)
-    //        menuBlockWidth = _menuBlockWidth.ToString();
-    //      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, menuBlockWidth);       
-    //      string menuBlockOffset = c_defaultMenuBlockOffset;
-    //      if (! _menuBlockOffset.IsEmpty)
-    //        menuBlockOffset = _menuBlockWidth.ToString();
-    //      writer.AddStyleAttribute ("padding-left", menuBlockOffset);
-    //      writer.RenderBeginTag (HtmlTextWriterTag.Div);  //  Begin table-cell
-    //      RenderMenuBlock (writer);
-    //      writer.RenderEndTag();  //  End table-cell
-    //    }
-    //    writer.RenderEndTag();  //  End table-row
-    //
-    //    if (hasNavigator)
-    //    {
-    //      writer.AddStyleAttribute ("display", "table-row");
-    //      writer.RenderBeginTag (HtmlTextWriterTag.Div);  //  Begin table-row
-    //
-    //      writer.RenderBeginTag (HtmlTextWriterTag.Div); //  Begin table-cell
-    //      RenderNavigator (writer);
-    //      writer.RenderEndTag();  //  End table-cell
-    //      writer.RenderBeginTag (HtmlTextWriterTag.Div); //  Begin table-cell
-    //      writer.RenderEndTag();  //  End table-cell
-    //
-    //      writer.RenderEndTag();  //  End table-row
-    //    }
-    //
-    //    writer.RenderEndTag();  //  End table
-  }
-
-  /// <remarks> Use display:table, display:table-row, ... for opera and mozilla/firefox </remarks>
-  private void RenderContentsLegacyBrowser (HtmlTextWriter writer, bool hasNavigator)
-  {
-    //  Render list block / menu block
-    writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-    writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-    writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-    writer.RenderBeginTag (HtmlTextWriterTag.Table);
-
-    //  Two columns
-    writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
-
-    bool isTextXml = false;
-
-    if (!IsDesignMode)
-      isTextXml = ControlHelper.IsXmlConformResponseTextRequired (Context);
-
-    //  Left: list block
-    writer.WriteBeginTag ("col"); //  Required because RenderBeginTag(); RenderEndTag();
-    if (isTextXml)
-      writer.Write (" />");
-    else
-      writer.Write (">");           //  writes empty tags, which is not valid for col in HTML 4.01
-
-    if (HasMenuBlock)
+    get
     {
-      //  Right: menu block
-      writer.WriteBeginTag ("col");
-      writer.Write (" style=\"");
-      string menuBlockWidth = c_defaultMenuBlockWidth;
-      if (!_menuBlockWidth.IsEmpty)
-        menuBlockWidth = _menuBlockWidth.ToString ();
-      writer.WriteStyleAttribute ("width", menuBlockWidth);
-      string menuBlockOffset = c_defaultMenuBlockOffset;
-      if (!_menuBlockOffset.IsEmpty)
-        menuBlockOffset = _menuBlockOffset.ToString ();
-      writer.WriteStyleAttribute ("padding-left", menuBlockOffset);
-      writer.Write ("\"");
-      
-      if (isTextXml)
-        writer.Write (" />");
-      else
-        writer.Write (">");
+      bool hasNavigator = _alwaysShowPageInfo || _pageCount > 1;
+      bool isReadOnly = IsReadOnly;
+      bool showForEmptyList = isReadOnly && _showEmptyListReadOnlyMode
+                        || !isReadOnly && _showEmptyListEditMode;
+      if (!IsDesignMode && IsEmptyList && !showForEmptyList)
+        hasNavigator = false;
+      return hasNavigator;
     }
-
-    writer.RenderEndTag();  //  End ColGroup
-
-    writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-    
-    //  List Block
-    writer.AddStyleAttribute ("vertical-align", "top");
-    writer.RenderBeginTag (HtmlTextWriterTag.Td);
-    RenderTableBlock (writer);
-    if (hasNavigator)
-      RenderNavigator (writer);
-    writer.RenderEndTag();
-
-    if (HasMenuBlock)
-    {
-      //  Menu Block
-      writer.AddStyleAttribute ("vertical-align", "top");
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      RenderMenuBlock (writer);
-      writer.RenderEndTag();
-    }
-    writer.RenderEndTag();  //  TR
-
-    writer.RenderEndTag();  //  Table
   }
 
-  protected bool HasMenuBlock
+  protected internal bool HasMenuBlock
   {
     get { return HasAvailableViewsList || HasOptionsMenu || HasListMenu; }
   }
 
-  protected bool HasAvailableViewsList
+  protected internal bool HasAvailableViewsList
   {
     get
     {
@@ -1516,7 +1318,7 @@ public class BocList:
     }
   }
 
-  protected bool HasOptionsMenu
+  protected internal bool HasOptionsMenu
   {
     get
     {
@@ -1537,7 +1339,7 @@ public class BocList:
     }
   }
 
-  protected bool HasListMenu
+  protected internal bool HasListMenu
   {
     get
     {
@@ -1563,7 +1365,7 @@ public class BocList:
     get { return Value == null || Value.Count == 0; }
   }
 
-  protected bool IsColumnVisible (BocColumnDefinition column)
+  protected internal bool IsColumnVisible (BocColumnDefinition column)
   {
     ArgumentUtility.CheckNotNull ("column", column);
 
@@ -1605,66 +1407,7 @@ public class BocList:
     return true;
   }
 
-  /// <summary> Renders the menu block of the control. </summary>
-  /// <remarks> Contains the drop down list for selcting a column configuration and the options menu.  </remarks>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  private void RenderMenuBlock (HtmlTextWriter writer)
-  {
-    string menuBlockItemOffset = c_defaultMenuBlockItemOffset;
-    if (! _menuBlockItemOffset.IsEmpty)
-      menuBlockItemOffset = _menuBlockItemOffset.ToString();
-
-    if (HasAvailableViewsList)
-    {
-      PopulateAvailableViewsList();
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassAvailableViewsListLabel);
-      
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      string availableViewsListTitle;
-      if (StringUtility.IsNullOrEmpty (_availableViewsListTitle))
-        availableViewsListTitle = GetResourceManager().GetString (ResourceIdentifier.AvailableViewsListTitle);
-      else
-        availableViewsListTitle = _availableViewsListTitle;
-      // Do not HTML encode.
-      writer.Write (availableViewsListTitle);
-      writer.RenderEndTag();
-
-      writer.Write (c_whiteSpace);
-      if (IsDesignMode)
-        _availableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
-      _availableViewsList.Enabled = ! IsRowEditModeActive && ! IsListEditModeActive;
-      _availableViewsList.CssClass = CssClassAvailableViewsListDropDownList;
-      _availableViewsList.RenderControl (writer);
-      writer.RenderEndTag();
-    }
-
-    if (HasOptionsMenu)
-    {
-      if (StringUtility.IsNullOrEmpty (_optionsTitle))
-        _optionsMenu.TitleText = GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
-      else
-        _optionsMenu.TitleText = _optionsTitle;
-      _optionsMenu.Style.Add ("margin-bottom", menuBlockItemOffset);
-      _optionsMenu.Enabled = ! IsRowEditModeActive;
-      _optionsMenu.IsReadOnly = IsReadOnly;
-      _optionsMenu.RenderControl (writer);
-    }
-
-    if (HasListMenu)
-    {
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, ClientID + "_Boc_ListMenu");
-      writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      RenderListMenu (writer, ClientID + "_Boc_ListMenu");
-      writer.RenderEndTag();
-    }
-  }
-
-  private void PopulateAvailableViewsList()
+  internal void PopulateAvailableViewsList()
   {
     _availableViewsList.Items.Clear();
 
@@ -1698,54 +1441,6 @@ public class BocList:
         Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
 
     return isInternetExplorer55AndHigher;
-  }
-
-  //  TODO: Move ListMenu the extra control "ContentMenu"
-  private void RenderListMenu (HtmlTextWriter writer, string menuID)
-  {
-    if (! _hasClientScript)
-      return;
-
-    WebMenuItem[] groupedListMenuItems = _listMenuItems.GroupMenuItems (false);
-
-    writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-    writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-    writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
-    writer.RenderBeginTag (HtmlTextWriterTag.Table);
-    bool isFirstItem = true;
-    for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
-    {
-
-      WebMenuItem currentItem = groupedListMenuItems[idxItems];
-      // HACK: Required since ListMenuItems are not added to a ListMenu's WebMenuItemCollection.
-      currentItem.OwnerControl = this;
-      if (! currentItem.EvaluateVisible())
-        continue;
-
-      bool isLastItem = idxItems == groupedListMenuItems.Length - 1;
-      bool isFirstCategoryItem = isFirstItem || groupedListMenuItems[idxItems - 1].Category != currentItem.Category;
-      bool isLastCategoryItem = isLastItem || groupedListMenuItems[idxItems + 1].Category != currentItem.Category;
-      bool hasAlwaysLineBreaks = _listMenuLineBreaks == ListMenuLineBreaks.All;
-      bool hasNoLineBreaks = _listMenuLineBreaks == ListMenuLineBreaks.None;
-
-      if (hasAlwaysLineBreaks || isFirstCategoryItem || (hasNoLineBreaks && isFirstItem))
-      {
-        writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, "contentMenuRow");
-        writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      }
-      RenderListMenuItem (writer, currentItem, menuID, _listMenuItems.IndexOf (currentItem));
-      if (hasAlwaysLineBreaks || isLastCategoryItem || (hasNoLineBreaks && isLastItem))
-      {
-        writer.RenderEndTag();
-        writer.RenderEndTag();
-      }
-
-      if (isFirstItem)
-        isFirstItem = false;
-    }
-    writer.RenderEndTag();
   }
 
   private void PreRenderListMenuItems (string menuID)
@@ -1852,463 +1547,6 @@ public class BocList:
         target);
   }
 
-  private void RenderListMenuItem (HtmlTextWriter writer, WebMenuItem menuItem, string menuID, int index)
-  {
-    bool showIcon = menuItem.Style == WebMenuItemStyle.Icon ||  menuItem.Style == WebMenuItemStyle.IconAndText;
-    bool showText = menuItem.Style == WebMenuItemStyle.Text ||  menuItem.Style == WebMenuItemStyle.IconAndText;
-
-    writer.AddAttribute (HtmlTextWriterAttribute.Id, menuID + "_" + index.ToString());
-    writer.RenderBeginTag (HtmlTextWriterTag.Span);
-    writer.RenderBeginTag (HtmlTextWriterTag.A);
-    if (showIcon && menuItem.Icon.HasRenderingInformation)
-    {
-      writer.AddAttribute (HtmlTextWriterAttribute.Src, UrlUtility.ResolveUrl (menuItem.Icon.Url));
-      writer.AddStyleAttribute ("vertical-align", "middle");
-      writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-      writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag();
-      if (showText)
-        writer.Write (c_whiteSpace);
-    }
-    if (showText)
-      writer.Write (menuItem.Text); // Do not HTML encode.
-    writer.RenderEndTag();
-    writer.RenderEndTag();
-  }
-
-  /// <summary> Renders the list of values as an <c>table</c>. </summary>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  private void RenderTableBlock (HtmlTextWriter writer)
-  {
-    bool isReadOnly = IsReadOnly;
-    bool showForEmptyList =    isReadOnly && _showEmptyListReadOnlyMode
-                            || ! isReadOnly && _showEmptyListEditMode;
-   
-    if (IsEmptyList && ! showForEmptyList)
-    {
-      if (IsDesignMode)
-      {
-        //  The table non-data sections
-        RenderTableOpeningTag (writer);
-        RenderColGroup (writer);
-        writer.RenderBeginTag (HtmlTextWriterTag.Thead);
-        RenderColumnTitlesRow (writer);
-        writer.RenderEndTag();
-        RenderTableClosingTag (writer);
-      }
-      else
-      {
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-        writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-        writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-        writer.RenderBeginTag (HtmlTextWriterTag.Table);
-        writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-        writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        writer.Write ("&nbsp;");
-        writer.RenderEndTag();
-        writer.RenderEndTag();
-        writer.RenderEndTag();
-      }
-    }
-    else
-    {
-      //  The table non-data sections
-      RenderTableOpeningTag (writer);
-      RenderColGroup (writer);
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTableHead);
-      writer.RenderBeginTag (HtmlTextWriterTag.Thead);
-      RenderColumnTitlesRow (writer);
-      writer.RenderEndTag();
-
-      //  The tables data-section
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTableBody);
-      writer.RenderBeginTag (HtmlTextWriterTag.Tbody);
-
-      int firstRow = 0;
-      int totalRowCount = (Value != null) ? Value.Count : 0;
-      int rowCountWithOffset = totalRowCount;
-
-      if (IsPagingEnabled && ! IsEmptyList)
-      {      
-        firstRow = _currentPage * _pageSize.Value;
-        rowCountWithOffset = firstRow + _pageSize.Value;
-        //  Check row count on last page
-        rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
-      }
-
-      if (IsEmptyList)
-      {
-        if (ShowEmptyListMessage)
-          RenderEmptyListDataRow (writer);
-      }
-      else
-      {
-        bool isOddRow = true;
-        BocListRow[] rows = EnsureGotIndexedRowsSorted();
-
-        for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0; 
-            idxAbsoluteRows < rowCountWithOffset; 
-            idxAbsoluteRows++, idxRelativeRows++)
-        {
-          BocListRow row = rows[idxAbsoluteRows];
-          int originalRowIndex = row.Index;
-          RenderDataRow (writer, row.BusinessObject, idxRelativeRows, idxAbsoluteRows, originalRowIndex, isOddRow);
-          isOddRow = !isOddRow;
-        }
-      }
-
-      writer.RenderEndTag(); // end Tbody
-
-      //  Close the table
-      RenderTableClosingTag (writer);
-    }
-
-    if (_hasClientScript && IsSelectionEnabled)
-    {
-      //  Render the init script for the client side selection handling
-      int count = 0;
-      if (IsPagingEnabled)
-        count = _pageSize.Value;
-      else if (Value != null)
-        count = Value.Count;
-
-      string script = 
-           "BocList_InitializeList ("
-          + "document.getElementById ('" + ClientID + "'), '"
-          + ClientID + c_dataRowSelectorControlIDSuffix + "', "
-          + count.ToString () + ","
-          + (int) _selection + ");";
-      ScriptUtility.RegisterStartupScriptBlock (this, typeof (BocList).FullName + "_" + ClientID + "_InitializeListScript", script);
-    }
-  }
-
-  /// <summary> Renders the navigation bar consisting of the move buttons and the <see cref="PageInfo"/>. </summary>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  private void RenderNavigator (HtmlTextWriter writer)
-  {
-    bool isFirstPage = _currentPage == 0;
-    bool isLastPage = _currentPage + 1 >= _pageCount;
-
-    writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassNavigator);
-    writer.AddStyleAttribute ("position", "relative");
-    writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-    //  Page info
-    string pageInfo = null;
-    if (StringUtility.IsNullOrEmpty (_pageInfo))
-      pageInfo = GetResourceManager().GetString (ResourceIdentifier.PageInfo);
-    else
-      pageInfo = _pageInfo;
-
-    string navigationText = string.Format (pageInfo, _currentPage + 1, _pageCount);
-    // Do not HTML encode.
-    writer.Write (navigationText);
-
-    if (_hasClientScript)
-    {
-      writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
-      
-      string imageUrl = null;
-      //  Move to first page button
-      if (isFirstPage || IsRowEditModeActive)
-        imageUrl = c_goToFirstInactiveIcon;
-      else
-        imageUrl = c_goToFirstIcon;
-      imageUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocList), ResourceType.Image, imageUrl);
-      if (isFirstPage || IsRowEditModeActive)
-      {
-        RenderIcon (writer, new IconInfo (imageUrl), null);
-      }
-      else
-      {
-        string argument = c_goToCommandPrefix + GoToOption.First.ToString();
-        string postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument);
-        postBackEvent += "; return false;";
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.RenderBeginTag (HtmlTextWriterTag.A);
-        RenderIcon (writer, new IconInfo (imageUrl), ResourceIdentifier.GoToFirstAlternateText);
-        writer.RenderEndTag ();
-      }
-      writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
-
-      //  Move to previous page button
-      if (isFirstPage || IsRowEditModeActive)
-        imageUrl = c_goToPreviousInactiveIcon;
-      else
-        imageUrl = c_goToPreviousIcon;      
-      imageUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocList), ResourceType.Image, imageUrl);
-      if (isFirstPage || IsRowEditModeActive)
-      {
-        RenderIcon (writer, new IconInfo (imageUrl), null);
-      }
-      else
-      {
-        string argument = c_goToCommandPrefix + GoToOption.Previous.ToString();
-        string postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument);
-        postBackEvent += "; return false;";
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.RenderBeginTag (HtmlTextWriterTag.A);
-        RenderIcon (writer, new IconInfo (imageUrl), ResourceIdentifier.GoToPreviousAlternateText);
-        writer.RenderEndTag ();
-      }
-      writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
-
-      //  Move to next page button
-      if (isLastPage || IsRowEditModeActive)
-        imageUrl = c_goToNextInactiveIcon;
-      else
-        imageUrl = c_goToNextIcon;      
-      imageUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocList), ResourceType.Image, imageUrl);
-      if (isLastPage || IsRowEditModeActive)
-      {
-        RenderIcon (writer, new IconInfo (imageUrl), null);
-      }
-      else
-      {
-        string argument = c_goToCommandPrefix + GoToOption.Next.ToString();
-        string postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument);
-        postBackEvent += "; return false;";
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.RenderBeginTag (HtmlTextWriterTag.A);
-        RenderIcon (writer, new IconInfo (imageUrl), ResourceIdentifier.GoToNextAlternateText);
-        writer.RenderEndTag ();
-      }
-      writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
-
-      //  Move to last page button
-      if (isLastPage || IsRowEditModeActive)
-        imageUrl = c_goToLastInactiveIcon;
-      else
-        imageUrl = c_goToLastIcon;     
-      imageUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocList), ResourceType.Image, imageUrl);
-      if (isLastPage || IsRowEditModeActive)
-      {
-        RenderIcon (writer, new IconInfo (imageUrl), null);
-      }
-      else
-      {
-        string argument = c_goToCommandPrefix + GoToOption.Last.ToString();
-        string postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument);
-        postBackEvent += "; return false;";
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.RenderBeginTag (HtmlTextWriterTag.A);
-        RenderIcon (writer, new IconInfo (imageUrl), ResourceIdentifier.GoToLastAlternateText);
-        writer.RenderEndTag ();
-      }
-    }
-    writer.RenderEndTag();
-  }
-
-  /// <summary> Renderes the opening tag of the table. </summary>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  private void RenderTableOpeningTag (HtmlTextWriter writer)
-  {
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTable);
-    writer.AddAttribute (HtmlTextWriterAttribute.Id, ClientID + "_Table");
-    writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-    writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-    writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-    writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTable);
-    writer.RenderBeginTag (HtmlTextWriterTag.Table);
-  }
-
-  /// <summary> Renderes the closing tag of the table. </summary>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  private void RenderTableClosingTag (HtmlTextWriter writer)
-  {
-    writer.RenderEndTag(); // table
-    writer.RenderEndTag(); // div
-  }
-
-  /// <summary> Renderes the column group, which provides the table's column layout. </summary>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  private void RenderColGroup (HtmlTextWriter writer)
-  {
-    BocColumnDefinition[] renderColumns = EnsureColumnsGot();
-
-    writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
-
-    bool isTextXml = false;
-
-    if (!IsDesignMode)
-      isTextXml = ControlHelper.IsXmlConformResponseTextRequired (Context);
-
-    if (IsIndexEnabled)
-    {
-      writer.WriteBeginTag ("col");
-      writer.Write (" style=\"");
-      writer.WriteStyleAttribute ("width", "1.6em");
-      writer.Write ("\"");
-      if (isTextXml)
-        writer.Write (" />");
-      else
-        writer.Write (">");
-    }
-
-    if (IsSelectionEnabled)
-    {
-      writer.WriteBeginTag ("col");
-      writer.Write (" style=\"");
-      writer.WriteStyleAttribute ("width", "1.6em");
-      writer.Write ("\"");
-      if (isTextXml)
-        writer.Write (" />");
-      else
-        writer.Write (">");
-    }
-
-    //bool isFirstColumnUndefinedWidth = true;
-    for (int i = 0; i < renderColumns.Length; i++)
-    {
-      BocColumnDefinition column = renderColumns[i];
-
-      if (! IsColumnVisible (column))
-        continue;
-      
-      writer.WriteBeginTag ("col");
-      if (! column.Width.IsEmpty)
-      {
-        writer.Write (" style=\"");
-        string width;
-        BocValueColumnDefinition valueColumn = column as BocValueColumnDefinition;
-        if (valueColumn != null && valueColumn.EnforceWidth && column.Width.Type != UnitType.Percentage)
-        {
-          width = "2em";
-        }
-        else
-        {
-          width = column.Width.ToString();
-        }
-        writer.WriteStyleAttribute ("width", width);
-        writer.Write ("\"");
-      }
-      if (isTextXml)
-        writer.Write (" />");
-      else
-        writer.Write (">");
-    }
-    
-    //  Design-mode and empty table
-    if (IsDesignMode && renderColumns.Length == 0)
-    {
-      for (int i = 0; i < c_designModeDummyColumnCount; i++)
-      {
-        writer.RenderBeginTag (HtmlTextWriterTag.Col);
-        writer.RenderEndTag();
-      }
-    }
- 
-    writer.RenderEndTag();
-  }
-
-  /// <summary> Renders the table row containing the column titles and sorting buttons. </summary>
-  /// <remarks> Title format: &lt;span&gt;label button &lt;span&gt;sort order&lt;/span&gt;&lt;/span&gt; </remarks>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  private void RenderColumnTitlesRow (HtmlTextWriter writer)
-  {
-    bool isReadOnly = IsReadOnly;
-    BocColumnDefinition[] renderColumns = EnsureColumnsGot();
-
-    writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-
-    if (IsIndexEnabled)
-    {
-      string cssClass = CssClassTitleCell + " " + CssClassTitleCellIndex;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      writer.RenderBeginTag (HtmlTextWriterTag.Th);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      string indexColumnTitle;
-      if (StringUtility.IsNullOrEmpty (_indexColumnTitle))
-        indexColumnTitle = GetResourceManager().GetString (ResourceIdentifier.IndexColumnTitle);
-      else
-        indexColumnTitle = _indexColumnTitle;
-      // Do not HTML encode.
-      writer.Write (indexColumnTitle);
-      writer.RenderEndTag();
-      writer.RenderEndTag();
-    }
-
-    if (IsSelectionEnabled)
-    {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTitleCell);
-      writer.RenderBeginTag (HtmlTextWriterTag.Th);
-      if (_selection == RowSelection.Multiple)
-      {
-        string selectorControlName = ID + c_titleRowSelectorControlIDSuffix;
-        bool isChecked = (_selectorControlCheckedState[c_titleRowIndex] != null);
-        RenderSelectorControl (writer, selectorControlName, c_titleRowIndex.ToString(), isChecked, true);
-      }
-      else
-      {
-        writer.Write (c_whiteSpace);
-      }
-      writer.RenderEndTag();
-    }
-
-    HybridDictionary sortingDirections = new HybridDictionary();
-    ArrayList sortingOrder = new ArrayList();
-    if (IsClientSideSortingEnabled || HasSortingKeys)
-    {
-      for (int i = 0; i < _sortingOrder.Count; i++)
-      {
-        BocListSortingOrderEntry currentEntry = (BocListSortingOrderEntry) _sortingOrder[i];
-        sortingDirections[currentEntry.ColumnIndex] = currentEntry.Direction;
-        if (currentEntry.Direction != SortingDirection.None)
-          sortingOrder.Add (currentEntry.ColumnIndex);
-      }
-    }
-
-    for (int idxColumns = 0; idxColumns < renderColumns.Length; idxColumns++)
-    {
-      BocColumnDefinition column = renderColumns[idxColumns];
-      BocRowEditModeColumnDefinition rowEditModeColumn = renderColumns[idxColumns] as BocRowEditModeColumnDefinition;
-
-      if (! IsColumnVisible (column))
-        continue;
-
-      string cssClassTitleCell = CssClassTitleCell;
-      if (! StringUtility.IsNullOrEmpty (column.CssClass))
-        cssClassTitleCell += " " + column.CssClass;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTitleCell);
-      writer.RenderBeginTag (HtmlTextWriterTag.Th);
-
-      RenderTitleCellMarkers (writer, column, idxColumns);
-      RenderBeginTagTitleCellSortCommand (writer, column, idxColumns);
-      RenderTitleCellText (writer, column);
-      if (IsClientSideSortingEnabled || HasSortingKeys)
-        RenderTitleCellSortingButton (writer, idxColumns, sortingDirections, sortingOrder);
-      RenderEndTagTitleCellSortCommand (writer);
-      
-      writer.RenderEndTag();  //  th
-    }
-    
-    if (IsDesignMode && renderColumns.Length == 0)
-    {
-      for (int i = 0; i < c_designModeDummyColumnCount; i++)
-      {
-        writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        writer.Write (string.Format (c_designModeDummyColumnTitle, i + 1));
-        writer.RenderEndTag();
-      }
-    }
-
-    writer.RenderEndTag();  // tr
-  }
-
-  private void RenderTitleCellMarkers (HtmlTextWriter writer, BocColumnDefinition column, int columnIndex)
-  {
-    _editModeController.RenderTitleCellMarkers (writer, column, columnIndex);
-  }
-
   /// <summary> Builds the input required marker. </summary>
   protected internal virtual Image GetRequiredMarker()
   {
@@ -2338,754 +1576,17 @@ public class BocList:
     return validationErrorIcon;
   }
 
-  private void RenderTitleCellText (HtmlTextWriter writer, BocColumnDefinition column)
-  {
-    if (IsDesignMode && column.ColumnTitleDisplayValue.Length == 0)
-    {
-      writer.Write (c_designModeEmptyContents);
-    }
-    else
-    {
-      string contents = HtmlUtility.HtmlEncode (column.ColumnTitleDisplayValue);
-      if (StringUtility.IsNullOrEmpty (contents))
-        contents = c_whiteSpace;
-      writer.Write (contents);
-    }
-  }
-
-  private void RenderTitleCellSortingButton (
-      HtmlTextWriter writer, 
-      int columnIndex, 
-      HybridDictionary sortingDirections, 
-      ArrayList sortingOrder)
-  {
-    object obj = sortingDirections[columnIndex];
-    SortingDirection sortingDirection = SortingDirection.None; 
-    if (obj != null)
-      sortingDirection = (SortingDirection)obj;
-
-    string imageUrl = string.Empty;
-    //  Button Asc -> Button Desc -> No Button
-    switch (sortingDirection)
-    {
-      case SortingDirection.Ascending:
-      {
-        imageUrl = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (BocList), ResourceType.Image, c_sortAscendingIcon);
-        break;
-      }
-      case SortingDirection.Descending:
-      {
-        imageUrl = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (BocList), ResourceType.Image, c_sortDescendingIcon);
-        break;
-      }
-      case SortingDirection.None:
-      {
-        break;
-      }
-    }
-
-    if (sortingDirection != SortingDirection.None)
-    {
-      //  WhiteSpace before icon
-      writer.Write (c_whiteSpace);
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSortingOrder);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-
-      Enum alternateTextID = null;
-      if (sortingDirection == SortingDirection.Ascending)
-        alternateTextID = ResourceIdentifier.SortAscendingAlternateText;
-      else
-        alternateTextID = ResourceIdentifier.SortDescendingAlternateText;
-      RenderIcon (writer, new IconInfo (imageUrl), alternateTextID);
-
-      if (IsShowSortingOrderEnabled && sortingOrder.Count > 1)
-      {
-        int orderIndex = sortingOrder.IndexOf (columnIndex);
-        writer.Write (c_whiteSpace + (orderIndex + 1).ToString());
-      }
-      writer.RenderEndTag();
-    }
-  }
-
-  private void RenderBeginTagTitleCellSortCommand (
-      HtmlTextWriter writer, 
-      BocColumnDefinition column,
-      int columnIndex)
-  {
-    bool hasSortingCommand =   IsClientSideSortingEnabled 
-                           && (column is IBocSortableColumnDefinition && ((IBocSortableColumnDefinition) column).IsSortable);
-    
-    if (hasSortingCommand)
-    {
-      if (! IsRowEditModeActive && ! IsListEditModeActive && _hasClientScript)
-      {
-        string argument = c_sortCommandPrefix + columnIndex.ToString();
-        string postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument);
-        postBackEvent += "; return false;";
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.RenderBeginTag (HtmlTextWriterTag.A);
-      }
-      else
-      {
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      }
-    }
-    else
-    {
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-    }
-  }
-
-  private void RenderEndTagTitleCellSortCommand (HtmlTextWriter writer)
-  {
-    writer.RenderEndTag();
-  }
-
-  /// <summary> Renders a table row containing the data for <paramref name="businessObject"/>. </summary>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  /// <param name="businessObject"> The <see cref="IBusinessObject"/> whose data will be rendered. </param>
-  /// <param name="rowIndex"> The row number in the current view. </param>
-  /// <param name="absoluteRowIndex"> The position of <paramref name="businessObject"/> in the list of values. </param>
-  /// <param name="originalRowIndex"> The position of <paramref name="businessObject"/> in the list of values. </param>
-  /// <param name="isOddRow"> Whether the data row is rendered in an odd or an even table row. </param>
-  private void RenderDataRow (
-      HtmlTextWriter writer, 
-      IBusinessObject businessObject,
-      int rowIndex,
-      int absoluteRowIndex,
-      int originalRowIndex,
-      bool isOddRow)
-  {
-    bool isReadOnly = IsReadOnly;
-    BocColumnDefinition[] renderColumns = EnsureColumnsGot();
-
-    string objectID = null;
-    IBusinessObjectWithIdentity businessObjectWithIdentity = businessObject as IBusinessObjectWithIdentity;
-    if (businessObjectWithIdentity != null)
-      objectID = businessObjectWithIdentity.UniqueIdentifier;
-
-    string selectorControlID = ClientID + c_dataRowSelectorControlIDSuffix + rowIndex.ToString();
-    bool isChecked = (_selectorControlCheckedState[originalRowIndex] != null);
-
-    string cssClassTableRow;
-    if (isChecked && AreDataRowsClickSensitive())
-      cssClassTableRow = CssClassDataRowSelected;
-    else
-      cssClassTableRow = CssClassDataRow;
-    
-    string cssClassTableCell;
-    if (isOddRow)
-      cssClassTableCell = CssClassDataCellOdd;
-    else
-      cssClassTableCell = CssClassDataCellEven;
-
-    if (IsSelectionEnabled && ! IsRowEditModeActive)
-    {
-      if (AreDataRowsClickSensitive())
-      {
-        string script = "BocList_OnRowClick ("
-            + "document.getElementById ('" + ClientID + "'), "
-            + "this, "
-            + "document.getElementById ('" + selectorControlID + "'));";
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-        //  Disallow selecting text in the row.
-        //  writer.AddAttribute ("onSelectStart", "return false");
-      }
-    }
-
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
-    writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-
-    if (IsIndexEnabled)
-    {
-      string cssClass = cssClassTableCell + " " + CssClassDataCellIndex;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      if (_index == RowIndex.InitialOrder)
-        RenderRowIndex (writer, originalRowIndex, selectorControlID);
-      else if (_index == RowIndex.SortedOrder)
-        RenderRowIndex (writer, absoluteRowIndex, selectorControlID);
-      writer.RenderEndTag();
-    }
-
-    if (IsSelectionEnabled)
-    {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      RenderSelectorControl (writer, selectorControlID, originalRowIndex.ToString(), isChecked, false);
-      writer.RenderEndTag();
-    }
-
-    BocListDataRowRenderEventArgs dataRowRenderEventArgs = 
-        new BocListDataRowRenderEventArgs (originalRowIndex, businessObject);
-    OnDataRowRendering (dataRowRenderEventArgs);
-
-    bool firstValueColumnRendered = false;
-    for (int idxColumns = 0; idxColumns < renderColumns.Length; idxColumns++)
-    {
-      bool showIcon = false;
-      BocColumnDefinition column = renderColumns[idxColumns];
-      if ( (!firstValueColumnRendered) && column is BocValueColumnDefinition)
-      {
-        firstValueColumnRendered = true;
-        showIcon = EnableIcon;
-      }
-      RenderDataCell (
-          writer, 
-          idxColumns, 
-          column, 
-          rowIndex,
-          absoluteRowIndex,
-          originalRowIndex, 
-          businessObject, 
-          showIcon, 
-          cssClassTableCell, 
-          dataRowRenderEventArgs);
-    }
-    
-    writer.RenderEndTag();
-  }
-
-  protected virtual void OnDataRowRendering (BocListDataRowRenderEventArgs e)
+  protected internal virtual void OnDataRowRendering (BocListDataRowRenderEventArgs e)
   {
     BocListDataRowRenderEventHandler handler = (BocListDataRowRenderEventHandler) Events[s_dataRowRenderEvent];
     if (handler != null)
       handler (this, e);
   }
 
-  private void RenderDataCell (
-      HtmlTextWriter writer, 
-      int columnIndex, BocColumnDefinition column, 
-      int rowIndex, int absoluteRowIndex,
-      int originalRowIndex, IBusinessObject businessObject,
-      bool showIcon, string cssClassTableCell,
-      BocListDataRowRenderEventArgs dataRowRenderEventArgs)
-  {
-    bool isReadOnly = IsReadOnly;
-    EditableRow editableRow = null;
-    bool isEditedRow = IsRowEditModeActive && EditableRowIndex.Value == originalRowIndex;
-    if (isEditedRow)
-      editableRow = _editModeController._rows[0];
-    else if (IsListEditModeActive)
-      editableRow = _editModeController._rows[originalRowIndex];
-    bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (columnIndex);
 
-    BocCommandEnabledColumnDefinition commandEnabledColumn = column as BocCommandEnabledColumnDefinition;
-    BocRowEditModeColumnDefinition rowEditModeColumn = column as BocRowEditModeColumnDefinition;
-    BocDropDownMenuColumnDefinition dropDownMenuColumn = column as BocDropDownMenuColumnDefinition;
-    BocCustomColumnDefinition customColumn = column as BocCustomColumnDefinition;
-
-    if (! IsColumnVisible (column))
-      return;
-
-    if (! StringUtility.IsNullOrEmpty (column.CssClass))
-      cssClassTableCell += " " + column.CssClass;
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
-    writer.RenderBeginTag (HtmlTextWriterTag.Td);
-
-    if (commandEnabledColumn != null)
-    {
-      BocCommandColumnDefinition commandColumn = column as BocCommandColumnDefinition;
-      BocCompoundColumnDefinition compoundColumn = column as BocCompoundColumnDefinition;
-      BocSimpleColumnDefinition simpleColumn = column as BocSimpleColumnDefinition;
-      BocValueColumnDefinition valueColumn = column as BocValueColumnDefinition;
-
-      bool showEditModeControl =   hasEditModeControl 
-                                && ! editableRow.GetEditControl (columnIndex).IsReadOnly;
-      
-      string valueColumnText = null;
-      if (valueColumn != null && ! showEditModeControl)
-        valueColumnText = valueColumn.GetStringValue (businessObject);
-
-
-      bool enforceWidth = 
-             valueColumn != null 
-          && valueColumn.EnforceWidth 
-          && ! column.Width.IsEmpty
-          && column.Width.Type != UnitType.Percentage
-          && ! showEditModeControl;
-
-      if (enforceWidth)
-      {
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, column.Width.ToString());
-        writer.AddStyleAttribute ("overflow", "hidden");
-        writer.AddStyleAttribute ("white-space", "nowrap");
-        writer.AddStyleAttribute ("display", "block");
-        writer.AddAttribute (HtmlTextWriterAttribute.Title, valueColumnText);
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      }
-
-      //  Render the command
-      bool isCommandEnabled = false;
-      if (commandColumn != null || ! StringUtility.IsNullOrEmpty (valueColumnText))
-      {
-        isCommandEnabled = RenderBeginTagDataCellCommand (writer, commandEnabledColumn, businessObject, columnIndex, originalRowIndex);
-      }
-      if (! isCommandEnabled)
-      {
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      }
-
-      //  Render the icon
-      if (!hasEditModeControl)
-      {
-        if (showIcon)
-          RenderDataCellIcon (writer, businessObject);
-        if (simpleColumn != null && simpleColumn.EnableIcon)
-        {
-          IBusinessObjectPropertyPath propertyPath;
-          if (simpleColumn.IsDynamic)
-            propertyPath = simpleColumn.GetDynamicPropertyPath (businessObject.BusinessObjectClass);
-          else
-            propertyPath = simpleColumn.GetPropertyPath ();
-
-          IBusinessObject value = propertyPath.GetValue (businessObject, false, true) as IBusinessObject;
-          if (value != null)
-            RenderDataCellIcon (writer, value);
-        }
-      }
-
-      //  Render the text
-      if (commandColumn != null)
-      {
-        RenderCommandColumnCell (writer, commandColumn);
-      }
-      else if (simpleColumn != null)
-      {
-        if (showEditModeControl)
-          RenderSimpleColumnCellEditModeControl (writer, simpleColumn, businessObject, columnIndex, editableRow);
-        else
-          RenderValueColumnCellText (writer, valueColumnText);
-      }
-      else if (compoundColumn != null)
-      {
-        RenderValueColumnCellText (writer, valueColumnText);
-      }
-
-      if (isCommandEnabled)
-        RenderEndTagDataCellCommand (writer, commandEnabledColumn); // End Command
-      else
-        writer.RenderEndTag(); // End Span
-
-      if (enforceWidth)
-        writer.RenderEndTag(); // End Span
-    }
-    else if (rowEditModeColumn != null)
-    {
-      RenderRowEditModeColumnCell (
-          writer, 
-          rowEditModeColumn, 
-          isEditedRow, 
-          dataRowRenderEventArgs.IsEditableRow, 
-          originalRowIndex);
-    }
-    else if (dropDownMenuColumn != null)
-    {
-      RenderDropDownMenuColumnCell (writer, dropDownMenuColumn, rowIndex);
-    }
-    else if (customColumn != null)
-    {
-      RenderCustomColumnCell (
-          writer, columnIndex, customColumn, rowIndex, originalRowIndex, businessObject, isEditedRow);
-    }
-
-    writer.RenderEndTag();
-  }
-
-  /// <summary> Renders the row index (Optionally as a label for the selector control). </summary>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  /// <param name="index"> The zero-based index to be rendered. </param>
-  /// <param name="selectorControlID"> 
-  ///   The ID of the selector-control for this row, or <see langword="null"/> for no control.
-  /// </param>
-  private void RenderRowIndex (HtmlTextWriter writer, int index, string selectorControlID) 
-  {
-    bool hasSelectorControl = selectorControlID != null;
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-    if (hasSelectorControl)
-    {
-      writer.AddAttribute (HtmlTextWriterAttribute.For, selectorControlID);
-      if (_hasClientScript)
-      {
-        string script = "BocList_OnSelectorControlLabelClick();";
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-      }
-      writer.RenderBeginTag (HtmlTextWriterTag.Label);
-    }
-    else
-    {
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-    }
-    int renderedIndex = index + 1;
-    if (_indexOffset != null)
-      renderedIndex += _indexOffset.Value;
-    writer.Write (renderedIndex);
-    writer.RenderEndTag();
-  }
-
-  /// <summary> Renders a <see cref="CheckBox"/> or <see cref="RadioButton"/> used for row selection. </summary>
-  /// <param name="writer"> The <see cref="HtmlTextWriter"/> object that receives the server control content. </param>
-  /// <param name="id"> The <see cref="string"/> rendered into the <c>id</c> and <c>name</c> attributes. </param>
-  /// <param name="value"> The value of the <see cref="CheckBox"/> or <see cref="RadioButton"/>. </param>
-  /// <param name="isChecked"> 
-  ///   <see langword="true"/> if the <see cref="CheckBox"/> or <see cref="RadioButton"/> is checked. 
-  /// </param>
-  /// <param name="isSelectAllSelectorControl"> 
-  ///   <see langword="true"/> if the rendered <see cref="CheckBox"/> or <see cref="RadioButton"/> is in the title row.
-  /// </param>
-  private void RenderSelectorControl (
-      HtmlTextWriter writer, 
-      string id, 
-      string value, 
-      bool isChecked, 
-      bool isSelectAllSelectorControl)
-  {
-    if (_selection == RowSelection.SingleRadioButton)
-      writer.AddAttribute (HtmlTextWriterAttribute.Type, "radio");
-    else
-      writer.AddAttribute (HtmlTextWriterAttribute.Type, "checkbox");
-    writer.AddAttribute (HtmlTextWriterAttribute.Id, id);
-    writer.AddAttribute (HtmlTextWriterAttribute.Name, id);
-    string alternateText;
-    if (isSelectAllSelectorControl)
-      alternateText = GetResourceManager().GetString (ResourceIdentifier.SelectAllRowsAlternateText);
-    else
-     alternateText = GetResourceManager().GetString (ResourceIdentifier.SelectRowAlternateText);
-    writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
-
-    writer.AddAttribute (HtmlTextWriterAttribute.Value, value);
-    if (isChecked)
-      writer.AddAttribute (HtmlTextWriterAttribute.Checked, "checked");    
-    if (IsRowEditModeActive)
-      writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "true");
-    if (isSelectAllSelectorControl)
-    {
-      int count = 0;
-      if (IsPagingEnabled)
-        count = _pageSize.Value;
-      else if (! IsEmptyList)
-        count = Value.Count;
-
-      if (_hasClientScript)
-      {
-        string script = "BocList_OnSelectAllSelectorControlClick ("
-            + "document.getElementById ('" + ClientID + "'), "
-            + "this , '"
-            + ClientID + c_dataRowSelectorControlIDSuffix + "', "
-            + count.ToString() + ");";
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-      }
-    }
-    else
-    {
-      if (_hasClientScript)
-      {
-        string script = "BocList_OnSelectionSelectorControlClick();";
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-      }
-    }
-    writer.RenderBeginTag (HtmlTextWriterTag.Input);
-    writer.RenderEndTag();
-  }
-
-  private void RenderDataCellIcon (HtmlTextWriter writer, IBusinessObject businessObject)
-  {
-    IconInfo icon = BusinessObjectBoundWebControl.GetIcon (
-        businessObject, 
-        businessObject.BusinessObjectClass.BusinessObjectProvider);
-
-    if (icon != null)
-    {
-      RenderIcon (writer, icon, null);
-      writer.Write (c_whiteSpace);
-    }
-  }
-
-  private void RenderRowEditModeColumnCell (
-      HtmlTextWriter writer, 
-      BocRowEditModeColumnDefinition column,
-      bool isEditedRow,
-      bool isEditableRow,
-      int originalRowIndex)
-  {
-    bool isReadOnly = IsReadOnly;
-    string argument = null;
-    string postBackEvent = null;
-
-    if (isEditedRow)
-    {
-      if (! isReadOnly && _hasClientScript)
-      {
-        argument = c_eventRowEditModePrefix + originalRowIndex + "," + RowEditModeCommand.Save;
-        postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument) + ";";
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
-      }
-      writer.RenderBeginTag (HtmlTextWriterTag.A);
-
-      bool hasSaveIcon = column.SaveIcon.HasRenderingInformation;
-      bool hasSaveText = ! StringUtility.IsNullOrEmpty (column.SaveText);
-
-      if (hasSaveIcon && hasSaveText)
-      {
-        RenderIcon (writer, column.SaveIcon, null);
-        writer.Write (c_whiteSpace);
-      }
-      else if (hasSaveIcon)
-      {
-        RenderIcon (writer, column.SaveIcon, ResourceIdentifier.RowEditModeSaveAlternateText);
-      }
-      if (hasSaveText)
-        writer.Write (column.SaveText); // Do not HTML encode.
-
-      writer.RenderEndTag();
-
-      writer.Write (" ");
-
-      if (! isReadOnly && _hasClientScript)
-      {
-        argument = c_eventRowEditModePrefix + originalRowIndex + "," + RowEditModeCommand.Cancel;
-        postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument) + ";";
-        writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
-      }
-      writer.RenderBeginTag (HtmlTextWriterTag.A);
-
-      bool hasCancelIcon = column.CancelIcon.HasRenderingInformation;
-      bool hasCancelText = ! StringUtility.IsNullOrEmpty (column.CancelText);
-
-      if (hasCancelIcon && hasCancelText)
-      {
-        RenderIcon (writer, column.CancelIcon, null);
-        writer.Write (c_whiteSpace);
-      }
-      else if (hasCancelIcon)
-      {
-        RenderIcon (writer, column.CancelIcon, ResourceIdentifier.RowEditModeCancelAlternateText);
-      }
-      if (hasCancelText)
-        writer.Write (column.CancelText); // Do not HTML encode.
-
-      writer.RenderEndTag();
-    }
-    else
-    {
-      if (isEditableRow)
-      {
-        if (! isReadOnly && _hasClientScript)
-        {
-          argument = c_eventRowEditModePrefix + originalRowIndex + "," + RowEditModeCommand.Edit;
-          postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument) + ";";
-          writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-          writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
-        }
-        writer.RenderBeginTag (HtmlTextWriterTag.A);
-
-        bool hasEditIcon = column.EditIcon.HasRenderingInformation;
-        bool hasEditText = ! StringUtility.IsNullOrEmpty (column.EditText);
-
-        if (hasEditIcon && hasEditText)
-        {
-          RenderIcon (writer, column.EditIcon, null);
-          writer.Write (c_whiteSpace);
-        }
-        else if (hasEditIcon)
-        {
-          RenderIcon (writer, column.EditIcon, ResourceIdentifier.RowEditModeEditAlternateText);
-        }
-        if (hasEditText)
-          writer.Write (column.EditText); // Do not HTML encode
-
-        writer.RenderEndTag();
-      }
-      else
-      {
-        writer.Write (c_whiteSpace);
-      }
-    }
-  }
-
-  private void RenderDropDownMenuColumnCell (
-      HtmlTextWriter writer, 
-      BocDropDownMenuColumnDefinition column,
-      int rowIndex)
-  {
-    if (_rowMenus == null || _rowMenus.Length < rowIndex || _rowMenus[rowIndex] == null)
-    {
-      writer.Write (c_whiteSpace);
-      return;
-    }
-
-    DropDownMenu dropDownMenu = (DropDownMenu) _rowMenus[rowIndex].Third;
-    if (dropDownMenu.MenuItems.Count == 0)
-    {
-      writer.Write (c_whiteSpace);
-      return;
-    }
-
-    if (_hasClientScript)
-      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
-    writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin div
-
-    dropDownMenu.Enabled = ! IsRowEditModeActive;
-
-    dropDownMenu.TitleText = column.MenuTitleText;
-    dropDownMenu.TitleIcon = column.MenuTitleIcon;
-    dropDownMenu.RenderControl (writer);
-    
-    writer.RenderEndTag(); // End div
-  }
-
-  private void RenderCommandColumnCell (HtmlTextWriter writer, BocCommandColumnDefinition column)
-  {
-    if (column.Icon.HasRenderingInformation)
-      column.Icon.Render (writer);
-
-    if (! StringUtility.IsNullOrEmpty (column.Text))
-      writer.Write (column.Text); // Do not HTML encode
-  }
-
-  private void RenderValueColumnCellText (HtmlTextWriter writer, string contents) 
-  {
-    contents = HtmlUtility.HtmlEncode (contents);
-    if (StringUtility.IsNullOrEmpty (contents))
-      contents = c_whiteSpace;
-    writer.Write (contents);
-  }
-
-  private void RenderSimpleColumnCellEditModeControl (
-      HtmlTextWriter writer, 
-      BocSimpleColumnDefinition column,
-      IBusinessObject businessObject,
-      int columnIndex, 
-      EditableRow editableRow) 
-  {
-    EditModeValidator editModeValidator = null;
-    for (int i = 0; i < _validators.Count; i++)
-    {
-      BaseValidator validator = (BaseValidator) _validators[i];
-      if (validator is EditModeValidator)
-        editModeValidator = (EditModeValidator) validator;
-    }
-
-    if (_hasClientScript)
-      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
-    writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin span
-    
-    editableRow.RenderSimpleColumnCellEditModeControl (
-        writer, column, businessObject, columnIndex,
-        editModeValidator, 
-        _editModeController.ShowEditModeValidationMarkers, 
-        _editModeController.DisableEditModeValidationMessages);
-    
-    writer.RenderEndTag(); // End span
-  }
- 
-  private bool RenderBeginTagDataCellCommand (
-      HtmlTextWriter writer, 
-      BocCommandEnabledColumnDefinition column,
-      IBusinessObject businessObject,
-      int columnIndex,
-      int originalRowIndex)
-  {
-    bool isCommandEnabled = false;
-    BocListItemCommand command = column.Command;
-    if (command == null)
-      return isCommandEnabled;
-
-    bool isReadOnly = IsReadOnly;
-    bool isActive =    command.Show == CommandShow.Always
-                    || isReadOnly && command.Show == CommandShow.ReadOnly
-                    || ! isReadOnly && command.Show == CommandShow.EditMode;
-    if (   isActive
-        && command.Type != CommandType.None
-        && ! IsRowEditModeActive
-        && (   command.CommandState == null
-            || command.CommandState.IsEnabled (this, businessObject, column)))
-    {
-      if (WcagHelper.Instance.IsWaiConformanceLevelARequired() && command.Type != CommandType.Href)
-        isCommandEnabled = false;
-      else
-        isCommandEnabled = true;
-    }
-
-    if (isCommandEnabled)
-    {    
-      string objectID = null;
-      IBusinessObjectWithIdentity businessObjectWithIdentity = businessObject as IBusinessObjectWithIdentity;
-      if (businessObjectWithIdentity != null)
-        objectID = businessObjectWithIdentity.UniqueIdentifier;
-
-      string argument = GetListItemCommandArgument (columnIndex, originalRowIndex);
-      string postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument) + ";";
-      string onClick = _hasClientScript ? c_onCommandClickScript : string.Empty;
-      command.RenderBegin (writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
-    }
-
-    return isCommandEnabled;
-  }
-
-  private string GetListItemCommandArgument (int columnIndex, int originalRowIndex)
+  internal string GetListItemCommandArgument (int columnIndex, int originalRowIndex)
   {
     return c_eventListItemCommandPrefix + columnIndex + "," + originalRowIndex;
-  }
-
-  private void RenderEndTagDataCellCommand (HtmlTextWriter writer, BocCommandEnabledColumnDefinition column)
-  {
-    column.Command.RenderEnd (writer);
-  }
-
-  private void RenderIcon (HtmlTextWriter writer, IconInfo icon, Enum alternateTextID)
-  {
-    bool hasAlternateText = ! StringUtility.IsNullOrEmpty (icon.AlternateText);
-    if (! hasAlternateText)
-    {
-      if (alternateTextID != null)
-        icon.AlternateText = GetResourceManager().GetString (alternateTextID);
-    }
-    
-    icon.Render (writer);
-
-    if (! hasAlternateText)
-      icon.AlternateText = string.Empty;
-  }
-
-  private void RenderEmptyListDataRow (HtmlTextWriter writer)
-  {
-    BocColumnDefinition[] renderColumns = EnsureColumnsGot();
-    int columnCount = 0;
-
-    if (IsIndexEnabled)
-      columnCount++;
-  
-    if (IsSelectionEnabled)
-      columnCount++;
-
-    for (int idxColumns = 0; idxColumns < renderColumns.Length; idxColumns++)
-    {
-      BocColumnDefinition column = renderColumns[idxColumns];
-      if (IsColumnVisible (column))
-        columnCount++;
-    }
-    
-    writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-    writer.AddAttribute (HtmlTextWriterAttribute.Colspan, columnCount.ToString());
-    writer.RenderBeginTag (HtmlTextWriterTag.Td);
-
-    string emptyListMessage = null;
-    if (StringUtility.IsNullOrEmpty (_emptyListMessage))
-      emptyListMessage = GetResourceManager().GetString (ResourceIdentifier.EmptyListMessage);
-    else
-      emptyListMessage = _emptyListMessage;
-    // Do not HTML encode
-    writer.Write (emptyListMessage);
-
-    writer.RenderEndTag();
-    writer.RenderEndTag();
   }
 
   /// <summary>
@@ -3226,7 +1727,7 @@ public class BocList:
   }
 
   /// <summary> Find the <see cref="IResourceManager"/> for this control. </summary>
-  protected virtual IResourceManager GetResourceManager()
+  protected internal virtual IResourceManager GetResourceManager()
   {
     return GetResourceManager (typeof (ResourceIdentifier));
   }
@@ -3770,69 +2271,6 @@ public class BocList:
     }
   }
 
-  /// <summary> Renders the cells of the custom columns. </summary>
-  private void RenderCustomColumnCell (
-      HtmlTextWriter writer, 
-      int columnIndex, 
-      BocCustomColumnDefinition column,
-      int rowIndex,
-      int originalRowIndex, 
-      IBusinessObject businessObject,
-      bool isEditedRow)
-  {
-    if (_customColumns == null)
-      return;
-
-    if (   column.Mode == BocCustomColumnDefinitionMode.NoControls
-        || (   column.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
-            && ! isEditedRow))
-    {
-      string onClick = _hasClientScript ? c_onCommandClickScript : string.Empty;
-      BocCustomCellRenderArguments arguments = new BocCustomCellRenderArguments (
-          this, businessObject, column, columnIndex, originalRowIndex, onClick);
-      column.CustomCell.RenderInternal (writer, arguments);
-    }
-    else
-    {
-      Triplet[] customColumnTriplets = (Triplet[]) _customColumns[column];
-      Triplet customColumnTriplet = customColumnTriplets[rowIndex];
-      if (customColumnTriplet == null)
-      {
-        writer.Write (c_whiteSpace);
-      }
-      else
-      {
-        string onClick = _hasClientScript ? c_onCommandClickScript : string.Empty; 
-        writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onClick);
-        writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin span
-     
-        Control control = (Control) customColumnTriplet.Third;
-      
-        CssStyleCollection controlStyle = null;
-        bool isControlWidthEmpty = true;
-        if (control is WebControl)
-        {
-          controlStyle = ((WebControl) control).Style;
-          isControlWidthEmpty = ((WebControl) control).Width.IsEmpty;
-        }
-        else if (control is System.Web.UI.HtmlControls.HtmlControl)
-        {
-          controlStyle = ((System.Web.UI.HtmlControls.HtmlControl) control).Style;
-        }
-        if (controlStyle != null)
-        {
-          if (StringUtility.IsNullOrEmpty (controlStyle["width"]) && isControlWidthEmpty)
-            controlStyle["width"] = "100%";
-          if (StringUtility.IsNullOrEmpty (controlStyle["vertical-align"]))
-            controlStyle["vertical-align"] = "middle";
-        }
-        control.RenderControl (writer);
-      
-        writer.RenderEndTag(); // End span
-      }
-    }
-  }
-
   private BocColumnDefinition[] EnsureColumnsForPreviousLifeCycleGot()
   {
     if (_columnDefinitionsPostBackEventHandlingPhase == null)
@@ -3847,7 +2285,7 @@ public class BocList:
     return _columnDefinitionsRenderPhase;
   }
 
-  private BocColumnDefinition[] EnsureColumnsGot()
+  internal BocColumnDefinition[] EnsureColumnsGot()
   {
     return EnsureColumnsGot (false);
   }
@@ -4175,7 +2613,7 @@ public class BocList:
     return (BocListRow[]) rows.ToArray (typeof (BocListRow));
   }
 
-  protected BocListRow[] EnsureGotIndexedRowsSorted()
+  protected internal BocListRow[] EnsureGotIndexedRowsSorted()
   {
     if (_indexedRowsSorted == null)
       _indexedRowsSorted = GetIndexedRows (true);
@@ -5275,7 +3713,7 @@ public class BocList:
     set { _enableSorting = value; }
   }
 
-  protected bool IsClientSideSortingEnabled
+  protected internal bool IsClientSideSortingEnabled
   {
     get { return EnableSorting; }
   }
@@ -5300,7 +3738,7 @@ public class BocList:
     set { _showSortingOrder = value; }
   }
 
-  protected virtual bool IsShowSortingOrderEnabled
+  protected internal virtual bool IsShowSortingOrderEnabled
   {
     get { return ShowSortingOrder != false; }
   }
@@ -5381,7 +3819,7 @@ public class BocList:
     set { _selection = value; }
   }
 
-  protected bool IsSelectionEnabled
+  protected internal bool IsSelectionEnabled
   {
     get { return _selection != RowSelection.Undefined && _selection != RowSelection.Disabled; }
   }
@@ -5402,7 +3840,7 @@ public class BocList:
     set { _index = value; }
   }
 
-  protected bool IsIndexEnabled
+  protected internal bool IsIndexEnabled
   {
     get { return _index != RowIndex.Undefined && _index != RowIndex.Disabled; }
   }
@@ -5430,7 +3868,7 @@ public class BocList:
     set { _indexColumnTitle = value; }
   }
 
-  protected bool AreDataRowsClickSensitive()
+  protected internal bool AreDataRowsClickSensitive()
   {
     return    _hasClientScript 
            && ! WcagHelper.Instance.IsWaiConformanceLevelARequired() 
@@ -5457,7 +3895,7 @@ public class BocList:
     }
   }
 
-  protected bool IsPagingEnabled
+  protected internal bool IsPagingEnabled
   {
     get 
     { 
@@ -5695,13 +4133,68 @@ public class BocList:
     }
   }
 
-  #region protected virtual string CssClass...
+  public int CurrentPage
+  {
+    get { return _currentPage; }
+  }
+
+  public int PageCount
+  {
+    get { return _pageCount; }
+  }
+
+  public bool HasClientScript
+  {
+    get { return _hasClientScript; }
+  }
+
+  public DropDownList AvailableViewsList
+  {
+    get { return _availableViewsList; }
+  }
+
+  public DropDownMenu OptionsMenu
+  {
+    get { return _optionsMenu; }
+  }
+
+  internal Hashtable SelectorControlCheckedState
+  {
+    get { return _selectorControlCheckedState; }
+  }
+
+  internal ArrayList SortingOrder
+  {
+    get { return _sortingOrder; }
+  }
+
+  internal EditModeController EditModeController
+  {
+    get { return _editModeController; }
+  }
+
+  internal ArrayList Validators
+  {
+    get { return _validators; }
+  }
+
+  internal Triplet[] RowMenus
+  {
+    get { return _rowMenus; }
+  }
+
+  internal Hashtable CustomColumns
+  {
+    get { return _customColumns; }
+  }
+
+    #region protected virtual string CssClass...
   /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/> itself. </summary>
   /// <remarks> 
   ///   <para> Class: <c>bocList</c>. </para>
   ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
   /// </remarks>
-  protected virtual string CssClassBase
+  protected internal virtual string CssClassBase
   { get { return "bocList"; } }
 
   /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/> when it is displayed in read-only mode. </summary>
@@ -5709,7 +4202,7 @@ public class BocList:
   ///   <para> Class: <c>readOnly</c>. </para>
   ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocList.readOnly</c> as a selector. </para>
   /// </remarks>
-  protected virtual string CssClassReadOnly
+  protected internal virtual string CssClassReadOnly
   { get { return "readOnly"; } }
 
   /// <summary> Gets the CSS-Class applied to the <see cref="BocEnumValue"/> when it is displayed disabled. </summary>
@@ -5717,83 +4210,84 @@ public class BocList:
   ///   <para> Class: <c>disabled</c>. </para>
   ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocEnumValue.disabled</c> as a selector. </para>
   /// </remarks>
-  protected virtual string CssClassDisabled
+  protected internal virtual string CssClassDisabled
   { get { return "disabled"; } }
 
   /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>table</c> tag. </summary>
   /// <remarks> Class: <c>bocListTable</c> </remarks>
-  protected virtual string CssClassTable
+  protected internal virtual string CssClassTable
   { get { return "bocListTable"; } }
 
   /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>thead</c> tag. </summary>
   /// <remarks> Class: <c>bocListTableHead</c> </remarks>
-  protected virtual string CssClassTableHead
+  protected internal virtual string CssClassTableHead
   { get { return "bocListTableHead"; } }
 
   /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>tbody</c> tag. </summary>
   /// <remarks> Class: <c>bocListTableBody</c> </remarks>
-  protected virtual string CssClassTableBody
+  protected internal virtual string CssClassTableBody
   { get { return "bocListTableBody"; } }
 
   /// <summary> CSS-Class applied to the cells in the <see cref="BocList"/>'s title row. </summary>
   /// <remarks> Class: <c>bocListTitleCell</c> </remarks>
-  protected virtual string CssClassTitleCell
+  protected internal virtual string CssClassTitleCell
   { get { return "bocListTitleCell"; } }
 
   /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s selected data. </summary>
   /// <remarks> Class: <c>bocListDataRow</c> </remarks>
-  protected virtual string CssClassDataRow
+  protected internal virtual string CssClassDataRow
   { get { return "bocListDataRow"; } }
 
   /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s selected data rows. </summary>
   /// <remarks> Class: <c>bocListDataRowSelected</c> </remarks>
-  protected virtual string CssClassDataRowSelected
+  protected internal virtual string CssClassDataRowSelected
   { get { return "bocListDataRowSelected"; } }
 
   /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s odd data rows. </summary>
   /// <remarks> Class: <c>bocListDataCellOdd</c> </remarks>
-  protected virtual string CssClassDataCellOdd
+  protected internal virtual string CssClassDataCellOdd
   { get { return "bocListDataCellOdd"; } }
 
   /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s even data rows. </summary>
   /// <remarks> Class: <c>bocListDataCellEven</c> </remarks>
-  protected virtual string CssClassDataCellEven
+  protected internal virtual string CssClassDataCellEven
   { get { return "bocListDataCellEven"; } }
 
   /// <summary> Gets the CSS-Class applied to the cell in the <see cref="BocList"/>'s title row that contains the row index header. </summary>
   /// <remarks> Class: <c>bocListTitleCellIndex</c> </remarks>
-  protected virtual string CssClassTitleCellIndex
+  protected internal virtual string CssClassTitleCellIndex
   { get { return "bocListTitleCellIndex"; } }
 
   /// <summary> Gets the CSS-Class applied to the cell in the <see cref="BocList"/>'s data rows that contains the row index. </summary>
   /// <remarks> Class: <c>bocListDataCellIndex</c> </remarks>
-  protected virtual string CssClassDataCellIndex
+  protected internal virtual string CssClassDataCellIndex
   { get { return "bocListDataCellIndex"; } }
 
   /// <summary> Gets the CSS-Class applied to the content if there is no anchor element. </summary>
   /// <remarks> Class: <c>bocListDataCellContent</c> </remarks>
-  protected virtual string CssClassContent
+  protected internal virtual string CssClassContent
   { get { return "bocListContent"; } }
 
   /// <summary> Gets the CSS-Class applied to the text providing the sorting order's index. </summary>
   /// <remarks> Class: <c>bocListSortingOrder</c> </remarks>
-  protected virtual string CssClassSortingOrder
+  protected internal virtual string CssClassSortingOrder
   { get { return "bocListSortingOrder"; } }
 
   /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s navigator. </summary>
   /// <remarks> Class: <c>bocListNavigator</c> </remarks>
-  protected virtual string CssClassNavigator
+  protected internal virtual string CssClassNavigator
   { get { return "bocListNavigator"; } }
 
   /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s list of additional columns. </summary>
   /// <remarks> Class: <c>bocListAvailableViewsListDropDownList</c> </remarks>
-  protected virtual string CssClassAvailableViewsListDropDownList
+  protected internal virtual string CssClassAvailableViewsListDropDownList
   { get { return "bocListAvailableViewsListDropDownList"; } }
   
   /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s label for the list of additional columns. </summary>
   /// <remarks> Class: <c>bocListAvailableViewsListLabel</c> </remarks>
-  protected virtual string CssClassAvailableViewsListLabel
+  protected internal virtual string CssClassAvailableViewsListLabel
   { get { return "bocListAvailableViewsListLabel"; } }
+
   #endregion
 }
 

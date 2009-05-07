@@ -267,6 +267,22 @@
     <Compile Include="UI\Controls\PropertyPathBindingCollection.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\Renderers\BocCommandColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocCommandEnabledColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocCompoundColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocCustomColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocDropDownMenuColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocListRendererFactory.cs" />
+    <Compile Include="UI\Controls\Renderers\BocColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocListMenuBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocListNavigatorRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocListRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocListBaseRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocRowRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocRowEditModeColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocSimpleColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\BocValueColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Renderers\IBocColumnRenderer.cs" />
     <Compile Include="UI\Controls\Styles.cs">
       <SubType>Component</SubType>
     </Compile>
