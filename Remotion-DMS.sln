@@ -183,6 +183,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityManager.AclTools.Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Shared", "Dms\Shared\Dms.Shared.csproj", "{B79940B8-1949-406D-9CCA-E6349898E11A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.TrayService", "Dms.TrayService\Dms.TrayService.csproj", "{B149B00A-91B4-425E-A9DD-5F5DE16F06AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -400,6 +402,10 @@ Global
 		{B79940B8-1949-406D-9CCA-E6349898E11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B79940B8-1949-406D-9CCA-E6349898E11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B79940B8-1949-406D-9CCA-E6349898E11A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B149B00A-91B4-425E-A9DD-5F5DE16F06AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B149B00A-91B4-425E-A9DD-5F5DE16F06AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B149B00A-91B4-425E-A9DD-5F5DE16F06AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B149B00A-91B4-425E-A9DD-5F5DE16F06AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -458,6 +464,7 @@ Global
 		{1763F21F-531C-4E86-ACFC-9A8BF903F945} = {41F62020-3A67-4A33-B82A-9442510269E3}
 		{F3AB6F46-3776-4562-8BB2-FFFDE7E62BE0} = {41F62020-3A67-4A33-B82A-9442510269E3}
 		{B79940B8-1949-406D-9CCA-E6349898E11A} = {41F62020-3A67-4A33-B82A-9442510269E3}
+		{B149B00A-91B4-425E-A9DD-5F5DE16F06AD} = {41F62020-3A67-4A33-B82A-9442510269E3}
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1
