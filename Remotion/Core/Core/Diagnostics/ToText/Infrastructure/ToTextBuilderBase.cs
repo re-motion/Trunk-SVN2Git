@@ -454,7 +454,7 @@ namespace Remotion.Diagnostics.ToText.Infrastructure
     }
 
     public IToTextBuilder WriteElement (object obj)
-    {
+     {
       _toTextProvider.ToText (obj, this);
       return this;
     }
