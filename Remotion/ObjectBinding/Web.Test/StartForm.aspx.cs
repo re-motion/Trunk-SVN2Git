@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
 
@@ -55,6 +56,7 @@ namespace OBWTest
 
     private void Page_Load (object sender, EventArgs e)
     {
+      ServiceLocator.SetLocatorProvider (() => new MockServiceLocator ());
     }
   }
 }
