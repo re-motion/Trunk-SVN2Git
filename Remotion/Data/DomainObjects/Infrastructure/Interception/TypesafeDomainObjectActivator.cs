@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       {
         DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
         return instance;
-      });
+      }); 
     }
   }
 }
