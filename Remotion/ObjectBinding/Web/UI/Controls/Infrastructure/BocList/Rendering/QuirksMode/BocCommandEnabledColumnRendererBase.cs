@@ -1,24 +1,38 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Abstract base class for column renderers that can handle derived classes of <see cref="BocCommandEnabledColumnDefinition"/>.
   /// Defines common utility methods.
   /// </summary>
   /// <typeparam name="TBocColumnDefinition">The column definition class which the deriving class can handle.</typeparam>
-  public abstract class BocCommandEnabledColumnRenderer<TBocColumnDefinition> : BocColumnRenderer<TBocColumnDefinition>
-    where TBocColumnDefinition : BocCommandEnabledColumnDefinition
+  public abstract class BocCommandEnabledColumnRendererBase<TBocColumnDefinition> : BocColumnRendererBase<TBocColumnDefinition>
+      where TBocColumnDefinition: BocCommandEnabledColumnDefinition
   {
-    protected BocCommandEnabledColumnRenderer (BocList list, HtmlTextWriter writer, TBocColumnDefinition column)
-        : base(list, writer, column)
+    protected BocCommandEnabledColumnRendererBase (Controls.BocList list, HtmlTextWriter writer, TBocColumnDefinition column)
+        : base (list, writer, column)
     {
     }
 
@@ -68,10 +82,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
 
       bool isCommandAllowed = (command.Type != CommandType.None) && !List.IsRowEditModeActive;
       bool isCommandEnabled = (command.CommandState == null) || command.CommandState.IsEnabled (List, businessObject, Column);
-      
+
       if (isActive && isCommandAllowed && isCommandEnabled)
       {
-        if (WcagHelper.Instance.IsWaiConformanceLevelARequired () && command.Type != CommandType.Href)
+        if (WcagHelper.Instance.IsWaiConformanceLevelARequired() && command.Type != CommandType.Href)
           return false;
       }
 
@@ -93,5 +107,4 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       Column.Command.RenderEnd (Writer);
     }
   }
-
 }

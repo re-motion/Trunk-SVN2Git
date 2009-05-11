@@ -1,4 +1,19 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
@@ -7,20 +22,22 @@ using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Abstract base class for all column renderers. Provides a template for rendering a table cell from an <see cref="IBusinessObject"/>
   /// and a <see cref="BocColumnDefinition"/>. 
   /// </summary>
   /// <typeparam name="TBocColumnDefinition">The column definition class which the deriving class can handle.</typeparam>
-  public abstract class BocColumnRenderer<TBocColumnDefinition> : BocListBaseRenderer, IBocColumnRenderer
-    where TBocColumnDefinition : BocColumnDefinition
+  public abstract class BocColumnRendererBase<TBocColumnDefinition> : BocListRendererBase, IBocColumnRenderer<TBocColumnDefinition>
+      where TBocColumnDefinition: BocColumnDefinition
   {
     /// <summary>Filename of the image used to indicate an ascending sort order of the column in its title cell.</summary>
     protected const string c_sortAscendingIcon = "SortAscending.gif";
+
     /// <summary>Filename of the image used to indicate an descending sort order of the column in its title cell.</summary>
     protected const string c_sortDescendingIcon = "SortDescending.gif";
+
     /// <summary> Prefix applied to the post back argument of the sort buttons. </summary>
     protected const string c_sortCommandPrefix = "Sort=";
 
@@ -30,16 +47,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     private readonly int _columnIndex;
 
     /// <summary>
-    /// Constructs the renderer, initializing the <see cref="BocListBaseRenderer.List"/>, <see cref="BocListBaseRenderer.Writer"/> and 
+    /// Constructs the renderer, initializing the <see cref="BocListRendererBase.List"/>, <see cref="BocListRendererBase.Writer"/> and 
     /// <see cref="Column"/> properties.
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> containing the data to be rendered.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the cells to.</param>
     /// <param name="column">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
-    protected BocColumnRenderer (BocList list, HtmlTextWriter writer, TBocColumnDefinition column) : base(list, writer)
+    protected BocColumnRendererBase (Controls.BocList list, HtmlTextWriter writer, TBocColumnDefinition column)
+        : base (list, writer)
     {
       _column = column;
-      List<BocColumnDefinition> columnsInBocList = new List<BocColumnDefinition> (List.EnsureColumnsGot ());
+      List<BocColumnDefinition> columnsInBocList = new List<BocColumnDefinition> (List.EnsureColumnsGot());
       _columnIndex = columnsInBocList.IndexOf (column);
     }
 
@@ -53,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       get { return Writer; }
     }
 
-    BocList IBocColumnRenderer.List
+    Controls.BocList IBocColumnRenderer.List
     {
       get { return List; }
     }
@@ -79,14 +97,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTitleCell);
       Writer.RenderBeginTag (HtmlTextWriterTag.Th);
 
-      RenderTitleCellMarkers ();
-      RenderBeginTagTitleCellSortCommand ();
-      RenderTitleCellText ();
+      RenderTitleCellMarkers();
+      RenderBeginTagTitleCellSortCommand();
+      RenderTitleCellText();
       if (List.IsClientSideSortingEnabled || List.HasSortingKeys)
         RenderTitleCellSortingButton (sortingDirection, orderIndex);
-      RenderEndTagTitleCellSortCommand ();
+      RenderEndTagTitleCellSortCommand();
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     private void RenderTitleCellMarkers ()
@@ -97,7 +115,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     private void RenderBeginTagTitleCellSortCommand ()
     {
       bool hasSortingCommand = List.IsClientSideSortingEnabled
-                             && (Column is IBocSortableColumnDefinition && ((IBocSortableColumnDefinition) Column).IsSortable);
+                               && (Column is IBocSortableColumnDefinition && ((IBocSortableColumnDefinition) Column).IsSortable);
 
       if (hasSortingCommand)
       {
@@ -111,22 +129,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
           Writer.RenderBeginTag (HtmlTextWriterTag.A);
         }
         else
-        {
           Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        }
       }
       else
-      {
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      }
     }
 
     private void RenderTitleCellText ()
     {
       if (ControlHelper.IsDesignMode ((Control) List) && Column.ColumnTitleDisplayValue.Length == 0)
-      {
         Writer.Write (c_designModeEmptyContents);
-      }
       else
       {
         string contents = HtmlUtility.HtmlEncode (Column.ColumnTitleDisplayValue);
@@ -148,17 +160,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassSortingOrder);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      BocList.ResourceIdentifier? alternateTextID;
+      Controls.BocList.ResourceIdentifier? alternateTextID;
       if (sortingDirection == SortingDirection.Ascending)
-        alternateTextID = BocList.ResourceIdentifier.SortAscendingAlternateText;
+        alternateTextID = Controls.BocList.ResourceIdentifier.SortAscendingAlternateText;
       else
-        alternateTextID = BocList.ResourceIdentifier.SortDescendingAlternateText;
+        alternateTextID = Controls.BocList.ResourceIdentifier.SortDescendingAlternateText;
       RenderIcon (new IconInfo (imageUrl), alternateTextID);
 
       if (List.IsShowSortingOrderEnabled && orderIndex >= 0)
-      {
         Writer.Write (c_whiteSpace + (orderIndex + 1));
-      }
       Writer.RenderEndTag();
     }
 
@@ -171,13 +181,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         case SortingDirection.Ascending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, HttpContext.Current, typeof (BocList), ResourceType.Image, c_sortAscendingIcon);
+              List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortAscendingIcon);
           break;
         }
         case SortingDirection.Descending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, HttpContext.Current, typeof (BocList), ResourceType.Image, c_sortDescendingIcon);
+              List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortDescendingIcon);
           break;
         }
         case SortingDirection.None:
@@ -190,7 +200,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
 
     private void RenderEndTagTitleCellSortCommand ()
     {
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     /// <summary>
@@ -206,10 +216,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// the table cell (&lt;td&gt;) element.
     /// </remarks>
     public void RenderDataCell (
-      int rowIndex,
-      bool showIcon, 
-      string cssClassTableCell,
-      BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+        int rowIndex,
+        bool showIcon,
+        string cssClassTableCell,
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       if (!List.IsColumnVisible (Column))
         return;
@@ -222,21 +232,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       bool isEditedRow = List.IsRowEditModeActive && List.EditableRowIndex.Value == originalRowIndex;
       RenderCellContents (dataRowRenderEventArgs, rowIndex, isEditedRow, showIcon);
-      
-      Writer.RenderEndTag ();
+
+      Writer.RenderEndTag();
     }
 
     /// <summary>
     /// Renders the contents of the table cell. It is called by <see cref="RenderDataCell"/> and should not be called by other clients.
     /// </summary>
     /// <param name="dataRowRenderEventArgs">The row-specific rendering arguments.</param>
-    /// <param name="rowIndex">The zero-based index of the row to render in <see cref="BocListBaseRenderer.List"/>.</param>
+    /// <param name="rowIndex">The zero-based index of the row to render in <see cref="BocListRendererBase.List"/>.</param>
     /// <param name="isEditedRow">Specifies if the row to render is currently being edited.</param>
     /// <param name="showIcon">Specifies if the cell should contain an icon of the current <see cref="IBusinessObject"/>.</param>
     protected abstract void RenderCellContents (
-      BocListDataRowRenderEventArgs dataRowRenderEventArgs,
-      int rowIndex, bool isEditedRow,
-      bool showIcon);
-    
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
+        int rowIndex,
+        bool isEditedRow,
+        bool showIcon);
   }
 }

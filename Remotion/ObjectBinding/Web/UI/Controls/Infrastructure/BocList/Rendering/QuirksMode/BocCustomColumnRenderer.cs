@@ -1,14 +1,30 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering table cells of <see cref="BocCustomColumnDefinition"/> columns.
   /// </summary>
-  public class BocCustomColumnRenderer : BocColumnRenderer<BocCustomColumnDefinition>
+  public class BocCustomColumnRenderer : BocColumnRendererBase<BocCustomColumnDefinition>
   {
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a
@@ -18,8 +34,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCustomColumnRenderer (BocList list, HtmlTextWriter writer, BocCustomColumnDefinition column)
-        : base(list, writer, column)
+    public BocCustomColumnRenderer (Controls.BocList list, HtmlTextWriter writer, BocCustomColumnDefinition column)
+        : base (list, writer, column)
     {
     }
 
@@ -28,19 +44,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// and the current row state.
     /// </summary>
     /// <remarks>
-    /// If the <see cref="BocCustomColumnDefinition.Mode"/> property of <see cref="BocColumnRenderer{TBocColumnDefinition}.Column"/> indicates that
+    /// If the <see cref="BocCustomColumnDefinition.Mode"/> property of <see cref="BocColumnRendererBase{TBocColumnDefinition}.Column"/> indicates that
     /// the custom cell does not contain any controls (<see cref="BocCustomColumnDefinitionMode.NoControls"/> or 
     /// <see cref="BocCustomColumnDefinitionMode.ControlInEditedRow"/> when the current row is not being edited),
     /// a <see cref="BocCustomCellRenderArguments"/> object is created and passed to the custom cell's 
     /// <see cref="BocCustomColumnDefinitionCell.RenderInternal"/> method.
     /// Otherwise, a click wrapper is rendered around the child control obtained from
-    /// <see cref="BocListBaseRenderer.List"/>'s <see cref="BocList.CustomColumns"/> property.
+    /// <see cref="BocListRendererBase.List"/>'s <see cref="BocList.CustomColumns"/> property.
     /// </remarks>
     protected override void RenderCellContents (
-      BocListDataRowRenderEventArgs dataRowRenderEventArgs, 
-      int rowIndex, 
-      bool isEditedRow,
-      bool showIcon)
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
+        int rowIndex,
+        bool isEditedRow,
+        bool showIcon)
     {
       if (List.CustomColumns == null)
         return;
@@ -50,13 +66,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
 
       if (Column.Mode == BocCustomColumnDefinitionMode.NoControls
           || (Column.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && !isEditedRow))
-      {
-        RenderCustomCellDirectly(businessObject, ColumnIndex, originalRowIndex);
-      }
+        RenderCustomCellDirectly (businessObject, ColumnIndex, originalRowIndex);
       else
-      {
-        RenderCustomCellInnerControls(rowIndex);
-      }
+        RenderCustomCellInnerControls (rowIndex);
     }
 
     private void RenderCustomCellInnerControls (int rowIndex)
@@ -69,14 +81,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         return;
       }
 
-      RenderClickWrapperBeginTag ();
+      RenderClickWrapperBeginTag();
 
       Control control = (Control) customColumnTriplet.Third;
-      
-      ApplyStyleDefaults(control);
+
+      ApplyStyleDefaults (control);
       control.RenderControl (Writer);
 
-      RenderClickWrapperEndTag ();
+      RenderClickWrapperEndTag();
     }
 
     private void RenderClickWrapperBeginTag ()
@@ -113,10 +125,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         controlStyle = ((WebControl) control).Style;
         isControlWidthEmpty = ((WebControl) control).Width.IsEmpty;
       }
-      else if (control is System.Web.UI.HtmlControls.HtmlControl)
-      {
-        controlStyle = ((System.Web.UI.HtmlControls.HtmlControl) control).Style;
-      }
+      else if (control is HtmlControl)
+        controlStyle = ((HtmlControl) control).Style;
       return controlStyle;
     }
 

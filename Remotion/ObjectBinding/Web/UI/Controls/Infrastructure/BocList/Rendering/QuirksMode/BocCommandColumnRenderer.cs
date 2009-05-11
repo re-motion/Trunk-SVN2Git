@@ -1,14 +1,28 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocCommandColumnDefinition"/> columns.
   /// </summary>
-  public class BocCommandColumnRenderer : BocCommandEnabledColumnRenderer<BocCommandColumnDefinition>
+  public class BocCommandColumnRenderer : BocCommandEnabledColumnRendererBase<BocCommandColumnDefinition>
   {
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a
@@ -18,8 +32,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCommandColumnRenderer (BocList list, HtmlTextWriter writer, BocCommandColumnDefinition column)
-        : base(list, writer, column)
+    public BocCommandColumnRenderer (Controls.BocList list, HtmlTextWriter writer, BocCommandColumnDefinition column)
+        : base (list, writer, column)
     {
     }
 
@@ -32,21 +46,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// an URL. Furthermore, the command text in <see cref="BocCommandColumnDefinition.Text"/> is rendered after any icons.
     /// </remarks>
     protected override void RenderCellContents (
-      BocListDataRowRenderEventArgs dataRowRenderEventArgs,
-      int rowIndex, 
-      bool isEditedRow, 
-      bool showIcon)
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
+        int rowIndex,
+        bool isEditedRow,
+        bool showIcon)
     {
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
 
       EditableRow editableRow = GetEditableRow (isEditedRow, originalRowIndex);
-      
+
       bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
 
-      bool isCommandEnabled = RenderBeginTag(originalRowIndex, businessObject);
+      bool isCommandEnabled = RenderBeginTag (originalRowIndex, businessObject);
 
-      RenderCellIcon(businessObject, hasEditModeControl, showIcon);
+      RenderCellIcon (businessObject, hasEditModeControl, showIcon);
       RenderCellCommand();
 
       RenderEndTag (isCommandEnabled);
@@ -64,9 +78,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     private void RenderCellIcon (IBusinessObject businessObject, bool hasEditModeControl, bool showIcon)
     {
       if (!hasEditModeControl && showIcon)
-      {
         RenderCellIcon (businessObject);
-      }
     }
 
     private bool RenderBeginTag (int originalRowIndex, IBusinessObject businessObject)
@@ -83,9 +95,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     protected void RenderEndTag (bool isCommandEnabled)
     {
       if (isCommandEnabled)
-        RenderEndTagDataCellCommand ();
+        RenderEndTagDataCellCommand();
       else
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
     }
   }
 }

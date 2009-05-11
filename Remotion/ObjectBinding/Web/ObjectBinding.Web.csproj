@@ -78,8 +78,15 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
@@ -267,22 +274,22 @@
     <Compile Include="UI\Controls\PropertyPathBindingCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\Renderers\BocCommandColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocCommandEnabledColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocCompoundColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocCustomColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocDropDownMenuColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocListRendererFactory.cs" />
-    <Compile Include="UI\Controls\Renderers\BocColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocListMenuBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocListNavigatorRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocListRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocListBaseRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocRowRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocRowEditModeColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocSimpleColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\BocValueColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Renderers\IBocColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCommandColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCommandEnabledColumnRendererBase.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCompoundColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCustomColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocDropDownMenuColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocColumnRendererBase.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListMenuBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListNavigatorRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListRendererBase.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowEditModeColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSimpleColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocValueColumnRendererBase.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocColumnRenderer.cs" />
     <Compile Include="UI\Controls\Styles.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -419,6 +426,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\Controls\Infrastructure\BocList\Rendering\StandardMode\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

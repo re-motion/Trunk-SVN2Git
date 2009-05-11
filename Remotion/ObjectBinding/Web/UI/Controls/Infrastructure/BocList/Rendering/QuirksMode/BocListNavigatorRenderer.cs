@@ -1,4 +1,19 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
@@ -6,13 +21,13 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering the navigation block of a <see cref="BocList"/>.
   /// </summary>
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
-  public class BocListNavigatorRenderer : BocListBaseRenderer
+  public class BocListNavigatorRenderer : BocListRendererBase
   {
     protected const string c_goToCommandPrefix = "GoTo=";
 
@@ -32,23 +47,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
                                                                                 { GoToOption.Next, c_goToNextIcon },
                                                                                 { GoToOption.Last, c_goToLastIcon }
                                                                             };
-    private static readonly IDictionary<GoToOption, string> s_inactiveIcons = new Dictionary<GoToOption, string>
-                                                                            {
-                                                                                { GoToOption.First, c_goToFirstInactiveIcon },
-                                                                                { GoToOption.Previous, c_goToPreviousInactiveIcon },
-                                                                                { GoToOption.Next, c_goToNextInactiveIcon },
-                                                                                { GoToOption.Last, c_goToLastInactiveIcon }
-                                                                            };
 
-    private static readonly IDictionary<GoToOption, BocList.ResourceIdentifier> s_alternateTexts =
-                                                      new Dictionary
-                                                          <GoToOption, BocList.ResourceIdentifier>
-                                                      {
-                                                          { GoToOption.First, BocList.ResourceIdentifier.GoToFirstAlternateText },
-                                                          {GoToOption.Previous,BocList.ResourceIdentifier.GoToPreviousAlternateText },
-                                                          { GoToOption.Next, BocList.ResourceIdentifier.GoToNextAlternateText },
-                                                          { GoToOption.Last, BocList.ResourceIdentifier.GoToLastAlternateText }
-                                                      };
+    private static readonly IDictionary<GoToOption, string> s_inactiveIcons = new Dictionary<GoToOption, string>
+                                                                              {
+                                                                                  { GoToOption.First, c_goToFirstInactiveIcon },
+                                                                                  { GoToOption.Previous, c_goToPreviousInactiveIcon },
+                                                                                  { GoToOption.Next, c_goToNextInactiveIcon },
+                                                                                  { GoToOption.Last, c_goToLastInactiveIcon }
+                                                                              };
+
+    private static readonly IDictionary<GoToOption, Controls.BocList.ResourceIdentifier> s_alternateTexts =
+        new Dictionary
+            <GoToOption, Controls.BocList.ResourceIdentifier>
+        {
+            { GoToOption.First, Controls.BocList.ResourceIdentifier.GoToFirstAlternateText },
+            { GoToOption.Previous, Controls.BocList.ResourceIdentifier.GoToPreviousAlternateText },
+            { GoToOption.Next, Controls.BocList.ResourceIdentifier.GoToNextAlternateText },
+            { GoToOption.Last, Controls.BocList.ResourceIdentifier.GoToLastAlternateText }
+        };
 
     /// <summary> The possible directions for paging through the List. </summary>
     private enum GoToOption
@@ -72,8 +88,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigatorRenderer (BocList list, HtmlTextWriter writer)
-      : base (list, writer)
+    public BocListNavigatorRenderer (Controls.BocList list, HtmlTextWriter writer)
+        : base (list, writer)
     {
     }
 
@@ -93,7 +109,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       //  Page info
       string pageInfo;
       if (StringUtility.IsNullOrEmpty (List.PageInfo))
-        pageInfo = List.GetResourceManager ().GetString (BocList.ResourceIdentifier.PageInfo);
+        pageInfo = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.PageInfo);
       else
         pageInfo = List.PageInfo;
 
@@ -110,7 +126,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         RenderNavigationIcon (isLastPage, GoToOption.Next);
         RenderNavigationIcon (isLastPage, GoToOption.Last);
       }
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     /// <summary>Renders the appropriate icon for the given <paramref name="command"/>, depending on <paramref name="isInactive"/>.</summary>
@@ -121,11 +137,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         imageUrl = s_inactiveIcons[command];
       else
         imageUrl = s_activeIcons[command];
-      imageUrl = ResourceUrlResolver.GetResourceUrl (List, HttpContext.Current, typeof (BocList), ResourceType.Image, imageUrl);
+      imageUrl = ResourceUrlResolver.GetResourceUrl (List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, imageUrl);
       if (isInactive || List.IsRowEditModeActive)
-      {
         RenderIcon (new IconInfo (imageUrl), null);
-      }
       else
       {
         string argument = c_goToCommandPrefix + command;
@@ -135,7 +149,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         Writer.RenderBeginTag (HtmlTextWriterTag.A);
         RenderIcon (new IconInfo (imageUrl), s_alternateTexts[command]);
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
       }
       Writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
     }

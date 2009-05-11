@@ -1,14 +1,29 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocRowEditModeColumnDefinition"/> columns.
   /// </summary>
-  public class BocRowEditModeColumnRenderer : BocColumnRenderer<BocRowEditModeColumnDefinition>
+  public class BocRowEditModeColumnRenderer : BocColumnRendererBase<BocRowEditModeColumnDefinition>
   {
     private const string c_eventRowEditModePrefix = "RowEditMode=";
 
@@ -20,15 +35,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocRowEditModeColumnRenderer (BocList list, HtmlTextWriter writer, BocRowEditModeColumnDefinition column)
-        : base(list, writer, column)
+    public BocRowEditModeColumnRenderer (Controls.BocList list, HtmlTextWriter writer, BocRowEditModeColumnDefinition column)
+        : base (list, writer, column)
     {
     }
 
     /// <summary>
     /// Renders the cell contents depending on the <paramref name="isEditedRow"/> argument and <paramref name="dataRowRenderEventArgs"/>'s
     /// <see cref="BocListDataRowRenderEventArgs.IsEditableRow"/> property.
-    /// <seealso cref="BocColumnRenderer{TBocColumnDefinition}.RenderCellContents"/>
+    /// <seealso cref="BocColumnRendererBase{TBocColumnDefinition}.RenderCellContents"/>
     /// </summary>
     /// <remarks>
     /// If the current row is being edited, "Save" and "Cancel" controls are rendered; if the row can be edited, an "Edit" control is rendered;
@@ -36,28 +51,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// Since the "Save", "Cancel" and "Edit" controls are structurally identical, their actual rendering is done by <see cref="RenderCommandControl"/>
     /// </remarks>
     protected override void RenderCellContents (
-      BocListDataRowRenderEventArgs dataRowRenderEventArgs,
-      int rowIndex,
-      bool isEditedRow, 
-      bool showIcon)
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
+        int rowIndex,
+        bool isEditedRow,
+        bool showIcon)
     {
       bool isEditableRow = dataRowRenderEventArgs.IsEditableRow;
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
 
       if (isEditedRow)
-      {
-        RenderEditedRowCellContents(originalRowIndex);
-      }
+        RenderEditedRowCellContents (originalRowIndex);
       else
       {
         if (isEditableRow)
-        {
-          RenderEditableRowCellContents(originalRowIndex);
-        }
+          RenderEditableRowCellContents (originalRowIndex);
         else
-        {
           Writer.Write (c_whiteSpace);
-        }
       }
     }
 
@@ -65,8 +74,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     {
       RenderCommandControl (
           originalRowIndex,
-          BocList.RowEditModeCommand.Edit,
-          BocList.ResourceIdentifier.RowEditModeEditAlternateText,
+          Controls.BocList.RowEditModeCommand.Edit,
+          Controls.BocList.ResourceIdentifier.RowEditModeEditAlternateText,
           Column.EditIcon,
           Column.EditText);
     }
@@ -75,33 +84,35 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     {
       RenderCommandControl (
           originalRowIndex,
-          BocList.RowEditModeCommand.Save,
-          BocList.ResourceIdentifier.RowEditModeSaveAlternateText,
-          Column.SaveIcon, Column.SaveText);
+          Controls.BocList.RowEditModeCommand.Save,
+          Controls.BocList.ResourceIdentifier.RowEditModeSaveAlternateText,
+          Column.SaveIcon,
+          Column.SaveText);
 
       Writer.Write (" ");
 
       RenderCommandControl (
           originalRowIndex,
-          BocList.RowEditModeCommand.Cancel,
-          BocList.ResourceIdentifier.RowEditModeCancelAlternateText,
-          Column.CancelIcon, Column.CancelText);
+          Controls.BocList.RowEditModeCommand.Cancel,
+          Controls.BocList.ResourceIdentifier.RowEditModeCancelAlternateText,
+          Column.CancelIcon,
+          Column.CancelText);
     }
 
     /// <summary>
     /// Renders a command control as link with an icon, a text or both.
     /// </summary>
-    /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="BocListBaseRenderer.List"/></param>
+    /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="BocListRendererBase.List"/></param>
     /// <param name="command">The <see cref="BocList.RowEditModeCommand"/> that is issued when the control is clicked.</param>
     /// <param name="alternateText">The <see cref="BocList.ResourceIdentifier"/> specifying which resource to load as alternate text to the icon.</param>
     /// <param name="icon">The icon to render; must not be <see langword="null"/>. To skip the icon, set <see cref="IconInfo.Url"/> to null.</param>
     /// <param name="text">The text to render after the icon. May be <see langword="null"/>, in which case no text is rendered.</param>
     protected virtual void RenderCommandControl (
-      int originalRowIndex, 
-      BocList.RowEditModeCommand command, 
-      BocList.ResourceIdentifier alternateText, 
-      IconInfo icon, 
-      string text)
+        int originalRowIndex,
+        Controls.BocList.RowEditModeCommand command,
+        Controls.BocList.ResourceIdentifier alternateText,
+        IconInfo icon,
+        string text)
     {
       ArgumentUtility.CheckNotNull ("icon", icon);
 
@@ -123,13 +134,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         Writer.Write (c_whiteSpace);
       }
       else if (hasIcon)
-      {
         RenderIcon (icon, alternateText);
-      }
       if (hasText)
         Writer.Write (text); // Do not HTML encode.
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
   }
 }

@@ -21,6 +21,8 @@ using System.Globalization;
 using System.Reflection;
 using System.Web.UI;
 using Remotion.ObjectBinding.Design;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -58,11 +60,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (_customCell == null)
         {
           if (StringUtility.IsNullOrEmpty (_customCellType))
+          {
             throw new InvalidOperationException (
                 string.Format (
                     "Neither a CustomCell nor a CustomCellType has been specified for BocCustomColumnDefinition '{0}' in BocList '{1}'.",
                     ItemID,
                     OwnerControl.ID));
+          }
           Type type = WebTypeUtility.GetType (_customCellType, true, false);
           _customCell = (BocCustomColumnDefinitionCell) Activator.CreateInstance (type);
         }
@@ -168,6 +172,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _mode = value; }
     }
 
+    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
+    {
+      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
+    }
+
     /// <summary> Gets the displayed value of the column title. </summary>
     /// <remarks> 
     ///   If <see cref="BocColumnDefinition.ColumnTitle"/> is empty or <see langowrd="null"/>, 
@@ -188,9 +197,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           try
           {
-            propertyPath = _propertyPathBinding.GetPropertyPath ();
+            propertyPath = _propertyPathBinding.GetPropertyPath();
           }
-          // TODO: Why is this catch block required?
+              // TODO: Why is this catch block required?
           catch (ArgumentException)
           {
           }
@@ -198,7 +207,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         if (propertyPath != null)
           return propertyPath.LastProperty.DisplayName;
-        
+
         return string.Empty;
       }
     }
@@ -421,7 +430,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         StringUtility.ParsedItem[] items = StringUtility.ParseSeparatedList (propertyValuePairs, ',');
         for (int i = 0; i < items.Length; i++)
         {
-          string[] pair = items[i].Value.Split (new char[] {'='}, 2);
+          string[] pair = items[i].Value.Split (new char[] { '=' }, 2);
           if (pair.Length == 2)
           {
             string key = pair[0].Trim();

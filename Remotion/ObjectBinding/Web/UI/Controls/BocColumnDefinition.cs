@@ -18,9 +18,12 @@ using System.ComponentModel;
 using System.Drawing.Design;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.Design;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -30,7 +33,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  public interface IBocSortableColumnDefinition: IControlItem
+  public interface IBocSortableColumnDefinition : IControlItem
   {
     bool IsSortable { get; }
   }
@@ -39,14 +42,35 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [Editor (typeof (ExpandableObjectConverter), typeof (UITypeEditor))]
   public abstract class BocColumnDefinition : BusinessObjectControlItem, IControlItem
   {
+    private static readonly ICache<Type, Type> s_interfaceCache = new InterlockedCache<Type, Type>();
+
     private string _itemID = string.Empty;
     private string _columnTitle = string.Empty;
     private Unit _width = Unit.Empty;
     private string _cssClass = string.Empty;
+    private IBocColumnRenderer _renderer;
 
     public BocColumnDefinition ()
     {
     }
+
+    public IBocColumnRenderer GetRenderer (BocList list, HtmlTextWriter writer)
+    {
+      if ((_renderer == null) || (!_renderer.List.Equals (list)) || (!_renderer.Writer.Equals (writer)))
+      {
+        Type rendererInterface = s_interfaceCache.GetOrCreateValue (GetType(), arg => typeof (IBocColumnRenderer<>).MakeGenericType (arg));
+        Type rendererImplementation =
+            ServiceLocator.Current.GetInstance<Type> (
+                string.Format (
+                    "{0}<{1}>",
+                    rendererInterface.Name.Substring (0, rendererInterface.Name.IndexOf ('`')),
+                    rendererInterface.GetGenericArguments()[0].Name));
+        _renderer = InstantiateRenderer (rendererImplementation, list, writer);
+      }
+      return _renderer;
+    }
+
+    protected abstract IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer);
 
     public override string ToString ()
     {
@@ -156,12 +180,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public BocCommandEnabledColumnDefinition ()
     {
-      _command = new SingleControlItemCollection (new BocListItemCommand (), new Type[] { typeof (BocListItemCommand) });
+      _command = new SingleControlItemCollection (new BocListItemCommand(), new Type[] { typeof (BocListItemCommand) });
     }
 
     protected override void OnOwnerControlChanged ()
     {
-      base.OnOwnerControlChanged ();
+      base.OnOwnerControlChanged();
       if (Command != null)
         Command.OwnerControl = OwnerControl;
     }
@@ -203,7 +227,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (Command != null)
       {
-        Command = (BocListItemCommand) Activator.CreateInstance (Command.GetType ());
+        Command = (BocListItemCommand) Activator.CreateInstance (Command.GetType());
         Command.Type = CommandType.None;
       }
     }
@@ -222,7 +246,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     private bool ShouldSerializePersistedCommand ()
     {
-      return ShouldSerializeCommand ();
+      return ShouldSerializeCommand();
     }
   }
 
@@ -230,10 +254,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocCommandColumnDefinition : BocCommandEnabledColumnDefinition
   {
     private string _text = string.Empty;
-    private IconInfo _icon = new IconInfo ();
+    private IconInfo _icon = new IconInfo();
 
     public BocCommandColumnDefinition ()
     {
+    }
+
+    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
+    {
+      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
     }
 
     /// <summary> Returns a <see cref="string"/> that represents this <see cref="BocColumnDefinition"/>. </summary>
@@ -276,10 +305,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [NotifyParentProperty (true)]
     public IconInfo Icon
     {
-      get
-      {
-        return _icon;
-      }
+      get { return _icon; }
       set
       {
         ArgumentUtility.CheckNotNull ("Icon", value);
@@ -294,7 +320,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void ResetIcon ()
     {
-      _icon.Reset ();
+      _icon.Reset();
     }
 
     /// <summary> Gets the human readable name of this type. </summary>
@@ -390,14 +416,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public BocSimpleColumnDefinition ()
     {
       _formatString = string.Empty;
-      _propertyPathBinding = new PropertyPathBinding ();
+      _propertyPathBinding = new PropertyPathBinding();
     }
 
     /// <summary> Passes the new OwnerControl to the <see cref="PropertyPathBindingCollection"/>. </summary>
     protected override void OnOwnerControlChanged ()
     {
       _propertyPathBinding.OwnerControl = OwnerControl;
-      base.OnOwnerControlChanged ();
+      base.OnOwnerControlChanged();
     }
 
     /// <summary> Creates a string representation of the data displayed in this column. </summary>
@@ -409,7 +435,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       IBusinessObjectPropertyPath propertyPath = null;
       if (!_propertyPathBinding.IsDynamic)
-        propertyPath = _propertyPathBinding.GetPropertyPath ();
+        propertyPath = _propertyPathBinding.GetPropertyPath();
       else
         propertyPath = _propertyPathBinding.GetDynamicPropertyPath (obj.BusinessObjectClass);
 
@@ -432,7 +458,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         return propertyPath.GetString (obj, StringUtility.EmptyToNull (formatString));
       }
-      //TODO: Move to BusinessObjectPropertyPath.GetString
+          //TODO: Move to BusinessObjectPropertyPath.GetString
       catch (PermissionDeniedException)
       {
         return c_notAccessible;
@@ -459,7 +485,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public IBusinessObjectPropertyPath GetPropertyPath ()
     {
-      return _propertyPathBinding.GetPropertyPath ();
+      return _propertyPathBinding.GetPropertyPath();
     }
 
     public IBusinessObjectPropertyPath GetDynamicPropertyPath (IBusinessObjectClass businessObjectClass)
@@ -505,7 +531,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (StringUtility.IsNullOrEmpty (_editModeControlType))
         return null;
-      
+
       Type type = WebTypeUtility.GetType (_editModeControlType, true, false);
       return (IBusinessObjectBoundEditableWebControl) ObjectFactory.Create (type, ParamList.Empty);
     }
@@ -553,6 +579,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _enableIcon = value; }
     }
 
+    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
+    {
+      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
+    }
+
     /// <summary> Gets the displayed value of the column title. </summary>
     /// <remarks> 
     ///   If <see cref="BocColumnDefinition.ColumnTitle"/> is empty or <see langowrd="null"/>, 
@@ -573,9 +604,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           try
           {
-            propertyPath = _propertyPathBinding.GetPropertyPath ();
+            propertyPath = _propertyPathBinding.GetPropertyPath();
           }
-            // TODO: Why is this catch block required?
+              // TODO: Why is this catch block required?
           catch (ArgumentException)
           {
           }
@@ -605,7 +636,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocCompoundColumnDefinition : BocValueColumnDefinition
   {
     private const string c_notAccessible = "×";
-    
+
     /// <summary>
     ///   A format string describing how the values accessed through the 
     ///   <see cref="BusinessObjectPropertyPath"/> objects are merged by <see cref="GetStringValue"/>.
@@ -636,14 +667,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (_propertyPathBindings[i].IsDynamic)
           formatters[i] = new BusinessObjectPropertyPath.Formatter (obj, _propertyPathBindings[i].GetDynamicPropertyPath (obj.BusinessObjectClass));
         else
-          formatters[i] = new BusinessObjectPropertyPath.Formatter (obj, _propertyPathBindings[i].GetPropertyPath ());
-      }      
+          formatters[i] = new BusinessObjectPropertyPath.Formatter (obj, _propertyPathBindings[i].GetPropertyPath());
+      }
 
       try
       {
         return string.Format (_formatString, formatters);
       }
-      //TODO: Move to BusinessObjectPropertyPath.GetString
+          //TODO: Move to BusinessObjectPropertyPath.GetString
       catch (PermissionDeniedException)
       {
         return c_notAccessible;
@@ -654,7 +685,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override void OnOwnerControlChanged ()
     {
       _propertyPathBindings.OwnerControl = OwnerControl;
-      base.OnOwnerControlChanged ();
+      base.OnOwnerControlChanged();
     }
 
     /// <summary>
@@ -691,6 +722,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _propertyPathBindings; }
     }
 
+    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
+    {
+      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
+    }
+
     /// <summary> Gets or sets the text displayed in the column title. Must not be empty or <see langword="null"/>. </summary>
     /// <value> A <see cref="string"/> representing the title of this column. </value>
     [Description ("The assigned value of the column title, must not be empty.")]
@@ -717,11 +753,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocRowEditModeColumnDefinition : BocColumnDefinition
   {
     private string _editText = string.Empty;
-    private IconInfo _editIcon = new IconInfo ();
+    private IconInfo _editIcon = new IconInfo();
     private string _saveText = string.Empty;
-    private IconInfo _saveIcon = new IconInfo ();
+    private IconInfo _saveIcon = new IconInfo();
     private string _cancelText = string.Empty;
-    private IconInfo _cancelIcon = new IconInfo ();
+    private IconInfo _cancelIcon = new IconInfo();
     private BocRowEditColumnDefinitionShow _show = BocRowEditColumnDefinitionShow.EditMode;
 
     public BocRowEditModeColumnDefinition ()
@@ -771,10 +807,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [NotifyParentProperty (true)]
     public IconInfo EditIcon
     {
-      get
-      {
-        return _editIcon;
-      }
+      get { return _editIcon; }
       set
       {
         ArgumentUtility.CheckNotNull ("EditIcon", value);
@@ -789,7 +822,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void ResetEditIcon ()
     {
-      _editIcon.Reset ();
+      _editIcon.Reset();
     }
 
 
@@ -818,10 +851,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [NotifyParentProperty (true)]
     public IconInfo SaveIcon
     {
-      get
-      {
-        return _saveIcon;
-      }
+      get { return _saveIcon; }
       set
       {
         ArgumentUtility.CheckNotNull ("SaveIcon", value);
@@ -836,7 +866,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void ResetSaveIcon ()
     {
-      _saveIcon.Reset ();
+      _saveIcon.Reset();
     }
 
     /// <summary> Gets or sets the text representing the cancel command in the rendered page. </summary>
@@ -864,10 +894,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [NotifyParentProperty (true)]
     public IconInfo CancelIcon
     {
-      get
-      {
-        return _cancelIcon;
-      }
+      get { return _cancelIcon; }
       set
       {
         ArgumentUtility.CheckNotNull ("CancelIcon", value);
@@ -882,7 +909,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void ResetCancelIcon ()
     {
-      _cancelIcon.Reset ();
+      _cancelIcon.Reset();
+    }
+
+    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
+    {
+      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
     }
 
     /// <summary> Gets the human readable name of this type. </summary>
@@ -890,6 +922,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return "RowEditModeColumnDefinition"; }
     }
+
     public override void LoadResources (IResourceManager resourceManager)
     {
       if (resourceManager == null)
@@ -935,7 +968,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public BocDropDownMenuColumnDefinition ()
     {
-      _menuTitleIcon = new IconInfo ();
+      _menuTitleIcon = new IconInfo();
+    }
+
+    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
+    {
+      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
     }
 
     /// <summary> Gets the human readable name of this type. </summary>
@@ -991,6 +1029,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> A column definition that acts as a placeholder for inserting a column for each property. </summary>
   public class BocAllPropertiesPlaceholderColumnDefinition : BocColumnDefinition
   {
+    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
+    {
+      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
+    }
+
     [Browsable (false)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public override string ItemID
@@ -1032,11 +1075,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return base.CssClass; }
       set { base.CssClass = value; }
     }
+
     /// <summary> Gets the human readable name of this type. </summary>
     protected override string DisplayedTypeName
     {
       get { return "AllPropertiesPlaceholderColumnDefinition"; }
     }
   }
-
 }

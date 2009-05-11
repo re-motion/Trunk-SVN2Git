@@ -1,14 +1,28 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering table cells of <see cref="BocSimpleColumnDefinition"/> columns.
   /// </summary>
-  public class BocSimpleColumnRenderer : BocValueColumnRenderer<BocSimpleColumnDefinition>
+  public class BocSimpleColumnRenderer : BocValueColumnRendererBase<BocSimpleColumnDefinition>
   {
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a
@@ -18,8 +32,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocSimpleColumnRenderer (BocList list, HtmlTextWriter writer, BocSimpleColumnDefinition column)
-        : base(list, writer, column)
+    public BocSimpleColumnRenderer (Controls.BocList list, HtmlTextWriter writer, BocSimpleColumnDefinition column)
+        : base (list, writer, column)
     {
     }
 
@@ -55,7 +69,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         if (Column.IsDynamic)
           propertyPath = Column.GetDynamicPropertyPath (businessObject.BusinessObjectClass);
         else
-          propertyPath = Column.GetPropertyPath ();
+          propertyPath = Column.GetPropertyPath();
 
         IBusinessObject value = propertyPath.GetValue (businessObject, false, true) as IBusinessObject;
         if (value != null)
@@ -80,12 +94,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin span
 
       editableRow.RenderSimpleColumnCellEditModeControl (
-          Writer, Column, businessObject, ColumnIndex,
+          Writer,
+          Column,
+          businessObject,
+          ColumnIndex,
           editModeValidator,
           List.EditModeController.ShowEditModeValidationMarkers,
           List.EditModeController.DisableEditModeValidationMessages);
 
-      Writer.RenderEndTag (); // End span
+      Writer.RenderEndTag(); // End span
     }
   }
 }

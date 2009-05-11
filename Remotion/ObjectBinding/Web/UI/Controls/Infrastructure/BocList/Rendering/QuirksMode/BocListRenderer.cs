@@ -1,10 +1,25 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering a <see cref="BocList"/> object.
@@ -14,9 +29,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
   /// 
   /// This class should not be instantiated directly. Use a <see cref="BocListRendererFactory"/> to obtain an instance.</remarks>
   /// <seealso cref="BocListMenuBlockRenderer"/>
-  /// <seealso cref="BocListNavigatorRenderer"/>
   /// <seealso cref="BocRowRenderer"/>
-  public class BocListRenderer : BocListBaseRenderer
+  /// <seealso cref="BocListNavigatorRenderer"/>
+  public class BocListRenderer : BocListRendererBase
   {
     private const string c_defaultMenuBlockWidth = "70pt";
     private const string c_defaultMenuBlockOffset = "5pt";
@@ -35,11 +50,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// <param name="writer">The target <see cref="HtmlTextWriter"/>.</param>
     /// <param name="factory">The <see cref="BocListRendererFactory"/> from which specialized renderers for the various parts
     /// can be obtained.</param>
-    protected internal BocListRenderer (BocList list, HtmlTextWriter writer, BocListRendererFactory factory) : base(list, writer)
+    protected internal BocListRenderer (Controls.BocList list, HtmlTextWriter writer, BocListRendererFactory factory)
+        : base (list, writer)
     {
-      _menuBlockRenderer = factory.GetMenuBlockRenderer();
-      _navigatorRenderer = factory.GetNavigatorRenderer();
-      _rowRenderer = factory.GetRowRenderer();
+      _menuBlockRenderer = factory.CreateMenuBlockRenderer();
+      _navigatorRenderer = factory.CreateNavigatorRenderer();
+      _rowRenderer = factory.CreateRowRenderer();
 
       RenderTopLevelColumnGroup = RenderTopLevelColumnGroupForLegacyBrowser;
 
@@ -49,14 +65,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         if (isXmlRequired)
           RenderTopLevelColumnGroup = RenderTopLevelColumnGroupForXmlBrowser;
       }
-    }    
+    }
 
     private BocListMenuBlockRenderer MenuBlockRenderer
     {
       get { return _menuBlockRenderer; }
     }
 
-    private BocListNavigatorRenderer NavigatorRenderer{
+    private BocListNavigatorRenderer NavigatorRenderer
+    {
       get { return _navigatorRenderer; }
     }
 
@@ -68,8 +85,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     private RenderMethodDelegate RenderTopLevelColumnGroup { get; set; }
 
     /// <summary>
-    /// Renders the <see cref="BocList"/> in the <see cref="BocListBaseRenderer.List"/> property 
-    /// to the <see cref="HtmlTextWriter"/> in the <see cref="BocListBaseRenderer.Writer"/> property.
+    /// Renders the <see cref="BocList"/> in the <see cref="BocListRendererBase.List"/> property 
+    /// to the <see cref="HtmlTextWriter"/> in the <see cref="BocListRendererBase.Writer"/> property.
     /// </summary>
     /// <remarks>
     /// This method provides the outline table of the <see cref="BocList"/>, creating three areas:
@@ -90,42 +107,42 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       Writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
       RenderTopLevelColumnGroup();
-      
+
       Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
       //  List Block
       Writer.AddStyleAttribute ("vertical-align", "top");
       Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
-      RenderTableBlock ();
+      RenderTableBlock();
 
       if (List.HasNavigator)
-        NavigatorRenderer.Render ();
+        NavigatorRenderer.Render();
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
 
       if (List.HasMenuBlock)
       {
         //  Menu Block
         Writer.AddStyleAttribute ("vertical-align", "top");
         Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        MenuBlockRenderer.Render ();
-        Writer.RenderEndTag ();
+        MenuBlockRenderer.Render();
+        Writer.RenderEndTag();
       }
 
-      Writer.RenderEndTag ();  //  TR
+      Writer.RenderEndTag(); //  TR
 
-      Writer.RenderEndTag ();  //  Table
+      Writer.RenderEndTag(); //  Table
     }
 
     private void RenderTopLevelColumnGroupForLegacyBrowser ()
     {
       Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
-      
+
       //  Left: list block
       Writer.WriteBeginTag ("col"); //  Required because RenderBeginTag(); RenderEndTag();
-                                    //  writes empty tags, which is not valid for col in HTML 4.01
-      Writer.Write (">");           
+      //  writes empty tags, which is not valid for col in HTML 4.01
+      Writer.Write (">");
 
       if (List.HasMenuBlock)
       {
@@ -135,19 +152,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
 
         string menuBlockWidth = c_defaultMenuBlockWidth;
         if (!List.MenuBlockWidth.IsEmpty)
-          menuBlockWidth = List.MenuBlockWidth.ToString ();
+          menuBlockWidth = List.MenuBlockWidth.ToString();
         Writer.WriteStyleAttribute ("width", menuBlockWidth);
 
         string menuBlockOffset = c_defaultMenuBlockOffset;
         if (!List.MenuBlockOffset.IsEmpty)
-          menuBlockOffset = List.MenuBlockOffset.ToString ();
+          menuBlockOffset = List.MenuBlockOffset.ToString();
         Writer.WriteStyleAttribute ("padding-left", menuBlockOffset);
 
         Writer.Write ("\">");
       }
 
-      Writer.RenderEndTag ();
-
+      Writer.RenderEndTag();
     }
 
     private void RenderTopLevelColumnGroupForXmlBrowser ()
@@ -163,30 +179,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         //  Right: menu block
         string menuBlockWidth = c_defaultMenuBlockWidth;
         if (!List.MenuBlockWidth.IsEmpty)
-          menuBlockWidth = List.MenuBlockWidth.ToString ();
+          menuBlockWidth = List.MenuBlockWidth.ToString();
 
         string menuBlockOffset = c_defaultMenuBlockOffset;
         if (!List.MenuBlockOffset.IsEmpty)
-          menuBlockOffset = List.MenuBlockOffset.ToString ();
+          menuBlockOffset = List.MenuBlockOffset.ToString();
 
         Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, menuBlockWidth);
         Writer.AddStyleAttribute (HtmlTextWriterStyle.PaddingLeft, menuBlockOffset);
         Writer.RenderBeginTag (HtmlTextWriterTag.Col);
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
       }
 
-      Writer.RenderEndTag ();
-
+      Writer.RenderEndTag();
     }
 
     /// <summary>
-    /// Renders the data contained in <see cref="BocListBaseRenderer.List"/> as a table.
+    /// Renders the data contained in <see cref="BocListRendererBase.List"/> as a table.
     /// </summary>
     /// <remarks>
     /// The table consists of a title row showing the column titles, and a data row for each <see cref="IBusinessObject"/>
-    /// in <see cref="BocListBaseRenderer.List"/>. If there is no data, the table will be completely hidden (only one cell containing only whitespace)
-    /// if <see cref="BocList.ShowEmptyListEditMode"/> is <see langword="false"/> and <see cref="BocListBaseRenderer.List"/> is editable
-    /// or if <see cref="BocList.ShowEmptyListReadOnlyMode"/> is <see langword="false"/> and <see cref="BocListBaseRenderer.List"/> is read-only.
+    /// in <see cref="BocListRendererBase.List"/>. If there is no data, the table will be completely hidden (only one cell containing only whitespace)
+    /// if <see cref="BocList.ShowEmptyListEditMode"/> is <see langword="false"/> and <see cref="BocListRendererBase.List"/> is editable
+    /// or if <see cref="BocList.ShowEmptyListReadOnlyMode"/> is <see langword="false"/> and <see cref="BocListRendererBase.List"/> is read-only.
     /// Exception: at design time, the title row will always be visible.
     /// </remarks>
     /// <seealso cref="RenderTableBlockColumnGroup"/>
@@ -199,15 +214,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
                               || !isReadOnly && List.ShowEmptyListEditMode;
 
       if (List.IsEmptyList && !showForEmptyList)
-      {
         RenderTable (isDesignMode, false);
-      }
       else
-      {
         RenderTable (true, true);
-      }
 
-      RenderClientSelectionScript ();
+      RenderClientSelectionScript();
     }
 
     private void RenderTable (bool tableHead, bool tableBody)
@@ -218,21 +229,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         return;
       }
 
-      RenderTableOpeningTag ();
-      RenderTableBlockColumnGroup ();
+      RenderTableOpeningTag();
+      RenderTableBlockColumnGroup();
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassTableHead);
 
       if (tableHead)
-      {
         RenderTableHead();
-      }
 
-      if(tableBody)
-        RenderTableBody ();
+      if (tableBody)
+        RenderTableBody();
 
-      RenderTableClosingTag ();
+      RenderTableClosingTag();
     }
-    
+
     private void RenderEmptyTable ()
     {
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
@@ -243,9 +252,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       Writer.RenderBeginTag (HtmlTextWriterTag.Td);
       Writer.Write ("&nbsp;");
-      Writer.RenderEndTag ();
-      Writer.RenderEndTag ();
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
+      Writer.RenderEndTag();
+      Writer.RenderEndTag();
     }
 
     /// <summary>
@@ -260,8 +269,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     protected virtual void RenderTableHead ()
     {
       Writer.RenderBeginTag (HtmlTextWriterTag.Thead);
-      RowRenderer.RenderTitlesRow ();
-      Writer.RenderEndTag ();
+      RowRenderer.RenderTitlesRow();
+      Writer.RenderEndTag();
     }
 
     /// <summary>
@@ -293,13 +302,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       }
 
       if (List.IsEmptyList && List.ShowEmptyListMessage)
-      {
-        RowRenderer.RenderEmptyListDataRow ();
-      }
+        RowRenderer.RenderEmptyListDataRow();
       else
       {
         bool isOddRow = true;
-        BocListRow[] rows = List.EnsureGotIndexedRowsSorted ();
+        BocListRow[] rows = List.EnsureGotIndexedRowsSorted();
 
         for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
              idxAbsoluteRows < rowCountWithOffset;
@@ -312,7 +319,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         }
       }
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     private void RenderClientSelectionScript ()
@@ -332,7 +339,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
             + List.ClientID + c_dataRowSelectorControlIDSuffix + "', "
             + count + ","
             + (int) List.Selection + ");";
-        ScriptUtility.RegisterStartupScriptBlock (List, typeof (BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
+        ScriptUtility.RegisterStartupScriptBlock (List, typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
       }
     }
 
@@ -353,14 +360,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// <summary> Renderes the closing tag of the table. </summary>
     private void RenderTableClosingTag ()
     {
-      Writer.RenderEndTag (); // table
-      Writer.RenderEndTag (); // div
+      Writer.RenderEndTag(); // table
+      Writer.RenderEndTag(); // div
     }
 
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
     private void RenderTableBlockColumnGroup ()
     {
-      BocColumnDefinition[] renderColumns = List.EnsureColumnsGot ();
+      BocColumnDefinition[] renderColumns = List.EnsureColumnsGot();
 
       Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
@@ -369,8 +376,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       if (!ControlHelper.IsDesignMode ((Control) List))
         isTextXml = ControlHelper.IsXmlConformResponseTextRequired (HttpContext.Current);
 
-      RenderIndexColumnDeclaration(isTextXml);
-      RenderSelectorColumnDeclaration(isTextXml);
+      RenderIndexColumnDeclaration (isTextXml);
+      RenderSelectorColumnDeclaration (isTextXml);
 
       //bool isFirstColumnUndefinedWidth = true;
       for (int i = 0; i < renderColumns.Length; i++)
@@ -380,7 +387,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         if (!List.IsColumnVisible (column))
           continue;
 
-        RenderDataColumnDeclaration(isTextXml, column);
+        RenderDataColumnDeclaration (isTextXml, column);
       }
 
       //  Design-mode and empty table
@@ -389,11 +396,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         for (int i = 0; i < c_designModeDummyColumnCount; i++)
         {
           Writer.RenderBeginTag (HtmlTextWriterTag.Col);
-          Writer.RenderEndTag ();
+          Writer.RenderEndTag();
         }
       }
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     /// <summary>Renders a single col element for the given column.</summary>
@@ -406,13 +413,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         string width;
         BocValueColumnDefinition valueColumn = column as BocValueColumnDefinition;
         if (valueColumn != null && valueColumn.EnforceWidth && column.Width.Type != UnitType.Percentage)
-        {
           width = "2em";
-        }
         else
-        {
-          width = column.Width.ToString ();
-        }
+          width = column.Width.ToString();
         Writer.WriteStyleAttribute ("width", width);
         Writer.Write ("\"");
       }

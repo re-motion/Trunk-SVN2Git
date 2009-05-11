@@ -1,31 +1,48 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Abstract base class for column renderers that handle classes derived from <see cref="BocValueColumnDefinition"/>.
   /// Defines <see cref="RenderCellContents"/> as template method and common utility methods.
   /// </summary>
   /// <typeparam name="TBocColumnDefinition">The column definition class that the derived class can handle.</typeparam>
-  public abstract class BocValueColumnRenderer<TBocColumnDefinition> : BocCommandEnabledColumnRenderer<TBocColumnDefinition>
-    where TBocColumnDefinition : BocValueColumnDefinition
+  public abstract class BocValueColumnRendererBase<TBocColumnDefinition> : BocCommandEnabledColumnRendererBase<TBocColumnDefinition>
+      where TBocColumnDefinition: BocValueColumnDefinition
   {
-    protected BocValueColumnRenderer (BocList list, HtmlTextWriter writer, TBocColumnDefinition column)
-        : base(list, writer, column)
+    protected BocValueColumnRendererBase (Controls.BocList list, HtmlTextWriter writer, TBocColumnDefinition column)
+        : base (list, writer, column)
     {
     }
 
     /// <summary>
     /// Renders a table cell for a <see cref="BocValueColumnDefinition"/>. This is a template method using 
-    /// <see cref="BocCommandEnabledColumnRenderer{TBocColumnDefinition}.RenderCellIcon"/>
+    /// <see cref="BocCommandEnabledColumnRendererBase{TBocColumnDefinition}.RenderCellIcon"/>
     /// and <see cref="RenderCellText"/>, which have to be defined in deriving classes.
     /// </summary>
-    protected override void RenderCellContents (BocListDataRowRenderEventArgs dataRowRenderEventArgs,
-      int rowIndex, bool isEditedRow, bool showIcon)
+    protected override void RenderCellContents (
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
+        int rowIndex,
+        bool isEditedRow,
+        bool showIcon)
     {
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
@@ -34,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
 
       bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
       bool showEditModeControl = hasEditModeControl
-                                && !editableRow.GetEditControl (ColumnIndex).IsReadOnly;
+                                 && !editableRow.GetEditControl (ColumnIndex).IsReadOnly;
 
       string valueColumnText = null;
       if (!showEditModeControl)
@@ -45,10 +62,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
 
       if (!hasEditModeControl)
       {
-        if( showIcon )
+        if (showIcon)
           RenderCellIcon (businessObject);
 
-        RenderOtherIcons(businessObject);
+        RenderOtherIcons (businessObject);
       }
       RenderCellText (businessObject, showEditModeControl, editableRow);
 
@@ -56,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       RenderCropSpanEndTag (enforceWidth);
     }
 
-    
+
     protected abstract void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, EditableRow editableRow);
 
     /// <summary>
@@ -85,7 +102,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
 
       if (enforceWidth)
       {
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Column.Width.ToString ());
+        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Column.Width.ToString());
         Writer.AddStyleAttribute ("overflow", "hidden");
         Writer.AddStyleAttribute ("white-space", "nowrap");
         Writer.AddStyleAttribute ("display", "block");
@@ -102,7 +119,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     private void RenderCropSpanEndTag (bool enforceWidth)
     {
       if (enforceWidth)
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
     }
 
 
@@ -110,9 +127,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     {
       bool isCommandEnabled = false;
       if (!StringUtility.IsNullOrEmpty (valueColumnText))
-      {
         isCommandEnabled = RenderBeginTagDataCellCommand (businessObject, originalRowIndex);
-      }
       if (!isCommandEnabled)
       {
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassContent);
@@ -124,9 +139,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     private void RenderEndTag (bool isCommandEnabled)
     {
       if (isCommandEnabled)
-        RenderEndTagDataCellCommand ();
+        RenderEndTagDataCellCommand();
       else
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
     }
   }
 }

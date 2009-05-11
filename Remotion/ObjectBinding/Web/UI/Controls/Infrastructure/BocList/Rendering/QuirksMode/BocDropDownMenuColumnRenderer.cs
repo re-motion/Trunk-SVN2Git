@@ -1,13 +1,28 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering cells of <see cref="BocDropDownMenuColumnDefinition"/> columns.
   /// </summary>
-  public class BocDropDownMenuColumnRenderer : BocColumnRenderer<BocDropDownMenuColumnDefinition>
+  public class BocDropDownMenuColumnRenderer : BocColumnRendererBase<BocDropDownMenuColumnDefinition>
   {
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a
@@ -17,25 +32,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocDropDownMenuColumnRenderer (BocList list, HtmlTextWriter writer, BocDropDownMenuColumnDefinition column)
-        : base(list, writer, column)
+    public BocDropDownMenuColumnRenderer (Controls.BocList list, HtmlTextWriter writer, BocDropDownMenuColumnDefinition column)
+        : base (list, writer, column)
     {
     }
 
     /// <summary>
     /// Renders a <see cref="DropDownMenu"/> with the options for the current row.
-    /// <seealso cref="BocColumnRenderer{TBocColumnDefinition}.RenderCellContents"/>
+    /// <seealso cref="BocColumnRendererBase{TBocColumnDefinition}.RenderCellContents"/>
     /// </summary>
     /// <remarks>
     /// The menu title is generated from the <see cref="DropDownMenu.TitleText"/> and <see cref="DropDownMenu.TitleText"/> properties of
-    /// the column definition in <see cref="BocColumnRenderer{TBocColumnDefinition}.Column"/>, and populated with the menu items in
-    /// the <see cref="BocList.RowMenus"/> property of <see cref="BocListBaseRenderer.List"/>.
+    /// the column definition in <see cref="BocColumnRendererBase{TBocColumnDefinition}.Column"/>, and populated with the menu items in
+    /// the <see cref="BocList.RowMenus"/> property of <see cref="BocListRendererBase.List"/>.
     /// </remarks>
     protected override void RenderCellContents (
-      BocListDataRowRenderEventArgs dataRowRenderEventArgs, 
-      int rowIndex, 
-      bool isEditedRow, 
-      bool showIcon)
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
+        int rowIndex,
+        bool isEditedRow,
+        bool showIcon)
     {
       if (List.RowMenus == null || List.RowMenus.Length < rowIndex || List.RowMenus[rowIndex] == null)
       {
@@ -60,7 +75,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       dropDownMenu.TitleIcon = Column.MenuTitleIcon;
       dropDownMenu.RenderControl (Writer);
 
-      Writer.RenderEndTag (); // End div
+      Writer.RenderEndTag(); // End div
     }
   }
 }

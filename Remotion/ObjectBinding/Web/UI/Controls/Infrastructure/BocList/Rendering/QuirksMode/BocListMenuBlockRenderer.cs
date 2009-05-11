@@ -1,17 +1,32 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering the menu block of a <see cref="BocList"/>.
   /// </summary>
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
-  public class BocListMenuBlockRenderer : BocListBaseRenderer
+  public class BocListMenuBlockRenderer : BocListRendererBase
   {
     protected const string c_defaultMenuBlockItemOffset = "5pt";
     protected const int c_designModeAvailableViewsListWidthInPoints = 40;
@@ -23,8 +38,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListMenuBlockRenderer (BocList list, HtmlTextWriter writer)
-      : base (list, writer)
+    public BocListMenuBlockRenderer (Controls.BocList list, HtmlTextWriter writer)
+        : base (list, writer)
     {
     }
 
@@ -47,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
         string availableViewsListTitle;
         if (StringUtility.IsNullOrEmpty (List.AvailableViewsListTitle))
-          availableViewsListTitle = List.GetResourceManager().GetString (BocList.ResourceIdentifier.AvailableViewsListTitle);
+          availableViewsListTitle = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.AvailableViewsListTitle);
         else
           availableViewsListTitle = List.AvailableViewsListTitle;
         // Do not HTML encode.
@@ -55,7 +70,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         Writer.RenderEndTag();
 
         Writer.Write (c_whiteSpace);
-        if (ControlHelper.IsDesignMode((Control)List))
+        if (ControlHelper.IsDesignMode ((Control) List))
           List.AvailableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
         List.AvailableViewsList.Enabled = ! List.IsRowEditModeActive && ! List.IsListEditModeActive;
         List.AvailableViewsList.CssClass = List.CssClassAvailableViewsListDropDownList;
@@ -66,7 +81,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       if (List.HasOptionsMenu)
       {
         if (StringUtility.IsNullOrEmpty (List.OptionsTitle))
-          List.OptionsMenu.TitleText = List.GetResourceManager().GetString (BocList.ResourceIdentifier.OptionsTitle);
+          List.OptionsMenu.TitleText = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.OptionsTitle);
         else
           List.OptionsMenu.TitleText = List.OptionsTitle;
         List.OptionsMenu.Style.Add ("margin-bottom", menuBlockItemOffset);
@@ -100,11 +115,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       bool isFirstItem = true;
       for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
       {
-
         WebMenuItem currentItem = groupedListMenuItems[idxItems];
         // HACK: Required since ListMenuItems are not added to a ListMenu's WebMenuItemCollection.
         currentItem.OwnerControl = List;
-        if (!currentItem.EvaluateVisible ())
+        if (!currentItem.EvaluateVisible())
           continue;
 
         bool isLastItem = idxItems == groupedListMenuItems.Length - 1;
@@ -123,14 +137,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         RenderListMenuItem (Writer, currentItem, menuID, List.ListMenuItems.IndexOf (currentItem));
         if (hasAlwaysLineBreaks || isLastCategoryItem || (hasNoLineBreaks && isLastItem))
         {
-          Writer.RenderEndTag ();
-          Writer.RenderEndTag ();
+          Writer.RenderEndTag();
+          Writer.RenderEndTag();
         }
 
         if (isFirstItem)
           isFirstItem = false;
       }
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     private void RenderListMenuItem (HtmlTextWriter writer, WebMenuItem menuItem, string menuID, int index)
@@ -138,7 +152,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
       bool showIcon = menuItem.Style == WebMenuItemStyle.Icon || menuItem.Style == WebMenuItemStyle.IconAndText;
       bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, menuID + "_" + index.ToString ());
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, menuID + "_" + index.ToString());
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       Writer.RenderBeginTag (HtmlTextWriterTag.A);
       if (showIcon && menuItem.Icon.HasRenderingInformation)
@@ -147,14 +161,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         Writer.AddStyleAttribute ("vertical-align", "middle");
         Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
         Writer.RenderBeginTag (HtmlTextWriterTag.Img);
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
         if (showText)
           Writer.Write (c_whiteSpace);
       }
       if (showText)
         Writer.Write (menuItem.Text); // Do not HTML encode.
-      Writer.RenderEndTag ();
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
+      Writer.RenderEndTag();
     }
   }
 }

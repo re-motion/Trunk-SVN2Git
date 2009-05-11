@@ -1,22 +1,39 @@
-﻿using System;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Abstract base class for BocList renderers. Defines common constants, properties and utility methods.
   /// </summary>
-  public abstract class BocListBaseRenderer
+  public abstract class BocListRendererBase
   {
     // constants
     // unused protected const string c_dataRowHiddenFieldIDSuffix = "_Boc_HiddenField_";
     /// <summary>Suffix for controls used for selecting or unselecting single rows.</summary>
     protected const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
+
     /// <summary>Suffix for the control used to select all visible rows.</summary>
     protected const string c_titleRowSelectorControlIDSuffix = "_Boc_SelectorControl_SelectAll";
+
     // unused protected const string c_availableViewsListIDSuffix = "_Boc_AvailableViewsList";
     // unused protected const string c_optionsMenuIDSuffix = "_Boc_OptionsMenu";
 
@@ -33,6 +50,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     // unused protected const string c_scriptFileUrl = "BocList.js";
     /// <summary>Name of the JavaScript function to call when a command control has been clicked.</summary>
     protected const string c_onCommandClickScript = "BocList_OnCommandClick();";
+
     // unused protected const string c_styleFileUrl = "BocList.css";
 
     /// <summary>Entity definition for whitespace separating controls, e.g. icons from following text</summary>
@@ -44,11 +62,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     // unused protected const string c_resourceKeyOptionsMenuItems = "OptionsMenuItems";
     // <summary> The key identifying a List menu item resource entry. </summary>
     // unused protected const string c_resourceKeyListMenuItems = "ListMenuItems";
-    
+
     /// <summary>Number of columns to show in design mode before actual columns have been defined.</summary>
     protected const int c_designModeDummyColumnCount = 3;
 
-    private readonly BocList _list;
+    private readonly Controls.BocList _list;
     private readonly HtmlTextWriter _writer;
 
     /// <summary>
@@ -60,14 +78,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// and must be set in the constructor.</remarks>
     /// <param name="list">The <see cref="BocList"/> to render.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the list to.</param>
-    protected BocListBaseRenderer (BocList list, HtmlTextWriter writer)
+    protected BocListRendererBase (Controls.BocList list, HtmlTextWriter writer)
     {
       _list = list;
       _writer = writer;
     }
 
     /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
-    protected BocList List
+    protected Controls.BocList List
     {
       get { return _list; }
     }
@@ -86,13 +104,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// <param name="icon">The icon to render. If it has an alternate text, that text will be used.</param>
     /// <param name="alternateTextID">The <see cref="BocList.ResourceIdentifier"/> used to load 
     /// the alternate text from the resource file. Can be <see langword="null"/>, in which case no text will be loaded.</param>
-    protected void RenderIcon (IconInfo icon, BocList.ResourceIdentifier? alternateTextID)
+    protected void RenderIcon (IconInfo icon, Controls.BocList.ResourceIdentifier? alternateTextID)
     {
       bool hasAlternateText = !StringUtility.IsNullOrEmpty (icon.AlternateText);
       if (!hasAlternateText)
       {
-        if( alternateTextID.HasValue )
-          icon.AlternateText = List.GetResourceManager ().GetString (alternateTextID);
+        if (alternateTextID.HasValue)
+          icon.AlternateText = List.GetResourceManager().GetString (alternateTextID);
       }
 
       icon.Render (Writer);
@@ -129,19 +147,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
         Writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "true");
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Value, value);
-      
+
       if (isSelectAllSelectorControl)
         AddSelectAllSelectorAttributes();
       else
         AddRowSelectorAttributes();
 
       Writer.RenderBeginTag (HtmlTextWriterTag.Input);
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     private void AddRowSelectorAttributes ()
     {
-      string alternateText = List.GetResourceManager ().GetString (BocList.ResourceIdentifier.SelectRowAlternateText);
+      string alternateText = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.SelectRowAlternateText);
       Writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
 
       if (List.HasClientScript)
@@ -153,7 +171,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
 
     private void AddSelectAllSelectorAttributes ()
     {
-      string alternateText = List.GetResourceManager ().GetString (BocList.ResourceIdentifier.SelectAllRowsAlternateText);
+      string alternateText = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.SelectAllRowsAlternateText);
       Writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
 
       int count = 0;

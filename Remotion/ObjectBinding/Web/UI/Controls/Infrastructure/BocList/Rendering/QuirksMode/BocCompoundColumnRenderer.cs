@@ -1,13 +1,27 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering table cells of <see cref="BocCompoundColumnDefinition"/> columns.
   /// </summary>
-  public class BocCompoundColumnRenderer : BocValueColumnRenderer<BocCompoundColumnDefinition>
+  public class BocCompoundColumnRenderer : BocValueColumnRendererBase<BocCompoundColumnDefinition>
   {
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a
@@ -17,8 +31,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Renderers
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCompoundColumnRenderer (BocList list, HtmlTextWriter writer, BocCompoundColumnDefinition column)
-        : base(list, writer, column)
+    public BocCompoundColumnRenderer (Controls.BocList list, HtmlTextWriter writer, BocCompoundColumnDefinition column)
+        : base (list, writer, column)
     {
     }
 
