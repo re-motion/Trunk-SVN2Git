@@ -14,17 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Web.UI;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Renderers;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Renderers.QuirksMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   [TestFixture]
   public class BocSimpleColumnRendererTest
@@ -67,48 +65,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     }
 
     [Test]
-    public void TestPerformanceGetType ()
-    {
-      Stopwatch stopwatch = new Stopwatch();
-
-      stopwatch.Start();
-      for (int i = 0; i < 10000; i++)
-        Column.GetType();
-      stopwatch.Stop();
-      Assert.Fail ("Time elapsed: " + stopwatch.ElapsedMilliseconds + " ms");
-    }
-
-    [Test]
-    public void TestPerformanceTypeOf ()
-    {
-      Stopwatch stopwatch = new Stopwatch();
-
-      stopwatch.Start();
-      for (int i = 0; i < 10000; i++)
-      {
-        Type type = typeof (IBocColumnRenderer<>);
-      }
-      stopwatch.Stop();
-      Assert.Fail ("Time elapsed: " + stopwatch.ElapsedMilliseconds + " ms");
-    }
-
-    [Test]
-    public void TestPerformanceMakeGenericType ()
-    {
-      Stopwatch stopwatch = new Stopwatch();
-      Type typeParameter = Column.GetType();
-      Type genericType = typeof (IBocColumnRenderer<>);
-      stopwatch.Start();
-      for (int i = 0; i < 10000; i++)
-        genericType.MakeGenericType (typeParameter);
-      stopwatch.Stop();
-      Assert.Fail ("Time elapsed: " + stopwatch.ElapsedMilliseconds + " ms");
-    }
-
-    [Test]
     public void RenderEmptyCell ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (List, Html.Writer, Column);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, "bocListTableCell", EventArgs);
       HtmlDocument document = Html.GetResultDocument();
@@ -119,7 +78,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       BusinessObject.SetProperty ("FirstValue", TypeWithReference.Create ("referencedObject1"));
 
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (List, Html.Writer, Column);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, "bocListTableCell", EventArgs);
       HtmlDocument document = Html.GetResultDocument();

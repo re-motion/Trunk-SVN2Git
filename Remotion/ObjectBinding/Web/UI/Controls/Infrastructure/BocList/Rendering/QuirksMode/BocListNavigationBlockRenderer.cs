@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
@@ -27,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   /// Responsible for rendering the navigation block of a <see cref="BocList"/>.
   /// </summary>
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
-  public class BocListNavigatorRenderer : BocListRendererBase
+  public class BocListNavigationBlockRenderer : BocListRendererBase, IBocListNavigationBlockRenderer
   {
     protected const string c_goToCommandPrefix = "GoTo=";
 
@@ -88,13 +89,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigatorRenderer (Controls.BocList list, HtmlTextWriter writer)
+    public BocListNavigationBlockRenderer (Controls.BocList list, HtmlTextWriter writer)
         : base (list, writer)
     {
     }
 
     /// <summary> 
-    /// Renders the navigation bar consisting of the move buttons and the <see cref="BocList.PageInfo"/>. 
+    /// Renders the navigation bar consisting of the move buttons and the <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.PageInfo"/>. 
     /// </summary>
     public void Render ()
     {

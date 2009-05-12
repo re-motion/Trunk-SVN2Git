@@ -1,17 +1,36 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.IO;
 using System.Text;
 using System.Web.UI;
 using HtmlAgilityPack;
 using NUnit.Framework;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Renderers
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering
 {
   public class HtmlHelper
   {
     public const string WhiteSpace = "&nbsp;";
 
-    public enum AttributeValueCompareMode { Equal, Contains }
+    public enum AttributeValueCompareMode
+    {
+      Equal,
+      Contains
+    }
 
     private byte[] Buffer { get; set; }
     public HtmlTextWriter Writer { get; private set; }
@@ -29,9 +48,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Renderers
 
     public HtmlDocument GetResultDocument ()
     {
-      Writer.Flush ();
+      Writer.Flush();
       Reader.BaseStream.Seek (0, SeekOrigin.Begin);
-      HtmlDocument document = new HtmlDocument ();
+      HtmlDocument document = new HtmlDocument();
       document.Load (Reader);
       return document;
     }
@@ -66,15 +85,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Renderers
 
         node = parent.ChildNodes[index];
 
-        Assert.AreEqual (HtmlNodeType.Element, node.NodeType,
-        String.Format (
+        Assert.AreEqual (
+            HtmlNodeType.Element,
+            node.NodeType,
+            String.Format (
                 "{0}.ChildNodes[{1}].NodeType is {2}, not {3}.",
                 parent.Name,
                 index,
                 parent.ChildNodes[index].NodeType,
                 HtmlNodeType.Text));
       }
-      
+
       Assert.AreEqual (tag, node.Name, "Unexpected element tag.");
       return node;
     }
@@ -91,7 +112,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Renderers
           {
             if (textNodeIndex == index)
             {
-              node = (HtmlTextNode)childNode;
+              node = (HtmlTextNode) childNode;
               break;
             }
             ++textNodeIndex;
@@ -115,7 +136,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Renderers
                 index,
                 parent.ChildNodes[index].NodeType,
                 HtmlNodeType.Text));
-        node = (HtmlTextNode)parent.ChildNodes[index];
+        node = (HtmlTextNode) parent.ChildNodes[index];
       }
       Assert.AreEqual (content, node.Text, "Unexpected text node content.");
     }

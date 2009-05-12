@@ -268,6 +268,19 @@
     <Compile Include="UI\Controls\Infrastructure\BocList\EditModeValidator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListMenuBlockRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListNavigationBlockRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListTableBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListTableBlockRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocRowRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocRowRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListMenuBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListNavigationBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListTableBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\PropertyPathBinding.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -279,10 +292,10 @@
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCompoundColumnRenderer.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCustomColumnRenderer.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocDropDownMenuColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocListRendererFactory.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocColumnRendererBase.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListMenuBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListNavigatorRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListNavigationBlockRenderer.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListRenderer.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListRendererBase.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowRenderer.cs" />

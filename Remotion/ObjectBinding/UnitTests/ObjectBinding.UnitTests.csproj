@@ -291,9 +291,12 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerInRowEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerTestBase.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerWithoutEditModeTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Renderers\QuirksMode\BocColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Renderers\QuirksMode\BocSimpleColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Renderers\HtmlHelper.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSimpleColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\HtmlHelper.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocListRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubServiceLocator.cs" />
     <None Include="ObjectBinding.UnitTests.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
@@ -369,7 +372,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Web\UI\Controls\Infrastructure\BocList\Renderers\StandardMode\" />
+    <Folder Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StandardMode\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

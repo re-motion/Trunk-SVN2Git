@@ -16,6 +16,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -42,35 +43,44 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [Editor (typeof (ExpandableObjectConverter), typeof (UITypeEditor))]
   public abstract class BocColumnDefinition : BusinessObjectControlItem, IControlItem
   {
-    private static readonly ICache<Type, Type> s_interfaceCache = new InterlockedCache<Type, Type>();
-
     private string _itemID = string.Empty;
     private string _columnTitle = string.Empty;
     private Unit _width = Unit.Empty;
     private string _cssClass = string.Empty;
-    private IBocColumnRenderer _renderer;
 
-    public BocColumnDefinition ()
+    protected BocColumnDefinition ()
     {
     }
 
-    public IBocColumnRenderer GetRenderer (BocList list, HtmlTextWriter writer)
+    public IBocColumnRenderer GetRenderer (IServiceLocator serviceLocator, BocList list, HtmlTextWriter writer)
     {
-      if ((_renderer == null) || (!_renderer.List.Equals (list)) || (!_renderer.Writer.Equals (writer)))
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      Type serviceType = typeof (IBocColumnRendererFactory<>).MakeGenericType (GetType());
+      var rendererFactory = serviceLocator.GetInstance (serviceType);
+      
+      MethodInfo createMethod = null;
+      foreach (MethodInfo info in rendererFactory.GetType().GetMethods())
       {
-        Type rendererInterface = s_interfaceCache.GetOrCreateValue (GetType(), arg => typeof (IBocColumnRenderer<>).MakeGenericType (arg));
-        Type rendererImplementation =
-            ServiceLocator.Current.GetInstance<Type> (
-                string.Format (
-                    "{0}<{1}>",
-                    rendererInterface.Name.Substring (0, rendererInterface.Name.IndexOf ('`')),
-                    rendererInterface.GetGenericArguments()[0].Name));
-        _renderer = InstantiateRenderer (rendererImplementation, list, writer);
+        if( !info.Name.Contains("CreateRenderer") )
+          continue;
+        if (!info.ReturnType.FullName.Contains(GetType().FullName))
+          continue;
+        createMethod = info;
+        break;
       }
-      return _renderer;
+      if (createMethod == null)
+      {
+        throw new InvalidOperationException (
+            string.Format ("Service locator provided factory without proper factory method for type '{0}'.", GetType()));
+      }
+      var renderer = createMethod.Invoke (rendererFactory, new object[] { writer, list, this });
+
+      return (IBocColumnRenderer) renderer;
     }
 
-    protected abstract IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer);
 
     public override string ToString ()
     {
@@ -258,11 +268,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public BocCommandColumnDefinition ()
     {
-    }
-
-    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
-    {
-      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
     }
 
     /// <summary> Returns a <see cref="string"/> that represents this <see cref="BocColumnDefinition"/>. </summary>
@@ -579,11 +584,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _enableIcon = value; }
     }
 
-    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
-    {
-      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
-    }
-
     /// <summary> Gets the displayed value of the column title. </summary>
     /// <remarks> 
     ///   If <see cref="BocColumnDefinition.ColumnTitle"/> is empty or <see langowrd="null"/>, 
@@ -720,11 +720,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public PropertyPathBindingCollection PropertyPathBindings
     {
       get { return _propertyPathBindings; }
-    }
-
-    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
-    {
-      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
     }
 
     /// <summary> Gets or sets the text displayed in the column title. Must not be empty or <see langword="null"/>. </summary>
@@ -912,11 +907,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _cancelIcon.Reset();
     }
 
-    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
-    {
-      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
-    }
-
     /// <summary> Gets the human readable name of this type. </summary>
     protected override string DisplayedTypeName
     {
@@ -969,11 +959,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public BocDropDownMenuColumnDefinition ()
     {
       _menuTitleIcon = new IconInfo();
-    }
-
-    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
-    {
-      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
     }
 
     /// <summary> Gets the human readable name of this type. </summary>
@@ -1029,11 +1014,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> A column definition that acts as a placeholder for inserting a column for each property. </summary>
   public class BocAllPropertiesPlaceholderColumnDefinition : BocColumnDefinition
   {
-    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
-    {
-      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
-    }
-
     [Browsable (false)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public override string ItemID

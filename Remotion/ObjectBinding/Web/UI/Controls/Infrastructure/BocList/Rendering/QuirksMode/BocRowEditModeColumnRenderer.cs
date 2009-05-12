@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
@@ -103,9 +104,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// Renders a command control as link with an icon, a text or both.
     /// </summary>
     /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="BocListRendererBase.List"/></param>
-    /// <param name="command">The <see cref="BocList.RowEditModeCommand"/> that is issued when the control is clicked.</param>
-    /// <param name="alternateText">The <see cref="BocList.ResourceIdentifier"/> specifying which resource to load as alternate text to the icon.</param>
-    /// <param name="icon">The icon to render; must not be <see langword="null"/>. To skip the icon, set <see cref="IconInfo.Url"/> to null.</param>
+    /// <param name="command">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeCommand"/> that is issued 
+    /// when the control is clicked. Must not be <see langword="null" />.</param>
+    /// <param name="alternateText">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> 
+    /// specifying which resource to load as alternate text to the icon.</param>
+    /// <param name="icon">The icon to render; must not be <see langword="null"/>. 
+    /// To skip the icon, set <see cref="IconInfo.Url"/> to <see langword="null" />.</param>
     /// <param name="text">The text to render after the icon. May be <see langword="null"/>, in which case no text is rendered.</param>
     protected virtual void RenderCommandControl (
         int originalRowIndex,
@@ -114,6 +118,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         IconInfo icon,
         string text)
     {
+      ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("icon", icon);
 
       if (!List.IsReadOnly && List.HasClientScript)

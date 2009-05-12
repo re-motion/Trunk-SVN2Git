@@ -23,10 +23,11 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -1320,8 +1321,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _pageCount = 1;
       }
 
-      BocListRendererFactory factory = new BocListRendererFactory (this, writer);
-      factory.CreateRenderer().RenderContents();
+      BocListRendererFactory factory = new BocListRendererFactory ();
+      factory.CreateRenderer (writer, this, ServiceLocator.Current).Render ();
     }
 
     public bool HasNavigator

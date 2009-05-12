@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -27,8 +28,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   public class BocCustomColumnRenderer : BocColumnRendererBase<BocCustomColumnDefinition>
   {
     /// <summary>
-    /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a
-    /// <see cref="BocCustomColumnDefinition"/> column for which to render cells.
+    /// Contructs a renderer bound to a <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList"/> to render, 
+    /// an <see cref="HtmlTextWriter"/> to render to, and a <see cref="BocCustomColumnDefinition"/> column for which to render cells.
     /// </summary>
     /// <remarks>
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
@@ -50,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// a <see cref="BocCustomCellRenderArguments"/> object is created and passed to the custom cell's 
     /// <see cref="BocCustomColumnDefinitionCell.RenderInternal"/> method.
     /// Otherwise, a click wrapper is rendered around the child control obtained from
-    /// <see cref="BocListRendererBase.List"/>'s <see cref="BocList.CustomColumns"/> property.
+    /// <see cref="BocListRendererBase.List"/>'s <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.CustomColumns"/> property.
     /// </remarks>
     protected override void RenderCellContents (
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,

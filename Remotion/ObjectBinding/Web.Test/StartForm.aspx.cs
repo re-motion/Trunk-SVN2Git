@@ -56,7 +56,7 @@ namespace OBWTest
 
     private void Page_Load (object sender, EventArgs e)
     {
-      ServiceLocator.SetLocatorProvider (() => new MockServiceLocator ());
+      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator ());
     }
   }
 }

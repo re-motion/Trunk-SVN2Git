@@ -80,18 +80,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the list to.</param>
     protected BocListRendererBase (Controls.BocList list, HtmlTextWriter writer)
     {
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
       _list = list;
       _writer = writer;
     }
 
     /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
-    protected Controls.BocList List
+    public Controls.BocList List
     {
       get { return _list; }
     }
 
     /// <summary>Gets the <see cref="HtmlTextWriter"/> object used to render the <see cref="BocList"/>.</summary>
-    protected HtmlTextWriter Writer
+    public HtmlTextWriter Writer
     {
       get { return _writer; }
     }
@@ -102,7 +105,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <remarks>If no alternate text is provided in the <code>icon</code> argument, the method will attempt to load
     /// the alternate text from the resources file, using <code>alternateTextID</code> as key.</remarks>
     /// <param name="icon">The icon to render. If it has an alternate text, that text will be used.</param>
-    /// <param name="alternateTextID">The <see cref="BocList.ResourceIdentifier"/> used to load 
+    /// <param name="alternateTextID">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> used to load 
     /// the alternate text from the resource file. Can be <see langword="null"/>, in which case no text will be loaded.</param>
     protected void RenderIcon (IconInfo icon, Controls.BocList.ResourceIdentifier? alternateTextID)
     {

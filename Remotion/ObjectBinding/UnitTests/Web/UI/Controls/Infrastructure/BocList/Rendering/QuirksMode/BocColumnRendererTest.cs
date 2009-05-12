@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,16 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Globalization;
-using System.Threading;
 using HtmlAgilityPack;
 using NUnit.Framework;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Renderers;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Renderers.QuirksMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   [TestFixture]
   public class BocColumnRendererTest
@@ -69,54 +66,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       RenderTitleCell (SortingDirection.Descending, 4, "bocListTitleCell", "bocListSortingOrder", "SortDescending.gif", "Sorted Descending");
     }
 
-    [Test]
-    public void RenderTitleCellAscendingZeroGerman ()
-    {
-      RenderTitleCellForCulture (
-          new CultureInfo ("de-AT"),
-          SortingDirection.Ascending,
-          0,
-          "bocListTitleCell",
-          "bocListSortingOrder",
-          "SortAscending.gif",
-          "Aufsteigend sortiert.");
-    }
-
-    [Test]
-    public void RenderTitleCellDescendingThreeGerman ()
-    {
-      RenderTitleCellForCulture (
-          new CultureInfo ("de-AT"),
-          SortingDirection.Descending,
-          3,
-          "bocListTitleCell",
-          "bocListSortingOrder",
-          "SortDescending.gif",
-          "Absteigend sortiert.");
-    }
-
-    private void RenderTitleCellForCulture (
-        CultureInfo culture,
-        SortingDirection sortDirection,
-        int sortIndex,
-        string titleCellCssClass,
-        string sortOrderSpanCssClass,
-        string iconFilename,
-        string iconAltText)
-    {
-      CultureInfo backupCulture = CultureInfo.CurrentUICulture;
-      Thread.CurrentThread.CurrentUICulture = culture;
-
-      try
-      {
-        RenderTitleCell (sortDirection, sortIndex, titleCellCssClass, sortOrderSpanCssClass, iconFilename, iconAltText);
-      }
-      finally
-      {
-        Thread.CurrentThread.CurrentUICulture = backupCulture;
-      }
-    }
-
     private void RenderTitleCell (
         SortingDirection sortDirection,
         int sortIndex,
@@ -125,7 +74,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
         string iconFilename,
         string iconAltText)
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (List, Html.Writer, (BocSimpleColumnDefinition) Column);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, (BocSimpleColumnDefinition) Column);
       renderer.RenderTitleCell (sortDirection, sortIndex);
 
       HtmlDocument document = Html.GetResultDocument();

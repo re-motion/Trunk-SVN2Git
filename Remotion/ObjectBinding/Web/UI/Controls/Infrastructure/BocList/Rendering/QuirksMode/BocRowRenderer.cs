@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -25,31 +26,31 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   /// Responsible for rendering single data rows or the title row of a specific <see cref="BocList"/>.
   /// </summary>
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
-  public class BocRowRenderer : BocListRendererBase
+  public class BocRowRenderer : BocListRendererBase, IBocRowRenderer
   {
     private const int c_titleRowIndex = -1;
 
     /// <summary>Text displayed when control is displayed in desinger and is read-only has no contents.</summary>
     private const string c_designModeDummyColumnTitle = "Column Title {0}";
 
-    private readonly BocListRendererFactory _columnRendererFactory;
+    private readonly IServiceLocator _serviceLocator;
 
-    public BocRowRenderer (Controls.BocList list, HtmlTextWriter writer, BocListRendererFactory columnRendererFactory)
+    public BocRowRenderer (Controls.BocList list, HtmlTextWriter writer, IServiceLocator serviceLocator)
         : base (list, writer)
     {
-      _columnRendererFactory = columnRendererFactory;
+      _serviceLocator = serviceLocator;
     }
 
-    public BocListRendererFactory ColumnRendererFactory
+    public IServiceLocator ServiceLocator
     {
-      get { return _columnRendererFactory; }
+      get { return _serviceLocator; }
     }
 
     /// <summary>Fetches a column renderer from the factory the first time it is called with a specific column argument,
     /// returns the cached renderer on subsequent calls with the same column.</summary>
     private IBocColumnRenderer GetColumnRenderer (BocColumnDefinition column)
     {
-      return column.GetRenderer (List, Writer);
+      return column.GetRenderer (ServiceLocator, List, Writer);
     }
 
     /// <summary> Renders the table row containing the column titles and sorting buttons. </summary>
@@ -146,11 +147,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     }
 
     /// <summary>
-    /// Renders a row containing the empty list message in <see cref="BocListRendererBase.List"/>'s <see cref="BocList.EmptyListMessage"/> protperty.
+    /// Renders a row containing the empty list message in <see cref="BocListRendererBase.List"/>'s 
+    /// <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.EmptyListMessage"/> protperty.
     /// </summary>
     /// <remarks>
     /// If the property is not set, a default message will be loaded from the resource file, using 
-    /// <see cref="BocList.ResourceIdentifier.EmptyListMessage"/> as key. 
+    /// <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier.EmptyListMessage"/> as key. 
     /// </remarks>
     public void RenderEmptyListDataRow ()
     {
@@ -191,16 +193,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <param name="rowIndex"> The row number in the current view. </param>
     /// <param name="absoluteRowIndex"> The position of <paramref name="businessObject"/> in the list of values. </param>
     /// <param name="originalRowIndex"> The position of <paramref name="businessObject"/> in the list of values before sorting. </param>
-    /// <param name="isOddRow"> Whether the data row is rendered in an odd or an even table row. </param>
     public void RenderDataRow (
         IBusinessObject businessObject,
         int rowIndex,
         int absoluteRowIndex,
-        int originalRowIndex,
-        bool isOddRow)
+        int originalRowIndex)
     {
       string selectorControlID = List.ClientID + c_dataRowSelectorControlIDSuffix + rowIndex;
       bool isChecked = (List.SelectorControlCheckedState[originalRowIndex] != null);
+      bool isOddRow = (rowIndex % 2 == 1);
 
       string cssClassTableRow = GetCssClassTableRow (isChecked);
       string cssClassTableCell = GetCssClassTableCell (isOddRow);

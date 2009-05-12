@@ -172,11 +172,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _mode = value; }
     }
 
-    protected override IBocColumnRenderer InstantiateRenderer (Type rendererImplementation, BocList list, HtmlTextWriter writer)
-    {
-      return TypesafeActivator.CreateInstance<IBocColumnRenderer> (rendererImplementation).With (list, writer, this);
-    }
-
     /// <summary> Gets the displayed value of the column title. </summary>
     /// <remarks> 
     ///   If <see cref="BocColumnDefinition.ColumnTitle"/> is empty or <see langowrd="null"/>, 

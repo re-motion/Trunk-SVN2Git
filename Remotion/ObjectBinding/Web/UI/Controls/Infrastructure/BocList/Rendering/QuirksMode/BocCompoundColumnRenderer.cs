@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {

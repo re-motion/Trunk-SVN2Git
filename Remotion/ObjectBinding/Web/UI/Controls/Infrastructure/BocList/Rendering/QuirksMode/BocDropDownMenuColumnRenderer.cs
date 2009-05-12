@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -44,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <remarks>
     /// The menu title is generated from the <see cref="DropDownMenu.TitleText"/> and <see cref="DropDownMenu.TitleText"/> properties of
     /// the column definition in <see cref="BocColumnRendererBase{TBocColumnDefinition}.Column"/>, and populated with the menu items in
-    /// the <see cref="BocList.RowMenus"/> property of <see cref="BocListRendererBase.List"/>.
+    /// the <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowMenus"/> property of <see cref="BocListRendererBase.List"/>.
     /// </remarks>
     protected override void RenderCellContents (
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,

@@ -30,8 +30,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     private static readonly ILog s_log = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    private IBocListSortingOrderProvider _provider;
-    private int _index;
+    private readonly IBocListSortingOrderProvider _provider;
+    private readonly int _index;
     private IBusinessObject _businessObject;
     private BocListSortingOrderEntry[] _cachedSortingOrder;
 
@@ -49,7 +49,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public int Index
     {
       get { return _index; }
-      set { _index = value; }
     }
 
     public IBusinessObject BusinessObject
