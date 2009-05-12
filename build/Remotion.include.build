@@ -204,6 +204,7 @@
         <include name="Castle.Core.*"/>
         <include name="Castle.DynamicProxy.*"/>
         <include name="AjaxControlToolkit.dll" />
+        <include name="Microsoft.Practices.ServiceLocation.dll" />
       </fileset>
     </copy>
 
@@ -230,6 +231,7 @@
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.DynamicProxy.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Rhino.Mocks.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/AjaxControlToolkit.dll" overwrite="true" />
+      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/HtmlAgilityPack.dll" overwrite="true" />
       <copy todir="${build.test.outputdir}">
         <fileset basedir="${build.outputdir}">
           <include name="*.exe" />
