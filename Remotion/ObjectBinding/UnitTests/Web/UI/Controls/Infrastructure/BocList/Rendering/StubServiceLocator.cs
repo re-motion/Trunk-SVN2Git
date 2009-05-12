@@ -41,6 +41,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       _instances.Add (typeof (IBocColumnRendererFactory<BocCustomColumnDefinition>), new BocColumnRendererFactory());
       _instances.Add (typeof (IBocColumnRendererFactory<BocRowEditModeColumnDefinition>), new BocColumnRendererFactory());
       _instances.Add (typeof (IBocColumnRendererFactory<BocDropDownMenuColumnDefinition>), new BocColumnRendererFactory());
+      _instances.Add (typeof (IBocIndexColumnRendererFactory), new BocColumnRendererFactory());
+      _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocColumnRendererFactory ());
     }
 
     protected override object DoGetInstance (Type serviceType, string key)

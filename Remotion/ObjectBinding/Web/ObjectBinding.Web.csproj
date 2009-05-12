@@ -269,6 +269,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocIndexColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocIndexColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListMenuBlockRendererFactory.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListNavigationBlockRendererFactory.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListRenderer.cs" />
@@ -279,7 +281,11 @@
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocRowRendererFactory.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListMenuBlockRenderer.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocListNavigationBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocSelectorColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\IBocSelectorColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListTableBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSelectorColumnRenderer.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\PropertyPathBinding.cs">
       <SubType>Code</SubType>

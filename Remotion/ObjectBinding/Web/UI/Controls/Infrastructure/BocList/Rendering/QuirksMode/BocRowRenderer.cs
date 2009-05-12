@@ -28,8 +28,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
   public class BocRowRenderer : BocListRendererBase, IBocRowRenderer
   {
-    private const int c_titleRowIndex = -1;
-
     /// <summary>Text displayed when control is displayed in desinger and is read-only has no contents.</summary>
     private const string c_designModeDummyColumnTitle = "Column Title {0}";
 
@@ -59,8 +57,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     {
       Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
-      RenderIndexTitle();
-      RenderSelectionTitle();
+      GetIndexColumnRenderer().RenderTitleCell();
+      GetSelectorColumnRenderer().RenderTitleCell();
 
       var sortingDirections = new Dictionary<int, SortingDirection>();
       var sortingOrder = new List<int>();
@@ -106,44 +104,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
         renderer.RenderTitleCell (sortingDirection, sortingOrder.IndexOf (idxColumns));
       }
-    }
-
-    private void RenderSelectionTitle ()
-    {
-      if (!List.IsSelectionEnabled)
-        return;
-
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassTitleCell);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Th);
-      if (List.Selection == RowSelection.Multiple)
-      {
-        string selectorControlName = List.ID + c_titleRowSelectorControlIDSuffix;
-        bool isChecked = (List.SelectorControlCheckedState[c_titleRowIndex] != null);
-        RenderSelectorControl (selectorControlName, c_titleRowIndex.ToString(), isChecked, true);
-      }
-      else
-        Writer.Write (c_whiteSpace);
-      Writer.RenderEndTag();
-    }
-
-    private void RenderIndexTitle ()
-    {
-      if (!List.IsIndexEnabled)
-        return;
-
-      string cssClass = List.CssClassTitleCell + " " + List.CssClassTitleCellIndex;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Th);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      string indexColumnTitle;
-      if (StringUtility.IsNullOrEmpty (List.IndexColumnTitle))
-        indexColumnTitle = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.IndexColumnTitle);
-      else
-        indexColumnTitle = List.IndexColumnTitle;
-      // Do not HTML encode.
-      Writer.Write (indexColumnTitle);
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
     }
 
     /// <summary>
@@ -210,18 +170,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
       Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
-      RenderIndexCell (originalRowIndex, selectorControlID, cssClassTableCell, absoluteRowIndex);
-      RenderSelectorCell (originalRowIndex, selectorControlID, cssClassTableCell, isChecked);
+      GetIndexColumnRenderer().RenderDataCell (originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
+      GetSelectorColumnRenderer ().RenderDataCell (originalRowIndex, selectorControlID, isChecked, cssClassTableCell);
 
       var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject);
       List.OnDataRowRendering (dataRowRenderEventArgs);
 
-      RenderDataCells (rowIndex, cssClassTableCell, dataRowRenderEventArgs);
+      RenderDataCells (rowIndex, dataRowRenderEventArgs);
 
       Writer.RenderEndTag();
     }
 
-    private void RenderDataCells (int rowIndex, string cssClassTableCell, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    private IBocSelectorColumnRenderer GetSelectorColumnRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocSelectorColumnRendererFactory> ().CreateRenderer (Writer, List);
+    }
+
+    private IBocIndexColumnRenderer GetIndexColumnRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer(Writer, List);
+    }
+
+    private void RenderDataCells (int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       bool firstValueColumnRendered = false;
       foreach (BocColumnDefinition column in List.EnsureColumnsGot())
@@ -238,34 +208,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         columnRenderer.RenderDataCell (
             rowIndex,
             showIcon,
-            cssClassTableCell,
             dataRowRenderEventArgs);
-      }
-    }
-
-    private void RenderSelectorCell (int originalRowIndex, string selectorControlID, string cssClassTableCell, bool isChecked)
-    {
-      if (List.IsSelectionEnabled)
-      {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
-        Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        RenderSelectorControl (selectorControlID, originalRowIndex.ToString(), isChecked, false);
-        Writer.RenderEndTag();
-      }
-    }
-
-    private void RenderIndexCell (int originalRowIndex, string selectorControlID, string cssClassTableCell, int absoluteRowIndex)
-    {
-      if (List.IsIndexEnabled)
-      {
-        string cssClass = cssClassTableCell + " " + List.CssClassDataCellIndex;
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-        Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        if (List.Index == RowIndex.InitialOrder)
-          RenderRowIndex (originalRowIndex, selectorControlID);
-        else if (List.Index == RowIndex.SortedOrder)
-          RenderRowIndex (absoluteRowIndex, selectorControlID);
-        Writer.RenderEndTag();
       }
     }
 
@@ -284,16 +227,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       }
     }
 
-    private string GetCssClassTableCell (bool isOddRow)
-    {
-      string cssClassTableCell;
-      if (isOddRow)
-        cssClassTableCell = List.CssClassDataCellOdd;
-      else
-        cssClassTableCell = List.CssClassDataCellEven;
-      return cssClassTableCell;
-    }
-
     private string GetCssClassTableRow (bool isChecked)
     {
       string cssClassTableRow;
@@ -305,29 +238,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     }
 
 
-    /// <summary> Renders the zero-based row index normalized to a one-based format
-    /// (Optionally as a label for the selector control). </summary>
-    private void RenderRowIndex (int index, string selectorControlID)
-    {
-      bool hasSelectorControl = selectorControlID != null;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassContent);
-      if (hasSelectorControl)
-      {
-        Writer.AddAttribute (HtmlTextWriterAttribute.For, selectorControlID);
-        if (List.HasClientScript)
-        {
-          const string script = "BocList_OnSelectorControlLabelClick();";
-          Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-        }
-        Writer.RenderBeginTag (HtmlTextWriterTag.Label);
-      }
-      else
-        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      int renderedIndex = index + 1;
-      if (List.IndexOffset != null)
-        renderedIndex += List.IndexOffset.Value;
-      Writer.Write (renderedIndex);
-      Writer.RenderEndTag();
-    }
+    
   }
 }

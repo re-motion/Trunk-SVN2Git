@@ -36,12 +36,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// </summary>
     /// <param name="rowIndex">The zero-based index of the row on the page to be displayed.</param>
     /// <param name="showIcon">Specifies if an object-specific icon will be rendered in the table cell.</param>
-    /// <param name="cssClassTableCell">Specifies the CSS class to be applied to the table cell.</param>
     /// <param name="dataRowRenderEventArgs">Specifies row-specific arguments used in rendering the table cell.</param>
     void RenderDataCell (
         int rowIndex,
         bool showIcon,
-        string cssClassTableCell,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs);
 
     /// <summary>The <see cref="BocList"/> containing the data to render.</summary>

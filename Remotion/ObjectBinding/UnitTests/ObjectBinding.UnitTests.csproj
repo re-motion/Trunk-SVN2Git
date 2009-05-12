@@ -296,6 +296,7 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\HtmlHelper.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocListRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\ReflectionBusinessObjectWebUIService.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubServiceLocator.cs" />
     <None Include="ObjectBinding.UnitTests.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />

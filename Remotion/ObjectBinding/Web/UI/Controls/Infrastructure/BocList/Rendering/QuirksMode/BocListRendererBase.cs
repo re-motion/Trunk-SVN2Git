@@ -193,5 +193,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
       }
     }
+
+    protected string GetCssClassTableCell (bool isOddRow)
+    {
+      string cssClassTableCell;
+      if (isOddRow)
+        cssClassTableCell = List.CssClassDataCellOdd;
+      else
+        cssClassTableCell = List.CssClassDataCellEven;
+      return cssClassTableCell;
+    }
   }
 }

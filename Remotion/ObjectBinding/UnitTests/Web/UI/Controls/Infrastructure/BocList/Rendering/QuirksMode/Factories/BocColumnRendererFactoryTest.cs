@@ -88,6 +88,28 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       CreateRenderer (column, factory);
     }
 
+    [Test]
+    public void CreateBocIndexColumnRenderer ()
+    {
+      IBocIndexColumnRendererFactory factory = new BocColumnRendererFactory();
+      IBocIndexColumnRenderer renderer = factory.CreateRenderer (Html.Writer, List);
+
+      Assert.IsNotNull (renderer);
+      Assert.AreSame (Html.Writer, renderer.Writer);
+      Assert.AreSame (List, renderer.List);
+    }
+
+    [Test]
+    public void CreateBocSelectorColumnRenderer ()
+    {
+      IBocSelectorColumnRendererFactory factory = new BocColumnRendererFactory();
+      IBocSelectorColumnRenderer renderer = factory.CreateRenderer (Html.Writer, List);
+
+      Assert.IsNotNull (renderer);
+      Assert.AreSame (Html.Writer, renderer.Writer);
+      Assert.AreSame (List, renderer.List);
+    }
+
     private void CreateRenderer<T> (T column, IBocColumnRendererFactory<T> rendererFactory)
         where T: BocColumnDefinition
     {

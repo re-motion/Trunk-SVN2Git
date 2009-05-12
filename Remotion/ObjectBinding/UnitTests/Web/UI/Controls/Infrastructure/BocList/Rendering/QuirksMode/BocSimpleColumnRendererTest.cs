@@ -18,9 +18,11 @@ using System.Web.UI;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -53,6 +55,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       EventArgs.IsEditableRow = false;
 
       Column = new BocSimpleColumnDefinition();
+      Column.Command = null;
       Column.IsDynamic = false;
       Column.IsReadOnly = false;
       Column.ColumnTitle = "FirstColumn";
@@ -69,19 +72,91 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
 
-      renderer.RenderDataCell (0, false, "bocListTableCell", EventArgs);
+      renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
+
+      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+
+      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      Html.AssertAttribute (span, "class", "bocListContent");
+
+      Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 0, false);
     }
 
     [Test]
-    public void RenderCell ()
+    public void RenderBasicCell ()
     {
       BusinessObject.SetProperty ("FirstValue", TypeWithReference.Create ("referencedObject1"));
 
       IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
 
-      renderer.RenderDataCell (0, false, "bocListTableCell", EventArgs);
+      renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
+
+      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+
+      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      Html.AssertAttribute (span, "class", "bocListContent");
+
+      Html.AssertTextNode (span, "referencedObject1", 0, false);
+    }
+
+    [Test]
+    public void RenderCommandCell ()
+    {
+      Column.Command = new BocListItemCommand (CommandType.Href);
+      
+      BusinessObject.SetProperty ("FirstValue", TypeWithReference.Create ("referencedObject1"));
+
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
+
+      renderer.RenderDataCell (0, false, EventArgs);
+      HtmlDocument document = Html.GetResultDocument ();
+
+      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+
+      HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+
+      Html.AssertTextNode (a, "referencedObject1", 0, false);
+      Html.AssertAttribute (a, "href", "");
+      Html.AssertAttribute (a, "onclick", "");
+    }
+
+    [Test]
+    public void RenderIconCell ()
+    {
+      Column.EnableIcon = true;
+      BusinessObject.BusinessObjectClass.BusinessObjectProvider.AddService<IBusinessObjectWebUIService> (new ReflectionBusinessObjectWebUIService());
+
+      BusinessObject.SetProperty ("FirstValue", TypeWithReference.Create ("referencedObject1"));
+
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
+
+      renderer.RenderDataCell (0, false, EventArgs);
+      HtmlDocument document = Html.GetResultDocument ();
+
+      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+
+      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      Html.AssertAttribute (span, "class", "bocListContent");
+
+      HtmlNode img = Html.GetAssertedChildElement (span, "img", 0, false);
+
+      string businessObjectClass = BusinessObject.BusinessObjectClass.Identifier;
+      businessObjectClass = businessObjectClass.Substring (0, businessObjectClass.IndexOf (", "));
+      Html.AssertAttribute (
+          img, "src", businessObjectClass, HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (img, "width", "16px");
+      Html.AssertAttribute (img, "height", "16px");
+      Html.AssertAttribute (img, "alt", "");
+      Html.AssertStyleAttribute (img, "vertical-align", "middle");
+      Html.AssertStyleAttribute (img, "border-style", "none");
+
+      Html.AssertTextNode (span, HtmlHelper.WhiteSpace + BusinessObject.GetPropertyString("FirstValue"), 1, false);
     }
   }
 }

@@ -66,16 +66,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       get { return Column; }
     }
 
-    HtmlTextWriter IBocColumnRenderer.Writer
-    {
-      get { return Writer; }
-    }
-
-    Controls.BocList IBocColumnRenderer.List
-    {
-      get { return List; }
-    }
-
     /// <see cref="IBocColumnRenderer.Column"/>
     public TBocColumnDefinition Column
     {
@@ -209,7 +199,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// </summary>
     /// <param name="rowIndex">The zero-based index of the row on the page to be displayed.</param>
     /// <param name="showIcon">Specifies if an object-specific icon will be rendered in the table cell.</param>
-    /// <param name="cssClassTableCell">Specifies the CSS class to be applied to the table cell.</param>
     /// <param name="dataRowRenderEventArgs">Specifies row-specific arguments used in rendering the table cell.</param>
     /// <remarks>
     /// This is a template method. Deriving classes must implement <see cref="RenderCellContents"/> to provide the contents of
@@ -218,11 +207,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     public void RenderDataCell (
         int rowIndex,
         bool showIcon,
-        string cssClassTableCell,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       if (!List.IsColumnVisible (Column))
         return;
+
+      string cssClassTableCell;
+      if (rowIndex % 2 == 1)
+        cssClassTableCell = List.CssClassDataCellOdd;
+      else
+        cssClassTableCell = List.CssClassDataCellEven;
 
       if (!StringUtility.IsNullOrEmpty (Column.CssClass))
         cssClassTableCell += " " + Column.CssClass;
@@ -230,7 +224,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
-      bool isEditedRow = List.IsRowEditModeActive && List.EditableRowIndex.Value == originalRowIndex;
+      bool isEditedRow = List.IsRowEditModeActive && (List.EditableRowIndex.Value == originalRowIndex);
       RenderCellContents (dataRowRenderEventArgs, rowIndex, isEditedRow, showIcon);
 
       Writer.RenderEndTag();

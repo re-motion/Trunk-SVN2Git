@@ -26,7 +26,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
           IBocColumnRendererFactory<BocCommandColumnDefinition>,
           IBocColumnRendererFactory<BocCustomColumnDefinition>,
           IBocColumnRendererFactory<BocDropDownMenuColumnDefinition>,
-          IBocColumnRendererFactory<BocRowEditModeColumnDefinition>
+          IBocColumnRendererFactory<BocRowEditModeColumnDefinition>,
+          IBocIndexColumnRendererFactory,
+          IBocSelectorColumnRendererFactory
   {
     public IBocColumnRenderer<BocSimpleColumnDefinition> CreateRenderer
         (HtmlTextWriter writer, Controls.BocList list, BocSimpleColumnDefinition columnDefinition)
@@ -86,6 +88,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
       return new BocRowEditModeColumnRenderer (list, writer, columnDefinition);
+    }
+
+    IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("list", list);
+
+      return new BocIndexColumnRenderer(list, writer);
+    }
+
+    IBocSelectorColumnRenderer IBocSelectorColumnRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("list", list);
+
+      return new BocSelectorColumnRenderer(list, writer);
     }
   }
 }
