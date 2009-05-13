@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
     public void InitializeStream ()
     {
-      Buffer = new byte[1 * 1024];
+      Buffer = new byte[16 * 1024];
       Stream = new MemoryStream (Buffer);
       StreamWriter innerWriter = new StreamWriter (Stream, Encoding.Unicode);
       Writer = new HtmlTextWriter (innerWriter);
@@ -93,7 +93,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
                 parent.Name,
                 index,
                 parent.ChildNodes[index].NodeType,
-                HtmlNodeType.Text));
+                HtmlNodeType.Element));
       }
 
       Assert.AreEqual (tag, node.Name, "Unexpected element tag.");
@@ -179,6 +179,23 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       string stylePart = String.Format ("{0}:{1};", cssProperty, cssValue);
       Assert.IsTrue (attribute.Value.Contains (stylePart), String.Format ("Attribute {0}.{1}", node.Name, attribute.Name));
+    }
+
+    public void AssertIcon (HtmlNode parentNode, IBusinessObject businessObject, string imageSourcePart)
+    {
+      HtmlNode img = GetAssertedChildElement (parentNode, "img", 0, false);
+      if (imageSourcePart == null)
+      {
+        string businessObjectClass = businessObject.BusinessObjectClass.Identifier;
+        imageSourcePart = businessObjectClass.Substring (0, businessObjectClass.IndexOf (", "));
+      }
+      AssertAttribute (
+          img, "src", imageSourcePart, HtmlHelper.AttributeValueCompareMode.Contains);
+      AssertAttribute (img, "width", "16px");
+      AssertAttribute (img, "height", "16px");
+      AssertAttribute (img, "alt", "");
+      AssertStyleAttribute (img, "vertical-align", "middle");
+      AssertStyleAttribute (img, "border-style", "none");
     }
   }
 }

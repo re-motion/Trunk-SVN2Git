@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// and must be set in the constructor.</remarks>
     /// <param name="list">The <see cref="BocList"/> to render.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the list to.</param>
-    protected BocListRendererBase (Controls.BocList list, HtmlTextWriter writer)
+    protected BocListRendererBase (HtmlTextWriter writer, Controls.BocList list)
     {
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("writer", writer);

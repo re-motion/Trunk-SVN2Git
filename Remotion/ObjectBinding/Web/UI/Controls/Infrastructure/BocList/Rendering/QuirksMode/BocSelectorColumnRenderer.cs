@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -8,7 +8,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     private const int c_titleRowIndex = -1;
 
     public BocSelectorColumnRenderer (Controls.BocList list, HtmlTextWriter writer)
-        : base(list, writer)
+        : base(writer, list)
     {
     }
 

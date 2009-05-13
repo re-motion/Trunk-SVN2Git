@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     private readonly IServiceLocator _serviceLocator;
 
     public BocRowRenderer (Controls.BocList list, HtmlTextWriter writer, IServiceLocator serviceLocator)
-        : base (list, writer)
+        : base (writer, list)
     {
       _serviceLocator = serviceLocator;
     }

@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
     public BocSimpleColumnRenderer (HtmlTextWriter writer, Controls.BocList list, BocSimpleColumnDefinition columnDefinition)
-        : base (list, writer, columnDefinition)
+        : base (writer, list, columnDefinition)
     {
     }
 

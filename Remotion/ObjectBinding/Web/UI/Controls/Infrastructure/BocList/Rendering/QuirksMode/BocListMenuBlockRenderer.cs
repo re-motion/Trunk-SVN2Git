@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
     public BocListMenuBlockRenderer (Controls.BocList list, HtmlTextWriter writer)
-        : base (list, writer)
+        : base (writer, list)
     {
     }
 

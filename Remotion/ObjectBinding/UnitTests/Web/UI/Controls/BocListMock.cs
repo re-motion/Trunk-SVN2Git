@@ -15,7 +15,9 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
@@ -64,7 +66,49 @@ public class BocListMock: BocList
   {
     get { return base.IsClientSideSortingEnabled; }
   }
-  
+
+  protected override bool IsDesignMode
+  {
+    get
+    {
+      return IsDesignModeOverrideValue.HasValue ? IsDesignModeOverrideValue.Value : base.IsDesignMode;
+    }
+  }
+
+  protected override bool IsInternetExplorer55OrHigher ()
+  {
+    return true;
+  }
+
+  protected override WebMenuItem[] InitializeRowMenuItems (IBusinessObject businessObject, int listIndex)
+  {
+
+    return new[]
+           {
+               new WebMenuItem (
+                   "item0",
+                   null,
+                   "WebMenuItem1",
+                   new IconInfo ("~/Images/RowMenuItem.gif", 16, 16),
+                   new IconInfo ("~/Images/RowMenuItemDisabled.gif", 16, 16),
+                   WebMenuItemStyle.Text,
+                   RequiredSelection.Any,
+                   false,
+                   null)
+           };
+  }
+
+  public bool? IsDesignModeOverrideValue { get; set; }
+
+  public void OnLoad ()
+  {
+    base.OnLoad (EventArgs.Empty);
+  }
+
+  public void OnPreRender ()
+  {
+    base.OnPreRender (EventArgs.Empty);
+  }
 }
 
 }

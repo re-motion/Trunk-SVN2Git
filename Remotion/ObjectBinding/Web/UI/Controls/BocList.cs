@@ -2830,7 +2830,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       _hasClientScript = false;
 
-      if (! ControlHelper.IsDesignMode (this, Context))
+      if (! IsDesignMode)
         _hasClientScript = EnableClientScript;
     }
 

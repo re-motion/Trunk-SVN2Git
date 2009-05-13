@@ -52,13 +52,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> containing the data to be rendered.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the cells to.</param>
-    /// <param name="column">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
-    protected BocColumnRendererBase (Controls.BocList list, HtmlTextWriter writer, TBocColumnDefinition column)
-        : base (list, writer)
+    /// <param name="columnDefinition">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
+    protected BocColumnRendererBase (HtmlTextWriter writer, Controls.BocList list, TBocColumnDefinition columnDefinition)
+        : base (writer, list)
     {
-      _column = column;
+      _column = columnDefinition;
       List<BocColumnDefinition> columnsInBocList = new List<BocColumnDefinition> (List.EnsureColumnsGot());
-      _columnIndex = columnsInBocList.IndexOf (column);
+      _columnIndex = columnsInBocList.IndexOf (columnDefinition);
     }
 
     BocColumnDefinition IBocColumnRenderer.Column

@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new BocCompoundColumnRenderer (list, writer, columnDefinition);
+      return new BocCompoundColumnRenderer (writer, list, columnDefinition);
     }
 
     public IBocColumnRenderer<BocCommandColumnDefinition> CreateRenderer (
@@ -57,7 +57,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new BocCommandColumnRenderer (list, writer, columnDefinition);
+      return new BocCommandColumnRenderer (writer, list, columnDefinition);
     }
 
     public IBocColumnRenderer<BocCustomColumnDefinition> CreateRenderer (
@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new BocDropDownMenuColumnRenderer (list, writer, columnDefinition);
+      return new BocDropDownMenuColumnRenderer (writer, list, columnDefinition);
     }
 
     public IBocColumnRenderer<BocRowEditModeColumnDefinition> CreateRenderer (
@@ -87,7 +87,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
-      return new BocRowEditModeColumnRenderer (list, writer, columnDefinition);
+      return new BocRowEditModeColumnRenderer (writer, list, columnDefinition);
     }
 
     IBocIndexColumnRenderer IBocIndexColumnRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list)

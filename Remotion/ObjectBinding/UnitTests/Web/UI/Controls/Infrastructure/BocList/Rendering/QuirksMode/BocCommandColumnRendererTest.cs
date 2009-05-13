@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI.WebControls;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -24,18 +25,17 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   [TestFixture]
-  public class BocSimpleColumnRendererTest : ColumnRendererTestBase<BocSimpleColumnDefinition>
+  public class BocCommandColumnRendererTest : ColumnRendererTestBase<BocCommandColumnDefinition>
   {
     [SetUp]
     public override void SetUp ()
     {
-      Column = new BocSimpleColumnDefinition();
-      Column.Command = null;
-      Column.IsDynamic = false;
-      Column.IsReadOnly = false;
+      Column = new BocCommandColumnDefinition();
+      Column.Command = new BocListItemCommand (CommandType.Event);
+      Column.Command.EventCommand = new Command.EventCommandInfo();
+      Column.Command.EventCommand.RequiresSynchronousPostBack = true;
+      Column.Text = "TestCommand";
       Column.ColumnTitle = "FirstColumn";
-      Column.PropertyPathIdentifier = "DisplayName";
-      Column.FormatString = "{0}";
 
       base.SetUp();
     }
@@ -43,57 +43,63 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
-
+      IBocColumnRenderer<BocCommandColumnDefinition> renderer = new BocCommandColumnRenderer (Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
-      HtmlDocument document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
-
-      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
-      Html.AssertAttribute (span, "class", "bocListContent");
-
-      Html.AssertTextNode (span, "referencedObject1", 0, false);
-    }
-
-    [Test]
-    public void RenderCommandCell ()
-    {
-      Column.Command = new BocListItemCommand (CommandType.Href);
-
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
-
-      renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
       Html.AssertAttribute (td, "class", "bocListDataCellEven");
 
       HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+      Html.AssertAttribute (a, "href", "#");
+      Html.AssertAttribute (a, "onclick", "__doPostBack('ctl00','ListCommand=0,0');");
 
-      Html.AssertTextNode (a, "referencedObject1", 0, false);
-      Html.AssertAttribute (a, "href", "");
-      Html.AssertAttribute (a, "onclick", "");
+      Html.AssertTextNode (a, "TestCommand", 0, false);
     }
 
     [Test]
     public void RenderIconCell ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
-
+      IBocColumnRenderer<BocCommandColumnDefinition> renderer = new BocCommandColumnRenderer (Html.Writer, List, Column);
       renderer.RenderDataCell (0, true, EventArgs);
+
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
       Html.AssertAttribute (td, "class", "bocListDataCellEven");
 
-      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
-      Html.AssertAttribute (span, "class", "bocListContent");
+      HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+      Html.AssertAttribute (a, "href", "#");
+      Html.AssertAttribute (a, "onclick", "__doPostBack('ctl00','ListCommand=0,0');");
 
-      Html.AssertIcon (span, EventArgs.BusinessObject, null);
+      Html.AssertIcon (a, EventArgs.BusinessObject, null);
 
-      Html.AssertTextNode (span, HtmlHelper.WhiteSpace + BusinessObject.GetPropertyString ("FirstValue"), 1, false);
+      Html.AssertTextNode (a, HtmlHelper.WhiteSpace + "TestCommand", 1, false);
+    }
+
+    [Test]
+    public void RenderCommandIconCell ()
+    {
+      Column.Icon.Url = "~/Images/CommandIcon.gif";
+      Column.Icon.Width = new Unit (16, UnitType.Pixel);
+      Column.Icon.Height = new Unit (16, UnitType.Pixel);
+
+      IBocColumnRenderer<BocCommandColumnDefinition> renderer = new BocCommandColumnRenderer (Html.Writer, List, Column);
+      renderer.RenderDataCell (0, false, EventArgs);
+
+      HtmlDocument document = Html.GetResultDocument();
+
+      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+
+      HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+      Html.AssertAttribute (a, "href", "#");
+      Html.AssertAttribute (a, "onclick", "__doPostBack('ctl00','ListCommand=0,0');");
+
+      Html.AssertIcon (a, EventArgs.BusinessObject, Column.Icon.Url);
+
+      Html.AssertTextNode (a, "TestCommand", 1, false);
     }
   }
 }

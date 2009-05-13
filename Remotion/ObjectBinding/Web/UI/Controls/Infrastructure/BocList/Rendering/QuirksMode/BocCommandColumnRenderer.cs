@@ -33,8 +33,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCommandColumnRenderer (Controls.BocList list, HtmlTextWriter writer, BocCommandColumnDefinition column)
-        : base (list, writer, column)
+    public BocCommandColumnRenderer (HtmlTextWriter writer, Controls.BocList list, BocCommandColumnDefinition columnDefinition)
+        : base (writer, list, columnDefinition)
     {
     }
 

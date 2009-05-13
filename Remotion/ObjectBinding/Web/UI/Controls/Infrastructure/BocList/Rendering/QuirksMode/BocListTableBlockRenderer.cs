@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     private readonly IBocRowRenderer _rowRenderer;
 
     public BocListTableBlockRenderer (Controls.BocList list, HtmlTextWriter writer, IServiceLocator serviceLocator)
-        : base(list, writer)
+        : base(writer, list)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 

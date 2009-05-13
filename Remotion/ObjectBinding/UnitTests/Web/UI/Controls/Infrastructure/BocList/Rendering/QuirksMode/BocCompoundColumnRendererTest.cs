@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,36 +14,56 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI.WebControls;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   [TestFixture]
-  public class BocSimpleColumnRendererTest : ColumnRendererTestBase<BocSimpleColumnDefinition>
+  public class BocCompoundColumnRendererTest : ColumnRendererTestBase<BocCompoundColumnDefinition>
   {
     [SetUp]
     public override void SetUp ()
     {
-      Column = new BocSimpleColumnDefinition();
-      Column.Command = null;
-      Column.IsDynamic = false;
-      Column.IsReadOnly = false;
+      Column = new BocCompoundColumnDefinition();
+      Column.ColumnTitle = "TestColumn1";
       Column.ColumnTitle = "FirstColumn";
-      Column.PropertyPathIdentifier = "DisplayName";
+      Column.Command = null;
+      Column.EnforceWidth = false;
       Column.FormatString = "{0}";
 
       base.SetUp();
+
+      Column.PropertyPathBindings.Add (new PropertyPathBinding ("DisplayName"));
+    }
+
+    [Test]
+    public void RenderEmptyCell ()
+    {
+      Column.FormatString = string.Empty;
+
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (Html.Writer, List, Column);
+
+      renderer.RenderDataCell (0, false, EventArgs);
+      HtmlDocument document = Html.GetResultDocument();
+
+      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+
+      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      Html.AssertAttribute (span, "class", "bocListContent");
+
+      Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 0, false);
     }
 
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
@@ -58,11 +78,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     }
 
     [Test]
-    public void RenderCommandCell ()
+    public void RenderEnforcedWidthCell ()
     {
-      Column.Command = new BocListItemCommand (CommandType.Href);
+      Column.EnforceWidth = true;
+      Column.Width = new Unit (40, UnitType.Pixel);
 
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
@@ -70,30 +91,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
       Html.AssertAttribute (td, "class", "bocListDataCellEven");
 
-      HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+      HtmlNode cropSpan = Html.GetAssertedChildElement (td, "span", 0, false);
+      Html.AssertAttribute (cropSpan, "title", "referencedObject1");
+      Html.AssertStyleAttribute (cropSpan, "width", "40px");
+      Html.AssertStyleAttribute (cropSpan, "display", "block");
+      Html.AssertStyleAttribute (cropSpan, "overflow", "hidden");
+      Html.AssertStyleAttribute (cropSpan, "white-space", "nowrap");
 
-      Html.AssertTextNode (a, "referencedObject1", 0, false);
-      Html.AssertAttribute (a, "href", "");
-      Html.AssertAttribute (a, "onclick", "");
-    }
-
-    [Test]
-    public void RenderIconCell ()
-    {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, Column);
-
-      renderer.RenderDataCell (0, true, EventArgs);
-      HtmlDocument document = Html.GetResultDocument();
-
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
-
-      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      HtmlNode span = Html.GetAssertedChildElement (cropSpan, "span", 0, false);
       Html.AssertAttribute (span, "class", "bocListContent");
 
-      Html.AssertIcon (span, EventArgs.BusinessObject, null);
-
-      Html.AssertTextNode (span, HtmlHelper.WhiteSpace + BusinessObject.GetPropertyString ("FirstValue"), 1, false);
+      Html.AssertTextNode (span, "referencedObject1", 0, false);
     }
   }
 }

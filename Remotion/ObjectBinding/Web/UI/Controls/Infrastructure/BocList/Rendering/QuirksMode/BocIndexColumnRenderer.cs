@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web.UI;
 using Remotion.Utilities;
 
@@ -7,7 +7,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   public class BocIndexColumnRenderer : BocListRendererBase, IBocIndexColumnRenderer
   {
     public BocIndexColumnRenderer (Controls.BocList list, HtmlTextWriter writer)
-        : base(list, writer)
+        : base(writer, list)
     {
     }
 
