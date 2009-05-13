@@ -185,6 +185,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Shared", "Dms\Shared\Dm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Web", "Dms\Web\Dms.Web.csproj", "{F47CE8AE-22DA-4666-8371-01E7A32D539B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Web.Test", "Dms\Web.Test\Dms.Web.Test.csproj", "{12C435C1-FE1C-4368-8FE5-A29B22A8F962}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -406,6 +408,10 @@ Global
 		{F47CE8AE-22DA-4666-8371-01E7A32D539B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F47CE8AE-22DA-4666-8371-01E7A32D539B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F47CE8AE-22DA-4666-8371-01E7A32D539B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12C435C1-FE1C-4368-8FE5-A29B22A8F962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12C435C1-FE1C-4368-8FE5-A29B22A8F962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12C435C1-FE1C-4368-8FE5-A29B22A8F962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12C435C1-FE1C-4368-8FE5-A29B22A8F962}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -465,6 +471,7 @@ Global
 		{F3AB6F46-3776-4562-8BB2-FFFDE7E62BE0} = {41F62020-3A67-4A33-B82A-9442510269E3}
 		{B79940B8-1949-406D-9CCA-E6349898E11A} = {41F62020-3A67-4A33-B82A-9442510269E3}
 		{F47CE8AE-22DA-4666-8371-01E7A32D539B} = {41F62020-3A67-4A33-B82A-9442510269E3}
+		{12C435C1-FE1C-4368-8FE5-A29B22A8F962} = {41F62020-3A67-4A33-B82A-9442510269E3}
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1
