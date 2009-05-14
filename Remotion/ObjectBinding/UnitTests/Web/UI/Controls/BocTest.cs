@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.Development.Web.UnitTesting.UI;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.UI;
@@ -55,6 +56,7 @@ public class BocTest
   {
     WcagHelper.SetInstance (new WcagHelperMock ());
     HttpContextHelper.SetCurrent (null);
+    WebConfigurationMock.Current = null;
   }
 
   protected WcagHelperMock WcagHelperMock
