@@ -19,6 +19,7 @@ namespace $PROJECT_ROOTNAMESPACE$.UI
   {
     private void Page_Load(object sender, System.EventArgs e)
     {
+
       Title = ResourceManagerUtility.GetResourceManager(this).GetString("Search~$DOMAIN_CLASSNAME$");
       // At the time of this writing (2008-12-01), SearchAllObjectsService is
       // implemented in a file named SearchAllObjectsService.cs. This file must
