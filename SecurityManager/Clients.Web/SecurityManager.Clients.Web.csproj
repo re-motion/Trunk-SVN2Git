@@ -123,19 +123,15 @@
   <ItemGroup>
     <Compile Include="Classes\AccessControl\CollapsedAccessControlConditionsRenderer.cs" />
     <Compile Include="Classes\AccessControl\EditAccessControlListControlBase.cs">
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Classes\AccessControl\PermissionBooleanValue.cs" />
     <Compile Include="Classes\EditableRowAutoCompleteControlFactory.cs" />
     <Compile Include="Classes\SecurableClassDefinitionTreeView.cs" />
     <Compile Include="Classes\BaseControl.cs">
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Classes\BaseEditPage.cs">
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Classes\BasePage.cs">
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Classes\SecurityManagerHttpApplication.cs" />
     <Compile Include="default.aspx.cs">
@@ -301,7 +297,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx.cs">
       <DependentUpon>EditAccessControlEntryHeaderControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx.designer.cs">
       <DependentUpon>EditAccessControlEntryHeaderControl.ascx</DependentUpon>
@@ -312,77 +307,66 @@
     </Compile>
     <Compile Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx.cs">
       <DependentUpon>EditStatelessAccessControlListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx.designer.cs">
       <DependentUpon>EditStatelessAccessControlListControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\AccessControl\EditPermissionControl.ascx.cs">
       <DependentUpon>EditPermissionControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\AccessControl\EditPermissionControl.ascx.designer.cs">
       <DependentUpon>EditPermissionControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\AccessControl\EditAccessControlEntryControl.ascx.cs">
       <DependentUpon>EditAccessControlEntryControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\AccessControl\EditAccessControlEntryControl.ascx.designer.cs">
       <DependentUpon>EditAccessControlEntryControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\AccessControl\EditStateCombinationControl.ascx.cs">
       <DependentUpon>EditStateCombinationControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\AccessControl\EditStateCombinationControl.ascx.designer.cs">
       <DependentUpon>EditStateCombinationControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\AccessControl\EditStatefulAccessControlListControl.ascx.cs">
       <DependentUpon>EditStatefulAccessControlListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\AccessControl\EditStatefulAccessControlListControl.ascx.designer.cs">
       <DependentUpon>EditStatefulAccessControlListControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\AccessControl\EditPermissionsForm.aspx.cs">
       <DependentUpon>EditPermissionsForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\AccessControl\EditPermissionsForm.aspx.designer.cs">
       <DependentUpon>EditPermissionsForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\AccessControl\SecurableClassDefinitionListForm.aspx.cs">
       <DependentUpon>SecurableClassDefinitionListForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\AccessControl\SecurableClassDefinitionListForm.aspx.designer.cs">
       <DependentUpon>SecurableClassDefinitionListForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\TenantListForm.aspx.cs">
       <DependentUpon>TenantListForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\TenantListForm.aspx.designer.cs">
       <DependentUpon>TenantListForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\TenantListControl.ascx.cs">
       <DependentUpon>TenantListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\TenantListControl.ascx.designer.cs">
       <DependentUpon>TenantListControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditTenantForm.aspx.cs">
       <DependentUpon>EditTenantForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditTenantForm.aspx.designer.cs">
       <DependentUpon>EditTenantForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditTenantControl.ascx.cs">
       <DependentUpon>EditTenantControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditTenantControl.ascx.designer.cs">
       <DependentUpon>EditTenantControl.ascx</DependentUpon>
@@ -403,154 +387,132 @@
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupTypePositionControl.ascx.cs">
       <DependentUpon>EditGroupTypePositionControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupTypePositionControl.ascx.designer.cs">
       <DependentUpon>EditGroupTypePositionControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupTypePositionForm.aspx.cs">
       <DependentUpon>EditGroupTypePositionForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupTypePositionForm.aspx.designer.cs">
       <DependentUpon>EditGroupTypePositionForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupControl.ascx.cs">
       <DependentUpon>EditGroupControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupControl.ascx.designer.cs">
       <DependentUpon>EditGroupControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupForm.aspx.cs">
       <DependentUpon>EditGroupForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupForm.aspx.designer.cs">
       <DependentUpon>EditGroupForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupTypeControl.ascx.cs">
       <DependentUpon>EditGroupTypeControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupTypeControl.ascx.designer.cs">
       <DependentUpon>EditGroupTypeControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupTypeForm.aspx.cs">
       <DependentUpon>EditGroupTypeForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditGroupTypeForm.aspx.designer.cs">
       <DependentUpon>EditGroupTypeForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditPositionControl.ascx.cs">
       <DependentUpon>EditPositionControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditPositionControl.ascx.designer.cs">
       <DependentUpon>EditPositionControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditPositionForm.aspx.cs">
       <DependentUpon>EditPositionForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditPositionForm.aspx.designer.cs">
       <DependentUpon>EditPositionForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditRoleControl.ascx.cs">
       <DependentUpon>EditRoleControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditRoleControl.ascx.designer.cs">
       <DependentUpon>EditRoleControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditRoleForm.aspx.cs">
       <DependentUpon>EditRoleForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditRoleForm.aspx.designer.cs">
       <DependentUpon>EditRoleForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditUserControl.ascx.cs">
       <DependentUpon>EditUserControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditUserControl.ascx.designer.cs">
       <DependentUpon>EditUserControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditUserForm.aspx.cs">
       <DependentUpon>EditUserForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\EditUserForm.aspx.designer.cs">
       <DependentUpon>EditUserForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupListControl.ascx.cs">
       <DependentUpon>GroupListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupListControl.ascx.designer.cs">
       <DependentUpon>GroupListControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupListForm.aspx.cs">
       <DependentUpon>GroupListForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupListForm.aspx.designer.cs">
       <DependentUpon>GroupListForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupTypeListControl.ascx.cs">
       <DependentUpon>GroupTypeListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupTypeListControl.ascx.designer.cs">
       <DependentUpon>GroupTypeListControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupTypeListForm.aspx.cs">
       <DependentUpon>GroupTypeListForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\GroupTypeListForm.aspx.designer.cs">
       <DependentUpon>GroupTypeListForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\PositionListControl.ascx.cs">
       <DependentUpon>PositionListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\PositionListControl.ascx.designer.cs">
       <DependentUpon>PositionListControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\PositionListForm.aspx.cs">
       <DependentUpon>PositionListForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\PositionListForm.aspx.designer.cs">
       <DependentUpon>PositionListForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\SearchGroupControl.ascx.cs">
       <DependentUpon>SearchGroupControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\SearchGroupControl.ascx.designer.cs">
       <DependentUpon>SearchGroupControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\SearchGroupForm.aspx.cs">
       <DependentUpon>SearchGroupForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\SearchGroupForm.aspx.designer.cs">
       <DependentUpon>SearchGroupForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\UserListControl.ascx.cs">
       <DependentUpon>UserListControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\UserListControl.ascx.designer.cs">
       <DependentUpon>UserListControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\UserListForm.aspx.cs">
       <DependentUpon>UserListForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\OrganizationalStructure\UserListForm.aspx.designer.cs">
       <DependentUpon>UserListForm.aspx</DependentUpon>
