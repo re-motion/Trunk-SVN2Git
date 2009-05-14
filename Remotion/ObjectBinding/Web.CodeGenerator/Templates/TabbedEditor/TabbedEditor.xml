@@ -81,7 +81,7 @@ TODO: <folder>
 	</forEachEnum>
 
 	<!-- TODO: remove ignore="ID;IsDiscarded;ClientTransaction;State" -->
-	<properties ignore="ID;IsDiscarded;ClientTransaction;State"	>
+	<properties ignore="ID;IsDiscarded;ClientTransaction;State;DisplayName"	>
 		<controlMappings>
       <mapping propertyType="Remotion.ObjectBinding.IBusinessObjectStringProperty" control="remotion:BocTextValue" />
       <mapping propertyType="Remotion.ObjectBinding.IBusinessObjectNumericProperty" control="remotion:BocTextValue" />
