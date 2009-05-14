@@ -6,13 +6,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 {
   public class BocIndexColumnRenderer : BocListRendererBase, IBocIndexColumnRenderer
   {
-    public BocIndexColumnRenderer (Controls.BocList list, HtmlTextWriter writer)
+    public BocIndexColumnRenderer (HtmlTextWriter writer, Controls.BocList list)
         : base(writer, list)
     {
     }
 
     public void RenderDataCell (int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell)
     {
+      ArgumentUtility.CheckNotNull ("cssClassTableCell", cssClassTableCell);
       if (!List.IsIndexEnabled)
         return;
 

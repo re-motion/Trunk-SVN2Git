@@ -80,7 +80,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_rowEditModeValidationErrorIcon = "ValidationError.gif";
 
     /// <summary> Prefix applied to the post back argument of the sort buttons. </summary>
-    private const string c_sortCommandPrefix = "Sort=";
+    internal const string SortCommandPrefix = "Sort=";
 
     private const string c_goToCommandPrefix = "GoTo=";
 
@@ -455,8 +455,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         HandleListItemCommandEvent (eventArgument.Substring (c_eventListItemCommandPrefix.Length));
       else if (eventArgument.StartsWith (c_eventMenuItemPrefix))
         HandleMenuItemEvent (eventArgument.Substring (c_eventMenuItemPrefix.Length));
-      else if (eventArgument.StartsWith (c_sortCommandPrefix))
-        HandleResorting (eventArgument.Substring (c_sortCommandPrefix.Length));
+      else if (eventArgument.StartsWith (SortCommandPrefix))
+        HandleResorting (eventArgument.Substring (SortCommandPrefix.Length));
       else if (eventArgument.StartsWith (c_customCellEventPrefix))
         HandleCustomCellEvent (eventArgument.Substring (c_customCellEventPrefix.Length));
       else if (eventArgument.StartsWith (c_eventRowEditModePrefix))
@@ -1195,6 +1195,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         PreRenderCustomColumns();
         PreRenderListItemCommands();
       }
+
+      PopulateAvailableViewsList ();
     }
 
     /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
@@ -1450,7 +1452,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return true;
     }
 
-    internal void PopulateAvailableViewsList ()
+    private void PopulateAvailableViewsList ()
     {
       _availableViewsList.Items.Clear();
 

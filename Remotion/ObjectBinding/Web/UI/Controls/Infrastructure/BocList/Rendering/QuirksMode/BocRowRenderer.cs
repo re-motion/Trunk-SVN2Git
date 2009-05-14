@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private readonly IServiceLocator _serviceLocator;
 
-    public BocRowRenderer (Controls.BocList list, HtmlTextWriter writer, IServiceLocator serviceLocator)
+    public BocRowRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
         : base (writer, list)
     {
       _serviceLocator = serviceLocator;

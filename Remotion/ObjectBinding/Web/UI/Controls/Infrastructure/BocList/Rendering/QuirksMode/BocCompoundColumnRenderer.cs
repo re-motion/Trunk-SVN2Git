@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -45,6 +46,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <param name="editableRow">Ignored.</param>
     protected override void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, EditableRow editableRow)
     {
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
       string valueColumnText = null;
       if (!showEditModeControl)
         valueColumnText = Column.GetStringValue (businessObject);

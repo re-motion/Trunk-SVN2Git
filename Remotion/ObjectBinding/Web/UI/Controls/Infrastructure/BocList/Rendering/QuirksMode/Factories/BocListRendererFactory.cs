@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories
 {
@@ -27,27 +28,45 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   {
     IBocRowRenderer IBocRowRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
     {
-      return new BocRowRenderer (list, writer, serviceLocator);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocRowRenderer (writer, list, serviceLocator);
     }
 
     IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list)
     {
-      return new BocListMenuBlockRenderer (list, writer);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("list", list);
+      
+      return new BocListMenuBlockRenderer (writer, list);
     }
 
     IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list)
     {
-      return new BocListNavigationBlockRenderer (list, writer);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("list", list);
+
+      return new BocListNavigationBlockRenderer (writer, list);
     }
 
     public IBocListRenderer CreateRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
     {
-      return new BocListRenderer (list, writer, serviceLocator);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocListRenderer (writer, list, serviceLocator);
     }
 
     IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
     {
-      return new BocListTableBlockRenderer (list, writer, serviceLocator);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
+
+      return new BocListTableBlockRenderer (writer, list, serviceLocator);
     }
   }
 }

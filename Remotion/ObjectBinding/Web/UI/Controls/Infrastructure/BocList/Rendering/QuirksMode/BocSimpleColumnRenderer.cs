@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -49,6 +50,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// May be <see langword="null"/> if <paramref name="showEditModeControl"/> is <see langword="false"/>.</param>
     protected override void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, EditableRow editableRow)
     {
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
       if (showEditModeControl)
         RenderEditModeControl (businessObject, editableRow);
       else
@@ -64,6 +67,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <param name="businessObject">The <see cref="IBusinessObject"/> that acts as a starting point for the property path.</param>
     protected override void RenderOtherIcons (IBusinessObject businessObject)
     {
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
       if (Column.EnableIcon)
       {
         IBusinessObjectPropertyPath propertyPath;

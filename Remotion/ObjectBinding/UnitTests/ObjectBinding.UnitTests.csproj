@@ -293,6 +293,7 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerWithoutEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCommandColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCustomColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocDropDownMenuColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowEditModeColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSimpleColumnRendererTest.cs" />
@@ -302,6 +303,7 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocListRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\ReflectionBusinessObjectWebUIService.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubCustomCellDefinition.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubServiceLocator.cs" />
     <None Include="ObjectBinding.UnitTests.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />

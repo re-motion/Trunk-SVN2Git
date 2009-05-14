@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListMenuBlockRenderer (Controls.BocList list, HtmlTextWriter writer)
+    public BocListMenuBlockRenderer (HtmlTextWriter writer, Controls.BocList list)
         : base (writer, list)
     {
     }
@@ -93,7 +93,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       if (!List.HasAvailableViewsList)
         return;
 
-      List.PopulateAvailableViewsList();
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       Writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);

@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
@@ -38,9 +37,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <summary>Filename of the image used to indicate an descending sort order of the column in its title cell.</summary>
     protected const string c_sortDescendingIcon = "SortDescending.gif";
 
-    /// <summary> Prefix applied to the post back argument of the sort buttons. </summary>
-    protected const string c_sortCommandPrefix = "Sort=";
-
     private const string c_designModeEmptyContents = "#";
 
     private readonly TBocColumnDefinition _column;
@@ -56,9 +52,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     protected BocColumnRendererBase (HtmlTextWriter writer, Controls.BocList list, TBocColumnDefinition columnDefinition)
         : base (writer, list)
     {
+      ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
+
       _column = columnDefinition;
-      List<BocColumnDefinition> columnsInBocList = new List<BocColumnDefinition> (List.EnsureColumnsGot());
-      _columnIndex = columnsInBocList.IndexOf (columnDefinition);
+      _columnIndex = Array.IndexOf (List.EnsureColumnsGot(), columnDefinition);
     }
 
     BocColumnDefinition IBocColumnRenderer.Column
@@ -66,19 +63,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       get { return Column; }
     }
 
-    /// <see cref="IBocColumnRenderer.Column"/>
     public TBocColumnDefinition Column
     {
       get { return _column; }
     }
 
-    /// <see cref="IBocColumnRenderer.ColumnIndex"/>
     public int ColumnIndex
     {
       get { return _columnIndex; }
     }
 
-    /// <see cref="IBocColumnRenderer.RenderTitleCell"/>
     public void RenderTitleCell (SortingDirection sortingDirection, int orderIndex)
     {
       string cssClassTitleCell = List.CssClassTitleCell;
@@ -111,7 +105,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       {
         if (!List.IsRowEditModeActive && !List.IsListEditModeActive && List.HasClientScript)
         {
-          string argument = c_sortCommandPrefix + ColumnIndex;
+          string argument = Controls.BocList.SortCommandPrefix + ColumnIndex;
           string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
           postBackEvent += "; return false;";
           Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
@@ -209,6 +203,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         bool showIcon,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
+      ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
+
       if (!List.IsColumnVisible (Column))
         return;
 

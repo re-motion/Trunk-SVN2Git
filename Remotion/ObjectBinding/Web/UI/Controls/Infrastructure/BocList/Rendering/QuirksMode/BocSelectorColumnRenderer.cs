@@ -1,5 +1,6 @@
 using System;
 using System.Web.UI;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -7,13 +8,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   {
     private const int c_titleRowIndex = -1;
 
-    public BocSelectorColumnRenderer (Controls.BocList list, HtmlTextWriter writer)
+    public BocSelectorColumnRenderer (HtmlTextWriter writer, Controls.BocList list)
         : base(writer, list)
     {
     }
 
     public void RenderDataCell (int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("selectorControlID", selectorControlID);
+      ArgumentUtility.CheckNotNullOrEmpty ("cssClassTableCell", cssClassTableCell);
+
       if (!List.IsSelectionEnabled)
         return;
 

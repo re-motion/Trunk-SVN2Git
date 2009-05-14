@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockRenderer (Controls.BocList list, HtmlTextWriter writer)
+    public BocListNavigationBlockRenderer (HtmlTextWriter writer, Controls.BocList list)
         : base (writer, list)
     {
     }

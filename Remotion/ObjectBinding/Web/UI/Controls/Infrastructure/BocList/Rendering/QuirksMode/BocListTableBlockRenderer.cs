@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocRowRenderer _rowRenderer;
 
-    public BocListTableBlockRenderer (Controls.BocList list, HtmlTextWriter writer, IServiceLocator serviceLocator)
+    public BocListTableBlockRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
         : base(writer, list)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);

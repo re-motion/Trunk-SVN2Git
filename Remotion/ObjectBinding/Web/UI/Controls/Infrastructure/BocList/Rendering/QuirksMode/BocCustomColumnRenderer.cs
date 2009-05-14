@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCustomColumnRenderer (Controls.BocList list, HtmlTextWriter writer, BocCustomColumnDefinition column)
+    public BocCustomColumnRenderer (HtmlTextWriter writer, Controls.BocList list, BocCustomColumnDefinition column)
         : base (writer, list, column)
     {
     }
@@ -59,6 +59,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         bool isEditedRow,
         bool showIcon)
     {
+      ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
       if (List.CustomColumns == null)
         return;
 
@@ -104,7 +105,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       Writer.RenderEndTag();
     }
 
-    private static void ApplyStyleDefaults (Control control)
+    private void ApplyStyleDefaults (Control control)
     {
       bool isControlWidthEmpty;
       CssStyleCollection controlStyle = GetControlStyle (control, out isControlWidthEmpty);
@@ -117,7 +118,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       }
     }
 
-    private static CssStyleCollection GetControlStyle (Control control, out bool isControlWidthEmpty)
+    private CssStyleCollection GetControlStyle (Control control, out bool isControlWidthEmpty)
     {
       CssStyleCollection controlStyle = null;
       isControlWidthEmpty = true;

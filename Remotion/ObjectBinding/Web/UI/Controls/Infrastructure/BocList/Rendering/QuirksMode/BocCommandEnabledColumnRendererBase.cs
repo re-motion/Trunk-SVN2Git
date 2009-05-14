@@ -48,6 +48,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     protected void RenderCellIcon (IBusinessObject businessObject)
     {
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
       IconInfo icon = BusinessObjectBoundWebControl.GetIcon (
           businessObject,
           businessObject.BusinessObjectClass.BusinessObjectProvider);
@@ -71,6 +73,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         IBusinessObject businessObject,
         int originalRowIndex)
     {
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
       BocListItemCommand command = Column.Command;
       if (command == null)
         return false;

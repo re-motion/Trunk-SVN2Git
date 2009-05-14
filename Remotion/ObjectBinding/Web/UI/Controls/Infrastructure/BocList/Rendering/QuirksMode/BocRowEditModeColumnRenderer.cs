@@ -57,6 +57,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         bool isEditedRow,
         bool showIcon)
     {
+      ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
+
       bool isEditableRow = dataRowRenderEventArgs.IsEditableRow;
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
 

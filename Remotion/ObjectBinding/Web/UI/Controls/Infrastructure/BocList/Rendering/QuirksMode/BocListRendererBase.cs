@@ -109,6 +109,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// the alternate text from the resource file. Can be <see langword="null"/>, in which case no text will be loaded.</param>
     protected void RenderIcon (IconInfo icon, Controls.BocList.ResourceIdentifier? alternateTextID)
     {
+      ArgumentUtility.CheckNotNull ("icon", icon);
+
       bool hasAlternateText = !StringUtility.IsNullOrEmpty (icon.AlternateText);
       if (!hasAlternateText)
       {
@@ -137,6 +139,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         bool isChecked,
         bool isSelectAllSelectorControl)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNullOrEmpty ("value", value);
+
       if (List.Selection == RowSelection.SingleRadioButton)
         Writer.AddAttribute (HtmlTextWriterAttribute.Type, "radio");
       else
