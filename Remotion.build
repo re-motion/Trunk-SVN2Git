@@ -283,7 +283,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Dms.Web">
+  <target name="Dms.Web" depends="Dms.Shared,Web">
     <property name="project.name" value="Dms.Web" />
     <property name="project.dir" value="Dms/Web" />
     <property name="project.output" value="Remotion.Dms.Web" />
