@@ -17,8 +17,8 @@ namespace $PROJECT_ROOTNAMESPACE$
       // This statement registers the code with the BindableObjectProvider. ISearchAvailableObjectService
       // is implemented in SearchAllObjectsService.cs, which must be part of your
       // domain project. [reinhard.gantar@rubicon.eu]
-      BindableObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (
-          typeof (ISearchAvailableObjectsService), new SearchAllObjectsService());
+      // BindableObjectProvider.GetProvider<BindableDomainObjectProviderAttribute>().AddService (
+      //    typeof (ISearchAvailableObjectsService), new SearchAllObjectsService());
     }
 
     protected void Application_End (object sender, EventArgs e)
