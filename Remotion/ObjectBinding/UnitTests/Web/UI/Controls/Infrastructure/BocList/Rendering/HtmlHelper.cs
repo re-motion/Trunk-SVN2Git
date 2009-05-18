@@ -138,7 +138,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
                 HtmlNodeType.Text));
         node = (HtmlTextNode) parent.ChildNodes[index];
       }
-      Assert.AreEqual (content, node.Text, "Unexpected text node content.");
+      Assert.AreEqual (content, node.Text.Trim(), "Unexpected text node content.");
     }
 
     public void AssertAttribute (HtmlNode node, string attributeName, string attributeValue)
@@ -196,6 +196,26 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       AssertAttribute (img, "alt", "");
       AssertStyleAttribute (img, "vertical-align", "middle");
       AssertStyleAttribute (img, "border-style", "none");
+    }
+
+    public void AssertWhiteSpaceTextNode (HtmlNode parent, int index)
+    {
+      Assert.Less (
+            index,
+            parent.ChildNodes.Count,
+            String.Format ("Node {0} has only {1} children - index {2} out of range.", parent.Name, parent.ChildNodes.Count, index));
+      Assert.AreEqual (
+          HtmlNodeType.Text,
+          parent.ChildNodes[index].NodeType,
+          String.Format (
+              "{0}.ChildNodes[{1}].NodeType is {2}, not {3}.",
+              parent.Name,
+              index,
+              parent.ChildNodes[index].NodeType,
+              HtmlNodeType.Text));
+      HtmlTextNode node = (HtmlTextNode) parent.ChildNodes[index];
+
+      Assert.AreEqual (string.Empty, node.Text.Trim());
     }
   }
 }

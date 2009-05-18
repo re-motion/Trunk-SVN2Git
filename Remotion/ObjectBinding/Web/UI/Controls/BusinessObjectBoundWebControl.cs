@@ -402,7 +402,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Evalutes whether this control is in <b>Design Mode</b>. </summary>
     [Browsable (false)]
-    protected virtual bool IsDesignMode
+    protected internal virtual bool IsDesignMode
     {
       get { return ControlHelper.IsDesignMode (this, Context); }
     }

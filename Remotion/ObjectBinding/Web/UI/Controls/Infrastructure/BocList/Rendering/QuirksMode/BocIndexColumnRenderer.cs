@@ -6,7 +6,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 {
   public class BocIndexColumnRenderer : BocListRendererBase, IBocIndexColumnRenderer
   {
-    public BocIndexColumnRenderer (HtmlTextWriter writer, Controls.BocList list)
+    public BocIndexColumnRenderer (HtmlTextWriter writer, IBocList list)
         : base(writer, list)
     {
     }

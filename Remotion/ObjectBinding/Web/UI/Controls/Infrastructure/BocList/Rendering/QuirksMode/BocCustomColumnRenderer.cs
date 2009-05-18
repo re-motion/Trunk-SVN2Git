@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCustomColumnRenderer (HtmlTextWriter writer, Controls.BocList list, BocCustomColumnDefinition column)
+    public BocCustomColumnRenderer (HtmlTextWriter writer, IBocList list, BocCustomColumnDefinition column)
         : base (writer, list, column)
     {
     }
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// a <see cref="BocCustomCellRenderArguments"/> object is created and passed to the custom cell's 
     /// <see cref="BocCustomColumnDefinitionCell.RenderInternal"/> method.
     /// Otherwise, a click wrapper is rendered around the child control obtained from
-    /// <see cref="BocListRendererBase.List"/>'s <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.CustomColumns"/> property.
+    /// <see cref="BocListRendererBase.List"/>'s <see cref="IBocList.CustomColumns"/> property.
     /// </remarks>
     protected override void RenderCellContents (
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,

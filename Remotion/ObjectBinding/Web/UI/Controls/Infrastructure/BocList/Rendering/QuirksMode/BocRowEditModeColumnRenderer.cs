@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocRowEditModeColumnRenderer (HtmlTextWriter writer, Controls.BocList list, BocRowEditModeColumnDefinition columnDefinition)
+    public BocRowEditModeColumnRenderer (HtmlTextWriter writer, IBocList list, BocRowEditModeColumnDefinition columnDefinition)
         : base (writer, list, columnDefinition)
     {
     }
@@ -126,7 +126,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       if (!List.IsReadOnly && List.HasClientScript)
       {
         string argument = c_eventRowEditModePrefix + originalRowIndex + "," + command;
-        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument) + ";";
+        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ((Control) List, argument) + ";";
         Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
       }

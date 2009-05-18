@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   public abstract class BocValueColumnRendererBase<TBocColumnDefinition> : BocCommandEnabledColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocValueColumnDefinition
   {
-    protected BocValueColumnRendererBase (HtmlTextWriter writer, Controls.BocList list, TBocColumnDefinition columnDefintion)
+    protected BocValueColumnRendererBase (HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion)
         : base (writer, list, columnDefintion)
     {
     }

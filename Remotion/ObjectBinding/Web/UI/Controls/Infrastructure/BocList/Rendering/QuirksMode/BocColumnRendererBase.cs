@@ -49,13 +49,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <param name="list">The <see cref="BocList"/> containing the data to be rendered.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the cells to.</param>
     /// <param name="columnDefinition">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
-    protected BocColumnRendererBase (HtmlTextWriter writer, Controls.BocList list, TBocColumnDefinition columnDefinition)
+    protected BocColumnRendererBase (HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefinition)
         : base (writer, list)
     {
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
       _column = columnDefinition;
-      _columnIndex = Array.IndexOf (List.EnsureColumnsGot(), columnDefinition);
+      _columnIndex = Array.IndexOf (List.GetColumns(), columnDefinition);
     }
 
     BocColumnDefinition IBocColumnRenderer.Column
@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       get { return _columnIndex; }
     }
 
-    public void RenderTitleCell (SortingDirection sortingDirection, int orderIndex)
+    public virtual void RenderTitleCell (SortingDirection sortingDirection, int orderIndex)
     {
       string cssClassTitleCell = List.CssClassTitleCell;
       if (!StringUtility.IsNullOrEmpty (Column.CssClass))
@@ -106,7 +106,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         if (!List.IsRowEditModeActive && !List.IsListEditModeActive && List.HasClientScript)
         {
           string argument = Controls.BocList.SortCommandPrefix + ColumnIndex;
-          string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
+          string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ((Control) List, argument);
           postBackEvent += "; return false;";
           Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
           Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
@@ -121,7 +121,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private void RenderTitleCellText ()
     {
-      if (ControlHelper.IsDesignMode ((Control) List) && Column.ColumnTitleDisplayValue.Length == 0)
+      if (List.IsDesignMode && Column.ColumnTitleDisplayValue.Length == 0)
         Writer.Write (c_designModeEmptyContents);
       else
       {
@@ -165,13 +165,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         case SortingDirection.Ascending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortAscendingIcon);
+              (Control)List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortAscendingIcon);
           break;
         }
         case SortingDirection.Descending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortDescendingIcon);
+              (Control) List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortDescendingIcon);
           break;
         }
         case SortingDirection.None:
@@ -198,7 +198,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This is a template method. Deriving classes must implement <see cref="RenderCellContents"/> to provide the contents of
     /// the table cell (&lt;td&gt;) element.
     /// </remarks>
-    public void RenderDataCell (
+    public virtual void RenderDataCell (
         int rowIndex,
         bool showIcon,
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)

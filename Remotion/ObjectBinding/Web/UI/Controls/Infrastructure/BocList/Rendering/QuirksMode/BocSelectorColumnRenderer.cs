@@ -8,7 +8,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   {
     private const int c_titleRowIndex = -1;
 
-    public BocSelectorColumnRenderer (HtmlTextWriter writer, Controls.BocList list)
+    public BocSelectorColumnRenderer (HtmlTextWriter writer, IBocList list)
         : base(writer, list)
     {
     }

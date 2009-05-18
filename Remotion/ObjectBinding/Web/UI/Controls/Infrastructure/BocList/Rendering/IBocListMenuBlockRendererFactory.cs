@@ -20,6 +20,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 {
   public interface IBocListMenuBlockRendererFactory
   {
-    IBocListMenuBlockRenderer CreateRenderer (HtmlTextWriter writer, Controls.BocList list);
+    IBocListMenuBlockRenderer CreateRenderer (HtmlTextWriter writer, IBocList list);
   }
 }

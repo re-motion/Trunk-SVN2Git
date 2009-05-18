@@ -21,6 +21,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   public interface IBocColumnRendererFactory<T>
       where T: BocColumnDefinition
   {
-    IBocColumnRenderer<T> CreateRenderer (HtmlTextWriter writer, Controls.BocList list, T columnDefinition);
+    IBocColumnRenderer<T> CreateRenderer (HtmlTextWriter writer, IBocList list, T columnDefinition);
   }
 }

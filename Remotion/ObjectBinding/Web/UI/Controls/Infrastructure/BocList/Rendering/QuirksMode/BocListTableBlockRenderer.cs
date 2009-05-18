@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocRowRenderer _rowRenderer;
 
-    public BocListTableBlockRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
+    public BocListTableBlockRenderer (HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
         : base(writer, list)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
@@ -155,7 +155,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         RowRenderer.RenderEmptyListDataRow ();
       else
       {
-        BocListRow[] rows = List.EnsureGotIndexedRowsSorted ();
+        BocListRow[] rows = List.GetIndexedRows ();
 
         for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
              idxAbsoluteRows < rowCountWithOffset;
@@ -187,7 +187,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
             + List.ClientID + c_dataRowSelectorControlIDSuffix + "', "
             + count + ","
             + (int) List.Selection + ");";
-        ScriptUtility.RegisterStartupScriptBlock (List, typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
+        ScriptUtility.RegisterStartupScriptBlock (
+            (Controls.BocList) List, typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
       }
     }
 
@@ -215,13 +216,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
     private void RenderTableBlockColumnGroup ()
     {
-      BocColumnDefinition[] renderColumns = List.EnsureColumnsGot ();
+      BocColumnDefinition[] renderColumns = List.GetColumns ();
 
       Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
       bool isTextXml = false;
 
-      if (!ControlHelper.IsDesignMode ((Control) List))
+      if (!List.IsDesignMode && (HttpContext.Current != null))
         isTextXml = ControlHelper.IsXmlConformResponseTextRequired (HttpContext.Current);
 
       RenderIndexColumnDeclaration (isTextXml);

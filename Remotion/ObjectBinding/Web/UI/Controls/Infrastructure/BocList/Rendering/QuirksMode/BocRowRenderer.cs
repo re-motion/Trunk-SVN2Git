@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private readonly IServiceLocator _serviceLocator;
 
-    public BocRowRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
+    public BocRowRenderer (HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
         : base (writer, list)
     {
       _serviceLocator = serviceLocator;
@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
       RenderTitleCells (sortingDirections, sortingOrder);
 
-      if (ControlHelper.IsDesignMode ((Control) List) && List.EnsureColumnsGot().Length == 0)
+      if (ControlHelper.IsDesignMode ((Control) List) && List.GetColumns().Length == 0)
       {
         for (int i = 0; i < c_designModeDummyColumnCount; i++)
         {
@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private void RenderTitleCells (IDictionary<int, SortingDirection> sortingDirections, IList<int> sortingOrder)
     {
-      BocColumnDefinition[] renderColumns = List.EnsureColumnsGot();
+      BocColumnDefinition[] renderColumns = List.GetColumns ();
       for (int idxColumns = 0; idxColumns < renderColumns.Length; idxColumns++)
       {
         BocColumnDefinition column = renderColumns[idxColumns];
@@ -116,7 +116,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// </remarks>
     public void RenderEmptyListDataRow ()
     {
-      BocColumnDefinition[] renderColumns = List.EnsureColumnsGot();
+      BocColumnDefinition[] renderColumns = List.GetColumns ();
       int columnCount = 0;
 
       if (List.IsIndexEnabled)
@@ -188,13 +188,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private IBocIndexColumnRenderer GetIndexColumnRenderer ()
     {
-      return ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer(Writer, List);
+      return ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer(Writer, (Controls.BocList)List);
     }
 
     private void RenderDataCells (int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       bool firstValueColumnRendered = false;
-      foreach (BocColumnDefinition column in List.EnsureColumnsGot())
+      foreach (BocColumnDefinition column in List.GetColumns())
       {
         bool showIcon = false;
         if ((!firstValueColumnRendered) && column is BocValueColumnDefinition)

@@ -464,11 +464,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </summary>
   public class BocCustomCellArguments
   {
-    private BocList _list;
-    private BocCustomColumnDefinition _columnDefinition;
+    private readonly IBocList _list;
+    private readonly BocCustomColumnDefinition _columnDefinition;
 
     public BocCustomCellArguments (
-        BocList list,
+        IBocList list,
         BocCustomColumnDefinition columnDefinition)
     {
       _list = list;
@@ -476,7 +476,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Gets the <see cref="BocList"/> containing the column. </summary>
-    public BocList List
+    public IBocList List
     {
       get { return _list; }
     }
@@ -491,9 +491,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> Contains the arguments provided to the <see cref="BocCustomColumnDefinitionCell.OnLoad"/> method. </summary>
   public class BocCustomCellLoadArguments : BocCustomCellArguments
   {
-    private IBusinessObject _businessObject;
-    private int _listIndex;
-    private Control _control;
+    private readonly IBusinessObject _businessObject;
+    private readonly int _listIndex;
+    private readonly Control _control;
 
     public BocCustomCellLoadArguments (
         BocList list,
@@ -530,7 +530,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> Contains the arguments provided to the <see cref="BocCustomColumnDefinitionCell.OnClick"/> method. </summary>
   public class BocCustomCellClickArguments : BocCustomCellArguments
   {
-    private IBusinessObject _businessObject;
+    private readonly IBusinessObject _businessObject;
 
     public BocCustomCellClickArguments (
         BocList list,
@@ -551,8 +551,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> Contains the arguments provided to the <see cref="BocCustomColumnDefinitionCell.OnClick"/> method. </summary>
   public class BocCustomCellValidationArguments : BocCustomCellArguments
   {
-    private IBusinessObject _businessObject;
-    private Control _control;
+    private readonly IBusinessObject _businessObject;
+    private readonly Control _control;
     private bool _isValid;
 
     public BocCustomCellValidationArguments (
@@ -590,13 +590,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> Contains the arguments provided to the <see cref="BocCustomColumnDefinitionCell.Render"/> method. </summary>
   public class BocCustomCellRenderArguments : BocCustomCellArguments
   {
-    private int _columnIndex;
-    private IBusinessObject _businessObject;
-    private int _listIndex;
-    private string _onClick;
+    private readonly int _columnIndex;
+    private readonly IBusinessObject _businessObject;
+    private readonly int _listIndex;
+    private readonly string _onClick;
 
     public BocCustomCellRenderArguments (
-        BocList list,
+        IBocList list,
         IBusinessObject businessObject,
         BocCustomColumnDefinition columnDefinition,
         int columnIndex,

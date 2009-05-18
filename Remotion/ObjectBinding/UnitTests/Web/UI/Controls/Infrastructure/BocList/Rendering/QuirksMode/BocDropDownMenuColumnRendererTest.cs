@@ -20,6 +20,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
 using Remotion.Web.UI.Controls;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -36,8 +37,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       base.SetUp();
 
-      List.RowMenuDisplay = RowMenuDisplay.Manual;
-      List.IsDesignModeOverrideValue = false;
+      ((BocListMock) List).IsDesignModeOverrideValue = false;
+      ((BocListMock) List).RowMenuDisplay = RowMenuDisplay.Manual;
+
       List.OnLoad();
     }
 

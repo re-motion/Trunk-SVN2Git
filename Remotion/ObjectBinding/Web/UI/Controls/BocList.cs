@@ -49,14 +49,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [Designer (typeof (BocListDesigner))]
   [DefaultEvent ("CommandClick")]
   [ToolboxItemFilter ("System.Web.UI")]
-  public class BocList
-      :
-          BusinessObjectBoundEditableWebControl,
-          IPostBackEventHandler,
-          IPostBackDataHandler,
-          IBocMenuItemContainer,
-          IBocListSortingOrderProvider,
-          IResourceDispatchTarget
+  public class BocList : BusinessObjectBoundEditableWebControl, IBocList
   {
     //  constants
     private const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
@@ -436,6 +429,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EnsureEditModeRestored();
       EnsureRowMenusInitialized();
       RestoreCustomColumns();
+    }
+
+    void IBocList.OnLoad ()
+    {
+      OnLoad (EventArgs.Empty);
     }
 
     /// <summary> Implements interface <see cref="IPostBackEventHandler"/>. </summary>
@@ -1196,7 +1194,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         PreRenderListItemCommands();
       }
 
-      PopulateAvailableViewsList ();
+      PopulateAvailableViewsList();
     }
 
     /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
@@ -1323,8 +1321,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _pageCount = 1;
       }
 
-      BocListRendererFactory factory = new BocListRendererFactory ();
-      factory.CreateRenderer (writer, this, ServiceLocator.Current).Render ();
+      BocListRendererFactory factory = new BocListRendererFactory();
+      factory.CreateRenderer (writer, this, ServiceLocator.Current).Render();
     }
 
     public bool HasNavigator
@@ -1341,12 +1339,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected internal bool HasMenuBlock
+    protected bool HasMenuBlock
     {
       get { return HasAvailableViewsList || HasOptionsMenu || HasListMenu; }
     }
 
-    protected internal bool HasAvailableViewsList
+    bool IBocList.HasMenuBlock
+    {
+      get { return HasMenuBlock; }
+    }
+
+    protected bool HasAvailableViewsList
     {
       get
       {
@@ -1367,7 +1370,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected internal bool HasOptionsMenu
+    bool IBocList.HasAvailableViewsList
+    {
+      get { return HasAvailableViewsList; }
+    }
+
+    protected bool HasOptionsMenu
     {
       get
       {
@@ -1388,7 +1396,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected internal bool HasListMenu
+    bool IBocList.HasOptionsMenu
+    {
+      get { return HasOptionsMenu; }
+    }
+
+    protected bool HasListMenu
     {
       get
       {
@@ -1409,12 +1422,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected internal bool IsEmptyList
+    bool IBocList.HasListMenu
+    {
+      get { return HasListMenu; }
+    }
+
+      protected bool IsEmptyList
     {
       get { return Value == null || Value.Count == 0; }
     }
 
-    protected internal bool IsColumnVisible (BocColumnDefinition column)
+    bool IBocList.IsEmptyList
+    {
+      get { return IsEmptyList; }
+    }
+
+    protected bool IsColumnVisible (BocColumnDefinition column)
     {
       ArgumentUtility.CheckNotNull ("column", column);
 
@@ -1450,6 +1473,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
 
       return true;
+    }
+
+    bool IBocList.IsColumnVisible (BocColumnDefinition columnDefinition)
+    {
+      return IsColumnVisible (columnDefinition);
     }
 
     private void PopulateAvailableViewsList ()
@@ -1620,17 +1648,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return validationErrorIcon;
     }
 
-    protected internal virtual void OnDataRowRendering (BocListDataRowRenderEventArgs e)
+    protected virtual void OnDataRowRendering (BocListDataRowRenderEventArgs e)
     {
       BocListDataRowRenderEventHandler handler = (BocListDataRowRenderEventHandler) Events[s_dataRowRenderEvent];
       if (handler != null)
         handler (this, e);
     }
 
+    void IBocList.OnDataRowRendering (BocListDataRowRenderEventArgs e)
+    {
+      OnDataRowRendering (e);
+    }
 
-    internal string GetListItemCommandArgument (int columnIndex, int originalRowIndex)
+    private string GetListItemCommandArgument (int columnIndex, int originalRowIndex)
     {
       return c_eventListItemCommandPrefix + columnIndex + "," + originalRowIndex;
+    }
+
+    string IBocList.GetListItemCommandArgument (int columnIndex, int originalRowIndex)
+    {
+      return GetListItemCommandArgument (columnIndex, originalRowIndex);
     }
 
     /// <summary>
@@ -1771,9 +1808,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Find the <see cref="IResourceManager"/> for this control. </summary>
-    protected internal virtual IResourceManager GetResourceManager ()
+    protected virtual IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
+    }
+
+    IResourceManager IBocList.GetResourceManager ()
+    {
+      return GetResourceManager();
     }
 
     /// <summary> Handles refreshing the bound control. </summary>
@@ -2326,9 +2368,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return _columnDefinitionsRenderPhase;
     }
 
-    internal BocColumnDefinition[] EnsureColumnsGot ()
+    private BocColumnDefinition[] EnsureColumnsGot ()
     {
       return EnsureColumnsGot (false);
+    }
+
+    BocColumnDefinition[] IBocList.GetColumns ()
+    {
+      return EnsureColumnsGot();
     }
 
     /// <summary>
@@ -2654,6 +2701,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_indexedRowsSorted == null)
         _indexedRowsSorted = GetIndexedRows (true);
       return _indexedRowsSorted;
+    }
+
+    BocListRow[] IBocList.GetIndexedRows ()
+    {
+      return EnsureGotIndexedRowsSorted();
     }
 
     /// <summary>
@@ -3269,6 +3321,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _editModeController.SwitchRowIntoEditMode (index, EnsureColumnsForPreviousLifeCycleGot(), EnsureColumnsGot());
     }
 
+    void IBocList.SwitchRowIntoEditMode (int index)
+    {
+      SwitchRowIntoEditMode (index);
+    }
+
     /// <summary>
     ///   Saves changes to the edited row rows and (re-)starts editing for the entire list.
     /// </summary>
@@ -3732,12 +3789,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _enableSorting = value; }
     }
 
-    protected internal bool IsClientSideSortingEnabled
+    protected bool IsClientSideSortingEnabled
     {
       get { return EnableSorting; }
     }
 
-    /// <summary>
+    bool IBocList.IsClientSideSortingEnabled
+    {
+      get { return IsClientSideSortingEnabled; }
+    }
+
+      /// <summary>
     ///   Gets or sets a flag that determines whether to display the sorting order index 
     ///   after each sorting button.
     /// </summary>
@@ -3757,12 +3819,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _showSortingOrder = value; }
     }
 
-    protected internal virtual bool IsShowSortingOrderEnabled
+    protected virtual bool IsShowSortingOrderEnabled
     {
       get { return ShowSortingOrder != false; }
     }
 
-    [Category ("Behavior")]
+    bool IBocList.IsShowSortingOrderEnabled
+    {
+      get { return IsShowSortingOrderEnabled; }
+    }
+
+      [Category ("Behavior")]
     [Description ("Enables sorting by multiple columns. Undefined is interpreted as true.")]
     [DefaultValue (typeof (bool?), "")]
     public virtual bool? EnableMultipleSorting
@@ -3859,9 +3926,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _index = value; }
     }
 
-    protected internal bool IsIndexEnabled
+    protected bool IsIndexEnabled
     {
       get { return _index != RowIndex.Undefined && _index != RowIndex.Disabled; }
+    }
+
+    bool IBocList.IsIndexEnabled
+    {
+      get { return IsIndexEnabled; }
     }
 
     /// <summary> Gets or sets the offset for the rendered index. </summary>
@@ -3887,11 +3959,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _indexColumnTitle = value; }
     }
 
-    protected internal bool AreDataRowsClickSensitive ()
+    protected bool AreDataRowsClickSensitive ()
     {
       return _hasClientScript
              && ! WcagHelper.Instance.IsWaiConformanceLevelARequired()
              && IsInternetExplorer55OrHigher();
+    }
+
+    bool IBocList.AreDataRowsClickSensitive ()
+    {
+      return AreDataRowsClickSensitive();
     }
 
     /// <summary> The number of rows displayed per page. </summary>
@@ -3914,9 +3991,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected internal bool IsPagingEnabled
+    protected bool IsPagingEnabled
     {
       get { return ! WcagHelper.Instance.IsWaiConformanceLevelARequired() && _pageSize != null && _pageSize.Value != 0; }
+    }
+
+    bool IBocList.IsPagingEnabled
+    {
+      get { return IsPagingEnabled; }
     }
 
     /// <summary>
@@ -4174,34 +4256,44 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _optionsMenu; }
     }
 
-    internal Hashtable SelectorControlCheckedState
+    Hashtable IBocList.SelectorControlCheckedState
     {
       get { return _selectorControlCheckedState; }
     }
 
-    internal ArrayList SortingOrder
+    ArrayList IBocList.SortingOrder
     {
       get { return _sortingOrder; }
     }
 
-    internal EditModeController EditModeController
+    EditModeController IBocList.EditModeController
     {
       get { return _editModeController; }
     }
 
-    internal ArrayList Validators
+    ArrayList IBocList.Validators
     {
       get { return _validators; }
     }
 
-    internal Triplet[] RowMenus
+    Triplet[] IBocList.RowMenus
     {
       get { return _rowMenus; }
     }
 
-    internal Hashtable CustomColumns
+    Hashtable IBocList.CustomColumns
     {
       get { return _customColumns; }
+    }
+
+    bool IBocList.IsDesignMode
+    {
+      get { return IsDesignMode; }
+    }
+
+    void IBocList.OnPreRender ()
+    {
+      OnPreRender (EventArgs.Empty);
     }
 
     #region protected virtual string CssClass...
@@ -4211,9 +4303,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <para> Class: <c>bocList</c>. </para>
     ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
     /// </remarks>
-    protected internal virtual string CssClassBase
+    protected virtual string CssClassBase
     {
       get { return "bocList"; }
+    }
+
+    string IBocList.CssClassBase
+    {
+      get { return CssClassBase; }
     }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/> when it is displayed in read-only mode. </summary>
@@ -4221,9 +4318,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <para> Class: <c>readOnly</c>. </para>
     ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocList.readOnly</c> as a selector. </para>
     /// </remarks>
-    protected internal virtual string CssClassReadOnly
+    protected virtual string CssClassReadOnly
     {
       get { return "readOnly"; }
+    }
+
+    string IBocList.CssClassReadOnly
+    {
+      get { return CssClassReadOnly; }
     }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocEnumValue"/> when it is displayed disabled. </summary>
@@ -4231,114 +4333,194 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <para> Class: <c>disabled</c>. </para>
     ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocEnumValue.disabled</c> as a selector. </para>
     /// </remarks>
-    protected internal virtual string CssClassDisabled
+    protected virtual string CssClassDisabled
     {
       get { return "disabled"; }
     }
 
+    string IBocList.CssClassDisabled
+    {
+      get { return CssClassDisabled; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>table</c> tag. </summary>
     /// <remarks> Class: <c>bocListTable</c> </remarks>
-    protected internal virtual string CssClassTable
+    protected virtual string CssClassTable
     {
       get { return "bocListTable"; }
     }
 
+    string IBocList.CssClassTable
+    {
+      get { return CssClassTable; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>thead</c> tag. </summary>
     /// <remarks> Class: <c>bocListTableHead</c> </remarks>
-    protected internal virtual string CssClassTableHead
+    protected virtual string CssClassTableHead
     {
       get { return "bocListTableHead"; }
     }
 
+    string IBocList.CssClassTableHead
+    {
+      get { return CssClassTableHead; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>tbody</c> tag. </summary>
     /// <remarks> Class: <c>bocListTableBody</c> </remarks>
-    protected internal virtual string CssClassTableBody
+    protected virtual string CssClassTableBody
     {
       get { return "bocListTableBody"; }
     }
 
+    string IBocList.CssClassTableBody
+    {
+      get { return CssClassTableBody; }
+    }
+
     /// <summary> CSS-Class applied to the cells in the <see cref="BocList"/>'s title row. </summary>
     /// <remarks> Class: <c>bocListTitleCell</c> </remarks>
-    protected internal virtual string CssClassTitleCell
+    protected virtual string CssClassTitleCell
     {
       get { return "bocListTitleCell"; }
     }
 
+    string IBocList.CssClassTitleCell
+    {
+      get { return CssClassTitleCell; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s selected data. </summary>
     /// <remarks> Class: <c>bocListDataRow</c> </remarks>
-    protected internal virtual string CssClassDataRow
+    protected virtual string CssClassDataRow
     {
       get { return "bocListDataRow"; }
     }
 
+    string IBocList.CssClassDataRow
+    {
+      get { return CssClassDataRow; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s selected data rows. </summary>
     /// <remarks> Class: <c>bocListDataRowSelected</c> </remarks>
-    protected internal virtual string CssClassDataRowSelected
+    protected virtual string CssClassDataRowSelected
     {
       get { return "bocListDataRowSelected"; }
     }
 
+    string IBocList.CssClassDataRowSelected
+    {
+      get { return CssClassDataRowSelected; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s odd data rows. </summary>
     /// <remarks> Class: <c>bocListDataCellOdd</c> </remarks>
-    protected internal virtual string CssClassDataCellOdd
+    protected virtual string CssClassDataCellOdd
     {
       get { return "bocListDataCellOdd"; }
     }
 
+    string IBocList.CssClassDataCellOdd
+    {
+      get { return CssClassDataCellOdd; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s even data rows. </summary>
     /// <remarks> Class: <c>bocListDataCellEven</c> </remarks>
-    protected internal virtual string CssClassDataCellEven
+    protected virtual string CssClassDataCellEven
     {
       get { return "bocListDataCellEven"; }
     }
 
+    string IBocList.CssClassDataCellEven
+    {
+      get { return CssClassDataCellEven; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the cell in the <see cref="BocList"/>'s title row that contains the row index header. </summary>
     /// <remarks> Class: <c>bocListTitleCellIndex</c> </remarks>
-    protected internal virtual string CssClassTitleCellIndex
+    protected virtual string CssClassTitleCellIndex
     {
       get { return "bocListTitleCellIndex"; }
     }
 
+    string IBocList.CssClassTitleCellIndex
+    {
+      get { return CssClassTitleCellIndex; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the cell in the <see cref="BocList"/>'s data rows that contains the row index. </summary>
     /// <remarks> Class: <c>bocListDataCellIndex</c> </remarks>
-    protected internal virtual string CssClassDataCellIndex
+    protected virtual string CssClassDataCellIndex
     {
       get { return "bocListDataCellIndex"; }
     }
 
+    string IBocList.CssClassDataCellIndex
+    {
+      get { return CssClassDataCellIndex; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the content if there is no anchor element. </summary>
     /// <remarks> Class: <c>bocListDataCellContent</c> </remarks>
-    protected internal virtual string CssClassContent
+    protected virtual string CssClassContent
     {
       get { return "bocListContent"; }
     }
 
+    string IBocList.CssClassContent
+    {
+      get { return CssClassContent; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the text providing the sorting order's index. </summary>
     /// <remarks> Class: <c>bocListSortingOrder</c> </remarks>
-    protected internal virtual string CssClassSortingOrder
+    protected virtual string CssClassSortingOrder
     {
       get { return "bocListSortingOrder"; }
     }
 
+    string IBocList.CssClassSortingOrder
+    {
+      get { return CssClassSortingOrder; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s navigator. </summary>
     /// <remarks> Class: <c>bocListNavigator</c> </remarks>
-    protected internal virtual string CssClassNavigator
+    protected virtual string CssClassNavigator
     {
       get { return "bocListNavigator"; }
     }
 
+    string IBocList.CssClassNavigator
+    {
+      get { return CssClassNavigator; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s list of additional columns. </summary>
     /// <remarks> Class: <c>bocListAvailableViewsListDropDownList</c> </remarks>
-    protected internal virtual string CssClassAvailableViewsListDropDownList
+    protected virtual string CssClassAvailableViewsListDropDownList
     {
       get { return "bocListAvailableViewsListDropDownList"; }
     }
 
+    string IBocList.CssClassAvailableViewsListDropDownList
+    {
+      get { return CssClassAvailableViewsListDropDownList; }
+    }
+
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s label for the list of additional columns. </summary>
     /// <remarks> Class: <c>bocListAvailableViewsListLabel</c> </remarks>
-    protected internal virtual string CssClassAvailableViewsListLabel
+    protected virtual string CssClassAvailableViewsListLabel
     {
       get { return "bocListAvailableViewsListLabel"; }
+    }
+
+    string IBocList.CssClassAvailableViewsListLabel
+    {
+      get { return CssClassAvailableViewsListLabel; }
     }
 
     #endregion

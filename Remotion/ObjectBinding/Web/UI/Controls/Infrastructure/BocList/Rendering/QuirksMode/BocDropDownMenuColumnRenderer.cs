@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocDropDownMenuColumnRenderer (HtmlTextWriter writer, Controls.BocList list, BocDropDownMenuColumnDefinition column)
+    public BocDropDownMenuColumnRenderer (HtmlTextWriter writer, IBocList list, BocDropDownMenuColumnDefinition column)
         : base (writer, list, column)
     {
     }
@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <remarks>
     /// The menu title is generated from the <see cref="DropDownMenu.TitleText"/> and <see cref="DropDownMenu.TitleText"/> properties of
     /// the column definition in <see cref="BocColumnRendererBase{TBocColumnDefinition}.Column"/>, and populated with the menu items in
-    /// the <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowMenus"/> property of <see cref="BocListRendererBase.List"/>.
+    /// the <see cref="IBocList.RowMenus"/> property of <see cref="BocListRendererBase.List"/>.
     /// </remarks>
     protected override void RenderCellContents (
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,

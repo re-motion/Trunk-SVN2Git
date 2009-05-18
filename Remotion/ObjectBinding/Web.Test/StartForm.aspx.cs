@@ -57,6 +57,23 @@ namespace OBWTest
     private void Page_Load (object sender, EventArgs e)
     {
       ServiceLocator.SetLocatorProvider (() => new StubServiceLocator ());
+      
+      // ServiceLocator.SetLocatorProvider (ProvideWindsorServiceLocator);
+    }
+
+    private IServiceLocator ProvideWindsorServiceLocator ()
+    {
+      throw new NotImplementedException();
+      //IWindsorContainer container = new WindsorContainer ();
+
+      //container.Register (
+      //    AllTypes.Pick ()
+      //        .FromAssembly (Assembly.GetExecutingAssembly ())
+      //        .If (t => t.Namespace.EndsWith (".Rendering.QuirksMode.Factories"))
+      //        .WithService.Select ((t, b) => t.GetInterfaces ())
+      //        .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+
+      //return new WindsorServiceLocator (container);
     }
   }
 }

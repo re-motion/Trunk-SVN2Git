@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         int originalRowIndex);
 
     /// <summary>The <see cref="BocList"/> containing the data to render.</summary>
-    Controls.BocList List { get; }
+    IBocList List { get; }
 
     /// <summary>The <see cref="HtmlTextWriter"/> that is used to render the table cells.</summary>
     HtmlTextWriter Writer { get; }

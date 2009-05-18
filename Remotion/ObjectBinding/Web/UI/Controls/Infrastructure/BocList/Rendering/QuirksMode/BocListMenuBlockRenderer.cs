@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListMenuBlockRenderer (HtmlTextWriter writer, Controls.BocList list)
+    public BocListMenuBlockRenderer (HtmlTextWriter writer, IBocList list)
         : base (writer, list)
     {
     }
@@ -109,7 +109,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       Writer.RenderEndTag();
 
       Writer.Write (c_whiteSpace);
-      if (ControlHelper.IsDesignMode ((Control) List))
+      if (List.IsDesignMode)
         List.AvailableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
       List.AvailableViewsList.Enabled = ! List.IsRowEditModeActive && ! List.IsListEditModeActive;
       List.AvailableViewsList.CssClass = List.CssClassAvailableViewsListDropDownList;
@@ -133,7 +133,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       {
         WebMenuItem currentItem = groupedListMenuItems[idxItems];
         // HACK: Required since ListMenuItems are not added to a ListMenu's WebMenuItemCollection.
-        currentItem.OwnerControl = List;
+        currentItem.OwnerControl = (Control)List;
         if (!currentItem.EvaluateVisible())
           continue;
 

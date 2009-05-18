@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory());
       _instances.Add (typeof (IBocListMenuBlockRendererFactory), new BocListRendererFactory());
       _instances.Add (typeof (IBocListNavigationBlockRendererFactory), new BocListRendererFactory());
-      _instances.Add (typeof (IBocListTableBlockRendererFactory), new BocListRendererFactory ());
+      _instances.Add (typeof (IBocListTableBlockRendererFactory), new BocListRendererFactory());
       _instances.Add (typeof (IBocRowRendererFactory), new BocListRendererFactory());
 
       _instances.Add (typeof (IBocColumnRendererFactory<BocSimpleColumnDefinition>), new BocColumnRendererFactory());
@@ -42,7 +42,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       _instances.Add (typeof (IBocColumnRendererFactory<BocRowEditModeColumnDefinition>), new BocColumnRendererFactory());
       _instances.Add (typeof (IBocColumnRendererFactory<BocDropDownMenuColumnDefinition>), new BocColumnRendererFactory());
       _instances.Add (typeof (IBocIndexColumnRendererFactory), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocColumnRendererFactory ());
+      _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocColumnRendererFactory());
+
+      _instances.Add (typeof (IBocColumnRendererFactory<StubColumnDefinition>), new StubColumnRendererFactory());
+    }
+
+    public void SetRowRendererFactory (IBocRowRendererFactory factory)
+    {
+      _instances[typeof (IBocRowRendererFactory)] = factory;
     }
 
     protected override object DoGetInstance (Type serviceType, string key)

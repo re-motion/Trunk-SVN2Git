@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    public IBocColumnRenderer GetRenderer (IServiceLocator serviceLocator, BocList list, HtmlTextWriter writer)
+    public IBocColumnRenderer GetRenderer (IServiceLocator serviceLocator, IBocList list, HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
       ArgumentUtility.CheckNotNull ("list", list);

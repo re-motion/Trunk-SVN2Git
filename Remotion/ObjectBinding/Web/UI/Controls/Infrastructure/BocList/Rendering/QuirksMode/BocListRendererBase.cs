@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <summary>Number of columns to show in design mode before actual columns have been defined.</summary>
     protected const int c_designModeDummyColumnCount = 3;
 
-    private readonly Controls.BocList _list;
+    private readonly IBocList _list;
     private readonly HtmlTextWriter _writer;
 
     /// <summary>
@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// and must be set in the constructor.</remarks>
     /// <param name="list">The <see cref="BocList"/> to render.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the list to.</param>
-    protected BocListRendererBase (HtmlTextWriter writer, Controls.BocList list)
+    protected BocListRendererBase (HtmlTextWriter writer, IBocList list)
     {
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("writer", writer);
@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     }
 
     /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
-    public Controls.BocList List
+    public IBocList List
     {
       get { return _list; }
     }

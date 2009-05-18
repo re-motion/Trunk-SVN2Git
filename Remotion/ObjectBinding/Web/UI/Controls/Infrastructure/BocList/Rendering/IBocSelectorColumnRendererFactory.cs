@@ -7,6 +7,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 {
   public interface IBocSelectorColumnRendererFactory
   {
-    IBocSelectorColumnRenderer CreateRenderer (HtmlTextWriter writer, Controls.BocList list);
+    IBocSelectorColumnRenderer CreateRenderer (HtmlTextWriter writer, IBocList list);
   }
 }

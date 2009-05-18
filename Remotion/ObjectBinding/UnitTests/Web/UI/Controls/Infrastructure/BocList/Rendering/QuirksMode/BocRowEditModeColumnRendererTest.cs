@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -32,12 +33,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Column.EditText = "Bearbeiten";
       Column.SaveText = "Speichern";
       Column.CancelText = "Abbrechen";
-      Column.Show = BocRowEditColumnDefinitionShow.EditMode;
+      Column.Show = BocRowEditColumnDefinitionShow.Always;
 
       base.SetUp ();
 
-      List.EnableClientScript = true;
-      List.IsDesignModeOverrideValue = false;
+      EventArgs.IsEditableRow = true;
+
+      ((BocListMock) List).EnableClientScript = true;
+      ((BocListMock) List).IsDesignModeOverrideValue = false;
+      ((BocListMock) List).ReadOnly = false;
+      ((BocListMock) List).DataSource.Mode = DataSourceMode.Edit;
       List.OnPreRender();
     }
 
@@ -77,7 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Html.AssertAttribute (save, "onclick", "__doPostBack('ctl00','RowEditMode=0,Save');BocList_OnCommandClick();");
       Html.AssertTextNode (save, "Speichern", 0, false);
 
-      Html.AssertTextNode (td, " ", 1, false);
+      Html.AssertWhiteSpaceTextNode (td, 1);
 
       HtmlNode cancel = Html.GetAssertedChildElement (td, "a", 2, false);
       Html.AssertAttribute (cancel, "href", "#");

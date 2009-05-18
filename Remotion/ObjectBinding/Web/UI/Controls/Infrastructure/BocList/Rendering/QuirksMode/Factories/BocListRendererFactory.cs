@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     IBocListNavigationBlockRendererFactory, 
     IBocRowRendererFactory, IBocListTableBlockRendererFactory
   {
-    IBocRowRenderer IBocRowRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
+    IBocRowRenderer IBocRowRendererFactory.CreateRenderer (HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       return new BocRowRenderer (writer, list, serviceLocator);
     }
 
-    IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list)
+    IBocListMenuBlockRenderer IBocListMenuBlockRendererFactory.CreateRenderer (HtmlTextWriter writer, IBocList list)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       return new BocListMenuBlockRenderer (writer, list);
     }
 
-    IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list)
+    IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (HtmlTextWriter writer, IBocList list)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       return new BocListNavigationBlockRenderer (writer, list);
     }
 
-    public IBocListRenderer CreateRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
+    public IBocListRenderer CreateRenderer (HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       return new BocListRenderer (writer, list, serviceLocator);
     }
 
-    IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (HtmlTextWriter writer, Controls.BocList list, IServiceLocator serviceLocator)
+    IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);

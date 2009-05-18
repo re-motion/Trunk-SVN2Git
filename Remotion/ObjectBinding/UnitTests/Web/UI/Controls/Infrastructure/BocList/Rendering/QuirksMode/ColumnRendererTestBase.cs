@@ -14,51 +14,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using NUnit.Framework;
-using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
-  public abstract class ColumnRendererTestBase<T>
+  public abstract class ColumnRendererTestBase<T> : RendererTestBase
       where T: BocColumnDefinition
   {
-    protected HtmlHelper Html { get; set; }
-    private Page Page { get; set; }
-    protected BocListMock List { get; set; }
     protected T Column { get; set; }
-    protected IBusinessObject BusinessObject { get; set; }
-    protected BocListDataRowRenderEventArgs EventArgs { get; set; }
 
-    [SetUp]
-    public virtual void SetUp ()
+    public override void SetUp ()
     {
-      TypeWithReference businessObject = TypeWithReference.Create (
-          TypeWithReference.Create ("referencedObject1"),
-          TypeWithReference.Create ("referencedObject2"));
-      businessObject.ReferenceList = new[] { businessObject.FirstValue, businessObject.SecondValue };
-      BusinessObject = (IBusinessObject) businessObject;
-      BusinessObject.BusinessObjectClass.BusinessObjectProvider.AddService<IBusinessObjectWebUIService> (new ReflectionBusinessObjectWebUIService());
+      base.SetUp ();
 
-      Page = new Page();
-      List = new BocListMock();
-      Page.Controls.Add (List);
-
-      List.DataSource = new BusinessObjectReferenceDataSource();
-      List.DataSource.BusinessObject = BusinessObject;
-      List.Property =
-          (IBusinessObjectReferenceProperty) BusinessObject.BusinessObjectClass.GetPropertyDefinition ("ReferenceList");
-      List.Value = ((TypeWithReference) BusinessObject).ReferenceList;
-
-      EventArgs = new BocListDataRowRenderEventArgs (0, (IBusinessObject) businessObject.FirstValue);
-      EventArgs.IsEditableRow = false;
-
+      InitializeBocList();
       List.FixedColumns.Add (Column);
-
-      Html = new HtmlHelper();
-      Html.InitializeStream();
     }
   }
 }

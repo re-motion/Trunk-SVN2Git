@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockRenderer (HtmlTextWriter writer, Controls.BocList list)
+    public BocListNavigationBlockRenderer (HtmlTextWriter writer, IBocList list)
         : base (writer, list)
     {
     }
@@ -138,13 +138,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         imageUrl = s_inactiveIcons[command];
       else
         imageUrl = s_activeIcons[command];
-      imageUrl = ResourceUrlResolver.GetResourceUrl (List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, imageUrl);
+      imageUrl = ResourceUrlResolver.GetResourceUrl ((Control) List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, imageUrl);
       if (isInactive || List.IsRowEditModeActive)
         RenderIcon (new IconInfo (imageUrl), null);
       else
       {
         string argument = c_goToCommandPrefix + command;
-        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
+        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ((Controls.BocList)List, argument);
         postBackEvent += "; return false;";
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
         Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
