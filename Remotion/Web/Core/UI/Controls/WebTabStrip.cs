@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -29,673 +30,680 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
-
-/// <include file='doc\include\UI\Controls\WebTabStrip.xml' path='WebTabStrip/Class/*' />
-[ToolboxData("<{0}:WebTabStrip runat=server></{0}:WebTabStrip>")]
-[Designer (typeof (WebControlDesigner))]
-public class WebTabStrip : 
-    WebControl, IControl, 
-    IPostBackDataHandler, IPostBackEventHandler, 
-    IResourceDispatchTarget, IControlWithDesignTimeSupport
-{
-  //  constants
-  /// <summary> The key identifying a tab resource entry. </summary>
-  private const string c_resourceKeyTabs = "Tabs";
-
-  // statics
-  private static readonly ILog s_log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-  private static readonly object s_selectedIndexChangedEvent = new object();
-  private static readonly object s_clickEvent = new object();
-
-  // types
-
-  // fields
-  private WebTabCollection _tabs;
-  private WebTab _selectedTab;
-  private string _selectedItemID;
-  private string _tabToBeSelected = null;
-  private bool _hasTabsRestored;
-  private bool _isRestoringTabs;
-  private object _tabsControlState;
-  private Control _ownerControl;
-  private bool _enableSelectedTab = false;
-  private WebTabStyle _tabStyle;
-  private WebTabStyle _selectedTabStyle;
-  private WebTabStyle _disabledTabStyle;
-
-  public WebTabStrip (WebTabCollection tabCollection)
+  /// <include file='doc\include\UI\Controls\WebTabStrip.xml' path='WebTabStrip/Class/*' />
+  [ToolboxData ("<{0}:WebTabStrip runat=server></{0}:WebTabStrip>")]
+  [Designer (typeof (WebControlDesigner))]
+  public class WebTabStrip
+      :
+          WebControl,
+          IControl,
+          IPostBackDataHandler,
+          IPostBackEventHandler,
+          IResourceDispatchTarget,
+          IControlWithDesignTimeSupport
   {
-    ArgumentUtility.CheckNotNull ("tabCollection", tabCollection);
-    _ownerControl = tabCollection.OwnerControl;
-    _tabs = tabCollection;
-    _tabs.SetTabStrip (this);
-    _tabStyle = new WebTabStyle();
-    _selectedTabStyle = new WebTabStyle();
-    _disabledTabStyle = new WebTabStyle();
-  }
+    //  constants
+    /// <summary> The key identifying a tab resource entry. </summary>
+    private const string c_resourceKeyTabs = "Tabs";
 
-  public WebTabStrip (Control ownerControl, Type[] supportedTabTypes)
-    : this (new WebTabCollection (ownerControl, supportedTabTypes))
-  {
-  }
+    // statics
+    private static readonly ILog s_log = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
+    private static readonly object s_selectedIndexChangedEvent = new object();
+    private static readonly object s_clickEvent = new object();
 
-  public WebTabStrip (Control ownerControl)
-    : this (ownerControl, new Type[] {typeof (WebTab)})
-  {}
+    // types
 
-  public WebTabStrip()
-    : this (null, new Type[] {typeof (WebTab)})
-  {
-  }
+    // fields
+    private readonly WebTabCollection _tabs;
+    private WebTab _selectedTab;
+    private string _selectedItemID;
+    private string _tabToBeSelected;
+    private bool _hasTabsRestored;
+    private bool _isRestoringTabs;
+    private object _tabsControlState;
+    private bool _enableSelectedTab;
+    private readonly WebTabStyle _tabStyle;
+    private readonly WebTabStyle _selectedTabStyle;
+    private readonly WebTabStyle _disabledTabStyle;
 
-  protected override void OnInit (EventArgs e)
-  {
-    base.OnInit (e);
-
-    if (!ControlHelper.IsDesignMode (this, Context))
+    public WebTabStrip (WebTabCollection tabCollection)
     {
-      Page.RegisterRequiresControlState (this);
-      Page.RegisterRequiresPostBack (this);
+      ArgumentUtility.CheckNotNull ("tabCollection", tabCollection);
+      _tabs = tabCollection;
+      _tabs.SetTabStrip (this);
+      _tabStyle = new WebTabStyle();
+      _selectedTabStyle = new WebTabStyle();
+      _disabledTabStyle = new WebTabStyle();
     }
 
-    string key = typeof (WebTabStrip).FullName + "_Style";
-    if (!HtmlHeadAppender.Current.IsRegistered (key))
+    public WebTabStrip (IControl ownerControl, Type[] supportedTabTypes)
+        : this (new WebTabCollection (ownerControl, supportedTabTypes))
     {
-      string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTabStrip), ResourceType.Html, "TabStrip.css");
-      HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-    }
-  }
-
-  bool IPostBackDataHandler.LoadPostData (string postDataKey, System.Collections.Specialized.NameValueCollection postCollection)
-  {
-    //  Is PostBack caused by this tab strip ?
-    if (postCollection[ControlHelper.PostEventSourceID] == UniqueID)
-    {
-      _tabToBeSelected = postCollection[ControlHelper.PostEventArgumentID ];
-      ArgumentUtility.CheckNotNullOrEmpty ("postCollection[\"__EVENTARGUMENT\"]", _tabToBeSelected);
-      if (_tabToBeSelected != _selectedItemID)
-        return true;
-    }
-    return false;
-  }
-
-  void IPostBackDataHandler.RaisePostDataChangedEvent()
-  {
-    EnsureTabsRestored();
-    HandleSelectionChangeEvent (_tabToBeSelected);
-  }
-
-  /// <summary> Handles the click event for a tab. </summary>
-  /// <param name="itemID"> The id of the tab. </param>
-  private void HandleSelectionChangeEvent (string itemID)
-  {
-    SetSelectedTab (itemID);
-    OnSelectedIndexChanged();
-  }
-
-  protected virtual void OnSelectedIndexChanged()
-  {
-    EventHandler handler = (EventHandler) Events[s_selectedIndexChangedEvent];
-    if (handler != null)
-      handler (this, EventArgs.Empty);
-  }
-
-  void IPostBackEventHandler.RaisePostBackEvent (string eventArgument)
-  {
-    EnsureTabsRestored();
-    HandleClickEvent (eventArgument);
-  }
-
-  private void HandleClickEvent (string eventArgument)
-  {
-    ArgumentUtility.CheckNotNullOrEmpty ("eventArgument", eventArgument);
-    WebTab tab = Tabs.Find (eventArgument);
-    if (tab != null)
-      OnClick (tab);
-  }
-
-  protected virtual void OnClick (WebTab tab)
-  {
-    ArgumentUtility.CheckNotNull ("tab", tab);
-    tab.OnClick();
-    WebTabClickEventHandler handler = (WebTabClickEventHandler) Events[s_clickEvent];
-    if (handler != null)
-    {
-      WebTabClickEventArgs e = new WebTabClickEventArgs (tab);
-      handler (this, e);
-    }
-  }
-
-  private void EnsureTabsRestored()
-  {
-    if (_hasTabsRestored)
-      return;
- 
-    _isRestoringTabs = true;
-    if (_tabsControlState != null)
-    {
-      LoadTabsControlState (_tabsControlState, _tabs);
-      _hasTabsRestored = true;
-    }
-    _isRestoringTabs = false;
-  }
-
-  protected override void LoadControlState (object savedState)
-  {
-    if (savedState != null)
-    {
-      object[] values = (object[]) savedState;
-      base.LoadControlState(values[0]);
-      _tabsControlState = values[1];
-      _selectedItemID = (string) values[2];
-    }
-  }
-
-  protected override object SaveControlState ()
-  {
-    object[] values = new object[3];
-    values[0] = base.SaveControlState();
-    values[1] = SaveTabsControlState (_tabs);
-    values[2] = _selectedItemID;
-    return values;
-  }
-
-  /// <summary> Loads the settings of the <paramref name="tabs"/> from <paramref name="tabsControlState"/>. </summary>
-  private void LoadTabsControlState (object tabsControlState, WebTabCollection tabs)
-  {
-    ((IControlStateManager) tabs).LoadControlState (tabsControlState);
-  }
-
-  /// <summary> Saves the settings of the  <paramref name="tabs"/> and returns this view state </summary>
-  private object SaveTabsControlState (WebTabCollection tabs)
-  {
-    EnsureTabsRestored();
-    return ((IControlStateManager) tabs).SaveControlState();
-  }
-  
-  protected override void OnPreRender(EventArgs e)
-  {
-    EnsureTabsRestored();
-    
-    base.OnPreRender (e);
-  
-    IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true);
-    LoadResources (resourceManager);
-
-    List<WebTab> visibleTabs = GetVisibleTabs ();
-    for (int i = 0; i < visibleTabs.Count; i++)
-    {
-      WebTab visibleTab = visibleTabs[i];
-      if (string.IsNullOrEmpty (visibleTab.ItemID))
-        visibleTab.ItemID = i.ToString ();
-
-      ScriptUtility.RegisterElementForBorderSpans (this, ClientID + "_" + visibleTab.ItemID);
-    }
-  }
-
-  /// <summary> Calls <see cref="Control.OnPreRender"/> on every invocation. </summary>
-  /// <remarks> Used by the <see cref="WebControlDesigner"/>. </remarks>
-  void IControlWithDesignTimeSupport.PreRenderForDesignMode()
-  {
-    if (! ControlHelper.IsDesignMode (this, Context))
-      throw new InvalidOperationException ("PreRenderChildControlsForDesignMode may only be called during design time.");
-    EnsureChildControls();
-    OnPreRender (EventArgs.Empty);
-  }
-
-  protected override HtmlTextWriterTag TagKey
-  {
-    get { return HtmlTextWriterTag.Div; }
-  }
-
-  protected override void AddAttributesToRender(HtmlTextWriter writer)
-  {  
-    base.AddAttributesToRender (writer);
-    
-    if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-      writer.AddAttribute(HtmlTextWriterAttribute.Class, CssClassBase);
-  }
-
-  protected override void RenderContents (HtmlTextWriter writer)
-  {
-    ArgumentUtility.CheckNotNull ("writer", writer);
-
-    if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
-      WcagHelper.Instance.HandleError (1, this);
-
-    List<WebTab> visibleTabs = GetVisibleTabs ();
-
-    RenderBeginTabsPane (writer);
-    for (int i = 0; i < visibleTabs.Count; i++)
-    { 
-      bool isLast = i == (visibleTabs.Count - 1);
-      WebTab tab = visibleTabs[i];
-      RenderTab (writer, tab, isLast);
-    }
-    RenderEndTabsPane (writer);
-  }
-
-  private List<WebTab> GetVisibleTabs ()
-  {
-    WebTabCollection tabs = Tabs;
-
-    if (ControlHelper.IsDesignMode (this, Context)
-        && tabs.Count == 0)
-    {
-      tabs = GetDesignTimeTabs ();
     }
 
-    List<WebTab> visibleTabs = new List<WebTab> ();
-    foreach (WebTab tab in tabs)
+    public WebTabStrip (IControl ownerControl)
+        : this (ownerControl, new[] { typeof (WebTab) })
     {
-      if (tab.EvaluateVisible () || ControlHelper.IsDesignMode (this, Context))
-        visibleTabs.Add (tab);
     }
 
-    return visibleTabs;
-  }
-
-  private WebTabCollection GetDesignTimeTabs()
-  {
-    WebTabCollection tabs = new WebTabCollection (null);
-    for (int i = 0; i < 5; i++)
-      tabs.Add (new WebTab (i.ToString(), "Tab " + (i + 1).ToString())); 
-    return tabs;
-  }
-
-  private void RenderBeginTabsPane (HtmlTextWriter writer)
-  {
-    bool isEmpty = Tabs.Count == 0;
-
-    string cssClass = CssClassTabsPane;
-    if (isEmpty)
-      cssClass += " " + CssClassTabsPaneEmpty;
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-
-    writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Div
-
-    if (ControlHelper.IsDesignMode (this, Context))
+    public WebTabStrip ()
+        : this (null, new[] { typeof (WebTab) })
     {
-      writer.AddStyleAttribute ("list-style", "none");
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      writer.AddStyleAttribute ("display", "inline");
-    }
-    writer.RenderBeginTag (HtmlTextWriterTag.Ul); // Begin List
-  }
-
-  private void RenderEndTabsPane (HtmlTextWriter writer)
-  {
-    writer.RenderEndTag(); // End List
-    writer.RenderEndTag(); // End Div
-  }
-
-  private void RenderTab (HtmlTextWriter writer, WebTab tab, bool isLast)
-  {
-    if (ControlHelper.IsDesignMode (this, Context))
-    {
-      writer.AddStyleAttribute ("float", "left");
-      writer.AddStyleAttribute ("display", "block");
-      writer.AddStyleAttribute ("white-space", "nowrap");
     }
 
-    writer.RenderBeginTag (HtmlTextWriterTag.Li); // Begin list item
-    
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, "tabStripTabWrapper");
-    writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab wrapper span
-
-    RenderSeperator (writer);
-
-    writer.AddAttribute (HtmlTextWriterAttribute.Id, ClientID + "_" + tab.ItemID);
-    string cssClass;
-    if (tab.IsSelected)
-      cssClass = CssClassTabSelected;
-    else
-      cssClass = CssClassTab;
-    if (!tab.EvaluateEnabled ())
-      cssClass += " " + CssClassDisabled;
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-    writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span
-
-    bool isEnabled = ! tab.IsSelected || _enableSelectedTab;
-    WebTabStyle style = tab.IsSelected ? _selectedTabStyle : _tabStyle;
-    tab.RenderBeginTagForCommand (writer, isEnabled, style);
-
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabAnchorBody);
-    writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin anchor body span
-
-    tab.RenderContents (writer);
-
-    writer.RenderEndTag (); // End anchor body span
-    tab.RenderEndTagForCommand (writer);
-
-    writer.RenderEndTag(); // End tab span
-
-    writer.RenderEndTag(); // End tab wrapper span
-
-    if (isLast)
+    protected override void OnInit (EventArgs e)
     {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabLast);
+      base.OnInit (e);
+
+      if (!ControlHelper.IsDesignMode (this, Context))
+      {
+        Page.RegisterRequiresControlState (this);
+        Page.RegisterRequiresPostBack (this);
+      }
+
+      string key = typeof (WebTabStrip).FullName + "_Style";
+      if (!HtmlHeadAppender.Current.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTabStrip), ResourceType.Html, "TabStrip.css");
+        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
+    bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
+    {
+      //  Is PostBack caused by this tab strip ?
+      if (postCollection[ControlHelper.PostEventSourceID] == UniqueID)
+      {
+        _tabToBeSelected = postCollection[ControlHelper.PostEventArgumentID];
+        ArgumentUtility.CheckNotNullOrEmpty ("postCollection[\"__EVENTARGUMENT\"]", _tabToBeSelected);
+        if (_tabToBeSelected != _selectedItemID)
+          return true;
+      }
+      return false;
+    }
+
+    void IPostBackDataHandler.RaisePostDataChangedEvent ()
+    {
+      EnsureTabsRestored();
+      HandleSelectionChangeEvent (_tabToBeSelected);
+    }
+
+    /// <summary> Handles the click event for a tab. </summary>
+    /// <param name="itemID"> The id of the tab. </param>
+    private void HandleSelectionChangeEvent (string itemID)
+    {
+      SetSelectedTab (itemID);
+      OnSelectedIndexChanged();
+    }
+
+    protected virtual void OnSelectedIndexChanged ()
+    {
+      EventHandler handler = (EventHandler) Events[s_selectedIndexChangedEvent];
+      if (handler != null)
+        handler (this, EventArgs.Empty);
+    }
+
+    void IPostBackEventHandler.RaisePostBackEvent (string eventArgument)
+    {
+      EnsureTabsRestored();
+      HandleClickEvent (eventArgument);
+    }
+
+    private void HandleClickEvent (string eventArgument)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("eventArgument", eventArgument);
+      WebTab tab = Tabs.Find (eventArgument);
+      if (tab != null)
+        OnClick (tab);
+    }
+
+    protected virtual void OnClick (WebTab tab)
+    {
+      ArgumentUtility.CheckNotNull ("tab", tab);
+      tab.OnClick();
+      WebTabClickEventHandler handler = (WebTabClickEventHandler) Events[s_clickEvent];
+      if (handler != null)
+      {
+        WebTabClickEventArgs e = new WebTabClickEventArgs (tab);
+        handler (this, e);
+      }
+    }
+
+    private void EnsureTabsRestored ()
+    {
+      if (_hasTabsRestored)
+        return;
+
+      _isRestoringTabs = true;
+      if (_tabsControlState != null)
+      {
+        LoadTabsControlState (_tabsControlState, _tabs);
+        _hasTabsRestored = true;
+      }
+      _isRestoringTabs = false;
+    }
+
+    protected override void LoadControlState (object savedState)
+    {
+      if (savedState != null)
+      {
+        object[] values = (object[]) savedState;
+        base.LoadControlState (values[0]);
+        _tabsControlState = values[1];
+        _selectedItemID = (string) values[2];
+      }
+    }
+
+    protected override object SaveControlState ()
+    {
+      object[] values = new object[3];
+      values[0] = base.SaveControlState();
+      values[1] = SaveTabsControlState (_tabs);
+      values[2] = _selectedItemID;
+      return values;
+    }
+
+    /// <summary> Loads the settings of the <paramref name="tabs"/> from <paramref name="tabsControlState"/>. </summary>
+    private void LoadTabsControlState (object tabsControlState, WebTabCollection tabs)
+    {
+      ((IControlStateManager) tabs).LoadControlState (tabsControlState);
+    }
+
+    /// <summary> Saves the settings of the  <paramref name="tabs"/> and returns this view state </summary>
+    private object SaveTabsControlState (WebTabCollection tabs)
+    {
+      EnsureTabsRestored();
+      return ((IControlStateManager) tabs).SaveControlState();
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      EnsureTabsRestored();
+
+      base.OnPreRender (e);
+
+      IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true);
+      LoadResources (resourceManager);
+
+      List<WebTab> visibleTabs = GetVisibleTabs();
+      for (int i = 0; i < visibleTabs.Count; i++)
+      {
+        WebTab visibleTab = visibleTabs[i];
+        if (string.IsNullOrEmpty (visibleTab.ItemID))
+          visibleTab.ItemID = i.ToString();
+
+        ScriptUtility.RegisterElementForBorderSpans (this, ClientID + "_" + visibleTab.ItemID);
+      }
+    }
+
+    /// <summary> Calls <see cref="Control.OnPreRender"/> on every invocation. </summary>
+    /// <remarks> Used by the <see cref="WebControlDesigner"/>. </remarks>
+    void IControlWithDesignTimeSupport.PreRenderForDesignMode ()
+    {
+      if (! ControlHelper.IsDesignMode (this, Context))
+        throw new InvalidOperationException ("PreRenderChildControlsForDesignMode may only be called during design time.");
+      EnsureChildControls();
+      OnPreRender (EventArgs.Empty);
+    }
+
+    protected override HtmlTextWriterTag TagKey
+    {
+      get { return HtmlTextWriterTag.Div; }
+    }
+
+    protected override void AddAttributesToRender (HtmlTextWriter writer)
+    {
+      base.AddAttributesToRender (writer);
+
+      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+    }
+
+    protected override void RenderContents (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
+        WcagHelper.Instance.HandleError (1, this);
+
+      List<WebTab> visibleTabs = GetVisibleTabs();
+
+      RenderBeginTabsPane (writer);
+      for (int i = 0; i < visibleTabs.Count; i++)
+      {
+        bool isLast = i == (visibleTabs.Count - 1);
+        WebTab tab = visibleTabs[i];
+        RenderTab (writer, tab, isLast);
+      }
+      RenderEndTabsPane (writer);
+    }
+
+    private List<WebTab> GetVisibleTabs ()
+    {
+      WebTabCollection tabs = Tabs;
+
+      if (ControlHelper.IsDesignMode (this, Context)
+          && tabs.Count == 0)
+        tabs = GetDesignTimeTabs();
+
+      List<WebTab> visibleTabs = new List<WebTab>();
+      foreach (WebTab tab in tabs)
+      {
+        if (tab.EvaluateVisible() || ControlHelper.IsDesignMode (this, Context))
+          visibleTabs.Add (tab);
+      }
+
+      return visibleTabs;
+    }
+
+    private WebTabCollection GetDesignTimeTabs ()
+    {
+      WebTabCollection tabs = new WebTabCollection (null);
+      for (int i = 0; i < 5; i++)
+        tabs.Add (new WebTab (i.ToString(), "Tab " + (i + 1)));
+      return tabs;
+    }
+
+    private void RenderBeginTabsPane (HtmlTextWriter writer)
+    {
+      bool isEmpty = Tabs.Count == 0;
+
+      string cssClass = CssClassTabsPane;
+      if (isEmpty)
+        cssClass += " " + CssClassTabsPaneEmpty;
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+
+      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Div
+
+      if (ControlHelper.IsDesignMode (this, Context))
+      {
+        writer.AddStyleAttribute ("list-style", "none");
+        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
+        writer.AddStyleAttribute ("display", "inline");
+      }
+      writer.RenderBeginTag (HtmlTextWriterTag.Ul); // Begin List
+    }
+
+    private void RenderEndTabsPane (HtmlTextWriter writer)
+    {
+      writer.RenderEndTag(); // End List
+      writer.RenderEndTag(); // End Div
+    }
+
+    private void RenderTab (HtmlTextWriter writer, WebTab tab, bool isLast)
+    {
+      if (ControlHelper.IsDesignMode (this, Context))
+      {
+        writer.AddStyleAttribute ("float", "left");
+        writer.AddStyleAttribute ("display", "block");
+        writer.AddStyleAttribute ("white-space", "nowrap");
+      }
+
+      writer.RenderBeginTag (HtmlTextWriterTag.Li); // Begin list item
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, "tabStripTabWrapper");
+      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab wrapper span
+
+      RenderSeperator (writer);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Id, ClientID + "_" + tab.ItemID);
+      string cssClass;
+      if (tab.IsSelected)
+        cssClass = CssClassTabSelected;
+      else
+        cssClass = CssClassTab;
+      if (!tab.EvaluateEnabled())
+        cssClass += " " + CssClassDisabled;
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span
+
+      bool isEnabled = ! tab.IsSelected || _enableSelectedTab;
+      WebTabStyle style = tab.IsSelected ? _selectedTabStyle : _tabStyle;
+      tab.RenderBeginTagForCommand (writer, isEnabled, style);
+
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabAnchorBody);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin anchor body span
+
+      tab.RenderContents (writer);
+
+      writer.RenderEndTag(); // End anchor body span
+      tab.RenderEndTagForCommand (writer);
+
+      writer.RenderEndTag(); // End tab span
+
+      writer.RenderEndTag(); // End tab wrapper span
+
+      if (isLast)
+      {
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabLast);
+        writer.RenderBeginTag (HtmlTextWriterTag.Span);
+        writer.RenderEndTag();
+      }
+
+      writer.RenderEndTag(); // End list item
+      writer.WriteLine();
+    }
+
+    private void RenderSeperator (HtmlTextWriter writer)
+    {
+      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSeparator);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      writer.RenderEndTag();
       writer.RenderEndTag();
     }
 
-    writer.RenderEndTag(); // End list item
-    writer.WriteLine();
-  }
-
-  private void RenderSeperator (HtmlTextWriter writer)
-  {
-    writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSeparator);
-    writer.RenderBeginTag (HtmlTextWriterTag.Span);
-    writer.RenderBeginTag (HtmlTextWriterTag.Span);
-    writer.RenderEndTag();
-    writer.RenderEndTag();
-  }
-
-  /// <summary> Dispatches the resources passed in <paramref name="values"/> to the control's properties. </summary>
-  /// <param name="values"> An <c>IDictonary</c>: &lt;string key, string value&gt;. </param>
-  void IResourceDispatchTarget.Dispatch (IDictionary values)
-  {
-    ArgumentUtility.CheckNotNull ("values", values);
-    Dispatch (values);
-  }
-
-  /// <summary> Dispatches the resources passed in <paramref name="values"/> to the control's properties. </summary>
-  /// <param name="values"> An <c>IDictonary</c>: &lt;string key, string value&gt;. </param>
-  protected virtual void Dispatch (IDictionary values)
-  {
-    HybridDictionary tabValues = new HybridDictionary();
-    HybridDictionary propertyValues = new HybridDictionary();
-
-    //  Parse the values
-
-    foreach (DictionaryEntry entry in values)
+    /// <summary> Dispatches the resources passed in <paramref name="values"/> to the control's properties. </summary>
+    /// <param name="values"> An <c>IDictonary</c>: &lt;string key, string value&gt;. </param>
+    void IResourceDispatchTarget.Dispatch (IDictionary values)
     {
-      string key = (string) entry.Key;
-      string[] keyParts = key.Split (new Char[] {':'}, 3);
+      ArgumentUtility.CheckNotNull ("values", values);
+      Dispatch (values);
+    }
 
-      //  Is a property/value entry?
-      if (keyParts.Length == 1)
+    /// <summary> Dispatches the resources passed in <paramref name="values"/> to the control's properties. </summary>
+    /// <param name="values"> An <c>IDictonary</c>: &lt;string key, string value&gt;. </param>
+    protected virtual void Dispatch (IDictionary values)
+    {
+      HybridDictionary tabValues = new HybridDictionary();
+      HybridDictionary propertyValues = new HybridDictionary();
+
+      //  Parse the values
+
+      foreach (DictionaryEntry entry in values)
       {
-        string property = keyParts[0];
-        propertyValues.Add (property, entry.Value);
-      }
-        //  Is collection entry?
-      else if (keyParts.Length == 3)
-      {    
-        //  Compound key: "collectionID:elementID:property"
-        string collectionID = keyParts[0];
-        string elementID = keyParts[1];
-        string property = keyParts[2];
+        string key = (string) entry.Key;
+        string[] keyParts = key.Split (new[] { ':' }, 3);
 
-        IDictionary currentCollection = null;
-
-        //  Switch to the right collection
-        switch (collectionID)
+        //  Is a property/value entry?
+        if (keyParts.Length == 1)
         {
-          case c_resourceKeyTabs:
-          {
-            currentCollection = tabValues;
-            break;
-          }
-          default:
-          {
-            //  Invalid collection property
-            s_log.Warn ("WebTabStrip '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page.ToString() + "' does not contain a collection property named '" + collectionID + "'.");
-            break;
-          }
-        }       
-
-        //  Add the property/value pair to the collection
-        if (currentCollection != null)
+          string property = keyParts[0];
+          propertyValues.Add (property, entry.Value);
+        }
+            //  Is collection entry?
+        else if (keyParts.Length == 3)
         {
-          //  Get the dictonary for the current element
-          IDictionary elementValues = (IDictionary) currentCollection[elementID];
+          //  Compound key: "collectionID:elementID:property"
+          string collectionID = keyParts[0];
+          string elementID = keyParts[1];
+          string property = keyParts[2];
 
-          //  If no dictonary exists, create it and insert it into the elements hashtable.
-          if (elementValues == null)
+          IDictionary currentCollection = null;
+
+          //  Switch to the right collection
+          switch (collectionID)
           {
-            elementValues = new HybridDictionary();
-            currentCollection[elementID] = elementValues;
+            case c_resourceKeyTabs:
+            {
+              currentCollection = tabValues;
+              break;
+            }
+            default:
+            {
+              //  Invalid collection property
+              s_log.Warn (
+                  "WebTabStrip '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page
+                  + "' does not contain a collection property named '" + collectionID + "'.");
+              break;
+            }
           }
 
-          //  Insert the argument and resource's value into the dictonary for the specified element.
-          elementValues.Add (property, entry.Value);
+          //  Add the property/value pair to the collection
+          if (currentCollection != null)
+          {
+            //  Get the dictonary for the current element
+            IDictionary elementValues = (IDictionary) currentCollection[elementID];
+
+            //  If no dictonary exists, create it and insert it into the elements hashtable.
+            if (elementValues == null)
+            {
+              elementValues = new HybridDictionary();
+              currentCollection[elementID] = elementValues;
+            }
+
+            //  Insert the argument and resource's value into the dictonary for the specified element.
+            elementValues.Add (property, entry.Value);
+          }
+        }
+        else
+        {
+          //  Not supported format or invalid property
+          s_log.Warn (
+              "WebTabStrip '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page
+              + "' received a resource with an invalid or unknown key '" + key
+              + "'. Required format: 'property' or 'collectionID:elementID:property'.");
         }
       }
-      else
-      {
-        //  Not supported format or invalid property
-        s_log.Warn ("WebTabStrip '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page.ToString() + "' received a resource with an invalid or unknown key '" + key + "'. Required format: 'property' or 'collectionID:elementID:property'.");
-      }
+
+      //  Dispatch simple properties
+      ResourceDispatcher.DispatchGeneric (this, propertyValues);
+
+      //  Dispatch to collections
+      Tabs.Dispatch (tabValues, this, "Tabs");
     }
 
-    //  Dispatch simple properties
-    ResourceDispatcher.DispatchGeneric (this, propertyValues);
-
-    //  Dispatch to collections
-    Tabs.Dispatch (tabValues, this, "Tabs");
-  }
-
-  /// <summary> Loads the resources into the control's properties. </summary>
-  protected virtual void LoadResources (IResourceManager resourceManager)
-  {
-    if (resourceManager == null)
-      return;
-
-    if (Remotion.Web.Utilities.ControlHelper.IsDesignMode ((Control) this))
-      return;
-    Tabs.LoadResources (resourceManager);
-  }
-
-  /// <summary> Sets the selected tab. </summary>
-  internal void SetSelectedTabInternal (WebTab tab)
-  {
-    if (! _isRestoringTabs)
-      EnsureTabsRestored();
-
-    if (tab != null && tab.TabStrip != this)
-      throw new InvalidOperationException ("Only tabs that are part of this tab strip can be selected.");
-    if (_selectedTab != tab)
+    /// <summary> Loads the resources into the control's properties. </summary>
+    protected virtual void LoadResources (IResourceManager resourceManager)
     {
-      if ((_selectedTab != null) && _selectedTab.IsSelected)
-        _selectedTab.SetSelected (false);
-      _selectedTab = tab;
-      if ((_selectedTab != null) && ! _selectedTab.IsSelected)
-        _selectedTab.SetSelected (true);
-      
-      if (_selectedTab == null)
-        _selectedItemID = null;
-      else
-        _selectedItemID = _selectedTab.ItemID;
+      if (resourceManager == null)
+        return;
 
-      if (_selectedTab != null)
-        _selectedTab.OnSelectionChangedInternal();
+      if (ControlHelper.IsDesignMode ((Control) this))
+        return;
+      Tabs.LoadResources (resourceManager);
     }
-  }
 
-  private void SetSelectedTab (string itemID)
-  {
-    ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
-    if (_selectedTab == null || _selectedTab.ItemID != itemID)
+    /// <summary> Sets the selected tab. </summary>
+    internal void SetSelectedTabInternal (WebTab tab)
     {
-      WebTab tab = Tabs.Find (itemID);
-      if (tab != _selectedTab)
-        SetSelectedTabInternal (tab);
-    }
-  }
-
-  /// <summary> Gets the currently selected tab. </summary>
-  [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-  [Browsable (false)]
-  public WebTab SelectedTab
-  {
-    get
-    { 
-      if (Tabs.Count > 0)
-      {
+      if (! _isRestoringTabs)
         EnsureTabsRestored();
-        if (! StringUtility.IsNullOrEmpty (_tabToBeSelected))
-          SetSelectedTab (_tabToBeSelected);
+
+      if (tab != null && tab.TabStrip != this)
+        throw new InvalidOperationException ("Only tabs that are part of this tab strip can be selected.");
+      if (_selectedTab != tab)
+      {
+        if ((_selectedTab != null) && _selectedTab.IsSelected)
+          _selectedTab.SetSelected (false);
+        _selectedTab = tab;
+        if ((_selectedTab != null) && ! _selectedTab.IsSelected)
+          _selectedTab.SetSelected (true);
+
+        if (_selectedTab == null)
+          _selectedItemID = null;
+        else
+          _selectedItemID = _selectedTab.ItemID;
+
+        if (_selectedTab != null)
+          _selectedTab.OnSelectionChangedInternal();
       }
-      return _selectedTab; 
     }
-  }
 
-  /// <summary> Gets the tabs displayed by this tab strip. </summary>
-  [PersistenceMode (PersistenceMode.InnerProperty)]
-  [ListBindable (false)]
-  [MergableProperty (false)]
-  //  Default category
-  [Description ("The tabs displayed by this tab strip.")]
-  [DefaultValue ((string) null)]
-  public WebTabCollection Tabs
-  {
-    get { return _tabs; }
-  }
+    private void SetSelectedTab (string itemID)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+      if (_selectedTab == null || _selectedTab.ItemID != itemID)
+      {
+        WebTab tab = Tabs.Find (itemID);
+        if (tab != _selectedTab)
+          SetSelectedTabInternal (tab);
+      }
+    }
 
-  [Description ("Determines whether to enable the selected tab.")]
-  [DefaultValue (false)]
-  public bool EnableSelectedTab
-  {
-    get { return _enableSelectedTab; }
-    set { _enableSelectedTab = value; }
-  }
+    /// <summary> Gets the currently selected tab. </summary>
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    public WebTab SelectedTab
+    {
+      get
+      {
+        if (Tabs.Count > 0)
+        {
+          EnsureTabsRestored();
+          if (! StringUtility.IsNullOrEmpty (_tabToBeSelected))
+            SetSelectedTab (_tabToBeSelected);
+        }
+        return _selectedTab;
+      }
+    }
 
-  /// <summary> Occurs when a node is clicked. </summary>
-  [Category ("Action")]
-  [Description ("Occurs when the selected tab has been changed.")]
-  public event EventHandler SelectedIndexChanged
-  {
-    add { Events.AddHandler (s_selectedIndexChangedEvent, value); }
-    remove { Events.RemoveHandler (s_selectedIndexChangedEvent, value); }
-  }
+    /// <summary> Gets the tabs displayed by this tab strip. </summary>
+    [PersistenceMode (PersistenceMode.InnerProperty)]
+    [ListBindable (false)]
+    [MergableProperty (false)]
+    //  Default category
+    [Description ("The tabs displayed by this tab strip.")]
+    [DefaultValue ((string) null)]
+    public WebTabCollection Tabs
+    {
+      get { return _tabs; }
+    }
 
-  /// <summary> Is raised when a tab is clicked. </summary>
-  [Category ("Action")]
-  [Description ("Is raised when a tab is clicked.")]
-  public event WebTabClickEventHandler Click
-  {
-    add { Events.AddHandler (s_clickEvent, value); }
-    remove { Events.RemoveHandler (s_clickEvent, value); }
-  }
+    [Description ("Determines whether to enable the selected tab.")]
+    [DefaultValue (false)]
+    public bool EnableSelectedTab
+    {
+      get { return _enableSelectedTab; }
+      set { _enableSelectedTab = value; }
+    }
 
-  [Category ("Style")]
-  [Description ("The style that you want to apply to a tab that is not selected.")]
-  [NotifyParentProperty (true)]
-  [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-  [PersistenceMode (PersistenceMode.InnerProperty)]
-  public WebTabStyle TabStyle
-  {
-    get { return _tabStyle; }
-  }
+    /// <summary> Occurs when a node is clicked. </summary>
+    [Category ("Action")]
+    [Description ("Occurs when the selected tab has been changed.")]
+    public event EventHandler SelectedIndexChanged
+    {
+      add { Events.AddHandler (s_selectedIndexChangedEvent, value); }
+      remove { Events.RemoveHandler (s_selectedIndexChangedEvent, value); }
+    }
 
-  [Category ("Style")]
-  [Description ("The style that you want to apply to the selected tab.")]
-  [NotifyParentProperty (true)]
-  [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-  [PersistenceMode (PersistenceMode.InnerProperty)]
-  public WebTabStyle SelectedTabStyle
-  {
-    get { return _selectedTabStyle; }
-  }
+    /// <summary> Is raised when a tab is clicked. </summary>
+    [Category ("Action")]
+    [Description ("Is raised when a tab is clicked.")]
+    public event WebTabClickEventHandler Click
+    {
+      add { Events.AddHandler (s_clickEvent, value); }
+      remove { Events.RemoveHandler (s_clickEvent, value); }
+    }
 
-  [Category ("Style")]
-  [Description ("The style that you want to apply to a disabled tab.")]
-  [NotifyParentProperty (true)]
-  [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-  [PersistenceMode (PersistenceMode.InnerProperty)]
-  public WebTabStyle DisabledTabStyle
-  {
-    get { return _disabledTabStyle; }
-  }
+    [Category ("Style")]
+    [Description ("The style that you want to apply to a tab that is not selected.")]
+    [NotifyParentProperty (true)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
+    [PersistenceMode (PersistenceMode.InnerProperty)]
+    public WebTabStyle TabStyle
+    {
+      get { return _tabStyle; }
+    }
 
-  #region protected virtual string CssClass...
-  /// <summary> Gets the CSS-Class applied to the <see cref="WebTabStrip"/> itself. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>tabStrip</c>. </para>
-  ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-  /// </remarks>
-  protected virtual string CssClassBase
-  {
-    get { return "tabStrip"; }
-  }
+    [Category ("Style")]
+    [Description ("The style that you want to apply to the selected tab.")]
+    [NotifyParentProperty (true)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
+    [PersistenceMode (PersistenceMode.InnerProperty)]
+    public WebTabStyle SelectedTabStyle
+    {
+      get { return _selectedTabStyle; }
+    }
 
-  /// <summary> Gets the CSS-Class applied to the pane of <see cref="WebTab"/> items. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>tabStripTabsPane</c>. </para>
-  /// </remarks>
-  protected virtual string CssClassTabsPane
-  {
-    get { return "tabStripTabsPane"; }
-  }
+    [Category ("Style")]
+    [Description ("The style that you want to apply to a disabled tab.")]
+    [NotifyParentProperty (true)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
+    [PersistenceMode (PersistenceMode.InnerProperty)]
+    public WebTabStyle DisabledTabStyle
+    {
+      get { return _disabledTabStyle; }
+    }
 
-  /// <summary> Gets the CSS-Class applied to a pane of <see cref="WebTab"/> items if no items are present. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>tabStripTabsPane</c>. </para>
-  ///   <para> Applied in addition to the regular CSS-Class. Use <c>div.tabStripTabsPane.readOnly</c> as a selector. </para>
-  /// </remarks>
-  protected virtual string CssClassTabsPaneEmpty
-  {
-    get { return "empty"; }
-  }
+    #region protected virtual string CssClass...
 
-  /// <summary> Gets the CSS-Class applied to a <see cref="WebTab"/>. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>tabStripTab</c>. </para>
-  ///   <para> Applied only if the <see cref="Style.CssClass"/> is not set for the <see cref="TabStyle"/>. </para>
-  /// </remarks>
-  protected virtual string CssClassTab
-  {
-    get { return "tabStripTab"; }
-  }
+    /// <summary> Gets the CSS-Class applied to the <see cref="WebTabStrip"/> itself. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabStrip</c>. </para>
+    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
+    /// </remarks>
+    protected virtual string CssClassBase
+    {
+      get { return "tabStrip"; }
+    }
 
-  /// <summary> Gets the CSS-Class applied to a <see cref="WebTab"/> if it is selected. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>tabStripTabSelected</c>. </para>
-  ///   <para> Applied only if the <see cref="Style.CssClass"/> is not set for the <see cref="SelectedTabStyle"/>. </para>
-  /// </remarks>
-  protected virtual string CssClassTabSelected
-  {
-    get { return "tabStripTabSelected"; }
-  }
+    /// <summary> Gets the CSS-Class applied to the pane of <see cref="WebTab"/> items. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabStripTabsPane</c>. </para>
+    /// </remarks>
+    protected virtual string CssClassTabsPane
+    {
+      get { return "tabStripTabsPane"; }
+    }
 
-  /// <summary> Gets the CSS-Class applied to a <c>span</c> intended for formatting the inside of the anchor element. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>anchorBody</c>. </para>
-  /// </remarks>
-  protected virtual string CssClassTabAnchorBody
-  {
-    get { return "anchorBody"; }
-  }
+    /// <summary> Gets the CSS-Class applied to a pane of <see cref="WebTab"/> items if no items are present. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabStripTabsPane</c>. </para>
+    ///   <para> Applied in addition to the regular CSS-Class. Use <c>div.tabStripTabsPane.readOnly</c> as a selector. </para>
+    /// </remarks>
+    protected virtual string CssClassTabsPaneEmpty
+    {
+      get { return "empty"; }
+    }
 
-  /// <summary> Gets the CSS-Class applied to a <c>span</c> intended for clearing the space after the last tab. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>last</c>. </para>
-  /// </remarks>
-  protected virtual string CssClassTabLast
-  {
-    get { return "last"; }
-  }
-  
-  /// <summary> Gets the CSS-Class applied to a separator. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>tabStripTabSeparator</c>. </para>
-  /// </remarks>
-  protected virtual string CssClassSeparator
-  {
-    get { return "tabStripTabSeparator"; }
-  }
-  
-  /// <summary> Gets the CSS-Class applied to the <see cref="WebTab"/> when it is displayed disabled. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>disabled</c>. </para>
-  ///   <para> Applied in addition to the regular CSS-Class. Use <c>.tabStripTab.disabled</c> as a selector.</para>
-  /// </remarks>
-  protected virtual string CssClassDisabled
-  { get { return "disabled"; } }
+    /// <summary> Gets the CSS-Class applied to a <see cref="WebTab"/>. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabStripTab</c>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> is not set for the <see cref="TabStyle"/>. </para>
+    /// </remarks>
+    protected virtual string CssClassTab
+    {
+      get { return "tabStripTab"; }
+    }
 
-  #endregion
-}
+    /// <summary> Gets the CSS-Class applied to a <see cref="WebTab"/> if it is selected. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabStripTabSelected</c>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> is not set for the <see cref="SelectedTabStyle"/>. </para>
+    /// </remarks>
+    protected virtual string CssClassTabSelected
+    {
+      get { return "tabStripTabSelected"; }
+    }
 
+    /// <summary> Gets the CSS-Class applied to a <c>span</c> intended for formatting the inside of the anchor element. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>anchorBody</c>. </para>
+    /// </remarks>
+    protected virtual string CssClassTabAnchorBody
+    {
+      get { return "anchorBody"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to a <c>span</c> intended for clearing the space after the last tab. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>last</c>. </para>
+    /// </remarks>
+    protected virtual string CssClassTabLast
+    {
+      get { return "last"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to a separator. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabStripTabSeparator</c>. </para>
+    /// </remarks>
+    protected virtual string CssClassSeparator
+    {
+      get { return "tabStripTabSeparator"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="WebTab"/> when it is displayed disabled. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>disabled</c>. </para>
+    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.tabStripTab.disabled</c> as a selector.</para>
+    /// </remarks>
+    protected virtual string CssClassDisabled
+    {
+      get { return "disabled"; }
+    }
+
+    #endregion
+  }
 }

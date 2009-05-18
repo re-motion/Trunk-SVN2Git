@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
@@ -59,9 +60,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     {
       IExecutionState executionState = CreateExecutionState (WxePermaUrlOptions.Null);
 
-      using (MockRepository.Ordered ())
+      using (MockRepository.Ordered())
       {
-        using (MockRepository.Unordered ())
+        using (MockRepository.Unordered())
         {
           _pageMock.Expect (mock => mock.GetPostBackCollection()).Return (PostBackCollection);
           _pageMock.Expect (mock => mock.SaveAllState());
@@ -93,7 +94,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
       IExecutionState executionState = CreateExecutionState (permaUrlOptions);
 
-      using (MockRepository.Ordered ())
+      using (MockRepository.Ordered())
       {
         using (MockRepository.Unordered())
         {
@@ -125,12 +126,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     [Test]
     public void ExecuteSubFunction_SuppressSender_IPostBackEventHandler ()
     {
-      Control senderMock = MockRepository.PartialMultiMock<Control> (typeof (IPostBackEventHandler));
+      IControl senderMock = MockRepository.StrictMultiMock<IControl> (typeof(IPostBackDataHandler));
       senderMock.Stub (stub => stub.UniqueID).Return (c_senderUniqueID).Repeat.Any();
 
       IExecutionState executionState = CreateExecutionState (senderMock);
 
-      using (MockRepository.Ordered ())
+      using (MockRepository.Ordered())
       {
         using (MockRepository.Unordered())
         {
@@ -160,12 +161,12 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     [Test]
     public void ExecuteSubFunction_SuppressSender_IPostBackDataHandler ()
     {
-      Control senderMock = MockRepository.PartialMultiMock<Control> (typeof (IPostBackDataHandler));
+      IControl senderMock = MockRepository.StrictMultiMock<IControl> (typeof (IPostBackDataHandler));
       senderMock.Stub (stub => stub.UniqueID).Return (c_senderUniqueID).Repeat.Any();
 
       IExecutionState executionState = CreateExecutionState (senderMock);
 
-      using (MockRepository.Ordered ())
+      using (MockRepository.Ordered())
       {
         using (MockRepository.Unordered())
         {
@@ -197,7 +198,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     {
       IExecutionState executionState = CreateExecutionState (true);
 
-      using (MockRepository.Ordered ())
+      using (MockRepository.Ordered())
       {
         using (MockRepository.Unordered())
         {
@@ -224,7 +225,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     [Test]
     public void ExecuteSubFunction_UsesEventTarget_SuppressSender_SenderRemains ()
     {
-      Control senderMock = MockRepository.PartialMultiMock<Control> (typeof (IPostBackDataHandler));
+      IControl senderMock = MockRepository.StrictMock<IControl> ();
       senderMock.Stub (stub => stub.UniqueID).Return (c_senderUniqueID).Repeat.Any();
 
       IExecutionState executionState = new PreProcessingSubFunctionState (
@@ -232,7 +233,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
           new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
           new WxeRepostOptions (senderMock, true));
 
-      using (MockRepository.Ordered ())
+      using (MockRepository.Ordered())
       {
         using (MockRepository.Unordered())
         {
@@ -264,7 +265,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
           WxeRepostOptions.Null);
     }
 
-    private PreProcessingSubFunctionState CreateExecutionState (Control sender)
+    private PreProcessingSubFunctionState CreateExecutionState (IControl sender)
     {
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
@@ -277,7 +278,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
           new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
-          new WxeRepostOptions (MockRepository.Stub<Control>(), usesEventTarget));
+          new WxeRepostOptions (MockRepository.Stub<IControl>(), usesEventTarget));
     }
   }
 }

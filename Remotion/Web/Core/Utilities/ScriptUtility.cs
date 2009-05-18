@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
@@ -45,63 +44,63 @@ namespace Remotion.Web.Utilities
         switch (c)
         {
           case '\t':
-            {
-              output.Append (@"\t");
-              break;
-            }
+          {
+            output.Append (@"\t");
+            break;
+          }
           case '\n':
-            {
-              output.Append (@"\n");
-              break;
-            }
+          {
+            output.Append (@"\n");
+            break;
+          }
           case '\r':
-            {
-              output.Append (@"\r");
-              break;
-            }
+          {
+            output.Append (@"\r");
+            break;
+          }
           case '"':
-            {
-              output.Append ("\\\"");
-              break;
-            }
+          {
+            output.Append ("\\\"");
+            break;
+          }
           case '\'':
-            {
-              output.Append (@"\'");
-              break;
-            }
+          {
+            output.Append (@"\'");
+            break;
+          }
           case '\\':
+          {
+            if (idxChars > 0 && idxChars + 1 < input.Length)
             {
-              if (idxChars > 0 && idxChars + 1 < input.Length)
+              char prevChar = input[idxChars - 1];
+              char nextChar = input[idxChars + 1];
+              if (prevChar == '<' && nextChar == '/')
               {
-                char prevChar = input[idxChars - 1];
-                char nextChar = input[idxChars + 1];
-                if (prevChar == '<' && nextChar == '/')
-                {
-                  output.Append (c);
-                  break;
-                }
+                output.Append (c);
+                break;
               }
-              output.Append (@"\\");
-              break;
             }
+            output.Append (@"\\");
+            break;
+          }
           case '\v':
-            {
-              output.Append (c);
-              break;
-            }
+          {
+            output.Append (c);
+            break;
+          }
           case '\f':
-            {
-              output.Append (c);
-              break;
-            }
+          {
+            output.Append (c);
+            break;
+          }
           default:
-            {
-              output.Append (c);
-              break;
-            }
+          {
+            output.Append (c);
+            break;
+          }
         }
       }
-      return output.ToString ();
+      return output.ToString();
     }
 
     /// <summary>
@@ -109,7 +108,7 @@ namespace Remotion.Web.Utilities
     ///   The script is automatically surrounded by &lt;script&gt; tags.
     /// </summary>
     /// <param name="control"> 
-    ///   The <see cref="Control"/> which the script file will be registered. Must not be <see langword="null"/>.
+    ///   The <see cref="IControl"/> which the script file will be registered. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="key"> 
     ///   The key identifying the registered script file. Must not be <see langword="null"/> or empty.
@@ -117,8 +116,9 @@ namespace Remotion.Web.Utilities
     /// <param name="javascript"> 
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
-    /// <seealso cref="Page.RegisterClientScriptBlock"/>
-    public static void RegisterClientScriptBlock (Control control, string key, string javascript)
+    /// <seealso cref="Page.ClientScript"/>
+    /// <seealso cref="ClientScriptManager.RegisterClientScriptBlock"/>
+    public static void RegisterClientScriptBlock (IControl control, string key, string javascript)
     {
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("key", key);
@@ -127,7 +127,8 @@ namespace Remotion.Web.Utilities
       if (!string.IsNullOrEmpty (javascript))
         javascript += "\r\n";
 
-      ScriptManager.RegisterClientScriptBlock (control, typeof (Page), key, javascript, true);
+      control.Page.ClientScript.RegisterClientScriptBlock (typeof (Page), key, javascript, true);
+      //ScriptManager.RegisterClientScriptBlock (control, typeof (Page), key, javascript, true);
     }
 
     /// <summary>
@@ -135,7 +136,7 @@ namespace Remotion.Web.Utilities
     ///   The script is automatically surrounded by &lt;script&gt; tags.
     /// </summary>
     /// <param name="control"> 
-    ///   The <see cref="Control"/> for which the script file will be registered. Must not be <see langword="null"/>.
+    ///   The <see cref="IControl"/> for which the script file will be registered. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="key"> 
     ///   The key identifying the registered script block. Must not be <see langword="null"/> or empty.
@@ -143,8 +144,9 @@ namespace Remotion.Web.Utilities
     /// <param name="javascript"> 
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
-    /// <seealso cref="Page.RegisterStartupScript"/>
-    public static void RegisterStartupScriptBlock (Control control, string key, string javascript)
+    /// <seealso cref="Page.ClientScript"/>
+    /// <seealso cref="ClientScriptManager.RegisterStartupScript(System.Type,string,string)"/>
+    public static void RegisterStartupScriptBlock (IControl control, string key, string javascript)
     {
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("key", key);
@@ -152,24 +154,27 @@ namespace Remotion.Web.Utilities
 
       if (!string.IsNullOrEmpty (javascript))
         javascript += "\r\n";
-      
-      ScriptManager.RegisterStartupScript (control, typeof (Page), key, javascript, true);
+
+      control.Page.ClientScript.RegisterStartupScript (control.Page.GetType(), key, javascript, true);
+      //ScriptManager.RegisterStartupScript (control, typeof (Page), key, javascript, true);
     }
 
-    public static void RegisterElementForBorderSpans (Control control, string elementID)
+    public static void RegisterElementForBorderSpans (IControl control, string elementID)
     {
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNullOrEmpty ("elementID", elementID);
 
-      ScriptUtility.RegisterStartupScriptBlock (
-         control, "BorderSpans_" + elementID, string.Format ("StyleUtility.CreateBorderSpans (document.getElementById ('{0}'));", elementID));
+      RegisterStartupScriptBlock (
+          control, "BorderSpans_" + elementID, string.Format ("StyleUtility.CreateBorderSpans (document.getElementById ('{0}'));", elementID));
     }
 
     /// <summary>
     /// Gets a flag that informs the caller if the <paramref name="control"/> will be part of the rendered output. This method only works during the
     /// Render cycle.
     /// </summary>
-    [Obsolete ("The various methods for registering scripts now accept controls instead of the page, thus allowing filtering of the output by the surrounding UpdatePanel.")]
+    [Obsolete (
+        "The various methods for registering scripts now accept controls instead of the page, thus allowing filtering of the output by the surrounding UpdatePanel."
+        )]
     public static bool IsPartOfRenderedOutput (Control control)
     {
       ArgumentUtility.CheckNotNull ("control", control);
@@ -178,16 +183,23 @@ namespace Remotion.Web.Utilities
       if (scriptManager != null && scriptManager.IsInAsyncPostBack)
       {
         bool isInsidePartialRenderingUpdatePanel = control.CreateSequence (c => c.Parent)
-          .Where (c => c is UpdatePanel && ((UpdatePanel)c).IsInPartialRendering)
-          .Cast<UpdatePanel>()
-          .Any();
+            .Where (c => c is UpdatePanel && ((UpdatePanel) c).IsInPartialRendering)
+            .Cast<UpdatePanel>()
+            .Any();
 
         return isInsidePartialRenderingUpdatePanel;
       }
       else
-      {
         return true;
-      }
+    }
+
+    public static string GetPostBackEventReference (IControl control, string argument)
+    {
+      Control standardControl = control as Control;
+      if (standardControl != null)
+        return control.Page.ClientScript.GetPostBackEventReference (standardControl, argument);
+
+      return string.Format ("__doPostback({0},{1})", control.UniqueID, argument);
     }
   }
 }

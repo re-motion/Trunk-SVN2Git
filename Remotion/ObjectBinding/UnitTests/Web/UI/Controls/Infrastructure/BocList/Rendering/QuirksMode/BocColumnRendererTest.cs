@@ -23,23 +23,19 @@ using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.Qu
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   [TestFixture]
-  public class BocColumnRendererTest
+  public class BocColumnRendererTest : RendererTestBase
   {
-    private HtmlHelper Html { get; set; }
-    private ObjectBinding.Web.UI.Controls.BocList List { get; set; }
     private BocColumnDefinition Column { get; set; }
 
     [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
-      List = new ObjectBinding.Web.UI.Controls.BocList();
       Column = new BocSimpleColumnDefinition();
       Column.ColumnTitle = "TestColumn1";
-      BocListView listView = new BocListView (List, new[] { Column });
-      List.AvailableViews.Add (listView);
 
-      Html = new HtmlHelper();
-      Html.InitializeStream();
+      base.SetUp();
+
+      InitializeBocList();
     }
 
     [Test]
@@ -74,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
         string iconFilename,
         string iconAltText)
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (Html.Writer, List, (BocSimpleColumnDefinition) Column);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, (BocSimpleColumnDefinition) Column);
       renderer.RenderTitleCell (sortDirection, sortIndex);
 
       HtmlDocument document = Html.GetResultDocument();

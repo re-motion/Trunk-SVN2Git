@@ -1,13 +1,14 @@
 using System;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   public class BocIndexColumnRenderer : BocListRendererBase, IBocIndexColumnRenderer
   {
-    public BocIndexColumnRenderer (HtmlTextWriter writer, IBocList list)
-        : base(writer, list)
+    public BocIndexColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
+        : base(context, writer, list)
     {
     }
 

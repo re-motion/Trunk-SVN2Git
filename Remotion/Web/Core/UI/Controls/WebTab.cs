@@ -30,22 +30,25 @@ namespace Remotion.Web.UI.Controls
 public class WebTab: IControlItem, IControlStateManager
 {
   /// <summary> The control to which this object belongs. </summary>
-  private Control _ownerControl = null;
+  private IControl _ownerControl;
   private string _itemID = "";
   private string _text = "";
   private IconInfo _icon;
   private bool _isVisible = true;
-  private bool _isDisabled = false;
+  private bool _isDisabled;
   private WebTabStrip _tabStrip;
-  private bool _isSelected = false;
-  private int _selectDesired = 0;
+  private bool _isSelected;
+  private int _selectDesired;
   private bool _isControlStateRestored;
 
   /// <summary> Initalizes a new instance. </summary>
   public WebTab (string itemID, string text, IconInfo icon)
   {
-    ItemID = itemID;
-    Text = text;
+    ArgumentUtility.CheckNotNull ("itemID", itemID);
+    ArgumentUtility.CheckNotNull ("text", text);
+
+    _itemID = itemID;
+    _text = text;
     _icon = icon;
   }
 
@@ -287,13 +290,13 @@ public class WebTab: IControlItem, IControlStateManager
   /// <summary> Gets or sets the control to which this object belongs. </summary>
   [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
   [Browsable (false)]
-  public Control OwnerControl
+  public IControl OwnerControl
   {
     get { return OwnerControlImplementation;  }
     set { OwnerControlImplementation = value; }
   }
 
-  protected virtual Control OwnerControlImplementation
+  protected virtual IControl OwnerControlImplementation
   {
     get { return _ownerControl;  }
     set
@@ -301,10 +304,10 @@ public class WebTab: IControlItem, IControlStateManager
       if (_ownerControl != value)
       {
         if (OwnerControl != null)
-          OwnerControl.PreRender -= new EventHandler (OwnerControl_PreRender);
+          OwnerControl.PreRender -= OwnerControl_PreRender;
         _ownerControl = value;
         if (OwnerControl != null)
-          OwnerControl.PreRender += new EventHandler (OwnerControl_PreRender);
+          OwnerControl.PreRender += OwnerControl_PreRender;
         OnOwnerControlChanged();
       }
     }
@@ -432,7 +435,7 @@ public delegate void WebTabClickEventHandler (object sender, WebTabClickEventArg
 public class WebTabClickEventArgs: EventArgs
 {
   /// <summary> The <see cref="WebTab"/> that was clicked. </summary>
-  private WebTab _tab;
+  private readonly WebTab _tab;
 
   /// <summary> Initializes an instance. </summary>
   public WebTabClickEventArgs (WebTab tab)

@@ -22,9 +22,9 @@ namespace Remotion.Web.UI.Controls
 {
 
 public class SingleControlItemCollection
-  : ICollection, IEnumerable // For Designer Support. (VS2003, VS2005)
+  : ICollection // For Designer Support. (VS2003, VS2005)
 {
-  private Type[] _supportedTypes;
+  private readonly Type[] _supportedTypes;
   private IControlItem _controlItem;
 
   /// <summary> Creates a new instance. </summary>
@@ -120,7 +120,7 @@ public class SingleControlItemCollection
 
 public class SingleControlItemCollectionEnumerator: IEnumerator
 {
-  private IControlItem _controlItem;
+  private readonly IControlItem _controlItem;
   bool _isMoved;
   bool _isEnd;
 

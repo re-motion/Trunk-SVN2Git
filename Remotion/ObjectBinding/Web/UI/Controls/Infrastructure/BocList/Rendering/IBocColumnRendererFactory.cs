@@ -15,12 +15,13 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering
 {
   public interface IBocColumnRendererFactory<T>
       where T: BocColumnDefinition
   {
-    IBocColumnRenderer<T> CreateRenderer (HtmlTextWriter writer, IBocList list, T columnDefinition);
+    IBocColumnRenderer<T> CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, T columnDefinition);
   }
 }

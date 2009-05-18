@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public void RenderTitleCellForMultiSelect ()
     {
       ((BocListMock) List).Selection = RowSelection.Multiple;
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (Html.Writer, List);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderTitleCell();
 
       HtmlDocument document = Html.GetResultDocument();
@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public void RenderDataCellForMultiSelect ()
     {
       ((BocListMock) List).Selection = RowSelection.Multiple;
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (Html.Writer, List);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderDataCell (0, "checkboxControl", false, "bocListTableCell");
 
       HtmlDocument document = Html.GetResultDocument ();
@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public void RenderTitleCellForSingleSelect ()
     {
       ((BocListMock) List).Selection = RowSelection.SingleRadioButton;
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (Html.Writer, List);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderTitleCell ();
 
       HtmlDocument document = Html.GetResultDocument ();
@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public void RenderDataCellForSingleSelect ()
     {
       ((BocListMock) List).Selection = RowSelection.SingleRadioButton;
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (Html.Writer, List);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderDataCell (0, "radioControl", false, "bocListTableCell");
 
       HtmlDocument document = Html.GetResultDocument ();

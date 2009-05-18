@@ -19,6 +19,8 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -35,8 +37,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCustomColumnRenderer (HtmlTextWriter writer, IBocList list, BocCustomColumnDefinition column)
-        : base (writer, list, column)
+    public BocCustomColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, BocCustomColumnDefinition column)
+        : base (context, writer, list, column)
     {
     }
 
@@ -75,8 +77,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private void RenderCustomCellInnerControls (int rowIndex)
     {
-      Triplet[] customColumnTriplets = (Triplet[]) List.CustomColumns[Column];
-      Triplet customColumnTriplet = customColumnTriplets[rowIndex];
+      BocListCustomColumnTriplet[] customColumnTriplets = List.CustomColumns[Column];
+      BocListCustomColumnTriplet customColumnTriplet = customColumnTriplets[rowIndex];
       if (customColumnTriplet == null)
       {
         Writer.Write (c_whiteSpace);
@@ -85,10 +87,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
       RenderClickWrapperBeginTag();
 
-      Control control = (Control) customColumnTriplet.Third;
-
-      ApplyStyleDefaults (control);
-      control.RenderControl (Writer);
+      Control control = customColumnTriplet.Third;
+      if (control != null)
+      {
+        ApplyStyleDefaults (control);
+        control.RenderControl (Writer);
+      }
 
       RenderClickWrapperEndTag();
     }
@@ -109,13 +113,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     {
       bool isControlWidthEmpty;
       CssStyleCollection controlStyle = GetControlStyle (control, out isControlWidthEmpty);
-      if (controlStyle != null)
-      {
-        if (StringUtility.IsNullOrEmpty (controlStyle["width"]) && isControlWidthEmpty)
-          controlStyle["width"] = "100%";
-        if (StringUtility.IsNullOrEmpty (controlStyle["vertical-align"]))
-          controlStyle["vertical-align"] = "middle";
-      }
+      if (controlStyle == null)
+        return;
+
+      if (StringUtility.IsNullOrEmpty (controlStyle["width"]) && isControlWidthEmpty)
+        controlStyle["width"] = "100%";
+      if (StringUtility.IsNullOrEmpty (controlStyle["vertical-align"]))
+        controlStyle["vertical-align"] = "middle";
     }
 
     private CssStyleCollection GetControlStyle (Control control, out bool isControlWidthEmpty)

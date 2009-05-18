@@ -20,6 +20,7 @@ using Remotion.Globalization;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -31,7 +32,7 @@ namespace Remotion.Web.UI.Controls
     public static WebMenuItem GetSeparator ()
     {
       return new WebMenuItem (
-          null, null, c_separator, new IconInfo (), new IconInfo (), WebMenuItemStyle.IconAndText, RequiredSelection.Any, false, null);
+          null, null, c_separator, new IconInfo(), new IconInfo(), WebMenuItemStyle.IconAndText, RequiredSelection.Any, false, null);
     }
 
     private string _itemID = string.Empty;
@@ -41,16 +42,18 @@ namespace Remotion.Web.UI.Controls
     private IconInfo _disabledIcon;
     private WebMenuItemStyle _style = WebMenuItemStyle.IconAndText;
     private RequiredSelection _requiredSelection = RequiredSelection.Any;
-    private bool _isDisabled = false;
+    private bool _isDisabled;
     private bool _isVisible = true;
     private MissingPermissionBehavior _missingPermissionBehavior;
     private ISecurableObject _securableObject;
 
     /// <summary> The command rendered for this menu item. </summary>
-    private SingleControlItemCollection _command = null;
+    private readonly SingleControlItemCollection _command;
+
     /// <summary> The control to which this object belongs. </summary>
-    private Control _ownerControl = null;
-    private CommandClickEventHandler _commandClick;
+    private IControl _ownerControl;
+
+    private readonly CommandClickEventHandler _commandClick;
 
     public WebMenuItem (
         string itemID,
@@ -63,25 +66,32 @@ namespace Remotion.Web.UI.Controls
         bool isDisabled,
         Command command)
     {
-      ItemID = itemID;
-      Category = category;
-      Text = text;
+      _itemID = itemID;
+      _category = category;
+      _text = text;
       Icon = icon;
       DisabledIcon = disabledIcon;
       _style = style;
       _requiredSelection = requiredSelection;
       _isDisabled = isDisabled;
-      _command = new SingleControlItemCollection (command, new Type[] { typeof (Command) });
+      _command = new SingleControlItemCollection (command, new[] { typeof (Command) });
 
       _commandClick = new CommandClickEventHandler (Command_Click);
-      if (Command != null)
-        Command.Click += _commandClick;
+      if (_command.ControlItem != null)
+        ((Command) _command.ControlItem).Click += _commandClick;
     }
 
     public WebMenuItem ()
-      : this (
-          null, null, null, new IconInfo (), new IconInfo (),
-          WebMenuItemStyle.IconAndText, RequiredSelection.Any, false, new Command (CommandType.Event))
+        : this (
+            null,
+            null,
+            null,
+            new IconInfo(),
+            new IconInfo(),
+            WebMenuItemStyle.IconAndText,
+            RequiredSelection.Any,
+            false,
+            new Command (CommandType.Event))
     {
     }
 
@@ -92,9 +102,9 @@ namespace Remotion.Web.UI.Controls
 
     private void OwnerControl_PreRender (object sender, EventArgs e)
     {
-      if (Remotion.Web.Utilities.ControlHelper.IsDesignMode (_ownerControl))
+      if (ControlHelper.IsDesignMode (_ownerControl))
         return;
-      PreRender ();
+      PreRender();
     }
 
     /// <summary> Is called when the <see cref="OwnerControl"/> is Pre-Rendered. </summary>
@@ -104,7 +114,7 @@ namespace Remotion.Web.UI.Controls
 
     private void Command_Click (object sender, CommandClickEventArgs e)
     {
-      OnClick ();
+      OnClick();
     }
 
     /// <summary> This mehtod is called when a menu item is clicked on the client side. </summary>
@@ -182,10 +192,7 @@ namespace Remotion.Web.UI.Controls
     [NotifyParentProperty (true)]
     public IconInfo Icon
     {
-      get
-      {
-        return _icon;
-      }
+      get { return _icon; }
       set
       {
         ArgumentUtility.CheckNotNull ("Icon", value);
@@ -200,7 +207,7 @@ namespace Remotion.Web.UI.Controls
 
     private void ResetIcon ()
     {
-      _icon.Reset ();
+      _icon.Reset();
     }
 
     /// <summary> 
@@ -214,10 +221,7 @@ namespace Remotion.Web.UI.Controls
     [NotifyParentProperty (true)]
     public IconInfo DisabledIcon
     {
-      get
-      {
-        return _disabledIcon;
-      }
+      get { return _disabledIcon; }
       set
       {
         ArgumentUtility.CheckNotNull ("DisabledIcon", value);
@@ -232,7 +236,7 @@ namespace Remotion.Web.UI.Controls
 
     private void ResetDisabledIcon ()
     {
-      _disabledIcon.Reset ();
+      _disabledIcon.Reset();
     }
 
     [PersistenceMode (PersistenceMode.Attribute)]
@@ -294,10 +298,7 @@ namespace Remotion.Web.UI.Controls
     [NotifyParentProperty (true)]
     public virtual Command Command
     {
-      get
-      {
-        return (Command) _command.ControlItem;
-      }
+      get { return (Command) _command.ControlItem; }
       set
       {
         if (Command != null)
@@ -339,7 +340,7 @@ namespace Remotion.Web.UI.Controls
     {
       if (Command != null)
       {
-        Command = (Command) Activator.CreateInstance (Command.GetType ());
+        Command = (Command) Activator.CreateInstance (Command.GetType());
         Command.Type = CommandType.None;
       }
     }
@@ -358,19 +359,19 @@ namespace Remotion.Web.UI.Controls
     /// </remarks>
     protected bool ShouldSerializePersistedCommand ()
     {
-      return ShouldSerializeCommand ();
+      return ShouldSerializeCommand();
     }
 
     /// <summary> Gets or sets the control to which this object belongs. </summary>
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     [Browsable (false)]
-    public Control OwnerControl
+    public IControl OwnerControl
     {
       get { return OwnerControlImplementation; }
       set { OwnerControlImplementation = value; }
     }
 
-    protected virtual Control OwnerControlImplementation
+    protected virtual IControl OwnerControlImplementation
     {
       get { return _ownerControl; }
       set
@@ -378,13 +379,13 @@ namespace Remotion.Web.UI.Controls
         if (_ownerControl != value)
         {
           if (_ownerControl != null)
-            _ownerControl.PreRender -= new EventHandler (OwnerControl_PreRender);
+            _ownerControl.PreRender -= OwnerControl_PreRender;
           _ownerControl = value;
           if (_ownerControl != null)
-            _ownerControl.PreRender += new EventHandler (OwnerControl_PreRender);
+            _ownerControl.PreRender += OwnerControl_PreRender;
           if (Command != null)
             Command.OwnerControl = value;
-          OnOwnerControlChanged ();
+          OnOwnerControlChanged();
         }
       }
     }
@@ -422,8 +423,7 @@ namespace Remotion.Web.UI.Controls
       if (resourceManager == null)
         return;
 
-      string key;
-      key = ResourceManagerUtility.GetGlobalResourceKey (Category);
+      string key = ResourceManagerUtility.GetGlobalResourceKey (Category);
       if (!StringUtility.IsNullOrEmpty (key))
         Category = resourceManager.GetString (key);
 
@@ -464,7 +464,7 @@ namespace Remotion.Web.UI.Controls
   public class WebMenuItemClickEventArgs : EventArgs
   {
     /// <summary> The <see cref="WebMenuItem"/> that was clicked. </summary>
-    private WebMenuItem _item;
+    private readonly WebMenuItem _item;
 
     /// <summary> Initializes an instance. </summary>
     public WebMenuItemClickEventArgs (WebMenuItem item)
@@ -485,5 +485,4 @@ namespace Remotion.Web.UI.Controls
       get { return _item; }
     }
   }
-
 }

@@ -14,8 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -32,9 +32,9 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     public static readonly IWxeCallArguments Default = new WxeCallArgumentsBase (new WxeCallOptions (WxePermaUrlOptions.Null));
 
-    private readonly Control _sender;
+    private readonly IControl _sender;
 
-    public WxeCallArguments (Control sender, WxeCallOptions options)
+    public WxeCallArguments (IControl sender, WxeCallOptions options)
         : base (options)
     {
       ArgumentUtility.CheckNotNull ("sender", sender);
@@ -42,7 +42,7 @@ namespace Remotion.Web.ExecutionEngine
       _sender = sender;
     }
 
-    public Control Sender
+    public IControl Sender
     {
       get { return _sender; }
     }

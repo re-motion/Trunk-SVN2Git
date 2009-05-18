@@ -24,13 +24,12 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
-
   /// <include file='doc\include\UI\Controls\DropDownMenu.xml' path='DropDownMenu/Class/*' />
   [Designer (typeof (WebControlDesigner))]
   public class DropDownMenu : WebControl, IControl, IPostBackEventHandler, IControlWithDesignTimeSupport
   {
-    private static readonly object s_eventCommandClickEvent = new object ();
-    private static readonly object s_wxeFunctionCommandClickEvent = new object ();
+    private static readonly object s_eventCommandClickEvent = new object();
+    private static readonly object s_wxeFunctionCommandClickEvent = new object();
 
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
 
@@ -38,28 +37,28 @@ namespace Remotion.Web.UI.Controls
     public static readonly string OnHeadTitleClickScript = "DropDownMenu_OnHeadControlClick();";
 
     private string _titleText = "";
-    private IconInfo _titleIcon = null;
-    private bool _isReadOnly = false;
+    private IconInfo _titleIcon;
+    private bool _isReadOnly;
     private bool _enableGrouping = true;
     private string _getSelectionCount = "";
 
-    private WebMenuItemCollection _menuItems;
+    private readonly WebMenuItemCollection _menuItems;
     private RenderMethod _renderHeadTitleMethod;
 
-    public DropDownMenu (Control ownerControl, Type[] supportedMenuItemTypes)
+    public DropDownMenu (IControl ownerControl, Type[] supportedMenuItemTypes)
     {
       if (ownerControl == null)
         ownerControl = this;
       _menuItems = new WebMenuItemCollection (ownerControl, supportedMenuItemTypes);
     }
 
-    public DropDownMenu (Control ownerControl)
-      : this (ownerControl, new Type[] { typeof (WebMenuItem) })
+    public DropDownMenu (IControl ownerControl)
+        : this (ownerControl, new[] { typeof (WebMenuItem) })
     {
     }
 
     public DropDownMenu ()
-      : this (null, new Type[] { typeof (WebMenuItem) })
+        : this (null, new[] { typeof (WebMenuItem) })
     {
     }
 
@@ -74,7 +73,7 @@ namespace Remotion.Web.UI.Controls
       try
       {
         if (eventArgument.Length == 0)
-          throw new FormatException ();
+          throw new FormatException();
         index = int.Parse (eventArgument);
       }
       catch (FormatException)
@@ -83,30 +82,36 @@ namespace Remotion.Web.UI.Controls
       }
 
       if (index >= _menuItems.Count)
-        throw new ArgumentOutOfRangeException (eventArgument, "Index of argument 'eventargument' was out of the range of valid values. Index must be less than the number of displayed menu items.'");
+      {
+        throw new ArgumentOutOfRangeException (
+            eventArgument,
+            "Index of argument 'eventargument' was out of the range of valid values. Index must be less than the number of displayed menu items.'");
+      }
 
       WebMenuItem item = _menuItems[index];
       if (item.Command == null)
-        throw new ArgumentOutOfRangeException (eventArgument, "The DropDownMenu '" + ID + "' does not have a command associated with menu item " + index + ".");
+      {
+        throw new ArgumentOutOfRangeException (
+            eventArgument, "The DropDownMenu '" + ID + "' does not have a command associated with menu item " + index + ".");
+      }
 
       switch (item.Command.Type)
       {
         case CommandType.Event:
-          {
-            OnEventCommandClick (item);
-            break;
-          }
+        {
+          OnEventCommandClick (item);
+          break;
+        }
         case CommandType.WxeFunction:
-          {
-            OnWxeFunctionCommandClick (item);
-            break;
-          }
+        {
+          OnWxeFunctionCommandClick (item);
+          break;
+        }
         default:
-          {
-            break;
-          }
+        {
+          break;
+        }
       }
-
     }
 
     /// <summary> Fires the <see cref="EventCommandClick"/> event. </summary>
@@ -120,7 +125,7 @@ namespace Remotion.Web.UI.Controls
       }
 
       if (item != null && item.Command != null)
-        item.Command.OnClick ();
+        item.Command.OnClick();
     }
 
     /// <summary> Fires the <see cref="WxeFunctionCommandClick"/> event. </summary>
@@ -170,7 +175,7 @@ namespace Remotion.Web.UI.Controls
       if (Enabled
           && !Page.ClientScript.IsStartupScriptRegistered (key))
       {
-        StringBuilder script = new StringBuilder ();
+        StringBuilder script = new StringBuilder();
         script.Append ("DropDownMenu_AddMenuInfo (\r\n\t");
         script.AppendFormat ("new DropDownMenu_MenuInfo ('{0}', new Array (\r\n", ClientID);
         bool isFirstItem = true;
@@ -179,7 +184,7 @@ namespace Remotion.Web.UI.Controls
         if (_enableGrouping)
           menuItems = _menuItems.GroupMenuItems (true);
         else
-          menuItems = _menuItems.ToArray ();
+          menuItems = _menuItems.ToArray();
 
         string category = null;
         bool isCategoryVisible = false;
@@ -191,7 +196,7 @@ namespace Remotion.Web.UI.Controls
             category = menuItem.Category;
             isCategoryVisible = false;
           }
-          if (!menuItem.EvaluateVisible ())
+          if (!menuItem.EvaluateVisible())
             continue;
           if (_enableGrouping && menuItem.IsSeparator && !isCategoryVisible)
             continue;
@@ -202,12 +207,11 @@ namespace Remotion.Web.UI.Controls
           else
             script.AppendFormat (",\r\n");
           AppendMenuItem (script, menuItem, _menuItems.IndexOf (menuItem));
-
         }
         script.Append (" )"); // Close Array
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );"); // Close AddMenuInfo
-        ScriptUtility.RegisterStartupScriptBlock (this, key, script.ToString ());
+        ScriptUtility.RegisterStartupScriptBlock (this, key, script.ToString());
       }
     }
 
@@ -227,20 +231,21 @@ namespace Remotion.Web.UI.Controls
         if (isCommandEnabled)
         {
           bool isPostBackCommand = menuItem.Command.Type == CommandType.Event
-                                  || menuItem.Command.Type == CommandType.WxeFunction;
+                                   || menuItem.Command.Type == CommandType.WxeFunction;
           if (isPostBackCommand)
           {
             // Clientside script creates an anchor with href="#" and onclick=function
-            string argument = menuItemIndex.ToString ();
+            string argument = menuItemIndex.ToString();
             href = Page.ClientScript.GetPostBackClientHyperlink (this, argument);
             href = ScriptUtility.EscapeClientScript (href);
             href = "'" + href + "'";
 
-            menuItem.Command.RegisterForSynchronousPostBack (this, argument, string.Format ("DropDownMenu '{0}', MenuItem '{1}'", ID, menuItem.ItemID));
+            menuItem.Command.RegisterForSynchronousPostBack (
+                this, argument, string.Format ("DropDownMenu '{0}', MenuItem '{1}'", ID, menuItem.ItemID));
           }
           else if (menuItem.Command.Type == CommandType.Href)
           {
-            href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
+            href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString(), menuItem.ItemID);
             if (!ControlHelper.IsDesignMode (this, Context))
               href = UrlUtility.GetAbsoluteUrl (Page, href);
             href = "'" + href + "'";
@@ -259,10 +264,10 @@ namespace Remotion.Web.UI.Controls
         disabledIcon = "'" + UrlUtility.ResolveUrl (menuItem.DisabledIcon.Url) + "'";
       string text = showText ? "'" + menuItem.Text + "'" : "null";
 
-      bool isDisabled = !menuItem.EvaluateEnabled () || !isCommandEnabled;
+      bool isDisabled = !menuItem.EvaluateEnabled() || !isCommandEnabled;
       stringBuilder.AppendFormat (
           "\t\tnew DropDownMenu_ItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8})",
-          menuItemIndex.ToString (),
+          menuItemIndex,
           menuItem.Category,
           text,
           icon,
@@ -279,7 +284,7 @@ namespace Remotion.Web.UI.Controls
     {
       if (!ControlHelper.IsDesignMode (this, Context))
         throw new InvalidOperationException ("PreRenderChildControlsForDesignMode may only be called during design time.");
-      EnsureChildControls ();
+      EnsureChildControls();
       OnPreRender (EventArgs.Empty);
     }
 
@@ -290,13 +295,13 @@ namespace Remotion.Web.UI.Controls
 
     protected override void AddAttributesToRender (HtmlTextWriter writer)
     {
-      this.Style.Add ("display", "inline-block");
+      Style.Add ("display", "inline-block");
       base.AddAttributesToRender (writer);
     }
 
     protected override void RenderContents (HtmlTextWriter writer)
     {
-      if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
+      if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
 
       //  Menu-Div filling the control's div is required to apply internal css attributes
@@ -312,7 +317,7 @@ namespace Remotion.Web.UI.Controls
 
       RenderHead (writer);
 
-      writer.RenderEndTag (); // End Menu-Div
+      writer.RenderEndTag(); // End Menu-Div
     }
 
     public string GetOpenDropDownMenuEventReference (string eventReference)
@@ -338,14 +343,14 @@ namespace Remotion.Web.UI.Controls
       writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
       writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
       writer.AddStyleAttribute ("display", "inline");
-      writer.RenderBeginTag (HtmlTextWriterTag.Table);  // Begin Drop Down Button table
+      writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin Drop Down Button table
       writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
       RenderHeadTitle (writer);
       RenderHeadButton (writer);
 
-      writer.RenderEndTag ();
-      writer.RenderEndTag (); // End Drop Down Button table
+      writer.RenderEndTag();
+      writer.RenderEndTag(); // End Drop Down Button table
 
       ////  Options Drop Down Button 
       //writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
@@ -372,7 +377,7 @@ namespace Remotion.Web.UI.Controls
       //writer.Write (_titleText);
       //writer.RenderEndTag();
 
-      writer.RenderEndTag ();  // End Drop Down Head-Div
+      writer.RenderEndTag(); // End Drop Down Head-Div
     }
 
     /// <summary> Only used by control developers. </summary>
@@ -392,14 +397,12 @@ namespace Remotion.Web.UI.Controls
 
         if (hasHeadTitleContents)
         {
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%");//"100%");
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%"); //"100%");
           writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHeadTitle);
           writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
 
           if (Enabled)
-          {
             writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin title tag
-          }
           else
           {
             writer.AddStyleAttribute (HtmlTextWriterStyle.Color, "GrayText");
@@ -407,22 +410,20 @@ namespace Remotion.Web.UI.Controls
           }
           RenderIcon (writer, _titleIcon);
           writer.Write (_titleText);
-          writer.RenderEndTag (); // End title tag
+          writer.RenderEndTag(); // End title tag
 
-          writer.RenderEndTag (); // End td
+          writer.RenderEndTag(); // End td
         }
       }
       else
-      {
         _renderHeadTitleMethod (writer, this);
-      }
 
       if (hasHeadTitleContents)
       {
         writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
         writer.AddStyleAttribute ("padding-right", "0.3em");
         writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
-        writer.RenderEndTag ();
+        writer.RenderEndTag();
       }
     }
 
@@ -434,14 +435,14 @@ namespace Remotion.Web.UI.Controls
       writer.AddAttribute (HtmlTextWriterAttribute.Src, icon.Url);
       if (!icon.Width.IsEmpty && !icon.Height.IsEmpty)
       {
-        writer.AddAttribute (HtmlTextWriterAttribute.Width, icon.Width.ToString ());
-        writer.AddAttribute (HtmlTextWriterAttribute.Height, icon.Height.ToString ());
+        writer.AddAttribute (HtmlTextWriterAttribute.Width, icon.Width.ToString());
+        writer.AddAttribute (HtmlTextWriterAttribute.Height, icon.Height.ToString());
       }
       writer.AddStyleAttribute ("vertical-align", "middle");
       writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
       writer.AddStyleAttribute ("margin-right", "0.3em");
       writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag ();
+      writer.RenderEndTag();
     }
 
     private void RenderHeadButton (HtmlTextWriter writer)
@@ -453,7 +454,7 @@ namespace Remotion.Web.UI.Controls
 
       writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1em");
       writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      writer.RenderBeginTag (HtmlTextWriterTag.A);  // Begin anchor
+      writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
 
       writer.AddStyleAttribute ("vertical-align", "middle");
       writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
@@ -462,11 +463,11 @@ namespace Remotion.Web.UI.Controls
       writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
       writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
       writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      writer.RenderEndTag (); // End img
+      writer.RenderEndTag(); // End img
 
-      writer.RenderEndTag (); // End anchor
+      writer.RenderEndTag(); // End anchor
 
-      writer.RenderEndTag (); // End td
+      writer.RenderEndTag(); // End td
     }
 
     /// <remarks>
@@ -534,39 +535,60 @@ namespace Remotion.Web.UI.Controls
     }
 
     protected virtual string CssClassHead
-    { get { return "dropDownMenuHead"; } }
+    {
+      get { return "dropDownMenuHead"; }
+    }
 
     protected virtual string CssClassHeadFocus
-    { get { return "dropDownMenuHeadFocus"; } }
+    {
+      get { return "dropDownMenuHeadFocus"; }
+    }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="DropDownMenu"/>'s title. </summary>
     /// <remarks> Class: <c></c> </remarks>
     protected virtual string CssClassHeadTitle
-    { get { return "dropDownMenuHeadTitle"; } }
+    {
+      get { return "dropDownMenuHeadTitle"; }
+    }
 
     protected virtual string CssClassHeadTitleFocus
-    { get { return "dropDownMenuHeadTitleFocus"; } }
+    {
+      get { return "dropDownMenuHeadTitleFocus"; }
+    }
 
     protected virtual string CssClassHeadButton
-    { get { return "dropDownMenuHeadButton"; } }
+    {
+      get { return "dropDownMenuHeadButton"; }
+    }
 
     protected virtual string CssClassMenuButtonFocus
-    { get { return "dropDownMenuButtonFocus"; } }
+    {
+      get { return "dropDownMenuButtonFocus"; }
+    }
 
     protected virtual string CssClassPopUp
-    { get { return "dropDownMenuPopUp"; } }
+    {
+      get { return "dropDownMenuPopUp"; }
+    }
 
     protected virtual string CssClassItem
-    { get { return "dropDownMenuItem"; } }
+    {
+      get { return "dropDownMenuItem"; }
+    }
 
     protected virtual string CssClassItemFocus
-    { get { return "dropDownMenuItemFocus"; } }
+    {
+      get { return "dropDownMenuItemFocus"; }
+    }
 
     protected virtual string CssClassItemTextPane
-    { get { return "dropDownMenuItemTextPane"; } }
+    {
+      get { return "dropDownMenuItemTextPane"; }
+    }
 
     protected virtual string CssClassItemIconPane
-    { get { return "dropDownMenuItemIconPane"; } }
+    {
+      get { return "dropDownMenuItemIconPane"; }
+    }
   }
-
 }

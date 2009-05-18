@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -31,6 +32,7 @@ namespace Remotion.Web.UI.Controls
   public class WebButton
       :
           Button,
+          IControl,
           // Required because Page.ProcessPostData always registers the last IPostBackEventHandler in the controls 
           // collection for controls (buttons) having PostData but no IPostBackDataHandler. 
           IPostBackDataHandler
@@ -78,7 +80,7 @@ namespace Remotion.Web.UI.Controls
     /// <remarks>
     ///   This method is never called if the button is rendered as a legacy button.
     /// </remarks>
-    bool IPostBackDataHandler.LoadPostData (string postDataKey, System.Collections.Specialized.NameValueCollection postCollection)
+    bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
       ArgumentUtility.CheckNotNull ("postCollection", postCollection);
 
@@ -136,9 +138,7 @@ namespace Remotion.Web.UI.Controls
           Text = _icon.AlternateText;
       }
       else
-      {
         Text = text;
-      }
 
       AddAttributesToRender_net20 (writer);
 
@@ -180,7 +180,7 @@ namespace Remotion.Web.UI.Controls
 
           string postBackEventReference = Page.ClientScript.GetPostBackEventReference (options, false);
           if (StringUtility.IsNullOrEmpty (postBackEventReference))
-            postBackEventReference = Page.ClientScript.GetPostBackEventReference (this, null);
+            postBackEventReference = ScriptUtility.GetPostBackEventReference (this, null);
           postBackScript += EnsureEndWithSemiColon (postBackEventReference);
 
           if (options.PerformValidation)
@@ -265,9 +265,7 @@ namespace Remotion.Web.UI.Controls
       text = SmartLabel.FormatLabelText (text, true);
 
       if (HasControls())
-      {
         base.RenderContents (writer);
-      }
       else
       {
         bool hasIcon = _icon != null && !StringUtility.IsNullOrEmpty (_icon.Url);
@@ -291,7 +289,7 @@ namespace Remotion.Web.UI.Controls
           writer.Write (text); // Do not HTML enocde
       }
 
-      writer.RenderEndTag (); // End acnhorBody span
+      writer.RenderEndTag(); // End acnhorBody span
     }
 
     /// <summary> Gets or sets the icon displayed in this menu item. </summary>
@@ -312,12 +310,11 @@ namespace Remotion.Web.UI.Controls
       if (resourceManager == null)
         return;
 
-      if (ControlHelper.IsDesignMode (this))
+      if (ControlHelper.IsDesignMode ((IControl) this))
         return;
 
       //  Dispatch simple properties
-      string key;
-      key = ResourceManagerUtility.GetGlobalResourceKey (Text);
+      string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
       if (!StringUtility.IsNullOrEmpty (key))
         Text = resourceManager.GetString (key);
 
@@ -393,7 +390,7 @@ namespace Remotion.Web.UI.Controls
       if (clickHandler == null)
         return true;
 
-      return securityAdapter.HasAccess (_securableObject, (EventHandler) Events[s_clickEvent]);
+      return securityAdapter.HasAccess (_securableObject, Events[s_clickEvent]);
     }
 
     public override bool Visible
@@ -429,8 +426,8 @@ namespace Remotion.Web.UI.Controls
     [Category ("Action")]
     public new event EventHandler Click
     {
-      add { base.Events.AddHandler (s_clickEvent, value); }
-      remove { base.Events.RemoveHandler (s_clickEvent, value); }
+      add { Events.AddHandler (s_clickEvent, value); }
+      remove { Events.RemoveHandler (s_clickEvent, value); }
     }
 
     protected override void OnClick (EventArgs e)

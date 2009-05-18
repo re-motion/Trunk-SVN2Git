@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
-using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -29,7 +28,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [SetUp]
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
       InitializeBocList();
       List.FixedColumns.Add (new StubColumnDefinition());
     }
@@ -37,9 +36,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderTitlesRow ()
     {
-      IBocRowRenderer renderer = new BocRowRenderer (Html.Writer, List, new StubServiceLocator());
-      renderer.RenderTitlesRow ();
-     
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
+      renderer.RenderTitlesRow();
+
 
       HtmlDocument document = Html.GetResultDocument();
 
@@ -57,11 +56,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       // List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
       ((ObjectBinding.Web.UI.Controls.BocList) List).Index = RowIndex.InitialOrder;
-      IBocRowRenderer renderer = new BocRowRenderer (Html.Writer, List, new StubServiceLocator ());
-      renderer.RenderTitlesRow ();
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator ());
+      renderer.RenderTitlesRow();
 
 
-      HtmlDocument document = Html.GetResultDocument ();
+      HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
 
@@ -80,11 +79,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       // List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       ((ObjectBinding.Web.UI.Controls.BocList) List).Selection = RowSelection.Multiple;
-      IBocRowRenderer renderer = new BocRowRenderer (Html.Writer, List, new StubServiceLocator ());
-      renderer.RenderTitlesRow ();
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
+      renderer.RenderTitlesRow();
 
 
-      HtmlDocument document = Html.GetResultDocument ();
+      HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
 
@@ -100,10 +99,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderDataRow ()
     {
-      IBocRowRenderer renderer = new BocRowRenderer (Html.Writer, List, new StubServiceLocator ());
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
       renderer.RenderDataRow (BusinessObject, 0, 0, 0);
 
-      HtmlDocument document = Html.GetResultDocument ();
+      HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
       Html.AssertAttribute (tr, "class", "bocListDataRow");

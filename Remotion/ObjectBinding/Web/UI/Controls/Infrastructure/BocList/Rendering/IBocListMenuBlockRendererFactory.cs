@@ -15,11 +15,12 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering
 {
   public interface IBocListMenuBlockRendererFactory
   {
-    IBocListMenuBlockRenderer CreateRenderer (HtmlTextWriter writer, IBocList list);
+    IBocListMenuBlockRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list);
   }
 }

@@ -268,7 +268,7 @@ namespace Remotion.Web.ExecutionEngine
       if (WxeHandler.IsSessionManagementEnabled)
       {
         //  Ensure the registration of "__doPostBack" on the page.
-        temp = _page.ClientScript.GetPostBackEventReference (_page, null);
+        temp = ScriptUtility.GetPostBackEventReference (_page, null);
 
         bool isAbortEnabled = _page.IsAbortEnabled;
 

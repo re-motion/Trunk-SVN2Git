@@ -14,10 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.ExecutionEngine
@@ -30,7 +29,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
         "The 'sender' must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.")]
     public void Inititalize_IsNot_IPostBackDataHandler_Or_IPostBackDataHandler ()
     {
-      new WxeRepostOptions (MockRepository.GenerateStub<Control>(), false);
+      new WxeRepostOptions (MockRepository.GenerateStub<IControl>(), false);
     }
 
     [Test]
@@ -39,6 +38,5 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
     {
       new WxeRepostOptions (null, false);
     }
-
   }
 }

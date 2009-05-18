@@ -28,7 +28,7 @@ namespace Remotion.Web.UI.Controls
   public class WebTreeNode : IControlItem
   {
     /// <summary> The control to which this object belongs. </summary>
-    private Control _ownerControl = null;
+    private IControl _ownerControl;
 
     private string _itemID = string.Empty;
     private string _text = string.Empty;
@@ -36,19 +36,20 @@ namespace Remotion.Web.UI.Controls
     private IconInfo _icon;
     private string _menuID = string.Empty;
 
-    private WebTreeNodeCollection _children;
+    private readonly WebTreeNodeCollection _children;
     private WebTreeView _treeView;
     private WebTreeNode _parentNode;
-    private bool _isExpanded = false;
-    private bool _isEvaluated = false;
-    private bool _isSelected = false;
-    private int _selectDesired = 0;
+    private bool _isExpanded;
+    private bool _isEvaluated;
+    private bool _isSelected;
+    private int _selectDesired;
 
     /// <summary> Initalizes a new instance. </summary>
     public WebTreeNode (string itemID, string text, string toolTip, IconInfo icon)
     {
-      ItemID = itemID;
-      Text = text;
+      ValidateItemId (itemID);
+      _itemID = itemID;
+      _text = StringUtility.NullToEmpty (text);
       _toolTip = StringUtility.NullToEmpty (toolTip);
       _icon = icon;
       _children = new WebTreeNodeCollection (null);
@@ -117,7 +118,7 @@ namespace Remotion.Web.UI.Controls
     public void EvaluateChildren ()
     {
       for (int i = 0; i < Children.Count; i++)
-        ((WebTreeNode) Children[i]).Evaluate();
+        Children[i].Evaluate();
     }
 
     /// <summary> Evaluates and expands the current node. </summary>
@@ -184,21 +185,26 @@ namespace Remotion.Web.UI.Controls
       get { return _itemID; }
       set
       {
-        ArgumentUtility.CheckNotNullOrEmpty ("value", value);
-        if (! StringUtility.IsNullOrEmpty (value))
-        {
-          WebTreeNodeCollection nodes = null;
-          if (ParentNode != null)
-            nodes = ParentNode.Children;
-          else if (TreeView != null)
-            nodes = TreeView.Nodes;
-          if (nodes != null)
-          {
-            if (nodes.Find (value) != null)
-              throw new ArgumentException ("The collection already contains a node with ItemID '" + value + "'.", "value");
-          }
-        }
+        ValidateItemId(value);
         _itemID = value;
+      }
+    }
+
+    private void ValidateItemId (string value)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("value", value);
+      if (! StringUtility.IsNullOrEmpty (value))
+      {
+        WebTreeNodeCollection nodes = null;
+        if (ParentNode != null)
+          nodes = ParentNode.Children;
+        else if (TreeView != null)
+          nodes = TreeView.Nodes;
+        if (nodes != null)
+        {
+          if (nodes.Find (value) != null)
+            throw new ArgumentException ("The collection already contains a node with ItemID '" + value + "'.", "value");
+        }
       }
     }
 
@@ -333,13 +339,13 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Gets or sets the control to which this object belongs. </summary>
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     [Browsable (false)]
-    public Control OwnerControl
+    public IControl OwnerControl
     {
       get { return OwnerControlImplementation; }
       set { OwnerControlImplementation = value; }
     }
 
-    protected virtual Control OwnerControlImplementation
+    protected virtual IControl OwnerControlImplementation
     {
       get { return _ownerControl; }
       set

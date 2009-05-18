@@ -29,6 +29,7 @@ namespace OBWTest.IndividualControlTests
 [MultiLingualResources ("OBWTest.Globalization.TestBasePage")]
 public class TestBasePage :
     WxePage, 
+    Remotion.Web.UI.Controls.IControl,
     IObjectWithResources //  Provides the WebForm's ResourceManager via GetResourceManager() 
 {  
   protected new TestFunction CurrentFunction

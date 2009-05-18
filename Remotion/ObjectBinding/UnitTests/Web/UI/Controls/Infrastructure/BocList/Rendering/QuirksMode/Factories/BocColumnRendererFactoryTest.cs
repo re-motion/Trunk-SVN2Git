@@ -19,12 +19,15 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
+using Remotion.Web.Infrastructure;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories
 {
   [TestFixture]
   public class BocColumnRendererFactoryTest
   {
+    protected IHttpContext HttpContext { get; set; }
     private HtmlHelper Html { get; set; }
     private ObjectBinding.Web.UI.Controls.BocList List { get; set; }
     private Page Page { get; set; }
@@ -32,6 +35,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [SetUp]
     public void SetUp ()
     {
+      HttpContext = MockRepository.GenerateMock<IHttpContext>();
+
       Html = new HtmlHelper();
       Html.InitializeStream();
 
@@ -92,7 +97,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public void CreateBocIndexColumnRenderer ()
     {
       IBocIndexColumnRendererFactory factory = new BocColumnRendererFactory();
-      IBocIndexColumnRenderer renderer = factory.CreateRenderer (Html.Writer, List);
+      IBocIndexColumnRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
 
       Assert.IsNotNull (renderer);
       Assert.AreSame (Html.Writer, renderer.Writer);
@@ -103,7 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public void CreateBocSelectorColumnRenderer ()
     {
       IBocSelectorColumnRendererFactory factory = new BocColumnRendererFactory();
-      IBocSelectorColumnRenderer renderer = factory.CreateRenderer (Html.Writer, List);
+      IBocSelectorColumnRenderer renderer = factory.CreateRenderer (HttpContext, Html.Writer, List);
 
       Assert.IsNotNull (renderer);
       Assert.AreSame (Html.Writer, renderer.Writer);
@@ -116,7 +121,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       column.ColumnTitle = "TestColumn1";
       List.FixedColumns.Add (column);
 
-      IBocColumnRenderer<T> renderer = rendererFactory.CreateRenderer (Html.Writer, List, column);
+      IBocColumnRenderer<T> renderer = rendererFactory.CreateRenderer (HttpContext, Html.Writer, List, column);
 
       Assert.IsNotNull (renderer);
       Assert.AreSame (Html.Writer, renderer.Writer);

@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
-using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -35,7 +34,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Column.CancelText = "Abbrechen";
       Column.Show = BocRowEditColumnDefinitionShow.Always;
 
-      base.SetUp ();
+      base.SetUp();
 
       EventArgs.IsEditableRow = true;
 
@@ -49,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderEditable ()
     {
-      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (HttpContext, Html.Writer, List, Column);
       EventArgs.IsEditableRow = true;
       renderer.RenderDataCell (0, false, EventArgs);
 
@@ -69,10 +68,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       List.SwitchRowIntoEditMode (0);
 
-      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument ();
+      HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
       Html.AssertAttribute (td, "class", "bocListDataCellEven");

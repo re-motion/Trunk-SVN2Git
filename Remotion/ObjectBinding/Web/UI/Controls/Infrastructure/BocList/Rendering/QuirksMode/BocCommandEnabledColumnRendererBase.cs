@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using Remotion.Security;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -31,8 +32,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   public abstract class BocCommandEnabledColumnRendererBase<TBocColumnDefinition> : BocColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocCommandEnabledColumnDefinition
   {
-    protected BocCommandEnabledColumnRendererBase (HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion)
-        : base (writer, list, columnDefintion)
+    protected BocCommandEnabledColumnRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion)
+        : base (context, writer, list, columnDefintion)
     {
     }
 
@@ -40,9 +41,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     {
       EditableRow editableRow = null;
       if (isEditedRow)
-        editableRow = List.EditModeController._rows[0];
+        editableRow = List.EditModeController.Rows[0];
       else if (List.IsListEditModeActive)
-        editableRow = List.EditModeController._rows[originalRowIndex];
+        editableRow = List.EditModeController.Rows[originalRowIndex];
       return editableRow;
     }
 
@@ -85,7 +86,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
                       || !isReadOnly && command.Show == CommandShow.EditMode;
 
       bool isCommandAllowed = (command.Type != CommandType.None) && !List.IsRowEditModeActive;
-      bool isCommandEnabled = (command.CommandState == null) || command.CommandState.IsEnabled ((UI.Controls.BocList) List, businessObject, Column);
+      bool isCommandEnabled = (command.CommandState == null) || command.CommandState.IsEnabled ( List, businessObject, Column);
 
       if (isActive && isCommandAllowed && isCommandEnabled)
       {
@@ -99,7 +100,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         objectID = businessObjectWithIdentity.UniqueIdentifier;
 
       string argument = List.GetListItemCommandArgument (ColumnIndex, originalRowIndex);
-      string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ((Control) List, argument) + ";";
+      string postBackEvent = ScriptUtility.GetPostBackEventReference ( List, argument) + ";";
       string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
       command.RenderBegin (Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
 

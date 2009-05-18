@@ -353,7 +353,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ArrayList SortingOrder { get; }
     ArrayList Validators { get; }
     Triplet[] RowMenus { get; }
-    Hashtable CustomColumns { get; }
+    System.Collections.Generic.IDictionary<BocColumnDefinition, BocListCustomColumnTriplet[]> CustomColumns { get; }
     bool IsEmptyList { get; }
     bool HasListMenu { get; }
     bool IsClientSideSortingEnabled { get; }

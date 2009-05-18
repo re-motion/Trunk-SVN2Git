@@ -16,11 +16,12 @@
 using System;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering
 {
   public interface IBocListTableBlockRendererFactory
   {
-    IBocListTableBlockRenderer CreateRenderer (HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator);
+    IBocListTableBlockRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator);
   }
 }

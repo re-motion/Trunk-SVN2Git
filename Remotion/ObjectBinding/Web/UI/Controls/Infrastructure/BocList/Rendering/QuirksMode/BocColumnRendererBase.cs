@@ -18,6 +18,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -47,10 +48,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <see cref="Column"/> properties.
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> containing the data to be rendered.</param>
+    /// <param name="context">The <see cref="IHttpContext"/> that contains the response for which to render the list.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the cells to.</param>
     /// <param name="columnDefinition">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
-    protected BocColumnRendererBase (HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefinition)
-        : base (writer, list)
+    protected BocColumnRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefinition)
+        : base (context, writer, list)
     {
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
@@ -106,7 +108,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         if (!List.IsRowEditModeActive && !List.IsListEditModeActive && List.HasClientScript)
         {
           string argument = Controls.BocList.SortCommandPrefix + ColumnIndex;
-          string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ((Control) List, argument);
+          string postBackEvent = ScriptUtility.GetPostBackEventReference ( List, argument);
           postBackEvent += "; return false;";
           Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
           Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
@@ -165,13 +167,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         case SortingDirection.Ascending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              (Control)List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortAscendingIcon);
+              List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortAscendingIcon);
           break;
         }
         case SortingDirection.Descending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              (Control) List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortDescendingIcon);
+              List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortDescendingIcon);
           break;
         }
         case SortingDirection.None:

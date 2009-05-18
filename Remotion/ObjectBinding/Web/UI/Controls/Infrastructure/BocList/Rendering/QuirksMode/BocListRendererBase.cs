@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -68,6 +69,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private readonly IBocList _list;
     private readonly HtmlTextWriter _writer;
+    private readonly IHttpContext _context;
 
     /// <summary>
     /// Constructor initializing the renderer with the <see cref="BocList"/> rendering object and the
@@ -76,15 +78,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <remarks>Each <see cref="BocList"/> renderer has to be bound to the list to render and 
     /// the <see cref="HtmlTextWriter"/> target to render it to. Therefore, these properties are <code>readonly</code>
     /// and must be set in the constructor.</remarks>
+    /// <param name="context">The <see cref="IHttpContext"/> that contains the response for which to render the list.</param>
     /// <param name="list">The <see cref="BocList"/> to render.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the list to.</param>
-    protected BocListRendererBase (HtmlTextWriter writer, IBocList list)
+    protected BocListRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list)
     {
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      _list = list;
+      _context = context;
       _writer = writer;
+      _list = list;
     }
 
     /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
@@ -99,7 +103,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       get { return _writer; }
     }
 
-    /// <summary>
+    /// <summary>Gets the <see cref="IHttpContext"/> that contains the response for which this renderer generates output.</summary>
+    public IHttpContext Context
+    {
+      get { return _context; }
+    }
+
+      /// <summary>
     /// Renders an <see cref="IconInfo"/> control with an alternate text.
     /// </summary>
     /// <remarks>If no alternate text is provided in the <code>icon</code> argument, the method will attempt to load

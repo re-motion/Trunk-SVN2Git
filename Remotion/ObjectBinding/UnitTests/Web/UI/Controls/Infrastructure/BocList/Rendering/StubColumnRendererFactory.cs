@@ -17,17 +17,19 @@ using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering
 {
   public class StubColumnRendererFactory : IBocColumnRendererFactory<StubColumnDefinition>
   {
     public IBocColumnRenderer<StubColumnDefinition> CreateRenderer (
+      IHttpContext context, 
       HtmlTextWriter writer, 
       IBocList list, 
       StubColumnDefinition columnDefinition)
     {
-      return new StubColumnRenderer (writer, list, columnDefinition);
+      return new StubColumnRenderer (context, writer, list, columnDefinition);
     }
   }
 }

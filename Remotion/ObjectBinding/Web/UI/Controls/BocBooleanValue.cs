@@ -300,7 +300,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
             + (StringUtility.IsNullOrEmpty (_nullDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (_nullDescription) + "'") + ");";
 
         if (_autoPostBack == true)
-          script += Page.ClientScript.GetPostBackEventReference (this, "") + ";";
+          script += ScriptUtility.GetPostBackEventReference (this, "") + ";";
         script += "return false;";
       }
       else

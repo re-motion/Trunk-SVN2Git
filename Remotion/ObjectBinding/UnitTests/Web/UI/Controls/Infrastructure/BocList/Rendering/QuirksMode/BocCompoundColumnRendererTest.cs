@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       Column.FormatString = string.Empty;
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
@@ -83,7 +83,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Column.EnforceWidth = true;
       Column.Width = new Unit (40, UnitType.Pixel);
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();

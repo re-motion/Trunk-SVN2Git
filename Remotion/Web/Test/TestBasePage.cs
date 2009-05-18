@@ -19,18 +19,18 @@ using Remotion.Web.UI;
 
 namespace Remotion.Web.Test
 {
-  public class TestBasePage : Page
+  public class TestBasePage : Page, IPage
   {
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
 
-      Remotion.Web.UI.HtmlHeadAppender.Current.RegisterStylesheetLink (
+      HtmlHeadAppender.Current.RegisterStylesheetLink (
           "style",
-          Remotion.Web.ResourceUrlResolver.GetResourceUrl (this, typeof (SmartPage), Remotion.Web.ResourceType.Html, "Style.css"));
-      Remotion.Web.UI.HtmlHeadAppender.Current.RegisterStylesheetLink (
+          ResourceUrlResolver.GetResourceUrl (this, typeof (SmartPage), ResourceType.Html, "Style.css"));
+      HtmlHeadAppender.Current.RegisterStylesheetLink (
           "fontsize080",
-          Remotion.Web.ResourceUrlResolver.GetResourceUrl (this, typeof (SmartPage), Remotion.Web.ResourceType.Html, "FontSize080.css"));
+          ResourceUrlResolver.GetResourceUrl (this, typeof (SmartPage), ResourceType.Html, "FontSize080.css"));
     }
   }
 }

@@ -56,7 +56,7 @@ public sealed class ResourceUrlResolver
   /// <param name="resourceType"> The resource type (image, static html, etc.) </param>
   /// <param name="relativeUrl"> The relative URL of the item. </param>
   public static string GetResourceUrl (
-      Control control, 
+      UI.Controls.IControl control, 
       HttpContext context,
       Type definingType, 
       ResourceType resourceType, 
@@ -69,6 +69,16 @@ public sealed class ResourceUrlResolver
       return resolver.GetResourceUrl (control, definingType, resourceType, relativeUrl);
     else
       return GetResourceUrl (control, definingType, resourceType, relativeUrl);
+  }
+
+  public static string GetResourceUrl(
+    bool isDesignMode,
+    HttpContext context,
+      Type definingType,
+      ResourceType resourceType,
+      string relativeUrl)
+  {
+    return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);
   }
 
   /// <summary>
@@ -96,20 +106,30 @@ public sealed class ResourceUrlResolver
   /// <param name="resourceType"> The resource type (image, static html, etc.) Must not be <see langword="null"/>. </param>
   /// <param name="relativeUrl"> The relative URL of the item. Must not be <see langword="null"/> or empty.</param>
   public static string GetResourceUrl (
-      Control control, 
+      UI.Controls.IControl control, 
       Type definingType, 
       ResourceType resourceType, 
+      string relativeUrl)
+  {
+    bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
+    return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);
+  }
+
+  private static string GetResourceUrl (
+    bool isDesignMode,
+      Type definingType,
+      ResourceType resourceType,
       string relativeUrl)
   {
     ArgumentUtility.CheckNotNull ("definingType", definingType);
     ArgumentUtility.CheckNotNull ("resourceType", resourceType);
     ArgumentUtility.CheckNotNullOrEmpty ("relativeUrl", relativeUrl);
 
-    bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
     string assemblyRoot = GetAssemblyRoot (isDesignMode, definingType.Assembly);
     string separator = isDesignMode ? @"\" : "/";
     return assemblyRoot + resourceType.Name + separator + relativeUrl;
   }
+    
 
   /// <summary> Returns the root folder for all resources belonging to the <paramref name="assembly"/>. </summary>
   /// <param name="isDesignMode"> <see langword="true"/> if the application is in design mode. </param>

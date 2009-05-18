@@ -280,7 +280,7 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
                         + (StringUtility.IsNullOrEmpty (_falseDescription) ? "null" : "'" + _falseDescription + "'") + ");";
 
         if (IsAutoPostBackEnabled)
-          script += Page.ClientScript.GetPostBackEventReference (this, "") + ";";
+          script += ScriptUtility.GetPostBackEventReference (this, "") + ";";
         checkBoxScript = "BocCheckBox_OnClick" + script;
         labelScript = "BocCheckBox_ToggleCheckboxValue" + script;
       }

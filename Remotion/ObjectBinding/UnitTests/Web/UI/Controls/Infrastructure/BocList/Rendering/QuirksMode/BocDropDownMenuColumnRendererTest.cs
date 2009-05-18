@@ -20,7 +20,6 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
 using Remotion.Web.UI.Controls;
-using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -46,7 +45,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderCell ()
     {
-      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
       HtmlDocument document = Html.GetResultDocument();

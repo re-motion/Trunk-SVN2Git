@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
-using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -37,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderIndexTitleCell ()
     {
-      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (Html.Writer, List);
+      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderTitleCell();
 
       HtmlDocument document = Html.GetResultDocument();
@@ -52,10 +51,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderIndexDataCell ()
     {
-      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (Html.Writer, List);
+      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderDataCell (0, "selectorID", 0, "bocListTableCell");
 
-      HtmlDocument document = Html.GetResultDocument ();
+      HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
       Html.AssertAttribute (td, "class", "bocListTableCell bocListDataCellIndex");

@@ -20,7 +20,6 @@ using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.Design;
@@ -28,6 +27,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
   /// <summary> A BocColumnDefinition defines how to display a column of a list. </summary>
   [Editor (typeof (ExpandableObjectConverter), typeof (UITypeEditor))]
-  public abstract class BocColumnDefinition : BusinessObjectControlItem, IControlItem
+  public abstract class BocColumnDefinition : BusinessObjectControlItem
   {
     private string _itemID = string.Empty;
     private string _columnTitle = string.Empty;
@@ -52,21 +52,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    public IBocColumnRenderer GetRenderer (IServiceLocator serviceLocator, IBocList list, HtmlTextWriter writer)
+    public IBocColumnRenderer GetRenderer (IServiceLocator serviceLocator, IHttpContext context, HtmlTextWriter writer, IBocList list)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
-      ArgumentUtility.CheckNotNull ("list", list);
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("list", list);
 
       Type serviceType = typeof (IBocColumnRendererFactory<>).MakeGenericType (GetType());
       var rendererFactory = serviceLocator.GetInstance (serviceType);
-      
+
       MethodInfo createMethod = null;
       foreach (MethodInfo info in rendererFactory.GetType().GetMethods())
       {
-        if( !info.Name.Contains("CreateRenderer") )
+        if (!info.Name.Contains ("CreateRenderer"))
           continue;
-        if (!info.ReturnType.FullName.Contains(GetType().FullName))
+        if (!info.ReturnType.FullName.Contains (GetType().FullName))
           continue;
         createMethod = info;
         break;
@@ -76,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         throw new InvalidOperationException (
             string.Format ("Service locator provided factory without proper factory method for type '{0}'.", GetType()));
       }
-      var renderer = createMethod.Invoke (rendererFactory, new object[] { writer, list, this });
+      var renderer = createMethod.Invoke (rendererFactory, new object[] { context, writer, list, this });
 
       return (IBocColumnRenderer) renderer;
     }
@@ -175,8 +176,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return;
       base.LoadResources (resourceManager);
 
-      string key;
-      key = ResourceManagerUtility.GetGlobalResourceKey (ColumnTitle);
+      string key = ResourceManagerUtility.GetGlobalResourceKey (ColumnTitle);
       if (!StringUtility.IsNullOrEmpty (key))
         ColumnTitle = resourceManager.GetString (key);
     }
@@ -186,11 +186,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public abstract class BocCommandEnabledColumnDefinition : BocColumnDefinition
   {
     /// <summary> The <see cref="BocListItemCommand"/> rendered in this column. </summary>
-    private SingleControlItemCollection _command;
+    private readonly SingleControlItemCollection _command;
 
-    public BocCommandEnabledColumnDefinition ()
+    protected BocCommandEnabledColumnDefinition ()
     {
-      _command = new SingleControlItemCollection (new BocListItemCommand(), new Type[] { typeof (BocListItemCommand) });
+      _command = new SingleControlItemCollection (new BocListItemCommand(), new[] { typeof (BocListItemCommand) });
     }
 
     protected override void OnOwnerControlChanged ()
@@ -213,7 +213,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         _command.ControlItem = value;
         if (OwnerControl != null)
-          _command.ControlItem.OwnerControl = (Control) OwnerControl;
+          _command.ControlItem.OwnerControl = OwnerControl;
       }
     }
 
@@ -340,8 +340,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return;
       base.LoadResources (resourceManager);
 
-      string key;
-      key = ResourceManagerUtility.GetGlobalResourceKey (Text);
+      string key = ResourceManagerUtility.GetGlobalResourceKey (Text);
       if (!StringUtility.IsNullOrEmpty (key))
         Text = resourceManager.GetString (key);
 
@@ -355,7 +354,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private bool _enforceWidth;
     private bool _isSortable = true;
 
-    public BocValueColumnDefinition ()
+    protected BocValueColumnDefinition ()
     {
     }
 
@@ -413,10 +412,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_notAccessible = "×";
 
     private string _formatString = string.Empty;
-    private PropertyPathBinding _propertyPathBinding;
+    private readonly PropertyPathBinding _propertyPathBinding;
     private string _editModeControlType = string.Empty;
     private bool _isReadOnly;
-    private bool _enableIcon = false;
+    private bool _enableIcon;
 
     public BocSimpleColumnDefinition ()
     {
@@ -438,7 +437,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
 
-      IBusinessObjectPropertyPath propertyPath = null;
+      IBusinessObjectPropertyPath propertyPath;
       if (!_propertyPathBinding.IsDynamic)
         propertyPath = _propertyPathBinding.GetPropertyPath();
       else
@@ -647,7 +646,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The collection of <see cref="PropertyPathBinding"/> objects used by
     ///   <see cref="GetStringValue"/> to access the values of an <see cref="IBusinessObject"/>.
     /// </summary>
-    private PropertyPathBindingCollection _propertyPathBindings;
+    private readonly PropertyPathBindingCollection _propertyPathBindings;
 
     public BocCompoundColumnDefinition ()
     {
@@ -919,8 +918,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return;
       base.LoadResources (resourceManager);
 
-      string key;
-      key = ResourceManagerUtility.GetGlobalResourceKey (EditText);
+      string key = ResourceManagerUtility.GetGlobalResourceKey (EditText);
       if (!StringUtility.IsNullOrEmpty (key))
         EditText = resourceManager.GetString (key);
 
@@ -1001,8 +999,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return;
       base.LoadResources (resourceManager);
 
-      string key;
-      key = ResourceManagerUtility.GetGlobalResourceKey (MenuTitleText);
+      string key = ResourceManagerUtility.GetGlobalResourceKey (MenuTitleText);
       if (!StringUtility.IsNullOrEmpty (key))
         MenuTitleText = resourceManager.GetString (key);
 

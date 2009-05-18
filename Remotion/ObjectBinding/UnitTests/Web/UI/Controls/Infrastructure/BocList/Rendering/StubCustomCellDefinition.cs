@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering
 {
@@ -24,13 +25,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
   {
     protected override Control CreateControl (BocCustomCellArguments arguments)
     {
-      return new HtmlGenericControl ("div");
+      return new StubCustomCellControl();
     }
 
     protected override void Render (HtmlTextWriter writer, BocCustomCellRenderArguments arguments)
     {
       writer.RenderBeginTag (HtmlTextWriterTag.Div);
       writer.RenderEndTag();
+    }
+  }
+
+  public class StubCustomCellControl : HtmlGenericControl, IControl
+  {
+    public StubCustomCellControl () : base ("div")
+    {
+      Attributes.Add ("class", "mockedCustomCellControl");
     }
   }
 }

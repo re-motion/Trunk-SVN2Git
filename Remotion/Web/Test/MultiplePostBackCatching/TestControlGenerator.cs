@@ -20,6 +20,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Test.MultiplePostBackCatching
 {
@@ -265,7 +266,7 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
       hyperLink.Attributes["onclick"] = string.Empty;
       hyperLink.PreRender += delegate
       {
-        hyperLink.Attributes["onclick"] = _page.ClientScript.GetPostBackEventReference (_postBackEventHandler, hyperLink.ID) + ";";
+        hyperLink.Attributes["onclick"] = ScriptUtility.GetPostBackEventReference (_postBackEventHandler, hyperLink.ID) + ";";
       };
 
       return hyperLink;

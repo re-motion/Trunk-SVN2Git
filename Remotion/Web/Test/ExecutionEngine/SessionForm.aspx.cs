@@ -205,7 +205,7 @@ namespace Remotion.Web.Test.ExecutionEngine
 
     private void ExecuteNoRepostButton_Click (object sender, System.EventArgs e)
     {
-      this.ExecuteFunctionNoRepost (new SampleWxeFunction (), (Control) sender);
+      this.ExecuteFunctionNoRepost (new SampleWxeFunction (), (UI.Controls.IControl) sender);
     }
 
     private void OpenSampleFunctionButton_Click (object sender, System.EventArgs e)
@@ -227,7 +227,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     private void OpenSampleFunctionInNewWindowButton_Click (object sender, System.EventArgs e)
     {
       if (!IsReturningPostBack)
-        this.ExecuteFunctionExternal (new SampleWxeFunction (), "_blank", (Control) sender, true, false, false);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), "_blank", (UI.Controls.IControl) sender, true, false, false);
     }
 
     private void OpenSampleFunctionWithPermanentUrlInNewWindowButton_Click (object sender, System.EventArgs e)
@@ -236,7 +236,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       {
         NameValueCollection queryString = new NameValueCollection();
         queryString.Add ("Parameter", "Hello World!");
-        this.ExecuteFunctionExternal (new SampleWxeFunction (), "_blank", (Control) sender, true, true, true, queryString);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), "_blank", (UI.Controls.IControl) sender, true, true, true, queryString);
       }
     }
 
@@ -255,13 +255,13 @@ namespace Remotion.Web.Test.ExecutionEngine
     private void OpenSessionFunctionInNewWindowButton_Click (object sender, System.EventArgs e)
     {
       if (!IsReturningPostBack)
-        this.ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", (Control) sender, true, false, false);
+        this.ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", (UI.Controls.IControl) sender, true, false, false);
     }
 
     private void OpenSessionFunctionWithPermanentUrlInNewWindowButton_Click (object sender, System.EventArgs e)
     {
       if (!IsReturningPostBack)
-        this.ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", (Control) sender, true, true, true);
+        this.ExecuteFunctionExternal (new SessionWxeFunction (true), "_blank", (UI.Controls.IControl) sender, true, true, true);
     }
 
     private void OpenSampleFunctionByRedirectButton_Click(object sender, System.EventArgs e)

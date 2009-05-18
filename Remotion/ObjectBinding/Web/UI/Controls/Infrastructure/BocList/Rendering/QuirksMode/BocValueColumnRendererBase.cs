@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -28,8 +29,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   public abstract class BocValueColumnRendererBase<TBocColumnDefinition> : BocCommandEnabledColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocValueColumnDefinition
   {
-    protected BocValueColumnRendererBase (HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion)
-        : base (writer, list, columnDefintion)
+    protected BocValueColumnRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion)
+        : base (context, writer, list, columnDefintion)
     {
     }
 

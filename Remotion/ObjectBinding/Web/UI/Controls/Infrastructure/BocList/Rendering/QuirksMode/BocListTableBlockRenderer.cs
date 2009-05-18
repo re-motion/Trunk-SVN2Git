@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -28,13 +29,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocRowRenderer _rowRenderer;
 
-    public BocListTableBlockRenderer (HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
-        : base(writer, list)
+    public BocListTableBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
+        : base(context, writer, list)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
       _serviceLocator = serviceLocator;
-      _rowRenderer = _serviceLocator.GetInstance<IBocRowRendererFactory>().CreateRenderer (writer, list, serviceLocator);
+      _rowRenderer = _serviceLocator.GetInstance<IBocRowRendererFactory>().CreateRenderer (Context, Writer, List, _serviceLocator);
     }
 
     private IBocRowRenderer RowRenderer
@@ -58,7 +59,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <seealso cref="RenderTableBody"/>
     public void Render ()
     {
-      bool isDesignMode = ControlHelper.IsDesignMode ((Control) List);
+      bool isDesignMode = ControlHelper.IsDesignMode (List);
       bool isReadOnly = List.IsReadOnly;
       bool showForEmptyList = isReadOnly && List.ShowEmptyListReadOnlyMode
                               || !isReadOnly && List.ShowEmptyListEditMode;
@@ -188,7 +189,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
             + count + ","
             + (int) List.Selection + ");";
         ScriptUtility.RegisterStartupScriptBlock (
-            (Controls.BocList) List, typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
+            List, typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
       }
     }
 
@@ -240,7 +241,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       }
 
       //  Design-mode and empty table
-      if (ControlHelper.IsDesignMode ((Control) List) && renderColumns.Length == 0)
+      if (ControlHelper.IsDesignMode (List) && renderColumns.Length == 0)
       {
         for (int i = 0; i < c_designModeDummyColumnCount; i++)
         {

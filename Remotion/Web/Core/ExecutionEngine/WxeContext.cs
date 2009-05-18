@@ -159,7 +159,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/ExecuteFunctionExternal/param[@name="page" or @name="function" or @name="target" or @name="features" or @name="urlParameters"]' />
     public static void ExecuteFunctionExternal (
-        Page page, WxeFunction function, string target, string features, NameValueCollection urlParameters)
+        IPage page, WxeFunction function, string target, string features, NameValueCollection urlParameters)
     {
       ExecuteFunctionExternal (page, function, target, features, false, urlParameters);
     }
@@ -170,7 +170,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/ExecuteFunctionExternal/param[@name="page" or @name="function" or @name="target" or @name="features" or @name="createPermaUrl" or @name="urlParameters"]' />
     public static void ExecuteFunctionExternal (
-        Page page, WxeFunction function, string target, string features,
+        IPage page, WxeFunction function, string target, string features,
         bool createPermaUrl, NameValueCollection urlParameters)
     {
       ArgumentUtility.CheckNotNull ("page", page);

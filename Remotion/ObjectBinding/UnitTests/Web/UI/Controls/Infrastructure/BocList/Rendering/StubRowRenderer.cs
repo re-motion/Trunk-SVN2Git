@@ -6,13 +6,14 @@ using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering
 {
   public class StubRowRenderer : BocListRendererBase, IBocRowRenderer
   {
-    public StubRowRenderer (HtmlTextWriter writer, IBocList list)
-        : base(writer, list)
+    public StubRowRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
+        : base(context, writer, list)
     {
     }
 

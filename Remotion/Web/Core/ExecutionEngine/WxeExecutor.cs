@@ -19,6 +19,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
@@ -30,7 +31,7 @@ namespace Remotion.Web.ExecutionEngine
   /// Dispose the <see cref="WxeExecutor{TWxePage}"/> at the end of the page life cycle, i.e. in the <see cref="Control.Dispose"/> method.
   /// </remarks>
   public class WxeExecutor<TWxePage> : IDisposable, IWxeExecutor
-    where TWxePage: Page, IWxePage
+      where TWxePage: Page, IWxePage
   {
     private readonly HttpContext _httpContext;
     private readonly TWxePage _page;
@@ -70,7 +71,7 @@ namespace Remotion.Web.ExecutionEngine
       _wxePageInfo.CurrentPageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_page, function, permaUrlOptions), repostOptions);
     }
 
-    public void ExecuteFunctionNoRepost (WxeFunction function, Control sender, WxeCallOptionsNoRepost options)
+    public void ExecuteFunctionNoRepost (WxeFunction function, IControl sender, WxeCallOptionsNoRepost options)
     {
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("sender", sender);
@@ -89,15 +90,16 @@ namespace Remotion.Web.ExecutionEngine
 
       WxeReturnOptions returnOptions;
       if (options.ReturnToCaller)
-        returnOptions = new WxeReturnOptions (options.CallerUrlParameters ?? _page.GetPermanentUrlParameters ());
+        returnOptions = new WxeReturnOptions (options.CallerUrlParameters ?? _page.GetPermanentUrlParameters());
       else
         returnOptions = WxeReturnOptions.Null;
 
       WxePermaUrlOptions permaUrlOptions = options.PermaUrlOptions;
-      _wxePageInfo.CurrentPageStep.ExecuteFunctionExternalByRedirect (new PreProcessingSubFunctionStateParameters (_page, function, permaUrlOptions), returnOptions);
+      _wxePageInfo.CurrentPageStep.ExecuteFunctionExternalByRedirect (
+          new PreProcessingSubFunctionStateParameters (_page, function, permaUrlOptions), returnOptions);
     }
 
-    public void ExecuteFunctionExternal (WxeFunction function, Control sender, WxeCallOptionsExternal options)
+    public void ExecuteFunctionExternal (WxeFunction function, IControl sender, WxeCallOptionsExternal options)
     {
       ArgumentUtility.CheckNotNull ("function", function);
       ArgumentUtility.CheckNotNull ("sender", sender);
@@ -134,7 +136,7 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     /// <summary> Gets the client script to be used as the return URL for the window of the external function. </summary>
-    private string GetClosingScriptForExternalFunction (string functionToken, Control sender, bool returningPostback)
+    private string GetClosingScriptForExternalFunction (string functionToken, IControl sender, bool returningPostback)
     {
       if (!returningPostback)
         return "window.close();";
@@ -149,7 +151,7 @@ namespace Remotion.Web.ExecutionEngine
 
         string eventTarget = postBackCollection[ControlHelper.PostEventSourceID];
         string eventArgument = postBackCollection[ControlHelper.PostEventArgumentID];
-        return FormatDoPostBackClientScript (functionToken, _page.CurrentPageStep.PageToken, sender.ClientID, eventTarget, eventArgument);
+        return FormatDoPostBackClientScript (functionToken, _page.CurrentPageStep.PageToken, eventTarget, eventArgument);
       }
       else
       {
@@ -166,10 +168,10 @@ namespace Remotion.Web.ExecutionEngine
     ///   Gets the client script used to execute <c>__dopostback</c> in the parent form before closing the window of the 
     ///   external function.
     /// </summary>
-    private string FormatDoPostBackClientScript (string functionToken, string pageToken, string senderID, string eventTarget, string eventArgument)
+    private string FormatDoPostBackClientScript (string functionToken, string pageToken, string eventTarget, string eventArgument)
     {
       return string.Format (
-@"
+          @"
 if (   window.opener != null
     && ! window.opener.closed
     && window.opener.wxeDoPostBack != null
@@ -193,7 +195,7 @@ window.close();
     private string FormatDoSubmitClientScript (string functionToken, string pageToken, string senderID)
     {
       return string.Format (
-@"
+          @"
 if (   window.opener != null
     && ! window.opener.closed
     && window.opener.wxeDoSubmit != null

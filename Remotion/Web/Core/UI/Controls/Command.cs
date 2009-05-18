@@ -31,7 +31,6 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
-
   //  TODO: Command: Move long comment blocks to xml-file
   /// <summary> A <see cref="Command"/> defines an action the user can invoke. </summary>
   [TypeConverter (typeof (ExpandableObjectConverter))]
@@ -40,13 +39,13 @@ namespace Remotion.Web.UI.Controls
     [TypeConverter (typeof (ExpandableObjectConverter))]
     public class EventCommandInfo
     {
-    //  EventPermissionProvider; //None, EventHandler, Properties
-    //  public class Permission
-    //  {
-    //    WxeFunctionType;
-    //    Method;
-    //    AccessTypes;
-    //  }
+      //  EventPermissionProvider; //None, EventHandler, Properties
+      //  public class Permission
+      //  {
+      //    WxeFunctionType;
+      //    Method;
+      //    AccessTypes;
+      //  }
 
       private bool _requiresSynchronousPostBack;
 
@@ -69,8 +68,6 @@ namespace Remotion.Web.UI.Controls
       /// <returns> A <see cref="string"/>. </returns>
       public override string ToString ()
       {
-        StringBuilder stringBuilder = new StringBuilder (50);
-
         if (_requiresSynchronousPostBack)
           return "Synchronous Postback required";
         else
@@ -95,8 +92,6 @@ namespace Remotion.Web.UI.Controls
       /// <returns> A <see cref="string"/>. </returns>
       public override string ToString ()
       {
-        StringBuilder stringBuilder = new StringBuilder (50);
-
         if (_href == string.Empty || _target == string.Empty)
           return _href;
         else
@@ -128,14 +123,11 @@ namespace Remotion.Web.UI.Controls
       [NotifyParentProperty (true)]
       public virtual string Href
       {
-        get
-        {
-          return _href;
-        }
+        get { return _href; }
         set
         {
           _href = StringUtility.NullToEmpty (value);
-          _href = _href.Trim ();
+          _href = _href.Trim();
         }
       }
 
@@ -154,14 +146,11 @@ namespace Remotion.Web.UI.Controls
       [NotifyParentProperty (true)]
       public virtual string Target
       {
-        get
-        {
-          return _target;
-        }
+        get { return _target; }
         set
         {
           _target = StringUtility.NullToEmpty (value);
-          _target = _target.Trim ();
+          _target = _target.Trim();
         }
       }
     }
@@ -214,14 +203,11 @@ namespace Remotion.Web.UI.Controls
       [NotifyParentProperty (true)]
       public virtual string TypeName
       {
-        get
-        {
-          return _typeName;
-        }
+        get { return _typeName; }
         set
         {
           _typeName = StringUtility.NullToEmpty (value);
-          _typeName = _typeName.Trim ();
+          _typeName = _typeName.Trim();
         }
       }
 
@@ -240,14 +226,11 @@ namespace Remotion.Web.UI.Controls
       [NotifyParentProperty (true)]
       public string MappingID
       {
-        get
-        {
-          return _mappingID;
-        }
+        get { return _mappingID; }
         set
         {
           _mappingID = StringUtility.NullToEmpty (value);
-          _mappingID = _mappingID.Trim ();
+          _mappingID = _mappingID.Trim();
         }
       }
 
@@ -266,14 +249,11 @@ namespace Remotion.Web.UI.Controls
       [NotifyParentProperty (true)]
       public virtual string Parameters
       {
-        get
-        {
-          return _parameters;
-        }
+        get { return _parameters; }
         set
         {
           _parameters = StringUtility.NullToEmpty (value);
-          _parameters = _parameters.Trim ();
+          _parameters = _parameters.Trim();
         }
       }
 
@@ -296,14 +276,14 @@ namespace Remotion.Web.UI.Controls
         set
         {
           _target = StringUtility.NullToEmpty (value);
-          _target = _target.Trim ();
+          _target = _target.Trim();
         }
       }
 
 
       public virtual WxeFunction InitializeFunction (NameObjectCollection additionalWxeParameters)
       {
-        Type functionType = ResolveFunctionType ();
+        Type functionType = ResolveFunctionType();
         WxeFunction function = (WxeFunction) Activator.CreateInstance (functionType);
 
         function.VariablesContainer.InitializeParameters (_parameters, additionalWxeParameters);
@@ -325,20 +305,18 @@ namespace Remotion.Web.UI.Controls
         if (hasMapping)
         {
           if (functionType == null)
-          {
             functionType = mapping.FunctionType;
-          }
           else if (mapping.FunctionType != functionType)
           {
-            throw new InvalidOperationException (string.Format (
-                "The WxeFunctionCommand in has both a MappingID ('{0}') and a TypeName ('{1}') defined, but they resolve to different WxeFunctions.",
-                _mappingID, _typeName));
+            throw new InvalidOperationException (
+                string.Format (
+                    "The WxeFunctionCommand in has both a MappingID ('{0}') and a TypeName ('{1}') defined, but they resolve to different WxeFunctions.",
+                    _mappingID,
+                    _typeName));
           }
         }
         else if (!hasTypeName)
-        {
           throw new InvalidOperationException ("The WxeFunctionCommand has no valid MappingID or FunctionTypeName specified.");
-        }
 
         return functionType;
       }
@@ -348,19 +326,19 @@ namespace Remotion.Web.UI.Controls
     private CommandType _type;
     private readonly CommandType _defaultType = CommandType.None;
     private CommandShow _show = CommandShow.Always;
-    private EventCommandInfo _eventCommand = new EventCommandInfo ();
-    private HrefCommandInfo _hrefCommand = new HrefCommandInfo ();
-    private WxeFunctionCommandInfo _wxeFunctionCommand = new WxeFunctionCommandInfo ();
+    private EventCommandInfo _eventCommand = new EventCommandInfo();
+    private HrefCommandInfo _hrefCommand = new HrefCommandInfo();
+    private WxeFunctionCommandInfo _wxeFunctionCommand = new WxeFunctionCommandInfo();
     //private ScriptCommandInfo _scriptCommand = null;
-    private bool _hasClickFired = false;
+    private bool _hasClickFired;
 
-    private Control _ownerControl = null;
+    private IControl _ownerControl;
 
     [Browsable (false)]
     public CommandClickEventHandler Click;
 
     public Command ()
-      : this (CommandType.None)
+        : this (CommandType.None)
     {
     }
 
@@ -434,7 +412,8 @@ namespace Remotion.Web.UI.Controls
           case CommandType.None:
             break;
           default:
-            throw new InvalidOperationException (string.Format ("The CommandType '{0}' is not supported by the '{1}'.", _type, typeof (Command).FullName));
+            throw new InvalidOperationException (
+                string.Format ("The CommandType '{0}' is not supported by the '{1}'.", _type, typeof (Command).FullName));
         }
       }
       style.AddAttributesToRender (writer);
@@ -460,7 +439,7 @@ namespace Remotion.Web.UI.Controls
     /// </param>
     public void RenderBegin (HtmlTextWriter writer, string postBackEvent, string[] parameters, string onClick, ISecurableObject securableObject)
     {
-      RenderBegin (writer, postBackEvent, parameters, onClick, securableObject, new NameValueCollection (0), true, new Style ());
+      RenderBegin (writer, postBackEvent, parameters, onClick, securableObject, new NameValueCollection (0), true, new Style());
     }
 
     /// <summary> Adds the attributes for the Href command to the anchor tag. </summary>
@@ -485,9 +464,9 @@ namespace Remotion.Web.UI.Controls
     protected virtual void AddAttributesToRenderForHrefCommand (
         HtmlTextWriter writer,
         string[] parameters,
-      string onClick,
-      NameValueCollection additionalUrlParameters,
-      bool includeNavigationUrlParameters)
+        string onClick,
+        NameValueCollection additionalUrlParameters,
+        bool includeNavigationUrlParameters)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("parameters", parameters);
@@ -506,8 +485,8 @@ namespace Remotion.Web.UI.Controls
 
           if (page != null)
           {
-            additionalUrlParameters = NameValueCollectionUtility.Clone (additionalUrlParameters);
-            NameValueCollectionUtility.Append (additionalUrlParameters, page.GetNavigationUrlParameters ());
+            additionalUrlParameters = additionalUrlParameters.Clone();
+            NameValueCollectionUtility.Append (additionalUrlParameters, page.GetNavigationUrlParameters());
           }
         }
         href = UrlUtility.AddParameters (href, additionalUrlParameters);
@@ -538,7 +517,7 @@ namespace Remotion.Web.UI.Controls
     protected virtual void AddAttributesToRenderForEventCommand (
         HtmlTextWriter writer,
         string postBackEvent,
-      string onClick)
+        string onClick)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("postBackEvent", postBackEvent);
@@ -575,14 +554,15 @@ namespace Remotion.Web.UI.Controls
     protected virtual void AddAttributesToRenderForWxeFunctionCommand (
         HtmlTextWriter writer,
         string postBackEvent,
-      string onClick,
-      NameValueCollection additionalUrlParameters,
-      bool includeNavigationUrlParameters)
+        string onClick,
+        NameValueCollection additionalUrlParameters,
+        bool includeNavigationUrlParameters)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("postBackEvent", postBackEvent);
       if (Type != CommandType.WxeFunction)
-        throw new InvalidOperationException ("Call to AddAttributesToRenderForWxeFunctionCommand not allowed unless Type is set to CommandType.WxeFunction.");
+        throw new InvalidOperationException (
+            "Call to AddAttributesToRenderForWxeFunctionCommand not allowed unless Type is set to CommandType.WxeFunction.");
 
       writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
       writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + StringUtility.NullToEmpty (onClick));
@@ -595,7 +575,7 @@ namespace Remotion.Web.UI.Controls
     public virtual void RenderEnd (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
-      writer.RenderEndTag ();
+      writer.RenderEndTag();
     }
 
     /// <summary>
@@ -622,23 +602,23 @@ namespace Remotion.Web.UI.Controls
     {
       StringBuilder stringBuilder = new StringBuilder (50);
 
-      stringBuilder.Append (Type.ToString ());
+      stringBuilder.Append (Type.ToString());
 
       switch (Type)
       {
         case CommandType.Href:
           if (HrefCommand != null)
-            stringBuilder.AppendFormat (": {0}", HrefCommand.ToString ());
+            stringBuilder.AppendFormat (": {0}", HrefCommand);
           break;
         case CommandType.WxeFunction:
           if (WxeFunctionCommand != null)
-            stringBuilder.AppendFormat (": {0}", WxeFunctionCommand.ToString ());
+            stringBuilder.AppendFormat (": {0}", WxeFunctionCommand);
           break;
         default:
           break;
       }
 
-      return stringBuilder.ToString ();
+      return stringBuilder.ToString();
     }
 
     /// <summary> Executes the <see cref="WxeFunction"/> defined by the <see cref="WxeFunctionCommandInfo"/>. </summary>
@@ -713,7 +693,7 @@ namespace Remotion.Web.UI.Controls
       set
       {
         _toolTip = StringUtility.NullToEmpty (value);
-        _toolTip = _toolTip.Trim ();
+        _toolTip = _toolTip.Trim();
       }
     }
 
@@ -813,13 +793,13 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Gets or sets the control to which this object belongs. </summary>
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     [Browsable (false)]
-    public Control OwnerControl
+    public IControl OwnerControl
     {
       get { return OwnerControlImplementation; }
       set { OwnerControlImplementation = value; }
     }
 
-    protected virtual Control OwnerControlImplementation
+    protected virtual IControl OwnerControlImplementation
     {
       get { return _ownerControl; }
       set
@@ -888,7 +868,7 @@ namespace Remotion.Web.UI.Controls
             }
             smartPage.RegisterCommandForSynchronousPostBack (control, argument);
           }
-        }          
+        }
       }
     }
 
@@ -901,17 +881,18 @@ namespace Remotion.Web.UI.Controls
         case CommandType.Event:
           return HasAccessForEventCommand (securableObject);
         case CommandType.WxeFunction:
-          return HasAccessForWxeFunctionCommand ();
+          return HasAccessForWxeFunctionCommand();
         case CommandType.None:
           return true;
         default:
-          throw new InvalidOperationException (string.Format ("The CommandType '{0}' is not supported by the '{1}'.", _type, typeof (Command).FullName));
+          throw new InvalidOperationException (
+              string.Format ("The CommandType '{0}' is not supported by the '{1}'.", _type, typeof (Command).FullName));
       }
     }
 
     private bool HasAccessForEventCommand (ISecurableObject securableObject)
     {
-      IWebSecurityAdapter webSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWebSecurityAdapter> ();
+      IWebSecurityAdapter webSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWebSecurityAdapter>();
       if (webSecurityAdapter == null)
         return true;
       return webSecurityAdapter.HasAccess (securableObject, Click);
@@ -919,10 +900,10 @@ namespace Remotion.Web.UI.Controls
 
     private bool HasAccessForWxeFunctionCommand ()
     {
-      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter> ();
+      IWxeSecurityAdapter wxeSecurityAdapter = AdapterRegistry.Instance.GetAdapter<IWxeSecurityAdapter>();
       if (wxeSecurityAdapter == null)
         return true;
-      return wxeSecurityAdapter.HasStatelessAccess (WxeFunctionCommand.ResolveFunctionType ());
+      return wxeSecurityAdapter.HasStatelessAccess (WxeFunctionCommand.ResolveFunctionType());
     }
   }
 
@@ -959,7 +940,7 @@ namespace Remotion.Web.UI.Controls
   /// <summary> Provides data for the <see cref="Remotion.Web.UI.Controls.Command.Click"/> event. </summary>
   public class CommandClickEventArgs : EventArgs
   {
-    private Command _command;
+    private readonly Command _command;
 
     /// <summary> Initializes a new instance. </summary>
     public CommandClickEventArgs (Command command)
@@ -974,5 +955,4 @@ namespace Remotion.Web.UI.Controls
       get { return _command; }
     }
   }
-
 }

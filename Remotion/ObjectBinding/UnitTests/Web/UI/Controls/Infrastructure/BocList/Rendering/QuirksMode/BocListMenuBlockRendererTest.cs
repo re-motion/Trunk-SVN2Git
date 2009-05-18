@@ -52,8 +52,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).WriteLine ("mocked dropdown list"));
       //dropDownList.Expect (mock => mock.RenderControl (Html.Writer)).Do (
       //    invocation => ((HtmlTextWriter) invocation.Arguments[0]).WriteLine ("mocked dropdown list"));
-      
-      var renderer = new BocListMenuBlockRenderer (Html.Writer, List);
+
+      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List);
       renderer.Render ();
 
       HtmlDocument document = Html.GetResultDocument ();

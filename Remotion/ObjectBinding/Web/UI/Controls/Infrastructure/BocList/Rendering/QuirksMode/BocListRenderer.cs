@@ -16,9 +16,9 @@
 using System;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -49,19 +49,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// as well as a <see cref="BocListRendererFactory"/> used to create detail renderers.
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> object to render.</param>
+    /// <param name="context">The <see cref="IHttpContext"/> which contains the response to render to.</param>
     /// <param name="writer">The target <see cref="HtmlTextWriter"/>.</param>
     /// <param name="serviceLocator">The <see cref="IServiceLocator"/> from which factory objects for specialised renderers
     /// can be obtained.</param>
-    protected internal BocListRenderer (HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
-        : base (writer, list)
+    protected internal BocListRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
+        : base (context, writer, list)
     {
-      _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory>().CreateRenderer (writer, list);
-      _navigationBlockRenderer = serviceLocator.GetInstance<IBocListNavigationBlockRendererFactory>().CreateRenderer (writer, list);
-      _tableBlockRenderer = serviceLocator.GetInstance<IBocListTableBlockRendererFactory>().CreateRenderer (writer, list, serviceLocator);
+      _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory>().CreateRenderer (context, writer, list);
+      _navigationBlockRenderer = serviceLocator.GetInstance<IBocListNavigationBlockRendererFactory>().CreateRenderer (context, writer, list);
+      _tableBlockRenderer = serviceLocator.GetInstance<IBocListTableBlockRendererFactory>().CreateRenderer (context, writer, list, serviceLocator);
 
       RenderTopLevelColumnGroup = RenderTopLevelColumnGroupForLegacyBrowser;
 
-      if (!ControlHelper.IsDesignMode ((Control) List))
+      if (!ControlHelper.IsDesignMode (List))
       {
         bool isXmlRequired = (HttpContext.Current != null) && ControlHelper.IsXmlConformResponseTextRequired (HttpContext.Current);
         if (isXmlRequired)

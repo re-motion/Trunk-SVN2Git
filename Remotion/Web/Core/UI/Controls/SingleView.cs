@@ -18,7 +18,6 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
-using Remotion.Web.UI.Design;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
@@ -33,9 +32,9 @@ namespace Remotion.Web.UI.Controls
     private PlaceHolder _topControl;
     private PlaceHolder _bottomControl;
 
-    private Style _viewStyle;
-    private Style _topControlsStyle;
-    private Style _bottomControlsStyle;
+    private readonly Style _viewStyle;
+    private readonly Style _topControlsStyle;
+    private readonly Style _bottomControlsStyle;
 
     public SingleView ()
     {
@@ -47,7 +46,7 @@ namespace Remotion.Web.UI.Controls
 
     private void CreateControls ()
     {
-      _view = new PlaceHolder ();
+      _view = new PlaceHolder();
       _topControl = new PlaceHolder();
       _bottomControl = new PlaceHolder();
     }
@@ -142,7 +141,7 @@ namespace Remotion.Web.UI.Controls
 
     protected override void RenderContents (HtmlTextWriter writer)
     {
-      EnsureChildControls ();
+      EnsureChildControls();
 
       if (!StringUtility.IsNullOrEmpty (CssClass))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClass);
@@ -188,7 +187,7 @@ namespace Remotion.Web.UI.Controls
       _view.RenderControl (writer);
 
       writer.RenderEndTag(); // end content div
-      writer.RenderEndTag (); // end body div
+      writer.RenderEndTag(); // end body div
       writer.RenderEndTag(); // end outer div
 
       writer.RenderEndTag(); // end td
@@ -267,8 +266,8 @@ namespace Remotion.Web.UI.Controls
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
     [Browsable (false)]
     //[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    //[Browsable (false)]
-    public ControlCollection View
+      //[Browsable (false)]
+      public ControlCollection View
     {
       get { return _view.Controls; }
       //get { return ViewTemplateContainer.Controls; }

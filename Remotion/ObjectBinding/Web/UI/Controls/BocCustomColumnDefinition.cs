@@ -21,8 +21,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Web.UI;
 using Remotion.ObjectBinding.Design;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
-using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -31,11 +29,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> A column definition using <see cref="BocCustomColumnDefinitionCell"/> for rendering the data. </summary>
   public class BocCustomColumnDefinition : BocColumnDefinition, IBusinessObjectClassSource, IBocSortableColumnDefinition
   {
-    private PropertyPathBinding _propertyPathBinding;
+    private readonly PropertyPathBinding _propertyPathBinding;
     private BocCustomColumnDefinitionCell _customCell;
     private string _customCellType = string.Empty;
     private string _customCellArgument = string.Empty;
-    private bool _isSortable = false;
+    private bool _isSortable;
     private BocCustomColumnDefinitionMode _mode;
 
     public BocCustomColumnDefinition ()
@@ -238,9 +236,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> Provides data for the <see cref="BocList.CustomCellClick"/> event. </summary>
   public class BocCustomCellClickEventArgs : EventArgs
   {
-    private IBusinessObject _businessObject;
-    private BocCustomColumnDefinition _column;
-    private string _argument;
+    private readonly IBusinessObject _businessObject;
+    private readonly BocCustomColumnDefinition _column;
+    private readonly string _argument;
 
     public BocCustomCellClickEventArgs (
         BocCustomColumnDefinition column,
@@ -284,7 +282,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </remarks>
   public abstract class BocCustomColumnDefinitionCell
   {
-    private BocCustomCellArguments _arguments = null;
+    private BocCustomCellArguments _arguments;
 
     /// <summary> Get the javascript code that invokes <see cref="OnClick"/> when called. </summary>
     /// <param name="eventArgument"> The event argument to be passed to <see cref="OnClick"/>. </param>
@@ -326,8 +324,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
               "{0}: An implementation of 'CreateControl' is required if the 'BocCustomColumnDefinition.Mode' property "
               + "is set to '{1}' or '{2}'.",
               GetType().Name,
-              BocCustomColumnDefinitionMode.ControlInEditedRow.ToString(),
-              BocCustomColumnDefinitionMode.ControlsInAllRows.ToString()));
+              BocCustomColumnDefinitionMode.ControlInEditedRow,
+              BocCustomColumnDefinitionMode.ControlsInAllRows));
     }
 
     internal void Init (BocCustomCellArguments arguments)
@@ -410,8 +408,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
               "{0}: An implementation of 'Render' is required if the 'BocCustomColumnDefinition.Mode' property "
               + "is set to '{1}' or '{2}'.",
               GetType().Name,
-              BocCustomColumnDefinitionMode.NoControls.ToString(),
-              BocCustomColumnDefinitionMode.ControlInEditedRow.ToString()));
+              BocCustomColumnDefinitionMode.NoControls,
+              BocCustomColumnDefinitionMode.ControlInEditedRow));
     }
 
     private void InitArguments (BocCustomCellArguments arguments)
@@ -425,7 +423,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         StringUtility.ParsedItem[] items = StringUtility.ParseSeparatedList (propertyValuePairs, ',');
         for (int i = 0; i < items.Length; i++)
         {
-          string[] pair = items[i].Value.Split (new char[] { '=' }, 2);
+          string[] pair = items[i].Value.Split (new[] { '=' }, 2);
           if (pair.Length == 2)
           {
             string key = pair[0].Trim();

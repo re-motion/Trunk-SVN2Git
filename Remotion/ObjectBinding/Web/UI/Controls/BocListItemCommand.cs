@@ -25,7 +25,6 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-
   //  TODO: BocListItemCommand: Move long comment blocks to xml-file
   /// <summary> A <see cref="BocListItemCommand"/> defines an action the user can invoke on a datarow. </summary>
   [TypeConverter (typeof (ExpandableObjectConverter))]
@@ -33,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     /// <summary> Wraps the properties required for rendering a hyperlink. </summary>
     [TypeConverter (typeof (ExpandableObjectConverter))]
-    public class ListItemHrefCommandInfo : BocCommand.BocHrefCommandInfo
+    public class ListItemHrefCommandInfo : BocHrefCommandInfo
     {
       /// <summary> Initalizes a new instance </summary>
       public ListItemHrefCommandInfo ()
@@ -45,7 +44,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ///   The URL to link to when the rendered command is clicked. The default value is 
       ///   an empty <see cref="String"/>. 
       /// </value>
-      [Description ("The hyperlink reference of the command. Use {0} to insert the Business Object's index in the list and {1} to insert the Business Object's ID.")]
+      [Description (
+          "The hyperlink reference of the command. Use {0} to insert the Business Object's index in the list and {1} to insert the Business Object's ID."
+          )]
       public override string Href
       {
         get { return base.Href; }
@@ -55,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Wraps the properties required for calling a WxeFunction. </summary>
     [TypeConverter (typeof (ExpandableObjectConverter))]
-    public class ListItemWxeFunctionCommandInfo : BocCommand.BocWxeFunctionCommandInfo
+    public class ListItemWxeFunctionCommandInfo : BocWxeFunctionCommandInfo
     {
       /// <summary> Initalizes a new instance </summary>
       public ListItemWxeFunctionCommandInfo ()
@@ -101,7 +102,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ///   The comma separated list of parameters passed to the WxeFunction when the rendered 
       ///   command is clicked. The default value is an empty <see cref="String"/>. 
       /// </value>
-      [Description ("A comma separated list of parameters for the command. The following reference parameters are available: index, id, object, parent, parentproperty.")]
+      [Description (
+          "A comma separated list of parameters for the command. The following reference parameters are available: index, id, object, parent, parentproperty."
+          )]
       public override string Parameters
       {
         get { return base.Parameters; }
@@ -117,15 +120,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private ListItemWxeFunctionCommandInfo _wxeFunctionCommand;
 
     public BocListItemCommand ()
-      : this (CommandType.None)
+        : this (CommandType.None)
     {
     }
 
     public BocListItemCommand (CommandType defaultType)
-      : base (defaultType)
+        : base (defaultType)
     {
-      _hrefCommand = new ListItemHrefCommandInfo ();
-      _wxeFunctionCommand = new ListItemWxeFunctionCommandInfo ();
+      _hrefCommand = new ListItemHrefCommandInfo();
+      _wxeFunctionCommand = new ListItemWxeFunctionCommandInfo();
     }
 
     /// <summary> Fires the <see cref="Click"/> event. </summary>
@@ -158,14 +161,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The <see cref="ISecurableObject"/> for which security is evaluated. Use <see landword="null"/> if security is stateless or not evaluated.
     /// </param>
     public void RenderBegin (
-        HtmlTextWriter writer, 
-        string postBackLink, 
-        string onClick, 
-        int listIndex, 
-        string businessObjectID, 
+        HtmlTextWriter writer,
+        string postBackLink,
+        string onClick,
+        int listIndex,
+        string businessObjectID,
         ISecurableObject securableObject)
     {
-      base.RenderBegin (writer, postBackLink, new string[] { listIndex.ToString (), businessObjectID }, onClick, securableObject);
+      base.RenderBegin (writer, postBackLink, new string[] { listIndex.ToString(), businessObjectID }, onClick, securableObject);
     }
 
     /// <summary>
@@ -190,7 +193,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private NameObjectCollection PrepareWxeFunctionParameters (int listIndex, IBusinessObject businessObject)
     {
-      NameObjectCollection parameters = new NameObjectCollection ();
+      NameObjectCollection parameters = new NameObjectCollection();
 
       parameters["index"] = listIndex;
       parameters["object"] = businessObject;
@@ -264,7 +267,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set
       {
         _commandStateType = StringUtility.NullToEmpty (value);
-        _commandStateType = _commandStateType.Trim ();
+        _commandStateType = _commandStateType.Trim();
       }
     }
   }
@@ -286,7 +289,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         BocCommandEnabledColumnDefinition column,
         int listIndex,
         IBusinessObject businessObject)
-      : base (command, businessObject)
+        : base (command, businessObject)
     {
       _column = column;
       _listIndex = listIndex;
@@ -332,7 +335,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see langword="true"/> if the <paramref name="columnDefinition"/>'s command should be enabled for the 
     ///   <paramref name="businessObject"/>. 
     /// </returns>
-    bool IsEnabled (BocList list, IBusinessObject businessObject, BocCommandEnabledColumnDefinition columnDefinition);
+    bool IsEnabled (IBocList list, IBusinessObject businessObject, BocCommandEnabledColumnDefinition columnDefinition);
   }
-
 }

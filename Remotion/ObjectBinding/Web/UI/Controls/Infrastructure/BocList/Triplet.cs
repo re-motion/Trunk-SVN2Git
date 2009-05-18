@@ -15,12 +15,23 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.Web.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering
+namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
 {
-  public interface IBocIndexColumnRendererFactory
+  public class Triplet<TFirst, TSecond, TThird>
   {
-    IBocIndexColumnRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list);
+    public TFirst First { get; set; }
+    public TSecond Second { get; set; }
+    public TThird Third { get; set; }
+  }
+
+  public class BocListCustomColumnTriplet : Triplet<IBusinessObject, int, Control>
+  {
+    public BocListCustomColumnTriplet (IBusinessObject businessObject, int originalRowIndex, Control control)
+    {
+      First = businessObject;
+      Second = originalRowIndex;
+      Third = control;
+    }
   }
 }

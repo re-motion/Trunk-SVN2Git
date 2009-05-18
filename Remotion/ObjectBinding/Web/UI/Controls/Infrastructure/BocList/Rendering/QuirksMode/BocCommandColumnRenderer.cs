@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -33,8 +34,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCommandColumnRenderer (HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition)
-        : base (writer, list, columnDefinition)
+    public BocCommandColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition)
+        : base (context, writer, list, columnDefinition)
     {
     }
 

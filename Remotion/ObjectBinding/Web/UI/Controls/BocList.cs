@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -254,7 +255,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///       Key = CustomColumn, 
     ///       Value = Triplet[] &lt; IBusinessObject, listIndex, Control &gt; &gt;
     /// </summary>
-    private Hashtable _customColumns;
+    private Dictionary<BocColumnDefinition, BocListCustomColumnTriplet[]> _customColumns;
 
     private PlaceHolder _customColumnsPlaceHolder;
 
@@ -1322,7 +1323,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       BocListRendererFactory factory = new BocListRendererFactory();
-      factory.CreateRenderer (writer, this, ServiceLocator.Current).Render();
+      factory.CreateRenderer (new Remotion.Web.Infrastructure.HttpContextWrapper(Context), writer, this, ServiceLocator.Current).Render();
     }
 
     public bool HasNavigator
@@ -1693,7 +1694,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (IsRowEditModeActive)
         return "return false;";
       string postBackArgument = FormatCustomCellPostBackArgument (columnIndex, listIndex, customCellArgument);
-      return Page.ClientScript.GetPostBackEventReference (this, postBackArgument) + ";";
+      return ScriptUtility.GetPostBackEventReference (this, postBackArgument) + ";";
     }
 
     /// <summary> Formats the arguments into a post back argument to be used by the client side post back event. </summary>
@@ -2186,7 +2187,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       CalculateCurrentPage (false);
 
-      _customColumns = new Hashtable();
+      _customColumns = new Dictionary<BocColumnDefinition, BocListCustomColumnTriplet[]>();
 
       int firstRow = 0;
       int totalRowCount = Value.Count;
@@ -2212,11 +2213,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           PlaceHolder placeHolder = new PlaceHolder();
           _customColumnsPlaceHolder.Controls.Add (placeHolder);
 
-          Triplet[] customColumnTriplets;
+          BocListCustomColumnTriplet[] customColumnTriplets;
           if (IsPagingEnabled)
-            customColumnTriplets = new Triplet[PageSize.Value];
+            customColumnTriplets = new BocListCustomColumnTriplet[PageSize.Value];
           else
-            customColumnTriplets = new Triplet[Value.Count];
+            customColumnTriplets = new BocListCustomColumnTriplet[Value.Count];
           _customColumns[customColumn] = customColumnTriplets;
 
           for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
@@ -2233,9 +2234,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
             BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
             Control control = customColumn.CustomCell.CreateControlInternal (args);
-            control.ID = ID + "_CustomColumnControl_" + idxColumns.ToString() + "_" + originalRowIndex.ToString();
+            control.ID = ID + "_CustomColumnControl_" + idxColumns + "_" + originalRowIndex;
             placeHolder.Controls.Add (control);
-            customColumnTriplets[idxRelativeRows] = new Triplet (row.BusinessObject, originalRowIndex, control);
+            customColumnTriplets[idxRelativeRows] = new BocListCustomColumnTriplet (row.BusinessObject, originalRowIndex, control);
           }
         }
       }
@@ -2277,19 +2278,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             && (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
                 || customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow))
         {
-          Triplet[] customColumnTriplets = (Triplet[]) _customColumns[customColumn];
+          BocListCustomColumnTriplet[] customColumnTriplets = _customColumns[customColumn];
           for (int idxRows = 0; idxRows < customColumnTriplets.Length; idxRows++)
           {
-            Triplet customColumnTriplet = customColumnTriplets[idxRows];
+            BocListCustomColumnTriplet customColumnTriplet = customColumnTriplets[idxRows];
             if (customColumnTriplet != null)
             {
-              int originalRowIndex = (int) customColumnTriplet.Second;
+              int originalRowIndex = customColumnTriplet.Second;
               if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
                   && (EditableRowIndex == null
                       || EditableRowIndex.Value != originalRowIndex))
                 continue;
-              IBusinessObject businessObject = (IBusinessObject) customColumnTriplet.First;
-              Control control = (Control) customColumnTriplet.Third;
+              IBusinessObject businessObject = customColumnTriplet.First;
+              Control control = customColumnTriplet.Third;
 
               BocCustomCellLoadArguments args =
                   new BocCustomCellLoadArguments (this, businessObject, customColumn, originalRowIndex, control);
@@ -2316,17 +2317,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (customColumn != null
             && customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow)
         {
-          Triplet[] customColumnTriplets = (Triplet[]) _customColumns[customColumn];
+          BocListCustomColumnTriplet[] customColumnTriplets = _customColumns[customColumn];
           for (int idxRows = 0; idxRows < customColumnTriplets.Length; idxRows++)
           {
-            Triplet customColumnTriplet = customColumnTriplets[idxRows];
+            BocListCustomColumnTriplet customColumnTriplet = customColumnTriplets[idxRows];
             if (customColumnTriplet != null)
             {
-              int originalRowIndex = (int) customColumnTriplet.Second;
+              int originalRowIndex = customColumnTriplet.Second;
               if (EditableRowIndex.Value == originalRowIndex)
               {
-                IBusinessObject businessObject = (IBusinessObject) customColumnTriplet.First;
-                Control control = (Control) customColumnTriplet.Third;
+                IBusinessObject businessObject = customColumnTriplet.First;
+                Control control = customColumnTriplet.Third;
                 BocCustomCellValidationArguments args =
                     new BocCustomCellValidationArguments (this, businessObject, customColumn, control);
                 customColumn.CustomCell.Validate (args);
@@ -4281,7 +4282,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _rowMenus; }
     }
 
-    Hashtable IBocList.CustomColumns
+    IDictionary<BocColumnDefinition, BocListCustomColumnTriplet[]> IBocList.CustomColumns
     {
       get { return _customColumns; }
     }

@@ -42,7 +42,7 @@ public interface IResourceUrlResolver
   /// <returns>
   ///   The absulute URL.
   /// </returns>
-	string GetResourceUrl (Control control, Type definingType, ResourceType resourceType, string relativeUrl);
+	string GetResourceUrl (UI.Controls.IControl control, Type definingType, ResourceType resourceType, string relativeUrl);
 }
 
 public class ResourceType

@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.ComponentModel;
 using System.Web.UI;
 
@@ -20,7 +21,7 @@ namespace Remotion.Web.UI.Controls
 {
   public class MainMenuTab : MenuTab
   {
-    private SubMenuTabCollection _subMenuTabs;
+    private readonly SubMenuTabCollection _subMenuTabs;
     private MenuTab _activeTab;
 
     public MainMenuTab (string itemID, string text, IconInfo icon)
@@ -56,14 +57,14 @@ namespace Remotion.Web.UI.Controls
 
     protected override void OnOwnerControlChanged ()
     {
-      base.OnOwnerControlChanged ();
+      base.OnOwnerControlChanged();
       _subMenuTabs.OwnerControl = OwnerControl;
     }
 
     protected override void OnSelectionChanged ()
     {
-      base.OnSelectionChanged ();
-      TabbedMenu.RefreshSubMenuTabStrip ();
+      base.OnSelectionChanged();
+      TabbedMenu.RefreshSubMenuTabStrip();
     }
 
     protected override MenuTab GetActiveTab ()
@@ -76,7 +77,7 @@ namespace Remotion.Web.UI.Controls
       {
         foreach (SubMenuTab subMenuTab in _subMenuTabs)
         {
-          bool isTabActive = subMenuTab.EvaluateVisible () && subMenuTab.EvaluateEnabled ();
+          bool isTabActive = subMenuTab.EvaluateVisible() && subMenuTab.EvaluateEnabled();
           bool isCommandActive = subMenuTab.Command != null && subMenuTab.Command.Type != CommandType.None;
           if (isTabActive && isCommandActive)
           {

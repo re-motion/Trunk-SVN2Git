@@ -18,6 +18,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -39,8 +40,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListMenuBlockRenderer (HtmlTextWriter writer, IBocList list)
-        : base (writer, list)
+    public BocListMenuBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
+        : base (context, writer, list)
     {
     }
 
@@ -133,7 +134,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       {
         WebMenuItem currentItem = groupedListMenuItems[idxItems];
         // HACK: Required since ListMenuItems are not added to a ListMenu's WebMenuItemCollection.
-        currentItem.OwnerControl = (Control)List;
+        currentItem.OwnerControl = List;
         if (!currentItem.EvaluateVisible())
           continue;
 
@@ -141,9 +142,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         bool isFirstCategoryItem = (isFirstItem || (groupedListMenuItems[idxItems - 1].Category != currentItem.Category));
         bool isLastCategoryItem = (isLastItem || (groupedListMenuItems[idxItems + 1].Category != currentItem.Category));
         bool hasAlwaysLineBreaks = (List.ListMenuLineBreaks == ListMenuLineBreaks.All);
-        bool hasNoLineBreaks = (List.ListMenuLineBreaks == ListMenuLineBreaks.None);
 
-        if (hasAlwaysLineBreaks || isFirstCategoryItem || (hasNoLineBreaks && isFirstItem))
+        if (hasAlwaysLineBreaks || isFirstCategoryItem)
         {
           Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
           Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
@@ -151,7 +151,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
           Writer.RenderBeginTag (HtmlTextWriterTag.Td);
         }
         RenderListMenuItem (currentItem, menuID, List.ListMenuItems.IndexOf (currentItem));
-        if (hasAlwaysLineBreaks || isLastCategoryItem || (hasNoLineBreaks && isLastItem))
+        if (hasAlwaysLineBreaks || isLastCategoryItem)
         {
           Writer.RenderEndTag();
           Writer.RenderEndTag();

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -33,8 +34,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private readonly IServiceLocator _serviceLocator;
 
-    public BocRowRenderer (HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
-        : base (writer, list)
+    public BocRowRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
+        : base (context, writer, list)
     {
       _serviceLocator = serviceLocator;
     }
@@ -48,7 +49,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// returns the cached renderer on subsequent calls with the same column.</summary>
     private IBocColumnRenderer GetColumnRenderer (BocColumnDefinition column)
     {
-      return column.GetRenderer (ServiceLocator, List, Writer);
+      return column.GetRenderer (ServiceLocator, Context, Writer, List);
     }
 
     /// <summary> Renders the table row containing the column titles and sorting buttons. </summary>
@@ -75,7 +76,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
       RenderTitleCells (sortingDirections, sortingOrder);
 
-      if (ControlHelper.IsDesignMode ((Control) List) && List.GetColumns().Length == 0)
+      if (ControlHelper.IsDesignMode (List) && List.GetColumns().Length == 0)
       {
         for (int i = 0; i < c_designModeDummyColumnCount; i++)
         {
@@ -183,12 +184,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private IBocSelectorColumnRenderer GetSelectorColumnRenderer ()
     {
-      return ServiceLocator.GetInstance<IBocSelectorColumnRendererFactory> ().CreateRenderer (Writer, List);
+      return ServiceLocator.GetInstance<IBocSelectorColumnRendererFactory> ().CreateRenderer (Context, Writer, List);
     }
 
     private IBocIndexColumnRenderer GetIndexColumnRenderer ()
     {
-      return ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer(Writer, (Controls.BocList)List);
+      return ServiceLocator.GetInstance<IBocIndexColumnRendererFactory>().CreateRenderer(Context, Writer, List);
     }
 
     private void RenderDataCells (int rowIndex, BocListDataRowRenderEventArgs dataRowRenderEventArgs)

@@ -96,7 +96,7 @@ namespace Remotion.Web.UI.Controls
     #endregion
 
     /// <summary> The nodes in this tree view. </summary>
-    private WebTreeNodeCollection _nodes;
+    private readonly WebTreeNodeCollection _nodes;
 
     private Triplet[] _nodesControlState;
     private bool _isLoadControlStateCompleted;
@@ -111,7 +111,7 @@ namespace Remotion.Web.UI.Controls
     private bool _requiresSynchronousPostBack;
     private WebTreeNode _selectedNode;
     private WebTreeViewMenuItemProvider _menuItemProvider;
-    private Dictionary<WebTreeNode, DropDownMenu> _menus = new Dictionary<WebTreeNode, DropDownMenu>();
+    private readonly Dictionary<WebTreeNode, DropDownMenu> _menus = new Dictionary<WebTreeNode, DropDownMenu>();
     private PlaceHolder _menuPlaceHolder;
     private bool _hasTreeNodeMenusCreated;
     private int _menuCounter;
@@ -128,7 +128,7 @@ namespace Remotion.Web.UI.Controls
     //  construction and destruction
 
     /// <summary> Initalizes a new instance. </summary>
-    public WebTreeView (Control ownerControl)
+    public WebTreeView (IControl ownerControl)
     {
       _nodes = new WebTreeNodeCollection (ownerControl);
       _nodes.SetParent (this, null);
@@ -314,9 +314,7 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
       if (!ControlHelper.IsDesignMode (this, Context))
-      {
         Page.RegisterRequiresControlState (this);
-      }
       if (Page != null && !Page.IsPostBack)
         _isLoadControlStateCompleted = true;
 
@@ -359,7 +357,7 @@ namespace Remotion.Web.UI.Controls
     {
       for (int i = 0; i < nodesState.Length; i++)
       {
-        Triplet nodeState = (Triplet) nodesState[i];
+        Triplet nodeState = nodesState[i];
         string nodeID = (string) nodeState.First;
         WebTreeNode node = nodes.Find (nodeID);
         if (node != null)
@@ -426,12 +424,10 @@ namespace Remotion.Web.UI.Controls
       if (resourceManager == null)
         return;
 
-      if (Remotion.Web.Utilities.ControlHelper.IsDesignMode ((Control) this))
+      if (ControlHelper.IsDesignMode ((Control) this))
         return;
 
-      string key;
-
-      key = ResourceManagerUtility.GetGlobalResourceKey (AccessKey);
+      string key = ResourceManagerUtility.GetGlobalResourceKey (AccessKey);
       if (!StringUtility.IsNullOrEmpty (key))
         AccessKey = resourceManager.GetString (key);
 
@@ -499,7 +495,7 @@ namespace Remotion.Web.UI.Controls
     {
       foreach (WebTreeNode node in nodes)
       {
-        ((ISmartPage) Page).RegisterCommandForSynchronousPostBack (this, GetClickCommandArgument (FormatNodePath (node)));
+        smartPage.RegisterCommandForSynchronousPostBack (this, GetClickCommandArgument (FormatNodePath (node)));
         RegisterTreeNodesForSynchronousPostback (smartPage, node.Children);
       }
     }
@@ -521,9 +517,7 @@ namespace Remotion.Web.UI.Controls
     protected override void RenderContents (HtmlTextWriter writer)
     {
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
-      {
         WcagHelper.Instance.HandleError (1, this);
-      }
 
       ResolveNodeIcons();
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassRoot);
@@ -539,14 +533,13 @@ namespace Remotion.Web.UI.Controls
     {
       for (int i = 0; i < nodes.Count; i++)
       {
-        WebTreeNode node = (WebTreeNode) nodes[i];
+        WebTreeNode node = nodes[i];
         bool isFirstNode = i == 0;
         bool isLastNode = i + 1 == nodes.Count;
 
         writer.RenderBeginTag (HtmlTextWriterTag.Li); // Begin node block
 
-        bool hasExpander = !isTopLevel
-                           || isTopLevel && _enableTopLevelExpander;
+        bool hasExpander = !isTopLevel || _enableTopLevelExpander;
 
         RenderNode (writer, node, isFirstNode, isLastNode, hasExpander);
         bool hasChildren = node.Children.Count > 0;
@@ -645,7 +638,7 @@ namespace Remotion.Web.UI.Controls
 
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      string argument = GetClickCommandArgument(nodePath);
+      string argument = GetClickCommandArgument (nodePath);
       string postBackLink = Page.ClientScript.GetPostBackClientHyperlink (this, argument);
       writer.AddAttribute (HtmlTextWriterAttribute.Href, postBackLink);
       writer.RenderBeginTag (HtmlTextWriterTag.A);
@@ -660,9 +653,7 @@ namespace Remotion.Web.UI.Controls
           writer.Write (HttpUtility.HtmlEncode (node.Text));
       }
       else
-      {
         _treeNodeRenderMethod.Invoke (writer, node);
-      }
       writer.RenderEndTag();
 
       writer.RenderEndTag();
@@ -750,13 +741,11 @@ namespace Remotion.Web.UI.Controls
       bool isExpanded = node.IsExpanded;
       bool isEvaluated = node.IsEvaluated;
 
-      char expander = ' ';
-      char type = 'r';
+      char expander;
+      char type;
 
       if (!isEvaluated)
-      {
         expander = '+';
-      }
       else if (hasChildren)
       {
         if (isExpanded)
@@ -765,9 +754,7 @@ namespace Remotion.Web.UI.Controls
           expander = '+';
       }
       else
-      {
         expander = ' ';
-      }
 
       if (hasParent)
       {
@@ -1071,8 +1058,8 @@ namespace Remotion.Web.UI.Controls
       }
       menu.ID = node.MenuID;
       menu.MenuItems.AddRange (_menuItemProvider.InitalizeMenuItems (node));
-      menu.EventCommandClick += new WebMenuItemClickEventHandler (Menu_EventCommandClick);
-      menu.WxeFunctionCommandClick += new WebMenuItemClickEventHandler (Menu_WxeFunctionCommandClick);
+      menu.EventCommandClick += Menu_EventCommandClick;
+      menu.WxeFunctionCommandClick += Menu_WxeFunctionCommandClick;
 
       _menus.Add (node, menu);
       _menuPlaceHolder.Controls.Add (menu);
@@ -1096,9 +1083,7 @@ namespace Remotion.Web.UI.Controls
       foreach (KeyValuePair<WebTreeNode, DropDownMenu> entry in _menus)
       {
         if (IsTreeNodeReachable (entry.Key))
-        {
           PreRenderTreeNodeMenus (entry.Key, entry.Value.MenuItems);
-        }
         else
         {
           _menuPlaceHolder.Controls.Remove (entry.Value);

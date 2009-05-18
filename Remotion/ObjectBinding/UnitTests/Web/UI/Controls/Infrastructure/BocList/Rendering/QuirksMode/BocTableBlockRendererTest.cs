@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       List.FixedColumns.Add (new StubColumnDefinition ());
       List.FixedColumns.Add (new StubColumnDefinition ());
 
-      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (Html.Writer, List, ServiceLocator);
+      IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, Html.Writer, List, ServiceLocator);
       renderer.Render();
 
       HtmlDocument document = Html.GetResultDocument();

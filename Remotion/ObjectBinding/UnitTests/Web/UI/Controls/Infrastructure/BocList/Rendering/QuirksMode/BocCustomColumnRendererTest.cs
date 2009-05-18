@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
       List.OnPreRender();
 
-      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
       HtmlDocument document = Html.GetResultDocument();
@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Column.Mode = BocCustomColumnDefinitionMode.NoControls;
       List.OnPreRender();
 
-      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (Html.Writer, List, Column);
+      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
       HtmlDocument document = Html.GetResultDocument();

@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -25,15 +26,15 @@ namespace Remotion.Web.ExecutionEngine
   /// methods has returned to the caller.
   /// </summary>
   [Serializable]
-  public class WxeRepostOptions:INullObject
+  public class WxeRepostOptions : INullObject
   {
     public static readonly WxeRepostOptions Null = new WxeRepostOptions();
-   
-    private readonly Control _sender;
+
+    private readonly IControl _sender;
     private readonly bool _usesEventTarget;
     private readonly bool _suppressRepost;
 
-    public WxeRepostOptions (Control sender, bool usesEventTarget)
+    public WxeRepostOptions (IControl sender, bool usesEventTarget)
     {
       ArgumentUtility.CheckNotNull ("sender", sender);
 
@@ -53,7 +54,7 @@ namespace Remotion.Web.ExecutionEngine
       _suppressRepost = false;
     }
 
-    public Control Sender
+    public IControl Sender
     {
       get { return _sender; }
     }
