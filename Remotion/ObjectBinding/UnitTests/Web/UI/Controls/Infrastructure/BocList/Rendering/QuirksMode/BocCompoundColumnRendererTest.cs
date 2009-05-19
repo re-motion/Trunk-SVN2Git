@@ -52,10 +52,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
-      Html.AssertAttribute (span, "class", "bocListContent");
+      Html.AssertAttribute (span, "class", List.CssClassContent);
 
       Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 0, false);
     }
@@ -69,10 +69,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
-      Html.AssertAttribute (span, "class", "bocListContent");
+      Html.AssertAttribute (span, "class", List.CssClassContent);
 
       Html.AssertTextNode (span, "referencedObject1", 0, false);
     }
@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode cropSpan = Html.GetAssertedChildElement (td, "span", 0, false);
       Html.AssertAttribute (cropSpan, "title", "referencedObject1");
@@ -99,7 +99,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Html.AssertStyleAttribute (cropSpan, "white-space", "nowrap");
 
       HtmlNode span = Html.GetAssertedChildElement (cropSpan, "span", 0, false);
-      Html.AssertAttribute (span, "class", "bocListContent");
+      Html.AssertAttribute (span, "class", List.CssClassContent);
 
       Html.AssertTextNode (span, "referencedObject1", 0, false);
     }

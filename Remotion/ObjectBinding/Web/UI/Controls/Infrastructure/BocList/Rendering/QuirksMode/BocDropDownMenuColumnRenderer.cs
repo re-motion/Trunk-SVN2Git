@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin div
 
-      dropDownMenu.Enabled = !List.IsRowEditModeActive;
+      dropDownMenu.Enabled = !List.EditModeController.IsRowEditModeActive;
 
       dropDownMenu.TitleText = Column.MenuTitleText;
       dropDownMenu.TitleIcon = Column.MenuTitleIcon;

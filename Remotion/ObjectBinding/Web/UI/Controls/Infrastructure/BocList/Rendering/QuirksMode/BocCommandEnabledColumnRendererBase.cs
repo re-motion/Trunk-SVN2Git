@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
                       || isReadOnly && command.Show == CommandShow.ReadOnly
                       || !isReadOnly && command.Show == CommandShow.EditMode;
 
-      bool isCommandAllowed = (command.Type != CommandType.None) && !List.IsRowEditModeActive;
+      bool isCommandAllowed = (command.Type != CommandType.None) && !List.EditModeController.IsRowEditModeActive;
       bool isCommandEnabled = (command.CommandState == null) || command.CommandState.IsEnabled ( List, businessObject, Column);
 
       if (isActive && isCommandAllowed && isCommandEnabled)

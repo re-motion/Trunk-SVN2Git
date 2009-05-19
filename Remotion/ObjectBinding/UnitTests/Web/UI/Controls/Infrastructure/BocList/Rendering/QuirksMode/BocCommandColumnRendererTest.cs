@@ -49,11 +49,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (a, "href", "#");
-      Html.AssertAttribute (a, "onclick", "__doPostBack('ctl00','ListCommand=0,0');");
+      Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
 
       Html.AssertTextNode (a, "TestCommand", 0, false);
     }
@@ -67,11 +67,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (a, "href", "#");
-      Html.AssertAttribute (a, "onclick", "__doPostBack('ctl00','ListCommand=0,0');");
+      Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
 
       Html.AssertIcon (a, EventArgs.BusinessObject, null);
 
@@ -91,11 +91,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (a, "href", "#");
-      Html.AssertAttribute (a, "onclick", "__doPostBack('ctl00','ListCommand=0,0');");
+      Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
 
       Html.AssertIcon (a, EventArgs.BusinessObject, Column.Icon.Url);
 

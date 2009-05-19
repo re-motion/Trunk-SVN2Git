@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
 {
@@ -28,6 +29,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
   public class BocListCustomColumnTriplet : Triplet<IBusinessObject, int, Control>
   {
     public BocListCustomColumnTriplet (IBusinessObject businessObject, int originalRowIndex, Control control)
+    {
+      First = businessObject;
+      Second = originalRowIndex;
+      Third = control;
+    }
+  }
+
+  public class BocListRowMenuTriplet : Triplet<IBusinessObject, int, DropDownMenu>
+  {
+    public BocListRowMenuTriplet (IBusinessObject businessObject, int originalRowIndex, DropDownMenu control)
     {
       First = businessObject;
       Second = originalRowIndex;

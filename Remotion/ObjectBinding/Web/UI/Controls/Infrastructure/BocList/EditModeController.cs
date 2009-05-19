@@ -752,7 +752,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
       set { _enableEditModeValidator = value; }
     }
 
-    internal EditableRow[] Rows
+    protected EditableRow[] Rows
     {
       get { return _rows; }
       set { _rows = value; }

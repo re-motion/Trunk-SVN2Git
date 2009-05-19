@@ -105,7 +105,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
       if (hasSortingCommand)
       {
-        if (!List.IsRowEditModeActive && !List.IsListEditModeActive && List.HasClientScript)
+        if (!List.EditModeController.IsRowEditModeActive && !List.EditModeController.IsListEditModeActive && List.HasClientScript)
         {
           string argument = Controls.BocList.SortCommandPrefix + ColumnIndex;
           string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ( List, argument);
@@ -210,11 +210,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       if (!List.IsColumnVisible (Column))
         return;
 
-      string cssClassTableCell;
-      if (rowIndex % 2 == 1)
-        cssClassTableCell = List.CssClassDataCellOdd;
-      else
-        cssClassTableCell = List.CssClassDataCellEven;
+      string cssClassTableCell = GetCssClassTableCell(dataRowRenderEventArgs.IsOddRow);
 
       if (!StringUtility.IsNullOrEmpty (Column.CssClass))
         cssClassTableCell += " " + Column.CssClass;

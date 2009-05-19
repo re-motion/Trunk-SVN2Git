@@ -69,23 +69,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     BocListView SelectedView { get; }
 
-    /// <summary> Gets a flag that determines wheter the <see cref="BocList"/> is n row edit mode. </summary>
-    /// <remarks>
-    ///   Queried where the rendering depends on whether the list is in edit mode. 
-    ///   Affected code: sorting buttons, additional columns list, paging buttons, selected column definition set index
-    /// </remarks>
-    bool IsRowEditModeActive { get; }
-
-    /// <summary> Gets a flag that determines wheter the <see cref="BocList"/> is n row edit mode. </summary>
-    /// <remarks>
-    ///   Queried where the rendering depends on whether the list is in edit mode. 
-    ///   Affected code: sorting buttons, additional columns list, paging buttons, selected column definition set index
-    /// </remarks>
-    bool IsListEditModeActive { get; }
-
-    /// <summary> Gets the index of the currently modified row. </summary>
-    int? EditableRowIndex { get; }
-
     /// <summary>
     ///   Gets or sets a flag that determines whether to show the asterisks in the title row for columns having 
     ///   edit mode controls.
@@ -351,11 +334,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string CssClassDataCellEven { get; }
     string CssClassTitleCellIndex { get; }
     string CssClassDataCellIndex { get; }
-    Hashtable SelectorControlCheckedState { get; }
+    System.Collections.Generic.IList<int> SelectorControlCheckedState { get; }
     IEditModeController EditModeController { get; }
     ArrayList SortingOrder { get; }
     ArrayList Validators { get; }
-    Triplet[] RowMenus { get; }
+    BocListRowMenuTriplet[] RowMenus { get; }
     System.Collections.Generic.IDictionary<BocColumnDefinition, BocListCustomColumnTriplet[]> CustomColumns { get; }
     bool IsEmptyList { get; }
     bool HasListMenu { get; }

@@ -161,8 +161,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         int originalRowIndex)
     {
       string selectorControlID = List.ClientID + c_dataRowSelectorControlIDSuffix + rowIndex;
-      bool isChecked = (List.SelectorControlCheckedState[originalRowIndex] != null);
-      bool isOddRow = (rowIndex % 2 == 1);
+      bool isChecked = (List.SelectorControlCheckedState.Contains(originalRowIndex));
+      bool isOddRow = (rowIndex % 2 == 0); // row index is zero-based here, but one-based in rendering => invert even/odd
 
       string cssClassTableRow = GetCssClassTableRow (isChecked);
       string cssClassTableCell = GetCssClassTableCell (isOddRow);
@@ -174,7 +174,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       GetIndexColumnRenderer().RenderDataCell (originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
       GetSelectorColumnRenderer().RenderDataCell (originalRowIndex, selectorControlID, isChecked, cssClassTableCell);
 
-      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject);
+      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject) { IsOddRow = isOddRow };
       List.OnDataRowRendering (dataRowRenderEventArgs);
 
       RenderDataCells (rowIndex, dataRowRenderEventArgs);
@@ -212,7 +212,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private void AddRowOnClickScript (string selectorControlID)
     {
-      if (List.IsSelectionEnabled && ! List.IsRowEditModeActive)
+      if (List.IsSelectionEnabled && !List.EditModeController.IsRowEditModeActive)
       {
         if (List.AreDataRowsClickSensitive())
         {

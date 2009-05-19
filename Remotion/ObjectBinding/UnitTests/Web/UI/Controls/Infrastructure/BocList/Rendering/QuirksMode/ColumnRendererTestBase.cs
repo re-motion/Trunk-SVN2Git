@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -27,8 +28,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       base.SetUp ();
 
-      InitializeBocList();
+      InitializeMockList();
       List.FixedColumns.Add (Column);
+      List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
     }
   }
 }

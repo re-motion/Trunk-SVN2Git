@@ -17,7 +17,6 @@ using System;
 using System.Web.UI;
 using HtmlAgilityPack;
 using NUnit.Framework;
-using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
@@ -40,11 +39,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       base.SetUp();
 
       InitializeMockList();
-      var editModeController = MockRepository.GenerateMock<IEditModeController> ();
+
+      List.Stub (mock => mock.GetColumns()).Return (new[] { Column });
+
+      var editModeController = MockRepository.GenerateMock<IEditModeController>();
       editModeController.Stub (mock => mock.RenderTitleCellMarkers (Html.Writer, Column, 0)).Do (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write (string.Empty));
 
-      List.Expect (mock => mock.EditModeController).Return (editModeController);
+      List.Stub (mock => mock.EditModeController).Return (editModeController);
 
       List.Stub (mock => mock.IsClientSideSortingEnabled).Return (true);
       List.Stub (mock => mock.IsShowSortingOrderEnabled).Return (true);

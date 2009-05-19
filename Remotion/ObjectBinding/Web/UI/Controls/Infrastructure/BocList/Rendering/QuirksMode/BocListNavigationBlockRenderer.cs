@@ -15,14 +15,12 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -32,8 +30,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
   /// <remarks>This class should not be instantiated directly. It is meant to be used by a <see cref="BocListRenderer"/>.</remarks>
   public class BocListNavigationBlockRenderer : BocListRendererBase, IBocListNavigationBlockRenderer
   {
-    protected const string c_goToCommandPrefix = "GoTo=";
-
     private const string c_goToFirstIcon = "MoveFirst.gif";
     private const string c_goToLastIcon = "MoveLast.gif";
     private const string c_goToPreviousIcon = "MovePrevious.gif";
@@ -135,17 +131,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <summary>Renders the appropriate icon for the given <paramref name="command"/>, depending on <paramref name="isInactive"/>.</summary>
     private void RenderNavigationIcon (bool isInactive, GoToOption command)
     {
-      string imageUrl;
-      if (isInactive || List.IsRowEditModeActive)
-        imageUrl = s_inactiveIcons[command];
-      else
-        imageUrl = s_activeIcons[command];
-      imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (Controls.BocList), ResourceType.Image, imageUrl);
-      if (isInactive || List.IsRowEditModeActive)
+      if (isInactive || List.EditModeController.IsRowEditModeActive)
+      {
+        string imageUrl = GetResolvedImageUrl(s_inactiveIcons[command]);
         RenderIcon (new IconInfo (imageUrl), null);
+      }
       else
       {
-        string argument = c_goToCommandPrefix + command;
+        string imageUrl = GetResolvedImageUrl (s_activeIcons[command]);
+
+        string argument = Controls.BocList.c_goToCommandPrefix + command;
         string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
         postBackEvent += "; return false;";
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
@@ -154,7 +149,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         RenderIcon (new IconInfo (imageUrl), s_alternateTexts[command]);
         Writer.RenderEndTag();
       }
+      
       Writer.Write (c_whiteSpace + c_whiteSpace + c_whiteSpace);
+    }
+
+    private string GetResolvedImageUrl (string imageUrl)
+    {
+      imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (Controls.BocList), ResourceType.Image, imageUrl);
+      return imageUrl;
     }
   }
 }

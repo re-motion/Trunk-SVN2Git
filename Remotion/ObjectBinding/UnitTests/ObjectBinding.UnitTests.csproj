@@ -297,12 +297,13 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocDropDownMenuColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocIndexColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListMenuBlockRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListNavigationBlockRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowEditModeColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSelectorColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSimpleColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\HtmlHelper.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocTableBlockRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListTableBlockRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\ColumnRendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCompoundColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />

@@ -16,6 +16,8 @@
 using System;
 using HtmlAgilityPack;
 using NUnit.Framework;
+using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
 using Rhino.Mocks;
@@ -23,7 +25,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
   [TestFixture]
-  public class BocTableBlockRendererTest : RendererTestBase
+  public class BocListTableBlockRendererTest : RendererTestBase
   {
     private StubServiceLocator ServiceLocator { get; set; }
 
@@ -31,19 +33,29 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public override void SetUp ()
     {
       base.SetUp();
-      InitializeMockList ();
+      InitializeMockList();
       ServiceLocator = new StubServiceLocator();
       ServiceLocator.SetRowRendererFactory (new StubRowRendererFactory());
+
+      var sortingProvider = MockRepository.GenerateStub<IBocListSortingOrderProvider>();
+      IBusinessObject firstObject = (IBusinessObject) ((TypeWithReference) BusinessObject).FirstValue;
+      IBusinessObject secondObject = (IBusinessObject) ((TypeWithReference) BusinessObject).SecondValue;
+      BocListRow[] rows = new[]
+                          {
+                              new BocListRow (sortingProvider, 0, firstObject),
+                              new BocListRow (sortingProvider, 1, secondObject)
+                          };
+      List.Stub (list => list.GetIndexedRows()).Return (rows);
     }
 
     [Test]
-    [Ignore("TODO: replace dependencies on Control with IControl so that mocked BocList can have a BocColumnDefinitionCollection")]
     public void Render ()
     {
       List.Stub (mock => mock.IsDesignMode).Return (false);
       List.FixedColumns.Add (new StubColumnDefinition());
-      List.FixedColumns.Add (new StubColumnDefinition ());
-      List.FixedColumns.Add (new StubColumnDefinition ());
+      List.FixedColumns.Add (new StubColumnDefinition());
+      List.FixedColumns.Add (new StubColumnDefinition());
+      List.Stub (list => list.GetColumns()).Return (List.FixedColumns.ToArray());
 
       IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, Html.Writer, List, ServiceLocator);
       renderer.Render();

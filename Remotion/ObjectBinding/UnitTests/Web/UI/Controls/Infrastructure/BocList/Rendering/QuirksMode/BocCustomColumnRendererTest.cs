@@ -14,9 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using HtmlAgilityPack;
 using NUnit.Framework;
+using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
 using Rhino.Mocks;
@@ -34,7 +37,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       base.SetUp();
 
-      ((BocListMock) List).IsDesignModeOverrideValue = false;
+      IBusinessObject firstObject = (IBusinessObject) ((TypeWithReference) BusinessObject).FirstValue;
+      IBusinessObject secondObject = (IBusinessObject) ((TypeWithReference) BusinessObject).SecondValue;
+      var triplets = new[]
+                     {
+                         new BocListCustomColumnTriplet (firstObject, 0, null),
+                         new BocListCustomColumnTriplet (secondObject, 1, null)
+                     };
+      var customColumns = new Dictionary<BocColumnDefinition, BocListCustomColumnTriplet[]>
+                          {
+                              { Column, triplets }
+                          };
+      List.Stub (mock => mock.CustomColumns).Return (customColumns);
     }
 
     [Test]
@@ -48,14 +62,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       HtmlDocument document = Html.GetResultDocument();
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
       Html.AssertAttribute (span, "onclick", "BocList_OnCommandClick();");
-
-      HtmlNode div = Html.GetAssertedChildElement (span, "div", 0, false);
-      Html.AssertStyleAttribute (div, "width", "100%");
-      Html.AssertStyleAttribute (div, "vertical-align", "middle");
     }
 
     [Test]
@@ -69,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       HtmlDocument document = Html.GetResultDocument();
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
     }
   }
 }

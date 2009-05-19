@@ -14,11 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -29,8 +31,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public override void SetUp ()
     {
       base.SetUp();
-      InitializeBocList();
+      InitializeMockList();
+      
+      List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       List.FixedColumns.Add (new StubColumnDefinition());
+      List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
     }
 
     [Test]
@@ -54,8 +59,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderTitlesRowWithIndex ()
     {
-      // List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
-      ((ObjectBinding.Web.UI.Controls.BocList) List).Index = RowIndex.InitialOrder;
+      List.Stub (mock => mock.IsIndexEnabled).Return (true);
+      List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
+      
       IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator ());
       renderer.RenderTitlesRow();
 
@@ -67,7 +73,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Html.AssertWhiteSpaceTextNode (tr, 0);
 
       HtmlNode thIndex = Html.GetAssertedChildElement (tr, "th", 1, false);
-      Html.AssertAttribute (thIndex, "class", "bocListTitleCell bocListTitleCellIndex");
+      Html.AssertAttribute (thIndex, "class", List.CssClassTitleCell, HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (thIndex, "class", List.CssClassTitleCellIndex, HtmlHelper.AttributeValueCompareMode.Contains);
 
       HtmlNode thColumn = Html.GetAssertedChildElement (tr, "th", 2, false);
 
@@ -77,8 +84,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderTitlesRowWithSelector ()
     {
-      // List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
-      ((ObjectBinding.Web.UI.Controls.BocList) List).Selection = RowSelection.Multiple;
+      List.Stub (mock => mock.IsSelectionEnabled).Return (true);
+      List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
+      
       IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
       renderer.RenderTitlesRow();
 
@@ -105,7 +113,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
-      Html.AssertAttribute (tr, "class", "bocListDataRow");
+      Html.AssertAttribute (tr, "class", List.CssClassDataRow);
 
       Html.AssertWhiteSpaceTextNode (tr, 0);
 

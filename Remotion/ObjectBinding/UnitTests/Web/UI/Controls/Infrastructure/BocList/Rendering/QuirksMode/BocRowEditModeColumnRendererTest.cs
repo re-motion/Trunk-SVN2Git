@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -38,10 +39,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       EventArgs.IsEditableRow = true;
 
-      ((BocListMock) List).EnableClientScript = true;
-      ((BocListMock) List).IsDesignModeOverrideValue = false;
-      ((BocListMock) List).ReadOnly = false;
-      ((BocListMock) List).DataSource.Mode = DataSourceMode.Edit;
+      List.Stub(mock=>mock.EnableClientScript).Return(true);
+      List.Stub (mock => mock.IsDesignMode).Return (false);
+      List.Stub (mock => mock.IsReadOnly).Return (false);
+      List.DataSource.Mode = DataSourceMode.Edit;
+      
       List.OnPreRender();
     }
 
@@ -55,18 +57,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (a, "href", "#");
-      Html.AssertAttribute (a, "onclick", "__doPostBack('ctl00','RowEditMode=0,Edit');BocList_OnCommandClick();");
+      Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
       Html.AssertTextNode (a, "Bearbeiten", 0, false);
     }
 
     [Test]
     public void RenderEditing ()
     {
-      List.SwitchRowIntoEditMode (0);
+      List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
       IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
@@ -74,18 +76,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode save = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (save, "href", "#");
-      Html.AssertAttribute (save, "onclick", "__doPostBack('ctl00','RowEditMode=0,Save');BocList_OnCommandClick();");
+      Html.AssertAttribute (save, "onclick", "postBackEventReference;BocList_OnCommandClick();");
       Html.AssertTextNode (save, "Speichern", 0, false);
 
       Html.AssertWhiteSpaceTextNode (td, 1);
 
       HtmlNode cancel = Html.GetAssertedChildElement (td, "a", 2, false);
       Html.AssertAttribute (cancel, "href", "#");
-      Html.AssertAttribute (cancel, "onclick", "__doPostBack('ctl00','RowEditMode=0,Cancel');BocList_OnCommandClick();");
+      Html.AssertAttribute (cancel, "onclick", "postBackEventReference;BocList_OnCommandClick();");
       Html.AssertTextNode (cancel, "Abbrechen", 0, false);
     }
   }

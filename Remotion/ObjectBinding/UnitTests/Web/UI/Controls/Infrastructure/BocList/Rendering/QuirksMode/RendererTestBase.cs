@@ -1,7 +1,20 @@
-// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
-// All rights reserved.
-//
-using System.Web;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Globalization;
@@ -50,40 +63,48 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       List = MockRepository.GenerateMock<IBocList>();
 
       List.Stub (list => list.HasClientScript).Return (true);
-      List.Stub (list => list.DataSource).Return (MockRepository.GenerateStub<IBusinessObjectDataSource> ());
+      List.Stub (list => list.DataSource).Return (MockRepository.GenerateStub<IBusinessObjectDataSource>());
       List.DataSource.BusinessObject = BusinessObject;
       List.Stub (list => list.Property).Return (BusinessObject.BusinessObjectClass.GetPropertyDefinition ("ReferenceList"));
 
       List.Stub (list => list.Value).Return (((TypeWithReference) BusinessObject).ReferenceList);
 
       List.Stub (list => list.FixedColumns).Return (new BocColumnDefinitionCollection (List));
-      List.Stub (list => list.GetColumns ()).Return (List.FixedColumns.ToArray ());
+      List.Stub (list => list.IsColumnVisible (null)).IgnoreArguments().Return (true);
 
-      List.Expect (list => list.GetResourceManager ()).Return (
-          MultiLingualResources.GetResourceManager (typeof (ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier)));
+      List.Stub (list => list.SelectorControlCheckedState).Return (new List<int> ());
 
       List.Stub (list => list.CssClassTitleCell).Return ("cssClassTitleCell");
       List.Stub (list => list.CssClassTitleCellIndex).Return ("cssClassTitleCellIndex");
       List.Stub (list => list.CssClassSortingOrder).Return ("cssClassSortingOrder");
       List.Stub (list => list.CssClassContent).Return ("cssClassContent");
-
+      List.Stub (list => list.CssClassDataCellOdd).Return ("cssClassDataCellOdd");
+      List.Stub (list => list.CssClassDataCellEven).Return ("cssClassDataCellEven");
+      List.Stub (list => list.CssClassDataRow).Return ("cssClassDataRow");
+      
       var page = MockRepository.GenerateMock<IPage>();
       List.Stub (list => list.Page).Return (page);
 
       var clientScriptManager = MockRepository.GenerateMock<IClientScriptManager>();
       page.Stub (pageMock => pageMock.ClientScript).Return (clientScriptManager);
 
-      clientScriptManager.Stub (scriptManagerMock => scriptManagerMock.GetPostBackEventReference (List, "")).Return ("postBackEventReference");
+      clientScriptManager.Stub (scriptManagerMock => scriptManagerMock.GetPostBackEventReference (null, ""))
+          .IgnoreArguments().Return ("postBackEventReference");
 
+      var editModeController = MockRepository.GenerateMock<IEditModeController>();
+      List.Stub (list => list.EditModeController).Return (editModeController);
+
+      List.Stub (list => list.GetResourceManager()).Return (
+          MultiLingualResources.GetResourceManager (typeof (ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier)));
     }
 
     protected void InitializeBocList ()
     {
-      Page page = new Page ();
-      List = new BocListMock ();
+      Page page = new Page();
+      List = new BocListMock();
       page.Controls.Add (((BocListMock) List));
 
-      List.DataSource = MockRepository.GenerateStub<IBusinessObjectDataSource> ();
+      List.DataSource = MockRepository.GenerateStub<IBusinessObjectDataSource>();
       List.DataSource.BusinessObject = BusinessObject;
       List.Property = BusinessObject.BusinessObjectClass.GetPropertyDefinition ("ReferenceList");
 

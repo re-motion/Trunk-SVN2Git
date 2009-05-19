@@ -30,20 +30,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public override void SetUp ()
     {
       base.SetUp ();
-      InitializeBocList ();
+      InitializeMockList ();
+      
+      List.Stub (mock => mock.IsSelectionEnabled).Return (true);
     }
 
     [Test]
     public void RenderTitleCellForMultiSelect ()
     {
-      ((BocListMock) List).Selection = RowSelection.Multiple;
+      List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderTitleCell();
 
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode th = Html.GetAssertedChildElement (document.DocumentNode, "th", 0, false);
-      Html.AssertAttribute (th, "class", "bocListTitleCell");
+      Html.AssertAttribute (th, "class", List.CssClassTitleCell);
 
       HtmlNode input = Html.GetAssertedChildElement (th, "input", 0, false);
       Html.AssertAttribute (input, "type", "checkbox");
@@ -55,7 +57,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderDataCellForMultiSelect ()
     {
-      ((BocListMock) List).Selection = RowSelection.Multiple;
+      List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderDataCell (0, "checkboxControl", false, "bocListTableCell");
 
@@ -74,14 +76,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderTitleCellForSingleSelect ()
     {
-      ((BocListMock) List).Selection = RowSelection.SingleRadioButton;
+      List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderTitleCell ();
 
       HtmlDocument document = Html.GetResultDocument ();
 
       HtmlNode th = Html.GetAssertedChildElement (document.DocumentNode, "th", 0, false);
-      Html.AssertAttribute (th, "class", "bocListTitleCell");
+      Html.AssertAttribute (th, "class", List.CssClassTitleCell);
 
       Html.AssertTextNode (th, HtmlHelper.WhiteSpace, 0, false);
     }
@@ -89,7 +91,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderDataCellForSingleSelect ()
     {
-      ((BocListMock) List).Selection = RowSelection.SingleRadioButton;
+      List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderDataCell (0, "radioControl", false, "bocListTableCell");
 

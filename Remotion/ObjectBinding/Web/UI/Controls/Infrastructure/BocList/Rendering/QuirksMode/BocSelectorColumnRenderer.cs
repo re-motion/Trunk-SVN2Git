@@ -38,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       if (List.Selection == RowSelection.Multiple)
       {
         string selectorControlName = List.ID + c_titleRowSelectorControlIDSuffix;
-        bool isChecked = (List.SelectorControlCheckedState[c_titleRowIndex] != null);
+        bool isChecked = (List.SelectorControlCheckedState.Contains(c_titleRowIndex));
         RenderSelectorControl (selectorControlName, c_titleRowIndex.ToString (), isChecked, true);
       }
       else

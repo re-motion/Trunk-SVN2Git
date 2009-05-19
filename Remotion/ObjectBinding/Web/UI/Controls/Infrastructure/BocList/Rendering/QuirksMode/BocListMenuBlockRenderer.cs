@@ -84,7 +84,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         List.OptionsMenu.TitleText = List.OptionsTitle;
 
       List.OptionsMenu.Style.Add ("margin-bottom", menuBlockItemOffset);
-      List.OptionsMenu.Enabled = !List.IsRowEditModeActive;
+      List.OptionsMenu.Enabled = !List.EditModeController.IsRowEditModeActive;
       List.OptionsMenu.IsReadOnly = List.IsReadOnly;
       List.OptionsMenu.RenderControl (Writer);
     }
@@ -112,7 +112,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       Writer.Write (c_whiteSpace);
       if (List.IsDesignMode)
         List.AvailableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
-      List.AvailableViewsList.Enabled = ! List.IsRowEditModeActive && ! List.IsListEditModeActive;
+      List.AvailableViewsList.Enabled = !List.EditModeController.IsRowEditModeActive && !List.EditModeController.IsListEditModeActive;
       List.AvailableViewsList.CssClass = List.CssClassAvailableViewsListDropDownList;
       List.AvailableViewsList.RenderControl (Writer);
       Writer.RenderEndTag();

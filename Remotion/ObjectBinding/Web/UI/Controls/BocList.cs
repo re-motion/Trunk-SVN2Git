@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Prefix applied to the post back argument of the sort buttons. </summary>
     internal const string SortCommandPrefix = "Sort=";
 
-    private const string c_goToCommandPrefix = "GoTo=";
+    internal const string c_goToCommandPrefix = "GoTo=";
 
     private const string c_scriptFileUrl = "BocList.js";
     private const string c_styleFileUrl = "BocList.css";
@@ -247,7 +247,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private WebMenuItemCollection _listMenuItems;
 
     /// <summary> Triplet &lt; IBusinessObject, listIndex, DropDownMenu &gt;</summary>
-    private Triplet[] _rowMenus;
+    private BocListRowMenuTriplet[] _rowMenus;
 
     private PlaceHolder _rowMenusPlaceHolder;
 
@@ -298,7 +298,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Contains the checked state for each of the selector controls in the <see cref="BocList"/>.
     ///   Hashtable&lt;int rowIndex, bool isChecked&gt; 
     /// </summary>
-    private Hashtable _selectorControlCheckedState = new Hashtable();
+    private IList<int> _selectorControlCheckedState = new List<int>();
 
     private RowIndex _index = RowIndex.Undefined;
     private string _indexColumnTitle;
@@ -488,7 +488,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      if (IsRowEditModeActive)
+      if (_editModeController.IsRowEditModeActive)
         return false;
 
       string dataRowSelectorControlFilter = ClientID + c_dataRowSelectorControlIDSuffix;
@@ -511,7 +511,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                   || isTitleRowSelectorControl))
             continue;
           int rowIndex = int.Parse (postCollection[i]);
-          _selectorControlCheckedState[rowIndex] = true;
+          _selectorControlCheckedState.Add(rowIndex);
         }
       }
 
@@ -1160,13 +1160,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       // Must be executed before CalculateCurrentPage
-      if (IsRowEditModeActive)
+      if (_editModeController.IsRowEditModeActive)
       {
         BocListRow[] sortedRows = EnsureGotIndexedRowsSorted();
         for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
         {
           int originalRowIndex = sortedRows[idxRows].Index;
-          if (EditableRowIndex.Value == originalRowIndex)
+          if (_editModeController.EditableRowIndex.Value == originalRowIndex)
           {
             _currentRow = idxRows;
             break;
@@ -1461,7 +1461,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (rowEditModeColumn.Show == BocRowEditColumnDefinitionShow.EditMode
             && isReadOnly)
           return false;
-        if (IsListEditModeActive)
+        if (_editModeController.IsListEditModeActive)
           return false;
       }
 
@@ -1606,7 +1606,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       string text = showText ? "'" + menuItem.Text + "'" : "null";
 
       bool isDisabled = !menuItem.EvaluateEnabled()
-                        || IsRowEditModeActive
+                        || _editModeController.IsRowEditModeActive
                         || ! isCommandEnabled;
       stringBuilder.AppendFormat (
           "\t\tnew ContentMenu_MenuItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8})",
@@ -1692,7 +1692,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <returns></returns>
     public string GetCustomCellPostBackClientEvent (int columnIndex, int listIndex, string customCellArgument)
     {
-      if (IsRowEditModeActive)
+      if (_editModeController.IsRowEditModeActive)
         return "return false;";
       string postBackArgument = FormatCustomCellPostBackArgument (columnIndex, listIndex, customCellArgument);
       return Page.ClientScript.GetPostBackEventReference (this, postBackArgument) + ";";
@@ -1717,7 +1717,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _availableViewsListSelectedValue = (string) values[2];
       _currentRow = (int) values[3];
       _sortingOrder = (ArrayList) values[4];
-      _selectorControlCheckedState = (Hashtable) values[5];
+      _selectorControlCheckedState = (IList<int>) values[5];
     }
 
     protected override object SaveControlState ()
@@ -1772,9 +1772,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (! interim)
       {
-        if (IsRowEditModeActive)
+        if (_editModeController.IsRowEditModeActive)
           EndRowEditMode (false);
-        else if (IsListEditModeActive)
+        else if (_editModeController.IsListEditModeActive)
           EndListEditMode (false);
       }
 
@@ -1795,9 +1795,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (! interim)
         {
-          if (IsRowEditModeActive)
+          if (_editModeController.IsRowEditModeActive)
             EndRowEditMode (true);
-          else if (IsListEditModeActive)
+          else if (_editModeController.IsListEditModeActive)
             EndListEditMode (true);
         }
 
@@ -1931,9 +1931,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       CalculateCurrentPage (false);
 
       if (IsPagingEnabled)
-        _rowMenus = new Triplet[PageSize.Value];
+        _rowMenus = new BocListRowMenuTriplet[PageSize.Value];
       else
-        _rowMenus = new Triplet[Value.Count];
+        _rowMenus = new BocListRowMenuTriplet[Value.Count];
       _rowMenusPlaceHolder.Controls.Clear();
 
 
@@ -1959,15 +1959,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         int originalRowIndex = row.Index;
 
         DropDownMenu dropDownMenu = new DropDownMenu (this);
-        dropDownMenu.ID = ID + "_RowMenu_" + originalRowIndex.ToString();
-        dropDownMenu.EventCommandClick += new WebMenuItemClickEventHandler (RowMenu_EventCommandClick);
-        dropDownMenu.WxeFunctionCommandClick += new WebMenuItemClickEventHandler (RowMenu_WxeFunctionCommandClick);
+        dropDownMenu.ID = ID + "_RowMenu_" + originalRowIndex;
+        dropDownMenu.EventCommandClick += RowMenu_EventCommandClick;
+        dropDownMenu.WxeFunctionCommandClick += RowMenu_WxeFunctionCommandClick;
 
         _rowMenusPlaceHolder.Controls.Add (dropDownMenu);
         WebMenuItem[] menuItems = InitializeRowMenuItems (row.BusinessObject, originalRowIndex);
         dropDownMenu.MenuItems.AddRange (menuItems);
 
-        _rowMenus[idxRelativeRows] = new Triplet (row.BusinessObject, originalRowIndex, dropDownMenu);
+        _rowMenus[idxRelativeRows] = new BocListRowMenuTriplet (row.BusinessObject, originalRowIndex, dropDownMenu);
       }
     }
 
@@ -1990,12 +1990,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       for (int i = 0; i < _rowMenus.Length; i++)
       {
-        Triplet rowMenuTriplet = _rowMenus[i];
+        BocListRowMenuTriplet rowMenuTriplet = _rowMenus[i];
         if (rowMenuTriplet != null)
         {
-          IBusinessObject businessObject = (IBusinessObject) rowMenuTriplet.First;
-          int listIndex = (int) rowMenuTriplet.Second;
-          DropDownMenu dropDownMenu = (DropDownMenu) rowMenuTriplet.Third;
+          IBusinessObject businessObject = rowMenuTriplet.First;
+          int listIndex = rowMenuTriplet.Second;
+          DropDownMenu dropDownMenu = rowMenuTriplet.Third;
           PreRenderRowMenuItems (dropDownMenu.MenuItems, businessObject, listIndex);
         }
       }
@@ -2021,14 +2021,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       for (int i = 0; i < _rowMenus.Length; i++)
       {
-        Triplet rowMenuTriplet = _rowMenus[i];
+        BocListRowMenuTriplet rowMenuTriplet = _rowMenus[i];
         if (rowMenuTriplet != null)
         {
-          DropDownMenu rowMenu = (DropDownMenu) rowMenuTriplet.Third;
+          DropDownMenu rowMenu = rowMenuTriplet.Third;
           if (rowMenu == sender)
           {
-            IBusinessObject businessObject = (IBusinessObject) rowMenuTriplet.First;
-            int listIndex = (int) rowMenuTriplet.Second;
+            IBusinessObject businessObject = rowMenuTriplet.First;
+            int listIndex = rowMenuTriplet.Second;
             OnRowMenuItemEventCommandClick (e.Item, businessObject, listIndex);
             return;
           }
@@ -2059,14 +2059,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       for (int i = 0; i < _rowMenus.Length; i++)
       {
-        Triplet rowMenuTriplet = _rowMenus[i];
+        BocListRowMenuTriplet rowMenuTriplet = _rowMenus[i];
         if (rowMenuTriplet != null)
         {
-          DropDownMenu rowMenu = (DropDownMenu) rowMenuTriplet.Third;
+          DropDownMenu rowMenu = rowMenuTriplet.Third;
           if (rowMenu == sender)
           {
-            IBusinessObject businessObject = (IBusinessObject) rowMenuTriplet.First;
-            int listIndex = (int) rowMenuTriplet.Second;
+            IBusinessObject businessObject = rowMenuTriplet.First;
+            int listIndex = rowMenuTriplet.Second;
             OnRowMenuItemWxeFunctionCommandClick (e.Item, businessObject, listIndex);
             return;
           }
@@ -2229,8 +2229,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             int originalRowIndex = row.Index;
 
             if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
-                && (EditableRowIndex == null
-                    || EditableRowIndex.Value != originalRowIndex))
+                && (_editModeController.EditableRowIndex == null
+                    || _editModeController.EditableRowIndex.Value != originalRowIndex))
               continue;
 
             BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
@@ -2253,7 +2253,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (customColumn != null
             && (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
                 || (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
-                    && IsRowEditModeActive)))
+                    && _editModeController.IsRowEditModeActive)))
 
         {
           BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
@@ -2287,8 +2287,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             {
               int originalRowIndex = customColumnTriplet.Second;
               if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
-                  && (EditableRowIndex == null
-                      || EditableRowIndex.Value != originalRowIndex))
+                  && (_editModeController.EditableRowIndex == null
+                      || _editModeController.EditableRowIndex.Value != originalRowIndex))
                 continue;
               IBusinessObject businessObject = customColumnTriplet.First;
               Control control = customColumnTriplet.Third;
@@ -2307,7 +2307,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_customColumns == null)
         return true;
 
-      if (! IsRowEditModeActive)
+      if (!_editModeController.IsRowEditModeActive)
         return true;
 
       bool isValid = true;
@@ -2325,7 +2325,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             if (customColumnTriplet != null)
             {
               int originalRowIndex = customColumnTriplet.Second;
-              if (EditableRowIndex.Value == originalRowIndex)
+              if (_editModeController.EditableRowIndex.Value == originalRowIndex)
               {
                 IBusinessObject businessObject = customColumnTriplet.First;
                 Control control = customColumnTriplet.Third;
@@ -3100,7 +3100,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             && (value.Value < 0 || value.Value >= _availableViews.Count))
           throw new ArgumentOutOfRangeException ("value");
 
-        if ((IsRowEditModeActive || IsListEditModeActive)
+        if ((_editModeController.IsRowEditModeActive || _editModeController.IsListEditModeActive)
             && _isSelectedViewIndexSet
             && _selectedViewIndex != value)
           throw new InvalidOperationException ("The selected column definition set cannot be changed while the BocList is in row edit mode.");
@@ -3165,15 +3165,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public int[] GetSelectedRows ()
     {
       ArrayList selectedRows = new ArrayList();
-      foreach (DictionaryEntry entry in _selectorControlCheckedState)
+      foreach (int entry in _selectorControlCheckedState)
       {
-        int rowIndex = (int) entry.Key;
-        if (rowIndex == c_titleRowIndex)
+        if (entry == c_titleRowIndex)
           continue;
 
-        bool isChecked = (bool) entry.Value;
-        if (isChecked)
-          selectedRows.Add (rowIndex);
+        selectedRows.Add (entry);
       }
       selectedRows.Sort();
       return (int[]) selectedRows.ToArray (typeof (int));
@@ -3219,8 +3216,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _selectorControlCheckedState.Clear();
       for (int i = 0; i < selectedRows.Length; i++)
       {
-        int rowIndex = (int) selectedRows[i];
-        _selectorControlCheckedState[rowIndex] = true;
+        int rowIndex = selectedRows[i];
+        _selectorControlCheckedState.Add (rowIndex);
       }
     }
 
@@ -4263,7 +4260,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _optionsMenu; }
     }
 
-    Hashtable IBocList.SelectorControlCheckedState
+    IList<int> IBocList.SelectorControlCheckedState
     {
       get { return _selectorControlCheckedState; }
     }
@@ -4283,7 +4280,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _validators; }
     }
 
-    Triplet[] IBocList.RowMenus
+    BocListRowMenuTriplet[] IBocList.RowMenus
     {
       get { return _rowMenus; }
     }

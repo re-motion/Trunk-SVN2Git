@@ -20,6 +20,7 @@ using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -35,13 +36,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     }
 
     [Test]
-    //[Ignore("TODO: make AvailableViewsList (DropDownList) mockable")]
     public void RenderWithAvailableViews ()
     {
-      BocColumnDefinition[] columns = new BocColumnDefinition[3];
-      for (int i = 0; i < columns.Length; i++)
-        columns[i] = new StubColumnDefinition ();
-
       DropDownList dropDownList = MockRepository.GenerateMock<DropDownList> ();
       List.Stub (mock => mock.AvailableViewsList).Return (dropDownList);
       List.Stub (mock => mock.HasAvailableViewsList).Return (true);
@@ -49,9 +45,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       List.Stub (mock => mock.CssClassAvailableViewsListLabel).Return ("CssClass");
 
       dropDownList.Stub (mock => mock.RenderControl (Html.Writer)).Do (
-          invocation => ((HtmlTextWriter) invocation.Arguments[0]).WriteLine ("mocked dropdown list"));
-      //dropDownList.Expect (mock => mock.RenderControl (Html.Writer)).Do (
-      //    invocation => ((HtmlTextWriter) invocation.Arguments[0]).WriteLine ("mocked dropdown list"));
+          invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown list"));
 
       var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List);
       renderer.Render ();
@@ -67,6 +61,75 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Html.AssertTextNode (span, "Views List Title", 0, false);
 
       Html.AssertTextNode (div, HtmlHelper.WhiteSpace + "mocked dropdown list", 1, true);
+    }
+
+    [Test]
+    public void RenderWithOptions ()
+    {
+      DropDownMenu optionsMenu = MockRepository.GenerateStub<DropDownMenu> (List);
+      List.Stub (mock => mock.OptionsMenu).Return (optionsMenu);
+      List.Stub (mock => mock.HasOptionsMenu).Return (true);
+      List.Stub (mock => mock.OptionsTitle).Return ("Options Menu Title");
+      // can't assert this because CssStyleCollection is sealed and has only internal constructors
+      // List.Stub (mock => mock.MenuBlockItemOffset).Return (new Unit (7, UnitType.Pixel));
+
+      optionsMenu.Stub (menuMock => menuMock.RenderControl (Html.Writer)).Do (
+          invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown menu"));
+
+      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List);
+      renderer.Render ();
+
+      HtmlDocument document = Html.GetResultDocument ();
+      Html.AssertTextNode (document.DocumentNode, "mocked dropdown menu", 0, false);
+
+      Assert.IsFalse (optionsMenu.IsReadOnly);
+      Assert.IsTrue (optionsMenu.Enabled);
+    }
+
+    [Test]
+    public void RenderWithListMenu ()
+    {
+      var menuItemCollection = new WebMenuItemCollection (List);
+      List.Stub (mock => mock.ListMenuItems).Return (menuItemCollection);
+      List.Stub (mock => mock.HasListMenu).Return (true);
+
+      WebMenuItem item = new WebMenuItem (
+          "itemId",
+          "category",
+          "text",
+          new IconInfo ("~/Images/NullIcon.gif"),
+          new IconInfo ("~/Images/NullIcon.gif"),
+          WebMenuItemStyle.Text,
+          RequiredSelection.Any,
+          false,
+          new Command());
+
+      menuItemCollection.Add (item);
+
+      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List);
+      renderer.Render ();
+
+      HtmlDocument document = Html.GetResultDocument ();
+
+      HtmlNode div = Html.GetAssertedChildElement (document.DocumentNode, "div", 0, false);
+      Html.AssertStyleAttribute (div, "width", "100%");
+      Html.AssertStyleAttribute (div, "margin-bottom", "5pt");
+
+      HtmlNode table = Html.GetAssertedChildElement (div, "table", 0, true);
+      Html.AssertAttribute (table, "cellspacing", "0");
+      Html.AssertAttribute (table, "cellpadding", "0");
+      Html.AssertAttribute (table, "border", "0");
+
+      HtmlNode tr = Html.GetAssertedChildElement (table, "tr", 0, true);
+
+      HtmlNode td = Html.GetAssertedChildElement (tr, "td", 0, true);
+      Html.AssertAttribute (td, "class", "contentMenuRow");
+      Html.AssertStyleAttribute (td, "width", "100%");
+
+      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+
+      HtmlNode a = Html.GetAssertedChildElement (span, "a", 0, false);
+      Html.AssertTextNode (a, "text", 0, false);
     }
   }
 }

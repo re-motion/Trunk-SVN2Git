@@ -49,10 +49,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
-      Html.AssertAttribute (span, "class", "bocListContent");
+      Html.AssertAttribute (span, "class", List.CssClassContent);
 
       Html.AssertTextNode (span, "referencedObject1", 0, false);
     }
@@ -68,13 +68,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
 
       Html.AssertTextNode (a, "referencedObject1", 0, false);
       Html.AssertAttribute (a, "href", "");
-      Html.AssertAttribute (a, "onclick", "");
+      Html.AssertAttribute (a, "onclick", "BocList_OnCommandClick();");
     }
 
     [Test]
@@ -86,10 +86,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListDataCellEven");
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
-      Html.AssertAttribute (span, "class", "bocListContent");
+      Html.AssertAttribute (span, "class", List.CssClassContent);
 
       Html.AssertIcon (span, EventArgs.BusinessObject, null);
 
