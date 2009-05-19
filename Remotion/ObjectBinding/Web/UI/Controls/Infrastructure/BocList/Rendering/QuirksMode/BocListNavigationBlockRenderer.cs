@@ -140,13 +140,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         imageUrl = s_inactiveIcons[command];
       else
         imageUrl = s_activeIcons[command];
-      imageUrl = ResourceUrlResolver.GetResourceUrl (List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, imageUrl);
+      imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (Controls.BocList), ResourceType.Image, imageUrl);
       if (isInactive || List.IsRowEditModeActive)
         RenderIcon (new IconInfo (imageUrl), null);
       else
       {
         string argument = c_goToCommandPrefix + command;
-        string postBackEvent = ScriptUtility.GetPostBackEventReference (List, argument);
+        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
         postBackEvent += "; return false;";
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
         Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");

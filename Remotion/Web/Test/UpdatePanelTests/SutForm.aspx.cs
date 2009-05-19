@@ -16,6 +16,7 @@
 using System;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Test.UpdatePanelTests
 {
@@ -27,10 +28,10 @@ namespace Remotion.Web.Test.UpdatePanelTests
 
       Remotion.Web.UI.HtmlHeadAppender.Current.RegisterStylesheetLink (
           "style",
-          Remotion.Web.ResourceUrlResolver.GetResourceUrl (this, typeof (WxePage), Remotion.Web.ResourceType.Html, "Style.css"));
+          Remotion.Web.ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (WxePage), Remotion.Web.ResourceType.Html, "Style.css"));
       Remotion.Web.UI.HtmlHeadAppender.Current.RegisterStylesheetLink (
           "fontsize080",
-          Remotion.Web.ResourceUrlResolver.GetResourceUrl (this, typeof (WxePage), Remotion.Web.ResourceType.Html, "FontSize080.css"));
+          Remotion.Web.ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (WxePage), Remotion.Web.ResourceType.Html, "FontSize080.css"));
     }
   }
 }

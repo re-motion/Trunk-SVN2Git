@@ -4,11 +4,13 @@
 using System.Web;
 using System.Web.UI;
 using NUnit.Framework;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -47,14 +49,32 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       List = MockRepository.GenerateMock<IBocList>();
 
-      List.Stub (mock => mock.DataSource).Return (MockRepository.GenerateStub<IBusinessObjectDataSource>());
+      List.Stub (list => list.HasClientScript).Return (true);
+      List.Stub (list => list.DataSource).Return (MockRepository.GenerateStub<IBusinessObjectDataSource> ());
       List.DataSource.BusinessObject = BusinessObject;
-      List.Property = BusinessObject.BusinessObjectClass.GetPropertyDefinition ("ReferenceList");
+      List.Stub (list => list.Property).Return (BusinessObject.BusinessObjectClass.GetPropertyDefinition ("ReferenceList"));
 
-      List.Stub (mock => mock.Value).Return (((TypeWithReference) BusinessObject).ReferenceList);
+      List.Stub (list => list.Value).Return (((TypeWithReference) BusinessObject).ReferenceList);
 
-      List.Stub (mock => mock.FixedColumns).Return (new BocColumnDefinitionCollection(List));
-      List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
+      List.Stub (list => list.FixedColumns).Return (new BocColumnDefinitionCollection (List));
+      List.Stub (list => list.GetColumns ()).Return (List.FixedColumns.ToArray ());
+
+      List.Expect (list => list.GetResourceManager ()).Return (
+          MultiLingualResources.GetResourceManager (typeof (ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier)));
+
+      List.Stub (list => list.CssClassTitleCell).Return ("cssClassTitleCell");
+      List.Stub (list => list.CssClassTitleCellIndex).Return ("cssClassTitleCellIndex");
+      List.Stub (list => list.CssClassSortingOrder).Return ("cssClassSortingOrder");
+      List.Stub (list => list.CssClassContent).Return ("cssClassContent");
+
+      var page = MockRepository.GenerateMock<IPage>();
+      List.Stub (list => list.Page).Return (page);
+
+      var clientScriptManager = MockRepository.GenerateMock<IClientScriptManager>();
+      page.Stub (pageMock => pageMock.ClientScript).Return (clientScriptManager);
+
+      clientScriptManager.Stub (scriptManagerMock => scriptManagerMock.GetPostBackEventReference (List, "")).Return ("postBackEventReference");
+
     }
 
     protected void InitializeBocList ()

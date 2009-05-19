@@ -78,9 +78,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       }
       else
       {
-        Assert.Less (
-            index,
+        Assert.Greater (
             parent.ChildNodes.Count,
+            index,
             String.Format ("Node {0} has only {1} children - index {2} out of range.", parent.Name, parent.ChildNodes.Count, index));
 
         node = parent.ChildNodes[index];
@@ -123,9 +123,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       }
       else
       {
-        Assert.Less (
+        Assert.Greater (
+            parent.ChildNodes.Count, 
             index,
-            parent.ChildNodes.Count,
             String.Format ("Node {0} has only {1} children - index {2} out of range.", parent.Name, parent.ChildNodes.Count, index));
         Assert.AreEqual (
             HtmlNodeType.Text,

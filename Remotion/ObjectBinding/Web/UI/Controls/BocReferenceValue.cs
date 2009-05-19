@@ -681,7 +681,7 @@ public class BocReferenceValue:
     string argument = string.Empty;
     string postBackEvent = null; 
     if (! IsDesignMode)
-      postBackEvent = ScriptUtility.GetPostBackEventReference (this, argument) + ";";
+      postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument) + ";";
     string objectID = string.Empty;
     if (InternalValue != c_nullIdentifier)
       objectID = InternalValue;
@@ -772,7 +772,7 @@ public class BocReferenceValue:
     bool isCommandEnabled = IsCommandEnabled (isReadOnly);
 
     string argument = string.Empty;
-    string postBackEvent = ScriptUtility.GetPostBackEventReference (this, argument) + ";";
+    string postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument) + ";";
     string objectID = string.Empty;
     if (InternalValue != c_nullIdentifier)
       objectID = InternalValue;

@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     private IconInfo GetIcon (string resourceUrl, string alternateText)
     {
-      return new IconInfo (ResourceUrlResolver.GetResourceUrl (this, typeof (EditUserControl), ResourceType.Image, resourceUrl))
+      return new IconInfo (ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (EditUserControl), ResourceType.Image, resourceUrl))
              { AlternateText = alternateText };
     }
 

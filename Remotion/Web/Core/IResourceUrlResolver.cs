@@ -42,7 +42,9 @@ public interface IResourceUrlResolver
   /// <returns>
   ///   The absulute URL.
   /// </returns>
-	string GetResourceUrl (UI.Controls.IControl control, Type definingType, ResourceType resourceType, string relativeUrl);
+	string GetResourceUrl (Control control, Type definingType, ResourceType resourceType, string relativeUrl);
+
+  string GetResourceUrl (UI.Controls.IControl control, Type definingType, ResourceType resourceType, string relativeUrl);
 }
 
 public class ResourceType
@@ -52,7 +54,7 @@ public class ResourceType
   public static readonly ResourceType UI = new ResourceType ("UI");
   public static readonly ResourceType HelpPage = new ResourceType ("HelpPage");
 
-  private string _name;
+  private readonly string _name;
 
   public ResourceType (string name)
   {

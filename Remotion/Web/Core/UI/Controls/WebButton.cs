@@ -180,7 +180,7 @@ namespace Remotion.Web.UI.Controls
 
           string postBackEventReference = Page.ClientScript.GetPostBackEventReference (options, false);
           if (StringUtility.IsNullOrEmpty (postBackEventReference))
-            postBackEventReference = ScriptUtility.GetPostBackEventReference (this, null);
+            postBackEventReference = Page.ClientScript.GetPostBackEventReference (this, null);
           postBackScript += EnsureEndWithSemiColon (postBackEventReference);
 
           if (options.PerformValidation)

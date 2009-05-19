@@ -58,7 +58,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     protected override void RenderCellContents (
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
-        bool isEditedRow,
         bool showIcon)
     {
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
@@ -67,6 +66,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
+      bool isEditedRow = List.EditModeController.EditableRowIndex.HasValue
+                         && List.EditModeController.EditableRowIndex == originalRowIndex;
 
       if (Column.Mode == BocCustomColumnDefinitionMode.NoControls
           || (Column.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && !isEditedRow))

@@ -19,6 +19,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web
 {
@@ -57,7 +58,7 @@ public sealed class ResourceUrlResolver
   /// <param name="relativeUrl"> The relative URL of the item. </param>
   public static string GetResourceUrl (
       UI.Controls.IControl control, 
-      HttpContext context,
+      IHttpContext context,
       Type definingType, 
       ResourceType resourceType, 
       string relativeUrl)
@@ -72,13 +73,19 @@ public sealed class ResourceUrlResolver
   }
 
   public static string GetResourceUrl(
-    bool isDesignMode,
+    Control control,
     HttpContext context,
       Type definingType,
       ResourceType resourceType,
       string relativeUrl)
   {
-    return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);
+    IResourceUrlResolver resolver = null;
+    if (context != null)
+      resolver = context.ApplicationInstance as IResourceUrlResolver;
+    if (resolver != null)
+      return resolver.GetResourceUrl (control, definingType, resourceType, relativeUrl);
+    else
+      return GetResourceUrl (control, definingType, resourceType, relativeUrl);
   }
 
   /// <summary>
@@ -110,6 +117,16 @@ public sealed class ResourceUrlResolver
       Type definingType, 
       ResourceType resourceType, 
       string relativeUrl)
+  {
+    bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
+    return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);
+  }
+
+  public static string GetResourceUrl (
+        Control control,
+        Type definingType,
+        ResourceType resourceType,
+        string relativeUrl)
   {
     bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
     return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);

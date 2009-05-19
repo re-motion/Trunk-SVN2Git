@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Web.Configuration;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -470,6 +471,11 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
   void ISmartPage.SaveAllState ()
   {
     _smartPageInfo.SaveAllState();
+  }
+
+  IClientScriptManager IPage.ClientScript
+  {
+    get { return new ClientScriptManagerWrapper (ClientScript); }
   }
 }
 

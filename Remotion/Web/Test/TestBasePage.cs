@@ -15,7 +15,9 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Test
 {
@@ -27,10 +29,15 @@ namespace Remotion.Web.Test
 
       HtmlHeadAppender.Current.RegisterStylesheetLink (
           "style",
-          ResourceUrlResolver.GetResourceUrl (this, typeof (SmartPage), ResourceType.Html, "Style.css"));
+          ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (SmartPage), ResourceType.Html, "Style.css"));
       HtmlHeadAppender.Current.RegisterStylesheetLink (
           "fontsize080",
-          ResourceUrlResolver.GetResourceUrl (this, typeof (SmartPage), ResourceType.Html, "FontSize080.css"));
+          ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (SmartPage), ResourceType.Html, "FontSize080.css"));
+    }
+
+    IClientScriptManager IPage.ClientScript
+    {
+      get { return new ClientScriptManagerWrapper (ClientScript); }
     }
   }
 }

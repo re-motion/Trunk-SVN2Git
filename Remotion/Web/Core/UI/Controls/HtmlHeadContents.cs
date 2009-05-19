@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
@@ -26,14 +27,14 @@ namespace Remotion.Web.UI.Controls
 ///   control renderes the controls registered with <see cref="HtmlHeadAppender"/>.
 /// </summary>
 [ToolboxData ("<{0}:HtmlHeadContents runat=\"server\" id=\"HtmlHeadContents\"></{0}:HtmlHeadContents>")]
-public class HtmlHeadContents : Control
+public class HtmlHeadContents : Control, IControl
 {
   private static bool s_isDesignMode;
 
   protected override void OnInit (EventArgs e)
   {
     base.OnInit (e);
-    s_isDesignMode = ControlHelper.IsDesignMode (this);
+    s_isDesignMode = ControlHelper.IsDesignMode ((IControl)this);
   }
 
   protected override void Render(HtmlTextWriter writer)
@@ -48,8 +49,8 @@ public class HtmlHeadContents : Control
   {
     bool isTextXml = false;
 
-    if (!ControlHelper.IsDesignMode (this))
-      isTextXml = ControlHelper.IsXmlConformResponseTextRequired (Context);
+    if (!ControlHelper.IsDesignMode ((IControl)this))
+      isTextXml = ControlHelper.IsXmlConformResponseTextRequired (new HttpContextWrapper(Context));
 
     foreach (Control control in Controls)
     {

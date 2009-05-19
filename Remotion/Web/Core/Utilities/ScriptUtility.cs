@@ -192,14 +192,5 @@ namespace Remotion.Web.Utilities
       else
         return true;
     }
-
-    public static string GetPostBackEventReference (IControl control, string argument)
-    {
-      Control standardControl = control as Control;
-      if (standardControl != null)
-        return control.Page.ClientScript.GetPostBackEventReference (standardControl, argument);
-
-      return string.Format ("__doPostback({0},{1})", control.UniqueID, argument);
-    }
   }
 }

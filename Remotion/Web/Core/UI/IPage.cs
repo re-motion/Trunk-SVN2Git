@@ -20,6 +20,7 @@ using System.Web.Caching;
 using System.Web.SessionState;
 using System.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI
 {
@@ -68,6 +69,7 @@ public interface IPage: ITemplateControl, IHttpHandler
   IPrincipal User { get; }
   ValidatorCollection Validators { get; }
   string ViewStateUserKey { get; set; }
+  IClientScriptManager ClientScript { get; }
 }
  
 }

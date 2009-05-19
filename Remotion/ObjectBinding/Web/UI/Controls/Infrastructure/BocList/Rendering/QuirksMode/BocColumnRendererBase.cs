@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         if (!List.IsRowEditModeActive && !List.IsListEditModeActive && List.HasClientScript)
         {
           string argument = Controls.BocList.SortCommandPrefix + ColumnIndex;
-          string postBackEvent = ScriptUtility.GetPostBackEventReference ( List, argument);
+          string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ( List, argument);
           postBackEvent += "; return false;";
           Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
           Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
@@ -167,13 +167,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         case SortingDirection.Ascending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortAscendingIcon);
+              List, Context, typeof (Controls.BocList), ResourceType.Image, c_sortAscendingIcon);
           break;
         }
         case SortingDirection.Descending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, HttpContext.Current, typeof (Controls.BocList), ResourceType.Image, c_sortDescendingIcon);
+              List, Context, typeof (Controls.BocList), ResourceType.Image, c_sortDescendingIcon);
           break;
         }
         case SortingDirection.None:
@@ -221,9 +221,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
       Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
-      int originalRowIndex = dataRowRenderEventArgs.ListIndex;
-      bool isEditedRow = List.IsRowEditModeActive && (List.EditableRowIndex.Value == originalRowIndex);
-      RenderCellContents (dataRowRenderEventArgs, rowIndex, isEditedRow, showIcon);
+      RenderCellContents (dataRowRenderEventArgs, rowIndex, showIcon);
 
       Writer.RenderEndTag();
     }
@@ -233,12 +231,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// </summary>
     /// <param name="dataRowRenderEventArgs">The row-specific rendering arguments.</param>
     /// <param name="rowIndex">The zero-based index of the row to render in <see cref="BocListRendererBase.List"/>.</param>
-    /// <param name="isEditedRow">Specifies if the row to render is currently being edited.</param>
     /// <param name="showIcon">Specifies if the cell should contain an icon of the current <see cref="IBusinessObject"/>.</param>
-    protected abstract void RenderCellContents (
-        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
-        int rowIndex,
-        bool isEditedRow,
-        bool showIcon);
+    protected abstract void RenderCellContents (BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon);
   }
 }

@@ -378,7 +378,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private string GetIconUrl (string url)
     {
-      return ResourceUrlResolver.GetResourceUrl (this, typeof (EditAccessControlEntryControl), ResourceType.Image, url);
+      return ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (EditAccessControlEntryControl), ResourceType.Image, url);
     }
   }
 }

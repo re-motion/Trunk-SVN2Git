@@ -60,7 +60,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       base.OnInit (e);
 
       DeleteStateDefinitionButton.Icon = new IconInfo (ResourceUrlResolver.GetResourceUrl (
-          this, typeof (EditStateCombinationControl), ResourceType.Image, "DeleteItem.gif"));
+          (IControl) this, typeof (EditStateCombinationControl), ResourceType.Image, "DeleteItem.gif"));
       DeleteStateDefinitionButton.Icon.AlternateText = Globalization.UI.AccessControl.AccessControlResources.DeleteStateCombinationButton_Text;
     }
 

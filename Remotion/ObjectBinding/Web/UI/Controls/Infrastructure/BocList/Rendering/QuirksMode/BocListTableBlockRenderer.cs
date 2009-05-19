@@ -223,8 +223,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
       bool isTextXml = false;
 
-      if (!List.IsDesignMode && (HttpContext.Current != null))
-        isTextXml = ControlHelper.IsXmlConformResponseTextRequired (HttpContext.Current);
+      if (!List.IsDesignMode)
+        isTextXml = ControlHelper.IsXmlConformResponseTextRequired (Context);
 
       RenderIndexColumnDeclaration (isTextXml);
       RenderSelectorColumnDeclaration (isTextXml);

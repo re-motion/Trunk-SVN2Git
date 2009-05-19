@@ -20,6 +20,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Image=System.Web.UI.WebControls.Image;
@@ -41,6 +42,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Is raised when the sorting order of the <see cref="BocList"/> has changed. </summary>
     /// <remarks> Will only be raised, if the change was caused by an UI action. </remarks>
     event BocListSortingOrderChangeEventHandler SortingOrderChanged;
+
+    new IPage Page { get; }
 
     new bool IsReadOnly { get; }
 
@@ -349,7 +352,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string CssClassTitleCellIndex { get; }
     string CssClassDataCellIndex { get; }
     Hashtable SelectorControlCheckedState { get; }
-    EditModeController EditModeController { get; }
+    IEditModeController EditModeController { get; }
     ArrayList SortingOrder { get; }
     ArrayList Validators { get; }
     Triplet[] RowMenus { get; }

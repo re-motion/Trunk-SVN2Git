@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     }
 
     /// <summary>
-    /// Renders the cell contents depending on the <paramref name="isEditedRow"/> argument and <paramref name="dataRowRenderEventArgs"/>'s
+    /// Renders the cell contents depending on the <paramref name="dataRowRenderEventArgs"/>'s
     /// <see cref="BocListDataRowRenderEventArgs.IsEditableRow"/> property.
     /// <seealso cref="BocColumnRendererBase{TBocColumnDefinition}.RenderCellContents"/>
     /// </summary>
@@ -56,13 +56,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     protected override void RenderCellContents (
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
-        bool isEditedRow,
         bool showIcon)
     {
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
       bool isEditableRow = dataRowRenderEventArgs.IsEditableRow;
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
+      bool isEditedRow = List.EditModeController.EditableRowIndex.HasValue
+                         && List.EditModeController.EditableRowIndex == dataRowRenderEventArgs.ListIndex;
 
       if (isEditedRow)
         RenderEditedRowCellContents (originalRowIndex);
@@ -128,7 +129,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       if (!List.IsReadOnly && List.HasClientScript)
       {
         string argument = c_eventRowEditModePrefix + originalRowIndex + "," + command;
-        string postBackEvent = ScriptUtility.GetPostBackEventReference (List, argument) + ";";
+        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument) + ";";
         Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
       }

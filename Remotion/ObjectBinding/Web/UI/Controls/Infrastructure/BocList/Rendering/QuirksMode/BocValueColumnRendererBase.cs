@@ -39,18 +39,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <see cref="BocCommandEnabledColumnRendererBase{TBocColumnDefinition}.RenderCellIcon"/>
     /// and <see cref="RenderCellText"/>, which have to be defined in deriving classes.
     /// </summary>
-    protected override void RenderCellContents (
-        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
-        int rowIndex,
-        bool isEditedRow,
-        bool showIcon)
+    protected override void RenderCellContents (BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
     {
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
 
-      EditableRow editableRow = GetEditableRow (isEditedRow, originalRowIndex);
+      EditableRow editableRow = List.EditModeController.GetEditableRow (originalRowIndex);
 
       bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
       bool showEditModeControl = hasEditModeControl

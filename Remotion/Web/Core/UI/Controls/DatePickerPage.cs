@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
@@ -87,7 +88,7 @@ namespace Remotion.Web.UI.Controls
       Form.Controls.Add (DateValueField);
 
       //  Force the creation of the postback function
-      ScriptUtility.GetPostBackEventReference (this, "");
+      Page.ClientScript.GetPostBackEventReference (this, "");
 
       base.OnInit (e);
 
@@ -136,6 +137,11 @@ namespace Remotion.Web.UI.Controls
       string script = "DatePicker_Calendar_SelectionChanged ('" + Calendar.SelectedDate.ToShortDateString() + "');";
       if (!Page.ClientScript.IsStartupScriptRegistered (key))
         ScriptUtility.RegisterStartupScriptBlock (this, key, script);
+    }
+
+    IClientScriptManager IPage.ClientScript
+    {
+      get { return new ClientScriptManagerWrapper (ClientScript); }
     }
   }
 }

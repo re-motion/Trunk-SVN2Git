@@ -14,11 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using HtmlAgilityPack;
 using NUnit.Framework;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -35,38 +39,44 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       base.SetUp();
 
-      InitializeBocList();
+      InitializeMockList();
+      var editModeController = MockRepository.GenerateMock<IEditModeController> ();
+      editModeController.Stub (mock => mock.RenderTitleCellMarkers (Html.Writer, Column, 0)).Do (
+          invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write (string.Empty));
+
+      List.Expect (mock => mock.EditModeController).Return (editModeController);
+
+      List.Stub (mock => mock.IsClientSideSortingEnabled).Return (true);
+      List.Stub (mock => mock.IsShowSortingOrderEnabled).Return (true);
     }
 
     [Test]
     public void RenderTitleCellAscendingZero ()
     {
-      RenderTitleCell (SortingDirection.Ascending, 0, "bocListTitleCell", "bocListSortingOrder", "SortAscending.gif", "Sorted Ascending");
+      RenderTitleCell (SortingDirection.Ascending, 0, "SortAscending.gif", "Sorted Ascending");
     }
 
     [Test]
     public void RenderTitleCellDescendingZero ()
     {
-      RenderTitleCell (SortingDirection.Descending, 0, "bocListTitleCell", "bocListSortingOrder", "SortDescending.gif", "Sorted Descending");
+      RenderTitleCell (SortingDirection.Descending, 0, "SortDescending.gif", "Sorted Descending");
     }
 
     [Test]
     public void RenderTitleCellAscendingThree ()
     {
-      RenderTitleCell (SortingDirection.Ascending, 3, "bocListTitleCell", "bocListSortingOrder", "SortAscending.gif", "Sorted Ascending");
+      RenderTitleCell (SortingDirection.Ascending, 3, "SortAscending.gif", "Sorted Ascending");
     }
 
     [Test]
     public void RenderTitleCellDescendingFour ()
     {
-      RenderTitleCell (SortingDirection.Descending, 4, "bocListTitleCell", "bocListSortingOrder", "SortDescending.gif", "Sorted Descending");
+      RenderTitleCell (SortingDirection.Descending, 4, "SortDescending.gif", "Sorted Descending");
     }
 
     private void RenderTitleCell (
         SortingDirection sortDirection,
         int sortIndex,
-        string titleCellCssClass,
-        string sortOrderSpanCssClass,
         string iconFilename,
         string iconAltText)
     {
@@ -76,14 +86,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode th = Html.GetAssertedChildElement (document.DocumentNode, "th", 0, false);
-      Html.AssertAttribute (th, "class", titleCellCssClass);
+      Html.AssertAttribute (th, "class", List.CssClassTitleCell);
 
       Assert.Less (0, th.ChildNodes.Count);
-      HtmlNode outerSpan = Html.GetAssertedChildElement (th, "span", 0, false);
-      Html.AssertTextNode (outerSpan, Column.ColumnTitleDisplayValue + HtmlHelper.WhiteSpace, 0, false);
+      HtmlNode sortCommandLink = Html.GetAssertedChildElement (th, "a", 0, false);
+      Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue + HtmlHelper.WhiteSpace, 0, false);
 
-      HtmlNode sortOrderSpan = Html.GetAssertedChildElement (outerSpan, "span", 1, false);
-      Html.AssertAttribute (sortOrderSpan, "class", sortOrderSpanCssClass);
+      HtmlNode sortOrderSpan = Html.GetAssertedChildElement (sortCommandLink, "span", 1, false);
+      Html.AssertAttribute (sortOrderSpan, "class", List.CssClassSortingOrder);
 
       HtmlNode sortIcon = Html.GetAssertedChildElement (sortOrderSpan, "img", 0, false);
       Html.AssertAttribute (sortIcon, "src", iconFilename, HtmlHelper.AttributeValueCompareMode.Contains);

@@ -133,6 +133,9 @@
     <Compile Include="ExecutionEngine\WxeFunction.cs" />
     <Compile Include="ExecutionEngine\WxeResourceUserControlStep.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
+    <Compile Include="Infrastructure\ClientScriptManagerWrapper.cs" />
+    <Compile Include="Infrastructure\IClientScriptManager.cs" />
+    <Compile Include="Infrastructure\PageWrapper.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateClearingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />

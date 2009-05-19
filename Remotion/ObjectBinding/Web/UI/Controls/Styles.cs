@@ -20,6 +20,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -381,7 +382,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       textBox.TextMode = _textMode;
     }
 
-    public void RegisterJavaScriptInclude (IControl control, HttpContext context)
+    public void RegisterJavaScriptInclude (IControl control, IHttpContext context)
     {
       ArgumentUtility.CheckNotNull ("control", control);
       if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
@@ -394,10 +395,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public void RegisterJavaScriptInclude (Control control, HttpContext context)
     {
       ArgumentUtility.CheckNotNull ("control", control);
-      bool isDesignMode = ControlHelper.IsDesignMode (control);
       if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (isDesignMode, context, typeof (TextBoxStyle), ResourceType.Html, c_scriptFileUrl);
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (control, context, typeof (TextBoxStyle), ResourceType.Html, c_scriptFileUrl);
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
     }

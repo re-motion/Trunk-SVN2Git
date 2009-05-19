@@ -33,6 +33,7 @@ using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -338,12 +339,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Determines whether the client script will be rendered. </summary>
     private bool _hasClientScript = false;
 
-    private EditModeController _editModeController;
+    private readonly EditModeController _editModeController;
     private EditableRowDataSourceFactory _editModeDataSourceFactory = new EditableRowDataSourceFactory();
     private EditableRowControlFactory _editModeControlFactory = new EditableRowControlFactory();
 
     private string _errorMessage;
-    private ArrayList _validators;
+    private readonly ArrayList _validators;
 
     // construction and disposing
 
@@ -1694,7 +1695,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (IsRowEditModeActive)
         return "return false;";
       string postBackArgument = FormatCustomCellPostBackArgument (columnIndex, listIndex, customCellArgument);
-      return ScriptUtility.GetPostBackEventReference (this, postBackArgument) + ";";
+      return Page.ClientScript.GetPostBackEventReference (this, postBackArgument) + ";";
     }
 
     /// <summary> Formats the arguments into a post back argument to be used by the client side post back event. </summary>
@@ -3667,6 +3668,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RemoveRows (businessObjects);
     }
 
+    IPage IBocList.Page
+    {
+      get { return new PageWrapper (Page); }
+    }
+
     bool IBocMenuItemContainer.IsReadOnly
     {
       get { return IsReadOnly; }
@@ -4267,7 +4273,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _sortingOrder; }
     }
 
-    EditModeController IBocList.EditModeController
+    IEditModeController IBocList.EditModeController
     {
       get { return _editModeController; }
     }

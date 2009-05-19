@@ -29,6 +29,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.SecurityManager.Clients.Web.UI
 {
@@ -47,7 +48,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       ArgumentUtility.CheckNotNull ("control", control);
 
       control.ServicePath = ResourceUrlResolver.GetResourceUrl (
-          control, typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx");
+          (IControl) control, typeof (SecurityManagerSearchWebService), ResourceType.UI, "SecurityManagerSearchWebService.asmx");
       control.ServiceMethod = "Search";
     }
 

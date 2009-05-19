@@ -52,7 +52,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     protected override void RenderCellContents (
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
-        bool isEditedRow,
         bool showIcon)
     {
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);

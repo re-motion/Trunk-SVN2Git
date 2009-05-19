@@ -80,7 +80,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
             "_blank", "width=1000, height=700, resizable=yes, menubar=no, toolbar=no, location=no, status=no", true);
         try
         {
-          ExecuteFunction (function, new WxeCallArguments ((Control) sender, options));
+          ExecuteFunction (function, new WxeCallArguments ((IControl) sender, options));
         }
         catch (WxeCallExternalException)
         {

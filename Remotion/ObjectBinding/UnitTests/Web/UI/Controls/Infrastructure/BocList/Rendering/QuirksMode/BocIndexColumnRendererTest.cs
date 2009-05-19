@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -29,8 +30,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public override void SetUp ()
     {
       base.SetUp();
-      InitializeBocList();
-      ((BocListMock) List).Index = RowIndex.InitialOrder;
+      InitializeMockList();
+      List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
+      List.Stub (mock => mock.IsIndexEnabled).Return (true);
     }
 
     [Test]
@@ -42,7 +44,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode th = Html.GetAssertedChildElement (document.DocumentNode, "th", 0, false);
-      Html.AssertAttribute (th, "class", "bocListTitleCell bocListTitleCellIndex");
+      Html.AssertAttribute (th, "class", List.CssClassTitleCell, HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (th, "class", List.CssClassTitleCellIndex, HtmlHelper.AttributeValueCompareMode.Contains);
 
       HtmlNode span = Html.GetAssertedChildElement (th, "span", 0, false);
       Html.AssertTextNode (span, "No.", 0, false);
@@ -52,15 +55,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public void RenderIndexDataCell ()
     {
       IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (HttpContext, Html.Writer, List);
-      renderer.RenderDataCell (0, "selectorID", 0, "bocListTableCell");
+      const string cssClassTableCell = "bocListTableCell";
+      renderer.RenderDataCell (0, "selectorID", 0, cssClassTableCell);
 
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
-      Html.AssertAttribute (td, "class", "bocListTableCell bocListDataCellIndex");
+      Html.AssertAttribute (td, "class", cssClassTableCell, HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (td, "class", List.CssClassDataCellIndex, HtmlHelper.AttributeValueCompareMode.Contains);
 
       HtmlNode label = Html.GetAssertedChildElement (td, "label", 0, false);
-      Html.AssertAttribute (label, "class", "bocListContent");
+      Html.AssertAttribute (label, "class", List.CssClassContent);
       Html.AssertAttribute (label, "for", "selectorID");
 
       Html.AssertTextNode (label, "1", 0, false);

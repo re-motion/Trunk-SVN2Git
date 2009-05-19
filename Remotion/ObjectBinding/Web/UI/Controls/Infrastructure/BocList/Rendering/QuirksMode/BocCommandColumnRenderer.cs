@@ -47,18 +47,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <paramref name="showIcon"/>, the latter if the column defintion's <see cref="BocCommandColumnDefinition.Icon"/> property contains
     /// an URL. Furthermore, the command text in <see cref="BocCommandColumnDefinition.Text"/> is rendered after any icons.
     /// </remarks>
-    protected override void RenderCellContents (
-        BocListDataRowRenderEventArgs dataRowRenderEventArgs,
-        int rowIndex,
-        bool isEditedRow,
-        bool showIcon)
+    protected override void RenderCellContents (BocListDataRowRenderEventArgs dataRowRenderEventArgs, int rowIndex, bool showIcon)
     {
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
 
-      EditableRow editableRow = GetEditableRow (isEditedRow, originalRowIndex);
+      EditableRow editableRow = List.EditModeController.GetEditableRow (originalRowIndex);
 
       bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
 

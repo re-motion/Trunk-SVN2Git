@@ -44,7 +44,7 @@ public sealed class IconInfo
           if (s_spacer == null)
           {
             string url = 
-                ResourceUrlResolver.GetResourceUrl (null, typeof (IconInfo), ResourceType.Image, "Spacer.gif");
+                ResourceUrlResolver.GetResourceUrl ((IControl)null, typeof (IconInfo), ResourceType.Image, "Spacer.gif");
             s_spacer = new IconInfo (url);
           }
         }

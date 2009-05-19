@@ -37,23 +37,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     {
     }
 
-    protected EditableRow GetEditableRow (bool isEditedRow, int originalRowIndex)
-    {
-      EditableRow editableRow = null;
-      if (isEditedRow)
-        editableRow = List.EditModeController.Rows[0];
-      else if (List.IsListEditModeActive)
-        editableRow = List.EditModeController.Rows[originalRowIndex];
-      return editableRow;
-    }
-
     protected void RenderCellIcon (IBusinessObject businessObject)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
-      IconInfo icon = BusinessObjectBoundWebControl.GetIcon (
-          businessObject,
-          businessObject.BusinessObjectClass.BusinessObjectProvider);
+      IconInfo icon = BusinessObjectBoundWebControl.GetIcon (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
 
       if (icon != null)
       {
@@ -100,7 +88,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         objectID = businessObjectWithIdentity.UniqueIdentifier;
 
       string argument = List.GetListItemCommandArgument (ColumnIndex, originalRowIndex);
-      string postBackEvent = ScriptUtility.GetPostBackEventReference ( List, argument) + ";";
+      string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ( List, argument) + ";";
       string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
       command.RenderBegin (Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
 

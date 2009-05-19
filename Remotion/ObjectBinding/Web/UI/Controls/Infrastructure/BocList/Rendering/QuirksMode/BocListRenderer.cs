@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
       if (!ControlHelper.IsDesignMode (List))
       {
-        bool isXmlRequired = (HttpContext.Current != null) && ControlHelper.IsXmlConformResponseTextRequired (HttpContext.Current);
+        bool isXmlRequired = (Context != null) && ControlHelper.IsXmlConformResponseTextRequired (Context);
         if (isXmlRequired)
           RenderTopLevelColumnGroup = RenderTopLevelColumnGroupForXmlBrowser;
       }

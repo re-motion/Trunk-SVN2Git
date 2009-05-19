@@ -23,6 +23,7 @@ using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -118,10 +119,10 @@ namespace Remotion.Web.ExecutionEngine
 
       _wxeForm.LoadPostData += Form_LoadPostData;
 
-      string url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo<>), ResourceType.Html, c_scriptFileUrl);
+      string url = ResourceUrlResolver.GetResourceUrl ((IControl) _page, typeof (WxePageInfo<>), ResourceType.Html, c_scriptFileUrl);
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
 
-      url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo<>), ResourceType.Html, c_styleFileUrl);
+      url = ResourceUrlResolver.GetResourceUrl ((IControl) _page, typeof (WxePageInfo<>), ResourceType.Html, c_styleFileUrl);
       HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
 
       //      url = ResourceUrlResolver.GetResourceUrl (page, typeof (WxePageInfo), ResourceType.Html, c_styleFileUrlForIE);
@@ -268,7 +269,7 @@ namespace Remotion.Web.ExecutionEngine
       if (WxeHandler.IsSessionManagementEnabled)
       {
         //  Ensure the registration of "__doPostBack" on the page.
-        temp = ScriptUtility.GetPostBackEventReference (_page, null);
+        temp = _page.ClientScript.GetPostBackEventReference (_page, null);
 
         bool isAbortEnabled = _page.IsAbortEnabled;
 

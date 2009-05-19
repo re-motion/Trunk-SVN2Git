@@ -73,13 +73,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     private void RegisterStyleSheets ()
     {
-      string url = ResourceUrlResolver.GetResourceUrl (this, typeof (ResourceUrlResolver), ResourceType.Html, "style.css");
+      string url = ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (ResourceUrlResolver), ResourceType.Html, "style.css");
 
       HtmlHeadAppender.Current.RegisterStylesheetLink (this.GetType () + "style", url);
 
       if (!HtmlHeadAppender.Current.IsRegistered (c_globalStyleFileKey))
       {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl (this, typeof (BasePage), ResourceType.Html, c_globalStyleFileUrl);
+        string styleUrl = ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (BasePage), ResourceType.Html, c_globalStyleFileUrl);
         HtmlHeadAppender.Current.RegisterStylesheetLink (c_globalStyleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

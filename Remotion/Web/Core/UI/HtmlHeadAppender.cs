@@ -129,9 +129,9 @@ namespace Remotion.Web.UI
       if (_hasAppendExecuted)
         return;
 
-      if (ControlHelper.IsDesignMode (htmlHeadContents))
+      if (ControlHelper.IsDesignMode ((IControl)htmlHeadContents))
         return;
-      if (ControlHelper.IsDesignMode (htmlHeadContents))
+      if (ControlHelper.IsDesignMode ((IControl) htmlHeadContents))
         htmlHeadContents.Controls.Clear();
 
       for (int idxPriority = 0; idxPriority < _sortedHeadElements.Count; idxPriority++)
@@ -145,7 +145,7 @@ namespace Remotion.Web.UI
         }
       }
 
-      if (ControlHelper.IsDesignMode (htmlHeadContents))
+      if (ControlHelper.IsDesignMode ((IControl) htmlHeadContents))
       {
         _sortedHeadElements.Clear();
         _registeredHeadElements.Clear();
