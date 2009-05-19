@@ -407,13 +407,13 @@ namespace Remotion.Web.UI
       initScript.AppendLine ("SmartPage_Initialize ();");
       initScript.AppendLine();
 
-      ScriptUtility.RegisterClientScriptBlock (_page, "smartPageInitialize", initScript.ToString());
+      ScriptUtility.RegisterClientScriptBlock ((Page)_page, "smartPageInitialize", initScript.ToString());
 
       string isAsynchronous = "false";
       ScriptManager scriptManager = ScriptManager.GetCurrent ((Page) _page);
       if (scriptManager != null && scriptManager.IsInAsyncPostBack)
         isAsynchronous = "true";
-      ScriptUtility.RegisterStartupScriptBlock (_page, "smartPageStartUp", "SmartPage_OnStartUp (" + isAsynchronous + ", " + isDirty + ");");
+      ScriptUtility.RegisterStartupScriptBlock ((Page) _page, "smartPageStartUp", "SmartPage_OnStartUp (" + isAsynchronous + ", " + isDirty + ");");
 
       // Ensure the __doPostBack function on the rendered page
       _page.GetPostBackEventReference ((Page) _page);

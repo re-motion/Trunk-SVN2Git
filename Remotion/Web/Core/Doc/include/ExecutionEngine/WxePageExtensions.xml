@@ -35,7 +35,7 @@
     <param name="function"> The WXE function to be executed. Must not be <see langword="null"/>. </param>  
     <param name="sender"> 
       The control that caused the event (i.e. the <b>sender</b> argument of the event handler).
-      Valid senders implement either <see cref="System.Web.UI.IPostBackEventHandler"/> or <see cref="System.Web.UI.IPostBackDataHandler"/>
+      Valid senders implement either <see cref="IPostBackEventHandler"/> or <see cref="IPostBackDataHandler"/>
     </param>
     <param name="usesEventTarget"> <see langword="true"/> to  use the <b>__EVENTTARGET</b> field. </param>
     <param name="createPermaUrl"> 
@@ -59,7 +59,7 @@
     <param name="features"> The features argument that is passed to the javascript function <b>window.open()</b>. </param>
     <param name="sender"> 
       The control that caused the event (i.e. the <b>sender</b> argument of the event handler).
-      Valid senders implement either <see cref="System.Web.UI.IPostBackEventHandler"/> or <see cref="System.Web.UI.IPostBackDataHandler"/>
+      Valid senders implement either <see cref="IPostBackEventHandler"/> or <see cref="IPostBackDataHandler"/>
     </param>
     <param name="returningPostback"> <see langword="true"/> if the call should be returned to the current window. </param>
     <param name="createPermaUrl"> 

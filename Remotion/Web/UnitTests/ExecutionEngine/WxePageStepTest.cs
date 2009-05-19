@@ -26,7 +26,6 @@ using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UnitTests.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 using PreProcessingSubFunctionState_WithRedirect =
@@ -102,7 +101,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       WxeContextMock.SetCurrent (_wxeContext);
 
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
-      WxeRepostOptions repostOptions = new WxeRepostOptions (MockRepository.GenerateStub<IControl>(), true);
+      WxeRepostOptions repostOptions = new WxeRepostOptions (MockRepository.GenerateStub<Control>(), true);
 
       using (_mockRepository.Ordered())
       {

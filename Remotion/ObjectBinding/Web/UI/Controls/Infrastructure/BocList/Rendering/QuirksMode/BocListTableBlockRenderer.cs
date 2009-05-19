@@ -188,7 +188,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
             + List.ClientID + c_dataRowSelectorControlIDSuffix + "', "
             + count + ","
             + (int) List.Selection + ");";
-        ScriptUtility.RegisterStartupScriptBlock (
+        List.Page.ClientScript.RegisterStartupScriptBlock (
             List, typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
       }
     }

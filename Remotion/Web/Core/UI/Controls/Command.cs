@@ -656,7 +656,7 @@ namespace Remotion.Web.UI.Controls
 
         IWxeCallArguments callArguments;
         if (hasTarget)
-          callArguments = new WxeCallArguments (OwnerControl, new WxeCallOptionsExternal (target, null, false));
+          callArguments = new WxeCallArguments ((Control) OwnerControl, new WxeCallOptionsExternal (target, null, false));
         else
           callArguments = WxeCallArguments.Default;
 

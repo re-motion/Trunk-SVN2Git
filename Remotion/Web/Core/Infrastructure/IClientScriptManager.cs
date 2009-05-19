@@ -334,6 +334,7 @@ namespace Remotion.Web.Infrastructure
     /// </param><param name="key">The key of the client script to register. 
     /// </param><param name="script">The client script literal to register. 
     /// </param>
+    [Obsolete ("Use RegisterClientScriptBlock (IControl, string, string) for compatibility with UpdatePanel.")]
     void RegisterClientScriptBlock (Type type, string key, string script);
 
     /// <summary>
@@ -345,7 +346,40 @@ namespace Remotion.Web.Infrastructure
     /// </param><param name="addScriptTags">A Boolean value indicating whether to add script tags.
     /// </param><exception cref="T:System.ArgumentNullException">The client script block type is null.
     /// </exception>
+    [Obsolete ("Use RegisterClientScriptBlock (IControl, string, string) for compatibility with UpdatePanel.")]
     void RegisterClientScriptBlock (Type type, string key, string script, bool addScriptTags);
+
+    /// <summary>
+    ///   Used to register a client javascript script to be rendered  at the beginning of the HTML page.
+    ///   The script is automatically surrounded by &lt;script&gt; tags.
+    /// </summary>
+    /// <param name="control"> 
+    ///   The <see cref="Control"/> which the script file will be registered. Must not be <see langword="null"/>.
+    /// </param>
+    /// <param name="key"> 
+    ///   The key identifying the registered script file. Must not be <see langword="null"/> or empty.
+    /// </param>
+    /// <param name="javascript"> 
+    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
+    /// </param>
+    /// <seealso cref="ScriptManager.RegisterClientScriptBlock"/>
+    void RegisterClientScriptBlock (IControl control, string key, string javascript);
+
+    /// <summary>
+    ///   Used to register a client javascript script to be rendered at the end of the HTML page. 
+    ///   The script is automatically surrounded by &lt;script&gt; tags.
+    /// </summary>
+    /// <param name="control"> 
+    ///   The <see cref="Control"/> for which the script file will be registered. Must not be <see langword="null"/>.
+    /// </param>
+    /// <param name="key"> 
+    ///   The key identifying the registered script block. Must not be <see langword="null"/> or empty.
+    /// </param>
+    /// <param name="javascript"> 
+    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
+    /// </param>
+    /// <seealso cref="ScriptManager.RegisterStartupScript"/>
+    void RegisterStartupScriptBlock (IControl control, string key, string javascript);
 
     /// <summary>
     /// Registers the client script with the <see cref="T:System.Web.UI.Page"/> object using a key and a URL.

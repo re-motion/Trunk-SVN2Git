@@ -30,11 +30,11 @@ namespace Remotion.Web.ExecutionEngine
   {
     public static readonly WxeRepostOptions Null = new WxeRepostOptions();
 
-    private readonly IControl _sender;
+    private readonly Control _sender;
     private readonly bool _usesEventTarget;
     private readonly bool _suppressRepost;
 
-    public WxeRepostOptions (IControl sender, bool usesEventTarget)
+    public WxeRepostOptions (Control sender, bool usesEventTarget)
     {
       ArgumentUtility.CheckNotNull ("sender", sender);
 
@@ -54,7 +54,7 @@ namespace Remotion.Web.ExecutionEngine
       _suppressRepost = false;
     }
 
-    public IControl Sender
+    public Control Sender
     {
       get { return _sender; }
     }

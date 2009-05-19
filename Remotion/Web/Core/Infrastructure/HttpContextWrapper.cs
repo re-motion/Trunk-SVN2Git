@@ -43,7 +43,8 @@ namespace Remotion.Web.Infrastructure
       _server = new HttpServerUtilityWrapper (httpContext.Server);
       _request = new HttpRequestWrapper (httpContext.Request);
       _response = new HttpResponseWrapper (httpContext.Response);
-      _session = new HttpSessionStateWrapper (httpContext.Session);
+      if (httpContext.Session != null)
+        _session = new HttpSessionStateWrapper (httpContext.Session);
     }
 
     /// <summary>

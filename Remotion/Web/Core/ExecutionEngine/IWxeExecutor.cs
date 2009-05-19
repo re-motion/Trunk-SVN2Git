@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.ExecutionEngine
@@ -21,8 +22,8 @@ namespace Remotion.Web.ExecutionEngine
   public interface IWxeExecutor
   {
     void ExecuteFunction (WxeFunction function, WxePermaUrlOptions permaUrlOptions);
-    void ExecuteFunctionNoRepost (WxeFunction function, IControl sender, WxeCallOptionsNoRepost options);
+    void ExecuteFunctionNoRepost (WxeFunction function, Control sender, WxeCallOptionsNoRepost options);
     void ExecuteFunctionExternalByRedirect (WxeFunction function, WxeCallOptionsExternalByRedirect options);
-    void ExecuteFunctionExternal (WxeFunction function, IControl sender, WxeCallOptionsExternal options);
+    void ExecuteFunctionExternal (WxeFunction function, Control sender, WxeCallOptionsExternal options);
   }
 }

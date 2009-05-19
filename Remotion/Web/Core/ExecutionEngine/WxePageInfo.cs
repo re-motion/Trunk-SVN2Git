@@ -23,7 +23,6 @@ using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -119,15 +118,11 @@ namespace Remotion.Web.ExecutionEngine
 
       _wxeForm.LoadPostData += Form_LoadPostData;
 
-      string url = ResourceUrlResolver.GetResourceUrl ((IControl) _page, typeof (WxePageInfo<>), ResourceType.Html, c_scriptFileUrl);
+      string url = ResourceUrlResolver.GetResourceUrl ((Control) _page, typeof (WxePageInfo<>), ResourceType.Html, c_scriptFileUrl);
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
 
-      url = ResourceUrlResolver.GetResourceUrl ((IControl) _page, typeof (WxePageInfo<>), ResourceType.Html, c_styleFileUrl);
+      url = ResourceUrlResolver.GetResourceUrl ((Control) _page, typeof (WxePageInfo<>), ResourceType.Html, c_styleFileUrl);
       HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
-
-      //      url = ResourceUrlResolver.GetResourceUrl (page, typeof (WxePageInfo), ResourceType.Html, c_styleFileUrlForIE);
-      //      HtmlHeadAppender.Current.RegisterStylesheetLingForInternetExplorerOnly
-      //          (s_styleFileKeyForIE, url, HtmlHeadAppender.Priority.Library);
     }
 
 

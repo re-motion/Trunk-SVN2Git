@@ -14,39 +14,50 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text;
+using System.Collections;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Web;
+using System.Web.SessionState;
+using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+using System.Globalization;
+using System.Collections.Specialized;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.Obsolete;
-using Remotion.Web.UI.Controls;
+using Remotion.Web.Test.ExecutionEngine;
+using Remotion.Web.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Test.ExecutionEngine
 {
   /// <summary>
   /// Summary description for WebForm1.
   /// </summary>
-  public class WebForm1 : WxePage
+  public class WebForm1: WxePage
   {
-    protected TextBox TextBox1;
-    protected Button Stay;
-    protected Button Next;
-    protected CheckBox IsPostBackCheck;
-    protected Button Sub;
-    protected Label StackLabel;
-    protected Label Label2;
-    protected Label Label3;
-    protected Label Var1Label;
-    protected Label Label5;
-    protected Label Var2Label;
-    protected Button Throw;
-    protected Label Label1;
-    protected Label RetValLabel;
-    protected Button SubExtButton;
-    protected Button SubNoReturnButton;
-    protected TextBox SubNoReturnField;
-    protected Button ThrowText;
-    protected Calendar Calendar1;
+    protected System.Web.UI.WebControls.TextBox TextBox1;
+    protected System.Web.UI.WebControls.Button Stay;
+    protected System.Web.UI.WebControls.Button Next;
+    protected System.Web.UI.WebControls.CheckBox IsPostBackCheck;
+    protected System.Web.UI.WebControls.Button Sub;
+    protected System.Web.UI.WebControls.Label StackLabel;
+    protected System.Web.UI.WebControls.Label Label2;
+    protected System.Web.UI.WebControls.Label Label3;
+    protected System.Web.UI.WebControls.Label Var1Label;
+    protected System.Web.UI.WebControls.Label Label5;
+    protected System.Web.UI.WebControls.Label Var2Label;
+    protected System.Web.UI.WebControls.Button Throw;
+    protected System.Web.UI.WebControls.Label Label1;
+    protected System.Web.UI.WebControls.Label RetValLabel;
+    protected System.Web.UI.WebControls.Button SubExtButton;
+    protected System.Web.UI.WebControls.Button SubNoReturnButton;
+    protected System.Web.UI.WebControls.TextBox SubNoReturnField;
+    protected System.Web.UI.WebControls.Button ThrowText;
+    protected System.Web.UI.WebControls.Calendar Calendar1;
 
     public readonly WxeParameterDeclaration[] PageParameters = {
         new WxeParameterDeclaration ("text", true, WxeParameterDirection.InOut, typeof (string)),
@@ -58,11 +69,12 @@ namespace Remotion.Web.Test.ExecutionEngine
       get { return (ISampleFunctionVariables) CurrentFunction; }
     }
 
-    private void Page_Load (object sender, EventArgs e)
+    private void Page_Load (object sender, System.EventArgs e)
     {
-      StringBuilder sb = new StringBuilder();
+
+      System.Text.StringBuilder sb = new System.Text.StringBuilder();
       for (WxeStep step = CurrentPageStep; step != null; step = step.ParentStep)
-        sb.AppendFormat ("{0}<br>", step);
+        sb.AppendFormat ("{0}<br>", step.ToString());      
       StackLabel.Text = sb.ToString();
 
       Var1Label.Text = Function.Var1;
@@ -70,52 +82,54 @@ namespace Remotion.Web.Test.ExecutionEngine
       IsPostBackCheck.Checked = IsPostBack;
 
       if (! IsPostBack)
+      {
         Calendar1.SelectedDate = DateTime.Now.Date;
+      }
     }
 
     #region Web Form Designer generated code
-
-    protected override void OnInit (EventArgs e)
+    override protected void OnInit(EventArgs e)
     {
       //
       // CODEGEN: This call is required by the ASP.NET Web Form Designer.
       //
       InitializeComponent();
-      base.OnInit (e);
+      base.OnInit(e);
     }
-
+		
     /// <summary>
     /// Required method for Designer support - do not modify
     /// the contents of this method with the code editor.
     /// </summary>
-    private void InitializeComponent ()
-    {
-      this.ThrowText.Click += new System.EventHandler (this.ThrowText_Click);
-      this.Stay.Click += new System.EventHandler (this.Stay_Click);
-      this.Next.Click += new System.EventHandler (this.Next_Click);
-      this.SubNoReturnField.TextChanged += new System.EventHandler (this.SubNoReturnField_TextChanged);
-      this.SubNoReturnButton.Click += new System.EventHandler (this.SubNoReturnButton_Click);
-      this.SubExtButton.Click += new System.EventHandler (this.SubExtButton_Click);
-      this.Throw.Click += new System.EventHandler (this.Throw_Click);
-      this.Sub.Click += new System.EventHandler (this.Sub_Click);
-      this.Calendar1.SelectionChanged += new System.EventHandler (this.Calendar1_SelectionChanged);
-      this.Load += new System.EventHandler (this.Page_Load);
-    }
+    private void InitializeComponent()
+    {    
+      this.ThrowText.Click += new System.EventHandler(this.ThrowText_Click);
+      this.Stay.Click += new System.EventHandler(this.Stay_Click);
+      this.Next.Click += new System.EventHandler(this.Next_Click);
+      this.SubNoReturnField.TextChanged += new System.EventHandler(this.SubNoReturnField_TextChanged);
+      this.SubNoReturnButton.Click += new System.EventHandler(this.SubNoReturnButton_Click);
+      this.SubExtButton.Click += new System.EventHandler(this.SubExtButton_Click);
+      this.Throw.Click += new System.EventHandler(this.Throw_Click);
+      this.Sub.Click += new System.EventHandler(this.Sub_Click);
+      this.Calendar1.SelectionChanged += new System.EventHandler(this.Calendar1_SelectionChanged);
+      this.Load += new System.EventHandler(this.Page_Load);
 
+    }
     #endregion
 
-    private void Stay_Click (object sender, EventArgs e)
+    private void Stay_Click (object sender, System.EventArgs e)
     {
+    
     }
 
-    private void Next_Click (object sender, EventArgs e)
+    private void Next_Click (object sender, System.EventArgs e)
     {
-      ExecuteNextStep();
+      ExecuteNextStep ();
       //      WxeFunction currentFunction = ((WxeFunction) Session["CurrentFunction"]);
       //      currentFunction.ExecutingStep.ExecuteNextStep (Context);
     }
 
-    private void Sub_Click (object sender, EventArgs e)
+    private void Sub_Click (object sender, System.EventArgs e)
     {
       // CurrentPageStep.ExecuteFunction ((Control)sender, this, new SubFunction("call var1", "call var2"));
       if (! IsReturningPostBack)
@@ -130,22 +144,22 @@ namespace Remotion.Web.Test.ExecutionEngine
       }
     }
 
-    private void Throw_Click (object sender, EventArgs e)
+    private void Throw_Click (object sender, System.EventArgs e)
     {
       throw new ApplicationException (string.Empty);
     }
 
-    private void ThrowText_Click (object sender, EventArgs e)
+    private void ThrowText_Click(object sender, System.EventArgs e)
     {
       throw new ApplicationException ("test");
     }
 
-    private void SubExtButton_Click (object sender, EventArgs e)
+    private void SubExtButton_Click(object sender, System.EventArgs e)
     {
       if (! IsReturningPostBack)
       {
         SubFunction subFunction = new SubFunction ("subext var 1", "vall var2");
-        this.ExecuteFunctionExternal (subFunction, "_blank", (IControl) sender, true);
+        this.ExecuteFunctionExternal (subFunction, "_blank", (Control) sender, true);
       }
       else
       {
@@ -154,25 +168,29 @@ namespace Remotion.Web.Test.ExecutionEngine
       }
     }
 
-    private void SubNoReturnButton_Click (object sender, EventArgs e)
+    private void SubNoReturnButton_Click (object sender, System.EventArgs e)
     {
-      this.ExecuteFunctionNoRepost (new SubFunction ("v1", "button"), (IControl) sender);
+      this.ExecuteFunctionNoRepost (new SubFunction ("v1", "button"), (Control) sender);    
     }
 
-    private void SubNoReturnField_TextChanged (object sender, EventArgs e)
+    private void SubNoReturnField_TextChanged (object sender, System.EventArgs e)
     {
-      this.ExecuteFunctionNoRepost (new SubFunction ("v1", "textbox"), (IControl) sender);
+      this.ExecuteFunctionNoRepost (new SubFunction ("v1", "textbox"), (Control) sender);    
     }
 
-    private void Calendar1_SelectionChanged (object sender, EventArgs e)
+    private void Calendar1_SelectionChanged(object sender, System.EventArgs e)
     {
       if (! IsReturningPostBack)
-        this.ExecuteFunctionExternal (new SubFunction ("v1", "calendar"), "_blank", (IControl) sender, true);
+      {
+        this.ExecuteFunctionExternal (new SubFunction ("v1", "calendar"), "_blank", (Control) sender, true);
+      }
       else
+      {
         Calendar1.SelectedDate = Calendar1.SelectedDate.AddDays (1);
+      }
     }
 
-    public class SubFunction : WxeFunction, ISampleFunctionVariables
+    public class SubFunction: WxeFunction, ISampleFunctionVariables
     {
       public SubFunction (string var1, string var2)
           : base (new NoneTransactionMode(), var1, var2)
@@ -206,11 +224,10 @@ namespace Remotion.Web.Test.ExecutionEngine
       private WxeStep Step2 = new WxePageStep (@"~\ExecutionEngine\WebForm1.aspx");
 
       private static int counter = 0;
-
       private void Step3 (WxeContext context)
       {
         ++counter;
-        Var1 += " SubFunction " + counter;
+        Var1 += " SubFunction " + counter.ToString();
       }
     }
   }

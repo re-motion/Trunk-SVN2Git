@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Infrastructure
 {
@@ -470,6 +471,46 @@ namespace Remotion.Web.Infrastructure
     public void RegisterClientScriptBlock (Type type, string key, string script, bool addScriptTags)
     {
       _clientScriptManager.RegisterClientScriptBlock (type, key, script, addScriptTags);
+    }
+        
+    /// <summary>
+    ///   Used to register a client javascript script to be rendered  at the beginning of the HTML page.
+    ///   The script is automatically surrounded by &lt;script&gt; tags.
+    /// </summary>
+    /// <param name="control"> 
+    ///   The <see cref="Control"/> which the script file will be registered. Must not be <see langword="null"/>.
+    /// </param>
+    /// <param name="key"> 
+    ///   The key identifying the registered script file. Must not be <see langword="null"/> or empty.
+    /// </param>
+    /// <param name="javascript"> 
+    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
+    /// </param>
+    /// <seealso cref="ScriptManager.RegisterClientScriptBlock"/>
+    public void RegisterClientScriptBlock (IControl control, string key, string javascript)
+    {
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+      ScriptUtility.RegisterClientScriptBlock ((Control) control, key, javascript);
+    }
+
+    /// <summary>
+    ///   Used to register a client javascript script to be rendered at the end of the HTML page. 
+    ///   The script is automatically surrounded by &lt;script&gt; tags.
+    /// </summary>
+    /// <param name="control"> 
+    ///   The <see cref="Control"/> for which the script file will be registered. Must not be <see langword="null"/>.
+    /// </param>
+    /// <param name="key"> 
+    ///   The key identifying the registered script block. Must not be <see langword="null"/> or empty.
+    /// </param>
+    /// <param name="javascript"> 
+    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
+    /// </param>
+    /// <seealso cref="ScriptManager.RegisterStartupScript"/>
+    public void RegisterStartupScriptBlock (IControl control, string key, string javascript)
+    {
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+      ScriptUtility.RegisterStartupScriptBlock ((Control) control, key, javascript);
     }
 
     /// <summary>

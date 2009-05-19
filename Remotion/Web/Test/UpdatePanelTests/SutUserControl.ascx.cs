@@ -18,11 +18,10 @@ using System.Threading;
 using System.Web.UI;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Test.UpdatePanelTests
 {
-  public partial class SutUserControl : UserControl
+  public partial class SutUserControl : System.Web.UI.UserControl
   {
     private PostBackEventHandler _postBackEventHandler;
 
@@ -42,18 +41,18 @@ namespace Remotion.Web.Test.UpdatePanelTests
       SyncPostBackInsideUpdatePanelWebButton.Click += HandlePostBack;
       DropDownMenuInsideUpdatePanel.EventCommandClick += HandlePostBack;
 
-      _postBackEventHandler = new PostBackEventHandler();
+      _postBackEventHandler = new PostBackEventHandler ();
       _postBackEventHandler.ID = "PostBackEventHandler";
       _postBackEventHandler.PostBack += HandlePostBack;
       Controls.Add (_postBackEventHandler);
 
-      const string asyncPostBackCommandInsideUpdatePanelID = "AsyncPostBackCommandInsideUpdatePanel";
+      string asyncPostBackCommandInsideUpdatePanelID = "AsyncPostBackCommandInsideUpdatePanel";
       ((ISmartPage) Page).RegisterCommandForSynchronousPostBack (_postBackEventHandler, asyncPostBackCommandInsideUpdatePanelID);
       AsyncCommandInsideUpdatePanelHyperLink.NavigateUrl = "#";
       AsyncCommandInsideUpdatePanelHyperLink.Attributes["onclick"] =
           Page.ClientScript.GetPostBackEventReference (_postBackEventHandler, asyncPostBackCommandInsideUpdatePanelID);
 
-      const string syncPostBackCommandInsideUpdatePanelID = "SyncPostBackCommandInsideUpdatePanel";
+      string syncPostBackCommandInsideUpdatePanelID = "SyncPostBackCommandInsideUpdatePanel";
       ((ISmartPage) Page).RegisterCommandForSynchronousPostBack (_postBackEventHandler, syncPostBackCommandInsideUpdatePanelID);
       SyncCommandInsideUpdatePanelHyperLink.NavigateUrl = "#";
       SyncCommandInsideUpdatePanelHyperLink.Attributes["onclick"] =
@@ -66,7 +65,7 @@ namespace Remotion.Web.Test.UpdatePanelTests
 
       UpdateStatus (null);
 
-      WebMenuItem menuItem = new WebMenuItem();
+      WebMenuItem menuItem = new WebMenuItem ();
       menuItem.ItemID = "Item" + PostBackCount;
       menuItem.Text = "Item " + PostBackCount;
       DropDownMenuInsideUpdatePanel.MenuItems.Add (menuItem);
@@ -87,8 +86,8 @@ namespace Remotion.Web.Test.UpdatePanelTests
 
     private void UpdateStatus (object sender)
     {
-      PostBackCountInsideUpdatePanelLabel.Text = PostBackCount.ToString();
-      PostBackCountOutsideUpdatePanelLabel.Text = PostBackCount.ToString();
+      PostBackCountInsideUpdatePanelLabel.Text = PostBackCount.ToString ();
+      PostBackCountOutsideUpdatePanelLabel.Text = PostBackCount.ToString ();
 
       string lastPostBack = "undefined";
       if (sender != null)
