@@ -259,7 +259,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Dms.Core">
+  <target name="Dms.Core" depends="Dms.Shared">
     <property name="project.name" value="Dms.Core" />
     <property name="project.dir" value="Dms/Core" />
     <property name="project.output" value="Remotion.Dms" />
@@ -291,7 +291,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Dms.Web" depends="Dms.Shared,Web">
+  <target name="Dms.Web" depends="Dms.Core, Dms.Shared, Web">
     <property name="project.name" value="Dms.Web" />
     <property name="project.dir" value="Dms/Web" />
     <property name="project.output" value="Remotion.Dms.Web" />
@@ -517,7 +517,7 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Dms.UnitTests" depends="Development.Core, Dms.Shared, Dms.DesktopConnector, Dms.Clients.Windows.Tray, Dms.Web">
+  <target name="Dms.UnitTests" depends="Development.Core, Dms.Shared, Dms.DesktopConnector, Dms.Clients.Windows.Tray, Dms.Web, Dms.Core">
     <property name="project.name" value="Dms.UnitTests" />
     <property name="project.dir" value="Dms/UnitTests" />
     <property name="project.output" value="Remotion.Dms.UnitTests" />
