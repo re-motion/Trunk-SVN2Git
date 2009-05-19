@@ -170,7 +170,7 @@
   <target name="all" depends="prereq,
       Core.Interfaces, Core.Core, Core.Mixins.MixerTool.Console, 
       Development.CodeDom, Development.Core, Development.Data, 
-      Dms.Shared, Dms.Clients.Windows.Tray, Dms.DesktopConnector, Dms.Web,
+      Dms.Core, Dms.Shared, Dms.Clients.Windows.Tray, Dms.DesktopConnector, Dms.Web,
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
       ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, ObjectBinding.Web.Preview, 
       ObjectBinding.Web.CodeGenerator, ObjectBinding.Web.CodeGenerator.Templates, 
@@ -255,6 +255,14 @@
     <property name="project.name" value="Development.CodeDom" />
     <property name="project.dir" value="Remotion/Development/CodeDom" />
     <property name="project.output" value="Remotion.Development.CodeDom" />
+    <property name="project.extension" value="dll" />
+    <call target="execute-buildstep" />
+  </target>
+
+  <target name="Dms.Core">
+    <property name="project.name" value="Dms.Core" />
+    <property name="project.dir" value="Dms/Core" />
+    <property name="project.output" value="Remotion.Dms" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
   </target>
