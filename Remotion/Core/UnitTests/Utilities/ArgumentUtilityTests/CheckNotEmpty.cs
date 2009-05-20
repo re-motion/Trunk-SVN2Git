@@ -66,5 +66,20 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     {
       ArgumentUtility.CheckNotEmpty ("arg", Type.EmptyTypes);
     }
+
+    [Test]
+    public void Succeed_NonEmptyGuid ()
+    {
+      Guid guid = Guid.NewGuid();
+      var result = ArgumentUtility.CheckNotEmpty ("arg", guid);
+      Assert.That (result, Is.EqualTo (guid));
+    }
+
+    [Test]
+    [ExpectedException(typeof(ArgumentEmptyException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
+    public void Fail_EmptyGuid ()
+    {
+      ArgumentUtility.CheckNotEmpty ("arg", Guid.Empty);
+    }
   }
 }

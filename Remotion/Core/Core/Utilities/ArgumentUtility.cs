@@ -137,6 +137,14 @@ namespace Remotion.Utilities
       return enumerable;
     }
 
+    public static Guid CheckNotEmpty (string argumentName, Guid actualValue)
+    {
+      if (actualValue == Guid.Empty)
+        throw new ArgumentEmptyException (argumentName);
+
+      return actualValue;
+    }
+
     public static void ThrowEnumArgumentOutOfRangeException (string argumentName, Enum actualValue)
     {
       string message = string.Format (
