@@ -247,7 +247,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private WebMenuItemCollection _listMenuItems;
 
     /// <summary> Triplet &lt; IBusinessObject, listIndex, DropDownMenu &gt;</summary>
-    private BocListRowMenuTriplet[] _rowMenus;
+    private BocListRowMenuTuple[] _rowMenus;
 
     private PlaceHolder _rowMenusPlaceHolder;
 
@@ -256,7 +256,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///       Key = CustomColumn, 
     ///       Value = Triplet[] &lt; IBusinessObject, listIndex, Control &gt; &gt;
     /// </summary>
-    private Dictionary<BocColumnDefinition, BocListCustomColumnTriplet[]> _customColumns;
+    private Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]> _customColumns;
 
     private PlaceHolder _customColumnsPlaceHolder;
 
@@ -1931,9 +1931,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       CalculateCurrentPage (false);
 
       if (IsPagingEnabled)
-        _rowMenus = new BocListRowMenuTriplet[PageSize.Value];
+        _rowMenus = new BocListRowMenuTuple[PageSize.Value];
       else
-        _rowMenus = new BocListRowMenuTriplet[Value.Count];
+        _rowMenus = new BocListRowMenuTuple[Value.Count];
       _rowMenusPlaceHolder.Controls.Clear();
 
 
@@ -1967,7 +1967,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         WebMenuItem[] menuItems = InitializeRowMenuItems (row.BusinessObject, originalRowIndex);
         dropDownMenu.MenuItems.AddRange (menuItems);
 
-        _rowMenus[idxRelativeRows] = new BocListRowMenuTriplet (row.BusinessObject, originalRowIndex, dropDownMenu);
+        _rowMenus[idxRelativeRows] = new BocListRowMenuTuple (row.BusinessObject, originalRowIndex, dropDownMenu);
       }
     }
 
@@ -1990,12 +1990,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       for (int i = 0; i < _rowMenus.Length; i++)
       {
-        BocListRowMenuTriplet rowMenuTriplet = _rowMenus[i];
-        if (rowMenuTriplet != null)
+        BocListRowMenuTuple rowMenuTuple = _rowMenus[i];
+        if (rowMenuTuple != null)
         {
-          IBusinessObject businessObject = rowMenuTriplet.First;
-          int listIndex = rowMenuTriplet.Second;
-          DropDownMenu dropDownMenu = rowMenuTriplet.Third;
+          IBusinessObject businessObject = rowMenuTuple.A;
+          int listIndex = rowMenuTuple.B;
+          DropDownMenu dropDownMenu = rowMenuTuple.C;
           PreRenderRowMenuItems (dropDownMenu.MenuItems, businessObject, listIndex);
         }
       }
@@ -2021,14 +2021,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       for (int i = 0; i < _rowMenus.Length; i++)
       {
-        BocListRowMenuTriplet rowMenuTriplet = _rowMenus[i];
-        if (rowMenuTriplet != null)
+        BocListRowMenuTuple rowMenuTuple = _rowMenus[i];
+        if (rowMenuTuple != null)
         {
-          DropDownMenu rowMenu = rowMenuTriplet.Third;
+          DropDownMenu rowMenu = rowMenuTuple.C;
           if (rowMenu == sender)
           {
-            IBusinessObject businessObject = rowMenuTriplet.First;
-            int listIndex = rowMenuTriplet.Second;
+            IBusinessObject businessObject = rowMenuTuple.A;
+            int listIndex = rowMenuTuple.B;
             OnRowMenuItemEventCommandClick (e.Item, businessObject, listIndex);
             return;
           }
@@ -2059,14 +2059,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       for (int i = 0; i < _rowMenus.Length; i++)
       {
-        BocListRowMenuTriplet rowMenuTriplet = _rowMenus[i];
-        if (rowMenuTriplet != null)
+        BocListRowMenuTuple rowMenuTuple = _rowMenus[i];
+        if (rowMenuTuple != null)
         {
-          DropDownMenu rowMenu = rowMenuTriplet.Third;
+          DropDownMenu rowMenu = rowMenuTuple.C;
           if (rowMenu == sender)
           {
-            IBusinessObject businessObject = rowMenuTriplet.First;
-            int listIndex = rowMenuTriplet.Second;
+            IBusinessObject businessObject = rowMenuTuple.A;
+            int listIndex = rowMenuTuple.B;
             OnRowMenuItemWxeFunctionCommandClick (e.Item, businessObject, listIndex);
             return;
           }
@@ -2188,7 +2188,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       CalculateCurrentPage (false);
 
-      _customColumns = new Dictionary<BocColumnDefinition, BocListCustomColumnTriplet[]>();
+      _customColumns = new Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]>();
 
       int firstRow = 0;
       int totalRowCount = Value.Count;
@@ -2214,12 +2214,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           PlaceHolder placeHolder = new PlaceHolder();
           _customColumnsPlaceHolder.Controls.Add (placeHolder);
 
-          BocListCustomColumnTriplet[] customColumnTriplets;
+          BocListCustomColumnTuple[] customColumnTuples;
           if (IsPagingEnabled)
-            customColumnTriplets = new BocListCustomColumnTriplet[PageSize.Value];
+            customColumnTuples = new BocListCustomColumnTuple[PageSize.Value];
           else
-            customColumnTriplets = new BocListCustomColumnTriplet[Value.Count];
-          _customColumns[customColumn] = customColumnTriplets;
+            customColumnTuples = new BocListCustomColumnTuple[Value.Count];
+          _customColumns[customColumn] = customColumnTuples;
 
           for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
                idxAbsoluteRows < rowCountWithOffset;
@@ -2237,7 +2237,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             Control control = customColumn.CustomCell.CreateControlInternal (args);
             control.ID = ID + "_CustomColumnControl_" + idxColumns + "_" + originalRowIndex;
             placeHolder.Controls.Add (control);
-            customColumnTriplets[idxRelativeRows] = new BocListCustomColumnTriplet (row.BusinessObject, originalRowIndex, control);
+            customColumnTuples[idxRelativeRows] = new BocListCustomColumnTuple (row.BusinessObject, originalRowIndex, control);
           }
         }
       }
@@ -2279,19 +2279,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             && (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
                 || customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow))
         {
-          BocListCustomColumnTriplet[] customColumnTriplets = _customColumns[customColumn];
-          for (int idxRows = 0; idxRows < customColumnTriplets.Length; idxRows++)
+          BocListCustomColumnTuple[] customColumnTuples = _customColumns[customColumn];
+          for (int idxRows = 0; idxRows < customColumnTuples.Length; idxRows++)
           {
-            BocListCustomColumnTriplet customColumnTriplet = customColumnTriplets[idxRows];
-            if (customColumnTriplet != null)
+            BocListCustomColumnTuple customColumnTuple = customColumnTuples[idxRows];
+            if (customColumnTuple != null)
             {
-              int originalRowIndex = customColumnTriplet.Second;
+              int originalRowIndex = customColumnTuple.B;
               if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
                   && (_editModeController.EditableRowIndex == null
                       || _editModeController.EditableRowIndex.Value != originalRowIndex))
                 continue;
-              IBusinessObject businessObject = customColumnTriplet.First;
-              Control control = customColumnTriplet.Third;
+              IBusinessObject businessObject = customColumnTuple.A;
+              Control control = customColumnTuple.C;
 
               BocCustomCellLoadArguments args =
                   new BocCustomCellLoadArguments (this, businessObject, customColumn, originalRowIndex, control);
@@ -2318,17 +2318,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (customColumn != null
             && customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow)
         {
-          BocListCustomColumnTriplet[] customColumnTriplets = _customColumns[customColumn];
-          for (int idxRows = 0; idxRows < customColumnTriplets.Length; idxRows++)
+          BocListCustomColumnTuple[] customColumnTuples = _customColumns[customColumn];
+          for (int idxRows = 0; idxRows < customColumnTuples.Length; idxRows++)
           {
-            BocListCustomColumnTriplet customColumnTriplet = customColumnTriplets[idxRows];
-            if (customColumnTriplet != null)
+            BocListCustomColumnTuple customColumnTuple = customColumnTuples[idxRows];
+            if (customColumnTuple != null)
             {
-              int originalRowIndex = customColumnTriplet.Second;
+              int originalRowIndex = customColumnTuple.B;
               if (_editModeController.EditableRowIndex.Value == originalRowIndex)
               {
-                IBusinessObject businessObject = customColumnTriplet.First;
-                Control control = customColumnTriplet.Third;
+                IBusinessObject businessObject = customColumnTuple.A;
+                Control control = customColumnTuple.C;
                 BocCustomCellValidationArguments args =
                     new BocCustomCellValidationArguments (this, businessObject, customColumn, control);
                 customColumn.CustomCell.Validate (args);
@@ -4280,12 +4280,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _validators; }
     }
 
-    BocListRowMenuTriplet[] IBocList.RowMenus
+    BocListRowMenuTuple[] IBocList.RowMenus
     {
       get { return _rowMenus; }
     }
 
-    IDictionary<BocColumnDefinition, BocListCustomColumnTriplet[]> IBocList.CustomColumns
+    IDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> IBocList.CustomColumns
     {
       get { return _customColumns; }
     }

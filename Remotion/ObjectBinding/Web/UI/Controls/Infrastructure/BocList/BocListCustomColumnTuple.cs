@@ -15,34 +15,19 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Collections;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
 {
-  public class Triplet<TFirst, TSecond, TThird>
+  public class BocListCustomColumnTuple : Tuple<IBusinessObject, int, Control>
   {
-    public TFirst First { get; set; }
-    public TSecond Second { get; set; }
-    public TThird Third { get; set; }
-  }
-
-  public class BocListCustomColumnTriplet : Triplet<IBusinessObject, int, Control>
-  {
-    public BocListCustomColumnTriplet (IBusinessObject businessObject, int originalRowIndex, Control control)
+    public BocListCustomColumnTuple (IBusinessObject businessObject, int originalRowIndex, Control control)
+        : base (ArgumentUtility.CheckNotNull ("businessObject", businessObject),
+                originalRowIndex,
+                ArgumentUtility.CheckNotNull ("control", control))
     {
-      First = businessObject;
-      Second = originalRowIndex;
-      Third = control;
-    }
-  }
-
-  public class BocListRowMenuTriplet : Triplet<IBusinessObject, int, DropDownMenu>
-  {
-    public BocListRowMenuTriplet (IBusinessObject businessObject, int originalRowIndex, DropDownMenu control)
-    {
-      First = businessObject;
-      Second = originalRowIndex;
-      Third = control;
     }
   }
 }

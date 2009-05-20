@@ -58,10 +58,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
               false,
               new Command()));
 
-      BocListRowMenuTriplet[] rowMenus = new[]
+      BocListRowMenuTuple[] rowMenus = new[]
                                          {
-                                           new BocListRowMenuTriplet (BusinessObject, 0, mockMenu),
-                                           new BocListRowMenuTriplet (BusinessObject, 1, mockMenu)
+                                           new BocListRowMenuTuple (BusinessObject, 0, mockMenu),
+                                           new BocListRowMenuTuple (BusinessObject, 1, mockMenu)
                                          };
       List.Stub (mock => mock.RowMenus).Return(rowMenus);
     }

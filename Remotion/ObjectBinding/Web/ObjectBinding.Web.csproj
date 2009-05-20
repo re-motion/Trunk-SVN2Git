@@ -251,6 +251,7 @@
     <Compile Include="UI\Controls\IDataEditControl.cs" />
     <Compile Include="UI\Controls\IExtendedBusinessObjectBoundWebControl.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocBooleanValue\BocBooleanValueResourceSet.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\BocListRowMenuTuple.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\EditableRow.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -288,7 +289,7 @@
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListTableBlockRenderer.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSelectorColumnRenderer.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocColumnRendererFactory.cs" />
-    <Compile Include="UI\Controls\Infrastructure\BocList\Triplet.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\BocListCustomColumnTuple.cs" />
     <Compile Include="UI\Controls\PropertyPathBinding.cs">
       <SubType>Code</SubType>
     </Compile>

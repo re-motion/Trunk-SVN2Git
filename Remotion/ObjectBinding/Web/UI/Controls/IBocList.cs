@@ -338,8 +338,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     IEditModeController EditModeController { get; }
     ArrayList SortingOrder { get; }
     ArrayList Validators { get; }
-    BocListRowMenuTriplet[] RowMenus { get; }
-    System.Collections.Generic.IDictionary<BocColumnDefinition, BocListCustomColumnTriplet[]> CustomColumns { get; }
+    BocListRowMenuTuple[] RowMenus { get; }
+    System.Collections.Generic.IDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> CustomColumns { get; }
     bool IsEmptyList { get; }
     bool HasListMenu { get; }
     bool IsClientSideSortingEnabled { get; }

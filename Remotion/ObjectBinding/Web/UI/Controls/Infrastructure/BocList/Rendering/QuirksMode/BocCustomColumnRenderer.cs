@@ -78,9 +78,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
     private void RenderCustomCellInnerControls (int rowIndex)
     {
-      BocListCustomColumnTriplet[] customColumnTriplets = List.CustomColumns[Column];
-      BocListCustomColumnTriplet customColumnTriplet = customColumnTriplets[rowIndex];
-      if (customColumnTriplet == null)
+      BocListCustomColumnTuple[] customColumnTuples = List.CustomColumns[Column];
+      BocListCustomColumnTuple customColumnTuple = customColumnTuples[rowIndex];
+      if (customColumnTuple == null)
       {
         Writer.Write (c_whiteSpace);
         return;
@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
 
       RenderClickWrapperBeginTag();
 
-      Control control = customColumnTriplet.Third;
+      Control control = customColumnTuple.C;
       if (control != null)
       {
         ApplyStyleDefaults (control);

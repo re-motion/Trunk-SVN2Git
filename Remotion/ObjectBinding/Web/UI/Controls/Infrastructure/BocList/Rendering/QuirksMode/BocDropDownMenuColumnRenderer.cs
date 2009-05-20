@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
         return;
       }
 
-      DropDownMenu dropDownMenu = (DropDownMenu) List.RowMenus[rowIndex].Third;
+      DropDownMenu dropDownMenu = (DropDownMenu) List.RowMenus[rowIndex].C;
       if (dropDownMenu.MenuItems.Count == 0)
       {
         Writer.Write (c_whiteSpace);

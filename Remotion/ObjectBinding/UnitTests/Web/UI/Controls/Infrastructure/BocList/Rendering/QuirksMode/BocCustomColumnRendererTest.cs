@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Web.UI;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
@@ -41,10 +42,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       IBusinessObject secondObject = (IBusinessObject) ((TypeWithReference) BusinessObject).SecondValue;
       var triplets = new[]
                      {
-                         new BocListCustomColumnTriplet (firstObject, 0, null),
-                         new BocListCustomColumnTriplet (secondObject, 1, null)
+                         new BocListCustomColumnTuple (firstObject, 0, new Control()),
+                         new BocListCustomColumnTuple (secondObject, 1, new Control())
                      };
-      var customColumns = new Dictionary<BocColumnDefinition, BocListCustomColumnTriplet[]>
+      var customColumns = new Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]>
                           {
                               { Column, triplets }
                           };
