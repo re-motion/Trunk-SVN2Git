@@ -80,7 +80,7 @@
 
 </table>
 <p><remotion:WebButton id="SwitchToEditModeButton" runat="server" Text="Switch to Edit Mode"></remotion:WebButton><remotion:WebButton id="EndEditModeButton" runat="server" Text="End Edit Mode"></remotion:WebButton><remotion:WebButton id="CancelEditModeButton" runat="server" Text="Cancel Edit Mode"></remotion:WebButton></p>
-<p><remotion:WebButton id="AddRowButton" runat="server" Text="Add Row"></remotion:WebButton><remotion:BocTextValue id="NumberOfNewRowsField" runat="server" ValueType="Integer" Width="2em" Required="True">
+<p><remotion:WebButton id="AddRowButton" runat="server" Text="Add Row"></remotion:WebButton><remotion:BocTextValue id="NumberOfNewRowsField" runat="server" ValueType="Int32" Width="2em" Required="True">
 <textboxstyle textmode="SingleLine">
 </TextBoxStyle>
 </remotion:BocTextValue><remotion:WebButton id="AddRowsButton" runat="server" Text="Add Rows"></remotion:WebButton><remotion:WebButton id="RemoveRows" runat="server" Text="Remove Rows"></remotion:WebButton></p>
