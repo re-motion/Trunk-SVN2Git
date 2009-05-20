@@ -151,7 +151,8 @@ namespace Remotion.Web.Infrastructure
     /// </param><exception cref="T:System.ArgumentNullException">The <see cref="T:System.Web.UI.Control"/> specified is null. 
     /// </exception><exception cref="T:System.InvalidOperationException">The <see cref="T:System.Web.UI.Control"/> specified does not implement the <see cref="T:System.Web.UI.ICallbackEventHandler"/> interface.
     /// </exception>
-    public string GetCallbackEventReference (IControl control, string argument, string clientCallback, string context, string clientErrorCallback, bool useAsync)
+    public string GetCallbackEventReference (
+        IControl control, string argument, string clientCallback, string context, string clientErrorCallback, bool useAsync)
     {
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
       return _clientScriptManager.GetCallbackEventReference ((Control) control, argument, clientCallback, context, clientErrorCallback, useAsync);
@@ -171,7 +172,8 @@ namespace Remotion.Web.Infrastructure
     /// </param><param name="clientErrorCallback">The name of the client event handler that receives the result when an error occurs in the server event handler. 
     /// </param><param name="useAsync">true to perform the callback asynchronously; false to perform the callback synchronously.
     /// </param>
-    public string GetCallbackEventReference (string target, string argument, string clientCallback, string context, string clientErrorCallback, bool useAsync)
+    public string GetCallbackEventReference (
+        string target, string argument, string clientCallback, string context, string clientErrorCallback, bool useAsync)
     {
       return _clientScriptManager.GetCallbackEventReference (target, argument, clientCallback, context, clientErrorCallback, useAsync);
     }
@@ -436,6 +438,22 @@ namespace Remotion.Web.Infrastructure
     }
 
     /// <summary>
+    /// Registers a name/value pair as a custom (expando) attribute of the specified control given a control ID, an attribute name, an attribute value, and a Boolean value indicating whether to encode the attribute value.
+    /// </summary>
+    /// <param name="registratorControl">The control registering the attribute.</param>
+    /// <param name="controlId">The <see cref="T:System.Web.UI.Control"/> on the page that contains the custom attribute.
+    /// </param><param name="attributeName">The name of the custom attribute to register.
+    /// </param><param name="attributeValue">The value of the custom attribute.
+    /// </param><param name="encode">A Boolean value indicating whether to encode the custom attribute to register.
+    /// </param>
+    public void RegisterExpandoAttribute (IControl registratorControl, string controlId, string attributeName, string attributeValue, bool encode)
+    {
+      ArgumentUtility.CheckNotNullAndType<Control> ("registratorControl", registratorControl);
+      ScriptManager.RegisterExpandoAttribute (
+          (Control) registratorControl, controlId, attributeName, StringUtility.NullToEmpty (attributeValue), encode);
+    }
+
+    /// <summary>
     /// Registers a hidden value with the <see cref="T:System.Web.UI.Page"/> object.
     /// </summary>
     /// <param name="hiddenFieldName">The name of the hidden field to register.
@@ -445,6 +463,20 @@ namespace Remotion.Web.Infrastructure
     public void RegisterHiddenField (string hiddenFieldName, string hiddenFieldInitialValue)
     {
       _clientScriptManager.RegisterHiddenField (hiddenFieldName, hiddenFieldInitialValue);
+    }
+
+    /// <summary>
+    /// Registers a hidden value with the <see cref="T:System.Web.UI.Page"/> object.
+    /// </summary>
+    /// <param name="control">The control registering the hidden field.</param>
+    /// <param name="hiddenFieldName">The name of the hidden field to register.
+    /// </param><param name="hiddenFieldInitialValue">The initial value of the field to register.
+    /// </param><exception cref="T:System.ArgumentNullException"><paramref name="hiddenFieldName"/> is null.
+    /// </exception>
+    public void RegisterHiddenField (IControl control, string hiddenFieldName, string hiddenFieldInitialValue)
+    {
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+      ScriptManager.RegisterHiddenField ((Control) control, hiddenFieldName, StringUtility.NullToEmpty (hiddenFieldInitialValue));
     }
 
     /// <summary>
@@ -472,7 +504,7 @@ namespace Remotion.Web.Infrastructure
     {
       _clientScriptManager.RegisterClientScriptBlock (type, key, script, addScriptTags);
     }
-        
+
     /// <summary>
     ///   Used to register a client javascript script to be rendered  at the beginning of the HTML page.
     ///   The script is automatically surrounded by &lt;script&gt; tags.
@@ -519,6 +551,7 @@ namespace Remotion.Web.Infrastructure
     /// <param name="key">The key of the client script include to register. 
     /// </param><param name="url">The URL of the client script include to register. 
     /// </param>
+    [Obsolete ("Use RegisterClientScriptInclude (IControl, Type, string, string) for compatibility with UpdatePanel.")]
     public void RegisterClientScriptInclude (string key, string url)
     {
       _clientScriptManager.RegisterClientScriptInclude (key, url);
@@ -540,6 +573,12 @@ namespace Remotion.Web.Infrastructure
       _clientScriptManager.RegisterClientScriptInclude (type, key, url);
     }
 
+    public void RegisterClientScriptInclude (IControl control, Type type, string key, string url)
+    {
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+      ScriptManager.RegisterClientScriptInclude ((Control) control, type, key, url);
+    }
+
     /// <summary>
     /// Registers the client script resource with the <see cref="T:System.Web.UI.Page"/> object using a type and a resource name.
     /// </summary>
@@ -555,6 +594,12 @@ namespace Remotion.Web.Infrastructure
       _clientScriptManager.RegisterClientScriptResource (type, resourceName);
     }
 
+    public void RegisterClientScriptResource (IControl control, Type type, string resourceName)
+    {
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+      ScriptManager.RegisterClientScriptResource ((Control) control, type, resourceName);
+    }
+
     /// <summary>
     /// Registers an OnSubmit statement with the <see cref="T:System.Web.UI.Page"/> object using a type, a key, and a script literal. The statement executes when the <see cref="T:System.Web.UI.HtmlControls.HtmlForm"/> is submitted.
     /// </summary>
@@ -566,6 +611,12 @@ namespace Remotion.Web.Infrastructure
     public void RegisterOnSubmitStatement (Type type, string key, string script)
     {
       _clientScriptManager.RegisterOnSubmitStatement (type, key, script);
+    }
+
+    public void RegisterOnSubmitStatement (IControl control, Type type, string key, string script)
+    {
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+      ScriptManager.RegisterOnSubmitStatement ((Control) control, type, key, StringUtility.NullToEmpty (script));
     }
 
     /// <summary>
@@ -592,6 +643,20 @@ namespace Remotion.Web.Infrastructure
     public void RegisterStartupScript (Type type, string key, string script, bool addScriptTags)
     {
       _clientScriptManager.RegisterStartupScript (type, key, script, addScriptTags);
+    }
+
+    /// <summary>
+    /// Registers the startup script with the <see cref="T:System.Web.UI.Page"/> object using a type, a key, a script literal, and a Boolean value indicating whether to add script tags.
+    /// </summary>
+    /// <param name="control">The control that is registering the client script block.</param>
+    /// <param name="type">The type of the startup script to register.</param>
+    /// <param name="key">The key of the startup script to register.</param>
+    /// <param name="script">The startup script literal to register.</param>
+    /// <param name="addScriptTags">A Boolean value indicating whether to add script tags.</param>
+    public void RegisterStartupScript (IControl control, Type type, string key, string script, bool addScriptTags)
+    {
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+      ScriptManager.RegisterStartupScript ((Control) control, type, key, StringUtility.NullToEmpty (script), addScriptTags);
     }
   }
 }
