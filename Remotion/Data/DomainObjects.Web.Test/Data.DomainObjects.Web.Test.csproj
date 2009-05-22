@@ -1,6 +1,6 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{86C6C68B-3AF4-4ADE-95FD-29D404F114FD}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -145,14 +145,12 @@
     <Compile Include="Domain\MixinForClassWithAllDataTypes1.cs" />
     <Compile Include="FirstControl.ascx.cs">
       <DependentUpon>FirstControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="FirstControl.ascx.designer.cs">
       <DependentUpon>FirstControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="ImmediatelyReturningPage.aspx.cs">
       <DependentUpon>ImmediatelyReturningPage.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ImmediatelyReturningPage.aspx.designer.cs">
       <DependentUpon>ImmediatelyReturningPage.aspx</DependentUpon>
@@ -194,7 +192,6 @@
     </Compile>
     <Compile Include="EditObject.aspx.cs">
       <DependentUpon>EditObject.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -202,15 +199,12 @@
     </Compile>
     <Compile Include="NewObject.aspx.cs">
       <DependentUpon>NewObject.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="SearchObject.aspx.cs">
       <DependentUpon>SearchObject.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="SecondControl.ascx.cs">
       <DependentUpon>SecondControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="SecondControl.ascx.designer.cs">
       <DependentUpon>SecondControl.ascx</DependentUpon>
@@ -220,7 +214,6 @@
     </Compile>
     <Compile Include="UndefinedEnumTest.aspx.cs">
       <DependentUpon>UndefinedEnumTest.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WxeFunctions\ShowSecondUserControlFunction.cs" />
     <Compile Include="WxeFunctions\WxeUserControlTestPageFunction.cs" />
@@ -250,11 +243,9 @@
     </Compile>
     <Compile Include="WxeTestPage.aspx.cs">
       <DependentUpon>WxeTestPage.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WxeUserControlTestPage.aspx.cs">
       <DependentUpon>WxeUserControlTestPage.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WxeUserControlTestPage.aspx.designer.cs">
       <DependentUpon>WxeUserControlTestPage.aspx</DependentUpon>
@@ -341,9 +332,6 @@
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/dev/Remotion/trunk/Remotion/Data/DomainObjects.Web.Test</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
