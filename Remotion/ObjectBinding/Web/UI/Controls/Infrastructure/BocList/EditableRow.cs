@@ -34,7 +34,7 @@ public class EditableRow : PlaceHolder, INamingContainer
 
   // member fields
 
-  private Controls.BocList _ownerControl;
+  private IBocList _ownerControl;
 
   private EditableRowDataSourceFactory _dataSourceFactory;
   private EditableRowControlFactory _controlFactory;
@@ -49,7 +49,7 @@ public class EditableRow : PlaceHolder, INamingContainer
 
   // construction and disposing
 
-  public EditableRow (Controls.BocList ownerControl)
+  public EditableRow (IBocList ownerControl)
   {
     ArgumentUtility.CheckNotNull ("ownerControl", ownerControl);
 
@@ -58,7 +58,7 @@ public class EditableRow : PlaceHolder, INamingContainer
 
   // methods and properties
 
-  public Controls.BocList OwnerControl
+  public IBocList OwnerControl
   {
     get { return _ownerControl; }
   }

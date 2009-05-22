@@ -36,15 +36,30 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     protected IBusinessObject BusinessObject { get; set; }
     protected BocListDataRowRenderEventArgs EventArgs { get; set; }
 
-    [SetUp]
-    public virtual void SetUp ()
+    protected void Initialize ()
     {
-      TypeWithReference businessObject = TypeWithReference.Create (
-          TypeWithReference.Create ("referencedObject1"),
-          TypeWithReference.Create ("referencedObject2"));
-      businessObject.ReferenceList = new[] { businessObject.FirstValue, businessObject.SecondValue };
+      Initialize (true);
+    }
+
+    protected void Initialize (bool withRowObjects)
+    {
+      TypeWithReference businessObject;
+      if (withRowObjects)
+      {
+        businessObject = TypeWithReference.Create (
+            TypeWithReference.Create ("referencedObject1"),
+            TypeWithReference.Create ("referencedObject2"));
+        businessObject.ReferenceList = new[] { businessObject.FirstValue, businessObject.SecondValue };
+        
+      }
+      else
+      {
+        businessObject = TypeWithReference.Create();
+        businessObject.ReferenceList = new TypeWithReference[0];
+      }
       BusinessObject = (IBusinessObject) businessObject;
-      BusinessObject.BusinessObjectClass.BusinessObjectProvider.AddService<IBusinessObjectWebUIService> (new ReflectionBusinessObjectWebUIService());
+      BusinessObject.BusinessObjectClass.BusinessObjectProvider.AddService<IBusinessObjectWebUIService>
+        (new ReflectionBusinessObjectWebUIService ());
 
       EventArgs = new BocListDataRowRenderEventArgs (0, (IBusinessObject) businessObject.FirstValue);
       EventArgs.IsEditableRow = false;
@@ -56,13 +71,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       IHttpResponse response = MockRepository.GenerateMock<IHttpResponse>();
       HttpContext.Stub (mock => mock.Response).Return (response);
       response.Stub (mock => mock.ContentType).Return ("text/html");
+
+      InitializeMockList();
     }
 
-    protected void InitializeMockList ()
+    private void InitializeMockList ()
     {
       List = MockRepository.GenerateMock<IBocList>();
 
       List.Stub (list => list.HasClientScript).Return (true);
+
       List.Stub (list => list.DataSource).Return (MockRepository.GenerateStub<IBusinessObjectDataSource>());
       List.DataSource.BusinessObject = BusinessObject;
       List.Stub (list => list.Property).Return (BusinessObject.BusinessObjectClass.GetPropertyDefinition ("ReferenceList"));
@@ -81,7 +99,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       List.Stub (list => list.CssClassDataCellOdd).Return ("cssClassDataCellOdd");
       List.Stub (list => list.CssClassDataCellEven).Return ("cssClassDataCellEven");
       List.Stub (list => list.CssClassDataRow).Return ("cssClassDataRow");
-      
+      List.Stub (list => list.CssClassDataRowSelected).Return ("cssClassDataRowSelected");
+
       var page = MockRepository.GenerateMock<IPage>();
       List.Stub (list => list.Page).Return (page);
 
@@ -96,19 +115,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       List.Stub (list => list.GetResourceManager()).Return (
           MultiLingualResources.GetResourceManager (typeof (ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier)));
-    }
-
-    protected void InitializeBocList ()
-    {
-      Page page = new Page();
-      List = new BocListMock();
-      page.Controls.Add (((BocListMock) List));
-
-      List.DataSource = MockRepository.GenerateStub<IBusinessObjectDataSource>();
-      List.DataSource.BusinessObject = BusinessObject;
-      List.Property = BusinessObject.BusinessObjectClass.GetPropertyDefinition ("ReferenceList");
-
-      ((BocListMock) List).Value = ((TypeWithReference) BusinessObject).ReferenceList;
     }
   }
 }

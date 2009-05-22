@@ -28,17 +28,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
   [TestFixture]
   public class BocColumnRendererTest : RendererTestBase
   {
+    private const string c_columnCssClass = "cssClassColumn";
+
     private BocColumnDefinition Column { get; set; }
 
     [SetUp]
-    public override void SetUp ()
+    public void SetUp ()
     {
       Column = new BocSimpleColumnDefinition();
       Column.ColumnTitle = "TestColumn1";
+      Column.CssClass = c_columnCssClass;
 
-      base.SetUp();
-
-      InitializeMockList();
+      Initialize ();
 
       List.Stub (mock => mock.GetColumns()).Return (new[] { Column });
 
@@ -76,6 +77,25 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       RenderTitleCell (SortingDirection.Descending, 4, "SortDescending.gif", "Sorted Descending");
     }
 
+    [Test]
+    public void RenderTitleCellNoSorting ()
+    {
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, (BocSimpleColumnDefinition) Column);
+      renderer.RenderTitleCell (SortingDirection.None, -1);
+
+      HtmlDocument document = Html.GetResultDocument ();
+
+      HtmlNode th = Html.GetAssertedChildElement (document.DocumentNode, "th", 0, false);
+      Html.AssertAttribute (th, "class", List.CssClassTitleCell, HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (th, "class", c_columnCssClass, HtmlHelper.AttributeValueCompareMode.Contains);
+
+      Assert.Less (0, th.ChildNodes.Count);
+      HtmlNode sortCommandLink = Html.GetAssertedChildElement (th, "a", 0, false);
+      Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue, 0, false);
+
+      Html.AssertChildElementCount (sortCommandLink, 0);
+    }
+
     private void RenderTitleCell (
         SortingDirection sortDirection,
         int sortIndex,
@@ -88,14 +108,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode th = Html.GetAssertedChildElement (document.DocumentNode, "th", 0, false);
-      Html.AssertAttribute (th, "class", List.CssClassTitleCell);
+      Html.AssertAttribute (th, "class", List.CssClassTitleCell, HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (th, "class", c_columnCssClass, HtmlHelper.AttributeValueCompareMode.Contains);
 
       Assert.Less (0, th.ChildNodes.Count);
       HtmlNode sortCommandLink = Html.GetAssertedChildElement (th, "a", 0, false);
       Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue + HtmlHelper.WhiteSpace, 0, false);
 
       HtmlNode sortOrderSpan = Html.GetAssertedChildElement (sortCommandLink, "span", 1, false);
-      Html.AssertAttribute (sortOrderSpan, "class", List.CssClassSortingOrder);
+      Html.AssertAttribute (sortOrderSpan, "class", List.CssClassSortingOrder, HtmlHelper.AttributeValueCompareMode.Contains);
 
       HtmlNode sortIcon = Html.GetAssertedChildElement (sortOrderSpan, "img", 0, false);
       Html.AssertAttribute (sortIcon, "src", iconFilename, HtmlHelper.AttributeValueCompareMode.Contains);

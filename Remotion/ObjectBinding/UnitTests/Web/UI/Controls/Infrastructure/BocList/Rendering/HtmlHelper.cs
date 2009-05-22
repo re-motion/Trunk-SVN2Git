@@ -55,6 +55,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       return document;
     }
 
+    public void AssertChildElementCount (HtmlNode parent, int count)
+    {
+      int elementCount = 0;
+      foreach (HtmlNode node in parent.ChildNodes)
+      {
+        if (node.NodeType == HtmlNodeType.Element)
+          ++elementCount;
+      }
+      Assert.AreEqual (count, elementCount);
+    }
+
     public HtmlNode GetAssertedChildElement (HtmlNode parent, string tag, int index, bool ignoreNonElementNodes)
     {
       HtmlNode node = null;

@@ -17,9 +17,10 @@ using System;
 using System.Web.UI.WebControls;
 using HtmlAgilityPack;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -40,10 +41,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       base.SetUp();
     }
 
+    [TearDown]
+    public void TearDown ()
+    {
+      WebConfigurationMock.Current = new WebConfigurationMock();
+    }
+
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer<BocCommandColumnDefinition> renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
+      var renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
       HtmlDocument document = Html.GetResultDocument();
@@ -61,7 +68,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderIconCell ()
     {
-      IBocColumnRenderer<BocCommandColumnDefinition> renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
+      var renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, true, EventArgs);
 
       HtmlDocument document = Html.GetResultDocument();
@@ -85,7 +92,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Column.Icon.Width = new Unit (16, UnitType.Pixel);
       Column.Icon.Height = new Unit (16, UnitType.Pixel);
 
-      IBocColumnRenderer<BocCommandColumnDefinition> renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
+      var renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
       HtmlDocument document = Html.GetResultDocument();
@@ -100,6 +107,25 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Html.AssertIcon (a, EventArgs.BusinessObject, Column.Icon.Url);
 
       Html.AssertTextNode (a, "TestCommand", 1, false);
+    }
+
+    [Test]
+    public void RenderDisabledCommandForWaiConformanceLevelA ()
+    {
+      WebConfigurationMock.Current.Wcag.ConformanceLevel = WaiConformanceLevel.A;
+
+      var renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
+      renderer.RenderDataCell (0, false, EventArgs);
+
+      HtmlDocument document = Html.GetResultDocument();
+
+      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+
+      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      Html.AssertAttribute (span, "class", List.CssClassContent);
+
+      Html.AssertTextNode (span, "TestCommand", 0, false);
     }
   }
 }

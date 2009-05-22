@@ -27,17 +27,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
   public class BocIndexColumnRendererTest : RendererTestBase
   {
     [SetUp]
-    public override void SetUp ()
+    public void SetUp ()
     {
-      base.SetUp();
-      InitializeMockList();
-      List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
+      Initialize ();
+      
       List.Stub (mock => mock.IsIndexEnabled).Return (true);
     }
 
     [Test]
     public void RenderIndexTitleCell ()
     {
+      List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
+
       IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderTitleCell();
 
@@ -52,7 +53,23 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     }
 
     [Test]
-    public void RenderIndexDataCell ()
+    public void RenderIndexDataCellInitialOrder ()
+    {
+      List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
+
+      RenderIndexDataCell(0);
+    }
+
+    [Test]
+    public void RenderIndexDataCellSortedOrderAndIndexOffset ()
+    {
+      List.Stub (mock => mock.Index).Return (RowIndex.SortedOrder);
+      List.Stub (mock => mock.IndexOffset).Return (2);
+
+      RenderIndexDataCell (2);
+    }
+
+    private void RenderIndexDataCell (int indexOffset)
     {
       IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (HttpContext, Html.Writer, List);
       const string cssClassTableCell = "bocListTableCell";
@@ -68,7 +85,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Html.AssertAttribute (label, "class", List.CssClassContent);
       Html.AssertAttribute (label, "for", "selectorID");
 
-      Html.AssertTextNode (label, "1", 0, false);
+      Html.AssertTextNode (label, (1 + indexOffset).ToString(), 0, false);
     }
   }
 }

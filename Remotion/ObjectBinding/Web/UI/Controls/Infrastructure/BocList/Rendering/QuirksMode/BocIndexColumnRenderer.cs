@@ -37,11 +37,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      string indexColumnTitle;
+      string indexColumnTitle= List.IndexColumnTitle;
       if (StringUtility.IsNullOrEmpty (List.IndexColumnTitle))
         indexColumnTitle = List.GetResourceManager ().GetString (Controls.BocList.ResourceIdentifier.IndexColumnTitle);
-      else
-        indexColumnTitle = List.IndexColumnTitle;
+
       // Do not HTML encode.
       Writer.Write (indexColumnTitle);
       Writer.RenderEndTag ();

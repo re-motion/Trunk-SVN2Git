@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Renderin
     /// <param name="writer">The target <see cref="HtmlTextWriter"/>.</param>
     /// <param name="serviceLocator">The <see cref="IServiceLocator"/> from which factory objects for specialised renderers
     /// can be obtained.</param>
-    protected internal BocListRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
+    public BocListRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
         : base (context, writer, list)
     {
       _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory>().CreateRenderer (context, writer, list);

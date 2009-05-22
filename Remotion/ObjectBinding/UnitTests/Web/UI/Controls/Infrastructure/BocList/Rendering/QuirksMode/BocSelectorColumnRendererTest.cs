@@ -27,10 +27,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
   public class BocSelectorColumnRendererTest : RendererTestBase
   {
     [SetUp]
-    public override void SetUp ()
+    public void SetUp ()
     {
-      base.SetUp ();
-      InitializeMockList ();
+      Initialize ();
       
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
     }

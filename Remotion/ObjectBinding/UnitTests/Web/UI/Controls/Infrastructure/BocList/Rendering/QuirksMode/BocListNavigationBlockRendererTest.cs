@@ -28,10 +28,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     private const string c_tripleBlank = HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace;
 
     [SetUp]
-    public override void SetUp ()
+    public void SetUp ()
     {
-      base.SetUp ();
-      InitializeMockList();
+      Initialize ();
+
       List.Stub (mock => mock.HasNavigator).Return (true);
       List.Stub (mock => mock.PageInfo).Return (c_pageInfo);
       List.Stub (mock => mock.CssClassNavigator).Return ("cssClassNavigator");

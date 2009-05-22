@@ -24,11 +24,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
   {
     protected T Column { get; set; }
 
-    public override void SetUp ()
+    public virtual void SetUp ()
     {
-      base.SetUp ();
+      Initialize();
 
-      InitializeMockList();
       List.FixedColumns.Add (Column);
       List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
     }

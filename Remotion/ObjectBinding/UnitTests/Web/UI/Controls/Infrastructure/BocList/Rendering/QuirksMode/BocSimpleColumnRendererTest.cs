@@ -14,12 +14,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using HtmlAgilityPack;
 using NUnit.Framework;
+using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
 using Remotion.Web.UI.Controls;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
 {
@@ -43,7 +47,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
+      var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
@@ -62,7 +66,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       Column.Command = new BocListItemCommand (CommandType.Href);
 
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
+      var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
@@ -80,7 +84,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     [Test]
     public void RenderIconCell ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
+      var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, true, EventArgs);
       HtmlDocument document = Html.GetResultDocument();
@@ -94,6 +98,39 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Html.AssertIcon (span, EventArgs.BusinessObject, null);
 
       Html.AssertTextNode (span, HtmlHelper.WhiteSpace + BusinessObject.GetPropertyString ("FirstValue"), 1, false);
+    }
+
+    [Test]
+    public void RenderEditModeControl ()
+    {
+      var firstObject = (IBusinessObject) ((TypeWithReference) BusinessObject).FirstValue;
+
+      EditableRow editableRow = new EditableRow (List);
+      editableRow.ControlFactory = new EditableRowControlFactory();
+      editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
+      editableRow.CreateControls (firstObject, List.GetColumns());
+      ((BusinessObjectBoundEditableWebControl)editableRow.GetEditControl (0)).ReadOnly = false;
+      List.EditModeController.Stub (mock => mock.GetEditableRow (0)).Return (editableRow);
+
+      List.Stub (mock => mock.Validators).Return (new ArrayList());
+
+      var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
+      renderer.RenderDataCell (0, false, EventArgs);
+      
+      HtmlDocument document = Html.GetResultDocument ();
+
+      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+
+      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      Html.AssertAttribute (span, "class", List.CssClassContent);
+
+      HtmlNode clickSpan = Html.GetAssertedChildElement (span, "span", 0, false);
+      Html.AssertAttribute (clickSpan, "onclick", "BocList_OnCommandClick();");
+
+      HtmlNode controlWrapperSpan = Html.GetAssertedChildElement (clickSpan, "span", 0, false);
+      Html.AssertStyleAttribute (controlWrapperSpan, "width", "100%");
+      Html.AssertStyleAttribute (controlWrapperSpan, "display", "block");
     }
   }
 }

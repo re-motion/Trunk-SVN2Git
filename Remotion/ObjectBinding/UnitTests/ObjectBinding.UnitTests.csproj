@@ -53,6 +53,7 @@
       <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -298,6 +299,7 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocIndexColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListMenuBlockRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListNavigationBlockRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowEditModeColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSelectorColumnRendererTest.cs" />
@@ -314,6 +316,8 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubColumnRenderer.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubColumnRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubCustomCellDefinition.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubRenderer.cs" />
+    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubRowRenderer.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubRowRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubServiceLocator.cs" />

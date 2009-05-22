@@ -23,44 +23,64 @@ using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.Qu
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering
 {
-  public class StubServiceLocator : ServiceLocatorImplBase
-  {
-    private readonly IDataStore<Type, object> _instances = new SimpleDataStore<Type, object>();
-
-    public StubServiceLocator ()
+    public class StubServiceLocator : ServiceLocatorImplBase
     {
-      _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory());
-      _instances.Add (typeof (IBocListMenuBlockRendererFactory), new BocListRendererFactory());
-      _instances.Add (typeof (IBocListNavigationBlockRendererFactory), new BocListRendererFactory());
-      _instances.Add (typeof (IBocListTableBlockRendererFactory), new BocListRendererFactory());
-      _instances.Add (typeof (IBocRowRendererFactory), new BocListRendererFactory());
+        private readonly IDataStore<Type, object> _instances = new SimpleDataStore<Type, object>();
 
-      _instances.Add (typeof (IBocColumnRendererFactory<BocSimpleColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocCompoundColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocCommandColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocCustomColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocRowEditModeColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocColumnRendererFactory<BocDropDownMenuColumnDefinition>), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocIndexColumnRendererFactory), new BocColumnRendererFactory());
-      _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocColumnRendererFactory());
+        public StubServiceLocator ()
+        {
+            _instances.Add (typeof (IBocListRendererFactory), new BocListRendererFactory());
+            _instances.Add (typeof (IBocListMenuBlockRendererFactory), new BocListRendererFactory());
+            _instances.Add (typeof (IBocListNavigationBlockRendererFactory), new BocListRendererFactory());
+            _instances.Add (typeof (IBocListTableBlockRendererFactory), new BocListRendererFactory());
+            _instances.Add (typeof (IBocRowRendererFactory), new BocListRendererFactory());
 
-      _instances.Add (typeof (IBocColumnRendererFactory<StubColumnDefinition>), new StubColumnRendererFactory());
+            _instances.Add (typeof (IBocColumnRendererFactory<BocSimpleColumnDefinition>), new BocColumnRendererFactory());
+            _instances.Add (typeof (IBocColumnRendererFactory<BocCompoundColumnDefinition>), new BocColumnRendererFactory());
+            _instances.Add (typeof (IBocColumnRendererFactory<BocCommandColumnDefinition>), new BocColumnRendererFactory());
+            _instances.Add (typeof (IBocColumnRendererFactory<BocCustomColumnDefinition>), new BocColumnRendererFactory());
+            _instances.Add (typeof (IBocColumnRendererFactory<BocRowEditModeColumnDefinition>), new BocColumnRendererFactory());
+            _instances.Add (typeof (IBocColumnRendererFactory<BocDropDownMenuColumnDefinition>), new BocColumnRendererFactory());
+            _instances.Add (typeof (IBocIndexColumnRendererFactory), new BocColumnRendererFactory());
+            _instances.Add (typeof (IBocSelectorColumnRendererFactory), new BocColumnRendererFactory());
+
+            _instances.Add (typeof (IBocColumnRendererFactory<StubColumnDefinition>), new StubColumnRendererFactory());
+        }
+
+        public void SetRowRendererFactory (IBocRowRendererFactory factory)
+        {
+            SetFactory (factory);
+        }
+
+        public void SetTableBlockRendererFactory (IBocListTableBlockRendererFactory factory)
+        {
+            SetFactory (factory);
+        }
+
+        public void SetMenuBlockRendererFactory (IBocListMenuBlockRendererFactory factory)
+        {
+            SetFactory (factory);
+        }
+
+        public void SetNavigationBlockRendererFactory (IBocListTableBlockRendererFactory factory)
+        {
+            SetFactory (factory);
+        }
+
+        private void SetFactory<T> (T factory)
+        {
+            _instances[typeof (T)] = factory;
+        }
+
+        protected override object DoGetInstance (Type serviceType, string key)
+        {
+            return _instances.GetOrCreateValue (
+                    serviceType, delegate (Type type) { throw new ArgumentException (string.Format ("No service for type '{0}' registered.", type)); });
+        }
+
+        protected override IEnumerable<object> DoGetAllInstances (Type serviceType)
+        {
+            throw new NotSupportedException();
+        }
     }
-
-    public void SetRowRendererFactory (IBocRowRendererFactory factory)
-    {
-      _instances[typeof (IBocRowRendererFactory)] = factory;
-    }
-
-    protected override object DoGetInstance (Type serviceType, string key)
-    {
-      return _instances.GetOrCreateValue (
-          serviceType, delegate (Type type) { throw new ArgumentException (string.Format ("No service for type '{0}' registered.", type)); });
-    }
-
-    protected override IEnumerable<object> DoGetAllInstances (Type serviceType)
-    {
-      throw new NotSupportedException();
-    }
-  }
 }
