@@ -236,6 +236,12 @@ namespace Remotion.Data.DomainObjects
       return true;
     }
 
+    private static IEnumerable<DomainObject> GetDomainObjectsFromDataContainers (DataContainerCollection dataContainers)
+    {
+      foreach (DataContainer dataContainer in dataContainers)
+        yield return dataContainer.DomainObject;
+    }
+
     // member fields
 
     /// <summary>
@@ -348,12 +354,6 @@ namespace Remotion.Data.DomainObjects
       _data = new DomainObjectCollectionData ();
       AddRange(domainObjects);
       SetIsReadOnly(makeCollectionReadOnly);
-    }
-
-    private static IEnumerable<DomainObject> GetDomainObjectsFromDataContainers (DataContainerCollection dataContainers)
-    {
-      foreach (DataContainer dataContainer in dataContainers)
-        yield return dataContainer.DomainObject;
     }
 
     // methods and properties
@@ -1015,7 +1015,7 @@ namespace Remotion.Data.DomainObjects
       DomainObjectCollection clone = Create (GetType());
 
       clone._requiredItemType = RequiredItemType;
-      clone.Combine (this);
+      clone.AddRange (this);
 
       IDomainObjectCollectionData clonedData = new DomainObjectCollectionData (_data);
       clone._data = clonedData;

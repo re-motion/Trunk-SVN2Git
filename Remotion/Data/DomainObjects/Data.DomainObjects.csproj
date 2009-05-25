@@ -249,7 +249,6 @@
     <Compile Include="Infrastructure\Interception\SerializationHelper.cs" />
     <Compile Include="Infrastructure\Interception\TypeGenerator.cs" />
     <Compile Include="Infrastructure\Interception\ModuleManager.cs" />
-    <Compile Include="Infrastructure\Interception\TypesafeDomainObjectActivator.cs" />
     <Compile Include="Infrastructure\InvalidatedTransactionListener.cs" />
     <Compile Include="Infrastructure\LoggingClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ReadOnlyClientTransactionListener.cs" />

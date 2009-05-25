@@ -320,7 +320,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <see cref="PropertyKind.RelatedObject"/> and <see cref="PropertyKind.RelatedObjectCollection"/> properties.</returns>
     public IEnumerable<DomainObject> GetAllRelatedObjects ()
     {
-      foreach (PropertyAccessor property in _domainObject.Properties.AsEnumerable())
+      foreach (PropertyAccessor property in AsEnumerable())
       {
         switch (property.PropertyData.Kind)
         {
