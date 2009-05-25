@@ -211,6 +211,7 @@
     <Compile Include="UI\Controls\BocTextValue.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocTextValueBase.cs" />
     <Compile Include="UI\Controls\BocTextValueValidator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -362,6 +363,7 @@
     <Content Include="Doc\include\UI\Controls\BocMultilineTextValue.xml" />
     <Content Include="Doc\include\UI\Controls\BocReferenceValue.xml" />
     <Content Include="Doc\include\UI\Controls\BocTextValue.xml" />
+    <Content Include="Doc\include\UI\Controls\BocTextValueBase.xml" />
     <Content Include="Doc\include\UI\Controls\BocTreeView.xml" />
     <Content Include="Doc\include\UI\Controls\BocLiteral.xml" />
     <Content Include="Doc\include\UI\Controls\IBusinessObjectDataSourceControl.xml" />

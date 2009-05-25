@@ -64,7 +64,7 @@
         Provide the external resources for this control. See <see cref="T:Remotion.Web.ResourceUrlResolver"/> 
         for details on this subject.
       </para><para>
-        See the <see cref="CreateValidators"/> method for the validators provided by this control.        
+        See the <see cref="BocTextValueBase.CreateValidators"/> method for the validators provided by this control.        
       </para><para>
         If <see cref="IBusinessObjectBoundControl.DataSource"/> and 
         <see cref="IBusinessObjectBoundControl.PropertyIdentifier"/> properties are not set, the 
@@ -101,7 +101,7 @@
           <description>Resource Identifier</description>
         </listheader>
         <item>
-          <term> <see cref="ErrorMessage"/> </term>
+          <term> <see cref="BocTextValueBase.ErrorMessage"/> </term>
           <description>
             <para> &lt;BocTextValue Resource ID&gt;:ErrorMessage </para>
             <para> e.g. auto:MyBocTextValue:ErrorMessage </para>
