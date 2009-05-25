@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,22 +14,33 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ObjectBinding.Web.UI.Controls;
+using System.Web.UI;
+using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue
 {
-  public abstract class ColumnRendererTestBase<T> : BocListRendererTestBase
-      where T: BocColumnDefinition
+  public class MockTextValue : ObjectBinding.Web.UI.Controls.BocTextValue
   {
-    protected T Column { get; set; }
-
-    public virtual void SetUp ()
+    public void OnPreRender ()
     {
-      Initialize();
+      OnPreRender (EventArgs.Empty);
+    }
 
-      List.FixedColumns.Add (Column);
-      List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
+    public override bool IsReadOnly
+    {
+      get { return ReadOnly.HasValue ? ReadOnly.Value : base.IsReadOnly; }
+    }
+
+    public new string CssClassBase
+    {
+      get { return base.CssClassBase; }
+    }
+
+    protected override void RenderContents (HtmlTextWriter writer)
+    {
+      var renderer = GetRenderer (MockRepository.GenerateMock<IHttpContext>(), writer);
+      renderer.Render();
     }
   }
 }

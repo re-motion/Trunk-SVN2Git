@@ -20,7 +20,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 
@@ -66,14 +68,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     // methods and properties
-
-    public override void PrepareValidation ()
-    {
-      base.PrepareValidation();
-
-      if (! IsReadOnly)
-        SetEditModeValue();
-    }
 
     protected override void OnPreRender (EventArgs e)
     {
@@ -124,111 +118,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected override void AddAttributesToRender (HtmlTextWriter writer)
-    {
-      string backUpStyleWidth = Style["width"];
-      if (! StringUtility.IsNullOrEmpty (Style["width"]))
-        Style["width"] = null;
-      Unit backUpWidth = Width; // base.Width and base.ControlStyle.Width
-      if (! Width.IsEmpty)
-        Width = Unit.Empty;
-
-      bool isReadOnly = IsReadOnly;
-      bool isDisabled = ! Enabled;
-
-      string backUpCssClass = CssClass; // base.CssClass and base.ControlStyle.CssClass
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-      {
-        if (isReadOnly)
-          CssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          CssClass += " " + CssClassDisabled;
-      }
-      string backUpAttributeCssClass = Attributes["class"];
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        if (isReadOnly)
-          Attributes["class"] += " " + CssClassReadOnly;
-        else if (isDisabled)
-          Attributes["class"] += " " + CssClassDisabled;
-      }
-
-      base.AddAttributesToRender (writer);
-
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-        CssClass = backUpCssClass;
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-        Attributes["class"] = backUpAttributeCssClass;
-
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        string cssClass = CssClassBase;
-        if (isReadOnly)
-          cssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          cssClass += " " + CssClassDisabled;
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      }
-
-      if (! StringUtility.IsNullOrEmpty (backUpStyleWidth))
-        Style["width"] = backUpStyleWidth;
-      if (! backUpWidth.IsEmpty)
-        Width = backUpWidth;
-
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
-    }
-
-    protected override void RenderContents (HtmlTextWriter writer)
-    {
-      EvaluateWaiConformity();
-
-      if (IsReadOnly)
-      {
-        bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-        bool isLabelHeightEmpty = Label.Height.IsEmpty && StringUtility.IsNullOrEmpty (Label.Style["height"]);
-        if (! isControlHeightEmpty && isLabelHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-        bool isLabelWidthEmpty = Label.Width.IsEmpty && StringUtility.IsNullOrEmpty (Label.Style["width"]);
-        if (! isControlWidthEmpty && isLabelWidthEmpty)
-        {
-          if (! Width.IsEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-        }
-
-        Label.RenderControl (writer);
-      }
-      else
-      {
-        bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-        bool isTextBoxHeightEmpty = StringUtility.IsNullOrEmpty (TextBox.Style["height"]);
-        if (! isControlHeightEmpty && isTextBoxHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-        bool isTextBoxWidthEmpty = TextBox.Width.IsEmpty && StringUtility.IsNullOrEmpty (TextBox.Style["width"]);
-        if (isTextBoxWidthEmpty)
-        {
-          if (isControlWidthEmpty)
-          {
-            if (TextBoxStyle.Columns == null)
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
-          }
-          else
-          {
-            if (! Width.IsEmpty)
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-            else
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-          }
-        }
-
-        TextBox.RenderControl (writer);
-      }
-    }
+    
 
     protected override void LoadControlState (object savedState)
     {
@@ -303,18 +193,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
-    /// <summary> Loads the resources into the control's properties. </summary>
-    protected override void LoadResources (IResourceManager resourceManager)
+    protected override IBocTextValueBaseRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer)
     {
-      if (resourceManager == null)
-        return;
-      if (IsDesignMode)
-        return;
-      base.LoadResources (resourceManager);
-
-      string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
-      if (! StringUtility.IsNullOrEmpty (key))
-        ErrorMessage = resourceManager.GetString (key);
+      throw new NotImplementedException();
     }
 
     protected override IEnumerable<BaseValidator> GetValidators ()

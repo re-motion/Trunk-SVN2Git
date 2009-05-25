@@ -43,8 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     private readonly int _columnIndex;
 
     /// <summary>
-    /// Constructs the renderer, initializing the <see cref="BocListRendererBase.List"/>, <see cref="BocListRendererBase.Writer"/> and 
-    /// <see cref="Column"/> properties.
+    /// Constructs the renderer, initializing the List, Writer and <see cref="Column"/> properties.
     /// </summary>
     /// <param name="list">The <see cref="BocList"/> containing the data to be rendered.</param>
     /// <param name="context">The <see cref="IHttpContext"/> that contains the response for which to render the list.</param>

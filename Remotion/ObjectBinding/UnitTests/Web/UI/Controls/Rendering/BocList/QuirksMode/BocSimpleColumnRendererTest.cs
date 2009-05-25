@@ -18,6 +18,7 @@ using System.Collections;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode;
@@ -104,8 +105,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     {
       var firstObject = (IBusinessObject) ((TypeWithReference) BusinessObject).FirstValue;
 
+      var controlFactory = MockRepository.GenerateMock<EditableRowControlFactory>();
+      controlFactory.Stub (mock => mock.Create (null, 0)).IgnoreArguments().Return (new MockTextValue());
+
       EditableRow editableRow = new EditableRow (List);
-      editableRow.ControlFactory = new EditableRowControlFactory();
+      editableRow.ControlFactory = controlFactory;
       editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
       editableRow.CreateControls (firstObject, List.GetColumns());
       ((BusinessObjectBoundEditableWebControl)editableRow.GetEditControl (0)).ReadOnly = false;

@@ -24,7 +24,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
   [TestFixture]
-  public class BocListRendererTest : RendererTestBase
+  public class BocListRendererTest : BocListRendererTestBase
   {
     private StubServiceLocator ServiceLocator { get; set; }
     private XhtmlConformanceMode XhtmlConformanceModeBackup { get; set; }

@@ -22,7 +22,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
   [TestFixture]
-  public class BocListNavigationBlockRendererTest : RendererTestBase
+  public class BocListNavigationBlockRendererTest : BocListRendererTestBase
   {
     private const string c_pageInfo = "current page: {0} (of {1})";
     private const string c_tripleBlank = HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace + HtmlHelper.WhiteSpace;

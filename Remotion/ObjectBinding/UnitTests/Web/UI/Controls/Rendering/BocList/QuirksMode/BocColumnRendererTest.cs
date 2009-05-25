@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
   [TestFixture]
-  public class BocColumnRendererTest : RendererTestBase
+  public class BocColumnRendererTest : BocListRendererTestBase
   {
     private const string c_columnCssClass = "cssClassColumn";
 

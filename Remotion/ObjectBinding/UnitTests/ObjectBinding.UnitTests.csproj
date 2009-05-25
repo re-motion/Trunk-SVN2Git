@@ -309,7 +309,9 @@
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocCompoundColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocListRendererFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\RendererTestBase.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocListRendererTestBase.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\MockTextValue.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\HtmlHelper.cs" />
     <Compile Include="Web\UI\Controls\Rendering\ReflectionBusinessObjectWebUIService.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubColumnDefinition.cs" />
@@ -321,6 +323,7 @@
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubRowRenderer.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubRowRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubServiceLocator.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\RendererTestBase.cs" />
     <None Include="ObjectBinding.UnitTests.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">

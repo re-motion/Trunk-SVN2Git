@@ -1,20 +1,34 @@
-// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
-// All rights reserved.
-//
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using System.Collections.Generic;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -25,20 +39,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     private readonly TextBox _textBox = new TextBox();
     private readonly Label _label = new Label();
-    private readonly Style _commonStyle = new Style ();
+    private readonly Style _commonStyle = new Style();
     private readonly TextBoxStyle _textBoxStyle;
-    private readonly Style _labelStyle = new Style ();
+    private readonly Style _labelStyle = new Style();
     private string _errorMessage;
     private readonly List<BaseValidator> _validators = new List<BaseValidator>();
-    private static readonly object s_textChangedEvent = new object ();
+    private static readonly object s_textChangedEvent = new object();
 
     /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     protected const string c_designModeEmptyLabelContents = "##";
 
-    protected const string c_defaultTextBoxWidth = "150pt";
+    
     protected const int c_defaultColumns = 60;
 
-    protected BocTextValueBase ():this(TextBoxMode.SingleLine)
+    protected BocTextValueBase ()
+        : this (TextBoxMode.SingleLine)
     {
     }
 
@@ -52,7 +67,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see cref="IBusinessObjectDateTimeProperty"/>, and <see cref="IBusinessObjectNumericProperty"/>.
     /// </summary>
     /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
-    protected override abstract Type[] SupportedPropertyInterfaces { get; }
+    protected abstract override Type[] SupportedPropertyInterfaces { get; }
 
     /// <summary>
     ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
@@ -82,7 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     [Browsable (false)]
     public string FocusID
-    { 
+    {
       get { return IsReadOnly ? null : _textBox.ClientID; }
     }
 
@@ -110,10 +125,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see langword="true"/>, this cannot be overridden using <see cref="TextBoxStyle"/> and <see cref="LabelStyle"/> 
     ///   properties.
     /// </remarks>
-    [Category("Style")]
-    [Description("The style that you want to apply to the TextBox (edit mode) and the Label (read-only mode).")]
-    [NotifyParentProperty(true)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+    [Category ("Style")]
+    [Description ("The style that you want to apply to the TextBox (edit mode) and the Label (read-only mode).")]
+    [NotifyParentProperty (true)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
     [PersistenceMode (PersistenceMode.InnerProperty)]
     public Style CommonStyle
     {
@@ -122,10 +137,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) only. </summary>
     /// <remarks> These style settings override the styles defined in <see cref="CommonStyle"/>. </remarks>
-    [Category("Style")]
-    [Description("The style that you want to apply to the TextBox (edit mode) only.")]
-    [NotifyParentProperty(true)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+    [Category ("Style")]
+    [Description ("The style that you want to apply to the TextBox (edit mode) only.")]
+    [NotifyParentProperty (true)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
     [PersistenceMode (PersistenceMode.InnerProperty)]
     public TextBoxStyle TextBoxStyle
     {
@@ -134,10 +149,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Gets the style that you want to apply to the <see cref="Label"/> (read-only mode) only. </summary>
     /// <remarks> These style settings override the styles defined in <see cref="CommonStyle"/>. </remarks>
-    [Category("Style")]
-    [Description("The style that you want to apply to the Label (read-only mode) only.")]
-    [NotifyParentProperty(true)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+    [Category ("Style")]
+    [Description ("The style that you want to apply to the Label (read-only mode) only.")]
+    [NotifyParentProperty (true)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
     [PersistenceMode (PersistenceMode.InnerProperty)]
     public Style LabelStyle
     {
@@ -149,18 +164,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
     ///   In case of the default value, the text is read from the resources for this control.
     /// </value>
-    [Description("Validation message displayed if there is an error.")]
+    [Description ("Validation message displayed if there is an error.")]
     [Category ("Validator")]
-    [DefaultValue("")]
+    [DefaultValue ("")]
     public string ErrorMessage
     {
-      get
-      { 
-        return _errorMessage; 
-      }
-      set 
+      get { return _errorMessage; }
+      set
       {
-        _errorMessage = value; 
+        _errorMessage = value;
         for (int i = 0; i < _validators.Count; i++)
         {
           BaseValidator validator = (BaseValidator) _validators[i];
@@ -182,7 +194,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocTextValue.readOnly</c> as a selector. </para>
     /// </remarks>
     protected virtual string CssClassReadOnly
-    { get { return "readOnly"; } }
+    {
+      get { return "readOnly"; }
+    }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> when it is displayed disabled. </summary>
     /// <remarks> 
@@ -190,7 +204,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocTextValue.disabled</c> as a selector.</para>
     /// </remarks>
     protected virtual string CssClassDisabled
-    { get { return "disabled"; } }
+    {
+      get { return "disabled"; }
+    }
 
     /// <summary> Gets or sets the string representation of the current value. </summary>
     /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
@@ -199,7 +215,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [DefaultValue ("")]
     public abstract string Text { get; set; }
 
-    protected override void CreateChildControls()
+    protected override void CreateChildControls ()
     {
       _textBox.ID = ID + "_Boc_TextBox";
       _textBox.EnableViewState = false;
@@ -210,7 +226,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       Controls.Add (_label);
     }
 
-    protected override void OnInit(EventArgs e)
+    protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
       if (!IsDesignMode)
@@ -219,8 +235,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void RegisterHtmlHeadContents (HttpContext context)
     {
-      base.RegisterHtmlHeadContents(context);
-  
+      base.RegisterHtmlHeadContents (context);
+
       EnsureChildControls();
       _textBoxStyle.RegisterJavaScriptInclude (_textBox, context);
     }
@@ -235,7 +251,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Invokes the <see cref="RaisePostDataChangedEvent"/> method. </summary>
-    void IPostBackDataHandler.RaisePostDataChangedEvent()
+    void IPostBackDataHandler.RaisePostDataChangedEvent ()
     {
       RaisePostDataChangedEvent();
     }
@@ -245,7 +261,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   between postbacks.
     /// </summary>
     /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadPostData/*' />
-    protected virtual bool LoadPostData(string postDataKey, NameValueCollection postCollection)
+    protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
       string newValue = PageUtility.GetPostBackCollectionItem (Page, _textBox.UniqueID);
       bool isDataChanged = newValue != null && StringUtility.NullToEmpty (Text) != newValue;
@@ -258,7 +274,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Called when the state of the control has changed between postbacks. </summary>
-    protected virtual void RaisePostDataChangedEvent()
+    protected virtual void RaisePostDataChangedEvent ()
     {
       if (! IsReadOnly && Enabled)
         OnTextChanged();
@@ -291,7 +307,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.PrepareValidation();
 
       if (! IsReadOnly)
-        SetEditModeValue ();
+        SetEditModeValue();
     }
 
     protected void SetEditModeValue ()
@@ -327,14 +343,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         else if (isDisabled)
           Attributes["class"] += " " + CssClassDisabled;
       }
-    
+
       base.AddAttributesToRender (writer);
 
       if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
         CssClass = backUpCssClass;
       if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
         Attributes["class"] = backUpAttributeCssClass;
-    
+
       if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
       {
         string cssClass = CssClassBase;
@@ -356,53 +372,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override void RenderContents (HtmlTextWriter writer)
     {
       EvaluateWaiConformity();
-
-      if (IsReadOnly)
-      {
-        bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-        bool isLabelHeightEmpty = _label.Height.IsEmpty && StringUtility.IsNullOrEmpty (_label.Style["height"]);
-        if (! isControlHeightEmpty && isLabelHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-        bool isLabelWidthEmpty = _label.Width.IsEmpty &&StringUtility.IsNullOrEmpty (_label.Style["width"]);
-        if (! isControlWidthEmpty && isLabelWidthEmpty)
-        {
-          if (! Width.IsEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-        }
-
-        _label.RenderControl (writer);
-      }
-      else
-      {
-        bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-        bool isTextBoxHeightEmpty = _textBox.Height.IsEmpty && StringUtility.IsNullOrEmpty (_textBox.Style["height"]);
-        if (! isControlHeightEmpty && isTextBoxHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-        bool isTextBoxWidthEmpty = _textBox.Width.IsEmpty && StringUtility.IsNullOrEmpty (_textBox.Style["width"]);
-        if (isTextBoxWidthEmpty)
-        {
-          if (isControlWidthEmpty)
-          {
-            if (_textBoxStyle.TextMode != TextBoxMode.MultiLine || _textBoxStyle.Columns == null)
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
-          }
-          else
-          {
-            if (! Width.IsEmpty)
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-            else
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-          }
-        }
-        _textBox.RenderControl (writer);
-      }
+      var renderer = GetRenderer(new HttpContextWrapper(Context), writer);
+      renderer.Render();
     }
+
+    protected abstract IBocTextValueBaseRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer);
 
     /// <summary> Loads the resources into the control's properties. </summary>
     protected override void LoadResources (IResourceManager resourceManager)
@@ -428,7 +402,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see cref="TextBox"/> if the control is in edit mode, or an empty array if the control is read-only.
     /// </returns>
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
-    public override string[] GetTrackedClientIDs()
+    public override string[] GetTrackedClientIDs ()
     {
       return IsReadOnly ? new string[0] : new string[1] { _textBox.ClientID };
     }
@@ -444,13 +418,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
     /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/CreateValidators/*' />
-    public override BaseValidator[] CreateValidators()
+    public override BaseValidator[] CreateValidators ()
     {
       if (IsReadOnly || ! IsRequired)
         return new BaseValidator[0];
 
       _validators.AddRange (GetValidators());
-      return _validators.ToArray ();
+      return _validators.ToArray();
     }
 
     protected abstract IEnumerable<BaseValidator> GetValidators ();

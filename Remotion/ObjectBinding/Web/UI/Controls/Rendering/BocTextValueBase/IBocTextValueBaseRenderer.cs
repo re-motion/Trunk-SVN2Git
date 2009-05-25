@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,22 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ObjectBinding.Web.UI.Controls;
-using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
 {
-  public abstract class ColumnRendererTestBase<T> : BocListRendererTestBase
-      where T: BocColumnDefinition
+  public interface IBocTextValueBaseRenderer
   {
-    protected T Column { get; set; }
-
-    public virtual void SetUp ()
-    {
-      Initialize();
-
-      List.FixedColumns.Add (Column);
-      List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
-    }
+    void Render ();
   }
 }

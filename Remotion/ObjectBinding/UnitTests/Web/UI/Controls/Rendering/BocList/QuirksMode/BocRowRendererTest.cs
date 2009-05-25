@@ -25,7 +25,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
   [TestFixture]
-  public class BocRowRendererTest : RendererTestBase
+  public class BocRowRendererTest : BocListRendererTestBase
   {
     [SetUp]
     public void SetUp ()

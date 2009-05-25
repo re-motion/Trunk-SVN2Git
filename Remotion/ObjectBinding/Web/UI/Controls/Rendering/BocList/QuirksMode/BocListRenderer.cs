@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 
     /// <summary>
     /// Renders the <see cref="BocList"/> in the <see cref="BocListRendererBase.List"/> property 
-    /// to the <see cref="HtmlTextWriter"/> in the <see cref="BocListRendererBase.Writer"/> property.
+    /// to the <see cref="HtmlTextWriter"/> in the Writer property.
     /// </summary>
     /// <remarks>
     /// This method provides the outline table of the <see cref="BocList"/>, creating three areas:

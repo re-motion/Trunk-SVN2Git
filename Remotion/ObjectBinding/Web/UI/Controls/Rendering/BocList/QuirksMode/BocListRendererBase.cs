@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
   /// <summary>
   /// Abstract base class for BocList renderers. Defines common constants, properties and utility methods.
   /// </summary>
-  public abstract class BocListRendererBase
+  public abstract class BocListRendererBase : RendererBase<IBocList>
   {
     // constants
     // unused protected const string c_dataRowHiddenFieldIDSuffix = "_Boc_HiddenField_";
@@ -68,8 +68,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     protected const int c_designModeDummyColumnCount = 3;
 
     private readonly IBocList _list;
-    private readonly HtmlTextWriter _writer;
-    private readonly IHttpContext _context;
 
     /// <summary>
     /// Constructor initializing the renderer with the <see cref="BocList"/> rendering object and the
@@ -82,34 +80,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <param name="list">The <see cref="BocList"/> to render.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the list to.</param>
     protected BocListRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list)
+        : base(context, writer, list)
     {
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("writer", writer);
 
-      _context = context;
-      _writer = writer;
       _list = list;
     }
 
     /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
     public IBocList List
     {
-      get { return _list; }
+      get { return Control; }
     }
 
-    /// <summary>Gets the <see cref="HtmlTextWriter"/> object used to render the <see cref="BocList"/>.</summary>
-    public HtmlTextWriter Writer
-    {
-      get { return _writer; }
-    }
-
-    /// <summary>Gets the <see cref="IHttpContext"/> that contains the response for which this renderer generates output.</summary>
-    public IHttpContext Context
-    {
-      get { return _context; }
-    }
-
-      /// <summary>
+    /// <summary>
     /// Renders an <see cref="IconInfo"/> control with an alternate text.
     /// </summary>
     /// <remarks>If no alternate text is provided in the <code>icon</code> argument, the method will attempt to load

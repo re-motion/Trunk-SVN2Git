@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,22 +14,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
 {
-  public abstract class ColumnRendererTestBase<T> : BocListRendererTestBase
-      where T: BocColumnDefinition
+  public class RendererTestBase
   {
-    protected T Column { get; set; }
+    protected IHttpContext HttpContext { get; private set; }
+    protected HtmlHelper Html { get; private set; }
 
-    public virtual void SetUp ()
+    protected RendererTestBase ()
     {
-      Initialize();
+      
+    }
 
-      List.FixedColumns.Add (Column);
-      List.Stub (mock => mock.GetColumns()).Return (List.FixedColumns.ToArray());
+    protected virtual void Initialize ()
+    {
+      Html = new HtmlHelper ();
+      Html.InitializeStream ();
+
+      HttpContext = MockRepository.GenerateMock<IHttpContext> ();
+      IHttpResponse response = MockRepository.GenerateMock<IHttpResponse> ();
+      HttpContext.Stub (mock => mock.Response).Return (response);
+      response.Stub (mock => mock.ContentType).Return ("text/html");
     }
   }
 }

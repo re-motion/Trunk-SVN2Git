@@ -25,7 +25,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
   [TestFixture]
-  public class BocListTableBlockRendererTest : RendererTestBase
+  public class BocListTableBlockRendererTest : BocListRendererTestBase
   {
     private StubServiceLocator ServiceLocator { get; set; }
 

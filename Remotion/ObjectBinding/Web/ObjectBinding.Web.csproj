@@ -313,6 +313,10 @@
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocSimpleColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocValueColumnRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueBaseRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
     <Compile Include="UI\Controls\Styles.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -453,7 +457,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UI\Controls\Rendering\BocList\StandardMode\" />
-    <Folder Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

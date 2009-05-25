@@ -28,21 +28,21 @@ using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
-  public abstract class RendererTestBase
+  public abstract class BocListRendererTestBase : RendererTestBase
   {
-    protected IHttpContext HttpContext { get; set; }
-    protected HtmlHelper Html { get; set; }
     protected IBocList List { get; set; }
     protected IBusinessObject BusinessObject { get; set; }
     protected BocListDataRowRenderEventArgs EventArgs { get; set; }
 
-    protected void Initialize ()
+    protected override void Initialize ()
     {
       Initialize (true);
     }
 
     protected void Initialize (bool withRowObjects)
     {
+      base.Initialize ();
+
       TypeWithReference businessObject;
       if (withRowObjects)
       {
@@ -63,14 +63,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       EventArgs = new BocListDataRowRenderEventArgs (0, (IBusinessObject) businessObject.FirstValue);
       EventArgs.IsEditableRow = false;
-
-      Html = new HtmlHelper();
-      Html.InitializeStream();
-
-      HttpContext = MockRepository.GenerateMock<IHttpContext>();
-      IHttpResponse response = MockRepository.GenerateMock<IHttpResponse>();
-      HttpContext.Stub (mock => mock.Response).Return (response);
-      response.Stub (mock => mock.ContentType).Return ("text/html");
 
       InitializeMockList();
     }
