@@ -334,6 +334,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [Ignore ("TODO 1157: Fix this")]
+    public void QueryWithSubQueryInWhere_AccessingOuterVariable_InMainFromClause ()
+    {
+      var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
+      var number = from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where (from oi in o.OrderItems select oi).Contains (orderItem2)
+                   select o;
+      CheckQueryResult (number, DomainObjectIDs.Order1);
+    }
+
+    [Test]
     public void QueryWithContains_Like ()
     {
       var ceos = from c in QueryFactory.CreateLinqQuery<Ceo>()
@@ -644,14 +655,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("Not supported by OPF")]
+    [Explicit ("Not supported by re-store")]
     public void QueryWithCount ()
     {
       var number = (from o in QueryFactory.CreateLinqQuery<Order>()
                     select o).Count();
       Assert.AreEqual (number, 6);
     }
-    
+
+    [Test]
+    [Ignore ("TODO 594: Fix this")]
+    public void QueryWithCount_InSubquery ()
+    {
+      var number = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                    where (from oi in QueryFactory.CreateLinqQuery <OrderItem> () where oi.Order == o select oi).Count () == 2
+                    select o);
+      CheckQueryResult (number, DomainObjectIDs.Order1);
+    }
+
     [Test]
     public void QueryWithFirst ()
     {
