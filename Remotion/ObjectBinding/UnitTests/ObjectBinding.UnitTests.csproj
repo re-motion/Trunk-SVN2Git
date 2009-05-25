@@ -292,35 +292,35 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerInRowEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerTestBase.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerWithoutEditModeTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCommandColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCustomColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocDropDownMenuColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocIndexColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListMenuBlockRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListNavigationBlockRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowEditModeColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocRowRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSelectorColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocSimpleColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\HtmlHelper.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocListTableBlockRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\ColumnRendererTestBase.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\BocCompoundColumnRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\Factories\BocListRendererFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\QuirksMode\RendererTestBase.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\ReflectionBusinessObjectWebUIService.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubColumnDefinition.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubColumnRenderer.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubColumnRendererFactory.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubCustomCellDefinition.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubRenderer.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubRendererFactory.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubRowRenderer.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubRowRendererFactory.cs" />
-    <Compile Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StubServiceLocator.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocCommandColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocCustomColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocDropDownMenuColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocIndexColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocListMenuBlockRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocListNavigationBlockRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocListRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocRowEditModeColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocRowRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocSelectorColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocSimpleColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocListTableBlockRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\ColumnRendererTestBase.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocCompoundColumnRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocListRendererFactoryTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\RendererTestBase.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\HtmlHelper.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\ReflectionBusinessObjectWebUIService.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\StubColumnDefinition.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\StubColumnRenderer.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\StubColumnRendererFactory.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\StubCustomCellDefinition.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\StubRenderer.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\StubRendererFactory.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\StubRowRenderer.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\StubRowRendererFactory.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocList\StubServiceLocator.cs" />
     <None Include="ObjectBinding.UnitTests.build" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="..\..\..\remotion.snk">
@@ -394,9 +394,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EnumWithResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Web\UI\Controls\Infrastructure\BocList\Rendering\StandardMode\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
