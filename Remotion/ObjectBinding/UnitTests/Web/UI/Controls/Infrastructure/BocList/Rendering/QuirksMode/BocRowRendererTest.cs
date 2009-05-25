@@ -15,12 +15,11 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode
@@ -130,10 +129,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     {
       List.SelectorControlCheckedState.Add (0);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator ());
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
       renderer.RenderDataRow (BusinessObject, 0, 0, 0);
 
-      HtmlDocument document = Html.GetResultDocument ();
+      HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
       Html.AssertAttribute (tr, "class", List.CssClassDataRowSelected);
@@ -151,10 +150,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       List.Stub (mock => mock.IsIndexEnabled).Return (true);
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
 
-      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator ());
-      renderer.RenderEmptyListDataRow ();
+      IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
+      renderer.RenderEmptyListDataRow();
 
-      HtmlDocument document = Html.GetResultDocument ();
+      HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
 

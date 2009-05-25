@@ -23,7 +23,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.Design;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.Reflection;
 using Remotion.Security;
 using Remotion.Utilities;

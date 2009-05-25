@@ -18,8 +18,8 @@ using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering
 {

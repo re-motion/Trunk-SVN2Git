@@ -15,8 +15,8 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
 using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
 

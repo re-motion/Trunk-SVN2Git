@@ -16,7 +16,7 @@
 using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocList.Rendering

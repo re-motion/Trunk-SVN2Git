@@ -28,7 +28,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -1323,7 +1323,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _pageCount = 1;
       }
 
-      BocListRendererFactory factory = new BocListRendererFactory();
+      var factory = new BocListRendererFactory();
       factory.CreateRenderer (new Remotion.Web.Infrastructure.HttpContextWrapper(Context), writer, this, ServiceLocator.Current).Render();
     }
 

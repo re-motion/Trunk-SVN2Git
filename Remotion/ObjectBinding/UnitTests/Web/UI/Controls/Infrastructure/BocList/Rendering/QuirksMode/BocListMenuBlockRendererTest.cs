@@ -18,7 +18,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using HtmlAgilityPack;
 using NUnit.Framework;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 

@@ -19,7 +19,7 @@ using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList.Rendering.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
 
