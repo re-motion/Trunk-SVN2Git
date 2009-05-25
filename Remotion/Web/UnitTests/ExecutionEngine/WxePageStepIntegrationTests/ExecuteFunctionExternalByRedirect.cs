@@ -113,10 +113,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         //Redirect to external subfunction
         _responseMock
             .Expect (mock => mock.Redirect (Arg<string>.Matches (arg => arg == "~/session/sub.wxe?WxeFunctionToken=" + _subFunction.FunctionToken)))
-            .Do (invocation => Thread.CurrentThread.Abort());
+            .WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
         //Show external sub function
-        _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (
+        _subFunction.Expect (mock => mock.Execute (_wxeContext)).WhenCalled (
             invocation =>
             {
               PrivateInvoke.SetNonPublicField (_functionState, "_postBackID", 100);
@@ -128,7 +128,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).Throw (new WxeExecuteNextStepException());
 
         _requestMock.Expect (mock => mock.HttpMethod).Return ("GET");
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).Do (
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).WhenCalled (
             invocation =>
             {
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
@@ -197,10 +197,10 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
         //Redirect to external subfunction
         _responseMock
             .Expect (mock => mock.Redirect (Arg<string>.Matches (arg => arg == "~/session/sub.wxe?WxeFunctionToken=" + _subFunction.FunctionToken)))
-            .Do (invocation => Thread.CurrentThread.Abort());
+            .WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
         //Show external sub function
-        _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (invocation => Thread.CurrentThread.Abort());
+        _subFunction.Expect (mock => mock.Execute (_wxeContext)).WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
         //Return from external sub function
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).Throw (new WxeExecuteNextStepException());

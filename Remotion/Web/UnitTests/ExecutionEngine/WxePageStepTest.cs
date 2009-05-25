@@ -106,7 +106,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       using (_mockRepository.Ordered())
       {
         _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
-        _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
+        _pageStep.Expect (mock => mock.Execute (_wxeContext)).WhenCalled (
             invocation =>
             {
               var executionState = (PreProcessingSubFunctionState) ((IExecutionStateContext) _pageStep).ExecutionState;
@@ -161,7 +161,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine
       using (_mockRepository.Ordered())
       {
         _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
-        _pageStep.Expect (mock => mock.Execute (_wxeContext)).Do (
+        _pageStep.Expect (mock => mock.Execute (_wxeContext)).WhenCalled (
             invocation =>
             {
               var executionState = (PreProcessingSubFunctionState_WithRedirect) ((IExecutionStateContext) _pageStep).ExecutionState;

@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       _parentQueryManagerMock
           .Expect (mock => mock.GetScalar (_queryMock))
-          .Do (invocation => Assert.That (_parentTransactionStub.IsReadOnly, Is.True))
+          .WhenCalled (invocation => Assert.That (_parentTransactionStub.IsReadOnly, Is.True))
           .Return (7);
       _parentQueryManagerMock.Replay ();
 
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _parentQueryManagerMock
           .Expect (mock => mock.GetCollection (_queryMock))
-          .Do (invocation => Assert.That (_parentTransactionStub.IsReadOnly, Is.False))
+          .WhenCalled (invocation => Assert.That (_parentTransactionStub.IsReadOnly, Is.False))
           .Return (expectedResult);
       _parentQueryManagerMock.Replay ();
 
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _parentQueryManagerMock
           .Expect (mock => mock.GetCollection<Order> (_queryMock))
-          .Do (invocation => Assert.That (_parentTransactionStub.IsReadOnly, Is.False))
+          .WhenCalled (invocation => Assert.That (_parentTransactionStub.IsReadOnly, Is.False))
           .Return (expectedResult);
       _parentQueryManagerMock.Replay ();
 

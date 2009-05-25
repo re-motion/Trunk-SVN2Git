@@ -202,7 +202,7 @@
       <fileset basedir="${prereq.assemblies}">
         <include name="log4net.*"/>
         <include name="Castle.Core.*"/>
-        <include name="Castle.DynamicProxy.*"/>
+        <include name="Castle.DynamicProxy2.*"/>
         <include name="AjaxControlToolkit.dll" />
         <include name="Microsoft.Practices.ServiceLocation.dll" />
       </fileset>
@@ -228,7 +228,7 @@
 
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/nunit.framework.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.Core.dll" overwrite="true"/>
-      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.DynamicProxy.dll" overwrite="true"/>
+      <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Castle.DynamicProxy2.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/Rhino.Mocks.dll" overwrite="true"/>
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/AjaxControlToolkit.dll" overwrite="true" />
       <copy todir="${build.test.outputdir}" file="${prereq.assemblies}/HtmlAgilityPack.dll" overwrite="true" />

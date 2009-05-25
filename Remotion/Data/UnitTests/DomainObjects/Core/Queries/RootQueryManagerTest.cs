@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       listenerMock
           .Expect (mock => mock.FilterQueryResult (Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ())
-          .Do (mi => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+          .WhenCalled (mi => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
       ClientTransactionMock.AddListener (listenerMock);
 
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");

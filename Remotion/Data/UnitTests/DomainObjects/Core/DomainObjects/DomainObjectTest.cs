@@ -990,7 +990,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       listenerMock
           .Expect (mock => mock.ObjectGotID (orderItem, DomainObjectIDs.OrderItem1))
-          .Do (invocation => Assert.That (orderItem.ID, Is.EqualTo (DomainObjectIDs.OrderItem1), "ID must have been set when event is raised"));
+          .WhenCalled (invocation => Assert.That (orderItem.ID, Is.EqualTo (DomainObjectIDs.OrderItem1), "ID must have been set when event is raised"));
       ClientTransactionMock.AddListener (listenerMock);
 
       orderItem.Initialize (DomainObjectIDs.OrderItem1, ClientTransaction.Current);

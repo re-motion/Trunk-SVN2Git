@@ -92,7 +92,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxeFunctionTests
       function.ExecutionListener = _executionListenerMock;
       
       WxeStep step1 = MockRepository.GenerateMock<WxeStep> ();
-      step1.Expect (mock => mock.Execute (_context)).Do (invocation => Thread.CurrentThread.Abort());
+      step1.Expect (mock => mock.Execute (_context)).WhenCalled (invocation => Thread.CurrentThread.Abort ()).Repeat.Once();
       function.Add (step1);
 
       WxeStep step2 = MockRepository.GenerateMock<WxeStep>();
@@ -138,7 +138,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxeFunctionTests
       function.ExecutionListener = _executionListenerMock;
 
       WxeStep step1 = MockRepository.GenerateMock<WxeStep> ();
-      step1.Expect (mock => mock.Execute (_context)).Do (invocation => Thread.CurrentThread.Abort ());
+      step1.Expect (mock => mock.Execute (_context)).WhenCalled (invocation => Thread.CurrentThread.Abort ());
       function.Add (step1);
 
       var fatalExecutionException = new WxeFatalExecutionException (new Exception ("Pause exception"), null);

@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         var newQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
         extensionMock
             .Expect (mock => mock.FilterQueryResult (Arg.Is (ClientTransactionMock), Arg<QueryResult<DomainObject>>.Is.Anything))
-            .Do (mi => Assert.AreSame (ClientTransactionMock, ClientTransaction.Current))
+            .WhenCalled (mi => Assert.AreSame (ClientTransactionMock, ClientTransaction.Current))
             .Return (newQueryResult);
 
         extensionMock.Replay ();
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
 
         extensionMock
             .Expect (mock => mock.FilterQueryResult (Arg<ClientTransaction>.Is.Anything, Arg<QueryResult<DomainObject>>.Is.Anything))
-            .Do (mi => Order.GetObject (DomainObjectIDs.Order1))
+            .WhenCalled (mi => Order.GetObject (DomainObjectIDs.Order1))
             .Return (newQueryResult);
 
         extensionMock.Replay ();

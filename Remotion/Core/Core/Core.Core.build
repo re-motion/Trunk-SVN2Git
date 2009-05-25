@@ -56,7 +56,7 @@
         <include asis="true" name="System.Core.dll"/>
         <include asis="true" name="System.Xml.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Interfaces.dll"/>
-        <include asis="true" name="${build.outputdir}/Castle.DynamicProxy.dll"/>
+        <include asis="true" name="${build.outputdir}/Castle.DynamicProxy2.dll"/>
       </references>
     </csc>
         

@@ -48,9 +48,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     {
       using (MockRepository.Ordered())
       {
-        ResponseMock.Expect (mock => mock.Redirect ("~/destination.wxe")).Do (invocation => Thread.CurrentThread.Abort());
+        ResponseMock.Expect (mock => mock.Redirect ("~/destination.wxe")).WhenCalled (invocation => Thread.CurrentThread.Abort ());
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<ExecutingSubFunctionWithPermaUrlState>.Is.NotNull))
-            .Do (
+            .WhenCalled (
             invocation =>
             {
               var nextState = CheckExecutionState ((ExecutingSubFunctionWithPermaUrlState) invocation.Arguments[0]);

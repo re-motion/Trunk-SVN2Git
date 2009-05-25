@@ -58,7 +58,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       WxeContextFactory wxeContextFactory = new WxeContextFactory ();
       WxeContext context = wxeContextFactory.CreateContext (new TestFunction ());
 
-      stepMock.Expect (mock => mock.Execute (context)).Do (
+      stepMock.Expect (mock => mock.Execute (context)).WhenCalled (
           invocation =>
           {
             TransactionStrategyBase strategy = transactionMode.CreateTransactionStrategy (childFunction, context);
@@ -84,7 +84,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       WxeContextFactory wxeContextFactory = new WxeContextFactory();
       WxeContext context = wxeContextFactory.CreateContext (new TestFunction());
 
-      stepMock.Expect (mock => mock.Execute (context)).Do (
+      stepMock.Expect (mock => mock.Execute (context)).WhenCalled (
           invocation =>
           {
             TransactionStrategyBase strategy = ((TestFunction2) childFunction).TransactionStrategy;
@@ -115,7 +115,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure
       WxeContextFactory wxeContextFactory = new WxeContextFactory ();
       WxeContext context = wxeContextFactory.CreateContext (new TestFunction ());
 
-      stepMock.Expect (mock => mock.Execute (context)).Do (
+      stepMock.Expect (mock => mock.Execute (context)).WhenCalled (
           invocation =>
           {
             TransactionStrategyBase strategy = ((TestFunction2) childFunction).TransactionStrategy;

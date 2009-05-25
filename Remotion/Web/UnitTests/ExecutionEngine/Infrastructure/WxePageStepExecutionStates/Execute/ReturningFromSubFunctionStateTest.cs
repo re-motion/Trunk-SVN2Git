@@ -52,9 +52,9 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     {
       using (MockRepository.Ordered())
       {
-        ResponseMock.Expect (mock => mock.Redirect ("/resumeUrl.wxe")).Do (invocation => Thread.CurrentThread.Abort());
+        ResponseMock.Expect (mock => mock.Redirect ("/resumeUrl.wxe")).WhenCalled (invocation => Thread.CurrentThread.Abort ());
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<PostProcessingSubFunctionState>.Is.NotNull))
-            .Do (invocation => CheckExecutionState ((PostProcessingSubFunctionState) invocation.Arguments[0]));
+            .WhenCalled (invocation => CheckExecutionState ((PostProcessingSubFunctionState) invocation.Arguments[0]));
       }
 
       MockRepository.ReplayAll();

@@ -32,7 +32,7 @@
         <exclude name="Properties/AssemblyInfoTemplate.cs" />
       </sources>
       <references failonempty="true">
-        <include asis="true" name="${build.test.outputdir}/Castle.DynamicProxy.dll"/>
+        <include asis="true" name="${build.test.outputdir}/Castle.DynamicProxy2.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Interfaces.dll"/>
         <include asis="true" name="${build.test.outputdir}/Remotion.Development.dll"/>

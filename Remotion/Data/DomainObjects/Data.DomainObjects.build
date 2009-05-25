@@ -54,7 +54,7 @@
       </sources>
       <references failonempty="true">
         <include asis="true" name="${build.outputdir}/Castle.Core.dll"/>
-        <include asis="true" name="${build.outputdir}/Castle.DynamicProxy.dll"/>
+        <include asis="true" name="${build.outputdir}/Castle.DynamicProxy2.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Data.Interfaces.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.Data.Linq.dll"/>

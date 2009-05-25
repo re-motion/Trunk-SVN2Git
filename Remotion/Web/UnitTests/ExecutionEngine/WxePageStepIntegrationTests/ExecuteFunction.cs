@@ -91,14 +91,14 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
           _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
         }
 
-        _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (
+        _subFunction.Expect (mock => mock.Execute (_wxeContext)).WhenCalled (
             invocation =>
             {
               PrivateInvoke.SetNonPublicField (_functionState, "_postBackID", 100);
               _pageStep.SetPostBackCollection (new NameValueCollection ());
             });
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", false)).Do (
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", false)).WhenCalled (
             invocation =>
             {
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));
@@ -132,7 +132,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
           _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
         }
 
-        _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (invocation => Thread.CurrentThread.Abort());
+        _subFunction.Expect (mock => mock.Execute (_wxeContext)).WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
         _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true));
       }
@@ -169,7 +169,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
           _pageMock.Expect (mock => mock.WxeHandler).Return (_wxeHandler);
         }
 
-        _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (invocation => Thread.CurrentThread.Abort());
+        _subFunction.Expect (mock => mock.Execute (_wxeContext)).WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
         _subFunction.Expect (mock => mock.Execute (_wxeContext));
 
@@ -223,17 +223,17 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
 
         //Redirect to subfunction
         responseMock.Expect (mock => mock.Redirect ("~/session/sub.wxe?WxeFunctionToken=" + _wxeContext.FunctionToken))
-            .Do (invocation => Thread.CurrentThread.Abort());
+            .WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
         //Show sub function
-        _subFunction.Expect (mock => mock.Execute (_wxeContext)).Do (invocation => Thread.CurrentThread.Abort());
+        _subFunction.Expect (mock => mock.Execute (_wxeContext)).WhenCalled (invocation => Thread.CurrentThread.Abort ());
 
         //Return from sub function
         _subFunction.Expect (mock => mock.Execute (_wxeContext)).Throw (new WxeExecuteNextStepException());
 
         //Return from sub function
         responseMock.Expect (mock => mock.Redirect ("/session/root.wxe?WxeFunctionToken=" + _wxeContext.FunctionToken))
-            .Do (
+            .WhenCalled (
             invocation =>
             {
               PrivateInvoke.SetNonPublicField (_functionState, "_postBackID", 100);
@@ -241,7 +241,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.WxePageStepIntegrationTests
               Thread.CurrentThread.Abort ();
             });
 
-        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).Do (
+        _pageExecutorMock.Expect (mock => mock.ExecutePage (_wxeContext, "ThePage", true)).WhenCalled (
             invocation =>
             {
               Assert.That (((IExecutionStateContext) _pageStep).ExecutionState, Is.SameAs (NullExecutionState.Null));

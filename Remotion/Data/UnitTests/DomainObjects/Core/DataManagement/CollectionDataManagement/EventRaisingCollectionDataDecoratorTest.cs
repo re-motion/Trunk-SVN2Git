@@ -112,13 +112,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_mockRepository.Ordered ())
       {
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (0, _order1)).Do (mi => Assert.That (_data.Count, Is.EqualTo (3)));
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).Do (mi => Assert.That (_data.Count, Is.EqualTo (3)));
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (2, _order3)).Do (mi => Assert.That (_data.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (0, _order1)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (2, _order3)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (3)));
 
-        _eventRaiserMock.Expect (mock => mock.EndRemove (2, _order3)).Do (mi => Assert.That (_data.Count, Is.EqualTo (0)));
-        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).Do (mi => Assert.That (_data.Count, Is.EqualTo (0)));
-        _eventRaiserMock.Expect (mock => mock.EndRemove (0, _order1)).Do (mi => Assert.That (_data.Count, Is.EqualTo (0)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (2, _order3)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (0)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (0)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (0, _order1)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (0)));
       }
 
       _eventRaiserMock.Replay ();
@@ -133,8 +133,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_mockRepository.Ordered ())
       {
-        _eventRaiserMock.Expect (mock => mock.BeginAdd (2, _order4)).Do (mi => Assert.That (_data.Count, Is.EqualTo (3)));
-        _eventRaiserMock.Expect (mock => mock.EndAdd (2, _order4)).Do (mi => Assert.That (_data.Count, Is.EqualTo (4)));
+        _eventRaiserMock.Expect (mock => mock.BeginAdd (2, _order4)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.EndAdd (2, _order4)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (4)));
       }
 
       _eventRaiserMock.Replay ();
@@ -149,8 +149,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_mockRepository.Ordered ())
       {
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).Do (mi => Assert.That (_data.Count, Is.EqualTo (3)));
-        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).Do (mi => Assert.That (_data.Count, Is.EqualTo (2)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (3)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).WhenCalled (mi => Assert.That (_data.Count, Is.EqualTo (2)));
       }
 
       _eventRaiserMock.Replay ();
@@ -176,10 +176,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     {
       using (_mockRepository.Ordered ())
       {
-        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).Do (mi => Assert.That (_data.GetObject(1), Is.SameAs (_order2)));
-        _eventRaiserMock.Expect (mock => mock.BeginAdd (1, _order4)).Do (mi => Assert.That (_data.GetObject (1), Is.SameAs (_order2)));
-        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).Do (mi => Assert.That (_data.GetObject (1), Is.SameAs (_order4)));
-        _eventRaiserMock.Expect (mock => mock.EndAdd (1, _order4)).Do (mi => Assert.That (_data.GetObject (1), Is.SameAs (_order4)));
+        _eventRaiserMock.Expect (mock => mock.BeginRemove (1, _order2)).WhenCalled (mi => Assert.That (_data.GetObject(1), Is.SameAs (_order2)));
+        _eventRaiserMock.Expect (mock => mock.BeginAdd (1, _order4)).WhenCalled (mi => Assert.That (_data.GetObject (1), Is.SameAs (_order2)));
+        _eventRaiserMock.Expect (mock => mock.EndRemove (1, _order2)).WhenCalled (mi => Assert.That (_data.GetObject (1), Is.SameAs (_order4)));
+        _eventRaiserMock.Expect (mock => mock.EndAdd (1, _order4)).WhenCalled (mi => Assert.That (_data.GetObject (1), Is.SameAs (_order4)));
       }
 
       _eventRaiserMock.Replay ();

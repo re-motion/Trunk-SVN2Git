@@ -429,7 +429,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       using (MockRepository.Ordered ())
       {
         MemberCallerMock.Expect (mock => mock.SetCollectionReadOnly (testPageHolder.Page.Controls, null)).Return ("error");
-        MemberCallerMock.Expect (mock => mock.SetCollectionReadOnly (testPageHolder.Page.Controls, "error")).Return (null).Do (
+        MemberCallerMock.Expect (mock => mock.SetCollectionReadOnly (testPageHolder.Page.Controls, "error")).Return (null).WhenCalled (
             invocation => Assert.That (
                               testPageHolder.Page.Controls,
                               Is.EqualTo (new Control[] { testPageHolder.OtherNamingContainer, testPageHolder.NamingContainer, replacer })));
@@ -465,7 +465,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.ControlReplacing
       using (MockRepository.Ordered())
       {
         MemberCallerMock.Expect (mock => mock.SetCollectionReadOnly (testPageHolder.Page.Controls, null)).Return ("error");
-        MemberCallerMock.Expect (mock => mock.SetCollectionReadOnly (testPageHolder.Page.Controls, "error")).Return (null).Do (
+        MemberCallerMock.Expect (mock => mock.SetCollectionReadOnly (testPageHolder.Page.Controls, "error")).Return (null).WhenCalled (
             invocation => Assert.That (
                               testPageHolder.Page.Controls,
                               Is.EqualTo (new Control[] { testPageHolder.OtherNamingContainer, testPageHolder.NamingContainer, replacer })));

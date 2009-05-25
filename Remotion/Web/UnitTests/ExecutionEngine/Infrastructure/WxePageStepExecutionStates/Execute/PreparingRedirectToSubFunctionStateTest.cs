@@ -64,7 +64,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       IExecutionState executionState = CreateExecutionState (permaUrlOptions);
 
       ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
-          .Do (
+          .WhenCalled (
           invocation =>
           {
             var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
@@ -88,7 +88,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       IExecutionState executionState = CreateExecutionState (permaUrlOptions);
 
       ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
-          .Do (
+          .WhenCalled (
           invocation =>
           {
             var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);
@@ -114,7 +114,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       IExecutionState executionState = CreateExecutionState (permaUrlOptions);
 
       ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<RedirectingToSubFunctionState>.Is.NotNull))
-          .Do (
+          .WhenCalled (
           invocation =>
           {
             var nextState = CheckExecutionState ((RedirectingToSubFunctionState) invocation.Arguments[0]);

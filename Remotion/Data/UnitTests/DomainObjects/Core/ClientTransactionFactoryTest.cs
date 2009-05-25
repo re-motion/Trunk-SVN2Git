@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ITransactionFactory factory = MockRepository.GenerateMock<ClientTransactionFactory>();
 
       var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension>();
-      factory.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnTransactionCreated", Arg<ClientTransaction>.Is.NotNull)).Do (
+      factory.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnTransactionCreated", Arg<ClientTransaction>.Is.NotNull)).WhenCalled (
           invocation => ((ClientTransaction) invocation.Arguments[0]).Extensions.Add ("extension", extensionStub));
 
       ITransaction transaction = factory.CreateRootTransaction();
@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ITransactionFactory factory = MockRepository.GenerateMock<ClientTransactionFactory>();
 
       var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension>();
-      factory.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnTransactionCreated", Arg<ClientTransaction>.Is.NotNull)).Do (
+      factory.Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "OnTransactionCreated", Arg<ClientTransaction>.Is.NotNull)).WhenCalled (
           invocation => ((ClientTransaction) invocation.Arguments[0]).Extensions.Add ("extension", extensionStub));
 
       ITransaction rootTransaction = factory.CreateRootTransaction();

@@ -53,7 +53,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
       {
         SubFunction.Expect (mock => mock.Execute (WxeContext));
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<PostProcessingSubFunctionState>.Is.NotNull))
-            .Do (invocation => CheckExecutionState ((PostProcessingSubFunctionState) invocation.Arguments[0]));
+            .WhenCalled (invocation => CheckExecutionState ((PostProcessingSubFunctionState) invocation.Arguments[0]));
       }
 
       MockRepository.ReplayAll();
@@ -68,7 +68,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     {
       using (MockRepository.Ordered())
       {
-        SubFunction.Expect (mock => mock.Execute (WxeContext)).Do (invocation => Thread.CurrentThread.Abort());
+        SubFunction.Expect (mock => mock.Execute (WxeContext)).WhenCalled (invocation => Thread.CurrentThread.Abort ());
         SubFunction.Expect (mock => mock.Execute (WxeContext));
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull));
       }

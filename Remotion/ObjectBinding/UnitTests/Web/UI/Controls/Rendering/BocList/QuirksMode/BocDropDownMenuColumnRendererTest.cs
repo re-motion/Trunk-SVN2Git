@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
 
       Menu = MockRepository.GenerateMock<DropDownMenu> (List);
-      Menu.Stub (menuMock => menuMock.RenderControl (Html.Writer)).Do (
+      Menu.Stub (menuMock => menuMock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown menu"));
     }
 

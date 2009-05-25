@@ -55,7 +55,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
         SubFunction.Expect (mock => mock.Execute (WxeContext));
         ExecutionStateContextMock.Expect (
             mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull))
-            .Do (
+            .WhenCalled (
             invocation =>
             {
               Assert.That (invocation.Arguments[0], Is.InstanceOfType (typeof (ReturningFromSubFunctionState)));
@@ -78,7 +78,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
     {
       using (MockRepository.Ordered())
       {
-        SubFunction.Expect (mock => mock.Execute (WxeContext)).Do (invocation => Thread.CurrentThread.Abort());
+        SubFunction.Expect (mock => mock.Execute (WxeContext)).WhenCalled (invocation => Thread.CurrentThread.Abort ());
         SubFunction.Expect (mock => mock.Execute (WxeContext));
         ExecutionStateContextMock.Expect (mock => mock.SetExecutionState (Arg<IExecutionState>.Is.NotNull));
       }

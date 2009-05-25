@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (mock => mock.AvailableViewsListTitle).Return ("Views List Title");
       List.Stub (mock => mock.CssClassAvailableViewsListLabel).Return ("CssClass");
 
-      dropDownList.Stub (mock => mock.RenderControl (Html.Writer)).Do (
+      dropDownList.Stub (mock => mock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown list"));
 
       var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List);
@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       // can't assert this because CssStyleCollection is sealed and has only internal constructors
       // List.Stub (mock => mock.MenuBlockItemOffset).Return (new Unit (7, UnitType.Pixel));
 
-      optionsMenu.Stub (menuMock => menuMock.RenderControl (Html.Writer)).Do (
+      optionsMenu.Stub (menuMock => menuMock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown menu"));
 
       var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List);
