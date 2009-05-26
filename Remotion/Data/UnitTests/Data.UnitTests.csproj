@@ -583,6 +583,7 @@
     <Compile Include="Linq\Parsing\FieldResolving\SelectFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\WhereFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
+    <Compile Include="Linq\Parsing\ReplacingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\CallParserDispatcherTest.cs" />
     <Compile Include="Linq\Parsing\Structure\FromLetWhereExpressionTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeObjectMother.cs" />
