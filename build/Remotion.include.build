@@ -203,6 +203,9 @@
         <include name="log4net.*"/>
         <include name="Castle.Core.*"/>
         <include name="Castle.DynamicProxy2.*"/>
+        <include name="Castle.MicroKernel.*"/>
+        <include name="Castle.Windsor.*"/>
+        <include name="CommonServiceLocator.WindsorAdapter.*"/>
         <include name="AjaxControlToolkit.dll" />
         <include name="Microsoft.Practices.ServiceLocation.dll" />
       </fileset>

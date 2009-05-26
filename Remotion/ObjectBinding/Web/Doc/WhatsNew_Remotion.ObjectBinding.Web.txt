@@ -1,3 +1,32 @@
+1.13.8
+======
+- Rendering of re-bind controls is done by separate renderer classes. Factory implementations creating the renderers are obtained from
+  a CommonServiceLocator object that can be configured as follows:
+
+  1) Add references to these assemblies to your web application project:
+      Castle.Core
+      Castle.MicroKernel
+      Castle.Windsor
+      CommonServiceLocator.WindsorAdapter
+      Microsoft.Practices.ServiceLocation
+      
+  (The assemblies are part of the Remotion build.)
+  
+  2) In the Global.asax file, add the follwing lines to the Application_Start method:
+
+      IWindsorContainer container = new WindsorContainer ();
+      container.Register (
+          AllTypes.Pick ()
+              .FromAssembly (typeof (RendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
+              .WithService.Select ((t, b) => t.GetInterfaces ())
+              .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+
+      ServiceLocator.SetLocatorProvider (() => new WindsorServiceLocator (container));
+      
+  This will register all renderer factories in any Remotion.ObjectBinding.Web.UI.Controls.Rendering.[ControlName].QuirksMode.Factories 
+  namespace of the Remotion.ObjectBinding.Web assembly.
+
 1.11.13
 =======
 - ISearchAvailableObjectService.Search now accepts objects of type ISearchAvailableObjectsService instead of a string argument.
