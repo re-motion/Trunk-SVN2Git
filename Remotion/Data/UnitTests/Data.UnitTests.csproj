@@ -696,13 +696,13 @@
     <Compile Include="Linq\TestQueryGenerators\SubQueryTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\WhereTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryProvider.cs" />
-    <Compile Include="Linq\Visitor\ExpressionTreeVisitorTests\ExpressionInstanceCreator.cs" />
-    <Compile Include="Linq\Visitor\ExpressionTreeVisitorTests\ExpressionTreeVisitorTest.cs" />
-    <Compile Include="Linq\Visitor\ExpressionTreeVisitorTests\ExpressionTreeVisitor_BinaryExpressionsTest.cs" />
-    <Compile Include="Linq\Visitor\ExpressionTreeVisitorTests\ExpressionTreeVisitor_SpecificExpressionsTest.cs" />
-    <Compile Include="Linq\Visitor\ExpressionTreeVisitorTests\ExpressionTreeVisitor_SpecificExpressionsTestBase.cs" />
-    <Compile Include="Linq\Visitor\ExpressionTreeVisitorTests\SimpleClass.cs" />
-    <Compile Include="Linq\Visitor\ExpressionTreeVisitorTests\SpecialExpressionNode.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\ExpressionInstanceCreator.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\ExpressionTreeVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\ExpressionTreeVisitor_BinaryExpressionsTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\ExpressionTreeVisitor_SpecificExpressionsTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\ExpressionTreeVisitor_SpecificExpressionsTestBase.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\SimpleClass.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\SpecialExpressionNode.cs" />
     <Compile Include="Linq\Visitor\StringBuildingQueryVisitorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
