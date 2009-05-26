@@ -25,18 +25,15 @@ namespace Remotion.Data.UnitTests.Linq.Parsing.Structure.IntermediateModel
 {
   public abstract class ExpressionNodeTestBase
   {
-    private IExpressionNode _sourceStub;
-
-    public IExpressionNode SourceStub
-    {
-      get { return _sourceStub; }
-    }
-
     [SetUp]
     public virtual void SetUp ()
     {
-      _sourceStub = MockRepository.GenerateStub<IExpressionNode> ();
+      SourceStub = new ConstantExpressionNode (typeof (int), new[] { 1, 2, 3 });
+      SourceReference = new IdentifierReferenceExpression (SourceStub);
     }
+
+    public IQuerySourceExpressionNode SourceStub { get; private set; }
+    public IdentifierReferenceExpression SourceReference { get; private set; }
 
     protected MethodInfo GetGenericMethodDefinition<TReturn> (Expression<Func<IQueryable<int>, TReturn>> methodCallLambda)
     {

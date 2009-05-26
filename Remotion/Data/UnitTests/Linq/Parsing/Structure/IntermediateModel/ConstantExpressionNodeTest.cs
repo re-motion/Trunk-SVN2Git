@@ -15,36 +15,23 @@
 // 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
-using System.Linq;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.Linq.Parsing.Structure.IntermediateModel
 {
   [TestFixture]
-  public class SelectExpressionNodeTest : ExpressionNodeTestBase
+  public class ConstantExpressionNodeTest
   {
     [Test]
-    public void SupportedMethod_WithoutPosition ()
+    public void Resolve_ReplacesParameter_WithIdentifierReference ()
     {
-      MethodInfo method = GetGenericMethodDefinition (q => q.Select (i => i.ToString()));
-      Assert.That (SelectExpressionNode.SupportedMethods, List.Contains (method));
-    }
-
-    [Test]
-    public void Resolve_ReplacesParameter_WithProjection ()
-    {
-      var node = new SelectExpressionNode (SourceStub, ExpressionHelper.CreateLambdaExpression<int, int> (j => j * j));
+      var node = new ConstantExpressionNode (typeof (int), new [] { 1, 2, 3, 4, 5 });
       var expression = ExpressionHelper.CreateLambdaExpression<int, bool> (i => i > 5);
 
       var result = node.Resolve (expression.Parameters[0], expression.Body);
 
-      var expectedResult = Expression.MakeBinary (ExpressionType.GreaterThan, 
-          Expression.MakeBinary (ExpressionType.Multiply, SourceReference, SourceReference),
-          Expression.Constant (5));
+      var expectedResult = Expression.MakeBinary (ExpressionType.GreaterThan, new IdentifierReferenceExpression (node), Expression.Constant (5));
       ExpressionTreeComparer.CheckAreEqualTrees (expectedResult, result);
     }
   }
