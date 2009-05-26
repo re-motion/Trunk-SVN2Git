@@ -23,7 +23,8 @@
           doc="${project.doc}"
           debug="${build.debug}"
           define="${build.csc.define}"
-          keyfile="${solution.key-file}">
+          keyfile="${solution.key-file}"
+          noconfig="true">
       <nowarn>
         <!-- missing XML comment -->
         <warning number="1591" />
@@ -62,9 +63,10 @@
         <include asis="true" name="${build.outputdir}/Remotion.ObjectBinding.dll"/>
         <include asis="true" name="${build.outputdir}/Remotion.ObjectBinding.Interfaces.dll"/>
         <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
+        <include asis="true" name="System.Core.dll"/>
         <include asis="true" name="System.Data.dll"/>
         <include asis="true" name="System.Xml.dll"/>
-        <include asis="true" name="System.Configuration.dll"/>
       </references>
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion.Data.DomainObjects">
         <include name="Schemas/*.xsd" />

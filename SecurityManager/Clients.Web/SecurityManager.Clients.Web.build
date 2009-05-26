@@ -26,7 +26,8 @@
           doc="${project.doc}" 
           debug="${build.debug}"
           define="${build.csc.define}"
-          keyfile="${solution.key-file}">
+          keyfile="${solution.key-file}"
+          noconfig="true">
       <nowarn>
         <!-- missing XML comment -->
         <warning number="1591" />
@@ -63,6 +64,8 @@
         <include asis="true" name="System.Data.dll"/>
         <include asis="true" name="System.Drawing.dll"/>
         <include asis="true" name="System.Web.dll"/>
+        <include asis="true" name="System.Web.Extensions.dll"/>
+        <include asis="true" name="System.Web.Services.dll"/>
         <include asis="true" name="System.Xml.dll"/>
       </references>
 

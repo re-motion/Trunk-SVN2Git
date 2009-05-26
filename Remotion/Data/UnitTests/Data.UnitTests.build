@@ -22,7 +22,8 @@
           output="${build.test.outputdir}/${project.output}.${project.extension}"
           debug="${build.debug}"
           define="${build.csc.define}"
-          keyfile="${solution.key-file}">
+          keyfile="${solution.key-file}"
+          noconfig="true">
       <nowarn>
         <!-- obsolete warning -->
         <warning number="0618" />

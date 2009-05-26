@@ -23,7 +23,8 @@
           output="${build.test.outputdir}/${project.output}.${project.extension}" 
           debug="${build.debug}"
           define="${build.csc.define}"
-          keyfile="${solution.key-file}">
+          keyfile="${solution.key-file}"
+          noconfig="true">
       <nowarn>
       </nowarn> 
       <sources failonempty="true">
@@ -48,10 +49,13 @@
         <include name="${build.test.outputdir}/HtmlAgilityPack.dll" />
         <include name="${build.test.outputdir}/Microsoft.Practices.ServiceLocation.dll" />
         <include asis="true" name="System.dll"/>
+        <include asis="true" name="System.Configuration.dll"/>
         <include asis="true" name="System.Core.dll"/>
         <include asis="true" name="System.Data.dll"/>
+        <include asis="true" name="System.Drawing.dll"/>
         <include asis="true" name="System.Web.dll"/>
         <include asis="true" name="System.Windows.Forms.dll"/>
+        <include asis="true" name="System.Xml.dll"/>
       </references>
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion.ObjectBinding.UnitTests">
         <include name="Core/Globalization/**/*.resx" />

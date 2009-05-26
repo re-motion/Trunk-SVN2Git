@@ -24,7 +24,8 @@
           doc="${project.doc}" 
           debug="${build.debug}"
           define="${build.csc.define}"
-          keyfile="${solution.key-file}">
+          keyfile="${solution.key-file}"
+          noconfig="true">
       <nowarn>
         <!-- missing XML comment -->
         <warning number="1591" />
@@ -49,6 +50,7 @@
         <include asis="true" name="System.Design.dll"/>
         <include asis="true" name="System.Drawing.dll"/>
         <include asis="true" name="System.Windows.Forms.dll"/>
+        <include asis="true" name="System.Xml.dll"/>
       </references>
       <resources failonempty="true" dynamicprefix="true" prefix="Remotion.ObjectBinding">
         <include name="Globalization/**/*.resx" />
