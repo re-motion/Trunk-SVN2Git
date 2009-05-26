@@ -585,6 +585,8 @@
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
     <Compile Include="Linq\Parsing\Structure\CallParserDispatcherTest.cs" />
     <Compile Include="Linq\Parsing\Structure\FromLetWhereExpressionTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeObjectMother.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\IdentifierReferenceExpressionTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\WhereExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\TakeExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SumExpressionNodeTest.cs" />
