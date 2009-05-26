@@ -573,6 +573,7 @@
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\SubQueryExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\UnaryExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeComparer.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\TypeForNewExpression.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\ClauseFieldResolverTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\FieldSourcePathBuilderTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\ClauseFieldResolverVisitorTest.cs" />
