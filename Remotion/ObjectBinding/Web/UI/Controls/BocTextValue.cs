@@ -30,7 +30,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary> This control can be used to display or edit values that can be edited in a text box. </summary>
   /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/Class/*' />
-  public class BocTextValue : BocTextValueBase
+  public class BocTextValue : BocTextValueBase, IBocTextValue
   {
     //  statics
 
@@ -88,51 +88,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       LoadResources (GetResourceManager());
 
-      if (IsReadOnly)
-      {
-        string text;
-        if (TextBoxStyle.TextMode == TextBoxMode.MultiLine
-            && ! StringUtility.IsNullOrEmpty (_text))
-        {
-          //  Allows for an optional \r
-          string temp = _text.Replace ("\r", "");
-          string[] lines = temp.Split ('\n');
-          for (int i = 0; i < lines.Length; i++)
-            lines[i] = HttpUtility.HtmlEncode (lines[i]);
-          text = StringUtility.ConcatWithSeparator (lines, "<br />");
-        }
-        else
-          text = HttpUtility.HtmlEncode (_text);
-
-        if (StringUtility.IsNullOrEmpty (text))
-        {
-          if (IsDesignMode)
-          {
-            text = c_designModeEmptyLabelContents;
-            //  Too long, can't resize in designer to less than the content's width
-            //  Label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
-          }
-          else
-            text = "&nbsp;";
-        }
-        Label.Text = text;
-        Label.Width = Unit.Empty;
-        Label.Height = Unit.Empty;
-        Label.ApplyStyle (CommonStyle);
-        Label.ApplyStyle (LabelStyle);
-      }
-      else
-      {
-        SetEditModeValue();
-
-        TextBox.ReadOnly = ! Enabled;
-        TextBox.Width = Unit.Empty;
-        TextBox.Height = Unit.Empty;
-        TextBox.ApplyStyle (CommonStyle);
-        TextBoxStyle.ApplyStyle (TextBox);
-        if (TextBox.TextMode == TextBoxMode.MultiLine && TextBox.Columns < 1)
-          TextBox.Columns = c_defaultColumns;
-      }
+      if (!IsReadOnly)
+        SetEditModeValue ();
     }
 
     protected override void LoadControlState (object savedState)
@@ -142,8 +99,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _text = (string) values[1];
       _valueType = (BocTextValueType) values[2];
       _actualValueType = (BocTextValueType) values[3];
-
-      TextBox.Text = _text;
     }
 
     protected override object SaveControlState ()
@@ -690,7 +645,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return s_supportedPropertyInterfaces; }
     }
 
-    #region protected virtual string CssClass...
+      #region protected virtual string CssClass...
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> itself. </summary>
     /// <remarks> 

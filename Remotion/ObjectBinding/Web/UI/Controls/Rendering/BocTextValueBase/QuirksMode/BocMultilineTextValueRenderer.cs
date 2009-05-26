@@ -22,9 +22,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
-  public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>, IBocTextValueBaseRenderer
+  public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>, IBocTextValueBaseRenderer
   {
-    public BocTextValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocTextValue control)
+    public BocMultilineTextValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocMultilineTextValue control)
         : base (context, writer, control)
     {
     }
@@ -32,32 +32,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
     protected override Label GetLabel ()
     {
       Label label = new Label { Text = Control.Text };
-      string text;
-      if (Control.TextBoxStyle.TextMode == TextBoxMode.MultiLine
-          && !StringUtility.IsNullOrEmpty (Control.Text))
+      string[] lines = Control.Value;
+      string text = null;
+      if (lines != null)
       {
-        //  Allows for an optional \r
-        string temp = Control.Text.Replace ("\r", "");
-        string[] lines = temp.Split ('\n');
         for (int i = 0; i < lines.Length; i++)
           lines[i] = HttpUtility.HtmlEncode (lines[i]);
         text = StringUtility.ConcatWithSeparator (lines, "<br />");
       }
-      else
-        text = HttpUtility.HtmlEncode (Control.Text);
-
       if (StringUtility.IsNullOrEmpty (text))
       {
         if (Control.IsDesignMode)
         {
           text = c_designModeEmptyLabelContents;
           //  Too long, can't resize in designer to less than the content's width
-          //  Label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
+          //  label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
         }
         else
           text = "&nbsp;";
       }
       label.Text = text;
+
       label.Width = Unit.Empty;
       label.Height = Unit.Empty;
       label.ApplyStyle (Control.CommonStyle);

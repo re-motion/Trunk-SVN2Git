@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {

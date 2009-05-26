@@ -15,17 +15,18 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue
 {
-  public class MockTextValue : ObjectBinding.Web.UI.Controls.BocTextValue
+  public class MockMultilineTextValue : BocMultilineTextValue
   {
-    //public void OnPreRender ()
-    //{
-    //  OnPreRender (EventArgs.Empty);
-    //}
+    public void OnPreRender ()
+    {
+      OnPreRender (EventArgs.Empty);
+    }
 
     public override bool IsReadOnly
     {
@@ -37,10 +38,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       get { return base.CssClassBase; }
     }
 
-    protected override void Render (HtmlTextWriter writer)
-    {
-      var renderer = GetRenderer (MockRepository.GenerateMock<IHttpContext> (), writer);
-      renderer.Render ();
-    }
+    //protected override void Render (HtmlTextWriter writer)
+    //{
+    //  var renderer = GetRenderer (MockRepository.GenerateMock<IHttpContext> (), writer);
+    //  renderer.Render ();
+    //}
   }
 }

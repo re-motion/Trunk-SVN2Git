@@ -14,9 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using HtmlAgilityPack;
 using NUnit.Framework;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
+using Remotion.Web.Infrastructure;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue.QuirksMode
 {
@@ -27,14 +33,20 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     private const string c_secondLineText = "with two lines now.";
     private const string c_cssClass = "SomeClass";
 
-    private MockTextValue TextValue { get; set; }
+    private IBocTextValue TextValue { get; set; }
+    private IBocTextValueBaseRenderer Renderer { get; set; }
 
     [SetUp]
     public void SetUp ()
     {
       Initialize();
-      TextValue = new MockTextValue ();
-      TextValue.Text = c_firstLineText;
+      TextValue = MockRepository.GenerateMock<IBocTextValue>();
+      Renderer = new BocTextValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, TextValue);
+
+      TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
+      TextValue.Stub (mock => mock.CssClassBase).Return ("cssClassBase");
+      TextValue.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
+      TextValue.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
     }
 
     [Test]
@@ -159,12 +171,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
     private void RenderSingleLineEditable (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
-      SetStyle (withStyle, inStandardProperties, withCssClass);
+      TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
-      TextValue.OnPreRender ();
-      TextValue.RenderControl (Html.Writer);
+      SetStyle (withStyle, withCssClass, inStandardProperties);
 
-      HtmlDocument document = Html.GetResultDocument ();
+      Renderer.Render();
+
+      HtmlDocument document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentNode, 1);
 
       HtmlNode span = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
@@ -181,24 +194,25 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
     private void RenderSingleLineDisabled (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
-      SetStyle (withStyle, inStandardProperties, withCssClass);
+      TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
-      TextValue.Enabled = false;
-      TextValue.OnPreRender ();
-      TextValue.RenderControl (Html.Writer);
+      SetStyle (withStyle, withCssClass, inStandardProperties);
 
-      HtmlDocument document = Html.GetResultDocument ();
+      TextValue.Stub (mock => mock.Enabled).Return (false);
+      Renderer.Render();
+
+      HtmlDocument document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentNode, 1);
 
       HtmlNode span = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
       CheckCssClass (span, withCssClass, inStandardProperties);
-      Html.AssertAttribute (span, "class", "disabled", HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (span, "class", TextValue.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
       HtmlNode input = Html.GetAssertedChildElement (span, "input", 0, false);
-      Html.AssertAttribute (input, "readonly", "readonly");
       Html.AssertAttribute (input, "disabled", "disabled");
+      Html.AssertAttribute (input, "readonly", "readonly");
       Html.AssertAttribute (input, "value", c_firstLineText);
 
       CheckStyle (withStyle, inStandardProperties, span, input);
@@ -206,18 +220,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
     private void RenderSingleLineReadonly (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
-      SetStyle (withStyle, inStandardProperties, withCssClass);
+      TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
-      TextValue.ReadOnly = true;
-      TextValue.OnPreRender ();
-      TextValue.RenderControl (Html.Writer);
+      SetStyle (withStyle, withCssClass, inStandardProperties);
 
-      HtmlDocument document = Html.GetResultDocument ();
+      TextValue.Stub (mock => mock.IsReadOnly).Return (true);
+      Renderer.Render();
+
+      HtmlDocument document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentNode, 1);
 
       HtmlNode span = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
       CheckCssClass (span, withCssClass, inStandardProperties);
-      Html.AssertAttribute (span, "class", "readOnly", HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (span, "class", TextValue.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
@@ -229,24 +244,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
     private void RenderMultiLineReadonly (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
-      string text = c_firstLineText + Environment.NewLine + c_secondLineText;
+      TextValue.Stub (mock => mock.Text).Return (c_firstLineText + Environment.NewLine + c_secondLineText);
+      TextValue.Stub (mock => mock.IsReadOnly).Return (true);
 
-      TextValue.Text = text;
-      TextValue.ReadOnly = true;
+      SetStyle (withStyle, withCssClass, inStandardProperties);
       TextValue.TextBoxStyle.TextMode = TextBoxMode.MultiLine;
 
-      SetStyle (withStyle, inStandardProperties, withCssClass);
+      Renderer.Render();
 
-      TextValue.OnPreRender ();
-      TextValue.RenderControl (Html.Writer);
-
-      HtmlDocument document = Html.GetResultDocument ();
+      HtmlDocument document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentNode, 1);
 
       HtmlNode span = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
 
-      CheckCssClass(span, withCssClass, inStandardProperties);
-      Html.AssertAttribute (span, "class", "readOnly", HtmlHelper.AttributeValueCompareMode.Contains);
+      CheckCssClass (span, withCssClass, inStandardProperties);
+      Html.AssertAttribute (span, "class", TextValue.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
@@ -279,23 +291,28 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       {
         string height = TextValue.Height.ToString();
         string width = TextValue.Width.ToString();
-        if( inStyleProperty )
+        if (inStyleProperty)
         {
           height = TextValue.Style["height"];
           width = TextValue.Style["width"];
         }
         if (!inStyleProperty)
           Html.AssertStyleAttribute (span, "display", "inline-block");
-         
+
         Html.AssertStyleAttribute (span, "height", height);
-        
+
         Html.AssertStyleAttribute (valueElement, "height", "100%");
         Html.AssertStyleAttribute (valueElement, "width", width);
       }
     }
 
-    private void SetStyle (bool withStyle, bool inStyleProperty, bool withCssClass)
+    private void SetStyle (bool withStyle, bool withCssClass, bool inStyleProperty)
     {
+      StateBag stateBag = new StateBag();
+      TextValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
+      TextValue.Stub (mock => mock.Style).Return (TextValue.Attributes.CssStyle);
+      TextValue.Stub (mock => mock.TextBoxStyle).Return (new TextBoxStyle());
+      TextValue.Stub (mock => mock.ControlStyle).Return (new Style(stateBag));
       if (withCssClass)
       {
         if (inStyleProperty)
@@ -306,15 +323,20 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
       if (withStyle)
       {
+        Unit height = new Unit (17, UnitType.Point);
+        Unit width = new Unit (123, UnitType.Point);
+
         if (inStyleProperty)
         {
-          TextValue.Style["height"] = (new Unit (17, UnitType.Point)).ToString ();
-          TextValue.Style["width"] = (new Unit (123, UnitType.Point)).ToString ();
+          TextValue.Style["height"] = height.ToString();
+          TextValue.Style["width"] = width.ToString();
         }
         else
         {
-          TextValue.Height = new Unit (17, UnitType.Point);
-          TextValue.Width = new Unit (123, UnitType.Point);
+          TextValue.Stub (mock => mock.Height).Return (height);
+          TextValue.Stub (mock => mock.Width).Return (width);
+          TextValue.ControlStyle.Height = TextValue.Height;
+          TextValue.ControlStyle.Width = TextValue.Width;
         }
       }
     }

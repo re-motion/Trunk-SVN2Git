@@ -22,11 +22,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -35,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [ValidationProperty ("Text")]
   [DefaultEvent ("TextChanged")]
   [ToolboxItemFilter ("System.Web.UI")]
-  public abstract class BocTextValueBase : BusinessObjectBoundEditableWebControl, IPostBackDataHandler, IFocusableControl
+  public abstract class BocTextValueBase : BusinessObjectBoundEditableWebControl, IBocTextValueBase
   {
     private readonly TextBox _textBox = new TextBox();
     private readonly Label _label = new Label();
@@ -46,11 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private readonly List<BaseValidator> _validators = new List<BaseValidator>();
     private static readonly object s_textChangedEvent = new object();
 
-    /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
-    protected const string c_designModeEmptyLabelContents = "##";
-
     
-    protected const int c_defaultColumns = 60;
 
     protected BocTextValueBase ()
         : this (TextBoxMode.SingleLine)
@@ -188,7 +182,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     protected abstract string CssClassBase { get; }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> when it is displayed in read-only mode. </summary>
+    string IBocTextValueBase.CssClassBase { get { return CssClassBase; } }
+
+      /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> when it is displayed in read-only mode. </summary>
     /// <remarks> 
     ///   <para> Class: <c>readOnly</c>. </para>
     ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocTextValue.readOnly</c> as a selector. </para>
@@ -197,6 +193,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return "readOnly"; }
     }
+
+    string IBocTextValueBase.CssClassReadOnly { get { return CssClassReadOnly; } }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> when it is displayed disabled. </summary>
     /// <remarks> 
@@ -207,6 +205,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return "disabled"; }
     }
+
+    string IBocTextValueBase.CssClassDisabled { get { return CssClassDisabled; } }
 
     /// <summary> Gets or sets the string representation of the current value. </summary>
     /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
@@ -300,6 +300,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (TextBox.AutoPostBack)
           WcagHelper.Instance.HandleWarning (1, this, "TextBox.AutoPostBack");
       }
+    }
+
+    char IBocTextValueBase.ClientIDSeparator
+    {
+      get { return ClientIDSeparator; }
     }
 
     public override void PrepareValidation ()
@@ -417,7 +422,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/CreateValidators/*' />
     public override BaseValidator[] CreateValidators ()
     {
       if (IsReadOnly || ! IsRequired)
@@ -427,6 +431,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return _validators.ToArray();
     }
 
+    bool IBocTextValueBase.IsDesignMode { get { return IsDesignMode; } }
+    public void BaseAddAttributesToRender (HtmlTextWriter writer)
+    {
+      base.AddAttributesToRender (writer);
+    }
+
     protected abstract IEnumerable<BaseValidator> GetValidators ();
-  }
+
+    Style IBocTextValueBase.ControlStyle { get { return ControlStyle; } }
+    }
 }

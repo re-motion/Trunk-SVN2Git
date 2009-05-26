@@ -244,6 +244,9 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UI\Controls\IBocList.cs" />
+    <Compile Include="UI\Controls\IBocMultilineTextValue.cs" />
+    <Compile Include="UI\Controls\IBocTextValue.cs" />
+    <Compile Include="UI\Controls\IBocTextValueBase.cs" />
     <Compile Include="UI\Controls\IBusinessObjectBoundEditableWebControl.cs" />
     <Compile Include="UI\Controls\IBusinessObjectBoundWebControl.cs" />
     <Compile Include="UI\Controls\IBusinessObjectDataSourceControl.cs">
@@ -314,6 +317,7 @@
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocValueColumnRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueBaseRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />

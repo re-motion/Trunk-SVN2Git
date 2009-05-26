@@ -21,10 +21,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -33,8 +33,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [ValidationProperty ("Text")]
   [DefaultEvent ("TextChanged")]
   [ToolboxItemFilter ("System.Web.UI")]
-  public class BocMultilineTextValue : BocTextValueBase
+  public class BocMultilineTextValue : BocTextValueBase, IBocMultilineTextValue
   {
+    // TODO: remove constants
+    /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
+    protected const string c_designModeEmptyLabelContents = "##";
+    protected const string c_defaultTextBoxWidth = "150pt";
+    protected const int c_defaultColumns = 60;
+
     // types
 
     /// <summary> A list of control specific resources. </summary>
@@ -118,7 +124,58 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    
+    protected override void RenderContents (HtmlTextWriter writer)
+    {
+    EvaluateWaiConformity();
+
+    if (IsReadOnly)
+    {
+      bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
+      bool isLabelHeightEmpty = Label.Height.IsEmpty && StringUtility.IsNullOrEmpty (Label.Style["height"]);
+      if (! isControlHeightEmpty && isLabelHeightEmpty)
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+
+      bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
+      bool isLabelWidthEmpty = Label.Width.IsEmpty &&StringUtility.IsNullOrEmpty (Label.Style["width"]);
+      if (! isControlWidthEmpty && isLabelWidthEmpty)
+      {
+        if (! Width.IsEmpty)
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
+        else
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
+      }
+
+      Label.RenderControl (writer);
+    }
+    else
+    {
+      bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
+      bool isTextBoxHeightEmpty = StringUtility.IsNullOrEmpty (TextBox.Style["height"]);
+      if (! isControlHeightEmpty && isTextBoxHeightEmpty)
+          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
+
+      bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
+      bool isTextBoxWidthEmpty = TextBox.Width.IsEmpty && StringUtility.IsNullOrEmpty (TextBox.Style["width"]);
+      if (isTextBoxWidthEmpty)
+      {
+        if (isControlWidthEmpty)
+        {
+          if (TextBoxStyle.Columns == null)
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
+        }
+        else
+        {
+          if (! Width.IsEmpty)
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
+          else
+            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
+        }
+      }
+
+      TextBox.RenderControl (writer);
+    }
+  
+    }
 
     protected override void LoadControlState (object savedState)
     {
@@ -195,7 +252,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override IBocTextValueBaseRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer)
     {
-      throw new NotImplementedException();
+      return new BocMultilineTextValueRenderer (context, writer, this);
+    }
+
+    /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/CreateValidators/*' />
+    public override BaseValidator[] CreateValidators ()
+    {
+      return base.CreateValidators();
     }
 
     protected override IEnumerable<BaseValidator> GetValidators ()

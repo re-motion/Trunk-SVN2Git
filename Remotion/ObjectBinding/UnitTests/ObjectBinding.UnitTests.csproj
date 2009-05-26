@@ -310,7 +310,9 @@
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocListRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocListRendererTestBase.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\MockMultilineTextValue.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\MockTextValue.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\HtmlHelper.cs" />
     <Compile Include="Web\UI\Controls\Rendering\ReflectionBusinessObjectWebUIService.cs" />

@@ -160,7 +160,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
     public void AssertAttribute (HtmlNode node, string attributeName, string attributeValue, AttributeValueCompareMode mode)
     {
       HtmlAttribute attribute = node.Attributes[attributeName];
-      Assert.IsNotNull (attribute, String.Format ("Attribute {0}.{1}", node.Name, attributeName));
+      Assert.IsNotNull (attribute, String.Format ("Attribute {0}.{1} does not exist.", node.Name, attributeName));
 
       if (attributeValue != null)
       {
@@ -189,7 +189,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
       Assert.IsNotNull (attribute, String.Format ("Attribute {0}.{1}", node.Name, "style"));
 
       string stylePart = String.Format ("{0}:{1};", cssProperty, cssValue);
-      Assert.IsTrue (attribute.Value.Contains (stylePart), String.Format ("Attribute {0}.{1}", node.Name, attribute.Name));
+      Assert.IsTrue (
+          attribute.Value.Contains (stylePart),
+          String.Format ("Attribute {0}.{1} does not contain '{2}' - value is '{3}'.", node.Name, attribute.Name, cssValue, attribute.Value));
     }
 
     public void AssertIcon (HtmlNode parentNode, IBusinessObject businessObject, string imageSourcePart)
