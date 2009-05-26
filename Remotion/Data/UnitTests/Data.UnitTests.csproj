@@ -703,7 +703,7 @@
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\ExpressionTreeVisitor_SpecificExpressionsTestBase.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\SimpleClass.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\SpecialExpressionNode.cs" />
-    <Compile Include="Linq\Visitor\StringBuildingQueryVisitorTest.cs" />
+    <Compile Include="Linq\StringBuilding\StringBuildingQueryVisitorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
