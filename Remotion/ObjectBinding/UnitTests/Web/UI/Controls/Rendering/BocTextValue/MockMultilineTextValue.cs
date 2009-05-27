@@ -38,10 +38,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       get { return base.CssClassBase; }
     }
 
-    //protected override void Render (HtmlTextWriter writer)
-    //{
-    //  var renderer = GetRenderer (MockRepository.GenerateMock<IHttpContext> (), writer);
-    //  renderer.Render ();
-    //}
+    protected override void Render (HtmlTextWriter writer)
+    {
+      var renderer = GetRenderer (MockRepository.GenerateMock<IHttpContext> (), writer);
+      renderer.Render ();
+    }
   }
 }

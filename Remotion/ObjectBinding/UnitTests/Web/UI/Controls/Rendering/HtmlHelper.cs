@@ -191,7 +191,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
       string stylePart = String.Format ("{0}:{1};", cssProperty, cssValue);
       Assert.IsTrue (
           attribute.Value.Contains (stylePart),
-          String.Format ("Attribute {0}.{1} does not contain '{2}' - value is '{3}'.", node.Name, attribute.Name, cssValue, attribute.Value));
+          String.Format ("Attribute {0}.{1} does not contain '{2}' - value is '{3}'.", node.Name, attribute.Name, stylePart, attribute.Value));
     }
 
     public void AssertIcon (HtmlNode parentNode, IBusinessObject businessObject, string imageSourcePart)

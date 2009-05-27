@@ -14,12 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
 using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
@@ -27,15 +25,8 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue.QuirksMode
 {
   [TestFixture]
-  public class BocTextValueRendererTest : RendererTestBase
+  public class BocTextValueRendererTest : BocTextValueRendererTestBase<IBocTextValue>
   {
-    private const string c_firstLineText = "This is my test text.";
-    private const string c_secondLineText = "with two lines now.";
-    private const string c_cssClass = "SomeClass";
-
-    private IBocTextValue TextValue { get; set; }
-    private IBocTextValueBaseRenderer Renderer { get; set; }
-
     [SetUp]
     public void SetUp ()
     {
@@ -189,7 +180,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       Html.AssertAttribute (input, "type", "text");
       Html.AssertAttribute (input, "value", c_firstLineText);
 
-      CheckStyle (withStyle, inStandardProperties, span, input);
+      CheckStyle (withStyle, span, input);
     }
 
     private void RenderSingleLineDisabled (bool withStyle, bool withCssClass, bool inStandardProperties)
@@ -215,7 +206,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       Html.AssertAttribute (input, "readonly", "readonly");
       Html.AssertAttribute (input, "value", c_firstLineText);
 
-      CheckStyle (withStyle, inStandardProperties, span, input);
+      CheckStyle (withStyle, span, input);
     }
 
     private void RenderSingleLineReadonly (bool withStyle, bool withCssClass, bool inStandardProperties)
@@ -239,7 +230,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       HtmlNode labelSpan = Html.GetAssertedChildElement (span, "span", 0, false);
       Html.AssertTextNode (labelSpan, c_firstLineText, 0, false);
 
-      CheckStyle (withStyle, inStandardProperties, span, labelSpan);
+      CheckStyle (withStyle, span, labelSpan);
     }
 
     private void RenderMultiLineReadonly (bool withStyle, bool withCssClass, bool inStandardProperties)
@@ -269,75 +260,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       Html.AssertTextNode (labelSpan, c_secondLineText, 2, false);
       Html.AssertChildElementCount (labelSpan, 1);
 
-      CheckStyle (withStyle, inStandardProperties, span, labelSpan);
+      CheckStyle (withStyle, span, labelSpan);
     }
 
-    private void CheckCssClass (HtmlNode span, bool withCssClass, bool inStandardProperties)
+    private void CheckStyle (bool withStyle, HtmlNode span, HtmlNode valueElement)
     {
-      string cssClass = TextValue.CssClassBase;
-      if (withCssClass)
-      {
-        if (inStandardProperties)
-          cssClass = TextValue.Attributes["class"];
-        else
-          cssClass = TextValue.CssClass;
-      }
-      Html.AssertAttribute (span, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
-    }
-
-    private void CheckStyle (bool withStyle, bool inStyleProperty, HtmlNode span, HtmlNode valueElement)
-    {
+      string height = withStyle ? Height.ToString() : null;
+      string width = withStyle ? Width.ToString() : /* default constant in BocTextValueRendererBase */ "150pt";
       if (withStyle)
       {
-        string height = TextValue.Height.ToString();
-        string width = TextValue.Width.ToString();
-        if (inStyleProperty)
-        {
-          height = TextValue.Style["height"];
-          width = TextValue.Style["width"];
-        }
-        if (!inStyleProperty)
-          Html.AssertStyleAttribute (span, "display", "inline-block");
+        Html.AssertStyleAttribute (span, "display", "inline-block");
 
         Html.AssertStyleAttribute (span, "height", height);
 
-        Html.AssertStyleAttribute (valueElement, "height", "100%");
+        if (height != null)
+          Html.AssertStyleAttribute (valueElement, "height", "100%");
         Html.AssertStyleAttribute (valueElement, "width", width);
-      }
-    }
-
-    private void SetStyle (bool withStyle, bool withCssClass, bool inStyleProperty)
-    {
-      StateBag stateBag = new StateBag();
-      TextValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
-      TextValue.Stub (mock => mock.Style).Return (TextValue.Attributes.CssStyle);
-      TextValue.Stub (mock => mock.TextBoxStyle).Return (new TextBoxStyle());
-      TextValue.Stub (mock => mock.ControlStyle).Return (new Style(stateBag));
-      if (withCssClass)
-      {
-        if (inStyleProperty)
-          TextValue.Attributes["class"] = c_cssClass;
-        else
-          TextValue.CssClass = c_cssClass;
-      }
-
-      if (withStyle)
-      {
-        Unit height = new Unit (17, UnitType.Point);
-        Unit width = new Unit (123, UnitType.Point);
-
-        if (inStyleProperty)
-        {
-          TextValue.Style["height"] = height.ToString();
-          TextValue.Style["width"] = width.ToString();
-        }
-        else
-        {
-          TextValue.Stub (mock => mock.Height).Return (height);
-          TextValue.Stub (mock => mock.Width).Return (width);
-          TextValue.ControlStyle.Height = TextValue.Height;
-          TextValue.ControlStyle.Width = TextValue.Width;
-        }
       }
     }
   }

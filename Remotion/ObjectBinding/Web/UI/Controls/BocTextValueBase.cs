@@ -25,26 +25,26 @@ using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
+  [ControlValueProperty("Text")]
+  [DefaultProperty("Text")]
   [ValidationProperty ("Text")]
+  [ParseChildren(true, "Text")]
   [DefaultEvent ("TextChanged")]
   [ToolboxItemFilter ("System.Web.UI")]
-  public abstract class BocTextValueBase : BusinessObjectBoundEditableWebControl, IBocTextValueBase
+  public abstract class BocTextValueBase : BusinessObjectBoundEditableWebControl, IBocTextValueBase, IPostBackDataHandler, IFocusableControl
   {
-    private readonly TextBox _textBox = new TextBox();
-    private readonly Label _label = new Label();
     private readonly Style _commonStyle = new Style();
     private readonly TextBoxStyle _textBoxStyle;
     private readonly Style _labelStyle = new Style();
     private string _errorMessage;
     private readonly List<BaseValidator> _validators = new List<BaseValidator>();
     private static readonly object s_textChangedEvent = new object();
-
-    
 
     protected BocTextValueBase ()
         : this (TextBoxMode.SingleLine)
@@ -80,7 +80,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <value> Returns the <see cref="TextBox"/> if the control is in edit mode, otherwise the control itself. </value>
     public override Control TargetControl
     {
-      get { return IsReadOnly ? (Control) this : _textBox; }
+      get { return this; }
     }
 
     /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
@@ -92,22 +92,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public string FocusID
     {
-      get { return IsReadOnly ? null : _textBox.ClientID; }
+      get { return IsReadOnly ? null : ClientID; }
     }
 
-    /// <summary> Gets the <see cref="TextBox"/> used in edit mode. </summary>
-    [Browsable (false)]
-    public TextBox TextBox
-    {
-      get { return _textBox; }
-    }
-
-    /// <summary> Gets the <see cref="Label"/> used in read-only mode. </summary>
-    [Browsable (false)]
-    public Label Label
-    {
-      get { return _label; }
-    }
+    [Browsable(false)]
+    public bool AutoPostBack { get; set; }
 
     /// <summary>
     ///   Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) 
@@ -169,7 +158,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         _errorMessage = value;
         for (int i = 0; i < _validators.Count; i++)
         {
-          BaseValidator validator = (BaseValidator) _validators[i];
+          BaseValidator validator = _validators[i];
           validator.ErrorMessage = _errorMessage;
         }
       }
@@ -215,17 +204,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [DefaultValue ("")]
     public abstract string Text { get; set; }
 
-    protected override void CreateChildControls ()
-    {
-      _textBox.ID = ID + "_Boc_TextBox";
-      _textBox.EnableViewState = false;
-      Controls.Add (_textBox);
-
-      _label.ID = ID + "_Boc_Label";
-      _label.EnableViewState = false;
-      Controls.Add (_label);
-    }
-
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
@@ -238,7 +216,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (context);
 
       EnsureChildControls();
-      _textBoxStyle.RegisterJavaScriptInclude (_textBox, context);
+      _textBoxStyle.RegisterJavaScriptInclude (this, context);
     }
 
     /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
@@ -263,7 +241,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadPostData/*' />
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, _textBox.UniqueID);
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetTextBoxUniqueID());
       bool isDataChanged = newValue != null && StringUtility.NullToEmpty (Text) != newValue;
       if (isDataChanged)
       {
@@ -288,97 +266,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         eventHandler (this, EventArgs.Empty);
     }
 
-    /// <summary> Checks whether the control conforms to the required WAI level. </summary>
-    /// <exception cref="Remotion.Web.UI.WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
-    protected virtual void EvaluateWaiConformity ()
-    {
-      if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
-      {
-        if (TextBoxStyle.AutoPostBack == true)
-          WcagHelper.Instance.HandleWarning (1, this, "TextBoxStyle.AutoPostBack");
-
-        if (TextBox.AutoPostBack)
-          WcagHelper.Instance.HandleWarning (1, this, "TextBox.AutoPostBack");
-      }
-    }
-
-    char IBocTextValueBase.ClientIDSeparator
-    {
-      get { return ClientIDSeparator; }
-    }
-
-    public override void PrepareValidation ()
-    {
-      base.PrepareValidation();
-
-      if (! IsReadOnly)
-        SetEditModeValue();
-    }
-
-    protected void SetEditModeValue ()
-    {
-      _textBox.Text = Text;
-    }
-
-    protected override void AddAttributesToRender (HtmlTextWriter writer)
-    {
-      string backUpStyleWidth = Style["width"];
-      if (! StringUtility.IsNullOrEmpty (Style["width"]))
-        Style["width"] = null;
-      Unit backUpWidth = Width; // base.Width and base.ControlStyle.Width
-      if (! Width.IsEmpty)
-        Width = Unit.Empty;
-
-      bool isReadOnly = IsReadOnly;
-      bool isDisabled = ! Enabled;
-
-      string backUpCssClass = CssClass; // base.CssClass and base.ControlStyle.CssClass
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-      {
-        if (isReadOnly)
-          CssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          CssClass += " " + CssClassDisabled;
-      }
-      string backUpAttributeCssClass = Attributes["class"];
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        if (isReadOnly)
-          Attributes["class"] += " " + CssClassReadOnly;
-        else if (isDisabled)
-          Attributes["class"] += " " + CssClassDisabled;
-      }
-
-      base.AddAttributesToRender (writer);
-
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-        CssClass = backUpCssClass;
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-        Attributes["class"] = backUpAttributeCssClass;
-
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        string cssClass = CssClassBase;
-        if (isReadOnly)
-          cssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          cssClass += " " + CssClassDisabled;
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      }
-
-      if (! StringUtility.IsNullOrEmpty (backUpStyleWidth))
-        Style["width"] = backUpStyleWidth;
-      if (! backUpWidth.IsEmpty)
-        Width = backUpWidth;
-
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
-    }
-
-    protected override void RenderContents (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
       EvaluateWaiConformity();
       var renderer = GetRenderer(new HttpContextWrapper(Context), writer);
       renderer.Render();
+    }
+
+    /// <summary> Checks whether the control conforms to the required WAI level. </summary>
+    /// <exception cref="Remotion.Web.UI.WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
+    protected virtual void EvaluateWaiConformity ()
+    {
+      if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
+      {
+        if (TextBoxStyle.AutoPostBack == true)
+          WcagHelper.Instance.HandleWarning (1, this, "TextBoxStyle.AutoPostBack");
+
+        if (!IsReadOnly && AutoPostBack)
+          WcagHelper.Instance.HandleWarning (1, this, "TextBox.AutoPostBack");
+      }
     }
 
     protected abstract IBocTextValueBaseRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer);
@@ -409,7 +315,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new string[1] { _textBox.ClientID };
+      return IsReadOnly ? new string[0] : new[] { GetTextBoxClientID() };
     }
 
     /// <summary> This event is fired when the text is changed between postbacks. </summary>
@@ -440,5 +346,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected abstract IEnumerable<BaseValidator> GetValidators ();
 
     Style IBocTextValueBase.ControlStyle { get { return ControlStyle; } }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      EnsureChildControls();
+      base.OnPreRender (e);
+
+      if (!IsDesignMode)
+        Page.RegisterRequiresPostBack (this);
+
+      LoadResources (GetResourceManager());
     }
+
+    /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
+    protected abstract IResourceManager GetResourceManager ();
+
+    public string GetTextBoxUniqueID ()
+    {
+      return UniqueID + IdSeparator + "Boc_TextBox";
+    }
+
+    public string GetTextBoxClientID ()
+    {
+      return ClientID + ClientIDSeparator + "Boc_TextBox";
+    }
+  }
 }

@@ -314,6 +314,7 @@
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\MockTextValue.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocTextValueRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocTextValueRendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\Rendering\HtmlHelper.cs" />
     <Compile Include="Web\UI\Controls\Rendering\ReflectionBusinessObjectWebUIService.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubColumnDefinition.cs" />

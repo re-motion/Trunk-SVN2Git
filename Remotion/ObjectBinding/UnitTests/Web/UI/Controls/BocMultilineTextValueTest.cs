@@ -90,7 +90,7 @@ public class BocMultilineTextValueTest: BocTest
   public void EvaluateWaiConformityDebugLevelAWithTextBoxAutoPostBackTrue()
   {
     WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
-    _bocMultilineTextValue.TextBox.AutoPostBack = true;
+    _bocMultilineTextValue.AutoPostBack = true;
     _bocMultilineTextValue.EvaluateWaiConformity ();
 
     Assert.IsTrue (WcagHelperMock.HasWarning);
@@ -116,7 +116,7 @@ public class BocMultilineTextValueTest: BocTest
     string[] actual = _bocMultilineTextValue.GetTrackedClientIDs();
     Assert.IsNotNull (actual);
     Assert.AreEqual (1, actual.Length);
-    Assert.AreEqual (_bocMultilineTextValue.TextBox.ClientID, actual[0]);
+    Assert.AreEqual (_bocMultilineTextValue.GetTextBoxClientID(), actual[0]);
   }
 
 

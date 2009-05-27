@@ -35,12 +35,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [ToolboxItemFilter ("System.Web.UI")]
   public class BocMultilineTextValue : BocTextValueBase, IBocMultilineTextValue
   {
-    // TODO: remove constants
-    /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
-    protected const string c_designModeEmptyLabelContents = "##";
-    protected const string c_defaultTextBoxWidth = "150pt";
-    protected const int c_defaultColumns = 60;
-
     // types
 
     /// <summary> A list of control specific resources. </summary>
@@ -75,116 +69,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
-    protected override void OnPreRender (EventArgs e)
-    {
-      EnsureChildControls();
-      base.OnPreRender (e);
-
-      LoadResources (GetResourceManager());
-
-      if (IsReadOnly)
-      {
-        string[] lines = Value;
-        string text = null;
-        if (lines != null)
-        {
-          for (int i = 0; i < lines.Length; i++)
-            lines[i] = HttpUtility.HtmlEncode (lines[i]);
-          text = StringUtility.ConcatWithSeparator (lines, "<br />");
-        }
-        if (StringUtility.IsNullOrEmpty (text))
-        {
-          if (IsDesignMode)
-          {
-            text = c_designModeEmptyLabelContents;
-            //  Too long, can't resize in designer to less than the content's width
-            //  Label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
-          }
-          else
-            text = "&nbsp;";
-        }
-        Label.Text = text;
-
-        Label.Width = Unit.Empty;
-        Label.Height = Unit.Empty;
-        Label.ApplyStyle (CommonStyle);
-        Label.ApplyStyle (LabelStyle);
-      }
-      else
-      {
-        SetEditModeValue();
-
-        TextBox.ReadOnly = ! Enabled;
-        TextBox.Width = Unit.Empty;
-        TextBox.Height = Unit.Empty;
-        TextBox.ApplyStyle (CommonStyle);
-        TextBoxStyle.ApplyStyle (TextBox);
-        if (TextBox.Columns < 1)
-          TextBox.Columns = c_defaultColumns;
-      }
-    }
-
-    protected override void RenderContents (HtmlTextWriter writer)
-    {
-    EvaluateWaiConformity();
-
-    if (IsReadOnly)
-    {
-      bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-      bool isLabelHeightEmpty = Label.Height.IsEmpty && StringUtility.IsNullOrEmpty (Label.Style["height"]);
-      if (! isControlHeightEmpty && isLabelHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-      bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-      bool isLabelWidthEmpty = Label.Width.IsEmpty &&StringUtility.IsNullOrEmpty (Label.Style["width"]);
-      if (! isControlWidthEmpty && isLabelWidthEmpty)
-      {
-        if (! Width.IsEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-        else
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-      }
-
-      Label.RenderControl (writer);
-    }
-    else
-    {
-      bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-      bool isTextBoxHeightEmpty = StringUtility.IsNullOrEmpty (TextBox.Style["height"]);
-      if (! isControlHeightEmpty && isTextBoxHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-      bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-      bool isTextBoxWidthEmpty = TextBox.Width.IsEmpty && StringUtility.IsNullOrEmpty (TextBox.Style["width"]);
-      if (isTextBoxWidthEmpty)
-      {
-        if (isControlWidthEmpty)
-        {
-          if (TextBoxStyle.Columns == null)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultTextBoxWidth);
-        }
-        else
-        {
-          if (! Width.IsEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-        }
-      }
-
-      TextBox.RenderControl (writer);
-    }
-  
-    }
-
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
 
       base.LoadControlState (values[0]);
       _text = (string) values[1];
-
-      TextBox.Text = Text;
     }
 
     protected override object SaveControlState ()
@@ -245,7 +135,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
-    protected virtual IResourceManager GetResourceManager ()
+    protected override IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
     }

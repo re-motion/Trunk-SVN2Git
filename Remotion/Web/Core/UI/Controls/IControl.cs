@@ -27,7 +27,7 @@ namespace Remotion.Web.UI.Controls
 /// <remarks>
 ///   The reason for providing this interface is that derived interfaces do not need to be casted to System.Web.UI.Control.
 /// </remarks>
-public interface IControl: IComponent, IDataBindingsAccessor, IParserAccessor
+public interface IControl : IComponent, IDataBindingsAccessor, IParserAccessor, IUrlResolutionService
 {
   event EventHandler DataBinding;
   event EventHandler Init;

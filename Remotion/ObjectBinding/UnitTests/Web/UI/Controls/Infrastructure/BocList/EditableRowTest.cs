@@ -848,24 +848,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       BocTextValue stringValueField = (BocTextValue) _editableRow.GetEditControl (0);
       BocTextValue int32ValueField = (BocTextValue) _editableRow.GetEditControl (1);
 
-      Assert.AreEqual (string.Empty, stringValueField.TextBox.Text);
-      Assert.AreEqual (string.Empty, int32ValueField.TextBox.Text);
-
       _editableRow.PrepareValidation();
 
-      Assert.AreEqual (stringValueField.Text, stringValueField.TextBox.Text);
-      Assert.AreEqual (int32ValueField.Text, int32ValueField.TextBox.Text);
+      Assert.AreEqual (stringValueField.Text, stringValueField.Text);
+      Assert.AreEqual (int32ValueField.Text, int32ValueField.Text);
     }
 
 
     private void SetValues (EditableRow row, string stringValue, string int32Value)
     {
       BocTextValue stringValueField = (BocTextValue) row.GetEditControl (0);
-      stringValueField.TextBox.Text = stringValue;
       stringValueField.Text = stringValue;
 
       BocTextValue int32ValueField = (BocTextValue) row.GetEditControl (1);
-      int32ValueField.TextBox.Text = int32Value;
       int32ValueField.Text = int32Value;
     }
   }

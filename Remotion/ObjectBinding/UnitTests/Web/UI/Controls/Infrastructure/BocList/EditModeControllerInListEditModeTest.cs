@@ -594,13 +594,10 @@ public class EditModeControllerInListEditModeTest : EditModeControllerTestBase
       BocTextValue stringValueField = (BocTextValue) editableRow.GetEditControl (0);
       BocTextValue int32ValueField = (BocTextValue) editableRow.GetEditControl (1);
       
-      Assert.AreEqual (string.Empty, stringValueField.TextBox.Text, "Row {0}", i);
-      Assert.AreEqual (string.Empty, int32ValueField.TextBox.Text, "Row {0}", i);
-
       Controller.PrepareValidation();
       
-      Assert.AreEqual (stringValueField.Text, stringValueField.TextBox.Text, "Row {0}", i);
-      Assert.AreEqual (int32ValueField.Text, int32ValueField.TextBox.Text, "Row {0}", i);
+      Assert.AreEqual (stringValueField.Text, stringValueField.Text, "Row {0}", i);
+      Assert.AreEqual (int32ValueField.Text, int32ValueField.Text, "Row {0}", i);
     }
   }
 

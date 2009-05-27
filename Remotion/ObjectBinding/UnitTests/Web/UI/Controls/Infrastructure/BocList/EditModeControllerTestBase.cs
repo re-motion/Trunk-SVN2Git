@@ -137,11 +137,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       ArgumentUtility.CheckNotNull ("row", row);
 
       BocTextValue stringValueField = (BocTextValue) row.GetEditControl (0);
-      stringValueField.TextBox.Text = stringValue;
       stringValueField.Text = stringValue;
 
       BocTextValue int32ValueField = (BocTextValue) row.GetEditControl (1);
-      int32ValueField.TextBox.Text = int32Value;
       int32ValueField.Text = int32Value;
     }
 

@@ -18,6 +18,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
@@ -38,9 +40,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
 
     protected void AddStandardAttributesToRender (HtmlTextWriter writer)
     {
-      if (Control.ID != null)
-        writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
-
       writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
 
       string cssClass = string.Empty;
@@ -67,6 +66,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
     protected TextBox GetTextBox ()
     {
       TextBox textBox = new TextBox { Text = Control.Text };
+      textBox.ID = Control.GetTextBoxUniqueID();
+      textBox.EnableViewState = false;
       textBox.Enabled = Control.Enabled;
       textBox.ReadOnly = !Control.Enabled;
       textBox.Width = Unit.Empty;
@@ -75,6 +76,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
       Control.TextBoxStyle.ApplyStyle (textBox);
       if (textBox.TextMode == TextBoxMode.MultiLine && textBox.Columns < 1)
         textBox.Columns = c_defaultColumns;
+
+      textBox.AutoPostBack = Control.AutoPostBack;
       return textBox;
     }
 
@@ -167,5 +170,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
     }
 
     protected abstract Label GetLabel ();
+
+    
   }
 }

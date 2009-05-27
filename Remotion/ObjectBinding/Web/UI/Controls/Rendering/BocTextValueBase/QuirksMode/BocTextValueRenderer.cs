@@ -32,6 +32,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
     protected override Label GetLabel ()
     {
       Label label = new Label { Text = Control.Text };
+      label.ID = Control.GetTextBoxUniqueID();
+      label.EnableViewState = false;
+
       string text;
       if (Control.TextBoxStyle.TextMode == TextBoxMode.MultiLine
           && !StringUtility.IsNullOrEmpty (Control.Text))

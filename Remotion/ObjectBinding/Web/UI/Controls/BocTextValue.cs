@@ -81,17 +81,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       Binding.BindingChanged += Binding_BindingChanged;
     }
 
-    protected override void OnPreRender (EventArgs e)
-    {
-      EnsureChildControls();
-      base.OnPreRender (e);
-
-      LoadResources (GetResourceManager());
-
-      if (!IsReadOnly)
-        SetEditModeValue ();
-    }
-
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
@@ -184,7 +173,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
-    protected virtual IResourceManager GetResourceManager ()
+    protected override IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
     }
