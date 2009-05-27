@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6DEF9C11-1D5A-4B14-A4EB-F4C7E7CC3E7B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -585,8 +585,8 @@
     <Compile Include="Linq\Parsing\FieldResolving\WhereFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
     <Compile Include="Linq\Parsing\ReplacingExpressionTreeVisitorTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\CallParserDispatcherTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\FromLetWhereExpressionTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\CallParserDispatcherTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\FromLetWhereExpressionTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ConstantExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeObjectMother.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\IdentifierReferenceExpressionTest.cs" />
@@ -608,43 +608,43 @@
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\DistinctExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\CountExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeTestBase.cs" />
-    <Compile Include="Linq\Parsing\Structure\LetExpressionParserTests\SimpleLetParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\OrderExpressionParserTests\MultiOrderByExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\OrderExpressionParserTests\OrderByWhereExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\OrderExpressionParserTests\SimpleOrderByExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\ParseResultCollectorTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryModelCreatorTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\MultiFromWhereQueryTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\MultiWhereQueryTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\OrderByWithWhereConditionAndMultiFrom.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\QueryTestBase.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\ReverseFromWhereQueryTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\ReverseFromWhereQueryWithProjectionTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\SelectWhereQueryTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\SimpleQueryTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\SimpleQueryWithProjectionTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\SimpleSelectManyQueryTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\SimpleSubQueryInAdditionalFromClauseTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\SimpleWhereQueryTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\ThreeFromQueryTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\ThreeFromWhereQueryTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QueryParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SelectExpressionParserTests\GeneralSelectExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SelectExpressionParserTests\MainFromExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SelectExpressionParserTests\SimpleSelectExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SelectExpressionParserTests\WhereSelectExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SelectManyExpressionParserTests\GeneralSelectManyExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SelectManyExpressionParserTests\RecursiveSelectManyExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SelectManyExpressionParserTests\SimpleSelectManyExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SelectManyExpressionParserTests\WhereSelectManyExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SimpleFromSourceExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SourceExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\SubQueryFindingVisitorTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\WhereExpressionParserTests\BodyHelper.cs" />
-    <Compile Include="Linq\Parsing\Structure\WhereExpressionParserTests\GeneralWhereExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\WhereExpressionParserTests\RecursiveWhereExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\WhereExpressionParserTests\SelectManyWhereExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\WhereExpressionParserTests\SimpleWhereExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\LetExpressionParserTests\SimpleLetParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\OrderExpressionParserTests\MultiOrderByExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\OrderExpressionParserTests\OrderByWhereExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\OrderExpressionParserTests\SimpleOrderByExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\ParseResultCollectorTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryModelCreatorTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\MultiFromWhereQueryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\MultiWhereQueryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\OrderByWithWhereConditionAndMultiFrom.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\QueryTestBase.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\ReverseFromWhereQueryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\ReverseFromWhereQueryWithProjectionTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\SelectWhereQueryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\SimpleQueryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\SimpleQueryWithProjectionTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\SimpleSelectManyQueryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\SimpleSubQueryInAdditionalFromClauseTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\SimpleWhereQueryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\ThreeFromQueryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserIntegrationTests\ThreeFromWhereQueryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\QueryParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SelectExpressionParserTests\GeneralSelectExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SelectExpressionParserTests\MainFromExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SelectExpressionParserTests\SimpleSelectExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SelectExpressionParserTests\WhereSelectExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SelectManyExpressionParserTests\GeneralSelectManyExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SelectManyExpressionParserTests\RecursiveSelectManyExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SelectManyExpressionParserTests\SimpleSelectManyExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SelectManyExpressionParserTests\WhereSelectManyExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SimpleFromSourceExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SourceExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\SubQueryFindingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\BodyHelper.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\GeneralWhereExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\RecursiveWhereExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\SelectManyWhereExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\SimpleWhereExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\TreeEvaluation\PartialEvaluationPreAnalyzerIntegrationTest.cs" />
     <Compile Include="Linq\Parsing\TreeEvaluation\PartialEvaluationPreAnalyzerTest.cs" />
     <Compile Include="Linq\Parsing\TreeEvaluation\PartialTreeEvaluatorTest.cs" />
