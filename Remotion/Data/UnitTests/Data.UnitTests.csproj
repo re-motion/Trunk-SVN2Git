@@ -586,6 +586,7 @@
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
     <Compile Include="Linq\Parsing\ReplacingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\ExpressionNodeTypeRegistryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\ExpressionTreeParserTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeFactoryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeWithTooManyCtors.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\CallParserDispatcherTest.cs" />
