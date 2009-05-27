@@ -34,7 +34,7 @@
 </DateTimeTextBoxStyle></remotion:bocdatetimevalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocbooleanvalue id="DeceasedField" runat="server" propertyidentifier="Deceased" datasourcecontrol="CurrentObject" nullitemerrormessage="Eingabe erforderlich" autopostback="True"></remotion:bocbooleanvalue></td></tr>
+    <td><remotion:bocbooleanvalue id="DeceasedField" runat="server" propertyidentifier="Deceased" datasourcecontrol="CurrentObject" nullitemerrormessage="Eingabe erforderlich" AutoPostBack="True"></remotion:bocbooleanvalue></td></tr>
   <tr>
     <td></td>
     <td><remotion:bocdatetimevalue id="DateOfDeathField" runat="server" propertyidentifier="DateOfDeath" datasourcecontrol="CurrentObject" ></remotion:bocdatetimevalue></td></tr>

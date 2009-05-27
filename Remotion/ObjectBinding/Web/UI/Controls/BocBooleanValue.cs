@@ -25,7 +25,6 @@ using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -37,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 [ValidationProperty ("ValidationValue")]
 [DefaultEvent ("SelectionChanged")]
 [ToolboxItemFilter("System.Web.UI")]
-public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDataHandler, IFocusableControl
+  public class BocBooleanValue : BocBooleanValueBase
 {
 	// constants
 
@@ -47,7 +46,6 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
   private const string c_falseIcon = "CheckBoxFalse.gif";
   private const string c_nullIcon = "CheckBoxNull.gif";
 
-  private const string c_defaultControlWidth = "100pt";
   private const string c_nullString = "null";
 
   private const string c_defaultResourceGroup = "default";
@@ -76,34 +74,25 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
 
   // static members
 	
-  private static readonly Type[] s_supportedPropertyInterfaces = new Type[] { 
+  private static readonly Type[] s_supportedPropertyInterfaces = new[] { 
       typeof (IBusinessObjectBooleanProperty) };
-
-  private static readonly object s_checkedChangedEvent = new object();
 
   private static readonly string s_scriptFileKey = typeof (BocBooleanValue).FullName + "_Script";
   private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValue).FullName+ "_Startup_";
 
 	// member fields
-  private bool? _value = null;
+  private bool? _value;
 
-  private HyperLink _hyperLink;
-  private Image _image;
-  private Label _label;
-  private HiddenField _hiddenField;
-  private Style _labelStyle;
-
-  private bool? _autoPostBack = null;
+  private readonly HyperLink _hyperLink;
+  private readonly Image _image;
+  private readonly Label _label;
+  private readonly HiddenField _hiddenField;
+  private readonly Style _labelStyle;
 
   private bool _showDescription = true;
-  private string _trueDescription = string.Empty;
-  private string _falseDescription = string.Empty;
-  private string _nullDescription = string.Empty;
 
   private string _errorMessage;
-  private ArrayList _validators;
-  /// <summary> Flag that determines whether the client script will be rendered. </summary>
-  private bool _hasClientScript = false;
+  private readonly ArrayList _validators;
 
   // construction and disposing
 
@@ -156,27 +145,12 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
     }
   }
 
-  /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
-  bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
-  {
-    if (RequiresLoadPostData)
-      return LoadPostData (postDataKey, postCollection);
-    else
-      return false;
-  }
-
-  /// <summary> Invokes the <see cref="RaisePostDataChangedEvent"/> method. </summary>
-  void IPostBackDataHandler.RaisePostDataChangedEvent()
-  {
-    RaisePostDataChangedEvent();
-  }
-
   /// <summary>
   ///   Uses the <paramref name="postCollection"/> to determine whether the value of this control has been changed 
   ///   between postbacks.
   /// </summary>
   /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadPostData/*' />
-  protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
+  protected override bool LoadPostData (string postDataKey, NameValueCollection postCollection)
   {
     string newValueAsString = PageUtility.GetPostBackCollectionItem (Page, _hiddenField.UniqueID);
     bool? newValue = null;
@@ -197,21 +171,6 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
     return isDataChanged;
   }
 
-  /// <summary> Called when the state of the control has changed between postbacks. </summary>
-  protected virtual void RaisePostDataChangedEvent()
-  {
-    if (! IsReadOnly && Enabled)
-      OnCheckedChanged();
-  }
-
-  /// <summary> Fires the <see cref="CheckedChanged"/> event. </summary>
-  protected virtual void OnCheckedChanged()
-  {
-    EventHandler eventHandler = (EventHandler) Events[s_checkedChangedEvent];
-    if (eventHandler != null)
-      eventHandler (this, EventArgs.Empty);
-  }
-
   /// <summary> Checks whether the control conforms to the required WAI level. </summary>
   /// <exception cref="WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
   protected virtual void EvaluateWaiConformity ()
@@ -230,9 +189,9 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
 
     BocBooleanValueResourceSet resourceSet = CreateResourceSet();
 
-    string trueDescription = (StringUtility.IsNullOrEmpty (_trueDescription) ? resourceSet.DefaultTrueDescription : _trueDescription);
-    string falseDescription = (StringUtility.IsNullOrEmpty (_falseDescription) ? resourceSet.DefaultFalseDescription : _falseDescription);
-    string nullDescription = (StringUtility.IsNullOrEmpty (_nullDescription) ? resourceSet.DefaultNullDescription : _nullDescription);
+    string trueDescription = (StringUtility.IsNullOrEmpty (TrueDescription) ? resourceSet.DefaultTrueDescription : TrueDescription);
+    string falseDescription = (StringUtility.IsNullOrEmpty (FalseDescription) ? resourceSet.DefaultFalseDescription : FalseDescription);
+    string nullDescription = (StringUtility.IsNullOrEmpty (NullDescription) ? resourceSet.DefaultNullDescription : NullDescription);
 
     string imageUrl;
     string description;
@@ -258,7 +217,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
 
     DetermineClientScriptLevel();
 
-    if (_hasClientScript && ! isReadOnly)
+    if (HasClientScript && ! isReadOnly)
     {
       string script;
 
@@ -286,8 +245,8 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
       if (Enabled)
       {
         string requiredFlag = IsRequired ? "true" : "false";
-        string image = "document.getElementById ('" + _image.ClientID + "')";
-        string label = _showDescription ? "document.getElementById ('" + _label.ClientID + "')" : "null";
+        string image = "document.getElementById ('" + Image.ClientID + "')";
+        string label = _showDescription ? "document.getElementById ('" + Label.ClientID + "')" : "null";
         string hiddenField = "document.getElementById ('" + _hiddenField.ClientID + "')";
         script = "BocBooleanValue_SelectNextCheckboxValue ("
             + "'" + resourceSet.ResourceKey + "', "
@@ -295,11 +254,11 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
             + label + ", " 
             + hiddenField + ", "
             + requiredFlag + ", "
-            + (StringUtility.IsNullOrEmpty (_trueDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (_trueDescription) + "'") + ", "
-            + (StringUtility.IsNullOrEmpty (_falseDescription) ? "null" :"'" +  ScriptUtility.EscapeClientScript (_falseDescription) + "'") + ", "
-            + (StringUtility.IsNullOrEmpty (_nullDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (_nullDescription) + "'") + ");";
+            + (StringUtility.IsNullOrEmpty (TrueDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (TrueDescription) + "'") + ", "
+            + (StringUtility.IsNullOrEmpty (FalseDescription) ? "null" :"'" +  ScriptUtility.EscapeClientScript (FalseDescription) + "'") + ", "
+            + (StringUtility.IsNullOrEmpty (NullDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (NullDescription) + "'") + ");";
 
-        if (_autoPostBack == true)
+        if (AutoPostBack == true)
           script += Page.ClientScript.GetPostBackEventReference (this, "") + ";";
         script += "return false;";
       }
@@ -307,7 +266,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
       {
         script = "return false;";
       }
-      _label.Attributes.Add ("onclick", script);
+      Label.Attributes.Add ("onclick", script);
       _hyperLink.Attributes.Add ("onclick", script);
       _hyperLink.Attributes.Add ("onkeydown", "BocBooleanValue_OnKeyDown (this);");
       _hyperLink.Style["padding"] = "0px";
@@ -320,16 +279,16 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
     if (!isReadOnly)
       _hiddenField.Value = _value.HasValue ? _value.ToString() : c_nullString;
     _hiddenField.Visible = ! isReadOnly;
-    _image.ImageUrl = imageUrl;
-    _image.AlternateText = description;
-    _image.Style["vertical-align"] = "middle";
+    Image.ImageUrl = imageUrl;
+    Image.AlternateText = description;
+    Image.Style["vertical-align"] = "middle";
 
     if (_showDescription)
-      _label.Text = description;
+      Label.Text = description;
 
-    _label.Width = Unit.Empty;
-    _label.Height = Unit.Empty;
-    _label.ApplyStyle (_labelStyle);
+    Label.Width = Unit.Empty;
+    Label.Height = Unit.Empty;
+    Label.ApplyStyle (LabelStyle);
   }
   
   /// <summary>
@@ -350,55 +309,6 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
         );
 
     return resourceSet;
-  }
-
-  protected override void AddAttributesToRender(HtmlTextWriter writer)
-  {
-    bool isReadOnly = IsReadOnly;
-    bool isDisabled = ! Enabled;
-
-    string backUpCssClass = CssClass; // base.CssClass and base.ControlStyle.CssClass
-    if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-    {
-      if (isReadOnly)
-        CssClass += " " + CssClassReadOnly;
-      else if (isDisabled)
-        CssClass += " " + CssClassDisabled;
-    }
-    string backUpAttributeCssClass = Attributes["class"];
-    if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-    {
-      if (isReadOnly)
-        Attributes["class"] += " " + CssClassReadOnly;
-      else if (isDisabled)
-        Attributes["class"] += " " + CssClassDisabled;
-    }
-    
-    base.AddAttributesToRender (writer);
-
-    if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-      CssClass = backUpCssClass;
-    if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-      Attributes["class"] = backUpAttributeCssClass;
-    
-    if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-    {
-      string cssClass = CssClassBase;
-      if (isReadOnly)
-        cssClass += " " + CssClassReadOnly;
-      else if (isDisabled)
-        cssClass += " " + CssClassDisabled;
-      writer.AddAttribute(HtmlTextWriterAttribute.Class, cssClass);
-    }
-
-    writer.AddStyleAttribute ("white-space", "nowrap");
-    if (! IsReadOnly)
-    {
-      bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-      bool isLabelWidthEmpty = StringUtility.IsNullOrEmpty (_label.Style["width"]);
-      if (isLabelWidthEmpty && isControlWidthEmpty)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
-    }
   }
 
   protected override void Render(HtmlTextWriter writer)
@@ -426,51 +336,6 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
     values[1] = _value;
 
     return values;
-  }
-
-  /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
-  /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadValue/*' />
-  public override void LoadValue (bool interim)
-  {
-    if (! interim)
-    {
-      if (Property != null && DataSource != null && DataSource.BusinessObject != null)
-      {
-        bool? value = (bool?) DataSource.BusinessObject.GetProperty (Property);
-        LoadValueInternal (value, interim);
-      }
-    }
-  }
-
-  /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
-  /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadUnboundValue/*' />
-  public void LoadUnboundValue (bool? value, bool interim)
-  {
-    LoadValueInternal (value, interim);
-  }
-
-  /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
-  protected virtual void LoadValueInternal (bool? value, bool interim)
-  {
-    if (! interim)
-    {
-      Value = value;
-      IsDirty = false;
-    }
-  }
-
-  /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
-  /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/SaveValue/*' />
-  public override void SaveValue (bool interim)
-  {
-    if (! interim && IsDirty)
-    {
-      if (Property != null && DataSource != null && DataSource.BusinessObject != null && ! IsReadOnly)
-      {
-        DataSource.BusinessObject.SetProperty (Property, Value);
-        IsDirty = false;
-      }
-    }
   }
 
   /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
@@ -532,36 +397,26 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
 
   private void DetermineClientScriptLevel() 
   {
-    _hasClientScript = false;
+    HasClientScript = false;
 
     if (! ControlHelper.IsDesignMode (this, Context))
     {
-      _hasClientScript = true;
+      HasClientScript = true;
       //bool isVersionHigherThan55 = Context.Request.Browser.MajorVersion >= 6
       //                        ||   Context.Request.Browser.MajorVersion == 5 
       //                          && Context.Request.Browser.MinorVersion >= 0.5;
       //bool isInternetExplorer55AndHigher = 
       //    Context.Request.Browser.Browser == "IE" && isVersionHigherThan55;
       //
-      //_hasClientScript = isInternetExplorer55AndHigher;
+      //HasClientScript = isInternetExplorer55AndHigher;
     }
-  }
-
-  /// <summary> Gets or sets the <see cref="IBusinessObjectBooleanProperty"/> object this control is bound to. </summary>
-  /// <value> An instance of type <see cref="IBusinessObjectBooleanProperty"/>. </value>
-  [Browsable (false)]
-  [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-  public new IBusinessObjectBooleanProperty Property
-  {
-    get { return (IBusinessObjectBooleanProperty) base.Property; }
-    set { base.Property = ArgumentUtility.CheckType<IBusinessObjectBooleanProperty> ("value", value); }
   }
   
   /// <summary> Gets or sets the current value. </summary>
   /// <value> The boolean value currently displayed or <see langword="null"/>. </value>
   /// <remarks> The dirty state is reset when the value is set. </remarks>
   [Browsable(false)]
-  public new bool? Value
+  public override bool? Value
   {
     get
     {
@@ -592,7 +447,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
   /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
   public override string[] GetTrackedClientIDs()
   {
-    return IsReadOnly ? new string[0] : new string[1] { _hiddenField.ClientID };
+    return IsReadOnly ? new string[0] : new[] { _hiddenField.ClientID };
   }
 
   /// <summary> The <see cref="BocCheckBox"/> supports only scalar properties. </summary>
@@ -639,7 +494,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
   /// </value>
   [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
   [Browsable (false)]
-  public string FocusID
+  public override string FocusID
   { 
     get { return IsReadOnly ? null : _hyperLink.ClientID; }
   }
@@ -658,14 +513,6 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
     get { return _hiddenField.Value; }
   }
 
-  /// <summary> Occurs when the <see cref="Value"/> property changes between postbacks. </summary>
-  [Category ("Action")]
-  [Description ("Fires when the value of the control has changed.")]
-  public event EventHandler CheckedChanged
-  {
-    add { Events.AddHandler (s_checkedChangedEvent, value); }
-    remove { Events.RemoveHandler (s_checkedChangedEvent, value); }
-  }
 
   /// <summary>
   ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
@@ -683,7 +530,7 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
 
   /// <summary> Gets the <see cref="System.Web.UI.WebControls.Label"/> used for displaying the description. </summary>
   [Browsable (false)]
-  public Label Label
+  public override Label Label
   {
     get { return _label; }
   }
@@ -709,21 +556,6 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
     get { return _hiddenField; }
   }
 
-  /// <summary> Gets a flag that determines whether changing the checked state causes an automatic postback.</summary>
-  /// <value> 
-  ///   <see langword="NaBoolean.True"/> to enable automatic postbacks. 
-  ///   Defaults to <see langword="null"/>, which is interpreted as <see langword="false"/>.
-  /// </value>
-  [Description("Automatically postback to the server after the checked state is modified. Undefined is interpreted as false.")]
-  [Category("Behavior")]
-  [DefaultValue (typeof(bool?), "")]
-  [NotifyParentProperty (true)]
-  public bool? AutoPostBack
-  {
-    get { return _autoPostBack; }
-    set { _autoPostBack = value; }
-  }
-
   /// <summary> Gets or sets the flag that determines whether to show the description next to the checkbox. </summary>
   /// <value> <see langword="true"/> to enable the description. The default value is <see langword="true"/>. </value>
   [Description("The flag that determines whether to show the description next to the checkbox")]
@@ -733,48 +565,6 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
   {
     get { return _showDescription; }
     set { _showDescription = value; }
-  }
-
-  /// <summary> Gets or sets the description displayed when the checkbox is set to <see langword="true"/>. </summary>
-  /// <value> 
-  ///   The text displayed for <see langword="true"/>. The default value is an empty <see cref="String"/>.
-  ///   In case of the default value, the text is read from the resources for this control.
-  /// </value>
-  [Description("The description displayed when the checkbox is set to True.")]
-  [Category ("Appearance")]
-  [DefaultValue("")]
-  public string TrueDescription
-  {
-    get { return _trueDescription; }
-    set { _trueDescription = value; }
-  }
-
-  /// <summary> Gets or sets the description displayed when the checkbox is set to <see langword="false"/>. </summary>
-  /// <value> 
-  ///   The text displayed for <see langword="false"/>. The default value is an empty <see cref="String"/>.
-  ///   In case of the default value, the text is read from the resources for this control.
-  /// </value>
-  [Description("The description displayed when the checkbox is set to False.")]
-  [Category ("Appearance")]
-  [DefaultValue("")]
-  public string FalseDescription
-  {
-    get { return _falseDescription; }
-    set { _falseDescription = value; }
-  }
-
-  /// <summary> Gets or sets the description displayed when the checkbox is set to <see langword="null"/>. </summary>
-  /// <value> 
-  ///   The text displayed for <see langword="null"/>. The default value is an empty <see cref="String"/>.
-  ///   In case of the default value, the text is read from the resources for this control.
-  /// </value>
-  [Description("The description displayed when the checkbox is set to null.")]
-  [Category ("Appearance")]
-  [DefaultValue("")]
-  public string NullDescription
-  {
-    get { return _nullDescription; }
-    set { _nullDescription = value; }
   }
 
   /// <summary> Gets or sets the validation error message. </summary>
@@ -808,24 +598,9 @@ public class BocBooleanValue: BusinessObjectBoundEditableWebControl, IPostBackDa
   ///   <para> Class: <c>bocBooleanValue</c>. </para>
   ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
   /// </remarks>
-  protected virtual string CssClassBase
+  protected override string CssClassBase
   { get { return "bocBooleanValue"; } }
 
-  /// <summary> Gets the CSS-Class applied to the <see cref="BocBooleanValue"/> when it is displayed in read-only mode. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>readOnly</c>. </para>
-  ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocBooleanValue.readOnly</c> as a selector. </para>
-  /// </remarks>
-  protected virtual string CssClassReadOnly
-  { get { return "readOnly"; } }
-
-  /// <summary> Gets the CSS-Class applied to the <see cref="BocBooleanValue"/> when it is displayed in disabled. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>disabled</c>. </para>
-  ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocBooleanValue.disabled</c> as a selector. </para>
-  /// </remarks>
-  protected virtual string CssClassDisabled
-  { get { return "disabled"; } }
   #endregion
 }
 }

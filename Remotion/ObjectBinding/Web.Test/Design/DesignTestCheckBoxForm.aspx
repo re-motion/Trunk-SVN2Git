@@ -68,30 +68,30 @@
     <td colSpan=2>Edit Mode right</td></tr>
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id=BocCheckBox9 runat="server" datasourcecontrol="CurrentObject" width="100%" propertyidentifier="Deceased" cssclass="bocCheckBox right" showdescription="True">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox></td>
     <td width="50%" class="cell">100%</td></tr>
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id=BocCheckBox10 runat="server" datasourcecontrol="CurrentObject" width="50%" propertyidentifier="Deceased" cssclass="bocCheckBox right" showdescription="True">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox></td>
     <td width="50%" class="cell">50%</td></tr>
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id=BocCheckBox11 runat="server" datasourcecontrol="CurrentObject" Width="300px" propertyidentifier="Deceased" cssclass="bocCheckBox right" showdescription="True">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox></td>
     <td width="50%" class="cell">300px</td></tr>
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id=BocCheckBox12 runat="server" datasourcecontrol="CurrentObject" Width="150px" propertyidentifier="Deceased" cssclass="bocCheckBox right" showdescription="True">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox></td>
     <td width="50%" class="cell">
       <p>150px</p></td></tr>
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id=BocCheckBox22 runat="server" datasourcecontrol="CurrentObject" Width="33%" propertyidentifier="Deceased" cssclass="bocCheckBox right" showdescription="True">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox><remotion:boccheckbox id=BocCheckBox23 runat="server" datasourcecontrol="CurrentObject" Width="33%" propertyidentifier="Deceased" cssclass="bocCheckBox right" showdescription="True">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle>
 </remotion:boccheckbox></td>
     <td width="50%" class="cell">
@@ -100,33 +100,33 @@
     <td colSpan=2>Read-Only Mode right</td></tr>
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id=BocCheckBox13 runat="server" datasourcecontrol="CurrentObject" width="100%" propertyidentifier="Deceased" readonly="True" cssclass="bocCheckBox right" showdescription="True">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox></td>
     <td width="50%" class="cell">100%</td></tr>
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id="BocCheckBox14" cssclass="bocCheckBox right" runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" width="50%" readonly="True" showdescription="True">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox></td>
     <td width="50%" class="cell">50%</td></tr>
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id="BocCheckBox15" cssclass="bocCheckBox right" runat="server" Width="300px" datasourcecontrol="CurrentObject" readonly="True" showdescription="True">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox></td>
     <td width="50%" class="cell">300px</td>
   </tr>
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id="BocCheckBox16" cssclass="bocCheckBox right" runat="server" Width="150px" datasourcecontrol="CurrentObject" readonly="True" showdescription="True" propertyidentifier="Deceased">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox></td>
     <td width="50%" class="cell">
       <p>150px</p></td>
   </tr>  
   <tr>
     <td width="50%" class="cell"><remotion:boccheckbox id="BocCheckBox20" cssclass="bocCheckBox right" runat="server" Width="33%" datasourcecontrol="CurrentObject" readonly="True" showdescription="True" propertyidentifier="Deceased">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle></remotion:boccheckbox>
 <remotion:boccheckbox id="BocCheckBox21" cssclass="bocCheckBox right" runat="server" Width="33%" datasourcecontrol="CurrentObject" readonly="True" showdescription="True" propertyidentifier="Deceased">
-<labelstyle cssclass="label">
+<LabelStyle cssclass="label">
 </LabelStyle>
 </remotion:boccheckbox></td>
     <td width="50%" class="cell">

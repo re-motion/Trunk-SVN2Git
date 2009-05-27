@@ -64,7 +64,7 @@
 </PersistedCommand></remotion:bocreferencevalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocbooleanvalue id=BooleanField runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" errormessage="Fehler" autopostback="True"></remotion:bocbooleanvalue></td></tr>
+    <td><remotion:bocbooleanvalue id=BooleanField runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" errormessage="Fehler" AutoPostBack="True"></remotion:bocbooleanvalue></td></tr>
   <tr>
     <td></td>
     <td></td></tr>

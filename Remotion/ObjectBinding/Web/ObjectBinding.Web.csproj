@@ -151,6 +151,7 @@
     <Compile Include="UI\Controls\BocCheckbox.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocBooleanValueBase.cs" />
     <Compile Include="UI\Controls\BocColumnDefinition.cs">
       <SubType>Code</SubType>
     </Compile>

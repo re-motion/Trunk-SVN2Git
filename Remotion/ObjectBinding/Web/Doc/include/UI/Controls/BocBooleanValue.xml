@@ -22,7 +22,7 @@
       <para>
         The control's <see cref="Value"/> can be assigned <see cref="Boolean"/> values and <see langword="null"/>. 
       </para><para>
-        The control's <see cref="Property"/> supports the <see cref="IBusinessObjectBooleanProperty"/>.
+        The control's <see cref="BusinessObjectBoundWebControl.Property"/> supports the <see cref="IBusinessObjectBooleanProperty"/>.
       </para>      
       
       <h4 class="dtH4">Standards Conformance</h4>
@@ -47,7 +47,7 @@
 
       <h4 class="dtH4">Usage Notes</h4>      
       <para>
-        Place an <see cref="HtmlHeadContents"/> control on every <b>ASPX</b> page displaying the 
+        Place an <see cref="Remotion.Web.UI.Controls.HtmlHeadContents"/> control on every <b>ASPX</b> page displaying the 
         <b>BocBooleanValue</b>.
       </para><para>
         Provide the external resources for this control. See <see cref="T:Remotion.Web.ResourceUrlResolver"/> 
@@ -62,7 +62,7 @@
       </para><para>
         The control provides a default <b>CSS Class</b>, applied to the top level element: <c>bocBooleanValue</c>.
       </para><para>
-        The control supports auto-postback. Use the <see cref="AutoPostBack"/> property to enable this behavior.
+        The control supports auto-postback. Use the <see cref="BocBooleanValueBase.AutoPostBack"/> property to enable this behavior.
       </para>
       
       <h4 class="dtH4">Localization Support</h4>
@@ -88,21 +88,21 @@
           </description>
         </item>
         <item>
-          <term> <see cref="TrueDescription"/> </term>
+          <term> <see cref="BocBooleanValueBase.TrueDescription"/> </term>
           <description>
             <para> &lt;BocBooleanValue Resource ID&gt;:TrueDescription </para>
             <para> e.g. auto:MyBocBooleanValue:TrueDescription </para>
           </description>
         </item>
         <item>
-          <term> <see cref="FalseDescription"/> </term>
+          <term> <see cref="BocBooleanValueBase.FalseDescription"/> </term>
           <description>
             <para> &lt;BocBooleanValue Resource ID&gt;:FalseDescription </para>
             <para> e.g. auto:MyBocBooleanValue:FalseDescription </para>
           </description>
         </item>
         <item>
-          <term> <see cref="NullDescription"/> </term>
+          <term> <see cref="BocBooleanValueBase.NullDescription"/> </term>
           <description>
             <para> &lt;BocBooleanValue Resource ID&gt;:NullDescription </para>
             <para> e.g. auto:MyBocBooleanValue:NullDescription </para>
@@ -123,7 +123,7 @@
         properties to access these controls directly.
       </para><para>
         The control uses the view state to cache the value between postbacks. If the control is data bound,
-        a call to <see cref="SaveValue"/> with <b>interim</b> set <see langword="true"/> is required to save the
+        a call to <see cref="BusinessObjectBoundEditableWebControl.SaveValue"/> with <b>interim</b> set <see langword="true"/> is required to save the
         value back into the data source.
       </para>
       <list type="table">

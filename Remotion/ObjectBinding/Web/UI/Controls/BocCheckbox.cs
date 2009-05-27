@@ -36,12 +36,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 [ValidationProperty ("ValidationValue")]
 [DefaultEvent ("SelectionChanged")]
 [ToolboxItemFilter("System.Web.UI")]
-public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHandler, IFocusableControl
+public class BocCheckBox: BocBooleanValueBase
 {
-	// constants
-
+  // constants
+  
   private const string c_scriptFileUrl = "BocCheckBox.js";
-  private const string c_defaultControlWidth = "100pt";
 
   private const string c_trueIcon = "CheckBoxTrue.gif";
   private const string c_falseIcon = "CheckBoxFalse.gif";
@@ -66,34 +65,24 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
 
   // static members
 	
-  private static readonly Type[] s_supportedPropertyInterfaces = new Type[] { 
+  private static readonly Type[] s_supportedPropertyInterfaces = new[] { 
       typeof (IBusinessObjectBooleanProperty) };
-
-  private static readonly object s_checkedChangedEvent = new object();
 
   private static readonly string s_scriptFileKey = typeof (BocCheckBox).FullName + "_Script";
   private static readonly string s_startUpScriptKey = typeof (BocCheckBox).FullName+ "_Startup";
 
 	// member fields
 
-  private bool _value = false;
-  private bool? _defaultValue = null;
+  private bool _value;
+  private bool? _defaultValue;
   private bool _isActive = true;
 
-  private HtmlInputCheckBox _checkBox;
-  private Image _image;
-  private Label _label;
-  private Style _labelStyle;
+  private readonly HtmlInputCheckBox _checkBox;
+  private readonly Image _image;
+  private readonly Label _label;
+  private readonly Style _labelStyle;
 
-  private bool? _autoPostBack = null;
-
-  private bool? _showDescription = null;
-  private string _trueDescription = string.Empty;
-  private string _falseDescription = string.Empty;
-  private string _nullDescription = string.Empty;
-
-  /// <summary> Flag that determines whether the client script will be rendered. </summary>
-  private bool _hasClientScript = false;
+  private bool? _showDescription;
 
   // construction and disposing
 
@@ -140,27 +129,12 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
     }
   }
 
-  /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
-  bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
-  {
-    if (RequiresLoadPostData)
-      return LoadPostData (postDataKey, postCollection);
-    else
-      return false;
-  }
-
-  /// <summary> Invokes the <see cref="RaisePostDataChangedEvent"/> method. </summary>
-  void IPostBackDataHandler.RaisePostDataChangedEvent()
-  {
-    RaisePostDataChangedEvent();
-  }
-
   /// <summary>
   ///   Uses the <paramref name="postCollection"/> to determine whether the value of this control has been changed 
   ///   between postbacks.
   /// </summary>
   /// <include file='doc\include\UI\Controls\BocCheckBox.xml' path='BocCheckBox/LoadPostData/*' />
-  protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
+  protected override bool LoadPostData (string postDataKey, NameValueCollection postCollection)
   {
     if (! _isActive)
       return false;
@@ -177,18 +151,10 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
   }
 
   /// <summary> Called when the state of the control has changed between postbacks. </summary>
-  protected virtual void RaisePostDataChangedEvent()
+  protected override void RaisePostDataChangedEvent()
   {
     if (! IsReadOnly && Enabled)
       OnCheckedChanged();
-  }
-
-  /// <summary> Fires the <see cref="CheckedChanged"/> event. </summary>
-  protected virtual void OnCheckedChanged()
-  {
-    EventHandler eventHandler = (EventHandler) Events[s_checkedChangedEvent];
-    if (eventHandler != null)
-      eventHandler (this, EventArgs.Empty);
   }
 
   /// <summary> Checks whether the control conforms to the required WAI level. </summary>
@@ -247,14 +213,14 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
       defaultTrueDescription = resourceManager.GetString (ResourceIdentifier.TrueDescription);
       defaultFalseDescription = resourceManager.GetString (ResourceIdentifier.FalseDescription);
 
-      trueDescription = (StringUtility.IsNullOrEmpty (_trueDescription) ? defaultTrueDescription : _trueDescription);
-      falseDescription = (StringUtility.IsNullOrEmpty (_falseDescription) ? defaultFalseDescription : _falseDescription);
+      trueDescription = (StringUtility.IsNullOrEmpty (TrueDescription) ? defaultTrueDescription : TrueDescription);
+      falseDescription = (StringUtility.IsNullOrEmpty (FalseDescription) ? defaultFalseDescription : FalseDescription);
     }
     string description = _value ? trueDescription : falseDescription;
 
     DetermineClientScriptLevel();
 
-    if (_hasClientScript)
+    if (HasClientScript)
     {
       if (Enabled)
       {
@@ -271,13 +237,13 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
       string labelScript;
       if (Enabled)
       {
-        string label = IsDescriptionEnabled ? "document.getElementById ('" + _label.ClientID + "')" : "null";
+        string label = IsDescriptionEnabled ? "document.getElementById ('" + Label.ClientID + "')" : "null";
         string checkBox = "document.getElementById ('" + _checkBox.ClientID + "')";
         string script = " ("
                         + checkBox + ", "
                         + label + ", "
-                        + (StringUtility.IsNullOrEmpty (_trueDescription) ? "null" : "'" + _trueDescription + "'") + ", "
-                        + (StringUtility.IsNullOrEmpty (_falseDescription) ? "null" : "'" + _falseDescription + "'") + ");";
+                        + (StringUtility.IsNullOrEmpty (TrueDescription) ? "null" : "'" + TrueDescription + "'") + ", "
+                        + (StringUtility.IsNullOrEmpty (FalseDescription) ? "null" : "'" + FalseDescription + "'") + ");";
 
         if (IsAutoPostBackEnabled)
           script += Page.ClientScript.GetPostBackEventReference (this, "") + ";";
@@ -290,7 +256,7 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
         labelScript = "return false;";
       }
       _checkBox.Attributes.Add ("onclick", checkBoxScript);
-      _label.Attributes.Add ("onclick", labelScript);
+      Label.Attributes.Add ("onclick", labelScript);
     }
 
     SetEditModeValue ();
@@ -298,10 +264,10 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
     
     if (IsDescriptionEnabled)
     {
-      _label.Text = description;
-      _label.Width = Unit.Empty;
-      _label.Height = Unit.Empty;
-      _label.ApplyStyle (_labelStyle);
+      Label.Text = description;
+      Label.Width = Unit.Empty;
+      Label.Height = Unit.Empty;
+      Label.ApplyStyle (LabelStyle);
     }
   }
 
@@ -318,77 +284,28 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
     string description;
     if (_value)
     {
-      if (StringUtility.IsNullOrEmpty (_trueDescription))
+      if (StringUtility.IsNullOrEmpty (TrueDescription))
         description = GetResourceManager().GetString (ResourceIdentifier.TrueDescription);
       else
-        description = _trueDescription;
+        description = TrueDescription;
     }
     else
     {
-      if (StringUtility.IsNullOrEmpty (_falseDescription))
+      if (StringUtility.IsNullOrEmpty (FalseDescription))
         description = GetResourceManager().GetString (ResourceIdentifier.FalseDescription);
       else
-        description = _falseDescription;
+        description = FalseDescription;
     }
-    _image.ImageUrl = imageUrl;
-    _image.AlternateText = description;
-    _image.Style["vertical-align"] = "middle";
+    Image.ImageUrl = imageUrl;
+    Image.AlternateText = description;
+    Image.Style["vertical-align"] = "middle";
 
     if (IsDescriptionEnabled)
     {
-      _label.Text = description;
-      _label.Width = Unit.Empty;
-      _label.Height = Unit.Empty;
-      _label.ApplyStyle (_labelStyle);
-    }
-  }
-
-  protected override void AddAttributesToRender(HtmlTextWriter writer)
-  {
-    bool isReadOnly = IsReadOnly;
-    bool isDisabled = ! Enabled;
-
-    string backUpCssClass = CssClass; // base.CssClass and base.ControlStyle.CssClass
-    if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-    {
-      if (isReadOnly)
-        CssClass += " " + CssClassReadOnly;
-      else if (isDisabled)
-        CssClass += " " + CssClassDisabled;
-    }
-    string backUpAttributeCssClass = Attributes["class"];
-    if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-    {
-      if (isReadOnly)
-        Attributes["class"] += " " + CssClassReadOnly;
-      else if (isDisabled)
-        Attributes["class"] += " " + CssClassDisabled;
-    }
-    
-    base.AddAttributesToRender (writer);
-
-    if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-      CssClass = backUpCssClass;
-    if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-      Attributes["class"] = backUpAttributeCssClass;
-    
-    if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-    {
-      string cssClass = CssClassBase;
-      if (isReadOnly)
-        cssClass += " " + CssClassReadOnly;
-      else if (isDisabled)
-        cssClass += " " + CssClassDisabled;
-      writer.AddAttribute(HtmlTextWriterAttribute.Class, cssClass);
-    }
-
-    writer.AddStyleAttribute ("white-space", "nowrap");
-    if (! IsReadOnly)
-    {
-      bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-      bool isLabelWidthEmpty = StringUtility.IsNullOrEmpty (_label.Style["width"]);
-      if (isLabelWidthEmpty && isControlWidthEmpty)
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
+      Label.Text = description;
+      Label.Width = Unit.Empty;
+      Label.Height = Unit.Empty;
+      Label.ApplyStyle (LabelStyle);
     }
   }
 
@@ -398,13 +315,13 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
 
     if (IsReadOnly)
     {
-      _image.RenderControl (writer);
-      _label.RenderControl (writer);
+      Image.RenderControl (writer);
+      Label.RenderControl (writer);
     }
     else
     {
       _checkBox.RenderControl (writer);
-      _label.RenderControl (writer);
+      Label.RenderControl (writer);
     }
   }
 
@@ -428,52 +345,6 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
     values[2] = _isActive;
 
     return values;
-  }
-
-
-  /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
-  /// <include file='doc\include\UI\Controls\BocCheckBox.xml' path='BocCheckBox/LoadValue/*' />
-  public override void LoadValue (bool interim)
-  {
-    if (! interim)
-    {
-      if (Property != null && DataSource != null && DataSource.BusinessObject != null)
-      {
-        bool? value = (bool?) DataSource.BusinessObject.GetProperty (Property);
-        LoadValueInternal (value, interim);
-      }
-    }
-  }
-
-  /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
-  /// <include file='doc\include\UI\Controls\BocCheckBox.xml' path='BocCheckBox/LoadUnboundValue/*' />
-  public void LoadUnboundValue (bool? value, bool interim)
-  {
-    LoadValueInternal (value, interim);
-  }
-
-  /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
-  protected virtual void LoadValueInternal (bool? value, bool interim)
-  {
-    if (! interim)
-    {
-      Value = value;
-      IsDirty = false;
-    }
-  }
-
-  /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
-  /// <include file='doc\include\UI\Controls\BocCheckBox.xml' path='BocCheckBox/SaveValue/*' />
-  public override void SaveValue (bool interim)
-  {
-    if (!interim && IsDirty)
-    {
-      if (Property != null && DataSource != null && DataSource.BusinessObject != null && ! IsReadOnly)
-      {
-        DataSource.BusinessObject.SetProperty (Property, Value);
-        IsDirty = false;
-      }
-    }
   }
 
   /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
@@ -503,22 +374,12 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
 
   private void DetermineClientScriptLevel() 
   {
-    _hasClientScript = false;
+    HasClientScript = false;
 
     if (! ControlHelper.IsDesignMode (this, Context))
     {
-      _hasClientScript = true;
+      HasClientScript = true;
     }
-  }
-
-  /// <summary> Gets or sets the <see cref="IBusinessObjectBooleanProperty"/> object this control is bound to. </summary>
-  /// <value> An instance of type <see cref="IBusinessObjectBooleanProperty"/>. </value>
-  [Browsable (false)]
-  [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-  public new IBusinessObjectBooleanProperty Property
-  {
-    get { return (IBusinessObjectBooleanProperty) base.Property; }
-    set { base.Property = ArgumentUtility.CheckType<IBusinessObjectBooleanProperty> ("value", value); }
   }
 
   /// <summary> Gets a flag that determines whether the control is to be treated as a required value. </summary>
@@ -537,7 +398,7 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
   /// </value>
   /// <remarks> The dirty state is reset when the value is set. </remarks>
   [Browsable(false)]
-  public new bool? Value
+  public override bool? Value
   {
     get
     {
@@ -548,13 +409,6 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
       IsDirty = true;
       _value = value ?? GetDefaultValue();
     }
-  }
-
-  /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-  protected override object ValueImplementation
-  {
-    get { return Value; }
-    set { Value = ArgumentUtility.CheckType<bool?> ("value", value); }
   }
 
   /// <summary> The boolean value to which this control defaults if the assigned value is <see langword="null"/>. </summary>
@@ -573,7 +427,7 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
   }
 
   /// <summary>
-  ///   Evaluates the default value settings using the <see cref="DefaultValue"/> and the <see cref="Property"/>'s
+  ///   Evaluates the default value settings using the <see cref="DefaultValue"/> and the <see cref="BusinessObjectBoundWebControl.Property"/>'s
   ///   default value.
   /// </summary>
   /// <returns>
@@ -584,7 +438,7 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
   ///       respectivly.
   ///     </item>
   ///     <item>
-  ///       If <see cref="DefaultValue"/> is set to <see langword="null"/>, the <see cref="Property"/>
+  ///       If <see cref="DefaultValue"/> is set to <see langword="null"/>, the <see cref="BusinessObjectBoundWebControl.Property"/>
   ///       is queried for its default value using the <see cref="IBusinessObjectBooleanProperty.GetDefaultValue"/>
   ///       method.
   ///       <list type="bullet">
@@ -627,15 +481,7 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
   /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
   public override string[] GetTrackedClientIDs()
   {
-    return IsReadOnly ? new string[0] : new string[1] { _checkBox.ClientID };
-  }
-
-  /// <summary> The <see cref="BocCheckBox"/> supports only scalar properties. </summary>
-  /// <returns> <see langword="true"/> if <paramref name="isList"/> is <see langword="false"/>. </returns>
-  /// <seealso cref="BusinessObjectBoundWebControl.SupportsPropertyMultiplicity"/>
-  protected override bool SupportsPropertyMultiplicity (bool isList)
-  {
-    return ! isList;
+    return IsReadOnly ? new string[0] : new[] { _checkBox.ClientID };
   }
 
   /// <summary>
@@ -645,16 +491,6 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
   protected override Type[] SupportedPropertyInterfaces
   {
     get { return s_supportedPropertyInterfaces; }
-  }
-
-  /// <summary>
-  ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
-  ///   <see cref="TargetControl"/>.
-  /// </summary>
-  /// <value> Always <see langword="true"/>. </value>
-  public override bool UseLabel
-  {
-    get { return true; }
   }
 
   /// <summary>
@@ -674,7 +510,7 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
   /// </value>
   [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
   [Browsable (false)]
-  public string FocusID
+  public override string FocusID
   { 
     get { return IsReadOnly ? null : _checkBox.ClientID; }
   }
@@ -690,15 +526,6 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
   public bool ValidationValue
   {
     get { return _checkBox.Checked; }
-  }
-
-  /// <summary> Occurs when the <see cref="Value"/> property changes between postbacks. </summary>
-  [Category ("Action")]
-  [Description ("Fires when the value of the control has changed.")]
-  public event EventHandler CheckedChanged
-  {
-    add { Events.AddHandler (s_checkedChangedEvent, value); }
-    remove { Events.RemoveHandler (s_checkedChangedEvent, value); }
   }
 
   /// <summary>
@@ -717,7 +544,7 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
 
   /// <summary> Gets the <see cref="System.Web.UI.WebControls.Label"/> used for displaying the description. </summary>
   [Browsable (false)]
-  public Label Label
+  public override Label Label
   {
     get { return _label; }
   }
@@ -734,32 +561,6 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
   public Image Image
   {
     get { return _image; }
-  }
-
-  /// <summary> Gets a flag that determines whether changing the checked state causes an automatic postback.</summary>
-  /// <value> 
-  ///   <see langword="NaBooleanEnum.True"/> to enable automatic postbacks. 
-  ///   Defaults to <see langword="null"/>, which is interpreted as 
-  ///   <see langword="NaBooleanEnum.False"/>.
-  /// </value>
-  /// <remarks>
-  ///   Use <see cref="IsAutoPostBackEnabled"/> to evaluate this property.
-  /// </remarks>
-  [Description("Automatically postback to the server after the checked state is modified. Undefined is interpreted as false.")]
-  [Category("Behavior")]
-  [DefaultValue (typeof (bool?), "")]
-  [NotifyParentProperty (true)]
-  public bool? AutoPostBack
-  {
-    get { return _autoPostBack; }
-    set { _autoPostBack = value; }
-  }
-
-  /// <summary> Gets the evaluated value for the <see cref="AutoPostBack"/> property. </summary>
-  /// <value> <see langowrd="true"/> if <see cref="AutoPostBack"/> is <see langword="true"/>. </value>
-  protected bool IsAutoPostBackEnabled
-  {
-    get { return _autoPostBack == true;}
   }
 
   /// <summary> Gets or sets the flag that determines whether to show the description next to the checkbox. </summary>
@@ -789,58 +590,15 @@ public class BocCheckBox: BusinessObjectBoundEditableWebControl, IPostBackDataHa
     get { return ! WcagHelper.Instance.IsWaiConformanceLevelARequired() && _showDescription == true;}
   }
 
-  /// <summary> Gets or sets the description displayed when the checkbox is set to <see langword="true"/>. </summary>
-  /// <value> 
-  ///   The text displayed for <see langword="true"/>. The default value is an empty <see cref="String"/>.
-  ///   In case of the default value, the text is read from the resources for this control.
-  /// </value>
-  [Description("The description displayed when the checkbox is set to True.")]
-  [Category ("Behavior")]
-  [DefaultValue("")]
-  public string TrueDescription
-  {
-    get { return _trueDescription; }
-    set { _trueDescription = value; }
-  }
-
-  /// <summary> Gets or sets the description displayed when the checkbox is set to <see langword="false"/>. </summary>
-  /// <value> 
-  ///   The text displayed for <see langword="false"/>. The default value is an empty <see cref="String"/>.
-  ///   In case of the default value, the text is read from the resources for this control.
-  /// </value>
-  [Description("The description displayed when the checkbox is set to False.")]
-  [Category ("Behavior")]
-  [DefaultValue("")]
-  public string FalseDescription
-  {
-    get { return _falseDescription; }
-    set { _falseDescription = value; }
-  }
-
   #region protected virtual string CssClass...
   /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> itself. </summary>
   /// <remarks> 
   ///   <para> Class: <c>bocCheckBox</c>. </para>
   ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
   /// </remarks>
-  protected virtual string CssClassBase
+  protected override string CssClassBase
   { get { return "bocCheckBox"; } }
 
-  /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>readOnly</c>. </para>
-  ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.readOnly</c> as a selector. </para>
-  /// </remarks>
-  protected virtual string CssClassReadOnly
-  { get { return "readOnly"; } }
-
-  /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
-  /// <remarks> 
-  ///   <para> Class: <c>disabled</c>. </para>
-  ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.disabled</c> as a selector.</para>
-  /// </remarks>
-  protected virtual string CssClassDisabled
-  { get { return "disabled"; } }
   #endregion
 }
 

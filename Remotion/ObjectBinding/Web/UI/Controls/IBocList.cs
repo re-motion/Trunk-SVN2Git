@@ -422,7 +422,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     void ApplyStyleSheetSkin (Page page);
     void Focus ();
     string ResolveUrl (string relativeUrl);
-    string ResolveClientUrl (string relativeUrl);
     IResourceManager GetResourceManager ();
     BocColumnDefinition[] GetColumns ();
     bool IsColumnVisible (BocColumnDefinition columnDefinition);

@@ -23,7 +23,7 @@
         The control's <see cref="Value"/> can be assigned <see cref="Boolean"/> values and <see langword="null"/>. 
         In case of <see langword="null"/>, a default value is assumed.
       </para><para>
-        The control's <see cref="Property"/> supports the <see cref="IBusinessObjectBooleanProperty"/>.
+        The control's <see cref="BusinessObjectBoundWebControl.Property"/> supports the <see cref="IBusinessObjectBooleanProperty"/>.
       </para>
       
       <h4 class="dtH4">Standards Conformance</h4>
@@ -72,7 +72,7 @@
       </para><para>
         The control provides a default <b>CSS Class</b>, applied to the top level element: <c>bocCheckBox</c>.
       </para><para>
-        The control supports auto-postback. Use the <see cref="AutoPostBack"/> property to enable this behavior.
+        The control supports auto-postback. Use the <see cref="BocBooleanValueBase.AutoPostBack"/> property to enable this behavior.
       </para>
       
       <h4 class="dtH4">Localization Support</h4>
@@ -91,14 +91,14 @@
           <description>Resource Identifier</description>
         </listheader>
         <item>
-          <term> <see cref="TrueDescription"/> </term>
+          <term> <see cref="BocBooleanValueBase.TrueDescription"/> </term>
           <description>
             <para> &lt;BocCheckBox Resource ID&gt;:TrueDescription </para>
             <para> e.g. auto:MyBocCheckBox:TrueDescription </para>
           </description>
         </item>
         <item>
-          <term> <see cref="FalseDescription"/> </term>
+          <term> <see cref="BocBooleanValueBase.FalseDescription"/> </term>
           <description>
             <para> &lt;BocCheckBox Resource ID&gt;:FalseDescription </para>
             <para> e.g. auto:MyBocCheckBox:FalseDescription </para>
@@ -117,7 +117,7 @@
         controls directly.
       </para><para>
         The control uses the view state to cache the value between postbacks. If the control is data bound,
-        a call to <see cref="SaveValue"/> with <b>interim</b> set <see langword="true"/> is required to save the
+        a call to <see cref="BusinessObjectBoundEditableWebControl.SaveValue"/> with <b>interim</b> set <see langword="true"/> is required to save the
         value back into the data source.
       </para>
       <list type="table">
@@ -175,7 +175,7 @@
         Loads the <see cref="Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/> 
         if <paramref name="interim"/> is <see langword="false"/>. 
       </para><para>
-        Requires a <see cref="Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
+        Requires a <see cref="BocBooleanValueBase.Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
         a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
       </para><para>
         <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> is <see langword="false"/> after invoking
@@ -214,7 +214,7 @@
         <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> will be <see langword="false"/> after invoking
         <see cref="SaveValue"/> with <paramref name="interim"/> <see langword="false"/>.
       </para><para>
-        Requires a <see cref="Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
+        Requires a <see cref="BusinessObjectBoundWebControl.Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
         a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
       </para>
     </remarks>
