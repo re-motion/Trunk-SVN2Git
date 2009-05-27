@@ -14,19 +14,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Structure
+namespace Remotion.Data.Linq.Parsing.Structure.Legacy
 {
-  public class LetExpressionData : BodyExpressionDataBase<Expression>
+  public class FromExpressionData : BodyExpressionDataBase<Expression>
   {
     public ParameterExpression Identifier { get; private set; }
 
-    public LetExpressionData (ParameterExpression identifier, Expression expression)
+    public FromExpressionData (Expression expression,ParameterExpression identifier)
         : base (expression)
     {
-      ArgumentUtility.CheckNotNull ("identifier", identifier);
       ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("identifier", identifier);
 
       Identifier = identifier;
     }

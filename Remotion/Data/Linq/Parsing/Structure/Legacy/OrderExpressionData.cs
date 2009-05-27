@@ -14,22 +14,31 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Parsing.Structure;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Structure
+namespace Remotion.Data.Linq.Parsing.Structure.Legacy
 {
-  public class FromExpressionData : BodyExpressionDataBase<Expression>
+  public class OrderExpressionData : BodyExpressionDataBase<LambdaExpression>
   {
-    public ParameterExpression Identifier { get; private set; }
-
-    public FromExpressionData (Expression expression,ParameterExpression identifier)
+    public OrderExpressionData (bool firstOrderBy, OrderingDirection orderingDirection, LambdaExpression expression)
         : base (expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      ArgumentUtility.CheckNotNull ("identifier", identifier);
 
-      Identifier = identifier;
+      FirstOrderBy = firstOrderBy;
+      OrderingDirection = orderingDirection;
+    }
+
+    public bool FirstOrderBy { get; private set; }
+    public OrderingDirection OrderingDirection { get; private set; }
+
+    public override string ToString ()
+    {
+      if (FirstOrderBy)
+        return string.Format ("orderby {0} {1}", TypedExpression, OrderingDirection);
+      else
+        return string.Format ("thenby {0} {1}", TypedExpression, OrderingDirection);
     }
   }
 }

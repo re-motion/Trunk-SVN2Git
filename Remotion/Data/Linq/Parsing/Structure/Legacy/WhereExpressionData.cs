@@ -15,7 +15,7 @@
 // 
 using System.Linq.Expressions;
 
-namespace Remotion.Data.Linq.Parsing.Structure
+namespace Remotion.Data.Linq.Parsing.Structure.Legacy
 {
   public class WhereExpressionData : BodyExpressionDataBase<LambdaExpression>
   {
