@@ -14,16 +14,17 @@
   
   2) In the Global.asax file, add the follwing lines to the Application_Start method:
 
-      IWindsorContainer container = new WindsorContainer ();
-      container.Register (
-          AllTypes.Pick ()
-              .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+    IWindsorContainer container = new WindsorContainer ();
+    container.Register (
+        AllTypes.Pick ()
+            .FromAssembly (typeof (RendererBase<>).Assembly)
+            .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
+            .WithService.Select ((t, b) => t.GetInterfaces ())
+            .Configure (c => c.Named ("default." + c.ServiceType.Name)));
 
-      ServiceLocator.SetLocatorProvider (() => new WindsorServiceLocator (container));
-      
+    Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (new WindsorServiceLocator (container)));
+    ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
+
   This will register all renderer factories in any Remotion.ObjectBinding.Web.UI.Controls.Rendering.[ControlName].QuirksMode.Factories 
   namespace of the Remotion.ObjectBinding.Web assembly.
 
