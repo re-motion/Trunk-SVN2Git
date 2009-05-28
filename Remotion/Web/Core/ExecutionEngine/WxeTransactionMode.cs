@@ -19,7 +19,11 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  //TODO: Doc
+  /// <summary>
+  /// Defines commonly used transaction modes that can be specified when a new <see cref="WxeFunction"/> is created.
+  /// </summary>
+  /// <typeparam name="TTransactionFactory">The type of the transaction factory to be used to create the transactions. This depends on the underlying
+  /// persistence management framework. For re-store, specify <see cref="T:Remotion.Data.DomainObjects.ClientTransactionFactory"/>.</typeparam>
   public abstract class WxeTransactionMode<TTransactionFactory>
       where TTransactionFactory : ITransactionFactory, new ()
   {
