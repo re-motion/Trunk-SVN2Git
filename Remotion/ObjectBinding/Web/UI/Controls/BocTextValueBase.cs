@@ -21,7 +21,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -287,7 +287,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected abstract IBocTextValueBaseRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer);
+    protected abstract IRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer);
 
     /// <summary> Loads the resources into the control's properties. </summary>
     protected override void LoadResources (IResourceManager resourceManager)

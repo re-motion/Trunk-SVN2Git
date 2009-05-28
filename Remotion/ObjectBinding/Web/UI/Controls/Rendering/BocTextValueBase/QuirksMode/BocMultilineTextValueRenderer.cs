@@ -22,7 +22,7 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
-  public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>, IBocTextValueBaseRenderer
+  public class BocMultilineTextValueRenderer : BocTextValueRendererBase<IBocMultilineTextValue>, IRenderer
   {
     public BocMultilineTextValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocMultilineTextValue control)
         : base (context, writer, control)

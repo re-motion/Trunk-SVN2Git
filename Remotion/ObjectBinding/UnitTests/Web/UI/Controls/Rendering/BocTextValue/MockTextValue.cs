@@ -22,11 +22,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 {
   public class MockTextValue : ObjectBinding.Web.UI.Controls.BocTextValue
   {
-    //public void OnPreRender ()
-    //{
-    //  OnPreRender (EventArgs.Empty);
-    //}
-
     public override bool IsReadOnly
     {
       get { return ReadOnly.HasValue ? ReadOnly.Value : base.IsReadOnly; }

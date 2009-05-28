@@ -139,7 +139,7 @@ public class BocCheckBox: BocBooleanValueBase
     if (! _isActive)
       return false;
 
-    string newValue = PageUtility.GetPostBackCollectionItem (Page, _checkBox.UniqueID);
+    string newValue = PageUtility.GetPostBackCollectionItem ((Page)Page, _checkBox.UniqueID);
     bool newBooleanValue = ! StringUtility.IsNullOrEmpty (newValue);
     bool isDataChanged = _value != newBooleanValue;
     if (isDataChanged)
@@ -222,21 +222,19 @@ public class BocCheckBox: BocBooleanValueBase
 
     if (HasClientScript)
     {
+      string checkBoxScript;
+      string labelScript;
+
       if (Enabled)
       {
         if (!Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey))
         {
-          string script = string.Format (
+          string startupScript = string.Format (
               "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
               defaultTrueDescription, defaultFalseDescription);
-          ScriptUtility.RegisterStartupScriptBlock (this, s_startUpScriptKey, script);
+          Page.ClientScript.RegisterStartupScriptBlock (this, s_startUpScriptKey, startupScript);
         }
-      }
-
-      string checkBoxScript;
-      string labelScript;
-      if (Enabled)
-      {
+      
         string label = IsDescriptionEnabled ? "document.getElementById ('" + Label.ClientID + "')" : "null";
         string checkBox = "document.getElementById ('" + _checkBox.ClientID + "')";
         string script = " ("
@@ -376,7 +374,7 @@ public class BocCheckBox: BocBooleanValueBase
   {
     HasClientScript = false;
 
-    if (! ControlHelper.IsDesignMode (this, Context))
+    if (! IsDesignMode )
     {
       HasClientScript = true;
     }

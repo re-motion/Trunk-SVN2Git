@@ -18,7 +18,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using HtmlAgilityPack;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue.QuirksMode
@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     private readonly Unit _height = new Unit (17, UnitType.Point);
     private readonly Unit _width = new Unit (123, UnitType.Point);
     protected T TextValue { get; set; }
-    protected IBocTextValueBaseRenderer Renderer { get; set; }
+    protected IRenderer Renderer { get; set; }
 
     protected Unit Height
     {

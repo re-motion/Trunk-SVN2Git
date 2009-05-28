@@ -244,6 +244,8 @@
     <Compile Include="UI\Controls\DataEditControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UI\Controls\IBocBooleanValue.cs" />
+    <Compile Include="UI\Controls\IBocBooleanValueBase.cs" />
     <Compile Include="UI\Controls\IBocList.cs" />
     <Compile Include="UI\Controls\IBocMultilineTextValue.cs" />
     <Compile Include="UI\Controls\IBocTextValue.cs" />
@@ -275,6 +277,7 @@
     <Compile Include="UI\Controls\Infrastructure\BocList\EditModeValidator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocBooleanValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />
@@ -317,7 +320,7 @@
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocSimpleColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocValueColumnRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueBaseRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\IRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRendererBase.cs" />

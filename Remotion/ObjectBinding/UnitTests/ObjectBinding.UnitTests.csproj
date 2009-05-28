@@ -292,6 +292,10 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerInRowEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerTestBase.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerWithoutEditModeTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\MockBooleanValue.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\MockCheckbox.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\BocBooleanValueRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\BocCheckboxRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocCommandColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocCustomColumnRendererTest.cs" />

@@ -19,11 +19,13 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  public abstract class BocBooleanValueBase : BusinessObjectBoundEditableWebControl, IPostBackDataHandler, IFocusableControl
+  public abstract class BocBooleanValueBase : BusinessObjectBoundEditableWebControl, IBocBooleanValueBase, IPostBackDataHandler, IFocusableControl
   {
     private const string c_defaultControlWidth = "100pt";
 
@@ -108,6 +110,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
     /// </remarks>
     protected abstract string CssClassBase { get; }
+
+    string IBocBooleanValueBase.CssClassReadOnly
+    {
+      get { return CssClassReadOnly; }
+    }
+
+    string IBocBooleanValueBase.CssClassDisabled
+    {
+      get { return CssClassDisabled; }
+    }
+
+    bool IBocBooleanValueBase.HasClientScript
+    {
+      get { return HasClientScript; }
+      set { HasClientScript = value; }
+    }
+
+    string IBocBooleanValueBase.CssClassBase
+    {
+      get { return CssClassBase; }
+    }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
     /// <remarks> 
@@ -327,5 +350,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     public abstract Label Label { get; }
+
+    bool IBocBooleanValueBase.IsAutoPostBackEnabled
+    {
+      get { return IsAutoPostBackEnabled; }
+    }
+
+    public virtual new IPage Page
+    {
+      get { return new PageWrapper (base.Page); }
+    }
+
+    bool IBocBooleanValueBase.IsDesignMode
+    {
+      get { return IsDesignMode; }
+    }
   }
 }

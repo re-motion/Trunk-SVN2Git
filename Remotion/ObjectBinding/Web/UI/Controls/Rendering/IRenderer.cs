@@ -15,9 +15,9 @@
 // 
 using System;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {
-  public interface IBocTextValueBaseRenderer
+  public interface IRenderer
   {
     void Render ();
   }

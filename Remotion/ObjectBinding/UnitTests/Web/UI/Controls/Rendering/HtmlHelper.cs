@@ -19,6 +19,7 @@ using System.Text;
 using System.Web.UI;
 using HtmlAgilityPack;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
 {
@@ -229,6 +230,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
       HtmlTextNode node = (HtmlTextNode) parent.ChildNodes[index];
 
       Assert.AreEqual (string.Empty, node.Text.Trim());
+    }
+
+    public void AssertNoAttribute (HtmlNode node, string attributeName)
+    {
+      Assert.That (node.Attributes[attributeName], Is.Null);
     }
   }
 }

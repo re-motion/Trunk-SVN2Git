@@ -20,7 +20,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
@@ -140,7 +140,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
-    protected override IBocTextValueBaseRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer)
+    protected override IRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer)
     {
       return new BocMultilineTextValueRenderer (context, writer, this);
     }
