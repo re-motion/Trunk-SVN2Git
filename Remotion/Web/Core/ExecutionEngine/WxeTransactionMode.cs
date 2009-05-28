@@ -23,14 +23,37 @@ namespace Remotion.Web.ExecutionEngine
   public abstract class WxeTransactionMode<TTransactionFactory>
       where TTransactionFactory : ITransactionFactory, new ()
   {
+    /// <summary>
+    /// Indicates that a <see cref="WxeFunction"/> will not create any transactions when executed; instead, it will use the transaction of the
+    /// <see cref="WxeStep.ParentFunction"/>, or no transaction if no parent exists.
+    /// </summary>
     public static readonly ITransactionMode None = new NoneTransactionMode();
 
+    /// <summary>
+    /// Indicates that a <see cref="WxeFunction"/> will create a new root transaction when executed. The transaction must be explicitly committed,
+    /// otherwise all changes made in its scope will be discarded.
+    /// </summary>
     public static readonly ITransactionMode CreateRoot = new CreateRootTransactionMode(false, new TTransactionFactory ());
 
+    /// <summary>
+    /// Indicates that a <see cref="WxeFunction"/> will create a new root transaction when executed. The transaction can be explicitly committed, and
+    /// it will be committed automatically when the function successfuly finishes execution. When the function finishes with an exception, the
+    /// transaction will not be committed automatically.
+    /// </summary>
     public static readonly ITransactionMode CreateRootWithAutoCommit = new CreateRootTransactionMode (true, new TTransactionFactory ());
 
+    /// <summary>
+    /// Indicates that a <see cref="WxeFunction"/> will create a new transaction when executed. If a <see cref="WxeStep.ParentFunction"/> exists which 
+    /// has an associated transaction, the new transaction will be created as a child of that transaction. If no parent transaction exists, a root
+    /// transaction will be created. The new transaction must be explicitly committed, otherwise all changes made in its scope will be discarded.
+    /// </summary>
     public static readonly ITransactionMode CreateChildIfParent = new CreateChildIfParentTransactionMode(false, new TTransactionFactory());
 
+    /// Indicates that a <see cref="WxeFunction"/> will create a new transaction when executed. If a <see cref="WxeStep.ParentFunction"/> exists which 
+    /// has an associated transaction, the new transaction will be created as a child of that transaction. If no parent transaction exists, a root
+    /// transaction will be created. The new transaction can be explicitly committed, and
+    /// it will be committed automatically when the function successfuly finishes execution. When the function finishes with an exception, the
+    /// transaction will not be committed automatically.
     public static readonly ITransactionMode CreateChildIfParentWithAutoCommit = new CreateChildIfParentTransactionMode (true, new TTransactionFactory());
 
     protected WxeTransactionMode ()
