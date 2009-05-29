@@ -584,9 +584,10 @@
     <Compile Include="Linq\Parsing\FieldResolving\SelectFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\WhereFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
-    <Compile Include="Linq\Parsing\ReplacingExpressionTreeVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\ReplacingVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\ExpressionNodeTypeRegistryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\ExpressionTreeParserTest.cs" />
+    <Compile Include="Linq\Parsing\AnonymousType.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeFactoryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeWithTooManyCtors.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\CallParserDispatcherTest.cs" />
@@ -650,10 +651,11 @@
     <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\SelectManyWhereExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\SimpleWhereExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Structure\MethodCallExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\TreeEvaluation\PartialEvaluationPreAnalyzerIntegrationTest.cs" />
-    <Compile Include="Linq\Parsing\TreeEvaluation\PartialEvaluationPreAnalyzerTest.cs" />
-    <Compile Include="Linq\Parsing\TreeEvaluation\PartialTreeEvaluatorTest.cs" />
-    <Compile Include="Linq\Parsing\TreeEvaluation\TestablePartialEvaluationPreAnalyzer.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TransparentIdentifierRemovingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\PartialEvaluationPreAnalyzerIntegrationTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\PartialEvaluationPreAnalyzerTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\PartialTreeEvaluatingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\TestablePartialEvaluationPreAnalyzer.cs" />
     <Compile Include="Linq\QueryModelTest.cs" />
     <Compile Include="Linq\QueryModel_BodyTest.cs" />
     <Compile Include="Linq\QueryProviderBaseTest.cs" />

@@ -13,23 +13,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using Remotion.Data.Linq.Expressions;
+using System;
 
-namespace Remotion.Data.Linq.Parsing.TreeEvaluation
+namespace Remotion.Data.UnitTests.Linq.Parsing
 {
-  public class PartialEvaluationData
+  public class AnonymousType
   {
-    public PartialEvaluationData ()
+    public AnonymousType ()
     {
-      UsedParameters = new Dictionary<Expression, HashSet<ParameterExpression>> ();
-      DeclaredParameters = new Dictionary<Expression, HashSet<ParameterExpression>> ();
-      SubQueries = new Dictionary<Expression, HashSet<SubQueryExpression>> ();
     }
 
-    public Dictionary<Expression, HashSet<ParameterExpression>> UsedParameters { get; private set; }
-    public Dictionary<Expression, HashSet<ParameterExpression>> DeclaredParameters { get; private set; }
-    public Dictionary<Expression, HashSet<SubQueryExpression>> SubQueries { get; private set; }
+    public AnonymousType (int a, int b)
+    {
+      this.a = a;
+      this.b = b;
+    }
+
+    public int a { get; set; }
+    public int b { get; set; }
   }
 }
