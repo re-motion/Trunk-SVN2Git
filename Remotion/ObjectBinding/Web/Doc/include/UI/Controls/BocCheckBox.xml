@@ -57,7 +57,7 @@
       
       <h4 class="dtH4">Usage Notes</h4>      
       <para>
-        Place an <see cref="HtmlHeadContents"/> control on every <b>ASPX</b> page displaying the 
+        Place an <see cref="Remotion.Web.UI.Controls.HtmlHeadContents"/> control on every <b>ASPX</b> page displaying the 
         <b>BocCheckBox</b>.
       </para><para>
         Provide the external resources for this control. See <see cref="T:Remotion.Web.ResourceUrlResolver"/> 

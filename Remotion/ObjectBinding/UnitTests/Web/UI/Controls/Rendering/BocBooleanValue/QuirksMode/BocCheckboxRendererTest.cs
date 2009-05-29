@@ -14,10 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Rhino.Mocks;
@@ -34,17 +37,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     private const string c_cssClass = "someCssClass";
     private readonly string _startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
 
-    private MockCheckbox _checkbox;
-    private ControlInvoker _controlInvoker;
-
+    private IBocCheckBox _checkbox;
     private string _startupScript;
 
     [SetUp]
     public void SetUp ()
     {
       Initialize ();
-      _checkbox = new MockCheckbox();
-      _controlInvoker = new ControlInvoker (_checkbox);
+      _checkbox = MockRepository.GenerateMock<IBocCheckBox>();
+
+      _checkbox.Stub (mock => mock.GetCheckboxKey ()).Return ("_Boc_CheckBox");
+      _checkbox.Stub (mock => mock.GetImageKey ()).Return ("_Boc_Image");
+      _checkbox.Stub (mock => mock.GetLabelKey ()).Return ("_Boc_Label");
 
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
       _startupScript = string.Format (
@@ -57,55 +61,72 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       var pageStub = MockRepository.GenerateStub<IPage> ();
       pageStub.Stub (stub => stub.ClientScript).Return (clientScriptManagerMock);
 
-      _checkbox.SetPage (pageStub);
-      _checkbox.TrueDescription = c_trueDescription;
-      _checkbox.FalseDescription = c_falseDescription;
-      _checkbox.ShowDescription = true;
+      _checkbox.Stub (mock => mock.Value).PropertyBehavior ();
+      _checkbox.Stub (mock => mock.HasClientScript).Return (true);
+      _checkbox.Stub (mock => mock.IsDescriptionEnabled).Return (true);
+
+      _checkbox.Stub (mock => mock.Page).Return (pageStub);
+      _checkbox.Stub (mock => mock.TrueDescription).Return (c_trueDescription);
+      _checkbox.Stub (mock => mock.FalseDescription).Return (c_falseDescription);
+
+      _checkbox.Stub (mock => mock.CssClass).PropertyBehavior ();
+      _checkbox.Stub (mock => mock.CssClassBase).Return ("cssClassBase");
+      _checkbox.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
+      _checkbox.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
+
+      StateBag stateBag = new StateBag ();
+      _checkbox.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
+      _checkbox.Stub (mock => mock.Style).Return (_checkbox.Attributes.CssStyle);
+      _checkbox.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
+      _checkbox.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
     }
 
     [Test]
     public void RenderTrue ()
     {
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
       CheckRender (true, _checkbox.TrueDescription);
     }
 
     [Test]
     public void RenderFalse ()
     {
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
       CheckRender (false, _checkbox.FalseDescription);
     }
 
     [Test]
     public void RenderTrueReadOnly ()
     {
-      _checkbox.SetReadOnly (true);
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
+      _checkbox.Stub (mock => mock.IsRequired).Return (true);
       CheckRender (true, _checkbox.TrueDescription);
     }
 
     [Test]
     public void RenderFalseReadOnly ()
     {
-      _checkbox.SetReadOnly (true);
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
+      _checkbox.Stub (mock => mock.IsRequired).Return (true);
       CheckRender (false, _checkbox.FalseDescription);
     }
 
     [Test]
     public void RenderTrueDisabled ()
     {
-      _checkbox.Enabled = false;
       CheckRender (true, _checkbox.TrueDescription);
     }
 
     [Test]
     public void RenderFalseDisabled ()
     {
-      _checkbox.Enabled = false;
       CheckRender (false, _checkbox.FalseDescription);
     }
 
     [Test]
     public void RenderTrueWithCssClass ()
     {
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
       _checkbox.CssClass = c_cssClass;
       CheckRender (true, _checkbox.TrueDescription);
     }
@@ -113,6 +134,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderFalseWithCssClass ()
     {
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
       _checkbox.CssClass = c_cssClass;
       CheckRender (false, _checkbox.FalseDescription);
     }
@@ -120,7 +142,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderTrueReadOnlyWithCssClass ()
     {
-      _checkbox.SetReadOnly (true);
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
+      _checkbox.Stub (mock => mock.IsRequired).Return (true);
       _checkbox.CssClass = c_cssClass;
       CheckRender (true, _checkbox.TrueDescription);
     }
@@ -128,7 +151,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderFalseReadOnlyWithCssClass ()
     {
-      _checkbox.SetReadOnly (true);
+      _checkbox.Stub (mock => mock.IsRequired).Return (true);
       _checkbox.CssClass = c_cssClass;
       CheckRender (false, _checkbox.FalseDescription);
     }
@@ -136,7 +159,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderTrueDisabledWithCssClass ()
     {
-      _checkbox.Enabled = false;
       _checkbox.CssClass = c_cssClass;
       CheckRender (true, _checkbox.TrueDescription);
     }
@@ -144,7 +166,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderFalseDisabledWithCssClass ()
     {
-      _checkbox.Enabled = false;
       _checkbox.CssClass = c_cssClass;
       CheckRender (false, _checkbox.FalseDescription);
     }
@@ -152,6 +173,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderTrueWithCssClassInStandardProperties ()
     {
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
       _checkbox.Attributes["class"] = c_cssClass;
       CheckRender (true, _checkbox.TrueDescription);
     }
@@ -159,6 +181,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderFalseWithCssClassInStandardProperties ()
     {
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
       _checkbox.Attributes["class"] = c_cssClass;
       CheckRender (false, _checkbox.FalseDescription);
     }
@@ -166,7 +189,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderTrueReadOnlyWithCssClassInStandardProperties ()
     {
-      _checkbox.SetReadOnly (true);
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
+      _checkbox.Stub (mock => mock.IsRequired).Return (true);
       _checkbox.Attributes["class"] = c_cssClass;
       CheckRender (true, _checkbox.TrueDescription);
     }
@@ -174,7 +198,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderFalseReadOnlyWithCssClassInStandardProperties ()
     {
-      _checkbox.SetReadOnly (true);
+      _checkbox.Stub (mock => mock.Enabled).Return (true);
+      _checkbox.Stub (mock => mock.IsRequired).Return (true);
       _checkbox.Attributes["class"] = c_cssClass;
       CheckRender (false, _checkbox.FalseDescription);
     }
@@ -182,7 +207,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderTrueDisabledWithCssClassInStandardProperties ()
     {
-      _checkbox.Enabled = false;
       _checkbox.Attributes["class"] = c_cssClass;
       CheckRender (true, _checkbox.TrueDescription);
     }
@@ -190,7 +214,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [Test]
     public void RenderFalseDisabledWithCssClassInStandardProperties ()
     {
-      _checkbox.Enabled = false;
       _checkbox.Attributes["class"] = c_cssClass;
       CheckRender (false, _checkbox.FalseDescription);
     }
@@ -199,8 +222,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     {
       _checkbox.Value = value;
 
-      _controlInvoker.PreRenderRecursive ();
-      _checkbox.RenderControl (Html.Writer);
+      var renderer = new BocCheckboxRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _checkbox);
+      renderer.Render();
 
       var document = Html.GetResultDocument();
 
@@ -255,13 +278,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _checkbox.Attributes["class"];
       if (string.IsNullOrEmpty (cssClass))
-        cssClass = _checkbox.CssClassBasePublic;
+        cssClass = _checkbox.CssClassBase;
 
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
       if( _checkbox.IsReadOnly )
-        Html.AssertAttribute (outerSpan, "class", _checkbox.CssClassReadOnlyPublic, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (outerSpan, "class", _checkbox.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       if( !_checkbox.Enabled)
-        Html.AssertAttribute (outerSpan, "class", _checkbox.CssClassDisabledPublic, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (outerSpan, "class", _checkbox.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
     }
   }
 }

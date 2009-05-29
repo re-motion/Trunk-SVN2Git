@@ -1,6 +1,8 @@
 using System.ComponentModel;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.UI;
+using AttributeCollection=System.Web.UI.AttributeCollection;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -72,5 +74,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool IsDesignMode { get; }
 
     bool Enabled { get; }
+
+    /// <summary>
+    ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
+    ///   description. 
+    /// </summary>
+    Style LabelStyle { get; }
+
+    AttributeCollection Attributes { get; }
+    string CssClass { get; set; }
+    Unit Width { get; }
+    CssStyleCollection Style { get; }
+    Style ControlStyle { get; }
   }
 }

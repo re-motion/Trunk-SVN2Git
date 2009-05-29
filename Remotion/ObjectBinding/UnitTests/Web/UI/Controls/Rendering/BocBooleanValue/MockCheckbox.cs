@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     }
 
     private IPage _page;
-    public override IPage Page
+    public new IPage  Page
     {
       get { return _page; }
     }

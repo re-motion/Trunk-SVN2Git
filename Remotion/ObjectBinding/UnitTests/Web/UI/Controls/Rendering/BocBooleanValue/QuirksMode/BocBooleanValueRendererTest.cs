@@ -14,9 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using HtmlAgilityPack;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;
@@ -34,22 +38,38 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     private const string c_cssClass = "someCssClass";
     private const string c_postbackEventReference = "postbackEventReference";
 
-    private ControlInvoker _controlInvoker;
     private string _startupScript;
     private string _clickScript;
     private string _keyDownScript;
     private string _dummyScript = "return false;";
-    private MockBooleanValue _booleanValue;
-    
+    private IBocBooleanValue _booleanValue;
+
     [SetUp]
     public void SetUp ()
     {
       Initialize();
-      _booleanValue = new MockBooleanValue();
-      _controlInvoker = new ControlInvoker (_booleanValue);
 
+      var resourceSet = new BocBooleanValueResourceSet (
+          "ResourceKey",
+          "TrueIconUrl",
+          "FalseIconUrl",
+          "NullIconUrl",
+          "DefaultTrueDescription",
+          "DefaultFalseDescription",
+          "DefaultNullDescription"
+          );
+
+      _booleanValue = MockRepository.GenerateMock<IBocBooleanValue>();
+      _booleanValue.Stub (mock => mock.CreateResourceSet()).Return (resourceSet);
+      
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
-      var resourceSet = _booleanValue.GetResourceSet();
+      
+
+      _booleanValue.Stub (mock => mock.GetHiddenFieldKey ()).Return ("_Boc_HiddenField");
+      _booleanValue.Stub (mock => mock.GetHyperLinkKey ()).Return ("_Boc_HyperLink");
+      _booleanValue.Stub (mock => mock.GetImageKey ()).Return ("_Boc_Image");
+      _booleanValue.Stub (mock => mock.GetLabelKey ()).Return ("_Boc_Label");
+
       string startupScriptKey = typeof (ObjectBinding.Web.UI.Controls.BocBooleanValue).FullName + "_Startup_" + resourceSet.ResourceKey;
       _startupScript = string.Format (
           "BocBooleanValue_InitializeGlobals ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}');",
@@ -67,156 +87,181 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<string>.Is.NotNull)).Return (false);
       clientScriptManagerMock.Stub (mock => mock.GetPostBackEventReference (_booleanValue, string.Empty)).Return (c_postbackEventReference);
 
-      _clickScript = "BocBooleanValue_SelectNextCheckboxValue ('resourceGroup', document.getElementById ('_Boc_Image'), " +
-                     "document.getElementById ('_Boc_Label'), document.getElementById ('_Boc_HiddenField'), false, " +
-                     "'" + c_trueDescription + "', '" + c_falseDescription + "', '" + c_nullDescription + "');return false;";
+      _clickScript = string.Format (
+          "BocBooleanValue_SelectNextCheckboxValue ('{0}', document.getElementById ('{1}'), " +
+          "document.getElementById ('{2}'), document.getElementById ('{3}'), false, " +
+          "'" + c_trueDescription + "', '" + c_falseDescription + "', '" + c_nullDescription + "');return false;",
+          "ResourceKey", _booleanValue.GetImageKey(), _booleanValue.GetLabelKey(), _booleanValue.GetHiddenFieldKey());
 
       _keyDownScript = "BocBooleanValue_OnKeyDown (this);";
 
       var pageStub = MockRepository.GenerateStub<IPage>();
       pageStub.Stub (stub => stub.ClientScript).Return (clientScriptManagerMock);
 
-      _booleanValue.SetPage (pageStub);
-      _booleanValue.TrueDescription = c_trueDescription;
-      _booleanValue.FalseDescription = c_falseDescription;
-      _booleanValue.NullDescription = c_nullDescription;
+      _booleanValue.Stub (mock => mock.Value).PropertyBehavior();
+      _booleanValue.Stub (mock => mock.HasClientScript).Return (true);
+      _booleanValue.Stub (mock => mock.ShowDescription).Return (true);
+
+      _booleanValue.Stub (mock => mock.Page).Return (pageStub);
+      _booleanValue.Stub (mock => mock.TrueDescription).Return (c_trueDescription);
+      _booleanValue.Stub (mock => mock.FalseDescription).Return (c_falseDescription);
+      _booleanValue.Stub (mock => mock.NullDescription).Return (c_nullDescription);
+
+      _booleanValue.Stub (mock => mock.CssClass).PropertyBehavior ();
+      _booleanValue.Stub (mock => mock.CssClassBase).Return ("cssClassBase");
+      _booleanValue.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
+      _booleanValue.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
+
+      StateBag stateBag = new StateBag ();
+      _booleanValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
+      _booleanValue.Stub (mock => mock.Style).Return (_booleanValue.Attributes.CssStyle);
+      _booleanValue.Stub (mock => mock.LabelStyle).Return (new Style(stateBag));
+      _booleanValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+
+      
     }
 
     [Test]
     public void RenderTrue ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = true;
-      CheckRendering (true.ToString(), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
     public void RenderFalse ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = false;
-      CheckRendering (false.ToString(), _booleanValue.FalseIconUrl, _booleanValue.FalseDescription);
+      CheckRendering (false.ToString(), "FalseIconUrl", _booleanValue.FalseDescription);
     }
 
     [Test]
     public void RenderNull ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = null;
-      CheckRendering ("null", _booleanValue.NullIconUrl, _booleanValue.NullDescription);
+      CheckRendering ("null", "NullIconUrl", _booleanValue.NullDescription);
     }
 
     [Test]
     public void RenderTrueReadOnly ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = true;
-      _booleanValue.SetReadOnly (true);
-      CheckRendering (true.ToString(), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      _booleanValue.Stub (mock => mock.IsReadOnly).Return (true);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
     public void RenderFalseReadOnly ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = false;
-      _booleanValue.SetReadOnly (true);
-      CheckRendering (false.ToString(), _booleanValue.FalseIconUrl, _booleanValue.FalseDescription);
+      _booleanValue.Stub (mock => mock.IsReadOnly).Return (true);
+      CheckRendering (false.ToString(), "FalseIconUrl", _booleanValue.FalseDescription);
     }
 
     [Test]
     public void RenderNullReadOnly ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = null;
-      _booleanValue.SetReadOnly (true);
-      CheckRendering ("null", _booleanValue.NullIconUrl, _booleanValue.NullDescription);
+      _booleanValue.Stub (mock => mock.IsReadOnly).Return (true);
+      CheckRendering ("null", "NullIconUrl", _booleanValue.NullDescription);
     }
 
     [Test]
     public void RenderTrueDisabled ()
     {
       _booleanValue.Value = true;
-      _booleanValue.Enabled = false;
-      CheckRendering (true.ToString(), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
     public void RenderFalseDisabled ()
     {
       _booleanValue.Value = false;
-      _booleanValue.Enabled = false;
-      CheckRendering (false.ToString(), _booleanValue.FalseIconUrl, _booleanValue.FalseDescription);
+      CheckRendering (false.ToString(), "FalseIconUrl", _booleanValue.FalseDescription);
     }
 
     [Test]
     public void RenderNullDisabled ()
     {
       _booleanValue.Value = null;
-      _booleanValue.Enabled = false;
-      CheckRendering ("null", _booleanValue.NullIconUrl, _booleanValue.NullDescription);
+      CheckRendering ("null","NullIconUrl", _booleanValue.NullDescription);
     }
 
     [Test]
     public void RenderTrueWithCssClass ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = true;
       _booleanValue.CssClass = c_cssClass;
-      CheckRendering (true.ToString (), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
     public void RenderTrueDisabledWithCssClass ()
     {
       _booleanValue.Value = true;
-      _booleanValue.Enabled = false;
       _booleanValue.CssClass = c_cssClass;
-      CheckRendering (true.ToString (), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(),"TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
     public void RenderTrueReadonlyWithCssClass ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = true;
-      _booleanValue.SetReadOnly (true);
+      _booleanValue.Stub (mock => mock.IsReadOnly).Return (true);
       _booleanValue.CssClass = c_cssClass;
-      CheckRendering (true.ToString (), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(),"TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
     public void RenderTrueWithCssClassInStandardProperty ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = true;
       _booleanValue.Attributes["class"] = c_cssClass;
-      CheckRendering (true.ToString (), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
     public void RenderTrueDisabledWithCssClassInStandardProperty ()
     {
       _booleanValue.Value = true;
-      _booleanValue.Enabled = false;
       _booleanValue.Attributes["class"] = c_cssClass;
-      CheckRendering (true.ToString (), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
     public void RenderTrueReadonlyWithCssClassInStandardProperty ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = true;
-      _booleanValue.SetReadOnly (true);
+      _booleanValue.Stub (mock => mock.IsReadOnly).Return (true);
       _booleanValue.Attributes["class"] = c_cssClass;
-      CheckRendering (true.ToString (), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
     public void RenderTrueWithAutoPostback ()
     {
+      _booleanValue.Stub (mock => mock.Enabled).Return (true);
       _booleanValue.Value = true;
-      _booleanValue.AutoPostBack = true;
+      _booleanValue.Stub (mock => mock.IsAutoPostBackEnabled).Return (true);
       _clickScript = _clickScript.Insert (_clickScript.IndexOf ("return false;"), c_postbackEventReference + ";");
-      CheckRendering (true.ToString (), _booleanValue.TrueIconUrl, _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
 
     private void CheckRendering (string value, string iconUrl, string description)
     {
-      _controlInvoker.PreRenderRecursive();
-      _booleanValue.RenderControl (Html.Writer);
+      var renderer = new BocBooleanValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _booleanValue);
+      renderer.Render();
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
       checkOuterSpanAttributes (outerSpan);
@@ -252,7 +297,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _booleanValue.Attributes["class"];
       if (string.IsNullOrEmpty (cssClass))
-        cssClass = _booleanValue.CssClassBasePublic;
+        cssClass = _booleanValue.CssClassBase;
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
     }
 
@@ -261,9 +306,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       CheckCssClass (outerSpan);
 
       if (!_booleanValue.Enabled)
-        Html.AssertAttribute (outerSpan, "class", _booleanValue.CssClassDisabledPublic, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (outerSpan, "class", _booleanValue.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
       if (_booleanValue.IsReadOnly)
-        Html.AssertAttribute (outerSpan, "class", _booleanValue.CssClassReadOnlyPublic, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (outerSpan, "class", _booleanValue.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       else
         Html.AssertStyleAttribute (outerSpan, "width", c_defaultControlWidth);
 

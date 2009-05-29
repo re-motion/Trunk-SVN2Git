@@ -87,50 +87,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // member fields
     private bool? _value;
 
-    private readonly HyperLink _hyperLink;
-    private readonly Image _image;
-    private readonly Label _label;
-    private readonly HiddenField _hiddenField;
     private readonly Style _labelStyle;
 
     private bool _showDescription = true;
 
     private string _errorMessage;
     private readonly ArrayList _validators;
-    private BocBooleanValueResourceSet _resourceSet;
 
     // construction and disposing
 
     public BocBooleanValue ()
     {
       _labelStyle = new Style();
-      _hiddenField = new HiddenField();
-      _hyperLink = new HyperLink();
-      _image = new Image();
-      _label = new Label();
       _validators = new ArrayList();
     }
 
     // methods and properties
-
-    protected override void CreateChildControls ()
-    {
-      _hiddenField.ID = ID + "_Boc_HiddenField";
-      _hiddenField.EnableViewState = false;
-      Controls.Add (_hiddenField);
-
-      _hyperLink.ID = ID + "_Boc_HyperLink";
-      _hyperLink.EnableViewState = false;
-      Controls.Add (_hyperLink);
-
-      _image.ID = ID + "_Boc_Image";
-      _image.EnableViewState = false;
-      _hyperLink.Controls.Add (_image);
-
-      _label.ID = ID + "_Boc_Label";
-      _label.EnableViewState = false;
-      Controls.Add (_label);
-    }
 
     protected override void OnInit (EventArgs e)
     {
@@ -157,7 +129,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadPostData/*' />
     protected override bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValueAsString = PageUtility.GetPostBackCollectionItem ((Page) Page, _hiddenField.UniqueID);
+      string newValueAsString = PageUtility.GetPostBackCollectionItem (Page, GetHiddenFieldKey());
       bool? newValue = null;
       bool isDataChanged = false;
       if (newValueAsString != null)
@@ -214,6 +186,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return resourceSet;
     }
 
+    BocBooleanValueResourceSet IBocBooleanValue.CreateResourceSet ()
+    {
+      return CreateResourceSet();
+    }
+
     protected override void Render (HtmlTextWriter writer)
     {
       EvaluateWaiConformity();
@@ -228,8 +205,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.LoadControlState (values[0]);
       _value = (bool?) values[1];
-
-      _hiddenField.Value = _value.HasValue ? _value.ToString() : c_nullString;
     }
 
     protected override object SaveControlState ()
@@ -336,7 +311,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { _hiddenField.ClientID };
+      return IsReadOnly ? new string[0] : new[] { GetHiddenFieldKey() };
     }
 
     /// <summary> The <see cref="BocCheckBox"/> supports only scalar properties. </summary>
@@ -373,7 +348,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <value> The <see cref="HyperLink"/> if the control is in edit mode, otherwise the control itself. </value>
     public override Control TargetControl
     {
-      get { return IsReadOnly ? (Control) this : _hyperLink; }
+      get { return this; }
     }
 
     /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
@@ -385,7 +360,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : _hyperLink.ClientID; }
+      get { return IsReadOnly ? null : GetHyperLinkKey(); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
@@ -399,7 +374,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public string ValidationValue
     {
-      get { return _hiddenField.Value; }
+      get { return Value.HasValue ? Value.Value.ToString() : c_nullString; }
     }
 
 
@@ -412,109 +387,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [NotifyParentProperty (true)]
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
     [PersistenceMode (PersistenceMode.InnerProperty)]
-    public Style LabelStyle
+    public override Style LabelStyle
     {
       get { return _labelStyle; }
-    }
-
-    private BocBooleanValueResourceSet ResourceSet
-    {
-      get
-      {
-        if (_resourceSet == null)
-          _resourceSet = CreateResourceSet ();
-        return _resourceSet;
-      }
-    }
-
-    string IBocBooleanValue.NullIconUrl
-    {
-      get
-      {
-        
-        return ResourceSet.NullIconUrl;
-      }
-    }
-
-    string IBocBooleanValue.TrueIconUrl
-    {
-      get
-      {
-        
-        return ResourceSet.TrueIconUrl;
-      }
-    }
-
-    string IBocBooleanValue.FalseIconUrl
-    {
-      get
-      {
-        
-        return ResourceSet.FalseIconUrl;
-      }
-    }
-
-    string IBocBooleanValue.DefaultNullDescription
-    {
-      get
-      {
-        
-        return ResourceSet.DefaultNullDescription;
-      }
-    }
-
-    string IBocBooleanValue.DefaultTrueDescription
-    {
-      get
-      {
-        
-        return ResourceSet.DefaultTrueDescription;
-      }
-    }
-
-    string IBocBooleanValue.DefaultFalseDescription
-    {
-      get
-      {
-        
-        return ResourceSet.DefaultFalseDescription;
-      }
-    }
-
-    /// <summary> Gets the <see cref="System.Web.UI.WebControls.Label"/> used for displaying the description. </summary>
-    [Browsable (false)]
-    public override Label Label
-    {
-      get { return _label; }
-    }
-
-    /// <summary> Gets the <see cref="System.Web.UI.WebControls.HyperLink"/> used for provding click functionality. </summary>
-    [Browsable (false)]
-    public HyperLink HyperLink
-    {
-      get { return _hyperLink; }
-    }
-
-    /// <summary> Gets the <see cref="System.Web.UI.WebControls.Image"/> used for displaying the checkbox icon. </summary>
-    [Browsable (false)]
-    public Image Image
-    {
-      get { return _image; }
-    }
-
-    /// <summary> Gets the <see cref="HiddenField"/> used for posting the value back to the server.  </summary>
-    [Browsable (false)]
-    public HiddenField HiddenField
-    {
-      get { return _hiddenField; }
-    }
-
-    string IBocBooleanValue.ResourceKey
-    {
-      get
-      {
-        return ResourceSet.ResourceKey;
-      }
     }
 
     /// <summary> Gets or sets the flag that determines whether to show the description next to the checkbox. </summary>
@@ -538,12 +413,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return UniqueID + IdSeparator + "Boc_Image";
     }
 
-    string IBocBooleanValue.GetHiddenFieldKey ()
+    public string GetHiddenFieldKey ()
     {
       return UniqueID + IdSeparator + "Boc_HiddenField";
     }
 
-    string IBocBooleanValue.GetHyperLinkKey ()
+    public string GetHyperLinkKey ()
     {
       return UniqueID + IdSeparator + "Boc_HyperLink";
     }

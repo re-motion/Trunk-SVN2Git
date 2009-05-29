@@ -14,17 +14,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  public interface IBocBooleanValue : IBocBooleanValueBase
+  public interface IBocCheckBox : IBocBooleanValueBase
   {
-    bool ShowDescription { get; }
     string GetLabelKey ();
+    string GetCheckboxKey ();
+    bool IsDescriptionEnabled { get; }
+    string DefaultTrueDescription { get; }
+    string DefaultFalseDescription { get; }
     string GetImageKey ();
-    string GetHiddenFieldKey ();
-    string GetHyperLinkKey ();
-    BocBooleanValueResourceSet CreateResourceSet ();
   }
 }

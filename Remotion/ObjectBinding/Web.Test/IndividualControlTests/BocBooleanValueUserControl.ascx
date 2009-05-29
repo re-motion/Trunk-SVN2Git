@@ -23,20 +23,20 @@
     <td colSpan=4><remotion:boctextvalue id=FirstNameField runat="server" PropertyIdentifier="FirstName" ReadOnly="True" datasourcecontrol="CurrentObject"></remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" PropertyIdentifier="LastName" ReadOnly="True" datasourcecontrol="CurrentObject"></remotion:boctextvalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocbooleanvalue id="DeceasedField" runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" width="300px" nullitemerrormessage="Eingabe erforderlich" FalseDescription="nein" NullDescription="undefiniert" TrueDescription="ja" ></remotion:bocbooleanvalue></td>
+    <td><remotion:bocbooleanvalue id="DeceasedField" runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" width="300px" FalseDescription="nope" NullDescription="häh?" TrueDescription="sicha" ></remotion:bocbooleanvalue></td>
     <td>bound</td>
     <td style="WIDTH: 20%"><asp:label id="DeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td>
   </tr>
   <tr>
     <td></td>
-    <td><remotion:bocbooleanvalue id="ReadOnlyDeceasedField" runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" width="300px" readonly="True"></remotion:bocbooleanvalue></td>
-    <td>bound, read only</td>
+    <td><remotion:bocbooleanvalue id="ReadOnlyDeceasedField" runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" width="300px" readonly="True" showdescription="false"></remotion:bocbooleanvalue></td>
+    <td>bound, read only, description=false</td>
     <td style="WIDTH: 20%"><asp:label id="ReadOnlyDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td>
   </tr>
   <tr>
     <td></td>
-    <td><remotion:bocbooleanvalue id=UnboundDeceasedField runat="server" Width="150px" required="False" showdescription="False"></remotion:bocbooleanvalue></td>
-    <td>unbound, value not set, required= false, description=false</td>
+    <td><remotion:bocbooleanvalue id=UnboundDeceasedField runat="server" Width="150px" required="False" ></remotion:bocbooleanvalue></td>
+    <td>unbound, value not set, required= false</td>
     <td style="WIDTH: 20%"><asp:label id="UnboundDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td>
   </tr>
   <tr>
@@ -47,7 +47,7 @@
   </tr>
   <tr>
     <td></td>
-    <td><remotion:bocbooleanvalue id="DisabledDeceasedField" runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" width="300px" nullitemerrormessage="Eingabe erforderlich" FalseDescription="nein" NullDescription="undefiniert" TrueDescription="ja" enabled=false></remotion:bocbooleanvalue></td>
+    <td><remotion:bocbooleanvalue id="DisabledDeceasedField" runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Deceased" width="300px" FalseDescription="nein" NullDescription="undefiniert" TrueDescription="ja" enabled=false></remotion:bocbooleanvalue></td>
     <td>disabled, bound</td>
     <td style="WIDTH: 20%"><asp:label id="DisabledDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td>
   </tr>

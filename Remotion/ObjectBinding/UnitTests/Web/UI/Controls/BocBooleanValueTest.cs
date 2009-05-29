@@ -17,6 +17,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
@@ -102,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocBooleanValue.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocBooleanValue.HiddenField.ClientID, actual[0]);
+      Assert.AreEqual (_bocBooleanValue.GetHiddenFieldKey(), actual[0]);
     }
 
 

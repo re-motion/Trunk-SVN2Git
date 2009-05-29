@@ -246,6 +246,7 @@
     </Compile>
     <Compile Include="UI\Controls\IBocBooleanValue.cs" />
     <Compile Include="UI\Controls\IBocBooleanValueBase.cs" />
+    <Compile Include="UI\Controls\IBocCheckBox.cs" />
     <Compile Include="UI\Controls\IBocList.cs" />
     <Compile Include="UI\Controls\IBocMultilineTextValue.cs" />
     <Compile Include="UI\Controls\IBocTextValue.cs" />
@@ -278,6 +279,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocBooleanValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocBooleanValueRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocCheckboxRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />

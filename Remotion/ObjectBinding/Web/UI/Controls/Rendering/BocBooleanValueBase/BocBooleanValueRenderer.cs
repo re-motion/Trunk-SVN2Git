@@ -16,16 +16,15 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Utilities;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 {
-  public class BocBooleanValueRenderer : RendererBase<IBocBooleanValue>, IRenderer
+  public class BocBooleanValueRenderer : BocBooleanValueRendererBase<IBocBooleanValue>
   {
     private const string c_nullString = "null";
-    private const string c_defaultControlWidth = "100pt";
 
     private static readonly string s_startUpScriptKeyPrefix = typeof (BocBooleanValue).FullName + "_Startup_";
 
@@ -34,32 +33,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
     {
     }
 
-    public void Render ()
+    public override void Render ()
     {
+      var resourceSet = Control.CreateResourceSet();
+
       AddAttributesToRender (Writer);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       bool isReadOnly = Control.IsReadOnly;
 
-      Label labelControl = new Label { ID = Control.GetLabelKey () };
-      Image imageControl = new Image { ID = Control.GetImageKey () };
-      HiddenField hiddenFieldControl = new HiddenField { ID = Control.GetHiddenFieldKey () };
-      HyperLink linkControl = new HyperLink { ID = Control.GetHyperLinkKey () };
+      Label labelControl = new Label { ID = Control.GetLabelKey() };
+      Image imageControl = new Image { ID = Control.GetImageKey() };
+      HiddenField hiddenFieldControl = new HiddenField { ID = Control.GetHiddenFieldKey() };
+      HyperLink linkControl = new HyperLink { ID = Control.GetHyperLinkKey() };
 
       bool isClientScriptEnabled = Control.HasClientScript && !isReadOnly;
       if (isClientScriptEnabled)
       {
         if (Control.Enabled)
-          RegisterStarupScriptIfNeeded();
-        
-        string script = GetClickScript (imageControl, labelControl, hiddenFieldControl, Control.Enabled);
+          RegisterStarupScriptIfNeeded (resourceSet);
+
+        string script = GetClickScript (imageControl, labelControl, hiddenFieldControl, Control.Enabled, resourceSet);
         labelControl.Attributes.Add ("onclick", script);
         linkControl.Attributes.Add ("onclick", script);
       }
 
       PrepareLinkControl (linkControl, isClientScriptEnabled);
-      PrepareHiddenControl(hiddenFieldControl, isReadOnly);
-      PrepareVisibleControls(imageControl, labelControl);
+      PrepareHiddenControl (hiddenFieldControl, isReadOnly);
+      PrepareVisibleControls (imageControl, labelControl, resourceSet);
 
       hiddenFieldControl.RenderControl (Writer);
       linkControl.Controls.Add (imageControl);
@@ -72,13 +73,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
     private void PrepareHiddenControl (HiddenField hiddenFieldControl, bool isReadOnly)
     {
       if (!isReadOnly)
-        hiddenFieldControl.Value = Control.Value.HasValue ? Control.Value.ToString () : c_nullString;
+        hiddenFieldControl.Value = Control.Value.HasValue ? Control.Value.ToString() : c_nullString;
       hiddenFieldControl.Visible = !isReadOnly;
     }
 
     private void PrepareLinkControl (HyperLink linkControl, bool isClientScriptEnabled)
     {
-      if (!isClientScriptEnabled )
+      if (!isClientScriptEnabled)
         return;
 
       linkControl.Attributes.Add ("onkeydown", "BocBooleanValue_OnKeyDown (this);");
@@ -89,9 +90,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
       linkControl.Enabled = Control.Enabled;
     }
 
-    private void RegisterStarupScriptIfNeeded ()
+    private void RegisterStarupScriptIfNeeded (BocBooleanValueResourceSet resourceSet)
     {
-      string startUpScriptKey = s_startUpScriptKeyPrefix + Control.ResourceKey;
+      string startUpScriptKey = s_startUpScriptKeyPrefix + resourceSet.ResourceKey;
       if (!Control.Page.ClientScript.IsStartupScriptRegistered (startUpScriptKey))
       {
         string trueValue = true.ToString();
@@ -100,21 +101,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 
         string startupScript = string.Format (
             "BocBooleanValue_InitializeGlobals ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}');",
-            Control.ResourceKey,
+            resourceSet.ResourceKey,
             trueValue,
             falseValue,
             nullValue,
-            ScriptUtility.EscapeClientScript (Control.DefaultTrueDescription),
-            ScriptUtility.EscapeClientScript (Control.DefaultFalseDescription),
-            ScriptUtility.EscapeClientScript (Control.DefaultNullDescription),
-            Control.TrueIconUrl,
-            Control.FalseIconUrl,
-            Control.NullIconUrl);
+            ScriptUtility.EscapeClientScript (resourceSet.DefaultTrueDescription),
+            ScriptUtility.EscapeClientScript (resourceSet.DefaultFalseDescription),
+            ScriptUtility.EscapeClientScript (resourceSet.DefaultNullDescription),
+            resourceSet.TrueIconUrl,
+            resourceSet.FalseIconUrl,
+            resourceSet.NullIconUrl);
         Control.Page.ClientScript.RegisterStartupScriptBlock (Control, startUpScriptKey, startupScript);
       }
     }
 
-    private string GetClickScript (Image imageControl, Label labelControl, HiddenField hiddenFieldControl, bool isEnabled)
+    private string GetClickScript (
+        Image imageControl,
+        Label labelControl,
+        HiddenField hiddenFieldControl,
+        bool isEnabled,
+        BocBooleanValueResourceSet resourceSet)
     {
       string script = "return false;";
       if (!isEnabled)
@@ -125,23 +131,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
       string label = Control.ShowDescription ? "document.getElementById ('" + labelControl.ClientID + "')" : "null";
       string hiddenField = "document.getElementById ('" + hiddenFieldControl.ClientID + "')";
       script = "BocBooleanValue_SelectNextCheckboxValue ("
-               + "'" + Control.ResourceKey + "', "
+               + "'" + resourceSet.ResourceKey + "', "
                + image + ", "
                + label + ", "
                + hiddenField + ", "
                + requiredFlag + ", "
-               +
-               (StringUtility.IsNullOrEmpty (Control.TrueDescription)
-                    ? "null"
-                    : "'" + ScriptUtility.EscapeClientScript (Control.TrueDescription) + "'") + ", "
-               +
-               (StringUtility.IsNullOrEmpty (Control.FalseDescription)
-                    ? "null"
-                    : "'" + ScriptUtility.EscapeClientScript (Control.FalseDescription) + "'") + ", "
-               +
-               (StringUtility.IsNullOrEmpty (Control.NullDescription)
-                    ? "null"
-                    : "'" + ScriptUtility.EscapeClientScript (Control.NullDescription) + "'") + ");";
+               + (string.IsNullOrEmpty (Control.TrueDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (Control.TrueDescription) + "'")
+               + ", "
+               + (string.IsNullOrEmpty (Control.FalseDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (Control.FalseDescription) + "'")
+               + ", "
+               + (string.IsNullOrEmpty (Control.NullDescription) ? "null" : "'" + ScriptUtility.EscapeClientScript (Control.NullDescription) + "'")
+               + ");";
 
       if (Control.IsAutoPostBackEnabled)
         script += Control.Page.ClientScript.GetPostBackEventReference (Control, "") + ";";
@@ -149,25 +149,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
       return script;
     }
 
-    private void PrepareVisibleControls (Image imageControl, Label labelControl)
+    private void PrepareVisibleControls (Image imageControl, Label labelControl, BocBooleanValueResourceSet resourceSet)
     {
       string imageUrl;
       string description;
 
       if (!Control.Value.HasValue)
       {
-        imageUrl = Control.NullIconUrl;
-        description = string.IsNullOrEmpty (Control.NullDescription) ? Control.DefaultNullDescription : Control.NullDescription;
+        imageUrl = resourceSet.NullIconUrl;
+        description = string.IsNullOrEmpty (Control.NullDescription) ? resourceSet.DefaultNullDescription : Control.NullDescription;
       }
       else if (Control.Value.Value)
       {
-        imageUrl = Control.TrueIconUrl;
-        description = string.IsNullOrEmpty (Control.TrueDescription) ? Control.DefaultTrueDescription : Control.TrueDescription;
+        imageUrl = resourceSet.TrueIconUrl;
+        description = string.IsNullOrEmpty (Control.TrueDescription) ? resourceSet.DefaultTrueDescription : Control.TrueDescription;
       }
       else
       {
-        imageUrl = Control.FalseIconUrl;
-        description = string.IsNullOrEmpty (Control.FalseDescription) ? Control.DefaultFalseDescription : Control.FalseDescription;
+        imageUrl = resourceSet.FalseIconUrl;
+        description = string.IsNullOrEmpty (Control.FalseDescription) ? resourceSet.DefaultFalseDescription : Control.FalseDescription;
       }
 
       imageControl.AlternateText = description;
@@ -180,80 +180,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
       labelControl.Width = Unit.Empty;
       labelControl.Height = Unit.Empty;
       labelControl.ApplyStyle (Control.LabelStyle);
-    }
-
-    protected void AddAttributesToRender (HtmlTextWriter writer)
-    {
-      bool isReadOnly = Control.IsReadOnly;
-      bool isDisabled = !Control.Enabled;
-
-      string backUpCssClass = Control.CssClass; // base.CssClass and base.ControlStyle.CssClass
-      bool hasCssClass = !StringUtility.IsNullOrEmpty (backUpCssClass);
-      if (hasCssClass)
-      {
-        if (isReadOnly)
-          Control.CssClass += " " + Control.CssClassReadOnly;
-        else if (isDisabled)
-          Control.CssClass += " " + Control.CssClassDisabled;
-      }
-      string backUpAttributeCssClass = Control.Attributes["class"];
-      bool hasAttributeCssClass = !StringUtility.IsNullOrEmpty (backUpAttributeCssClass);
-      if (hasAttributeCssClass)
-      {
-        if (isReadOnly)
-          Control.Attributes["class"] += " " + Control.CssClassReadOnly;
-        else if (isDisabled)
-          Control.Attributes["class"] += " " + Control.CssClassDisabled;
-      }
-
-      AddStandardAttributesToRender (Writer);
-
-      Control.CssClass = backUpCssClass;
-      Control.Attributes["class"] = backUpAttributeCssClass;
-
-      if (!hasCssClass && !hasAttributeCssClass)
-      {
-        string cssClass = Control.CssClassBase;
-        if (isReadOnly)
-          cssClass += " " + Control.CssClassReadOnly;
-        else if (isDisabled)
-          cssClass += " " + Control.CssClassDisabled;
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      }
-
-      writer.AddStyleAttribute ("white-space", "nowrap");
-      if (!isReadOnly)
-      {
-        bool isControlWidthEmpty = Control.Width.IsEmpty && StringUtility.IsNullOrEmpty (Control.Style["width"]);
-        bool isLabelWidthEmpty = Control.LabelStyle.Width.IsEmpty;
-        if (isLabelWidthEmpty && isControlWidthEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
-      }
-    }
-
-    protected void AddStandardAttributesToRender (HtmlTextWriter writer)
-    {
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
-
-      string cssClass = string.Empty;
-      if (!string.IsNullOrEmpty (Control.CssClass))
-        cssClass = Control.CssClass + " ";
-
-      if (!string.IsNullOrEmpty (Control.ControlStyle.CssClass))
-        cssClass += Control.ControlStyle.CssClass;
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-
-      CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes (Control);
-      foreach (string style in styles.Keys)
-      {
-        writer.AddStyleAttribute (style, styles[style]);
-      }
-
-      foreach (string attribute in Control.Attributes.Keys)
-      {
-        writer.AddAttribute (attribute, Control.Attributes[attribute]);
-      }
     }
   }
 }

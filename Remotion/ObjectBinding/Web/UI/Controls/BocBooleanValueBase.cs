@@ -27,8 +27,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   public abstract class BocBooleanValueBase : BusinessObjectBoundEditableWebControl, IBocBooleanValueBase, IPostBackDataHandler, IFocusableControl
   {
-    private const string c_defaultControlWidth = "100pt";
-
     private bool? _autoPostBack = null;
     private string _trueDescription = string.Empty;
     private string _falseDescription = string.Empty;
@@ -238,55 +236,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         eventHandler (this, EventArgs.Empty);
     }
 
-    protected override void AddAttributesToRender(HtmlTextWriter writer)
-    {
-      bool isReadOnly = IsReadOnly;
-      bool isDisabled = ! Enabled;
-
-      string backUpCssClass = CssClass; // base.CssClass and base.ControlStyle.CssClass
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-      {
-        if (isReadOnly)
-          CssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          CssClass += " " + CssClassDisabled;
-      }
-      string backUpAttributeCssClass = Attributes["class"];
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        if (isReadOnly)
-          Attributes["class"] += " " + CssClassReadOnly;
-        else if (isDisabled)
-          Attributes["class"] += " " + CssClassDisabled;
-      }
-    
-      base.AddAttributesToRender (writer);
-
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-        CssClass = backUpCssClass;
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-        Attributes["class"] = backUpAttributeCssClass;
-    
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        string cssClass = CssClassBase;
-        if (isReadOnly)
-          cssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          cssClass += " " + CssClassDisabled;
-        writer.AddAttribute(HtmlTextWriterAttribute.Class, cssClass);
-      }
-
-      writer.AddStyleAttribute ("white-space", "nowrap");
-      if (! IsReadOnly)
-      {
-        bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-        bool isLabelWidthEmpty = StringUtility.IsNullOrEmpty (Label.Style["width"]);
-        if (isLabelWidthEmpty && isControlWidthEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
-      }
-    }
-
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadValue/*' />
     public override void LoadValue (bool interim)
@@ -349,14 +298,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       remove { Events.RemoveHandler (s_checkedChangedEvent, value); }
     }
 
-    public abstract Label Label { get; }
-
     bool IBocBooleanValueBase.IsAutoPostBackEnabled
     {
       get { return IsAutoPostBackEnabled; }
     }
 
-    public virtual new IPage Page
+    IPage IBocBooleanValueBase.Page
     {
       get { return new PageWrapper (base.Page); }
     }
@@ -365,5 +312,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return IsDesignMode; }
     }
+
+    /// <summary>
+    ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
+    ///   description. 
+    /// </summary>
+    [Category ("Style")]
+    [Description ("The style that you want to apply to the label used for displaying the description.")]
+    [NotifyParentProperty (true)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
+    [PersistenceMode (PersistenceMode.InnerProperty)]
+    public abstract Style LabelStyle { get; }
   }
 }
