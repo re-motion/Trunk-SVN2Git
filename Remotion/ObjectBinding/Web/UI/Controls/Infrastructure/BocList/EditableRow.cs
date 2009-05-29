@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
 {
 
 [ToolboxItem (false)]
-public class EditableRow : PlaceHolder, INamingContainer
+public class EditableRow : PlaceHolder, INamingContainer, IEditableRow
 {
   // types
 

@@ -292,8 +292,6 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerInRowEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerTestBase.cs" />
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerWithoutEditModeTest.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\MockBooleanValue.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\MockCheckbox.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\BocBooleanValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\BocCheckboxRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocColumnRendererTest.cs" />
@@ -314,8 +312,6 @@
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocListRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocListRendererTestBase.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\MockMultilineTextValue.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocTextValue\MockTextValue.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\BocTextValueRendererTestBase.cs" />

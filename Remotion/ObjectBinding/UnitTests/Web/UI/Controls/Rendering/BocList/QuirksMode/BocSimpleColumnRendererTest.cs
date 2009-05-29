@@ -105,22 +105,27 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     {
       var firstObject = (IBusinessObject) ((TypeWithReference) BusinessObject).FirstValue;
 
-      var controlFactory = MockRepository.GenerateMock<EditableRowControlFactory>();
-      controlFactory.Stub (mock => mock.Create (null, 0)).IgnoreArguments().Return (new MockTextValue());
+      IEditableRow editableRow = MockRepository.GenerateMock<IEditableRow>();
+      editableRow.Stub (mock => mock.HasEditControl (0)).IgnoreArguments().Return (true);
+      editableRow.Stub (mock => mock.GetEditControl (0)).IgnoreArguments().Return (MockRepository.GenerateStub<IBocTextValue>());
+      editableRow.Expect (
+          mock => mock.RenderSimpleColumnCellEditModeControl (
+                      Html.Writer,
+                      Column,
+                      firstObject,
+                      0,
+                      null,
+                      List.EditModeController.ShowEditModeValidationMarkers,
+                      List.EditModeController.DisableEditModeValidationMessages));
 
-      EditableRow editableRow = new EditableRow (List);
-      editableRow.ControlFactory = controlFactory;
-      editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      editableRow.CreateControls (firstObject, List.GetColumns());
-      ((BusinessObjectBoundEditableWebControl)editableRow.GetEditControl (0)).ReadOnly = false;
       List.EditModeController.Stub (mock => mock.GetEditableRow (0)).Return (editableRow);
 
       List.Stub (mock => mock.Validators).Return (new ArrayList());
 
       var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
-      
-      HtmlDocument document = Html.GetResultDocument ();
+
+      HtmlDocument document = Html.GetResultDocument();
 
       HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
@@ -131,9 +136,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       HtmlNode clickSpan = Html.GetAssertedChildElement (span, "span", 0, false);
       Html.AssertAttribute (clickSpan, "onclick", "BocList_OnCommandClick();");
 
-      HtmlNode controlWrapperSpan = Html.GetAssertedChildElement (clickSpan, "span", 0, false);
-      Html.AssertStyleAttribute (controlWrapperSpan, "width", "100%");
-      Html.AssertStyleAttribute (controlWrapperSpan, "display", "block");
+      editableRow.AssertWasCalled (mock => mock.RenderSimpleColumnCellEditModeControl (
+                      Html.Writer,
+                      Column,
+                      firstObject,
+                      0,
+                      null,
+                      List.EditModeController.ShowEditModeValidationMarkers,
+                      List.EditModeController.DisableEditModeValidationMessages));
     }
   }
 }

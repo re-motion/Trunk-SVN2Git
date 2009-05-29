@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// a string representation of <paramref name="businessObject"/> will be displayed (<see langword="false"/>).</param>
     /// <param name="editableRow">The <see cref="EditableRow"/> object used to actually render the edit row controls.
     /// May be <see langword="null"/> if <paramref name="showEditModeControl"/> is <see langword="false"/>.</param>
-    protected override void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, EditableRow editableRow)
+    protected override void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
@@ -85,9 +85,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       }
     }
 
-    private void RenderEditModeControl (
-        IBusinessObject businessObject,
-        EditableRow editableRow)
+    private void RenderEditModeControl (IBusinessObject businessObject, IEditableRow editableRow)
     {
       EditModeValidator editModeValidator = null;
       for (int i = 0; i < List.Validators.Count; i++)

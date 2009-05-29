@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
 
-      EditableRow editableRow = List.EditModeController.GetEditableRow (originalRowIndex);
+      IEditableRow editableRow = List.EditModeController.GetEditableRow (originalRowIndex);
 
       bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
 

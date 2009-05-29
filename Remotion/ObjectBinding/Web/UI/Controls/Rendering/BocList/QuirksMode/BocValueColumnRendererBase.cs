@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
 
-      EditableRow editableRow = List.EditModeController.GetEditableRow (originalRowIndex);
+      IEditableRow editableRow = List.EditModeController.GetEditableRow (originalRowIndex);
 
       bool hasEditModeControl = editableRow != null && editableRow.HasEditControl (ColumnIndex);
       bool showEditModeControl = hasEditModeControl
@@ -74,7 +74,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     }
 
 
-    protected abstract void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, EditableRow editableRow);
+    protected abstract void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow);
 
     /// <summary>
     /// Used by <see cref="RenderCellContents"/> to render icons in addition to the <paramref name="businessObject"/>'s icon.

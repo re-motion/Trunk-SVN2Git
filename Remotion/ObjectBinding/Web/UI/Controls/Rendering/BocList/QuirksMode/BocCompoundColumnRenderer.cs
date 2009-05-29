@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <param name="businessObject">The <see cref="IBusinessObject"/> whose property will be rendered.</param>
     /// <param name="showEditModeControl">Prevents rendering if <see langword="true"/>.</param>
     /// <param name="editableRow">Ignored.</param>
-    protected override void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, EditableRow editableRow)
+    protected override void RenderCellText (IBusinessObject businessObject, bool showEditModeControl, IEditableRow editableRow)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 

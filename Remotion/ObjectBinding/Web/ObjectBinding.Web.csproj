@@ -278,6 +278,8 @@
     <Compile Include="UI\Controls\Infrastructure\BocList\EditModeValidator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\Infrastructure\BocList\IEditableRow.cs" />
+    <Compile Include="UI\Controls\Infrastructure\BocList\IEditModeController.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocBooleanValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocBooleanValueRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocCheckboxRenderer.cs" />
