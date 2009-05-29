@@ -149,6 +149,7 @@ Additional permissions are listed in the file re-motion_exceptions.txt.
         </ElementKinds>
       </UserRule>
       <Abbreviation Text="ID" />
+      <Abbreviation Text="UI" />
     </Naming2>
   </CodeStyleSettings>
 </Configuration>
