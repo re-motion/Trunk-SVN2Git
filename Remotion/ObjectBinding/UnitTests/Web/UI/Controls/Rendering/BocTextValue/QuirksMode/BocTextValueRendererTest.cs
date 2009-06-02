@@ -15,7 +15,7 @@
 // 
 using System;
 using System.Web.UI.WebControls;
-using HtmlAgilityPack;
+using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
@@ -168,15 +168,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
       Renderer.Render();
 
-      HtmlDocument document = Html.GetResultDocument();
-      Html.AssertChildElementCount (document.DocumentNode, 1);
+      var document = Html.GetResultDocument();
+      Html.AssertChildElementCount (document.DocumentElement, 1);
 
-      HtmlNode span = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
+      var span = Html.GetAssertedChildElement (document, "span", 0, false);
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
-      HtmlNode input = Html.GetAssertedChildElement (span, "input", 0, false);
+      var input = Html.GetAssertedChildElement (span, "input", 0, false);
       Html.AssertAttribute (input, "type", "text");
       Html.AssertAttribute (input, "value", c_firstLineText);
 
@@ -192,16 +192,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       TextValue.Stub (mock => mock.Enabled).Return (false);
       Renderer.Render();
 
-      HtmlDocument document = Html.GetResultDocument();
-      Html.AssertChildElementCount (document.DocumentNode, 1);
+      var document = Html.GetResultDocument();
+      Html.AssertChildElementCount (document.DocumentElement, 1);
 
-      HtmlNode span = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
+      var span = Html.GetAssertedChildElement (document, "span", 0, false);
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertAttribute (span, "class", TextValue.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
-      HtmlNode input = Html.GetAssertedChildElement (span, "input", 0, false);
+      var input = Html.GetAssertedChildElement (span, "input", 0, false);
       Html.AssertAttribute (input, "disabled", "disabled");
       Html.AssertAttribute (input, "readonly", "readonly");
       Html.AssertAttribute (input, "value", c_firstLineText);
@@ -218,16 +218,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
       Renderer.Render();
 
-      HtmlDocument document = Html.GetResultDocument();
-      Html.AssertChildElementCount (document.DocumentNode, 1);
+      var document = Html.GetResultDocument();
+      Html.AssertChildElementCount (document.DocumentElement, 1);
 
-      HtmlNode span = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
+      var span = Html.GetAssertedChildElement (document, "span", 0, false);
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertAttribute (span, "class", TextValue.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
-      HtmlNode labelSpan = Html.GetAssertedChildElement (span, "span", 0, false);
+      var labelSpan = Html.GetAssertedChildElement (span, "span", 0, false);
       Html.AssertTextNode (labelSpan, c_firstLineText, 0, false);
 
       CheckStyle (withStyle, span, labelSpan);
@@ -243,17 +243,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
       Renderer.Render();
 
-      HtmlDocument document = Html.GetResultDocument();
-      Html.AssertChildElementCount (document.DocumentNode, 1);
+      var document = Html.GetResultDocument();
+      Html.AssertChildElementCount (document.DocumentElement, 1);
 
-      HtmlNode span = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
+      var span = Html.GetAssertedChildElement (document, "span", 0, false);
 
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertAttribute (span, "class", TextValue.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
-      HtmlNode labelSpan = Html.GetAssertedChildElement (span, "span", 0, false);
+      var labelSpan = Html.GetAssertedChildElement (span, "span", 0, false);
 
       Html.AssertTextNode (labelSpan, c_firstLineText, 0, false);
       Html.GetAssertedChildElement (labelSpan, "br", 1, false);
@@ -263,7 +263,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       CheckStyle (withStyle, span, labelSpan);
     }
 
-    private void CheckStyle (bool withStyle, HtmlNode span, HtmlNode valueElement)
+    private void CheckStyle (bool withStyle, XmlNode span, XmlNode valueElement)
     {
       string height = withStyle ? Height.ToString() : null;
       string width = withStyle ? Width.ToString() : /* default constant in BocTextValueRendererBase */ "150pt";

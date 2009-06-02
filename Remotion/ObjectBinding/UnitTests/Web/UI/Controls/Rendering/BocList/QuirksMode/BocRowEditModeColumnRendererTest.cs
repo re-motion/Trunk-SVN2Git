@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
@@ -39,11 +38,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       EventArgs.IsEditableRow = true;
 
-      List.Stub(mock=>mock.EnableClientScript).Return(true);
+      List.Stub (mock => mock.EnableClientScript).Return (true);
       List.Stub (mock => mock.IsDesignMode).Return (false);
       List.Stub (mock => mock.IsReadOnly).Return (false);
       List.DataSource.Mode = DataSourceMode.Edit;
-      
+
       List.OnPreRender();
     }
 
@@ -54,12 +53,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       EventArgs.IsEditableRow = true;
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+      var a = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (a, "href", "#");
       Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
       Html.AssertTextNode (a, "Bearbeiten", 0, false);
@@ -73,19 +72,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode save = Html.GetAssertedChildElement (td, "a", 0, false);
+      var save = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (save, "href", "#");
       Html.AssertAttribute (save, "onclick", "postBackEventReference;BocList_OnCommandClick();");
       Html.AssertTextNode (save, "Speichern", 0, false);
 
-      Html.AssertWhiteSpaceTextNode (td, 1);
-
-      HtmlNode cancel = Html.GetAssertedChildElement (td, "a", 2, false);
+      var cancel = Html.GetAssertedChildElement (td, "a", 1, false);
       Html.AssertAttribute (cancel, "href", "#");
       Html.AssertAttribute (cancel, "onclick", "postBackEventReference;BocList_OnCommandClick();");
       Html.AssertTextNode (cancel, "Abbrechen", 0, false);

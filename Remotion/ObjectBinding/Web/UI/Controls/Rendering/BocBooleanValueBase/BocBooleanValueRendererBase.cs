@@ -43,14 +43,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
       if (!string.IsNullOrEmpty (Control.ControlStyle.CssClass))
         cssClass += Control.ControlStyle.CssClass;
 
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      if (!string.IsNullOrEmpty (cssClass))
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
 
       CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes (Control);
       foreach (string style in styles.Keys)
         writer.AddStyleAttribute (style, styles[style]);
 
       foreach (string attribute in Control.Attributes.Keys)
-        writer.AddAttribute (attribute, Control.Attributes[attribute]);
+      {
+        string value = Control.Attributes[attribute];
+        if( !string.IsNullOrEmpty(value) )
+          writer.AddAttribute (attribute, value);
+      }
     }
 
     protected void AddAttributesToRender (HtmlTextWriter writer)

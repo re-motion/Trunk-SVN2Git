@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Web.UI;
-using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
@@ -53,7 +52,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     [Test]
     public void RenderCellWithPopulatedMenu ()
     {
-      InitializeRowMenus ();
+      InitializeRowMenus();
       Menu.MenuItems.Add (
           new WebMenuItem (
               "itemId",
@@ -69,12 +68,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode div = Html.GetAssertedChildElement (td, "div", 0, false);
+      var div = Html.GetAssertedChildElement (td, "div", 0, false);
       Html.AssertAttribute (div, "onclick", "BocList_OnCommandClick();");
 
       Html.AssertTextNode (div, "mocked dropdown menu", 0, false);
@@ -83,14 +82,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     [Test]
     public void RenderCellWithEmptyMenu ()
     {
-      InitializeRowMenus ();
+      InitializeRowMenus();
 
       IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       Html.AssertChildElementCount (td, 0);
@@ -102,9 +101,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument ();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       Html.AssertChildElementCount (td, 0);

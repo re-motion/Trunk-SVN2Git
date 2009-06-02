@@ -84,6 +84,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       List.Stub (list => list.SelectorControlCheckedState).Return (new List<int> ());
 
+      List.Stub (list => list.CssClassTable).Return ("cssClassTable");
+      List.Stub (list => list.CssClassTableHead).Return ("cssClassTableHead");
+      List.Stub (list => list.CssClassTableBody).Return ("cssClassTableBody");
       List.Stub (list => list.CssClassTitleCell).Return ("cssClassTitleCell");
       List.Stub (list => list.CssClassTitleCellIndex).Return ("cssClassTitleCellIndex");
       List.Stub (list => list.CssClassSortingOrder).Return ("cssClassSortingOrder");
@@ -92,6 +95,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (list => list.CssClassDataCellEven).Return ("cssClassDataCellEven");
       List.Stub (list => list.CssClassDataRow).Return ("cssClassDataRow");
       List.Stub (list => list.CssClassDataRowSelected).Return ("cssClassDataRowSelected");
+      List.Stub (list => list.CssClassNavigator).Return ("cssClassNavigator");
+      
 
       var page = MockRepository.GenerateMock<IPage>();
       List.Stub (list => list.Page).Return (page);

@@ -16,7 +16,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using HtmlAgilityPack;
+using System.Xml;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       get { return _width; }
     }
 
-    protected void CheckCssClass (HtmlNode span, bool withCssClass, bool inStandardProperties)
+    protected void CheckCssClass (XmlNode span, bool withCssClass, bool inStandardProperties)
     {
       string cssClass = TextValue.CssClassBase;
       if (withCssClass)

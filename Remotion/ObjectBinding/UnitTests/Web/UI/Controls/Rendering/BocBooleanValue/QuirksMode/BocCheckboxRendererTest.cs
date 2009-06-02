@@ -16,9 +16,8 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using HtmlAgilityPack;
+using System.Xml;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.Web.Infrastructure;
@@ -43,25 +42,26 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     [SetUp]
     public void SetUp ()
     {
-      Initialize ();
+      Initialize();
       _checkbox = MockRepository.GenerateMock<IBocCheckBox>();
 
-      _checkbox.Stub (mock => mock.GetCheckboxKey ()).Return ("_Boc_CheckBox");
-      _checkbox.Stub (mock => mock.GetImageKey ()).Return ("_Boc_Image");
-      _checkbox.Stub (mock => mock.GetLabelKey ()).Return ("_Boc_Label");
+      _checkbox.Stub (mock => mock.GetCheckboxKey()).Return ("_Boc_CheckBox");
+      _checkbox.Stub (mock => mock.GetImageKey()).Return ("_Boc_Image");
+      _checkbox.Stub (mock => mock.GetLabelKey()).Return ("_Boc_Label");
 
-      var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
+      var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
       _startupScript = string.Format (
-              "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
-              _checkbox.DefaultTrueDescription, _checkbox.DefaultFalseDescription);
+          "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
+          _checkbox.DefaultTrueDescription,
+          _checkbox.DefaultFalseDescription);
       clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_checkbox, _startUpScriptKey, _startupScript));
       clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<string>.Is.NotNull)).Return (false);
       clientScriptManagerMock.Stub (mock => mock.GetPostBackEventReference (_checkbox, string.Empty)).Return (c_postbackEventReference);
 
-      var pageStub = MockRepository.GenerateStub<IPage> ();
+      var pageStub = MockRepository.GenerateStub<IPage>();
       pageStub.Stub (stub => stub.ClientScript).Return (clientScriptManagerMock);
 
-      _checkbox.Stub (mock => mock.Value).PropertyBehavior ();
+      _checkbox.Stub (mock => mock.Value).PropertyBehavior();
       _checkbox.Stub (mock => mock.HasClientScript).Return (true);
       _checkbox.Stub (mock => mock.IsDescriptionEnabled).Return (true);
 
@@ -69,12 +69,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       _checkbox.Stub (mock => mock.TrueDescription).Return (c_trueDescription);
       _checkbox.Stub (mock => mock.FalseDescription).Return (c_falseDescription);
 
-      _checkbox.Stub (mock => mock.CssClass).PropertyBehavior ();
+      _checkbox.Stub (mock => mock.CssClass).PropertyBehavior();
       _checkbox.Stub (mock => mock.CssClassBase).Return ("cssClassBase");
       _checkbox.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
       _checkbox.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
 
-      StateBag stateBag = new StateBag ();
+      StateBag stateBag = new StateBag();
       _checkbox.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
       _checkbox.Stub (mock => mock.Style).Return (_checkbox.Attributes.CssStyle);
       _checkbox.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
@@ -227,17 +227,17 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
       var document = Html.GetResultDocument();
 
-      var outerSpan = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
-      checkCssClass(outerSpan);
+      var outerSpan = Html.GetAssertedChildElement (document, "span", 0, false);
+      checkCssClass (outerSpan);
 
       Html.AssertStyleAttribute (outerSpan, "white-space", "nowrap");
       if (!_checkbox.IsReadOnly)
         Html.AssertStyleAttribute (outerSpan, "width", c_defaultControlWidth);
 
       if (_checkbox.IsReadOnly)
-        CheckImage(value, outerSpan, spanText);
+        CheckImage (value, outerSpan, spanText);
       else
-        CheckInput(value, outerSpan);
+        CheckInput (value, outerSpan);
 
       var label = Html.GetAssertedChildElement (outerSpan, "span", 1, false);
       Html.AssertAttribute (label, "id", "_Boc_Label");
@@ -245,7 +245,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Html.AssertTextNode (label, spanText, 0, false);
     }
 
-    private void CheckInput (bool value, HtmlNode outerSpan)
+    private void CheckInput (bool value, XmlNode outerSpan)
     {
       var checkbox = Html.GetAssertedChildElement (outerSpan, "input", 0, false);
       Html.AssertAttribute (checkbox, "type", "checkbox");
@@ -262,7 +262,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
         Html.AssertAttribute (checkbox, "disabled", "disabled");
     }
 
-    private void CheckImage (bool value, HtmlNode outerSpan, string altText)
+    private void CheckImage (bool value, XmlNode outerSpan, string altText)
     {
       var image = Html.GetAssertedChildElement (outerSpan, "img", 0, false);
       Html.AssertAttribute (image, "id", "_Boc_Image");
@@ -272,7 +272,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Html.AssertStyleAttribute (image, "vertical-align", "middle");
     }
 
-    private void checkCssClass (HtmlNode outerSpan)
+    private void checkCssClass (XmlNode outerSpan)
     {
       string cssClass = _checkbox.CssClass;
       if (string.IsNullOrEmpty (cssClass))
@@ -281,9 +281,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
         cssClass = _checkbox.CssClassBase;
 
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
-      if( _checkbox.IsReadOnly )
+      if (_checkbox.IsReadOnly)
         Html.AssertAttribute (outerSpan, "class", _checkbox.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
-      if( !_checkbox.Enabled)
+      if (!_checkbox.Enabled)
         Html.AssertAttribute (outerSpan, "class", _checkbox.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
     }
   }

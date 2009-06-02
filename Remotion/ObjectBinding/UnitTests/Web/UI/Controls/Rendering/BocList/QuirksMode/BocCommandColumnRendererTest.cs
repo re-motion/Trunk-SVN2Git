@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Web.UI.WebControls;
-using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -53,12 +52,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       var renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+      var a = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (a, "href", "#");
       Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
 
@@ -71,12 +70,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       var renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, true, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+      var a = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (a, "href", "#");
       Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
 
@@ -95,12 +94,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       var renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+      var a = Html.GetAssertedChildElement (td, "a", 0, false);
       Html.AssertAttribute (a, "href", "#");
       Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
 
@@ -117,12 +116,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       var renderer = new BocCommandColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      var span = Html.GetAssertedChildElement (td, "span", 0, false);
       Html.AssertAttribute (span, "class", List.CssClassContent);
 
       Html.AssertTextNode (span, "TestCommand", 0, false);

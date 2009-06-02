@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections;
-using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
@@ -47,15 +46,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.RenderTitlesRow();
 
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
 
-      Html.AssertWhiteSpaceTextNode (tr, 0);
-
-      HtmlNode th = Html.GetAssertedChildElement (tr, "th", 1, false);
-
-      Html.AssertWhiteSpaceTextNode (tr, 2);
+      Html.GetAssertedChildElement (tr, "th", 0, false);
     }
 
     [Test]
@@ -68,19 +63,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.RenderTitlesRow();
 
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
 
-      Html.AssertWhiteSpaceTextNode (tr, 0);
-
-      HtmlNode thIndex = Html.GetAssertedChildElement (tr, "th", 1, false);
+      var thIndex = Html.GetAssertedChildElement (tr, "th", 0, false);
       Html.AssertAttribute (thIndex, "class", List.CssClassTitleCell, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (thIndex, "class", List.CssClassTitleCellIndex, HtmlHelper.AttributeValueCompareMode.Contains);
 
-      HtmlNode thColumn = Html.GetAssertedChildElement (tr, "th", 2, false);
-
-      Html.AssertWhiteSpaceTextNode (tr, 3);
+      Html.GetAssertedChildElement (tr, "th", 1, false);
     }
 
     [Test]
@@ -93,17 +84,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.RenderTitlesRow();
 
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
 
-      Html.AssertWhiteSpaceTextNode (tr, 0);
+      Html.GetAssertedChildElement (tr, "th", 0, false);
 
-      HtmlNode thSelector = Html.GetAssertedChildElement (tr, "th", 1, false);
-
-      HtmlNode thColumn = Html.GetAssertedChildElement (tr, "th", 2, false);
-
-      Html.AssertWhiteSpaceTextNode (tr, 3);
+      Html.GetAssertedChildElement (tr, "th", 1, false);
     }
 
     [Test]
@@ -112,16 +99,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
       renderer.RenderDataRow (BusinessObject, 0, 0, 0);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
       Html.AssertAttribute (tr, "class", List.CssClassDataRow);
 
-      Html.AssertWhiteSpaceTextNode (tr, 0);
-
-      HtmlNode th = Html.GetAssertedChildElement (tr, "td", 1, false);
-
-      Html.AssertWhiteSpaceTextNode (tr, 2);
+      Html.GetAssertedChildElement (tr, "td", 0, false);
     }
 
     [Test]
@@ -132,16 +115,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
       renderer.RenderDataRow (BusinessObject, 0, 0, 0);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
       Html.AssertAttribute (tr, "class", List.CssClassDataRowSelected);
 
-      Html.AssertWhiteSpaceTextNode (tr, 0);
-
-      HtmlNode th = Html.GetAssertedChildElement (tr, "td", 1, false);
-
-      Html.AssertWhiteSpaceTextNode (tr, 2);
+      Html.GetAssertedChildElement (tr, "td", 0, false);
     }
 
     [Test]
@@ -153,15 +132,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       IBocRowRenderer renderer = new BocRowRenderer (HttpContext, Html.Writer, List, new StubServiceLocator());
       renderer.RenderEmptyListDataRow();
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode tr = Html.GetAssertedChildElement (document.DocumentNode, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
 
-      Html.AssertWhiteSpaceTextNode (tr, 0);
-
-      HtmlNode th = Html.GetAssertedChildElement (tr, "td", 1, false);
-
-      Html.AssertWhiteSpaceTextNode (tr, 2);
+      Html.GetAssertedChildElement (tr, "td", 0, false);
     }
   }
 }

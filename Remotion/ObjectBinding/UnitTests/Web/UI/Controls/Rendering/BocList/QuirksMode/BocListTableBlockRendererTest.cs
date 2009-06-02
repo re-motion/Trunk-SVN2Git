@@ -14,7 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using HtmlAgilityPack;
+using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -35,13 +35,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       InitializePopulatedList();
       CommonInitialize();
 
-      HtmlNode tbody;
+      XmlNode tbody;
       RenderAndAssertTable (out tbody);
 
-      HtmlNode trData1 = Html.GetAssertedChildElement (tbody, "tr", 0, true);
+      var trData1 = Html.GetAssertedChildElement (tbody, "tr", 0, true);
       Html.AssertAttribute (trData1, "class", "dataStub");
 
-      HtmlNode trData2 = Html.GetAssertedChildElement (tbody, "tr", 1, true);
+      var trData2 = Html.GetAssertedChildElement (tbody, "tr", 1, true);
       Html.AssertAttribute (trData2, "class", "dataStub");
     }
 
@@ -55,10 +55,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (mock => mock.ShowEmptyListMessage).Return (true);
       List.Stub (mock => mock.ShowEmptyListEditMode).Return (true);
 
-      HtmlNode tbody;
-      RenderAndAssertTable(out tbody);
+      XmlNode tbody;
+      RenderAndAssertTable (out tbody);
 
-      HtmlNode trData1 = Html.GetAssertedChildElement (tbody, "tr", 0, true);
+      var trData1 = Html.GetAssertedChildElement (tbody, "tr", 0, true);
       Html.AssertAttribute (trData1, "class", "emptyStub");
     }
 
@@ -66,40 +66,40 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     public void RenderDummyTable ()
     {
       Initialize (false);
-      CommonInitialize ();
+      CommonInitialize();
       List.Stub (mock => mock.IsEmptyList).Return (true);
 
       IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, Html.Writer, List, ServiceLocator);
-      renderer.Render ();
+      renderer.Render();
 
-      HtmlDocument document = Html.GetResultDocument ();
+      var document = Html.GetResultDocument();
 
-      HtmlNode table = Html.GetAssertedChildElement (document.DocumentNode, "table", 0, true);
-      HtmlNode tr = Html.GetAssertedChildElement (table, "tr", 0, true);
-      HtmlNode td = Html.GetAssertedChildElement (tr, "td", 0, true);
+      var table = Html.GetAssertedChildElement (document, "table", 0, true);
+      var tr = Html.GetAssertedChildElement (table, "tr", 0, true);
+      var td = Html.GetAssertedChildElement (tr, "td", 0, true);
       Html.AssertTextNode (td, HtmlHelper.WhiteSpace, 0, false);
     }
 
-    private void RenderAndAssertTable (out HtmlNode tbody)
+    private void RenderAndAssertTable (out XmlNode tbody)
     {
       IBocListTableBlockRenderer renderer = new BocListTableBlockRenderer (HttpContext, Html.Writer, List, ServiceLocator);
       renderer.Render();
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode div = Html.GetAssertedChildElement (document.DocumentNode, "div", 0, false);
+      var div = Html.GetAssertedChildElement (document, "div", 0, false);
 
-      HtmlNode table = Html.GetAssertedChildElement (div, "table", 0, true);
+      var table = Html.GetAssertedChildElement (div, "table", 0, true);
 
-      HtmlNode colgroup = Html.GetAssertedChildElement (table, "colgroup", 0, true);
+      var colgroup = Html.GetAssertedChildElement (table, "colgroup", 0, true);
 
       Html.GetAssertedChildElement (colgroup, "col", 0, true);
       Html.GetAssertedChildElement (colgroup, "col", 1, true);
       Html.GetAssertedChildElement (colgroup, "col", 2, true);
 
-      HtmlNode thead = Html.GetAssertedChildElement (table, "thead", 1, true);
+      var thead = Html.GetAssertedChildElement (table, "thead", 1, true);
 
-      HtmlNode trTitle = Html.GetAssertedChildElement (thead, "tr", 0, true);
+      var trTitle = Html.GetAssertedChildElement (thead, "tr", 0, true);
       Html.AssertAttribute (trTitle, "class", "titleStub");
 
       tbody = Html.GetAssertedChildElement (table, "tbody", 2, true);
@@ -107,15 +107,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
     private void CommonInitialize ()
     {
-      ServiceLocator = new StubServiceLocator ();
-      ServiceLocator.SetRowRendererFactory (new StubRowRendererFactory ());
+      ServiceLocator = new StubServiceLocator();
+      ServiceLocator.SetRowRendererFactory (new StubRowRendererFactory());
 
       List.Stub (list => list.IsSelectionEnabled).Return (true);
       List.Stub (mock => mock.IsDesignMode).Return (false);
-      List.FixedColumns.Add (new StubColumnDefinition ());
-      List.FixedColumns.Add (new StubColumnDefinition ());
-      List.FixedColumns.Add (new StubColumnDefinition ());
-      List.Stub (list => list.GetColumns ()).Return (List.FixedColumns.ToArray ());
+      List.FixedColumns.Add (new StubColumnDefinition());
+      List.FixedColumns.Add (new StubColumnDefinition());
+      List.FixedColumns.Add (new StubColumnDefinition());
+      List.Stub (list => list.GetColumns()).Return (List.FixedColumns.ToArray());
 
       List.Stub (mock => mock.IsPagingEnabled).Return (true);
       List.Stub (mock => mock.PageSize).Return (5);
@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     {
       Initialize (true);
 
-      var sortingProvider = MockRepository.GenerateStub<IBocListSortingOrderProvider> ();
+      var sortingProvider = MockRepository.GenerateStub<IBocListSortingOrderProvider>();
       IBusinessObject firstObject = (IBusinessObject) ((TypeWithReference) BusinessObject).FirstValue;
       IBusinessObject secondObject = (IBusinessObject) ((TypeWithReference) BusinessObject).SecondValue;
       BocListRow[] rows = new[]
@@ -133,7 +133,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
                               new BocListRow (sortingProvider, 0, firstObject),
                               new BocListRow (sortingProvider, 1, secondObject)
                           };
-      List.Stub (list => list.GetIndexedRows ()).Return (rows);
+      List.Stub (list => list.GetIndexedRows()).Return (rows);
     }
   }
 }

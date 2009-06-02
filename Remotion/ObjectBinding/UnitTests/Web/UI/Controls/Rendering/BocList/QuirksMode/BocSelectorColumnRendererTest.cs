@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
@@ -29,8 +28,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     [SetUp]
     public void SetUp ()
     {
-      Initialize ();
-      
+      Initialize();
+
       List.Stub (mock => mock.IsSelectionEnabled).Return (true);
     }
 
@@ -41,12 +40,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderTitleCell();
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode th = Html.GetAssertedChildElement (document.DocumentNode, "th", 0, false);
+      var th = Html.GetAssertedChildElement (document, "th", 0, false);
       Html.AssertAttribute (th, "class", List.CssClassTitleCell);
 
-      HtmlNode input = Html.GetAssertedChildElement (th, "input", 0, false);
+      var input = Html.GetAssertedChildElement (th, "input", 0, false);
       Html.AssertAttribute (input, "type", "checkbox");
       Html.AssertAttribute (input, "name", "_Boc_SelectorControl_SelectAll");
       Html.AssertAttribute (input, "value", "-1");
@@ -60,12 +59,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderDataCell (0, "checkboxControl", false, "bocListTableCell");
 
-      HtmlDocument document = Html.GetResultDocument ();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", "bocListTableCell");
 
-      HtmlNode input = Html.GetAssertedChildElement (td, "input", 0, false);
+      var input = Html.GetAssertedChildElement (td, "input", 0, false);
       Html.AssertAttribute (input, "type", "checkbox");
       Html.AssertAttribute (input, "name", "checkboxControl");
       Html.AssertAttribute (input, "value", "0");
@@ -77,11 +76,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
-      renderer.RenderTitleCell ();
+      renderer.RenderTitleCell();
 
-      HtmlDocument document = Html.GetResultDocument ();
+      var document = Html.GetResultDocument();
 
-      HtmlNode th = Html.GetAssertedChildElement (document.DocumentNode, "th", 0, false);
+      var th = Html.GetAssertedChildElement (document, "th", 0, false);
       Html.AssertAttribute (th, "class", List.CssClassTitleCell);
 
       Html.AssertTextNode (th, HtmlHelper.WhiteSpace, 0, false);
@@ -94,12 +93,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (HttpContext, Html.Writer, List);
       renderer.RenderDataCell (0, "radioControl", false, "bocListTableCell");
 
-      HtmlDocument document = Html.GetResultDocument ();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", "bocListTableCell");
 
-      HtmlNode input = Html.GetAssertedChildElement (td, "input", 0, false);
+      var input = Html.GetAssertedChildElement (td, "input", 0, false);
       Html.AssertAttribute (input, "type", "radio");
       Html.AssertAttribute (input, "name", "radioControl");
       Html.AssertAttribute (input, "value", "0");

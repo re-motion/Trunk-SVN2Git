@@ -15,10 +15,8 @@
 // 
 using System;
 using System.Collections;
-using HtmlAgilityPack;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode;
@@ -50,12 +48,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, EventArgs);
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      var span = Html.GetAssertedChildElement (td, "span", 0, false);
       Html.AssertAttribute (span, "class", List.CssClassContent);
 
       Html.AssertTextNode (span, "referencedObject1", 0, false);
@@ -69,12 +67,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, false, EventArgs);
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode a = Html.GetAssertedChildElement (td, "a", 0, false);
+      var a = Html.GetAssertedChildElement (td, "a", 0, false);
 
       Html.AssertTextNode (a, "referencedObject1", 0, false);
       Html.AssertAttribute (a, "href", "");
@@ -87,12 +85,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
 
       renderer.RenderDataCell (0, true, EventArgs);
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      var span = Html.GetAssertedChildElement (td, "span", 0, false);
       Html.AssertAttribute (span, "class", List.CssClassContent);
 
       Html.AssertIcon (span, EventArgs.BusinessObject, null);
@@ -125,18 +123,19 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       var renderer = new BocSimpleColumnRenderer (HttpContext, Html.Writer, List, Column);
       renderer.RenderDataCell (0, false, EventArgs);
 
-      HtmlDocument document = Html.GetResultDocument();
+      var document = Html.GetResultDocument();
 
-      HtmlNode td = Html.GetAssertedChildElement (document.DocumentNode, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0, false);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      HtmlNode span = Html.GetAssertedChildElement (td, "span", 0, false);
+      var span = Html.GetAssertedChildElement (td, "span", 0, false);
       Html.AssertAttribute (span, "class", List.CssClassContent);
 
-      HtmlNode clickSpan = Html.GetAssertedChildElement (span, "span", 0, false);
+      var clickSpan = Html.GetAssertedChildElement (span, "span", 0, false);
       Html.AssertAttribute (clickSpan, "onclick", "BocList_OnCommandClick();");
 
-      editableRow.AssertWasCalled (mock => mock.RenderSimpleColumnCellEditModeControl (
+      editableRow.AssertWasCalled (
+          mock => mock.RenderSimpleColumnCellEditModeControl (
                       Html.Writer,
                       Column,
                       firstObject,

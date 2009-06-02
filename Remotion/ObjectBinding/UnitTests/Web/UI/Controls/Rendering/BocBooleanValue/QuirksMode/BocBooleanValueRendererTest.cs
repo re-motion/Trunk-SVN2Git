@@ -16,7 +16,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using HtmlAgilityPack;
+using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     private string _startupScript;
     private string _clickScript;
     private string _keyDownScript;
-    private string _dummyScript = "return false;";
+    private const string _dummyScript = "return false;";
     private IBocBooleanValue _booleanValue;
 
     [SetUp]
@@ -61,14 +61,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
       _booleanValue = MockRepository.GenerateMock<IBocBooleanValue>();
       _booleanValue.Stub (mock => mock.CreateResourceSet()).Return (resourceSet);
-      
-      var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
-      
 
-      _booleanValue.Stub (mock => mock.GetHiddenFieldKey ()).Return ("_Boc_HiddenField");
-      _booleanValue.Stub (mock => mock.GetHyperLinkKey ()).Return ("_Boc_HyperLink");
-      _booleanValue.Stub (mock => mock.GetImageKey ()).Return ("_Boc_Image");
-      _booleanValue.Stub (mock => mock.GetLabelKey ()).Return ("_Boc_Label");
+      var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
+
+
+      _booleanValue.Stub (mock => mock.GetHiddenFieldKey()).Return ("_Boc_HiddenField");
+      _booleanValue.Stub (mock => mock.GetHyperLinkKey()).Return ("_Boc_HyperLink");
+      _booleanValue.Stub (mock => mock.GetImageKey()).Return ("_Boc_Image");
+      _booleanValue.Stub (mock => mock.GetLabelKey()).Return ("_Boc_Label");
 
       string startupScriptKey = typeof (ObjectBinding.Web.UI.Controls.BocBooleanValue).FullName + "_Startup_" + resourceSet.ResourceKey;
       _startupScript = string.Format (
@@ -91,7 +91,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
           "BocBooleanValue_SelectNextCheckboxValue ('{0}', document.getElementById ('{1}'), " +
           "document.getElementById ('{2}'), document.getElementById ('{3}'), false, " +
           "'" + c_trueDescription + "', '" + c_falseDescription + "', '" + c_nullDescription + "');return false;",
-          "ResourceKey", _booleanValue.GetImageKey(), _booleanValue.GetLabelKey(), _booleanValue.GetHiddenFieldKey());
+          "ResourceKey",
+          _booleanValue.GetImageKey(),
+          _booleanValue.GetLabelKey(),
+          _booleanValue.GetHiddenFieldKey());
 
       _keyDownScript = "BocBooleanValue_OnKeyDown (this);";
 
@@ -107,18 +110,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       _booleanValue.Stub (mock => mock.FalseDescription).Return (c_falseDescription);
       _booleanValue.Stub (mock => mock.NullDescription).Return (c_nullDescription);
 
-      _booleanValue.Stub (mock => mock.CssClass).PropertyBehavior ();
+      _booleanValue.Stub (mock => mock.CssClass).PropertyBehavior();
       _booleanValue.Stub (mock => mock.CssClassBase).Return ("cssClassBase");
       _booleanValue.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
       _booleanValue.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
 
-      StateBag stateBag = new StateBag ();
+      StateBag stateBag = new StateBag();
       _booleanValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
       _booleanValue.Stub (mock => mock.Style).Return (_booleanValue.Attributes.CssStyle);
-      _booleanValue.Stub (mock => mock.LabelStyle).Return (new Style(stateBag));
+      _booleanValue.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
       _booleanValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
-
-      
     }
 
     [Test]
@@ -190,7 +191,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     public void RenderNullDisabled ()
     {
       _booleanValue.Value = null;
-      CheckRendering ("null","NullIconUrl", _booleanValue.NullDescription);
+      CheckRendering ("null", "NullIconUrl", _booleanValue.NullDescription);
     }
 
     [Test]
@@ -207,7 +208,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     {
       _booleanValue.Value = true;
       _booleanValue.CssClass = c_cssClass;
-      CheckRendering (true.ToString(),"TrueIconUrl", _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
@@ -217,7 +218,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       _booleanValue.Value = true;
       _booleanValue.Stub (mock => mock.IsReadOnly).Return (true);
       _booleanValue.CssClass = c_cssClass;
-      CheckRendering (true.ToString(),"TrueIconUrl", _booleanValue.TrueDescription);
+      CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
 
     [Test]
@@ -263,7 +264,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       var renderer = new BocBooleanValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _booleanValue);
       renderer.Render();
       var document = Html.GetResultDocument();
-      var outerSpan = Html.GetAssertedChildElement (document.DocumentNode, "span", 0, false);
+      var outerSpan = Html.GetAssertedChildElement (document, "span", 0, false);
       checkOuterSpanAttributes (outerSpan);
 
       int offset = 0;
@@ -291,7 +292,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
         Html.AssertAttribute (label, "onclick", _booleanValue.Enabled ? _clickScript : _dummyScript);
     }
 
-    private void CheckCssClass (HtmlNode outerSpan)
+    private void CheckCssClass (XmlNode outerSpan)
     {
       string cssClass = _booleanValue.CssClass;
       if (string.IsNullOrEmpty (cssClass))
@@ -301,7 +302,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
     }
 
-    private void checkOuterSpanAttributes (HtmlNode outerSpan)
+    private void checkOuterSpanAttributes (XmlNode outerSpan)
     {
       CheckCssClass (outerSpan);
 
@@ -315,7 +316,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Html.AssertStyleAttribute (outerSpan, "white-space", "nowrap");
     }
 
-    private void checkImageAttributes (HtmlNode image, string iconUrl, string description)
+    private void checkImageAttributes (XmlNode image, string iconUrl, string description)
     {
       Html.AssertAttribute (image, "id", "_Boc_Image");
       Html.AssertAttribute (image, "src", iconUrl);
@@ -324,7 +325,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Html.AssertStyleAttribute (image, "vertical-align", "middle");
     }
 
-    private void CheckLinkAttributes (HtmlNode link)
+    private void CheckLinkAttributes (XmlNode link)
     {
       Html.AssertAttribute (link, "onclick", _booleanValue.Enabled ? _clickScript : _dummyScript);
       Html.AssertAttribute (link, "onkeydown", _keyDownScript);
@@ -334,7 +335,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Html.AssertStyleAttribute (link, "background-color", "transparent");
     }
 
-    private void CheckHiddenField (HtmlNode outerSpan, string value)
+    private void CheckHiddenField (XmlNode outerSpan, string value)
     {
       var hiddenField = Html.GetAssertedChildElement (outerSpan, "input", 0, false);
       Html.AssertAttribute (hiddenField, "type", "hidden");
