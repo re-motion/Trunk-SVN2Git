@@ -22,7 +22,7 @@
             .WithService.Select ((t, b) => t.GetInterfaces ())
             .Configure (c => c.Named ("default." + c.ServiceType.Name)));
 
-    Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (new WindsorServiceLocator (container)));
+    Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
     ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
 
   This will register all renderer factories in any Remotion.ObjectBinding.Web.UI.Controls.Rendering.[ControlName].QuirksMode.Factories 

@@ -16,6 +16,11 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using CommonServiceLocator.WindsorAdapter;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.Web.ExecutionEngine;
@@ -32,6 +37,18 @@ namespace Remotion.SecurityManager.Clients.Web
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
       AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), new WebSecurityAdapter());
       AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), new WxeSecurityAdapter());
+
+      //Windsor dependency does not come into play unless application_start is invoked. This only happens in stand-alone applications.
+      IWindsorContainer container = new WindsorContainer ();
+      container.Register (
+          AllTypes.Pick ()
+              .FromAssembly (typeof (RendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
+              .WithService.Select ((t, b) => t.GetInterfaces ())
+              .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+
+      Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
+      ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
     }
 
     protected void Application_End (object sender, EventArgs e)

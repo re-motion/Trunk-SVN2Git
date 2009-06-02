@@ -76,21 +76,16 @@ namespace OBWTest
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (ISearchAvailableObjectsService), new BindableXmlObjectSearchService ());
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService ());
 
-      ServiceLocator.SetLocatorProvider (GetContainer);
-    }
-
-    private IServiceLocator GetContainer ()
-    {
       IWindsorContainer container = new WindsorContainer ();
-
       container.Register (
           AllTypes.Pick ()
               .FromAssembly (typeof (RendererBase<>).Assembly)
               .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces ())
               .Configure (c => c.Named ("default." + c.ServiceType.Name)));
-      
-      return new WindsorServiceLocator (container);
+
+      Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
+      ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
     }
 
     protected void Session_Start (Object sender, EventArgs e)
