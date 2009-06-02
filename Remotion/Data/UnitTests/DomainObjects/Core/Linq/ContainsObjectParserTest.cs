@@ -20,7 +20,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
@@ -148,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       SelectClause selectClause = _parser.CreateSelectClause (whereClause, mainFromClause.Identifier);
       Assert.That (selectClause.PreviousClause, Is.SameAs (whereClause));
-      Assert.That (selectClause.ProjectionExpression.Body, Is.SameAs(mainFromClause.Identifier));
+      Assert.That (selectClause.Selector.Body, Is.SameAs(mainFromClause.Identifier));
     }
 
     [Test]
@@ -169,8 +168,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fromClause.Identifier.Name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
 
       WhereClause whereClause = (WhereClause) queryModel.BodyClauses[0];
-      Assert.That (((LambdaExpression)whereClause.Predicate).Body, Is.InstanceOfType (typeof (BinaryExpression)));
-      BinaryExpression binaryExpression = (BinaryExpression) ((LambdaExpression)whereClause.Predicate).Body;
+      Assert.That (whereClause.Predicate.Body, Is.InstanceOfType (typeof (BinaryExpression)));
+      BinaryExpression binaryExpression = (BinaryExpression) whereClause.Predicate.Body;
       Assert.That (binaryExpression.Left, Is.InstanceOfType (typeof (MemberExpression)));
       MemberExpression memberExpression = (MemberExpression) binaryExpression.Left;
       Assert.That (memberExpression.Expression, Is.SameAs (fromClause.Identifier));
@@ -178,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (binaryExpression.Right, Is.SameAs (_queriedObjectExpression));
 
       SelectClause selectClause = (SelectClause) queryModel.SelectOrGroupClause;
-      Assert.That (selectClause.ProjectionExpression.Body, Is.EqualTo(fromClause.Identifier));
+      Assert.That (selectClause.Selector.Body, Is.EqualTo(fromClause.Identifier));
     }
 
     [Test]
