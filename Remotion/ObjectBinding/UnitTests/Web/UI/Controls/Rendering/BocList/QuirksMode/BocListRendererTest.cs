@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       XmlNode colgroup;
       RenderAndAssertTable (out colgroup);
 
-      var colMenu = Html.GetAssertedChildElement (colgroup, "col", 1, true);
+      var colMenu = Html.GetAssertedChildElement (colgroup, "col", 1);
       Html.AssertStyleAttribute (colMenu, "width", menuBlockWidth.ToString());
       Html.AssertStyleAttribute (colMenu, "padding-left", menuBlockOffset.ToString());
     }
@@ -76,21 +76,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var table = Html.GetAssertedChildElement (document, "table", 0, false);
+      var table = Html.GetAssertedChildElement (document, "table", 0);
       Html.AssertAttribute (table, "cellspacing", "0");
       Html.AssertAttribute (table, "cellpadding", "0");
       Html.AssertStyleAttribute (table, "width", "100%");
 
-      colgroup = Html.GetAssertedChildElement (table, "colgroup", 0, true);
+      colgroup = Html.GetAssertedChildElement (table, "colgroup", 0);
 
-      var colTableAndNavigation = Html.GetAssertedChildElement (colgroup, "col", 0, true);
+      var colTableAndNavigation = Html.GetAssertedChildElement (colgroup, "col", 0);
 
-      var tr = Html.GetAssertedChildElement (table, "tr", 1, true);
+      var tr = Html.GetAssertedChildElement (table, "tr", 1);
 
-      var td = Html.GetAssertedChildElement (tr, "td", 0, true);
+      var td = Html.GetAssertedChildElement (tr, "td", 0);
       Html.AssertStyleAttribute (td, "vertical-align", "top");
 
-      Html.GetAssertedChildElement (td, "div", 0, false);
+      Html.GetAssertedChildElement (td, "div", 0);
     }
   }
 }

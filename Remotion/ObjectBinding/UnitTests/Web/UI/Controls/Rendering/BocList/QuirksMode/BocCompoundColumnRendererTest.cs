@@ -50,13 +50,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.RenderDataCell (0, false, EventArgs);
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      var span = Html.GetAssertedChildElement (td, "span", 0, false);
+      var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "class", List.CssClassContent);
 
-      Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 0, false);
+      Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 0);
     }
 
     [Test]
@@ -67,13 +67,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.RenderDataCell (0, false, EventArgs);
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      var span = Html.GetAssertedChildElement (td, "span", 0, false);
+      var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "class", List.CssClassContent);
 
-      Html.AssertTextNode (span, "referencedObject1", 0, false);
+      Html.AssertTextNode (span, "referencedObject1", 0);
     }
 
     [Test]
@@ -87,20 +87,20 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.RenderDataCell (0, false, EventArgs);
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      var cropSpan = Html.GetAssertedChildElement (td, "span", 0, false);
+      var cropSpan = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (cropSpan, "title", "referencedObject1");
       Html.AssertStyleAttribute (cropSpan, "width", "40px");
       Html.AssertStyleAttribute (cropSpan, "display", "block");
       Html.AssertStyleAttribute (cropSpan, "overflow", "hidden");
       Html.AssertStyleAttribute (cropSpan, "white-space", "nowrap");
 
-      var span = Html.GetAssertedChildElement (cropSpan, "span", 0, false);
+      var span = Html.GetAssertedChildElement (cropSpan, "span", 0);
       Html.AssertAttribute (span, "class", List.CssClassContent);
 
-      Html.AssertTextNode (span, "referencedObject1", 0, false);
+      Html.AssertTextNode (span, "referencedObject1", 0);
     }
   }
 }

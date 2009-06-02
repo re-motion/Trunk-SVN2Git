@@ -264,7 +264,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       var renderer = new BocBooleanValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _booleanValue);
       renderer.Render();
       var document = Html.GetResultDocument();
-      var outerSpan = Html.GetAssertedChildElement (document, "span", 0, false);
+      var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
       checkOuterSpanAttributes (outerSpan);
 
       int offset = 0;
@@ -275,18 +275,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       }
       Html.AssertChildElementCount (outerSpan, 2 + offset);
 
-      var link = Html.GetAssertedChildElement (outerSpan, "a", offset, false);
+      var link = Html.GetAssertedChildElement (outerSpan, "a", offset);
       Html.AssertAttribute (link, "id", "_Boc_HyperLink");
       if (!_booleanValue.IsReadOnly)
         CheckLinkAttributes (link);
 
-      var image = Html.GetAssertedChildElement (link, "img", 0, false);
+      var image = Html.GetAssertedChildElement (link, "img", 0);
       checkImageAttributes (image, iconUrl, description);
 
-      var label = Html.GetAssertedChildElement (outerSpan, "span", offset + 1, false);
+      var label = Html.GetAssertedChildElement (outerSpan, "span", offset + 1);
       Html.AssertAttribute (label, "id", "_Boc_Label");
       Html.AssertChildElementCount (label, 0);
-      Html.AssertTextNode (label, description, 0, false);
+      Html.AssertTextNode (label, description, 0);
 
       if (!_booleanValue.IsReadOnly)
         Html.AssertAttribute (label, "onclick", _booleanValue.Enabled ? _clickScript : _dummyScript);
@@ -337,7 +337,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
     private void CheckHiddenField (XmlNode outerSpan, string value)
     {
-      var hiddenField = Html.GetAssertedChildElement (outerSpan, "input", 0, false);
+      var hiddenField = Html.GetAssertedChildElement (outerSpan, "input", 0);
       Html.AssertAttribute (hiddenField, "type", "hidden");
       Html.AssertAttribute (hiddenField, "id", "_Boc_HiddenField");
       Html.AssertAttribute (hiddenField, "value", value);

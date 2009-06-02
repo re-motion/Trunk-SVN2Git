@@ -132,7 +132,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
-      var span = Html.GetAssertedChildElement (document, "span", 0, false);
+      var span = Html.GetAssertedChildElement (document, "span", 0);
       CheckCssClass (span, withCssClass, inStandardProperties);
       if (isDisabled)
         Html.AssertAttribute (span, "class", TextValue.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
@@ -140,9 +140,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
-      var textarea = Html.GetAssertedChildElement (span, "textarea", 0, false);
+      var textarea = Html.GetAssertedChildElement (span, "textarea", 0);
       CheckTextAreaStyle (textarea, false, withStyle);
-      Html.AssertTextNode (textarea, TextValue.Text, 0, false);
+      Html.AssertTextNode (textarea, TextValue.Text, 0);
       Html.AssertChildElementCount (textarea, 0);
     }
 
@@ -157,7 +157,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
-      var span = Html.GetAssertedChildElement (document, "span", 0, false);
+      var span = Html.GetAssertedChildElement (document, "span", 0);
       CheckCssClass (span, withCssClass, inStandardProperties);
       Html.AssertAttribute (span, "class", TextValue.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
@@ -171,10 +171,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
           Html.AssertStyleAttribute (span, "display", "inline-block");
       }
 
-      var label = Html.GetAssertedChildElement (span, "span", 0, false);
-      Html.AssertTextNode (label, c_firstLineText, 0, false);
-      Html.GetAssertedChildElement (label, "br", 1, false);
-      Html.AssertTextNode (label, c_secondLineText, 2, false);
+      var label = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertTextNode (label, c_firstLineText, 0);
+      Html.GetAssertedChildElement (label, "br", 1);
+      Html.AssertTextNode (label, c_secondLineText, 2);
       Html.AssertChildElementCount (label, 1);
     }
 

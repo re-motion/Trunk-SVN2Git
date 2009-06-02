@@ -227,7 +227,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
       var document = Html.GetResultDocument();
 
-      var outerSpan = Html.GetAssertedChildElement (document, "span", 0, false);
+      var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
       checkCssClass (outerSpan);
 
       Html.AssertStyleAttribute (outerSpan, "white-space", "nowrap");
@@ -239,15 +239,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       else
         CheckInput (value, outerSpan);
 
-      var label = Html.GetAssertedChildElement (outerSpan, "span", 1, false);
+      var label = Html.GetAssertedChildElement (outerSpan, "span", 1);
       Html.AssertAttribute (label, "id", "_Boc_Label");
 
-      Html.AssertTextNode (label, spanText, 0, false);
+      Html.AssertTextNode (label, spanText, 0);
     }
 
     private void CheckInput (bool value, XmlNode outerSpan)
     {
-      var checkbox = Html.GetAssertedChildElement (outerSpan, "input", 0, false);
+      var checkbox = Html.GetAssertedChildElement (outerSpan, "input", 0);
       Html.AssertAttribute (checkbox, "type", "checkbox");
       Html.AssertAttribute (checkbox, "id", "_Boc_CheckBox");
       Html.AssertAttribute (checkbox, "name", "_Boc_CheckBox");
@@ -264,7 +264,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
     private void CheckImage (bool value, XmlNode outerSpan, string altText)
     {
-      var image = Html.GetAssertedChildElement (outerSpan, "img", 0, false);
+      var image = Html.GetAssertedChildElement (outerSpan, "img", 0);
       Html.AssertAttribute (image, "id", "_Boc_Image");
       Html.AssertAttribute (image, "src", string.Format ("/CheckBox{0}.gif", value), HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (image, "alt", altText);

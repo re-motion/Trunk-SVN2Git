@@ -55,13 +55,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      var a = Html.GetAssertedChildElement (td, "a", 0, false);
+      var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "#");
       Html.AssertAttribute (a, "onclick", "postBackEventReference;BocList_OnCommandClick();");
-      Html.AssertTextNode (a, "Bearbeiten", 0, false);
+      Html.AssertTextNode (a, "Bearbeiten", 0);
     }
 
     [Test]
@@ -74,18 +74,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      var save = Html.GetAssertedChildElement (td, "a", 0, false);
+      var save = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (save, "href", "#");
       Html.AssertAttribute (save, "onclick", "postBackEventReference;BocList_OnCommandClick();");
-      Html.AssertTextNode (save, "Speichern", 0, false);
+      Html.AssertTextNode (save, "Speichern", 0);
 
-      var cancel = Html.GetAssertedChildElement (td, "a", 1, false);
+      var cancel = Html.GetAssertedChildElement (td, "a", 1);
       Html.AssertAttribute (cancel, "href", "#");
       Html.AssertAttribute (cancel, "onclick", "postBackEventReference;BocList_OnCommandClick();");
-      Html.AssertTextNode (cancel, "Abbrechen", 0, false);
+      Html.AssertTextNode (cancel, "Abbrechen", 0);
     }
   }
 }

@@ -49,15 +49,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var div = Html.GetAssertedChildElement (document, "div", 0, false);
+      var div = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "margin-bottom", "5pt");
 
-      var span = Html.GetAssertedChildElement (div, "span", 0, true);
+      var span = Html.GetAssertedChildElement (div, "span", 0);
       Html.AssertAttribute (span, "class", "CssClass");
-      Html.AssertTextNode (span, "Views List Title", 0, false);
+      Html.AssertTextNode (span, "Views List Title", 0);
 
-      Html.AssertTextNode (div, HtmlHelper.WhiteSpace + "mocked dropdown list", 1, false);
+      Html.AssertTextNode (div, HtmlHelper.WhiteSpace + "mocked dropdown list", 1);
     }
 
     [Test]
@@ -109,31 +109,31 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var div = Html.GetAssertedChildElement (document, "div", 0, false);
+      var div = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "margin-bottom", menuBlockOffset.ToString());
 
-      var table = Html.GetAssertedChildElement (div, "table", 0, true);
+      var table = Html.GetAssertedChildElement (div, "table", 0);
       Html.AssertAttribute (table, "cellspacing", "0");
       Html.AssertAttribute (table, "cellpadding", "0");
       Html.AssertAttribute (table, "border", "0");
 
-      var tr = Html.GetAssertedChildElement (table, "tr", 0, true);
+      var tr = Html.GetAssertedChildElement (table, "tr", 0);
 
-      var td = Html.GetAssertedChildElement (tr, "td", 0, true);
+      var td = Html.GetAssertedChildElement (tr, "td", 0);
       Html.AssertAttribute (td, "class", "contentMenuRow");
       Html.AssertStyleAttribute (td, "width", "100%");
 
-      var span = Html.GetAssertedChildElement (td, "span", 0, false);
+      var span = Html.GetAssertedChildElement (td, "span", 0);
 
-      var a = Html.GetAssertedChildElement (span, "a", 0, false);
+      var a = Html.GetAssertedChildElement (span, "a", 0);
 
-      var img = Html.GetAssertedChildElement (a, "img", 0, false);
+      var img = Html.GetAssertedChildElement (a, "img", 0);
       Html.AssertAttribute (img, "src", "/Images/NullIcon.gif", HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (img, "vertical-align", "middle");
       Html.AssertStyleAttribute (img, "border-style", "none");
 
-      Html.AssertTextNode (a, HtmlHelper.WhiteSpace + "text", 1, false);
+      Html.AssertTextNode (a, HtmlHelper.WhiteSpace + "text", 1);
     }
   }
 }

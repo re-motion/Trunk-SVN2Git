@@ -42,10 +42,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var th = Html.GetAssertedChildElement (document, "th", 0, false);
+      var th = Html.GetAssertedChildElement (document, "th", 0);
       Html.AssertAttribute (th, "class", List.CssClassTitleCell);
 
-      var input = Html.GetAssertedChildElement (th, "input", 0, false);
+      var input = Html.GetAssertedChildElement (th, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
       Html.AssertAttribute (input, "name", "_Boc_SelectorControl_SelectAll");
       Html.AssertAttribute (input, "value", "-1");
@@ -61,10 +61,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", "bocListTableCell");
 
-      var input = Html.GetAssertedChildElement (td, "input", 0, false);
+      var input = Html.GetAssertedChildElement (td, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
       Html.AssertAttribute (input, "name", "checkboxControl");
       Html.AssertAttribute (input, "value", "0");
@@ -80,10 +80,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var th = Html.GetAssertedChildElement (document, "th", 0, false);
+      var th = Html.GetAssertedChildElement (document, "th", 0);
       Html.AssertAttribute (th, "class", List.CssClassTitleCell);
 
-      Html.AssertTextNode (th, HtmlHelper.WhiteSpace, 0, false);
+      Html.AssertTextNode (th, HtmlHelper.WhiteSpace, 0);
     }
 
     [Test]
@@ -95,10 +95,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", "bocListTableCell");
 
-      var input = Html.GetAssertedChildElement (td, "input", 0, false);
+      var input = Html.GetAssertedChildElement (td, "input", 0);
       Html.AssertAttribute (input, "type", "radio");
       Html.AssertAttribute (input, "name", "radioControl");
       Html.AssertAttribute (input, "value", "0");

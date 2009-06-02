@@ -38,7 +38,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       HttpContext = MockRepository.GenerateMock<IHttpContext>();
 
       Html = new HtmlHelper();
-      Html.InitializeStream();
 
       List = new ObjectBinding.Web.UI.Controls.BocList();
       Page = new Page();

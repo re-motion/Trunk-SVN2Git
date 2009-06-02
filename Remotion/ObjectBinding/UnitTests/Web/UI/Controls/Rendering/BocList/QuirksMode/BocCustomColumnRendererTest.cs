@@ -63,10 +63,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      var span = Html.GetAssertedChildElement (td, "span", 0, false);
+      var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "onclick", "BocList_OnCommandClick();");
     }
 
@@ -80,10 +80,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      var span = Html.GetAssertedChildElement (td, "span", 0, false);
+      var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "onclick", "BocList_OnCommandClick();");
     }
 
@@ -97,7 +97,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
     }
   }

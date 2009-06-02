@@ -38,10 +38,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       XmlNode tbody;
       RenderAndAssertTable (out tbody);
 
-      var trData1 = Html.GetAssertedChildElement (tbody, "tr", 0, true);
+      var trData1 = Html.GetAssertedChildElement (tbody, "tr", 0);
       Html.AssertAttribute (trData1, "class", "dataStub");
 
-      var trData2 = Html.GetAssertedChildElement (tbody, "tr", 1, true);
+      var trData2 = Html.GetAssertedChildElement (tbody, "tr", 1);
       Html.AssertAttribute (trData2, "class", "dataStub");
     }
 
@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       XmlNode tbody;
       RenderAndAssertTable (out tbody);
 
-      var trData1 = Html.GetAssertedChildElement (tbody, "tr", 0, true);
+      var trData1 = Html.GetAssertedChildElement (tbody, "tr", 0);
       Html.AssertAttribute (trData1, "class", "emptyStub");
     }
 
@@ -74,10 +74,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var table = Html.GetAssertedChildElement (document, "table", 0, true);
-      var tr = Html.GetAssertedChildElement (table, "tr", 0, true);
-      var td = Html.GetAssertedChildElement (tr, "td", 0, true);
-      Html.AssertTextNode (td, HtmlHelper.WhiteSpace, 0, false);
+      var table = Html.GetAssertedChildElement (document, "table", 0);
+      var tr = Html.GetAssertedChildElement (table, "tr", 0);
+      var td = Html.GetAssertedChildElement (tr, "td", 0);
+      Html.AssertTextNode (td, HtmlHelper.WhiteSpace, 0);
     }
 
     private void RenderAndAssertTable (out XmlNode tbody)
@@ -87,22 +87,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var div = Html.GetAssertedChildElement (document, "div", 0, false);
+      var div = Html.GetAssertedChildElement (document, "div", 0);
 
-      var table = Html.GetAssertedChildElement (div, "table", 0, true);
+      var table = Html.GetAssertedChildElement (div, "table", 0);
 
-      var colgroup = Html.GetAssertedChildElement (table, "colgroup", 0, true);
+      var colgroup = Html.GetAssertedChildElement (table, "colgroup", 0);
 
-      Html.GetAssertedChildElement (colgroup, "col", 0, true);
-      Html.GetAssertedChildElement (colgroup, "col", 1, true);
-      Html.GetAssertedChildElement (colgroup, "col", 2, true);
+      Html.GetAssertedChildElement (colgroup, "col", 0);
+      Html.GetAssertedChildElement (colgroup, "col", 1);
+      Html.GetAssertedChildElement (colgroup, "col", 2);
 
-      var thead = Html.GetAssertedChildElement (table, "thead", 1, true);
+      var thead = Html.GetAssertedChildElement (table, "thead", 1);
 
-      var trTitle = Html.GetAssertedChildElement (thead, "tr", 0, true);
+      var trTitle = Html.GetAssertedChildElement (thead, "tr", 0);
       Html.AssertAttribute (trTitle, "class", "titleStub");
 
-      tbody = Html.GetAssertedChildElement (table, "tbody", 2, true);
+      tbody = Html.GetAssertedChildElement (table, "tbody", 2);
     }
 
     private void CommonInitialize ()

@@ -84,13 +84,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var th = Html.GetAssertedChildElement (document, "th", 0, false);
+      var th = Html.GetAssertedChildElement (document, "th", 0);
       Html.AssertAttribute (th, "class", List.CssClassTitleCell, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (th, "class", c_columnCssClass, HtmlHelper.AttributeValueCompareMode.Contains);
 
       Assert.Less (0, th.ChildNodes.Count);
-      var sortCommandLink = Html.GetAssertedChildElement (th, "a", 0, false);
-      Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue, 0, false);
+      var sortCommandLink = Html.GetAssertedChildElement (th, "a", 0);
+      Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue, 0);
 
       Html.AssertChildElementCount (sortCommandLink, 0);
     }
@@ -106,24 +106,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var th = Html.GetAssertedChildElement (document, "th", 0, false);
+      var th = Html.GetAssertedChildElement (document, "th", 0);
       Html.AssertAttribute (th, "class", List.CssClassTitleCell, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (th, "class", c_columnCssClass, HtmlHelper.AttributeValueCompareMode.Contains);
 
       Assert.Less (0, th.ChildNodes.Count);
-      var sortCommandLink = Html.GetAssertedChildElement (th, "a", 0, false);
-      Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue + HtmlHelper.WhiteSpace, 0, false);
+      var sortCommandLink = Html.GetAssertedChildElement (th, "a", 0);
+      Html.AssertTextNode (sortCommandLink, Column.ColumnTitleDisplayValue + HtmlHelper.WhiteSpace, 0);
 
-      var sortOrderSpan = Html.GetAssertedChildElement (sortCommandLink, "span", 1, false);
+      var sortOrderSpan = Html.GetAssertedChildElement (sortCommandLink, "span", 1);
       Html.AssertAttribute (sortOrderSpan, "class", List.CssClassSortingOrder, HtmlHelper.AttributeValueCompareMode.Contains);
 
-      var sortIcon = Html.GetAssertedChildElement (sortOrderSpan, "img", 0, false);
+      var sortIcon = Html.GetAssertedChildElement (sortOrderSpan, "img", 0);
       Html.AssertAttribute (sortIcon, "src", iconFilename, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (sortIcon, "alt", iconAltText);
       Html.AssertStyleAttribute (sortIcon, "vertical-align", "middle");
       Html.AssertStyleAttribute (sortIcon, "border-style", "none");
 
-      Html.AssertTextNode (sortOrderSpan, HtmlHelper.WhiteSpace + (sortIndex + 1), 1, false);
+      Html.AssertTextNode (sortOrderSpan, HtmlHelper.WhiteSpace + (sortIndex + 1), 1);
     }
   }
 }

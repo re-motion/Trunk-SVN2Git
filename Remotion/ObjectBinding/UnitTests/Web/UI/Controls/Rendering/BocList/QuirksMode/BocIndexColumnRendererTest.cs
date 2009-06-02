@@ -43,12 +43,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var th = Html.GetAssertedChildElement (document, "th", 0, false);
+      var th = Html.GetAssertedChildElement (document, "th", 0);
       Html.AssertAttribute (th, "class", List.CssClassTitleCell, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (th, "class", List.CssClassTitleCellIndex, HtmlHelper.AttributeValueCompareMode.Contains);
 
-      var span = Html.GetAssertedChildElement (th, "span", 0, false);
-      Html.AssertTextNode (span, "No.", 0, false);
+      var span = Html.GetAssertedChildElement (th, "span", 0);
+      Html.AssertTextNode (span, "No.", 0);
     }
 
     [Test]
@@ -76,15 +76,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", cssClassTableCell, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (td, "class", List.CssClassDataCellIndex, HtmlHelper.AttributeValueCompareMode.Contains);
 
-      var label = Html.GetAssertedChildElement (td, "label", 0, false);
+      var label = Html.GetAssertedChildElement (td, "label", 0);
       Html.AssertAttribute (label, "class", List.CssClassContent);
       Html.AssertAttribute (label, "for", "selectorID");
 
-      Html.AssertTextNode (label, (1 + indexOffset).ToString(), 0, false);
+      Html.AssertTextNode (label, (1 + indexOffset).ToString(), 0);
     }
   }
 }

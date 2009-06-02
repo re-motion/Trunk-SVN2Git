@@ -33,7 +33,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     public void SetUp ()
     {
       Html = new HtmlHelper();
-      Html.InitializeStream();
 
       HttpContext = MockRepository.GenerateMock<IHttpContext> ();
 

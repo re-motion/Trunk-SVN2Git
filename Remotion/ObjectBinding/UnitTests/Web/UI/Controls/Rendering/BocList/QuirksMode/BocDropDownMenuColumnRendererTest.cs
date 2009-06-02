@@ -70,13 +70,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
-      var div = Html.GetAssertedChildElement (td, "div", 0, false);
+      var div = Html.GetAssertedChildElement (td, "div", 0);
       Html.AssertAttribute (div, "onclick", "BocList_OnCommandClick();");
 
-      Html.AssertTextNode (div, "mocked dropdown menu", 0, false);
+      Html.AssertTextNode (div, "mocked dropdown menu", 0);
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       Html.AssertChildElementCount (td, 0);
@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var td = Html.GetAssertedChildElement (document, "td", 0, false);
+      var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
 
       Html.AssertChildElementCount (td, 0);

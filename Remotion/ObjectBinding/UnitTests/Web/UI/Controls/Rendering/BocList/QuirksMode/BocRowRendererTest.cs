@@ -48,9 +48,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0);
 
-      Html.GetAssertedChildElement (tr, "th", 0, false);
+      Html.GetAssertedChildElement (tr, "th", 0);
     }
 
     [Test]
@@ -65,13 +65,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0);
 
-      var thIndex = Html.GetAssertedChildElement (tr, "th", 0, false);
+      var thIndex = Html.GetAssertedChildElement (tr, "th", 0);
       Html.AssertAttribute (thIndex, "class", List.CssClassTitleCell, HtmlHelper.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (thIndex, "class", List.CssClassTitleCellIndex, HtmlHelper.AttributeValueCompareMode.Contains);
 
-      Html.GetAssertedChildElement (tr, "th", 1, false);
+      Html.GetAssertedChildElement (tr, "th", 1);
     }
 
     [Test]
@@ -86,11 +86,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0);
 
-      Html.GetAssertedChildElement (tr, "th", 0, false);
+      Html.GetAssertedChildElement (tr, "th", 0);
 
-      Html.GetAssertedChildElement (tr, "th", 1, false);
+      Html.GetAssertedChildElement (tr, "th", 1);
     }
 
     [Test]
@@ -101,10 +101,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0);
       Html.AssertAttribute (tr, "class", List.CssClassDataRow);
 
-      Html.GetAssertedChildElement (tr, "td", 0, false);
+      Html.GetAssertedChildElement (tr, "td", 0);
     }
 
     [Test]
@@ -117,10 +117,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0);
       Html.AssertAttribute (tr, "class", List.CssClassDataRowSelected);
 
-      Html.GetAssertedChildElement (tr, "td", 0, false);
+      Html.GetAssertedChildElement (tr, "td", 0);
     }
 
     [Test]
@@ -134,9 +134,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var tr = Html.GetAssertedChildElement (document, "tr", 0, false);
+      var tr = Html.GetAssertedChildElement (document, "tr", 0);
 
-      Html.GetAssertedChildElement (tr, "td", 0, false);
+      Html.GetAssertedChildElement (tr, "td", 0);
     }
   }
 }

@@ -14,29 +14,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.Infrastructure;
-using Rhino.Mocks;
+using System.Collections;
+using System.Web;
+using System.Web.UI.WebControls;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTimeValue
 {
-  public class RendererTestBase
+  public class MockHyperLink : HyperLink
   {
-    protected IHttpContext HttpContext { get; private set; }
-    protected HtmlHelper Html { get; private set; }
-
-    protected RendererTestBase ()
+    protected override System.Web.HttpContext Context
     {
-      
-    }
-
-    protected virtual void Initialize ()
-    {
-      Html = new HtmlHelper ();
-
-      HttpContext = MockRepository.GenerateMock<IHttpContext> ();
-      IHttpResponse response = MockRepository.GenerateMock<IHttpResponse> ();
-      HttpContext.Stub (mock => mock.Response).Return (response);
-      response.Stub (mock => mock.ContentType).Return ("text/html");
+      get
+      {
+        var context = new HttpContext (new HttpRequest ("Test.aspx", "http://www.example.com/", ""), new HttpResponse (null));
+        context.Request.Browser = new HttpBrowserCapabilities ();
+        context.Request.Browser.Capabilities = new Hashtable ();
+        context.Request.Browser.Capabilities.Add ("browser", "IE");
+        context.Request.Browser.Capabilities.Add ("majorversion", "7");
+        return context;
+      }
     }
   }
 }
