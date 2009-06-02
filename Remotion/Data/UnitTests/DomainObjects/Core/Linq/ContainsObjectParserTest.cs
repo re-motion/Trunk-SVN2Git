@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       WhereClause whereClause = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, queriedObject);
       Assert.That (whereClause.PreviousClause, Is.SameAs (mainFromClause));
-      ExpressionTreeComparer.CheckAreEqualTrees (whereClause.BoolExpression, expectedWhereComparison);
+      ExpressionTreeComparer.CheckAreEqualTrees (whereClause.Predicate, expectedWhereComparison);
     }
 
     [Test]
@@ -169,8 +169,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fromClause.Identifier.Name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
 
       WhereClause whereClause = (WhereClause) queryModel.BodyClauses[0];
-      Assert.That (whereClause.BoolExpression.Body, Is.InstanceOfType (typeof (BinaryExpression)));
-      BinaryExpression binaryExpression = (BinaryExpression) whereClause.BoolExpression.Body;
+      Assert.That (((LambdaExpression)whereClause.Predicate).Body, Is.InstanceOfType (typeof (BinaryExpression)));
+      BinaryExpression binaryExpression = (BinaryExpression) ((LambdaExpression)whereClause.Predicate).Body;
       Assert.That (binaryExpression.Left, Is.InstanceOfType (typeof (MemberExpression)));
       MemberExpression memberExpression = (MemberExpression) binaryExpression.Left;
       Assert.That (memberExpression.Expression, Is.SameAs (fromClause.Identifier));
