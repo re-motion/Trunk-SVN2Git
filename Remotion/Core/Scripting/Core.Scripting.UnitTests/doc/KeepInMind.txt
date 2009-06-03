@@ -1,0 +1,2 @@
+﻿ "Microsoft.Scripting.ExtensionAttribute.dll" must be present at runtime, otherwise Microsoft.Scripting throws. 
+ TODO: Check ambiguity warning with regard to ExtensionAttribute
