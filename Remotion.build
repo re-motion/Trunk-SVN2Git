@@ -168,7 +168,7 @@
   </target>
 
   <target name="all" depends="prereq,
-      Core.Interfaces, Core.Core, Core.Mixins.MixerTool.Console, 
+      Core.Interfaces, Core.Core, Core.Mixins.MixerTool.Console, Core.Scripting,
       Development.CodeDom, Development.Core, Development.Data, 
       Dms.Core, Dms.Shared, Dms.Clients.Windows.Tray, Dms.DesktopConnector, Dms.Web,
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
@@ -181,7 +181,7 @@
     <echo message="Target has executed."/>
   </target>
 
-  <target name="all-test" depends="prereq, Core.Mixins.Samples, Core.UnitTests, Development.UnitTests, Web.UnitTests, ObjectBinding.UnitTests, 
+  <target name="all-test" depends="prereq, Core.Mixins.Samples, Core.UnitTests, Core.Scripting.UnitTests, Development.UnitTests, Web.UnitTests, ObjectBinding.UnitTests, 
       Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests, 
       Security.UnitTests.TestDomain, Security.UnitTests, SecurityManager.Core.UnitTests, Dms.UnitTests">
     <echo message="Target has executed."/>
@@ -226,6 +226,14 @@
     <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
   </target>
+
+  <target name="Core.Scripting" depends="Core.Core, Core.Interfaces">
+    <property name="project.name" value="Core.Scripting" />
+    <property name="project.dir" value="Remotion/Core/Scripting/Scripting" />
+    <property name="project.output" value="Remotion.Scripting" />
+    <property name="project.extension" value="dll" />
+    <call target="execute-buildstep" />
+  </target>  
 
   <target name="Development.Core" depends="Core.Core">
     <property name="project.name" value="Development.Core" />
@@ -505,6 +513,14 @@
     <property name="project.name" value="Core.UnitTests" />
     <property name="project.dir" value="Remotion/Core/UnitTests" />
     <property name="project.output" value="Remotion.UnitTests" />
+    <property name="project.extension" value="dll" />
+    <call target="buildtest" />
+  </target>
+
+  <target name="Core.Scripting.UnitTests" depends="Core.Scripting, Core.Core, Development.Core">
+    <property name="project.name" value="Core.Scripting.UnitTests" />
+    <property name="project.dir" value="Remotion/Core/Scripting/UnitTests" />
+    <property name="project.output" value="Remotion.Scripting.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
   </target>

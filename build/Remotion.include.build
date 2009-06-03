@@ -208,6 +208,12 @@
         <include name="CommonServiceLocator.WindsorAdapter.*"/>
         <include name="AjaxControlToolkit.dll" />
         <include name="Microsoft.Practices.ServiceLocation.dll" />
+
+        <include name="IronPython.dll" />
+        <include name="IronPython.Modules.dll" />
+        <include name="Microsoft.Scripting.dll" />
+        <include name="Microsoft.Scripting.Core.dll" />
+        <include name="Microsoft.Scripting.ExtensionAttribute.dll" />
       </fileset>
     </copy>
 
