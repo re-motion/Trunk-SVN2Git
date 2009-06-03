@@ -13,14 +13,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.DataObjectModel;
+using System;
 
-namespace Remotion.Data.Linq.SqlGeneration
+namespace Remotion.Data.Linq.Clauses.ResultModifications
 {
-  public interface ISelectBuilder
+  public class TakeResultModification : ResultModificationBase
   {
-    void BuildSelectPart (IEvaluation selectEvaluation, List<ResultModificationBase> resultModifiers);
+    public int Count { get; set; }
+
+    public TakeResultModification (SelectClause selectClause, int count)
+        : base (selectClause)
+    {
+      Count = count;
+    }
+
+    public override ResultModificationBase Clone (SelectClause newSelectClause)
+    {
+      return new TakeResultModification (newSelectClause, Count);
+    }
   }
 }

@@ -664,7 +664,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 594: Fix this")]
     public void QueryWithCount_InSubquery ()
     {
       var number = (from o in QueryFactory.CreateLinqQuery<Order> ()

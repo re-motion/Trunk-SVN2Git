@@ -13,14 +13,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.DataObjectModel;
+using System;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses.ResultModifications;
 
-namespace Remotion.Data.Linq.SqlGeneration
+namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
 {
-  public interface ISelectBuilder
+  [TestFixture]
+  public class DistinctResultModificationTest
   {
-    void BuildSelectPart (IEvaluation selectEvaluation, List<ResultModificationBase> resultModifiers);
+    [Test]
+    public void Clone ()
+    {
+      var selectClause = ExpressionHelper.CreateSelectClause ();
+      var newSelectClause = ExpressionHelper.CreateSelectClause ();
+
+      var resultModification = new DistinctResultModification (selectClause);
+      var clone = resultModification.Clone (newSelectClause);
+
+      Assert.That (clone, Is.InstanceOfType (typeof (DistinctResultModification)));
+      Assert.That (clone.SelectClause, Is.SameAs (newSelectClause));
+    }
   }
 }

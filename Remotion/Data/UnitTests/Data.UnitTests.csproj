@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6DEF9C11-1D5A-4B14-A4EB-F4C7E7CC3E7B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -518,6 +518,12 @@
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
     <Compile Include="Linq\Clauses\AdditionalFromClauseTest.cs" />
     <Compile Include="Linq\Clauses\ClauseFinderTest.cs" />
+    <Compile Include="Linq\Clauses\ResultModifications\SingleResultModificationTest.cs" />
+    <Compile Include="Linq\Clauses\ResultModifications\TakeResultModificationTest.cs" />
+    <Compile Include="Linq\Clauses\ResultModifications\CountResultModificationTest.cs" />
+    <Compile Include="Linq\Clauses\ResultModifications\DistinctResultModificationTest.cs" />
+    <Compile Include="Linq\Clauses\ResultModifications\LastResultModificationTest.cs" />
+    <Compile Include="Linq\Clauses\ResultModifications\FirstResultModificationTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchOneRequestTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchRequestBaseTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchFilteringExpressionTreeVisitorTest.cs" />
