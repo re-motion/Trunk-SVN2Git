@@ -44,7 +44,6 @@
         <include asis="true" name="${build.outputdir}/IronPython.Modules.dll"/>
         <include asis="true" name="${build.outputdir}/Microsoft.Scripting.dll"/>
         <include asis="true" name="${build.outputdir}/Microsoft.Scripting.Core.dll"/>
-        <!--<include asis="true" name="${build.outputdir}/Microsoft.Scripting.ExtensionAttribute.dll"/>-->
         <include asis="true" name="System.dll"/>
       </references>
     </csc>

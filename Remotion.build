@@ -229,7 +229,7 @@
 
   <target name="Core.Scripting" depends="Core.Core, Core.Interfaces">
     <property name="project.name" value="Core.Scripting" />
-    <property name="project.dir" value="Remotion/Core/Scripting/Scripting" />
+    <property name="project.dir" value="Remotion/Core/Scripting" />
     <property name="project.output" value="Remotion.Scripting" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
@@ -519,7 +519,7 @@
 
   <target name="Core.Scripting.UnitTests" depends="Core.Scripting, Core.Core, Development.Core">
     <property name="project.name" value="Core.Scripting.UnitTests" />
-    <property name="project.dir" value="Remotion/Core/Scripting/UnitTests" />
+    <property name="project.dir" value="Remotion/Core/Scripting.UnitTests" />
     <property name="project.output" value="Remotion.Scripting.UnitTests" />
     <property name="project.extension" value="dll" />
     <call target="buildtest" />
