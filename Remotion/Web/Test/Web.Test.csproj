@@ -1,6 +1,6 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{0B5318E7-4878-402A-8CF8-6BFFC47F571D}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
@@ -133,7 +133,6 @@
   <ItemGroup>
     <Compile Include="ExecutionEngine\ZeroControl.ascx.cs">
       <DependentUpon>ZeroControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\ZeroControl.ascx.designer.cs">
       <DependentUpon>ZeroControl.ascx</DependentUpon>
@@ -144,14 +143,12 @@
     <Compile Include="ExecutionEngine\ShowFourthUserControlFormFunction.cs" />
     <Compile Include="ExecutionEngine\FourthControl.ascx.cs">
       <DependentUpon>FourthControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\FourthControl.ascx.designer.cs">
       <DependentUpon>FourthControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="ExecutionEngine\ThirdControl.ascx.cs">
       <DependentUpon>ThirdControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\ThirdControl.ascx.designer.cs">
       <DependentUpon>ThirdControl.ascx</DependentUpon>
@@ -160,14 +157,12 @@
     <Compile Include="ExecutionEngine\ShowSecondUserControlFormFunction.cs" />
     <Compile Include="ExecutionEngine\SecondControl.ascx.cs">
       <DependentUpon>SecondControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\SecondControl.ascx.designer.cs">
       <DependentUpon>SecondControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="ExecutionEngine\FirstControl.ascx.cs">
       <DependentUpon>FirstControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\FirstControl.ascx.designer.cs">
       <DependentUpon>FirstControl.ascx</DependentUpon>
@@ -175,7 +170,6 @@
     <Compile Include="ExecutionEngine\ShowUserControlFormFunction.cs" />
     <Compile Include="ExecutionEngine\UserControlForm.aspx.cs">
       <DependentUpon>UserControlForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\UserControlForm.aspx.designer.cs">
       <DependentUpon>UserControlForm.aspx</DependentUpon>
@@ -198,7 +192,6 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="SutBasePage.cs">
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="MultiplePostBackCatching\UpdatePanelTestForm.aspx.cs">
       <DependentUpon>UpdatePanelTestForm.aspx</DependentUpon>
@@ -209,7 +202,6 @@
     </Compile>
     <Compile Include="MultiplePostBackCatching\UpdatePanelSutForm.aspx.cs">
       <DependentUpon>UpdatePanelSutForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="MultiplePostBackCatching\UpdatePanelSutForm.aspx.designer.cs">
       <DependentUpon>UpdatePanelSutForm.aspx</DependentUpon>
@@ -238,11 +230,9 @@
     </Compile>
     <Compile Include="MultiplePostBackCatching\SutForm.aspx.cs">
       <DependentUpon>SutForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\ProfilingForm.aspx.cs">
       <DependentUpon>ProfilingForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\ProfilingWxeFunction.cs">
       <SubType>Code</SubType>
@@ -255,7 +245,6 @@
     </Compile>
     <Compile Include="ExecutionEngine\SessionForm.aspx.cs">
       <DependentUpon>SessionForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\SessionWxeFunction.cs">
       <SubType>Code</SubType>
@@ -267,15 +256,12 @@
     <Compile Include="MultiplePostBackCatching\TestControlGenerator.cs" />
     <Compile Include="ExecutionEngine\UserControl1.ascx.cs">
       <DependentUpon>UserControl1.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExecutionEngine\WebForm1.aspx.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UpdatePanelTests\SutForm.aspx.cs">
       <DependentUpon>SutForm.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="UpdatePanelTests\SutForm.aspx.designer.cs">
       <DependentUpon>SutForm.aspx</DependentUpon>
@@ -356,6 +342,9 @@
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/dev/Remotion/trunk/Remotion/web/Test</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
