@@ -189,9 +189,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Web.Test", "Dms\Web.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Core", "Dms\Core\Dms.Core.csproj", "{7ACCED5E-6AE7-477D-8D15-ED33DEAB0FD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Scripting", "Remotion\Core\Scripting\Scripting\Core.Scripting.csproj", "{58B51BBB-23D9-4B96-9F1F-8696B71F73C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Scripting", "Remotion\Core\Scripting\Core.Scripting.csproj", "{58B51BBB-23D9-4B96-9F1F-8696B71F73C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Scripting.UnitTests", "Remotion\Core\Scripting\UnitTests\Core.Scripting.UnitTests.csproj", "{4A626E26-F384-451A-A966-C90B961D9C8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Scripting.UnitTests", "Remotion\Core\Scripting.UnitTests\Core.Scripting.UnitTests.csproj", "{4A626E26-F384-451A-A966-C90B961D9C8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
