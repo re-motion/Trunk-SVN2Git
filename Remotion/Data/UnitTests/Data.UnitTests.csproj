@@ -599,7 +599,7 @@
     <Compile Include="Linq\Parsing\FieldResolving\WhereFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\ReplacingVisitorTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\ExpressionNodeTypeRegistryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\MethodCallExpressionNodeTypeRegistryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\ExpressionTreeParserTest.cs" />
     <Compile Include="Linq\Parsing\AnonymousType.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeFactoryTest.cs" />
