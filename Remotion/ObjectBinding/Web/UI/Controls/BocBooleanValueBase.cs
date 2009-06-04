@@ -18,6 +18,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -109,42 +110,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     protected abstract string CssClassBase { get; }
 
-    string IBocBooleanValueBase.CssClassReadOnly
-    {
-      get { return CssClassReadOnly; }
-    }
+    string IBocRenderableControl.CssClassBase { get { return CssClassBase; } }
 
-    string IBocBooleanValueBase.CssClassDisabled
-    {
-      get { return CssClassDisabled; }
-    }
-
-    bool IBocBooleanValueBase.HasClientScript
-    {
-      get { return HasClientScript; }
-      set { HasClientScript = value; }
-    }
-
-    string IBocBooleanValueBase.CssClassBase
-    {
-      get { return CssClassBase; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
+      /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
     /// <remarks> 
     ///   <para> Class: <c>readOnly</c>. </para>
     ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.readOnly</c> as a selector. </para>
     /// </remarks>
-    protected virtual string CssClassReadOnly
-    { get { return "readOnly"; } }
+    protected virtual string CssClassReadOnly{ get { return "readOnly"; } }
+
+    string IBocRenderableControl.CssClassReadOnly { get { return CssClassReadOnly; } }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
     /// <remarks> 
     ///   <para> Class: <c>disabled</c>. </para>
     ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.disabled</c> as a selector.</para>
     /// </remarks>
-    protected virtual string CssClassDisabled
-    { get { return "disabled"; } }
+    protected virtual string CssClassDisabled{ get { return "disabled"; } }
+
+    string IBocRenderableControl.CssClassDisabled { get { return CssClassDisabled; } }
 
     /// <summary> Gets or sets the <see cref="IBusinessObjectBooleanProperty"/> object this control is bound to. </summary>
     /// <value> An instance of type <see cref="IBusinessObjectBooleanProperty"/>. </value>
@@ -166,7 +150,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public abstract string FocusID { get; }
 
     /// <summary> Flag that determines whether the client script will be rendered. </summary>
-    protected bool HasClientScript
+    public bool HasClientScript
     {
       get { return _hasClientScript; }
       set { _hasClientScript = value; }
@@ -308,7 +292,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return new PageWrapper (base.Page); }
     }
 
-    bool IBocBooleanValueBase.IsDesignMode
+    bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
     }

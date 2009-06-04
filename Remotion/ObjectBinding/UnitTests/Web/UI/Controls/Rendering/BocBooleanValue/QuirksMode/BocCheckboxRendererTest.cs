@@ -19,7 +19,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Rhino.Mocks;

@@ -164,6 +164,7 @@
     <Compile Include="UI\Controls\BocCustomColumnDefinition.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocDatePickerButton.cs" />
     <Compile Include="UI\Controls\BocDateTimeValue.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -247,6 +248,8 @@
     <Compile Include="UI\Controls\IBocBooleanValue.cs" />
     <Compile Include="UI\Controls\IBocBooleanValueBase.cs" />
     <Compile Include="UI\Controls\IBocCheckBox.cs" />
+    <Compile Include="UI\Controls\IBocDatePickerButton.cs" />
+    <Compile Include="UI\Controls\IBocDateTimeValue.cs" />
     <Compile Include="UI\Controls\IBocList.cs" />
     <Compile Include="UI\Controls\IBocMultilineTextValue.cs" />
     <Compile Include="UI\Controls\IBocTextValue.cs" />
@@ -280,9 +283,11 @@
     </Compile>
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditableRow.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditModeController.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocBooleanValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocBooleanValueRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\BocCheckboxRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocBooleanValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocBooleanValueRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocCheckboxRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\BocDatePickerButtonRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\BocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />
@@ -325,11 +330,13 @@
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocSimpleColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocValueColumnRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\IBocRenderableControl.cs" />
     <Compile Include="UI\Controls\Rendering\IRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\SimpleControlRendererBase.cs" />
     <Compile Include="UI\Controls\Styles.cs">
       <SubType>Component</SubType>
     </Compile>

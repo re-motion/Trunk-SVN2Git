@@ -20,7 +20,7 @@ using System.Web.UI.WebControls;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
 {
   public class BocCheckboxRenderer : BocBooleanValueRendererBase<IBocCheckBox>
   {
@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
 
     public override void Render ()
     {
-      AddAttributesToRender (Writer);
+      AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       Label labelControl = new Label { ID = Control.GetLabelKey() };

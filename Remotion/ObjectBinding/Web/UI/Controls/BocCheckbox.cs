@@ -21,7 +21,7 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;

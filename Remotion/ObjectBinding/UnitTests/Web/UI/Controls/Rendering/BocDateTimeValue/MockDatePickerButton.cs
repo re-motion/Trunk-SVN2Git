@@ -17,38 +17,17 @@ using System;
 using System.Collections;
 using System.Web;
 using Remotion.Development.UnitTesting;
+using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTimeValue
 {
-  public class MockDateTimeValue : ObjectBinding.Web.UI.Controls.BocDateTimeValue
+  public class MockDatePickerButton : BocDatePickerButton
   {
-    private bool _isReadOnly;
-    private bool _isDesignMode = false;
-    private const string c_defaultControlWidth = "150pt";
+    private bool _hasClientScript = true;
 
-    public MockDateTimeValue ()
+    public MockDatePickerButton ()
     {
-      PrivateInvoke.SetNonPublicField (this, "_datePickerButton", new StubDatePickerButton());
-    }
-
-    public new string CssClassBase
-    {
-      get { return base.CssClassBase; }
-    }
-
-    public new string CssClassReadOnly
-    {
-      get { return base.CssClassReadOnly; }
-    }
-
-    public new string CssClassDisabled
-    {
-      get { return base.CssClassDisabled; }
-    }
-
-    public string DefaultWidth
-    {
-      get { return c_defaultControlWidth; }
+      PrivateInvoke.SetNonPublicField (this, "_hyperLink", new MockHyperLink ());
     }
 
     protected override HttpContext Context
@@ -56,39 +35,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       get
       {
         var context = new HttpContext (new HttpRequest ("Test.aspx", "http://www.example.com/", ""), new HttpResponse (null));
-        context.Request.Browser = new HttpBrowserCapabilities();
-        context.Request.Browser.Capabilities = new Hashtable();
+        context.Request.Browser = new HttpBrowserCapabilities ();
+        context.Request.Browser.Capabilities = new Hashtable ();
         context.Request.Browser.Capabilities.Add ("browser", "IE");
         context.Request.Browser.Capabilities.Add ("majorversion", "7");
         return context;
       }
     }
 
-    public void SetReadOnly (bool readOnly)
+    public void SetClientScript (bool value)
     {
-      _isReadOnly = readOnly;
+      _hasClientScript = value;
     }
 
-    public override bool IsReadOnly
+    public override bool HasClientScript
     {
-      get
-      {
-        return _isReadOnly;
-      }
+      get { return _hasClientScript; }
     }
-
-    public void SetDesignMode (bool value)
-    {
-      _isDesignMode = value;
-    }
-
-    protected override bool IsDesignMode
-    {
-      get
-      {
-        return _isDesignMode;
-      }
-    }
-
   }
 }

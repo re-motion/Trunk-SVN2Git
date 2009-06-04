@@ -171,7 +171,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     protected abstract string CssClassBase { get; }
 
-    string IBocTextValueBase.CssClassBase { get { return CssClassBase; } }
+    string IBocRenderableControl.CssClassBase { get { return CssClassBase; } }
 
       /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> when it is displayed in read-only mode. </summary>
     /// <remarks> 
@@ -183,7 +183,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "readOnly"; }
     }
 
-    string IBocTextValueBase.CssClassReadOnly { get { return CssClassReadOnly; } }
+    string IBocRenderableControl.CssClassReadOnly { get { return CssClassReadOnly; } }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> when it is displayed disabled. </summary>
     /// <remarks> 
@@ -195,7 +195,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "disabled"; }
     }
 
-    string IBocTextValueBase.CssClassDisabled { get { return CssClassDisabled; } }
+    string IBocRenderableControl.CssClassDisabled { get { return CssClassDisabled; } }
 
     /// <summary> Gets or sets the string representation of the current value. </summary>
     /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
@@ -337,7 +337,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return _validators.ToArray();
     }
 
-    bool IBocTextValueBase.IsDesignMode { get { return IsDesignMode; } }
+    bool IBocRenderableControl.IsDesignMode { get { return IsDesignMode; } }
     public void BaseAddAttributesToRender (HtmlTextWriter writer)
     {
       base.AddAttributesToRender (writer);
@@ -345,7 +345,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected abstract IEnumerable<BaseValidator> GetValidators ();
 
-    Style IBocTextValueBase.ControlStyle { get { return ControlStyle; } }
+    Style IBocRenderableControl.ControlStyle { get { return ControlStyle; } }
 
     protected override void OnPreRender (EventArgs e)
     {

@@ -1,21 +1,32 @@
-using System.ComponentModel;
-using System.Web.UI;
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Web.UI;
-using AttributeCollection=System.Web.UI.AttributeCollection;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  public interface IBocBooleanValueBase : IBusinessObjectBoundEditableWebControl
+  public interface IBocBooleanValueBase : IBusinessObjectBoundEditableWebControl, IBocRenderableControl
   {
     /// <summary> Gets or sets the description displayed when the checkbox is set to <see langword="true"/>. </summary>
     /// <value> 
     ///   The text displayed for <see langword="true"/>. The default value is an empty <see cref="string"/>.
     ///   In case of the default value, the text is read from the resources for this control.
     /// </value>
-    [Description ("The description displayed when the checkbox is set to True.")]
-    [Category ("Appearance")]
-    [DefaultValue ("")]
     string TrueDescription { get; set; }
 
     /// <summary> Gets or sets the description displayed when the checkbox is set to <see langword="false"/>. </summary>
@@ -23,9 +34,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The text displayed for <see langword="false"/>. The default value is an empty <see cref="string"/>.
     ///   In case of the default value, the text is read from the resources for this control.
     /// </value>
-    [Description ("The description displayed when the checkbox is set to False.")]
-    [Category ("Appearance")]
-    [DefaultValue ("")]
     string FalseDescription { get; set; }
 
     /// <summary> Gets or sets the description displayed when the checkbox is set to <see langword="null"/>. </summary>
@@ -33,47 +41,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The text displayed for <see langword="null"/>. The default value is an empty <see cref="string"/>.
     ///   In case of the default value, the text is read from the resources for this control.
     /// </value>
-    [Description ("The description displayed when the checkbox is set to null.")]
-    [Category ("Appearance")]
-    [DefaultValue ("")]
     string NullDescription { get; set; }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocCheckBox</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    string CssClassBase { get; }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>readOnly</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.readOnly</c> as a selector. </para>
-    /// </remarks>
-    string CssClassReadOnly { get; }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>disabled</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.disabled</c> as a selector.</para>
-    /// </remarks>
-    string CssClassDisabled { get; }
-
-    /// <summary> Flag that determines whether the client script will be rendered. </summary>
-    bool HasClientScript { get; set; }
 
     /// <summary> Gets or sets the current value. </summary>
     new bool? Value { get; set; }
 
     bool IsAutoPostBackEnabled { get; }
 
-    new IPage Page { get; }
-
-    /// <summary> Evalutes whether this control is in <b>Design Mode</b>. </summary>
-    [Browsable (false)]
-    bool IsDesignMode { get; }
-
-    bool Enabled { get; }
+    bool HasClientScript { get; }
 
     /// <summary>
     ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
@@ -81,10 +56,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     Style LabelStyle { get; }
 
-    AttributeCollection Attributes { get; }
-    string CssClass { get; set; }
-    Unit Width { get; }
-    CssStyleCollection Style { get; }
-    Style ControlStyle { get; }
+    new IPage Page { get; }
   }
 }

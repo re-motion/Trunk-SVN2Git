@@ -20,7 +20,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
 {
   public class BocBooleanValueRenderer : BocBooleanValueRendererBase<IBocBooleanValue>
   {
@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
     {
       var resourceSet = Control.CreateResourceSet();
 
-      AddAttributesToRender (Writer);
+      AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       bool isReadOnly = Control.IsReadOnly;

@@ -20,7 +20,7 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.Utilities;

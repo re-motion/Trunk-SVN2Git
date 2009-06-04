@@ -22,7 +22,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
@@ -457,7 +458,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "bocBooleanValue"; }
     }
 
-    string IBocBooleanValueBase.CssClassBase
+    string IBocRenderableControl.CssClassBase
     {
       get { return CssClassBase; }
     }

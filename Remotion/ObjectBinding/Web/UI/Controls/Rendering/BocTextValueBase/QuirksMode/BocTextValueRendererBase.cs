@@ -16,14 +16,11 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
-  public abstract class BocTextValueRendererBase<T> : RendererBase<T>
+  public abstract class BocTextValueRendererBase<T> : SimpleControlRendererBase<T>
     where T: IBocTextValueBase
   {
     /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
@@ -36,34 +33,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
         : base(context, writer, control)
     {
 
-    }
-
-    protected void AddStandardAttributesToRender (HtmlTextWriter writer)
-    {
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
-
-      string cssClass = string.Empty;
-      if (!string.IsNullOrEmpty (Control.CssClass))
-        cssClass = Control.CssClass + " ";
-
-      if (!string.IsNullOrEmpty (Control.ControlStyle.CssClass))
-        cssClass += Control.ControlStyle.CssClass;
-
-      if( !string.IsNullOrEmpty(cssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-
-      CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes(Control);
-      foreach (string style in styles.Keys)
-      {
-        writer.AddStyleAttribute (style, styles[style]);
-      }
-
-      foreach (string attribute in Control.Attributes.Keys)
-      {
-        string value = Control.Attributes[attribute];
-        if (!string.IsNullOrEmpty (value))
-          writer.AddAttribute (attribute, value);
-      }
     }
 
     protected TextBox GetTextBox ()
@@ -84,64 +53,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
       return textBox;
     }
 
-    protected void AddAttributesToRender (HtmlTextWriter writer)
-    {
-      string backUpStyleWidth = Control.Style["width"];
-      bool hasStyleWidth = !StringUtility.IsNullOrEmpty (backUpStyleWidth);
-      if (hasStyleWidth)
-        Control.Style["width"] = null;
-      
-      Unit backUpWidth = Control.Width; // base.Width and base.ControlStyle.Width
-      bool hasControlWidth = !backUpWidth.IsEmpty;
-      if (hasControlWidth)
-        Control.Width = Unit.Empty;
-
-      bool isReadOnly = Control.IsReadOnly;
-      bool isDisabled = !Control.Enabled;
-
-      string backUpCssClass = Control.CssClass; // base.CssClass and base.ControlStyle.CssClass
-      bool hasCssClass = !StringUtility.IsNullOrEmpty (backUpCssClass);
-      if (hasCssClass)
-        Control.CssClass += GetAdditionalCssClass (isReadOnly, isDisabled);
-
-      string backUpAttributeCssClass = Control.Attributes["class"];
-      bool hasClassAttribute = !StringUtility.IsNullOrEmpty (backUpAttributeCssClass);
-      if (hasClassAttribute)
-        Control.Attributes["class"] += GetAdditionalCssClass (isReadOnly, isDisabled);
-
-      AddStandardAttributesToRender (Writer);
-
-      if (!hasCssClass && !hasClassAttribute)
-      {
-        string cssClass = Control.CssClassBase + GetAdditionalCssClass(isReadOnly, isDisabled);
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      }
-      
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
-
-      // restore original values
-      Control.CssClass = backUpCssClass;
-      Control.Attributes["class"] = backUpAttributeCssClass;
-      Control.Style["width"] = backUpStyleWidth;
-      Control.Width = backUpWidth;
-    }
-
-    private string GetAdditionalCssClass (bool isReadOnly, bool isDisabled)
-    {
-      string additionalCssClass = string.Empty;
-      if (isReadOnly)
-        additionalCssClass = " " + Control.CssClassReadOnly;
-      else if (isDisabled)
-        additionalCssClass = " " + Control.CssClassDisabled;
-      return additionalCssClass;
-    }
-
     public void Render ()
     {
-      AddAttributesToRender (Writer);
+      AddAttributesToRender (true);
       Writer.RenderBeginTag ("span");
 
-      bool isControlHeightEmpty = Control.Height.IsEmpty && StringUtility.IsNullOrEmpty (Control.Style["height"]);
+      bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
 
       string controlWidth = Control.Width.IsEmpty ? Control.Style["width"] : Control.Width.ToString();
       bool isControlWidthEmpty = string.IsNullOrEmpty (controlWidth);
@@ -149,8 +66,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
 
       WebControl innerControl = Control.IsReadOnly ? (WebControl) GetLabel() : GetTextBox();
 
-      bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && StringUtility.IsNullOrEmpty (innerControl.Style["height"]);
-      bool isInnerControlWidthEmpty = innerControl.Width.IsEmpty && StringUtility.IsNullOrEmpty (innerControl.Style["width"]);
+      bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && string.IsNullOrEmpty (innerControl.Style["height"]);
+      bool isInnerControlWidthEmpty = innerControl.Width.IsEmpty && string.IsNullOrEmpty (innerControl.Style["width"]);
 
       if (!isControlHeightEmpty && isInnerControlHeightEmpty)
         Writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
@@ -174,6 +91,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
 
     protected abstract Label GetLabel ();
 
-    
+    protected override void AddAdditionalAttributes ()
+    {
+    }
   }
 }

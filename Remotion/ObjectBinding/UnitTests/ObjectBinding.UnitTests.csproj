@@ -290,9 +290,12 @@
     <Compile Include="Web\UI\Controls\Infrastructure\BocList\EditModeControllerWithoutEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\BocBooleanValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\BocCheckboxRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocDateTimeValue\BocDatePickerButtonRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocDateTimeValue\BocDateTimeValueRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocDateTimeValue\MockDatePickerButton.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocDateTimeValue\MockDateTimeValue.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocDateTimeValue\MockHyperLink.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocDateTimeValue\StubDatePickerButton.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocCommandColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocCustomColumnRendererTest.cs" />
