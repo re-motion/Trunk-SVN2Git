@@ -11,9 +11,9 @@ namespace Remtion.Scripting
 
   namespace IronPython_Research.Helper
   {
-    public static class PythonScriptEngine
+    public static class PythonScriptEngineSpike
     {
-      private static DlrHost s_dlrHost;
+      private static DlrHostSpike s_dlrHostSpike;
       private static ScriptEngine s_scriptEngine;
 
       public static ScriptEngine ScriptEngine
@@ -22,8 +22,8 @@ namespace Remtion.Scripting
         {
           if (s_scriptEngine == null)
           {
-            s_dlrHost = DlrHost.New ();
-            s_scriptEngine = s_dlrHost.GetEngine (DlrHost.EngineType.Python);
+            s_dlrHostSpike = DlrHostSpike.New ();
+            s_scriptEngine = s_dlrHostSpike.GetEngine (DlrHostSpike.EngineType.Python);
           }
           return s_scriptEngine;
         }

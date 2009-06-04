@@ -2,10 +2,10 @@
 // All rights reserved.
 //
 using System;
-//using System.Linq.Expressions;
+using System.Linq.Expressions;
 //using Extension1;
 using Microsoft;
-using Microsoft.Linq.Expressions;
+//using Microsoft.Linq.Expressions;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using NUnit.Framework;
@@ -13,18 +13,19 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
 using Remtion.Scripting;
 
+
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
-  public class IronPythonAsFormulaLanguageTests
+  public class IronPythonAsFormulaLanguageSpikeTest
   {
     [Test]
     public void ExpressionBaseTest ()
     {
       const string scriptText1 = "2+7+4";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
       ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Expression);
@@ -42,8 +43,8 @@ namespace Remotion.Scripting.UnitTests
           @"
 17";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
       ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Expression);
@@ -58,8 +59,8 @@ namespace Remotion.Scripting.UnitTests
           @"33
 17";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
       ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Expression);
@@ -75,8 +76,8 @@ namespace Remotion.Scripting.UnitTests
           @"x=3
 x+=17";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope0 = pythonEngine.CreateScope ();
       ScriptSource scriptSource0 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Statements);
@@ -98,8 +99,8 @@ x+=17";
       const string scriptText1 =
           @"import clr";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
       ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Expression);
@@ -114,8 +115,8 @@ x+=17";
       const string scriptText1 =
           @"(val < 100.0 and val > 0) + val + doc.Value";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
       ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Expression);
@@ -139,8 +140,8 @@ x+=17";
           @"if val < 100.0: val 
 else: 100.0";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope0 = pythonEngine.CreateScope ();
       scope0.SetVariable ("val", 11);
@@ -184,14 +185,14 @@ else: 100.0";
     {
       const string scriptText1 = "IIf(val < 100.0,val,100.0)";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
       ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Expression);
 
       scope1.SetVariable ("val", 111);
-      scope1.SetVariable ("IIf", new Func<bool, object, object, object> ((cond, trueVal, falseVal) => cond ? trueVal : falseVal));
+      scope1.SetVariable ("IIf", new System.Func<bool, object, object, object> ((cond, trueVal, falseVal) => cond ? trueVal : falseVal));
       var result = scriptSource1.Execute (scope1);
 
       Assert.That (result, Is.EqualTo (100));
@@ -203,15 +204,15 @@ else: 100.0";
     {
       const string scriptText1 = "IIf(True,val,dummy.NonExistingAttribute)";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
       ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Expression);
 
       scope1.SetVariable ("val", 33);
       scope1.SetVariable ("dummy", null);
-      scope1.SetVariable ("IIf", new Func<bool, object, object, object> ((cond, trueVal, falseVal) => cond ? trueVal : falseVal));
+      scope1.SetVariable ("IIf", new System.Func<bool, object, object, object> ((cond, trueVal, falseVal) => cond ? trueVal : falseVal));
       scriptSource1.Execute (scope1);
     }
 
@@ -222,14 +223,14 @@ else: 100.0";
     {
       const string scriptText1 = "IIf(True,val,val.NonExistingAttribute)";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
       ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Expression);
 
       scope1.SetVariable ("val", 111);
-      scope1.SetVariable ("IIf", new Func<bool, Expression, Expression, object> ((cond, trueVal, falseVal) => cond ? trueVal : falseVal));
+      scope1.SetVariable ("IIf", new System.Func<bool, Expression, Expression, object> ((cond, trueVal, falseVal) => cond ? trueVal : falseVal));
       scriptSource1.Execute (scope1);
     }
 
@@ -238,15 +239,15 @@ else: 100.0";
     {
       const string scriptText1 = "LazyIIf(True,lambda:val,lambda:val.NonExistingAttribute)";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
       ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Expression);
 
       scope1.SetVariable ("val", 33);
       // Define LazyIIf in C#
-      scope1.SetVariable ("LazyIIf", new Func<bool, Func<object>, Func<object>, object> ((cond, trueVal, falseVal) => cond ? trueVal () : falseVal ()));
+      scope1.SetVariable ("LazyIIf", new System.Func<bool, System.Func<object>, System.Func<object>, object> ((cond, trueVal, falseVal) => cond ? trueVal () : falseVal ()));
       var result = scriptSource1.Execute (scope1);
 
       Assert.That (result, Is.EqualTo (33));
@@ -266,8 +267,8 @@ def LazyIIf(cond, trueVal, falseVal):
 ";
       const string scriptText1 = "LazyIIf(val<100,lambda:val,lambda:val.NonExistingAttribute)";
 
-      var dlrHost = DlrHost.New ();
-      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHost.EngineType.Python);
+      var dlrHost = DlrHostSpike.New ();
+      ScriptEngine pythonEngine = dlrHost.GetEngine (DlrHostSpike.EngineType.Python);
 
       var scope1 = pythonEngine.CreateScope ();
 

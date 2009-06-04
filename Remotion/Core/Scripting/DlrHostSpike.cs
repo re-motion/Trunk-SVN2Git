@@ -14,9 +14,9 @@ using Microsoft.Scripting.Hosting;
 // For build test only !
 namespace Remtion.Scripting
 {
-  public class DlrHost
+  public class DlrHostSpike
   {
-    private readonly ScriptRuntime _runtime;
+    private readonly ScriptRuntime _scriptRuntime;
 
     readonly Dictionary<EngineType, ScriptEngine> _engines = new Dictionary<EngineType, ScriptEngine> ();
 
@@ -31,9 +31,9 @@ namespace Remtion.Scripting
 
     public string ErrorFromLastExecution { get; set; }
 
-    public ScriptRuntime Runtime
+    public ScriptRuntime ScriptRuntime
     {
-      get { return _runtime; }
+      get { return _scriptRuntime; }
     }
 
 
@@ -49,31 +49,31 @@ namespace Remtion.Scripting
       Ruby
     }
 
-    public DlrHost ()
+    public DlrHostSpike ()
     {
       _output = new MemoryStream ();
       _error = new MemoryStream ();
 
       //string configFilePath = Path.GetFullPath (Uri.UnescapeDataString (new Uri (typeof (DlrHost).Assembly.CodeBase).AbsolutePath)) + ".config";
-      _runtime = new ScriptRuntime (ScriptRuntimeSetup.ReadConfiguration ());
+      _scriptRuntime = new ScriptRuntime (ScriptRuntimeSetup.ReadConfiguration ());
 
       foreach (EngineType engineType in Enum.GetValues (typeof (EngineType)))
       {
         ScriptEngine engine;
-        var engineAvailable = Runtime.TryGetEngine (engineType.ToString (), out engine);
+        var engineAvailable = ScriptRuntime.TryGetEngine (engineType.ToString (), out engine);
         if (engineAvailable)
         {
           _engines[engineType] = engine;
         }
       }
 
-      Runtime.Globals.SetVariable ("prompt", "ThePrompt");
+      ScriptRuntime.Globals.SetVariable ("prompt", "ThePrompt");
 
       //_engine = _runtime.GetEngine ("py");
       //_theScope = _engine.CreateScope ();
 
-      Runtime.IO.SetOutput (_output, new StreamWriter (_output));
-      Runtime.IO.SetErrorOutput (_error, new StreamWriter (_error));
+      ScriptRuntime.IO.SetOutput (_output, new StreamWriter (_output));
+      ScriptRuntime.IO.SetErrorOutput (_error, new StreamWriter (_error));
 
       // Load assembly types into dynamic context
       //Runtime.LoadAssembly (Assembly.GetAssembly (typeof (Window1)));
@@ -164,14 +164,14 @@ namespace Remtion.Scripting
       return Encoding.GetEncoding ("utf-8").GetString (bytes, 0, (int) bytes.Length);
     }
 
-    public static DlrHost New ()
+    public static DlrHostSpike New ()
     {
-      return new DlrHost ();
+      return new DlrHostSpike ();
     }
 
     public void LoadAssembly (Assembly assembly)
     {
-      Runtime.LoadAssembly (assembly);
+      ScriptRuntime.LoadAssembly (assembly);
     }
   }
 }
