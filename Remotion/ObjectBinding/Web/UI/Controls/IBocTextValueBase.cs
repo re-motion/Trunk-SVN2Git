@@ -35,8 +35,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     void CopyBaseAttributes (WebControl controlSrc);
     void MergeStyle (Style s);
 
-    bool AutoPostBack { get; set; }
-
     void BaseAddAttributesToRender (HtmlTextWriter writer);
 
     string GetTextBoxUniqueID ();

@@ -95,9 +95,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return IsReadOnly ? null : ClientID; }
     }
 
-    [Browsable(false)]
-    public bool AutoPostBack { get; set; }
-
     /// <summary>
     ///   Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) 
     ///   and the <see cref="Label"/> (read-only mode).
@@ -281,9 +278,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (TextBoxStyle.AutoPostBack == true)
           WcagHelper.Instance.HandleWarning (1, this, "TextBoxStyle.AutoPostBack");
-
-        if (!IsReadOnly && AutoPostBack)
-          WcagHelper.Instance.HandleWarning (1, this, "TextBox.AutoPostBack");
       }
     }
 

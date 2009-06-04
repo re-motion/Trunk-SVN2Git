@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
@@ -24,8 +25,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
   {
     /// <summary> Text displayed when control is displayed in desinger and is read-only has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
-
     private const string c_defaultControlWidth = "150pt";
+
+    private readonly DateTimeFormatter _formatter = new DateTimeFormatter();
 
     public BocDateTimeValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control)
         : base (context, writer, control)
@@ -49,10 +51,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     private void RenderEditModeControls ()
     {
       var dateTextBox = new TextBox { ID = Control.GetDateTextboxId() };
-      Initialize (dateTextBox, Control.DateTextBoxStyle, GetDateMaxLength(), FormatDateValue);
-
+      Initialize (dateTextBox, Control.DateTextBoxStyle, GetDateMaxLength());
+      dateTextBox.Text = Control.Value.HasValue ? _formatter.FormatDateValue (Control.Value.Value) : Control.DateString;
+      
       var timeTextBox = new TextBox { ID = Control.GetTimeTextboxId() };
-      Initialize (timeTextBox, Control.TimeTextBoxStyle, GetTimeMaxLength(), FormatTimeValue);
+      Initialize (timeTextBox, Control.TimeTextBoxStyle, GetTimeMaxLength ());
+      timeTextBox.Text = Control.Value.HasValue ? _formatter.FormatTimeValue (Control.Value.Value, Control.ShowSeconds) : Control.TimeString;
 
       var datePickerButton = Control.DatePickerButton;
       datePickerButton.AlternateText = Control.GetDatePickerText();
@@ -237,7 +241,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       Writer.AddStyleAttribute ("display", "inline");
     }
 
-    private void Initialize (TextBox textBox, SingleRowTextBoxStyle textBoxStyle, int maxLength, Func<DateTime, string> valueFormatter)
+    private void Initialize (TextBox textBox, SingleRowTextBoxStyle textBoxStyle, int maxLength)
     {
       textBox.Enabled = Control.Enabled;
       textBox.ReadOnly = !Control.Enabled;
@@ -249,8 +253,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
       if (Control.ProvideMaxLength)
         textBox.MaxLength = maxLength;
-
-      textBox.Text = Control.Value.HasValue ? valueFormatter (Control.Value.Value) : null;
     }
 
     /// <summary> Calculates the maximum length for required for entering the date component. </summary>
@@ -289,9 +291,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
           DateTime dateTime = Control.Value.Value;
 
           if (Control.ActualValueType == BocDateTimeValueType.DateTime)
-            label.Text = FormatDateTimeValue (dateTime);
+            label.Text = _formatter.FormatDateTimeValue (dateTime, Control.ShowSeconds);
           else if (Control.ActualValueType == BocDateTimeValueType.Date)
-            label.Text = FormatDateValue (dateTime);
+            label.Text = _formatter.FormatDateValue (dateTime);
           else
             label.Text = dateTime.ToString();
         }
@@ -320,59 +322,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       }
 
       label.RenderControl (Writer);
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value according to the current culture. </summary>
-    /// <param name="dateValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <returns> A formatted string representing the <see cref="DateTime"/> value. </returns>
-    protected virtual string FormatDateTimeValue (DateTime dateValue)
-    {
-      if (Control.ShowSeconds)
-      {
-        //  G:  yyyy, mm, dd, hh, mm, ss
-        return dateValue.ToString ("G");
-      }
-      else
-      {
-        //  g:  yyyy, mm, dd, hh, mm
-        return dateValue.ToString ("g");
-      }
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value's date component according to the current culture. </summary>
-    /// <param name="dateValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <returns> A formatted string representing the <see cref="DateTime"/> value's date component. </returns>
-    protected virtual string FormatDateValue (DateTime dateValue)
-    {
-      return dateValue.ToString ("d");
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value's time component according to the current culture. </summary>
-    /// <param name="timeValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <param name="isReadOnly"> <see langword="true"/> if the control is in read-only mode. </param>
-    /// <returns>  A formatted string representing the <see cref="DateTime"/> value's time component. </returns>
-    protected virtual string FormatTimeValue (DateTime timeValue, bool isReadOnly)
-    {
-      //  ignore Read-Only
-
-      if (Control.ShowSeconds)
-      {
-        //  T: hh, mm, ss
-        return timeValue.ToString ("T");
-      }
-      else
-      {
-        //  T: hh, mm
-        return timeValue.ToString ("t");
-      }
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value's time component according to the current culture. </summary>
-    /// <param name="timeValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <returns> A formatted string representing the <see cref="DateTime"/> value's time component.  </returns>
-    protected virtual string FormatTimeValue (DateTime timeValue)
-    {
-      return FormatTimeValue (timeValue, false);
     }
   }
 }

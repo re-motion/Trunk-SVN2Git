@@ -86,20 +86,6 @@ public class BocMultilineTextValueTest: BocTest
     Assert.AreEqual ("TextBoxStyle.AutoPostBack", WcagHelperMock.Property);
   }
 
-	[Test]
-  public void EvaluateWaiConformityDebugLevelAWithTextBoxAutoPostBackTrue()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
-    _bocMultilineTextValue.AutoPostBack = true;
-    _bocMultilineTextValue.EvaluateWaiConformity ();
-
-    Assert.IsTrue (WcagHelperMock.HasWarning);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocMultilineTextValue, WcagHelperMock.Control);
-    Assert.AreEqual ("TextBox.AutoPostBack", WcagHelperMock.Property);
-  }
-
-
   [Test]
   public void GetTrackedClientIDsInReadOnlyMode()
   {
@@ -118,8 +104,7 @@ public class BocMultilineTextValueTest: BocTest
     Assert.AreEqual (1, actual.Length);
     Assert.AreEqual (_bocMultilineTextValue.GetTextBoxClientID(), actual[0]);
   }
-
-
+  
   [Test]
   public void SetValueToString()
   {

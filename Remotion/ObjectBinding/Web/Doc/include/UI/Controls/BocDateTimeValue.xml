@@ -123,9 +123,9 @@
         During read-only mode, the control's value is displayed using a single 
         <see cref="System.Web.UI.WebControls.Label"/>.
       </para><para>
-         Use the <see cref="DateTextBox"/>, <see cref="TimeTextBox"/>, <see cref="DatePickerButton"/>,
-         and <see cref="Label"/> properties to access 
-         these controls directly.
+         Since these controls are dynamically created during the rendering phase, they cannot be accessed directly.
+         However, their styles can be set using the <see cref="CommonStyle" />, <see cref="DateTimeTextBoxStyle" />,
+         <see cref="DateTextBoxStyle" /> and <see cref="TimeTextBoxStyle" /> properties.
       </para>
       <list type="table">
         <listheader>
@@ -153,7 +153,7 @@
             Edit Mode / <see cref="Value"/> is not <see langword="null"/>
           </term>
           <description>
-            Displayes the <see cref="DateTextBox"/> and the <see cref="TimeTextBox"/>
+            Displays text boxes containing date and time
             according to the setting of <see cref="ActualValueType"/>. Sets the inital value of 
             the <b>Text</b> property to the formatted date and time components.
           </description>
@@ -163,7 +163,7 @@
             Edit Mode / <see cref="Value"/> is <see langword="null"/>
           </term>
           <description>
-            Displayes the <see cref="DateTextBox"/> and the <see cref="TimeTextBox"/>
+            Displays the text boxes containing date and time
             according to the setting of <see cref="ActualValueType"/>.
           </description>
         </item>
@@ -183,7 +183,7 @@
         Sets the new value and the <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> flag if the value 
         has changed.
       </para><para>
-        Evaluates the value of the <see cref="DateTextBox"/> and the <see cref="TimeTextBox"/>.
+        Evaluates the value entered in the date and time text boxes.
       </para>
       <note type="inheritinfo">
         Overrive this method to change the way of detecting a changed value when read from the 
@@ -264,8 +264,8 @@
         <see cref="TimeTextBoxStyle"/>, and <see cref="LabelStyle"/> properties.
       </para><para>
         Note that if you set one of the <b>Width</b> attribute, that it will be applied to
-        both the <see cref="DateTextBox"/> and the <see cref="TimeTextBox"/> as well as the 
-        <see cref="Label"/> as is. If the control's <see cref="ActualValueType"/> is set to 
+        both the date and time text boxes as well as the 
+        label as is. If the control's <see cref="ActualValueType"/> is set to 
         <see cref="BocDateTimeValueType.DateTime"/>, it will show different 
         widths depending on whether it is in read-only mode or not. It is recommended to set 
         the width in the styles of the individual sub-controls instead.

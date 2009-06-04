@@ -32,7 +32,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     Style DatePickerButtonStyle { get; }
     string ContainerControlId { get; }
     string GetDatePickerUrl ();
-    string GetHyperLinkId ();
     string GetResolvedImageUrl ();
   }
 }

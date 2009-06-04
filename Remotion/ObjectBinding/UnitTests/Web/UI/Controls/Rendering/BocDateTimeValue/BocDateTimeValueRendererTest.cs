@@ -40,8 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.ID = "controlId";
       _dateTimeValue.Stub (mock => mock.ClientID).Return ("controlId");
       _dateTimeValue.Stub (mock => mock.DatePickerButton).Return (new StubDatePickerButton());
-      _dateTimeValue.DatePickerButton.HyperLink.ImageUrl = "~/Images/DatePickerButton.gif";
-      _dateTimeValue.DatePickerButton.HyperLink.Text = "DatePickerButton";
+      _dateTimeValue.DatePickerButton.AlternateText = "DatePickerButton";
 
       _dateTimeValue.Stub (mock => mock.ProvideMaxLength).Return (true);
 

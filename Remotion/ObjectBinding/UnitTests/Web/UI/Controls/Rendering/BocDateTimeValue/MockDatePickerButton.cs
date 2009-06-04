@@ -16,7 +16,6 @@
 using System;
 using System.Collections;
 using System.Web;
-using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTimeValue
@@ -27,7 +26,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
 
     public MockDatePickerButton ()
     {
-      PrivateInvoke.SetNonPublicField (this, "_hyperLink", new MockHyperLink ());
     }
 
     protected override HttpContext Context
@@ -35,8 +33,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       get
       {
         var context = new HttpContext (new HttpRequest ("Test.aspx", "http://www.example.com/", ""), new HttpResponse (null));
-        context.Request.Browser = new HttpBrowserCapabilities ();
-        context.Request.Browser.Capabilities = new Hashtable ();
+        context.Request.Browser = new HttpBrowserCapabilities();
+        context.Request.Browser.Capabilities = new Hashtable();
         context.Request.Browser.Capabilities.Add ("browser", "IE");
         context.Request.Browser.Capabilities.Add ("majorversion", "7");
         return context;

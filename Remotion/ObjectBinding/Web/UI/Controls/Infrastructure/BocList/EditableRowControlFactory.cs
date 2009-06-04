@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
       var bocBooleanValue = new Controls.BocBooleanValue();
       bocBooleanValue.RegisterHtmlHeadContents (context);
 
-      var bocDateTimeValue = new BocDateTimeValue();
+      var bocDateTimeValue = new Controls.BocDateTimeValue();
       bocDateTimeValue.RegisterHtmlHeadContents (context);
 
       var bocEnumValue = new BocEnumValue();

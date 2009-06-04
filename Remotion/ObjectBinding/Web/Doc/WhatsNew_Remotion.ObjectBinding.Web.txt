@@ -28,6 +28,10 @@
   This will register all renderer factories in any Remotion.ObjectBinding.Web.UI.Controls.Rendering.[ControlName].QuirksMode.Factories 
   namespace of the Remotion.ObjectBinding.Web assembly.
 
+- The inner controls like TextBoxes, Labels have been removed from the BocControls, but the associated style properties remain and
+  are applied during rendering. As a consequence, AutoPostback cannot be set directly on the inner controls, but only in the style
+  property.
+
 1.11.13
 =======
 - ISearchAvailableObjectService.Search now accepts objects of type ISearchAvailableObjectsService instead of a string argument.

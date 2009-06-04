@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
     public void Render ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.GetHyperLinkId ().Replace ('$', '_'));
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Padding, "0px");
       Writer.AddStyleAttribute ("border", "none");

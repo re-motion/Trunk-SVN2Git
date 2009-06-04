@@ -21,6 +21,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
 using Remotion.Utilities;
@@ -41,13 +42,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [ToolboxItemFilter ("System.Web.UI")]
   public class BocDateTimeValue : BusinessObjectBoundEditableWebControl, IBocDateTimeValue, IPostBackDataHandler, IFocusableControl
   {
-    //  constants
-
-    /// <summary> Text displayed when control is displayed in desinger and is read-only has no contents. </summary>
-    private const string c_designModeEmptyLabelContents = "##";
-
-    private const string c_defaultControlWidth = "150pt";
-
     // types
 
     /// <summary> A list of control specific resources. </summary>
@@ -76,15 +70,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // static members
 
-    private static readonly Type[] s_supportedPropertyInterfaces = new Type[] { typeof (IBusinessObjectDateTimeProperty) };
+    private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectDateTimeProperty) };
 
     private static readonly object s_dateTimeChangedEvent = new object();
 
     // member fields
 
-    private readonly TextBox _dateTextBox;
-    private readonly TextBox _timeTextBox;
-    private readonly Label _label;
+    private readonly DateTimeFormatter _formatter = new DateTimeFormatter();
     private readonly BocDatePickerButton _datePickerButton;
 
     private readonly Style _commonStyle;
@@ -93,16 +85,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private readonly SingleRowTextBoxStyle _timeTextBoxStyle;
     private readonly Style _labelStyle;
 
-    private string _internalDateValue = null;
-    private string _internalTimeValue = null;
+    private string _internalDateValue;
+    private string _internalTimeValue;
 
     /// <summary> A backup of the <see cref="DateTime"/> value. </summary>
-    private DateTime? _savedDateTimeValue = null;
+    private DateTime? _savedDateTimeValue;
 
     private BocDateTimeValueType _valueType = BocDateTimeValueType.Undefined;
     private BocDateTimeValueType _actualValueType = BocDateTimeValueType.Undefined;
 
-    private bool _showSeconds = false;
+    private bool _showSeconds;
     private bool _provideMaxLength = true;
     private bool _enableClientScript = true;
 
@@ -111,8 +103,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // construction and disposing
 
-    private bool _isDesignMode;
-
     public BocDateTimeValue ()
     {
       _commonStyle = new Style();
@@ -120,9 +110,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _dateTextBoxStyle = new SingleRowTextBoxStyle();
       _timeTextBoxStyle = new SingleRowTextBoxStyle();
       _labelStyle = new Style();
-      _dateTextBox = new TextBox();
-      _timeTextBox = new TextBox();
-      _label = new Label();
       _datePickerButton = new BocDatePickerButton();
       _validators = new ArrayList();
     }
@@ -131,18 +118,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void CreateChildControls ()
     {
-      _dateTextBox.ID = ID + "_Boc_DateTextBox";
-      _dateTextBox.EnableViewState = false;
-      Controls.Add (_dateTextBox);
-
-      _timeTextBox.ID = ID + "_Boc_TimeTextBox";
-      _timeTextBox.EnableViewState = false;
-      Controls.Add (_timeTextBox);
-
-      _label.ID = ID + "_Boc_Label";
-      _label.EnableViewState = false;
-      Controls.Add (_label);
-
       _datePickerButton.ID = ID + "_Boc_DatePicker";
       _datePickerButton.EnableViewState = false;
       Controls.Add (_datePickerButton);
@@ -193,7 +168,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       //  Date input field
 
-      string newDateValue = PageUtility.GetPostBackCollectionItem (Page, _dateTextBox.UniqueID);
+      string newDateValue = PageUtility.GetPostBackCollectionItem (Page, GetDateTextboxId());
       bool isDateChanged = newDateValue != null
                            && StringUtility.NullToEmpty (_internalDateValue) != newDateValue;
       if (isDateChanged)
@@ -201,15 +176,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         InternalDateValue = StringUtility.EmptyToNull (newDateValue);
 
         //  Reset the time in if the control is displayed in date mode and the date was changed
-        if (ActualValueType == BocDateTimeValueType.Date
-            && _savedDateTimeValue.HasValue)
+        if ((ActualValueType == BocDateTimeValueType.Date) && _savedDateTimeValue.HasValue)
           _savedDateTimeValue = _savedDateTimeValue.Value.Date;
         IsDirty = true;
       }
 
       //  Time input field
 
-      string newTimeValue = PageUtility.GetPostBackCollectionItem (Page, _timeTextBox.UniqueID);
+      string newTimeValue = PageUtility.GetPostBackCollectionItem (Page, GetTimeTextboxId());
       bool isTimeChanged = newTimeValue != null
                            && StringUtility.NullToEmpty (_internalTimeValue) != newTimeValue;
       if (isTimeChanged)
@@ -258,12 +232,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         if (DateTimeTextBoxStyle.AutoPostBack == true)
           WcagHelper.Instance.HandleWarning (1, this, "DateTimeTextBoxStyle.AutoPostBack");
-
-        if (DateTextBox.AutoPostBack)
-          WcagHelper.Instance.HandleWarning (1, this, "DateTextBox.AutoPostBack");
-
-        if (TimeTextBox.AutoPostBack)
-          WcagHelper.Instance.HandleWarning (1, this, "TimeTextBox.AutoPostBack");
       }
 
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelDoubleARequired())
@@ -273,31 +241,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    public override void PrepareValidation ()
-    {
-      base.PrepareValidation();
-
-      if (! IsReadOnly)
-      {
-        SetEditModeDateValue();
-        SetEditModeTimeValue();
-      }
-    }
-
-    private void SetEditModeDateValue ()
-    {
-      if (ProvideMaxLength)
-        _dateTextBox.MaxLength = GetDateMaxLength();
-      _dateTextBox.Text = InternalDateValue;
-    }
-
-    private void SetEditModeTimeValue ()
-    {
-      if (ProvideMaxLength)
-        _timeTextBox.MaxLength = GetTimeMaxLength();
-      _timeTextBox.Text = InternalTimeValue;
-    }
-
     protected override void OnPreRender (EventArgs e)
     {
       EnsureChildControls();
@@ -305,19 +248,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       LoadResources (GetResourceManager());
 
-      if (IsReadOnly)
-        PreRenderReadOnlyValue();
-      else
-      {
-        PreRenderEditModeValueDate();
-        PreRenderEditModeValueTime();
+      _datePickerButton.ContainerControlId = UniqueID;
+      _datePickerButton.TargetControlId = GetDateTextboxId();
 
-        _datePickerButton.ContainerControlId = UniqueID;
-        _datePickerButton.TargetControlId = ((IBocDateTimeValue) this).GetDateTextboxId();
-        _datePickerButton.AlternateText = GetResourceManager ().GetString (BocDateTimeValue.ResourceIdentifier.DataPickerButtonAlternateText);
-        _datePickerButton.TargetControlId = _dateTextBox.ClientID;
-        _datePickerButton.IsDesignMode = IsDesignMode;
-      }
+      EvaluateWaiConformity ();
     }
 
     /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
@@ -330,204 +264,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       var renderer = new BocDateTimeValueRenderer (new HttpContextWrapper(Context), writer, this);
       renderer.Render();
-    }
-
-    protected override void AddAttributesToRender (HtmlTextWriter writer)
-    {
-      string backUpStyleWidth = Style["width"];
-      if (! StringUtility.IsNullOrEmpty (Style["width"]))
-        Style["width"] = null;
-      Unit backUpWidth = Width; // base.Width and base.ControlStyle.Width
-      if (! Width.IsEmpty)
-        Width = Unit.Empty;
-
-      bool isReadOnly = IsReadOnly;
-      bool isDisabled = ! Enabled;
-
-      string backUpCssClass = CssClass; // base.CssClass and base.ControlStyle.CssClass
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-      {
-        if (isReadOnly)
-          CssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          CssClass += " " + CssClassDisabled;
-      }
-      string backUpAttributeCssClass = Attributes["class"];
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        if (isReadOnly)
-          Attributes["class"] += " " + CssClassReadOnly;
-        else if (isDisabled)
-          Attributes["class"] += " " + CssClassDisabled;
-      }
-
-      base.AddAttributesToRender (writer);
-
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-        CssClass = backUpCssClass;
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-        Attributes["class"] = backUpAttributeCssClass;
-
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        string cssClass = CssClassBase;
-        if (isReadOnly)
-          cssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          cssClass += " " + CssClassDisabled;
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      }
-
-      if (! StringUtility.IsNullOrEmpty (backUpStyleWidth))
-        Style["width"] = backUpStyleWidth;
-      if (! backUpWidth.IsEmpty)
-        Width = backUpWidth;
-
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
-
-      writer.AddStyleAttribute ("display", "inline");
-    }
-
-    protected override void RenderContents (HtmlTextWriter writer)
-    {
-      EvaluateWaiConformity();
-
-      if (IsReadOnly)
-      {
-        bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-        bool isLabelHeightEmpty = _label.Height.IsEmpty && StringUtility.IsNullOrEmpty (_label.Style["height"]);
-        if (! isControlHeightEmpty && isLabelHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-        bool isLabelWidthEmpty = _label.Width.IsEmpty && StringUtility.IsNullOrEmpty (_label.Style["width"]);
-        if (! isControlWidthEmpty && isLabelWidthEmpty)
-        {
-          if (! Width.IsEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-        }
-
-        _label.RenderControl (writer);
-      }
-      else
-      {
-        bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-        bool isDateTextBoxHeightEmpty = _dateTextBox.Height.IsEmpty
-                                        && StringUtility.IsNullOrEmpty (_dateTextBox.Style["height"]);
-        bool isTimeTextBoxHeightEmpty = _timeTextBox.Height.IsEmpty
-                                        && StringUtility.IsNullOrEmpty (_timeTextBox.Style["height"]);
-        if (! isControlHeightEmpty && isDateTextBoxHeightEmpty && isTimeTextBoxHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-        bool isDateTextBoxWidthEmpty = _dateTextBox.Width.IsEmpty
-                                       && StringUtility.IsNullOrEmpty (_dateTextBox.Style["width"]);
-        bool isTimeTextBoxWidthEmpty = _timeTextBox.Width.IsEmpty
-                                       && StringUtility.IsNullOrEmpty (_timeTextBox.Style["width"]);
-        if (isDateTextBoxWidthEmpty && isTimeTextBoxWidthEmpty)
-        {
-          if (isControlWidthEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
-          else
-          {
-            if (! Width.IsEmpty)
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-            else
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-          }
-        }
-
-        writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-        writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-        writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
-        writer.AddStyleAttribute ("display", "inline");
-        writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin table
-
-        writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin tr
-
-        bool hasDateField = ActualValueType == BocDateTimeValueType.DateTime
-                            || ActualValueType == BocDateTimeValueType.Date
-                            || ActualValueType == BocDateTimeValueType.Undefined;
-        bool hasTimeField = ActualValueType == BocDateTimeValueType.DateTime
-                            || ActualValueType == BocDateTimeValueType.Undefined;
-        bool hasDatePicker = hasDateField
-                             && (_enableClientScript && IsDesignMode
-                                 || _datePickerButton.HasClientScript);
-
-        string dateTextBoxSize = string.Empty;
-        string timeTextBoxSize = string.Empty;
-        if (hasDateField && hasTimeField && ShowSeconds)
-        {
-          dateTextBoxSize = "55%";
-          timeTextBoxSize = "45%";
-        }
-        else if (hasDateField && hasTimeField)
-        {
-          dateTextBoxSize = "60%";
-          timeTextBoxSize = "40%";
-        }
-        else if (hasDateField)
-          dateTextBoxSize = "100%";
-
-        if (hasDateField)
-        {
-          if (_dateTextBoxStyle.Width.IsEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, dateTextBoxSize);
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, _dateTextBoxStyle.Width.ToString());
-          writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
-
-          if (! isControlHeightEmpty && isDateTextBoxHeightEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-          if (! StringUtility.IsNullOrEmpty (dateTextBoxSize))
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-          _dateTextBox.RenderControl (writer);
-
-          writer.RenderEndTag(); // End td
-        }
-
-        if (hasDatePicker)
-        {
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-          writer.AddStyleAttribute ("padding-left", "0.3em");
-          writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
-          _datePickerButton.RenderControl (writer);
-          writer.RenderEndTag(); // End td
-        }
-
-        //HACK: Opera has problems with inline tables and may collapse contents unless a cell with width 0% is present
-        if (! hasDatePicker && Context.Request.Browser.Browser == "Opera")
-        {
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0%");
-          writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
-          writer.Write ("&nbsp;");
-          writer.RenderEndTag(); // End td
-        }
-
-        if (hasTimeField)
-        {
-          if (_timeTextBoxStyle.Width.IsEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, timeTextBoxSize);
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, _timeTextBoxStyle.Width.ToString());
-          if (hasDateField)
-            writer.AddStyleAttribute ("padding-left", "0.3em");
-          writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin td
-
-          if (! isControlHeightEmpty && isTimeTextBoxHeightEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-          if (! StringUtility.IsNullOrEmpty (timeTextBoxSize))
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-          _timeTextBox.RenderControl (writer);
-
-          writer.RenderEndTag(); // End td
-        }
-
-        writer.RenderEndTag(); // End tr
-        writer.RenderEndTag(); // End table
-      }
     }
 
     protected override void LoadControlState (object savedState)
@@ -545,9 +281,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _showSeconds = (bool) values[5];
       _provideMaxLength = (bool) values[6];
       _savedDateTimeValue = (DateTime?) values[7];
-
-      _dateTextBox.Text = _internalDateValue;
-      _timeTextBox.Text = _internalTimeValue;
     }
 
     protected override object SaveControlState ()
@@ -631,7 +364,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.LoadResources (resourceManager);
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
-      if (! StringUtility.IsNullOrEmpty (key))
+      if (! string.IsNullOrEmpty (key))
         ErrorMessage = resourceManager.GetString (key);
     }
 
@@ -647,7 +380,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       BocDateTimeValueValidator dateTimeValueValidator = new BocDateTimeValueValidator();
       dateTimeValueValidator.ID = ID + "_ValidatorDateTime";
       dateTimeValueValidator.ControlToValidate = ID;
-      if (StringUtility.IsNullOrEmpty (_errorMessage))
+      if (string.IsNullOrEmpty (_errorMessage))
       {
         IResourceManager resourceManager = GetResourceManager();
         dateTimeValueValidator.RequiredErrorMessage =
@@ -667,186 +400,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       _validators.AddRange (validators);
       return validators;
-    }
-
-    /// <summary> Prerenders the <see cref="Label"/>. </summary>
-    private void PreRenderReadOnlyValue ()
-    {
-      if (IsDesignMode && StringUtility.IsNullOrEmpty (_label.Text))
-      {
-        _label.Text = c_designModeEmptyLabelContents;
-        //  Too long, can't resize in designer to less than the content's width
-        //  _label.Text = "[ " + this.GetType().Name + " \"" + this.ID + "\" ]";
-      }
-      else
-      {
-        object internalValue = Value;
-
-        if (internalValue != null)
-        {
-          DateTime dateTime = (DateTime) internalValue;
-
-          if (ActualValueType == BocDateTimeValueType.DateTime)
-            _label.Text = FormatDateTimeValue (dateTime, true);
-          else if (ActualValueType == BocDateTimeValueType.Date)
-            _label.Text = FormatDateValue (dateTime, true);
-          else
-            _label.Text = dateTime.ToString();
-        }
-        else
-          _label.Text = "&nbsp;";
-      }
-
-      _label.Height = Unit.Empty;
-      _label.Width = Unit.Empty;
-      _label.ApplyStyle (_commonStyle);
-      _label.ApplyStyle (_labelStyle);
-    }
-
-    /// <summary> Prerenders the <see cref="DateTextBox"/>. </summary>
-    private void PreRenderEditModeValueDate ()
-    {
-      SetEditModeDateValue();
-      _dateTextBox.ReadOnly = ! Enabled;
-      _dateTextBox.Width = Unit.Empty;
-      _dateTextBox.Height = Unit.Empty;
-      _dateTextBox.ApplyStyle (_commonStyle);
-      _dateTimeTextBoxStyle.ApplyStyle (_dateTextBox);
-      _dateTextBoxStyle.ApplyStyle (_dateTextBox);
-    }
-
-    /// <summary> Prerenders the <see cref="TimeTextBox"/>. </summary>
-    private void PreRenderEditModeValueTime ()
-    {
-      SetEditModeTimeValue();
-      _timeTextBox.ReadOnly = ! Enabled;
-      _timeTextBox.Height = Unit.Empty;
-      _timeTextBox.Width = Unit.Empty;
-      _timeTextBox.ApplyStyle (_commonStyle);
-      _dateTimeTextBoxStyle.ApplyStyle (_timeTextBox);
-      _timeTextBoxStyle.ApplyStyle (_timeTextBox);
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value according to the current culture. </summary>
-    /// <param name="dateValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <param name="isReadOnly"> <see langword="true"/> if the control is in read-only mode. </param>
-    /// <returns> A formatted string representing the <see cref="DateTime"/> value. </returns>
-    protected virtual string FormatDateTimeValue (DateTime dateValue, bool isReadOnly)
-    {
-      isReadOnly = false;
-
-      if (isReadOnly)
-      {
-        if (ShowSeconds)
-        {
-          //  F:  dddd, MMMM dd yyyy, hh, mm, ss
-          return dateValue.ToString ("F");
-        }
-        else
-        {
-          //  f:  dddd, MMMM dd yyyy, hh, mm
-          return dateValue.ToString ("f");
-        }
-      }
-      else
-      {
-        if (ShowSeconds)
-        {
-          //  G:  yyyy, mm, dd, hh, mm, ss
-          return dateValue.ToString ("G");
-        }
-        else
-        {
-          //  g:  yyyy, mm, dd, hh, mm
-          return dateValue.ToString ("g");
-        }
-      }
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value according to the current culture. </summary>
-    /// <param name="dateValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <returns> A formatted string representing the <see cref="DateTime"/> value. </returns>
-    protected virtual string FormatDateTimeValue (DateTime dateValue)
-    {
-      return FormatDateTimeValue (dateValue, false);
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value's date component according to the current culture. </summary>
-    /// <param name="dateValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <param name="isReadOnly"> <see langword="true"/> if the control is in read-only mode. </param>
-    /// <returns> A formatted string representing the <see cref="DateTime"/> value's date component. </returns>
-    protected virtual string FormatDateValue (DateTime dateValue, bool isReadOnly)
-    {
-      isReadOnly = false;
-
-      if (isReadOnly)
-      {
-        //  D:  dddd, MMMM dd yyyy
-        return dateValue.ToString ("D");
-      }
-      else
-      {
-        //  d:  yyyy, mm, dd
-        return dateValue.ToString ("d");
-      }
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value's date component according to the current culture. </summary>
-    /// <param name="dateValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <returns> A formatted string representing the <see cref="DateTime"/> value's date component. </returns>
-    protected virtual string FormatDateValue (DateTime dateValue)
-    {
-      return FormatDateValue (dateValue, false);
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value's time component according to the current culture. </summary>
-    /// <param name="timeValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <param name="isReadOnly"> <see langword="true"/> if the control is in read-only mode. </param>
-    /// <returns>  A formatted string representing the <see cref="DateTime"/> value's time component. </returns>
-    protected virtual string FormatTimeValue (DateTime timeValue, bool isReadOnly)
-    {
-      //  ignore Read-Only
-
-      if (ShowSeconds)
-      {
-        //  T: hh, mm, ss
-        return timeValue.ToString ("T");
-      }
-      else
-      {
-        //  T: hh, mm
-        return timeValue.ToString ("t");
-      }
-    }
-
-    /// <summary> Formats the <see cref="DateTime"/> value's time component according to the current culture. </summary>
-    /// <param name="timeValue"> The <see cref="DateTime"/> value to be formatted. </param>
-    /// <returns> A formatted string representing the <see cref="DateTime"/> value's time component.  </returns>
-    protected virtual string FormatTimeValue (DateTime timeValue)
-    {
-      return FormatTimeValue (timeValue, false);
-    }
-
-    /// <summary> Calculates the maximum length for required for entering the date component. </summary>
-    /// <returns> The length. </returns>
-    protected virtual int GetDateMaxLength ()
-    {
-      string maxDate = new DateTime (2000, 12, 31).ToString ("d");
-      return maxDate.Length;
-    }
-
-    /// <summary> Calculates the maximum length for required for entering the time component. </summary>
-    /// <returns> The length. </returns>
-    protected virtual int GetTimeMaxLength ()
-    {
-      string maxTime = "";
-
-      if (ShowSeconds)
-        maxTime = new DateTime (1, 1, 1, 23, 30, 30).ToString ("T");
-      else
-        maxTime = new DateTime (1, 1, 1, 23, 30, 30).ToString ("t");
-
-      return maxTime.Length;
     }
 
     /// <summary> Handles refreshing the bound control. </summary>
@@ -909,8 +462,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         //  Parse Date
 
-        if (InternalDateValue == null
-            && ActualValueType != BocDateTimeValueType.Undefined)
+        if ((InternalDateValue == null) && ActualValueType != BocDateTimeValueType.Undefined)
         {
           //throw new FormatException ("The date component of the DateTime value is null.");
           return null;
@@ -918,8 +470,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         try
         {
-          if (! IsDesignMode
-              || ! StringUtility.IsNullOrEmpty (InternalDateValue))
+          if (!IsDesignMode || !string.IsNullOrEmpty (InternalDateValue))
             dateTimeValue = DateTime.Parse (InternalDateValue).Date;
         }
         catch (FormatException)
@@ -935,14 +486,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         //  Parse Time
 
-        if ((ActualValueType == BocDateTimeValueType.DateTime
-             || ActualValueType == BocDateTimeValueType.Undefined)
+        if ((ActualValueType == BocDateTimeValueType.DateTime || ActualValueType == BocDateTimeValueType.Undefined)
             && InternalTimeValue != null)
         {
           try
           {
             if (! IsDesignMode
-                || ! StringUtility.IsNullOrEmpty (InternalTimeValue))
+                || ! string.IsNullOrEmpty (InternalTimeValue))
               dateTimeValue = dateTimeValue.Add (DateTime.Parse (InternalTimeValue).TimeOfDay);
           }
           catch (FormatException)
@@ -983,11 +533,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         try
         {
-          InternalDateValue = FormatDateValue (_savedDateTimeValue.Value);
+          InternalDateValue = _formatter.FormatDateValue (_savedDateTimeValue.Value);
         }
         catch (InvalidCastException e)
         {
-          throw new ArgumentException ("Expected type '" + _actualValueType.ToString() + "', but was '" + value.GetType().FullName + "'.", "value", e);
+          throw new ArgumentException ("Expected type '" + _actualValueType + "', but was '" + value.GetType().FullName + "'.", "value", e);
         }
 
         if (ActualValueType == BocDateTimeValueType.DateTime
@@ -995,12 +545,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           try
           {
-            InternalTimeValue = FormatTimeValue (_savedDateTimeValue.Value);
+            InternalTimeValue = _formatter.FormatTimeValue (_savedDateTimeValue.Value, ShowSeconds);
           }
           catch (InvalidCastException e)
           {
             throw new ArgumentException (
-                "Expected type '" + _actualValueType.ToString() + "', but was '" + value.GetType().FullName + "'.", "value", e);
+                "Expected type '" + _actualValueType + "', but was '" + value.GetType().FullName + "'.", "value", e);
           }
         }
         else
@@ -1025,14 +575,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { Value = ArgumentUtility.CheckType<DateTime?> ("value", value); }
     }
 
-    /// <summary> Gets or sets the string displayed in the <see cref="DateTextBox"/>. </summary>
+    /// <summary> Gets or sets the displayed date string. </summary>
     protected virtual string InternalDateValue
     {
       get { return _internalDateValue; }
       set { _internalDateValue = value; }
     }
 
-    /// <summary> Gets or sets the string displayed in the <see cref="TimeTextBox"/>. </summary>
+    /// <summary> Gets or sets the displayed time string. </summary>
     protected virtual string InternalTimeValue
     {
       get { return _internalTimeValue; }
@@ -1045,7 +595,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     /// <returns> 
     ///   A <see cref="String"/> <see cref="Array"/> containing the <see cref="Control.ClientID"/> of the
-    ///   <see cref="DateTextBox"/> and the <see cref="TimeTextBox"/> if the control is in edit mode, or an empty array 
+    ///   date and the time text boxes if the control is in edit mode, or an empty array 
     ///   if the control is read-only.
     /// </returns>
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
@@ -1053,13 +603,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (IsReadOnly)
         return new string[0];
-      else if (ActualValueType == BocDateTimeValueType.DateTime
-               || ActualValueType == BocDateTimeValueType.Undefined)
-        return new string[2] { _dateTextBox.ClientID, _timeTextBox.ClientID };
-      else if (ActualValueType == BocDateTimeValueType.Date)
-        return new string[1] { _dateTextBox.ClientID };
-      else
-        return new string[0];
+      
+      switch( ActualValueType )
+      {
+        case BocDateTimeValueType.DateTime:
+        case BocDateTimeValueType.Undefined:
+          return new[] { GetDateTextboxClientId(), GetTimeTextboxClientId() };
+        case BocDateTimeValueType.Date:
+          return new[] { GetDateTextboxClientId () };
+        default:
+          return new string[0];
+      }
+    }
+
+    public string GetTimeTextboxClientId ()
+    {
+      return GetTimeTextboxId ().Replace (IdSeparator, ClientIDSeparator);
+    }
+
+    public string GetDateTextboxClientId ()
+    {
+      return GetDateTextboxId().Replace (IdSeparator, ClientIDSeparator);
     }
 
     /// <summary> The <see cref="BocDateTimeValue"/> supports only scalar properties. </summary>
@@ -1093,27 +657,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its 
     ///   <see cref="Control.ClientID"/>.
     /// </summary>
-    /// <remarks> Returns the <see cref="DateTextBox"/> if the control is in edit mode, otherwise the control itself. </remarks>
+    /// <remarks> Returns the control itself. </remarks>
     public override Control TargetControl
     {
-      get { return IsReadOnly ? (Control) this : _dateTextBox; }
+      get { return this; }
     }
 
     /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
     /// <value>
-    ///   Returns the <see cref="Control.ClientID"/> of the <see cref="DateTextBox"/> if the control is in edit mode, 
+    ///   Returns the <see cref="Control.ClientID"/> of the date text box if the control is in edit mode, 
     ///   otherwise <see langword="null"/>. 
     /// </value>
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     [Browsable (false)]
     public string FocusID
     {
-      get { return IsReadOnly ? null : _dateTextBox.ClientID; }
+      get { return IsReadOnly ? null : GetDateTextboxClientId(); }
     }
 
     /// <summary>
-    ///   Gets the style that you want to apply to the <see cref="DateTextBox"/> and the <see cref="TimeTextBox"/> 
-    ///   (edit mode) and the <see cref="Label"/> (read-only mode).
+    ///   Gets the style that you want to apply to the date and time text boxes 
+    ///   (edit mode) as well as the label (read-only mode).
     /// </summary>
     /// <include file='doc\include\UI\Controls\BocDateTimeValue.xml' path='BocDateTimeValue/CommonStyle/*' />
     [Category ("Style")]
@@ -1127,7 +691,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Gets the style that you want to apply to both the <see cref="DateTextBox"/> and the <see cref="TimeTextBox"/>
+    ///   Gets the style that you want to apply to both the date and the time text box
     ///   (edit mode) only.
     /// </summary>
     /// <include file='doc\include\UI\Controls\BocDateTimeValue.xml' path='BocDateTimeValue/DateTimeTextBoxStyle/*' />
@@ -1141,7 +705,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _dateTimeTextBoxStyle; }
     }
 
-    /// <summary> Gets the style that you want to apply to the <see cref="DateTextBox"/> (edit mode) only. </summary>
+    /// <summary> Gets the style that you want to apply to the date text box (edit mode) only. </summary>
     /// <remarks> These style settings override the styles defined in <see cref="DateTimeTextBoxStyle"/>. </remarks>
     [Category ("Style")]
     [Description ("The style that you want to apply to only the date TextBox (edit mode) only.")]
@@ -1163,7 +727,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _dateTextBoxStyle; }
     }
 
-    /// <summary> Gets the style that you want to apply to the <see cref="TimeTextBox"/> (edit mode) only. </summary>
+    /// <summary> Gets the style that you want to apply to the time text box (edit mode) only. </summary>
     /// <remarks> These style settings override the styles defined in <see cref="DateTimeTextBoxStyle"/>. </remarks>
     [Category ("Style")]
     [Description ("The style that you want to apply to only the time TextBox (edit mode) only.")]
@@ -1299,7 +863,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    string IBocDateTimeValue.GetDateTextboxId ()
+    public string GetDateTextboxId ()
     {
       return UniqueID + IdSeparator + "_Boc_DateTextBox";
     }
@@ -1325,27 +889,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> Gets the <see cref="TextBox"/> used in edit mode for the date component. </summary>
-    [Browsable (false)]
-    public TextBox DateTextBox
-    {
-      get { return _dateTextBox; }
-    }
-
-    /// <summary> Gets the <see cref="TextBox"/> used in edit mode for the time component. </summary>
-    [Browsable (false)]
-    public TextBox TimeTextBox
-    {
-      get { return _timeTextBox; }
-    }
-
-    /// <summary> Gets the <see cref="Label"/> used in read-only mode. </summary>
-    [Browsable (false)]
-    public Label Label
-    {
-      get { return _label; }
-    }
-
     /// <summary> Gets the <see cref="BocDatePickerButton"/> used in edit mode for opening the date picker. </summary>
     [Browsable (false)]
     public BocDatePickerButton DatePickerButton
@@ -1354,8 +897,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   Gets the contents of the <see cref="DateTextBox"/> and the <see cref="TimeTextBox"/>, 
-    ///   seperated by a newline character.
+    ///   Gets the entered date and time, seperated by a newline character.
     /// </summary>
     /// <remarks> This property is used for validation. </remarks>
     [Browsable (false)]
@@ -1443,6 +985,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual string CssClassDisabled
     {
       get { return "disabled"; }
+    }
+
+    public string DateString
+    {
+      get { return InternalDateValue; }
+    }
+
+    public string TimeString
+    {
+      get { return InternalTimeValue; }
     }
 
     #endregion

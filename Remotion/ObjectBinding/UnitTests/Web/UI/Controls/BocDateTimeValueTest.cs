@@ -115,20 +115,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void EvaluateWaiConformityDebugLevelAWithDateTextBoxAutoPostBackTrue()
-    {
-      WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
-      _bocDateTimeValue.DateTextBox.AutoPostBack = true;
-      _bocDateTimeValue.EvaluateWaiConformity();
-
-      Assert.IsTrue (WcagHelperMock.HasWarning);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocDateTimeValue, WcagHelperMock.Control);
-      Assert.AreEqual ("DateTextBox.AutoPostBack", WcagHelperMock.Property);
-    }
-
-
-    [Test]
     public void EvaluateWaiConformityDebugLevelAWithTimeTextBoxStyleAutoPostBackTrue()
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
@@ -140,20 +126,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       Assert.AreSame (_bocDateTimeValue, WcagHelperMock.Control);
       Assert.AreEqual ("TimeTextBoxStyle.AutoPostBack", WcagHelperMock.Property);
     }
-
-    [Test]
-    public void EvaluateWaiConformityDebugLevelAWithTimeTextBoxAutoPostBackTrue()
-    {
-      WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
-      _bocDateTimeValue.TimeTextBox.AutoPostBack = true;
-      _bocDateTimeValue.EvaluateWaiConformity();
-
-      Assert.IsTrue (WcagHelperMock.HasWarning);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocDateTimeValue, WcagHelperMock.Control);
-      Assert.AreEqual ("TimeTextBox.AutoPostBack", WcagHelperMock.Property);
-    }
-
 
     [Test]
     public void GetTrackedClientIDsInReadOnlyMode()
@@ -172,8 +144,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, actual.Length);
-      Assert.AreEqual (_bocDateTimeValue.DateTextBox.ClientID, actual[0]);
-      Assert.AreEqual (_bocDateTimeValue.TimeTextBox.ClientID, actual[1]);
+      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientId(), actual[0]);
+      Assert.AreEqual (_bocDateTimeValue.GetTimeTextboxClientId(), actual[1]);
     }
 
     [Test]
@@ -184,7 +156,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocDateTimeValue.DateTextBox.ClientID, actual[0]);
+      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientId(), actual[0]);
     }
 
     [Test]
@@ -195,8 +167,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, actual.Length);
-      Assert.AreEqual (_bocDateTimeValue.DateTextBox.ClientID, actual[0]);
-      Assert.AreEqual (_bocDateTimeValue.TimeTextBox.ClientID, actual[1]);
+      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientId(), actual[0]);
+      Assert.AreEqual (_bocDateTimeValue.GetTimeTextboxClientId(), actual[1]);
     }
 
 

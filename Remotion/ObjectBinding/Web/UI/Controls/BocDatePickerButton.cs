@@ -32,7 +32,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private static readonly string s_datePickerScriptFileKey = typeof (BocDateTimeValue).FullName + "_DatePickerScript";
 
-    private readonly HyperLink _hyperLink;
     private readonly Style _datePickerButtonStyle;
 
     public BocDatePickerButton ()
@@ -41,13 +40,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       AlternateText = string.Empty;
       DatePickerPopupWidth = Unit.Point (c_defaultDatePickerLengthInPoints);
       DatePickerPopupHeight = Unit.Point (c_defaultDatePickerLengthInPoints);
-      _hyperLink = new HyperLink();
       _datePickerButtonStyle = new Style();
-    }
-
-    public HyperLink HyperLink
-    {
-      get { return _hyperLink; }
     }
 
     string IBocRenderableControl.CssClassBase
@@ -92,11 +85,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return ResourceUrlResolver.GetResourceUrl (Parent, Context, typeof (DatePickerPage), ResourceType.UI, c_datePickerPopupForm);
     }
 
-    string IBocDatePickerButton.GetHyperLinkId ()
-    {
-      return UniqueID;
-    }
-
     string IBocDatePickerButton.GetResolvedImageUrl ()
     {
       return ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocDateTimeValue), ResourceType.Image, ImageFileName);
@@ -119,67 +107,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "DatePicker.gif"; }
     }
 
-    protected override void CreateChildControls ()
-    {
-      _hyperLink.ID = ID + "Button";
-      _hyperLink.EnableViewState = false;
-      Controls.Add (_hyperLink);
-    }
-
     protected override void OnPreRender (EventArgs e)
     {
       DetermineClientScriptLevel();
-
-      if (EnableClientScript && IsDesignMode
-          || HasClientScript)
-      {
-        string imageUrl = ResourceUrlResolver.GetResourceUrl (
-            this, Context, typeof (BocDateTimeValue), ResourceType.Image, ImageFileName);
-        if (imageUrl == null)
-          _hyperLink.ImageUrl = ImageFileName;
-        else
-          _hyperLink.ImageUrl = imageUrl;
-        _hyperLink.Text = AlternateText;
-
-        string script;
-        if (HasClientScript && Enabled)
-        {
-          string pickerActionButton = "this";
-          string pickerActionContainer = "document.getElementById ('" + Parent.ClientID + "')";
-          string pickerActionTarget = "document.getElementById ('" + TargetControlId + "')";
-
-          string pickerUrl = "'" + ResourceUrlResolver.GetResourceUrl (
-                                       Parent, Context, typeof (DatePickerPage), ResourceType.UI, c_datePickerPopupForm) + "'";
-
-          Unit popUpWidth = DatePickerPopupWidth;
-          if (popUpWidth.IsEmpty)
-            popUpWidth = Unit.Point (c_defaultDatePickerLengthInPoints);
-          string pickerWidth = "'" + popUpWidth + "'";
-
-          Unit popUpHeight = DatePickerPopupHeight;
-          if (popUpHeight.IsEmpty)
-            popUpHeight = Unit.Point (c_defaultDatePickerLengthInPoints);
-          string pickerHeight = "'" + popUpHeight + "'";
-
-          script = "DatePicker_ShowDatePicker("
-                   + pickerActionButton + ", "
-                   + pickerActionContainer + ", "
-                   + pickerActionTarget + ", "
-                   + pickerUrl + ", "
-                   + pickerWidth + ", "
-                   + pickerHeight + ");"
-                   + "return false;";
-        }
-        else
-          script = "return false;";
-        _hyperLink.Attributes.Add ("href", "#");
-        _hyperLink.Attributes["onclick"] = script;
-      }
-
-      _hyperLink.Style["padding"] = "0px";
-      _hyperLink.Style["border"] = "none";
-      _hyperLink.Style["background-color"] = "transparent";
-      _hyperLink.ApplyStyle (_datePickerButtonStyle);
     }
 
     public override void RenderControl (HtmlTextWriter writer)

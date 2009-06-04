@@ -49,7 +49,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
       if (textBox.TextMode == TextBoxMode.MultiLine && textBox.Columns < 1)
         textBox.Columns = c_defaultColumns;
 
-      textBox.AutoPostBack = Control.AutoPostBack;
       return textBox;
     }
 

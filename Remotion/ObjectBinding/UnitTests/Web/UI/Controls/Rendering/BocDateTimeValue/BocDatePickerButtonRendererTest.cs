@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _datePickerButton.ID = "_Boc_DatePickerButton";
       _datePickerButton.Stub (mock => mock.ContainerControlId).Return ("Container");
       _datePickerButton.Stub (mock => mock.TargetControlId).Return ("Target");
-      _datePickerButton.Stub (mock => mock.GetHyperLinkId()).Return (_datePickerButton.ID);
+      _datePickerButton.Stub (mock => mock.ClientID).Return (_datePickerButton.ID);
       _datePickerButton.Stub (mock => mock.GetResolvedImageUrl()).Return ("FullImagePath");
       _datePickerButton.Stub (mock => mock.GetDatePickerUrl()).Return ("DatePickerUrl");
     }

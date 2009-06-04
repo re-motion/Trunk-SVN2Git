@@ -82,20 +82,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocTextValueTests
     }
 
     [Test]
-    public void EvaluateWaiConformityDebugLevelAWithTextBoxAutoPostBackTrue ()
-    {
-      WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
-      _bocTextValue.AutoPostBack = true;
-      _bocTextValue.EvaluateWaiConformity();
-
-      Assert.IsTrue (WcagHelperMock.HasWarning);
-      Assert.AreEqual (1, WcagHelperMock.Priority);
-      Assert.AreSame (_bocTextValue, WcagHelperMock.Control);
-      Assert.AreEqual ("TextBox.AutoPostBack", WcagHelperMock.Property);
-    }
-
-
-    [Test]
     public void GetTrackedClientIDsInReadOnlyMode ()
     {
       _bocTextValue.ReadOnly = true;
