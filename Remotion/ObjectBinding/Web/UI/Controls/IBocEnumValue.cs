@@ -14,20 +14,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using Remotion.ObjectBinding.Web.UI.Controls;
+using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-
-/// <summary> Exposes non-public members of the <see cref="BocEnumValue"/> type. </summary>
-[ToolboxItem (false)]
-public class BocEnumValueMock: BocEnumValue
-{
-	public new void EvaluateWaiConformity ()
+  public interface IBocEnumValue : IBusinessObjectBoundEditableWebControl, IBocRenderableControl
   {
-    base.EvaluateWaiConformity ();
+    IEnumerationValueInfo EnumerationValueInfo { get; }
+    Style CommonStyle { get; }
+    Style LabelStyle { get; }
+    ListControlStyle ListControlStyle { get; }
+    string NullIdentifier { get; }
+    string GetListControlClientID ();
+    string GetLabelClientID ();
+    IEnumerationValueInfo[] GetEnabledValues();
+    string GetNullItemText ();
   }
-}
-
 }

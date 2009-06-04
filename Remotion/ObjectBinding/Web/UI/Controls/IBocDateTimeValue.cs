@@ -34,10 +34,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     SingleRowTextBoxStyle DateTimeTextBoxStyle { get; }
     string DateString { get; }
     string TimeString { get; }
-    string GetDateTextboxId ();
+    string GetDateTextboxID ();
     string GetDatePickerText ();
-    string GetTimeTextboxId ();
-    string GetTimeTextboxClientId ();
-    string GetDateTextboxClientId ();
+    string GetTimeTextboxID ();
+    string GetTimeTextboxClientID ();
+    string GetDateTextboxClientID ();
   }
 }

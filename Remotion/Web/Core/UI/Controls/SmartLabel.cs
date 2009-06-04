@@ -218,20 +218,21 @@ public class SmartLabel: WebControl
     if (! ControlHelper.IsDesignMode (this))
     {
       Control target = ControlHelper.FindControl (NamingContainer, ForControl);
-      ISmartControl smartControl = target as ISmartControl;
-      bool useLabel;
-      if (smartControl != null)
+      bool useLabel = false;
+      string clientID = null;
+      if (target is ISmartControl && target is IFocusableControl)
       {
-        target = smartControl.TargetControl;
-        useLabel = smartControl.UseLabel;
+        clientID = ((IFocusableControl)target).FocusID;
+        useLabel = ((ISmartControl)target).UseLabel;
       }
-      else
+      else if (target != null)
       {
+        clientID = target.ClientID;
         useLabel = ! (target is DropDownList || target is HtmlSelect);
       }
 
-      if (useLabel && target != null)
-        writer.AddAttribute (HtmlTextWriterAttribute.For, target.ClientID);
+      if (useLabel && !string.IsNullOrEmpty (clientID))
+        writer.AddAttribute (HtmlTextWriterAttribute.For, clientID);
 
       // TODO: add <a href="ToName(target.ClientID)"> ...
       // ToName: '.' -> '_'

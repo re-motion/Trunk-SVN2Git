@@ -87,20 +87,6 @@ public class BocEnumValueTest: BocTest
     Assert.AreEqual ("ListControlStyle.AutoPostBack", WcagHelperMock.Property);
   }
 
-	[Test]
-  public void EvaluateWaiConformityDebugLevelAWithListControlAutoPostBackTrue()
-  {
-    WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
-    _bocEnumValue.ListControl.AutoPostBack = true;
-    _bocEnumValue.EvaluateWaiConformity ();
-
-    Assert.IsTrue (WcagHelperMock.HasWarning);
-    Assert.AreEqual (1, WcagHelperMock.Priority);
-    Assert.AreSame (_bocEnumValue, WcagHelperMock.Control);
-    Assert.AreEqual ("ListControl.AutoPostBack", WcagHelperMock.Property);
-  }
-
-
   [Test]
   public void GetTrackedClientIDsInReadOnlyMode()
   {
@@ -118,7 +104,7 @@ public class BocEnumValueTest: BocTest
     string[] actual = _bocEnumValue.GetTrackedClientIDs();
     Assert.IsNotNull (actual);
     Assert.AreEqual (1, actual.Length);
-    Assert.AreEqual (_bocEnumValue.ListControl.ClientID, actual[0]);
+    Assert.AreEqual (_bocEnumValue.GetListControlClientID(), actual[0]);
   }
 
   [Test]
@@ -129,7 +115,7 @@ public class BocEnumValueTest: BocTest
     string[] actual = _bocEnumValue.GetTrackedClientIDs();
     Assert.IsNotNull (actual);
     Assert.AreEqual (1, actual.Length);
-    Assert.AreEqual (_bocEnumValue.ListControl.ClientID, actual[0]);
+    Assert.AreEqual (_bocEnumValue.GetListControlClientID(), actual[0]);
   }
 
   [Test]
@@ -142,14 +128,13 @@ public class BocEnumValueTest: BocTest
         typeof (IBusinessObjectEnumerationProperty).IsAssignableFrom (_propertyEnumValue.GetType()), 
         "Property 'EnumValue' of invalid type.");
     _bocEnumValue.Property = _propertyEnumValue;
-    _bocEnumValue.RefreshEnumList();
 
     string[] actual = _bocEnumValue.GetTrackedClientIDs();
     Assert.IsNotNull (actual);
     Assert.AreEqual (3, actual.Length);
-    Assert.AreEqual (_bocEnumValue.ListControl.ClientID + "_0", actual[0]);
-    Assert.AreEqual (_bocEnumValue.ListControl.ClientID + "_1", actual[1]);
-    Assert.AreEqual (_bocEnumValue.ListControl.ClientID + "_2", actual[2]);
+    Assert.AreEqual (_bocEnumValue.GetListControlClientID() + "_0", actual[0]);
+    Assert.AreEqual (_bocEnumValue.GetListControlClientID() + "_1", actual[1]);
+    Assert.AreEqual (_bocEnumValue.GetListControlClientID() + "_2", actual[2]);
   }
 
 

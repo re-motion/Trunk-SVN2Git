@@ -250,6 +250,7 @@
     <Compile Include="UI\Controls\IBocCheckBox.cs" />
     <Compile Include="UI\Controls\IBocDatePickerButton.cs" />
     <Compile Include="UI\Controls\IBocDateTimeValue.cs" />
+    <Compile Include="UI\Controls\IBocEnumValue.cs" />
     <Compile Include="UI\Controls\IBocList.cs" />
     <Compile Include="UI\Controls\IBocMultilineTextValue.cs" />
     <Compile Include="UI\Controls\IBocTextValue.cs" />
@@ -289,6 +290,7 @@
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocCheckboxRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\BocDatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\BocDateTimeValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocEnumValue\BocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />

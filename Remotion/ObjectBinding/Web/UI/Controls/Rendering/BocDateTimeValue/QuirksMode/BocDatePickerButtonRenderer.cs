@@ -77,8 +77,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       {
         string pickerActionButton = "this";
         
-        string pickerActionContainer = "document.getElementById ('" + Control.ContainerControlId.Replace('$', '_') + "')";
-        string pickerActionTarget = "document.getElementById ('" + Control.TargetControlId.Replace ('$', '_') + "')";
+        string pickerActionContainer = "document.getElementById ('" + Control.ContainerControlID.Replace('$', '_') + "')";
+        string pickerActionTarget = "document.getElementById ('" + Control.TargetControlID.Replace ('$', '_') + "')";
 
         string pickerUrl = "'" + Control.GetDatePickerUrl() + "'";
 

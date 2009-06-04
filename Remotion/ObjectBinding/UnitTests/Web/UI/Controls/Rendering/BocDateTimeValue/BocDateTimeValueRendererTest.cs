@@ -48,8 +48,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
       _dateTimeValue.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
 
-      _dateTimeValue.Stub (mock => mock.GetDateTextboxId()).Return ("DateTextboxId");
-      _dateTimeValue.Stub (mock => mock.GetTimeTextboxId ()).Return ("TimeTextboxId");
+      _dateTimeValue.Stub (mock => mock.GetDateTextboxID()).Return ("DateTextboxId");
+      _dateTimeValue.Stub (mock => mock.GetTimeTextboxID ()).Return ("TimeTextboxId");
       
       StateBag stateBag = new StateBag();
       _dateTimeValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
@@ -564,7 +564,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
         maxLength = 8;
         timeFormat = "HH:mm:ss";
       }
-      AssertTextBox (timeBox, _dateTimeValue.GetTimeTextboxId(), maxLength, isDisabled, withStyle);
+      AssertTextBox (timeBox, _dateTimeValue.GetTimeTextboxID(), maxLength, isDisabled, withStyle);
       if (_dateTimeValue.Value.HasValue)
         Html.AssertAttribute (timeBox, "value", _dateTimeValue.Value.Value.ToString (timeFormat));
       else
@@ -574,7 +574,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private void AssertDateTextBox (XmlNode dateBoxCell, bool isDisabled, bool withStyle)
     {
       var dateBox = Html.GetAssertedChildElement (dateBoxCell, "input", 0);
-      AssertTextBox (dateBox, _dateTimeValue.GetDateTextboxId(), 10, isDisabled, withStyle);
+      AssertTextBox (dateBox, _dateTimeValue.GetDateTextboxID(), 10, isDisabled, withStyle);
       if (_dateTimeValue.Value.HasValue)
         Html.AssertAttribute (dateBox, "value", _dateTimeValue.Value.Value.ToString ("dd.MM.yyyy"));
       else

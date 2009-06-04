@@ -77,8 +77,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _datePickerButtonStyle; }
     }
 
-    public string ContainerControlId{get;set;}
-    public string TargetControlId { get; set; }
+    public string ContainerControlID{get;set;}
+    public string TargetControlID { get; set; }
 
     string IBocDatePickerButton.GetDatePickerUrl ()
     {

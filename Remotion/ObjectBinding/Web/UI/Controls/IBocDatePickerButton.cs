@@ -26,11 +26,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool HasClientScript { get; }
     string AlternateText { get; }
     bool EnableClientScript { get; }
-    string TargetControlId { get; }
+    string TargetControlID { get; }
     Unit DatePickerPopupWidth { get; }
     Unit DatePickerPopupHeight { get; }
     Style DatePickerButtonStyle { get; }
-    string ContainerControlId { get; }
+    string ContainerControlID { get; }
     string GetDatePickerUrl ();
     string GetResolvedImageUrl ();
   }

@@ -144,8 +144,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, actual.Length);
-      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientId(), actual[0]);
-      Assert.AreEqual (_bocDateTimeValue.GetTimeTextboxClientId(), actual[1]);
+      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientID(), actual[0]);
+      Assert.AreEqual (_bocDateTimeValue.GetTimeTextboxClientID(), actual[1]);
     }
 
     [Test]
@@ -156,7 +156,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientId(), actual[0]);
+      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientID(), actual[0]);
     }
 
     [Test]
@@ -167,8 +167,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocDateTimeValue.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (2, actual.Length);
-      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientId(), actual[0]);
-      Assert.AreEqual (_bocDateTimeValue.GetTimeTextboxClientId(), actual[1]);
+      Assert.AreEqual (_bocDateTimeValue.GetDateTextboxClientID(), actual[0]);
+      Assert.AreEqual (_bocDateTimeValue.GetTimeTextboxClientID(), actual[1]);
     }
 
 

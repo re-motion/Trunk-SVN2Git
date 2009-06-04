@@ -50,17 +50,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
     private void RenderEditModeControls ()
     {
-      var dateTextBox = new TextBox { ID = Control.GetDateTextboxId() };
+      var dateTextBox = new TextBox { ID = Control.GetDateTextboxID() };
       Initialize (dateTextBox, Control.DateTextBoxStyle, GetDateMaxLength());
       dateTextBox.Text = Control.Value.HasValue ? _formatter.FormatDateValue (Control.Value.Value) : Control.DateString;
       
-      var timeTextBox = new TextBox { ID = Control.GetTimeTextboxId() };
+      var timeTextBox = new TextBox { ID = Control.GetTimeTextboxID() };
       Initialize (timeTextBox, Control.TimeTextBoxStyle, GetTimeMaxLength ());
       timeTextBox.Text = Control.Value.HasValue ? _formatter.FormatTimeValue (Control.Value.Value, Control.ShowSeconds) : Control.TimeString;
 
       var datePickerButton = Control.DatePickerButton;
       datePickerButton.AlternateText = Control.GetDatePickerText();
-      datePickerButton.TargetControlId = Control.GetDateTextboxId();
+      datePickerButton.TargetControlID = Control.GetDateTextboxID();
       datePickerButton.IsDesignMode = Control.IsDesignMode;
 
       RenderTableBeginTag (dateTextBox, timeTextBox); // Begin table

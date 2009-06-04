@@ -35,8 +35,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       Initialize();
       _datePickerButton = MockRepository.GenerateStub<IBocDatePickerButton>();
       _datePickerButton.ID = "_Boc_DatePickerButton";
-      _datePickerButton.Stub (mock => mock.ContainerControlId).Return ("Container");
-      _datePickerButton.Stub (mock => mock.TargetControlId).Return ("Target");
+      _datePickerButton.Stub (mock => mock.ContainerControlID).Return ("Container");
+      _datePickerButton.Stub (mock => mock.TargetControlID).Return ("Target");
       _datePickerButton.Stub (mock => mock.ClientID).Return (_datePickerButton.ID);
       _datePickerButton.Stub (mock => mock.GetResolvedImageUrl()).Return ("FullImagePath");
       _datePickerButton.Stub (mock => mock.GetDatePickerUrl()).Return ("DatePickerUrl");
@@ -106,8 +106,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       string script = string.Format (
           "DatePicker_ShowDatePicker(this, document.getElementById ('{0}'), " +
           "document.getElementById ('{1}'), '{2}', '{3}', '{4}');return false;",
-          _datePickerButton.ContainerControlId,
-          _datePickerButton.TargetControlId,
+          _datePickerButton.ContainerControlID,
+          _datePickerButton.TargetControlID,
           _datePickerButton.GetDatePickerUrl(),
           _datePickerButton.DatePickerPopupWidth.IsEmpty ? "150pt" : _datePickerButton.DatePickerPopupWidth.ToString(),
           _datePickerButton.DatePickerPopupHeight.IsEmpty ? "150pt" : _datePickerButton.DatePickerPopupHeight.ToString()
