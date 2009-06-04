@@ -437,7 +437,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void QueryWithLet_LethWithTable ()
+    public void QueryWithLet_LetWithTable ()
     {
       var orders = from o in QueryFactory.CreateLinqQuery<Order>()
                    let x = o
