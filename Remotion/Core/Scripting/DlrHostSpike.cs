@@ -12,7 +12,7 @@ using Microsoft.Scripting.Hosting;
 
 
 // For build test only !
-namespace Remtion.Scripting
+namespace Remotion.Scripting
 {
   public class DlrHostSpike
   {

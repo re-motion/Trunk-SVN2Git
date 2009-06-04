@@ -6,7 +6,7 @@ using System;
 using Microsoft.Scripting.Hosting;
 
 // For build test only !
-namespace Remtion.Scripting
+namespace Remotion.Scripting
 {
 
   namespace IronPython_Research.Helper

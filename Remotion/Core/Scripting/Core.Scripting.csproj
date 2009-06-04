@@ -8,8 +8,8 @@
     <ProjectGuid>{58B51BBB-23D9-4B96-9F1F-8696B71F73C8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remtion.Scripting</RootNamespace>
-    <AssemblyName>Remtion.Scripting</AssemblyName>
+    <RootNamespace>Remotion.Scripting</RootNamespace>
+    <AssemblyName>Remotion.Scripting</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>

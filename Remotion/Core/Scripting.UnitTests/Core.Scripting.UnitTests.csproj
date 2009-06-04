@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4A626E26-F384-451A-A966-C90B961D9C8D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -82,6 +82,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bag.txt" />
     <Content Include="doc\KeepInMind.txt" />
   </ItemGroup>
   <ItemGroup>

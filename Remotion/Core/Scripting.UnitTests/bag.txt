@@ -1,0 +1,12 @@
+﻿   //[Test]
+    //public void ScriptRuntimeThreadStaticTest ()
+    //{
+    //  //ScriptingHost scriptingHost = CreateScriptingHost ();
+    //  ScriptRuntime scriptRuntimeDifferentThread = null;
+    //  var threadRunner = new ThreadRunner (delegate { scriptRuntimeDifferentThread = scriptingHost.GetScriptRuntime (); });
+    //  threadRunner.Run ();
+    //  var scriptRuntime = scriptingHost.GetScriptRuntime ();
+    //  Assert.That (scriptRuntime, Is.Not.Null);
+    //  Assert.That (scriptRuntimeDifferentThread, Is.Not.Null);
+    //  Assert.That (scriptRuntime, Is.Not.EqualTo (scriptRuntimeDifferentThread));
+    //}

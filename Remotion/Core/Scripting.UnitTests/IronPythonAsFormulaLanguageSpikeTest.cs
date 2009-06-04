@@ -11,7 +11,7 @@ using Microsoft.Scripting.Hosting;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
-using Remtion.Scripting;
+using Remotion.Scripting;
 
 
 namespace Remotion.Scripting.UnitTests
