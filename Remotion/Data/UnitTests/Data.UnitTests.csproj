@@ -602,7 +602,7 @@
     <Compile Include="Linq\Parsing\Structure\MethodCallExpressionNodeTypeRegistryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\ExpressionTreeParserTest.cs" />
     <Compile Include="Linq\Parsing\AnonymousType.cs" />
-    <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeFactoryTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\MethodCallExpressionNodeFactoryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeWithTooManyCtors.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\CallParserDispatcherTest.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\FromLetWhereExpressionTest.cs" />
