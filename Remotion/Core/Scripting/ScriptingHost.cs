@@ -1,13 +1,16 @@
 // Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
 // All rights reserved.
 //
+using System;
 using Microsoft.Scripting.Hosting;
+using Remotion.Diagnostics.ToText;
 
 namespace Remtion.Scripting
 {
-  public class ScriptingHost
+  public static class ScriptingHost
   {
-    private readonly ScriptRuntime _scriptRuntime;
+    [ThreadStatic]
+    private static ScriptRuntime s_scriptRuntime;
 
     public enum ScriptLanguageType
     {
@@ -19,16 +22,17 @@ namespace Remtion.Scripting
       Python
     }
 
-    public ScriptRuntime ScriptRuntime
+    public static ScriptRuntime ScriptRuntime
     {
-      get { return _scriptRuntime; }
-    }
+      get
+      {
+        if (s_scriptRuntime == null)
+        {
+          s_scriptRuntime = new ScriptRuntime (ScriptRuntimeSetup.ReadConfiguration ());
+        }
+          return s_scriptRuntime; }
+      }
 
-    public ScriptingHost ()
-    {
-      _scriptRuntime = new ScriptRuntime (ScriptRuntimeSetup.ReadConfiguration ());
-    }
-
-
+ 
   }
 }
