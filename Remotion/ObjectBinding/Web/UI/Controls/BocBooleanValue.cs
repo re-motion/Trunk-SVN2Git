@@ -20,10 +20,11 @@ using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
@@ -51,7 +52,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_nullString = "null";
 
     private const string c_defaultResourceGroup = "default";
-
 
     // types
 
@@ -83,7 +83,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                                                                    };
 
     private static readonly string s_scriptFileKey = typeof (BocBooleanValue).FullName + "_Script";
-    
 
     // member fields
     private bool? _value;
@@ -105,13 +104,39 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
-    protected override void OnInit (EventArgs e)
+    public override void RenderControl (HtmlTextWriter writer)
     {
-      base.OnInit (e);
-      if (!IsDesignMode)
-        Page.RegisterRequiresPostBack (this);
+      EvaluateWaiConformity ();
+
+      var factory = ServiceLocator.Current.GetInstance<IBocBooleanValueRendererFactory> ();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      renderer.Render ();
     }
 
+    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
+    /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/CreateValidators/*' />
+    public override BaseValidator[] CreateValidators ()
+    {
+      if (IsReadOnly || !IsRequired)
+        return new BaseValidator[0];
+
+      BaseValidator[] validators = new BaseValidator[1];
+
+      CompareValidator notNullItemValidator = new CompareValidator ();
+      notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
+      notNullItemValidator.ControlToValidate = ID;
+      notNullItemValidator.ValueToCompare = c_nullString;
+      notNullItemValidator.Operator = ValidationCompareOperator.NotEqual;
+      if (StringUtility.IsNullOrEmpty (_errorMessage))
+        notNullItemValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
+      else
+        notNullItemValidator.ErrorMessage = _errorMessage;
+      validators[0] = notNullItemValidator;
+
+      _validators.AddRange (validators);
+      return validators;
+    }
+    
     public override void RegisterHtmlHeadContents (HttpContext context)
     {
       base.RegisterHtmlHeadContents (context);
@@ -121,6 +146,153 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (this, context, typeof (BocBooleanValue), ResourceType.Html, c_scriptFileUrl);
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
+    }
+
+    /// <summary> 
+    ///   Returns the <see cref="Control.ClientID"/> values of all controls whose value can be modified in the user 
+    ///   interface.
+    /// </summary>
+    /// <returns> 
+    ///   A <see cref="String"/> <see cref="Array"/> containing the <see cref="Control.ClientID"/> of the
+    ///   <see cref="HiddenField"/> if the control is in edit mode, or an empty array if the control is read-only.
+    /// </returns>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
+    public override string[] GetTrackedClientIDs ()
+    {
+      return IsReadOnly ? new string[0] : new[] { GetHiddenFieldKey () };
+    }
+
+    public string GetHiddenFieldKey ()
+    {
+      return UniqueID + IdSeparator + "Boc_HiddenField";
+    }
+
+    public string GetHyperLinkKey ()
+    {
+      return UniqueID + IdSeparator + "Boc_HyperLink";
+    }
+
+    /// <summary> Gets or sets the current value. </summary>
+    /// <value> The boolean value currently displayed or <see langword="null"/>. </value>
+    /// <remarks> The dirty state is reset when the value is set. </remarks>
+    [Browsable (false)]
+    public override bool? Value
+    {
+      get { return _value; }
+      set
+      {
+        IsDirty = true;
+        _value = value;
+      }
+    }
+
+    /// <summary> Gets or sets the validation error message. </summary>
+    /// <value> 
+    ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
+    ///   In case of the default value, the text is read from the resources for this control.
+    /// </value>
+    [Description ("Validation message displayed if there is an error.")]
+    [Category ("Validator")]
+    [DefaultValue ("")]
+    public string ErrorMessage
+    {
+      get { return _errorMessage; }
+      set
+      {
+        _errorMessage = value;
+        for (int i = 0; i < _validators.Count; i++)
+        {
+          BaseValidator validator = (BaseValidator) _validators[i];
+          validator.ErrorMessage = _errorMessage;
+        }
+      }
+    }
+
+    /// <summary>
+    ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
+    ///   <see cref="TargetControl"/>.
+    /// </summary>
+    /// <value> Always <see langword="true"/>. </value>
+    public override bool UseLabel
+    {
+      get { return true; }
+    }
+
+    /// <summary>
+    ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its 
+    ///   <see cref="Control.ClientID"/>.
+    /// </summary>
+    /// <value> The <see cref="HyperLink"/> if the control is in edit mode, otherwise the control itself. </value>
+    public override Control TargetControl
+    {
+      get { return this; }
+    }
+
+    /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
+    /// <value>
+    ///   Returns the <see cref="Control.ClientID"/> of the <see cref="HyperLink"/> if the control is in edit mode, 
+    ///   otherwise <see langword="null"/>. 
+    /// </value>
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    public override string FocusID
+    {
+      get { return IsReadOnly ? null : GetHyperLinkKey (); }
+    }
+
+    /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
+    /// <remarks> 
+    ///   <para>
+    ///     Values can be <c>True</c>, <c>False</c>, and <c>null</c>. 
+    ///   </para><para>
+    ///     This property is used for validation.
+    ///   </para>
+    /// </remarks>
+    [Browsable (false)]
+    public string ValidationValue
+    {
+      get { return Value.HasValue ? Value.Value.ToString () : c_nullString; }
+    }
+
+    /// <summary>
+    ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
+    ///   description. 
+    /// </summary>
+    [Category ("Style")]
+    [Description ("The style that you want to apply to the label used for displaying the description.")]
+    [NotifyParentProperty (true)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
+    [PersistenceMode (PersistenceMode.InnerProperty)]
+    public override Style LabelStyle
+    {
+      get { return _labelStyle; }
+    }
+
+    /// <summary> Gets or sets the flag that determines whether to show the description next to the checkbox. </summary>
+    /// <value> <see langword="true"/> to enable the description. The default value is <see langword="true"/>. </value>
+    [Description ("The flag that determines whether to show the description next to the checkbox")]
+    [Category ("Appearance")]
+    [DefaultValue (true)]
+    public bool ShowDescription
+    {
+      get { return _showDescription; }
+      set { _showDescription = value; }
+    }
+
+    /// <summary>
+    ///   The <see cref="BocBooleanValue"/> supports properties of type <see cref="IBusinessObjectBooleanProperty"/>.
+    /// </summary>
+    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
+    protected override Type[] SupportedPropertyInterfaces
+    {
+      get { return s_supportedPropertyInterfaces; }
+    }
+
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+      if (!IsDesignMode)
+        Page.RegisterRequiresPostBack (this);
     }
 
     /// <summary>
@@ -135,9 +307,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       bool isDataChanged = false;
       if (newValueAsString != null)
       {
-        if (newValueAsString == c_nullString)
-          newValue = null;
-        else
+        if (newValueAsString != c_nullString)
           newValue = bool.Parse (newValueAsString);
         isDataChanged = _value != newValue;
       }
@@ -167,39 +337,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       DetermineClientScriptLevel();
     }
 
-    /// <summary>
-    /// Override this method to change the default look of the <see cref="BocBooleanValue"/>
-    /// </summary>
-    protected virtual BocBooleanValueResourceSet CreateResourceSet ()
-    {
-      IResourceManager resourceManager = GetResourceManager();
-
-      BocBooleanValueResourceSet resourceSet = new BocBooleanValueResourceSet (
-          c_defaultResourceGroup,
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_trueIcon),
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_falseIcon),
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_nullIcon),
-          resourceManager.GetString (ResourceIdentifier.TrueDescription),
-          resourceManager.GetString (ResourceIdentifier.FalseDescription),
-          resourceManager.GetString (ResourceIdentifier.NullDescription)
-          );
-
-      return resourceSet;
-    }
-
-    BocBooleanValueResourceSet IBocBooleanValue.CreateResourceSet ()
-    {
-      return CreateResourceSet();
-    }
-
-    protected override void Render (HtmlTextWriter writer)
-    {
-      EvaluateWaiConformity();
-
-      var renderer = new BocBooleanValueRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render();
-    }
-
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
@@ -216,6 +353,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       values[1] = _value;
 
       return values;
+    }
+
+    /// <summary>
+    /// Override this method to change the default look of the <see cref="BocBooleanValue"/>
+    /// </summary>
+    protected virtual BocBooleanValueResourceSet CreateResourceSet ()
+    {
+      IResourceManager resourceManager = GetResourceManager ();
+
+      BocBooleanValueResourceSet resourceSet = new BocBooleanValueResourceSet (
+          c_defaultResourceGroup,
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_trueIcon),
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_falseIcon),
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_nullIcon),
+          resourceManager.GetString (ResourceIdentifier.TrueDescription),
+          resourceManager.GetString (ResourceIdentifier.FalseDescription),
+          resourceManager.GetString (ResourceIdentifier.NullDescription)
+          );
+
+      return resourceSet;
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
@@ -251,68 +408,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         ErrorMessage = resourceManager.GetString (key);
     }
 
-    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/CreateValidators/*' />
-    public override BaseValidator[] CreateValidators ()
-    {
-      if (IsReadOnly || ! IsRequired)
-        return new BaseValidator[0];
-
-      BaseValidator[] validators = new BaseValidator[1];
-
-      CompareValidator notNullItemValidator = new CompareValidator();
-      notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
-      notNullItemValidator.ControlToValidate = ID;
-      notNullItemValidator.ValueToCompare = c_nullString;
-      notNullItemValidator.Operator = ValidationCompareOperator.NotEqual;
-      if (StringUtility.IsNullOrEmpty (_errorMessage))
-        notNullItemValidator.ErrorMessage = GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
-      else
-        notNullItemValidator.ErrorMessage = _errorMessage;
-      validators[0] = notNullItemValidator;
-
-      _validators.AddRange (validators);
-      return validators;
-    }
-
-    private void DetermineClientScriptLevel ()
-    {
-      HasClientScript = !IsDesignMode;
-    }
-
-    /// <summary> Gets or sets the current value. </summary>
-    /// <value> The boolean value currently displayed or <see langword="null"/>. </value>
-    /// <remarks> The dirty state is reset when the value is set. </remarks>
-    [Browsable (false)]
-    public override bool? Value
-    {
-      get { return _value; }
-      set
-      {
-        IsDirty = true;
-        _value = value;
-      }
-    }
-
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
     protected override object ValueImplementation
     {
       get { return Value; }
       set { Value = ArgumentUtility.CheckType<bool?> ("value", value); }
-    }
-
-    /// <summary> 
-    ///   Returns the <see cref="Control.ClientID"/> values of all controls whose value can be modified in the user 
-    ///   interface.
-    /// </summary>
-    /// <returns> 
-    ///   A <see cref="String"/> <see cref="Array"/> containing the <see cref="Control.ClientID"/> of the
-    ///   <see cref="HiddenField"/> if the control is in edit mode, or an empty array if the control is read-only.
-    /// </returns>
-    /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
-    public override string[] GetTrackedClientIDs ()
-    {
-      return IsReadOnly ? new string[0] : new[] { GetHiddenFieldKey() };
     }
 
     /// <summary> The <see cref="BocCheckBox"/> supports only scalar properties. </summary>
@@ -322,131 +422,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       return ! isList;
     }
-
-    /// <summary>
-    ///   The <see cref="BocBooleanValue"/> supports properties of type <see cref="IBusinessObjectBooleanProperty"/>.
-    /// </summary>
-    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
-    protected override Type[] SupportedPropertyInterfaces
-    {
-      get { return s_supportedPropertyInterfaces; }
-    }
-
-    /// <summary>
-    ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
-    ///   <see cref="TargetControl"/>.
-    /// </summary>
-    /// <value> Always <see langword="true"/>. </value>
-    public override bool UseLabel
-    {
-      get { return true; }
-    }
-
-    /// <summary>
-    ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its 
-    ///   <see cref="Control.ClientID"/>.
-    /// </summary>
-    /// <value> The <see cref="HyperLink"/> if the control is in edit mode, otherwise the control itself. </value>
-    public override Control TargetControl
-    {
-      get { return this; }
-    }
-
-    /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
-    /// <value>
-    ///   Returns the <see cref="Control.ClientID"/> of the <see cref="HyperLink"/> if the control is in edit mode, 
-    ///   otherwise <see langword="null"/>. 
-    /// </value>
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    [Browsable (false)]
-    public override string FocusID
-    {
-      get { return IsReadOnly ? null : GetHyperLinkKey(); }
-    }
-
-    /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
-    /// <remarks> 
-    ///   <para>
-    ///     Values can be <c>True</c>, <c>False</c>, and <c>null</c>. 
-    ///   </para><para>
-    ///     This property is used for validation.
-    ///   </para>
-    /// </remarks>
-    [Browsable (false)]
-    public string ValidationValue
-    {
-      get { return Value.HasValue ? Value.Value.ToString() : c_nullString; }
-    }
-
-
-    /// <summary>
-    ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
-    ///   description. 
-    /// </summary>
-    [Category ("Style")]
-    [Description ("The style that you want to apply to the label used for displaying the description.")]
-    [NotifyParentProperty (true)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
-    [PersistenceMode (PersistenceMode.InnerProperty)]
-    public override Style LabelStyle
-    {
-      get { return _labelStyle; }
-    }
-
-    /// <summary> Gets or sets the flag that determines whether to show the description next to the checkbox. </summary>
-    /// <value> <see langword="true"/> to enable the description. The default value is <see langword="true"/>. </value>
-    [Description ("The flag that determines whether to show the description next to the checkbox")]
-    [Category ("Appearance")]
-    [DefaultValue (true)]
-    public bool ShowDescription
-    {
-      get { return _showDescription; }
-      set { _showDescription = value; }
-    }
-
-    string IBocBooleanValue.GetLabelKey ()
-    {
-      return UniqueID + IdSeparator + "Boc_Label";
-    }
-
-    string IBocBooleanValue.GetImageKey ()
-    {
-      return UniqueID + IdSeparator + "Boc_Image";
-    }
-
-    public string GetHiddenFieldKey ()
-    {
-      return UniqueID + IdSeparator + "Boc_HiddenField";
-    }
-
-    public string GetHyperLinkKey ()
-    {
-      return UniqueID + IdSeparator + "Boc_HyperLink";
-    }
-
-    /// <summary> Gets or sets the validation error message. </summary>
-    /// <value> 
-    ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
-    ///   In case of the default value, the text is read from the resources for this control.
-    /// </value>
-    [Description ("Validation message displayed if there is an error.")]
-    [Category ("Validator")]
-    [DefaultValue ("")]
-    public string ErrorMessage
-    {
-      get { return _errorMessage; }
-      set
-      {
-        _errorMessage = value;
-        for (int i = 0; i < _validators.Count; i++)
-        {
-          BaseValidator validator = (BaseValidator) _validators[i];
-          validator.ErrorMessage = _errorMessage;
-        }
-      }
-    }
-
-    #region protected virtual string CssClass...
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocBooleanValue"/> itself. </summary>
     /// <remarks> 
@@ -458,11 +433,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "bocBooleanValue"; }
     }
 
+    private void DetermineClientScriptLevel ()
+    {
+      HasClientScript = !IsDesignMode;
+    }
+
+    string IBocBooleanValue.GetLabelClientID ()
+    {
+      return UniqueID + IdSeparator + "Boc_Label";
+    }
+
+    string IBocBooleanValue.GetImageClientID ()
+    {
+      return UniqueID + IdSeparator + "Boc_Image";
+    }
+
+    BocBooleanValueResourceSet IBocBooleanValue.CreateResourceSet ()
+    {
+      return CreateResourceSet ();
+    }
+
     string IBocRenderableControl.CssClassBase
     {
       get { return CssClassBase; }
     }
-
-    #endregion
   }
 }

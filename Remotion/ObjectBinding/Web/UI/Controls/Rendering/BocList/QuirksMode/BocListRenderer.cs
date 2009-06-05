@@ -25,10 +25,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
   /// <summary>
   /// Responsible for rendering a <see cref="BocList"/> object.
   /// </summary>
-  /// <remarks>Renders the outline of a <see cref="BocList"/> object to an <see cref="HtmlTextWriter"/> and controls
+  /// <remarks>Renders the outline of a <see cref="IBocList"/> object to an <see cref="HtmlTextWriter"/> and controls
   /// rendering of the various parts by delegating to specialized renderers.
   /// 
   /// This class should not be instantiated directly. Use a <see cref="BocListRendererFactory"/> to obtain an instance.</remarks>
+  /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocListRenderer.xml' path='BocListRenderer/Class'/>
   /// <seealso cref="BocListMenuBlockRenderer"/>
   /// <seealso cref="BocRowRenderer"/>
   /// <seealso cref="BocListNavigationBlockRenderer"/>

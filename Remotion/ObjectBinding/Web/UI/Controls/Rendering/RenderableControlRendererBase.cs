@@ -20,42 +20,26 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {
-  public abstract class SimpleControlRendererBase<TControl> : RendererBase<TControl>
+  /// <summary>
+  /// Base class for renderers of <see cref="IBocRenderableControl"/> objects.
+  /// </summary>
+  /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
+  public abstract class RenderableControlRendererBase<TControl> : RendererBase<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
-    protected SimpleControlRendererBase (IHttpContext context, HtmlTextWriter writer, TControl control)
+    protected RenderableControlRendererBase (IHttpContext context, HtmlTextWriter writer, TControl control)
         : base (context, writer, control)
     {
     }
 
-    protected void AddStandardAttributesToRender ()
-    {
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
-
-      string cssClass = string.Empty;
-      if (!string.IsNullOrEmpty (Control.CssClass))
-        cssClass = Control.CssClass + " ";
-
-      if (!string.IsNullOrEmpty (Control.ControlStyle.CssClass))
-        cssClass += Control.ControlStyle.CssClass;
-
-      if( !string.IsNullOrEmpty(cssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-
-      CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes(Control);
-      foreach (string style in styles.Keys)
-      {
-        Writer.AddStyleAttribute (style, styles[style]);
-      }
-
-      foreach (string attribute in Control.Attributes.Keys)
-      {
-        string value = Control.Attributes[attribute];
-        if (!string.IsNullOrEmpty (value))
-          Writer.AddAttribute (attribute, value);
-      }
-    }
-
+    /// <summary>
+    /// Adds class and style attributes found in the <see cref="RendererBase{TControl}.Control"/> 
+    /// to the <see cref="RendererBase{TControl}.Writer"/> so that they are rendered in the next begin tag.
+    /// </summary>
+    /// <param name="overrideWidth">When <see langword="true"/>, the 'width' style attribute is rendered with a value of 'auto'
+    /// without changing the contents of the actual style.</param>
+    /// <remarks>This automatically adds the CSS classes found in <see cref="IBocRenderableControl.CssClassReadOnly"/>
+    /// and <see cref="IBocRenderableControl.CssClassDisabled"/> if appropriate.</remarks>
     protected void AddAttributesToRender (bool overrideWidth)
     {
       Unit backUpWidth;
@@ -74,7 +58,39 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
       AddAdditionalAttributes();
     }
 
+    /// <summary>
+    /// Called after all attributes have been added by <see cref="AddAttributesToRender"/>.
+    /// Use this to render style attributes without putting them into the control's <see cref="IBocRenderableControl.Style"/> property.
+    /// </summary>
     protected abstract void AddAdditionalAttributes();
+
+    private void AddStandardAttributesToRender ()
+    {
+      Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
+
+      string cssClass = string.Empty;
+      if (!string.IsNullOrEmpty (Control.CssClass))
+        cssClass = Control.CssClass + " ";
+
+      if (!string.IsNullOrEmpty (Control.ControlStyle.CssClass))
+        cssClass += Control.ControlStyle.CssClass;
+
+      if (!string.IsNullOrEmpty (cssClass))
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+
+      CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes (Control);
+      foreach (string style in styles.Keys)
+      {
+        Writer.AddStyleAttribute (style, styles[style]);
+      }
+
+      foreach (string attribute in Control.Attributes.Keys)
+      {
+        string value = Control.Attributes[attribute];
+        if (!string.IsNullOrEmpty (value))
+          Writer.AddAttribute (attribute, value);
+      }
+    }
 
     private void OverrideWidth (bool overrideWidth, string newWidth, out Unit backUpWidth, out string backUpStyleWidth)
     {

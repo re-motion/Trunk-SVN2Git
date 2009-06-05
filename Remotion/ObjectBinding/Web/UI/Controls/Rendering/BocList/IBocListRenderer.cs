@@ -14,18 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
-  public interface IBocListRenderer
+  public interface IBocListRenderer : IRenderer<IBocList>
   {
-    void Render ();
-
-    /// <summary>The <see cref="BocList"/> containing the data to render.</summary>
-    IBocList List { get; }
-
-    /// <summary>The <see cref="HtmlTextWriter"/> that is used to render the table cells.</summary>
-    HtmlTextWriter Writer { get; }
   }
 }

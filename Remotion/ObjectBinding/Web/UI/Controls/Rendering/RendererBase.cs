@@ -15,18 +15,34 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {
+  /// <summary>
+  /// Base class for all renderers. Contains the essential properties used in rendering.
+  /// </summary>
+  /// <remarks>
+  /// This class does <b>not</b> restrict the type of control - for <see cref="IBocRenderableControl"/> renderers,
+  /// use <see cref="RenderableControlRendererBase{TControl}"/> as base class.
+  /// </remarks>
+  /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class RendererBase<TControl>
   {
     private readonly HtmlTextWriter _writer;
     private readonly IHttpContext _context;
     private readonly TControl _control;
 
+    /// <summary>
+    /// Initializes the <see cref="Context"/>, <see cref="Writer"/> and <see cref="Control"/> properties from the arguments.
+    /// </summary>
     protected RendererBase (IHttpContext context, HtmlTextWriter writer, TControl control)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("control", control);
+
       _writer = writer;
       _control = control;
       _context = context;
@@ -44,7 +60,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
       get { return _context; }
     }
 
-    protected TControl Control
+    /// <summary>Gets the control that will be rendered.</summary>
+    public TControl Control
     {
       get { return _control; }
     }

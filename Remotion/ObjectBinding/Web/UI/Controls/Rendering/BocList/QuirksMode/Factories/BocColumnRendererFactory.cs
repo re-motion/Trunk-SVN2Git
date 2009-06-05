@@ -20,6 +20,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating the quirks mode column renderers.
+  /// </summary>
   public class BocColumnRendererFactory
       :
           IBocColumnRendererFactory<BocSimpleColumnDefinition>,

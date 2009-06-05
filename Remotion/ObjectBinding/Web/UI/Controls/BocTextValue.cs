@@ -16,12 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
@@ -34,8 +33,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     //  statics
 
-    private static readonly Type[] s_supportedPropertyInterfaces =
-        new[] { typeof (IBusinessObjectNumericProperty), typeof (IBusinessObjectStringProperty), typeof (IBusinessObjectDateTimeProperty) };
+    private static readonly Type[] s_supportedPropertyInterfaces = new[]
+                                                                   {
+                                                                       typeof (IBusinessObjectNumericProperty),
+                                                                       typeof (IBusinessObjectStringProperty),
+                                                                       typeof (IBusinessObjectDateTimeProperty)
+                                                                   };
 
     // types
 
@@ -75,32 +78,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    protected override void OnInit (EventArgs e)
-    {
-      base.OnInit (e);
-      Binding.BindingChanged += Binding_BindingChanged;
-    }
-
-    protected override void LoadControlState (object savedState)
-    {
-      object[] values = (object[]) savedState;
-      base.LoadControlState (values[0]);
-      _text = (string) values[1];
-      _valueType = (BocTextValueType) values[2];
-      _actualValueType = (BocTextValueType) values[3];
-    }
-
-    protected override object SaveControlState ()
-    {
-      object[] values = new object[4];
-      values[0] = base.SaveControlState();
-      values[1] = _text;
-      values[2] = _valueType;
-      values[3] = _actualValueType;
-      return values;
-    }
-
-
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadValue/*' />
     public override void LoadValue (bool interim)
@@ -114,7 +91,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         }
       }
     }
-
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
     /// <param name="value"> A <see cref="String"/> to load or <see langword="null"/>. </param>
@@ -148,6 +124,247 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       LoadValueInternal (value, interim);
     }
 
+    /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
+    /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/SaveValue/*' />
+    public override void SaveValue (bool interim)
+    {
+      if (!interim && IsDirty)
+      {
+        if (Property != null && DataSource != null && DataSource.BusinessObject != null && !IsReadOnly)
+        {
+          DataSource.BusinessObject.SetProperty (Property, Value);
+          IsDirty = false;
+        }
+      }
+    }
+
+    public override void RenderControl (HtmlTextWriter writer)
+    {
+      var factory = ServiceLocator.Current.GetInstance<IBocTextValueRendererFactory> ();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      renderer.Render ();
+    }
+
+    /// <summary> Gets or sets the current value. </summary>
+    /// <value> 
+    ///   <para>
+    ///     The value has the type specified in the <see cref="ValueType"/> property (<see cref="String"/>, 
+    ///     <see cref="Int32"/>, <see cref="Double"/> or <see cref="DateTime"/>). If <see cref="ValueType"/> is not
+    ///     set, the type is determined by the bound <see cref="BusinessObjectBoundWebControl.Property"/>.
+    ///   </para><para>
+    ///     Returns <see langword="null"/> if <see cref="Text"/> is an empty <see cref="String"/>.
+    ///   </para>
+    /// </value>
+    /// <remarks> The dirty state is reset when the value is set. </remarks>
+    /// <exception cref="FormatException"> 
+    ///   The value of the <see cref="Text"/> property cannot be converted to the specified <see cref="ValueType"/>.
+    /// </exception>
+    [Description ("Gets or sets the current value.")]
+    [Browsable (false)]
+    public new object Value
+    {
+      get
+      {
+        string text = _text;
+        if (text != null)
+          text = text.Trim ();
+
+        if (StringUtility.IsNullOrEmpty (text))
+          return null;
+
+        switch (ActualValueType)
+        {
+          case BocTextValueType.String:
+            return text;
+
+          case BocTextValueType.Byte:
+            return byte.Parse (text);
+
+          case BocTextValueType.Int16:
+            return short.Parse (text);
+
+          case BocTextValueType.Int32:
+            return int.Parse (text);
+
+          case BocTextValueType.Int64:
+            return long.Parse (text);
+
+          case BocTextValueType.Date:
+            return DateTime.Parse (text).Date;
+
+          case BocTextValueType.DateTime:
+            return DateTime.Parse (text);
+
+          case BocTextValueType.Decimal:
+            return decimal.Parse (text);
+
+          case BocTextValueType.Double:
+            return double.Parse (text);
+
+          case BocTextValueType.Single:
+            return float.Parse (text);
+        }
+        return text;
+      }
+
+      set
+      {
+        IsDirty = true;
+
+        if (value == null)
+        {
+          _text = null;
+          return;
+        }
+
+        IFormattable formattable = value as IFormattable;
+        if (formattable != null)
+        {
+          string format = Format;
+          if (format == null)
+          {
+            if (ActualValueType == BocTextValueType.Date)
+              format = "d";
+            else if (ActualValueType == BocTextValueType.DateTime)
+              format = "g";
+          }
+          _text = formattable.ToString (format, null);
+        }
+        else
+          _text = value.ToString ();
+      }
+    }
+
+    /// <summary>
+    ///   Gets a flag describing whether it is save (i.e. accessing <see cref="Value"/> does not throw a 
+    ///   <see cref="FormatException"/> or <see cref="OverflowException"/>) to read the contents of <see cref="Value"/>.
+    /// </summary>
+    /// <remarks> Valid values include <see langword="null"/>. </remarks>
+    [Browsable (false)]
+    public bool IsValidValue
+    {
+      get
+      {
+        try
+        {
+          //  Force the evaluation of Value
+          if (Value != null)
+            return true;
+        }
+        catch (FormatException)
+        {
+          return false;
+        }
+        catch (OverflowException)
+        {
+          return false;
+        }
+
+        return true;
+      }
+    }
+
+    /// <summary> Gets or sets the string representation of the current value. </summary>
+    /// <value> 
+    ///   An empty <see cref="String"/> if the control's value is <see langword="null"/> or empty. 
+    ///   The default value is an empty <see cref="String"/>. 
+    /// </value>
+    [Description ("Gets or sets the string representation of the current value.")]
+    [Category ("Data")]
+    [DefaultValue ("")]
+    public override string Text
+    {
+      get { return StringUtility.NullToEmpty (_text); }
+      set
+      {
+        IsDirty = true;
+        _text = value;
+      }
+    }
+
+    /// <summary> Gets or sets the <see cref="BocTextValueType"/> assigned from an external source. </summary>
+    /// <value> 
+    ///   The externally set <see cref="BocTextValueType"/>. The default value is 
+    ///   <see cref="BocTextValueType.Undefined"/>. 
+    /// </value>
+    [Description ("Gets or sets a fixed value type.")]
+    [Category ("Data")]
+    [DefaultValue (BocTextValueType.Undefined)]
+    public BocTextValueType ValueType
+    {
+      get { return _valueType; }
+      set
+      {
+        if (_valueType != value)
+        {
+          _valueType = value;
+          _actualValueType = value;
+          if (_valueType != BocTextValueType.Undefined)
+            _text = string.Empty;
+        }
+      }
+    }
+
+    /// <summary>
+    ///   Gets the controls fixed <see cref="ValueType"/> or, if <see cref="BocTextValueType.Undefined"/>, 
+    ///   the <see cref="BusinessObjectBoundWebControl.Property"/>'s value type.
+    /// </summary>
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    public BocTextValueType ActualValueType
+    {
+      get
+      {
+        if (_valueType == BocTextValueType.Undefined && Property != null)
+          _actualValueType = GetBocTextValueType (Property);
+        return _actualValueType;
+      }
+    }
+
+    /// <summary> Gets or sets the format string used to create the string value.  </summary>
+    /// <value> 
+    ///   A string passed to the <b>ToString</b> method of the object returned by <see cref="Value"/>.
+    ///   The default value is an empty <see cref="String"/>. 
+    /// </value>
+    /// <remarks>
+    ///   <see cref="IFormattable"/> is used to format the value using this string. The default is "d" for date-only
+    ///   values and "g" for date/time values (use "G" to display seconds too). 
+    /// </remarks>
+    [Description ("Gets or sets the format string used to create the string value. " +
+                  "Format must be parsable by the value's type if the control is in edit mode.")]
+    [Category ("Style")]
+    [DefaultValue ("")]
+    public string Format
+    {
+      get { return StringUtility.EmptyToNull (_format); }
+      set { _format = value; }
+    }
+
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+      Binding.BindingChanged += Binding_BindingChanged;
+    }
+
+    protected override void LoadControlState (object savedState)
+    {
+      object[] values = (object[]) savedState;
+      base.LoadControlState (values[0]);
+      _text = (string) values[1];
+      _valueType = (BocTextValueType) values[2];
+      _actualValueType = (BocTextValueType) values[3];
+    }
+
+    protected override object SaveControlState ()
+    {
+      object[] values = new object[4];
+      values[0] = base.SaveControlState ();
+      values[1] = _text;
+      values[2] = _valueType;
+      values[3] = _actualValueType;
+      return values;
+    }
+
     /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (object value, bool interim)
     {
@@ -158,29 +375,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/SaveValue/*' />
-    public override void SaveValue (bool interim)
-    {
-      if (!interim && IsDirty)
-      {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null && ! IsReadOnly)
-        {
-          DataSource.BusinessObject.SetProperty (Property, Value);
-          IsDirty = false;
-        }
-      }
-    }
-
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
     protected override IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
-    }
-
-    protected override IRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer)
-    {
-      return new BocTextValueRenderer (context, writer, this);
     }
 
     protected override IEnumerable<BaseValidator> GetValidators ()
@@ -286,6 +484,41 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return validators;
     }
 
+    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    protected override object ValueImplementation
+    {
+      get { return Value; }
+      set { Value = value; }
+    }
+
+    /// <summary> The <see cref="BocTextValue"/> supports only scalar properties. </summary>
+    /// <returns> <see langword="true"/> if <paramref name="isList"/> is <see langword="false"/>. </returns>
+    /// <seealso cref="BusinessObjectBoundWebControl.SupportsPropertyMultiplicity"/>
+    protected override bool SupportsPropertyMultiplicity (bool isList)
+    {
+      return ! isList;
+    }
+
+    /// <summary>
+    ///   The <see cref="BocTextValue"/> supports properties of types <see cref="IBusinessObjectStringProperty"/>,
+    ///   <see cref="IBusinessObjectDateTimeProperty"/>, and <see cref="IBusinessObjectNumericProperty"/>.
+    /// </summary>
+    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
+    protected override Type[] SupportedPropertyInterfaces
+    {
+      get { return s_supportedPropertyInterfaces; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> itself. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>bocTextValue</c>. </para>
+    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
+    /// </remarks>
+    protected override string CssClassBase
+    {
+      get { return "bocTextValue"; }
+    }
+
     private NumericValidationDataType GetNumericValidatorDataType (BocTextValueType valueType)
     {
       switch (valueType)
@@ -347,7 +580,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="e"> An <see cref="EventArgs"/> object that contains the event data. </param>
     private void Binding_BindingChanged (object sender, EventArgs e)
     {
-      RefreshPropertiesFromObjectModel();
+      RefreshPropertiesFromObjectModel ();
     }
 
     /// <summary>
@@ -399,7 +632,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         else if (numericProperty.Type == typeof (float))
           return BocTextValueType.Single;
         else
-          throw new NotSupportedException ("BocTextValue does not support property type " + property.GetType());
+          throw new NotSupportedException ("BocTextValue does not support property type " + property.GetType ());
       }
       else if (property is IBusinessObjectDateTimeProperty)
       {
@@ -410,272 +643,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           return BocTextValueType.DateTime;
       }
       else
-        throw new NotSupportedException ("BocTextValue does not support property type " + property.GetType());
+        throw new NotSupportedException ("BocTextValue does not support property type " + property.GetType ());
     }
 
-    /// <summary> Gets or sets the current value. </summary>
-    /// <value> 
-    ///   <para>
-    ///     The value has the type specified in the <see cref="ValueType"/> property (<see cref="String"/>, 
-    ///     <see cref="Int32"/>, <see cref="Double"/> or <see cref="DateTime"/>). If <see cref="ValueType"/> is not
-    ///     set, the type is determined by the bound <see cref="BusinessObjectBoundWebControl.Property"/>.
-    ///   </para><para>
-    ///     Returns <see langword="null"/> if <see cref="Text"/> is an empty <see cref="String"/>.
-    ///   </para>
-    /// </value>
-    /// <remarks> The dirty state is reset when the value is set. </remarks>
-    /// <exception cref="FormatException"> 
-    ///   The value of the <see cref="Text"/> property cannot be converted to the specified <see cref="ValueType"/>.
-    /// </exception>
-    [Description ("Gets or sets the current value.")]
-    [Browsable (false)]
-    public new object Value
-    {
-      get
-      {
-        string text = _text;
-        if (text != null)
-          text = text.Trim();
-
-        if (StringUtility.IsNullOrEmpty (text))
-          return null;
-
-        switch (ActualValueType)
-        {
-          case BocTextValueType.String:
-            return text;
-
-          case BocTextValueType.Byte:
-            return byte.Parse (text);
-
-          case BocTextValueType.Int16:
-            return short.Parse (text);
-
-          case BocTextValueType.Int32:
-            return int.Parse (text);
-
-          case BocTextValueType.Int64:
-            return long.Parse (text);
-
-          case BocTextValueType.Date:
-            return DateTime.Parse (text).Date;
-
-          case BocTextValueType.DateTime:
-            return DateTime.Parse (text);
-
-          case BocTextValueType.Decimal:
-            return decimal.Parse (text);
-
-          case BocTextValueType.Double:
-            return double.Parse (text);
-
-          case BocTextValueType.Single:
-            return float.Parse (text);
-        }
-        return text;
-      }
-
-      set
-      {
-        IsDirty = true;
-
-        if (value == null)
-        {
-          _text = null;
-          return;
-        }
-
-        IFormattable formattable = value as IFormattable;
-        if (formattable != null)
-        {
-          string format = Format;
-          if (format == null)
-          {
-            if (ActualValueType == BocTextValueType.Date)
-              format = "d";
-            else if (ActualValueType == BocTextValueType.DateTime)
-              format = "g";
-          }
-          _text = formattable.ToString (format, null);
-        }
-        else
-          _text = value.ToString();
-      }
-    }
-
-    /// <summary>
-    ///   Gets a flag describing whether it is save (i.e. accessing <see cref="Value"/> does not throw a 
-    ///   <see cref="FormatException"/> or <see cref="OverflowException"/>) to read the contents of <see cref="Value"/>.
-    /// </summary>
-    /// <remarks> Valid values include <see langword="null"/>. </remarks>
-    [Browsable (false)]
-    public bool IsValidValue
-    {
-      get
-      {
-        try
-        {
-          //  Force the evaluation of Value
-          if (Value != null)
-            return true;
-        }
-        catch (FormatException)
-        {
-          return false;
-        }
-        catch (OverflowException)
-        {
-          return false;
-        }
-
-        return true;
-      }
-    }
-
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = value; }
-    }
-
-    /// <summary> Gets or sets the string representation of the current value. </summary>
-    /// <value> 
-    ///   An empty <see cref="String"/> if the control's value is <see langword="null"/> or empty. 
-    ///   The default value is an empty <see cref="String"/>. 
-    /// </value>
-    [Description ("Gets or sets the string representation of the current value.")]
-    [Category ("Data")]
-    [DefaultValue ("")]
-    public override string Text
-    {
-      get { return StringUtility.NullToEmpty (_text); }
-      set
-      {
-        IsDirty = true;
-        _text = value;
-      }
-    }
-
-    /// <summary> Gets or sets the <see cref="BocTextValueType"/> assigned from an external source. </summary>
-    /// <value> 
-    ///   The externally set <see cref="BocTextValueType"/>. The default value is 
-    ///   <see cref="BocTextValueType.Undefined"/>. 
-    /// </value>
-    [Description ("Gets or sets a fixed value type.")]
-    [Category ("Data")]
-    [DefaultValue (BocTextValueType.Undefined)]
-    public BocTextValueType ValueType
-    {
-      get { return _valueType; }
-      set
-      {
-        if (_valueType != value)
-        {
-          _valueType = value;
-          _actualValueType = value;
-          if (_valueType != BocTextValueType.Undefined)
-            _text = string.Empty;
-        }
-      }
-    }
-
-    /// <summary>
-    ///   Gets the controls fixed <see cref="ValueType"/> or, if <see cref="BocTextValueType.Undefined"/>, 
-    ///   the <see cref="BusinessObjectBoundWebControl.Property"/>'s value type.
-    /// </summary>
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    [Browsable (false)]
-    public BocTextValueType ActualValueType
-    {
-      get
-      {
-        if (_valueType == BocTextValueType.Undefined && Property != null)
-          _actualValueType = GetBocTextValueType (Property);
-        return _actualValueType;
-      }
-    }
-
-    /// <summary> Gets or sets the format string used to create the string value.  </summary>
-    /// <value> 
-    ///   A string passed to the <b>ToString</b> method of the object returned by <see cref="Value"/>.
-    ///   The default value is an empty <see cref="String"/>. 
-    /// </value>
-    /// <remarks>
-    ///   <see cref="IFormattable"/> is used to format the value using this string. The default is "d" for date-only
-    ///   values and "g" for date/time values (use "G" to display seconds too). 
-    /// </remarks>
-    [Description (
-        "Gets or sets the format string used to create the string value. Format must be parsable by the value's type if the control is in edit mode.")
-    ]
-    [Category ("Style")]
-    [DefaultValue ("")]
-    public string Format
-    {
-      get { return StringUtility.EmptyToNull (_format); }
-      set { _format = value; }
-    }
-
-    /// <summary> The <see cref="BocTextValue"/> supports only scalar properties. </summary>
-    /// <returns> <see langword="true"/> if <paramref name="isList"/> is <see langword="false"/>. </returns>
-    /// <seealso cref="BusinessObjectBoundWebControl.SupportsPropertyMultiplicity"/>
-    protected override bool SupportsPropertyMultiplicity (bool isList)
-    {
-      return ! isList;
-    }
-
-    /// <summary>
-    ///   The <see cref="BocTextValue"/> supports properties of types <see cref="IBusinessObjectStringProperty"/>,
-    ///   <see cref="IBusinessObjectDateTimeProperty"/>, and <see cref="IBusinessObjectNumericProperty"/>.
-    /// </summary>
-    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
-    protected override Type[] SupportedPropertyInterfaces
-    {
-      get { return s_supportedPropertyInterfaces; }
-    }
-
-      #region protected virtual string CssClass...
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocTextValue</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected override string CssClassBase
-    {
-      get { return "bocTextValue"; }
-    }
-
-    #endregion
-  }
-
-  /// <summary> A list possible data types for the <see cref="BocTextValue"/> </summary>
-  public enum BocTextValueType
-  {
-    /// <summary> 
-    ///   Format the value as its default string representation. 
-    ///   No parsing is possible, <see cref="P:BocTextValue.Value"/> will return a string. 
-    /// </summary>
-    Undefined,
-    /// <summary> Interpret the value as a <see cref="String"/>. </summary>
-    String,
-    /// <summary> Interpret the value as an <see cref="Byte"/>. </summary>
-    Byte,
-    /// <summary> Interpret the value as a <see cref="Int16"/>. </summary>
-    Int16,
-    /// <summary> Interpret the value as a <see cref="Int32"/>. </summary>
-    Int32,
-    /// <summary> Interpret the value as a <see cref="Int64"/>. </summary>
-    Int64,
-    /// <summary> Interpret the value as a <see cref="DateTime"/> with the time component set to zero. </summary>
-    Date,
-    /// <summary> Interpret the value as a <see cref="DateTime"/>. </summary>
-    DateTime,
-    /// <summary> Interpret the value as a <see cref="Decimal"/>. </summary>
-    Decimal,
-    /// <summary> Interpret the value as a <see cref="Double"/>. </summary>
-    Double,
-    /// <summary> Interpret the value as a <see cref="Single"/>. </summary>
-    Single,
   }
 }

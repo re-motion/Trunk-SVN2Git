@@ -14,9 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue
 {
+  /// <summary>
+  /// Utility class for formatting date/time values in a consistent way.
+  /// <seealso cref="BocDateTimeValue"/>
+  /// <seealso cref="BocDateTimeValueRenderer"/>
+  /// </summary>
   public class DateTimeFormatter
   {
     public DateTimeFormatter ()

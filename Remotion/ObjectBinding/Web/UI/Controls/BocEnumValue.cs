@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue;
@@ -94,142 +95,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
-    protected override void OnInit (EventArgs e)
+    public override void RenderControl (HtmlTextWriter writer)
     {
-      base.OnInit (e);
-      if (!IsDesignMode)
-        Page.RegisterRequiresPostBack (this);
+      var factory = ServiceLocator.Current.GetInstance<IBocEnumValueRendererFactory> ();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      renderer.Render ();
     }
 
-    /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
-    bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
-    {
-      if (RequiresLoadPostData)
-        return LoadPostData (postDataKey, postCollection);
-      else
-        return false;
-    }
-
-    /// <summary> Invokes the <see cref="RaisePostDataChangedEvent"/> method. </summary>
-    void IPostBackDataHandler.RaisePostDataChangedEvent ()
-    {
-      RaisePostDataChangedEvent();
-    }
-
-    /// <summary>
-    ///   Uses the <paramref name="postCollection"/> to determine whether the value of this control has been changed
-    ///   between postbacks.
-    /// </summary>
-    /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadPostData/*' />
-    protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
-    {
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetListControlClientID());
-      bool isDataChanged = false;
-      if (newValue != null)
-      {
-        if (_internalValue == null && newValue != c_nullIdentifier)
-          isDataChanged = true;
-        else if (_internalValue != null && newValue != _internalValue)
-          isDataChanged = true;
-      }
-
-      if (isDataChanged)
-      {
-        if (newValue == c_nullIdentifier)
-          InternalValue = null;
-        else
-          InternalValue = newValue;
-        IsDirty = true;
-      }
-      return isDataChanged;
-    }
-
-    /// <summary> Called when the state of the control has changed between postbacks. </summary>
-    protected virtual void RaisePostDataChangedEvent ()
-    {
-      if (! IsReadOnly && Enabled)
-        OnSelectionChanged();
-    }
-
-    /// <summary> Fires the <see cref="SelectionChanged"/> event. </summary>
-    protected virtual void OnSelectionChanged ()
-    {
-      EventHandler eventHandler = (EventHandler) Events[s_selectionChangedEvent];
-      if (eventHandler != null)
-        eventHandler (this, EventArgs.Empty);
-    }
-
-    /// <summary> Checks whether the control conforms to the required WAI level. </summary>
-    /// <exception cref="Remotion.Web.UI.WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
-    protected virtual void EvaluateWaiConformity ()
-    {
-      if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
-      {
-        if (ListControlStyle.AutoPostBack == true)
-          WcagHelper.Instance.HandleWarning (1, this, "ListControlStyle.AutoPostBack");
-      }
-    }
-
-    protected override void OnPreRender (EventArgs e)
-    {
-      EnsureChildControls();
-      base.OnPreRender (e);
-
-      LoadResources (GetResourceManager());
-
-      EvaluateWaiConformity();
-    }
-
-    /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
-    protected override HtmlTextWriterTag TagKey
-    {
-      get { return HtmlTextWriterTag.Div; }
-    }
-
-
-    protected override void Render (HtmlTextWriter writer)
-    {
-      var renderer = new BocEnumValueRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render();
-    }
-
-    protected override void LoadControlState (object savedState)
-    {
-      object[] values = (object[]) savedState;
-
-      base.LoadControlState (values[0]);
-      _value = values[1];
-      if (values[2] != null)
-        _internalValue = (string) values[2];
-    }
-
-    protected override object SaveControlState ()
-    {
-      object[] values = new object[5];
-
-      values[0] = base.SaveControlState();
-      values[1] = _value;
-      values[2] = _internalValue;
-
-      return values;
-    }
-
-    public string NullIdentifier
-    {
-      get { return c_nullIdentifier; }
-    }
-
-      /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
+    /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
-      if (! interim)
+      if (interim)
+        return;
+      
+      if (Property != null && DataSource != null && DataSource.BusinessObject != null)
       {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null)
-        {
-          object value = DataSource.BusinessObject.GetProperty (Property);
-          LoadValueInternal (value, interim);
-        }
+        object value = DataSource.BusinessObject.GetProperty (Property);
+        LoadValueInternal (value, false);
       }
     }
 
@@ -237,7 +120,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="value"> The enumeration value or <see langword="null"/>. </param>
     /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadUnboundValue/*' />
     public void LoadUnboundValue<TEnum> (TEnum? value, bool interim)
-        where TEnum: struct
+        where TEnum : struct
     {
       ArgumentUtility.CheckType<Enum> ("value", value);
       LoadValueInternal (value, interim);
@@ -247,20 +130,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="value"> The enumeration value. </param>
     /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadUnboundValue/*' />
     public void LoadUnboundValue<TEnum> (TEnum value, bool interim)
-        where TEnum: struct
+        where TEnum : struct
     {
       ArgumentUtility.CheckType<Enum> ("value", value);
       LoadValueInternal (value, interim);
-    }
-
-    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
-    protected virtual void LoadValueInternal (object value, bool interim)
-    {
-      if (! interim)
-      {
-        Value = value;
-        IsDirty = false;
-      }
     }
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
@@ -269,7 +142,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (!interim && IsDirty)
       {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null && ! IsReadOnly)
+        if (Property != null && DataSource != null && DataSource.BusinessObject != null && !IsReadOnly)
         {
           DataSource.BusinessObject.SetProperty (Property, Value);
           IsDirty = false;
@@ -277,39 +150,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
-    protected virtual IResourceManager GetResourceManager ()
-    {
-      return GetResourceManager (typeof (ResourceIdentifier));
-    }
-
-    /// <summary> Loads the resources into the control's properties. </summary>
-    protected override void LoadResources (IResourceManager resourceManager)
-    {
-      if (resourceManager == null)
-        return;
-      if (IsDesignMode)
-        return;
-      base.LoadResources (resourceManager);
-
-      //  Dispatch simple properties
-      string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
-      if (! StringUtility.IsNullOrEmpty (key))
-        ErrorMessage = resourceManager.GetString (key);
-    }
-
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
     /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/CreateValidators/*' />
     public override BaseValidator[] CreateValidators ()
     {
-      if (IsReadOnly || ! IsRequired)
+      if (IsReadOnly || !IsRequired)
         return new BaseValidator[0];
 
       BaseValidator[] validators = new BaseValidator[1];
 
       if (IsNullItemVisible)
       {
-        CompareValidator notNullItemValidator = new CompareValidator();
+        CompareValidator notNullItemValidator = new CompareValidator ();
         notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
         notNullItemValidator.ControlToValidate = TargetControl.ID;
         notNullItemValidator.ValueToCompare = c_nullIdentifier;
@@ -317,7 +169,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (StringUtility.IsNullOrEmpty (_errorMessage))
         {
           notNullItemValidator.ErrorMessage =
-              GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
+              GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
         }
         else
           notNullItemValidator.ErrorMessage = _errorMessage;
@@ -325,13 +177,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
       else
       {
-        RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
+        RequiredFieldValidator requiredValidator = new RequiredFieldValidator ();
         requiredValidator.ID = ID + "_ValidatorRequried";
         requiredValidator.ControlToValidate = TargetControl.ID;
         if (StringUtility.IsNullOrEmpty (_errorMessage))
         {
           requiredValidator.ErrorMessage =
-              GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
+              GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
         }
         else
           requiredValidator.ErrorMessage = _errorMessage;
@@ -345,53 +197,61 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return validators;
     }
 
-    private IEnumerationValueInfo[] GetEnabledValues ()
+    /// <summary> 
+    ///   Returns the <see cref="Control.ClientID"/> values of all controls whose value can be modified in the user 
+    ///   interface.
+    /// </summary>
+    /// <returns> 
+    ///   A <see cref="String"/> <see cref="Array"/> containing the <see cref="Control.ClientID"/> of the
+    ///   <see cref="ListControl"/> (or the radio buttons that make up the list), if the control is in edit mode, 
+    ///   or an empty array if the control is read-only.
+    /// </returns>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
+    public override string[] GetTrackedClientIDs ()
     {
-      if (Property == null)
-        return new IEnumerationValueInfo[0];
-      return Property.GetEnabledValues (GetBusinessObject());
-    }
-
-    IEnumerationValueInfo[] IBocEnumValue.GetEnabledValues ()
-    {
-      return GetEnabledValues();
-    }
-
-    private IBusinessObject GetBusinessObject ()
-    {
-      return (Property != null && DataSource != null) ? DataSource.BusinessObject : null;
-    }
-
-    /// <summary> Evaluates whether to show the null item as an option in the list. </summary>
-    private bool IsNullItemVisible
-    {
-      get
+      if (IsReadOnly)
+        return new string[0];
+      else if (ListControlStyle.ControlType == ListControlType.DropDownList
+               || ListControlStyle.ControlType == ListControlType.ListBox)
+        return new[] { GetListControlClientID () };
+      else if (ListControlStyle.ControlType == ListControlType.RadioButtonList)
       {
-        bool isRadioButtonList = _listControlStyle.ControlType == ListControlType.RadioButtonList;
-        if (! isRadioButtonList)
-          return true;
-        if (IsRequired)
-          return false;
-        return _listControlStyle.RadioButtonListNullValueVisible;
+        string[] clientIDs = new string[GetEnabledValues ().Length + (IsRequired ? 0 : 1)];
+        for (int i = 0; i < clientIDs.Length; i++)
+          clientIDs[i] = GetListControlClientID () + "_" + i.ToString (NumberFormatInfo.InvariantInfo);
+        return clientIDs;
       }
+      else
+        return new string[0];
     }
 
-    private string GetNullItemText ()
+    public string GetLabelID ()
     {
-      string nullDisplayName = _undefinedItemText;
-      if (string.IsNullOrEmpty (nullDisplayName) && (ListControlStyle.ControlType!=ListControlType.DropDownList))
-      {
-        if (IsDesignMode)
-          nullDisplayName = "undefined";
-        else
-          nullDisplayName = GetResourceManager().GetString (ResourceIdentifier.UndefinedItemText);
-      }
-      return nullDisplayName;
+      return UniqueID + IdSeparator + "Boc_Label";
     }
 
-    string IBocEnumValue.GetNullItemText ()
+    public string GetListControlID ()
     {
-      return GetNullItemText();
+      return UniqueID + IdSeparator + "Boc_ListControl";
+    }
+
+    public string GetListControlClientID ()
+    {
+      return GetListControlID ().Replace (IdSeparator, ClientIDSeparator);
+    }
+
+    public string GetLabelClientID ()
+    {
+      return GetLabelID ().Replace (IdSeparator, ClientIDSeparator);
+    }
+
+    /// <summary> This event is fired when the selection is changed between postbacks. </summary>
+    [Category ("Action")]
+    [Description ("Fires when the value of the control has changed.")]
+    public event EventHandler SelectionChanged
+    {
+      add { Events.AddHandler (s_selectionChangedEvent, value); }
+      remove { Events.RemoveHandler (s_selectionChangedEvent, value); }
     }
 
     /// <summary> Gets or sets the <see cref="IBusinessObjectEnumerationProperty"/> object this control is bound to. </summary>
@@ -411,7 +271,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        EnsureValue();
+        EnsureValue ();
         return _value;
       }
       set
@@ -420,7 +280,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         _value = value;
 
         if (Property != null && _value != null)
-          _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject());
+          _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject ());
         else
           _enumerationValueInfo = null;
 
@@ -429,150 +289,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         else
           InternalValue = null;
       }
-    }
-
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = value; }
-    }
-
-    public string GetLabelID ()
-    {
-      return UniqueID + IdSeparator + "Boc_Label";
-    }
-
-    public string GetListControlID ()
-    {
-      return UniqueID + IdSeparator + "Boc_ListControl";
-    }
-
-    public string GetListControlClientID ()
-    {
-      return GetListControlID().Replace (IdSeparator, ClientIDSeparator);
-    }
-
-    public string GetLabelClientID ()
-    {
-      return GetLabelID().Replace (IdSeparator, ClientIDSeparator);
-    }
-
-    IEnumerationValueInfo IBocEnumValue.EnumerationValueInfo
-    {
-      get { return EnumerationValueInfo; }
-    }
-
-    /// <summary> Gets the current value. </summary>
-    /// <value> 
-    ///   The <see cref="EnumerationValueInfo"/> object
-    ///   or <see langword="null"/> if no item / the null item is selected 
-    ///   or the <see cref="Property"/> is <see langword="null"/>.
-    /// </value>
-    /// <remarks> Only used to simplify access to the <see cref="IEnumerationValueInfo"/>. </remarks>
-    protected IEnumerationValueInfo EnumerationValueInfo
-    {
-      get
-      {
-        if (_enumerationValueInfo == null && Property != null && _value != null)
-          _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject());
-
-        return _enumerationValueInfo;
-      }
-    }
-
-    /// <summary> Gets or sets the current value. </summary>
-    /// <value> 
-    ///   The <see cref="IEnumerationValueInfo.Identifier"/> object
-    ///   or <see langword="null"/> if no item / the null item is selected.
-    /// </value>
-    /// <remarks> Used to identify the currently selected item. </remarks>
-    protected virtual string InternalValue
-    {
-      get
-      {
-        if (_internalValue == null && EnumerationValueInfo != null)
-          _internalValue = EnumerationValueInfo.Identifier;
-
-        return _internalValue;
-      }
-      set
-      {
-        if (_internalValue == value)
-          return;
-
-        _internalValue = value;
-
-        EnsureValue();
-      }
-    }
-
-    /// <summary> Ensures that the <see cref="Value"/> is set to the enum-value of the <see cref="InternalValue"/>. </summary>
-    protected void EnsureValue ()
-    {
-      if (_enumerationValueInfo != null
-          && _enumerationValueInfo.Identifier == _internalValue)
-      {
-        //  Still chached in _enumerationValueInfo
-        _value = _enumerationValueInfo.Value;
-      }
-      else if (_internalValue != null && Property != null)
-      {
-        //  Can get a new EnumerationValueInfo
-        _enumerationValueInfo = Property.GetValueInfoByIdentifier (_internalValue, GetBusinessObject());
-        _value = _enumerationValueInfo.Value;
-      }
-      else if (_internalValue == null)
-      {
-        _value = null;
-        _enumerationValueInfo = null;
-      }
-    }
-
-    /// <summary> 
-    ///   Returns the <see cref="Control.ClientID"/> values of all controls whose value can be modified in the user 
-    ///   interface.
-    /// </summary>
-    /// <returns> 
-    ///   A <see cref="String"/> <see cref="Array"/> containing the <see cref="Control.ClientID"/> of the
-    ///   <see cref="ListControl"/> (or the radio buttons that make up the list), if the control is in edit mode, 
-    ///   or an empty array if the control is read-only.
-    /// </returns>
-    /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
-    public override string[] GetTrackedClientIDs ()
-    {
-      if (IsReadOnly)
-        return new string[0];
-      else if (ListControlStyle.ControlType == ListControlType.DropDownList
-               || ListControlStyle.ControlType == ListControlType.ListBox)
-        return new[] { GetListControlClientID() };
-      else if (ListControlStyle.ControlType == ListControlType.RadioButtonList)
-      {
-        string[] clientIDs = new string[GetEnabledValues().Length + (IsRequired ? 0 : 1)];
-        for (int i = 0; i < clientIDs.Length; i++)
-          clientIDs[i] = GetListControlClientID() + "_" + i.ToString (NumberFormatInfo.InvariantInfo);
-        return clientIDs;
-      }
-      else
-        return new string[0];
-    }
-
-    /// <summary> The <see cref="BocEnumValue"/> supports only scalar properties. </summary>
-    /// <returns> <see langword="true"/> if <paramref name="isList"/> is <see langword="false"/>. </returns>
-    /// <seealso cref="BusinessObjectBoundWebControl.SupportsPropertyMultiplicity"/>
-    protected override bool SupportsPropertyMultiplicity (bool isList)
-    {
-      return ! isList;
-    }
-
-    /// <summary>
-    ///   The <see cref="BocEnumValue"/> supports properties of types <see cref="IBusinessObjectEnumerationProperty"/>
-    ///   and <see cref="IBusinessObjectBooleanProperty"/>.
-    /// </summary>
-    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
-    protected override Type[] SupportedPropertyInterfaces
-    {
-      get { return s_supportedPropertyInterfaces; }
     }
 
     /// <summary>
@@ -591,7 +307,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         bool isDropDownList = _listControlStyle.ControlType == ListControlType.DropDownList;
         bool isListBox = _listControlStyle.ControlType == ListControlType.ListBox;
 
-        return ! (isDropDownList || isListBox);
+        return !(isDropDownList || isListBox);
       }
     }
 
@@ -614,16 +330,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public string FocusID
     {
-      get { return IsReadOnly ? null : GetListControlClientID(); }
-    }
-
-    /// <summary> This event is fired when the selection is changed between postbacks. </summary>
-    [Category ("Action")]
-    [Description ("Fires when the value of the control has changed.")]
-    public event EventHandler SelectionChanged
-    {
-      add { Events.AddHandler (s_selectionChangedEvent, value); }
-      remove { Events.RemoveHandler (s_selectionChangedEvent, value); }
+      get { return IsReadOnly ? null : GetListControlClientID (); }
     }
 
     /// <summary>
@@ -706,7 +413,231 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    #region protected virtual string CssClass...
+    [Browsable(false)]
+    public string NullIdentifier
+    {
+      get { return c_nullIdentifier; }
+    }
+
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+      if (!IsDesignMode)
+        Page.RegisterRequiresPostBack (this);
+    }
+
+    protected override void LoadControlState (object savedState)
+    {
+      object[] values = (object[]) savedState;
+
+      base.LoadControlState (values[0]);
+      _value = values[1];
+      if (values[2] != null)
+        _internalValue = (string) values[2];
+    }
+
+    protected override object SaveControlState ()
+    {
+      object[] values = new object[5];
+
+      values[0] = base.SaveControlState();
+      values[1] = _value;
+      values[2] = _internalValue;
+
+      return values;
+    }
+
+    /// <summary>
+    ///   Uses the <paramref name="postCollection"/> to determine whether the value of this control has been changed
+    ///   between postbacks.
+    /// </summary>
+    /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadPostData/*' />
+    protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
+    {
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetListControlClientID ());
+      bool isDataChanged = false;
+      if (newValue != null)
+      {
+        if (_internalValue == null && newValue != c_nullIdentifier)
+          isDataChanged = true;
+        else if (_internalValue != null && newValue != _internalValue)
+          isDataChanged = true;
+      }
+
+      if (isDataChanged)
+      {
+        if (newValue == c_nullIdentifier)
+          InternalValue = null;
+        else
+          InternalValue = newValue;
+        IsDirty = true;
+      }
+      return isDataChanged;
+    }
+
+    /// <summary> Called when the state of the control has changed between postbacks. </summary>
+    protected virtual void RaisePostDataChangedEvent ()
+    {
+      if (!IsReadOnly && Enabled)
+        OnSelectionChanged ();
+    }
+
+    /// <summary> Fires the <see cref="SelectionChanged"/> event. </summary>
+    protected virtual void OnSelectionChanged ()
+    {
+      EventHandler eventHandler = (EventHandler) Events[s_selectionChangedEvent];
+      if (eventHandler != null)
+        eventHandler (this, EventArgs.Empty);
+    }
+
+    /// <summary> Checks whether the control conforms to the required WAI level. </summary>
+    /// <exception cref="Remotion.Web.UI.WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
+    protected virtual void EvaluateWaiConformity ()
+    {
+      if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
+      {
+        if (ListControlStyle.AutoPostBack == true)
+          WcagHelper.Instance.HandleWarning (1, this, "ListControlStyle.AutoPostBack");
+      }
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      EnsureChildControls ();
+      base.OnPreRender (e);
+
+      LoadResources (GetResourceManager ());
+
+      EvaluateWaiConformity ();
+    }
+
+    /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
+    protected override HtmlTextWriterTag TagKey
+    {
+      get { return HtmlTextWriterTag.Div; }
+    }
+    
+    /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
+    protected virtual void LoadValueInternal (object value, bool interim)
+    {
+      if (interim)
+        return;
+
+      Value = value;
+      IsDirty = false;
+    }
+
+    /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
+    protected virtual IResourceManager GetResourceManager ()
+    {
+      return GetResourceManager (typeof (ResourceIdentifier));
+    }
+
+    /// <summary> Loads the resources into the control's properties. </summary>
+    protected override void LoadResources (IResourceManager resourceManager)
+    {
+      if (resourceManager == null)
+        return;
+      if (IsDesignMode)
+        return;
+      base.LoadResources (resourceManager);
+
+      //  Dispatch simple properties
+      string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
+      if (! StringUtility.IsNullOrEmpty (key))
+        ErrorMessage = resourceManager.GetString (key);
+    }
+
+    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    protected override object ValueImplementation
+    {
+      get { return Value; }
+      set { Value = value; }
+    }
+
+    /// <summary> Gets the current value. </summary>
+    /// <value> 
+    ///   The <see cref="EnumerationValueInfo"/> object
+    ///   or <see langword="null"/> if no item / the null item is selected 
+    ///   or the <see cref="Property"/> is <see langword="null"/>.
+    /// </value>
+    /// <remarks> Only used to simplify access to the <see cref="IEnumerationValueInfo"/>. </remarks>
+    protected IEnumerationValueInfo EnumerationValueInfo
+    {
+      get
+      {
+        if (_enumerationValueInfo == null && Property != null && _value != null)
+          _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject ());
+
+        return _enumerationValueInfo;
+      }
+    }
+
+    /// <summary> Gets or sets the current value. </summary>
+    /// <value> 
+    ///   The <see cref="IEnumerationValueInfo.Identifier"/> object
+    ///   or <see langword="null"/> if no item / the null item is selected.
+    /// </value>
+    /// <remarks> Used to identify the currently selected item. </remarks>
+    protected virtual string InternalValue
+    {
+      get
+      {
+        if (_internalValue == null && EnumerationValueInfo != null)
+          _internalValue = EnumerationValueInfo.Identifier;
+
+        return _internalValue;
+      }
+      set
+      {
+        if (_internalValue == value)
+          return;
+
+        _internalValue = value;
+
+        EnsureValue ();
+      }
+    }
+
+    /// <summary> Ensures that the <see cref="Value"/> is set to the enum-value of the <see cref="InternalValue"/>. </summary>
+    protected void EnsureValue ()
+    {
+      if (_enumerationValueInfo != null
+          && _enumerationValueInfo.Identifier == _internalValue)
+      {
+        //  Still chached in _enumerationValueInfo
+        _value = _enumerationValueInfo.Value;
+      }
+      else if (_internalValue != null && Property != null)
+      {
+        //  Can get a new EnumerationValueInfo
+        _enumerationValueInfo = Property.GetValueInfoByIdentifier (_internalValue, GetBusinessObject ());
+        _value = _enumerationValueInfo.Value;
+      }
+      else if (_internalValue == null)
+      {
+        _value = null;
+        _enumerationValueInfo = null;
+      }
+    }
+
+    /// <summary> The <see cref="BocEnumValue"/> supports only scalar properties. </summary>
+    /// <returns> <see langword="true"/> if <paramref name="isList"/> is <see langword="false"/>. </returns>
+    /// <seealso cref="BusinessObjectBoundWebControl.SupportsPropertyMultiplicity"/>
+    protected override bool SupportsPropertyMultiplicity (bool isList)
+    {
+      return !isList;
+    }
+
+    /// <summary>
+    ///   The <see cref="BocEnumValue"/> supports properties of types <see cref="IBusinessObjectEnumerationProperty"/>
+    ///   and <see cref="IBusinessObjectBooleanProperty"/>.
+    /// </summary>
+    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
+    protected override Type[] SupportedPropertyInterfaces
+    {
+      get { return s_supportedPropertyInterfaces; }
+    }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocEnumValue"/> itself. </summary>
     /// <remarks> 
@@ -716,26 +647,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual string CssClassBase
     {
       get { return "bocEnumValue"; }
-    }
-
-    string IBocRenderableControl.CssClassReadOnly
-    {
-      get { return CssClassReadOnly; }
-    }
-
-    string IBocRenderableControl.CssClassDisabled
-    {
-      get { return CssClassDisabled; }
-    }
-
-    bool IBocRenderableControl.IsDesignMode
-    {
-      get { return IsDesignMode; }
-    }
-
-    string IBocRenderableControl.CssClassBase
-    {
-      get { return CssClassBase; }
     }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocEnumValue"/> when it is displayed in read-only mode. </summary>
@@ -758,6 +669,93 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "disabled"; }
     }
 
-    #endregion
+    private IEnumerationValueInfo[] GetEnabledValues ()
+    {
+      if (Property == null)
+        return new IEnumerationValueInfo[0];
+      return Property.GetEnabledValues (GetBusinessObject ());
+    }
+
+    private IBusinessObject GetBusinessObject ()
+    {
+      return (Property != null && DataSource != null) ? DataSource.BusinessObject : null;
+    }
+
+    /// <summary> Evaluates whether to show the null item as an option in the list. </summary>
+    private bool IsNullItemVisible
+    {
+      get
+      {
+        bool isRadioButtonList = _listControlStyle.ControlType == ListControlType.RadioButtonList;
+        if (!isRadioButtonList)
+          return true;
+        if (IsRequired)
+          return false;
+        return _listControlStyle.RadioButtonListNullValueVisible;
+      }
+    }
+
+    private string GetNullItemText ()
+    {
+      string nullDisplayName = _undefinedItemText;
+      if (string.IsNullOrEmpty (nullDisplayName) && (ListControlStyle.ControlType != ListControlType.DropDownList))
+      {
+        if (IsDesignMode)
+          nullDisplayName = "undefined";
+        else
+          nullDisplayName = GetResourceManager ().GetString (ResourceIdentifier.UndefinedItemText);
+      }
+      return nullDisplayName;
+    }
+
+    /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
+    bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
+    {
+      if (RequiresLoadPostData)
+        return LoadPostData (postDataKey, postCollection);
+      else
+        return false;
+    }
+
+    /// <summary> Invokes the <see cref="RaisePostDataChangedEvent"/> method. </summary>
+    void IPostBackDataHandler.RaisePostDataChangedEvent ()
+    {
+      RaisePostDataChangedEvent ();
+    }
+
+    string IBocRenderableControl.CssClassReadOnly
+    {
+      get { return CssClassReadOnly; }
+    }
+
+    string IBocRenderableControl.CssClassDisabled
+    {
+      get { return CssClassDisabled; }
+    }
+
+    bool IBocRenderableControl.IsDesignMode
+    {
+      get { return IsDesignMode; }
+    }
+
+    string IBocRenderableControl.CssClassBase
+    {
+      get { return CssClassBase; }
+    }
+
+    IEnumerationValueInfo[] IBocEnumValue.GetEnabledValues ()
+    {
+      return GetEnabledValues ();
+    }
+
+    IEnumerationValueInfo IBocEnumValue.EnumerationValueInfo
+    {
+      get { return EnumerationValueInfo; }
+    }
+
+    string IBocEnumValue.GetNullItemText ()
+    {
+      return GetNullItemText ();
+    }
   }
 }

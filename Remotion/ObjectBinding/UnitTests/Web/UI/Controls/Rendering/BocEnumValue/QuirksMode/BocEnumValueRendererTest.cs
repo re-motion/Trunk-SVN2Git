@@ -23,7 +23,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode;
 using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
 

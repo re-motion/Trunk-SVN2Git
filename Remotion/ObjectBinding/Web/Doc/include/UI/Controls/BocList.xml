@@ -25,53 +25,7 @@
       </para><para>
         The control's <see cref="Property"/> supports the <see cref="IBusinessObjectReferenceProperty"/>.
       </para>
-      
-      <h4 class="dtH4">Standards Conformance</h4>
-      <list type="table">
-        <listheader>
-          <term>Standard</term>
-          <description>Conformance Information</description>
-        </listheader>
-        <item>
-          <term>HTML 4.01</term>
-          <description> 
-            Not valid if the views drop down box is enabled. ASP.NET 1.1 renders an invalid attribute.
-          </description>
-        </item>
-        <item>
-          <term>XHTML 1.0</term>
-          <description>Not valid</description>
-        </item>
-        <item>
-          <term>WAI WCAG 1.0</term>
-          <description>
-            <para> 
-              Level A conform if advanced features are turned off. This can be enforced by the 
-              <see cref="Remotion.Web.Configuration.WebConfiguration.Wcag"/> configuration entry.
-            </para>
-            <para> Priority 1 checkpoint 6.3 is not met by the following advacned features:</para>
-            <list type="bullet">
-              <item> An event or a WXE command defined for a column. </item>
-              <item> Paging. </item>
-              <item> Views. </item>
-              <item> The edit details column. </item>
-              <item> The drop down menu and the list menu. </item>
-              <item> The drop down menu column. </item>
-            </list>
-            <para> Priority 2 checkpoints 6.5 and 10.1 are not met if the advanced features are enabled. </para>
-            <para>
-              Priority 2 checkpoint 12.4 is not met if <see cref="Selection"/> is enabled but <see cref="Index"/> 
-              is not.
-            </para><para> 
-              Priority 2 checkpoint 13.1 is not met for links placed into value columns. The column's value is used 
-              to identify the link's target.
-            </para><para>
-              Interactive sorting requires java-script but is not considered to be required for a usable page.
-            </para>
-          </description>
-        </item>        
-      </list>
-
+     
       <h4 class="dtH4">General Usage Notes</h4>      
       <para>
         Place an <see cref="HtmlHeadContents"/> control on every <b>ASPX</b> page displaying the 

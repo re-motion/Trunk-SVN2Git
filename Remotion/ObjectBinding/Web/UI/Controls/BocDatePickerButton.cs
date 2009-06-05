@@ -16,7 +16,9 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
@@ -114,16 +116,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void RenderControl (HtmlTextWriter writer)
     {
-      var renderer = new BocDatePickerButtonRenderer (new HttpContextWrapper(Context), writer, this);
-      renderer.Render();
-    }
-
-    public override void RenderBeginTag (HtmlTextWriter writer)
-    {
-    }
-
-    public override void RenderEndTag (HtmlTextWriter writer)
-    {
+      var factory = ServiceLocator.Current.GetInstance<IBocDatePickerButtonRendererFactory> ();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      renderer.Render ();
     }
 
     private void DetermineClientScriptLevel ()

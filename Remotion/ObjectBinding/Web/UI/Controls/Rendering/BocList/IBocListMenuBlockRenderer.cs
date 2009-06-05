@@ -18,8 +18,12 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
+  /// <summary>
+  /// Interface for classes able to render the menu block of a <see cref="IBocList"/> control.
+  /// </summary>
   public interface IBocListMenuBlockRenderer
   {
+    /// <summary>Renders the menu block, which contains </summary>
     void Render ();
 
     /// <summary>The <see cref="BocList"/> containing the data to render.</summary>

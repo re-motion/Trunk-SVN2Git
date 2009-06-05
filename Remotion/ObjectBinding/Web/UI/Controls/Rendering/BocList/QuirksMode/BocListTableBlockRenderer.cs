@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -24,13 +23,16 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
+  /// <summary>
+  /// Responsible for rendering the table (consisting of title and data rows) that shows the items contained in the <see cref="IBocList"/>.
+  /// </summary>
   public class BocListTableBlockRenderer : BocListRendererBase, IBocListTableBlockRenderer
   {
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocRowRenderer _rowRenderer;
 
     public BocListTableBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
-        : base(context, writer, list)
+        : base (context, writer, list)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
@@ -43,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       get { return _rowRenderer; }
     }
 
-      /// <summary>
+    /// <summary>
     /// Renders the data contained in <see cref="BocListRendererBase.List"/> as a table.
     /// </summary>
     /// <remarks>
@@ -69,28 +71,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       else
         RenderTable (true, true);
 
-      RenderClientSelectionScript ();
+      RenderClientSelectionScript();
     }
 
     private void RenderTable (bool tableHead, bool tableBody)
     {
       if (!tableHead && !tableBody)
       {
-        RenderEmptyTable ();
+        RenderEmptyTable();
         return;
       }
 
-      RenderTableOpeningTag ();
-      RenderTableBlockColumnGroup ();
+      RenderTableOpeningTag();
+      RenderTableBlockColumnGroup();
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassTableHead);
 
       if (tableHead)
-        RenderTableHead ();
+        RenderTableHead();
 
       if (tableBody)
-        RenderTableBody ();
+        RenderTableBody();
 
-      RenderTableClosingTag ();
+      RenderTableClosingTag();
     }
 
     private void RenderEmptyTable ()
@@ -103,9 +105,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       Writer.RenderBeginTag (HtmlTextWriterTag.Td);
       Writer.Write ("&nbsp;");
-      Writer.RenderEndTag ();
-      Writer.RenderEndTag ();
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
+      Writer.RenderEndTag();
+      Writer.RenderEndTag();
     }
 
     /// <summary>
@@ -120,8 +122,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     protected virtual void RenderTableHead ()
     {
       Writer.RenderBeginTag (HtmlTextWriterTag.Thead);
-      RowRenderer.RenderTitlesRow ();
-      Writer.RenderEndTag ();
+      RowRenderer.RenderTitlesRow();
+      Writer.RenderEndTag();
     }
 
     /// <summary>
@@ -153,10 +155,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       }
 
       if (List.IsEmptyList && List.ShowEmptyListMessage)
-        RowRenderer.RenderEmptyListDataRow ();
+        RowRenderer.RenderEmptyListDataRow();
       else
       {
-        BocListRow[] rows = List.GetIndexedRows ();
+        BocListRow[] rows = List.GetIndexedRows();
 
         for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
              idxAbsoluteRows < rowCountWithOffset;
@@ -168,7 +170,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
         }
       }
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     private void RenderClientSelectionScript ()
@@ -210,14 +212,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <summary> Renderes the closing tag of the table. </summary>
     private void RenderTableClosingTag ()
     {
-      Writer.RenderEndTag (); // table
-      Writer.RenderEndTag (); // div
+      Writer.RenderEndTag(); // table
+      Writer.RenderEndTag(); // div
     }
 
     /// <summary> Renders the column group, which provides the table's column layout. </summary>
     private void RenderTableBlockColumnGroup ()
     {
-      BocColumnDefinition[] renderColumns = List.GetColumns ();
+      BocColumnDefinition[] renderColumns = List.GetColumns();
 
       Writer.RenderBeginTag (HtmlTextWriterTag.Colgroup);
 
@@ -246,11 +248,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
         for (int i = 0; i < c_designModeDummyColumnCount; i++)
         {
           Writer.RenderBeginTag (HtmlTextWriterTag.Col);
-          Writer.RenderEndTag ();
+          Writer.RenderEndTag();
         }
       }
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     /// <summary>Renders a single col element for the given column.</summary>
@@ -265,7 +267,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
         if (valueColumn != null && valueColumn.EnforceWidth && column.Width.Type != UnitType.Percentage)
           width = "2em";
         else
-          width = column.Width.ToString ();
+          width = column.Width.ToString();
         Writer.WriteStyleAttribute ("width", width);
         Writer.Write ("\"");
       }

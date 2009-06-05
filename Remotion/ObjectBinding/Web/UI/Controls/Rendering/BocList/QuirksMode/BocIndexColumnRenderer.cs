@@ -20,6 +20,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
+  /// <summary>
+  /// Responsible for rendering the index column of a <see cref="IBocList"/>.
+  /// </summary>
   public class BocIndexColumnRenderer : BocListRendererBase, IBocIndexColumnRenderer
   {
     public BocIndexColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
@@ -27,6 +30,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     {
     }
 
+    /// <summary>
+    /// Renders the index cell for the data row identified by <paramref name="originalRowIndex"/>.
+    /// </summary>
+    /// <param name="originalRowIndex">The absolute row index in the original (unsorted) item collection.</param>
+    /// <param name="selectorControlID">The ID of the control used for selecting the row. See <see cref="BocSelectorColumnRenderer"/>.</param>
+    /// <param name="absoluteRowIndex">The absolute row index (including previous pages) after sorting.</param>
+    /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
     public void RenderDataCell (int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell)
     {
       ArgumentUtility.CheckNotNull ("cssClassTableCell", cssClassTableCell);
@@ -43,6 +53,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       Writer.RenderEndTag();
     }
 
+    /// <summary>
+    /// Renders the index cell for the title row.
+    /// </summary>
     public void RenderTitleCell ()
     {
       if (!List.IsIndexEnabled)

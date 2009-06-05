@@ -28,6 +28,8 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
@@ -1323,8 +1325,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _pageCount = 1;
       }
 
-      var factory = new BocListRendererFactory();
-      factory.CreateRenderer (new Remotion.Web.Infrastructure.HttpContextWrapper(Context), writer, this, ServiceLocator.Current).Render();
+      var serviceLocator = ServiceLocator.Current;
+      var factory = serviceLocator.GetInstance<IBocListRendererFactory> ();
+      factory.CreateRenderer (new Remotion.Web.Infrastructure.HttpContextWrapper (Context), writer, this, serviceLocator).Render ();
     }
 
     public bool HasNavigator
@@ -4290,7 +4293,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _customColumns; }
     }
 
-    bool IBocList.IsDesignMode
+    bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
     }
@@ -4312,7 +4315,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "bocList"; }
     }
 
-    string IBocList.CssClassBase
+    string IBocRenderableControl.CssClassBase
     {
       get { return CssClassBase; }
     }
@@ -4327,7 +4330,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "readOnly"; }
     }
 
-    string IBocList.CssClassReadOnly
+    string IBocRenderableControl.CssClassReadOnly
     {
       get { return CssClassReadOnly; }
     }
@@ -4342,7 +4345,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "disabled"; }
     }
 
-    string IBocList.CssClassDisabled
+    string IBocRenderableControl.CssClassDisabled
     {
       get { return CssClassDisabled; }
     }

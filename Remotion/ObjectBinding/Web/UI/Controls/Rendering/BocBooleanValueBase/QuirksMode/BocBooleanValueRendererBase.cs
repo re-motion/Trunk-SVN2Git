@@ -19,7 +19,13 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
 {
-  public abstract class BocBooleanValueRendererBase<T> : SimpleControlRendererBase<T>, IRenderer
+  /// <summary>
+  /// Base class for the renderers in the same namespace. Contains common constants and methods.
+  /// <seealso cref="BocBooleanValueRenderer"/>
+  /// <seealso cref="BocCheckboxRenderer"/>
+  /// </summary>
+  /// <typeparam name="T">The concrete control or corresponding interface that will be rendered.</typeparam>
+  public abstract class BocBooleanValueRendererBase<T> : RenderableControlRendererBase<T>
       where T : IBocBooleanValueBase
   {
     private const string c_defaultControlWidth = "100pt";

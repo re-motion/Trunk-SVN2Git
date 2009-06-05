@@ -18,10 +18,15 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
 {
-  public class BocDatePickerButtonRenderer : RendererBase<IBocDatePickerButton>, IRenderer
+  /// <summary>
+  /// Responsible for rendering a <see cref="BocDatePickerButton"/> control.
+  /// <seealso cref="IBocDatePickerButton"/>
+  /// </summary>
+  public class BocDatePickerButtonRenderer : RendererBase<IBocDatePickerButton>, IBocDatePickerButtonRenderer
   {
     private const int c_defaultDatePickerLengthInPoints = 150;
 
@@ -30,6 +35,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     {
     }
 
+    /// <summary>
+    /// Renders a click-enabled image that shows a <see cref="DatePickerPage"/> on click, which puts the selected value
+    /// into the control specified by <see cref="BocDatePickerButton.TargetControlID"/>.
+    /// </summary>
     public void Render ()
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);

@@ -21,7 +21,13 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
 {
-  public class BocDateTimeValueRenderer : SimpleControlRendererBase<IBocDateTimeValue>, IRenderer
+  /// <summary>
+  /// Responsible for rendering <see cref="BocDateTimeValue"/> controls, but not for the included <see cref="BocDatePickerButton"/>.
+  /// For that, see <see cref="BocDatePickerButtonRenderer"/>.
+  /// <seealso cref="IBocDateTimeValue"/>
+  /// </summary>
+  /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocDateTimeValueRenderer.xml' path='BocDateTimeValueRenderer/Class'/>
+  public class BocDateTimeValueRenderer : RenderableControlRendererBase<IBocDateTimeValue>, IBocDateTimeValueRenderer
   {
     /// <summary> Text displayed when control is displayed in desinger and is read-only has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
@@ -34,6 +40,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     {
     }
 
+    /// <summary>
+    /// Renders an inline table consisting of one row with up to three cells, depending on <see cref="IBocDateTimeValue.ActualValueType"/>.
+    /// The first one for the date textbox, second for the <see cref="BocDatePickerButton"/> and third for the time textbox.
+    /// The text boxes are rendered directly, the date picker is responsible for rendering itself.
+    /// </summary>
     public void Render ()
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);

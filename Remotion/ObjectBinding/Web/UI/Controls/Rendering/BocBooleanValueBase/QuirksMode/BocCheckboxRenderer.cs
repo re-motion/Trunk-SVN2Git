@@ -22,7 +22,12 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
 {
-  public class BocCheckboxRenderer : BocBooleanValueRendererBase<IBocCheckBox>
+  /// <summary>
+  /// Responsible for rendering <see cref="BocCheckBox"/> controls.
+  /// <seealso cref="IBocCheckBox"/>
+  /// </summary>
+  /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocCheckboxRenderer.xml' path='BocCheckboxRenderer/Class'/>
+  public class BocCheckboxRenderer : BocBooleanValueRendererBase<IBocCheckBox>, IBocCheckboxRenderer
   {
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";
@@ -34,6 +39,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
     {
     }
 
+    /// <summary>
+    /// Renders an image and label in readonly mode, a checkbox and label in edit mode.
+    /// </summary>
     public override void Render ()
     {
       AddAttributesToRender (false);

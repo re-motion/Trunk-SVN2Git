@@ -20,10 +20,11 @@ using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
@@ -36,7 +37,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary> This control can be used to display or edit date/time values. </summary>
   /// <include file='doc\include\UI\Controls\BocDateTimeValue.xml' path='BocDateTimeValue/Class/*' />
-  // TODO: see "Doc\Bugs and ToDos.txt"
   [ValidationProperty ("ValidationValue")]
   [DefaultEvent ("TextChanged")]
   [ToolboxItemFilter ("System.Web.UI")]
@@ -262,8 +262,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void RenderControl (HtmlTextWriter writer)
     {
-      var renderer = new BocDateTimeValueRenderer (new HttpContextWrapper(Context), writer, this);
-      renderer.Render();
+      var factory = ServiceLocator.Current.GetInstance<IBocDateTimeValueRendererFactory> ();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      renderer.Render ();
     }
 
     protected override void LoadControlState (object savedState)

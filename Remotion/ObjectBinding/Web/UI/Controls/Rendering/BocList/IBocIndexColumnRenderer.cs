@@ -18,13 +18,26 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
+  /// <summary>
+  /// Interface for classes that render the index column of <see cref="IBocList"/> controls.
+  /// </summary>
   public interface IBocIndexColumnRenderer
   {
+    /// <summary>
+    /// Renders the index cell for the data row identified by <paramref name="originalRowIndex"/>.
+    /// </summary>
+    /// <param name="originalRowIndex">The absolute row index in the original (unsorted) item collection.</param>
+    /// <param name="selectorControlID">The ID of the control used for selecting the row. See <see cref="IBocSelectorColumnRenderer"/>.</param>
+    /// <param name="absoluteRowIndex">The absolute row index (including previous pages) after sorting.</param>
+    /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
     void RenderDataCell (int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell);
 
+    /// <summary>
+    /// Renders the index cell for the title row.
+    /// </summary>
     void RenderTitleCell ();
 
-    /// <summary>The <see cref="BocList"/> containing the data to render.</summary>
+    /// <summary>The <see cref="IBocList"/> containing the data to render.</summary>
     IBocList List { get; }
 
     /// <summary>The <see cref="HtmlTextWriter"/> that is used to render the table cells.</summary>

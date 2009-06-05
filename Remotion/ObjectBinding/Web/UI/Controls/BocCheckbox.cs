@@ -18,10 +18,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
@@ -41,10 +41,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // constants
 
     private const string c_scriptFileUrl = "BocCheckBox.js";
-
-    private const string c_trueIcon = "CheckBoxTrue.gif";
-    private const string c_falseIcon = "CheckBoxFalse.gif";
-    private const string c_defaultControlWidth = "100pt";
 
     // types
 
@@ -66,13 +62,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // static members
 
-    private static readonly Type[] s_supportedPropertyInterfaces = new[]
-                                                                   {
-                                                                       typeof (IBusinessObjectBooleanProperty)
-                                                                   };
+    private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectBooleanProperty) };
 
     private static readonly string s_scriptFileKey = typeof (BocCheckBox).FullName + "_Script";
-    private static readonly string s_startUpScriptKey = typeof (BocCheckBox).FullName + "_Startup";
 
     // member fields
 
@@ -93,13 +85,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
-    protected override void OnInit (EventArgs e)
-    {
-      base.OnInit (e);
-      if (!IsDesignMode)
-        Page.RegisterRequiresPostBack (this);
-    }
-
     public override void RegisterHtmlHeadContents (HttpContext context)
     {
       base.RegisterHtmlHeadContents (context);
@@ -109,6 +94,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (this, context, typeof (BocCheckBox), ResourceType.Html, c_scriptFileUrl);
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
+    }
+
+    public override void RenderControl (HtmlTextWriter writer)
+    {
+      EvaluateWaiConformity ();
+
+      var factory = ServiceLocator.Current.GetInstance<IBocCheckboxRendererFactory> ();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      renderer.Render ();
+    }
+
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+      if (!IsDesignMode)
+        Page.RegisterRequiresPostBack (this);
     }
 
     /// <summary>
@@ -164,14 +165,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _isActive = !IsReadOnly && Enabled;
     }
 
-    protected override void Render (HtmlTextWriter writer)
-    {
-      EvaluateWaiConformity();
-
-      var renderer = new BocCheckboxRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render();
-    }
-
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
@@ -217,12 +210,95 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         FalseDescription = resourceManager.GetString (key);
     }
 
-    private void DetermineClientScriptLevel ()
+    /// <summary> 
+    ///   Returns the <see cref="Control.ClientID"/> values of all controls whose value can be modified in the user 
+    ///   interface.
+    /// </summary>
+    /// <returns> 
+    ///   A <see cref="String"/> <see cref="Array"/> containing the <see cref="Control.ClientID"/> of the
+    ///   <see cref="CheckBox"/> if the control is in edit mode, or an empty array if the control is read-only.
+    /// </returns>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
+    public override string[] GetTrackedClientIDs ()
     {
-      HasClientScript = false;
+      return IsReadOnly ? new string[0] : new[] { GetCheckboxKey () };
+    }
 
-      if (! IsDesignMode)
-        HasClientScript = true;
+    /// <summary>
+    ///   The <see cref="BocCheckBox"/> supports properties of type <see cref="IBusinessObjectBooleanProperty"/>.
+    /// </summary>
+    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
+    protected override Type[] SupportedPropertyInterfaces
+    {
+      get { return s_supportedPropertyInterfaces; }
+    }
+
+    /// <summary>
+    ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its 
+    ///   <see cref="Control.ClientID"/>.
+    /// </summary>
+    /// <value> The <see cref="HyperLink"/> if the control is in edit mode, otherwise the control itself. </value>
+    public override Control TargetControl
+    {
+      get { return this; }
+    }
+
+    /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
+    /// <value>
+    ///   Returns the <see cref="Control.ClientID"/> of the <see cref="CheckBox"/> if the control is in edit mode, 
+    ///   otherwise <see langword="null"/>. 
+    /// </value>
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    public override string FocusID
+    {
+      get { return IsReadOnly ? null : GetCheckboxKey (); }
+    }
+
+    /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
+    /// <remarks> 
+    ///   <para>
+    ///     Values can be <c>True</c>, <c>False</c>, and <c>null</c>. 
+    ///   </para><para>
+    ///     This property is used for validation.
+    ///   </para>
+    /// </remarks>
+    [Browsable (false)]
+    public bool ValidationValue
+    {
+      get { return Value.Value; }
+    }
+
+
+    /// <summary>
+    ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
+    ///   description. 
+    /// </summary>
+    [Category ("Style")]
+    [Description ("The style that you want to apply to the label used for displaying the description.")]
+    [NotifyParentProperty (true)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
+    [PersistenceMode (PersistenceMode.InnerProperty)]
+    public override Style LabelStyle
+    {
+      get { return _labelStyle; }
+    }
+
+    /// <summary> Gets or sets the flag that determines whether to show the description next to the checkbox. </summary>
+    /// <value> 
+    ///   <see langword="true"/> to enable the description. 
+    ///   Defaults to <see langword="null"/>, which is interpreted as <see langword="false"/>.
+    /// </value>
+    /// <remarks>
+    ///   Use <see cref="IsDescriptionEnabled"/> to evaluate this property.
+    /// </remarks>
+    [Description ("The flag that determines whether to show the description next to the checkbox. Undefined is interpreted as false.")]
+    [Category ("Appearance")]
+    [DefaultValue (typeof (bool?), "")]
+    public bool? ShowDescription
+    {
+      get { return _showDescription; }
+      set { _showDescription = value; }
     }
 
     /// <summary> Gets a flag that determines whether the control is to be treated as a required value. </summary>
@@ -307,95 +383,32 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return _defaultValue == true ? true : false;
     }
 
-    /// <summary> 
-    ///   Returns the <see cref="Control.ClientID"/> values of all controls whose value can be modified in the user 
-    ///   interface.
-    /// </summary>
-    /// <returns> 
-    ///   A <see cref="String"/> <see cref="Array"/> containing the <see cref="Control.ClientID"/> of the
-    ///   <see cref="CheckBox"/> if the control is in edit mode, or an empty array if the control is read-only.
-    /// </returns>
-    /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
-    public override string[] GetTrackedClientIDs ()
-    {
-      return IsReadOnly ? new string[0] : new[] { GetCheckboxKey() };
-    }
-
-    /// <summary>
-    ///   The <see cref="BocCheckBox"/> supports properties of type <see cref="IBusinessObjectBooleanProperty"/>.
-    /// </summary>
-    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
-    protected override Type[] SupportedPropertyInterfaces
-    {
-      get { return s_supportedPropertyInterfaces; }
-    }
-
-    /// <summary>
-    ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its 
-    ///   <see cref="Control.ClientID"/>.
-    /// </summary>
-    /// <value> The <see cref="HyperLink"/> if the control is in edit mode, otherwise the control itself. </value>
-    public override Control TargetControl
-    {
-      get { return this; }
-    }
-
-    /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
+    /// <summary> Gets the evaluated value for the <see cref="ShowDescription"/> property. </summary>
     /// <value>
-    ///   Returns the <see cref="Control.ClientID"/> of the <see cref="CheckBox"/> if the control is in edit mode, 
-    ///   otherwise <see langword="null"/>. 
+    ///   <see langowrd="true"/> if WAI conformity is not required 
+    ///   and <see cref="ShowDescription"/> is <see langword="true"/>. 
     /// </value>
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    [Browsable (false)]
-    public override string FocusID
+    protected bool IsDescriptionEnabled
     {
-      get { return IsReadOnly ? null : GetCheckboxKey(); }
+      get { return !WcagHelper.Instance.IsWaiConformanceLevelARequired () && _showDescription == true; }
     }
 
-    /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
+    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> itself. </summary>
     /// <remarks> 
-    ///   <para>
-    ///     Values can be <c>True</c>, <c>False</c>, and <c>null</c>. 
-    ///   </para><para>
-    ///     This property is used for validation.
-    ///   </para>
+    ///   <para> Class: <c>bocCheckBox</c>. </para>
+    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
     /// </remarks>
-    [Browsable (false)]
-    public bool ValidationValue
+    protected override string CssClassBase
     {
-      get { return Value.Value; }
+      get { return "bocCheckBox"; }
     }
 
-
-    /// <summary>
-    ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
-    ///   description. 
-    /// </summary>
-    [Category ("Style")]
-    [Description ("The style that you want to apply to the label used for displaying the description.")]
-    [NotifyParentProperty (true)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
-    [PersistenceMode (PersistenceMode.InnerProperty)]
-    public override Style LabelStyle
+    private void DetermineClientScriptLevel ()
     {
-      get { return _labelStyle; }
-    }
+      HasClientScript = false;
 
-    /// <summary> Gets or sets the flag that determines whether to show the description next to the checkbox. </summary>
-    /// <value> 
-    ///   <see langword="true"/> to enable the description. 
-    ///   Defaults to <see langword="null"/>, which is interpreted as <see langword="false"/>.
-    /// </value>
-    /// <remarks>
-    ///   Use <see cref="IsDescriptionEnabled"/> to evaluate this property.
-    /// </remarks>
-    [Description ("The flag that determines whether to show the description next to the checkbox. Undefined is interpreted as false.")]
-    [Category ("Appearance")]
-    [DefaultValue (typeof (bool?), "")]
-    public bool? ShowDescription
-    {
-      get { return _showDescription; }
-      set { _showDescription = value; }
+      if (!IsDesignMode)
+        HasClientScript = true;
     }
 
     string IBocCheckBox.GetLabelKey ()
@@ -427,29 +440,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return GetResourceManager().GetString (ResourceIdentifier.FalseDescription); }
     }
-
-    /// <summary> Gets the evaluated value for the <see cref="ShowDescription"/> property. </summary>
-    /// <value>
-    ///   <see langowrd="true"/> if WAI conformity is not required 
-    ///   and <see cref="ShowDescription"/> is <see langword="true"/>. 
-    /// </value>
-    protected bool IsDescriptionEnabled
-    {
-      get { return ! WcagHelper.Instance.IsWaiConformanceLevelARequired() && _showDescription == true; }
-    }
-
-    #region protected virtual string CssClass...
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocCheckBox</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected override string CssClassBase
-    {
-      get { return "bocCheckBox"; }
-    }
-
-    #endregion
   }
 }

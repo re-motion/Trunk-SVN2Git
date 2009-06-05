@@ -21,6 +21,10 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating the quirks mode renderers for <see cref="IBocList"/> and its parts except columns - for that,
+  /// see <see cref="BocColumnRendererFactory"/>.
+  /// </summary>
   public class BocListRendererFactory : 
     IBocListRendererFactory,
     IBocListMenuBlockRendererFactory, 

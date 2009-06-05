@@ -17,10 +17,16 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode
 {
-  public class BocEnumValueRenderer : SimpleControlRendererBase<IBocEnumValue>, IRenderer
+  /// <summary>
+  /// Responsible for rendering <see cref="BocEnumValue"/> controls.
+  /// <seealso cref="IBocEnumValue"/>
+  /// </summary>
+  /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocEnumValueRenderer.xml' path='BocEnumValueRenderer/Class'/>
+  public class BocEnumValueRenderer : RenderableControlRendererBase<IBocEnumValue>, IBocEnumValueRenderer
   {
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
@@ -32,6 +38,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue
     {
     }
 
+    /// <summary>
+    /// Renders the concrete <see cref="ListControl"/> control as obtained from <see cref="IBocEnumValue.ListControlStyle"/>,
+    /// wrapped in a &lt;div&gt;
+    /// <seealso cref="ListControlType"/>
+    /// </summary>
+    /// <remarks>The <see cref="ISmartControl.IsRequired"/> attribute determines if a "null item" is inserted. In addition,
+    /// as long as no value has been selected, <see cref="DropDownList"/> and <see cref="ListBox"/> have a "null item" inserted
+    /// even when <see cref="ISmartControl.IsRequired"/> is <see langword="true"/>.
+    /// </remarks>
     public void Render ()
     {
       AddAttributesToRender (false);

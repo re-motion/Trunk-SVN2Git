@@ -20,6 +20,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
+  /// <summary>
+  /// Responsible for rendering the cells containing the row selector controls.
+  /// </summary>
   public class BocSelectorColumnRenderer : BocListRendererBase, IBocSelectorColumnRenderer
   {
     private const int c_titleRowIndex = -1;
@@ -29,6 +32,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     {
     }
 
+    /// <summary>
+    /// Renders a cell containing the selector control specified by <see cref="IBocList.Selection"/> for the row
+    /// identified by <paramref name="originalRowIndex"/>
+    /// </summary>
+    /// <param name="originalRowIndex">The absollute index of the row in the original (unsorted) collection.</param>
+    /// <param name="selectorControlID">The ID to apply to the selector control.</param>
+    /// <param name="isChecked">Indicates whether the row is selected.</param>
+    /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
     public void RenderDataCell (int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("selectorControlID", selectorControlID);
@@ -43,6 +54,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       Writer.RenderEndTag();
     }
 
+    /// <summary>
+    /// Renders the cell for the title row.
+    /// </summary>
     public void RenderTitleCell ()
     {
       if (!List.IsSelectionEnabled)

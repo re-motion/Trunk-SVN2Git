@@ -23,27 +23,7 @@
         The control's <see cref="Value"/> can be assigned <see cref="Boolean"/> values and <see langword="null"/>. 
       </para><para>
         The control's <see cref="BusinessObjectBoundWebControl.Property"/> supports the <see cref="IBusinessObjectBooleanProperty"/>.
-      </para>      
-      
-      <h4 class="dtH4">Standards Conformance</h4>
-      <list type="table">
-        <listheader>
-          <term>Standard</term>
-          <description>Conformance Information</description>
-        </listheader>
-        <item>
-            <term>HTML 4.01</term>
-            <description>valid</description>
-        </item>
-        <item>
-            <term>XHTML 1.0</term>
-            <description>valid</description>
-        </item>
-        <item>
-            <term>WAI WCAG 1.0</term>
-            <description>not conform</description>
-        </item>        
-      </list>
+      </para>
 
       <h4 class="dtH4">Usage Notes</h4>      
       <para>
@@ -60,7 +40,7 @@
         control is unbound. The <see cref="Value"/> property must be accessed programmatically to display the 
         current value.
       </para><para>
-        The control provides a default <b>CSS Class</b>, applied to the top level element: <c>bocBooleanValue</c>.
+        The control provides a default <b>CSS Class</b>, applied to the top level element: <c>BocBooleanValue</c>.
       </para><para>
         The control supports auto-postback. Use the <see cref="BocBooleanValueBase.AutoPostBack"/> property to enable this behavior.
       </para>
@@ -112,19 +92,13 @@
 
       <h4 class="dtH4">Inner Workings</h4>
       <para>
-        The control is displayed using a <see cref="System.Web.UI.WebControls.HyperLink"/> encapsulating an 
-        <see cref="System.Web.UI.WebControls.Image"/> to simulate a check box. In read-only mode the <b>Href</b>
-        property is set to emtpy, disabling the hyperlink. It also offers a 
-        <see cref="System.Web.UI.WebControls.Label"/> containing the string representation of the current value,
-        rendered next to the image. A <see cref="T:HiddenField"/> control is used for 
-        posting the value back to the server. 
-      </para><para>
-        Use the <see cref="HyperLink"/>, <see cref="Image"/>, <see cref="Label"/>, and <see cref="HiddenField"/> 
-        properties to access these controls directly.
-      </para><para>
         The control uses the view state to cache the value between postbacks. If the control is data bound,
-        a call to <see cref="BusinessObjectBoundEditableWebControl.SaveValue"/> with <b>interim</b> set <see langword="true"/> is required to save the
-        value back into the data source.
+        a call to <see cref="BusinessObjectBoundEditableWebControl.SaveValue"/> with <b>interim</b> set <see langword="true"/> 
+        is required to save the value back into the data source.
+      </para>
+      <para>
+        Rendering of the control is done by the <see cref="IBocBooleanValueRenderer" /> obtained from the
+        <see cref="IBocBooleanValueRendererFactory" /> registered in <see cref="ServiceLocator.Current"/>.
       </para>
       <list type="table">
         <listheader>
@@ -137,7 +111,7 @@
           </term>
           <description>
             Renders the image and the optional description according to the <see cref="Value"/>'s 
-            <see langword="true"/>, <see langword="false"/>, or <b>null</b> value.
+            <see langword="true"/>, <see langword="false"/>, or <see langword="null" /> value.
           </description>
         </item>
         <item>
@@ -146,7 +120,7 @@
           </term>
           <description>
             Renders the image and the optional description according to the <see cref="Value"/>'s current
-            <see langword="true"/>, <see langword="false"/>, or <b>null</b> value. Also activates the
+            <see langword="true"/>, <see langword="false"/>, or <see langword="null" /> value. Also activates the
             client-side script for switching between the values on the client side.
           </description>
         </item>
@@ -160,7 +134,7 @@
         Sets the new value and the <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> flag if the value has
         changed.
       </para><para>
-        Evaluates the value of the <see cref="HiddenField"/>.
+        Evaluates the value of the <see cref="HiddenField"/> rendered in edit mode (<see cref="IRenderer{TControl}.Render"/>);
       </para>
       <note type="inheritinfo">
         Overrive this method to change the way of detecting a changed value when read from the 

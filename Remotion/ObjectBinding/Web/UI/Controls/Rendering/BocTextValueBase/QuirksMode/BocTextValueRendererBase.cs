@@ -20,7 +20,14 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
-  public abstract class BocTextValueRendererBase<T> : SimpleControlRendererBase<T>
+  /// <summary>
+  /// Responsible for rendering <see cref="BocTextValue"/> and <see cref="BocMultilineTextValue"/> controls, which is done
+  /// by a template method for which deriving classes have to supply the <see cref="GetLabel()"/> method.
+  /// <seealso cref="BocTextValueRenderer"/>
+  /// <seealso cref="BocMultilineTextValueRenderer"/>
+  /// </summary>
+  /// <typeparam name="T">The concrete control or corresponding interface that will be rendered.</typeparam>
+  public abstract class BocTextValueRendererBase<T> : RenderableControlRendererBase<T>
     where T: IBocTextValueBase
   {
     /// <summary> Text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
@@ -32,26 +39,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
     protected BocTextValueRendererBase (IHttpContext context, HtmlTextWriter writer, T control)
         : base(context, writer, control)
     {
-
     }
 
-    protected TextBox GetTextBox ()
-    {
-      TextBox textBox = new TextBox { Text = Control.Text };
-      textBox.ID = Control.GetTextBoxUniqueID();
-      textBox.EnableViewState = false;
-      textBox.Enabled = Control.Enabled;
-      textBox.ReadOnly = !Control.Enabled;
-      textBox.Width = Unit.Empty;
-      textBox.Height = Unit.Empty;
-      textBox.ApplyStyle (Control.CommonStyle);
-      Control.TextBoxStyle.ApplyStyle (textBox);
-      if (textBox.TextMode == TextBoxMode.MultiLine && textBox.Columns < 1)
-        textBox.Columns = c_defaultColumns;
-
-      return textBox;
-    }
-
+    /// <summary>
+    /// Renders a label when <see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>,
+    /// a textbox in edit mode.
+    /// </summary>
     public void Render ()
     {
       AddAttributesToRender (true);
@@ -88,6 +81,31 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
       Writer.RenderEndTag();
     }
 
+    /// <summary>
+    /// Creates a <see cref="TextBox"/> control to use for rendering the <see cref="BocTextValueBase"/> control in edit mode.
+    /// </summary>
+    /// <returns>A <see cref="TextBox"/> control with the all relevant properties set and all appropriate styles applied to it.</returns>
+    protected virtual TextBox GetTextBox ()
+    {
+      TextBox textBox = new TextBox { Text = Control.Text };
+      textBox.ID = Control.GetTextBoxUniqueID ();
+      textBox.EnableViewState = false;
+      textBox.Enabled = Control.Enabled;
+      textBox.ReadOnly = !Control.Enabled;
+      textBox.Width = Unit.Empty;
+      textBox.Height = Unit.Empty;
+      textBox.ApplyStyle (Control.CommonStyle);
+      Control.TextBoxStyle.ApplyStyle (textBox);
+      if (textBox.TextMode == TextBoxMode.MultiLine && textBox.Columns < 1)
+        textBox.Columns = c_defaultColumns;
+
+      return textBox;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Label"/> control to use for rendering the <see cref="BocTextValueBase"/> control in read-only mode.
+    /// </summary>
+    /// <returns>A <see cref="Label"/> control with all relevant properties set and all appropriate styles applied to it.</returns>
     protected abstract Label GetLabel ();
 
     protected override void AddAdditionalAttributes ()

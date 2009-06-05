@@ -20,6 +20,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -29,6 +30,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   public interface IBocList
       : IBusinessObjectBoundEditableWebControl,
+        IBocRenderableControl,
         IPostBackEventHandler,
         IPostBackDataHandler,
         IBocMenuItemContainer,
@@ -295,35 +297,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     BusinessObjectBinding Binding { get; }
 
     string AccessKey { get; }
-    AttributeCollection Attributes { get; }
     Color BackColor { get; }
     Color BorderColor { get; }
     Unit BorderWidth { get; }
     BorderStyle BorderStyle { get; }
-    Style ControlStyle { get; }
     bool ControlStyleCreated { get; }
-    string CssClass { get; }
-    CssStyleCollection Style { get; }
-    bool Enabled { get; }
     bool EnableTheming { get; }
     FontInfo Font { get; }
     Color ForeColor { get; }
     bool HasAttributes { get; }
-    Unit Height { get; }
     string SkinID { get; }
     short TabIndex { get; }
     string ToolTip { get; }
-    Unit Width { get; }
     TemplateControl TemplateControl { get; }
     string AppRelativeTemplateSourceDirectory { get; }
-    string CssClassBase { get; }
     string CssClassAvailableViewsListLabel { get; }
     string CssClassAvailableViewsListDropDownList { get; }
     string CssClassNavigator { get; }
     string CssClassSortingOrder { get; }
     string CssClassContent { get; }
-    string CssClassReadOnly { get; }
-    string CssClassDisabled { get; }
     string CssClassTable { get; }
     string CssClassTableBody { get; }
     string CssClassTableHead { get; }
@@ -348,7 +340,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool HasMenuBlock { get; }
     bool IsPagingEnabled { get; }
     bool IsShowSortingOrderEnabled { get; }
-    bool IsDesignMode { get; }
 
     /// <summary> Builds the validation error marker. </summary>
     Image GetValidationErrorMarker ();

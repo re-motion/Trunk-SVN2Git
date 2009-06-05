@@ -25,36 +25,6 @@
         The control's <see cref="Property"/> supports the <see cref="IBusinessObjectEnumerationProperty"/>.
       </para>
       
-      <h4 class="dtH4">Standards Conformance</h4>
-      <list type="table">
-        <listheader>
-          <term>Standard</term>
-          <description>Conformance Information</description>
-        </listheader>
-        <item>
-          <term>HTML 4.01</term>
-          <description>valid, unless <see cref="WebControl.Enabled"/> is set to <see langword="false"/>. </description>
-        </item>
-        <item>
-          <term>XHTML 1.0</term>
-          <description>not valid</description>
-        </item>
-        <item>
-          <term>WAI WCAG 1.0</term>
-          <description>
-            <para>level A conform</para>
-            <para>
-              Enabling auto post back can break compliance with priority 1 checkpoint 6.3 if the post back is 
-              required for using the page.
-            </para><para>
-              Priority 2 checkpoint 12.4 is not met if the control is displayed as a drop down box.
-              Internet Explorer resets the selection when the user clicks the label for this control. The label is
-              therefor not associated with the control.
-            </para>
-          </description>
-        </item>        
-      </list>
-
       <h4 class="dtH4">Usage Notes</h4>      
       <para>
         See the <see cref="CreateValidators"/> method for the validators provided by this control.        
@@ -100,15 +70,13 @@
       
       <h4 class="dtH4">Inner Workings</h4>
       <para>
-        During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.ListControl"/>.
-      </para><para>
-        During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.
-      </para><para>
-        Use the <see cref="ListControl"/> and <see cref="Label"/> properties to access these controls directly.
-      </para><para>
         The control uses the view state to cache the value between postbacks. If the control is data bound,
         a call to <see cref="SaveValue"/> with <b>interim</b> set <see langword="true"/> is required to save the
         value back into the data source.
+      </para>
+      <para>
+        Rendering of the control is done by the <see cref="IBocEnumValueRenderer" /> obtained from the
+        <see cref="IBocEnumValueRendererFactory" /> registered in <see cref="ServiceLocator.Current"/>.
       </para>
 
       <list type="table">

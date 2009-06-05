@@ -20,6 +20,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
+  /// <summary>
+  /// Interface for factories creating <see cref="IBocRowRenderer"/> renderers.
+  /// </summary>
   public interface IBocRowRendererFactory
   {
     IBocRowRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator);

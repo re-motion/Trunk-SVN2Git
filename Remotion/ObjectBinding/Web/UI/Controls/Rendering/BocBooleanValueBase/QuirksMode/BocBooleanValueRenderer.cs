@@ -22,7 +22,12 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
 {
-  public class BocBooleanValueRenderer : BocBooleanValueRendererBase<IBocBooleanValue>
+  /// <summary>
+  /// Responsible for rendering <see cref="BocBooleanValue"/> controls.
+  /// <seealso cref="IBocBooleanValue"/>
+  /// </summary>
+  /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocBooleanValueRenderer.xml' path='BocBooleanValueRenderer/Class'/>
+  public class BocBooleanValueRenderer : BocBooleanValueRendererBase<IBocBooleanValue>, IBocBooleanValueRenderer
   {
     private const string c_nullString = "null";
 
@@ -33,6 +38,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
     {
     }
 
+    /// <summary>
+    /// Renders an image and a label. In edit mode, the image is wrapped in a hyperlink that is
+    /// scripted to respond to clicks and change the "checkbox" state accordingly; 
+    /// in addition, the state is put into an additional hidden field.
+    /// </summary>
     public override void Render ()
     {
       var resourceSet = Control.CreateResourceSet();
@@ -42,8 +52,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
 
       bool isReadOnly = Control.IsReadOnly;
 
-      Label labelControl = new Label { ID = Control.GetLabelKey() };
-      Image imageControl = new Image { ID = Control.GetImageKey() };
+      Label labelControl = new Label { ID = Control.GetLabelClientID() };
+      Image imageControl = new Image { ID = Control.GetImageClientID() };
       HiddenField hiddenFieldControl = new HiddenField { ID = Control.GetHiddenFieldKey() };
       HyperLink linkControl = new HyperLink { ID = Control.GetHyperLinkKey() };
 

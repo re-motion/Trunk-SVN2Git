@@ -21,8 +21,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public interface IBocBooleanValue : IBocBooleanValueBase
   {
     bool ShowDescription { get; }
-    string GetLabelKey ();
-    string GetImageKey ();
+    string GetLabelClientID ();
+    string GetImageClientID ();
     string GetHiddenFieldKey ();
     string GetHyperLinkKey ();
     BocBooleanValueResourceSet CreateResourceSet ();

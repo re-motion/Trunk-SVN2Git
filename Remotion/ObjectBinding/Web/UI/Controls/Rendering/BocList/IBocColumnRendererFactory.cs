@@ -19,6 +19,10 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
+  /// <summary>
+  /// Interface for factories creating <see cref="IBocColumnRenderer{TColumnDefinition}"/> renderers.
+  /// </summary>
+  /// <typeparam name="T">The type of column the created renderers can handle.</typeparam>
   public interface IBocColumnRendererFactory<T>
       where T: BocColumnDefinition
   {

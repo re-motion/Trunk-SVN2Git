@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<BocMultilineTextValueRenderer>
+  <Class>
+    <remarks>
+      <h4 class="dtH4">Standards Conformance</h4>
+      <list type="table">
+        <listheader>
+          <term>Standard</term>
+          <description>Conformance Information</description>
+        </listheader>
+        <item>
+          <term>HTML 4.01</term>
+          <description>valid</description>
+        </item>
+        <item>
+          <term>XHTML 1.0</term>
+          <description>valid</description>
+        </item>
+        <item>
+          <term>WAI WCAG 1.0</term>
+          <description>
+            <para>level Double-A conform</para>
+            <para>
+              Enabling auto post back can break compliance with priority 1 checkpoint 6.3 if the post back is
+              required for using the page.
+            </para>
+            <para>
+              Priority 3 checkpoint 10.4 is not met. The control does not provide a place-holder text in the
+              text box.
+            </para>
+          </description>
+        </item>
+      </list>
+
+      <h4 class="dtH4">Inner Workings</h4>
+      <para>
+        The control is displayed using a <see cref="System.Web.UI.WebControls.TextBox"/> in edit mode,
+        and a <see cref="System.Web.UI.WebControls.Label"/> in read-only mode.
+      </para>
+      <para>
+        The controls cannot be accessed directly, but the appropriate styles are applied.
+      </para>
+    </remarks>
+  </Class>
+</BocMultilineTextValueRenderer>

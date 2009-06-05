@@ -22,7 +22,11 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
-  public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>, IRenderer
+  /// <summary>
+  /// Provides a label for rendering a <see cref="BocTextValue"/> control in read-only mode. 
+  /// Rendering is done by the parent class.
+  /// </summary>
+  public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>, IBocTextValueRenderer
   {
     public BocTextValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocTextValue control)
         : base (context, writer, control)

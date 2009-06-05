@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       Assert.IsNotNull (renderer);
       Assert.AreSame (Html.Writer, renderer.Writer);
-      Assert.AreSame (List, renderer.List);
+      Assert.AreSame (List, renderer.Control);
     }
   }
 }

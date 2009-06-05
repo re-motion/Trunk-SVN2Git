@@ -263,12 +263,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         eventHandler (this, EventArgs.Empty);
     }
 
-    protected override void Render (HtmlTextWriter writer)
-    {
-      EvaluateWaiConformity();
-      var renderer = GetRenderer(new HttpContextWrapper(Context), writer);
-      renderer.Render();
-    }
+    public abstract override void RenderControl (HtmlTextWriter writer);
 
     /// <summary> Checks whether the control conforms to the required WAI level. </summary>
     /// <exception cref="Remotion.Web.UI.WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
@@ -280,8 +275,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           WcagHelper.Instance.HandleWarning (1, this, "TextBoxStyle.AutoPostBack");
       }
     }
-
-    protected abstract IRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer);
 
     /// <summary> Loads the resources into the control's properties. </summary>
     protected override void LoadResources (IResourceManager resourceManager)
@@ -350,6 +343,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         Page.RegisterRequiresPostBack (this);
 
       LoadResources (GetResourceManager());
+
+      EvaluateWaiConformity ();
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>

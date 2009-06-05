@@ -26,35 +26,6 @@
         The control's <see cref="BusinessObjectBoundWebControl.Property"/> supports the <see cref="IBusinessObjectBooleanProperty"/>.
       </para>
       
-      <h4 class="dtH4">Standards Conformance</h4>
-      <list type="table">
-        <listheader>
-          <term>Standard</term>
-          <description>Conformance Information</description>
-        </listheader>
-        <item>
-          <term>HTML 4.01</term>
-          <description>valid</description>
-        </item>
-        <item>
-          <term>XHTML 1.0</term>
-          <description>valid</description>
-        </item>
-        <item>
-          <term>WAI WCAG 1.0</term>
-          <description>
-            <para>
-              Priority 1 checkpoint 6.3 is not met if the label provding a textual representation of the value 
-              is also rendered. This can be enforced by the 
-              <see cref="Remotion.Web.Configuration.WebConfiguration.Wcag"/> configuration entry.
-            </para><para>
-              Enabling auto post back can break compliance with priority 1 checkpoint 6.3 if the post back is 
-              required for using the page.
-            </para>
-          </description>
-        </item>        
-      </list>
-      
       <h4 class="dtH4">Usage Notes</h4>      
       <para>
         Place an <see cref="Remotion.Web.UI.Controls.HtmlHeadContents"/> control on every <b>ASPX</b> page displaying the 
@@ -108,17 +79,13 @@
 
       <h4 class="dtH4">Inner Workings</h4>
       <para>
-        The control is displayed using a <see cref="System.Web.UI.WebControls.CheckBox"/> in edit mode and an 
-        <see cref="System.Web.UI.WebControls.Image"/> in read-only mode. It also offers a 
-        <see cref="System.Web.UI.WebControls.Label"/> containing the string representation of the current value,
-        rendered next to the checkbox or image.
-      </para><para>
-        Use the <see cref="CheckBox"/>, <see cref="Image"/>, and <see cref="Label"/> properties to access these 
-        controls directly.
-      </para><para>
         The control uses the view state to cache the value between postbacks. If the control is data bound,
         a call to <see cref="BusinessObjectBoundEditableWebControl.SaveValue"/> with <b>interim</b> set <see langword="true"/> is required to save the
         value back into the data source.
+      </para>
+      <para>
+        Rendering of the control is done by the <see cref="IBocCheckboxRenderer" /> obtained from the
+        <see cref="IBocCheckboxRendererFactory" /> registered in <see cref="ServiceLocator.Current"/>.
       </para>
       <list type="table">
         <listheader>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<BocEnumValueRenderer>
+  <Class>
+    <remarks>
+      <h4 class="dtH4">Standards Conformance</h4>
+      <list type="table">
+        <listheader>
+          <term>Standard</term>
+          <description>Conformance Information</description>
+        </listheader>
+        <item>
+          <term>HTML 4.01</term>
+          <description>
+            valid, unless <see cref="WebControl.Enabled"/> is set to <see langword="false"/>.
+          </description>
+        </item>
+        <item>
+          <term>XHTML 1.0</term>
+          <description>not valid</description>
+        </item>
+        <item>
+          <term>WAI WCAG 1.0</term>
+          <description>
+            <para>level A conform</para>
+            <para>
+              Enabling auto post back can break compliance with priority 1 checkpoint 6.3 if the post back is
+              required for using the page.
+            </para>
+            <para>
+              Priority 2 checkpoint 12.4 is not met if the control is displayed as a drop down box.
+              Internet Explorer resets the selection when the user clicks the label for this control. The label is
+              therefor not associated with the control.
+            </para>
+          </description>
+        </item>
+      </list>
+
+      <h4 class="dtH4">Inner Workings</h4>
+      <para>
+        During edit mode, the control is displayed using a <see cref="ListControl"/>. The concrete implementation is determined by
+        <see cref="IBocEnumValue.ListControlStyle"/>'s <see cref="ListControlStyle.ControlType" /> property.
+      </para>
+      <para>
+        During read-only mode, the control's value is displayed using a <see cref="Label"/>.
+      </para>
+      <para>
+        These controls cannot be accessed directly, but the appropriate styles are applied.
+      </para>
+    </remarks>
+  </Class>
+</BocEnumValueRenderer>

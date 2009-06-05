@@ -26,35 +26,6 @@
         The control's <see cref="Property"/> supports the <see cref="IBusinessObjectStringProperty"/> with
         <see cref="P:Remotion.ObjectBinding.IBusinessObjectProperty.IsList"/> set <see langword="true"/>.
       </para>
-      
-      <h4 class="dtH4">Standards Conformance</h4>
-      <list type="table">
-        <listheader>
-          <term>Standard</term>
-          <description>Conformance Information</description>
-        </listheader>
-        <item>
-          <term>HTML 4.01</term>
-          <description>valid</description>
-        </item>
-        <item>
-          <term>XHTML 1.0</term>
-          <description>valid</description>
-        </item>
-        <item>
-          <term>WAI WCAG 1.0</term>
-          <description>
-            <para>level Double-A conform</para>
-            <para>
-              Enabling auto post back can break compliance with priority 1 checkpoint 6.3 if the post back is 
-              required for using the page.
-            </para><para>
-              Priority 3 checkpoint 10.4 is not met. The control does not provide a place-holder text in the 
-              text box.
-            </para>
-          </description>
-        </item>        
-      </list>
 
       <h4 class="dtH4">Usage Notes</h4>      
       <para>
@@ -106,19 +77,19 @@
       
       <h4 class="dtH4">Inner Workings</h4>
       <para>
-        The control is displayed using a <see cref="System.Web.UI.WebControls.TextBox"/> in edit mode, 
-        and a <see cref="System.Web.UI.WebControls.Label"/> in read-only mode. 
-      </para><para>
-        Use the <see cref="TextBox"/> and <see cref="Label"/> properties to access these controls directly.
-      </para><para>
         The control uses the view state to cache the value between postbacks. If the control is data bound,
         a call to <see cref="SaveValue"/> with <b>interim</b> set <see langword="true"/> is required to save the
         value back into the data source.
-      </para><para>
+      </para>
+      <para>
         The control uses a client script provided by <see cref="T:TextBoxStyle"/> to check that the entered text does
         not exceed the maximum length. This only covers text entered by the keyboard, not through the clipboard. 
         Set <see cref="SingleRowTextBoxStyle.CheckClientSideMaxLength"/> to <see langword="false"/> 
         to disable this script.        
+      </para>
+      <para>
+        Rendering of the control is done by the <see cref="IBocMultilineTextValueRenderer" /> obtained from the
+        <see cref="IBocMultilineTextValueRendererFactory" /> registered in <see cref="ServiceLocator.Current"/>.
       </para>
       <list type="table">
         <listheader>

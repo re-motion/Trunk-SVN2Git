@@ -14,47 +14,67 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using AttributeCollection=System.Web.UI.AttributeCollection;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {
+  /// <summary>
+  /// Common interface for controls which exposes properties relevant to rendering.
+  /// </summary>
   public interface IBocRenderableControl
   {
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocCheckBox</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
+    /// <summary>Gets the CSS-Class applied to the control as set by the application. May be <see langword="null"/>.</summary>
+    string CssClass { get; set; }
+
+    /// <summary>Gets the CSS-Class applied to the control if <see cref="CssClass"/> is not set.</summary>
     string CssClassBase { get; }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>readOnly</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.readOnly</c> as a selector. </para>
-    /// </remarks>
+    /// <summary>
+    /// Gets the CSS-Class applied to the control when it is displayed in read-only mode
+    /// (<see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>).
+    /// </summary>
     string CssClassReadOnly { get; }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>disabled</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.disabled</c> as a selector.</para>
-    /// </remarks>
+    /// <summary>
+    /// Gets the CSS-Class applied to the control when it is disabled 
+    /// (<see cref="Enabled"/> is <see langword="false"/>).</summary>
     string CssClassDisabled { get; }
 
-    /// <summary> Evalutes whether this control is in <b>Design Mode</b>. </summary>
-    [Browsable (false)]
+    /// <summary>Evalutes whether this control is in <b>Design Mode</b>.</summary>
     bool IsDesignMode { get; }
 
+    /// <summary>
+    /// <para>Gets whether the control currently accepts user input; useful for temporarily disabling input during ongoing interactions
+    /// in other controls.</para>
+    /// <para>This is not the same as <see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/>, which determines if the value shown
+    /// by the control can be manipulated by the current user at all.</para>
+    /// </summary>
     bool Enabled { get; }
+
+    /// <summary>
+    /// Interface exposure of <see cref="WebControl.Attributes"/>.
+    /// </summary>
     AttributeCollection Attributes { get; }
-    string CssClass { get; set; }
+
+    /// <summary>
+    /// Interface exposure of <see cref="WebControl.Style"/>.
+    /// </summary>
     CssStyleCollection Style { get; }
+
+    /// <summary>
+    /// Interface exposure of <see cref="WebControl.ControlStyle"/>.
+    /// </summary>
     Style ControlStyle { get; }
 
+    /// <summary>
+    /// Interface exposure of <see cref="WebControl.Width"/>.
+    /// </summary>
     Unit Width { get; set; }
+
+    /// <summary>
+    /// Interface exposure of <see cref="WebControl.Height"/>.
+    /// </summary>
     Unit Height { get; set; }
   }
 }

@@ -16,12 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
@@ -55,8 +54,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // static members
 
-    private static readonly Type[] s_supportedPropertyInterfaces =
-        new[] { typeof (IBusinessObjectStringProperty) };
+    private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectStringProperty) };
 
     private string _text = string.Empty;
 
@@ -68,25 +66,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     // methods and properties
-
-    protected override void LoadControlState (object savedState)
-    {
-      object[] values = (object[]) savedState;
-
-      base.LoadControlState (values[0]);
-      _text = (string) values[1];
-    }
-
-    protected override object SaveControlState ()
-    {
-      object[] values = new object[2];
-
-      values[0] = base.SaveControlState();
-      values[1] = _text;
-
-      return values;
-    }
-
 
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/LoadValue/*' />
@@ -110,6 +89,107 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       LoadValueInternal (value, interim);
     }
 
+    /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
+    /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/SaveValue/*' />
+    public override void SaveValue (bool interim)
+    {
+      if (!interim && IsDirty)
+      {
+        if (Property != null && DataSource != null && DataSource.BusinessObject != null && !IsReadOnly)
+        {
+          DataSource.BusinessObject.SetProperty (Property, Value);
+          IsDirty = false;
+        }
+      }
+    }
+
+    public override void RenderControl (HtmlTextWriter writer)
+    {
+      var factory = ServiceLocator.Current.GetInstance<IBocMultilineTextValueRendererFactory> ();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      renderer.Render ();
+    }
+
+    // ReSharper disable RedundantOverridenMember
+    // included for documentation
+    /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/CreateValidators/*' />
+    public override BaseValidator[] CreateValidators ()
+    {
+      return base.CreateValidators ();
+    }
+    // ReSharper restore RedundantOverridenMember
+
+    /// <summary> Gets or sets the <see cref="IBusinessObjectStringProperty"/> object this control is bound to. </summary>
+    /// <value> An <see cref="IBusinessObjectStringProperty"/> object. </value>
+    [Browsable (false)]
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    public new IBusinessObjectStringProperty Property
+    {
+      get { return (IBusinessObjectStringProperty) base.Property; }
+      set { base.Property = ArgumentUtility.CheckType<IBusinessObjectStringProperty> ("value", value); }
+    }
+
+    /// <summary> Gets or sets the current value. </summary>
+    /// <value> The <see cref="String"/> array currently displayed or <see langword="null"/> if no text is entered. </value>
+    /// <remarks> The dirty state is reset when the value is set. </remarks>
+    [Browsable (false)]
+    public new string[] Value
+    {
+      get
+      {
+        string text = _text;
+        if (text != null)
+          text = text.Trim ();
+
+        if (StringUtility.IsNullOrEmpty (text))
+          return null;
+        else
+        {
+          //  Allows for an optional \r
+          string temp = _text.Replace ("\r", "");
+          return temp.Split ('\n');
+        }
+      }
+      set
+      {
+        IsDirty = true;
+
+        if (value == null)
+          _text = null;
+        else
+          _text = StringUtility.ConcatWithSeparator (value, "\r\n");
+      }
+    }
+
+    /// <summary> Gets or sets the string representation of the current value. </summary>
+    /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
+    [Description ("The string representation of the current value.")]
+    [Category ("Data")]
+    [DefaultValue ("")]
+    public override string Text
+    {
+      get { return StringUtility.NullToEmpty (_text); }
+      set { _text = value; }
+    }
+
+    protected override void LoadControlState (object savedState)
+    {
+      object[] values = (object[]) savedState;
+
+      base.LoadControlState (values[0]);
+      _text = (string) values[1];
+    }
+
+    protected override object SaveControlState ()
+    {
+      object[] values = new object[2];
+
+      values[0] = base.SaveControlState ();
+      values[1] = _text;
+
+      return values;
+    }
+
     /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (string[] value, bool interim)
     {
@@ -120,35 +200,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/SaveValue/*' />
-    public override void SaveValue (bool interim)
-    {
-      if (!interim && IsDirty)
-      {
-        if (Property != null && DataSource != null && DataSource.BusinessObject != null && ! IsReadOnly)
-        {
-          DataSource.BusinessObject.SetProperty (Property, Value);
-          IsDirty = false;
-        }
-      }
-    }
-
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
     protected override IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
-    }
-
-    protected override IRenderer GetRenderer (IHttpContext context, HtmlTextWriter writer)
-    {
-      return new BocMultilineTextValueRenderer (context, writer, this);
-    }
-
-    /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/CreateValidators/*' />
-    public override BaseValidator[] CreateValidators ()
-    {
-      return base.CreateValidators();
     }
 
     protected override IEnumerable<BaseValidator> GetValidators ()
@@ -185,65 +240,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return validators;
     }
 
-    /// <summary> Gets or sets the <see cref="IBusinessObjectStringProperty"/> object this control is bound to. </summary>
-    /// <value> An <see cref="IBusinessObjectStringProperty"/> object. </value>
-    [Browsable (false)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public new IBusinessObjectStringProperty Property
-    {
-      get { return (IBusinessObjectStringProperty) base.Property; }
-      set { base.Property = ArgumentUtility.CheckType<IBusinessObjectStringProperty> ("value", value); }
-    }
-
-    /// <summary> Gets or sets the current value. </summary>
-    /// <value> The <see cref="String"/> array currently displayed or <see langword="null"/> if no text is entered. </value>
-    /// <remarks> The dirty state is reset when the value is set. </remarks>
-    [Browsable (false)]
-    public new string[] Value
-    {
-      get
-      {
-        string text = _text;
-        if (text != null)
-          text = text.Trim();
-
-        if (StringUtility.IsNullOrEmpty (text))
-          return null;
-        else
-        {
-          //  Allows for an optional \r
-          string temp = _text.Replace ("\r", "");
-          return temp.Split ('\n');
-        }
-      }
-      set
-      {
-        IsDirty = true;
-
-        if (value == null)
-          _text = null;
-        else
-          _text = StringUtility.ConcatWithSeparator (value, "\r\n");
-      }
-    }
-
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
     /// <value> The value must be of type <b>string[]</b>. </value>
     protected override object ValueImplementation
     {
       get { return Value; }
       set { Value = (string[]) value; }
-    }
-
-    /// <summary> Gets or sets the string representation of the current value. </summary>
-    /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
-    [Description ("The string representation of the current value.")]
-    [Category ("Data")]
-    [DefaultValue ("")]
-    public override string Text
-    {
-      get { return StringUtility.NullToEmpty (_text); }
-      set { _text = value; }
     }
 
     /// <summary>
@@ -263,8 +265,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return isList;
     }
 
-    #region protected virtual string CssClass...
-
     /// <summary> Gets the CSS-Class applied to the <see cref="BocMultilineTextValue"/> itself. </summary>
     /// <remarks> 
     ///   <para> Class: <c>bocMultilineTextValue</c>. </para>
@@ -274,7 +274,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return "bocMultilineTextValue"; }
     }
-
-    #endregion
   }
 }
