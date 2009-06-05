@@ -37,8 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SecurityManager", "Security
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles", "{22F8ED2F-3EA0-459E-B5B6-B074A57EDAB9}"
 	ProjectSection(SolutionItems) = preProject
-		Build-RemotionLocal.ps1 = Build-RemotionLocal.ps1
-		Build-RemotionLocalDoc.ps1 = Build-RemotionLocalDoc.ps1
+		Build-RemotionLocal.cmd = Build-RemotionLocal.cmd
+		Build-RemotionLocalDoc.cmd = Build-RemotionLocalDoc.cmd
 		buildall.cmd = buildall.cmd
 		build\buildversion.xml = build\buildversion.xml
 		build\properties.include.build = build\properties.include.build
