@@ -640,7 +640,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>..\..\..\..\..\prereq\FuncGen\FuncGen.exe $(ProjectDir)*.template.cs *.generated.cs /rec</PreBuildEvent>
+    <PreBuildEvent>..\..\..\..\..\prereq\Tools\FuncGen\FuncGen.exe $(ProjectDir)*.template.cs *.generated.cs /rec</PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>

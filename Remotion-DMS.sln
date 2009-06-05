@@ -41,7 +41,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		Build-RemotionLocalDoc.ps1 = Build-RemotionLocalDoc.ps1
 		buildall.cmd = buildall.cmd
 		build\buildversion.xml = build\buildversion.xml
-		build\funcgen.cmd = build\funcgen.cmd
 		build\properties.include.build = build\properties.include.build
 		Remotion.build = Remotion.build
 		build\Remotion.Doc.include.build = build\Remotion.Doc.include.build

@@ -1,1 +1,0 @@
-..\prereq\FuncGen\FuncGen ..\Core\*.template.cs *.generated.cs /recursive

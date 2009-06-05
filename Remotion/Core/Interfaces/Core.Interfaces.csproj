@@ -137,6 +137,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>..\..\..\..\..\prereq\FuncGen\FuncGen.exe $(ProjectDir)*.template.cs *.generated.cs /rec</PreBuildEvent>
+    <PreBuildEvent>..\..\..\..\..\prereq\Tools\FuncGen\FuncGen.exe $(ProjectDir)*.template.cs *.generated.cs /rec</PreBuildEvent>
   </PropertyGroup>
 </Project>
