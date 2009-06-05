@@ -9,13 +9,33 @@ using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
+  /// <summary>
+  /// Provides access to Dynamic Language Runtime <see cref="ScriptEngine"/>|s.
+  /// </summary>
+  /// <remarks>
+  /// <para>
+  /// Note: Script Languages must be registered in the "App.config" &lt;microsoft.scripting&gt;-section of the scriptable application
+  /// with the string representation of the respective <see cref="ScriptLanguageType"/> given under the &lt;languages&gt;-tag
+  /// names-attribute. e.g.: 
+  /// <code lang="XML"><![CDATA[
+  /// <microsoft.scripting>
+  ///   <languages>
+  ///     <language names="Python" extensions=".py" displayName="IronPython 2.0" type="IronPython.Runtime.PythonContext, IronPython, Version=2.0.0.0000, Culture=neutral" />
+  ///   </languages>  
+  /// </microsoft.scripting>
+  /// ]]></code>
+  /// </para>
+  /// <para>
+  /// <example>
+  /// <code  escaped="true" lang="C#">
+  /// // Retrieve IronPython DLR ScriptEngine
+  /// var pythonEngine = ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.Python);
+  /// </code>
+  /// </example>
+  /// </para>
+  /// </remarks>
   public class ScriptingHost
   {
-    // Note: Languages must be registered in  App.config <microsoft.scripting>-section of scriptable application.
-    // e.g.
-    // <languages>
-    //   <language names="IronPython;Python;py" extensions=".py" displayName="IronPython 2.0" type="IronPython.Runtime.PythonContext, IronPython, Version=2.0.0.0000, Culture=neutral" />
-    // </languages>
     public enum ScriptLanguageType
     {
       Python,
