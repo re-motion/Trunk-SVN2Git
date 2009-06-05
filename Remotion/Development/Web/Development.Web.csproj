@@ -62,6 +62,7 @@
     <Compile Include="UnitTesting\ExecutionEngine\WxeContextMock.cs" />
     <Compile Include="UnitTesting\UI\Controls\ControlInvoker.cs" />
     <Compile Include="UnitTesting\UI\Controls\NamingContainerMock.cs" />
+    <Compile Include="UnitTesting\UI\Controls\Rendering\HtmlHelperBase.cs" />
     <Compile Include="UnitTesting\UI\WcagHelperMock.cs" />
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
