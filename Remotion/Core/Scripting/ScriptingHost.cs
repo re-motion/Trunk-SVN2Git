@@ -10,7 +10,8 @@ using Remotion.Utilities;
 namespace Remotion.Scripting
 {
   /// <summary>
-  /// Provides access to Dynamic Language Runtime <see cref="ScriptEngine"/>|s.
+  /// Provides access to Dynamic Language Runtime <see cref="ScriptEngine"/>|s through its static members. 
+  /// Returned <see cref="ScriptEngine"/>|s are local to the calling thread.
   /// </summary>
   /// <remarks>
   /// <para>
@@ -36,6 +37,9 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptingHost
   {
+    /// <summary>
+    /// Script languages supported by re-motion.
+    /// </summary>
     public enum ScriptLanguageType
     {
       Python,
@@ -58,7 +62,9 @@ namespace Remotion.Scripting
       return s_scriptingHost;
     }
 
-
+    /// <summary>
+    /// Retrieves the ScriptEngine given by the <paramref name="languageType"/> parameter. Throws if requested engine is not available on system.
+    /// </summary>
     public static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
     {
       ArgumentUtility.CheckNotNull ("languageType", languageType);
