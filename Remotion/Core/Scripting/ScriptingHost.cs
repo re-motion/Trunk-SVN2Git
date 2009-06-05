@@ -3,9 +3,7 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Microsoft.Scripting.Hosting;
-using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 
@@ -20,7 +18,8 @@ namespace Remotion.Scripting
     // </languages>
     public enum ScriptLanguageType
     {
-      Python
+      Python,
+      None
     }
 
     [ThreadStatic]
@@ -30,7 +29,7 @@ namespace Remotion.Scripting
     private Dictionary<ScriptLanguageType, ScriptEngine> _scriptEngines;
 
 
-    public static ScriptingHost GetCurrentScriptingHost ()
+    public static ScriptingHost GetScriptingHost ()
     {
       if (s_scriptingHost == null)
       {
@@ -43,7 +42,7 @@ namespace Remotion.Scripting
     public static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
     {
       ArgumentUtility.CheckNotNull ("languageType", languageType);
-      return GetCurrentScriptingHost().GetEngine (languageType);
+      return GetScriptingHost().GetEngine (languageType);
     }
 
 
@@ -59,26 +58,33 @@ namespace Remotion.Scripting
       return _scriptRuntime;
     }
 
-    private Dictionary<ScriptLanguageType, ScriptEngine> GetScriptEngines ()
+    public Dictionary<ScriptLanguageType, ScriptEngine> GetScriptEngines ()
     {
       if (_scriptEngines == null)
       {
-        _scriptEngines = new Dictionary<ScriptLanguageType, ScriptEngine>();
-        foreach (ScriptLanguageType languageType in Enum.GetValues (typeof (ScriptLanguageType)))
-        {
-          ScriptEngine engine;
-          var engineAvailable = GetScriptRuntime().TryGetEngine (languageType.ToString(), out engine);
-          if (engineAvailable)
-            _scriptEngines[languageType] = engine;
-        }
+        _scriptEngines = FindScriptEngines ();
       }
       return _scriptEngines;
+    }
+
+    public Dictionary<ScriptLanguageType, ScriptEngine> FindScriptEngines ()
+    {
+      var scriptEngines = new Dictionary<ScriptLanguageType, ScriptEngine> ();
+      foreach (ScriptLanguageType languageType in Enum.GetValues (typeof (ScriptLanguageType)))
+      {
+        ScriptEngine engine;
+        var engineAvailable = GetScriptRuntime().TryGetEngine (languageType.ToString(), out engine);
+        if (engineAvailable)
+        {
+          scriptEngines[languageType] = engine;
+        }
+      }
+      return scriptEngines;
     }
 
 
     public ScriptEngine GetEngine (ScriptLanguageType languageType)
     {
-      //return GetScriptEngines()[languageType];
       ScriptEngine scriptEngine;
       bool engineAvailable = GetScriptEngines().TryGetValue (languageType, out scriptEngine);
       if (!engineAvailable)
