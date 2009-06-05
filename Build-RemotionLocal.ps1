@@ -1,4 +1,4 @@
-set-alias nant "C:\Program Files\NAnt\bin.net-2.0\nant.exe";
+set-alias nant "prereq\Tools\NAnt\bin.net-2.0\nant.exe";
 
 nant "-f:Remotion.build" "-D:build.temp.root=\Temp\RemotionLocal" "-t:net-3.5" "-l:Build.log" "-nologo" `
     "-D:build.update.assembly-info=false" `
