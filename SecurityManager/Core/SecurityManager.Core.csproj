@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{990B8638-A08F-4A94-B01A-E7DAEF089F27}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -409,7 +409,7 @@
     <None Include="Database\SecurityManagerSetupDBSpecialTables.sql" />
     <None Include="Domain\SecurityManagerQueries.xml">
     </None>
-    <None Include="GenerateSetupDBScript.ps1" />
+    <None Include="GenerateSetupDBScript.cmd" />
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
@@ -449,8 +449,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>powershell -command "Set-ExecutionPolicy Unrestricted"
-cd ..\..\
-.\GenerateSetupDBScript.ps1</PostBuildEvent>
+    <PostBuildEvent>cd ..\..\
+.\GenerateSetupDBScript.cmd</PostBuildEvent>
   </PropertyGroup>
 </Project>
