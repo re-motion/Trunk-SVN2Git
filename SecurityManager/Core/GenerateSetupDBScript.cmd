@@ -20,11 +20,13 @@ goto end
 :dbschema_error
 echo.
 echo There was an error running dbschema.exe.
-exit 1
+exit /b 1
 
 :ren_error
 echo.
 echo There was an error renaming SetupDB.sql to SecurityManagerSetupDB.sql.
-exit 2
+exit /b 2
 
 :end
+
+exit /b 0
