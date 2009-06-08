@@ -264,15 +264,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       return isList;
     }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocMultilineTextValue"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocMultilineTextValue</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected override string CssClassBase
-    {
-      get { return "bocMultilineTextValue"; }
-    }
   }
 }

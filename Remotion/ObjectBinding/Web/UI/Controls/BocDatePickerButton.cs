@@ -45,21 +45,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _datePickerButtonStyle = new Style();
     }
 
-    string IBocRenderableControl.CssClassBase
-    {
-      get { return null; }
-    }
-
-    string IBocRenderableControl.CssClassReadOnly
-    {
-      get { return "readOnly"; }
-    }
-
-    string IBocRenderableControl.CssClassDisabled
-    {
-      get { return "disabled"; }
-    }
-
     public bool IsDesignMode { get; set; }
 
     public bool EnableClientScript { get; set; }
@@ -125,20 +110,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       HasClientScript = false;
 
-      if (!IsDesignMode)
-      {
-        if (EnableClientScript)
-        {
-          bool isVersionGreaterOrEqual55 =
-              Context.Request.Browser.MajorVersion >= 6
-              || Context.Request.Browser.MajorVersion == 5
-                 && Context.Request.Browser.MinorVersion >= 0.5;
-          bool isInternetExplorer55AndHigher =
-              Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
+      if (IsDesignMode || !EnableClientScript)
+        return;
+      
+      bool isVersionGreaterOrEqual55 =
+          Context.Request.Browser.MajorVersion >= 6
+          || Context.Request.Browser.MajorVersion == 5
+             && Context.Request.Browser.MinorVersion >= 0.5;
+      bool isInternetExplorer55AndHigher =
+          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
 
-          HasClientScript = isInternetExplorer55AndHigher;
-        }
-      }
+      HasClientScript = isInternetExplorer55AndHigher;
     }
   }
 }

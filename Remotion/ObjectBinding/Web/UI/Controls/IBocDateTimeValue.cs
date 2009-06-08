@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool ProvideMaxLength { get; }
     SingleRowTextBoxStyle DateTextBoxStyle { get; }
     SingleRowTextBoxStyle TimeTextBoxStyle { get; }
-    BocDatePickerButton DatePickerButton { get; }
+    IBocDatePickerButton DatePickerButton { get; }
     bool ShowSeconds { get; }
     SingleRowTextBoxStyle DateTimeTextBoxStyle { get; }
     string DateString { get; }

@@ -22,9 +22,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   public interface IBocDatePickerButton : IBocRenderableControl, IControl
   {
+    new bool IsDesignMode { get; set; }
     string ImageFileName { get; }
     bool HasClientScript { get; }
-    string AlternateText { get; }
+    string AlternateText { get; set; }
     bool EnableClientScript { get; }
     string TargetControlID { get; }
     Unit DatePickerPopupWidth { get; }

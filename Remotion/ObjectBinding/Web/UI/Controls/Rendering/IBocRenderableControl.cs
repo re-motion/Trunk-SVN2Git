@@ -24,22 +24,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
   /// </summary>
   public interface IBocRenderableControl
   {
-    /// <summary>Gets the CSS-Class applied to the control as set by the application. May be <see langword="null"/>.</summary>
+    /// <summary>The CSS class applied to the control itself.</summary>
     string CssClass { get; set; }
-
-    /// <summary>Gets the CSS-Class applied to the control if <see cref="CssClass"/> is not set.</summary>
-    string CssClassBase { get; }
-
-    /// <summary>
-    /// Gets the CSS-Class applied to the control when it is displayed in read-only mode
-    /// (<see cref="IBusinessObjectBoundEditableControl.IsReadOnly"/> is <see langword="true"/>).
-    /// </summary>
-    string CssClassReadOnly { get; }
-
-    /// <summary>
-    /// Gets the CSS-Class applied to the control when it is disabled 
-    /// (<see cref="Enabled"/> is <see langword="false"/>).</summary>
-    string CssClassDisabled { get; }
 
     /// <summary>Evalutes whether this control is in <b>Design Mode</b>.</summary>
     bool IsDesignMode { get; }

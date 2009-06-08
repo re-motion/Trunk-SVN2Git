@@ -509,16 +509,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return s_supportedPropertyInterfaces; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocTextValue</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected override string CssClassBase
-    {
-      get { return "bocTextValue"; }
-    }
-
     private NumericValidationDataType GetNumericValidatorDataType (BocTextValueType valueType)
     {
       switch (valueType)

@@ -20,6 +20,7 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -43,6 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     private string _keyDownScript;
     private const string _dummyScript = "return false;";
     private IBocBooleanValue _booleanValue;
+    private IBocBooleanValueRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -111,9 +113,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       _booleanValue.Stub (mock => mock.NullDescription).Return (c_nullDescription);
 
       _booleanValue.Stub (mock => mock.CssClass).PropertyBehavior();
-      _booleanValue.Stub (mock => mock.CssClassBase).Return ("cssClassBase");
-      _booleanValue.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
-      _booleanValue.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
 
       StateBag stateBag = new StateBag();
       _booleanValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
@@ -261,8 +260,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
     private void CheckRendering (string value, string iconUrl, string description)
     {
-      var renderer = new BocBooleanValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _booleanValue);
-      renderer.Render();
+      _renderer = new BocBooleanValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _booleanValue);
+      _renderer.Render();
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
       checkOuterSpanAttributes (outerSpan);
@@ -298,7 +297,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _booleanValue.Attributes["class"];
       if (string.IsNullOrEmpty (cssClass))
-        cssClass = _booleanValue.CssClassBase;
+        cssClass = _renderer.CssClassBase;
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
     }
 
@@ -307,9 +306,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       CheckCssClass (outerSpan);
 
       if (!_booleanValue.Enabled)
-        Html.AssertAttribute (outerSpan, "class", _booleanValue.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (outerSpan, "class", _renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
       if (_booleanValue.IsReadOnly)
-        Html.AssertAttribute (outerSpan, "class", _booleanValue.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (outerSpan, "class", _renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       else
         Html.AssertStyleAttribute (outerSpan, "width", c_defaultControlWidth);
 

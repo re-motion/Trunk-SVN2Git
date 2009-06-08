@@ -19,6 +19,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -38,6 +39,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
 
     private IBocCheckBox _checkbox;
     private string _startupScript;
+    private IBocCheckboxRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -70,9 +72,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       _checkbox.Stub (mock => mock.FalseDescription).Return (c_falseDescription);
 
       _checkbox.Stub (mock => mock.CssClass).PropertyBehavior();
-      _checkbox.Stub (mock => mock.CssClassBase).Return ("cssClassBase");
-      _checkbox.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
-      _checkbox.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
 
       StateBag stateBag = new StateBag();
       _checkbox.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
@@ -222,8 +221,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
     {
       _checkbox.Value = value;
 
-      var renderer = new BocCheckboxRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _checkbox);
-      renderer.Render();
+      _renderer = new BocCheckboxRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _checkbox);
+      _renderer.Render();
 
       var document = Html.GetResultDocument();
 
@@ -278,13 +277,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _checkbox.Attributes["class"];
       if (string.IsNullOrEmpty (cssClass))
-        cssClass = _checkbox.CssClassBase;
+        cssClass = _renderer.CssClassBase;
 
       Html.AssertAttribute (outerSpan, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
       if (_checkbox.IsReadOnly)
-        Html.AssertAttribute (outerSpan, "class", _checkbox.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (outerSpan, "class", _renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       if (!_checkbox.Enabled)
-        Html.AssertAttribute (outerSpan, "class", _checkbox.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (outerSpan, "class", _renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
     }
   }
 }

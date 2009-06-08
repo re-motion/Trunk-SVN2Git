@@ -1207,46 +1207,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HtmlTextWriterTag.Div; }
     }
 
-    protected override void AddAttributesToRender (HtmlTextWriter writer)
-    {
-      bool isReadOnly = IsReadOnly;
-      bool isDisabled = ! Enabled;
-
-      string backUpCssClass = CssClass; // base.CssClass and base.ControlStyle.CssClass
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-      {
-        if (isReadOnly)
-          CssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          CssClass += " " + CssClassDisabled;
-      }
-      string backUpAttributeCssClass = Attributes["class"];
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        if (isReadOnly)
-          Attributes["class"] += " " + CssClassReadOnly;
-        else if (isDisabled)
-          Attributes["class"] += " " + CssClassDisabled;
-      }
-
-      base.AddAttributesToRender (writer);
-
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (CssClass))
-        CssClass = backUpCssClass;
-      if ((isReadOnly || isDisabled) && ! StringUtility.IsNullOrEmpty (Attributes["class"]))
-        Attributes["class"] = backUpAttributeCssClass;
-
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        string cssClass = CssClassBase;
-        if (isReadOnly)
-          cssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          cssClass += " " + CssClassDisabled;
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      }
-    }
-
     protected void CalculateCurrentPage (bool evaluateGoTo)
     {
       if (!IsPagingEnabled || Value == null)
@@ -1327,7 +1287,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var serviceLocator = ServiceLocator.Current;
       var factory = serviceLocator.GetInstance<IBocListRendererFactory> ();
-      factory.CreateRenderer (new Remotion.Web.Infrastructure.HttpContextWrapper (Context), writer, this, serviceLocator).Render ();
+      var renderer = factory.CreateRenderer (new Remotion.Web.Infrastructure.HttpContextWrapper (Context), writer, this, serviceLocator);
+      renderer.Render ();
     }
 
     public bool HasNavigator
@@ -4304,51 +4265,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     #region protected virtual string CssClass...
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocList</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected virtual string CssClassBase
-    {
-      get { return "bocList"; }
-    }
-
-    string IBocRenderableControl.CssClassBase
-    {
-      get { return CssClassBase; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>readOnly</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocList.readOnly</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassReadOnly
-    {
-      get { return "readOnly"; }
-    }
-
-    string IBocRenderableControl.CssClassReadOnly
-    {
-      get { return CssClassReadOnly; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocEnumValue"/> when it is displayed disabled. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>disabled</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocEnumValue.disabled</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassDisabled
-    {
-      get { return "disabled"; }
-    }
-
-    string IBocRenderableControl.CssClassDisabled
-    {
-      get { return CssClassDisabled; }
-    }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>table</c> tag. </summary>
     /// <remarks> Class: <c>bocListTable</c> </remarks>

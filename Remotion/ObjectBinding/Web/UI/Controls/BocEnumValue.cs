@@ -97,9 +97,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void RenderControl (HtmlTextWriter writer)
     {
-      var factory = ServiceLocator.Current.GetInstance<IBocEnumValueRendererFactory> ();
+      var factory = ServiceLocator.Current.GetInstance<IBocEnumValueRendererFactory>();
       var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render ();
+      renderer.Render();
     }
 
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
@@ -639,36 +639,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return s_supportedPropertyInterfaces; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocEnumValue"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocEnumValue</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected virtual string CssClassBase
-    {
-      get { return "bocEnumValue"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocEnumValue"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>readOnly</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocEnumValue.readOnly</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassReadOnly
-    {
-      get { return "readOnly"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocEnumValue"/> when it is displayed disabled. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>disabled</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocEnumValue.disabled</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassDisabled
-    {
-      get { return "disabled"; }
-    }
-
     private IEnumerationValueInfo[] GetEnabledValues ()
     {
       if (Property == null)
@@ -723,24 +693,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RaisePostDataChangedEvent ();
     }
 
-    string IBocRenderableControl.CssClassReadOnly
-    {
-      get { return CssClassReadOnly; }
-    }
-
-    string IBocRenderableControl.CssClassDisabled
-    {
-      get { return CssClassDisabled; }
-    }
-
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
-    }
-
-    string IBocRenderableControl.CssClassBase
-    {
-      get { return CssClassBase; }
     }
 
     IEnumerationValueInfo[] IBocEnumValue.GetEnabledValues ()

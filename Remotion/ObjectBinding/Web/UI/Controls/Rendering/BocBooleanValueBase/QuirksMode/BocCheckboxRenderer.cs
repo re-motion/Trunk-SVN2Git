@@ -169,5 +169,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       }
       return Control.Value.Value ? trueDescription : falseDescription;
     }
+
+    public override string CssClassBase
+    {
+      get { return "bocCheckBox"; }
+    }
   }
 }

@@ -71,7 +71,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
       var datePickerButton = Control.DatePickerButton;
       datePickerButton.AlternateText = Control.GetDatePickerText();
-      datePickerButton.TargetControlID = Control.GetDateTextboxID();
       datePickerButton.IsDesignMode = Control.IsDesignMode;
 
       RenderTableBeginTag (dateTextBox, timeTextBox); // Begin table
@@ -162,7 +161,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       Writer.RenderEndTag(); // End td
     }
 
-    private void RenderDatePickerCell (bool hasDatePicker, BocDatePickerButton datePickerButton)
+    private void RenderDatePickerCell (bool hasDatePicker, IBocDatePickerButton datePickerButton)
     {
       if (!hasDatePicker)
         return;
@@ -250,6 +249,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     protected override void AddAdditionalAttributes ()
     {
       Writer.AddStyleAttribute ("display", "inline");
+    }
+
+    public override string CssClassBase
+    {
+      get { return "bocDateTimeValue"; }
     }
 
     private void Initialize (TextBox textBox, SingleRowTextBoxStyle textBoxStyle, int maxLength)

@@ -71,5 +71,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
       label.ApplyStyle (Control.LabelStyle);
       return label;
     }
+
+    public override string CssClassBase
+    {
+      get { return "bocTextValue"; }
+    }
   }
 }

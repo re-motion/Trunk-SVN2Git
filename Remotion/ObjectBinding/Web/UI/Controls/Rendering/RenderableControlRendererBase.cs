@@ -38,8 +38,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
     /// </summary>
     /// <param name="overrideWidth">When <see langword="true"/>, the 'width' style attribute is rendered with a value of 'auto'
     /// without changing the contents of the actual style.</param>
-    /// <remarks>This automatically adds the CSS classes found in <see cref="IBocRenderableControl.CssClassReadOnly"/>
-    /// and <see cref="IBocRenderableControl.CssClassDisabled"/> if appropriate.</remarks>
+    /// <remarks>This automatically adds the CSS classes found in <see cref="CssClassReadOnly"/>
+    /// and <see cref="CssClassDisabled"/> if appropriate.</remarks>
     protected void AddAttributesToRender (bool overrideWidth)
     {
       Unit backUpWidth;
@@ -63,6 +63,33 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
     /// Use this to render style attributes without putting them into the control's <see cref="IBocRenderableControl.Style"/> property.
     /// </summary>
     protected abstract void AddAdditionalAttributes();
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> when it is displayed in read-only mode. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>readOnly</c>. </para>
+    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocTextValue.readOnly</c> as a selector. </para>
+    /// </remarks>
+    public virtual string CssClassReadOnly
+    {
+      get { return "readOnly"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> itself. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>bocTextValue</c>. </para>
+    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
+    /// </remarks>
+    public abstract string CssClassBase { get; }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> when it is displayed disabled. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>disabled</c>. </para>
+    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocTextValue.disabled</c> as a selector.</para>
+    /// </remarks>
+    public virtual string CssClassDisabled
+    {
+      get { return "disabled"; }
+    }
 
     private void AddStandardAttributesToRender ()
     {
@@ -116,7 +143,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
         Control.Attributes["class"] += GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
 
       if (!hasCssClass && !hasClassAttribute)
-        Control.CssClass = Control.CssClassBase + GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
+        Control.CssClass = CssClassBase + GetAdditionalCssClass (Control.IsReadOnly, !Control.Enabled);
     }
 
     private void RestoreWidth (string backUpStyleWidth, Unit backUpWidth)
@@ -135,9 +162,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
     {
       string additionalCssClass = string.Empty;
       if (isReadOnly)
-        additionalCssClass = " " + Control.CssClassReadOnly;
+        additionalCssClass = " " + CssClassReadOnly;
       else if (isDisabled)
-        additionalCssClass = " " + Control.CssClassDisabled;
+        additionalCssClass = " " + CssClassDisabled;
       return additionalCssClass;
     }
   }

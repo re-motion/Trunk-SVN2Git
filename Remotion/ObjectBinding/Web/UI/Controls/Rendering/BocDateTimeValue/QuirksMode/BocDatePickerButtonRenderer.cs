@@ -79,6 +79,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       Writer.RenderEndTag();
     }
 
+    public string CssClassBase
+    {
+      get { throw new NotSupportedException (); }
+    }
+
+    public string CssClassDisabled
+    {
+      get { throw new NotSupportedException (); }
+    }
+
+    public string CssClassReadOnly
+    {
+      get { throw new NotSupportedException (); }
+    }
+
     private string GetClickScript ()
     {
       string script;

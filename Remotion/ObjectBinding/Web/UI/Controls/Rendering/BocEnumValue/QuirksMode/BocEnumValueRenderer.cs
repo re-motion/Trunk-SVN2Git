@@ -160,5 +160,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
     {
       Writer.AddStyleAttribute ("display", "inline");
     }
+
+    public override string CssClassBase
+    {
+      get { return "bocEnumValue"; }
+    }
   }
 }

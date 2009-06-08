@@ -191,5 +191,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       labelControl.Height = Unit.Empty;
       labelControl.ApplyStyle (Control.LabelStyle);
     }
+
+    public override string CssClassBase
+    {
+      get { return "bocBooleanValue"; }
+    }
   }
 }

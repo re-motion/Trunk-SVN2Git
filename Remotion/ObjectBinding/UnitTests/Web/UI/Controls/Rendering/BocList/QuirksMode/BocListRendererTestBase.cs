@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
-using NUnit.Framework;
+using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
@@ -96,7 +96,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (list => list.CssClassDataRow).Return ("cssClassDataRow");
       List.Stub (list => list.CssClassDataRowSelected).Return ("cssClassDataRowSelected");
       List.Stub (list => list.CssClassNavigator).Return ("cssClassNavigator");
-      
+
+      StateBag stateBag = new StateBag ();
+      List.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
+      List.Stub (mock => mock.Style).Return (List.Attributes.CssStyle);
+      List.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
 
       var page = MockRepository.GenerateMock<IPage>();
       List.Stub (list => list.Page).Return (page);

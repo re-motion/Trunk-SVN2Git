@@ -161,39 +161,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocTextValue</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected abstract string CssClassBase { get; }
-
-    string IBocRenderableControl.CssClassBase { get { return CssClassBase; } }
-
-      /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>readOnly</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocTextValue.readOnly</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassReadOnly
-    {
-      get { return "readOnly"; }
-    }
-
-    string IBocRenderableControl.CssClassReadOnly { get { return CssClassReadOnly; } }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocTextValue"/> when it is displayed disabled. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>disabled</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocTextValue.disabled</c> as a selector.</para>
-    /// </remarks>
-    protected virtual string CssClassDisabled
-    {
-      get { return "disabled"; }
-    }
-
-    string IBocRenderableControl.CssClassDisabled { get { return CssClassDisabled; } }
-
     /// <summary> Gets or sets the string representation of the current value. </summary>
     /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
     [Description ("The string representation of the current value.")]

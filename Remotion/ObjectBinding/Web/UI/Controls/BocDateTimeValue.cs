@@ -559,11 +559,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    string IBocRenderableControl.CssClassDisabled
-    {
-      get { return CssClassDisabled; }
-    }
-
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
@@ -892,7 +887,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Gets the <see cref="BocDatePickerButton"/> used in edit mode for opening the date picker. </summary>
     [Browsable (false)]
-    public BocDatePickerButton DatePickerButton
+    public IBocDatePickerButton DatePickerButton
     {
       get { return _datePickerButton; }
     }
@@ -946,47 +941,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    #region protected virtual string CssClass...
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocDateTimeValue"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocDateTimeValue</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected virtual string CssClassBase
-    {
-      get { return "bocDateTimeValue"; }
-    }
-
-    string IBocRenderableControl.CssClassReadOnly
-    {
-      get { return CssClassReadOnly; }
-    }
-
-    string IBocRenderableControl.CssClassBase
-    {
-      get { return CssClassBase; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocDateTimeValue"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>readOnly</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocDateTimeValue.readOnly</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassReadOnly
-    {
-      get { return "readOnly"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocDateTimeValue"/> when it is displayed disabled. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>disabled</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocDateTimeValue.disabled</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassDisabled
-    {
-      get { return "disabled"; }
-    }
 
     public string DateString
     {
@@ -997,8 +951,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return InternalTimeValue; }
     }
-
-    #endregion
   }
 
   /// <summary> A list possible data types for the <see cref="BocDateTimeValue"/> </summary>

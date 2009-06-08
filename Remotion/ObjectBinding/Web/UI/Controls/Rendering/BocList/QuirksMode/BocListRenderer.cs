@@ -103,6 +103,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <seealso cref="BocListNavigationBlockRenderer"/>
     public virtual void Render ()
     {
+      AddAttributesToRender(false);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
       //  Render list block / menu block
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
@@ -134,8 +137,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       }
 
       Writer.RenderEndTag(); //  TR
-
       Writer.RenderEndTag(); //  Table
+      Writer.RenderEndTag(); //  div
     }
 
     private void RenderTopLevelColumnGroupForLegacyBrowser ()
@@ -195,6 +198,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       }
 
       Writer.RenderEndTag();
+    }
+
+    protected override void AddAdditionalAttributes ()
+    {
+    }
+
+    public override string CssClassBase
+    {
+      get { return "bocList"; }
     }
   }
 }

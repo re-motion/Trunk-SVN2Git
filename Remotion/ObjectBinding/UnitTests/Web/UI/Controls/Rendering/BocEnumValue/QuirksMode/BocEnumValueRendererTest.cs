@@ -23,6 +23,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode;
 using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
@@ -36,6 +37,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
     private readonly Unit _width = Unit.Point (173);
     private readonly Unit _height = Unit.Point (17);
     private IEnumerationValueInfo[] _enumerationInfos;
+    private IBocEnumValueRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -61,10 +63,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub (mock => mock.GetNullItemText()).Return ("null");
       _enumValue.Stub (mock => mock.GetLabelClientID()).Return ("LabelClientID");
       _enumValue.Stub (mock => mock.GetListControlClientID ()).Return ("ListControlClientID");
-
-      _enumValue.Stub (mock => mock.CssClassBase).Return ("cssClassBase");
-      _enumValue.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
-      _enumValue.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
 
       StateBag stateBag = new StateBag ();
       _enumValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
@@ -96,8 +94,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
+      _renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
+      _renderer.Render();
 
       var document = Html.GetResultDocument();
       var div = GetAssertedDiv (document, false, false, false);
@@ -442,13 +440,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _enumValue.Attributes["class"];
       if (string.IsNullOrEmpty (cssClass))
-        cssClass = _enumValue.CssClassBase;
+        cssClass = _renderer.CssClassBase;
 
       Html.AssertAttribute (div, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
       if (isReadOnly)
-        Html.AssertAttribute (div, "class", _enumValue.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (div, "class", _renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       if (isDisabled)
-        Html.AssertAttribute (div, "class", _enumValue.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (div, "class", _renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
 
       Html.AssertStyleAttribute (div, "display", "inline");
 

@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
   /// <summary>
   /// Abstract base class for BocList renderers. Defines common constants, properties and utility methods.
   /// </summary>
-  public abstract class BocListRendererBase : RendererBase<IBocList>
+  public abstract class BocListRendererBase : RenderableControlRendererBase<IBocList>
   {
     // constants
     // unused protected const string c_dataRowHiddenFieldIDSuffix = "_Boc_HiddenField_";
@@ -67,8 +67,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <summary>Number of columns to show in design mode before actual columns have been defined.</summary>
     protected const int c_designModeDummyColumnCount = 3;
 
-    private readonly IBocList _list;
-
     /// <summary>
     /// Constructor initializing the renderer with the <see cref="BocList"/> rendering object and the
     /// <see cref="HtmlTextWriter"/> rendering target.
@@ -84,8 +82,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     {
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("writer", writer);
-
-      _list = list;
     }
 
     /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
@@ -202,6 +198,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       else
         cssClassTableCell = List.CssClassDataCellEven;
       return cssClassTableCell;
+    }
+
+    protected override void AddAdditionalAttributes ()
+    {
+    }
+
+    public override string CssClassBase
+    {
+      get { throw new NotImplementedException (); }
     }
   }
 }

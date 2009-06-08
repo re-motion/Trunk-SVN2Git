@@ -192,33 +192,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _hasClientScript = value; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocCheckBox</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected abstract string CssClassBase { get; }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>readOnly</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.readOnly</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassReadOnly
-    {
-      get { return "readOnly"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>disabled</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocCheckBox.disabled</c> as a selector.</para>
-    /// </remarks>
-    protected virtual string CssClassDisabled
-    {
-      get { return "disabled"; }
-    }
-
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
     protected override object ValueImplementation
     {
@@ -300,21 +273,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
-    }
-
-    string IBocRenderableControl.CssClassReadOnly
-    {
-      get { return CssClassReadOnly; }
-    }
-
-    string IBocRenderableControl.CssClassDisabled
-    {
-      get { return CssClassDisabled; }
-    }
-
-    string IBocRenderableControl.CssClassBase
-    {
-      get { return CssClassBase; }
     }
   }
 }

@@ -34,6 +34,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
     /// <summary>Gets the context in which rendering occurs.</summary>
     IHttpContext Context { get; }
 
+    /// <summary>Gets the default CSS class, which is applied if no CSS class is defined on the control.</summary>
+    string CssClassBase { get; }
+
+    string CssClassDisabled { get; }
+
+    string CssClassReadOnly { get; }
+
     /// <summary>Renders the <see cref="Control"/> using the <see cref="Writer"/> in the given <see cref="Context"/>.</summary>
     void Render ();
   }

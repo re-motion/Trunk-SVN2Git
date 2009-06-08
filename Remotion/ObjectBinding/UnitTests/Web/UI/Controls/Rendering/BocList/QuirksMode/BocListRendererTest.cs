@@ -76,7 +76,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       var document = Html.GetResultDocument();
 
-      var table = Html.GetAssertedChildElement (document, "table", 0);
+      var div = Html.GetAssertedChildElement(document, "div", 0);
+
+      var table = Html.GetAssertedChildElement (div, "table", 0);
       Html.AssertAttribute (table, "cellspacing", "0");
       Html.AssertAttribute (table, "cellpadding", "0");
       Html.AssertStyleAttribute (table, "width", "100%");

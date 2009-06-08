@@ -393,16 +393,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return !WcagHelper.Instance.IsWaiConformanceLevelARequired () && _showDescription == true; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocCheckBox"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocCheckBox</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected override string CssClassBase
-    {
-      get { return "bocCheckBox"; }
-    }
-
     private void DetermineClientScriptLevel ()
     {
       HasClientScript = false;

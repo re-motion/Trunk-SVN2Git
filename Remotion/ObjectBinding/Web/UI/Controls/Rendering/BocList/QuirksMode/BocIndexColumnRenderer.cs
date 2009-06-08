@@ -99,5 +99,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       Writer.Write (renderedIndex);
       Writer.RenderEndTag();
     }
+
+
   }
 }

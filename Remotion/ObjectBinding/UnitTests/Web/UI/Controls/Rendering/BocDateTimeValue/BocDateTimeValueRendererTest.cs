@@ -14,11 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
 using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
@@ -31,34 +35,46 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private const string c_defaultControlWidth = "150pt";
 
     private IBocDateTimeValue _dateTimeValue;
+    private IBocDateTimeValueRenderer _renderer;
+    private IHttpContext _httpContext;
 
     [SetUp]
     public void SetUp ()
     {
       Initialize();
+
+      var datePickerButton = MockRepository.GenerateStub<IBocDatePickerButton>();
+      datePickerButton.Stub (stub => stub.HasClientScript).Return (true);
+
       _dateTimeValue = MockRepository.GenerateStub<IBocDateTimeValue>();
       _dateTimeValue.ID = "controlId";
       _dateTimeValue.Stub (mock => mock.ClientID).Return ("controlId");
-      _dateTimeValue.Stub (mock => mock.DatePickerButton).Return (new StubDatePickerButton());
+      _dateTimeValue.Stub (mock => mock.DatePickerButton).Return (datePickerButton);
       _dateTimeValue.DatePickerButton.AlternateText = "DatePickerButton";
 
       _dateTimeValue.Stub (mock => mock.ProvideMaxLength).Return (true);
 
-      _dateTimeValue.Stub (mock => mock.CssClassBase).Return ("cssClassBase");
-      _dateTimeValue.Stub (mock => mock.CssClassDisabled).Return ("cssClassDisabled");
-      _dateTimeValue.Stub (mock => mock.CssClassReadOnly).Return ("cssClassReadonly");
-
       _dateTimeValue.Stub (mock => mock.GetDateTextboxID()).Return ("DateTextboxId");
-      _dateTimeValue.Stub (mock => mock.GetTimeTextboxID ()).Return ("TimeTextboxId");
-      
+      _dateTimeValue.Stub (mock => mock.GetTimeTextboxID()).Return ("TimeTextboxId");
+
       StateBag stateBag = new StateBag();
       _dateTimeValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
       _dateTimeValue.Stub (mock => mock.Style).Return (_dateTimeValue.Attributes.CssStyle);
-      _dateTimeValue.Stub (mock => mock.DateTextBoxStyle).Return (new TextBoxStyle ());
-      _dateTimeValue.Stub (mock => mock.TimeTextBoxStyle).Return (new TextBoxStyle ());
-      _dateTimeValue.Stub (mock => mock.DateTimeTextBoxStyle).Return (new TextBoxStyle ());
+      _dateTimeValue.Stub (mock => mock.DateTextBoxStyle).Return (new TextBoxStyle());
+      _dateTimeValue.Stub (mock => mock.TimeTextBoxStyle).Return (new TextBoxStyle());
+      _dateTimeValue.Stub (mock => mock.DateTimeTextBoxStyle).Return (new TextBoxStyle());
       _dateTimeValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
 
+      HttpBrowserCapabilities browser = new HttpBrowserCapabilities();
+      browser.Capabilities = new Hashtable ();
+      browser.Capabilities.Add ("browser", "IE");
+      browser.Capabilities.Add ("majorversion", "7");
+
+      var request = MockRepository.GenerateStub<IHttpRequest> ();
+      request.Browser = browser;
+
+      _httpContext = MockRepository.GenerateStub<IHttpContext>();
+      _httpContext.Stub (stub => stub.Request).Return (request);
     }
 
     [Test]
@@ -67,8 +83,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, false);
     }
@@ -80,8 +96,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, false);
     }
@@ -93,8 +109,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, false);
     }
@@ -106,8 +122,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, false);
     }
@@ -117,8 +133,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     {
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, true, false);
     }
@@ -129,8 +145,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, true, false);
     }
@@ -141,8 +157,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.Date);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, true, false);
     }
@@ -154,8 +170,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, false);
     }
@@ -168,8 +184,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, false);
     }
@@ -182,8 +198,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, false);
     }
@@ -195,8 +211,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, true);
     }
@@ -209,8 +225,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, true);
     }
@@ -223,8 +239,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, true);
     }
@@ -235,8 +251,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       SetStyle (false);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, true, true);
     }
@@ -248,8 +264,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, true, true);
     }
@@ -261,8 +277,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.Date);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, true, true);
     }
@@ -275,8 +291,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, true);
     }
@@ -290,8 +306,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, true);
     }
@@ -305,8 +321,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, true);
     }
@@ -318,8 +334,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, true);
     }
@@ -332,8 +348,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, true);
     }
@@ -346,8 +362,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, true);
     }
@@ -358,8 +374,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       SetStyle (true);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, true, true);
     }
@@ -371,8 +387,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, true, true);
     }
@@ -384,8 +400,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.Date);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, true, true);
     }
@@ -398,8 +414,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, true);
     }
@@ -413,8 +429,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, true);
     }
@@ -428,8 +444,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, true);
     }
@@ -440,8 +456,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (false, false, false);
     }
@@ -453,8 +469,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.IsReadOnly).Return (true);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _dateTimeValue);
-      renderer.Render ();
+      _renderer = new BocDateTimeValueRenderer (_httpContext, Html.Writer, _dateTimeValue);
+      _renderer.Render();
 
       AssertDocument (true, false, false);
     }
@@ -498,7 +514,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
 
       XmlNode buttonCell = GetAssertedButtonCell (tr);
       Html.AssertChildElementCount (buttonCell, 0);
-      
+
       if (_dateTimeValue.ActualValueType != BocDateTimeValueType.Date)
       {
         XmlNode timeBoxCell = GetAssertedTimeBoxCell (tr);
@@ -621,14 +637,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       Html.AssertAttribute (
           div,
           "class",
-          withStyle ? _dateTimeValue.CssClass : _dateTimeValue.CssClassBase,
-          HtmlHelper.AttributeValueCompareMode.Contains);
+          withStyle ? _dateTimeValue.CssClass : _renderer.CssClassBase,
+          HtmlHelperBase.AttributeValueCompareMode.Contains);
 
       if (isDisabled)
-        Html.AssertAttribute (div, "class", _dateTimeValue.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (div, "class", _renderer.CssClassDisabled, HtmlHelperBase.AttributeValueCompareMode.Contains);
 
       if (isReadOnly)
-        Html.AssertAttribute (div, "class", _dateTimeValue.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (div, "class", _renderer.CssClassReadOnly, HtmlHelperBase.AttributeValueCompareMode.Contains);
 
       Html.AssertStyleAttribute (div, "width", "auto");
       Html.AssertStyleAttribute (div, "display", "inline");

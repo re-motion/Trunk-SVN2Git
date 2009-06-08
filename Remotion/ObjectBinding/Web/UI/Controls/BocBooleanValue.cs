@@ -423,16 +423,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return ! isList;
     }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocBooleanValue"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocBooleanValue</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected override string CssClassBase
-    {
-      get { return "bocBooleanValue"; }
-    }
-
     private void DetermineClientScriptLevel ()
     {
       HasClientScript = !IsDesignMode;
@@ -451,11 +441,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     BocBooleanValueResourceSet IBocBooleanValue.CreateResourceSet ()
     {
       return CreateResourceSet ();
-    }
-
-    string IBocRenderableControl.CssClassBase
-    {
-      get { return CssClassBase; }
     }
   }
 }
