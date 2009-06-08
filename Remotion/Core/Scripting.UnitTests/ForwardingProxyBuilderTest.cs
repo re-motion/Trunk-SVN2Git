@@ -3,11 +3,11 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -48,68 +48,5 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (proxiedFieldInfo.IsInitOnly, Is.True);
       Assert.That (proxiedFieldInfo.IsPrivate, Is.True);
     }  
-  }
-
-
-  public interface IProxiedGetName
-  {
-    string GetName ();
-  }
-
-
-  public class Proxied : IProxiedGetName
-  {
-    private string _name;
-
-    public Proxied ()
-      : this ("default")
-    {
-    }
-
-    public Proxied (string name)
-    {
-      _name = name;
-    }
-
-    public string Name
-    {
-      get { return _name; }
-    }
-
-    public string MutableName
-    {
-      get { return _name; }
-      set { _name = value; }
-    }
-
-    public string ReadonlyName
-    {
-      get { return _name; }
-    }
-
-    public string WriteonlyName
-    {
-      set { _name = value; }
-    }
-
-    public string GetName ()
-    {
-      return "Implementer.IProxiedGetName";
-    }
-
-    public string Sum (params int[] numbers)
-    {
-      return Name + ": " + numbers.Sum ();
-    }
-
-    public string PrependName (string text)
-    {
-      return Name + " " + text;
-    }
-
-    public override string ToString ()
-    {
-      return "[Proxied: " + Name + "]";
-    }
   }
 }

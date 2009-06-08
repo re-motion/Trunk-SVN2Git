@@ -68,9 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForwardingProxyBuilderTest.cs" />
+    <Compile Include="TestDomain\IProxiedGetName.cs" />
     <Compile Include="IronPythonAsFormulaLanguageSpikeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <Compile Include="TestDomain\Proxied.cs" />
     <Compile Include="ScriptingHostTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -98,9 +100,6 @@
     <None Include="App.config">
     </None>
     <None Include="Core.Scripting.UnitTests.build" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TestDomain\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
