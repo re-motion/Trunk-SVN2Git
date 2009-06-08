@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4A626E26-F384-451A-A966-C90B961D9C8D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.DynamicProxy2, Version=2.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
     <Reference Include="IronPython, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5a37eec359dd3d95, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\IronPython.dll</HintPath>
@@ -63,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ForwardingProxyBuilderTest.cs" />
     <Compile Include="IronPythonAsFormulaLanguageSpikeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
@@ -93,6 +98,9 @@
     <None Include="App.config">
     </None>
     <None Include="Core.Scripting.UnitTests.build" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="TestDomain\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

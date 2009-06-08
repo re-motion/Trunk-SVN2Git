@@ -58,7 +58,7 @@ namespace Remotion.Scripting.UnitTests
       ScriptingHost scriptingHost = ScriptingHost.GetScriptingHost (); 
       Assert.That (scriptingHost, Is.Not.Null);
       Assert.That (scriptingHostDifferentThread, Is.Not.Null);
-      Assert.That (scriptingHost, Is.Not.EqualTo (scriptingHostDifferentThread));
+      Assert.That (Object.ReferenceEquals (scriptingHost, scriptingHostDifferentThread), Is.Not.True);
     }
 
 
