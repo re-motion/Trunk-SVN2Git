@@ -69,7 +69,6 @@
   <ItemGroup>
     <Compile Include="ForwardingProxyBuilderTest.cs" />
     <Compile Include="TestDomain\IProxiedGetName.cs" />
-    <Compile Include="IronPythonAsFormulaLanguageSpikeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="TestDomain\Proxied.cs" />

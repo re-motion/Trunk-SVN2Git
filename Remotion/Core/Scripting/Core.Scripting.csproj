@@ -56,11 +56,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DlrHostSpike.cs" />
     <Compile Include="ForwardingProxyBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <Compile Include="PythonScriptEngineSpike.cs" />
     <Compile Include="ScriptingHost.cs" />
   </ItemGroup>
   <ItemGroup>
