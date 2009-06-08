@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6DEF9C11-1D5A-4B14-A4EB-F4C7E7CC3E7B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -599,6 +599,7 @@
     <Compile Include="Linq\Parsing\FieldResolving\WhereFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\ReplacingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\CastExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\MethodCallExpressionNodeTypeRegistryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\ExpressionTreeParserTest.cs" />
     <Compile Include="Linq\Parsing\AnonymousType.cs" />
