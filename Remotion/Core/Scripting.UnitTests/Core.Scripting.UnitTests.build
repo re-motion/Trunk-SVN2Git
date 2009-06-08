@@ -36,6 +36,8 @@
         <exclude name="Reflection/TestAssemblies/**/*.cs" />
       </sources>
       <references failonempty="true">
+        <include name="${build.test.outputdir}/Castle.Core.dll" />
+        <include name="${build.test.outputdir}/Castle.DynamicProxy2.dll" />
         <include name="${build.test.outputdir}/Remotion.dll" />
         <include name="${build.test.outputdir}/Remotion.Scripting.dll"/>
         <include name="${build.test.outputdir}/Remotion.Development.dll"/>
