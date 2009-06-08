@@ -51,7 +51,6 @@ namespace Remotion.Development.Web.UnitTesting.UI.Controls.Rendering
     private readonly StreamReader _reader;
 
     private readonly BinaryAssertDelegate _assertAreEqual;
-    private readonly BinaryAssertDelegate _assertNotEqual;
     private readonly BinaryAssertDelegate _assertGreaterThan;
     private readonly UnaryAssertDelegate _assertNotNull;
     private readonly UnaryAssertDelegate _assertIsNull;
@@ -63,14 +62,12 @@ namespace Remotion.Development.Web.UnitTesting.UI.Controls.Rendering
     /// </summary>
     protected HtmlHelperBase (
         BinaryAssertDelegate areEqual,
-        BinaryAssertDelegate notEqual,
         BinaryAssertDelegate greaterThan,
         UnaryAssertDelegate notNull,
         UnaryAssertDelegate isNull,
         ConditionAssertDelegate isTrue)
     {
       ArgumentUtility.CheckNotNull ("areEqual", areEqual);
-      ArgumentUtility.CheckNotNull ("notEqual", notEqual);
       ArgumentUtility.CheckNotNull ("greaterThan", greaterThan);
       ArgumentUtility.CheckNotNull ("notNull", notNull);
       ArgumentUtility.CheckNotNull ("isNull", isNull);
@@ -81,7 +78,6 @@ namespace Remotion.Development.Web.UnitTesting.UI.Controls.Rendering
       _reader = new StreamReader (Stream, Encoding.Unicode);
 
       _assertAreEqual = areEqual;
-      _assertNotEqual = notEqual;
       _assertGreaterThan = greaterThan;
       _assertNotNull = notNull;
       _assertIsNull = isNull;
@@ -278,11 +274,6 @@ namespace Remotion.Development.Web.UnitTesting.UI.Controls.Rendering
     protected BinaryAssertDelegate AssertAreEqual
     {
       get { return _assertAreEqual; }
-    }
-
-    protected BinaryAssertDelegate AssertNotEqual
-    {
-      get { return _assertNotEqual; }
     }
 
     protected BinaryAssertDelegate AssertGreaterThan

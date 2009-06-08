@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F5416318-15B4-421E-9B44-03CD4C052D5A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -97,6 +97,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
     <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
       <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
       <Name>Core.Interfaces</Name>
@@ -160,6 +161,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Web\UnitTesting\UI\Controls\ControlInvokerTest.cs" />
+    <Compile Include="Web\UnitTesting\UI\Controls\Rendering\ConcreteHtmlHelper.cs" />
+    <Compile Include="Web\UnitTesting\UI\Controls\Rendering\HtmlHelperBaseTest.cs" />
+    <Compile Include="Web\UnitTesting\UI\Controls\Rendering\IAsserter.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <None Include="Development.UnitTests.build" />
     <None Include="..\..\..\remotion.snk">
