@@ -613,7 +613,6 @@
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\WhereExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\TakeExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SumExpressionNodeTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\IntermediateModel\SingleOrDefaultExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SingleExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SelectManyExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SelectExpressionNodeTest.cs" />
