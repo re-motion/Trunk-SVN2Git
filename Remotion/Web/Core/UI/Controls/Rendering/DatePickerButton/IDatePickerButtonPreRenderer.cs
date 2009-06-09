@@ -15,10 +15,9 @@
 // 
 using System;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
+namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
-  public interface IDatePickerButtonPreRenderer
+  public interface IDatePickerButtonPreRenderer : IPreRenderer<IDatePickerButton>
   {
-    void PreRender ();
   }
 }

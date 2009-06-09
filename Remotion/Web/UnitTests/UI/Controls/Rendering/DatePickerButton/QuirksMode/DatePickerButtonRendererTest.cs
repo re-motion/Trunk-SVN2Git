@@ -15,7 +15,7 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode;
 using Rhino.Mocks;
 

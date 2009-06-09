@@ -19,9 +19,14 @@ using System.Web.UI.WebControls;
 
 namespace Remotion.Web.UI.Controls.Rendering
 {
+  /// <summary>
+  /// Exposes WebControl properties for <see cref="RendererBase{TControl}"/>.
+  /// </summary>
   public interface IStyledControl : IControl
   {
-    /// <summary>The CSS class applied to the control itself.</summary>
+    /// <summary>
+    /// Interface exposure of <see cref="WebControl.CssClass"/>.
+    /// </summary>
     string CssClass { get; set; }
 
     /// <summary>

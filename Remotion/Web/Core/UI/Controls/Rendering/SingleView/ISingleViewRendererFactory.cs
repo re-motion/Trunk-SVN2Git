@@ -17,11 +17,13 @@ using System;
 using System.Web.UI;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering
+namespace Remotion.Web.UI.Controls.Rendering.SingleView
 {
-  public interface IRendererFactory<TControl>
-      where TControl: IControl
+  /// <summary>
+  /// Interface for factories that create renderers for <see cref="ISingleView"/>.
+  /// </summary>
+  public interface ISingleViewRendererFactory
   {
-    IRenderer<TControl> CreateRenderer (IHttpContext context, HtmlTextWriter writer, TControl control);
+    ISingleViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control);
   }
 }

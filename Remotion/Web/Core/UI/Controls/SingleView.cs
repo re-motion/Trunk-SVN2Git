@@ -132,7 +132,7 @@ namespace Remotion.Web.UI.Controls
 
     public override void RenderControl (HtmlTextWriter writer)
     {
-      var factory = ServiceLocator.Current.GetInstance<IRendererFactory<ISingleView>>();
+      var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
       var renderer = factory.CreateRenderer (new HttpContextWrapper(Context), writer, this);
       renderer.Render();
     }

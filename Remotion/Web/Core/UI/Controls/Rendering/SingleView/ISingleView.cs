@@ -18,6 +18,9 @@ using System.Web.UI.WebControls;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView
 {
+  /// <summary>
+  /// Exposes <see cref="SingleView"/> properties that are relevant to rendering.
+  /// </summary>
   public interface ISingleView : IStyledControl
   {
     PlaceHolder TopControl { get; }

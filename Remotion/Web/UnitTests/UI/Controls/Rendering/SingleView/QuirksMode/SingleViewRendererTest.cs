@@ -15,12 +15,13 @@
 // 
 using System;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.Rendering.SingleView;
 using Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
 {
@@ -29,15 +30,25 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
   {
     private const string c_cssClass = "CssClass";
 
-    private SingleViewMock _singleView;
-    private ControlInvoker _invoker;
+    private ISingleView _singleView;
 
     [SetUp]
     public void SetUp ()
     {
       Initialize();
-      _singleView = new SingleViewMock { ID = "SingleView" };
-      _invoker = new ControlInvoker (_singleView);
+      _singleView = MockRepository.GenerateStub<ISingleView>();
+      _singleView.Stub (stub => stub.ClientID).Return ("SingleView");
+      _singleView.Stub (stub => stub.TopControl).Return (new PlaceHolder { ID = "TopControl" });
+      _singleView.Stub (stub => stub.BottomControl).Return (new PlaceHolder { ID = "BottomControl" });
+      _singleView.Stub (stub => stub.View).Return (new PlaceHolder { ID = "ViewControl" });
+      _singleView.Stub (stub => stub.ViewClientID).Return ("ViewClientID");
+
+      StateBag stateBag = new StateBag ();
+      _singleView.Stub (stub => stub.Attributes).Return (new AttributeCollection (stateBag));
+      _singleView.Stub (stub => stub.TopControlsStyle).Return (new Style (stateBag));
+      _singleView.Stub (stub => stub.BottomControlsStyle).Return (new Style (stateBag));
+      _singleView.Stub (stub => stub.ViewStyle).Return (new Style (stateBag));
+      _singleView.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
     }
 
     [Test]
@@ -50,21 +61,21 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
     [Test]
     public void RenderViewWithCssClass ()
     {
-      PopulateControl ();
+      PopulateControl();
       AssertRendering (false, true, false, false);
     }
 
     [Test]
     public void RenderViewWithCssClassInAttributes ()
     {
-      PopulateControl ();
+      PopulateControl();
       AssertRendering (false, true, true, false);
     }
 
     [Test]
     public void RenderEmptyView ()
     {
-      AssertRendering(true, false, false, false);
+      AssertRendering (true, false, false, false);
     }
 
     [Test]
@@ -82,64 +93,66 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
     [Test]
     public void RenderViewInDesignMode ()
     {
-      PopulateControl ();
-      _singleView.SetDesignMode (true);
+      PopulateControl();
+      _singleView.Stub (stub => stub.IsDesignMode).Return (true);
       AssertRendering (false, false, false, true);
     }
 
     [Test]
     public void RenderViewWithCssClassInDesignMode ()
     {
-      PopulateControl ();
-      _singleView.SetDesignMode (true);
+      PopulateControl();
+      _singleView.Stub (stub => stub.IsDesignMode).Return (true);
       AssertRendering (false, true, false, true);
     }
 
     [Test]
     public void RenderViewWithCssClassInAttributesInDesignMode ()
     {
-      PopulateControl ();
-      _singleView.SetDesignMode (true);
+      PopulateControl();
+      _singleView.Stub (stub => stub.IsDesignMode).Return (true);
       AssertRendering (false, true, true, true);
     }
 
     [Test]
     public void RenderEmptyViewInDesignMode ()
     {
-      _singleView.SetDesignMode (true);
+      _singleView.Stub (stub => stub.IsDesignMode).Return (true);
       AssertRendering (true, false, false, true);
     }
 
     [Test]
     public void RenderEmptyViewWithCssClassInDesignMode ()
     {
-      _singleView.SetDesignMode (true);
+      _singleView.Stub (stub => stub.IsDesignMode).Return (true);
       AssertRendering (true, true, false, true);
     }
 
     [Test]
     public void RenderEmptyViewWithCssClassInAttributesInDesignMode ()
     {
-      _singleView.SetDesignMode (true);
+      _singleView.Stub (stub => stub.IsDesignMode).Return (true);
       AssertRendering (true, true, true, true);
     }
 
     private void PopulateControl ()
     {
-      _singleView.TopControls.Add (new LiteralControl ("TopControl"));
-      _singleView.BottomControls.Add (new LiteralControl ("BottomControl"));
-      _singleView.View.Add (new LiteralControl ("View"));
+      _singleView.TopControl.Controls.Add (new LiteralControl ("TopControl"));
+      _singleView.BottomControl.Controls.Add (new LiteralControl ("BottomControl"));
+      _singleView.View.Controls.Add (new LiteralControl ("View"));
     }
 
     private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      string controlCssClass = _singleView.CssClassBasePublic;
-      string topControlsCssClass = _singleView.CssClassTopControlsPublic;
-      string bottomControlsCssClass = _singleView.CssClassBottomControlsPublic;
+      var renderer = new SingleViewRenderer (HttpContext, Html.Writer, _singleView);
 
-      string contentCssClass = _singleView.CssClassContentPublic;
-      string viewCssClass = _singleView.CssClassViewPublic;
-      string viewBodyCssClass = _singleView.CssClassViewBodyPublic;
+      string controlCssClass = renderer.CssClassBase;
+      string topControlsCssClass = renderer.CssClassTopControls;
+      string bottomControlsCssClass = renderer.CssClassBottomControls;
+
+      string contentCssClass = renderer.CssClassContent;
+      string viewCssClass = renderer.CssClassView;
+      string viewBodyCssClass = renderer.CssClassViewBody;
 
       if (withCssClasses)
       {
@@ -151,43 +164,41 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
           _singleView.Attributes["class"] = controlCssClass;
         else
           _singleView.CssClass = controlCssClass;
-        
+
         _singleView.TopControlsStyle.CssClass = topControlsCssClass;
         _singleView.BottomControlsStyle.CssClass = bottomControlsCssClass;
         _singleView.ViewStyle.CssClass = viewCssClass;
       }
 
-      _invoker.PreRenderRecursive();
-      var renderer = new SingleViewRenderer (HttpContext, Html.Writer, _singleView);
       renderer.Render();
       //_singleView.RenderControl (Html.Writer);
 
       var document = Html.GetResultDocument();
-      
-      XmlNode outerDiv = GetAssertedOuterDiv(document, controlCssClass, isDesignMode);
-      XmlNode table = GetAssertedTable(outerDiv, controlCssClass);
+
+      XmlNode outerDiv = GetAssertedOuterDiv (document, controlCssClass, isDesignMode);
+      XmlNode table = GetAssertedTable (outerDiv, controlCssClass);
 
 
-      XmlNode tdTop = GetAssertedTdTop (table, topControlsCssClass, isEmpty);
+      XmlNode tdTop = GetAssertedTdTop (table, topControlsCssClass, isEmpty, renderer.CssClassEmpty);
       XmlNode divTopControls = GetAssertedDivTopControls (tdTop, topControlsCssClass);
 
       var divTopContent = Html.GetAssertedChildElement (divTopControls, "div", 0);
-      
+
       Html.AssertAttribute (divTopContent, "class", contentCssClass);
 
-      
-      XmlNode tdView = GetAssertedTdView(table, viewCssClass);
+
+      XmlNode tdView = GetAssertedTdView (table, viewCssClass);
       XmlNode divViewControls = GetAssertedDivViewControls (tdView, viewCssClass);
 
-      
+
       XmlNode divViewBody = GetAssertedDivViewBody (divViewControls, viewBodyCssClass);
 
       var divViewContent = Html.GetAssertedChildElement (divViewBody, "div", 0);
       Html.AssertAttribute (divViewContent, "class", contentCssClass);
 
 
-      XmlNode tdBottom = GetAssertedTdBottom (table, bottomControlsCssClass, isEmpty);
-      XmlNode divBottomControls = GetAssertedDivBottomControls(tdBottom, bottomControlsCssClass);
+      XmlNode tdBottom = GetAssertedTdBottom (table, bottomControlsCssClass, isEmpty, renderer.CssClassEmpty);
+      XmlNode divBottomControls = GetAssertedDivBottomControls (tdBottom, bottomControlsCssClass);
 
       var divBottomContent = Html.GetAssertedChildElement (divBottomControls, "div", 0);
       Html.AssertAttribute (divBottomContent, "class", contentCssClass);
@@ -204,7 +215,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
     private XmlNode GetAssertedDivBottomControls (XmlNode tdBottom, string cssClass)
     {
       var divBottomControls = Html.GetAssertedChildElement (tdBottom, "div", 0);
-      Html.AssertAttribute (divBottomControls, "id", ((ISingleView) _singleView).BottomControl.ClientID);
+      Html.AssertAttribute (divBottomControls, "id", _singleView.BottomControl.ClientID);
       Html.AssertAttribute (divBottomControls, "class", cssClass);
       Html.AssertChildElementCount (divBottomControls, 1);
       return divBottomControls;
@@ -214,7 +225,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
     {
       var divViewControls = Html.GetAssertedChildElement (tdView, "div", 0);
       Html.AssertAttribute (divViewControls, "class", cssClass);
-      Html.AssertAttribute (divViewControls, "id", ((ISingleView) _singleView).ViewClientID);
+      Html.AssertAttribute (divViewControls, "id", _singleView.ViewClientID);
       Html.AssertChildElementCount (divViewControls, 1);
       return divViewControls;
     }
@@ -222,21 +233,21 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
     private XmlNode GetAssertedDivTopControls (XmlNode tdTop, string cssClass)
     {
       var divTopControls = Html.GetAssertedChildElement (tdTop, "div", 0);
-      Html.AssertAttribute (divTopControls, "id", ((ISingleView) _singleView).TopControl.ClientID);
+      Html.AssertAttribute (divTopControls, "id", _singleView.TopControl.ClientID);
       Html.AssertAttribute (divTopControls, "class", cssClass);
       Html.AssertChildElementCount (divTopControls, 1);
       return divTopControls;
     }
 
-    private XmlNode GetAssertedTdBottom (XmlNode table, string cssClass, bool isEmpty)
+    private XmlNode GetAssertedTdBottom (XmlNode table, string cssClass, bool isEmpty, string cssClassEmpty)
     {
       var trBottom = Html.GetAssertedChildElement (table, "tr", 2);
       Html.AssertChildElementCount (trBottom, 1);
 
       var tdBottom = Html.GetAssertedChildElement (trBottom, "td", 0);
       Html.AssertAttribute (tdBottom, "class", cssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      if( isEmpty )
-        Html.AssertAttribute (tdBottom, "class", _singleView.CssClassEmptyPublic, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      if (isEmpty)
+        Html.AssertAttribute (tdBottom, "class", cssClassEmpty, HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertChildElementCount (tdBottom, 1);
       return tdBottom;
     }
@@ -248,14 +259,14 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
 
       var tdView = Html.GetAssertedChildElement (trView, "td", 0);
       Html.AssertAttribute (tdView, "class", cssClass);
-      if (((ISingleView) _singleView).IsDesignMode)
+      if (_singleView.IsDesignMode)
         Html.AssertStyleAttribute (tdView, "border", "solid 1px black");
 
       Html.AssertChildElementCount (tdView, 1);
       return tdView;
     }
 
-    private XmlNode GetAssertedTdTop (XmlNode table, string cssClass, bool isEmpty)
+    private XmlNode GetAssertedTdTop (XmlNode table, string cssClass, bool isEmpty, string cssClassEmpty)
     {
       var trTop = Html.GetAssertedChildElement (table, "tr", 0);
       Html.AssertChildElementCount (trTop, 1);
@@ -263,7 +274,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.QuirksMode
       var tdTop = Html.GetAssertedChildElement (trTop, "td", 0);
       Html.AssertAttribute (tdTop, "class", cssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
       if (isEmpty)
-        Html.AssertAttribute (tdTop, "class", _singleView.CssClassEmptyPublic, HtmlHelperBase.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (tdTop, "class", cssClassEmpty, HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertChildElementCount (tdTop, 1);
       return tdTop;
     }

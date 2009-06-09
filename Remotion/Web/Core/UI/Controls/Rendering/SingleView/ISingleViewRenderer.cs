@@ -14,19 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode.Factories
+namespace Remotion.Web.UI.Controls.Rendering.SingleView
 {
   /// <summary>
-  /// Responsible for creating the quirks mode renderer for <see cref="SingleView"/> controls.
+  /// Interface for classes able to render <see cref="ISingleView"/> controls.
   /// </summary>
-  public class SingleViewRendererFactory : ISingleViewRendererFactory
+  public interface ISingleViewRenderer : IRenderer<ISingleView>
   {
-    public ISingleViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control)
-    {
-      return new SingleViewRenderer (context, writer, control);
-    }
   }
 }

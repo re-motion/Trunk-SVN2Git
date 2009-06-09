@@ -15,10 +15,12 @@
 // 
 using System;
 using System.Web.UI.WebControls;
-using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.Web.UI.Controls
+namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
+  /// <summary>
+  /// Exposes <see cref="DatePickerButton"/> properties relevant to rendering.
+  /// </summary>
   public interface IDatePickerButton : IStyledControl
   {
     new IControl Parent { get; }

@@ -145,7 +145,7 @@
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategy.cs" />
     <Compile Include="UI\Controls\DatePickerButton.cs" />
-    <Compile Include="UI\Controls\IDatePickerButton.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButton.cs" />
     <Compile Include="UI\Controls\LazyInitializationContainer.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IReplaceableControl.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonPreRenderer.cs" />
@@ -156,11 +156,12 @@
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\Factories\DatePickerButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\IPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\IRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\IStyledControl.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleView.cs" />
     <Compile Include="UI\Controls\Rendering\PreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRenderer.cs" />
     <Compile Include="Utilities\ControlState.cs" />

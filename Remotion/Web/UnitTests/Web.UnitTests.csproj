@@ -177,7 +177,6 @@
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\HtmlHelper.cs" />
     <Compile Include="UI\Controls\Rendering\RendererTestBase.cs" />
-    <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewMock.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRendererTest.cs" />
     <Compile Include="UI\Controls\ReplaceableControlMock.cs" />
     <Compile Include="UI\Controls\RequestMode.cs" />

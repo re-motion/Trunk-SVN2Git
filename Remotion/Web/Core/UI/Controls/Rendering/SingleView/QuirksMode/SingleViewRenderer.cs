@@ -20,7 +20,7 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
 {
-  public class SingleViewRenderer : RendererBase<ISingleView>, IRenderer<ISingleView>
+  public class SingleViewRenderer : RendererBase<ISingleView>, ISingleViewRenderer
   {
     public SingleViewRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control)
         : base(context, writer, control)
@@ -159,7 +159,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     /// <remarks> 
     ///   <para> Class: <c>singleView</c>. </para>
     /// </remarks>
-    protected virtual string CssClassBase
+    public virtual string CssClassBase
     {
       get { return "singleView"; }
     }
@@ -169,7 +169,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     ///   <para> Class: <c>singleViewActiveView</c>. </para>
     ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="P:Control.ViewStyle"/> is not set. </para>
     /// </remarks>
-    protected virtual string CssClassView
+    public virtual string CssClassView
     {
       get { return "singleViewView"; }
     }
@@ -179,7 +179,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     ///   <para> Class: <c>singleViewTopControls</c>. </para>
     ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="P:Control.TopControlsStyle"/> is not set. </para>
     /// </remarks>
-    protected virtual string CssClassTopControls
+    public virtual string CssClassTopControls
     {
       get { return "singleViewTopControls"; }
     }
@@ -189,7 +189,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     ///   <para> Class: <c>singleViewBottomControls</c>. </para>
     ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="P:Control.BottomControlsStyle"/> is not set. </para>
     /// </remarks>
-    protected virtual string CssClassBottomControls
+    public virtual string CssClassBottomControls
     {
       get { return "singleViewBottomControls"; }
     }
@@ -198,7 +198,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     /// <remarks> 
     ///   <para> Class: <c>body</c>. </para>
     /// </remarks>
-    protected virtual string CssClassViewBody
+    public virtual string CssClassViewBody
     {
       get { return "body"; }
     }
@@ -207,7 +207,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     /// <remarks> 
     ///   <para> Class: <c>content</c>. </para>
     /// </remarks>
-    protected virtual string CssClassContent
+    public virtual string CssClassContent
     {
       get { return "content"; }
     }
@@ -220,7 +220,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     ///     <c>td.singleViewBottomControls.emtpy</c>as a selector.
     ///   </para>
     /// </remarks>
-    protected virtual string CssClassEmpty
+    public virtual string CssClassEmpty
     {
       get { return "empty"; }
     }

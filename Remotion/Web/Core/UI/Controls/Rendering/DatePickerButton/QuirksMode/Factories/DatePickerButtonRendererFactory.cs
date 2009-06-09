@@ -15,11 +15,13 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating the quirks mode renderer for <see cref="DatePickerButton"/> controls.
+  /// </summary>
   public class DatePickerButtonRendererFactory : IDatePickerButtonRendererFactory
   {
     public IDatePickerButtonRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control)

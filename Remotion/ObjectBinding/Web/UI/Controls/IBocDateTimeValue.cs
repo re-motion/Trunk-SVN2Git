@@ -16,7 +16,7 @@
 using System;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
-using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {

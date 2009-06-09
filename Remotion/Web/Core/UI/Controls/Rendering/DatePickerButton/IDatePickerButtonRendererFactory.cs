@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton

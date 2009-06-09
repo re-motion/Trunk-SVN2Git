@@ -30,6 +30,7 @@ using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -835,7 +836,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> Gets the <see cref="Remotion.Web.UI.Controls.IDatePickerButton"/> used in edit mode for opening the date picker. </summary>
+    /// <summary> Gets the <see cref="IDatePickerButton"/> used in edit mode for opening the date picker. </summary>
     [Browsable (false)]
     public IDatePickerButton DatePickerButton
     {

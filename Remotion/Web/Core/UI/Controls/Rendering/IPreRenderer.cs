@@ -18,6 +18,10 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering
 {
+  /// <summary>
+  /// Base interface for classes that handle markup-related actions, such as registering HTML head contents,
+  /// which have to be executed before the rendering stage.
+  /// </summary>
   public interface IPreRenderer<TControl>
       where TControl: IControl
   {
@@ -27,7 +31,7 @@ namespace Remotion.Web.UI.Controls.Rendering
     /// <summary>Gets the context in which rendering occurs.</summary>
     IHttpContext Context { get; }
 
-    /// <summary>Prepares the control for rendering.</summary>
+    /// <summary>Executes rendering-related actions that have to be finished before the control can enter the rendering stage.</summary>
     void PreRender ();
   }
 }

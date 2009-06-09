@@ -14,11 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 {
+  /// <summary>
+  /// Responsible for registering the client script file that the <see cref="DatePickerButton"/> depends on.
+  /// </summary>
   public class DatePickerButtonPreRenderer : PreRendererBase<IDatePickerButton>, IDatePickerButtonPreRenderer
   {
     private const string c_datePickerScriptFileName = "DatePicker.js";
@@ -30,6 +32,9 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
     {
     }
 
+    /// <summary>
+    /// Registers the JavaScript file that contains the necessary functions for showing the pop-up calendar and retrieving the date.
+    /// </summary>
     public override void PreRender ()
     {
       if (HtmlHeadAppender.Current.IsRegistered (ScriptFileKey))
@@ -39,11 +44,17 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (ScriptFileKey, scriptUrl);
     }
 
+    /// <summary>
+    /// Gets the key with which to register the script file.
+    /// </summary>
     public string ScriptFileKey
     {
       get { return s_datePickerScriptFileKey; }
     }
 
+    /// <summary>
+    /// Gets the name of the script file.
+    /// </summary>
     public string ScriptFileName
     {
       get { return c_datePickerScriptFileName; }
