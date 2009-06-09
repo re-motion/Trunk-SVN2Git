@@ -27,6 +27,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Security.ExecutionEngine;
 using Remotion.Web.Security.UI;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.SecurityManager.Clients.Web
 {
@@ -43,6 +44,12 @@ namespace Remotion.SecurityManager.Clients.Web
       container.Register (
           AllTypes.Pick ()
               .FromAssembly (typeof (RendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
+              .WithService.Select ((t, b) => t.GetInterfaces ())
+              .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+      container.Register (
+          AllTypes.Pick ()
+              .FromAssembly (typeof (BocRendererBase<>).Assembly)
               .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces ())
               .Configure (c => c.Named ("default." + c.ServiceType.Name)));

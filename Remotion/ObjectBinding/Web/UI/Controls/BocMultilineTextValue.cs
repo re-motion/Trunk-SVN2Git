@@ -107,7 +107,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       var factory = ServiceLocator.Current.GetInstance<IBocMultilineTextValueRendererFactory> ();
       var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render ();
+      renderer.Render();
     }
 
     // ReSharper disable RedundantOverridenMember

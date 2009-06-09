@@ -15,15 +15,17 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
+namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
   /// <summary>
-  /// Interface for factories creating <see cref="IBocDatePickerButtonRenderer"/> renderers.
+  /// Interface for factories creating <see cref="IDatePickerButtonRenderer"/> renderers.
   /// </summary>
-  public interface IBocDatePickerButtonRendererFactory
+  public interface IDatePickerButtonRendererFactory
   {
-    IBocDatePickerButtonRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocDatePickerButton control);
+    IDatePickerButtonRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control);
+    IDatePickerButtonPreRenderer CreatePreRenderer (IHttpContext context, IDatePickerButton control);
   }
 }

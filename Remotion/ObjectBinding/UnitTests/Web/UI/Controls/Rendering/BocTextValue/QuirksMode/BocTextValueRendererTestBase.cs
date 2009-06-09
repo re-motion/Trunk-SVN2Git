@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     private readonly Unit _height = new Unit (17, UnitType.Point);
     private readonly Unit _width = new Unit (123, UnitType.Point);
     protected T TextValue { get; set; }
-    protected IRenderer<T> Renderer { get; set; }
+    protected IBocRenderableControlRenderer<T> Renderer { get; set; }
 
     protected Unit Height
     {

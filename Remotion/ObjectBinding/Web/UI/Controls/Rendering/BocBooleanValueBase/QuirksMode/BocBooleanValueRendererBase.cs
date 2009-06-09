@@ -25,19 +25,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
   /// <seealso cref="BocCheckboxRenderer"/>
   /// </summary>
   /// <typeparam name="T">The concrete control or corresponding interface that will be rendered.</typeparam>
-  public abstract class BocBooleanValueRendererBase<T> : RenderableControlRendererBase<T>
-      where T : IBocBooleanValueBase
+  public abstract class BocBooleanValueRendererBase<T> : BocRendererBase<T>
+      where T: IBocBooleanValueBase
   {
     private const string c_defaultControlWidth = "100pt";
 
     protected BocBooleanValueRendererBase (IHttpContext context, HtmlTextWriter writer, T control)
-        : base(context, writer, control)
+        : base (context, writer, control)
     {
     }
 
-    public abstract void Render ();
+    public abstract void Render();
 
-    protected override void AddAdditionalAttributes ()
+    protected override void AddAdditionalAttributes()
     {
       Writer.AddStyleAttribute ("white-space", "nowrap");
       if (!Control.IsReadOnly)

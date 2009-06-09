@@ -76,6 +76,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -140,8 +144,20 @@
     <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategy.cs" />
+    <Compile Include="UI\Controls\DatePickerButton.cs" />
+    <Compile Include="UI\Controls\IDatePickerButton.cs" />
     <Compile Include="UI\Controls\LazyInitializationContainer.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IReplaceableControl.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\IDatePickerButtonRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\Factories\DatePickerButtonRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\IPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\IRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\PreRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
@@ -693,6 +709,7 @@
     <Content Include="Res\HTML\Utilities.js" />
     <Content Include="Res\HTML\WebButton.css" />
     <Content Include="Res\HTML\WebButton.js" />
+    <Content Include="Res\Image\DatePicker.gif" />
     <Content Include="Res\Image\DropDownMenuArrow.gif" />
     <Content Include="Res\Image\DropDownMenuItemIconPane.gif" />
     <Content Include="Res\Image\Help.gif" />

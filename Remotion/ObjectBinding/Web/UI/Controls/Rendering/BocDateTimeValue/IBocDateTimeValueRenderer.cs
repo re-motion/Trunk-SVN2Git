@@ -20,7 +20,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
   /// <summary>
   /// Interface for classes able to render <see cref="IBocDateTimeValue"/> controls.
   /// </summary>
-  public interface IBocDateTimeValueRenderer : IRenderer<IBocDateTimeValue>
+  public interface IBocDateTimeValueRenderer : IBocRenderableControlRenderer<IBocDateTimeValue>
   {
   }
 }

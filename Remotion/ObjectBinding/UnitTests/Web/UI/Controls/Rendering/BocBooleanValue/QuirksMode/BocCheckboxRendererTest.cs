@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       pageStub.Stub (stub => stub.ClientScript).Return (clientScriptManagerMock);
 
       _checkbox.Stub (mock => mock.Value).PropertyBehavior();
-      _checkbox.Stub (mock => mock.HasClientScript).Return (true);
+      _checkbox.Stub (mock => mock.IsDesignMode).Return (false);
       _checkbox.Stub (mock => mock.IsDescriptionEnabled).Return (true);
 
       _checkbox.Stub (mock => mock.Page).Return (pageStub);

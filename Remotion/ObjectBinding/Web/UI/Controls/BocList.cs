@@ -1288,7 +1288,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       var serviceLocator = ServiceLocator.Current;
       var factory = serviceLocator.GetInstance<IBocListRendererFactory> ();
       var renderer = factory.CreateRenderer (new Remotion.Web.Infrastructure.HttpContextWrapper (Context), writer, this, serviceLocator);
-      renderer.Render ();
+      renderer.Render();
     }
 
     public bool HasNavigator

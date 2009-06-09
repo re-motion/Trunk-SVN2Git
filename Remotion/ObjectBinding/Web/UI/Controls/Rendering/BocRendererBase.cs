@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {
@@ -24,10 +25,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
   /// Base class for renderers of <see cref="IBocRenderableControl"/> objects.
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
-  public abstract class RenderableControlRendererBase<TControl> : RendererBase<TControl>
+  public abstract class BocRendererBase<TControl> : RendererBase<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
-    protected RenderableControlRendererBase (IHttpContext context, HtmlTextWriter writer, TControl control)
+    protected BocRendererBase (IHttpContext context, HtmlTextWriter writer, TControl control)
         : base (context, writer, control)
     {
     }

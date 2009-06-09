@@ -142,7 +142,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       var factory = ServiceLocator.Current.GetInstance<IBocTextValueRendererFactory> ();
       var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render ();
+      renderer.Render();
     }
 
     /// <summary> Gets or sets the current value. </summary>

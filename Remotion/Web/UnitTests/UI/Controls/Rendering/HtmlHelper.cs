@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,10 +14,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
+namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 {
-  public interface IBocListRenderer : IBocRenderableControlRenderer<IBocList>
+  public class HtmlHelper : HtmlHelperBase
   {
+    public HtmlHelper ()
+        : base (Assert.AreEqual, Assert.Greater, Assert.IsNotNull, Assert.IsNull, Assert.IsTrue)
+    {
+    }
   }
 }

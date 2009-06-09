@@ -14,10 +14,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {
-  public interface IBocListRenderer : IBocRenderableControlRenderer<IBocList>
+  public interface IBocRenderableControlRenderer<TControl> : IRenderer<TControl>
+      where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
+    /// <summary>Gets the default CSS class, which is applied if no CSS class is defined on the control.</summary>
+    string CssClassBase { get; }
+
+    string CssClassDisabled { get; }
+
+    string CssClassReadOnly { get; }
   }
 }

@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
   /// <seealso cref="IBocEnumValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocEnumValueRenderer.xml' path='BocEnumValueRenderer/Class'/>
-  public class BocEnumValueRenderer : RenderableControlRendererBase<IBocEnumValue>, IBocEnumValueRenderer
+  public class BocEnumValueRenderer : BocRendererBase<IBocEnumValue>, IBocEnumValueRenderer
   {
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";

@@ -34,7 +34,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string _nullDescription = string.Empty;
 
     /// <summary> Flag that determines whether the client script will be rendered. </summary>
-    private bool _hasClientScript;
 
     private static readonly object s_checkedChangedEvent = new object();
 
@@ -183,13 +182,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return _nullDescription; }
       set { _nullDescription = value; }
-    }
-
-    /// <summary> Flag that determines whether the client script will be rendered. </summary>
-    public bool HasClientScript
-    {
-      get { return _hasClientScript; }
-      set { _hasClientScript = value; }
     }
 
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>

@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -29,7 +30,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool ProvideMaxLength { get; }
     SingleRowTextBoxStyle DateTextBoxStyle { get; }
     SingleRowTextBoxStyle TimeTextBoxStyle { get; }
-    IBocDatePickerButton DatePickerButton { get; }
+    IDatePickerButton DatePickerButton { get; }
     bool ShowSeconds { get; }
     SingleRowTextBoxStyle DateTimeTextBoxStyle { get; }
     string DateString { get; }

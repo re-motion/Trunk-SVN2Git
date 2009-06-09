@@ -15,9 +15,10 @@
 // 
 using System;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
 {
-  public interface IBocListRenderer : IBocRenderableControlRenderer<IBocList>
+  public interface IDatePickerButtonPreRenderer
   {
+    void PreRender ();
   }
 }

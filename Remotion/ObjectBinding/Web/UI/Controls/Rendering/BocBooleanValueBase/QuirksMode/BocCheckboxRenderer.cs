@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
     /// <summary>
     /// Renders an image and label in readonly mode, a checkbox and label in edit mode.
     /// </summary>
-    public override void Render ()
+    public override void Render()
     {
       AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -63,7 +63,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       }
       else
       {
-        if (Control.HasClientScript)
+        bool hasClientScript = DetermineClientScriptLevel();
+        if (hasClientScript)
         {
           PrepareScripts(checkBoxControl, labelControl);
         }
@@ -80,6 +81,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       Writer.RenderEndTag();
     }
 
+    private bool DetermineClientScriptLevel ()
+    {
+      return !Control.IsDesignMode;
+    }
     
     private void PrepareScripts (HtmlInputCheckBox checkBoxControl, Label labelControl)
     {

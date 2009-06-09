@@ -134,7 +134,7 @@
         Sets the new value and the <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> flag if the value has
         changed.
       </para><para>
-        Evaluates the value of the <see cref="HiddenField"/> rendered in edit mode (<see cref="IRenderer{TControl}.Render"/>);
+        Evaluates the value of the <see cref="HiddenField"/> rendered in edit mode (<see cref="Remotion.Web.UI.Controls.Rendering.IRenderer{TControl}.Render"/>);
       </para>
       <note type="inheritinfo">
         Overrive this method to change the way of detecting a changed value when read from the 

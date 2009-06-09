@@ -20,19 +20,13 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocDateTimeValue"/> and <see cref="IBocDatePickerButton"/> controls.
+  /// Responsible for creating quirks mode renderers for <see cref="IBocDateTimeValue"/> controls.
   /// </summary>
-  public class BocDateTimeValueRendererFactory : IBocDateTimeValueRendererFactory, IBocDatePickerButtonRendererFactory
+  public class BocDateTimeValueRendererFactory : IBocDateTimeValueRendererFactory
   {
     IBocDateTimeValueRenderer IBocDateTimeValueRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control)
     {
       return new BocDateTimeValueRenderer (context, writer, control);
-    }
-
-    IBocDatePickerButtonRenderer IBocDatePickerButtonRendererFactory.CreateRenderer (
-        IHttpContext context, HtmlTextWriter writer, IBocDatePickerButton control)
-    {
-      return new BocDatePickerButtonRenderer (context, writer, control);
     }
   }
 }

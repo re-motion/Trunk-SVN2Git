@@ -48,8 +48,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     bool IsAutoPostBackEnabled { get; }
 
-    bool HasClientScript { get; }
-
     /// <summary>
     ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
     ///   description. 

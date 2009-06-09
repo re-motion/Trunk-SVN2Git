@@ -1,3 +1,18 @@
+1.13.11
+=======
+- The DatePickerButton, which is used by BocDateTimeValue, has been moved to Remotion.Web.dll
+  As a consequence, in addition to the code described in the notes for 1.13.8, add the following lines to your Global.asax file
+  right after the first container.Register() call:
+  
+  container.Register (
+        AllTypes.Pick ()
+            .FromAssembly (typeof (BocRendererBase<>).Assembly)
+            .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
+            .WithService.Select ((t, b) => t.GetInterfaces ())
+            .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+            
+  You may also have to add a using statement for Remotion.Web.UI.Controls.Rendering
+  
 1.13.8
 ======
 - Rendering of re-bind controls is done by separate renderer classes. Factory implementations creating the renderers are obtained from

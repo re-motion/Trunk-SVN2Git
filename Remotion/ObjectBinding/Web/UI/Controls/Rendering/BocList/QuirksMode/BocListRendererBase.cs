@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
   /// <summary>
   /// Abstract base class for BocList renderers. Defines common constants, properties and utility methods.
   /// </summary>
-  public abstract class BocListRendererBase : RenderableControlRendererBase<IBocList>
+  public abstract class BocListRendererBase : BocRendererBase<IBocList>
   {
     // constants
     // unused protected const string c_dataRowHiddenFieldIDSuffix = "_Boc_HiddenField_";

@@ -102,7 +102,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var factory = ServiceLocator.Current.GetInstance<IBocCheckboxRendererFactory> ();
       var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render ();
+      renderer.Render();
     }
 
     protected override void OnInit (EventArgs e)
@@ -160,7 +160,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.OnPreRender (e);
 
       LoadResources (GetResourceManager());
-      DetermineClientScriptLevel();
 
       _isActive = !IsReadOnly && Enabled;
     }
@@ -391,14 +390,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected bool IsDescriptionEnabled
     {
       get { return !WcagHelper.Instance.IsWaiConformanceLevelARequired () && _showDescription == true; }
-    }
-
-    private void DetermineClientScriptLevel ()
-    {
-      HasClientScript = false;
-
-      if (!IsDesignMode)
-        HasClientScript = true;
     }
 
     string IBocCheckBox.GetLabelKey ()

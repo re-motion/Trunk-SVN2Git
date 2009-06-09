@@ -18,15 +18,11 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
+namespace Remotion.Web.UI.Controls.Rendering
 {
   /// <summary>
   /// Base class for all renderers. Contains the essential properties used in rendering.
   /// </summary>
-  /// <remarks>
-  /// This class does <b>not</b> restrict the type of control - for <see cref="IBocRenderableControl"/> renderers,
-  /// use <see cref="RenderableControlRendererBase{TControl}"/> as base class.
-  /// </remarks>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class RendererBase<TControl>
   {
@@ -48,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
       _context = context;
     }
 
-    /// <summary>Gets the <see cref="HtmlTextWriter"/> object used to render the <see cref="BocList"/>.</summary>
+    /// <summary>Gets the <see cref="HtmlTextWriter"/> object used to render the <see cref="IControl"/>.</summary>
     public HtmlTextWriter Writer
     {
       get { return _writer; }

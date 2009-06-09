@@ -20,7 +20,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
   /// <summary>
   /// Interface for classes able to render <see cref="IBocCheckBox"/> controls.
   /// </summary>
-  public interface IBocCheckboxRenderer : IRenderer<IBocCheckBox>
+  public interface IBocCheckboxRenderer : IBocRenderableControlRenderer<IBocCheckBox>
   {
   }
 }

@@ -19,7 +19,7 @@ using System.Web;
 using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
+namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 {
   public class RendererTestBase
   {

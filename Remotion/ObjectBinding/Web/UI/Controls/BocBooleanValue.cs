@@ -110,7 +110,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var factory = ServiceLocator.Current.GetInstance<IBocBooleanValueRendererFactory> ();
       var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render ();
+      renderer.Render();
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
@@ -334,7 +334,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       IResourceManager resourceManager = GetResourceManager();
       LoadResources (resourceManager);
-      DetermineClientScriptLevel();
     }
 
     protected override void LoadControlState (object savedState)
@@ -421,11 +420,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override bool SupportsPropertyMultiplicity (bool isList)
     {
       return ! isList;
-    }
-
-    private void DetermineClientScriptLevel ()
-    {
-      HasClientScript = !IsDesignMode;
     }
 
     string IBocBooleanValue.GetLabelClientID ()

@@ -16,31 +16,39 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
+namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 {
   /// <summary>
-  /// Responsible for rendering a <see cref="BocDatePickerButton"/> control.
-  /// <seealso cref="IBocDatePickerButton"/>
+  /// Responsible for rendering a <see cref="DatePickerButton"/> control.
+  /// <seealso cref="IDatePickerButton"/>
   /// </summary>
-  public class BocDatePickerButtonRenderer : RendererBase<IBocDatePickerButton>, IBocDatePickerButtonRenderer
+  public class DatePickerButtonRenderer : RendererBase<IDatePickerButton>, IDatePickerButtonRenderer
   {
+    private const string c_datePickerPopupForm = "DatePickerForm.aspx";
     private const int c_defaultDatePickerLengthInPoints = 150;
 
-    public BocDatePickerButtonRenderer (IHttpContext context, HtmlTextWriter writer, IBocDatePickerButton control)
+
+    public DatePickerButtonRenderer (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control)
         : base (context, writer, control)
     {
     }
 
+    public void PreRender ()
+    {
+      
+    }
+
     /// <summary>
     /// Renders a click-enabled image that shows a <see cref="DatePickerPage"/> on click, which puts the selected value
-    /// into the control specified by <see cref="BocDatePickerButton.TargetControlID"/>.
+    /// into the control specified by <see cref="P:Control.TargetControlID"/>.
     /// </summary>
     public void Render ()
     {
+      bool hasClientScript = DetermineClientScriptLevel ();
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Padding, "0px");
@@ -48,10 +56,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundColor, "transparent");
       // TODO: hyperLink.ApplyStyle (Control.DatePickerButtonStyle);
 
-      bool canScript = (Control.EnableClientScript && Control.IsDesignMode) || Control.HasClientScript;
+      bool canScript = (Control.EnableClientScript && Control.IsDesignMode) || hasClientScript;
       if (canScript)
       {
-        string script = GetClickScript();
+        string script = GetClickScript(hasClientScript);
 
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
         Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
@@ -65,9 +73,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
       if (canScript)
       {
-        string imageUrl = Control.GetResolvedImageUrl();
+        string imageUrl = GetResolvedImageUrl();
         if (imageUrl == null)
-          imageUrl = Control.ImageFileName;
+          imageUrl = ImageFileName;
 
         Writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
         Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty(Control.AlternateText));
@@ -94,26 +102,52 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       get { throw new NotSupportedException (); }
     }
 
-    private string GetClickScript ()
+    public string GetDatePickerUrl ()
+    {
+      return ResourceUrlResolver.GetResourceUrl (Control.Parent, Context, typeof (DatePickerPage), ResourceType.UI, c_datePickerPopupForm);
+    }
+
+    public string GetResolvedImageUrl ()
+    {
+      return ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (Controls.DatePickerButton), ResourceType.Image, ImageFileName);
+    }
+
+    protected virtual string ImageFileName
+    {
+      get { return "DatePicker.gif"; }
+    }
+
+    private bool DetermineClientScriptLevel ()
+    {
+      if (Control.IsDesignMode || !Control.EnableClientScript)
+        return false;
+
+      bool isVersionGreaterOrEqual55 =
+          Context.Request.Browser.MajorVersion >= 6
+          || Context.Request.Browser.MajorVersion == 5
+             && Context.Request.Browser.MinorVersion >= 0.5;
+      bool isInternetExplorer55AndHigher =
+          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
+
+      return isInternetExplorer55AndHigher;
+    }
+
+    private string GetClickScript (bool hasClientScript)
     {
       string script;
-      if (Control.HasClientScript && Control.Enabled)
+      if (hasClientScript && Control.Enabled)
       {
-        string pickerActionButton = "this";
+        const string pickerActionButton = "this";
         
         string pickerActionContainer = "document.getElementById ('" + Control.ContainerControlID.Replace('$', '_') + "')";
         string pickerActionTarget = "document.getElementById ('" + Control.TargetControlID.Replace ('$', '_') + "')";
 
-        string pickerUrl = "'" + Control.GetDatePickerUrl() + "'";
+        string pickerUrl = "'" + GetDatePickerUrl() + "'";
 
-        Unit popUpWidth = Control.DatePickerPopupWidth;
-        if (popUpWidth.IsEmpty)
-          popUpWidth = Unit.Point (c_defaultDatePickerLengthInPoints);
+        Unit popUpWidth = Unit.Point (c_defaultDatePickerLengthInPoints);
         string pickerWidth = "'" + popUpWidth + "'";
 
-        Unit popUpHeight = Control.DatePickerPopupHeight;
-        if (popUpHeight.IsEmpty)
-          popUpHeight = Unit.Point (c_defaultDatePickerLengthInPoints);
+        Unit popUpHeight = Unit.Point (c_defaultDatePickerLengthInPoints);
         string pickerHeight = "'" + popUpHeight + "'";
 
         script = "DatePicker_ShowDatePicker("

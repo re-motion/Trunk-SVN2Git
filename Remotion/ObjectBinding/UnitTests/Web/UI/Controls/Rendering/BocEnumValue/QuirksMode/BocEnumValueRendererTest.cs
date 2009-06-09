@@ -37,7 +37,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
     private readonly Unit _width = Unit.Point (173);
     private readonly Unit _height = Unit.Point (17);
     private IEnumerationValueInfo[] _enumerationInfos;
-    private IBocEnumValueRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -78,13 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub (mock => mock.Enabled).Return (true);
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, false, false);
-
-      AssertOptionList (div, true, null, false, false);
+      AssertOptionList (true, null, false, false);
     }
 
     [Test]
@@ -94,13 +87,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      _renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      _renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, false, false);
-
-      AssertOptionList (div, false, TestEnum.First, false, false);
+      AssertOptionList (false, TestEnum.First, false, false);
     }
 
     [Test]
@@ -110,13 +97,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(false);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, false, false);
-
-      AssertOptionList (div, true, TestEnum.First, false, false);
+      AssertOptionList (true, TestEnum.First, false, false);
     }
 
     [Test]
@@ -124,13 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
     {
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, true, false);
-
-      AssertOptionList (div, true, null, true, false);
+      AssertOptionList (true, null, true, false);
     }
 
     [Test]
@@ -139,13 +114,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, true, false);
-
-      AssertOptionList (div, false, TestEnum.First, true, false);
+      AssertOptionList (false, TestEnum.First, true, false);
     }
 
     [Test]
@@ -154,13 +123,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(false);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, true, false);
-
-      AssertOptionList (div, true, TestEnum.First, true, false);
+      AssertOptionList (true, TestEnum.First, true, false);
     }
 
     [Test]
@@ -170,13 +133,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Stub(mock=>mock.IsReadOnly).Return(true);
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      XmlNode div = GetAssertedDiv (document, true, false, false);
-
-      AssertLabel (div, null, false);
+      AssertLabel (null, false);
     }
 
     [Test]
@@ -188,13 +145,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Value = TestEnum.First;
       _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      XmlNode div = GetAssertedDiv (document, true, false, false);
-
-      AssertLabel (div, TestEnum.First, false);
+      AssertLabel (TestEnum.First, false);
     }
 
     [Test]
@@ -205,13 +156,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, false, false);
-
-      AssertOptionList (div, false, TestEnum.First, false, false);
+      AssertOptionList (false, TestEnum.First, false, false);
     }
 
     [Test]
@@ -221,13 +166,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, true, false);
-
-      AssertOptionList (div, false, TestEnum.First, true, false);
+      AssertOptionList (false, TestEnum.First, true, false);
     }
 
     [Test]
@@ -240,13 +179,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Value = TestEnum.First;
       _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      XmlNode div = GetAssertedDiv (document, true, false, false);
-
-      AssertLabel (div, TestEnum.First, false);
+      AssertLabel (TestEnum.First, false);
     }
 
     [Test]
@@ -257,13 +190,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, false, false);
-
-      AssertOptionList (div, false, TestEnum.First, false, false);
+      AssertOptionList (false, TestEnum.First, false, false);
     }
 
     [Test]
@@ -273,13 +200,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, true, false);
-
-      AssertOptionList (div, false, TestEnum.First, true, false);
+      AssertOptionList (false, TestEnum.First, true, false);
     }
 
     [Test]
@@ -292,13 +213,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Value = TestEnum.First;
       _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      XmlNode div = GetAssertedDiv (document, true, false, false);
-
-      AssertLabel (div, TestEnum.First, false);
+      AssertLabel (TestEnum.First, false);
     }
 
     [Test]
@@ -312,13 +227,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, false, true);
-
-      AssertOptionList (div, false, TestEnum.First, false, true);
+      AssertOptionList (false, TestEnum.First, false, true);
     }
 
     [Test]
@@ -331,13 +240,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, true, true);
-
-      AssertOptionList (div, false, TestEnum.First, true, true);
+      AssertOptionList (false, TestEnum.First, true, true);
     }
 
     [Test]
@@ -354,13 +257,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Value = TestEnum.First;
       _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      XmlNode div = GetAssertedDiv (document, true, false, true);
-
-      AssertLabel (div, TestEnum.First, true);
+      AssertLabel (TestEnum.First, true);
     }
 
     [Test]
@@ -373,13 +270,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, false, false);
-
-      AssertOptionList (div, false, TestEnum.First, false, true);
+      AssertOptionList (false, TestEnum.First, false, true);
     }
 
     [Test]
@@ -390,13 +281,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub(mock=>mock.IsRequired).Return(true);
       _enumValue.Value = TestEnum.First;
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      var div = GetAssertedDiv (document, false, true, false);
-
-      AssertOptionList (div, false, TestEnum.First, true, true);
+      AssertOptionList (false, TestEnum.First, true, true);
     }
 
     [Test]
@@ -410,17 +295,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Value = TestEnum.First;
       _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
 
-      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _enumValue);
-      renderer.Render();
-
-      var document = Html.GetResultDocument();
-      XmlNode div = GetAssertedDiv (document, true, false, false);
-
-      AssertLabel (div, TestEnum.First, false);
+      AssertLabel (TestEnum.First, false);
     }
 
-    private void AssertLabel (XmlNode div, TestEnum? value, bool withStyle)
+    private void AssertLabel (TestEnum? value, bool withStyle)
     {
+      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext> (), Html.Writer, _enumValue);
+      renderer.Render ();
+
+      var document = Html.GetResultDocument ();
+      XmlNode div = GetAssertedDiv (document, true, false, false, renderer);
+
+
       var span = Html.GetAssertedChildElement (div, "span", 0);
       Html.AssertAttribute (span, "id", _enumValue.GetLabelClientID());
 
@@ -433,20 +319,20 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       Html.AssertTextNode (span, value.HasValue ? value.Value.ToString() : HtmlHelper.WhiteSpace, 0);
     }
 
-    private XmlNode GetAssertedDiv (XmlDocument document, bool isReadOnly, bool isDisabled, bool withStyle)
+    private XmlNode GetAssertedDiv (XmlDocument document, bool isReadOnly, bool isDisabled, bool withStyle, IBocEnumValueRenderer renderer)
     {
       var div = Html.GetAssertedChildElement (document, "div", 0);
       string cssClass = _enumValue.CssClass;
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _enumValue.Attributes["class"];
       if (string.IsNullOrEmpty (cssClass))
-        cssClass = _renderer.CssClassBase;
+        cssClass = renderer.CssClassBase;
 
       Html.AssertAttribute (div, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
       if (isReadOnly)
-        Html.AssertAttribute (div, "class", _renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (div, "class", renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
       if (isDisabled)
-        Html.AssertAttribute (div, "class", _renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
+        Html.AssertAttribute (div, "class", renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
 
       Html.AssertStyleAttribute (div, "display", "inline");
 
@@ -459,8 +345,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       return div;
     }
 
-    private void AssertOptionList (XmlNode div, bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle)
+    private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle)
     {
+      var renderer = new BocEnumValueRenderer (MockRepository.GenerateMock<IHttpContext> (), Html.Writer, _enumValue);
+      renderer.Render ();
+
+      var document = Html.GetResultDocument ();
+      var div = GetAssertedDiv (document, false, false, false, renderer);
+
       var select = Html.GetAssertedChildElement (div, "select", 0);
       Html.AssertAttribute (select, "name", _enumValue.GetListControlClientID());
       Html.AssertAttribute (select, "id", _enumValue.GetListControlClientID());

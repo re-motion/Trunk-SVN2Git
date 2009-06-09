@@ -20,7 +20,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue
   /// <summary>
   /// Interface for classes able to render <see cref="IBocEnumValue"/> controls.
   /// </summary>
-  public interface IBocEnumValueRenderer : IRenderer<IBocEnumValue>
+  public interface IBocEnumValueRenderer : IBocRenderableControlRenderer<IBocEnumValue>
   {
   }
 }

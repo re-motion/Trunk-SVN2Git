@@ -34,17 +34,8 @@ namespace Remotion.Web.UI.Controls
 
     // types
 
-#if NET11
-  [CLSCompliant (false)]
-  protected internal class MultiView: Microsoft.Web.UI.WebControls.MultiPage
-#else
     protected internal class MultiView : System.Web.UI.WebControls.MultiView
-#endif
     {
-#if NET11
-    private bool _isLoadViewStateComplete = false;
-#endif
-
       protected internal MultiView ()
       {
       }
@@ -94,51 +85,6 @@ namespace Remotion.Web.UI.Controls
           smartNavigablePage.DiscardSmartNavigationData ();
       }
 
-#if NET11
-    protected override void LoadViewState(object savedState)
-    {
-      base.LoadViewState (savedState);
-      _isLoadViewStateComplete = true;
-    }
-
-    public TabView GetActiveView()
-    {
-      int selectedView = SelectedIndex;
-      if (selectedView >= 0 && selectedView < Controls.Count)
-        return (TabView) Controls[selectedView];
-      return null;
-    }
-
-    public void SetActiveView (TabView view)
-    {
-      int index = Controls.IndexOf (view);
-      if (index < 0)
-        throw new HttpException (string.Format ("The view {0} cannot be found inside {1}, the ActiveView must be a View control directly inside a MultiView.", (view == null) ? "null" : view.ID, ID));
-      if (SelectedIndex != index)
-      {
-        SelectedIndex = index;
-        if (_isLoadViewStateComplete || (Page != null && ! Page.IsPostBack))
-          OnSelectedIndexChange (EventArgs.Empty);
-      }
-    }
-
-    public event EventHandler ActiveViewChanged
-    {
-      add { SelectedIndexChange += value; }
-      remove { SelectedIndexChange -= value; }
-    }
-
-    protected override Microsoft.Web.UI.WebControls.RenderPathID RenderPath
-    {
-      get 
-      { 
-    	  if (this.IsDesignMode)
-		      return Microsoft.Web.UI.WebControls.RenderPathID.DesignerPath;
-        else
-	  	    return Microsoft.Web.UI.WebControls.RenderPathID.DownLevelPath;
-      }
-    }
-#else
       protected override void OnPreRender (EventArgs e)
       {
         foreach (TabView view in Views)
@@ -146,7 +92,6 @@ namespace Remotion.Web.UI.Controls
 
         base.OnPreRender (e);
       }
-#endif
     }
 
     protected internal class MultiViewTab : WebTab
@@ -299,10 +244,9 @@ namespace Remotion.Web.UI.Controls
 
       if (Views.Count == 2 && Views.IndexOf (_placeHolderTabView) > 0)
         Views.Remove (_placeHolderTabView);
-#if ! NET11
+
       if (Views.Count == 1)
         _multiViewInternal.ActiveViewIndex = 0;
-#endif
     }
 
     private void OnTabViewRemove (TabView view)
@@ -351,9 +295,6 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-#if NET11
-  [CLSCompliant (false)]
-#endif
     public void SetActiveView (TabView view)
     {
       ArgumentUtility.CheckNotNull ("view", view);
@@ -363,9 +304,6 @@ namespace Remotion.Web.UI.Controls
       nextActiveTab.IsSelected = true;
     }
 
-#if NET11
-  [CLSCompliant (false)]
-#endif
     public TabView GetActiveView ()
     {
       TabView view = (TabView) MultiViewInternal.GetActiveView ();
@@ -579,9 +517,6 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-#if NET11
-  [CLSCompliant (false)]
-#endif
     protected TabbedMultiView.MultiView MultiViewInternal
     {
       get

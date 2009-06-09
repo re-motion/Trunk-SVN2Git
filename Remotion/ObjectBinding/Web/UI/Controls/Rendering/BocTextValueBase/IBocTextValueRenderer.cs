@@ -20,7 +20,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
   /// <summary>
   /// Interface for classes able to render <see cref="IBocTextValue"/> controls.
   /// </summary>
-  public interface IBocTextValueRenderer : IRenderer<IBocTextValue>
+  public interface IBocTextValueRenderer : IBocRenderableControlRenderer<IBocTextValue>
   {
   }
 }

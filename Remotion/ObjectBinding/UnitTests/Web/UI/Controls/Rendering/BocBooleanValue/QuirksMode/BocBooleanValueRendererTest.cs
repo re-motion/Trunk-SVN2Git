@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       pageStub.Stub (stub => stub.ClientScript).Return (clientScriptManagerMock);
 
       _booleanValue.Stub (mock => mock.Value).PropertyBehavior();
-      _booleanValue.Stub (mock => mock.HasClientScript).Return (true);
+      _booleanValue.Stub (mock => mock.IsDesignMode).Return (false);
       _booleanValue.Stub (mock => mock.ShowDescription).Return (true);
 
       _booleanValue.Stub (mock => mock.Page).Return (pageStub);
@@ -256,7 +256,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       _clickScript = _clickScript.Insert (_clickScript.IndexOf ("return false;"), c_postbackEventReference + ";");
       CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
     }
-
 
     private void CheckRendering (string value, string iconUrl, string description)
     {

@@ -14,58 +14,36 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI.WebControls;
-using System.Xml;
 using NUnit.Framework;
-using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
-using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTimeValue
+namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DatePickerButton.QuirksMode
 {
   [TestFixture]
-  public class BocDatePickerButtonRendererTest : RendererTestBase
+  public class DatePickerButtonRendererTest : RendererTestBase
   {
-    private IBocDatePickerButton _datePickerButton;
+    private IDatePickerButton _datePickerButton;
 
     [SetUp]
     public void SetUp ()
     {
       Initialize();
-      _datePickerButton = MockRepository.GenerateStub<IBocDatePickerButton>();
+      _datePickerButton = MockRepository.GenerateStub<IDatePickerButton>();
       _datePickerButton.ID = "_Boc_DatePickerButton";
       _datePickerButton.Stub (mock => mock.ContainerControlID).Return ("Container");
       _datePickerButton.Stub (mock => mock.TargetControlID).Return ("Target");
       _datePickerButton.Stub (mock => mock.ClientID).Return (_datePickerButton.ID);
-      _datePickerButton.Stub (mock => mock.GetResolvedImageUrl()).Return ("FullImagePath");
-      _datePickerButton.Stub (mock => mock.GetDatePickerUrl()).Return ("DatePickerUrl");
     }
 
     [Test]
     public void RenderButton ()
     {
       _datePickerButton.Stub (mock => mock.Enabled).Return (true);
-      _datePickerButton.Stub (mock => mock.HasClientScript).Return (true);
+      _datePickerButton.Stub (mock => mock.EnableClientScript).Return (true);
 
-      var renderer = new BocDatePickerButtonRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _datePickerButton);
-      renderer.Render();
-
-      AssertDateTimePickerButton (Html.GetResultDocument(), false, true);
-    }
-
-    [Test]
-    public void RenderButtonEmptyPopupSize ()
-    {
-      _datePickerButton.Stub (mock => mock.Enabled).Return (true);
-      _datePickerButton.Stub (mock => mock.HasClientScript).Return (true);
-      _datePickerButton.Stub (mock => mock.DatePickerPopupWidth).Return (Unit.Empty);
-      _datePickerButton.Stub (mock => mock.DatePickerPopupHeight).Return (Unit.Empty);
-
-      var renderer = new BocDatePickerButtonRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _datePickerButton);
-      renderer.Render();
-
-      AssertDateTimePickerButton (Html.GetResultDocument(), false, true);
+      AssertDateTimePickerButton (false, true);
     }
 
     [Test]
@@ -73,34 +51,32 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     {
       _datePickerButton.Stub (mock => mock.Enabled).Return (true);
 
-      var renderer = new BocDatePickerButtonRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _datePickerButton);
-      renderer.Render();
-
-      AssertDateTimePickerButton (Html.GetResultDocument(), false, false);
+      AssertDateTimePickerButton (false, false);
     }
 
     [Test]
     public void RenderButtonDisabled ()
     {
-      _datePickerButton.Stub (mock => mock.HasClientScript).Return (true);
+      _datePickerButton.Stub (mock => mock.EnableClientScript).Return (true);
 
-      var renderer = new BocDatePickerButtonRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _datePickerButton);
-      renderer.Render();
-
-      AssertDateTimePickerButton (Html.GetResultDocument(), true, true);
+      AssertDateTimePickerButton (true, true);
     }
 
     [Test]
     public void RenderButtonDisabledNoClientScript ()
     {
-      var renderer = new BocDatePickerButtonRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, _datePickerButton);
-      renderer.Render();
-
-      AssertDateTimePickerButton (Html.GetResultDocument(), true, false);
+      AssertDateTimePickerButton (true, false);
     }
 
-    private void AssertDateTimePickerButton (XmlNode buttonDocument, bool isDisabled, bool hasClientScript)
+    private void AssertDateTimePickerButton (bool isDisabled, bool hasClientScript)
     {
+      var preRenderer = new DatePickerButtonPreRenderer (HttpContext, _datePickerButton);
+      preRenderer.PreRender();
+
+      var renderer = new DatePickerButtonRenderer (HttpContext, Html.Writer, _datePickerButton);
+      renderer.Render ();
+      var buttonDocument = Html.GetResultDocument();
+
       var button = Html.GetAssertedChildElement (buttonDocument, "a", 0);
       Html.AssertAttribute (button, "id", "_Boc_DatePickerButton");
       string script = string.Format (
@@ -108,9 +84,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
           "document.getElementById ('{1}'), '{2}', '{3}', '{4}');return false;",
           _datePickerButton.ContainerControlID,
           _datePickerButton.TargetControlID,
-          _datePickerButton.GetDatePickerUrl(),
-          _datePickerButton.DatePickerPopupWidth.IsEmpty ? "150pt" : _datePickerButton.DatePickerPopupWidth.ToString(),
-          _datePickerButton.DatePickerPopupHeight.IsEmpty ? "150pt" : _datePickerButton.DatePickerPopupHeight.ToString()
+          renderer.GetDatePickerUrl(),
+          "150pt",
+          "150pt"
           );
 
       if (isDisabled)
@@ -131,7 +107,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       {
         var image = Html.GetAssertedChildElement (button, "img", 0);
         Html.AssertAttribute (image, "alt", _datePickerButton.AlternateText);
-        Html.AssertAttribute (image, "src", _datePickerButton.GetResolvedImageUrl());
+        Html.AssertAttribute (image, "src", renderer.GetResolvedImageUrl());
         Html.AssertStyleAttribute (image, "border-width", "0px");
       }
     }

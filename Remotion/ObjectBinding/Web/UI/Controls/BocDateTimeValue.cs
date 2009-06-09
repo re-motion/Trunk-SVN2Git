@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // member fields
 
     private readonly DateTimeFormatter _formatter = new DateTimeFormatter();
-    private readonly BocDatePickerButton _datePickerButton;
+    private readonly DatePickerButton _datePickerButton;
 
     private readonly Style _commonStyle;
     private readonly SingleRowTextBoxStyle _dateTimeTextBoxStyle;
@@ -110,7 +110,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _dateTextBoxStyle = new SingleRowTextBoxStyle();
       _timeTextBoxStyle = new SingleRowTextBoxStyle();
       _labelStyle = new Style();
-      _datePickerButton = new BocDatePickerButton();
+      _datePickerButton = new DatePickerButton();
       _validators = new ArrayList();
     }
 
@@ -129,19 +129,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       Binding.BindingChanged += Binding_BindingChanged;
       if (!IsDesignMode)
         Page.RegisterRequiresPostBack (this);
-    }
-
-    public override void RegisterHtmlHeadContents (HttpContext context)
-    {
-      base.RegisterHtmlHeadContents (context);
-
-      if (!HtmlHeadAppender.Current.IsRegistered (_datePickerButton.ScriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            this, context, typeof (DatePickerPage), ResourceType.Html, _datePickerButton.ScriptFileName);
-
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (_datePickerButton.ScriptFileKey, scriptUrl);
-      }
     }
 
     /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
@@ -264,7 +251,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       var factory = ServiceLocator.Current.GetInstance<IBocDateTimeValueRendererFactory> ();
       var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render ();
+      renderer.Render();
     }
 
     protected override void LoadControlState (object savedState)
@@ -713,16 +700,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _dateTextBoxStyle; }
     }
 
-    SingleRowTextBoxStyle IBocDateTimeValue.TimeTextBoxStyle
-    {
-      get { return _timeTextBoxStyle; }
-    }
-
-    SingleRowTextBoxStyle IBocDateTimeValue.DateTextBoxStyle
-    {
-      get { return _dateTextBoxStyle; }
-    }
-
     /// <summary> Gets the style that you want to apply to the time text box (edit mode) only. </summary>
     /// <remarks> These style settings override the styles defined in <see cref="DateTimeTextBoxStyle"/>. </remarks>
     [Category ("Style")]
@@ -759,28 +736,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _datePickerButton.DatePickerButtonStyle; }
     }
 
-    /// <summary> Gets or sets the width of the IFrame used to display the date picker. </summary>
-    /// <value> The <see cref="Unit"/> value used for the width. The default value is <b>150pt</b>. </value>
-    [Category ("Appearance")]
-    [Description ("The width of the IFrame used to display the date picker.")]
-    [DefaultValue (typeof (Unit), "150pt")]
-    public Unit DatePickerPopupWidth
-    {
-      get { return _datePickerButton.DatePickerPopupWidth; }
-      set { _datePickerButton.DatePickerPopupWidth = value; }
-    }
-
-    /// <summary> Gets or sets the height of the IFrame used to display the date picker. </summary>
-    /// <value> The <see cref="Unit"/> value used for the height. The default value is <b>150pt</b>. </value>
-    [Category ("Appearance")]
-    [Description ("The height of the IFrame used to display the date picker.")]
-    [DefaultValue (typeof (Unit), "150pt")]
-    public Unit DatePickerPopupHeight
-    {
-      get { return _datePickerButton.DatePickerPopupHeight; }
-      set { _datePickerButton.DatePickerPopupHeight = value; }
-    }
-
     /// <summary> Gets or sets a flag that determines whether to display the seconds. </summary>
     /// <value> <see langword="true"/> to enable the seconds. The default value is <see langword="false"/>. </value>
     [Category ("Appearance")]
@@ -790,11 +745,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return _showSeconds; }
       set { _showSeconds = value; }
-    }
-
-    SingleRowTextBoxStyle IBocDateTimeValue.DateTimeTextBoxStyle
-    {
-      get { return _dateTimeTextBoxStyle; }
     }
 
     /// <summary> Gets or sets a flag that determines whether to apply an automatic maximum length to the text boxes. </summary>
@@ -885,9 +835,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> Gets the <see cref="BocDatePickerButton"/> used in edit mode for opening the date picker. </summary>
+    /// <summary> Gets the <see cref="Remotion.Web.UI.Controls.IDatePickerButton"/> used in edit mode for opening the date picker. </summary>
     [Browsable (false)]
-    public IBocDatePickerButton DatePickerButton
+    public IDatePickerButton DatePickerButton
     {
       get { return _datePickerButton; }
     }

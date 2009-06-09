@@ -14,13 +14,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI.WebControls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
+namespace Remotion.Web.UI.Controls
 {
-  /// <summary>
-  /// Interface for classes able to render <see cref="IBocDatePickerButton"/> controls.
-  /// </summary>
-  public interface IBocDatePickerButtonRenderer:IRenderer<IBocDatePickerButton>
+  public interface IDatePickerButton : IControl
   {
+    new IControl Parent { get; }
+    bool IsDesignMode { get; set; }
+    string AlternateText { get; set; }
+    bool EnableClientScript { get; }
+    string TargetControlID { get; }
+    Style DatePickerButtonStyle { get; }
+    string ContainerControlID { get; }
+    bool Enabled { get; }
   }
 }

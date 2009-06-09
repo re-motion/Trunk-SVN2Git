@@ -14,10 +14,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
+namespace Remotion.Web.UI.Controls.Rendering
 {
-  public interface IBocListRenderer : IBocRenderableControlRenderer<IBocList>
+  public interface IPreRenderer<TControl>
+      where TControl: IControl
   {
+    /// <summary>Gets the control to render.</summary>
+    TControl Control { get; }
+
+    /// <summary>Gets the context in which rendering occurs.</summary>
+    IHttpContext Context { get; }
+
+    /// <summary>Prepares the control for rendering.</summary>
+    void PreRender ();
   }
 }

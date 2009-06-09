@@ -18,16 +18,17 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
 {
   /// <summary>
-  /// Responsible for rendering <see cref="BocDateTimeValue"/> controls, but not for the included <see cref="BocDatePickerButton"/>.
-  /// For that, see <see cref="BocDatePickerButtonRenderer"/>.
+  /// Responsible for rendering <see cref="BocDateTimeValue"/> controls, but not for the included <see cref="IDatePickerButton"/>.
+  /// For that, see <see cref="IDatePickerButtonRenderer"/>.
   /// <seealso cref="IBocDateTimeValue"/>
   /// </summary>
   /// <include file='doc\include\UI\Controls\Rendering\QuirksMode\BocDateTimeValueRenderer.xml' path='BocDateTimeValueRenderer/Class'/>
-  public class BocDateTimeValueRenderer : RenderableControlRendererBase<IBocDateTimeValue>, IBocDateTimeValueRenderer
+  public class BocDateTimeValueRenderer : BocRendererBase<IBocDateTimeValue>, IBocDateTimeValueRenderer
   {
     /// <summary> Text displayed when control is displayed in desinger and is read-only has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
@@ -42,10 +43,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
     /// <summary>
     /// Renders an inline table consisting of one row with up to three cells, depending on <see cref="IBocDateTimeValue.ActualValueType"/>.
-    /// The first one for the date textbox, second for the <see cref="BocDatePickerButton"/> and third for the time textbox.
+    /// The first one for the date textbox, second for the <see cref="DatePickerButton"/> and third for the time textbox.
     /// The text boxes are rendered directly, the date picker is responsible for rendering itself.
     /// </summary>
-    public void Render ()
+    public void Render()
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddAttributesToRender (true);
@@ -89,7 +90,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
           hasTimeField = true;
           break;
       }
-      bool canScript = datePickerButton.HasClientScript || (Control.IsDesignMode && datePickerButton.EnableClientScript);
+      bool canScript = DetermineClientScriptLevel(datePickerButton);
       bool hasDatePicker = hasDateField && canScript;
 
       int dateTextBoxWidthPercentage = GetDateTextBoxWidthPercentage (hasDateField, hasTimeField);
@@ -106,6 +107,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
       Writer.RenderEndTag(); // End tr
       Writer.RenderEndTag(); // End table
+    }
+
+    private bool DetermineClientScriptLevel (IDatePickerButton datePickerButton)
+    {
+      if (!datePickerButton.EnableClientScript)
+        return false;
+
+      if (Control.IsDesignMode)
+        return true;
+
+      bool isVersionGreaterOrEqual55 =
+          Context.Request.Browser.MajorVersion >= 6
+          || Context.Request.Browser.MajorVersion == 5
+             && Context.Request.Browser.MinorVersion >= 0.5;
+      bool isInternetExplorer55AndHigher =
+          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
+
+      return isInternetExplorer55AndHigher;
     }
 
     private string GetDateTextBoxSize (int dateTextBoxWidthPercentage)
@@ -161,7 +180,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       Writer.RenderEndTag(); // End td
     }
 
-    private void RenderDatePickerCell (bool hasDatePicker, IBocDatePickerButton datePickerButton)
+    private void RenderDatePickerCell (bool hasDatePicker, IDatePickerButton datePickerButton)
     {
       if (!hasDatePicker)
         return;

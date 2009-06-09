@@ -43,21 +43,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
     /// scripted to respond to clicks and change the "checkbox" state accordingly; 
     /// in addition, the state is put into an additional hidden field.
     /// </summary>
-    public override void Render ()
+    public override void Render()
     {
       var resourceSet = Control.CreateResourceSet();
 
       AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      bool isReadOnly = Control.IsReadOnly;
-
       Label labelControl = new Label { ID = Control.GetLabelClientID() };
       Image imageControl = new Image { ID = Control.GetImageClientID() };
       HiddenField hiddenFieldControl = new HiddenField { ID = Control.GetHiddenFieldKey() };
       HyperLink linkControl = new HyperLink { ID = Control.GetHyperLinkKey() };
 
-      bool isClientScriptEnabled = Control.HasClientScript && !isReadOnly;
+      bool isClientScriptEnabled = DetermineClientScriptLevel();
       if (isClientScriptEnabled)
       {
         if (Control.Enabled)
@@ -69,7 +67,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       }
 
       PrepareLinkControl (linkControl, isClientScriptEnabled);
-      PrepareHiddenControl (hiddenFieldControl, isReadOnly);
+      PrepareHiddenControl (hiddenFieldControl, Control.IsReadOnly);
       PrepareVisibleControls (imageControl, labelControl, resourceSet);
 
       hiddenFieldControl.RenderControl (Writer);
@@ -78,6 +76,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       labelControl.RenderControl (Writer);
 
       Writer.RenderEndTag();
+    }
+
+    private bool DetermineClientScriptLevel ()
+    {
+      return !Control.IsDesignMode && !Control.IsReadOnly;
     }
 
     private void PrepareHiddenControl (HiddenField hiddenFieldControl, bool isReadOnly)

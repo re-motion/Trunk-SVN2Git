@@ -20,7 +20,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
   /// <summary>
   /// Interface for classes able to render <see cref="IBocBooleanValue"/> controls.
   /// </summary>
-  public interface IBocBooleanValueRenderer : IRenderer<IBocBooleanValue>
+  public interface IBocBooleanValueRenderer : IBocRenderableControlRenderer<IBocBooleanValue>
   {
   }
 }
