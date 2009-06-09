@@ -587,6 +587,7 @@
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\MemberBindings\FieldInfoBindingTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\MemberBindings\MemberBindingTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\MemberBindings\MemberBindingTestBase.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\EvaluatableTreeFindingVisitorTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\TypeForNewExpression.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\ClauseFieldResolverTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\FieldSourcePathBuilderTest.cs" />
@@ -666,10 +667,7 @@
     <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\SimpleWhereExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Structure\MethodCallExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TransparentIdentifierRemovingVisitorTest.cs" />
-    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\PartialEvaluationPreAnalyzerIntegrationTest.cs" />
-    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\PartialEvaluationPreAnalyzerTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\PartialTreeEvaluatingVisitorTest.cs" />
-    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\TestablePartialEvaluationPreAnalyzer.cs" />
     <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTest.cs" />
     <Compile Include="Linq\Parsing\Structure\QueryParserNameHackTest.cs" />
     <Compile Include="Linq\Parsing\Structure\QueryParserTest.cs" />
