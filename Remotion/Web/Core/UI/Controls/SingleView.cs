@@ -17,14 +17,18 @@ using System;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls.Rendering.SingleView;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
   [ToolboxData ("<{0}:SingleView id=\"SingleView\" runat=\"server\">\r\n\t<View>\r\n\t</View>\r\n</{0}:SingleView>")]
   //[Designer( typeof (SingleViewDesigner))]
-  public class SingleView : WebControl, IControl
+  public class SingleView : WebControl, ISingleView
   {
     private PlaceHolder _view;
     //private Control _viewTemplateContainer;
@@ -126,125 +130,11 @@ namespace Remotion.Web.UI.Controls
       ScriptUtility.RegisterElementForBorderSpans (this, _bottomControl.ClientID);
     }
 
-    protected override void AddAttributesToRender (HtmlTextWriter writer)
+    public override void RenderControl (HtmlTextWriter writer)
     {
-      base.AddAttributesToRender (writer);
-      if (ControlHelper.IsDesignMode (this, Context))
-      {
-        writer.AddStyleAttribute ("width", "100%");
-        writer.AddStyleAttribute ("height", "75%");
-      }
-
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
-    }
-
-    protected override void RenderContents (HtmlTextWriter writer)
-    {
-      EnsureChildControls();
-
-      if (!StringUtility.IsNullOrEmpty (CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClass);
-      else if (!StringUtility.IsNullOrEmpty (Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, Attributes["class"]);
-      else
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Table);
-
-      RenderTopControls (writer);
-      RenderView (writer);
-      RenderBottomControls (writer);
-
-      writer.RenderEndTag();
-    }
-
-    protected virtual void RenderView (HtmlTextWriter writer)
-    {
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
-
-      if (ControlHelper.IsDesignMode (this, Context))
-        writer.AddStyleAttribute ("border", "solid 1px black");
-      _viewStyle.AddAttributesToRender (writer);
-      if (StringUtility.IsNullOrEmpty (_viewStyle.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, ViewClientID);
-      _viewStyle.AddAttributesToRender (writer);
-      if (StringUtility.IsNullOrEmpty (_viewStyle.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassViewBody);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin body div
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, ClientID + "_View_Content");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
-
-      //_viewTemplateContainer.RenderControl (writer);
-      _view.RenderControl (writer);
-
-      writer.RenderEndTag(); // end content div
-      writer.RenderEndTag(); // end body div
-      writer.RenderEndTag(); // end outer div
-
-      writer.RenderEndTag(); // end td
-      writer.RenderEndTag(); // end tr
-    }
-
-    protected virtual void RenderTopControls (HtmlTextWriter writer)
-    {
-      Style style = _topControlsStyle;
-      PlaceHolder placeHolder = _topControl;
-      string cssClass = CssClassTopControls;
-      RenderPlaceHolder (writer, style, placeHolder, cssClass);
-    }
-
-    protected virtual void RenderBottomControls (HtmlTextWriter writer)
-    {
-      Style style = _bottomControlsStyle;
-      PlaceHolder placeHolder = _bottomControl;
-      string cssClass = CssClassBottomControls;
-      RenderPlaceHolder (writer, style, placeHolder, cssClass);
-    }
-
-    private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string cssClass)
-    {
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // begin tr
-      if (StringUtility.IsNullOrEmpty (style.CssClass))
-      {
-        if (placeHolder.Controls.Count > 0)
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-        else
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass + " " + CssClassEmpty);
-      }
-      else
-      {
-        if (placeHolder.Controls.Count > 0)
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass);
-        else
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass + " " + CssClassEmpty);
-      }
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
-      style.AddAttributesToRender (writer);
-      if (StringUtility.IsNullOrEmpty (style.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
-
-      placeHolder.RenderControl (writer);
-
-      writer.RenderEndTag(); // end content div
-      writer.RenderEndTag(); // end outer div
-
-      writer.RenderEndTag(); // end td
-      writer.RenderEndTag(); // end tr
+      var factory = ServiceLocator.Current.GetInstance<IRendererFactory<ISingleView>>();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper(Context), writer, this);
+      renderer.Render();
     }
 
     protected string ViewClientID
@@ -260,6 +150,21 @@ namespace Remotion.Web.UI.Controls
         EnsureChildControls();
         return base.Controls;
       }
+    }
+
+    PlaceHolder ISingleView.TopControl
+    {
+      get { return _topControl; }
+    }
+
+    PlaceHolder ISingleView.View
+    {
+      get { return _view; }
+    }
+
+    PlaceHolder ISingleView.BottomControl
+    {
+      get { return _bottomControl; }
     }
 
     [PersistenceMode (PersistenceMode.InnerProperty)]
@@ -343,6 +248,16 @@ namespace Remotion.Web.UI.Controls
     public Style BottomControlsStyle
     {
       get { return _bottomControlsStyle; }
+    }
+
+    bool ISingleView.IsDesignMode
+    {
+      get { return ControlHelper.IsDesignMode(this, Context); }
+    }
+
+    string ISingleView.ViewClientID
+    {
+      get { return ViewClientID; }
     }
 
     [PersistenceMode (PersistenceMode.InnerProperty)]

@@ -25,6 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class RendererBase<TControl>
+    where TControl : IStyledControl
   {
     private readonly HtmlTextWriter _writer;
     private readonly IHttpContext _context;
@@ -60,6 +61,25 @@ namespace Remotion.Web.UI.Controls.Rendering
     public TControl Control
     {
       get { return _control; }
+    }
+
+    protected void AddStandardAttributesToRender ()
+    {
+      if (!string.IsNullOrEmpty (Control.CssClass))
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClass);
+
+      CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes (Control);
+      foreach (string style in styles.Keys)
+      {
+        Writer.AddStyleAttribute (style, styles[style]);
+      }
+
+      foreach (string attribute in Control.Attributes.Keys)
+      {
+        string value = Control.Attributes[attribute];
+        if (!string.IsNullOrEmpty (value))
+          Writer.AddAttribute (attribute, value);
+      }
     }
   }
 }

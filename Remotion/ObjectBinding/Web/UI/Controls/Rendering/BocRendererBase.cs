@@ -92,34 +92,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
       get { return "disabled"; }
     }
 
-    private void AddStandardAttributesToRender ()
-    {
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
-
-      string cssClass = string.Empty;
-      if (!string.IsNullOrEmpty (Control.CssClass))
-        cssClass = Control.CssClass + " ";
-
-      if (!string.IsNullOrEmpty (Control.ControlStyle.CssClass))
-        cssClass += Control.ControlStyle.CssClass;
-
-      if (!string.IsNullOrEmpty (cssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-
-      CssStyleCollection styles = Control.ControlStyle.GetStyleAttributes (Control);
-      foreach (string style in styles.Keys)
-      {
-        Writer.AddStyleAttribute (style, styles[style]);
-      }
-
-      foreach (string attribute in Control.Attributes.Keys)
-      {
-        string value = Control.Attributes[attribute];
-        if (!string.IsNullOrEmpty (value))
-          Writer.AddAttribute (attribute, value);
-      }
-    }
-
     private void OverrideWidth (bool overrideWidth, string newWidth, out Unit backUpWidth, out string backUpStyleWidth)
     {
       backUpStyleWidth = Control.Style["width"];

@@ -39,6 +39,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
 
     protected override void AddAdditionalAttributes()
     {
+      Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
       Writer.AddStyleAttribute ("white-space", "nowrap");
       if (!Control.IsReadOnly)
       {

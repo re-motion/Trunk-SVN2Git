@@ -14,20 +14,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI.WebControls;
-using Remotion.Web.UI.Controls.Rendering;
+using System.Web.UI;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls
+namespace Remotion.Web.UI.Controls.Rendering
 {
-  public interface IDatePickerButton : IStyledControl
+  public interface IRendererFactory<TControl>
+      where TControl: IControl
   {
-    new IControl Parent { get; }
-    bool IsDesignMode { get; set; }
-    string AlternateText { get; set; }
-    bool EnableClientScript { get; }
-    string TargetControlID { get; }
-    Style DatePickerButtonStyle { get; }
-    string ContainerControlID { get; }
-    bool Enabled { get; }
+    IRenderer<TControl> CreateRenderer (IHttpContext context, HtmlTextWriter writer, TControl control);
   }
 }

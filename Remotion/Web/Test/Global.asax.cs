@@ -14,10 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Web;
-using System.Web.SessionState;
+using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using CommonServiceLocator.WindsorAdapter;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.Test
 {
@@ -39,6 +40,17 @@ namespace Remotion.Web.Test
     protected void Application_Start(Object sender, EventArgs e)
     {
       log4net.Config.XmlConfigurator.Configure();
+
+      IWindsorContainer container = new WindsorContainer ();
+      container.Register (
+          AllTypes.Pick ()
+              .FromAssembly (typeof (RendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
+              .WithService.Select ((t, b) => t.GetInterfaces ())
+              .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+
+      Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
+      ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
     }
  
     protected void Session_Start(Object sender, EventArgs e)

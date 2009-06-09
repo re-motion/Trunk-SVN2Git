@@ -15,19 +15,20 @@
 // 
 using System;
 using System.Web.UI.WebControls;
-using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.Web.UI.Controls
+namespace Remotion.Web.UI.Controls.Rendering.SingleView
 {
-  public interface IDatePickerButton : IStyledControl
+  public interface ISingleView : IStyledControl
   {
-    new IControl Parent { get; }
-    bool IsDesignMode { get; set; }
-    string AlternateText { get; set; }
-    bool EnableClientScript { get; }
-    string TargetControlID { get; }
-    Style DatePickerButtonStyle { get; }
-    string ContainerControlID { get; }
-    bool Enabled { get; }
+    PlaceHolder TopControl { get; }
+    PlaceHolder View { get; }
+    PlaceHolder BottomControl { get; }
+    Style TopControlsStyle { get; }
+    Style ViewStyle { get; }
+    Style BottomControlsStyle { get; }
+
+    bool IsDesignMode { get; }
+    
+    string ViewClientID { get; }
   }
 }

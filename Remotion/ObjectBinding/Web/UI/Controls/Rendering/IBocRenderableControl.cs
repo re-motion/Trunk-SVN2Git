@@ -16,17 +16,15 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {
   /// <summary>
   /// Common interface for controls which exposes properties relevant to rendering.
   /// </summary>
-  public interface IBocRenderableControl
+  public interface IBocRenderableControl : IStyledControl
   {
-    /// <summary>The CSS class applied to the control itself.</summary>
-    string CssClass { get; set; }
-
     /// <summary>Evalutes whether this control is in <b>Design Mode</b>.</summary>
     bool IsDesignMode { get; }
 
@@ -39,19 +37,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
     bool Enabled { get; }
 
     /// <summary>
-    /// Interface exposure of <see cref="WebControl.Attributes"/>.
-    /// </summary>
-    AttributeCollection Attributes { get; }
-
-    /// <summary>
     /// Interface exposure of <see cref="WebControl.Style"/>.
     /// </summary>
     CssStyleCollection Style { get; }
-
-    /// <summary>
-    /// Interface exposure of <see cref="WebControl.ControlStyle"/>.
-    /// </summary>
-    Style ControlStyle { get; }
 
     /// <summary>
     /// Interface exposure of <see cref="WebControl.Width"/>.

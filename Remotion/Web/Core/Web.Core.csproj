@@ -156,8 +156,13 @@
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\Factories\DatePickerButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\IPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\IRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\IStyledControl.cs" />
+    <Compile Include="UI\Controls\Rendering\SingleView\ISingleView.cs" />
     <Compile Include="UI\Controls\Rendering\PreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRenderer.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />

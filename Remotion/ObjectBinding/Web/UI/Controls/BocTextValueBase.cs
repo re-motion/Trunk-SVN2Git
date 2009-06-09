@@ -26,6 +26,7 @@ using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -298,8 +299,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     protected abstract IEnumerable<BaseValidator> GetValidators ();
-
-    Style IBocRenderableControl.ControlStyle { get { return ControlStyle; } }
 
     protected override void OnPreRender (EventArgs e)
     {
