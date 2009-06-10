@@ -601,6 +601,7 @@
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\ReplacingVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\CastExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\Legacy\LegacySubQueryFindingVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\MethodCallExpressionNodeTypeRegistryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\ExpressionTreeParserTest.cs" />
     <Compile Include="Linq\Parsing\AnonymousType.cs" />
@@ -659,7 +660,7 @@
     <Compile Include="Linq\Parsing\Structure\Legacy\SelectManyExpressionParserTests\WhereSelectManyExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\SimpleFromSourceExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\SourceExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\Legacy\SubQueryFindingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\SubQueryFindingVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\BodyHelper.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\GeneralWhereExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Structure\Legacy\WhereExpressionParserTests\RecursiveWhereExpressionParserTest.cs" />
