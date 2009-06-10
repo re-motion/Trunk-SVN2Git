@@ -426,6 +426,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [Ignore ("TODO 1180")]
     public void QueryWithSubQueryInMainFrom ()
     {
       var orders = from c in
@@ -494,8 +495,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found 'DomainObjectQueryable<Order>"
-                                                                    + ".Select(o => CreateLinqQuery().Select(c => c))' (MethodCallExpression).")]
+    [ExpectedException (typeof (ParserException), 
+        ExpectedMessage = "This version of re-linq does not support subqueries in the select projection of a query.")]
     public void QueryWithSubQuery_InSelectClause ()
     {
       var orders = from o in QueryFactory.CreateLinqQuery<Order>()
@@ -503,32 +504,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                        (from c in QueryFactory.CreateLinqQuery<Computer>() select c);
 
       orders.ToArray();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found 'DomainObjectQueryable<Order>"
-                                                                    + ".Where(o => (o.OrderNumber = 5)).Select(o => CreateLinqQuery().Select(c => c))' (MethodCallExpression).")]
-    public void QueryWithSubQueryInSelectClause_WhereClause ()
-    {
-      var orders = from o in QueryFactory.CreateLinqQuery<Order>()
-                   where o.OrderNumber == 5
-                   select
-                       (from c in QueryFactory.CreateLinqQuery<Computer>() select c);
-
-      orders.ToArray ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ParserException), ExpectedMessage = "Expected no subqueries for Select expressions, found 'DomainObjectQueryable<Order>"
-                                                                    + ".Where(o => (o.OrderNumber = 5)).Select(o => CreateLinqQuery().Where(c => (c = null)))' (MethodCallExpression).")]
-    public void QueryWithSubQueryInSelectClause_WhereClause2 ()
-    {
-      var orders = from o in QueryFactory.CreateLinqQuery<Order>()
-                   where o.OrderNumber == 5
-                   select
-                       (from c in QueryFactory.CreateLinqQuery<Computer>() where c == null select c);
-
-      orders.ToArray ();
     }
 
     [Test]
