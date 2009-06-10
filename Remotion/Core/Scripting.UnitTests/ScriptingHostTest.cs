@@ -43,9 +43,9 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void GetScriptingHostTest ()
     {
-      ScriptingHost scriptingHost = ScriptingHost.GetScriptingHost ();
+      ScriptingHost scriptingHost = ScriptingHost.Current;
       Assert.That (scriptingHost, Is.Not.Null);
-      ScriptingHost scriptingHost2 = ScriptingHost.GetScriptingHost ();
+      ScriptingHost scriptingHost2 = ScriptingHost.Current;
       Assert.That (scriptingHost,Is.SameAs(scriptingHost2));
     }
  
@@ -53,9 +53,9 @@ namespace Remotion.Scripting.UnitTests
     public void ScriptingHostThreadStaticTest ()
     {
       ScriptingHost scriptingHostDifferentThread = null;
-      var threadRunner = new ThreadRunner (delegate { scriptingHostDifferentThread = ScriptingHost.GetScriptingHost (); });
+      var threadRunner = new ThreadRunner (delegate { scriptingHostDifferentThread = ScriptingHost.Current; });
       threadRunner.Run ();
-      ScriptingHost scriptingHost = ScriptingHost.GetScriptingHost (); 
+      ScriptingHost scriptingHost = ScriptingHost.Current; 
       Assert.That (scriptingHost, Is.Not.Null);
       Assert.That (scriptingHostDifferentThread, Is.Not.Null);
       Assert.That (scriptingHost, Is.Not.SameAs (scriptingHostDifferentThread));

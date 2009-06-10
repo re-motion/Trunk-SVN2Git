@@ -46,6 +46,8 @@ namespace Remotion.Scripting
       None
     }
 
+    // ScriptingHost encapsulates Microsoft.Scripting.Hosting.ScriptRuntime, which is not thread safe. We therefore supply a seperate 
+    // singleton instance to every thread through a thread static member.
     [ThreadStatic]
     private static ScriptingHost s_scriptingHost;
 
@@ -53,13 +55,16 @@ namespace Remotion.Scripting
     private Dictionary<ScriptLanguageType, ScriptEngine> _scriptEngines;
 
 
-    public static ScriptingHost GetScriptingHost ()
+    public static ScriptingHost Current
     {
-      if (s_scriptingHost == null)
+      get
       {
-        s_scriptingHost = new ScriptingHost ();
+        if (s_scriptingHost == null)
+        {
+          s_scriptingHost = new ScriptingHost();
+        }
+        return s_scriptingHost;
       }
-      return s_scriptingHost;
     }
 
     /// <summary>
@@ -68,7 +73,7 @@ namespace Remotion.Scripting
     public static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
     {
       ArgumentUtility.CheckNotNull ("languageType", languageType);
-      return GetScriptingHost().GetEngine (languageType);
+      return Current.GetEngine (languageType);
     }
 
 
