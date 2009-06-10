@@ -178,6 +178,9 @@
     <Compile Include="UI\Controls\Rendering\HtmlHelper.cs" />
     <Compile Include="UI\Controls\Rendering\RendererTestBase.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRendererTest.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRendererTest.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\WebTabStripMock.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\XmlNodeExtensions.cs" />
     <Compile Include="UI\Controls\ReplaceableControlMock.cs" />
     <Compile Include="UI\Controls\RequestMode.cs" />
     <Compile Include="UI\Controls\TestPageHolder.cs" />

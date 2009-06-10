@@ -95,7 +95,7 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
 
-      if (!ControlHelper.IsDesignMode (this, Context))
+      if (!IsDesignMode)
       {
         Page.RegisterRequiresControlState (this);
         Page.RegisterRequiresPostBack (this);
@@ -240,7 +240,7 @@ namespace Remotion.Web.UI.Controls
     /// <remarks> Used by the <see cref="WebControlDesigner"/>. </remarks>
     void IControlWithDesignTimeSupport.PreRenderForDesignMode ()
     {
-      if (! ControlHelper.IsDesignMode (this, Context))
+      if (! IsDesignMode)
         throw new InvalidOperationException ("PreRenderChildControlsForDesignMode may only be called during design time.");
       EnsureChildControls();
       OnPreRender (EventArgs.Empty);
@@ -282,14 +282,14 @@ namespace Remotion.Web.UI.Controls
     {
       WebTabCollection tabs = Tabs;
 
-      if (ControlHelper.IsDesignMode (this, Context)
+      if (IsDesignMode
           && tabs.Count == 0)
         tabs = GetDesignTimeTabs();
 
       List<WebTab> visibleTabs = new List<WebTab>();
       foreach (WebTab tab in tabs)
       {
-        if (tab.EvaluateVisible() || ControlHelper.IsDesignMode (this, Context))
+        if (tab.EvaluateVisible() || IsDesignMode)
           visibleTabs.Add (tab);
       }
 
@@ -315,7 +315,7 @@ namespace Remotion.Web.UI.Controls
 
       writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Div
 
-      if (ControlHelper.IsDesignMode (this, Context))
+      if (IsDesignMode)
       {
         writer.AddStyleAttribute ("list-style", "none");
         writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
@@ -332,7 +332,7 @@ namespace Remotion.Web.UI.Controls
 
     private void RenderTab (HtmlTextWriter writer, WebTab tab, bool isLast)
     {
-      if (ControlHelper.IsDesignMode (this, Context))
+      if (IsDesignMode)
       {
         writer.AddStyleAttribute ("float", "left");
         writer.AddStyleAttribute ("display", "block");
@@ -382,6 +382,11 @@ namespace Remotion.Web.UI.Controls
 
       writer.RenderEndTag(); // End list item
       writer.WriteLine();
+    }
+
+    public virtual bool IsDesignMode
+    {
+      get { return ControlHelper.IsDesignMode(this, Context); }
     }
 
     private void RenderSeperator (HtmlTextWriter writer)
@@ -489,7 +494,7 @@ namespace Remotion.Web.UI.Controls
       if (resourceManager == null)
         return;
 
-      if (ControlHelper.IsDesignMode ((Control) this))
+      if (IsDesignMode)
         return;
       Tabs.LoadResources (resourceManager);
     }
