@@ -21,9 +21,12 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.UI.Design;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -36,7 +39,7 @@ namespace Remotion.Web.UI.Controls
   public class WebTabStrip
       :
           WebControl,
-          IControl,
+          IWebTabStrip,
           IPostBackDataHandler,
           IPostBackEventHandler,
           IResourceDispatchTarget,
@@ -246,36 +249,16 @@ namespace Remotion.Web.UI.Controls
       OnPreRender (EventArgs.Empty);
     }
 
-    protected override HtmlTextWriterTag TagKey
-    {
-      get { return HtmlTextWriterTag.Div; }
-    }
-
-    protected override void AddAttributesToRender (HtmlTextWriter writer)
-    {
-      base.AddAttributesToRender (writer);
-
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
-    }
-
-    protected override void RenderContents (HtmlTextWriter writer)
+    public override void RenderControl (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
 
-      List<WebTab> visibleTabs = GetVisibleTabs();
-
-      RenderBeginTabsPane (writer);
-      for (int i = 0; i < visibleTabs.Count; i++)
-      {
-        bool isLast = i == (visibleTabs.Count - 1);
-        WebTab tab = visibleTabs[i];
-        RenderTab (writer, tab, isLast);
-      }
-      RenderEndTabsPane (writer);
+      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper(Context), writer, this);
+      renderer.Render();
     }
 
     private List<WebTab> GetVisibleTabs ()
@@ -286,7 +269,7 @@ namespace Remotion.Web.UI.Controls
           && tabs.Count == 0)
         tabs = GetDesignTimeTabs();
 
-      List<WebTab> visibleTabs = new List<WebTab>();
+      var visibleTabs = new List<WebTab>();
       foreach (WebTab tab in tabs)
       {
         if (tab.EvaluateVisible() || IsDesignMode)
@@ -304,98 +287,14 @@ namespace Remotion.Web.UI.Controls
       return tabs;
     }
 
-    private void RenderBeginTabsPane (HtmlTextWriter writer)
+    IList<IWebTab> IWebTabStrip.GetVisibleTabs ()
     {
-      bool isEmpty = Tabs.Count == 0;
-
-      string cssClass = CssClassTabsPane;
-      if (isEmpty)
-        cssClass += " " + CssClassTabsPaneEmpty;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Div
-
-      if (IsDesignMode)
-      {
-        writer.AddStyleAttribute ("list-style", "none");
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-        writer.AddStyleAttribute ("display", "inline");
-      }
-      writer.RenderBeginTag (HtmlTextWriterTag.Ul); // Begin List
-    }
-
-    private void RenderEndTabsPane (HtmlTextWriter writer)
-    {
-      writer.RenderEndTag(); // End List
-      writer.RenderEndTag(); // End Div
-    }
-
-    private void RenderTab (HtmlTextWriter writer, WebTab tab, bool isLast)
-    {
-      if (IsDesignMode)
-      {
-        writer.AddStyleAttribute ("float", "left");
-        writer.AddStyleAttribute ("display", "block");
-        writer.AddStyleAttribute ("white-space", "nowrap");
-      }
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Li); // Begin list item
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, "tabStripTabWrapper");
-      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab wrapper span
-
-      RenderSeperator (writer);
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, ClientID + "_" + tab.ItemID);
-      string cssClass;
-      if (tab.IsSelected)
-        cssClass = CssClassTabSelected;
-      else
-        cssClass = CssClassTab;
-      if (!tab.EvaluateEnabled())
-        cssClass += " " + CssClassDisabled;
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span
-
-      bool isEnabled = ! tab.IsSelected || _enableSelectedTab;
-      WebTabStyle style = tab.IsSelected ? _selectedTabStyle : _tabStyle;
-      tab.RenderBeginTagForCommand (writer, isEnabled, style);
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabAnchorBody);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin anchor body span
-
-      tab.RenderContents (writer);
-
-      writer.RenderEndTag(); // End anchor body span
-      tab.RenderEndTagForCommand (writer);
-
-      writer.RenderEndTag(); // End tab span
-
-      writer.RenderEndTag(); // End tab wrapper span
-
-      if (isLast)
-      {
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabLast);
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        writer.RenderEndTag();
-      }
-
-      writer.RenderEndTag(); // End list item
-      writer.WriteLine();
+      return GetVisibleTabs().ConvertAll<IWebTab>(tab=>tab);
     }
 
     public virtual bool IsDesignMode
     {
       get { return ControlHelper.IsDesignMode(this, Context); }
-    }
-
-    private void RenderSeperator (HtmlTextWriter writer)
-    {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSeparator);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      writer.RenderEndTag();
-      writer.RenderEndTag();
     }
 
     /// <summary> Dispatches the resources passed in <paramref name="values"/> to the control's properties. </summary>
@@ -573,6 +472,11 @@ namespace Remotion.Web.UI.Controls
       set { _enableSelectedTab = value; }
     }
 
+    IPage IWebTabStrip.Page
+    {
+      get { return new PageWrapper (Page); }
+    }
+
     /// <summary> Occurs when a node is clicked. </summary>
     [Category ("Action")]
     [Description ("Occurs when the selected tab has been changed.")]
@@ -655,7 +559,7 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Gets the CSS-Class applied to a <see cref="WebTab"/>. </summary>
     /// <remarks> 
     ///   <para> Class: <c>tabStripTab</c>. </para>
-    ///   <para> Applied only if the <see cref="Style.CssClass"/> is not set for the <see cref="TabStyle"/>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> is not set for the <see cref="P:Control.TabStyle"/>. </para>
     /// </remarks>
     protected virtual string CssClassTab
     {
@@ -665,7 +569,7 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Gets the CSS-Class applied to a <see cref="WebTab"/> if it is selected. </summary>
     /// <remarks> 
     ///   <para> Class: <c>tabStripTabSelected</c>. </para>
-    ///   <para> Applied only if the <see cref="Style.CssClass"/> is not set for the <see cref="SelectedTabStyle"/>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> is not set for the <see cref="P:Control.SelectedTabStyle"/>. </para>
     /// </remarks>
     protected virtual string CssClassTabSelected
     {

@@ -16,29 +16,50 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
 {
   [TestFixture]
   public class WebTabStripRendererTest : RendererTestBase
   {
-    private Page _page;
-    private WebTabStripMock _webTabStrip;
+    private IWebTabStrip _webTabStrip;
+    private IWebTabStripRenderer _renderer;
+    private IPage _pageStub;
+    private IWebTab _tab0;
 
     [SetUp]
     public void SetUp ()
     {
       Initialize();
 
-      _webTabStrip = new WebTabStripMock { ID = "MyWebTabStrip" };
-      _page = new Page();
-      _page.Controls.Add (_webTabStrip);
+      _webTabStrip = MockRepository.GenerateStub<IWebTabStrip>();
+      _webTabStrip.Stub (stub => stub.ClientID).Return ("WebTabStrip");
+
+      _pageStub = MockRepository.GenerateStub<IPage>();
+      var clientScriptStub = MockRepository.GenerateStub<IClientScriptManager>();
+      clientScriptStub.Stub (stub => stub.GetPostBackClientHyperlink (_webTabStrip, null)).IgnoreArguments().Return ("PostBackHyperlink");
+      _pageStub.Stub (stub => stub.ClientScript).Return (clientScriptStub);
+
+      _webTabStrip.Stub (stub => stub.Page).Return (_pageStub);
+      _webTabStrip.Stub (stub => stub.Tabs).Return (new WebTabCollection (_webTabStrip));
+      _webTabStrip.Stub (stub => stub.GetVisibleTabs()).Return (new List<IWebTab>());
+
+      StateBag stateBag = new StateBag();
+      _webTabStrip.Stub (stub => stub.Attributes).Return (new AttributeCollection (stateBag));
+      _webTabStrip.Stub (stub => stub.SelectedTabStyle).Return (new WebTabStyle());
+      _webTabStrip.Stub (stub => stub.TabStyle).Return (new WebTabStyle());
+      _webTabStrip.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
     }
 
     [Test]
@@ -51,7 +72,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
     public void RenderPopulatedStrip ()
     {
       PopulateTabStrip();
-      ((WebTab) _webTabStrip.Tabs[1]).IsSelected = true;
+      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
 
       AssertControl (false, false, false, 4);
     }
@@ -60,8 +81,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
     public void RenderPopulatedStripWithCssClass ()
     {
       _webTabStrip.CssClass = "SomeCssClass";
-      PopulateTabStrip ();
-      ((WebTab) _webTabStrip.Tabs[1]).IsSelected = true;
+      PopulateTabStrip();
+      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
 
       AssertControl (true, false, false, 4);
     }
@@ -69,10 +90,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
     [Test]
     public void RenderPopulatedStripWithEnableSelectedTab ()
     {
-      _webTabStrip.EnableSelectedTab = true;
+      _webTabStrip.Stub (stub => stub.EnableSelectedTab).Return (true);
 
-      PopulateTabStrip ();
-      ((WebTab) _webTabStrip.Tabs[1]).IsSelected = true;
+      PopulateTabStrip();
+      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
 
       AssertControl (false, false, false, 4);
     }
@@ -80,62 +101,93 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
     [Test]
     public void RenderPopulatedStripWithDisabledTab ()
     {
-      PopulateTabStrip ();
-      ((WebTab) _webTabStrip.Tabs[1]).IsSelected = true;
-      ((WebTab) _webTabStrip.Tabs[0]).IsDisabled = true;
-
+      PopulateTabStrip();
+      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (false);
       AssertControl (false, false, false, 4);
     }
 
     [Test]
     public void RenderPopulatedStripWithInvisibleTab ()
     {
-      PopulateTabStrip ();
-      ((WebTab) _webTabStrip.Tabs[1]).IsSelected = true;
-      ((WebTab) _webTabStrip.Tabs[2]).IsVisible = false;
+      PopulateTabStrip();
+      _webTabStrip.GetVisibleTabs().RemoveAt (2);
 
       AssertControl (false, false, false, 3);
     }
 
     [Test]
-    public void RenderEmptyStripInDesignMode ()
+    public void RenderEmptyListInDesignMode ()
     {
-      _webTabStrip.SetDesignMode (true);
+      _webTabStrip.Stub (stub => stub.IsDesignMode).Return (true);
 
-      AssertControl (false, true, true, 5);
+      AssertControl (false, true, true, 0);
+    }
+
+    [Test]
+    public void RenderPopulatedListInDesignMode ()
+    {
+      _webTabStrip.Stub (stub => stub.IsDesignMode).Return (true);
+      PopulateTabStrip();
+      AssertControl (false, true, true, 4);
     }
 
     private void PopulateTabStrip ()
     {
-      var tab0 = new WebTab { ItemID = "Tab0", Text = "First Tab", Icon = new IconInfo ()};
-      var tab1 = new WebTab { ItemID = "Tab1", Text = "Second Tab", Icon = new IconInfo ("myImageUrl")};
-      var tab2 = new WebTab { ItemID = "Tab2", Text = "Third Tab", Icon = null };
-      var tab3 = new WebTab { ItemID = "Tab3", Icon = null };
-      _webTabStrip.Tabs.Add (tab0);
-      _webTabStrip.Tabs.Add (tab1);
-      _webTabStrip.Tabs.Add (tab2);
-      _webTabStrip.Tabs.Add (tab3);
+      _tab0 = MockRepository.GenerateStub<IWebTab>();
+      _tab0.Stub (stub => stub.ItemID).Return ("Tab0");
+      _tab0.Stub (stub => stub.Text).Return ("First Tab");
+      _tab0.Stub (stub => stub.Icon).Return (new IconInfo());
+      _tab0.Stub (stub => stub.EvaluateEnabled ()).Return (true);
+      _tab0.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink(_webTabStrip, _tab0.ItemID));
+
+      var tab1 = MockRepository.GenerateStub<IWebTab> ();
+      tab1.Stub (stub => stub.ItemID).Return ("Tab1");
+      tab1.Stub (stub => stub.Text).Return ("Second Tab");
+      tab1.Stub (stub => stub.Icon).Return (new IconInfo ("myImageUrl"));
+      tab1.Stub (stub => stub.EvaluateEnabled ()).Return (true);
+      tab1.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab1.ItemID));
+
+      var tab2 = MockRepository.GenerateStub<IWebTab> ();
+      tab2.Stub (stub => stub.ItemID).Return ("Tab2");
+      tab2.Stub (stub => stub.Text).Return ("Third Tab");
+      tab2.Stub (stub => stub.Icon).Return (null);
+      tab2.Stub (stub => stub.EvaluateEnabled ()).Return (true);
+      tab2.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab2.ItemID));
+
+      var tab3 = MockRepository.GenerateStub<IWebTab> ();
+      tab3.Stub (stub => stub.ItemID).Return ("Tab3");
+      tab3.Stub (stub => stub.Text).Return (null);
+      tab3.Stub (stub => stub.Icon).Return (null);
+      tab3.Stub (stub => stub.EvaluateEnabled ()).Return (true);
+      tab3.Stub (stub => stub.GetPostBackClientEvent ()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, tab3.ItemID));
+
+      _webTabStrip.GetVisibleTabs().Add (_tab0);
+      _webTabStrip.GetVisibleTabs().Add (tab1);
+      _webTabStrip.GetVisibleTabs().Add (tab2);
+      _webTabStrip.GetVisibleTabs().Add (tab3);
     }
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
-      _webTabStrip.RenderControl (Html.Writer);
+      var factory = new WebTabStripRendererFactory();
+      _renderer = factory.CreateRenderer (HttpContext, Html.Writer, _webTabStrip);
+      _renderer.Render();
 
-      var document = Html.GetResultDocument ();
+      var document = Html.GetResultDocument();
       XmlNode list = GetAssertedTabList (document, withCssClass, isEmpty, tabCount, isDesignMode);
       AssertTabs (list, isDesignMode);
     }
 
     private void AssertTabs (XmlNode list, bool isDesignMode)
     {
-      var tabs = (List<WebTab>)PrivateInvoke.InvokeNonPublicMethod (_webTabStrip, typeof(Web.UI.Controls.WebTabStrip), "GetVisibleTabs");
+      var tabs = _webTabStrip.GetVisibleTabs();
       int itemCount = list.ChildNodes.Count;
-      if( !isDesignMode )
+      if (!isDesignMode)
         Assert.That (itemCount, Is.EqualTo (tabs.Count));
 
       for (int i = 0; i < itemCount; i++)
       {
-        WebTab tab = tabs[i];
+        IWebTab tab = tabs[i];
         bool isLastItem = (i == itemCount - 1);
 
         var item = list.GetAssertedChildElement ("li", i);
@@ -152,13 +204,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
     private XmlNode GetAssertedTabList (XmlDocument document, bool withCssClass, bool isEmpty, int tabCount, bool isDesignMode)
     {
       var outerDiv = document.GetAssertedChildElement ("div", 0);
-      outerDiv.AssertAttributeValueEquals ("class", withCssClass ? _webTabStrip.CssClass : _webTabStrip.CssClassBasePublic);
+      outerDiv.AssertAttributeValueEquals ("class", withCssClass ? _webTabStrip.CssClass : _renderer.CssClassBase);
       outerDiv.AssertChildElementCount (1);
 
       var innerDiv = outerDiv.GetAssertedChildElement ("div", 0);
-      innerDiv.AssertAttributeValueContains ("class", _webTabStrip.CssClassTabsPanePublic);
-      if( isEmpty )
-        innerDiv.AssertAttributeValueContains ("class", _webTabStrip.CssClassTabsPaneEmptyPublic);
+      innerDiv.AssertAttributeValueContains ("class", _renderer.CssClassTabsPane);
+      if (isEmpty)
+        innerDiv.AssertAttributeValueContains ("class", _renderer.CssClassTabsPaneEmpty);
 
       innerDiv.AssertChildElementCount (1);
 
@@ -173,7 +225,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
       return list;
     }
 
-    private void AssertItem (XmlNode item, WebTab webTab, bool isLastItem, bool isDesignMode)
+    private void AssertItem (XmlNode item, IWebTab webTab, bool isLastItem, bool isDesignMode)
     {
       if (isDesignMode)
       {
@@ -184,10 +236,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
       item.AssertChildElementCount (isLastItem ? 2 : 1);
 
       var wrapper = item.GetAssertedChildElement ("span", 0);
-      wrapper.AssertAttributeValueEquals ("class", _webTabStrip.CssClassTapStripTabWrapperPublic);
+      wrapper.AssertAttributeValueEquals ("class", _renderer.CssClassTabWrapper);
 
       var separator = wrapper.GetAssertedChildElement ("span", 0);
-      separator.AssertAttributeValueEquals ("class", _webTabStrip.CssClassSeparatorPublic);
+      separator.AssertAttributeValueEquals ("class", _renderer.CssClassSeparator);
       separator.AssertChildElementCount (1);
 
       var empty = separator.GetAssertedChildElement ("span", 0);
@@ -195,33 +247,30 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
 
       var tab = wrapper.GetAssertedChildElement ("span", 1);
       tab.AssertAttributeValueEquals ("id", _webTabStrip.ClientID + "_" + webTab.ItemID);
-      tab.AssertAttributeValueContains ("class", webTab.IsSelected ? _webTabStrip.CssClassTabSelectedPublic : _webTabStrip.CssClassTabPublic);
-      if( webTab.IsDisabled )
-        tab.AssertAttributeValueContains ("class", _webTabStrip.CssClassDisabledPublic);
+      tab.AssertAttributeValueContains ("class", webTab.IsSelected ? _renderer.CssClassTabSelected : _renderer.CssClassTab);
+      if (webTab.IsDisabled)
+        tab.AssertAttributeValueContains ("class", _renderer.CssClassDisabled);
       var link = tab.GetAssertedChildElement ("a", 0);
 
       bool isDisabledBySelection = webTab.IsSelected && !_webTabStrip.EnableSelectedTab;
       if (!webTab.IsDisabled && !isDisabledBySelection)
       {
         link.AssertAttributeValueEquals ("href", "#");
-        string clickScript = _page.ClientScript.GetPostBackClientHyperlink (_webTabStrip, webTab.ItemID);
-        if( isDesignMode )
-          clickScript = string.Empty;
-
+        string clickScript = _pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, webTab.ItemID);
         link.AssertAttributeValueEquals ("onclick", clickScript);
       }
 
-      AssertAnchor(link, webTab);
+      AssertAnchor (link, webTab);
     }
 
-    private void AssertAnchor (XmlNode link, WebTab tab)
+    private void AssertAnchor (XmlNode link, IWebTab tab)
     {
       var anchorBody = link.GetAssertedChildElement ("span", 0);
-      anchorBody.AssertAttributeValueEquals ("class", _webTabStrip.CssClassTabAnchorBodyPublic);
+      anchorBody.AssertAttributeValueEquals ("class", _renderer.CssClassTabAnchorBody);
 
       string url = "/res/Remotion.Web/Image/Spacer.gif";
       string alt = "";
-      string text = StringUtility.NullToEmpty(tab.Text);
+      string text = StringUtility.NullToEmpty (tab.Text);
       if (tab.Icon != null)
       {
         alt = StringUtility.NullToEmpty (tab.Icon.AlternateText);

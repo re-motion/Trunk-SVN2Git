@@ -164,6 +164,14 @@
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTab.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStrip.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\Factories\WebTabStripRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRenderer.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
@@ -764,9 +772,6 @@
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

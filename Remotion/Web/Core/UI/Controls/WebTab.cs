@@ -20,14 +20,14 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.UI.Globalization;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
 
 [TypeConverter (typeof (ExpandableObjectConverter))]
-public class WebTab: IControlItem, IControlStateManager
+public class WebTab: IWebTab, IControlStateManager
 {
   /// <summary> The control to which this object belongs. </summary>
   private IControl _ownerControl;
@@ -342,6 +342,12 @@ public class WebTab: IControlItem, IControlStateManager
     return _tabStrip.Page.ClientScript.GetPostBackClientHyperlink (_tabStrip, ItemID);
   }
 
+  string IWebTab.GetPostBackClientEvent ()
+  {
+    return GetPostBackClientEvent();
+  }
+
+  [Obsolete("Use the WebTabRenderer class instead.")]
   public virtual void RenderBeginTagForCommand (HtmlTextWriter writer, bool isEnabled, WebTabStyle style)
   {
     ArgumentUtility.CheckNotNull ("writer", writer);
@@ -355,12 +361,14 @@ public class WebTab: IControlItem, IControlStateManager
     writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
   }
 
+  [Obsolete ("Use the WebTabRenderer class instead.")]
   public virtual void RenderEndTagForCommand (HtmlTextWriter writer)
   {
     ArgumentUtility.CheckNotNull ("writer", writer);
     writer.RenderEndTag();
   }
 
+  [Obsolete ("Use the WebTabRenderer class instead.")]
   public virtual void RenderContents (HtmlTextWriter writer)
   {
     ArgumentUtility.CheckNotNull ("writer", writer);
