@@ -31,7 +31,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void ScriptRuntime ()
+    public void GetScriptRuntime ()
     {
       ScriptingHost scriptingHost = CreateScriptingHost();
       Assert.That (scriptingHost, Is.Not.Null);
