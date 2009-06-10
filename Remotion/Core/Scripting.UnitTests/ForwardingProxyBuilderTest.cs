@@ -7,6 +7,7 @@ using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -15,6 +16,19 @@ namespace Remotion.Scripting.UnitTests
   public class ForwardingProxyBuilderTest
   {
     private ModuleScope _moduleScope;
+
+
+    [TestFixtureTearDown]
+    public void TestFixtureTearDown ()
+    {
+      if (_moduleScope != null)
+      {
+        if (_moduleScope.StrongNamedModule != null)
+          SaveAndVerifyModuleScopeAssembly (true);
+        if (_moduleScope.WeakNamedModule != null)
+          SaveAndVerifyModuleScopeAssembly (false);
+      }
+    }
 
     public ModuleScope ModuleScope
     {
@@ -47,6 +61,13 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (proxiedFieldInfo.GetValue (proxy), Is.EqualTo (proxied));
       Assert.That (proxiedFieldInfo.IsInitOnly, Is.True);
       Assert.That (proxiedFieldInfo.IsPrivate, Is.True);
-    }  
+    }
+
+
+    private void SaveAndVerifyModuleScopeAssembly (bool strongNamed)
+    {
+      var path = _moduleScope.SaveAssembly (strongNamed);
+      PEVerifier.VerifyPEFile (path);
+    }
   }
 }

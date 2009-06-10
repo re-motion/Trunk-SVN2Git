@@ -12,7 +12,7 @@ namespace Remotion.Scripting.UnitTests
   public class ScriptingHostTest
   {
     [Test]
-    public void CollectScriptEnginesTest ()
+    public void FindScriptEngines ()
     {
       ScriptingHost scriptingHost = CreateScriptingHost ();
       var scriptEngines = scriptingHost.FindScriptEngines ();
@@ -22,7 +22,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    public void GetScriptEnginesTest ()
+    public void GetScriptEngines ()
     {
       ScriptingHost scriptingHost = CreateScriptingHost ();
       var scriptEngines = scriptingHost.GetScriptEngines ();
@@ -31,7 +31,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void ScriptRuntimeTest ()
+    public void ScriptRuntime ()
     {
       ScriptingHost scriptingHost = CreateScriptingHost();
       Assert.That (scriptingHost, Is.Not.Null);
@@ -41,7 +41,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    public void GetScriptingHostTest ()
+    public void ScriptingHost_Current ()
     {
       ScriptingHost scriptingHost = ScriptingHost.Current;
       Assert.That (scriptingHost, Is.Not.Null);
@@ -50,7 +50,7 @@ namespace Remotion.Scripting.UnitTests
     }
  
     [Test]
-    public void ScriptingHostThreadStaticTest ()
+    public void ScriptingHost_Current_ThreadStatic ()
     {
       ScriptingHost scriptingHostDifferentThread = null;
       var threadRunner = new ThreadRunner (delegate { scriptingHostDifferentThread = ScriptingHost.Current; });
@@ -63,7 +63,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void ScriptRuntimeGetEngineTest ()
+    public void GetEngine ()
     {
       ScriptingHost scriptingHost = CreateScriptingHost ();
       var pythonEngine = scriptingHost.GetEngine (ScriptingHost.ScriptLanguageType.Python);
@@ -72,7 +72,7 @@ namespace Remotion.Scripting.UnitTests
 
     [Test]
     [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "ScriptEngine for ScriptLanguageType None cannot be supplied. Check App.config <microsoft.scripting>-section.")]
-    public void ScriptRuntimeGetEngineFailsTest ()
+    public void GetEngine_Fails ()
     {
       ScriptingHost scriptingHost = CreateScriptingHost ();
       scriptingHost.GetEngine (ScriptingHost.ScriptLanguageType.None);
@@ -80,7 +80,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void ScriptRuntimeGetEngineStaticTest ()
+    public void GetEngine_Static ()
     {
       var pythonEngine = ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.Python);
       Assert.That (pythonEngine, Is.Not.Null);
@@ -88,7 +88,7 @@ namespace Remotion.Scripting.UnitTests
 
     [Test]
     [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "ScriptEngine for ScriptLanguageType None cannot be supplied. Check App.config <microsoft.scripting>-section.")]
-    public void ScriptRuntimeGetEngineStaticFailsTest ()
+    public void GetEngine_Static_Fails ()
     {
       ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.None);
     } 
