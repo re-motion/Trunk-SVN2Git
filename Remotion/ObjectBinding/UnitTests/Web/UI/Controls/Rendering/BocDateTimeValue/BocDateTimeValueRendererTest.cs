@@ -14,6 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Globalization;
+using System.Threading;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -426,11 +428,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private void AssertSpan (XmlNode div)
     {
       var span = Html.GetAssertedChildElement (div, "span", 0);
-      string formatString = "dd.MM.yyyy";
+      string formatString = "d";
       if (_dateTimeValue.ActualValueType == BocDateTimeValueType.DateTime)
-        formatString += " HH:mm";
+        formatString = "g";
       else if (_dateTimeValue.ActualValueType == BocDateTimeValueType.Undefined)
-        formatString += " HH:mm:ss";
+        formatString = "G";
 
       Html.AssertTextNode (
           span,
@@ -473,14 +475,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private void AssertTimeTextBox (XmlNode timeBoxCell, bool isDisabled, bool withStyle)
     {
       var timeBox = Html.GetAssertedChildElement (timeBoxCell, "input", 0);
-      int maxLength = 5;
-      string timeFormat = "HH:mm";
+      string timeFormat = "t";
 
       if (_dateTimeValue.ShowSeconds)
       {
-        maxLength = 8;
-        timeFormat = "HH:mm:ss";
+        timeFormat = "T";
       }
+      int maxLength = new DateTime (2009, 12, 31, 12, 30, 30).ToString (timeFormat).Length;
+
       AssertTextBox (timeBox, _dateTimeValue.GetTimeTextboxID(), maxLength, isDisabled, withStyle);
       if (_dateTimeValue.Value.HasValue)
         Html.AssertAttribute (timeBox, "value", _dateTimeValue.Value.Value.ToString (timeFormat));
@@ -493,7 +495,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       var dateBox = Html.GetAssertedChildElement (dateBoxCell, "input", 0);
       AssertTextBox (dateBox, _dateTimeValue.GetDateTextboxID(), 10, isDisabled, withStyle);
       if (_dateTimeValue.Value.HasValue)
-        Html.AssertAttribute (dateBox, "value", _dateTimeValue.Value.Value.ToString ("dd.MM.yyyy"));
+        Html.AssertAttribute (dateBox, "value", _dateTimeValue.Value.Value.ToString ("d"));
       else
         Html.AssertNoAttribute (dateBox, "value");
     }
