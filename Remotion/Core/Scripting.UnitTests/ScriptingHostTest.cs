@@ -46,7 +46,7 @@ namespace Remotion.Scripting.UnitTests
       ScriptingHost scriptingHost = ScriptingHost.GetScriptingHost ();
       Assert.That (scriptingHost, Is.Not.Null);
       ScriptingHost scriptingHost2 = ScriptingHost.GetScriptingHost ();
-      Assert.That (Object.ReferenceEquals(scriptingHost,scriptingHost2), Is.True);
+      Assert.That (scriptingHost,Is.SameAs(scriptingHost2));
     }
  
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.Scripting.UnitTests
       ScriptingHost scriptingHost = ScriptingHost.GetScriptingHost (); 
       Assert.That (scriptingHost, Is.Not.Null);
       Assert.That (scriptingHostDifferentThread, Is.Not.Null);
-      Assert.That (Object.ReferenceEquals (scriptingHost, scriptingHostDifferentThread), Is.Not.True);
+      Assert.That (scriptingHost, Is.Not.SameAs (scriptingHostDifferentThread));
     }
 
 

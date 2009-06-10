@@ -36,7 +36,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void ForwardingProxyBuilder_BuildProxyTypeTest ()
     {
-      var proxyBuilder = new ForwardingProxyBuilder ("CreateForwardingProxyHullCtorTestClass", ModuleScope, typeof (Proxied), new Type[0]);
+      var proxyBuilder = new ForwardingProxyBuilder ("ForwardingProxyBuilder_BuildProxyTypeTest", ModuleScope, typeof (Proxied), new Type[0]);
       Type proxyType = proxyBuilder.BuildProxyType ();
 
       // Create proxy instance, initializing it with class to be proxied
