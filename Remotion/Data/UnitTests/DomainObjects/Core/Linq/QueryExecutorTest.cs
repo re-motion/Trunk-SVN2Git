@@ -25,10 +25,10 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.EagerFetching;
-using Remotion.Data.Linq.Parsing.Structure.Legacy;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.Linq;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using System.Collections.Generic;
@@ -393,19 +393,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private QueryModel GetParsedSimpleQuery ()
     {
       IQueryable<Computer> query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
-      return new QueryParser (query.Expression).GetParsedQuery ();
+      return ExpressionHelper.ParseQuery (query.Expression);
     }
 
     private QueryModel GetParsedSimpleWhereQuery ()
     {
       IQueryable<Order> query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
-      return new QueryParser (query.Expression).GetParsedQuery ();
+      return ExpressionHelper.ParseQuery (query.Expression);
     }
 
     private QueryModel GetParsedSimpleCustomerQuery ()
     {
       IQueryable<Customer> query = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
-      return new QueryParser (query.Expression).GetParsedQuery ();
+      return ExpressionHelper.ParseQuery (query.Expression);
     }
 
     
