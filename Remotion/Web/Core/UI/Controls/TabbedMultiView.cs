@@ -332,13 +332,18 @@ namespace Remotion.Web.UI.Controls
     protected override void AddAttributesToRender (HtmlTextWriter writer)
     {
       base.AddAttributesToRender (writer);
-      if (ControlHelper.IsDesignMode (this, Context))
+      if (IsDesignMode)
       {
         writer.AddStyleAttribute ("width", "100%");
         writer.AddStyleAttribute ("height", "75%");
       }
       if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+    }
+
+    public virtual bool IsDesignMode
+    {
+      get { return ControlHelper.IsDesignMode (this, Context); }
     }
 
     protected override void RenderContents (HtmlTextWriter writer)
@@ -389,7 +394,7 @@ namespace Remotion.Web.UI.Controls
 
     protected virtual void RenderActiveView (HtmlTextWriter writer)
     {
-      if (ControlHelper.IsDesignMode (this, Context))
+      if (IsDesignMode)
         writer.AddStyleAttribute ("border", "solid 1px black");
       _activeViewStyle.AddAttributesToRender (writer);
       if (StringUtility.IsNullOrEmpty (_activeViewStyle.CssClass))
@@ -629,7 +634,7 @@ namespace Remotion.Web.UI.Controls
     /// <remarks> 
     ///   <para> Class: <c>tabbedMultiView</c>. </para>
     /// </remarks>
-    protected virtual string CssClassBase
+    public virtual string CssClassBase
     {
       get { return "tabbedMultiView"; }
     }
@@ -638,7 +643,7 @@ namespace Remotion.Web.UI.Controls
     /// <remarks> 
     ///   <para> Class: <c>tabbedMultiViewTabStrip</c>. </para>
     /// </remarks>
-    protected virtual string CssClassTabStrip
+    public virtual string CssClassTabStrip
     {
       get { return "tabbedMultiViewTabStrip"; }
     }
@@ -648,7 +653,7 @@ namespace Remotion.Web.UI.Controls
     ///   <para> Class: <c>tabbedMultiViewActiveView</c>. </para>
     ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="ActiveViewStyle"/> is not set. </para>
     /// </remarks>
-    protected virtual string CssClassActiveView
+    public virtual string CssClassActiveView
     {
       get { return "tabbedMultiViewActiveView"; }
     }
@@ -658,7 +663,7 @@ namespace Remotion.Web.UI.Controls
     ///   <para> Class: <c>tabbedMultiViewTopControls</c>. </para>
     ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="TopControlsStyle"/> is not set. </para>
     /// </remarks>
-    protected virtual string CssClassTopControls
+    public virtual string CssClassTopControls
     {
       get { return "tabbedMultiViewTopControls"; }
     }
@@ -668,7 +673,7 @@ namespace Remotion.Web.UI.Controls
     ///   <para> Class: <c>tabbedMultiViewBottomControls</c>. </para>
     ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="BottomControlsStyle"/> is not set. </para>
     /// </remarks>
-    protected virtual string CssClassBottomControls
+    public virtual string CssClassBottomControls
     {
       get { return "tabbedMultiViewBottomControls"; }
     }
@@ -677,7 +682,7 @@ namespace Remotion.Web.UI.Controls
     /// <remarks> 
     ///   <para> Class: <c>body</c>. </para>
     /// </remarks>
-    protected virtual string CssClassViewBody
+    public virtual string CssClassViewBody
     {
       get { return "body"; }
     }
@@ -686,7 +691,7 @@ namespace Remotion.Web.UI.Controls
     /// <remarks> 
     ///   <para> Class: <c>content</c>. </para>
     /// </remarks>
-    protected virtual string CssClassContent
+    public virtual string CssClassContent
     {
       get { return "content"; }
     }
@@ -699,7 +704,7 @@ namespace Remotion.Web.UI.Controls
     ///     <c>td.tabbedMultiViewBottomControls.emtpy</c>as a selector.
     ///   </para>
     /// </remarks>
-    protected virtual string CssClassEmpty
+    public virtual string CssClassEmpty
     { get { return "empty"; } }
     #endregion
   }
