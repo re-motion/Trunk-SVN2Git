@@ -164,6 +164,11 @@
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\Factories\TabbedMultiViewRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTab.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStrip.cs" />

@@ -183,7 +183,6 @@
     <Compile Include="UI\Controls\Rendering\RendererTestBase.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\StubServiceLocator.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\TabbedMultiViewMock.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRendererTest.cs" />

@@ -15,11 +15,16 @@
 // 
 using System;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using System.Xml;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.TabbedMultiView;
+using Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 {
@@ -28,21 +33,43 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
   {
     private const string c_cssClass = "SomeCssClass";
 
-    private TabbedMultiViewMock _control;
+    private ITabbedMultiView _control;
 
     [SetUp]
     public void SetUp ()
     {
       ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
       Initialize();
-      _control = new TabbedMultiViewMock();
+      _control = MockRepository.GenerateStub<ITabbedMultiView>();
+
+      _control.Stub (stub => stub.TopControl).Return (new PlaceHolder { ID = "_TopControl" });
+      _control.Stub (stub => stub.BottomControl).Return (new PlaceHolder { ID = "_BottomControl" });
+
+      var tabStrip = MockRepository.GenerateStub<IWebTabStrip>();
+      _control.Stub (stub => stub.TabStrip).Return (tabStrip);
+
+      _control.Stub (stub => stub.ActiveViewClientID).Return (_control.ClientID + "_ActiveView");
+
+      StateBag stateBag = new StateBag ();
+      _control.Stub (stub => stub.Attributes).Return (new AttributeCollection (stateBag));
+      _control.Stub (stub => stub.TopControlsStyle).Return (new Style (stateBag));
+      _control.Stub (stub => stub.BottomControlsStyle).Return (new Style (stateBag));
+      _control.Stub (stub => stub.ActiveViewStyle).Return (new WebTabStyle ());
+      _control.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
+
+      _control.Stub (stub => stub.CssClassActiveView).Return ("CssClassActiveView");
+      _control.Stub (stub => stub.CssClassBase).Return ("CssClassBase");
+      _control.Stub (stub => stub.CssClassBottomControls).Return ("CssClassBottomControls");
+      _control.Stub (stub => stub.CssClassContent).Return ("CssClassContent");
+      _control.Stub (stub => stub.CssClassEmpty).Return ("CssClassEmpty");
+      _control.Stub (stub => stub.CssClassTabStrip).Return ("CssClassTabStrip");
+      _control.Stub (stub => stub.CssClassTopControls).Return ("CssClassTopControls");
+      _control.Stub (stub => stub.CssClassViewBody).Return ("CssClassViewBody");
     }
 
     [Test]
     public void RenderEmptyControl ()
     {
-      _control.RenderControl (Html.Writer);
-
       AssertControl (false, false, false, true);
     }
 
@@ -53,8 +80,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       _control.TopControlsStyle.CssClass = c_cssClass;
       _control.ActiveViewStyle.CssClass = c_cssClass;
       _control.BottomControlsStyle.CssClass = c_cssClass;
-
-      _control.RenderControl (Html.Writer);
 
       AssertControl (true, false, false, true);
     }
@@ -67,17 +92,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       _control.ActiveViewStyle.CssClass = c_cssClass;
       _control.BottomControlsStyle.CssClass = c_cssClass;
 
-      _control.RenderControl (Html.Writer);
-
       AssertControl (true, true, false, true);
     }
 
     [Test]
     public void RenderEmptyControlInDesignMode ()
     {
-      _control.SetDesignMode (true);
-
-      _control.RenderControl (Html.Writer);
+      _control.Stub (stub => stub.IsDesignMode).Return (true);
 
       AssertControl (false, false, true, true);
     }
@@ -85,13 +106,11 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
     [Test]
     public void RenderEmptyControlWithCssClassInDesignMode ()
     {
-      _control.SetDesignMode (true);
+      _control.Stub (stub => stub.IsDesignMode).Return (true);
       _control.CssClass = c_cssClass;
       _control.TopControlsStyle.CssClass = c_cssClass;
       _control.ActiveViewStyle.CssClass = c_cssClass;
       _control.BottomControlsStyle.CssClass = c_cssClass;
-
-      _control.RenderControl (Html.Writer);
 
       AssertControl (true, false,true, true);
     }
@@ -100,8 +119,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
     public void RenderPopulatedControl ()
     {
       PopulateControl();
-
-      _control.RenderControl (Html.Writer);
 
       AssertControl (false, false, false, false);
     }
@@ -116,8 +133,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       _control.ActiveViewStyle.CssClass = c_cssClass;
       _control.BottomControlsStyle.CssClass = c_cssClass;
 
-      _control.RenderControl (Html.Writer);
-
       AssertControl (true, false, false, false);
     }
 
@@ -125,9 +140,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
     public void RenderPopulatedControlInDesignMode ()
     {
       PopulateControl ();
-      _control.SetDesignMode (true);
-
-      _control.RenderControl (Html.Writer);
+      _control.Stub (stub => stub.IsDesignMode).Return (true);
 
       AssertControl (false, false, true, false);
     }
@@ -137,33 +150,31 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
     {
       PopulateControl();
 
-      _control.SetDesignMode (true);
+      _control.Stub (stub => stub.IsDesignMode).Return (true);
       _control.CssClass = c_cssClass;
       _control.TopControlsStyle.CssClass = c_cssClass;
       _control.ActiveViewStyle.CssClass = c_cssClass;
       _control.BottomControlsStyle.CssClass = c_cssClass;
-
-      _control.RenderControl (Html.Writer);
 
       AssertControl (true, false, true, false);
     }
 
     private void PopulateControl ()
     {
-      _control.TopControls.Add (new LiteralControl ("TopControls"));
+      _control.TopControl.Controls.Add (new LiteralControl ("TopControls"));
+      
       var view1 = new TabView { ID="View1ID", Title = "View1Title" };
       view1.LazyControls.Add (new LiteralControl ("View1Contents"));
+      _control.Stub(stub=>stub.GetActiveView()).Return (view1);
 
-      var view2 = new TabView { ID = "View2ID", Title = "View2Title" };
-      view2.LazyControls.Add (new LiteralControl ("View2Contents"));
-      
-      _control.Views.Add (view1);
-      _control.Views.Add (view2);
-      _control.BottomControls.Add (new LiteralControl ("BottomControls"));
+      _control.BottomControl.Controls.Add (new LiteralControl ("BottomControls"));
     }
 
     private void AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
     {
+      var renderer = new TabbedMultiViewRenderer (HttpContext, Html.Writer, _control);
+      renderer.Render();
+
       var table = GetAssertedTableElement (withCssClass, inAttributes, isDesignMode);
       AssertTopRow (table, withCssClass, isEmpty);
       AssertTabStripRow (table);

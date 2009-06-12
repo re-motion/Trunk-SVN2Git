@@ -14,11 +14,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.UI.Controls.Rendering;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView
+namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
 {
   public interface ITabbedMultiView : IStyledControl
   {
+    bool IsDesignMode { get; }
+    string CssClassBase { get; }
+    string CssClassTabStrip { get; }
+    string CssClassActiveView { get; }
+    string ActiveViewClientID { get; }
+    Style ActiveViewStyle { get; }
+    string CssClassViewBody { get; }
+    string CssClassContent { get; }
+    Style TopControlsStyle { get; }
+    string CssClassTopControls { get; }
+    PlaceHolder TopControl { get; }
+    Style BottomControlsStyle { get; }
+    PlaceHolder BottomControl { get; }
+    string CssClassBottomControls { get; }
+    string CssClassEmpty { get; }
+    IWebTabStrip TabStrip { get; }
+    Control GetActiveView ();
   }
 }

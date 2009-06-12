@@ -17,16 +17,19 @@ using System;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering.TabbedMultiView;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
-
   /// <include file='doc\include\UI\Controls\TabbedMultiView.xml' path='TabbedMultiView/Class/*' />
   [ToolboxData ("<{0}:TabbedMultiView id=\"MultiView\" runat=\"server\"></{0}:TabbedMultiView>")]
   [DefaultEvent ("ActiveViewChanged")]
-  public class TabbedMultiView : WebControl, IControl
+  public class TabbedMultiView : WebControl, ITabbedMultiView
   {
     // constants
     private const string c_itemIDSuffix = "_Tab";
@@ -51,7 +54,7 @@ namespace Remotion.Web.UI.Controls
 
         tabView.IsLazyLoadingEnabled = Parent.EnableLazyLoading;
         if (!Parent.EnableLazyLoading)
-          tabView.EnsureLazyControls ();
+          tabView.EnsureLazyControls();
 
         base.AddedControl (control, index);
       }
@@ -82,13 +85,13 @@ namespace Remotion.Web.UI.Controls
 
         ISmartNavigablePage smartNavigablePage = Page as ISmartNavigablePage;
         if (smartNavigablePage != null)
-          smartNavigablePage.DiscardSmartNavigationData ();
+          smartNavigablePage.DiscardSmartNavigationData();
       }
 
       protected override void OnPreRender (EventArgs e)
       {
         foreach (TabView view in Views)
-          view.OverrideVisible ();
+          view.OverrideVisible();
 
         base.OnPreRender (e);
       }
@@ -96,29 +99,28 @@ namespace Remotion.Web.UI.Controls
 
     protected internal class MultiViewTab : WebTab
     {
-      string _target;
+      private string _target;
 
       /// <summary> Initalizes a new instance. </summary>
       public MultiViewTab (string itemID, string text, IconInfo icon)
-        : base (itemID, text, icon)
+          : base (itemID, text, icon)
       {
       }
 
       /// <summary> Initalizes a new instance. </summary>
       public MultiViewTab (string itemID, string text, string iconUrl)
-        : this (itemID, text, new IconInfo (iconUrl))
+          : this (itemID, text, new IconInfo (iconUrl))
       {
       }
 
       /// <summary> Initalizes a new instance. </summary>
       public MultiViewTab (string itemID, string text)
-        : this (itemID, text, string.Empty)
+          : this (itemID, text, string.Empty)
       {
       }
 
       /// <summary> Initalizes a new instance. </summary>
       public MultiViewTab ()
-        : base ()
       {
       }
 
@@ -130,7 +132,7 @@ namespace Remotion.Web.UI.Controls
 
       protected override void OnSelectionChanged ()
       {
-        base.OnSelectionChanged ();
+        base.OnSelectionChanged();
 
         TabbedMultiView multiView = ((TabbedMultiView) OwnerControl);
         TabView view = null;
@@ -161,16 +163,16 @@ namespace Remotion.Web.UI.Controls
 
     // fields
 
-    private bool _enableLazyLoading = false;
-    private bool _isInitialized = false;
+    private bool _enableLazyLoading;
+    private bool _isInitialized;
     private WebTabStrip _tabStrip;
-    private TabbedMultiView.MultiView _multiViewInternal;
+    private MultiView _multiViewInternal;
     private PlaceHolder _topControl;
     private PlaceHolder _bottomControl;
 
-    private Style _activeViewStyle;
-    private Style _topControlsStyle;
-    private Style _bottomControlsStyle;
+    private readonly Style _activeViewStyle;
+    private readonly Style _topControlsStyle;
+    private readonly Style _bottomControlsStyle;
 
     private TabView _newActiveTabAfterRemove;
     private EmptyTabView _placeHolderTabView;
@@ -178,10 +180,10 @@ namespace Remotion.Web.UI.Controls
     // construction and destruction
     public TabbedMultiView ()
     {
-      CreateControls ();
-      _activeViewStyle = new Style ();
-      _topControlsStyle = new Style ();
-      _bottomControlsStyle = new Style ();
+      CreateControls();
+      _activeViewStyle = new Style();
+      _topControlsStyle = new Style();
+      _bottomControlsStyle = new Style();
     }
 
     // methods and properties
@@ -189,10 +191,10 @@ namespace Remotion.Web.UI.Controls
     private void CreateControls ()
     {
       _tabStrip = new WebTabStrip (this);
-      _multiViewInternal = new TabbedMultiView.MultiView ();
-      _topControl = new PlaceHolder ();
-      _bottomControl = new PlaceHolder ();
-      _placeHolderTabView = new EmptyTabView ();
+      _multiViewInternal = new MultiView();
+      _topControl = new PlaceHolder();
+      _bottomControl = new PlaceHolder();
+      _placeHolderTabView = new EmptyTabView();
     }
 
     protected override void CreateChildControls ()
@@ -226,16 +228,16 @@ namespace Remotion.Web.UI.Controls
     protected override void OnLoad (EventArgs e)
     {
       base.OnLoad (e);
-      TabView view = (TabView) MultiViewInternal.GetActiveView ();
+      TabView view = (TabView) MultiViewInternal.GetActiveView();
       if (view != null)
-        view.EnsureLazyControls ();
+        view.EnsureLazyControls();
     }
 
     private void OnTabViewInserted (TabView view)
     {
-      EnsureChildControls ();
+      EnsureChildControls();
 
-      MultiViewTab tab = new MultiViewTab ();
+      MultiViewTab tab = new MultiViewTab();
       tab.ItemID = view.ID + c_itemIDSuffix;
       tab.Text = view.Title;
       tab.Icon = view.Icon;
@@ -251,9 +253,9 @@ namespace Remotion.Web.UI.Controls
 
     private void OnTabViewRemove (TabView view)
     {
-      EnsureChildControls ();
+      EnsureChildControls();
 
-      TabView activeView = GetActiveView ();
+      TabView activeView = GetActiveView();
       if (view != null && view == activeView)
       {
         int index = MultiViewInternal.Controls.IndexOf (view);
@@ -266,19 +268,15 @@ namespace Remotion.Web.UI.Controls
             _newActiveTabAfterRemove = _placeHolderTabView;
         }
         else
-        {
           _newActiveTabAfterRemove = (TabView) MultiViewInternal.Controls[index + 1];
-        }
       }
       else
-      {
         _newActiveTabAfterRemove = null;
-      }
     }
 
     private void OnTabViewRemoved (TabView view)
     {
-      EnsureChildControls ();
+      EnsureChildControls();
 
       WebTab tab = _tabStrip.Tabs.Find (view.ID + c_itemIDSuffix);
       if (tab == null)
@@ -299,16 +297,16 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("view", view);
       MultiViewInternal.SetActiveView (view);
-      TabView activeView = GetActiveView ();
+      TabView activeView = GetActiveView();
       WebTab nextActiveTab = _tabStrip.Tabs.Find (activeView.ID + c_itemIDSuffix);
       nextActiveTab.IsSelected = true;
     }
 
     public TabView GetActiveView ()
     {
-      TabView view = (TabView) MultiViewInternal.GetActiveView ();
+      TabView view = (TabView) MultiViewInternal.GetActiveView();
       if (view != null && _isInitialized)
-        view.EnsureLazyControls ();
+        view.EnsureLazyControls();
       return view;
     }
 
@@ -329,157 +327,18 @@ namespace Remotion.Web.UI.Controls
       base.OnPreRender (e);
     }
 
-    protected override void AddAttributesToRender (HtmlTextWriter writer)
-    {
-      base.AddAttributesToRender (writer);
-      if (IsDesignMode)
-      {
-        writer.AddStyleAttribute ("width", "100%");
-        writer.AddStyleAttribute ("height", "75%");
-      }
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
-    }
-
     public virtual bool IsDesignMode
     {
       get { return ControlHelper.IsDesignMode (this, Context); }
     }
 
-    protected override void RenderContents (HtmlTextWriter writer)
+    public override void RenderControl (HtmlTextWriter writer)
     {
-      EnsureChildControls ();
+      EnsureChildControls();
 
-      if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
-        WcagHelper.Instance.HandleError (1, this);
-
-      if (!StringUtility.IsNullOrEmpty (CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClass);
-      else if (!StringUtility.IsNullOrEmpty (Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, Attributes["class"]);
-      else
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Table);
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      RenderTopControls (writer);
-      writer.RenderEndTag ();
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      RenderTabStrip (writer);
-      writer.RenderEndTag ();
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      RenderActiveView (writer);
-      writer.RenderEndTag ();
-     
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      RenderBottomControls (writer);
-      writer.RenderEndTag ();
-
-      writer.RenderEndTag ();
-    }
-
-    protected virtual void RenderTabStrip (HtmlTextWriter writer)
-    {
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabStrip);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
-
-      _tabStrip.CssClass = CssClassTabStrip;
-      _tabStrip.RenderControl (writer);
-
-      writer.RenderEndTag (); // end td
-    }
-
-    protected virtual void RenderActiveView (HtmlTextWriter writer)
-    {
-      if (IsDesignMode)
-        writer.AddStyleAttribute ("border", "solid 1px black");
-      _activeViewStyle.AddAttributesToRender (writer);
-      if (StringUtility.IsNullOrEmpty (_activeViewStyle.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, ActiveViewClientID);
-      _activeViewStyle.AddAttributesToRender (writer);
-      if (StringUtility.IsNullOrEmpty (_activeViewStyle.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassViewBody);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin body div
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, ActiveViewClientID + "_Content");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
-
-      Control view = _multiViewInternal.GetActiveView ();
-      if (view != null)
-      {
-        for (int i = 0; i < view.Controls.Count; i++)
-        {
-          Control control = (Control) view.Controls[i];
-          control.RenderControl (writer);
-        }
-      }
-
-      writer.RenderEndTag (); // end content div
-      writer.RenderEndTag (); // end body div
-      writer.RenderEndTag (); // end outer div
-
-      writer.RenderEndTag (); // end td
-    }
-
-    protected virtual void RenderTopControls (HtmlTextWriter writer)
-    {
-      Style style = _topControlsStyle;
-      PlaceHolder placeHolder = _topControl;
-      string cssClass = CssClassTopControls;
-      RenderPlaceHolder (writer, style, placeHolder, cssClass);
-    }
-
-    protected virtual void RenderBottomControls (HtmlTextWriter writer)
-    {
-      Style style = _bottomControlsStyle;
-      PlaceHolder placeHolder = _bottomControl;
-      string cssClass = CssClassBottomControls;
-      RenderPlaceHolder (writer, style, placeHolder, cssClass);
-    }
-
-    private void RenderPlaceHolder (HtmlTextWriter writer, Style style, PlaceHolder placeHolder, string cssClass)
-    {
-      if (StringUtility.IsNullOrEmpty (style.CssClass))
-      {
-        if (placeHolder.Controls.Count > 0)
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-        else
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass + " " + CssClassEmpty);
-      }
-      else
-      {
-        if (placeHolder.Controls.Count > 0)
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass);
-        else
-          writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass + " " + CssClassEmpty);
-      }
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
-      style.AddAttributesToRender (writer);
-      if (StringUtility.IsNullOrEmpty (style.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
-
-      placeHolder.RenderControl (writer);
-
-      writer.RenderEndTag (); // end content div
-      writer.RenderEndTag (); // end outer div
-
-      writer.RenderEndTag (); // end td
+      var factory = ServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory>();
+      var renderer = factory.CreateRenderer (Context == null ? null : new HttpContextWrapper (Context), writer, this);
+      renderer.Render();
     }
 
     protected string ActiveViewClientID
@@ -491,7 +350,7 @@ namespace Remotion.Web.UI.Controls
     {
       get
       {
-        EnsureChildControls ();
+        EnsureChildControls();
         return base.Controls;
       }
     }
@@ -517,16 +376,16 @@ namespace Remotion.Web.UI.Controls
     {
       get
       {
-        EnsureChildControls ();
+        EnsureChildControls();
         return _tabStrip;
       }
     }
 
-    protected TabbedMultiView.MultiView MultiViewInternal
+    protected MultiView MultiViewInternal
     {
       get
       {
-        EnsureChildControls ();
+        EnsureChildControls();
         return _multiViewInternal;
       }
     }
@@ -534,7 +393,7 @@ namespace Remotion.Web.UI.Controls
     public void EnsureAllLazyLoadedViews ()
     {
       foreach (TabView view in Views)
-        view.EnsureLazyControls ();
+        view.EnsureLazyControls();
     }
 
     [Category ("Behavior")]
@@ -621,15 +480,41 @@ namespace Remotion.Web.UI.Controls
     /// </remarks>
     public void Clear ()
     {
-      CreateControls ();
-      Controls.Clear ();
-      CreateChildControls ();
+      CreateControls();
+      Controls.Clear();
+      CreateChildControls();
       //  Views.Clear();
       //  TabStrip.Tabs.Clear();
       //  MultiViewInternal.Controls.Clear();
     }
 
+    string ITabbedMultiView.ActiveViewClientID
+    {
+      get { return ActiveViewClientID; }
+    }
+
+    PlaceHolder ITabbedMultiView.TopControl
+    {
+      get { return _topControl; }
+    }
+
+    PlaceHolder ITabbedMultiView.BottomControl
+    {
+      get { return _bottomControl; }
+    }
+
+    IWebTabStrip ITabbedMultiView.TabStrip
+    {
+      get { return TabStrip; }
+    }
+
+    Control ITabbedMultiView.GetActiveView ()
+    {
+      return GetActiveView();
+    }
+
     #region protected virtual string CssClass...
+
     /// <summary> Gets the CSS-Class applied to the <see cref="TabbedMultiView"/>. </summary>
     /// <remarks> 
     ///   <para> Class: <c>tabbedMultiView</c>. </para>
@@ -695,7 +580,7 @@ namespace Remotion.Web.UI.Controls
     {
       get { return "content"; }
     }
-    
+
     /// <summary> Gets the CSS-Class applied when the section is empty. </summary>
     /// <remarks> 
     ///   <para> Class: <c>empty</c>. </para>
@@ -705,8 +590,10 @@ namespace Remotion.Web.UI.Controls
     ///   </para>
     /// </remarks>
     public virtual string CssClassEmpty
-    { get { return "empty"; } }
+    {
+      get { return "empty"; }
+    }
+
     #endregion
   }
-
 }
