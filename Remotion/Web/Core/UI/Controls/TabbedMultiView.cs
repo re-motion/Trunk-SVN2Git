@@ -15,7 +15,6 @@
 // 
 using System;
 using System.ComponentModel;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -217,14 +216,6 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
       _isInitialized = true;
-
-      string key = typeof (TabbedMultiView).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            this, new HttpContextWrapper(Context), typeof (TabbedMultiView), ResourceType.Html, ResourceTheme.Legacy, "TabbedMultiView.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
     }
 
     protected override void OnLoad (EventArgs e)
@@ -327,6 +318,10 @@ namespace Remotion.Web.UI.Controls
       ScriptUtility.RegisterElementForBorderSpans (this, _bottomControl.ClientID);
 
       base.OnPreRender (e);
+
+      var factory = ServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (Context == null ? null : new HttpContextWrapper (Context), this);
+      preRenderer.PreRender();
     }
 
     public virtual bool IsDesignMode

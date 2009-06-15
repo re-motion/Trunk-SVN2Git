@@ -25,5 +25,6 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView
   public interface ISingleViewRendererFactory
   {
     ISingleViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control);
+    ISingleViewPreRenderer CreatePreRenderer (IHttpContext context, ISingleView control);
   }
 }

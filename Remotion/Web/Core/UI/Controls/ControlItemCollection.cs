@@ -26,19 +26,6 @@ using Remotion.Web.UI.Globalization;
 namespace Remotion.Web.UI.Controls
 {
   /// <summary>
-  ///   Provides <see cref="IComponent"/>-like functionality for non-UI items of controls.
-  /// </summary>
-  /// <remarks>
-  ///   <b>IComponent</b> is not used because it involves CodeDOM designer serialization.
-  /// </remarks>
-  public interface IControlItem
-  {
-    IControl OwnerControl { get; set; }
-    string ItemID { get; }
-    void LoadResources (IResourceManager resourceManager);
-  }
-
-  /// <summary>
   ///   Colletion of <see cref="IControlItem"/>.
   /// </summary>
   public class ControlItemCollection : CollectionBase

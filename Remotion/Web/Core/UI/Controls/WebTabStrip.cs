@@ -104,14 +104,6 @@ namespace Remotion.Web.UI.Controls
         Page.RegisterRequiresControlState (this);
         Page.RegisterRequiresPostBack (this);
       }
-
-      string key = typeof (WebTabStrip).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-          this, new HttpContextWrapper(Context), typeof (WebTabStrip), ResourceType.Html, ResourceTheme.Legacy, "TabStrip.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
     }
 
     bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
@@ -239,6 +231,10 @@ namespace Remotion.Web.UI.Controls
 
         ScriptUtility.RegisterElementForBorderSpans (this, ClientID + "_" + visibleTab.ItemID);
       }
+
+      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      preRenderer.PreRender ();
     }
 
     /// <summary> Calls <see cref="Control.OnPreRender"/> on every invocation. </summary>

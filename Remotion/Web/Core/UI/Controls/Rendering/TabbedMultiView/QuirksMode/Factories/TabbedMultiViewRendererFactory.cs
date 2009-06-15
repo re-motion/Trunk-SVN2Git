@@ -25,5 +25,10 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode.Factorie
     {
       return new TabbedMultiViewRenderer (context, writer, control);
     }
+
+    public ITabbedMultiViewPreRenderer CreatePreRenderer (IHttpContext context, ITabbedMultiView control)
+    {
+      return new TabbedMultiViewPreRenderer (context, control);
+    }
   }
 }

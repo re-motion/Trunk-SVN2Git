@@ -14,24 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode.Factories
+namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
-  /// <summary>
-  /// Responsible for creating the quirks mode renderer for <see cref="SingleView"/> controls.
-  /// </summary>
-  public class SingleViewRendererFactory : ISingleViewRendererFactory
+  public interface IWebTabStripPreRenderer : IPreRenderer<IWebTabStrip>
   {
-    public ISingleViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control)
-    {
-      return new SingleViewRenderer (context, writer, control);
-    }
-
-    public ISingleViewPreRenderer CreatePreRenderer (IHttpContext context, ISingleView control)
-    {
-      return new SingleViewPreRenderer (context, control);
-    }
   }
 }

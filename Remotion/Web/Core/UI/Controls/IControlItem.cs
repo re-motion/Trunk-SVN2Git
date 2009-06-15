@@ -14,24 +14,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.ComponentModel;
+using Remotion.Globalization;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode.Factories
+namespace Remotion.Web.UI.Controls
 {
   /// <summary>
-  /// Responsible for creating the quirks mode renderer for <see cref="SingleView"/> controls.
+  ///   Provides <see cref="IComponent"/>-like functionality for non-UI items of controls.
   /// </summary>
-  public class SingleViewRendererFactory : ISingleViewRendererFactory
+  /// <remarks>
+  ///   <b>IComponent</b> is not used because it involves CodeDOM designer serialization.
+  /// </remarks>
+  public interface IControlItem
   {
-    public ISingleViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control)
-    {
-      return new SingleViewRenderer (context, writer, control);
-    }
-
-    public ISingleViewPreRenderer CreatePreRenderer (IHttpContext context, ISingleView control)
-    {
-      return new SingleViewPreRenderer (context, control);
-    }
+    IControl OwnerControl { get; set; }
+    string ItemID { get; }
+    void LoadResources (IResourceManager resourceManager);
   }
 }

@@ -14,24 +14,26 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode.Factories
+namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
 {
-  /// <summary>
-  /// Responsible for creating the quirks mode renderer for <see cref="SingleView"/> controls.
-  /// </summary>
-  public class SingleViewRendererFactory : ISingleViewRendererFactory
+  public class WebTabStripPreRenderer : PreRendererBase<IWebTabStrip>, IWebTabStripPreRenderer
   {
-    public ISingleViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control)
+    public WebTabStripPreRenderer (IHttpContext context, IWebTabStrip control)
+        : base (context, control)
     {
-      return new SingleViewRenderer (context, writer, control);
     }
 
-    public ISingleViewPreRenderer CreatePreRenderer (IHttpContext context, ISingleView control)
+    public override void PreRender ()
     {
-      return new SingleViewPreRenderer (context, control);
+      string key = typeof (IWebTabStrip).FullName + "_Style";
+      if (!HtmlHeadAppender.Current.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+          Control, Context, typeof (IWebTabStrip), ResourceType.Html, ResourceTheme.Legacy, "TabStrip.css");
+        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
     }
   }
 }

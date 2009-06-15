@@ -29,6 +29,11 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories
       return new WebTabStripRenderer (context, writer, control, this);
     }
 
+    public IWebTabStripPreRenderer CreatePreRenderer (IHttpContext context, IWebTabStrip control)
+    {
+      return new WebTabStripPreRenderer (context, control);
+    }
+
     public IWebTabRenderer CreateTabRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
     {
       return new WebTabRenderer (context, writer, control);

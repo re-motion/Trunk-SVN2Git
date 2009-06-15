@@ -18,9 +18,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.Rendering.SingleView;
 using Remotion.Web.Utilities;
 
@@ -72,14 +70,6 @@ namespace Remotion.Web.UI.Controls
       base.OnInit (e);
       //CreateTemplatedControls (DesignMode);
       EnsureChildControls();
-
-      string key = typeof (SingleView).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            this, new HttpContextWrapper(Context), typeof (SingleView), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
     }
 
     //private void CreateTemplatedControls (bool recreate)
@@ -128,6 +118,10 @@ namespace Remotion.Web.UI.Controls
       ScriptUtility.RegisterElementForBorderSpans (this, ClientID + "_View");
       ScriptUtility.RegisterElementForBorderSpans (this, _topControl.ClientID);
       ScriptUtility.RegisterElementForBorderSpans (this, _bottomControl.ClientID);
+
+      var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.PreRender();
     }
 
     public override void RenderControl (HtmlTextWriter writer)
