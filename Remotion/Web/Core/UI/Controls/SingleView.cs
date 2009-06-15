@@ -77,7 +77,7 @@ namespace Remotion.Web.UI.Controls
       if (!HtmlHeadAppender.Current.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            this, Context, typeof (SingleView), ResourceType.Html, "SingleView.css");
+            this, new HttpContextWrapper(Context), typeof (SingleView), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }

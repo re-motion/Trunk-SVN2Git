@@ -293,6 +293,20 @@
       <DependentUpon>WebForm1.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Theming\SingleViewTest.aspx.cs">
+      <DependentUpon>SingleViewTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Theming\SingleViewTest.aspx.designer.cs">
+      <DependentUpon>SingleViewTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Theming\TabbedMultiViewTest.aspx.cs">
+      <DependentUpon>TabbedMultiViewTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Theming\TabbedMultiViewTest.aspx.designer.cs">
+      <DependentUpon>TabbedMultiViewTest.aspx</DependentUpon>
+    </Compile>
     <Compile Include="UpdatePanelTests\SutForm.aspx.cs">
       <DependentUpon>SutForm.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -336,6 +350,8 @@
     <Content Include="Start.aspx">
       <SubType>Form</SubType>
     </Content>
+    <Content Include="Theming\SingleViewTest.aspx" />
+    <Content Include="Theming\TabbedMultiViewTest.aspx" />
     <Content Include="UpdatePanelTests\SutForm.aspx" />
     <Content Include="UpdatePanelTests\SutUserControl.ascx" />
     <Content Include="UrlMapping.xml" />

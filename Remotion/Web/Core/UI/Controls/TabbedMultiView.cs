@@ -15,6 +15,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -220,7 +221,8 @@ namespace Remotion.Web.UI.Controls
       string key = typeof (TabbedMultiView).FullName + "_Style";
       if (!HtmlHeadAppender.Current.IsRegistered (key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (TabbedMultiView), ResourceType.Html, "TabbedMultiView.css");
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            this, new HttpContextWrapper(Context), typeof (TabbedMultiView), ResourceType.Html, ResourceTheme.Legacy, "TabbedMultiView.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }

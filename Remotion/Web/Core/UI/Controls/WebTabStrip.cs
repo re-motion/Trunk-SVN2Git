@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reflection;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -107,7 +108,8 @@ namespace Remotion.Web.UI.Controls
       string key = typeof (WebTabStrip).FullName + "_Style";
       if (!HtmlHeadAppender.Current.IsRegistered (key))
       {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTabStrip), ResourceType.Html, "TabStrip.css");
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+          this, new HttpContextWrapper(Context), typeof (WebTabStrip), ResourceType.Html, ResourceTheme.Legacy, "TabStrip.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }

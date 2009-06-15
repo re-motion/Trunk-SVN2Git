@@ -20,6 +20,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Configuration;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web
 {
@@ -39,7 +40,7 @@ public sealed class ResourceUrlResolver
   ///     If the current ASP.NET application object implements <see cref="IResourceUrlResolver"/>, the application 
   ///     object creates the URL string. 
   ///     Otherwise, or if <paramref name="context"/> is <see langword="null"/>, the URL 
-  ///     <c>&lt;resource root&gt;/&lt;definingType.Assembly&gt;/&lt;ResourceType&gt;/relativeUrl</c> is used.
+  ///     <c>&lt;resource root&gt;/&lt;definingType.Assembly&gt;/&lt;ResourceType&gt;/fileName</c> is used.
   ///   </para><para>
   ///     The <b>resource root</b> is loaded from the application configuration,
   ///     <see cref="Remotion.Web.Configuration.WebConfiguration.Resources">WebConfiguration.Resources</see>, and 
@@ -55,21 +56,38 @@ public sealed class ResourceUrlResolver
   /// <param name="context"> The current <see cref="HttpContext"/>. </param>
   /// <param name="definingType"> The type that this resource item is associated with. </param>
   /// <param name="resourceType"> The resource type (image, static html, etc.) </param>
-  /// <param name="relativeUrl"> The relative URL of the item. </param>
+  /// <param name="fileName"> The relative URL of the item. </param>
   public static string GetResourceUrl (
       UI.Controls.IControl control, 
       IHttpContext context,
       Type definingType, 
       ResourceType resourceType, 
-      string relativeUrl)
+      string fileName)
   {
     IResourceUrlResolver resolver = null;
     if (context != null)
       resolver = context.ApplicationInstance as IResourceUrlResolver;
     if (resolver != null)
-      return resolver.GetResourceUrl (control, definingType, resourceType, relativeUrl);
+      return resolver.GetResourceUrl (control, definingType, resourceType, fileName);
     else
-      return GetResourceUrl (control, definingType, resourceType, relativeUrl);
+      return GetResourceUrl (control, definingType, resourceType, fileName);
+  }
+
+  public static string GetResourceUrl (
+      UI.Controls.IControl control,
+      IHttpContext context,
+      Type definingType,
+      ResourceType resourceType,
+      ResourceTheme theme,
+      string fileName)
+  {
+    IResourceUrlResolver resolver = null;
+    if (context != null)
+      resolver = context.ApplicationInstance as IResourceUrlResolver;
+    if (resolver != null)
+      return resolver.GetResourceUrl (control, definingType, resourceType, theme, fileName);
+    else
+      return GetResourceUrl (control, definingType, resourceType, theme, fileName);
   }
 
   public static string GetResourceUrl(
@@ -111,14 +129,49 @@ public sealed class ResourceUrlResolver
   ///   The type that this resource item is associated with. Must not be <see langword="null"/>.
   /// </param>
   /// <param name="resourceType"> The resource type (image, static html, etc.) Must not be <see langword="null"/>. </param>
-  /// <param name="relativeUrl"> The relative URL of the item. Must not be <see langword="null"/> or empty.</param>
-  public static string GetResourceUrl (
-      UI.Controls.IControl control, 
-      Type definingType, 
-      ResourceType resourceType, 
-      string relativeUrl)
+  /// <param name="fileName"> The resource file name. Must not be <see langword="null"/> or empty.</param>
+  public static string GetResourceUrl (IControl control, Type definingType, ResourceType resourceType, string fileName)
   {
     bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
+
+    return GetResourceUrl (isDesignMode, definingType, resourceType, fileName);
+  }
+
+  /// <summary>
+  ///   Returns the physical URL of a resource item.
+  /// </summary>
+  /// <seealso cref="IResourceUrlResolver"/>.
+  /// <remarks>
+  ///   <para>
+  ///     Uses the URL &lt;resource root&gt;/&lt;definingType.Assembly&gt;/&lt;ResourceType&gt;/relativeUrl.
+  ///   </para><para>
+  ///     The <b>resource root</b> is loaded from the application configuration,
+  ///     <see cref="Remotion.Web.Configuration.WebConfiguration.Resources">WebConfiguration.Resources</see>, and 
+  ///     defaults to <c>/&lt;AppDir&gt;/res</c>, e.g. <c>/WebApplication/res/Remotion.Web/Image/Help.gif</c>.
+  ///   </para><para>
+  ///     During design time, the <b>resource root</b> is mapped to the environment variable
+  ///     <c>REMOTIONRESOURCES</c>, or if the variable does not exist, <c>C:\Remotion.Resources</c>.
+  ///   </para>
+  /// </remarks>
+  /// <param name="control"> 
+  ///   The current <see cref="Control"/>. This parameter is only used to detect design time.
+  /// </param>
+  /// <param name="definingType"> 
+  ///   The type that this resource item is associated with. Must not be <see langword="null"/>.
+  /// </param>
+  /// <param name="resourceType"> The resource type (image, static html, etc.) Must not be <see langword="null"/>. </param>
+  /// <param name="theme">The <see cref="ResourceTheme"/> to which the resource belongs.</param>
+  /// <param name="fileName"> The resource file name. Must not be <see langword="null"/> or empty.</param>
+  public static string GetResourceUrl (
+      UI.Controls.IControl control,
+      Type definingType,
+      ResourceType resourceType,
+      ResourceTheme theme,
+      string fileName)
+  {
+    bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
+    string separator = isDesignMode ? @"\" : "/";
+    string relativeUrl = (theme!=null) ? (theme.Name + separator + fileName) : fileName;
     return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);
   }
 

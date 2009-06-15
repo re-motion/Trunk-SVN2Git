@@ -140,6 +140,8 @@
     <Compile Include="Infrastructure\ClientScriptManagerWrapper.cs" />
     <Compile Include="Infrastructure\IClientScriptManager.cs" />
     <Compile Include="Infrastructure\PageWrapper.cs" />
+    <Compile Include="ResourceTheme.cs" />
+    <Compile Include="ResourceType.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateClearingStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\IStateModificationStrategy.cs" />
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategy.cs" />
@@ -716,14 +718,14 @@
     <Content Include="Res\HTML\FontSize100.css" />
     <Content Include="Res\HTML\FontSize100Quirks.css" />
     <Content Include="Res\HTML\FormGrid.css" />
-    <Content Include="Res\HTML\SingleView.css" />
+    <Content Include="Res\HTML\Legacy\SingleView.css" />
     <Content Include="Res\HTML\SmartNavigation.js" />
     <Content Include="Res\HTML\SmartPage.css" />
     <Content Include="Res\HTML\SmartPage.js" />
     <Content Include="Res\HTML\Style.css" />
     <Content Include="Res\HTML\TabbedMenu.css" />
-    <Content Include="Res\HTML\TabbedMultiView.css" />
-    <Content Include="Res\HTML\TabStrip.css" />
+    <Content Include="Res\HTML\Legacy\TabbedMultiView.css" />
+    <Content Include="Res\HTML\Legacy\TabStrip.css" />
     <Content Include="Res\HTML\TreeView.css" />
     <Content Include="Res\HTML\Utilities.js" />
     <Content Include="Res\HTML\WebButton.css" />
