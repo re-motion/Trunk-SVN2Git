@@ -14,33 +14,32 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
-using Remotion.Utilities;
-using System.Linq;
+using Remotion.Data.Linq.EagerFetching;
+using Rhino.Mocks;
 
-namespace Remotion.Data.Linq.Clauses.ResultModifications
+namespace Remotion.Data.UnitTests.Linq.Clauses.ExecutionStrategies
 {
-  public class TakeResultModification : ResultModificationBase
+  [TestFixture]
+  public class ScalarExecutionStrategyTest
   {
-    public int Count { get; set; }
-
-    public TakeResultModification (SelectClause selectClause, int count)
-        : base (selectClause, CollectionExecutionStrategy.Instance)
+    [Test]
+    public void GetExecutionExpression ()
     {
-      Count = count;
-    }
+      var queryModel = ExpressionHelper.CreateQueryModel();
+      var fetchRequests = new FetchRequestBase[0];
 
-    public override ResultModificationBase Clone (SelectClause newSelectClause)
-    {
-      return new TakeResultModification (newSelectClause, Count);
-    }
+      var lambda = ScalarExecutionStrategy.Instance.GetExecutionExpression<int> (queryModel, fetchRequests);
 
-    public override IEnumerable ExecuteInMemory<T> (IEnumerable<T> items)
-    {
-      ArgumentUtility.CheckNotNull ("items", items);
-      return items.Take (Count);
+      var executorMock = MockRepository.GenerateMock<IQueryExecutor>();
+      executorMock.Expect (mock => mock.ExecuteScalar<int> (queryModel, fetchRequests)).Return (7);
+      int result = lambda.Compile() (executorMock);
+
+      Assert.That (result, Is.EqualTo (7));
+      executorMock.VerifyAllExpectations();
     }
   }
 }

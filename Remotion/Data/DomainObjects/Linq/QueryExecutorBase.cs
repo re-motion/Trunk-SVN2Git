@@ -44,6 +44,16 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public ISqlGenerator SqlGenerator { get; private set; }
 
+    public T ExecuteScalar<T> (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IEnumerable<T> ExecuteCollection2<T> (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
+    {
+      throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Creates and executes a given <see cref="QueryModel"/>.
     /// </summary>

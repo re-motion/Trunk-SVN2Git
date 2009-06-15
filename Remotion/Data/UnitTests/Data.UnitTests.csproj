@@ -518,6 +518,9 @@
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
     <Compile Include="Linq\Clauses\AdditionalFromClauseTest.cs" />
     <Compile Include="Linq\Clauses\ClauseFinderTest.cs" />
+    <Compile Include="Linq\Clauses\ExecutionStrategies\CollectionExecutionStrategyTest.cs" />
+    <Compile Include="Linq\Clauses\ExecutionStrategies\ScalarExecutionStrategyTest.cs" />
+    <Compile Include="Linq\Clauses\ExecutionStrategies\SingleExecutionStrategyTest.cs" />
     <Compile Include="Linq\Clauses\ResultModifications\SumResultModificationTest.cs" />
     <Compile Include="Linq\Clauses\ResultModifications\MaxResultModificationTest.cs" />
     <Compile Include="Linq\Clauses\ResultModifications\MinResultModificationTest.cs" />
