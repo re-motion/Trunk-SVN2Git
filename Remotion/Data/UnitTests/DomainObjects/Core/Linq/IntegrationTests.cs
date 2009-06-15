@@ -630,7 +630,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Explicit ("Not supported by re-store")]
+    [Ignore ("TODO 1210")]
     public void QueryWithCount ()
     {
       var number = (from o in QueryFactory.CreateLinqQuery<Order>()

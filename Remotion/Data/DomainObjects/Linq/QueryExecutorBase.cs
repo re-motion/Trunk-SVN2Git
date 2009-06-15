@@ -25,6 +25,7 @@ using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Utilities;
 using System.Reflection;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
@@ -46,12 +47,26 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public T ExecuteScalar<T> (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
+
+      if (ClientTransaction.Current == null)
+        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
+
+      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests);
+      return (T) ClientTransaction.Current.QueryManager.GetScalar (query);
     }
 
     public IEnumerable<T> ExecuteCollection2<T> (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
     {
-      throw new NotImplementedException();
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
+
+      if (ClientTransaction.Current == null)
+        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
+
+      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests);
+      return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable ().Cast<T>();
     }
 
     /// <summary>
@@ -64,6 +79,8 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </returns>
     public object ExecuteSingle (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
     {
+      throw new NotImplementedException ();
+
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
 
@@ -90,6 +107,8 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </returns>
     public IEnumerable ExecuteCollection (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
     {
+      throw new NotImplementedException ();
+
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
 
@@ -245,8 +264,10 @@ namespace Remotion.Data.DomainObjects.Linq
       foreach (CommandParameter commandParameter in commandParameters)
         queryParameters.Add (commandParameter.Name, commandParameter.Value, QueryParameterType.Value);
 
+      // TODO 1210: Support scalar queries
       return QueryFactory.CreateCollectionQuery (id, storageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
     }
+
 
     public abstract ClassDefinition GetClassDefinition ();
 
