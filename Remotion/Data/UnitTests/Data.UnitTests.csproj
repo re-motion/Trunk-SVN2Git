@@ -612,7 +612,7 @@
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\TestDomain\ExpressionNodeWithTooManyCtors.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ConstantExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeObjectMother.cs" />
-    <Compile Include="Linq\Parsing\Structure\IntermediateModel\QuerySourceReferenceExpressionTest.cs" />
+    <Compile Include="Linq\Clauses\Expressions\QuerySourceReferenceExpressionTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\WhereExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\TakeExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SumExpressionNodeTest.cs" />

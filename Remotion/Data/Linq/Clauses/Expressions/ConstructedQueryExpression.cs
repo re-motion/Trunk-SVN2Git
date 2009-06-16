@@ -13,24 +13,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Linq.Expressions;
-using Remotion.Data.Linq.Clauses;
-using Remotion.Utilities;
-
-namespace Remotion.Data.Linq.Parsing.Structure.IntermediateModel
+namespace Remotion.Data.Linq.Clauses.Expressions
 {
-  /// <summary>
-  /// Represents an expression tree node that points to a query source represented by a <see cref="FromClauseBase"/>.
-  /// </summary>
-  public class QuerySourceReferenceExpression : Expression
+  public class ConstructedQueryExpression : QueryModelExpressionBase
   {
-    public QuerySourceReferenceExpression (FromClauseBase fromClause)
-      : base ((ExpressionType) (-1), ArgumentUtility.CheckNotNull ("fromClause", fromClause).Identifier.Type)
+    public ConstructedQueryExpression (QueryModel queryModel)
+      : base (queryModel)
     {
-      ReferencedClause = fromClause;
     }
-
-    public FromClauseBase ReferencedClause { get; private set; }
   }
 }
