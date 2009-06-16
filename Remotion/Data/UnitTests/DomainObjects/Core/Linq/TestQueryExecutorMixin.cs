@@ -15,6 +15,7 @@
 // 
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.SqlGeneration;
@@ -28,9 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public interface IBaseCallRequirements
     {
       ClassDefinition GetClassDefinition ();
-      IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters);
-      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests);
-      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, ClassDefinition classDefinitionOfResult, string sortExpression);
+      IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType);
+      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType);
+      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType, ClassDefinition classDefinitionOfResult, string sortExpression);
       CommandData CreateStatement (QueryModel queryModel);
     }
 
@@ -48,24 +49,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters)
+    public IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)
     {
       CreateQueryCalled = true;
-      return Base.CreateQuery (id, storageProviderID, statement, commandParameters);
+      return Base.CreateQuery (id, storageProviderID, statement, commandParameters, queryType);
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
+    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType)
     {
       CreateQueryFromModelCalled = true;
-      return Base.CreateQuery (id, queryModel, fetchRequests);
+      return Base.CreateQuery (id, queryModel, fetchRequests, queryType);
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, ClassDefinition classDefinitionOfResult, string sortExpression)
+    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType, ClassDefinition classDefinitionOfResult, string sortExpression)
     {
       CreateQueryFromModelWithClassDefinitionCalled = true;
-      return Base.CreateQuery (id, queryModel, fetchRequests, classDefinitionOfResult, sortExpression);
+      return Base.CreateQuery (id, queryModel, fetchRequests, queryType, classDefinitionOfResult, sortExpression);
     }
 
     [OverrideTarget]

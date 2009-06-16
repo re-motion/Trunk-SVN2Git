@@ -20,10 +20,10 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.Linq.Clauses.ExecutionStrategies;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Utilities;
-using Remotion.Data.Linq.EagerFetching;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
@@ -145,6 +145,19 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="queryable">The queryable constituting the LINQ query. This must be obtained by forming a LINQ query starting with an instance of 
     /// <see cref="DomainObjectQueryable{T}"/>. Use <see cref="CreateLinqQuery{T}()"/> to create such a query source.</param>
     /// <returns>An implementation of <see cref="IQuery"/> holding the parsed LINQ query data.</returns>
+    /// <remarks>
+    /// <para>
+    /// Note that parts of the <paramref name="queryable"/> might not be represented in the returned <see cref="IQuery"/>. For example,
+    /// query methods such as <see cref="Queryable.SingleOrDefault{TSource}(System.Linq.IQueryable{TSource})"/> 
+    /// need some code to be executed in memory in order to throw the right exception if too many items are returned by the query, or to return a 
+    /// default value if no item is returned. The <see cref="IQuery"/> will not know about those in-memory parts.
+    /// </para>
+    /// <para>
+    /// In addition, scalar queries cannot be created using this method because they cannot be represented as a <see cref="IQueryable"/>.
+    /// (The methods that generate scalar queries, such as <see cref="Queryable.Count{TSource}(System.Linq.IQueryable{TSource})"/>, alsways
+    /// execute the query immediately instead of returning an <see cref="IQueryable"/>.)
+    /// </para>
+    /// </remarks>
     public static IQuery CreateQuery (string id, IQueryable queryable)
     {
       ArgumentUtility.CheckNotNull ("queryable", queryable);
@@ -163,7 +176,8 @@ namespace Remotion.Data.DomainObjects.Queries
       var expression = queryable.Expression;
       var fetchRequests = provider.GetFetchRequests (ref expression);
       var queryModel = provider.GenerateQueryModel (expression);
-      return queryExecutor.CreateQuery (id, queryModel, fetchRequests);
+
+      return queryExecutor.CreateQuery (id, queryModel, fetchRequests, QueryType.Collection);
     }
 
 

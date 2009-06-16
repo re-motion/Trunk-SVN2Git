@@ -14,8 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Mixins;
 using Remotion.Utilities;
@@ -30,13 +30,13 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
   {
     public interface IBaseCallRequirements
     {
-      IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters);
+      IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType);
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters)
+    public IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)
     {
-      IQuery query = Base.CreateQuery (id, storageProviderID, statement, commandParameters);
+      IQuery query = Base.CreateQuery (id, storageProviderID, statement, commandParameters, queryType);
       QueryConstructed (query);
       return query;
     }

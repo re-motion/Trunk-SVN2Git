@@ -26,11 +26,12 @@ using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Utilities;
 using System.Reflection;
 using System.Linq;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
   /// <summary>
-  /// The class uses re-store to execute queries.
+  /// An base implementation of <see cref="IQueryExecutor"/> for re-store.
   /// </summary>
   public abstract class QueryExecutorBase : IQueryExecutor
   {
@@ -45,6 +46,15 @@ namespace Remotion.Data.DomainObjects.Linq
 
     public ISqlGenerator SqlGenerator { get; private set; }
 
+    /// <summary>
+    /// Creates and executes a given <see cref="QueryModel"/> as an <see cref="IQuery"/> using the current <see cref="ClientTransaction"/>'s
+    /// <see cref="ClientTransaction.QueryManager"/>. The query is executed as a scalar query.
+    /// </summary>
+    /// <param name="queryModel">The generated <see cref="QueryModel"/> of the LINQ query.</param>
+    /// <param name="fetchRequests">The <see cref="FetchRequestBase"/> instances to be executed together with the query.</param>
+    /// <returns>
+    /// The result of the executed query, cast to <typeparam name="T"/>.
+    /// </returns>
     public T ExecuteScalar<T> (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -53,10 +63,19 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests);
+      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests, QueryType.Scalar);
       return (T) ClientTransaction.Current.QueryManager.GetScalar (query);
     }
 
+    /// <summary>
+    /// Creates and executes a given <see cref="QueryModel"/> as an <see cref="IQuery"/> using the current <see cref="ClientTransaction"/>'s
+    /// <see cref="ClientTransaction.QueryManager"/>. The query is executed as a collection query.
+    /// </summary>
+    /// <param name="queryModel">The generated <see cref="QueryModel"/> of the LINQ query.</param>
+    /// <param name="fetchRequests">The <see cref="FetchRequestBase"/> instances to be executed together with the query.</param>
+    /// <returns>
+    /// The result of the executed query as an <see cref="IEnumerable{T}"/>.
+    /// </returns>
     public IEnumerable<T> ExecuteCollection2<T> (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -65,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests);
+      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests, QueryType.Collection);
       return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable ().Cast<T>();
     }
 
@@ -80,21 +99,6 @@ namespace Remotion.Data.DomainObjects.Linq
     public object ExecuteSingle (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
     {
       throw new NotImplementedException ();
-
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-      ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
-
-      IEnumerable results = ExecuteCollection (queryModel, fetchRequests);
-      var resultList = new ArrayList();
-      foreach (object o in results)
-        resultList.Add (o);
-      if (resultList.Count == 1)
-        return resultList[0];
-      else
-      {
-        string message = string.Format ("ExecuteSingle must return a single object, but the query returned {0} objects.", resultList.Count);
-        throw new InvalidOperationException (message);
-      }
     }
 
     /// <summary>
@@ -108,15 +112,6 @@ namespace Remotion.Data.DomainObjects.Linq
     public IEnumerable ExecuteCollection (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
     {
       throw new NotImplementedException ();
-
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-      ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
-
-      if (ClientTransaction.Current == null)
-        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
-
-      IQuery query = CreateQuery("<dynamic query>", queryModel, fetchRequests);
-      return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable();
     }
 
     /// <summary>
@@ -143,36 +138,38 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     /// <summary>
-    /// Creates a a <see cref="IQuery"/> object based on the given <see cref="QueryModel"/>.
+    /// Creates an <see cref="IQuery"/> object based on the given <see cref="QueryModel"/>.
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
     /// <param name="fetchRequests">The <see cref="FetchRequestBase"/> instances to be executed together with the query.</param>
+    /// <param name="queryType">The type of query to create.</param>
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
-    public virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
+    public virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
       ClassDefinition classDefinition = GetClassDefinition ();
-      return CreateQuery(id, queryModel, fetchRequests, classDefinition, null);
+      return CreateQuery (id, queryModel, fetchRequests, queryType, classDefinition, null);
     }
 
     /// <summary>
-    /// Creates a a <see cref="IQuery"/> object based on the given <see cref="QueryModel"/>.
+    /// Creates an <see cref="IQuery"/> object based on the given <see cref="QueryModel"/>.
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
     /// <param name="fetchRequests">The <see cref="FetchRequestBase"/> instances to be executed together with the query.</param>
+    /// <param name="queryType">The type of query to create.</param>
     /// <param name="classDefinitionOfResult">The class definition of the result objects to be returned by the query. This is used to obtain the
     /// storage provider to execute the query and to resolve the relation properties of the <paramref name="fetchRequests"/>.</param>
     /// <param name="sortExpression">A SQL expression that is used in an ORDER BY clause to sort the query results.</param>
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
-    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, ClassDefinition classDefinitionOfResult, string sortExpression)
+    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType, ClassDefinition classDefinitionOfResult, string sortExpression)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
@@ -186,9 +183,35 @@ namespace Remotion.Data.DomainObjects.Linq
       if (!string.IsNullOrEmpty (sortExpression))
         statement = "SELECT * FROM (" + statement + ") [result] ORDER BY " + sortExpression;
 
-      var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, commandData.Parameters);
+      var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, commandData.Parameters, queryType);
       CreateEagerFetchQueries (query, queryModel, classDefinitionOfResult, fetchRequests);
       return query;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="IQuery"/> object.
+    /// </summary>
+    /// <param name="id">The identifier for the linq query.</param>
+    /// <param name="storageProviderID">The ID of the <see cref="StorageProvider"/> to be used for the query.</param>
+    /// <param name="statement">The sql statement of the query.</param>
+    /// <param name="commandParameters">The parameters of the sql statement.</param>
+    /// <param name="queryType">The type of query to create.</param>
+    /// <returns>A <see cref="IQuery"/> object.</returns>
+    public virtual IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("storageProviderID", storageProviderID);
+      ArgumentUtility.CheckNotNull ("statement", statement);
+      ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
+
+      var queryParameters = new QueryParameterCollection ();
+      foreach (CommandParameter commandParameter in commandParameters)
+        queryParameters.Add (commandParameter.Name, commandParameter.Value, QueryParameterType.Value);
+
+      if (queryType == QueryType.Scalar)
+        return QueryFactory.CreateScalarQuery (id, storageProviderID, statement, queryParameters);
+      else
+        return QueryFactory.CreateCollectionQuery (id, storageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
     }
 
     private void CreateEagerFetchQueries (IQuery query, QueryModel queryModel, ClassDefinition classDefinition, IEnumerable<FetchRequestBase> fetchRequests)
@@ -203,8 +226,8 @@ namespace Remotion.Data.DomainObjects.Linq
             "<fetch query for " + fetchRequest.RelationMember.Name + ">",
             fetchQueryModel,
             fetchRequest.InnerFetchRequests,
-            relationEndPointDefinition.GetOppositeClassDefinition(),
-            sortExpression);
+            QueryType.Collection,
+            relationEndPointDefinition.GetOppositeClassDefinition(), sortExpression);
 
           query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
       }
@@ -244,30 +267,6 @@ namespace Remotion.Data.DomainObjects.Linq
       else
         return null;
     }
-
-    /// <summary>
-    /// Creates a <see cref="IQuery"/> object.
-    /// </summary>
-    /// <param name="id">The identifier for the linq query.</param>
-    /// <param name="storageProviderID">The ID of the <see cref="StorageProvider"/> to be used for the query.</param>
-    /// <param name="statement">The sql statement of the query.</param>
-    /// <param name="commandParameters">The parameters of the sql statement.</param>
-    /// <returns>A <see cref="IQuery"/> object.</returns>
-    public virtual IQuery CreateQuery(string id, string storageProviderID, string statement, CommandParameter[] commandParameters)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      ArgumentUtility.CheckNotNull ("storageProviderID", storageProviderID);
-      ArgumentUtility.CheckNotNull ("statement", statement);
-      ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
-
-      var queryParameters = new QueryParameterCollection();
-      foreach (CommandParameter commandParameter in commandParameters)
-        queryParameters.Add (commandParameter.Name, commandParameter.Value, QueryParameterType.Value);
-
-      // TODO 1210: Support scalar queries
-      return QueryFactory.CreateCollectionQuery (id, storageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
-    }
-
 
     public abstract ClassDefinition GetClassDefinition ();
 

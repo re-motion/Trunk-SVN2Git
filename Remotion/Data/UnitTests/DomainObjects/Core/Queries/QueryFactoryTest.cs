@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.Linq;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Mapping;
@@ -165,6 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (query.Statement, Is.EqualTo ("SELECT [o].* FROM [OrderView] [o] WHERE ([o].[OrderNo] > @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.ID, Is.EqualTo ("<dynamico queryo>"));
+      Assert.That (query.QueryType, Is.EqualTo (QueryType.Collection));
     }
 
     [Test]
