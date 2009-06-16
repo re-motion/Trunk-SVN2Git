@@ -1,6 +1,9 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SingleViewTest.aspx.cs" Inherits="Remotion.Web.Test.Theming.SingleViewTest" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SingleViewTest.aspx.cs" 
+    Inherits="Remotion.Web.Test.Theming.SingleViewTest" %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" > -->
+
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
@@ -10,11 +13,11 @@
 <body>
     <form id="form1" runat="server">
     <div>
-    <remotion:SingleView runat="server">
+    <remotion:SingleView ID="MySingleView" runat="server">
       <TopControls>
         <h1>Single View Theming Test</h1>
       </TopControls>
-      <View runat="server">
+      <View>
         <p>There should be something here.</p>
       </View>
       <BottomControls>

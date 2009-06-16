@@ -136,6 +136,11 @@ namespace Remotion.Web.UI.Controls
       get { return ClientID + "_View"; }
     }
 
+    IPage ISingleView.Page
+    {
+      get { return new PageWrapper(Page); }
+    }
+
     [EditorBrowsable (EditorBrowsableState.Never)]
     public override ControlCollection Controls
     {

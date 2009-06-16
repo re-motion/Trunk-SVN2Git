@@ -17,8 +17,9 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
+namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 {
   /// <summary>
   /// Responsible for rendering <see cref="TabbedMultiView"/> controls in quirks mode.
@@ -32,35 +33,17 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 
     public void Render ()
     {
+      string key = Control.ClientID + "_ResizeScript";
+      Control.Page.ClientScript.RegisterStartupScript (Control, typeof (ITabbedMultiView), key, "adjustViewsWithTimeout();", true);
+
       AddAttributesToRender();
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      if (!string.IsNullOrEmpty (Control.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClass);
-      else if (!string.IsNullOrEmpty (Control.Attributes["class"]))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.Attributes["class"]);
-      else
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassBase);
-
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table);
-
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       RenderTopControls();
-      Writer.RenderEndTag ();
-
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       RenderTabStrip();
-      Writer.RenderEndTag ();
-
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      RenderActiveView();
-      Writer.RenderEndTag ();
-
-      Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
       RenderBottomControls();
-      Writer.RenderEndTag ();
+      RenderActiveView ();
 
-      Writer.RenderEndTag ();
       Writer.RenderEndTag();
     }
 
@@ -79,36 +62,26 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 
     protected virtual void RenderTabStrip ()
     {
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.TabStripContainerClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassTabStrip);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       Control.TabStrip.CssClass = Control.CssClassTabStrip;
       Control.TabStrip.RenderControl (Writer);
 
-      Writer.RenderEndTag (); // end td
+      Writer.RenderEndTag ();
     }
 
     protected virtual void RenderActiveView ()
     {
       if (Control.IsDesignMode)
         Writer.AddStyleAttribute ("border", "solid 1px black");
-      Control.ActiveViewStyle.AddAttributesToRender (Writer);
-      if (string.IsNullOrEmpty (Control.ActiveViewStyle.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassActiveView);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewClientID);
       Control.ActiveViewStyle.AddAttributesToRender (Writer);
       if (string.IsNullOrEmpty (Control.ActiveViewStyle.CssClass))
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassActiveView);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
-
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassViewBody);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin body div
-
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewClientID + "_Content");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       var view = Control.GetActiveView ();
       if (view != null)
@@ -120,11 +93,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
         }
       }
 
-      Writer.RenderEndTag (); // end content div
-      Writer.RenderEndTag (); // end body div
-      Writer.RenderEndTag (); // end outer div
-
-      Writer.RenderEndTag (); // end td
+      Writer.RenderEndTag ();
     }
 
     protected virtual void RenderTopControls ()
@@ -143,39 +112,26 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
       RenderPlaceHolder (style, placeHolder, cssClass);
     }
 
-    private void RenderPlaceHolder (Style style, PlaceHolder placeHolder, string cssClass)
+    private void RenderPlaceHolder (Style style, PlaceHolder placeHolder, string defaultCssClass)
     {
-      if (string.IsNullOrEmpty (style.CssClass))
-      {
-        if (placeHolder.Controls.Count > 0)
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-        else
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass + " " + Control.CssClassEmpty);
-      }
-      else
-      {
-        if (placeHolder.Controls.Count > 0)
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass);
-        else
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass + " " + Control.CssClassEmpty);
-      }
-      Writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
+      string cssClass = defaultCssClass;
+      if (!string.IsNullOrEmpty (style.CssClass))
+        cssClass = style.CssClass;
+
+      if (placeHolder.Controls.Count == 0)
+        cssClass += " " + Control.CssClassEmpty;
+
+      string backupCssClass = style.CssClass;
+      style.CssClass = cssClass;
+      style.AddAttributesToRender (Writer);
+      style.CssClass = backupCssClass;
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
-      style.AddAttributesToRender (Writer);
-      if (string.IsNullOrEmpty (style.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
-
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       placeHolder.RenderControl (Writer);
 
-      Writer.RenderEndTag (); // end content div
-      Writer.RenderEndTag (); // end outer div
-
-      Writer.RenderEndTag (); // end td
+      Writer.RenderEndTag ();
     }
   }
 }

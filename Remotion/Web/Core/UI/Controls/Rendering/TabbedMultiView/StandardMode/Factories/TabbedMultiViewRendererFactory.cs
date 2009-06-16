@@ -14,25 +14,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI.WebControls;
+using System.Web.UI;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView
+namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode.Factories
 {
-  /// <summary>
-  /// Exposes <see cref="SingleView"/> properties that are relevant to rendering.
-  /// </summary>
-  public interface ISingleView : IStyledControl
+  public class TabbedMultiViewRendererFactory : ITabbedMultiViewRendererFactory
   {
-    PlaceHolder TopControl { get; }
-    PlaceHolder View { get; }
-    PlaceHolder BottomControl { get; }
-    Style TopControlsStyle { get; }
-    Style ViewStyle { get; }
-    Style BottomControlsStyle { get; }
+    public ITabbedMultiViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMultiView control)
+    {
+      return new TabbedMultiViewRenderer (context, writer, control);
+    }
 
-    bool IsDesignMode { get; }
-    
-    string ViewClientID { get; }
-    new IPage Page { get; }
+    public ITabbedMultiViewPreRenderer CreatePreRenderer (IHttpContext context, ITabbedMultiView control)
+    {
+      return new TabbedMultiViewPreRenderer (context, control);
+    }
   }
 }

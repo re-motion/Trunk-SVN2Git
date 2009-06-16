@@ -14,25 +14,24 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI.WebControls;
+using System.Web.UI;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView
+namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode.Factories
 {
   /// <summary>
-  /// Exposes <see cref="SingleView"/> properties that are relevant to rendering.
+  /// Responsible for creating the standard mode renderer for <see cref="SingleView"/> controls.
   /// </summary>
-  public interface ISingleView : IStyledControl
+  public class SingleViewRendererFactory : ISingleViewRendererFactory
   {
-    PlaceHolder TopControl { get; }
-    PlaceHolder View { get; }
-    PlaceHolder BottomControl { get; }
-    Style TopControlsStyle { get; }
-    Style ViewStyle { get; }
-    Style BottomControlsStyle { get; }
+    public ISingleViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control)
+    {
+      return new SingleViewRenderer (context, writer, control);
+    }
 
-    bool IsDesignMode { get; }
-    
-    string ViewClientID { get; }
-    new IPage Page { get; }
+    public ISingleViewPreRenderer CreatePreRenderer (IHttpContext context, ISingleView control)
+    {
+      return new SingleViewPreRenderer (context, control);
+    }
   }
 }

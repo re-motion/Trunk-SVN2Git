@@ -169,6 +169,9 @@
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\Factories\SingleViewRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRenderer.cs" />
@@ -176,6 +179,9 @@
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\Factories\TabbedMultiViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\Factories\TabbedMultiViewRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTab.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStrip.cs" />
@@ -186,6 +192,10 @@
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\Factories\WebTabStripRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripRenderer.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
@@ -729,6 +739,10 @@
     <Content Include="Res\HTML\SmartNavigation.js" />
     <Content Include="Res\HTML\SmartPage.css" />
     <Content Include="Res\HTML\SmartPage.js" />
+    <Content Include="Res\HTML\Standard\SingleView.css" />
+    <Content Include="Res\HTML\Standard\TabbedMultiView.css" />
+    <Content Include="Res\HTML\Standard\TabStrip.css" />
+    <Content Include="Res\HTML\Standard\Views.js" />
     <Content Include="Res\HTML\Style.css" />
     <Content Include="Res\HTML\TabbedMenu.css" />
     <Content Include="Res\HTML\Legacy\TabbedMultiView.css" />

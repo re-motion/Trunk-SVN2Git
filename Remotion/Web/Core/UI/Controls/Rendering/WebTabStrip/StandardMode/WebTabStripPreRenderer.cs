@@ -14,25 +14,26 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI.WebControls;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.SingleView
+namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 {
-  /// <summary>
-  /// Exposes <see cref="SingleView"/> properties that are relevant to rendering.
-  /// </summary>
-  public interface ISingleView : IStyledControl
+  public class WebTabStripPreRenderer : PreRendererBase<IWebTabStrip>, IWebTabStripPreRenderer
   {
-    PlaceHolder TopControl { get; }
-    PlaceHolder View { get; }
-    PlaceHolder BottomControl { get; }
-    Style TopControlsStyle { get; }
-    Style ViewStyle { get; }
-    Style BottomControlsStyle { get; }
+    public WebTabStripPreRenderer (IHttpContext context, IWebTabStrip control)
+        : base (context, control)
+    {
+    }
 
-    bool IsDesignMode { get; }
-    
-    string ViewClientID { get; }
-    new IPage Page { get; }
+    public override void PreRender ()
+    {
+      string key = typeof (IWebTabStrip).FullName + "_Style";
+      if (!HtmlHeadAppender.Current.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IWebTabStrip), ResourceType.Html, ResourceTheme.Standard, "TabStrip.css");
+        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
+    }
   }
 }

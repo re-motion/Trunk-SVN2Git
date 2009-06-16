@@ -295,12 +295,22 @@ namespace Remotion.Web.UI.Controls
       nextActiveTab.IsSelected = true;
     }
 
+    public string TabStripContainerClientID
+    {
+      get { return ClientID + ClientIDSeparator + "TabStripContainer"; }
+    }
+
     public TabView GetActiveView ()
     {
       TabView view = (TabView) MultiViewInternal.GetActiveView();
       if (view != null && _isInitialized)
         view.EnsureLazyControls();
       return view;
+    }
+
+    IPage ITabbedMultiView.Page
+    {
+      get { return new PageWrapper (Page); }
     }
 
     protected override HtmlTextWriterTag TagKey

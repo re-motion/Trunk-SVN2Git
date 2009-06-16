@@ -38,6 +38,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
     string CssClassBottomControls { get; }
     string CssClassEmpty { get; }
     IWebTabStrip TabStrip { get; }
+    string TabStripContainerClientID { get; }
     Control GetActiveView ();
+    new IPage Page { get; }
   }
 }

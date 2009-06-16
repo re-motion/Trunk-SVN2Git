@@ -78,16 +78,22 @@ namespace OBWTest
       container.Register (
           AllTypes.Pick ()
               .FromAssembly (typeof (RendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+              .WithService.Select ((t, b) => t.GetInterfaces ())
+              .Configure (c => c.Named ("standard." + c.ServiceType.Name)));
+      container.Register (
+          AllTypes.Pick ()
+              .FromAssembly (typeof (RendererBase<>).Assembly)
               .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+              .Configure (c => c.Named ("legacy." + c.ServiceType.Name)));
       // Remotion.ObjectBinding.Web
       container.Register (
           AllTypes.Pick ()
               .FromAssembly (typeof (BocRendererBase<>).Assembly)
               .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
               .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("default." + c.ServiceType.Name)));
+              .Configure (c => c.Named ("legacy." + c.ServiceType.Name)));
 
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
