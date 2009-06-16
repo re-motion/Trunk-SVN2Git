@@ -13,28 +13,37 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.Linq.SqlGeneration;
+using System.Linq;
+using System.Linq.Expressions;
+using Remotion.Data.Linq;
+using Remotion.Utilities;
+using System;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
   /// <summary>
-  /// Extends <see cref="QueryExecutorBase"/>.
+  /// The class extends <see cref="QueryProviderBase"/>.
   /// </summary>
-  /// <typeparam name="T">The type of the linq query.</typeparam>
-  public class QueryExecutor<T> : QueryExecutorBase
+  public class DomainObjectQueryProvider : QueryProviderBase
   {
-    public QueryExecutor (ISqlGenerator sqlGenerator) : base(sqlGenerator)
+    public DomainObjectQueryProvider (DomainObjectQueryExecutor executor)
+        : base (executor)
     {
     }
 
     /// <summary>
-    /// Gets ClassDefinition of current mapping configuration.
+    /// The method returns a specific instance of <see cref="IQueryable"/>.
     /// </summary>
-    /// <returns>returns <see cref="ClassDefinition"/></returns>
-    public override ClassDefinition GetClassDefinition ()
+    /// <typeparam name="T">The type of the expression.</typeparam>
+    /// <param name="expression">The query as expression chain.</param>
+    /// <returns></returns>
+    protected override IQueryable<T> CreateQueryable<T> (Expression expression)
     {
-      return MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      Type queryableType = typeof (DomainObjectQueryable<>).MakeGenericType (typeof (T));
+      return (IQueryable<T>) Activator.CreateInstance (queryableType, this, expression);
     }
+
+    
   }
 }

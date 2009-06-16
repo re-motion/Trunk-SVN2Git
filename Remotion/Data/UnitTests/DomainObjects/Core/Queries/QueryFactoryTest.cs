@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.Linq;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Mapping;
@@ -39,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var sqlGeneratorMock = MockRepository.GenerateMock<ISqlGenerator> ();
       var queryable = QueryFactory.CreateLinqQuery<Order> (sqlGeneratorMock);
       Assert.That (queryable, Is.Not.Null);
-      Assert.That (queryable.GetExecutor (), Is.InstanceOfType (typeof (QueryExecutor<Order>)));
+      Assert.That (queryable.GetExecutor (), Is.InstanceOfType (typeof (DomainObjectQueryExecutor)));
       Assert.That (queryable.GetExecutor ().SqlGenerator, Is.SameAs (sqlGeneratorMock));
     }
 
@@ -48,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     {
       var queryable = QueryFactory.CreateLinqQuery<Order> ();
       Assert.That (queryable, Is.Not.Null);
-      Assert.That (queryable.GetExecutor (), Is.InstanceOfType (typeof (QueryExecutor<Order>)));
+      Assert.That (queryable.GetExecutor (), Is.InstanceOfType (typeof (DomainObjectQueryExecutor)));
       Assert.That (queryable.GetExecutor ().SqlGenerator, Is.Not.Null);
 
       Assert.That (queryable.GetExecutor ().SqlGenerator, Is.SameAs (QueryFactory.GetDefaultSqlGenerator (typeof (Order))));

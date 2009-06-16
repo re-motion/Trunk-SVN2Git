@@ -15,11 +15,13 @@
 // 
 using System.Linq;
 using System.Linq.Expressions;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.Utilities;
 
 
 namespace Remotion.Data.DomainObjects.Linq
@@ -30,6 +32,13 @@ namespace Remotion.Data.DomainObjects.Linq
   /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
   public class DomainObjectQueryable<T> : QueryableBase<T> 
   {
+    private static DomainObjectQueryProvider CreateProvider (ISqlGenerator sqlGenerator)
+    {
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
+      var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (ParamList.Create (sqlGenerator, classDefinition));
+      return new DomainObjectQueryProvider (executor);
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainObjectQueryable&lt;T&gt;"/> class.
     /// </summary>
@@ -38,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <remarks>
     /// This constructor is used by the standard query methods defined in <see cref="Queryable"/> when a LINQ query is constructed.
     /// </remarks>
-    public DomainObjectQueryable (QueryProvider provider, Expression expression)
+    public DomainObjectQueryable (DomainObjectQueryProvider provider, Expression expression)
       : base (provider, expression)
     {
     }
@@ -58,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </para>
     /// </remarks>
     public DomainObjectQueryable (ISqlGenerator sqlGenerator)
-      : base (new QueryProvider(ObjectFactory.Create<QueryExecutor<T>>(ParamList.Create (sqlGenerator))))
+      : base (CreateProvider(ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator)))
     {
     }
 
@@ -67,14 +76,14 @@ namespace Remotion.Data.DomainObjects.Linq
       return "DomainObjectQueryable<" + typeof (T).Name + ">";
     }
 
-    public new QueryProvider Provider
+    public new DomainObjectQueryProvider Provider
     {
-      get { return (QueryProvider) base.Provider; }
+      get { return (DomainObjectQueryProvider) base.Provider; }
     }
 
-    public QueryExecutor<T> GetExecutor ()
+    public DomainObjectQueryExecutor GetExecutor ()
     {
-      return (QueryExecutor<T>) Provider.Executor;
+      return (DomainObjectQueryExecutor) Provider.Executor;
     }
 
     

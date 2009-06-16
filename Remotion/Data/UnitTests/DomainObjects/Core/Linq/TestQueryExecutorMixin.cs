@@ -28,25 +28,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   {
     public interface IBaseCallRequirements
     {
-      ClassDefinition GetClassDefinition ();
       IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType);
       IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType);
       IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType, ClassDefinition classDefinitionOfResult, string sortExpression);
       CommandData CreateStatement (QueryModel queryModel);
     }
 
-    public bool GetClassDefinitionCalled = false;
     public bool CreateQueryCalled = false;
     public bool CreateQueryFromModelCalled = false;
     public bool CreateQueryFromModelWithClassDefinitionCalled = false;
     public bool GetStatementCalled = false;
-
-    [OverrideTarget]
-    public ClassDefinition GetClassDefinition ()
-    {
-      GetClassDefinitionCalled = true;
-      return Base.GetClassDefinition ();
-    }
 
     [OverrideTarget]
     public IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType)

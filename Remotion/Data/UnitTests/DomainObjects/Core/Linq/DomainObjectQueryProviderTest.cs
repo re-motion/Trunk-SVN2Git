@@ -15,10 +15,9 @@
 // 
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -26,14 +25,14 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   [TestFixture]
-  public class QueryProviderTest
+  public class DomainObjectQueryProviderTest
   {
     [Test]
     public void CreateQuery()
     {
       var sqlGenerator = new SqlServerGenerator (DatabaseInfo.Instance);
-      var executor = new QueryExecutor<Supplier> (sqlGenerator);
-      var provider = new QueryProvider (executor);
+      var executor = new DomainObjectQueryExecutor (sqlGenerator, MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Supplier)));
+      var provider = new DomainObjectQueryProvider (executor);
       IQueryable<Supplier> query = from supplier in QueryFactory.CreateLinqQuery<Supplier>() select supplier;
 
       IQueryable<Supplier> queryCreatedByProvider = provider.CreateQuery<Supplier> (query.Expression);

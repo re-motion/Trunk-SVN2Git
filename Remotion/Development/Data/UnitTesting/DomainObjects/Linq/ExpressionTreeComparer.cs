@@ -46,7 +46,7 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
       QueryModel queryModel = MethodCaller.CallFunc<QueryModel> ("GenerateQueryModel", BindingFlags.Instance | BindingFlags.Public)
           .With ((QueryProviderBase) queryable.Provider, queryable.Expression);
 
-      return ((QueryExecutor<T>) ((QueryProviderBase) queryable.Provider).Executor).CreateStatement (queryModel);
+      return ((DomainObjectQueryExecutor) ((QueryProviderBase) queryable.Provider).Executor).CreateStatement (queryModel);
     }
   }
 }

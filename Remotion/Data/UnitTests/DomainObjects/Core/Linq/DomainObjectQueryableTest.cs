@@ -14,13 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -38,17 +37,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'Remotion.Data.DomainObjects.DomainObject'.")]
+    public void Initialization_WrongType ()
+    {
+      new DomainObjectQueryable<DomainObject> (_sqlGenerator);
+    }
+
+    [Test]
     public void Provider_AutoInitialized()
     {
       var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
       Assert.That (queryable.Provider, Is.Not.Null);
-      Assert.That (queryable.Provider, Is.InstanceOfType (typeof (QueryProvider)));
+      Assert.That (queryable.Provider, Is.InstanceOfType (typeof (DomainObjectQueryProvider)));
     }
 
     [Test]
     public void Provider_PassedIn ()
     {
-      var expectedProvider = new QueryProvider (new QueryExecutor<Order> (_sqlGenerator));
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
+      var expectedProvider = new DomainObjectQueryProvider (new DomainObjectQueryExecutor (_sqlGenerator, classDefinition));
       var queryable = new DomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (DomainObjectQueryable<Order>)));
       Assert.That (queryable.Provider, Is.Not.Null);
       Assert.That (queryable.Provider, Is.SameAs (expectedProvider));
@@ -58,7 +65,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void Get_Executor ()
     {
       var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
-      Assert.That (queryable.Provider.Executor, Is.InstanceOfType (typeof (QueryExecutor<Order>)));
+      Assert.That (queryable.Provider.Executor, Is.InstanceOfType (typeof (DomainObjectQueryExecutor)));
+      Assert.That (((DomainObjectQueryExecutor)queryable.Provider.Executor).StartingClassDefinition, 
+          Is.SameAs (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order))));
       Assert.That (queryable.GetExecutor(), Is.SameAs (queryable.Provider.Executor));
       
     }

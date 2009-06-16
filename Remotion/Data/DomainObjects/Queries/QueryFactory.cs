@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.Linq.Clauses.ExecutionStrategies;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Utilities;
@@ -163,7 +162,7 @@ namespace Remotion.Data.DomainObjects.Queries
       ArgumentUtility.CheckNotNull ("queryable", queryable);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
-      var provider = queryable.Provider as QueryProvider;
+      var provider = queryable.Provider as DomainObjectQueryProvider;
       if (provider == null)
       {
         string message = string.Format ("The given queryable must stem from an instance of DomainObjectQueryable. Instead, it is of type '{0}',"
@@ -172,7 +171,7 @@ namespace Remotion.Data.DomainObjects.Queries
         throw new ArgumentException (message, "queryable");
       }
 
-      var queryExecutor = (QueryExecutorBase) provider.Executor;
+      var queryExecutor = (DomainObjectQueryExecutor) provider.Executor;
       var expression = queryable.Expression;
       var fetchRequests = provider.GetFetchRequests (ref expression);
       var queryModel = provider.GenerateQueryModel (expression);

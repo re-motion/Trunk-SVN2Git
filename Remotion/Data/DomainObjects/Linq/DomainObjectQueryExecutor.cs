@@ -31,20 +31,27 @@ using Remotion.Data.DomainObjects.Queries.Configuration;
 namespace Remotion.Data.DomainObjects.Linq
 {
   /// <summary>
-  /// An base implementation of <see cref="IQueryExecutor"/> for re-store.
+  /// Provides an implementation of <see cref="IQueryExecutor"/> for <see cref="DomainObject"/> queries.
   /// </summary>
-  public abstract class QueryExecutorBase : IQueryExecutor
+  public class DomainObjectQueryExecutor : IQueryExecutor
   {
     /// <summary>
-    /// Initializes a new instance of this <see cref="QueryExecutorBase"/> class.
+    /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
     /// </summary>
     /// <param name="sqlGenerator">The sql generator <see cref="ISqlGenerator"/> which is used for querying re-store.</param>
-    protected QueryExecutorBase (ISqlGenerator sqlGenerator)
+    /// <param name="startingClassDefinition">The <see cref="ClassDefinition"/> of the <see cref="DomainObject"/> type the query is started 
+    /// with. This determines the <see cref="StorageProvider"/> used for the query.</param>
+    public DomainObjectQueryExecutor (ISqlGenerator sqlGenerator, ClassDefinition startingClassDefinition)
     {
+      ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator);
+      ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
+
+      StartingClassDefinition = startingClassDefinition;
       SqlGenerator = sqlGenerator;
     }
 
     public ISqlGenerator SqlGenerator { get; private set; }
+    public ClassDefinition StartingClassDefinition { get; private set; }
 
     /// <summary>
     /// Creates and executes a given <see cref="QueryModel"/> as an <see cref="IQuery"/> using the current <see cref="ClientTransaction"/>'s
@@ -152,8 +159,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
 
-      ClassDefinition classDefinition = GetClassDefinition ();
-      return CreateQuery (id, queryModel, fetchRequests, queryType, classDefinition, null);
+      return CreateQuery (id, queryModel, fetchRequests, queryType, StartingClassDefinition, null);
     }
 
     /// <summary>
@@ -267,8 +273,6 @@ namespace Remotion.Data.DomainObjects.Linq
       else
         return null;
     }
-
-    public abstract ClassDefinition GetClassDefinition ();
 
     /// <summary>
     /// Uses the given <see cref="ISqlGenerator"/> to generate sql code for the linq query.

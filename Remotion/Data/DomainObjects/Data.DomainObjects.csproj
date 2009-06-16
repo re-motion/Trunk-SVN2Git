@@ -194,9 +194,8 @@
     <Compile Include="Linq\DatabaseInfo.cs" />
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\ExtensionMethods.cs" />
-    <Compile Include="Linq\QueryExecutor.cs" />
-    <Compile Include="Linq\QueryExecutorBase.cs" />
-    <Compile Include="Linq\QueryProvider.cs" />
+    <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
+    <Compile Include="Linq\DomainObjectQueryProvider.cs" />
     <Compile Include="Mapping\ClassDefinitionValidator.cs" />
     <Compile Include="Mapping\IMappingNameResolver.cs" />
     <Compile Include="Mapping\IPersistentMixinFinder.cs" />
