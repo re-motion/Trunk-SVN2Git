@@ -120,6 +120,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\WINDOWS\assembly\GAC_MSIL\System.Web.Extensions\1.0.61025.0__31bf3856ad364e35\System.Web.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
@@ -151,6 +152,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecutionEngine\RedirectHandler.ashx.cs">
+      <DependentUpon>RedirectHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="ExecutionEngine\ZeroControl.ascx.cs">
       <DependentUpon>ZeroControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -371,6 +375,7 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <Content Include="ExecutionEngine\RedirectHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="res\" />

@@ -32,6 +32,11 @@
         </a>
       </p>
       <p>
+        <a href="ExecutionEngine/RedirectHandler.ashx?RedirectTo=~/ShowUserControl.wxe" target="newWindow">
+          RedirectTo ShowUserControl.wxe
+        </a>
+      </p>
+      <p>
         <a href="session.wxe?ReadOnly=True">session.wxe?ReadOnly=True</a>
       </p>
       <p>
