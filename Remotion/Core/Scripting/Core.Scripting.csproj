@@ -59,6 +59,7 @@
     <Compile Include="ForwardingProxyBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <Compile Include="ReadOnlyDictionary.cs" />
     <Compile Include="ScriptingHost.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +77,9 @@
       <Link>remotion.snk</Link>
     </None>
     <None Include="Core.Scripting.build" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bag.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

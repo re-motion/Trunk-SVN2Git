@@ -64,7 +64,7 @@ namespace Remotion.Scripting
     private static ScriptingHost s_scriptingHost;
 
     private ScriptRuntime _scriptRuntime;
-    private Dictionary<ScriptLanguageType, ScriptEngine> _scriptEngines;
+    private ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> _scriptEngines;
 
 
     public static ScriptingHost Current
@@ -101,7 +101,7 @@ namespace Remotion.Scripting
       return _scriptRuntime;
     }
 
-    public Dictionary<ScriptLanguageType, ScriptEngine> GetScriptEngines ()
+    public ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> GetScriptEngines ()
     {
       if (_scriptEngines == null)
       {
@@ -110,7 +110,7 @@ namespace Remotion.Scripting
       return _scriptEngines;
     }
 
-    public Dictionary<ScriptLanguageType, ScriptEngine> FindScriptEngines ()
+    public ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> FindScriptEngines ()
     {
       var scriptEngines = new Dictionary<ScriptLanguageType, ScriptEngine> ();
       foreach (ScriptLanguageType languageType in Enum.GetValues (typeof (ScriptLanguageType)))
@@ -122,7 +122,7 @@ namespace Remotion.Scripting
           scriptEngines[languageType] = engine;
         }
       }
-      return scriptEngines;
+      return new ReadOnlyDictionary<ScriptLanguageType, ScriptEngine> (scriptEngines);
     }
 
 

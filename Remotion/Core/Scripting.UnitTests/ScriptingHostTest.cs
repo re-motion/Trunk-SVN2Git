@@ -17,6 +17,7 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using System.Linq;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -38,7 +39,7 @@ namespace Remotion.Scripting.UnitTests
     {
       ScriptingHost scriptingHost = CreateScriptingHost ();
       var scriptEngines = scriptingHost.GetScriptEngines ();
-      Assert.That (scriptEngines, Is.EquivalentTo (scriptingHost.FindScriptEngines ()));
+      Assert.That (scriptEngines.ToArray(), Is.EquivalentTo (scriptingHost.FindScriptEngines ().ToArray()));
     }
 
 
