@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       QueryModel model = GetParsedSimpleQuery();
 
-      IEnumerable<Computer> computers = _computerExecutor.ExecuteCollection2<Computer> (model, new FetchManyRequest[0]);
+      IEnumerable<Computer> computers = _computerExecutor.ExecuteCollection<Computer> (model, new FetchManyRequest[0]);
 
       var computerList = new ArrayList();
       foreach (Computer computer in computers)
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       using (ClientTransactionScope.EnterNullScope ())
       {
-        _computerExecutor.ExecuteCollection2<Computer> (model, new FetchManyRequest[0]);
+        _computerExecutor.ExecuteCollection<Computer> (model, new FetchManyRequest[0]);
       }
     }
 
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       QueryModel model = GetParsedSimpleWhereQuery ();
 
-      IEnumerable<Order> orders = _orderExecutor.ExecuteCollection2<Order> (model, new FetchManyRequest[0]);
+      IEnumerable<Order> orders = _orderExecutor.ExecuteCollection<Order> (model, new FetchManyRequest[0]);
 
       var orderList = new ArrayList ();
       foreach (Order order in orders) 

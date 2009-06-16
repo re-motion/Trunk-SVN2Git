@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <returns>
     /// The result of the executed query as an <see cref="IEnumerable{T}"/>.
     /// </returns>
-    public IEnumerable<T> ExecuteCollection2<T> (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
+    public IEnumerable<T> ExecuteCollection<T> (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
     {
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
@@ -93,32 +93,6 @@ namespace Remotion.Data.DomainObjects.Linq
 
       IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests, QueryType.Collection);
       return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable ().Cast<T>();
-    }
-
-    /// <summary>
-    /// Creates and executes a given <see cref="QueryModel"/>.
-    /// </summary>
-    /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
-    /// <param name="fetchRequests">The <see cref="FetchRequestBase"/> instances to be executed together with the query.</param>
-    /// <returns>
-    /// The result of the executed query as single object.
-    /// </returns>
-    public object ExecuteSingle (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
-    {
-      throw new NotImplementedException ();
-    }
-
-    /// <summary>
-    /// Creates and executes a given <see cref="IQuery"/>.
-    /// </summary>
-    /// <param name="queryModel">The generated <see cref="QueryModel"/> of the linq query.</param>
-    /// <param name="fetchRequests">The <see cref="FetchRequestBase"/> instances to be executed together with the query.</param>
-    /// <returns>
-    /// The result of the executed query as <see cref="IEnumerable"/>.
-    /// </returns>
-    public IEnumerable ExecuteCollection (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests)
-    {
-      throw new NotImplementedException ();
     }
 
     /// <summary>
