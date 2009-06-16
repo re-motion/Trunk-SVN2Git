@@ -568,6 +568,7 @@
     <Compile Include="Linq\Parsing\Details\SelectProjectionParserRegistryTest.cs" />
     <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\BinaryExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\ConstantExpressionParserTest.cs" />
+    <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\QuerySourceReferenceExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\MemberExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\MethodCallExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\NewExpressionParserTest.cs" />
@@ -578,6 +579,7 @@
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\ConstantExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\ContainsFulltextParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\ContainsParserTest.cs" />
+    <Compile Include="Linq\Parsing\Details\WhereConditionParsing\QuerySourceReferenceExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\LikeParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\MemberExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\MethodCallExpressionParserTest.cs" />
