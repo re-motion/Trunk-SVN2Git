@@ -160,9 +160,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dms", "Dms", "{41F62020-3A6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Clients.Windows.Tray", "Dms\Clients.Windows.Tray\Dms.Clients.Windows.Tray.csproj", "{B5CBF254-BC60-4018-A772-DAD5DE4C96EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.UnitTests", "Dms\UnitTests\Dms.UnitTests.csproj", "{1763F21F-531C-4E86-ACFC-9A8BF903F945}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Core", "Dms\Core\Dms.Core.csproj", "{7ACCED5E-6AE7-477D-8D15-ED33DEAB0FD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.DesktopConnector", "Dms\DesktopConnector\Dms.DesktopConnector.csproj", "{F3AB6F46-3776-4562-8BB2-FFFDE7E62BE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Shared", "Dms\Shared\Dms.Shared.csproj", "{B79940B8-1949-406D-9CCA-E6349898E11A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.UnitTests", "Dms\UnitTests\Dms.UnitTests.csproj", "{1763F21F-531C-4E86-ACFC-9A8BF903F945}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Web", "Dms\Web\Dms.Web.csproj", "{F47CE8AE-22DA-4666-8371-01E7A32D539B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Web.Test", "Dms\Web.Test\Dms.Web.Test.csproj", "{12C435C1-FE1C-4368-8FE5-A29B22A8F962}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Documentation", "Remotion\Core.Documentation\Core.Documentation.csproj", "{15EF21FE-5234-42AD-8B70-0F04C0D7AC7F}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -181,14 +189,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Documentation", "Remot
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityManager.AclTools.Expander", "SecurityManager\AclTools.Expander\SecurityManager.AclTools.Expander.csproj", "{3214FB15-2359-48EC-A926-2CAA47E4D826}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Shared", "Dms\Shared\Dms.Shared.csproj", "{B79940B8-1949-406D-9CCA-E6349898E11A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Web", "Dms\Web\Dms.Web.csproj", "{F47CE8AE-22DA-4666-8371-01E7A32D539B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Web.Test", "Dms\Web.Test\Dms.Web.Test.csproj", "{12C435C1-FE1C-4368-8FE5-A29B22A8F962}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Core", "Dms\Core\Dms.Core.csproj", "{7ACCED5E-6AE7-477D-8D15-ED33DEAB0FD9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Scripting", "Remotion\Core\Scripting\Core.Scripting.csproj", "{58B51BBB-23D9-4B96-9F1F-8696B71F73C8}"
 EndProject
