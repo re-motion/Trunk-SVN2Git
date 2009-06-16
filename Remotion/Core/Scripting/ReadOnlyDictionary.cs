@@ -50,12 +50,13 @@ namespace Remotion.Scripting
       return _dictionary.ContainsValue (value);
     }
 
-
+    // TODO: Fix unit tests in ReadOnlyDictionaryGetObjectDataTest.cs
     public void GetObjectData (SerializationInfo info, StreamingContext context)
     {
       _dictionary.GetObjectData (info, context);
     }
 
+    // TODO: Implement unit tests in ReadOnlyDictionaryGetObjectDataTest.cs
     public void OnDeserialization (object sender)
     {
       _dictionary.OnDeserialization (sender);
