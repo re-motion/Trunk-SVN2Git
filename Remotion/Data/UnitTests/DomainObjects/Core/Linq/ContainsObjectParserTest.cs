@@ -90,11 +90,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       ParameterExpression identifier = Expression.Parameter (typeof (OrderItem), "oi");
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
       ParameterExpression queriedObject = Expression.Parameter (typeof (Order), "o");
-      LambdaExpression whereComparison = _parser.CreateWhereComparison (identifier, foreignKeyProperty, queriedObject);
+      Expression whereComparison = _parser.CreateWhereComparison (identifier, foreignKeyProperty, queriedObject);
 
-      Assert.That (whereComparison.Body, Is.InstanceOfType (typeof (BinaryExpression)));
-      BinaryExpression boolExpression = (BinaryExpression) whereComparison.Body;
-      Assert.That (boolExpression.NodeType, Is.EqualTo (ExpressionType.Equal));
+      Assert.That (whereComparison.NodeType, Is.EqualTo (ExpressionType.Equal));
     }
 
     [Test]
@@ -103,11 +101,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       ParameterExpression identifier = Expression.Parameter (typeof (OrderItem), "oi");
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
       ParameterExpression queriedObject = Expression.Parameter (typeof (Order), "o");
-      LambdaExpression whereComparison = _parser.CreateWhereComparison (identifier, foreignKeyProperty, queriedObject);
-      BinaryExpression boolExpression = (BinaryExpression) whereComparison.Body;
+      var whereComparison = _parser.CreateWhereComparison (identifier, foreignKeyProperty, queriedObject);
       
-      Assert.That (boolExpression.Left, Is.InstanceOfType (typeof (MemberExpression)));
-      MemberExpression memberExpression = (MemberExpression) boolExpression.Left;
+      Assert.That (whereComparison.Left, Is.InstanceOfType (typeof (MemberExpression)));
+      var memberExpression = (MemberExpression) whereComparison.Left;
       Assert.That (memberExpression.Expression, Is.SameAs (identifier));
       Assert.That (memberExpression.Member, Is.SameAs (foreignKeyProperty));
     }
@@ -118,10 +115,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       ParameterExpression identifier = Expression.Parameter (typeof (OrderItem), "oi");
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
       ParameterExpression queriedObject = Expression.Parameter (typeof (Order), "o");
-      LambdaExpression whereComparison = _parser.CreateWhereComparison (identifier, foreignKeyProperty, queriedObject);
-      BinaryExpression boolExpression = (BinaryExpression) whereComparison.Body;
-
-      Assert.That (boolExpression.Right, Is.SameAs (queriedObject));
+      var whereComparison = _parser.CreateWhereComparison (identifier, foreignKeyProperty, queriedObject);
+      Assert.That (whereComparison.Right, Is.SameAs (queriedObject));
     }
 
     [Test]
@@ -130,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
       ParameterExpression queriedObject = Expression.Parameter (typeof (Order), "o");
-      LambdaExpression expectedWhereComparison = _parser.CreateWhereComparison (mainFromClause.Identifier, foreignKeyProperty, queriedObject);
+      var expectedWhereComparison = _parser.CreateWhereComparison (mainFromClause.Identifier, foreignKeyProperty, queriedObject);
 
       WhereClause whereClause = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, queriedObject);
       Assert.That (whereClause.PreviousClause, Is.SameAs (mainFromClause));
@@ -168,8 +163,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fromClause.Identifier.Name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
 
       WhereClause whereClause = (WhereClause) queryModel.BodyClauses[0];
-      Assert.That (whereClause.Predicate.Body, Is.InstanceOfType (typeof (BinaryExpression)));
-      BinaryExpression binaryExpression = (BinaryExpression) whereClause.Predicate.Body;
+      Assert.That (whereClause.Predicate, Is.InstanceOfType (typeof (BinaryExpression)));
+      BinaryExpression binaryExpression = (BinaryExpression) whereClause.Predicate;
       Assert.That (binaryExpression.Left, Is.InstanceOfType (typeof (MemberExpression)));
       MemberExpression memberExpression = (MemberExpression) binaryExpression.Left;
       Assert.That (memberExpression.Expression, Is.SameAs (fromClause.Identifier));

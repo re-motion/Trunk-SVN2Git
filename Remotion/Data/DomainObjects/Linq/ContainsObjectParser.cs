@@ -128,10 +128,11 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("foreignKeyProperty", foreignKeyProperty);
       ArgumentUtility.CheckNotNull ("queriedObject", queriedObject);
-      return new WhereClause (fromClause, CreateWhereComparison(fromClause.Identifier, foreignKeyProperty, queriedObject));
+      var comparison = CreateWhereComparison(fromClause.Identifier, foreignKeyProperty, queriedObject);
+      return new WhereClause (fromClause, Expression.Lambda (comparison), comparison);
     }
 
-    public LambdaExpression CreateWhereComparison (ParameterExpression fromIdentifier, PropertyInfo foreignKeyProperty, Expression queriedObject)
+    public BinaryExpression CreateWhereComparison (ParameterExpression fromIdentifier, PropertyInfo foreignKeyProperty, Expression queriedObject)
     {
       ArgumentUtility.CheckNotNull ("fromIdentifier", fromIdentifier);
       ArgumentUtility.CheckNotNull ("foreignKeyProperty", foreignKeyProperty);
@@ -139,7 +140,7 @@ namespace Remotion.Data.DomainObjects.Linq
       Expression left = Expression.MakeMemberAccess (fromIdentifier, foreignKeyProperty);
       Expression right = queriedObject;
       BinaryExpression binaryExpression = Expression.Equal (left, right);
-      return Expression.Lambda (binaryExpression);
+      return binaryExpression;
     }
 
     public SelectClause CreateSelectClause (WhereClause whereClause, ParameterExpression fromIdentifier)
