@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForwardingProxyBuilderTest.cs" />
-    <Compile Include="ReadOnlyDictionaryTest.cs" />
+    <Compile Include="ReadOnlyDictionarySpecificTest.cs" />
     <Compile Include="TestDomain\IProxiedGetName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />

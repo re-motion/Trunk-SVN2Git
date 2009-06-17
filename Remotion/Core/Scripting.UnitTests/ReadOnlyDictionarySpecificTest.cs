@@ -22,7 +22,7 @@ using NUnit.Framework.SyntaxHelpers;
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
-  public class ReadOnlyDictionaryTest
+  public class ReadOnlyDictionarySpecificTest
   {
     private Dictionary<string, string> _dictionary;
     private ReadOnlyDictionarySpecific<string, string> _readOnlyDictionarySpecific;
