@@ -8,7 +8,7 @@
     <title>Tabbed multi-view theming test</title>
     <remotion:HtmlHeadContents runat="server" />
 </head>
-<body onload="adjustViews();" style="margin: 0;">
+<body>
     <form id="form1" runat="server" style="height:100%;">
     <div id="test">
     <remotion:TabbedMultiView ID="MyMultiView" runat="server">

@@ -735,6 +735,7 @@
     <Content Include="Res\HTML\FontSize100.css" />
     <Content Include="Res\HTML\FontSize100Quirks.css" />
     <Content Include="Res\HTML\FormGrid.css" />
+    <Content Include="Res\HTML\jquery.js" />
     <Content Include="Res\HTML\Legacy\SingleView.css" />
     <Content Include="Res\HTML\SmartNavigation.js" />
     <Content Include="Res\HTML\SmartPage.css" />

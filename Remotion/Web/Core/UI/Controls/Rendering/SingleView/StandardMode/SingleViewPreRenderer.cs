@@ -21,7 +21,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
   public class SingleViewPreRenderer : PreRendererBase<ISingleView>, ISingleViewPreRenderer
   {
     public SingleViewPreRenderer (IHttpContext context, ISingleView control)
-        : base(context, control)
+        : base (context, control)
     {
     }
 
@@ -39,17 +39,22 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
             Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Standard, "Views.js");
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyScript, scriptUrl);
       }
+      string keyJquery = "jQuery";
+      if (!HtmlHeadAppender.Current.IsRegistered (keyJquery))
+      {
+        string jQueryUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (ISingleView), ResourceType.Html, "jquery.js");
+        HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyJquery, jQueryUrl);
+      }
 
-      string script = "function adjustViews(){{"
-                      + "Views.SetBodyHeightToWindowHeight({0});"
-                      + "Views.Adjust({0}, {1}, 1);"
-                      + "}}"
-                      + "function adjustViewsWithTimeout() {{"
-                      + "setTimeout('adjustViews();', 10);"
-                      + "}}"
-                      + "window.onresize = adjustViewsWithTimeout;";
+      string script = "function adjustView_{0}(){{" + Environment.NewLine +
+                      "  Views.SetBodyHeightToWindowHeight({0});" + Environment.NewLine +
+                      "  Views.Adjust({0}, {1});" + Environment.NewLine +
+                      "}}" + Environment.NewLine +
+                      "$(window).bind('resize', function(){{adjustView_{0}();}});" + Environment.NewLine;
+
       script = string.Format (script, Control.ClientID, Control.ViewClientID);
-      Control.Page.ClientScript.RegisterClientScriptBlock (typeof (ISingleView), Control.ClientID + "_AdjustViews", script, true);
+      Control.Page.ClientScript.RegisterClientScriptBlock (typeof (ISingleView), Control.ClientID + "_AdjustView", script, true);
     }
   }
 }

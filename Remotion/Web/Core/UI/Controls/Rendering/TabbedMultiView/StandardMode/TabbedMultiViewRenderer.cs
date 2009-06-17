@@ -33,9 +33,6 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
     public void Render ()
     {
-      string key = Control.ClientID + "_ResizeScript";
-      Control.Page.ClientScript.RegisterStartupScript (Control, typeof (ITabbedMultiView), key, "adjustViewsWithTimeout();", true);
-
       AddAttributesToRender();
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 

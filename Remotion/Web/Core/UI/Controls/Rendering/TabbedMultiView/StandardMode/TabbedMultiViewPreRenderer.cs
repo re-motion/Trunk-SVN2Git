@@ -21,7 +21,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
   public class TabbedMultiViewPreRenderer : PreRendererBase<ITabbedMultiView>, ITabbedMultiViewPreRenderer
   {
     public TabbedMultiViewPreRenderer (IHttpContext context, ITabbedMultiView control)
-        : base(context, control)
+        : base (context, control)
     {
     }
 
@@ -40,17 +40,23 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
       }
 
-      string script = "function adjustViews(){{"
-                      + "Views.SetBodyHeightToWindowHeight({0});"
-                      + "Views.AdjustTop({0}, {1}, 1); "
-                      + "Views.Adjust({0}, {2}, 1);"
-                      + "}}"
-                      + "function adjustViewsWithTimeout() {{"
-                      + "setTimeout('adjustViews();', 10);"
-                      + "}}"
-                      + "window.onresize = adjustViewsWithTimeout;";
+      string keyJquery = "jQuery";
+      if (!HtmlHeadAppender.Current.IsRegistered (keyJquery))
+      {
+        string jQueryUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (ITabbedMultiView), ResourceType.Html, "jquery.js");
+        HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyJquery, jQueryUrl);
+      }
+
+      string script = "function adjustView_{0}(){{" + Environment.NewLine +
+                      "  Views.SetBodyHeightToWindowHeight({0});" + Environment.NewLine +
+                      "  Views.AdjustTop({0}, {1}); " + Environment.NewLine +
+                      "  Views.Adjust({0}, {2});" + Environment.NewLine +
+                      "}}" + Environment.NewLine +
+                      "$(window).bind('resize', function(){{adjustView_{0}();}});" + Environment.NewLine;
+
       script = string.Format (script, Control.ClientID, Control.TabStripContainerClientID, Control.ActiveViewClientID);
-      Control.Page.ClientScript.RegisterClientScriptBlock (typeof (ITabbedMultiView), Control.ClientID + "_AdjustViews", script, true);
+      Control.Page.ClientScript.RegisterClientScriptBlock (typeof (ITabbedMultiView), Control.ClientID + "_AdjustView", script, true);
     }
   }
 }
