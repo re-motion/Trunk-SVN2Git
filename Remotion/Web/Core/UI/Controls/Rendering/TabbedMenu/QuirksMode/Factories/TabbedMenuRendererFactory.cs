@@ -14,24 +14,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
+using System.Web.UI;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
+namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
 {
-  /// <summary>
-  /// Interface for classes able to render <see cref="WebTabStrip"/> controls.
-  /// </summary>
-  public interface IWebTabStripRenderer : IRenderer<IWebTabStrip>
+  public class TabbedMenuRendererFactory : IMenuTabRendererFactory
   {
-    IWebTabRenderer WebTabRenderer { get; }
-    string CssClassBase { get; }
-    string CssClassTabsPaneEmpty { get; }
-    string CssClassTabsPane { get; }
-    string CssClassTabWrapper { get; }
-    string CssClassSeparator { get; }
-    string CssClassTabSelected { get; }
-    string CssClassTab { get; }
-    string CssClassDisabled { get; }
-    string CssClassTabAnchorBody { get; }
+    public IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
+    {
+      return new MenuTabRenderer (context, writer, control);
+    }
   }
 }

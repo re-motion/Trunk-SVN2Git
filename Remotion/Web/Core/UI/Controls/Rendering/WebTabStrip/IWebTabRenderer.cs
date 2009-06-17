@@ -23,7 +23,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
   public interface IWebTabRenderer
   {
     void RenderBeginTagForCommand (IWebTab tab, bool isEnabled, WebTabStyle style);
-    void RenderEndTagForCommand ();
+    void RenderEndTagForCommand (IWebTab tab, bool isEnabled);
     void RenderContents (IWebTab tab);
   }
 }

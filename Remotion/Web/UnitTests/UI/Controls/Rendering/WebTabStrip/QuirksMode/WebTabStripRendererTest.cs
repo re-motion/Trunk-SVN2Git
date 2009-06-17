@@ -170,7 +170,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
       var factory = new WebTabStripRendererFactory();
-      _renderer = factory.CreateRenderer (HttpContext, Html.Writer, _webTabStrip);
+      _renderer = factory.CreateRenderer (HttpContext, Html.Writer, _webTabStrip, factory);
       _renderer.Render();
 
       var document = Html.GetResultDocument();

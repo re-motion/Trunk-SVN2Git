@@ -18,16 +18,14 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using Remotion.Globalization;
-using Remotion.Utilities;
+using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 
 namespace Remotion.Web.UI.Controls
 {
 
-  public abstract class MenuTab : WebTab
+  public abstract class MenuTab : WebTab, IMenuTab
   {
-    private SingleControlItemCollection _command = null;
-    /// <summary> The command being rendered by this menu item. </summary>
-    private NavigationCommand _renderingCommand = null;
+    private SingleControlItemCollection _command;
     private MissingPermissionBehavior _missingPermissionBehavior;
 
     protected MenuTab (string itemID, string text, IconInfo icon)
@@ -43,12 +41,17 @@ namespace Remotion.Web.UI.Controls
 
     private void Initialize ()
     {
-      _command = new SingleControlItemCollection (new NavigationCommand (), new Type[] { typeof (NavigationCommand) });
+      _command = new SingleControlItemCollection (new NavigationCommand (), new[] { typeof (NavigationCommand) });
     }
 
     protected TabbedMenu TabbedMenu
     {
       get { return (TabbedMenu) OwnerControl; }
+    }
+
+    public NameValueCollection GetUrlParameters ()
+    {
+      return TabbedMenu.GetUrlParameters (this);
     }
 
     /// <summary> Gets or sets the <see cref="NavigationCommand"/> rendered for this menu item. </summary>
@@ -129,47 +132,14 @@ namespace Remotion.Web.UI.Controls
         Command.LoadResources (resourceManager);
     }
 
-    public override void RenderBeginTagForCommand (HtmlTextWriter writer, bool isEnabled, WebTabStyle style)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      ArgumentUtility.CheckNotNull ("style", style);
-
-      MenuTab activeTab = null;
-      if (isEnabled && EvaluateEnabled ())
-      {
-        activeTab = GetActiveTab ();
-        _renderingCommand = activeTab.Command;
-      }
-      else
-      {
-        _renderingCommand = null;
-      }
-
-      if (_renderingCommand != null)
-      {
-        NameValueCollection additionalUrlParameters = TabbedMenu.GetUrlParameters (activeTab);
-        _renderingCommand.RenderBegin (writer, GetPostBackClientEvent (), new string[0], string.Empty, null, additionalUrlParameters, false, style);
-      }
-      else
-      {
-        style.AddAttributesToRender (writer);
-        writer.RenderBeginTag (HtmlTextWriterTag.A);
-      }
-    }
-
-    public override void RenderEndTagForCommand (HtmlTextWriter writer)
-    {
-      ArgumentUtility.CheckNotNull ("writer", writer);
-      if (_renderingCommand != null)
-        _renderingCommand.RenderEnd (writer);
-      else
-        writer.RenderEndTag ();
-      _renderingCommand = null;
-    }
-
     protected virtual MenuTab GetActiveTab ()
     {
       return this;
+    }
+
+    IMenuTab IMenuTab.GetActiveTab ()
+    {
+      return GetActiveTab();
     }
 
     public override void OnClick ()

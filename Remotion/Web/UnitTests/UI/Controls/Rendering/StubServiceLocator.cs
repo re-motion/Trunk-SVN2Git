@@ -28,13 +28,15 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 
     public StubServiceLocator ()
     {
-      var rendererStub = MockRepository.GenerateStub<IWebTabStripRenderer>();
+      var tabStripRendererStub = MockRepository.GenerateStub<IWebTabStripRenderer>();
       var tabRendererStub = MockRepository.GenerateStub<IWebTabRenderer>();
 
-      var stubFactory = MockRepository.GenerateStub<IWebTabStripRendererFactory>();
-      stubFactory.Stub (stub => stub.CreateRenderer (null, null, null)).IgnoreArguments().Return (rendererStub);
-      stubFactory.Stub (stub => stub.CreateTabRenderer (null, null, null)).IgnoreArguments ().Return (tabRendererStub);
-      _instances.Add (typeof (IWebTabStripRendererFactory), stubFactory);
+      var stubTabRendererFactory = MockRepository.GenerateStub<IWebTabRendererFactory>();
+      stubTabRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null)).IgnoreArguments().Return (tabRendererStub);
+
+      var stubTabStripRendererFactory = MockRepository.GenerateStub<IWebTabStripRendererFactory>();
+      stubTabStripRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null, stubTabRendererFactory)).IgnoreArguments().Return (tabStripRendererStub);
+      _instances.Add (typeof (IWebTabStripRendererFactory), stubTabStripRendererFactory);
     }
 
     public void SetFactory<T> (T factory)

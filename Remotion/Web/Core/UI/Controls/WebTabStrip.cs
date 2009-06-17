@@ -255,8 +255,13 @@ namespace Remotion.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
 
       var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
-      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper(Context) : null, writer, this);
+      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper(Context) : null, writer, this, GetTabRendererFactory());
       renderer.Render();
+    }
+
+    protected virtual IWebTabRendererFactory GetTabRendererFactory ()
+    {
+      return ServiceLocator.Current.GetInstance<IWebTabRendererFactory>();
     }
 
     private List<WebTab> GetVisibleTabs ()

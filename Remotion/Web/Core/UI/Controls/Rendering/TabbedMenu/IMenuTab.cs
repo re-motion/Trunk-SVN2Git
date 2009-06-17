@@ -14,24 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
+using System.Collections.Specialized;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
+namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
-  /// <summary>
-  /// Interface for classes able to render <see cref="WebTabStrip"/> controls.
-  /// </summary>
-  public interface IWebTabStripRenderer : IRenderer<IWebTabStrip>
+  public interface IMenuTab : IWebTab
   {
-    IWebTabRenderer WebTabRenderer { get; }
-    string CssClassBase { get; }
-    string CssClassTabsPaneEmpty { get; }
-    string CssClassTabsPane { get; }
-    string CssClassTabWrapper { get; }
-    string CssClassSeparator { get; }
-    string CssClassTabSelected { get; }
-    string CssClassTab { get; }
-    string CssClassDisabled { get; }
-    string CssClassTabAnchorBody { get; }
+    NavigationCommand Command { get; }
+    NameValueCollection GetUrlParameters ();
+    IMenuTab GetActiveTab ();
   }
 }

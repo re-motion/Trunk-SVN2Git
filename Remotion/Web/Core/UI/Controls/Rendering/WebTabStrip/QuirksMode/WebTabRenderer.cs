@@ -42,7 +42,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
       Writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
     }
 
-    public virtual void RenderEndTagForCommand ()
+    public virtual void RenderEndTagForCommand (IWebTab tab, bool isEnabled)
     {
       Writer.RenderEndTag ();
     }

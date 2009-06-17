@@ -20,9 +20,11 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 using Remotion.Web.UI.Design;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -44,11 +46,26 @@ namespace Remotion.Web.UI.Controls
     private static readonly object s_eventCommandClickEvent = new object ();
 
     // types
+    public class MenuTabStrip : WebTabStrip
+    {
+      public MenuTabStrip (TabbedMenu menu, Type[] types):base(menu, types)
+      {
+      }
+
+      public MenuTabStrip (MainMenuTabCollection tabCollection):base(tabCollection)
+      {
+      }
+
+      protected override Remotion.Web.UI.Controls.Rendering.WebTabStrip.IWebTabRendererFactory GetTabRendererFactory ()
+      {
+        return ServiceLocator.Current.GetInstance<IMenuTabRendererFactory>();
+      }
+    }
 
     // fields
-    private Style _statusStyle;
-    private WebTabStrip _mainMenuTabStrip;
-    private WebTabStrip _subMenuTabStrip;
+    private readonly Style _statusStyle;
+    private readonly MenuTabStrip _mainMenuTabStrip;
+    private readonly MenuTabStrip _subMenuTabStrip;
     private string _statusText;
     private bool _isSubMenuTabStripRefreshed;
     private bool _isPastInitialization;
@@ -59,8 +76,8 @@ namespace Remotion.Web.UI.Controls
     // construction and destruction
     public TabbedMenu ()
     {
-      _mainMenuTabStrip = new WebTabStrip (new MainMenuTabCollection (this, new Type[] { typeof (MainMenuTab) }));
-      _subMenuTabStrip = new WebTabStrip (this, new Type[] { typeof (SubMenuTab) });
+      _mainMenuTabStrip = new MenuTabStrip (new MainMenuTabCollection (this, new[] { typeof (MainMenuTab) }));
+      _subMenuTabStrip = new MenuTabStrip (this, new[] { typeof (SubMenuTab) });
       _statusStyle = new Style ();
       _subMenuBackgroundColor = new Color ();
     }
@@ -76,10 +93,10 @@ namespace Remotion.Web.UI.Controls
       _isPastInitialization = true;
       _mainMenuTabStrip.EnableSelectedTab = true;
       _mainMenuTabStrip.EnableViewState = false;
-      _mainMenuTabStrip.Click += new WebTabClickEventHandler (MainMenuTabStrip_Click);
+      _mainMenuTabStrip.Click += MainMenuTabStrip_Click;
       _subMenuTabStrip.EnableSelectedTab = true;
       _subMenuTabStrip.EnableViewState = false;
-      _subMenuTabStrip.Click += new WebTabClickEventHandler (SubMenuTabStrip_Click);
+      _subMenuTabStrip.Click += SubMenuTabStrip_Click;
 
       if (Page is ISmartNavigablePage)
       {
@@ -303,7 +320,7 @@ namespace Remotion.Web.UI.Controls
     /// <returns> A string array. </returns>
     private string[] ConvertTabIDsToArray (MainMenuTab mainMenuTab, SubMenuTab subMenuTab)
     {
-      string[] tabIDs = new string[2];
+      string[] tabIDs;
       if (mainMenuTab == null)
       {
         tabIDs = new string[0];
@@ -428,7 +445,7 @@ namespace Remotion.Web.UI.Controls
     ///   A <see cref="NameValueCollection"/> that contains the URL parameters parameters required by this 
     ///   <see cref="TabbedMenu"/>.
     /// </returns>
-    public virtual NameValueCollection GetUrlParameters (MenuTab menuTab)
+    public virtual NameValueCollection GetUrlParameters (IMenuTab menuTab)
     {
       ArgumentUtility.CheckNotNull ("menuTab", menuTab);
 
@@ -438,8 +455,10 @@ namespace Remotion.Web.UI.Controls
       string[] tabIDs;
       if (mainMenuTab != null)
         tabIDs = ConvertTabIDsToArray (mainMenuTab, null);
-      else
+      else if (subMenuTab != null)
         tabIDs = ConvertTabIDsToArray (subMenuTab.Parent, subMenuTab);
+      else
+        throw new NotSupportedException (string.Format ("menuTab is of unsupported type '{0}'.", menuTab.GetType().FullName));
 
       string value = (string) TypeConversionProvider.Current.Convert (typeof (string[]), typeof (string), tabIDs);
 
@@ -581,8 +600,7 @@ namespace Remotion.Web.UI.Controls
       if (ControlHelper.IsDesignMode (this, Context))
         return;
 
-      string key;
-      key = ResourceManagerUtility.GetGlobalResourceKey (StatusText);
+      string key = ResourceManagerUtility.GetGlobalResourceKey (StatusText);
       if (!StringUtility.IsNullOrEmpty (key))
         StatusText = resourceManager.GetString (key);
     }

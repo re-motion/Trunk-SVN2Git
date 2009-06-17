@@ -347,45 +347,6 @@ public class WebTab: IWebTab, IControlStateManager
     return GetPostBackClientEvent();
   }
 
-  [Obsolete("Use the WebTabRenderer class instead.")]
-  public virtual void RenderBeginTagForCommand (HtmlTextWriter writer, bool isEnabled, WebTabStyle style)
-  {
-    ArgumentUtility.CheckNotNull ("writer", writer);
-    ArgumentUtility.CheckNotNull ("style", style);
-    if (isEnabled && ! _isDisabled)
-    {
-      writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-      writer.AddAttribute (HtmlTextWriterAttribute.Onclick, GetPostBackClientEvent ());
-    }
-    style.AddAttributesToRender (writer);
-    writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
-  }
-
-  [Obsolete ("Use the WebTabRenderer class instead.")]
-  public virtual void RenderEndTagForCommand (HtmlTextWriter writer)
-  {
-    ArgumentUtility.CheckNotNull ("writer", writer);
-    writer.RenderEndTag();
-  }
-
-  [Obsolete ("Use the WebTabRenderer class instead.")]
-  public virtual void RenderContents (HtmlTextWriter writer)
-  {
-    ArgumentUtility.CheckNotNull ("writer", writer);
-    bool hasIcon = _icon != null && ! StringUtility.IsNullOrEmpty (_icon.Url);
-    bool hasText = ! StringUtility.IsNullOrEmpty (_text);
-    if (hasIcon)
-      _icon.Render (writer);
-    else
-      IconInfo.RenderInvisibleSpacer (writer);
-    if (hasIcon && hasText)
-      writer.Write ("&nbsp;");
-    if (hasText)
-      writer.Write (_text); // Do not HTML encode
-    if (!hasIcon && !hasText)
-      writer.Write ("&nbsp;");
-  }
-
   public virtual void OnClick()
   {
   }

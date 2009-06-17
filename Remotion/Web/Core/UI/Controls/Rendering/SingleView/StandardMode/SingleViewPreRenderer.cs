@@ -54,7 +54,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
                       "$(window).bind('resize', function(){{adjustView_{0}();}});" + Environment.NewLine;
 
       script = string.Format (script, Control.ClientID, Control.ViewClientID);
-      Control.Page.ClientScript.RegisterClientScriptBlock (typeof (ISingleView), Control.ClientID + "_AdjustView", script, true);
+      Control.Page.ClientScript.RegisterClientScriptBlock (Control, Control.ClientID + "_AdjustView", script);
     }
   }
 }

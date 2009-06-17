@@ -14,10 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
 {
@@ -27,12 +27,12 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
   /// </summary>
   public class WebTabStripRenderer : RendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    private readonly IWebTabRenderer _tabRenderer;
+    private readonly IWebTabRenderer _webTabRenderer;
 
-    public WebTabStripRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTabStripRendererFactory factory)
+    public WebTabStripRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTabRendererFactory factory)
         : base (context, writer, control)
     {
-      _tabRenderer = factory.CreateTabRenderer (context, writer, control);
+      _webTabRenderer = factory.CreateRenderer (context, writer, control);
     }
 
     public void Render ()
@@ -53,9 +53,9 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
       Writer.RenderEndTag();
     }
 
-    public IWebTabRenderer TabRenderer
+    public IWebTabRenderer WebTabRenderer
     {
-      get { return _tabRenderer; }
+      get { return _webTabRenderer; }
     }
 
     protected void AddAttributesToRender ()
@@ -121,15 +121,15 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
 
       bool isEnabled = !tab.IsSelected || Control.EnableSelectedTab;
       WebTabStyle style = tab.IsSelected ? Control.SelectedTabStyle : Control.TabStyle;
-      TabRenderer.RenderBeginTagForCommand (tab, isEnabled, style);
+      WebTabRenderer.RenderBeginTagForCommand (tab, isEnabled, style);
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabAnchorBody);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin anchor body span
 
-      TabRenderer.RenderContents (tab);
+      WebTabRenderer.RenderContents (tab);
 
       Writer.RenderEndTag(); // End anchor body span
-      TabRenderer.RenderEndTagForCommand();
+      WebTabRenderer.RenderEndTagForCommand (tab, isEnabled);
 
       Writer.RenderEndTag(); // End tab span
 
