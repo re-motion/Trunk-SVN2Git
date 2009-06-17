@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding;
@@ -40,11 +41,15 @@ public class TestTabbedForm : TestWxeBasePage
   protected SmartHyperLink SmartHyperLink1;
   private bool _currentObjectSaved = false;
 
+  public TestTabbedForm ()
+  {
+    MasterPageFile = (Global.UseStandardModeRendering) ? "~/StandardMode.Master" : "~/QuirksMode.Master";
+  }
+
   protected TestTabbedFormWxeFunction Function
   {
     get { return (TestTabbedFormWxeFunction) CurrentFunction; }
   }
-
 
   protected override void OnLoad(EventArgs e)
   {

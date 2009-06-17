@@ -170,6 +170,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="QuirksMode.Master.cs">
+      <DependentUpon>QuirksMode.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="QuirksMode.Master.designer.cs">
+      <DependentUpon>QuirksMode.Master</DependentUpon>
+    </Compile>
     <Compile Include="IndividualControlTests\AutoCompleteService.asmx.cs">
       <DependentUpon>AutoCompleteService.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -183,6 +190,13 @@
     </Compile>
     <Compile Include="IndividualControlTests\Form.aspx.designer.cs">
       <DependentUpon>Form.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="StandardMode.Master.cs">
+      <DependentUpon>StandardMode.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="StandardMode.Master.designer.cs">
+      <DependentUpon>StandardMode.Master</DependentUpon>
     </Compile>
     <Compile Include="StubServiceLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -526,6 +540,8 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <Content Include="StandardMode.Master" />
+    <Content Include="QuirksMode.Master" />
     <None Include="WxeLauncher.ashx" />
   </ItemGroup>
   <ItemGroup>

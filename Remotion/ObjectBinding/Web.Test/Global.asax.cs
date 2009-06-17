@@ -49,6 +49,8 @@ namespace OBWTest
       InitializeComponent();
     }
 
+    public static bool UseStandardModeRendering{get;private set;}
+
     public XmlReflectionBusinessObjectStorageProvider XmlReflectionBusinessObjectStorageProvider
     {
       get { return XmlReflectionBusinessObjectStorageProvider.Current; }
@@ -62,6 +64,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
+      UseStandardModeRendering = true;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))
@@ -75,12 +78,15 @@ namespace OBWTest
 
       IWindsorContainer container = new WindsorContainer ();
       // Remotion.Web.Core
-      container.Register (
-          AllTypes.Pick ()
-              .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("standard." + c.ServiceType.Name)));
+      if (UseStandardModeRendering)
+      {
+        container.Register (
+            AllTypes.Pick()
+                .FromAssembly (typeof (RendererBase<>).Assembly)
+                .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+                .WithService.Select ((t, b) => t.GetInterfaces())
+                .Configure (c => c.Named ("standard." + c.ServiceType.Name)));
+      }
       container.Register (
           AllTypes.Pick ()
               .FromAssembly (typeof (RendererBase<>).Assembly)

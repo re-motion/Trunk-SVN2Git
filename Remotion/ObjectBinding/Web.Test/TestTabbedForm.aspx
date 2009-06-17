@@ -14,16 +14,12 @@
  % along with re-motion; if not, see http://www.gnu.org/licenses.
 --%>
 <%@ Page Language="c#" Codebehind="TestTabbedForm.aspx.cs" AutoEventWireup="false" Inherits="OBWTest.TestTabbedForm" %>
+<%@ Import Namespace="OBWTest"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" > -->
-<html>
-<head>
+<asp:Content ContentPlaceHolderID="head" runat="server">
   <title>Test Tabbed Form</title>
-  <remotion:HtmlHeadContents ID="HtmlHeadContents" runat="server" />
-</head>
-<body>
-  <form id="Form" method="post" runat="server">
+</asp:Content>
+<asp:Content ContentPlaceHolderID="body" runat="server">
     <remotion:TabbedMultiView ID="MultiView" runat="server" CssClass="tabbedMultiView">
       <TopControls>
         <remotion:TabbedMenu ID="NavigationTabs" runat="server" StatusText="Status Text" SubMenuBackgroundColor-IsEmpty="True" SubMenuBackgroundColor-A="0" SubMenuBackgroundColor-B="0"
@@ -168,6 +164,4 @@
         <remotion:SmartHyperLink ID="SmartHyperLink1" runat="server" NavigateUrl="~/Start.aspx">test</remotion:SmartHyperLink>
       </BottomControls>
     </remotion:TabbedMultiView>
-  </form>
-</body>
-</html>
+</asp:Content>
