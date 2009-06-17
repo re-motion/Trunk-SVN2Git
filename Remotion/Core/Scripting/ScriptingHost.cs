@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Scripting.Hosting;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 

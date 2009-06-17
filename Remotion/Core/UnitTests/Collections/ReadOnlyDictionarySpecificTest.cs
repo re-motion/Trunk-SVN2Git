@@ -18,8 +18,9 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 
-namespace Remotion.Scripting.UnitTests
+namespace Remotion.UnitTests.Collections
 {
   [TestFixture]
   public class ReadOnlyDictionarySpecificTest
@@ -39,7 +40,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void GetEnumerator ()
     {
-      Assert.That (_readOnlyDictionarySpecific.GetEnumerator (), Is.EqualTo (_dictionary.GetEnumerator ()));
+      Assert.That (_readOnlyDictionarySpecific.GetEnumerator(), Is.EqualTo (_dictionary.GetEnumerator()));
     }
 
     [Test]
@@ -47,7 +48,7 @@ namespace Remotion.Scripting.UnitTests
     {
       var readOnlyDictionaryAsGenericIEnumerable = (IEnumerable<KeyValuePair<string, string>>) (_readOnlyDictionarySpecific);
       var dictionaryAsGenericIEnumerable = (IEnumerable<KeyValuePair<string, string>>) (_dictionary);
-      Assert.That (readOnlyDictionaryAsGenericIEnumerable.GetEnumerator (), Is.EqualTo (dictionaryAsGenericIEnumerable.GetEnumerator ()));
+      Assert.That (readOnlyDictionaryAsGenericIEnumerable.GetEnumerator(), Is.EqualTo (dictionaryAsGenericIEnumerable.GetEnumerator()));
     }
 
 
@@ -79,7 +80,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void TryGetValue ()
     {
-      AssertTryGetValue("a","Alfa",true);
+      AssertTryGetValue ("a", "Alfa", true);
       AssertTryGetValue ("b", "Bravo", true);
       AssertTryGetValue ("c", "Charlie", true);
 
@@ -87,7 +88,6 @@ namespace Remotion.Scripting.UnitTests
       AssertTryGetValue ("alfa", null, false);
       AssertTryGetValue ("Charli", null, false);
     }
-
 
 
     [Test]
@@ -112,43 +112,42 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (System.Collections.Generic.KeyNotFoundException), ExpectedMessage = "The given key was not present in the dictionary.")]
+    [ExpectedException (ExceptionType = typeof (KeyNotFoundException),
+        ExpectedMessage = "The given key was not present in the dictionary.")]
     public void Indexer_Get_Failure ()
     {
       var dummy = _readOnlyDictionarySpecific["non existing key"];
     }
 
-   
-    void AssertTryGetValue (string key, string expectedValue, bool expectedHasValue)
+
+    private void AssertTryGetValue (string key, string expectedValue, bool expectedHasValue)
     {
       string value;
-      bool hasValue =_readOnlyDictionarySpecific.TryGetValue (key, out value);
+      bool hasValue = _readOnlyDictionarySpecific.TryGetValue (key, out value);
       if (expectedHasValue)
       {
         Assert.That (hasValue, Is.True);
         Assert.That (value, Is.EqualTo (expectedValue));
       }
       else
-      {
         Assert.That (hasValue, Is.False);
-      }
     }
 
-    void AssertIndexer (string key, string expectedValue)
+    private void AssertIndexer (string key, string expectedValue)
     {
       Assert.That (_readOnlyDictionarySpecific[key], Is.EqualTo (expectedValue));
     }
 
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (System.NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
+    [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
     public void IDictionary_Add ()
     {
       _readOnlyDictionaryAsIDictionary.Add ("this", "fails");
     }
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (System.NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
+    [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
     public void IDictionary_Remove ()
     {
       _readOnlyDictionaryAsIDictionary.Remove ("this_fails");
@@ -163,7 +162,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    [ExpectedException (ExceptionType = typeof (System.NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
+    [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
     public void IDictionary_Indexer_Set_Fails ()
     {
       _readOnlyDictionaryAsIDictionary["this"] = "fails";
@@ -173,15 +172,13 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void IDictionary_Keys ()
     {
-      Assert.That (_readOnlyDictionaryAsIDictionary.Keys.ToArray(), Is.EqualTo (new [] {"a","b","c"}));
+      Assert.That (_readOnlyDictionaryAsIDictionary.Keys.ToArray(), Is.EqualTo (new[] { "a", "b", "c" }));
     }
 
     [Test]
     public void IDictionary_Values ()
     {
-      Assert.That (_readOnlyDictionaryAsIDictionary.Values.ToArray (), Is.EqualTo (new[] { "Alfa", "Bravo", "Charlie" }));
+      Assert.That (_readOnlyDictionaryAsIDictionary.Values.ToArray(), Is.EqualTo (new[] { "Alfa", "Bravo", "Charlie" }));
     }
   }
-
-
 }
