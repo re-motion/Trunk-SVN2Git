@@ -152,12 +152,12 @@ namespace Remotion.Web.Infrastructure
     HttpApplication ApplicationInstance { get; set; }
 
     /// <summary>
-    /// Gets the <see cref="T:System.Web.HttpApplicationState" /> object for the current HTTP request.
+    /// Gets the <see cref="IHttpApplicationState" /> object for the current HTTP request.
     /// </summary>
     /// <returns>
-    /// The <see cref="T:System.Web.HttpApplicationState" /> for the current HTTP request.
+    /// The <see cref="IHttpApplicationState" /> for the current HTTP request.
     /// </returns>
-    HttpApplicationState Application { get; }
+    IHttpApplicationState Application { get; }
 
     /// <summary>
     /// Gets or sets the <see cref="T:System.Web.IHttpHandler" /> object responsible for processing the HTTP request.

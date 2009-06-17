@@ -18,7 +18,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Web;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.Infrastructure
 {

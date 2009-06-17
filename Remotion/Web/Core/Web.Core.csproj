@@ -138,7 +138,9 @@
     <Compile Include="ExecutionEngine\WxeResourceUserControlStep.cs" />
     <Compile Include="ExecutionEngine\WxeTransactionMode.cs" />
     <Compile Include="Infrastructure\ClientScriptManagerWrapper.cs" />
+    <Compile Include="Infrastructure\HttpApplicationStateWrapper.cs" />
     <Compile Include="Infrastructure\IClientScriptManager.cs" />
+    <Compile Include="Infrastructure\IHttpApplicationState.cs" />
     <Compile Include="Infrastructure\PageWrapper.cs" />
     <Compile Include="ResourceTheme.cs" />
     <Compile Include="ResourceType.cs" />

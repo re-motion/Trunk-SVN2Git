@@ -30,21 +30,19 @@ namespace Remotion.Web.Infrastructure
   public class HttpContextWrapper : IHttpContext
   {
     private readonly HttpContext _httpContext;
-    private readonly IHttpServerUtility _server;
     private readonly IHttpRequest _request;
     private readonly IHttpResponse _response;
-    private readonly IHttpSessionState _session;
+    private IHttpServerUtility _server;
+    private IHttpSessionState _session;
+    private IHttpApplicationState _applicationState;
 
     public HttpContextWrapper (HttpContext httpContext)
     {
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
 
       _httpContext = httpContext;
-      _server = new HttpServerUtilityWrapper (httpContext.Server);
       _request = new HttpRequestWrapper (httpContext.Request);
       _response = new HttpResponseWrapper (httpContext.Response);
-      if (httpContext.Session != null)
-        _session = new HttpSessionStateWrapper (httpContext.Session);
     }
 
     /// <summary>
@@ -221,9 +219,14 @@ namespace Remotion.Web.Infrastructure
     /// <returns>
     /// The <see cref="T:System.Web.HttpApplicationState" /> for the current HTTP request.
     /// </returns>
-    public HttpApplicationState Application
+    public IHttpApplicationState Application
     {
-      get { return _httpContext.Application; }
+      get
+      {
+        if (_applicationState == null)
+          _applicationState = new HttpApplicationStateWrapper (_httpContext.Application);
+        return _applicationState;
+      }
     }
 
     /// <summary>
@@ -312,7 +315,12 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public IHttpSessionState Session
     {
-      get { return _session; }
+      get
+      {
+        if (_session == null && _httpContext.Session != null)
+          _session = new HttpSessionStateWrapper (_httpContext.Session);
+        return _session;
+      }
     }
 
     /// <summary>
@@ -323,7 +331,12 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public IHttpServerUtility Server
     {
-      get { return _server; }
+      get
+      {
+        if (_server == null)
+          _server = new HttpServerUtilityWrapper (_httpContext.Server);
+        return _server;
+      }
     }
 
     /// <summary>
