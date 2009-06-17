@@ -22,21 +22,21 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories
   /// <summary>
   /// Responsible for creating standard mode renderers for <see cref="WebTabStrip"/>.
   /// </summary>
-  public class WebTabStripRendererFactory : IWebTabStripRendererFactory
+  public class WebTabStripRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
   {
-    public IWebTabStripRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
+    public IWebTabStripRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTabRendererFactory tabRendererFactory)
     {
-      return new QuirksMode.WebTabStripRenderer (context, writer, control, this);
+      return new WebTabStripRenderer (context, writer, control, tabRendererFactory);
     }
 
     public IWebTabStripPreRenderer CreatePreRenderer (IHttpContext context, IWebTabStrip control)
     {
-      return new QuirksMode.WebTabStripPreRenderer (context, control);
+      return new WebTabStripPreRenderer (context, control);
     }
 
-    public IWebTabRenderer CreateTabRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
+    IWebTabRenderer IWebTabRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
     {
-      return new QuirksMode.WebTabRenderer (context, writer, control);
+      return new WebTabRenderer (context, writer, control);
     }
   }
 }

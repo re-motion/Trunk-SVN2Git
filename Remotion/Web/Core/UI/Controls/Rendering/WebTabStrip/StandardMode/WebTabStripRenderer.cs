@@ -28,10 +28,10 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
   {
     private readonly IWebTabRenderer _tabRenderer;
 
-    public WebTabStripRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTabStripRendererFactory factory)
+    public WebTabStripRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTabRendererFactory factory)
         : base (context, writer, control)
     {
-      _tabRenderer = factory.CreateTabRenderer (context, writer, control);
+      _tabRenderer = factory.CreateRenderer (context, writer, control);
     }
 
     public void Render ()
@@ -52,7 +52,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
       Writer.RenderEndTag();
     }
 
-    public IWebTabRenderer TabRenderer
+    public IWebTabRenderer WebTabRenderer
     {
       get { return _tabRenderer; }
     }
@@ -120,15 +120,15 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 
       bool isEnabled = !tab.IsSelected || Control.EnableSelectedTab;
       WebTabStyle style = tab.IsSelected ? Control.SelectedTabStyle : Control.TabStyle;
-      TabRenderer.RenderBeginTagForCommand (tab, isEnabled, style);
+      WebTabRenderer.RenderBeginTagForCommand (tab, isEnabled, style);
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabAnchorBody);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin anchor body span
 
-      TabRenderer.RenderContents (tab);
+      WebTabRenderer.RenderContents (tab);
 
       Writer.RenderEndTag(); // End anchor body span
-      TabRenderer.RenderEndTagForCommand();
+      WebTabRenderer.RenderEndTagForCommand (tab, isEnabled);
 
       Writer.RenderEndTag(); // End tab span
 

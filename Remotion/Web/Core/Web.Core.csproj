@@ -200,6 +200,10 @@
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\Factories\WebTabStripRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripRenderer.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
