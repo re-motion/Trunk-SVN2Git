@@ -20,18 +20,18 @@ using System.Collections.Generic;
 namespace Remotion.Scripting
 {
   [Serializable]
-  public class ReadOnlyDictionarySpecific<TKey, TValue> : IDictionary<TKey, TValue>
+  public class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
   {
-    private readonly Dictionary<TKey, TValue> _dictionary;
+    private readonly IDictionary<TKey, TValue> _dictionary;
 
-    public ReadOnlyDictionarySpecific (Dictionary<TKey, TValue> dictionary)
+    public ReadOnlyDictionary (IDictionary<TKey, TValue> dictionary)
     {
       _dictionary = dictionary;
     }
 
     IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator ()
     {
-      return ((IEnumerable<KeyValuePair<TKey, TValue>>) _dictionary).GetEnumerator ();
+      return _dictionary.GetEnumerator ();
     }
 
     public IEnumerator GetEnumerator ()
@@ -45,10 +45,6 @@ namespace Remotion.Scripting
       return _dictionary.ContainsKey (key);
     }
 
-    public bool ContainsValue (TValue value)
-    {
-      return _dictionary.ContainsValue (value);
-    }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
@@ -56,12 +52,7 @@ namespace Remotion.Scripting
     }
 
 
-
-    public IEqualityComparer<TKey> Comparer
-    {
-      get { return _dictionary.Comparer; }
-    }
-
+    
     void ICollection<KeyValuePair<TKey, TValue>>.Add (KeyValuePair<TKey, TValue> item)
     {
       throw new NotSupportedException ("Dictionary is read-only.");
@@ -74,12 +65,12 @@ namespace Remotion.Scripting
 
     bool ICollection<KeyValuePair<TKey, TValue>>.Contains (KeyValuePair<TKey, TValue> item)
     {
-      return ((ICollection<KeyValuePair<TKey, TValue>>)_dictionary).Contains (item);
+      return _dictionary.Contains (item);
     }
 
     void ICollection<KeyValuePair<TKey, TValue>>.CopyTo (KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
-      ((ICollection<KeyValuePair<TKey, TValue>>) _dictionary).CopyTo (array, arrayIndex);
+      _dictionary.CopyTo (array, arrayIndex);
     }
 
     bool ICollection<KeyValuePair<TKey, TValue>>.Remove (KeyValuePair<TKey, TValue> item)
@@ -101,6 +92,22 @@ namespace Remotion.Scripting
     public TValue this[TKey key]
     {
       get { return _dictionary[key]; }
+    }
+
+    public ICollection<TKey> Keys
+    {
+      get
+      {
+        throw new NotSupportedException ("Dictionary is read-only (IDictionary.Keys does not guarantee immutability).");
+      }
+    }
+
+    public ICollection<TValue> Values
+    {
+      get
+      {
+        throw new NotSupportedException ("Dictionary is read-only (IDictionary.Values does not guarantee immutability).");
+      }
     }
 
 
@@ -133,16 +140,5 @@ namespace Remotion.Scripting
       }
     }
 
-    // Note that System.Collections.Generic.Dictionary Keys is guranteed to be read-only, whereas IDictionary Keys makes no such gurantee.
-    ICollection<TKey> IDictionary<TKey, TValue>.Keys
-    {
-      get { return _dictionary.Keys; }
-    }
-
-    // Note that System.Collections.Generic.Dictionary Values is guranteed to be read-only, whereas IDictionary Values makes no such gurantee.
-    ICollection<TValue> IDictionary<TKey, TValue>.Values
-    {
-      get { return _dictionary.Values; }
-    }
   }
 }
