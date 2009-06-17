@@ -16,9 +16,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Remotion.Collections
 {
+  /// <summary>
+  /// Read-only wrapper around a <see cref="Dictionary{TKey,TValue}"/> which explicitely implements <see cref="IDictionary{TKey,TValue}"/>.
+  /// </summary>
+  /// <remarks>
+  /// Behaves analogue to <see cref="ReadOnlyCollection{T}"/>, i.e. not supported methods required by <see cref="IDictionary{TKey,TValue}"/> 
+  /// throw <see cref="NotSupportedException"/>|s.
+  /// <para/>
+  /// See also <see cref="ReadOnlyDictionary{TKey,TValue}"/>.
+  /// </remarks>
   [Serializable]
   public class ReadOnlyDictionarySpecific<TKey, TValue> : IDictionary<TKey, TValue>
   {
