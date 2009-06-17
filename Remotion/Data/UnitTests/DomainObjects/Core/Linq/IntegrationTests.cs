@@ -323,7 +323,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1219: Should work again after integrating WhereClause")]
     public void QueryWithSubQueryInWhere ()
     {
       var orders =
@@ -356,7 +355,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1219: Should work again after integrating WhereClause")]
     public void QueryWithSubQueryAndJoinInWhere ()
     {
       var orders =
@@ -369,7 +367,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1219: Should work again after integrating WhereClause")]
     public void QueryWithSubQueryAndJoinInWhere_WithOuterVariable ()
     {
       OrderItem myOrderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
@@ -418,7 +415,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1219: Should work again after integrating WhereClause")]
     public void QueryWithSubQuery ()
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
@@ -644,7 +640,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1219: Should work again after integrating WhereClause")]
     public void QueryWithCount_InSubquery ()
     {
       var number = (from o in QueryFactory.CreateLinqQuery<Order> ()
