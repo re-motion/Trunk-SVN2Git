@@ -142,7 +142,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       SelectClause selectClause = _parser.CreateSelectClause (whereClause, mainFromClause.Identifier);
       Assert.That (selectClause.PreviousClause, Is.SameAs (whereClause));
-      Assert.That (selectClause.Selector.Body, Is.SameAs(mainFromClause.Identifier));
+      Assert.That (selectClause.LegacySelector.Body, Is.SameAs(mainFromClause.Identifier));
+      Assert.That (selectClause.Selector, Is.SameAs (mainFromClause.Identifier));
     }
 
     [Test]
@@ -172,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (binaryExpression.Right, Is.SameAs (_queriedObjectExpression));
 
       SelectClause selectClause = (SelectClause) queryModel.SelectOrGroupClause;
-      Assert.That (selectClause.Selector.Body, Is.EqualTo(fromClause.Identifier));
+      Assert.That (selectClause.LegacySelector.Body, Is.EqualTo(fromClause.Identifier));
     }
 
     [Test]
