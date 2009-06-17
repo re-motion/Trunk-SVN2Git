@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("foreignKeyProperty", foreignKeyProperty);
       ArgumentUtility.CheckNotNull ("queriedObject", queriedObject);
       var comparison = CreateWhereComparison(fromClause.Identifier, foreignKeyProperty, queriedObject);
-      return new WhereClause (fromClause, Expression.Lambda (comparison), comparison);
+      return new WhereClause (fromClause, comparison);
     }
 
     public BinaryExpression CreateWhereComparison (ParameterExpression fromIdentifier, PropertyInfo foreignKeyProperty, Expression queriedObject)
