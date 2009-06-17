@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
@@ -24,25 +25,27 @@ namespace Remotion.Scripting.UnitTests
   public class ReadOnlyDictionaryTest
   {
     private Dictionary<string, string> _dictionary;
-    private ReadOnlyDictionary<string, string> _readOnlyDictionary;
+    private ReadOnlyDictionarySpecific<string, string> _readOnlyDictionarySpecific;
+    private IDictionary<string, string> _readOnlyDictionaryAsIDictionary;
 
     [SetUp]
     public void SetUp ()
     {
       _dictionary = new Dictionary<string, string> { { "a", "Alfa" }, { "b", "Bravo" }, { "c", "Charlie" } };
-      _readOnlyDictionary = new ReadOnlyDictionary<string, string> (_dictionary);
+      _readOnlyDictionarySpecific = new ReadOnlyDictionarySpecific<string, string> (_dictionary);
+      _readOnlyDictionaryAsIDictionary = _readOnlyDictionarySpecific;
     }
 
     [Test]
     public void GetEnumerator ()
     {
-      Assert.That (_readOnlyDictionary.GetEnumerator (), Is.EqualTo (_dictionary.GetEnumerator ()));
+      Assert.That (_readOnlyDictionarySpecific.GetEnumerator (), Is.EqualTo (_dictionary.GetEnumerator ()));
     }
 
     [Test]
     public void GetEnumerator_Generic ()
     {
-      var readOnlyDictionaryAsGenericIEnumerable = (IEnumerable<KeyValuePair<string, string>>) (_readOnlyDictionary);
+      var readOnlyDictionaryAsGenericIEnumerable = (IEnumerable<KeyValuePair<string, string>>) (_readOnlyDictionarySpecific);
       var dictionaryAsGenericIEnumerable = (IEnumerable<KeyValuePair<string, string>>) (_dictionary);
       Assert.That (readOnlyDictionaryAsGenericIEnumerable.GetEnumerator (), Is.EqualTo (dictionaryAsGenericIEnumerable.GetEnumerator ()));
     }
@@ -51,25 +54,25 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void ContainsKey ()
     {
-      Assert.That (_readOnlyDictionary.ContainsKey ("a"), Is.True);
-      Assert.That (_readOnlyDictionary.ContainsKey ("b"), Is.True);
-      Assert.That (_readOnlyDictionary.ContainsKey ("c"), Is.True);
+      Assert.That (_readOnlyDictionarySpecific.ContainsKey ("a"), Is.True);
+      Assert.That (_readOnlyDictionarySpecific.ContainsKey ("b"), Is.True);
+      Assert.That (_readOnlyDictionarySpecific.ContainsKey ("c"), Is.True);
 
-      Assert.That (_readOnlyDictionary.ContainsKey ("c0"), Is.False);
-      Assert.That (_readOnlyDictionary.ContainsKey (""), Is.False);
-      Assert.That (_readOnlyDictionary.ContainsKey ("x"), Is.False);
+      Assert.That (_readOnlyDictionarySpecific.ContainsKey ("c0"), Is.False);
+      Assert.That (_readOnlyDictionarySpecific.ContainsKey (""), Is.False);
+      Assert.That (_readOnlyDictionarySpecific.ContainsKey ("x"), Is.False);
     }
 
     [Test]
     public void ContainsValue ()
     {
-      Assert.That (_readOnlyDictionary.ContainsValue ("Alfa"), Is.True);
-      Assert.That (_readOnlyDictionary.ContainsValue ("Bravo"), Is.True);
-      Assert.That (_readOnlyDictionary.ContainsValue ("Charlie"), Is.True);
+      Assert.That (_readOnlyDictionarySpecific.ContainsValue ("Alfa"), Is.True);
+      Assert.That (_readOnlyDictionarySpecific.ContainsValue ("Bravo"), Is.True);
+      Assert.That (_readOnlyDictionarySpecific.ContainsValue ("Charlie"), Is.True);
 
-      Assert.That (_readOnlyDictionary.ContainsValue ("alfa"), Is.False);
-      Assert.That (_readOnlyDictionary.ContainsValue (""), Is.False);
-      Assert.That (_readOnlyDictionary.ContainsValue ("Charli"), Is.False);
+      Assert.That (_readOnlyDictionarySpecific.ContainsValue ("alfa"), Is.False);
+      Assert.That (_readOnlyDictionarySpecific.ContainsValue (""), Is.False);
+      Assert.That (_readOnlyDictionarySpecific.ContainsValue ("Charli"), Is.False);
     }
 
 
@@ -90,18 +93,18 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Comparer ()
     {
-      Assert.That (_readOnlyDictionary.Comparer, Is.EqualTo (_dictionary.Comparer));
+      Assert.That (_readOnlyDictionarySpecific.Comparer, Is.EqualTo (_dictionary.Comparer));
     }
 
     [Test]
     public void Count ()
     {
-      Assert.That (_readOnlyDictionary.Count, Is.EqualTo (_dictionary.Count));
+      Assert.That (_readOnlyDictionarySpecific.Count, Is.EqualTo (_dictionary.Count));
     }
 
 
     [Test]
-    public void Indexer ()
+    public void Indexer_Get ()
     {
       AssertIndexer ("a", "Alfa");
       AssertIndexer ("b", "Bravo");
@@ -110,16 +113,16 @@ namespace Remotion.Scripting.UnitTests
 
     [Test]
     [ExpectedException (ExceptionType = typeof (System.Collections.Generic.KeyNotFoundException), ExpectedMessage = "The given key was not present in the dictionary.")]
-    public void IndexerFailure ()
+    public void Indexer_Get_Failure ()
     {
-      var dummy = _readOnlyDictionary["non existing key"];
+      var dummy = _readOnlyDictionarySpecific["non existing key"];
     }
 
    
     void AssertTryGetValue (string key, string expectedValue, bool expectedHasValue)
     {
       string value;
-      bool hasValue =_readOnlyDictionary.TryGetValue (key, out value);
+      bool hasValue =_readOnlyDictionarySpecific.TryGetValue (key, out value);
       if (expectedHasValue)
       {
         Assert.That (hasValue, Is.True);
@@ -133,9 +136,51 @@ namespace Remotion.Scripting.UnitTests
 
     void AssertIndexer (string key, string expectedValue)
     {
-      Assert.That (_readOnlyDictionary[key], Is.EqualTo (expectedValue));
+      Assert.That (_readOnlyDictionarySpecific[key], Is.EqualTo (expectedValue));
     }
 
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (System.NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
+    public void IDictionary_Add ()
+    {
+      _readOnlyDictionaryAsIDictionary.Add ("this", "fails");
+    }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (System.NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
+    public void IDictionary_Remove ()
+    {
+      _readOnlyDictionaryAsIDictionary.Remove ("this_fails");
+    }
+
+
+    [Test]
+    public void IDictionary_Indexer_Get ()
+    {
+      Assert.That (_readOnlyDictionaryAsIDictionary["c"], Is.EqualTo ("Charlie"));
+    }
+
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (System.NotSupportedException), ExpectedMessage = "Dictionary is read-only.")]
+    public void IDictionary_Indexer_Set_Fails ()
+    {
+      _readOnlyDictionaryAsIDictionary["this"] = "fails";
+    }
+
+
+    [Test]
+    public void IDictionary_Keys ()
+    {
+      Assert.That (_readOnlyDictionaryAsIDictionary.Keys.ToArray(), Is.EqualTo (new [] {"a","b","c"}));
+    }
+
+    [Test]
+    public void IDictionary_Values ()
+    {
+      Assert.That (_readOnlyDictionaryAsIDictionary.Values.ToArray (), Is.EqualTo (new[] { "Alfa", "Bravo", "Charlie" }));
+    }
   }
 
 

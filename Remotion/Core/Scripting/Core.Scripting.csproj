@@ -59,7 +59,7 @@
     <Compile Include="ForwardingProxyBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <Compile Include="ReadOnlyDictionary.cs" />
+    <Compile Include="ReadOnlyDictionarySpecific.cs" />
     <Compile Include="ScriptingHost.cs" />
   </ItemGroup>
   <ItemGroup>
