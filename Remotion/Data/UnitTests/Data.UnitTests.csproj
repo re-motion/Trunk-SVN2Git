@@ -522,6 +522,7 @@
     <Compile Include="Linq\Clauses\ExecutionStrategies\CollectionExecutionStrategyTest.cs" />
     <Compile Include="Linq\Clauses\ExecutionStrategies\ScalarExecutionStrategyTest.cs" />
     <Compile Include="Linq\Clauses\ExecutionStrategies\SingleExecutionStrategyTest.cs" />
+    <Compile Include="Linq\Clauses\ExpressionTreeVisitors\CloneExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Clauses\ResultModifications\SumResultModificationTest.cs" />
     <Compile Include="Linq\Clauses\ResultModifications\MaxResultModificationTest.cs" />
     <Compile Include="Linq\Clauses\ResultModifications\MinResultModificationTest.cs" />
