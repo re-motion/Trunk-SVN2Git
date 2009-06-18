@@ -179,6 +179,8 @@
     <Compile Include="UI\Controls\ControlReplacing\StateLoadingStrategyTest.cs" />
     <Compile Include="UI\Controls\ControlReplacing\TestBase.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonRendererTest.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenu\DropDownMenuMock.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\HtmlHelper.cs" />
     <Compile Include="UI\Controls\Rendering\RendererTestBase.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRendererTest.cs" />

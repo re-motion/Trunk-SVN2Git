@@ -1,0 +1,412 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Xml;
+using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.UI.Controls;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
+using Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip;
+using Remotion.Web.Utilities;
+using Rhino.Mocks;
+
+namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
+{
+  [TestFixture]
+  public class DropDownMenuRendererTest : RendererTestBase
+  {
+    private DropDownMenuMock _control;
+    private ControlInvoker _invoker;
+    private readonly List<string> _itemInfos = new List<string>();
+
+    [SetUp]
+    public void SetUp ()
+    {
+      Initialize();
+      _control = new DropDownMenuMock();
+      _control.ID = "DropDownMenu1";
+      _control.EnableGrouping = false;
+
+      Page page = new Page();
+      page.Controls.Add (_control);
+
+      _invoker = new ControlInvoker (_control);
+    }
+
+    [Test]
+    public void RenderEmptyMenuWithoutTitle ()
+    {
+      SetUpScriptExpectations();
+      XmlNode outerDiv = GetAssertedOuterDiv();
+      XmlNode clickDiv = GetAssertedClickDiv(outerDiv);
+      AssertHeadDiv (clickDiv, false, false, false);
+    }
+
+    [Test]
+    public void RenderPopulatedMenuWithoutTitle ()
+    {
+      PopulateMenu ();
+
+      SetUpScriptExpectations ();
+      XmlNode outerDiv = GetAssertedOuterDiv ();
+      XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
+      AssertHeadDiv (clickDiv, false, false, false);
+    }
+
+    [Test]
+    public void RenderDisabledPopulatedMenuWithoutTitle ()
+    {
+      _control.Enabled = false;
+
+      PopulateMenu ();
+
+      SetUpScriptExpectations ();
+      XmlNode outerDiv = GetAssertedOuterDiv ();
+      XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
+      AssertHeadDiv (clickDiv, false, false, false);
+    }
+
+    [Test]
+    public void RenderEmptyMenuWithTitle ()
+    {
+      AddTitle(false);
+      SetUpScriptExpectations ();
+      XmlNode outerDiv = GetAssertedOuterDiv ();
+      XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
+      AssertHeadDiv (clickDiv, true, false, false);
+    }
+
+    [Test]
+    public void RenderEmptyMenuWithTitleAndIcon ()
+    {
+      AddTitle (true);
+      SetUpScriptExpectations ();
+      XmlNode outerDiv = GetAssertedOuterDiv ();
+      XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
+      AssertHeadDiv (clickDiv, true, true, false);
+    }
+
+    [Test]
+    public void RenderPopulatedMenuWithTitle ()
+    {
+      AddTitle (false);
+      PopulateMenu ();
+
+      SetUpScriptExpectations ();
+      XmlNode outerDiv = GetAssertedOuterDiv ();
+      XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
+      AssertHeadDiv (clickDiv, true, false, false);
+    }
+
+    [Test]
+    public void RenderPopulatedMenuWithTitleAndEmptyRenderMethod ()
+    {
+      AddTitle (false);
+      PopulateMenu ();
+      _control.SetRenderHeadTitleMethodDelegate ((c, w) => { });
+
+      SetUpScriptExpectations ();
+      XmlNode outerDiv = GetAssertedOuterDiv ();
+      XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
+      AssertHeadDiv (clickDiv, true, false, true);
+    }
+
+    [Test]
+    public void RenderDisabledPopulatedMenuWithTitle ()
+    {
+      AddTitle(false);
+      _control.Enabled = false;
+
+      PopulateMenu();
+
+      SetUpScriptExpectations ();
+      XmlNode outerDiv = GetAssertedOuterDiv ();
+      XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
+      AssertHeadDiv (clickDiv, true, false, false);
+    }
+
+    [Test]
+    public void RenderPopulatedGroupedMenuWithTitle ()
+    {
+      AddTitle (false);
+      PopulateMenu ();
+      _control.EnableGrouping = true;
+
+      SetUpScriptExpectations ();
+      XmlNode outerDiv = GetAssertedOuterDiv ();
+      XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
+      AssertHeadDiv (clickDiv, true, false, false);
+    }
+
+    [Test]
+    public void RenderDisabledPopulatedGroupedMenuWithTitle ()
+    {
+      AddTitle (false);
+      _control.Enabled = false;
+
+      PopulateMenu ();
+      _control.EnableGrouping = true;
+
+      SetUpScriptExpectations ();
+      XmlNode outerDiv = GetAssertedOuterDiv ();
+      XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
+      AssertHeadDiv (clickDiv, true, false, false);
+    }
+
+    private void PopulateMenu ()
+    {
+      AddItem (0, "Category1", CommandType.Event, false, true);
+      AddItem (1, "Category1", CommandType.Href, false, true);
+      AddItem (2, "Category2", CommandType.WxeFunction, false, true);
+      AddItem (3, "Category2", CommandType.WxeFunction, true, true);
+      AddItem (4, "Category2", CommandType.WxeFunction, false, false);
+    }
+    
+    private void AddTitle (bool withIcon)
+    {
+      _control.TitleText = "MenuTitle";
+      if( withIcon )
+        _control.TitleIcon = new IconInfo ("~/Images/DropDownMenuTitle.gif", "Title", "Title", Unit.Pixel (16), Unit.Pixel (16));
+    }
+
+    private void AddItem (int index, string category, CommandType commandType, bool isDisabled, bool isVisible)
+    {
+      string id = "item" + index;
+      string text = "Item" + index;
+      const string height = "16";
+      const string width = "16";
+      const string iconUrl = "~/Images/Icon.gif";
+      const string disabledIconUrl = "~/Images/DisabledIcon.gif";
+      const RequiredSelection requiredSelection = RequiredSelection.Any;
+
+      Command command = new Command (commandType);
+      if (commandType == CommandType.Href)
+      {
+        command.HrefCommand.Href = "~/Target.aspx?index={0}&itemID={1}";
+        command.HrefCommand.Target = "_blank";
+      }
+
+      _control.MenuItems.Add (
+          new WebMenuItem (
+              id,
+              category,
+              text,
+              new IconInfo (iconUrl, text, text, width, height),
+              new IconInfo (disabledIconUrl, text, text, width, height),
+              WebMenuItemStyle.IconAndText,
+              requiredSelection,
+              isDisabled,
+              command) { IsVisible = isVisible });
+
+      string link;
+      if (commandType == CommandType.Href)
+        link = string.Format ("~/Target.aspx?index={0}&itemID={1}", null, null);
+      else
+        link = ScriptUtility.EscapeClientScript (_control.Page.ClientScript.GetPostBackClientHyperlink (_control, index.ToString()));
+
+      if (isVisible)
+      {
+        _itemInfos.Add (
+            string.Format (
+                "\t\tnew DropDownMenu_ItemInfo ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6}, '{7}', {8})",
+                index,
+                category,
+                text,
+                iconUrl,
+                disabledIconUrl,
+                (int) requiredSelection,
+                isDisabled ? "true" : "false",
+                link,
+                (commandType == CommandType.Href) ? "_blank" : "null"));
+      }
+    }
+
+    private void SetUpScriptExpectations ()
+    {
+      Type type = typeof (Web.UI.Controls.DropDownMenu);
+      string initializationScriptKey = type.FullName + "_Startup";
+      string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (_control, HttpContext, type, ResourceType.Html, "DropDownMenu.css");
+      string initializationScript = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
+
+      string menuInfoKey = _control.UniqueID;
+      string menuInfoScript = "DropDownMenu_AddMenuInfo (" + Environment.NewLine +
+                        "\t" + "new DropDownMenu_MenuInfo ('{0}', new Array (" + Environment.NewLine +
+                        "{1} ) ) );";
+      StringBuilder menuItems = new StringBuilder();
+      foreach (string menuItem in _itemInfos)
+      {
+        menuItems.Append (menuItem);
+        bool isLast = _itemInfos.IndexOf (menuItem) == _itemInfos.Count - 1;
+        if (!isLast)
+          menuItems.AppendLine (",");
+      }
+      menuInfoScript = string.Format (menuInfoScript, _control.ClientID, menuItems);
+
+      IClientScriptManager scriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
+      scriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (type, initializationScriptKey)).Return (false);
+      scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, initializationScriptKey, initializationScript));
+      if(_control.Enabled)
+        scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, menuInfoKey, menuInfoScript));
+    }
+
+    private XmlNode GetAssertedOuterDiv ()
+    {
+      _invoker.PreRenderRecursive();
+      _control.RenderControl (Html.Writer);
+
+      var document = Html.GetResultDocument();
+      document.AssertChildElementCount (1);
+
+      var outerDiv = document.GetAssertedChildElement ("div", 0);
+      outerDiv.AssertStyleAttribute ("display", "inline-block");
+      outerDiv.AssertChildElementCount (1);
+      return outerDiv;
+    }
+
+    private XmlNode GetAssertedClickDiv (XmlNode outerDiv)
+    {
+      var clickDiv = outerDiv.GetAssertedChildElement ("div", 0);
+      if (_control.Enabled)
+        clickDiv.AssertAttributeValueEquals ("onclick", string.Format ("DropDownMenu_OnClick (this, '{0}', null, null);", _control.ClientID));
+      else
+        clickDiv.AssertNoAttribute ("onclick");
+
+      clickDiv.AssertAttributeValueEquals ("id", _control.ClientID + "_MenuDiv");
+      clickDiv.AssertStyleAttribute ("position", "relative");
+      clickDiv.AssertChildElementCount (1);
+      return clickDiv;
+    }
+
+    private void AssertHeadDiv (XmlNode parent, bool hasTitle, bool withIcon, bool withEmptyRenderMethod)
+    {
+      var headDiv = parent.GetAssertedChildElement ("div", 0);
+      headDiv.AssertAttributeValueEquals ("id", _control.ClientID + "_HeadDiv");
+      headDiv.AssertAttributeValueEquals ("class", "dropDownMenuHead");
+      headDiv.AssertAttributeValueEquals ("OnMouseOver", "DropDownMenu_OnHeadMouseOver (this)");
+      headDiv.AssertAttributeValueEquals ("OnMouseOut", "DropDownMenu_OnHeadMouseOut (this)");
+      headDiv.AssertStyleAttribute ("position", "relative");
+      headDiv.AssertChildElementCount (1);
+
+      AssertHeadTable(headDiv, hasTitle, withIcon, withEmptyRenderMethod);
+    }
+
+    private void AssertHeadTable (XmlNode parent, bool hasTitle, bool withIcon, bool withEmptyRenderMethod)
+    {
+      var table = parent.GetAssertedChildElement ("table", 0);
+      table.AssertAttributeValueEquals ("cellspacing", "0");
+      table.AssertAttributeValueEquals ("cellpadding", "0");
+      table.AssertStyleAttribute ("display", "inline");
+      table.AssertChildElementCount (1);
+
+      var tr = table.GetAssertedChildElement ("tr", 0);
+      if (!hasTitle)
+      {
+        tr.AssertChildElementCount (1);
+        AssertHeadButtonCell (tr, 0);
+      }
+      else if (!withEmptyRenderMethod)
+      {
+        tr.AssertChildElementCount (3);
+        AssertHeadTitleCell (tr, withIcon);
+        AssertHeadSeparatorCell (tr, 1);
+        AssertHeadButtonCell (tr, 2);
+      }
+      else
+      {
+        tr.AssertChildElementCount (2);
+        AssertHeadSeparatorCell (tr, 0);
+        AssertHeadButtonCell (tr, 1);
+      }
+    }
+
+    private void AssertHeadSeparatorCell (XmlNode parent, int index)
+    {
+      var td = parent.GetAssertedChildElement ("td", index);
+      td.AssertStyleAttribute ("width", "0%");
+      td.AssertStyleAttribute ("padding-right", "0.3em");
+      td.AssertChildElementCount (0);
+    }
+
+    private void AssertHeadTitleCell (XmlNode parent, bool withIcon)
+    {
+      var td = parent.GetAssertedChildElement ("td", 0);
+      td.AssertAttributeValueEquals ("class", "dropDownMenuHeadTitle");
+      td.AssertStyleAttribute ("width", "1%");
+      td.AssertChildElementCount (1);
+
+      XmlNode title;
+      if (_control.Enabled)
+        title = td.GetAssertedChildElement ("a", 0);
+      else
+        title = td.GetAssertedChildElement ("span", 0);
+
+      if (!withIcon)
+      {
+        title.AssertTextNode ("MenuTitle", 0);
+        title.AssertChildElementCount (0);
+      }
+      else
+      {
+        title.AssertTextNode ("MenuTitle", 1);
+        title.AssertChildElementCount (1);
+
+        var img = title.GetAssertedChildElement ("img", 0);
+        img.AssertAttributeValueEquals ("src", _control.TitleIcon.Url);
+        img.AssertAttributeValueEquals ("width", _control.TitleIcon.Width.ToString());
+        img.AssertAttributeValueEquals ("height", _control.TitleIcon.Height.ToString ());
+        img.AssertStyleAttribute ("vertical-align", "middle");
+        img.AssertStyleAttribute ("border-style", "none");
+        img.AssertStyleAttribute ("margin-right", "0.3em");
+      }
+    }
+
+
+    private void AssertHeadButtonCell (XmlNode parent, int index)
+    {
+      var td = parent.GetAssertedChildElement ("td", index);
+      td.AssertAttributeValueEquals ("class", "dropDownMenuHeadButton");
+      td.AssertStyleAttribute ("width", "0%");
+      td.AssertStyleAttribute ("text-align", "center");
+      td.AssertChildElementCount (1);
+
+      AssertHeadLink(td);
+    }
+
+    private void AssertHeadLink (XmlNode parent)
+    {
+      var link = parent.GetAssertedChildElement ("a", 0);
+      link.AssertAttributeValueEquals ("href", "#");
+      link.AssertStyleAttribute ("width", "1em");
+      link.AssertChildElementCount (1);
+
+      AssertImage(link);
+    }
+
+    private void AssertImage (XmlNode parent)
+    {
+      var img = parent.GetAssertedChildElement ("img", 0);
+      img.AssertAttributeValueEquals ("src", "/res/Remotion.Web/Image/DropDownMenuArrow.gif");
+      img.AssertAttributeValueEquals ("alt", "");
+      img.AssertStyleAttribute ("vertical-align", "middle");
+      img.AssertStyleAttribute ("border-style", "none");
+      img.AssertChildElementCount (0);
+    }
+  }
+}
