@@ -21,7 +21,9 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode;
 using Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.Utilities;
@@ -32,24 +34,44 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
   [TestFixture]
   public class DropDownMenuRendererTest : RendererTestBase
   {
-    private DropDownMenuMock _control;
+    private IDropDownMenu _control;
     private readonly List<string> _itemInfos = new List<string>();
 
     [SetUp]
     public void SetUp ()
     {
       Initialize();
-      _control = new DropDownMenuMock();
+      _control = MockRepository.GenerateStub<IDropDownMenu>();
       _control.ID = "DropDownMenu1";
-      _control.EnableGrouping = false;
+      _control.Stub (stub => stub.UniqueID).Return ("DropDownMenu1");
+      _control.Stub (stub => stub.ClientID).Return ("DropDownMenu1");
+      _control.Stub (stub => stub.MenuItems).Return (new WebMenuItemCollection (_control));
+      _control.Stub (stub => stub.GetOpenDropDownMenuEventReference(null)).IgnoreArguments().Return ("OpenDropDownMenuEventReference");
 
-      Page page = new Page();
-      page.Controls.Add (_control);
+      IPage pageStub = MockRepository.GenerateStub<IPage>();
+      _control.Stub (stub => stub.Page).Return (pageStub);
+
+      StateBag stateBag = new StateBag ();
+      _control.Stub (stub => stub.Attributes).Return (new AttributeCollection (stateBag));
+      _control.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
+
+      IClientScriptManager scriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
+      _control.Page.Stub (stub => stub.ClientScript).Return (scriptManagerMock);
+      
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      _itemInfos.Clear ();
+      _control.Page.ClientScript.VerifyAllExpectations();
     }
 
     [Test]
     public void RenderEmptyMenuWithoutTitle ()
     {
+      _control.Stub (stub => stub.Enabled).Return (true);
+
       SetUpScriptExpectations();
       XmlNode outerDiv = GetAssertedOuterDiv();
       XmlNode clickDiv = GetAssertedClickDiv(outerDiv);
@@ -59,8 +81,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     [Test]
     public void RenderPopulatedMenuWithoutTitle ()
     {
-      PopulateMenu ();
+      _control.Stub (stub => stub.Enabled).Return (true);
 
+      PopulateMenu ();
+      
       SetUpScriptExpectations ();
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
@@ -70,8 +94,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     [Test]
     public void RenderDisabledPopulatedMenuWithoutTitle ()
     {
-      _control.Enabled = false;
-
+      _control.Stub (stub => stub.Enabled).Return (true);
       PopulateMenu ();
 
       SetUpScriptExpectations ();
@@ -84,6 +107,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     public void RenderEmptyMenuWithTitle ()
     {
       AddTitle(false);
+      _control.Stub (stub => stub.Enabled).Return (true);
+      
       SetUpScriptExpectations ();
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
@@ -94,6 +119,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     public void RenderEmptyMenuWithTitleAndIcon ()
     {
       AddTitle (true);
+      _control.Stub (stub => stub.Enabled).Return (true);
+
       SetUpScriptExpectations ();
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
@@ -104,6 +131,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     public void RenderPopulatedMenuWithTitle ()
     {
       AddTitle (false);
+      _control.Stub (stub => stub.Enabled).Return (true);
+
       PopulateMenu ();
 
       SetUpScriptExpectations ();
@@ -113,11 +142,15 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     }
 
     [Test]
+    [ExpectedException(typeof(InvalidCastException))] // fails because RenderMethod only accepts System.Web.UI.Control as argument
     public void RenderPopulatedMenuWithTitleAndEmptyRenderMethod ()
     {
       AddTitle (false);
+      _control.Stub (stub => stub.Enabled).Return (true);
+
       PopulateMenu ();
-      _control.SetRenderHeadTitleMethodDelegate ((c, w) => { });
+      _control.Stub (stub => stub.Enabled).Return (true);
+      _control.Stub (stub => stub.RenderHeadTitleMethod).Return ((c, w) => { });
 
       SetUpScriptExpectations ();
       XmlNode outerDiv = GetAssertedOuterDiv ();
@@ -129,7 +162,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     public void RenderDisabledPopulatedMenuWithTitle ()
     {
       AddTitle(false);
-      _control.Enabled = false;
 
       PopulateMenu();
 
@@ -143,8 +175,11 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     public void RenderPopulatedGroupedMenuWithTitle ()
     {
       AddTitle (false);
+      _control.Stub (stub => stub.Enabled).Return (true);
+
       PopulateMenu ();
-      _control.EnableGrouping = true;
+      _control.Stub (stub => stub.Enabled).Return (true);
+      _control.Stub (stub => stub.EnableGrouping).Return (true);
 
       SetUpScriptExpectations ();
       XmlNode outerDiv = GetAssertedOuterDiv ();
@@ -155,11 +190,11 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     [Test]
     public void RenderDisabledPopulatedGroupedMenuWithTitle ()
     {
+      _control.Stub (stub => stub.EnableGrouping).Return (true);
+
       AddTitle (false);
-      _control.Enabled = false;
 
       PopulateMenu ();
-      _control.EnableGrouping = true;
 
       SetUpScriptExpectations ();
       XmlNode outerDiv = GetAssertedOuterDiv ();
@@ -178,9 +213,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     
     private void AddTitle (bool withIcon)
     {
-      _control.TitleText = "MenuTitle";
-      if( withIcon )
-        _control.TitleIcon = new IconInfo ("~/Images/DropDownMenuTitle.gif", "Title", "Title", Unit.Pixel (16), Unit.Pixel (16));
+      _control.Stub (stub => stub.TitleText).Return ("MenuTitle");
+      if (withIcon)
+        _control.Stub (stub => stub.TitleIcon).Return (
+            new IconInfo ("~/Images/DropDownMenuTitle.gif", "Title", "Title", Unit.Pixel (16), Unit.Pixel (16)));
     }
 
     private void AddItem (int index, string category, CommandType commandType, bool isDisabled, bool isVisible)
@@ -216,7 +252,15 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       if (commandType == CommandType.Href)
         link = string.Format ("~/Target.aspx?index={0}&itemID={1}", null, null);
       else
-        link = ScriptUtility.EscapeClientScript (_control.Page.ClientScript.GetPostBackClientHyperlink (_control, index.ToString()));
+      {
+        if (isVisible && _control.Enabled)
+        {
+          _control.Page.ClientScript.Expect (
+              mock => mock.GetPostBackClientHyperlink (Arg.Is<IControl> (_control), Arg.Text.Like (index.ToString())))
+              .Return ("PostBackHyperLink:" + index);
+        }
+        link = "PostBackHyperLink:" + index;
+      }
 
       if (isVisible)
       {
@@ -231,13 +275,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
                 (int) requiredSelection,
                 isDisabled ? "true" : "false",
                 link,
-                (commandType == CommandType.Href) ? "_blank" : "null"));
+                (commandType == CommandType.Href) ? "'_blank'" : "null"));
       }
     }
 
     private void SetUpScriptExpectations ()
     {
-      Type type = typeof (Web.UI.Controls.DropDownMenu);
+      Type type = typeof (IDropDownMenu);
       string initializationScriptKey = type.FullName + "_Startup";
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (_control, HttpContext, type, ResourceType.Html, "DropDownMenu.css");
       string initializationScript = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
@@ -256,11 +300,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       }
       menuInfoScript = string.Format (menuInfoScript, _control.ClientID, menuItems);
 
-      IClientScriptManager scriptManagerMock = MockRepository.GenerateMock<IClientScriptManager> ();
+      var scriptManagerMock = _control.Page.ClientScript;
       scriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (type, initializationScriptKey)).Return (false);
       scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, initializationScriptKey, initializationScript));
       if(_control.Enabled)
         scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, menuInfoKey, menuInfoScript));
+      _control.Page.ClientScript.Replay ();
     }
 
     private XmlNode GetAssertedOuterDiv ()
@@ -283,7 +328,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     {
       var clickDiv = outerDiv.GetAssertedChildElement ("div", 0);
       if (_control.Enabled)
-        clickDiv.AssertAttributeValueEquals ("onclick", string.Format ("DropDownMenu_OnClick (this, '{0}', null, null);", _control.ClientID));
+        clickDiv.AssertAttributeValueEquals ("onclick", "OpenDropDownMenuEventReference");
       else
         clickDiv.AssertNoAttribute ("onclick");
 

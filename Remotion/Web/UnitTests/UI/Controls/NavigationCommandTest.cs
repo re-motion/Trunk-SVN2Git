@@ -96,6 +96,7 @@ public class NavigationCommandTest
   { 
     WebConfigurationMock.Current = null;
     Remotion.Web.ExecutionEngine.UrlMapping.UrlMappingConfiguration.SetCurrent (null);
+    HttpContextHelper.SetCurrent (null);
   }
 
   [Test]

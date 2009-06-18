@@ -59,7 +59,7 @@ namespace Remotion.Web.UnitTests.UI.Controls
     {
       TearDownPage ();
       TearDownContext ();
-      WcagHelper.SetInstance (new WcagHelperMock ());
+      WcagHelper.SetInstance (null);
     }
 
     protected virtual void TearDownContext ()

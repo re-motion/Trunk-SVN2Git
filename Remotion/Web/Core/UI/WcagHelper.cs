@@ -25,24 +25,20 @@ namespace Remotion.Web.UI
 
 public class WcagHelper
 {
-  private static ILog s_log = LogManager.GetLogger (typeof (WcagHelper));
-  private static WcagHelper s_instance = new WcagHelper();
+  private static readonly ILog s_log = LogManager.GetLogger (typeof (WcagHelper));
+  private static readonly DoubleCheckedLockingContainer<WcagHelper> s_instance = new DoubleCheckedLockingContainer<WcagHelper>(()=>new WcagHelper());
 
   public static WcagHelper Instance
   {
-    get { return s_instance; }
+    get { return s_instance.Value; }
   }
 
   public static void SetInstance (WcagHelper instance)
   {
-    ArgumentUtility.CheckNotNull ("instance", instance);
-    lock (typeof (WcagHelper))
-    {
-      s_instance = instance;
-    }
+    s_instance.Value = instance;
   }
 
-	protected WcagHelper()
+  protected WcagHelper()
 	{
 	}
 
