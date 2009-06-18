@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
+using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
+using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Rhino.Mocks;
 
@@ -37,6 +39,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering
       var stubTabStripRendererFactory = MockRepository.GenerateStub<IWebTabStripRendererFactory>();
       stubTabStripRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null, stubTabRendererFactory)).IgnoreArguments().Return (tabStripRendererStub);
       _instances.Add (typeof (IWebTabStripRendererFactory), stubTabStripRendererFactory);
+
+      _instances.Add (typeof (IDropDownMenuRendererFactory), new DropDownRendererFactory());
     }
 
     public void SetFactory<T> (T factory)

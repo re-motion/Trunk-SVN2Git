@@ -20,9 +20,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode;
 using Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
@@ -33,7 +33,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
   public class DropDownMenuRendererTest : RendererTestBase
   {
     private DropDownMenuMock _control;
-    private ControlInvoker _invoker;
     private readonly List<string> _itemInfos = new List<string>();
 
     [SetUp]
@@ -46,8 +45,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
 
       Page page = new Page();
       page.Controls.Add (_control);
-
-      _invoker = new ControlInvoker (_control);
     }
 
     [Test]
@@ -268,8 +265,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
 
     private XmlNode GetAssertedOuterDiv ()
     {
-      _invoker.PreRenderRecursive();
-      _control.RenderControl (Html.Writer);
+      var preRenderer = new DropDownMenuPreRenderer (HttpContext, _control);
+      preRenderer.PreRender();
+      var renderer = new DropDownMenuRenderer (HttpContext, Html.Writer, _control);
+      renderer.Render();
 
       var document = Html.GetResultDocument();
       document.AssertChildElementCount (1);

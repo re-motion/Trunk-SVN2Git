@@ -159,6 +159,13 @@
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\DatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\DatePickerButton\QuirksMode\Factories\DatePickerButtonRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenu.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenuPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenuRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenu\IDropDownMenuRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\Factories\DropDownRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\IPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IStyledControl.cs" />

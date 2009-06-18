@@ -18,7 +18,10 @@ using System.ComponentModel;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Design;
 using Remotion.Web.Utilities;
 
@@ -26,7 +29,7 @@ namespace Remotion.Web.UI.Controls
 {
   /// <include file='doc\include\UI\Controls\DropDownMenu.xml' path='DropDownMenu/Class/*' />
   [Designer (typeof (WebControlDesigner))]
-  public class DropDownMenu : WebControl, IControl, IPostBackEventHandler, IControlWithDesignTimeSupport
+  public class DropDownMenu : WebControl, IDropDownMenu, IPostBackEventHandler, IControlWithDesignTimeSupport
   {
     private static readonly object s_eventCommandClickEvent = new object();
     private static readonly object s_wxeFunctionCommandClickEvent = new object();
@@ -162,57 +165,9 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnPreRender (e);
 
-      //  Startup script initalizing the global values of the script.
-      string key = typeof (DropDownMenu).FullName + "_Startup";
-      if (!Page.ClientScript.IsStartupScriptRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (DropDownMenu), ResourceType.Html, "DropDownMenu.css");
-        string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
-        ScriptUtility.RegisterStartupScriptBlock (this, key, script);
-      }
-
-      key = UniqueID;
-      if (Enabled
-          && !Page.ClientScript.IsStartupScriptRegistered (key))
-      {
-        StringBuilder script = new StringBuilder();
-        script.Append ("DropDownMenu_AddMenuInfo (\r\n\t");
-        script.AppendFormat ("new DropDownMenu_MenuInfo ('{0}', new Array (\r\n", ClientID);
-        bool isFirstItem = true;
-
-        WebMenuItem[] menuItems;
-        if (_enableGrouping)
-          menuItems = _menuItems.GroupMenuItems (true);
-        else
-          menuItems = _menuItems.ToArray();
-
-        string category = null;
-        bool isCategoryVisible = false;
-        for (int i = 0; i < menuItems.Length; i++)
-        {
-          WebMenuItem menuItem = menuItems[i];
-          if (_enableGrouping && category != menuItem.Category)
-          {
-            category = menuItem.Category;
-            isCategoryVisible = false;
-          }
-          if (!menuItem.EvaluateVisible())
-            continue;
-          if (_enableGrouping && menuItem.IsSeparator && !isCategoryVisible)
-            continue;
-          if (_enableGrouping)
-            isCategoryVisible = true;
-          if (isFirstItem)
-            isFirstItem = false;
-          else
-            script.AppendFormat (",\r\n");
-          AppendMenuItem (script, menuItem, _menuItems.IndexOf (menuItem));
-        }
-        script.Append (" )"); // Close Array
-        script.Append (" )"); // Close new MenuInfo
-        script.Append (" );"); // Close AddMenuInfo
-        ScriptUtility.RegisterStartupScriptBlock (this, key, script.ToString());
-      }
+      var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      preRenderer.PreRender();
     }
 
     private void AppendMenuItem (StringBuilder stringBuilder, WebMenuItem menuItem, int menuItemIndex)
@@ -246,7 +201,7 @@ namespace Remotion.Web.UI.Controls
           else if (menuItem.Command.Type == CommandType.Href)
           {
             href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString(), menuItem.ItemID);
-            if (!ControlHelper.IsDesignMode (this, Context))
+            if (!IsDesignMode)
               href = UrlUtility.GetAbsoluteUrl (Page, href);
             href = "'" + href + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";
@@ -282,7 +237,7 @@ namespace Remotion.Web.UI.Controls
     /// <remarks> Used by the <see cref="WebControlDesigner"/>. </remarks>
     void IControlWithDesignTimeSupport.PreRenderForDesignMode ()
     {
-      if (!ControlHelper.IsDesignMode (this, Context))
+      if (!IsDesignMode)
         throw new InvalidOperationException ("PreRenderChildControlsForDesignMode may only be called during design time.");
       EnsureChildControls();
       OnPreRender (EventArgs.Empty);
@@ -479,6 +434,11 @@ namespace Remotion.Web.UI.Controls
       set { _titleText = value; }
     }
 
+    RenderMethod IDropDownMenu.RenderHeadTitleMethod
+    {
+      get { return _renderHeadTitleMethod; }
+    }
+
     public IconInfo TitleIcon
     {
       get { return _titleIcon; }
@@ -495,11 +455,21 @@ namespace Remotion.Web.UI.Controls
       get { return _menuItems; }
     }
 
+    IPage IDropDownMenu.Page
+    {
+      get { return new PageWrapper (Page); }
+    }
+
     [DefaultValue (false)]
     public bool IsReadOnly
     {
       get { return _isReadOnly; }
       set { _isReadOnly = value; }
+    }
+
+    public bool IsDesignMode
+    {
+      get { return ControlHelper.IsDesignMode(this, Context); }
     }
 
     [DefaultValue (true)]
