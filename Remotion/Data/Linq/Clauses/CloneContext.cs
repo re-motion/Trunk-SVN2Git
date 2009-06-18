@@ -13,13 +13,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
+using Remotion.Utilities;
+
 namespace Remotion.Data.Linq.Clauses
 {
-  public interface IBodyClause : IClause
+  /// <summary>
+  /// Aggregates all objects needed in the process of cloning a <see cref="QueryModel"/> and its clauses.
+  /// </summary>
+  public class CloneContext
   {
-    QueryModel QueryModel { get; }
-    void SetQueryModel (QueryModel model);
+    public CloneContext (ClonedClauseMapping clonedClauseMapping, List<QueryModel> subQueryRegistry)
+    {
+      ArgumentUtility.CheckNotNull ("clonedClauseMapping", clonedClauseMapping);
+      ArgumentUtility.CheckNotNull ("subQueryRegistry", subQueryRegistry);
 
-    IBodyClause Clone (CloneContext cloneContext);
+      ClonedClauseMapping = clonedClauseMapping;
+      SubQueryRegistry = subQueryRegistry;
+    }
+
+    public ClonedClauseMapping ClonedClauseMapping { get; private set; }
+    public List<QueryModel> SubQueryRegistry { get; private set; }
   }
 }
