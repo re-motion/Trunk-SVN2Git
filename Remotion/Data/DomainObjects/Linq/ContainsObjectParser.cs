@@ -148,7 +148,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
       ArgumentUtility.CheckNotNull ("fromIdentifier", fromIdentifier);
 
-      return new SelectClause (whereClause, Expression.Lambda(fromIdentifier), fromIdentifier);
+      return new SelectClause (whereClause, fromIdentifier);
     }
     
     public PropertyInfo GetForeignKeyProperty (PropertyInfo collectionProperty) // Order.OrderItems

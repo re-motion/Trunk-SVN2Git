@@ -142,7 +142,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       SelectClause selectClause = _parser.CreateSelectClause (whereClause, mainFromClause.Identifier);
       Assert.That (selectClause.PreviousClause, Is.SameAs (whereClause));
-      Assert.That (selectClause.LegacySelector.Body, Is.SameAs(mainFromClause.Identifier));
       Assert.That (selectClause.Selector, Is.SameAs (mainFromClause.Identifier));
     }
 
@@ -163,17 +162,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fromClause.Identifier.Type, Is.EqualTo (typeof (OrderItem)));
       Assert.That (fromClause.Identifier.Name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
 
-      WhereClause whereClause = (WhereClause) queryModel.BodyClauses[0];
+      var whereClause = (WhereClause) queryModel.BodyClauses[0];
       Assert.That (whereClause.Predicate, Is.InstanceOfType (typeof (BinaryExpression)));
-      BinaryExpression binaryExpression = (BinaryExpression) whereClause.Predicate;
+      var binaryExpression = (BinaryExpression) whereClause.Predicate;
       Assert.That (binaryExpression.Left, Is.InstanceOfType (typeof (MemberExpression)));
-      MemberExpression memberExpression = (MemberExpression) binaryExpression.Left;
+      var memberExpression = (MemberExpression) binaryExpression.Left;
       Assert.That (memberExpression.Expression, Is.SameAs (fromClause.Identifier));
       Assert.That (memberExpression.Member, Is.EqualTo (typeof (OrderItem).GetProperty ("Order")));
       Assert.That (binaryExpression.Right, Is.SameAs (_queriedObjectExpression));
 
-      SelectClause selectClause = (SelectClause) queryModel.SelectOrGroupClause;
-      Assert.That (selectClause.LegacySelector.Body, Is.EqualTo(fromClause.Identifier));
+      var selectClause = (SelectClause) queryModel.SelectOrGroupClause;
+      Assert.That (selectClause.Selector, Is.EqualTo (fromClause.Identifier));
     }
 
     [Test]
