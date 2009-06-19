@@ -30,8 +30,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
   public abstract class BocValueColumnRendererBase<TBocColumnDefinition> : BocCommandEnabledColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocValueColumnDefinition
   {
-    protected BocValueColumnRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion)
-        : base (context, writer, list, columnDefintion)
+    protected BocValueColumnRendererBase (
+        IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
+        : base (context, writer, list, columnDefintion, cssClasses)
     {
     }
 
@@ -130,7 +131,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
         isCommandEnabled = RenderBeginTagDataCellCommand (businessObject, originalRowIndex);
       if (!isCommandEnabled)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassContent);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       }
       return isCommandEnabled;

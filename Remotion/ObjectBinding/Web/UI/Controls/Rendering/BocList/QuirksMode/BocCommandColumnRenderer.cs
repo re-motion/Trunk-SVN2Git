@@ -35,8 +35,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocCommandColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition)
-        : base (context, writer, list, columnDefinition)
+    public BocCommandColumnRenderer (
+        IHttpContext context, HtmlTextWriter writer, IBocList list, BocCommandColumnDefinition columnDefinition, CssClassContainer cssClasses)
+        : base (context, writer, list, columnDefinition, cssClasses)
     {
     }
 
@@ -87,7 +88,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       bool isCommandEnabled = RenderBeginTagDataCellCommand (businessObject, originalRowIndex);
       if (!isCommandEnabled)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassContent);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       }
       return isCommandEnabled;

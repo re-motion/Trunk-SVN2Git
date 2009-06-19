@@ -65,13 +65,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
               false,
               new Command()));
 
-      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (
+          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       var div = Html.GetAssertedChildElement (td, "div", 0);
       Html.AssertAttribute (div, "onclick", "BocList_OnCommandClick();");
@@ -84,13 +85,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     {
       InitializeRowMenus();
 
-      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (
+          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       Html.AssertChildElementCount (td, 0);
     }
@@ -98,13 +100,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     [Test]
     public void RenderCellWithNullMenu ()
     {
-      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer<BocDropDownMenuColumnDefinition> renderer = new BocDropDownMenuColumnRenderer (
+          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       Html.AssertChildElementCount (td, 0);
     }

@@ -49,14 +49,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     [Test]
     public void RenderEditable ()
     {
-      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (
+          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
       EventArgs.IsEditableRow = true;
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (a, "href", "#");
@@ -69,13 +70,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     {
       List.EditModeController.Stub (mock => mock.EditableRowIndex).Return (0);
 
-      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer<BocRowEditModeColumnDefinition> renderer = new BocRowEditModeColumnRenderer (
+          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       var save = Html.GetAssertedChildElement (td, "a", 0);
       Html.AssertAttribute (save, "href", "#");

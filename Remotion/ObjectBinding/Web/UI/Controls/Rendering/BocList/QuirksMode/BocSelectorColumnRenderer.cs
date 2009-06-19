@@ -27,8 +27,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
   {
     private const int c_titleRowIndex = -1;
 
-    public BocSelectorColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
-        : base (context, writer, list)
+    public BocSelectorColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
+        : base (context, writer, list, cssClasses)
     {
     }
 
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       if (!List.IsSelectionEnabled)
         return;
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassTitleCell);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TitleCell);
       Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       if (List.Selection == RowSelection.Multiple)
       {

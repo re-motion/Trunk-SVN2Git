@@ -87,8 +87,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
-        : base (context, writer, list)
+    public BocListNavigationBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
+        : base (context, writer, list, cssClasses)
     {
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       bool isLastPage = List.CurrentPage + 1 >= List.PageCount;
 
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassNavigator);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Navigator);
       Writer.AddStyleAttribute ("position", "relative");
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 

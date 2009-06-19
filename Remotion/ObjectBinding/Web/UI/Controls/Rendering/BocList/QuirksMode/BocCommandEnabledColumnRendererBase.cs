@@ -32,8 +32,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
   public abstract class BocCommandEnabledColumnRendererBase<TBocColumnDefinition> : BocColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocCommandEnabledColumnDefinition
   {
-    protected BocCommandEnabledColumnRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion)
-        : base (context, writer, list, columnDefintion)
+    protected BocCommandEnabledColumnRendererBase (
+      IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefintion, CssClassContainer cssClasses)
+        : base (context, writer, list, columnDefintion, cssClasses)
     {
     }
 

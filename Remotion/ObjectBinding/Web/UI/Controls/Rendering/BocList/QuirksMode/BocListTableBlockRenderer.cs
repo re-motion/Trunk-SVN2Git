@@ -31,8 +31,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocRowRenderer _rowRenderer;
 
-    public BocListTableBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
-        : base (context, writer, list)
+    public BocListTableBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+        : base (context, writer, list, cssClasses)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
@@ -84,7 +84,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 
       RenderTableOpeningTag();
       RenderTableBlockColumnGroup();
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassTableHead);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableHead);
 
       if (tableHead)
         RenderTableHead();
@@ -137,7 +137,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <seealso cref="BocRowRenderer"/>
     protected virtual void RenderTableBody ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassTableBody);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableBody);
       Writer.RenderBeginTag (HtmlTextWriterTag.Tbody);
 
       int firstRow = 0;
@@ -198,14 +198,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <summary> Renderes the opening tag of the table. </summary>
     private void RenderTableOpeningTag ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassTable);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Table);
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, List.ClientID + "_Table");
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
       Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassTable);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Table);
       Writer.RenderBeginTag (HtmlTextWriterTag.Table);
     }
 

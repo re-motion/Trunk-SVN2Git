@@ -30,7 +30,6 @@ using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -157,10 +156,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     // static members
-    private static readonly Type[] s_supportedPropertyInterfaces = new Type[]
-                                                                   {
-                                                                       typeof (IBusinessObjectReferenceProperty)
-                                                                   };
+    private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectReferenceProperty) };
 
     private static readonly ILog s_log = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -179,22 +175,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private static readonly object s_editableRowChangesCanceledEvent = new object();
 
     private static readonly string s_scriptFileKey = typeof (BocList).FullName + "_Script";
-    private static readonly string s_startUpScriptKey = typeof (BocList).FullName + "_Startup";
     private static readonly string s_styleFileKey = typeof (BocList).FullName + "_Style";
 
     // member fields
 
     /// <summary> The <see cref="DropDownList"/> used to select the column configuration. </summary>
-    private DropDownList _availableViewsList;
+    private readonly DropDownList _availableViewsList;
 
     /// <summary> The <see cref="string"/> that is rendered in front of the <see cref="_availableViewsList"/>. </summary>
     private string _availableViewsListTitle;
 
-    /// <summary> The width applied to the <see cref="_availableViewsList"/>. </summary>
-    private Unit _availableViewsListWidth = Unit.Empty;
-
     /// <summary> The predefined column definition sets that the user can choose from at run-time. </summary>
-    private BocListViewCollection _availableViews;
+    private readonly BocListViewCollection _availableViews;
 
     /// <summary> Determines whether to show the drop down list for selecting a view. </summary>
     private bool _showAvailableViewsList = true;
@@ -206,30 +198,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The zero-based index of the <see cref="BocListView"/> selected from 
     ///   <see cref="AvailableViews"/>.
     /// </summary>
-    private int? _selectedViewIndex = null;
+    private int? _selectedViewIndex;
 
     private string _availableViewsListSelectedValue = string.Empty;
-    private bool _isSelectedViewIndexSet = false;
+    private bool _isSelectedViewIndexSet;
 
     /// <summary> The <see cref="IList"/> displayed by the <see cref="BocList"/>. </summary>
-    private IList _value = null;
+    private IList _value;
 
     /// <summary> The user independent column definitions. </summary>
-    private BocColumnDefinitionCollection _fixedColumns;
+    private readonly BocColumnDefinitionCollection _fixedColumns;
 
     /// <summary> 
     ///   Contains a <see cref="BocColumnDefinition"/> for each property of the bound 
     ///   <see cref="IBusinessObject"/>. 
     /// </summary>
-    private BocColumnDefinition[] _allPropertyColumns = null;
+    private BocColumnDefinition[] _allPropertyColumns;
 
     /// <summary> Contains the <see cref="BocColumnDefinition"/> objects during the handling of the post back events. </summary>
-    private BocColumnDefinition[] _columnDefinitionsPostBackEventHandlingPhase = null;
+    private BocColumnDefinition[] _columnDefinitionsPostBackEventHandlingPhase;
 
     /// <summary> Contains the <see cref="BocColumnDefinition"/> objects during the rendering phase. </summary>
-    private BocColumnDefinition[] _columnDefinitionsRenderPhase = null;
+    private BocColumnDefinition[] _columnDefinitionsRenderPhase;
 
-    private bool _hasAppendedAllPropertyColumnDefinitions = false;
+    private bool _hasAppendedAllPropertyColumnDefinitions;
 
 
     /// <summary> Determines whether the options menu is shown. </summary>
@@ -245,13 +237,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private Unit _menuBlockOffset = Unit.Empty;
     private Unit _menuBlockItemOffset = Unit.Empty;
     private ListMenuLineBreaks _listMenuLineBreaks = ListMenuLineBreaks.All;
-    private DropDownMenu _optionsMenu;
-    private WebMenuItemCollection _listMenuItems;
+    private readonly DropDownMenu _optionsMenu;
+    private readonly WebMenuItemCollection _listMenuItems;
 
     /// <summary> Triplet &lt; IBusinessObject, listIndex, DropDownMenu &gt;</summary>
     private BocListRowMenuTuple[] _rowMenus;
 
-    private PlaceHolder _rowMenusPlaceHolder;
+    private readonly PlaceHolder _rowMenusPlaceHolder;
 
     /// <summary> 
     ///   HashTable &lt; 
@@ -260,16 +252,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     private Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]> _customColumns;
 
-    private PlaceHolder _customColumnsPlaceHolder;
+    private readonly PlaceHolder _customColumnsPlaceHolder;
 
     /// <summary> Determines wheter an empty list will still render its headers and the additional column sets list. </summary>
     private bool _showEmptyListEditMode = true;
 
     private bool _showMenuForEmptyListEditMode = true;
-    private bool _showEmptyListReadOnlyMode = false;
-    private bool _showMenuForEmptyListReadOnlyMode = false;
-    private string _emptyListMessage = null;
-    private bool _showEmptyListMessage = false;
+    private bool _showEmptyListReadOnlyMode;
+    private bool _showMenuForEmptyListReadOnlyMode;
+    private string _emptyListMessage;
+    private bool _showEmptyListMessage;
 
     /// <summary> Determines whether to generate columns for all properties. </summary>
     private bool _showAllProperties;
@@ -281,17 +273,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private bool _enableSorting = true;
 
     /// <summary> Determines whether to show the sorting order after the sorting button. Undefined interpreted as True. </summary>
-    private bool? _showSortingOrder = null;
+    private bool? _showSortingOrder;
 
     /// <summary> Undefined interpreted as True. </summary>
-    private bool? _enableMultipleSorting = null;
+    private bool? _enableMultipleSorting;
 
     /// <summary> 
     ///   Contains <see cref="BocListSortingOrderEntry"/> objects in the order of the buttons pressed.
     /// </summary>
     private ArrayList _sortingOrder = new ArrayList();
 
-    private BocListRow[] _indexedRowsSorted = null;
+    private BocListRow[] _indexedRowsSorted;
 
     /// <summary> Determines whether to enable the selecting of the data rows. </summary>
     private RowSelection _selection = RowSelection.Undefined;
@@ -304,19 +296,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private RowIndex _index = RowIndex.Undefined;
     private string _indexColumnTitle;
-    private int? _indexOffset = null;
+    private int? _indexOffset;
 
     /// <summary> Null, 0: show all objects, > 0: show n objects per page. </summary>
-    private int? _pageSize = null;
+    private int? _pageSize;
 
     /// <summary>
     ///   Show page info ("page 1 of n") and links always (true),
     ///   or only if there is more than 1 page (false)
     /// </summary>
-    private bool _alwaysShowPageInfo = false;
+    private bool _alwaysShowPageInfo;
 
     /// <summary> The text providing the current page information to the user. </summary>
-    private string _pageInfo = null;
+    private string _pageInfo;
 
     /// <summary> 
     ///   The navigation bar command that caused the post back. 
@@ -327,19 +319,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> 
     ///   The index of the current row in the <see cref="IBusinessObject"/> this control is bound to.
     /// </summary>
-    private int _currentRow = 0;
+    private int _currentRow;
 
     /// <summary> The index of the current page. </summary>
-    private int _currentPage = 0;
+    private int _currentPage;
 
     /// <summary> The total number of pages required for paging through the entire list. </summary>
-    private int _pageCount = 0;
+    private int _pageCount;
 
     /// <summary> Determines whether the client script is enabled. </summary>
     private bool _enableClientScript = true;
-
-    /// <summary> Determines whether the client script will be rendered. </summary>
-    private bool _hasClientScript = false;
 
     private readonly EditModeController _editModeController;
     private EditableRowDataSourceFactory _editModeDataSourceFactory = new EditableRowDataSourceFactory();
@@ -389,11 +378,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       base.OnInit (e);
 
-      _optionsMenu.EventCommandClick += new WebMenuItemClickEventHandler (OptionsMenu_EventCommandClick);
-      _optionsMenu.WxeFunctionCommandClick += new WebMenuItemClickEventHandler (OptionsMenu_WxeFunctionCommandClick);
+      _optionsMenu.EventCommandClick += OptionsMenu_EventCommandClick;
+      _optionsMenu.WxeFunctionCommandClick += OptionsMenu_WxeFunctionCommandClick;
 
-      _availableViews.CollectionChanged += new CollectionChangeEventHandler (AvailableViews_CollectionChanged);
-      Binding.BindingChanged += new EventHandler (Binding_BindingChanged);
+      _availableViews.CollectionChanged += AvailableViews_CollectionChanged;
+      Binding.BindingChanged += Binding_BindingChanged;
 
       if (!IsDesignMode)
       {
@@ -542,7 +531,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNullOrEmpty ("eventArgument", eventArgument);
 
-      string[] eventArgumentParts = eventArgument.Split (new char[] { ',' }, 2);
+      string[] eventArgumentParts = eventArgument.Split (new[] { ',' }, 2);
 
       //  First part: column index
       int columnIndex;
@@ -676,7 +665,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNullOrEmpty ("eventArgument", eventArgument);
 
-      string[] eventArgumentParts = eventArgument.Split (new char[] { ',' }, 3);
+      string[] eventArgumentParts = eventArgument.Split (new[] { ',' }, 3);
 
       //  First part: column index
       int columnIndex;
@@ -948,8 +937,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArrayList workingSortingOrder = new ArrayList (_sortingOrder);
 
       BocListSortingOrderEntry oldSortingOrderEntry = BocListSortingOrderEntry.Empty;
-      BocListSortingOrderEntry newSortingOrderEntry = null;
-
+      
       for (int i = 0; i < workingSortingOrder.Count; i++)
       {
         BocListSortingOrderEntry currentEntry = (BocListSortingOrderEntry) workingSortingOrder[i];
@@ -960,6 +948,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         }
       }
 
+      BocListSortingOrderEntry newSortingOrderEntry = null;
       //  Cycle: Ascending -> Descending -> None -> Ascending
       if (! oldSortingOrderEntry.IsEmpty)
       {
@@ -1146,20 +1135,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EnsureChildControls();
       base.OnPreRender (e);
 
-      DetermineClientScriptLevel();
-
-      if (_hasClientScript)
-      {
-        //  Startup script initalizing the global values of the script.
-        if (! Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey))
-        {
-          string script = string.Format (
-              "BocList_InitializeGlobals ('{0}', '{1}');",
-              CssClassDataRow,
-              CssClassDataRowSelected);
-          ScriptUtility.RegisterStartupScriptBlock (this, s_startUpScriptKey, script);
-        }
-      }
+      var factory = ServiceLocator.Current.GetInstance<IBocListRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      preRenderer.PreRender ();
 
       // Must be executed before CalculateCurrentPage
       if (_editModeController.IsRowEditModeActive)
@@ -1482,7 +1460,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void PreRenderListMenuItems (string menuID)
     {
-      if (!_hasClientScript)
+      if (!HasClientScript)
         return;
 
       WebMenuItem[] groupedListMenuItems = _listMenuItems.GroupMenuItems (false);
@@ -1541,7 +1519,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           if (isPostBackCommand)
           {
             // Clientside script creates an anchor with href="#" and onclick=function
-            string argument = c_eventMenuItemPrefix + menuItemIndex.ToString();
+            string argument = c_eventMenuItemPrefix + menuItemIndex;
             href = Page.ClientScript.GetPostBackClientHyperlink (this, argument) + ";";
             href = ScriptUtility.EscapeClientScript (href);
             href = "'" + href + "'";
@@ -1574,7 +1552,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                         || ! isCommandEnabled;
       stringBuilder.AppendFormat (
           "\t\tnew ContentMenu_MenuItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8})",
-          menuID + "_" + menuItemIndex.ToString(),
+          menuID + "_" + menuItemIndex,
           menuItem.Category,
           text,
           icon,
@@ -1800,10 +1778,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       IBusinessObjectProperty[] properties;
       if (DataSource == null)
         properties = new IBusinessObjectProperty[0];
-      if (Property == null)
+      else if (Property == null)
         properties = DataSource.BusinessObjectClass.GetPropertyDefinitions();
       else
-        properties = ((IBusinessObjectReferenceProperty) Property).ReferenceClass.GetPropertyDefinitions();
+        properties = Property.ReferenceClass.GetPropertyDefinitions();
 
       _allPropertyColumns = new BocColumnDefinition[properties.Length];
       for (int i = 0; i < properties.Length; i++)
@@ -1811,7 +1789,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         IBusinessObjectProperty property = properties[i];
         BocSimpleColumnDefinition column = new BocSimpleColumnDefinition();
         column.ColumnTitle = property.DisplayName;
-        column.SetPropertyPath (property.BusinessObjectProvider.CreatePropertyPath (new IBusinessObjectProperty[] { property }));
+        column.SetPropertyPath (property.BusinessObjectProvider.CreatePropertyPath (new[] { property }));
         column.OwnerControl = this;
         _allPropertyColumns[i] = column;
       }
@@ -2051,7 +2029,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           BocMenuItemCommand command = (BocMenuItemCommand) menuItem.Command;
           if (Page is IWxePage)
-            command.ExecuteWxeFunction ((IWxePage) Page, new int[1] { listIndex }, new IBusinessObject[1] { businessObject });
+            command.ExecuteWxeFunction ((IWxePage) Page, new[] { listIndex }, new[] { businessObject });
           //else
           //  command.ExecuteWxeFunction (Page, new int[1] {listIndex}, new IBusinessObject[1] {businessObject});
         }
@@ -2101,8 +2079,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         //  Check row count on last page
         rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
       }
-
-      ISmartPage smartPage = Page as ISmartPage;
 
       BocColumnDefinition[] columns = EnsureColumnsGot (false);
       BocListRow[] rows = EnsureGotIndexedRowsSorted();
@@ -2367,7 +2343,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (isPostBackEventPhase)
       {
-        columnDefinitions = GetColumnsForPreviousLifeCycle (columnDefinitions);
+        columnDefinitions = EnsureColumnsGot();
         RestoreSortingOrderColumns (_sortingOrder, columnDefinitions);
       }
       else
@@ -2493,30 +2469,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
       for (int i = 0; i < entriesToBeRemoved.Count; i++)
         sortingOrder.Remove (entriesToBeRemoved[i]);
-    }
-
-    /// <summary>
-    ///   Override this method to modify the column definitions displayed in the <see cref="BocList"/> during the
-    ///   previous page life cycle.
-    /// </summary>
-    /// <remarks>
-    ///   <para>
-    ///     The <see cref="BocColumnDefinition"/> instances displayed during the last page life cycle are required 
-    ///     to correctly handle the events raised on the BocList, such as an <see cref="Command"/> event 
-    ///     or a data changed event.
-    ///   </para><para>
-    ///     Make the method protected <see langword="virtual"/> should this feature be ever required and change the 
-    ///     method's body to return the passed <paramref name="columnDefinitions"/>.
-    ///   </para>
-    /// </remarks>
-    /// <param name="columnDefinitions"> 
-    ///   The <see cref="BocColumnDefinition"/> array containing the columns defined by the <see cref="BocList"/>. 
-    /// </param>
-    /// <returns> The <see cref="BocColumnDefinition"/> array. </returns>
-    private BocColumnDefinition[] GetColumnsForPreviousLifeCycle (BocColumnDefinition[] columnDefinitions)
-    {
-      //  return columnDefinitions;
-      return EnsureColumnsGot();
     }
 
     /// <summary>
@@ -2720,7 +2672,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       foreach (DictionaryEntry entry in values)
       {
         string key = (string) entry.Key;
-        string[] keyParts = key.Split (new Char[] { ':' }, 3);
+        string[] keyParts = key.Split (new[] { ':' }, 3);
 
         //  Is a property/value entry?
         if (keyParts.Length == 1)
@@ -2760,7 +2712,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             {
               //  Invalid collection property
               s_log.Debug (
-                  "BocList '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page.ToString()
+                  "BocList '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page
                   + "' does not contain a collection property named '" + collectionID + "'.");
               break;
             }
@@ -2787,7 +2739,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           //  Not supported format or invalid property
           s_log.Debug (
-              "BocList '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page.ToString()
+              "BocList '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page
               + "' received a resource with an invalid or unknown key '" + key
               + "'. Required format: 'property' or 'collectionID:elementID:property'.");
         }
@@ -2839,19 +2791,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _fixedColumns.LoadResources (resourceManager);
       OptionsMenuItems.LoadResources (resourceManager);
       ListMenuItems.LoadResources (resourceManager);
-    }
-
-    /// <summary>
-    ///   Sets <see cref="_hasClientScript"/>  to <see langword="true"/> if 
-    ///   <see cref="EnableClientScript"/> is <see langword="true"/> and the browser is an
-    ///   <c>Internet Explorer 5.5</c> or later.
-    /// </summary>
-    private void DetermineClientScriptLevel ()
-    {
-      _hasClientScript = false;
-
-      if (! IsDesignMode)
-        _hasClientScript = EnableClientScript;
     }
 
     /// <summary> Is raised when a data row is rendered. </summary>
@@ -2908,7 +2847,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     public override Control TargetControl
     {
-      get { return (Control) this; }
+      get { return this; }
     }
 
     /// <summary>
@@ -3077,7 +3016,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           int selectedIndex = _selectedViewIndex.Value;
           if (selectedIndex < _availableViews.Count)
-            _selectedView = (BocListView) _availableViews[selectedIndex];
+            _selectedView = _availableViews[selectedIndex];
         }
 
         if (hasIndexChanged)
@@ -3929,7 +3868,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected bool AreDataRowsClickSensitive ()
     {
-      return _hasClientScript
+      return HasClientScript
              && ! WcagHelper.Instance.IsWaiConformanceLevelARequired()
              && IsInternetExplorer55OrHigher();
     }
@@ -4211,7 +4150,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public bool HasClientScript
     {
-      get { return _hasClientScript; }
+      get { return (!IsDesignMode && EnableClientScript); }
     }
 
     public DropDownList AvailableViewsList
@@ -4263,190 +4202,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       OnPreRender (EventArgs.Empty);
     }
-
-    #region protected virtual string CssClass...
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>table</c> tag. </summary>
-    /// <remarks> Class: <c>bocListTable</c> </remarks>
-    protected virtual string CssClassTable
-    {
-      get { return "bocListTable"; }
-    }
-
-    string IBocList.CssClassTable
-    {
-      get { return CssClassTable; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>thead</c> tag. </summary>
-    /// <remarks> Class: <c>bocListTableHead</c> </remarks>
-    protected virtual string CssClassTableHead
-    {
-      get { return "bocListTableHead"; }
-    }
-
-    string IBocList.CssClassTableHead
-    {
-      get { return CssClassTableHead; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s <c>tbody</c> tag. </summary>
-    /// <remarks> Class: <c>bocListTableBody</c> </remarks>
-    protected virtual string CssClassTableBody
-    {
-      get { return "bocListTableBody"; }
-    }
-
-    string IBocList.CssClassTableBody
-    {
-      get { return CssClassTableBody; }
-    }
-
-    /// <summary> CSS-Class applied to the cells in the <see cref="BocList"/>'s title row. </summary>
-    /// <remarks> Class: <c>bocListTitleCell</c> </remarks>
-    protected virtual string CssClassTitleCell
-    {
-      get { return "bocListTitleCell"; }
-    }
-
-    string IBocList.CssClassTitleCell
-    {
-      get { return CssClassTitleCell; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s selected data. </summary>
-    /// <remarks> Class: <c>bocListDataRow</c> </remarks>
-    protected virtual string CssClassDataRow
-    {
-      get { return "bocListDataRow"; }
-    }
-
-    string IBocList.CssClassDataRow
-    {
-      get { return CssClassDataRow; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s selected data rows. </summary>
-    /// <remarks> Class: <c>bocListDataRowSelected</c> </remarks>
-    protected virtual string CssClassDataRowSelected
-    {
-      get { return "bocListDataRowSelected"; }
-    }
-
-    string IBocList.CssClassDataRowSelected
-    {
-      get { return CssClassDataRowSelected; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s odd data rows. </summary>
-    /// <remarks> Class: <c>bocListDataCellOdd</c> </remarks>
-    protected virtual string CssClassDataCellOdd
-    {
-      get { return "bocListDataCellOdd"; }
-    }
-
-    string IBocList.CssClassDataCellOdd
-    {
-      get { return CssClassDataCellOdd; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s even data rows. </summary>
-    /// <remarks> Class: <c>bocListDataCellEven</c> </remarks>
-    protected virtual string CssClassDataCellEven
-    {
-      get { return "bocListDataCellEven"; }
-    }
-
-    string IBocList.CssClassDataCellEven
-    {
-      get { return CssClassDataCellEven; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the cell in the <see cref="BocList"/>'s title row that contains the row index header. </summary>
-    /// <remarks> Class: <c>bocListTitleCellIndex</c> </remarks>
-    protected virtual string CssClassTitleCellIndex
-    {
-      get { return "bocListTitleCellIndex"; }
-    }
-
-    string IBocList.CssClassTitleCellIndex
-    {
-      get { return CssClassTitleCellIndex; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the cell in the <see cref="BocList"/>'s data rows that contains the row index. </summary>
-    /// <remarks> Class: <c>bocListDataCellIndex</c> </remarks>
-    protected virtual string CssClassDataCellIndex
-    {
-      get { return "bocListDataCellIndex"; }
-    }
-
-    string IBocList.CssClassDataCellIndex
-    {
-      get { return CssClassDataCellIndex; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the content if there is no anchor element. </summary>
-    /// <remarks> Class: <c>bocListDataCellContent</c> </remarks>
-    protected virtual string CssClassContent
-    {
-      get { return "bocListContent"; }
-    }
-
-    string IBocList.CssClassContent
-    {
-      get { return CssClassContent; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the text providing the sorting order's index. </summary>
-    /// <remarks> Class: <c>bocListSortingOrder</c> </remarks>
-    protected virtual string CssClassSortingOrder
-    {
-      get { return "bocListSortingOrder"; }
-    }
-
-    string IBocList.CssClassSortingOrder
-    {
-      get { return CssClassSortingOrder; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s navigator. </summary>
-    /// <remarks> Class: <c>bocListNavigator</c> </remarks>
-    protected virtual string CssClassNavigator
-    {
-      get { return "bocListNavigator"; }
-    }
-
-    string IBocList.CssClassNavigator
-    {
-      get { return CssClassNavigator; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s list of additional columns. </summary>
-    /// <remarks> Class: <c>bocListAvailableViewsListDropDownList</c> </remarks>
-    protected virtual string CssClassAvailableViewsListDropDownList
-    {
-      get { return "bocListAvailableViewsListDropDownList"; }
-    }
-
-    string IBocList.CssClassAvailableViewsListDropDownList
-    {
-      get { return CssClassAvailableViewsListDropDownList; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s label for the list of additional columns. </summary>
-    /// <remarks> Class: <c>bocListAvailableViewsListLabel</c> </remarks>
-    protected virtual string CssClassAvailableViewsListLabel
-    {
-      get { return "bocListAvailableViewsListLabel"; }
-    }
-
-    string IBocList.CssClassAvailableViewsListLabel
-    {
-      get { return CssClassAvailableViewsListLabel; }
-    }
-
-    #endregion
   }
 
   public enum RowSelection

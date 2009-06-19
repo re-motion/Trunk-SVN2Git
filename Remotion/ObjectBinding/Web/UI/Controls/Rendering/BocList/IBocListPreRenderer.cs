@@ -14,19 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
-using System.Web.UI;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
-  /// <summary>
-  /// Interface for factories creating <see cref="IBocListRenderer"/> renderers.
-  /// </summary>
-  public interface IBocListRendererFactory
+  public interface IBocListPreRenderer : IPreRenderer<IBocList>
   {
-    IBocListRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator);
-    IBocListPreRenderer CreatePreRenderer (IHttpContext context, IBocList list);
   }
 }

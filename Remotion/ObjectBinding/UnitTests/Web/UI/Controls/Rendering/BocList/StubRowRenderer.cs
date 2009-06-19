@@ -13,7 +13,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
   public class StubRowRenderer : BocListRendererBase, IBocRowRenderer
   {
     public StubRowRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
-        : base(context, writer, list)
+        : base(context, writer, list, CssClassContainer.Instance)
     {
     }
 

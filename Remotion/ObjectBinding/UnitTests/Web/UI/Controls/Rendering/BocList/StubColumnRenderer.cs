@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
   public class StubColumnRenderer : BocColumnRendererBase<StubColumnDefinition>
   {
     public StubColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, StubColumnDefinition columnDefinition)
-        : base (context, writer, list, columnDefinition)
+        : base (context, writer, list, columnDefinition, CssClassContainer.Instance)
     {
     }
 

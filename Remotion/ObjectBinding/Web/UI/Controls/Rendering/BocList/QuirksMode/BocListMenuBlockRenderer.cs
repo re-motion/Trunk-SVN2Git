@@ -40,8 +40,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain an instance of this class.
     /// </remarks>
-    public BocListMenuBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
-        : base (context, writer, list)
+    public BocListMenuBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
+        : base (context, writer, list, cssClasses)
     {
     }
 
@@ -97,7 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       Writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassAvailableViewsListLabel);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.AvailableViewsListLabel);
 
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       string availableViewsListTitle;
@@ -113,7 +113,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       if (List.IsDesignMode)
         List.AvailableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
       List.AvailableViewsList.Enabled = !List.EditModeController.IsRowEditModeActive && !List.EditModeController.IsListEditModeActive;
-      List.AvailableViewsList.CssClass = List.CssClassAvailableViewsListDropDownList;
+      List.AvailableViewsList.CssClass = CssClasses.AvailableViewsListDropDownList;
       List.AvailableViewsList.RenderControl (Writer);
       Writer.RenderEndTag();
     }

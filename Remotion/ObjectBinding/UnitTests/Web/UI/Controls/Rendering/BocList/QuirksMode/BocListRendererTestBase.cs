@@ -84,19 +84,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       List.Stub (list => list.SelectorControlCheckedState).Return (new List<int> ());
 
-      List.Stub (list => list.CssClassTable).Return ("cssClassTable");
-      List.Stub (list => list.CssClassTableHead).Return ("cssClassTableHead");
-      List.Stub (list => list.CssClassTableBody).Return ("cssClassTableBody");
-      List.Stub (list => list.CssClassTitleCell).Return ("cssClassTitleCell");
-      List.Stub (list => list.CssClassTitleCellIndex).Return ("cssClassTitleCellIndex");
-      List.Stub (list => list.CssClassSortingOrder).Return ("cssClassSortingOrder");
-      List.Stub (list => list.CssClassContent).Return ("cssClassContent");
-      List.Stub (list => list.CssClassDataCellOdd).Return ("cssClassDataCellOdd");
-      List.Stub (list => list.CssClassDataCellEven).Return ("cssClassDataCellEven");
-      List.Stub (list => list.CssClassDataRow).Return ("cssClassDataRow");
-      List.Stub (list => list.CssClassDataRowSelected).Return ("cssClassDataRowSelected");
-      List.Stub (list => list.CssClassNavigator).Return ("cssClassNavigator");
-
       StateBag stateBag = new StateBag ();
       List.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
       List.Stub (mock => mock.Style).Return (List.Attributes.CssStyle);

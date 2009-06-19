@@ -34,7 +34,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       List.Stub (mock => mock.HasNavigator).Return (true);
       List.Stub (mock => mock.PageInfo).Return (c_pageInfo);
-      List.Stub (mock => mock.CssClassNavigator).Return ("cssClassNavigator");
     }
 
     [Test]
@@ -43,13 +42,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (1);
 
-      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List);
+      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
       renderer.Render();
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", List.CssClassNavigator);
+      Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "position", "relative");
 
@@ -82,13 +81,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (mock => mock.CurrentPage).Return (0);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List);
+      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
       renderer.Render();
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", List.CssClassNavigator);
+      Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "position", "relative");
 
@@ -121,13 +120,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (2);
 
-      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List);
+      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
       renderer.Render();
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", List.CssClassNavigator);
+      Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "position", "relative");
 
@@ -160,13 +159,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (mock => mock.CurrentPage).Return (1);
       List.Stub (mock => mock.PageCount).Return (3);
 
-      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List);
+      var renderer = new BocListNavigationBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
       renderer.Render();
 
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, "class", List.CssClassNavigator);
+      Html.AssertAttribute (div, "class", CssClassContainer.Instance.Navigator);
       Html.AssertStyleAttribute (div, "width", "100%");
       Html.AssertStyleAttribute (div, "position", "relative");
 

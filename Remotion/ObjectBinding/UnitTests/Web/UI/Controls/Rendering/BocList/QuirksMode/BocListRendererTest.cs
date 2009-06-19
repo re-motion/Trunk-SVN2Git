@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
     private void RenderAndAssertTable (out XmlNode colgroup)
     {
-      var renderer = new BocListRenderer (HttpContext, Html.Writer, List, ServiceLocator);
+      var renderer = new BocListRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance, ServiceLocator);
       renderer.Render();
 
       var document = Html.GetResultDocument();

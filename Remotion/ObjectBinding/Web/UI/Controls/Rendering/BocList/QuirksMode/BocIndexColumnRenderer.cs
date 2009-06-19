@@ -25,8 +25,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
   /// </summary>
   public class BocIndexColumnRenderer : BocListRendererBase, IBocIndexColumnRenderer
   {
-    public BocIndexColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
-        : base (context, writer, list)
+    public BocIndexColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
+        : base (context, writer, list, cssClasses)
     {
     }
 
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       if (!List.IsIndexEnabled)
         return;
 
-      string cssClass = cssClassTableCell + " " + List.CssClassDataCellIndex;
+      string cssClass = cssClassTableCell + " " + CssClasses.DataCellIndex;
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       Writer.RenderBeginTag (HtmlTextWriterTag.Td);
       if (List.Index == RowIndex.InitialOrder)
@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       if (!List.IsIndexEnabled)
         return;
 
-      string cssClass = List.CssClassTitleCell + " " + List.CssClassTitleCellIndex;
+      string cssClass = CssClasses.TitleCell + " " + CssClasses.TitleCellIndex;
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -80,7 +80,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     private void RenderRowIndex (int index, string selectorControlID)
     {
       bool hasSelectorControl = selectorControlID != null;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassContent);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Content);
       if (hasSelectorControl)
       {
         Writer.AddAttribute (HtmlTextWriterAttribute.For, selectorControlID);

@@ -305,6 +305,7 @@
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListMenuBlockRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListNavigationBlockRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\IBocListPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocListTableBlockRenderer.cs" />
@@ -316,8 +317,10 @@
     <Compile Include="UI\Controls\Rendering\BocList\IBocSelectorColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocSelectorColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocIndexColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocListPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocListTableBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocSelectorColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\CssClassContainer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\Factories\BocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\BocListCustomColumnTuple.cs" />
     <Compile Include="UI\Controls\PropertyPathBinding.cs">

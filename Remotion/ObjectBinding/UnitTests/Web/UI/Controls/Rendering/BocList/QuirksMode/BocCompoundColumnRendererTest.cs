@@ -45,16 +45,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     {
       Column.FormatString = string.Empty;
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
 
       renderer.RenderDataCell (0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", List.CssClassContent);
+      Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
       Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 0);
     }
@@ -62,16 +62,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
 
       renderer.RenderDataCell (0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
-      Html.AssertAttribute (span, "class", List.CssClassContent);
+      Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
       Html.AssertTextNode (span, "referencedObject1", 0);
     }
@@ -82,13 +82,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       Column.EnforceWidth = true;
       Column.Width = new Unit (40, UnitType.Pixel);
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
 
       renderer.RenderDataCell (0, false, EventArgs);
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       var cropSpan = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (cropSpan, "title", "referencedObject1");
@@ -98,7 +98,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       Html.AssertStyleAttribute (cropSpan, "white-space", "nowrap");
 
       var span = Html.GetAssertedChildElement (cropSpan, "span", 0);
-      Html.AssertAttribute (span, "class", List.CssClassContent);
+      Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
       Html.AssertTextNode (span, "referencedObject1", 0);
     }

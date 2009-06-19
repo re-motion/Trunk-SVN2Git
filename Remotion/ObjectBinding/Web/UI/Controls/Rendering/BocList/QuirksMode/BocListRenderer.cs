@@ -51,10 +51,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <param name="list">The <see cref="BocList"/> object to render.</param>
     /// <param name="context">The <see cref="IHttpContext"/> which contains the response to render to.</param>
     /// <param name="writer">The target <see cref="HtmlTextWriter"/>.</param>
+    /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
     /// <param name="serviceLocator">The <see cref="IServiceLocator"/> from which factory objects for specialised renderers
     /// can be obtained.</param>
-    public BocListRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
-        : base (context, writer, list)
+    public BocListRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+        : base (context, writer, list, cssClasses)
     {
       _menuBlockRenderer = serviceLocator.GetInstance<IBocListMenuBlockRendererFactory>().CreateRenderer (context, writer, list);
       _navigationBlockRenderer = serviceLocator.GetInstance<IBocListNavigationBlockRendererFactory>().CreateRenderer (context, writer, list);

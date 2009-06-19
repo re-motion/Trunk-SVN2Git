@@ -27,28 +27,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
   /// </summary>
   public abstract class BocListRendererBase : BocRendererBase<IBocList>
   {
+    private readonly CssClassContainer _cssClasses;
     // constants
-    // unused protected const string c_dataRowHiddenFieldIDSuffix = "_Boc_HiddenField_";
     /// <summary>Suffix for controls used for selecting or unselecting single rows.</summary>
     protected const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
 
     /// <summary>Suffix for the control used to select all visible rows.</summary>
     protected const string c_titleRowSelectorControlIDSuffix = "_Boc_SelectorControl_SelectAll";
 
-    // unused protected const string c_availableViewsListIDSuffix = "_Boc_AvailableViewsList";
-    // unused protected const string c_optionsMenuIDSuffix = "_Boc_OptionsMenu";
-
-    // <summary> Prefix applied to the post back argument of the event type column commands. </summary>
-    // unused protected const int c_titleRowIndex = -1;protected const string c_eventListItemCommandPrefix = "ListCommand=";
-    // <summary> Prefix applied to the post back argument of the event type menu commands. </summary>
-    // unused protected const string c_eventMenuItemPrefix = "MenuItem=";
-    // <summary> Prefix applied to the post back argument of the custom columns. </summary>
-    // unused protected const string c_customCellEventPrefix = "CustomCell=";
-
-    // unused protected const string c_rowEditModeRequiredFieldIcon = "RequiredField.gif";
-    // unused protected const string c_rowEditModeValidationErrorIcon = "ValidationError.gif";
-
-    // unused protected const string c_scriptFileUrl = "BocList.js";
     /// <summary>Name of the JavaScript function to call when a command control has been clicked.</summary>
     protected const string c_onCommandClickScript = "BocList_OnCommandClick();";
 
@@ -56,13 +42,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 
     /// <summary>Entity definition for whitespace separating controls, e.g. icons from following text</summary>
     protected const string c_whiteSpace = "&nbsp;";
-
-    // <summary> The key identifying a fixed column resource entry. </summary>
-    // unused protected const string c_resourceKeyFixedColumns = "FixedColumns";
-    // <summary> The key identifying a options menu item resource entry. </summary>
-    // unused protected const string c_resourceKeyOptionsMenuItems = "OptionsMenuItems";
-    // <summary> The key identifying a List menu item resource entry. </summary>
-    // unused protected const string c_resourceKeyListMenuItems = "ListMenuItems";
 
     /// <summary>Number of columns to show in design mode before actual columns have been defined.</summary>
     protected const int c_designModeDummyColumnCount = 3;
@@ -77,11 +56,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <param name="context">The <see cref="IHttpContext"/> that contains the response for which to render the list.</param>
     /// <param name="list">The <see cref="BocList"/> to render.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the list to.</param>
-    protected BocListRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list)
+    /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
+    protected BocListRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses)
         : base(context, writer, list)
     {
-      ArgumentUtility.CheckNotNull ("list", list);
-      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
+      _cssClasses = cssClasses;
+    }
+
+    public CssClassContainer CssClasses
+    {
+      get { return _cssClasses; }
     }
 
     /// <summary>Gets the <see cref="BocList"/> object that will be rendered.</summary>
@@ -194,9 +179,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     {
       string cssClassTableCell;
       if (isOddRow)
-        cssClassTableCell = List.CssClassDataCellOdd;
+        cssClassTableCell = CssClasses.DataCellOdd;
       else
-        cssClassTableCell = List.CssClassDataCellEven;
+        cssClassTableCell = CssClasses.DataCellEven;
       return cssClassTableCell;
     }
 

@@ -311,21 +311,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string ToolTip { get; }
     TemplateControl TemplateControl { get; }
     string AppRelativeTemplateSourceDirectory { get; }
-    string CssClassAvailableViewsListLabel { get; }
-    string CssClassAvailableViewsListDropDownList { get; }
-    string CssClassNavigator { get; }
-    string CssClassSortingOrder { get; }
-    string CssClassContent { get; }
-    string CssClassTable { get; }
-    string CssClassTableBody { get; }
-    string CssClassTableHead { get; }
-    string CssClassTitleCell { get; }
-    string CssClassDataRow { get; }
-    string CssClassDataRowSelected { get; }
-    string CssClassDataCellOdd { get; }
-    string CssClassDataCellEven { get; }
-    string CssClassTitleCellIndex { get; }
-    string CssClassDataCellIndex { get; }
     System.Collections.Generic.IList<int> SelectorControlCheckedState { get; }
     IEditModeController EditModeController { get; }
     ArrayList SortingOrder { get; }

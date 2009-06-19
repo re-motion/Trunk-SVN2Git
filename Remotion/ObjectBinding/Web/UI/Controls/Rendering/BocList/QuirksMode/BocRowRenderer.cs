@@ -34,8 +34,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 
     private readonly IServiceLocator _serviceLocator;
 
-    public BocRowRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
-        : base (context, writer, list)
+    public BocRowRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+        : base (context, writer, list, cssClasses)
     {
       _serviceLocator = serviceLocator;
     }
@@ -229,9 +229,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     {
       string cssClassTableRow;
       if (isChecked && List.AreDataRowsClickSensitive())
-        cssClassTableRow = List.CssClassDataRowSelected;
+        cssClassTableRow = CssClasses.DataRowSelected;
       else
-        cssClassTableRow = List.CssClassDataRow;
+        cssClassTableRow = CssClasses.DataRow;
       return cssClassTableRow;
     }
   }

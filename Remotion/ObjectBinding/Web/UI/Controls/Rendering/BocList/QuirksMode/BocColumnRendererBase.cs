@@ -49,8 +49,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// <param name="context">The <see cref="IHttpContext"/> that contains the response for which to render the list.</param>
     /// <param name="writer">The <see cref="HtmlTextWriter"/> to render the cells to.</param>
     /// <param name="columnDefinition">The <typeparamref name="TBocColumnDefinition"/> for which cells are rendered.</param>
-    protected BocColumnRendererBase (IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefinition)
-        : base (context, writer, list)
+    /// <param name="cssClasses">The <see cref="CssClassContainer"/> containing the CSS classes to apply to the rendered elements.</param>
+    protected BocColumnRendererBase (
+        IHttpContext context, HtmlTextWriter writer, IBocList list, TBocColumnDefinition columnDefinition, CssClassContainer cssClasses)
+        : base (context, writer, list, cssClasses)
     {
       ArgumentUtility.CheckNotNull ("columnDefinition", columnDefinition);
 
@@ -75,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 
     public virtual void RenderTitleCell (SortingDirection sortingDirection, int orderIndex)
     {
-      string cssClassTitleCell = List.CssClassTitleCell;
+      string cssClassTitleCell = CssClasses.TitleCell;
       if (!StringUtility.IsNullOrEmpty (Column.CssClass))
         cssClassTitleCell += " " + Column.CssClass;
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTitleCell);
@@ -141,7 +143,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 
       //  WhiteSpace before icon
       Writer.Write (c_whiteSpace);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, List.CssClassSortingOrder);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.SortingOrder);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       Controls.BocList.ResourceIdentifier? alternateTextID;

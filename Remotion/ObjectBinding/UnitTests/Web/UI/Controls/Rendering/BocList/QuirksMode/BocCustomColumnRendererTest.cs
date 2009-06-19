@@ -59,12 +59,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
       List.OnPreRender();
 
-      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (
+          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "onclick", "BocList_OnCommandClick();");
@@ -76,12 +77,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
       List.OnPreRender();
 
-      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (
+          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "onclick", "BocList_OnCommandClick();");
@@ -93,12 +95,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       Column.Mode = BocCustomColumnDefinitionMode.NoControls;
       List.OnPreRender();
 
-      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (HttpContext, Html.Writer, List, Column);
+      IBocColumnRenderer<BocCustomColumnDefinition> renderer = new BocCustomColumnRenderer (
+          HttpContext, Html.Writer, List, Column, CssClassContainer.Instance);
       renderer.RenderDataCell (0, false, EventArgs);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", List.CssClassDataCellOdd);
+      Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
     }
   }
 }

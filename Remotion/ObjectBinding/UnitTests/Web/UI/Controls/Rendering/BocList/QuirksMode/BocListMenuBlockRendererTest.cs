@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
@@ -39,12 +40,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (mock => mock.AvailableViewsList).Return (dropDownList);
       List.Stub (mock => mock.HasAvailableViewsList).Return (true);
       List.Stub (mock => mock.AvailableViewsListTitle).Return ("Views List Title");
-      List.Stub (mock => mock.CssClassAvailableViewsListLabel).Return ("CssClass");
 
       dropDownList.Stub (mock => mock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown list"));
 
-      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List);
+      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
       renderer.Render();
 
       var document = Html.GetResultDocument();
@@ -54,7 +54,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       Html.AssertStyleAttribute (div, "margin-bottom", "5pt");
 
       var span = Html.GetAssertedChildElement (div, "span", 0);
-      Html.AssertAttribute (span, "class", "CssClass");
+      Html.AssertAttribute (span, "class", CssClassContainer.Instance.AvailableViewsListLabel);
       Html.AssertTextNode (span, "Views List Title", 0);
 
       Html.AssertTextNode (div, HtmlHelper.WhiteSpace + "mocked dropdown list", 1);
@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       optionsMenu.Stub (menuMock => menuMock.RenderControl (Html.Writer)).WhenCalled (
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown menu"));
 
-      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List);
+      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
       renderer.Render();
 
       Assert.That (Html.GetDocumentText().StartsWith ("mocked dropdown menu"));
@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
 
       menuItemCollection.Add (item);
 
-      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List);
+      var renderer = new BocListMenuBlockRenderer (HttpContext, Html.Writer, List, CssClassContainer.Instance);
       renderer.Render();
 
       var document = Html.GetResultDocument();
@@ -129,7 +129,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       var a = Html.GetAssertedChildElement (span, "a", 0);
 
       var img = Html.GetAssertedChildElement (a, "img", 0);
-      Html.AssertAttribute (img, "src", "/Images/NullIcon.gif", HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (img, "src", "/Images/NullIcon.gif", HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (img, "vertical-align", "middle");
       Html.AssertStyleAttribute (img, "border-style", "none");
 

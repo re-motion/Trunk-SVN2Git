@@ -37,8 +37,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// <see cref="BocListRendererFactory"/> to obtain instances of this class.
     /// </remarks>
-    public BocRowEditModeColumnRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, BocRowEditModeColumnDefinition columnDefinition)
-        : base (context, writer, list, columnDefinition)
+    public BocRowEditModeColumnRenderer (
+        IHttpContext context, HtmlTextWriter writer, IBocList list, BocRowEditModeColumnDefinition columnDefinition, CssClassContainer cssClasses)
+        : base (context, writer, list, columnDefinition, cssClasses)
     {
     }
 
