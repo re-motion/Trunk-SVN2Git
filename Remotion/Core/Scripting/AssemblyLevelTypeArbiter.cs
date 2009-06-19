@@ -26,7 +26,7 @@ namespace Remotion.Scripting
   /// </summary>
   public class AssemblyLevelTypeArbiter : ITypeArbiter
   {
-    private readonly Dictionary<Assembly,bool> _validAssemblies;
+    private readonly Dictionary<Assembly,bool> _validAssemblies = new Dictionary<Assembly, bool>();
 
     public AssemblyLevelTypeArbiter (Assembly[] validAssemblies)
     {
@@ -38,7 +38,7 @@ namespace Remotion.Scripting
 
     public bool IsTypeValid (Type type)
     {
-      throw new NotImplementedException();
+      return _validAssemblies.ContainsKey (type.Assembly);
     }
   }
 }

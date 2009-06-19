@@ -23,10 +23,10 @@ namespace Remotion.Scripting.UnitTests
   public class AssemblyLevelTypeArbiterTest
   {
     [Test]
-    [Explicit]
     public void IsTypeValid ()
     {
       var typeArbiter = new AssemblyLevelTypeArbiter (new[] { typeof(Object).Assembly, this.GetType().Assembly });
+      
       Assert.That (typeArbiter.IsTypeValid (typeof (string)), Is.True);
       Assert.That (typeArbiter.IsTypeValid (typeof (AssemblyLevelTypeArbiterTest)), Is.True);
 
