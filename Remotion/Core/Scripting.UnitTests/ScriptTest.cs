@@ -20,7 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
-  public class ScriptContextTest
+  public class ScriptTest
   {
     
   }

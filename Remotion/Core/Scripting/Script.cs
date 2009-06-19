@@ -13,14 +13,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
-
-namespace Remotion.Scripting.UnitTests
+namespace Remotion.Scripting
 {
-  [TestFixture]
-  public class ScriptContextTest
+  /// <summary>
+  /// Represents a re-motion script which knows its <see cref="ScriptContext"/> and <see cref="ScriptingHost.ScriptLanguageType"/>.
+  /// </summary>
+  public class Script
   {
     
   }
