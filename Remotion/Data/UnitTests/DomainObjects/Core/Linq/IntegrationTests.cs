@@ -426,15 +426,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1180")]
     public void QueryWithSubQueryInMainFrom ()
     {
-      var orders = from c in
-                     (from ci in QueryFactory.CreateLinqQuery<Computer> () select ci)
-                   select c;
-      
+      var orders = from c in (from ci in QueryFactory.CreateLinqQuery<Computer> () select ci) select c;
+
       CheckQueryResult (orders, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3, DomainObjectIDs.Computer4, 
           DomainObjectIDs.Computer5 );
+    }
+
+    [Test]
+    public void QueryWithInto ()
+    {
+      var orders = from c in QueryFactory.CreateLinqQuery<Customer> () 
+                   where c.ID == DomainObjectIDs.Customer1 
+                   select c.Orders 
+                   into x 
+                   from o in x 
+                   from oi in o.OrderItems
+                   select oi;
+
+      CheckQueryResult (orders, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
 
     [Test]
@@ -472,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void QueryWithSeveralJoinsAndCrossApply ()
+    public void QueryWithSeveralJoinsAndLet ()
     {
       var ceos = from o in QueryFactory.CreateLinqQuery<Order>()
                  let x = o.Customer.Ceo
@@ -483,8 +494,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1181")]
-    public void QueryWithLet_SeveralCrossApplies ()
+    public void QueryWithSeveralLets ()
     {
       var orders = from o in QueryFactory.CreateLinqQuery<Order>()
                    let x = o
