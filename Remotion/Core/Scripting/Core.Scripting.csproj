@@ -61,7 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="ScriptingHost.cs" />
-    <Compile Include="TypeArbiter.cs" />
+    <Compile Include="AssemblyLevelTypeArbiter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.Core.csproj">

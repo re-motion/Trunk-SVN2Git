@@ -14,14 +14,24 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
+using System.Reflection;
 
-namespace Remotion.Scripting.UnitTests
+namespace Remotion.Scripting
 {
-  [TestFixture]
-  public class TypeArbiterTest
+  /// <summary>
+  /// Categorizes <see cref="Type"/>|s into "valid" and "invalid" types, 
+  /// based on whether their assembly is a member of the class's assembly collection.
+  /// </summary>
+  public class AssemblyLevelTypeArbiter : ITypeArbiter
   {
-    
+    public AssemblyLevelTypeArbiter (Assembly[] validAssemblies)
+    {
+      throw new NotImplementedException();
+    }
+
+    public bool IsTypeValid (Type type)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

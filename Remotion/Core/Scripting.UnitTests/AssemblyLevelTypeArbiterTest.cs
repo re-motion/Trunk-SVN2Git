@@ -13,10 +13,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Scripting
+using System;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+
+namespace Remotion.Scripting.UnitTests
 {
-  public class TypeArbiter
+  [TestFixture]
+  public class AssemblyLevelTypeArbiterTest
   {
-    
+    [Test]
+    public void IsTypeValid ()
+    {
+      var typeArbiter = new AssemblyLevelTypeArbiter (new[] { typeof(Object).Assembly, this.GetType().Assembly });
+    }
   }
 }

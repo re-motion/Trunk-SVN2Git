@@ -26,7 +26,7 @@ namespace Remotion.Scripting
     /// <summary>
     /// Decides whether passed <see cref="Type"/> is valid.
     /// </summary>
-    /// <returns><c>true</c> if <see cref="Type"/> is valid, <c>false</c> otherwise.</returns>
+    /// <returns><see langword="true" /> if <see cref="Type"/> is valid, <see langword="false" /> otherwise.</returns>
     bool IsTypeValid (Type type);  
   }
 }
