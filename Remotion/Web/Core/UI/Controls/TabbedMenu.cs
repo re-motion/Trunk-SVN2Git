@@ -36,7 +36,7 @@ namespace Remotion.Web.UI.Controls
   ///   The <b>TabbedMenu</b> can be used to provide a navigation menu.
   /// </summary>
   [Designer (typeof (TabbedMenuDesigner))]
-  public class TabbedMenu : WebControl, INavigationControl
+  public class TabbedMenu : WebControl, INavigationControl, ITabbedMenu
   {
     // constants
     private const string c_styleFileUrl = "TabbedMenu.css";
@@ -203,7 +203,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       base.AddAttributesToRender (writer);
-      if (ControlHelper.IsDesignMode (this, Context))
+      if (IsDesignMode)
         writer.AddStyleAttribute ("width", "100%");
       if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
@@ -363,6 +363,11 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
+    protected virtual bool IsDesignMode
+    {
+      get { return ControlHelper.IsDesignMode (this, Context); }
+    }
+
     /// <summary> Gets the IDs of the tabs to be selected from the query string. </summary>
     /// <returns> 
     ///   A string array containing the ID of the <see cref="MainMenuTab"/> at index 0 and the ID of the 
@@ -372,7 +377,7 @@ namespace Remotion.Web.UI.Controls
     {
       string[] selection = null;
 
-      if (!ControlHelper.IsDesignMode (this, Context))
+      if (!IsDesignMode)
       {
         string value;
         if (Page is IWxePage)
@@ -397,7 +402,7 @@ namespace Remotion.Web.UI.Controls
     {
       string[] selection = null;
 
-      if (!ControlHelper.IsDesignMode (this, Context))
+      if (!IsDesignMode)
       {
         IWindowStateManager windowStateManager = Page as IWindowStateManager;
         if (windowStateManager != null)
@@ -597,7 +602,7 @@ namespace Remotion.Web.UI.Controls
     {
       if (resourceManager == null)
         return;
-      if (ControlHelper.IsDesignMode (this, Context))
+      if (IsDesignMode)
         return;
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (StatusText);

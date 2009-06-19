@@ -25,7 +25,6 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode;
-using Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 

@@ -19,6 +19,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
+using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Rhino.Mocks;
 
@@ -31,15 +32,23 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering
     public StubServiceLocator ()
     {
       var tabStripRendererStub = MockRepository.GenerateStub<IWebTabStripRenderer>();
+      var tabStripPreRendererStub = MockRepository.GenerateStub<IWebTabStripPreRenderer> ();
       var tabRendererStub = MockRepository.GenerateStub<IWebTabRenderer>();
 
       var stubTabRendererFactory = MockRepository.GenerateStub<IWebTabRendererFactory>();
       stubTabRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null)).IgnoreArguments().Return (tabRendererStub);
 
       var stubTabStripRendererFactory = MockRepository.GenerateStub<IWebTabStripRendererFactory>();
-      stubTabStripRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null, stubTabRendererFactory)).IgnoreArguments().Return (tabStripRendererStub);
-      _instances.Add (typeof (IWebTabStripRendererFactory), stubTabStripRendererFactory);
+      stubTabStripRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null, stubTabRendererFactory)).IgnoreArguments().Return (
+          tabStripRendererStub);
+      stubTabStripRendererFactory.Stub (stub => stub.CreatePreRenderer (null, null)).IgnoreArguments ().Return (
+          tabStripPreRendererStub);
 
+      var menuTabRendererFactory = MockRepository.GenerateStub<IMenuTabRendererFactory>();
+      menuTabRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null)).IgnoreArguments().Return (tabRendererStub);
+
+      _instances.Add (typeof (IWebTabStripRendererFactory), stubTabStripRendererFactory);
+      _instances.Add (typeof (IMenuTabRendererFactory), menuTabRendererFactory);
       _instances.Add (typeof (IDropDownMenuRendererFactory), new DropDownRendererFactory());
     }
 

@@ -17,7 +17,7 @@ using System;
 using System.Xml;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip
+namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 {
   public static class XmlNodeExtensions
   {

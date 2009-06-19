@@ -101,6 +101,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web">
       <Name>system.web</Name>
     </Reference>
@@ -186,12 +187,14 @@
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\StubServiceLocator.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuRendererTest.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\WebTabStripRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\TabbedMultiViewMock.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\WebTabStripMock.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\XmlNodeExtensions.cs" />
+    <Compile Include="UI\Controls\Rendering\XmlNodeExtensions.cs" />
     <Compile Include="UI\Controls\ReplaceableControlMock.cs" />
     <Compile Include="UI\Controls\RequestMode.cs" />
     <Compile Include="UI\Controls\TestPageHolder.cs" />

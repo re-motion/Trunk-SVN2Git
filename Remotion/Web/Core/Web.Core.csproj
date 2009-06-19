@@ -182,6 +182,8 @@
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\IMenuTabRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenu.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\IWebMenuItem.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\TabbedMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewPreRenderer.cs" />

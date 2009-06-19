@@ -22,7 +22,6 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering.SingleView;
 using Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode;
 using Rhino.Mocks;
-using Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.StandardMode
 {

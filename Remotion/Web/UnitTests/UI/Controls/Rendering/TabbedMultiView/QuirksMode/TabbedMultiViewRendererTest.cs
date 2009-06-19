@@ -25,7 +25,6 @@ using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.TabbedMultiView;
 using Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
-using Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMode

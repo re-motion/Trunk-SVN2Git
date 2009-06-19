@@ -14,29 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.UnitTests.UI.Controls
+namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
-[ToolboxItem (false)]
-public class TabbedMenuMock: TabbedMenu
-{
-  private bool _isDesignMode;
-
-  public new void EvaluateWaiConformity ()
+  public interface ITabbedMenu : IStyledControl
   {
-    base.EvaluateWaiConformity ();
   }
-
-  protected override bool IsDesignMode
-  {
-    get{return _isDesignMode;}
-  }
-
-  public void SetDesignMode (bool value)
-  {
-    _isDesignMode = value;
-  }
-}
 }
