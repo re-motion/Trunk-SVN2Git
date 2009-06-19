@@ -309,7 +309,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1223: Should work again after integrating AdditionalFromClause")]
     public void QueryWithSubQueryAndWhereInAdditionalFrom ()
     {
       var orders =
