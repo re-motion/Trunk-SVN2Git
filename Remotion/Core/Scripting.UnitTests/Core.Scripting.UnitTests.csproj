@@ -70,6 +70,7 @@
     <Compile Include="ForwardingProxyBuilderTest.cs" />
     <Compile Include="ScriptContextTest.cs" />
     <Compile Include="ScriptTest.cs" />
+    <Compile Include="StableBindingProxyProviderTest.cs" />
     <Compile Include="TestDomain\IProxiedGetName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />

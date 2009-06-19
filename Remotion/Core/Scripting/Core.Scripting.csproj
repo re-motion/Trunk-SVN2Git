@@ -67,6 +67,7 @@
     <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptingHost.cs" />
     <Compile Include="AssemblyLevelTypeArbiter.cs" />
+    <Compile Include="StableBindingProxyProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.Core.csproj">

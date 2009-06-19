@@ -13,16 +13,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Scripting
+using System;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
+
+namespace Remotion.Scripting.UnitTests
 {
-  /// <summary>
-  /// Represents a re-motion script context, which is used to isolate different re-motion modules from one another.
-  /// Static members give access to the currently actice script context.
-  /// <remarks>
-  /// <seealso cref="Script"/>
-  /// </remarks>
-  /// </summary>
-  public class ScriptContext
+  [TestFixture]
+  public class StableBindingProxyProviderTest
   {
     
   }

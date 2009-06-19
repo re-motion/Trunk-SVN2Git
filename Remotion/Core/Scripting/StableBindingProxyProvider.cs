@@ -16,13 +16,14 @@
 namespace Remotion.Scripting
 {
   /// <summary>
-  /// Represents a re-motion script context, which is used to isolate different re-motion modules from one another.
-  /// Static members give access to the currently actice script context.
+  /// Creates and caches forwarding proxy objects which expose only the members known in the current <see cref="ScriptContext"/>.
   /// <remarks>
-  /// <seealso cref="Script"/>
+  /// Used by the re-motion mixin engine to present only the members of a class known in the current <see cref="ScriptContext"/>
+  /// to the Dynamic Language Runtime, thereby guaranteeing that mixins coming from different re-motion modules do not 
+  /// interfere with the mixins and scripts coming from a specific module.
   /// </remarks>
   /// </summary>
-  public class ScriptContext
+  public class StableBindingProxyProvider
   {
     
   }
