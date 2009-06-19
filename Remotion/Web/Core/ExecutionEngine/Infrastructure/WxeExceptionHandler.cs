@@ -32,7 +32,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     }
 
     /// <summary> 
-    ///   If this is <c>true</c>, exceptions are caught and returned in the <see cref="Exception"/> property.
+    ///   If this is <see langword="true" />, exceptions are caught and returned in the <see cref="Exception"/> property.
     /// </summary>
     public bool CatchExceptions
     {
@@ -41,7 +41,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
     }
 
     /// <summary>
-    ///   Sets <see cref="CatchExceptions"/> to <c>true</c> and limits the types of exceptions that are caught.
+    ///   Sets <see cref="CatchExceptions"/> to <see langword="true" /> and limits the types of exceptions that are caught.
     /// </summary>
     /// <param name="exceptionTypes"> Exceptions of these types or sub classes will be caught, all other
     ///     exceptions will be rethrown. </param>

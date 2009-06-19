@@ -36,8 +36,8 @@ namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
     /// </summary>
     /// <param name="typeHandlerMap">The handler map. External container so it can be shared with a 2nd 
     /// instance configured to exhibit different registered type handling behavior.</param> 
-    /// <param name="searchForParentHandlers">If <c>false</c> only uses a handler if his type matches the type of the instance passed 
-    /// to <see cref="ToTextIfTypeMatches"/>. If <c>true</c> recursively searches for the nearest registered base type handler, 
+    /// <param name="searchForParentHandlers">If <see langword="false" /> only uses a handler if his type matches the type of the instance passed 
+    /// to <see cref="ToTextIfTypeMatches"/>. If <see langword="true" /> recursively searches for the nearest registered base type handler, 
     /// if no exact match can be found.</param>
     public ToTextProviderRegisteredTypeHandler (ToTextSpecificHandlerMap<IToTextSpecificTypeHandler> typeHandlerMap, bool searchForParentHandlers)
     {

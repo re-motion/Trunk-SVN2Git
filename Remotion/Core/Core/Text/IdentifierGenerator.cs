@@ -390,7 +390,7 @@ public class IdentifierGenerator: ICloneable
   /// identifier, while accented letters and umlauts are not.
   /// </summary>
   /// <remarks>
-  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <c>true</c>.
+  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <see langword="true" />.
   /// </remarks>
   public bool AllowFirstCharacterEnglishLetters
   {
@@ -403,7 +403,7 @@ public class IdentifierGenerator: ICloneable
   /// including accented letters and umlauts.
   /// </summary>
   /// <remarks>
-  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <c>true</c>.
+  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <see langword="true" />.
   /// </remarks>
   public bool AllowFirstCharacterLanguageSpecificLetters
   {
@@ -415,7 +415,7 @@ public class IdentifierGenerator: ICloneable
   /// States that numeric digits are valid for the first character of an identifier.
   /// </summary>
   /// <remarks>
-  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <c>true</c>.
+  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <see langword="true" />.
   /// </remarks>
   public bool AllowFirstCharacterDigits
   {
@@ -427,7 +427,7 @@ public class IdentifierGenerator: ICloneable
   /// Provides a list of characters that are valid for the first character of an identifier.
   /// </summary>
   /// <remarks>
-  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <c>true</c>.
+  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <see langword="true" />.
   /// </remarks>
   public string AllowFirstCharacterAdditionalCharacters
   {
@@ -439,7 +439,7 @@ public class IdentifierGenerator: ICloneable
   /// If the first character is not valid and has no special replace string defined, it isreplaced with this value.
   /// </summary>
   /// <remarks>
-  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <c>true</c>.
+  /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <see langword="true" />.
   /// </remarks>
   public string DefaultFirstCharacterReplaceString
   {

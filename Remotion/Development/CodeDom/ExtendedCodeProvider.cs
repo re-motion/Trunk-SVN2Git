@@ -101,7 +101,7 @@ public abstract class ExtendedCodeProvider
   /// <summary>
   /// Specifies whether the current provider supports casting operators.
   /// </summary>
-  /// <value>The default implementation always returns <c>false</c>.</value>
+  /// <value>The default implementation always returns <see langword="false" />.</value>
   public virtual bool SupportsCastingOperators
   {
     get { return false; }
@@ -281,7 +281,7 @@ public abstract class ExtendedCodeProvider
   /// Creates a type that contains integer values.
   /// </summary>
   /// <param name="name">The name of the new type.</param>
-  /// <returns>The default implementation returns a <c>CodeTypeDeclaration</c> object with its <c>IsEnum</c> property set to <c>true</c>.</returns>
+  /// <returns>The default implementation returns a <c>CodeTypeDeclaration</c> object with its <c>IsEnum</c> property set to <see langword="true" />.</returns>
   public virtual CodeTypeDeclaration CreateEnumDeclaration (string name)
   {
     CodeTypeDeclaration enumDeclaration = new CodeTypeDeclaration (GetValidName (name));

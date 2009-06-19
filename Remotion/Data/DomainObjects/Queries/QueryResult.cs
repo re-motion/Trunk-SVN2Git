@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// Determines whether the result set contains duplicates.
     /// </summary>
     /// <returns>
-    /// 	<c>true</c> if result set contains duplicates; otherwise, <c>false</c>.
+    /// 	<see langword="true" /> if result set contains duplicates; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// This method needs additional memory to hold up to <see cref="Count"/> elements to check for duplicates, and it iterates over the result 
@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// Determines whether result set contains <see langword="null"/> values.
     /// </summary>
     /// <returns>
-    /// 	<c>true</c> if result set contains <see langword="null"/> values; otherwise, <c>false</c>.
+    /// 	<see langword="true" /> if result set contains <see langword="null"/> values; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// This method iterates over the result elements, visiting each at most once.

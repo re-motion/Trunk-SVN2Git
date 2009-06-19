@@ -14,7 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace Remotion.Scripting
 {
@@ -24,9 +26,14 @@ namespace Remotion.Scripting
   /// </summary>
   public class AssemblyLevelTypeArbiter : ITypeArbiter
   {
+    private readonly Dictionary<Assembly,bool> _validAssemblies;
+
     public AssemblyLevelTypeArbiter (Assembly[] validAssemblies)
     {
-      throw new NotImplementedException();
+      foreach (var assembly in validAssemblies)
+      {
+        _validAssemblies.Add (assembly, true);
+      }
     }
 
     public bool IsTypeValid (Type type)

@@ -42,7 +42,7 @@ namespace Remotion.Utilities
       /// <summary> The string value at this position. </summary>
       public string Value;
 
-      /// <summary> An indicator that is <c>true</c> if the string at this position was quoted in the input string. </summary>
+      /// <summary> An indicator that is <see langword="true" /> if the string at this position was quoted in the input string. </summary>
       public bool IsQuoted;
     }
 

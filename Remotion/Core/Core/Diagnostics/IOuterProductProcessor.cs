@@ -24,13 +24,13 @@ namespace Remotion.Diagnostics
     /// <summary>
     /// Processor callback invoked before a nested for loop starts.
     /// </summary>
-    /// <returns><c>true</c> to continue looping, <c>false</c> to break from the current loop.</returns>
+    /// <returns><see langword="true" /> to continue looping, <see langword="false" /> to break from the current loop.</returns>
     //TODO: rename ProcessStateBeforeLoop?
     bool DoBeforeLoop ();
     /// <summary>
     /// Processor callback invoked after a nested for loop has finished.
     /// </summary>
-    /// <returns><c>true</c> to continue looping, <c>false</c> to break from the current loop.</returns>
+    /// <returns><see langword="true" /> to continue looping, <see langword="false" /> to break from the current loop.</returns>
     //TODO: rename ProcessStateAfterLoop?
     bool DoAfterLoop ();
     /// <summary>

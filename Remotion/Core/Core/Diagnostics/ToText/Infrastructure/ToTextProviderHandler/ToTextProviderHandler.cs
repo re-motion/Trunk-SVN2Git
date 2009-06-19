@@ -42,7 +42,7 @@ namespace Remotion.Diagnostics.ToText.Infrastructure.ToTextProviderHandler
     /// </summary>
     /// <param name="toTextParameters">The instance to convert, type of the instance and <see cref="ToTextBuilder"/> to add the human readable text to.</param>
     /// <param name="toTextProviderHandlerFeedback">If the type was handled by the method, it must set 
-    /// the <see cref="ToTextProviderHandlerFeedback.Handled"/> property of the passed argument to <c>true</c>.</param>
+    /// the <see cref="ToTextProviderHandlerFeedback.Handled"/> property of the passed argument to <see langword="true" />.</param>
     public abstract void ToTextIfTypeMatches (ToTextParameters toTextParameters, ToTextProviderHandlerFeedback toTextProviderHandlerFeedback);
 
     /// <summary>

@@ -102,7 +102,7 @@ public class InvalidCommandLineArgumentValueException: CommandLineArgumentExcept
 /// </summary>
 /// <remarks>
 /// The exception is thrown either because there is no argument definition with the specified name,
-/// or (if <see cref="CommandLineParser.IncrementalNameValidation"/> is <c>true</c>), because there 
+/// or (if <see cref="CommandLineParser.IncrementalNameValidation"/> is <see langword="true" />), because there 
 /// is more than one argument that starts with the specified string.
 /// </remarks>
 [Serializable]

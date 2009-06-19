@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <remarks>
     ///   Set this property to <see langword="null"/> in order to use the default value 
     ///   (see <see cref="IsReadOnly"/>). Note that if the data source is in read-only mode, the
-    ///   control is read-only too, even if this property is set to <c>false</c>.
+    ///   control is read-only too, even if this property is set to <see langword="false" />.
     /// </remarks>
     [Description ("Explicitly specifies whether the control should be displayed in read-only mode.")]
     [Category ("Data")]
