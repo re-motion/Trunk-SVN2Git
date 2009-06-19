@@ -51,8 +51,9 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
                       "  Views.SetBodyHeightToWindowHeight({0});" + Environment.NewLine +
                       "  Views.Adjust({0}, {1});" + Environment.NewLine +
                       "}}" + Environment.NewLine +
-                      "$(window).bind('resize', function(){{adjustView_{0}();}});" + Environment.NewLine;
-
+                      "$(window).bind('resize', function(){{adjustView_{0}();}});" + Environment.NewLine +
+                      "$(document).ready( function(){{ setTimeout('adjustView_{0}();', 10); }} );" + Environment.NewLine;
+      
       script = string.Format (script, Control.ClientID, Control.ViewClientID);
       Control.Page.ClientScript.RegisterClientScriptBlock (Control, Control.ClientID + "_AdjustView", script);
     }

@@ -53,7 +53,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
                       "  Views.AdjustTop({0}, {1}); " + Environment.NewLine +
                       "  Views.Adjust({0}, {2});" + Environment.NewLine +
                       "}}" + Environment.NewLine +
-                      "$(window).bind('resize', function(){{adjustView_{0}();}});" + Environment.NewLine;
+                      "$(window).bind('resize', function(){{adjustView_{0}();}});" + Environment.NewLine +
+                      "$(document).ready( function(){{ setTimeout('adjustView_{0}();', 10); }} );" + Environment.NewLine;
 
       script = string.Format (script, Control.ClientID, Control.TabStripContainerClientID, Control.ActiveViewClientID);
       Control.Page.ClientScript.RegisterClientScriptBlock (Control, Control.ClientID + "_AdjustView", script);
