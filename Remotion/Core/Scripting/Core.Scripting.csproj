@@ -63,6 +63,7 @@
     <Compile Include="ITypeArbiter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
+    <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptingHost.cs" />
     <Compile Include="AssemblyLevelTypeArbiter.cs" />
   </ItemGroup>
