@@ -73,6 +73,7 @@
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="TestDomain\Proxied.cs" />
     <Compile Include="ScriptingHostTest.cs" />
+    <Compile Include="TypeArbiterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">

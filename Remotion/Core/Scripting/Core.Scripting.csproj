@@ -57,9 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForwardingProxyBuilder.cs" />
+    <Compile Include="ITypeArbiter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="ScriptingHost.cs" />
+    <Compile Include="TypeArbiter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.Core.csproj">
