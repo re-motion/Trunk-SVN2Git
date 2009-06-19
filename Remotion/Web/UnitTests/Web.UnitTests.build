@@ -54,6 +54,7 @@
         <include asis="true" name="System.Core.dll"/>
         <include asis="true" name="System.Data.dll"/>
         <include asis="true" name="System.Design.dll"/>
+        <include asis="true" name="System.Drawing.dll"/>
         <include asis="true" name="System.Web.dll"/>
         <include asis="true" name="System.Xml.dll"/>
       </references>
