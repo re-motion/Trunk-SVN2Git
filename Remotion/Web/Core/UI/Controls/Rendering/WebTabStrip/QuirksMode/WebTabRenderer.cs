@@ -25,9 +25,12 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
   /// </summary>
   public class WebTabRenderer : RendererBase<IWebTabStrip>, IWebTabRenderer
   {
-    public WebTabRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
+    private readonly IWebTab _tab;
+
+    public WebTabRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTab tab)
         : base(context, writer, control)
     {
+      _tab = tab;
     }
 
     public virtual void RenderBeginTagForCommand (IWebTab tab, bool isEnabled, WebTabStyle style)

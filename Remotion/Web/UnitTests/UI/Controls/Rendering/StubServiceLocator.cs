@@ -20,8 +20,9 @@ using Remotion.Collections;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
+using Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
-using Rhino.Mocks;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 {
@@ -31,25 +32,11 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 
     public StubServiceLocator ()
     {
-      var tabStripRendererStub = MockRepository.GenerateStub<IWebTabStripRenderer>();
-      var tabStripPreRendererStub = MockRepository.GenerateStub<IWebTabStripPreRenderer> ();
-      var tabRendererStub = MockRepository.GenerateStub<IWebTabRenderer>();
-
-      var stubTabRendererFactory = MockRepository.GenerateStub<IWebTabRendererFactory>();
-      stubTabRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null)).IgnoreArguments().Return (tabRendererStub);
-
-      var stubTabStripRendererFactory = MockRepository.GenerateStub<IWebTabStripRendererFactory>();
-      stubTabStripRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null, stubTabRendererFactory)).IgnoreArguments().Return (
-          tabStripRendererStub);
-      stubTabStripRendererFactory.Stub (stub => stub.CreatePreRenderer (null, null)).IgnoreArguments ().Return (
-          tabStripPreRendererStub);
-
-      var menuTabRendererFactory = MockRepository.GenerateStub<IMenuTabRendererFactory>();
-      menuTabRendererFactory.Stub (stub => stub.CreateRenderer (null, null, null)).IgnoreArguments().Return (tabRendererStub);
-
-      _instances.Add (typeof (IWebTabStripRendererFactory), stubTabStripRendererFactory);
-      _instances.Add (typeof (IMenuTabRendererFactory), menuTabRendererFactory);
+      _instances.Add (typeof (IWebTabStripRendererFactory), new WebTabStripRendererFactory());
+      _instances.Add (typeof (ITabbedMenuRendererFactory), new WebTabStripRendererFactory());
       _instances.Add (typeof (IDropDownMenuRendererFactory), new DropDownRendererFactory());
+      _instances.Add (typeof (IWebTabRendererFactory), new WebTabStripRendererFactory());
+      _instances.Add (typeof (IMenuTabRendererFactory), new TabbedMenuRendererFactory ());
     }
 
     public void SetFactory<T> (T factory)

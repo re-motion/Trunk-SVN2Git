@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
@@ -26,12 +27,10 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
   /// </summary>
   public class WebTabStripRenderer : RendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    private readonly IWebTabRenderer _tabRenderer;
 
-    public WebTabStripRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTabRendererFactory factory)
+    public WebTabStripRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
         : base (context, writer, control)
     {
-      _tabRenderer = factory.CreateRenderer (context, writer, control);
     }
 
     public void Render ()
@@ -50,11 +49,6 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
       }
       RenderEndTabsPane();
       Writer.RenderEndTag();
-    }
-
-    public IWebTabRenderer WebTabRenderer
-    {
-      get { return _tabRenderer; }
     }
 
     protected void AddAttributesToRender ()
@@ -118,17 +112,19 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span
 
+      var tabRenderer = tab.GetRenderer (ServiceLocator.Current, Context, Writer, Control);
+
       bool isEnabled = !tab.IsSelected || Control.EnableSelectedTab;
       WebTabStyle style = tab.IsSelected ? Control.SelectedTabStyle : Control.TabStyle;
-      WebTabRenderer.RenderBeginTagForCommand (tab, isEnabled, style);
+      tabRenderer.RenderBeginTagForCommand (tab, isEnabled, style);
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabAnchorBody);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin anchor body span
 
-      WebTabRenderer.RenderContents (tab);
+      tabRenderer.RenderContents (tab);
 
       Writer.RenderEndTag(); // End anchor body span
-      WebTabRenderer.RenderEndTagForCommand (tab, isEnabled);
+      tabRenderer.RenderEndTagForCommand (tab, isEnabled);
 
       Writer.RenderEndTag(); // End tab span
 

@@ -18,8 +18,10 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.UI.Globalization;
 
@@ -321,6 +323,12 @@ public class WebTab: IWebTab, IControlStateManager
   public virtual bool EvaluateEnabled ()
   {
     return !IsDisabled;
+  }
+
+  public virtual IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, IHttpContext context, HtmlTextWriter writer, IWebTabStrip tabStrip)
+  {
+    var factory = serviceLocator.GetInstance<IWebTabRendererFactory>();
+    return factory.CreateRenderer (context, writer, tabStrip, this);
   }
 
   protected string GetPostBackClientEvent ()

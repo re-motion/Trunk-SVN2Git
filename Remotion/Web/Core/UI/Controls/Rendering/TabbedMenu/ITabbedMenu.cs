@@ -28,5 +28,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
     Style StatusStyle { get; }
     string StatusText { get; }
     bool IsDesignMode { get; }
+
+    new IPage Page { get; }
   }
 }

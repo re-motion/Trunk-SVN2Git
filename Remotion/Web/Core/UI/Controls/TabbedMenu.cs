@@ -48,26 +48,12 @@ namespace Remotion.Web.UI.Controls
     private static readonly object s_eventCommandClickEvent = new object ();
 
     // types
-    public class MenuTabStrip : WebTabStrip
-    {
-      public MenuTabStrip (TabbedMenu menu, Type[] types):base(menu, types)
-      {
-      }
 
-      public MenuTabStrip (MainMenuTabCollection tabCollection):base(tabCollection)
-      {
-      }
-
-      protected override Remotion.Web.UI.Controls.Rendering.WebTabStrip.IWebTabRendererFactory GetTabRendererFactory ()
-      {
-        return ServiceLocator.Current.GetInstance<IMenuTabRendererFactory>();
-      }
-    }
 
     // fields
     private readonly Style _statusStyle;
-    private readonly MenuTabStrip _mainMenuTabStrip;
-    private readonly MenuTabStrip _subMenuTabStrip;
+    private readonly WebTabStrip _mainMenuTabStrip;
+    private readonly WebTabStrip _subMenuTabStrip;
     private string _statusText;
     private bool _isSubMenuTabStripRefreshed;
     private bool _isPastInitialization;
@@ -78,8 +64,8 @@ namespace Remotion.Web.UI.Controls
     // construction and destruction
     public TabbedMenu ()
     {
-      _mainMenuTabStrip = new MenuTabStrip (new MainMenuTabCollection (this, new[] { typeof (MainMenuTab) }));
-      _subMenuTabStrip = new MenuTabStrip (this, new[] { typeof (SubMenuTab) });
+      _mainMenuTabStrip = new WebTabStrip (new MainMenuTabCollection (this, new[] { typeof (MainMenuTab) }));
+      _subMenuTabStrip = new WebTabStrip (this, new[] { typeof (SubMenuTab) });
       _statusStyle = new Style ();
       _subMenuBackgroundColor = new Color ();
     }
@@ -332,6 +318,11 @@ namespace Remotion.Web.UI.Controls
     public virtual bool IsDesignMode
     {
       get { return ControlHelper.IsDesignMode (this, Context); }
+    }
+
+    IPage ITabbedMenu.Page
+    {
+      get { return new PageWrapper (Page); }
     }
 
     /// <summary> Gets the IDs of the tabs to be selected from the query string. </summary>

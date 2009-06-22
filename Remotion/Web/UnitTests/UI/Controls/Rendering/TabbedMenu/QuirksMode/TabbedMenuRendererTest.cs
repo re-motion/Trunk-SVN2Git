@@ -16,18 +16,21 @@
 using System;
 using System.Drawing;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.UI.Controls;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.QuirksMode
 {
   [TestFixture]
   public class TabbedMenuRendererTest : RendererTestBase
   {
-    private TabbedMenuMock _control;
-    private ControlInvoker _invoker;
+    private ITabbedMenu _control;
 
     [TestFixtureSetUp]
     public void TestFixtureSetUp ()
@@ -39,10 +42,21 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.QuirksMode
     public void SetUp ()
     {
       Initialize();
-      _control = new TabbedMenuMock();
-      _invoker = new ControlInvoker (_control);
-      Page page = new Page();
-      page.Controls.Add (_control);
+
+      _control = MockRepository.GenerateStub<ITabbedMenu>();
+      _control.Stub (stub => stub.MainMenuTabStrip).Return (MockRepository.GenerateStub<IWebTabStrip>());
+      _control.Stub (stub => stub.SubMenuTabStrip).Return (MockRepository.GenerateStub<IWebTabStrip> ());
+
+      StateBag stateBag = new StateBag ();
+      _control.Stub (stub => stub.Attributes).Return (new AttributeCollection (stateBag));
+      _control.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
+      _control.Stub (stub => stub.StatusStyle).Return (new Style (stateBag));
+
+      _control.SubMenuTabStrip.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
+      _control.SubMenuTabStrip.Stub (stub => stub.Style).Return (_control.SubMenuTabStrip.ControlStyle.GetStyleAttributes(_control));
+
+      IPage pageStub = MockRepository.GenerateStub<IPage>();
+      _control.Stub (stub => stub.Page).Return (pageStub);
     }
 
     [Test]
@@ -54,22 +68,22 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.QuirksMode
     [Test]
     public void RenderEmptyMenuInDesignMode ()
     {
-      _control.SetDesignMode (true);
+      _control.Stub (stub => stub.IsDesignMode).Return (true);
       AssertControl (true, false, false);
     }
 
     [Test]
     public void RenderEmptyMenuWithStatusText ()
     {
-      _control.StatusText = "Status";
+      _control.Stub (stub => stub.StatusText).Return ("Status");
       AssertControl (false, true, false);
     }
 
     [Test]
     public void RenderEmptyMenuWithStatusTextInDesignMode ()
     {
-      _control.SetDesignMode (true);
-      _control.StatusText = "Status";
+      _control.Stub (stub => stub.IsDesignMode).Return (true);
+      _control.Stub (stub => stub.StatusText).Return ("Status");
       AssertControl (true, true, false);
     }
 
@@ -83,13 +97,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.QuirksMode
     [Test]
     public void RenderEmptyMenuWithBackgroundColor ()
     {
-      _control.SubMenuBackgroundColor = Color.Yellow;
+      _control.Stub (stub => stub.SubMenuBackgroundColor).Return (Color.Yellow);
       AssertControl (false, false, false);
     }
 
     private void AssertControl (bool isDesignMode, bool hasStatusText, bool hasCssClass)
     {
-      _invoker.PreRenderRecursive();
       var renderer = new TabbedMenuRenderer (HttpContext, Html.Writer, _control);
       renderer.Render();
       // _control.RenderControl (Html.Writer);

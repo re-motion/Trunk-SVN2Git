@@ -17,8 +17,11 @@ using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -42,6 +45,12 @@ namespace Remotion.Web.UI.Controls
     private void Initialize ()
     {
       _command = new SingleControlItemCollection (new NavigationCommand (), new[] { typeof (NavigationCommand) });
+    }
+
+    public override IWebTabRenderer GetRenderer (IServiceLocator serviceLocator, IHttpContext context, HtmlTextWriter writer, IWebTabStrip tabStrip)
+    {
+      var factory = serviceLocator.GetInstance<IMenuTabRendererFactory>();
+      return factory.CreateRenderer (context, writer, tabStrip, this);
     }
 
     protected TabbedMenu TabbedMenu

@@ -24,9 +24,9 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories
   /// </summary>
   public class WebTabStripRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
   {
-    public IWebTabStripRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTabRendererFactory tabRendererFactory)
+    public IWebTabStripRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
     {
-      return new WebTabStripRenderer (context, writer, control, tabRendererFactory);
+      return new WebTabStripRenderer (context, writer, control);
     }
 
     public IWebTabStripPreRenderer CreatePreRenderer (IHttpContext context, IWebTabStrip control)
@@ -34,9 +34,9 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories
       return new WebTabStripPreRenderer (context, control);
     }
 
-    IWebTabRenderer IWebTabRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
+    IWebTabRenderer IWebTabRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTab tab)
     {
-      return new WebTabRenderer (context, writer, control);
+      return new WebTabRenderer (context, writer, control, tab);
     }
   }
 }

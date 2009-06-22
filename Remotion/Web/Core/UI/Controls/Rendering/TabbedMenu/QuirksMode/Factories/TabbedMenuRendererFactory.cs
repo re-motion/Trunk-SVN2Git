@@ -22,9 +22,9 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
 {
   public class TabbedMenuRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
   {
-    public IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
+    public IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)
     {
-      return new MenuTabRenderer (context, writer, control);
+      return new MenuTabRenderer (context, writer, control, tab);
     }
 
     public ITabbedMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMenu control)

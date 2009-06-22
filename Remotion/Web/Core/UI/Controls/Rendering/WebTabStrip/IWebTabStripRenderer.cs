@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
@@ -23,7 +22,6 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
   /// </summary>
   public interface IWebTabStripRenderer : IRenderer<IWebTabStrip>
   {
-    IWebTabRenderer WebTabRenderer { get; }
     string CssClassBase { get; }
     string CssClassTabsPaneEmpty { get; }
     string CssClassTabsPane { get; }

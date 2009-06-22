@@ -25,8 +25,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
 {
   public class MenuTabRenderer : WebTabRenderer, IMenuTabRenderer
   {
-    public MenuTabRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
-        : base(context, writer, control)
+    public MenuTabRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)
+        : base(context, writer, control, tab)
     {
     }
 

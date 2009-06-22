@@ -14,11 +14,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
-  public interface IMenuTabRendererFactory : IWebTabRendererFactory
+  public interface IMenuTabRendererFactory
   {
+     IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab);
   }
 }

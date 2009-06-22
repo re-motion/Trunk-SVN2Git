@@ -24,7 +24,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
   /// </summary>
   public interface IWebTabStripRendererFactory
   {
-    IWebTabStripRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTabRendererFactory tabRendererFactory);
+    IWebTabStripRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control);
     IWebTabStripPreRenderer CreatePreRenderer (IHttpContext context, IWebTabStrip control);
   }
 }
