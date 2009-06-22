@@ -24,6 +24,30 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptContext
   {
-    
+    private readonly string _name;
+    private readonly ITypeArbiter _typeArbiter;
+
+    private ScriptContext (string name, ITypeArbiter typeArbiter)
+    {
+      _name = name;
+      _typeArbiter = typeArbiter;
+    }
+
+    /// <summary>
+    /// The name through which this <see cref="ScriptContext"/> is uniquely identified.
+    /// </summary>
+    public string Name
+    {
+      get { return _name; }
+    }
+
+    /// <summary>
+    /// The <see cref="ITypeArbiter"/> used in this <see cref="ScriptContext"/> to discern which methods/properties 
+    /// shall be exposed to the DLR (see <see cref="ForwardingProxyBuilder"/>).
+    /// </summary>
+    public ITypeArbiter TypeArbiter
+    {
+      get { return _typeArbiter; }
+    }
   }
 }

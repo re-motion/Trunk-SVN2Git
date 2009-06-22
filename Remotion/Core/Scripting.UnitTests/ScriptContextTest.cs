@@ -16,12 +16,28 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
   public class ScriptContextTest
   {
-    
+    [Test]
+    public void NameAndTypeArbiterProperties ()
+    {
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter>();
+      ScriptContext scriptContext = CreateScriptContext ("test", typeArbiterStub);
+      Assert.That (scriptContext.Name, Is.EqualTo ("test"));
+      Assert.That (scriptContext.TypeArbiter, Is.SameAs (typeArbiterStub));
+    }
+
+    private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
+    {
+      return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext",name,typeArbiter);
+    }
+
+ 
   }
 }
