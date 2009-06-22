@@ -30,18 +30,18 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
     {
     }
 
-    public override void RenderBeginTagForCommand (IWebTab tab, bool isEnabled, WebTabStyle style)
+    protected override void RenderBeginTagForCommand (bool isEnabled, WebTabStyle style)
     {
       ArgumentUtility.CheckNotNull ("style", style);
 
-      var menuTab = ((IMenuTab) tab).GetActiveTab();
-      var renderingCommand = GetRenderingCommand(menuTab, isEnabled);
+      var menuTab = ((IMenuTab) Tab).GetActiveTab ();
+      RenderingCommand = GetRenderingCommand(isEnabled, menuTab);
 
-      if (renderingCommand != null)
+      if (RenderingCommand != null)
       {
         NameValueCollection additionalUrlParameters = menuTab.GetUrlParameters();
-        renderingCommand.RenderBegin (
-            Writer, tab.GetPostBackClientEvent(), new string[0], string.Empty, null, additionalUrlParameters, false, style);
+        RenderingCommand.RenderBegin (
+            Writer, Tab.GetPostBackClientEvent (), new string[0], string.Empty, null, additionalUrlParameters, false, style);
       }
       else
       {
@@ -50,24 +50,22 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
       }
     }
 
-    private Command GetRenderingCommand (IWebTab tab, bool isEnabled)
+    protected Command RenderingCommand { get; set; }
+
+    protected override void RenderEndTagForCommand ()
     {
-      if (! (tab is IMenuTab))
-        return null;
-
-      if (isEnabled && tab.EvaluateEnabled())
-        return ((IMenuTab)tab).Command;
-
-      return null;
-    }
-
-    public override void RenderEndTagForCommand (IWebTab tab, bool isEnabled)
-    {
-      var renderingCommand = GetRenderingCommand (tab, isEnabled);
-      if (renderingCommand != null)
-        renderingCommand.RenderEnd (Writer);
+      if (RenderingCommand != null)
+        RenderingCommand.RenderEnd (Writer);
       else
         Writer.RenderEndTag ();
+    }
+
+    private Command GetRenderingCommand (bool isEnabled, IMenuTab activeTab)
+    {
+      if (isEnabled && activeTab.EvaluateEnabled ())
+        return activeTab.Command;
+
+      return null;
     }
   }
 }

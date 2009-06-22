@@ -86,67 +86,13 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
 
     private void RenderTab (IWebTab tab, bool isLast)
     {
-      if (Control.IsDesignMode)
-      {
-        Writer.AddStyleAttribute ("float", "left");
-        Writer.AddStyleAttribute ("display", "block");
-        Writer.AddStyleAttribute ("white-space", "nowrap");
-      }
-
-      Writer.RenderBeginTag (HtmlTextWriterTag.Li); // Begin list item
-
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, "tabStripTabWrapper");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab wrapper span
-
-      RenderSeperator();
-
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID + "_" + tab.ItemID);
-      string cssClass;
-      if (tab.IsSelected)
-        cssClass = CssClassTabSelected;
-      else
-        cssClass = CssClassTab;
-      if (!tab.EvaluateEnabled())
-        cssClass += " " + CssClassDisabled;
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span
-
       var tabRenderer = tab.GetRenderer (ServiceLocator.Current, Context, Writer, Control);
 
       bool isEnabled = !tab.IsSelected || Control.EnableSelectedTab;
       WebTabStyle style = tab.IsSelected ? Control.SelectedTabStyle : Control.TabStyle;
-      tabRenderer.RenderBeginTagForCommand (tab, isEnabled, style);
+      tabRenderer.Render (isEnabled, isLast, style);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabAnchorBody);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin anchor body span
-
-      tabRenderer.RenderContents (tab);
-
-      Writer.RenderEndTag(); // End anchor body span
-      tabRenderer.RenderEndTagForCommand (tab, isEnabled);
-
-      Writer.RenderEndTag(); // End tab span
-
-      Writer.RenderEndTag(); // End tab wrapper span
-
-      if (isLast)
-      {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabLast);
-        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        Writer.RenderEndTag();
-      }
-
-      Writer.RenderEndTag(); // End list item
-      Writer.WriteLine();
-    }
-
-    private void RenderSeperator ()
-    {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSeparator);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      Writer.RenderEndTag();
-      Writer.RenderEndTag();
+      Writer.WriteLine ();
     }
 
     #region public virtual string CssClass...

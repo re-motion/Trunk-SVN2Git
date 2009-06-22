@@ -27,7 +27,7 @@ using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.QuirksMode
@@ -36,7 +36,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.QuirksMode
   public class WebTabStripRendererTest : RendererTestBase
   {
     private IWebTabStrip _webTabStrip;
-    private IWebTabStripRenderer _renderer;
+    private WebTabStripRenderer _renderer;
     private IPage _pageStub;
     private IMenuTab _tab0;
 
@@ -187,8 +187,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.QuirksMode
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
-      var factory = new WebTabStripRendererFactory();
-      _renderer = factory.CreateRenderer (HttpContext, Html.Writer, _webTabStrip);
+      _renderer = new WebTabStripRenderer (HttpContext, Html.Writer, _webTabStrip);
       _renderer.Render();
 
       var document = Html.GetResultDocument();

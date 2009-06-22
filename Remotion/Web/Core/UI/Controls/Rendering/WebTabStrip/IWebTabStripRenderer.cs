@@ -22,14 +22,6 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
   /// </summary>
   public interface IWebTabStripRenderer : IRenderer<IWebTabStrip>
   {
-    string CssClassBase { get; }
-    string CssClassTabsPaneEmpty { get; }
-    string CssClassTabsPane { get; }
-    string CssClassTabWrapper { get; }
-    string CssClassSeparator { get; }
-    string CssClassTabSelected { get; }
-    string CssClassTab { get; }
-    string CssClassDisabled { get; }
-    string CssClassTabAnchorBody { get; }
+
   }
 }

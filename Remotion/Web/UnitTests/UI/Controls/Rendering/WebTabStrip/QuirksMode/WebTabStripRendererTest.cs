@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
@@ -35,7 +36,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
   public class WebTabStripRendererTest : RendererTestBase
   {
     private IWebTabStrip _webTabStrip;
-    private IWebTabStripRenderer _renderer;
+    private WebTabStripRenderer _renderer;
     private IPage _pageStub;
     private IWebTab _tab0;
 
@@ -43,6 +44,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
     public void SetUp ()
     {
       Initialize();
+
+      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
 
       _webTabStrip = MockRepository.GenerateStub<IWebTabStrip>();
       _webTabStrip.Stub (stub => stub.ClientID).Return ("WebTabStrip");
@@ -178,8 +181,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.WebTabStrip.QuirksMode
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount)
     {
-      var factory = new WebTabStripRendererFactory();
-      _renderer = factory.CreateRenderer (HttpContext, Html.Writer, _webTabStrip);
+      _renderer = new WebTabStripRenderer (HttpContext, Html.Writer, _webTabStrip);
       _renderer.Render();
 
       var document = Html.GetResultDocument();
