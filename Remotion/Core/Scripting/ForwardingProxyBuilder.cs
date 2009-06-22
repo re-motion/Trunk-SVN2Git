@@ -22,6 +22,15 @@ using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
+  /// <summary>
+  /// Builds a proxy object which exposes only selected methods/properties, as decided by its <see cref="ITypeArbiter"/>. 
+  /// </summary>
+  /// <remarks>
+  /// What methods/properties are to be exposed is dependent on whether the method/property comes from a type which is
+  /// classified as "valid" by the <see cref="ITypeArbiter"/> of the class.
+  /// <para/> 
+  /// Used by <see cref="StableBindingProxyProvider"/>.
+  /// </remarks>
   public class ForwardingProxyBuilder
   {
     private readonly CustomClassEmitter _classEmitter;

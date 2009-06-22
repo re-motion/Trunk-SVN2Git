@@ -13,18 +13,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Runtime.CompilerServices;
+
 namespace Remotion.Scripting
 {
   /// <summary>
-  /// Creates and caches forwarding proxy objects which expose only the members known in the current <see cref="ScriptContext"/>.
+  /// Supplies functionality to implement a GetCustoMember method qualified with <see cref="SpecialNameAttribute"/> 
+  /// which passes member/property access on to <see cref="StableBindingProxyProvider"/>.
   /// </summary>
-  /// <remarks>
-  /// Used by the re-motion mixin engine to present only the members of a class known in the current <see cref="ScriptContext"/>
-  /// to the Dynamic Language Runtime, thereby guaranteeing that mixins coming from different re-motion modules do not 
-  /// interfere with the mixins and scripts coming from a specific module.
-  /// </remarks>
-  public class StableBindingProxyProvider
+  public class StableBindingGetCustomMemberImplementor
   {
-    
+    [SpecialName]
+    public void Test ()
+    {
+      
+    }
   }
 }

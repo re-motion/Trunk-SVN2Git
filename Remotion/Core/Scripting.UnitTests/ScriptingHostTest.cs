@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -33,14 +34,13 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (scriptEngines[ScriptingHost.ScriptLanguageType.Python], Is.Not.Null);
     }
 
-    // TODO: Rewrite without ToArray
-    //[Test]
-    //public void GetScriptEngines ()
-    //{
-    //  ScriptingHost scriptingHost = CreateScriptingHost ();
-    //  var scriptEngines = scriptingHost.GetScriptEngines ();
-    //  Assert.That (scriptEngines.ToArray(), Is.EquivalentTo (scriptingHost.FindScriptEngines ().ToArray()));
-    //}
+    [Test]
+    public void GetScriptEngines ()
+    {
+      ScriptingHost scriptingHost = CreateScriptingHost ();
+      var scriptEngines = scriptingHost.GetScriptEngines ();
+      Assert.That (scriptEngines.ToArray(), Is.EquivalentTo (scriptingHost.FindScriptEngines ().ToArray()));
+    }
 
 
     [Test]

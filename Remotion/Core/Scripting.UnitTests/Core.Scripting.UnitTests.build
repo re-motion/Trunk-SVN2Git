@@ -23,7 +23,7 @@
           output="${build.test.outputdir}/${project.output}.${project.extension}" 
           debug="${build.debug}"
           define="${build.csc.define}"
-          noconfig="true"
+          noconfig="false"
           ><!--keyfile="${solution.key-file}"-->
       <nowarn>
         <!--  unused member warning  -->
@@ -47,8 +47,6 @@
         <include name="${build.test.outputdir}/Microsoft.Scripting.Core.dll"/>
         <include name="${build.test.outputdir}/nunit.framework.dll" />
         <include name="${build.test.outputdir}/Rhino.Mocks.dll" />
-        <include asis="true" name="System.dll"/>
-        <include asis="true" name="System.Core.dll"/>
       </references>
     </csc>
 
