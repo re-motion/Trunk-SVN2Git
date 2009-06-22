@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Contexts;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -29,6 +30,7 @@ namespace Remotion.Scripting
   public class ScriptContext
   {
     private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
+    private static readonly Object s_scriptContextLock = new object();
 
     private static Dictionary<string, ScriptContext> ScriptContexts
     {
@@ -39,21 +41,27 @@ namespace Remotion.Scripting
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("typeArbiter", typeArbiter);
-      if (GetScriptContext (name) != null)
+      lock (s_scriptContextLock)
       {
-        throw new ArgumentException(String.Format("ScriptContext named \"{0}\" already exists.",name));
+        if (GetScriptContext (name) != null)
+        {
+          throw new ArgumentException (String.Format ("ScriptContext named \"{0}\" already exists.", name));
+        }
+        var scriptContext = new ScriptContext (name, typeArbiter);
+        ScriptContexts[name] = scriptContext;
+        return scriptContext;
       }
-      var scriptContext = new ScriptContext (name, typeArbiter);
-      //ScriptContexts.
-      ScriptContexts[name] = scriptContext;
-      return scriptContext;
     }
 
     public static ScriptContext GetScriptContext (string name)
     {
-      ScriptContext scriptContext;
-      ScriptContexts.TryGetValue (name, out scriptContext);
-      return scriptContext;
+      // Note: Null-or-empty for name OK
+      lock (s_scriptContextLock)
+      {
+        ScriptContext scriptContext;
+        ScriptContexts.TryGetValue (name, out scriptContext);
+        return scriptContext;
+      }
     }
 
 

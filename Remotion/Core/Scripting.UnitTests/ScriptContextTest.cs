@@ -70,6 +70,9 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
+    // TODO: Test thread safety of CreateScriptContext and GetScriptContext
+
+
     private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
     {
       return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext",name,typeArbiter);
