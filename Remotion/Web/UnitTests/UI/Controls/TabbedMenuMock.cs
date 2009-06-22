@@ -29,7 +29,7 @@ public class TabbedMenuMock: TabbedMenu
     base.EvaluateWaiConformity ();
   }
 
-  protected override bool IsDesignMode
+  public override bool IsDesignMode
   {
     get{return _isDesignMode;}
   }

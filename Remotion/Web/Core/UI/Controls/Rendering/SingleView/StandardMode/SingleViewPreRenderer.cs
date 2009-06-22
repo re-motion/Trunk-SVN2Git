@@ -36,7 +36,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
         HtmlHeadAppender.Current.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Standard, "Views.js");
+            Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Standard, "ViewLayout.js");
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyScript, scriptUrl);
       }
       string keyJquery = "jQuery";
@@ -47,12 +47,13 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyJquery, jQueryUrl);
       }
 
-      string script = "function adjustView_{0}(){{" + Environment.NewLine +
-                      "  Views.SetBodyHeightToWindowHeight({0});" + Environment.NewLine +
-                      "  Views.Adjust({0}, {1});" + Environment.NewLine +
-                      "}}" + Environment.NewLine +
-                      "$(window).bind('resize', function(){{adjustView_{0}();}});" + Environment.NewLine +
-                      "$(document).ready( function(){{ setTimeout('adjustView_{0}();', 10); }} );" + Environment.NewLine;
+      string script = 
+@"function adjustView_{0}(){{
+  ViewLayout.SetBodyHeightToWindowHeight({0});
+  ViewLayout.Adjust({0}, {1});
+}}
+$(window).bind('resize', function(){{adjustView_{0}();}});
+$(document).ready( function(){{ setTimeout('adjustView_{0}();', 10); }} );";
       
       script = string.Format (script, Control.ClientID, Control.ViewClientID);
       Control.Page.ClientScript.RegisterClientScriptBlock (Control, Control.ClientID + "_AdjustView", script);

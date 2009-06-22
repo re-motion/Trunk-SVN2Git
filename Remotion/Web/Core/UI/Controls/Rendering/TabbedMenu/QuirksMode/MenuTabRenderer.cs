@@ -41,7 +41,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
       {
         NameValueCollection additionalUrlParameters = menuTab.GetUrlParameters();
         renderingCommand.RenderBegin (
-            Writer, menuTab.GetPostBackClientEvent(), new string[0], string.Empty, null, additionalUrlParameters, false, style);
+            Writer, tab.GetPostBackClientEvent(), new string[0], string.Empty, null, additionalUrlParameters, false, style);
       }
       else
       {

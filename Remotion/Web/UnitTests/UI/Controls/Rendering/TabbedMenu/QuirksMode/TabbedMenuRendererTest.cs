@@ -19,6 +19,7 @@ using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.QuirksMode
 {
@@ -89,7 +90,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.QuirksMode
     private void AssertControl (bool isDesignMode, bool hasStatusText, bool hasCssClass)
     {
       _invoker.PreRenderRecursive();
-      _control.RenderControl (Html.Writer);
+      var renderer = new TabbedMenuRenderer (HttpContext, Html.Writer, _control);
+      renderer.Render();
+      // _control.RenderControl (Html.Writer);
 
       var document = Html.GetResultDocument();
       var table = document.GetAssertedChildElement ("table", 0);

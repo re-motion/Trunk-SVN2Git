@@ -24,7 +24,9 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 using Remotion.Web.UI.Design;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -241,52 +243,16 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Overrides the <see cref="WebControl.RenderContents"/> method. </summary>
-    protected override void RenderContents (HtmlTextWriter writer)
+    public override void RenderControl (HtmlTextWriter writer)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       EnsureChildControls ();
 
       EvaluateWaiConformity ();
 
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin main menu row
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Colspan, "2");
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassMainMenuCell);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin main menu cell
-      _mainMenuTabStrip.CssClass = CssClassMainMenu;
-      _mainMenuTabStrip.Width = Unit.Percentage (100);
-      _mainMenuTabStrip.RenderControl (writer);
-      writer.RenderEndTag (); // End main menu cell
-
-      writer.RenderEndTag (); // End main menu row
-
-      writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin sub menu row
-
-      writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSubMenuCell);
-      if (!_subMenuBackgroundColor.IsEmpty)
-      {
-        string backGroundColor = ColorTranslator.ToHtml (_subMenuBackgroundColor);
-        writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundColor, backGroundColor);
-      }
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin sub menu cell
-      _subMenuTabStrip.Style["width"] = "auto";
-      _subMenuTabStrip.CssClass = CssClassSubMenu;
-      _subMenuTabStrip.RenderControl (writer);
-      writer.RenderEndTag (); // End sub menu cell
-
-      _statusStyle.AddAttributesToRender (writer);
-      if (StringUtility.IsNullOrEmpty (_statusStyle.CssClass))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassStatusCell);
-      writer.RenderBeginTag (HtmlTextWriterTag.Td); // Begin status cell
-
-      if (StringUtility.IsNullOrEmpty (_statusText))
-        writer.Write ("&nbsp;");
-      else
-        writer.Write (_statusText); // Do not HTML encode
-
-      writer.RenderEndTag (); // End status cell
-
-      writer.RenderEndTag (); // End sub menu row
+      var factory = ServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
+      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper (Context) : null, writer, this);
+      renderer.Render();
     }
 
     /// <summary> Overrides the <see cref="Control.Controls"/> property. </summary>
@@ -363,7 +329,7 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    protected virtual bool IsDesignMode
+    public virtual bool IsDesignMode
     {
       get { return ControlHelper.IsDesignMode (this, Context); }
     }
@@ -765,7 +731,15 @@ namespace Remotion.Web.UI.Controls
       set { _subMenuBackgroundColor = value; }
     }
 
+    IWebTabStrip ITabbedMenu.MainMenuTabStrip
+    {
+      get { return MainMenuTabStrip; }
+    }
 
+    IWebTabStrip ITabbedMenu.SubMenuTabStrip
+    {
+      get { return SubMenuTabStrip; }
+    }
 
     #region protected virtual string CssClass...
     /// <summary> Gets the CSS-Class applied to the <see cref="WebTabStrip"/> itself. </summary>

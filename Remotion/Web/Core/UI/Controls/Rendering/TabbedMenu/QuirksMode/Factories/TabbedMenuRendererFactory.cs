@@ -20,11 +20,16 @@ using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
 {
-  public class TabbedMenuRendererFactory : IMenuTabRendererFactory
+  public class TabbedMenuRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
   {
     public IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control)
     {
       return new MenuTabRenderer (context, writer, control);
+    }
+
+    public ITabbedMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMenu control)
+    {
+      return new TabbedMenuRenderer (context, writer, control);
     }
   }
 }

@@ -91,9 +91,7 @@
     <Reference Include="System.Design">
       <Name>system.design</Name>
     </Reference>
-    <Reference Include="System.Drawing">
-      <Name>System.Drawing</Name>
-    </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web">
       <Name>System.Web</Name>
     </Reference>
@@ -183,8 +181,11 @@
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\IMenuTabRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenu.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\IWebMenuItem.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\TabbedMenuRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRenderer.cs" />
@@ -760,7 +761,7 @@
     <Content Include="Res\HTML\Standard\SingleView.css" />
     <Content Include="Res\HTML\Standard\TabbedMultiView.css" />
     <Content Include="Res\HTML\Standard\TabStrip.css" />
-    <Content Include="Res\HTML\Standard\Views.js" />
+    <Content Include="Res\HTML\Standard\ViewLayout.js" />
     <Content Include="Res\HTML\Style.css" />
     <Content Include="Res\HTML\TabbedMenu.css" />
     <Content Include="Res\HTML\Legacy\TabbedMultiView.css" />

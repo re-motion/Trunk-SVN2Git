@@ -14,23 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Web.UI;
-using System.Web.UI.WebControls;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
+namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
-  public interface IWebTabStrip : IStyledControl
+  public interface ITabbedMenuRendererFactory
   {
-    IList<IWebTab> GetVisibleTabs ();
-    bool IsDesignMode { get; }
-    WebTabCollection Tabs { get; }
-    WebTabStyle TabStyle { get; }
-    WebTabStyle SelectedTabStyle { get; }
-    bool EnableSelectedTab { get; }
-
-    new IPage Page { get; }
-    Unit Width { get; set; }
-    CssStyleCollection Style { get; }
+    ITabbedMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMenu control);
   }
 }
