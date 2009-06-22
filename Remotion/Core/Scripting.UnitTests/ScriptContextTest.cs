@@ -25,13 +25,50 @@ namespace Remotion.Scripting.UnitTests
   public class ScriptContextTest
   {
     [Test]
-    public void NameAndTypeArbiterProperties ()
+    public void Name_And_TypeArbiter_Properties ()
     {
       var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter>();
-      ScriptContext scriptContext = CreateScriptContext ("test", typeArbiterStub);
-      Assert.That (scriptContext.Name, Is.EqualTo ("test"));
+      var scriptContext = CreateScriptContext ("Context0", typeArbiterStub);
+      Assert.That (scriptContext.Name, Is.EqualTo ("Context0"));
       Assert.That (scriptContext.TypeArbiter, Is.SameAs (typeArbiterStub));
     }
+
+    [Test]
+    public void CreateScriptContext ()
+    {
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter>();
+      var scriptContext = ScriptContext.CreateScriptContext ("Context1", typeArbiterStub);
+      Assert.That (scriptContext.Name, Is.EqualTo ("Context1"));
+      Assert.That (scriptContext.TypeArbiter, Is.SameAs (typeArbiterStub));
+    }
+
+    [Test]
+    public void GetScriptContext ()
+    {
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+      const string name = "Context2";
+      var scriptContext = ScriptContext.CreateScriptContext (name, typeArbiterStub);
+      Assert.That (ScriptContext.GetScriptContext (name),Is.SameAs(scriptContext));
+    }
+
+    [Test]
+    public void GetScriptContext_NonExistingContext ()
+    {
+      const string name = "NonExistingContext";
+      Assert.That (ScriptContext.GetScriptContext (name), Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (ArgumentException), ExpectedMessage = "ScriptContext named \"DuplicateContext\" already exists.")]
+    public void CreateScriptContext_CreatingSameNamedContextFails ()
+    {
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+      const string name = "DuplicateContext";
+      var scriptContext = ScriptContext.CreateScriptContext (name, typeArbiterStub);
+      Assert.That (scriptContext, Is.Not.Null);
+      ScriptContext.CreateScriptContext (name, typeArbiterStub);
+    }
+
 
     private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
     {

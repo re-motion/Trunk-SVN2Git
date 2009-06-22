@@ -13,6 +13,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
+using Remotion.Utilities;
+
 namespace Remotion.Scripting
 {
   /// <summary>
@@ -24,6 +28,35 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptContext
   {
+    private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
+
+    private static Dictionary<string, ScriptContext> ScriptContexts
+    {
+      get { return s_scriptContexts; }
+    }
+
+    public static ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      ArgumentUtility.CheckNotNull ("typeArbiter", typeArbiter);
+      if (GetScriptContext (name) != null)
+      {
+        throw new ArgumentException(String.Format("ScriptContext named \"{0}\" already exists.",name));
+      }
+      var scriptContext = new ScriptContext (name, typeArbiter);
+      //ScriptContexts.
+      ScriptContexts[name] = scriptContext;
+      return scriptContext;
+    }
+
+    public static ScriptContext GetScriptContext (string name)
+    {
+      ScriptContext scriptContext;
+      ScriptContexts.TryGetValue (name, out scriptContext);
+      return scriptContext;
+    }
+
+
     private readonly string _name;
     private readonly ITypeArbiter _typeArbiter;
 
@@ -49,5 +82,6 @@ namespace Remotion.Scripting
     {
       get { return _typeArbiter; }
     }
+
   }
 }
