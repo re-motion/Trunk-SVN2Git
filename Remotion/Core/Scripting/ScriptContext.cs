@@ -31,6 +31,7 @@ namespace Remotion.Scripting
   {
     private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
+    private static ScriptContext s_lastCreatedScriptContext;
 
     private static Dictionary<string, ScriptContext> ScriptContexts
     {
@@ -43,14 +44,20 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("typeArbiter", typeArbiter);
       lock (s_scriptContextLock)
       {
-        if (GetScriptContext (name) != null)
-        {
-          throw new ArgumentException (String.Format ("ScriptContext named \"{0}\" already exists.", name));
-        }
-        var scriptContext = new ScriptContext (name, typeArbiter);
-        ScriptContexts[name] = scriptContext;
-        return scriptContext;
+        return CreateScriptContextUnsafe(name, typeArbiter);
       }
+    }
+
+    private static ScriptContext CreateScriptContextUnsafe (string name, ITypeArbiter typeArbiter)
+    {
+      if (GetScriptContext (name) != null)
+      {
+        throw new ArgumentException (String.Format ("ScriptContext named \"{0}\" already exists.", name));
+      }
+      var scriptContext = new ScriptContext (name, typeArbiter);
+      ScriptContexts[name] = scriptContext;
+      s_lastCreatedScriptContext = scriptContext;
+      return scriptContext;
     }
 
     public static ScriptContext GetScriptContext (string name)
@@ -61,6 +68,14 @@ namespace Remotion.Scripting
         ScriptContext scriptContext;
         ScriptContexts.TryGetValue (name, out scriptContext);
         return scriptContext;
+      }
+    }
+
+    private static ScriptContext GetLastCreatedScriptContext ()
+    {
+      lock (s_scriptContextLock)
+      {
+        return s_lastCreatedScriptContext;
       }
     }
 
@@ -91,5 +106,6 @@ namespace Remotion.Scripting
       get { return _typeArbiter; }
     }
 
+ 
   }
 }
