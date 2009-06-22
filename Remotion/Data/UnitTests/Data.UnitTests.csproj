@@ -594,6 +594,7 @@
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\MemberBindings\MemberBindingTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\MemberBindings\MemberBindingTestBase.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\EvaluatableTreeFindingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\UnknownExpression.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\TypeForNewExpression.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\ClauseFieldResolverTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\FieldSourcePathBuilderTest.cs" />
