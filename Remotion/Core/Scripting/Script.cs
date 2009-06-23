@@ -13,6 +13,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using Remotion.Utilities;
+
 namespace Remotion.Scripting
 {
   /// <summary>
@@ -26,9 +28,11 @@ namespace Remotion.Scripting
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
     {
+      ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
+      // Note: null/empty script text is allowed. 
       _scriptContext = scriptContext;
-      ScriptText = scriptText;
       _scriptLanguageType = scriptLanguageType;
+      _scriptText = scriptText;
     }
 
 
