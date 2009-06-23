@@ -20,6 +20,32 @@ namespace Remotion.Scripting
   /// </summary>
   public class Script
   {
-    
+    private string _scriptText;
+    private readonly ScriptingHost.ScriptLanguageType _scriptLanguageType;
+    private readonly ScriptContext _scriptContext;
+
+    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
+    {
+      _scriptContext = scriptContext;
+      ScriptText = scriptText;
+      _scriptLanguageType = scriptLanguageType;
+    }
+
+
+    public string ScriptText
+    {
+      get { return _scriptText; }
+      set { _scriptText = value; }
+    }
+
+    public ScriptingHost.ScriptLanguageType ScriptLanguageType
+    {
+      get { return _scriptLanguageType; }
+    }
+
+    public ScriptContext ScriptContext
+    {
+      get { return _scriptContext; }
+    }
   }
 }

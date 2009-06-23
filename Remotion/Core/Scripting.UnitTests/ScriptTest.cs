@@ -16,12 +16,37 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
   public class ScriptTest
   {
-    
+    [Test]
+    public void Ctor ()
+    {
+      ScriptContext scriptContext = GetScriptContext ();
+      const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
+      const string scriptText = "text";
+
+      var script = new Script (scriptContext, scriptLanguageType, scriptText);
+      Assert.That (script.ScriptContext, Is.EqualTo (scriptContext));
+      Assert.That (script.ScriptLanguageType, Is.EqualTo (scriptLanguageType));
+      Assert.That (script.ScriptText, Is.EqualTo (scriptText));
+    }
+
+
+    private ScriptContext GetScriptContext ()
+    {
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+      return CreateScriptContext("DummyScriptContext", typeArbiterStub);
+    }
+
+    private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
+    {
+      return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeArbiter);
+    }
   }
 }
