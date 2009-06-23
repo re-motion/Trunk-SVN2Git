@@ -108,11 +108,12 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
+    [Explicit]
     public void ExecuteScript ()
     {
-      //ScriptContextTestHelper
-      //Script script = new Script();
-      //ScriptingHost.Current.ExecuteScript (script);
+      const string pythonScriptText = "3*4";
+      Script script = new Script (ScriptContextTestHelper.GetTestScriptContext (),ScriptingHost.ScriptLanguageType.Python,pythonScriptText);
+      ScriptingHost.Current.ExecuteScript (script);
     }
 
 

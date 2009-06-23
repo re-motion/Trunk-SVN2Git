@@ -99,6 +99,12 @@ namespace Remotion.Scripting
     public void ExecuteScript (Script script)
     {
       throw new NotImplementedException();
+      var scriptEngine = GetEngine (script.ScriptLanguageType);
+      // TODO: 
+      // 1) Use ScriptEngine.CreateScriptSourceFromString in Script (?)
+      // 2) Use ScriptContext shared ScriptScope
+      // 3) Switch ScriptContext to script.ScriptContext before execution
+      scriptEngine.Execute (script.ScriptText);
     }
 
 
