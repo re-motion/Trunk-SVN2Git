@@ -117,7 +117,6 @@ namespace Remotion.Data.DomainObjects.Linq
       var queryModel = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
       queryModel.AddBodyClause (whereClause);
 
-      queryModel.SetParentQuery (parentQuery);
       return queryModel;
     }
 

@@ -182,14 +182,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void CreateQueryModel_ParentQuery ()
-    {
-      QueryModel parentQuery = ExpressionHelper.CreateQueryModel();
-      QueryModel queryModel = _parser.CreateQueryModel (_containsObjectCallExpression, parentQuery, Expression.Constant (0));
-      Assert.That (queryModel.ParentQuery, Is.SameAs (parentQuery));
-    }
-
-    [Test]
     public void CreateEquivalentSubQuery_CreatesSubQuery_WithQueryModel ()
     {
       SubQueryExpression subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant (0));
