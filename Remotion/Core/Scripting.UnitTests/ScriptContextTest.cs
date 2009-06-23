@@ -31,7 +31,7 @@ namespace Remotion.Scripting.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      ClearScriptContexts();
+      ScriptContextTestHelper.ClearScriptContexts ();
     }
 
 
@@ -39,7 +39,7 @@ namespace Remotion.Scripting.UnitTests
     public void Name_And_TypeArbiter_Properties ()
     {
       var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter>();
-      var scriptContext = CreateScriptContext ("Context0", typeArbiterStub);
+      var scriptContext = ScriptContextTestHelper.CreateTestScriptContext ("Context0", typeArbiterStub);
       Assert.That (scriptContext.Name, Is.EqualTo ("Context0"));
       Assert.That (scriptContext.TypeArbiter, Is.SameAs (typeArbiterStub));
     }
@@ -168,14 +168,14 @@ namespace Remotion.Scripting.UnitTests
 
 
 
-    private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
-    {
-      return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext",name,typeArbiter);
-    }
+    //private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
+    //{
+    //  return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext",name,typeArbiter);
+    //}
 
-    private void ClearScriptContexts ()
-    {
-      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ClearScriptContexts");
-    }
+    //private void ClearScriptContexts ()
+    //{
+    //  PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ClearScriptContexts");
+    //}
   }
 }

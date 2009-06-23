@@ -22,7 +22,7 @@ namespace Remotion.Scripting
 {
   /// <summary>
   /// Represents a re-motion script context, which is used to isolate different re-motion modules from one another.
-  /// Static members give access to the currently actice script context.
+  /// Static members give access to the currently active script context.
   /// </summary>
   /// <remarks>
   /// <seealso cref="Script"/>

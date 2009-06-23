@@ -83,7 +83,7 @@ namespace Remotion.Scripting
     /// <summary>
     /// Retrieves the ScriptEngine given by the <paramref name="languageType"/> parameter. Throws if requested engine is not available on system.
     /// </summary>
-    public static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
+    private static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
     {
       ArgumentUtility.CheckNotNull ("languageType", languageType);
       return Current.GetEngine (languageType);
@@ -92,8 +92,18 @@ namespace Remotion.Scripting
 
     private ScriptingHost () {}
 
+    /// <summary>
+    /// Executes the passed <see cref="Script"/>, switching the global <see cref="ScriptContext"/> to the
+    /// <see cref="Script"/>|s <see cref="ScriptContext"/> beforehand.
+    /// </summary>
+    public void ExecuteScript (Script script)
+    {
+      throw new NotImplementedException();
+    }
 
-    public ScriptRuntime GetScriptRuntime ()
+
+
+    private ScriptRuntime GetScriptRuntime ()
     {
       if (_scriptRuntime == null)
       {
@@ -102,7 +112,7 @@ namespace Remotion.Scripting
       return _scriptRuntime;
     }
 
-    public ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> GetScriptEngines ()
+    private ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> GetScriptEngines ()
     {
       if (_scriptEngines == null)
       {
@@ -111,7 +121,7 @@ namespace Remotion.Scripting
       return _scriptEngines;
     }
 
-    public ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> FindScriptEngines ()
+    private ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> FindScriptEngines ()
     {
       var scriptEngines = new Dictionary<ScriptLanguageType, ScriptEngine> ();
       foreach (ScriptLanguageType languageType in Enum.GetValues (typeof (ScriptLanguageType)))
@@ -127,7 +137,7 @@ namespace Remotion.Scripting
     }
 
 
-    public ScriptEngine GetEngine (ScriptLanguageType languageType)
+    private ScriptEngine GetEngine (ScriptLanguageType languageType)
     {
       ScriptEngine scriptEngine;
       bool engineAvailable = GetScriptEngines().TryGetValue (languageType, out scriptEngine);

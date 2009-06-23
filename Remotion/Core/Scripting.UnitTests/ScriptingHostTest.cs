@@ -95,7 +95,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void GetEngine_Static ()
     {
-      var pythonEngine = ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.Python);
+      var pythonEngine = ScriptingHostTestHelper.GetScriptEngine (ScriptingHost.ScriptLanguageType.Python);
       Assert.That (pythonEngine, Is.Not.Null);
     }
 
@@ -103,8 +103,17 @@ namespace Remotion.Scripting.UnitTests
     [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "ScriptEngine for ScriptLanguageType None cannot be supplied. Check App.config <microsoft.scripting>-section.")]
     public void GetEngine_Static_Fails ()
     {
-      ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.None);
-    } 
+      ScriptingHostTestHelper.GetScriptEngine (ScriptingHost.ScriptLanguageType.None);
+    }
+
+
+    [Test]
+    public void ExecuteScript ()
+    {
+      //ScriptContextTestHelper
+      //Script script = new Script();
+      //ScriptingHost.Current.ExecuteScript (script);
+    }
 
 
     private static ScriptingHost CreateScriptingHost ()

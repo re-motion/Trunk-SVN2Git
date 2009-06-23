@@ -27,7 +27,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Ctor ()
     {
-      ScriptContext scriptContext = GetScriptContext ();
+      ScriptContext scriptContext = ScriptContextTestHelper.GetTestScriptContext ();
       const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
       const string scriptText = "text";
 
@@ -38,15 +38,15 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    private ScriptContext GetScriptContext ()
-    {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
-      return CreateScriptContext("DummyScriptContext", typeArbiterStub);
-    }
+    //private ScriptContext GetScriptContext ()
+    //{
+    //  var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+    //  return CreateScriptContext("DummyScriptContext", typeArbiterStub);
+    //}
 
-    private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
-    {
-      return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeArbiter);
-    }
+    //private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
+    //{
+    //  return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeArbiter);
+    //}
   }
 }
