@@ -19,34 +19,43 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.DataObjectModel;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.Parsing.Details.WhereConditionParsing;
 using Remotion.Utilities;
-using Remotion.Data.Linq;
 
 namespace Remotion.Data.DomainObjects.Linq
 {
-  // source: 
-  // transformed: where (from oi in QueryFactory.CreateLinqQuery<OrderItem> () where oi.Order == o select oi).Contains (myOrderItem)
-  // SQL: WHERE @1 IN (SELECT [oi].[ID] FROM [OrderItem] [oi] WHERE (([oi].[OrderID] IS NULL AND [o].[ID] IS NULL) OR [oi].[OrderID] = [o].[ID]))
   /// <summary>
   /// Parses expressions of the form <code>where o.OrderItems.ContainsObject (myOrderItem)</code>.
   /// </summary>
   /// <remarks>
+  /// <para>
   /// This parser parses parts of where conditions that contains calls to <see cref="DomainObjectCollection.ContainsObject"/>. It does so by
-  /// constructing an equivalent subquery
+  /// constructing an equivalent subquery.
+  /// </para>
+  /// <para>
+  /// source: where o.OrderItems.ContainsObject (myOrderItem)
+  /// </para>
+  /// <para>
+  /// transformed: where (from oi in QueryFactory.CreateLinqQuery[OrderItem] () where oi.Order == o select oi).Contains (myOrderItem)
+  /// </para>
   /// </remarks>
   public class ContainsObjectParser : IWhereConditionParser
   {
     private static readonly MethodInfo s_genericContainsMethod =
         ParserUtility.GetMethod (() => Queryable.Contains (null, (object) null)).GetGenericMethodDefinition();
+
+// ReSharper disable PossibleNullReferenceException
     private static readonly MethodInfo s_containsObjectMethod =
         ParserUtility.GetMethod (() => ((DomainObjectCollection) null).ContainsObject (null));
-    private static readonly MethodInfo s_genericCreateQueryableMethod = 
+// ReSharper restore PossibleNullReferenceException
+
+    private static readonly MethodInfo s_genericCreateQueryableMethod =
         ParserUtility.GetMethod (() => QueryFactory.CreateLinqQuery<DomainObject>()).GetGenericMethodDefinition();
 
     private readonly WhereConditionParserRegistry _registry;
@@ -59,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Linq
     public bool CanParse (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      MethodCallExpression methodCallExpression = expression as MethodCallExpression;
+      var methodCallExpression = expression as MethodCallExpression;
       return methodCallExpression != null && methodCallExpression.Method == s_containsObjectMethod;
     }
 
@@ -68,21 +77,23 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("fieldDescriptors", parseContext);
 
-      MethodCallExpression containsObjectCallExpression = ParserUtility.GetTypedExpression<MethodCallExpression> (
+      var containsObjectCallExpression = ParserUtility.GetTypedExpression<MethodCallExpression> (
           expression, "ContainsObject parser", parseContext.ExpressionTreeRoot);
-      
-      SubQueryExpression subQueryExpression = CreateEquivalentSubQuery (containsObjectCallExpression, parseContext.QueryModel,parseContext.ExpressionTreeRoot);
+
+      SubQueryExpression subQueryExpression = CreateEquivalentSubQuery (
+          containsObjectCallExpression, parseContext.QueryModel, parseContext.ExpressionTreeRoot);
       MethodCallExpression containsExpression = CreateExpressionForContainsParser (subQueryExpression, containsObjectCallExpression.Arguments[0]);
       return _registry.GetParser (containsExpression).Parse (containsExpression, parseContext);
     }
 
-    public SubQueryExpression CreateEquivalentSubQuery (MethodCallExpression containsObjectCallExpression, QueryModel parentQuery, Expression expressionTreeRoot)
+    public SubQueryExpression CreateEquivalentSubQuery (
+        MethodCallExpression containsObjectCallExpression, QueryModel parentQuery, Expression expressionTreeRoot)
     {
       ArgumentUtility.CheckNotNull ("containsObjectCallExpression", containsObjectCallExpression);
       ArgumentUtility.CheckNotNull ("parentQuery", parentQuery);
 
       QueryModel queryModel = CreateQueryModel (containsObjectCallExpression, parentQuery, expressionTreeRoot);
-      SubQueryExpression subQuery = new SubQueryExpression (queryModel);
+      var subQuery = new SubQueryExpression (queryModel);
       return subQuery;
     }
 
@@ -91,18 +102,19 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("parentQuery", parentQuery);
 
-      Type containsParameterType = methodCallExpression.Arguments[0].Type;
-      MemberExpression collectionExpression = ParserUtility.GetTypedExpression<MemberExpression> (
+      Type collectionElementType = methodCallExpression.Arguments[0].Type;
+      var collectionExpression = ParserUtility.GetTypedExpression<MemberExpression> (
           methodCallExpression.Object, "object on which ContainsObject is called", expressionTreeRoot);
-      PropertyInfo collectionProperty = 
-          ParserUtility.GetTypedExpression<PropertyInfo> (collectionExpression.Member, "member on which ContainsObject is called", methodCallExpression);
+      var collectionProperty =
+          ParserUtility.GetTypedExpression<PropertyInfo> (
+              collectionExpression.Member, "member on which ContainsObject is called", methodCallExpression);
       PropertyInfo foreignKeyProperty = GetForeignKeyProperty (collectionProperty);
 
-      MainFromClause mainFromClause = CreateFromClause(containsParameterType);
+      MainFromClause mainFromClause = CreateFromClause (collectionElementType);
       WhereClause whereClause = CreateWhereClause (mainFromClause, foreignKeyProperty, collectionExpression.Expression);
-      SelectClause selectClause = CreateSelectClause (whereClause, mainFromClause.Identifier);
+      SelectClause selectClause = CreateSelectClause (whereClause, mainFromClause);
 
-      QueryModel queryModel = new QueryModel (typeof (IQueryable<>).MakeGenericType (containsParameterType), mainFromClause, selectClause);
+      var queryModel = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
       queryModel.AddBodyClause (whereClause);
 
       queryModel.SetParentQuery (parentQuery);
@@ -113,11 +125,11 @@ namespace Remotion.Data.DomainObjects.Linq
     public MainFromClause CreateFromClause (Type containsParameterType)
     {
       ArgumentUtility.CheckNotNull ("containsParameterType", containsParameterType);
-      string identifierName = "<<generated>>" + Guid.NewGuid().ToString("N");
+      string identifierName = "<<generated>>" + Guid.NewGuid().ToString ("N");
       ParameterExpression identifier = Expression.Parameter (containsParameterType, identifierName);
-    
+
       MethodInfo entityMethod = s_genericCreateQueryableMethod.MakeGenericMethod (containsParameterType);
-      object queryable = entityMethod.Invoke(null, null);
+      object queryable = entityMethod.Invoke (null, null);
       Expression querySource = Expression.Constant (queryable);
 
       return new MainFromClause (identifier, querySource);
@@ -128,39 +140,32 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       ArgumentUtility.CheckNotNull ("foreignKeyProperty", foreignKeyProperty);
       ArgumentUtility.CheckNotNull ("queriedObject", queriedObject);
-      var comparison = CreateWhereComparison(fromClause.Identifier, foreignKeyProperty, queriedObject);
+
+      Expression left = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (fromClause), foreignKeyProperty);
+      Expression right = queriedObject;
+      BinaryExpression comparison = Expression.Equal (left, right);
+      
       return new WhereClause (fromClause, comparison);
     }
 
-    public BinaryExpression CreateWhereComparison (ParameterExpression fromIdentifier, PropertyInfo foreignKeyProperty, Expression queriedObject)
-    {
-      ArgumentUtility.CheckNotNull ("fromIdentifier", fromIdentifier);
-      ArgumentUtility.CheckNotNull ("foreignKeyProperty", foreignKeyProperty);
-      ArgumentUtility.CheckNotNull ("queriedObject", queriedObject);
-      Expression left = Expression.MakeMemberAccess (fromIdentifier, foreignKeyProperty);
-      Expression right = queriedObject;
-      BinaryExpression binaryExpression = Expression.Equal (left, right);
-      return binaryExpression;
-    }
-
-    public SelectClause CreateSelectClause (WhereClause whereClause, ParameterExpression fromIdentifier)
+    public SelectClause CreateSelectClause (WhereClause whereClause, MainFromClause mainFromClause)
     {
       ArgumentUtility.CheckNotNull ("whereClause", whereClause);
-      ArgumentUtility.CheckNotNull ("fromIdentifier", fromIdentifier);
+      ArgumentUtility.CheckNotNull ("mainFromClause", mainFromClause);
 
-      return new SelectClause (whereClause, fromIdentifier);
+      return new SelectClause (whereClause, new QuerySourceReferenceExpression (mainFromClause));
     }
-    
+
     public PropertyInfo GetForeignKeyProperty (PropertyInfo collectionProperty) // Order.OrderItems
     {
       ArgumentUtility.CheckNotNull ("collectionProperty", collectionProperty);
+
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (collectionProperty.DeclaringType);
       string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (collectionProperty);
       IRelationEndPointDefinition collectionEndPoint = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName); // Order.OrderItems
       IRelationEndPointDefinition foreignKeyEndPoint = collectionEndPoint.GetOppositeEndPointDefinition(); // OrderItem.Order
 
       return MappingConfiguration.Current.NameResolver.GetProperty (foreignKeyEndPoint.ClassDefinition.ClassType, foreignKeyEndPoint.PropertyName);
-      
     }
 
     public MethodCallExpression CreateExpressionForContainsParser (SubQueryExpression subQueryExpression, Expression queryParameterExpression)

@@ -573,8 +573,6 @@
     <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\MemberExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\MethodCallExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\NewExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\ParameterExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Details\SelectProjectionParsing\ResultModifierParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParserRegistryTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\BinaryExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\ConstantExpressionParserTest.cs" />
@@ -584,7 +582,6 @@
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\LikeParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\MemberExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\MethodCallExpressionParserTest.cs" />
-    <Compile Include="Linq\Parsing\Details\WhereConditionParsing\ParameterExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\SubQueryExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\Details\WhereConditionParsing\UnaryExpressionParserTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeComparer.cs" />
@@ -597,6 +594,7 @@
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\UnknownExpression.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\TypeForNewExpression.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\ClauseFieldResolverTest.cs" />
+    <Compile Include="Linq\Parsing\FieldResolving\FieldAccessPolicyTestBase.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\FieldSourcePathBuilderTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\ClauseFieldResolverVisitorTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\JoinedTableContextTest.cs" />

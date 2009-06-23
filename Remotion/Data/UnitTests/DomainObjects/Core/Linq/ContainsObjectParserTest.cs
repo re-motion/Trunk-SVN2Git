@@ -31,7 +31,6 @@ using Remotion.Data.Linq.Parsing.Details;
 using Remotion.Data.Linq.Parsing.Details.WhereConditionParsing;
 using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Data.UnitTests.Linq;
-using Remotion.Data.UnitTests.Linq.Parsing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -49,6 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private MockRepository _mockRepository;
     private WhereConditionParserRegistry _registryStub;
     private IWhereConditionParser _containsParserMock;
+    private QuerySourceReferenceExpression _orderReference;
 
     public override void SetUp ()
     {
@@ -64,33 +64,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _queriedObjectExpression =
           (ParameterExpression) new ExpressionTreeNavigator (_containsObjectCallExpression).Object.MemberAccess_Expression.Expression;
 
+      _orderReference = new QuerySourceReferenceExpression (ExpressionHelper.CreateMainFromClause (Expression.Parameter (typeof (Order), "o"), _query));
+
       _parser = new ContainsObjectParser (_registryStub);
     }
 
     [Test]
     public void CreateFromClause_Identifier ()
     {
-      MainFromClause fromClause = _parser.CreateFromClause (typeof (OrderItem));
-      Assert.That (fromClause.Identifier.Type, Is.EqualTo (typeof (OrderItem)));
-      Assert.That (fromClause.Identifier.Name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
+      MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
+      Assert.That (mainFromClause.Identifier.Type, Is.EqualTo (typeof (OrderItem)));
+      Assert.That (mainFromClause.Identifier.Name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
     }
 
     [Test]
     public void CreateFromClause_QuerySource ()
     {
-      MainFromClause fromClause = _parser.CreateFromClause (typeof (OrderItem));
-      Assert.That (fromClause.QuerySource, Is.InstanceOfType (typeof (ConstantExpression)));
-      object value = ((ConstantExpression) fromClause.QuerySource).Value;
+      MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
+      Assert.That (mainFromClause.QuerySource, Is.InstanceOfType (typeof (ConstantExpression)));
+      object value = ((ConstantExpression) mainFromClause.QuerySource).Value;
       Assert.That (value, Is.InstanceOfType (typeof (DomainObjectQueryable<OrderItem>)));
     }
 
     [Test]
     public void CreateWhereComparison_CreatesBinaryEqualsExpression ()
     {
-      ParameterExpression identifier = Expression.Parameter (typeof (OrderItem), "oi");
+      var mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
+
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
-      ParameterExpression queriedObject = Expression.Parameter (typeof (Order), "o");
-      Expression whereComparison = _parser.CreateWhereComparison (identifier, foreignKeyProperty, queriedObject);
+      Expression whereComparison = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference).Predicate;
 
       Assert.That (whereComparison.NodeType, Is.EqualTo (ExpressionType.Equal));
     }
@@ -98,25 +100,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateWhereComparison_CreatesBinaryEqualsExpression_LeftSide ()
     {
-      ParameterExpression identifier = Expression.Parameter (typeof (OrderItem), "oi");
+      var mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
-      ParameterExpression queriedObject = Expression.Parameter (typeof (Order), "o");
-      var whereComparison = _parser.CreateWhereComparison (identifier, foreignKeyProperty, queriedObject);
+
+      var whereComparison = (BinaryExpression) _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference).Predicate;
       
       Assert.That (whereComparison.Left, Is.InstanceOfType (typeof (MemberExpression)));
       var memberExpression = (MemberExpression) whereComparison.Left;
-      Assert.That (memberExpression.Expression, Is.SameAs (identifier));
+      Assert.That (((QuerySourceReferenceExpression) memberExpression.Expression).ReferencedClause, Is.SameAs (mainFromClause));
       Assert.That (memberExpression.Member, Is.SameAs (foreignKeyProperty));
     }
 
     [Test]
     public void CreateWhereComparison_CreatesBinaryEqualsExpression_RightSide ()
     {
-      ParameterExpression identifier = Expression.Parameter (typeof (OrderItem), "oi");
+      var mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
-      ParameterExpression queriedObject = Expression.Parameter (typeof (Order), "o");
-      var whereComparison = _parser.CreateWhereComparison (identifier, foreignKeyProperty, queriedObject);
-      Assert.That (whereComparison.Right, Is.SameAs (queriedObject));
+
+      var whereComparison = (BinaryExpression) _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference).Predicate;
+      Assert.That (whereComparison.Right, Is.SameAs (_orderReference));
     }
 
     [Test]
@@ -124,12 +126,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
-      ParameterExpression queriedObject = Expression.Parameter (typeof (Order), "o");
-      var expectedWhereComparison = _parser.CreateWhereComparison (mainFromClause.Identifier, foreignKeyProperty, queriedObject);
 
-      WhereClause whereClause = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, queriedObject);
+      WhereClause whereClause = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference);
       Assert.That (whereClause.PreviousClause, Is.SameAs (mainFromClause));
-      ExpressionTreeComparer.CheckAreEqualTrees (whereClause.Predicate, expectedWhereComparison);
     }
 
     [Test]
@@ -137,12 +136,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
-      ParameterExpression queriedObject = Expression.Parameter (typeof (Order), "o");
-      WhereClause whereClause = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, queriedObject);
 
-      SelectClause selectClause = _parser.CreateSelectClause (whereClause, mainFromClause.Identifier);
+      WhereClause whereClause = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference);
+
+      SelectClause selectClause = _parser.CreateSelectClause (whereClause, mainFromClause);
       Assert.That (selectClause.PreviousClause, Is.SameAs (whereClause));
-      Assert.That (selectClause.Selector, Is.SameAs (mainFromClause.Identifier));
+      Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedClause, Is.SameAs (mainFromClause));
     }
 
     [Test]
@@ -167,12 +166,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var binaryExpression = (BinaryExpression) whereClause.Predicate;
       Assert.That (binaryExpression.Left, Is.InstanceOfType (typeof (MemberExpression)));
       var memberExpression = (MemberExpression) binaryExpression.Left;
-      Assert.That (memberExpression.Expression, Is.SameAs (fromClause.Identifier));
+      Assert.That (((QuerySourceReferenceExpression) memberExpression.Expression).ReferencedClause, Is.SameAs (fromClause));
       Assert.That (memberExpression.Member, Is.EqualTo (typeof (OrderItem).GetProperty ("Order")));
       Assert.That (binaryExpression.Right, Is.SameAs (_queriedObjectExpression));
 
       var selectClause = (SelectClause) queryModel.SelectOrGroupClause;
-      Assert.That (selectClause.Selector, Is.EqualTo (fromClause.Identifier));
+      Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedClause, Is.SameAs (fromClause));
     }
 
     [Test]
@@ -240,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Do (action);
 
       _mockRepository.ReplayAll ();
-      ParseContext expectedParseContext = new ParseContext (
+      var expectedParseContext = new ParseContext (
           ExpressionHelper.CreateQueryModel(), _query.Expression, new List<FieldDescriptor>(), new JoinedTableContext());
       ICriterion result = _parser.Parse (_containsObjectCallExpression, expectedParseContext);
       Assert.That (result, Is.SameAs (expectedResult));
