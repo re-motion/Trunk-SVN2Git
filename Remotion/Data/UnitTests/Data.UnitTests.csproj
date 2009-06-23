@@ -593,14 +593,12 @@
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\TreeEvaluation\EvaluatableTreeFindingVisitorTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\UnknownExpression.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\TypeForNewExpression.cs" />
-    <Compile Include="Linq\Parsing\FieldResolving\ClauseFieldResolverTest.cs" />
+    <Compile Include="Linq\Parsing\FieldResolving\FieldResolverTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\FieldAccessPolicyTestBase.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\FieldSourcePathBuilderTest.cs" />
-    <Compile Include="Linq\Parsing\FieldResolving\ClauseFieldResolverVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\FieldResolving\FieldResolverVisitorTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\JoinedTableContextTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\OrderingFieldAccessPolicyTest.cs" />
-    <Compile Include="Linq\Parsing\FieldResolving\QueryModelFieldResolverTest.cs" />
-    <Compile Include="Linq\Parsing\FieldResolving\QueryModelFieldResolverVisitorTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\SelectFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\WhereFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
