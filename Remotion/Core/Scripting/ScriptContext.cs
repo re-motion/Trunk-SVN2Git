@@ -31,7 +31,6 @@ namespace Remotion.Scripting
   {
     private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
-    private static ScriptContext s_lastCreatedScriptContext;
 
     private static Dictionary<string, ScriptContext> ScriptContexts
     {
@@ -56,7 +55,6 @@ namespace Remotion.Scripting
       }
       var scriptContext = new ScriptContext (name, typeArbiter);
       ScriptContexts[name] = scriptContext;
-      s_lastCreatedScriptContext = scriptContext;
       return scriptContext;
     }
 
@@ -71,15 +69,15 @@ namespace Remotion.Scripting
       }
     }
 
-    private static ScriptContext GetLastCreatedScriptContext ()
+    // Test-only method
+    private static void ClearScriptContexts ()
     {
       lock (s_scriptContextLock)
       {
-        return s_lastCreatedScriptContext;
+        ScriptContexts.Clear();
       }
     }
-
-
+ 
     private readonly string _name;
     private readonly ITypeArbiter _typeArbiter;
 

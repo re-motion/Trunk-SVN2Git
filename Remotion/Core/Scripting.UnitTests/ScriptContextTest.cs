@@ -28,6 +28,13 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class ScriptContextTest
   {
+    [SetUp]
+    public void SetUp ()
+    {
+      ClearScriptContexts();
+    }
+
+
     [Test]
     public void Name_And_TypeArbiter_Properties ()
     {
@@ -62,15 +69,6 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (ScriptContext.GetScriptContext (name), Is.Null);
     }
 
-    [Test]
-    public void GetLastCreatedScriptContext ()
-    {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
-      var scriptContext1 = ScriptContext.CreateScriptContext ("GetLastCreatedScriptContextContext1", typeArbiterStub);
-      Assert.That (GetLastCreatedScriptContextPrivateInvoke (), Is.SameAs (scriptContext1));
-      var scriptContext2 = ScriptContext.CreateScriptContext ("GetLastCreatedScriptContextContext2", typeArbiterStub);
-      Assert.That (GetLastCreatedScriptContextPrivateInvoke (), Is.SameAs (scriptContext2));
-    }
 
     [Test]
     [ExpectedException (ExceptionType = typeof (ArgumentException), ExpectedMessage = "ScriptContext named \"DuplicateContext\" already exists.")]
@@ -86,17 +84,7 @@ namespace Remotion.Scripting.UnitTests
     public delegate void CreateScriptContextsDelegate ();
 
     [Test]
-    public void CreateScriptContext_ThreadSafe ()
-    {
-      CreateScriptContextsDelegate thread0 = new ScriptContextCreator(true).CreateScriptContexts;
-      CreateScriptContextsDelegate thread1 = new ScriptContextCreator (true).CreateScriptContexts;
-      IAsyncResult iftAr0 = thread0.BeginInvoke (null, null);
-      IAsyncResult iftAr1 = thread1.BeginInvoke (null, null);
-      thread0.EndInvoke (iftAr0);
-      thread1.EndInvoke (iftAr1);
-    }
-
-    [Test]
+    [Explicit] // Note: Race condition does only occur when test is executed standalone.
     [ExpectedException (ExceptionType = typeof (InvalidOperationException), ExpectedMessage = "ScriptContext inconsistent")]
     public void CreateScriptContextUnsafe_NotThreadSafe ()
     {
@@ -107,6 +95,19 @@ namespace Remotion.Scripting.UnitTests
       thread0.EndInvoke (iftAr0);
       thread1.EndInvoke (iftAr1);
     }
+
+    [Test]
+    public void CreateScriptContext_ThreadSafe ()
+    {
+      CreateScriptContextsDelegate thread0 = new ScriptContextCreator(true).CreateScriptContexts;
+      CreateScriptContextsDelegate thread1 = new ScriptContextCreator (true).CreateScriptContexts;
+      IAsyncResult iftAr0 = thread0.BeginInvoke (null, null);
+      IAsyncResult iftAr1 = thread1.BeginInvoke (null, null);
+      thread0.EndInvoke (iftAr0);
+      thread1.EndInvoke (iftAr1);
+    }
+
+
     
  
     private class ScriptContextCreator
@@ -139,18 +140,18 @@ namespace Remotion.Scripting.UnitTests
               scriptContext = (ScriptContext) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "CreateScriptContextUnsafe", name, s_typeArbiterStub);
             }
             scriptContexts[name] = scriptContext;
+            //To.ConsoleLine.e (() => name).e (scriptContext);
             CheckGetScriptContextConsistency (name, scriptContext);
-            Assert.That (ScriptContext.GetScriptContext (name), Is.SameAs (scriptContext));
           }
           catch (ArgumentException)
           {
-            //To.ConsoleLine.s ("ArgumentException >>>>>>>>>>>>>"); //.e(Thread.CurrentThread.ManagedThreadId);
+            // Exception intentionally ignored; threads are expected to try to create same ScriptContext|s.
+            //To.ConsoleLine.s ("ArgumentException");
           }
         }
 
         foreach (var pair in scriptContexts)
         {
-          //Assert.That (ScriptContext.GetScriptContext (pair.Key), Is.SameAs (pair.Value));
           CheckGetScriptContextConsistency (pair.Key, pair.Value);
           //To.ConsoleLine.e (pair.Value.Name).e(Thread.CurrentThread.Name);
         }
@@ -166,32 +167,15 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    // TODO: Test thread safety of CreateScriptContext and GetScriptContext
-    //private class ScriptContextCreator
-    //{
-    //  private int _start;
-    //  private int _increment;
-    //  private int _numberOfScriptContexts;
-
-    //  public ScriptContextCreator (int start, int increment)
-    //  {
-    //    _start = start;
-    //    _increment = increment;
-    //  }
-
-    //  public void CreateScriptContexts ()
-    //  {
-    //  }
-    //}
 
     private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
     {
       return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext",name,typeArbiter);
     }
 
-    private ScriptContext GetLastCreatedScriptContextPrivateInvoke ()
+    private void ClearScriptContexts ()
     {
-      return (ScriptContext) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "GetLastCreatedScriptContext");
+      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ClearScriptContexts");
     }
   }
 }
