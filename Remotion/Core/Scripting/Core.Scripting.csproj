@@ -60,8 +60,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForwardingProxyBuilder.cs" />
-    <Compile Include="Script.generated.cs" />
-    <Compile Include="Script.template.cs" />
+    <Compile Include="Script.generated.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Script.template.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="StableBindingGetCustomMemberImplementor.cs" />
     <Compile Include="ITypeArbiter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
