@@ -14,11 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Microsoft.Scripting;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
-using Rhino.Mocks;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -47,16 +44,5 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (script.Execute("works"), Is.EqualTo ("Test: works"));
     }
 
-
-    private ScriptContext GetScriptContext ()
-    {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
-      return CreateScriptContext ("DummyScriptContext", typeArbiterStub);
-    }
-
-    private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
-    {
-      return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeArbiter);
-    }
   }
 }
