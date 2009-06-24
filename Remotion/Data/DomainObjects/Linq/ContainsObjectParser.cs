@@ -80,23 +80,22 @@ namespace Remotion.Data.DomainObjects.Linq
       var containsObjectCallExpression = ParserUtility.GetTypedExpression<MethodCallExpression> (expression, "ContainsObject parser");
 
       SubQueryExpression subQueryExpression = CreateEquivalentSubQuery (
-          containsObjectCallExpression, parseContext.QueryModel, parseContext.ExpressionTreeRoot);
+          containsObjectCallExpression, parseContext.QueryModel);
       MethodCallExpression containsExpression = CreateExpressionForContainsParser (subQueryExpression, containsObjectCallExpression.Arguments[0]);
       return _registry.GetParser (containsExpression).Parse (containsExpression, parseContext);
     }
 
-    public SubQueryExpression CreateEquivalentSubQuery (
-        MethodCallExpression containsObjectCallExpression, QueryModel parentQuery, Expression expressionTreeRoot)
+    public SubQueryExpression CreateEquivalentSubQuery (MethodCallExpression containsObjectCallExpression, QueryModel parentQuery)
     {
       ArgumentUtility.CheckNotNull ("containsObjectCallExpression", containsObjectCallExpression);
       ArgumentUtility.CheckNotNull ("parentQuery", parentQuery);
 
-      QueryModel queryModel = CreateQueryModel (containsObjectCallExpression, parentQuery, expressionTreeRoot);
+      QueryModel queryModel = CreateQueryModel (containsObjectCallExpression, parentQuery);
       var subQuery = new SubQueryExpression (queryModel);
       return subQuery;
     }
 
-    public QueryModel CreateQueryModel (MethodCallExpression methodCallExpression, QueryModel parentQuery, Expression expressionTreeRoot)
+    public QueryModel CreateQueryModel (MethodCallExpression methodCallExpression, QueryModel parentQuery)
     {
       ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
       ArgumentUtility.CheckNotNull ("parentQuery", parentQuery);

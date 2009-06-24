@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQueryModel_Clauses ()
     {
-      QueryModel queryModel = _parser.CreateQueryModel (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant(0));
+      QueryModel queryModel = _parser.CreateQueryModel (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
 
       MainFromClause fromClause = queryModel.MainFromClause;
       Assert.That (fromClause.ItemType, Is.EqualTo (typeof (OrderItem)));
@@ -177,21 +177,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateQueryModel_ResultType ()
     {
-      QueryModel queryModel = _parser.CreateQueryModel (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant (0));
+      QueryModel queryModel = _parser.CreateQueryModel (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
       Assert.That (queryModel.ResultType, Is.EqualTo (typeof (IQueryable<OrderItem>)));
     }
 
     [Test]
     public void CreateEquivalentSubQuery_CreatesSubQuery_WithQueryModel ()
     {
-      SubQueryExpression subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant (0));
+      SubQueryExpression subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
       Assert.That (subQuery.QueryModel, Is.Not.Null);
     }
 
     [Test]
     public void CreateExpressionForContainsParser ()
     {
-      SubQueryExpression subQueryExpression1 = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant (0));
+      SubQueryExpression subQueryExpression1 = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
       Expression queryParameterExpression = Expression.Constant (null, typeof (OrderItem));
       MethodCallExpression methodCallExpression = _parser.CreateExpressionForContainsParser (subQueryExpression1, queryParameterExpression);
       Assert.That (methodCallExpression.Object, Is.Null);
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _mockRepository.ReplayAll ();
       var expectedParseContext = new ParseContext (
-          ExpressionHelper.CreateQueryModel(), _query.Expression, new List<FieldDescriptor>(), new JoinedTableContext());
+          ExpressionHelper.CreateQueryModel(), new List<FieldDescriptor>(), new JoinedTableContext());
       ICriterion result = _parser.Parse (_containsObjectCallExpression, expectedParseContext);
       Assert.That (result, Is.SameAs (expectedResult));
       _mockRepository.VerifyAll ();
