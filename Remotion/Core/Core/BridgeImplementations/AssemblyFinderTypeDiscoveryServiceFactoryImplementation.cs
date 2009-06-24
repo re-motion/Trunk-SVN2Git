@@ -13,14 +13,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.ComponentModel.Design;
-using Remotion.Implementation;
+using Remotion.BridgeInterfaces;
+using Remotion.Reflection;
 
-namespace Remotion.BridgeInterfaces
+namespace Remotion.BridgeImplementations
 {
-  [ConcreteImplementation ("Remotion.BridgeImplementations.AssemblyFinderTypeDiscoveryServiceImplementation, Remotion, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>")]
-  public interface IAssemblyFinderTypeDiscoveryServiceImplementation
+  /// <summary>
+  /// The <see cref="AssemblyFinderTypeDiscoveryServiceFactoryImplementation"/> is a factory class that creates instances of type 
+  /// <see cref="AssemblyFinderTypeDiscoveryService"/>.
+  /// </summary>
+  /// <seealso cref="ContextAwareTypeDiscoveryUtility"/>
+  public class AssemblyFinderTypeDiscoveryServiceFactoryImplementation : IAssemblyFinderTypeDiscoveryServiceFactoryImplementation
   {
-    ITypeDiscoveryService CreateTypeDiscoveryService ();
+    public ITypeDiscoveryService CreateTypeDiscoveryService ()
+    {
+      return new AssemblyFinderTypeDiscoveryService (new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, false));
+    }
   }
 }

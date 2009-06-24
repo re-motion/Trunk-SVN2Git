@@ -35,7 +35,7 @@ namespace Remotion.Reflection
           if (_defaultService == null)
           {
             _defaultService =
-                VersionDependentImplementationBridge<IAssemblyFinderTypeDiscoveryServiceImplementation>.Implementation.CreateTypeDiscoveryService();
+                VersionDependentImplementationBridge<IAssemblyFinderTypeDiscoveryServiceFactoryImplementation>.Implementation.CreateTypeDiscoveryService();
           }
           return _defaultService;
         }
