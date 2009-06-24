@@ -77,8 +77,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("fieldDescriptors", parseContext);
 
-      var containsObjectCallExpression = ParserUtility.GetTypedExpression<MethodCallExpression> (
-          expression, "ContainsObject parser", parseContext.ExpressionTreeRoot);
+      var containsObjectCallExpression = ParserUtility.GetTypedExpression<MethodCallExpression> (expression, "ContainsObject parser");
 
       SubQueryExpression subQueryExpression = CreateEquivalentSubQuery (
           containsObjectCallExpression, parseContext.QueryModel, parseContext.ExpressionTreeRoot);
@@ -104,10 +103,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
       Type collectionElementType = methodCallExpression.Arguments[0].Type;
       var collectionExpression = ParserUtility.GetTypedExpression<MemberExpression> (
-          methodCallExpression.Object, "object on which ContainsObject is called", expressionTreeRoot);
-      var collectionProperty =
-          ParserUtility.GetTypedExpression<PropertyInfo> (
-              collectionExpression.Member, "member on which ContainsObject is called", methodCallExpression);
+          methodCallExpression.Object, "object on which ContainsObject is called");
+      var collectionProperty = ParserUtility.GetTypedExpression<PropertyInfo> (collectionExpression.Member, "member on which ContainsObject is called");
       PropertyInfo foreignKeyProperty = GetForeignKeyProperty (collectionProperty);
 
       MainFromClause mainFromClause = CreateFromClause (collectionElementType);
