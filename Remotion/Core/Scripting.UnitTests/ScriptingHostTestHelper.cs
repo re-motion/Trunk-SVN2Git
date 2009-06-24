@@ -22,10 +22,10 @@ namespace Remotion.Scripting.UnitTests
 {
   static class ScriptingHostTestHelper 
   {
-    public static ScriptEngine GetScriptEngine (ScriptingHost.ScriptLanguageType languageType)
-    {
-      return (ScriptEngine) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptingHost), "GetScriptEngine", languageType);
-    }
+    //public static ScriptEngine GetScriptEngine (ScriptingHost.ScriptLanguageType languageType)
+    //{
+    //  return (ScriptEngine) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptingHost), "GetScriptEngine", languageType);
+    //}
 
     public static ScriptRuntime GetScriptRuntime (this ScriptingHost scriptingHost)
     {

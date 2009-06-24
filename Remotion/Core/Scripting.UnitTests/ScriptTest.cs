@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Scripting;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -24,29 +25,38 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class ScriptTest
   {
-    //[Test]
-    //public void Ctor ()
-    //{
-    //  ScriptContext scriptContext = ScriptContextTestHelper.GetTestScriptContext ();
-    //  const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
-    //  const string scriptText = "text";
+    [Test]
+    public void Ctor ()
+    {
+      ScriptContext scriptContext = ScriptContextTestHelper.GetTestScriptContext ();
+      const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
+      const string scriptFunctionName = "Test";
 
-    //  var script = new ScriptBase (scriptContext, scriptLanguageType, scriptText);
-    //  Assert.That (script.ScriptContext, Is.EqualTo (scriptContext));
-    //  Assert.That (script.ScriptLanguageType, Is.EqualTo (scriptLanguageType));
-    //  Assert.That (script.ScriptText, Is.EqualTo (scriptText));
-    //}
+      const string scriptText =
+@"def Test(s) :
+  return 'Test: ' + s";
+
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptScope = engine.CreateScope ();
+
+      var script = new Script<string, string> (scriptContext, scriptLanguageType, scriptText, scriptScope, scriptFunctionName);
+
+      Assert.That (script.ScriptContext, Is.EqualTo (scriptContext));
+      Assert.That (script.ScriptLanguageType, Is.EqualTo (scriptLanguageType));
+      Assert.That (script.ScriptText, Is.EqualTo (scriptText));
+      Assert.That (script.Execute("works"), Is.EqualTo ("Test: works"));
+    }
 
 
-    //private ScriptContext GetScriptContext ()
-    //{
-    //  var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
-    //  return CreateScriptContext("DummyScriptContext", typeArbiterStub);
-    //}
+    private ScriptContext GetScriptContext ()
+    {
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+      return CreateScriptContext ("DummyScriptContext", typeArbiterStub);
+    }
 
-    //private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
-    //{
-    //  return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeArbiter);
-    //}
+    private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
+    {
+      return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeArbiter);
+    }
   }
 }

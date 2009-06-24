@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using Remotion.Reflection;
 
@@ -31,6 +32,10 @@ namespace Remotion.Scripting
       ScriptScope scope, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
+      scriptSource.Execute (scope);
+
       // @replace "TFixedArg<n>, "
       _func = scope.GetVariable<Func<TFixedArg1, TResult>> (scriptFunctionName);
     }

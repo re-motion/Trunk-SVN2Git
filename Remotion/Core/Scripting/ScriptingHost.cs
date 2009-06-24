@@ -83,7 +83,7 @@ namespace Remotion.Scripting
     /// <summary>
     /// Retrieves the ScriptEngine given by the <paramref name="languageType"/> parameter. Throws if requested engine is not available on system.
     /// </summary>
-    private static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
+    public static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
     {
       ArgumentUtility.CheckNotNull ("languageType", languageType);
       return Current.GetEngine (languageType);
