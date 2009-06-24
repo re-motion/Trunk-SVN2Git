@@ -44,6 +44,7 @@ namespace Remotion.Scripting
     }
 
   }
+  // @end-template
 
   //public class Script<TR> : ScriptBase
   //{
