@@ -19,7 +19,7 @@ using Microsoft.Scripting.Hosting;
 
 namespace Remotion.Scripting
 {
-  // @begin-template first=1 template=1 generate=0..3 suppressTemplate=true
+  // @begin-template first=1 template=1 generate=0..9 suppressTemplate=true
    
   // @replace "TFixedArg<n>, "
   public partial class Script<TFixedArg1, TResult> : ScriptBase

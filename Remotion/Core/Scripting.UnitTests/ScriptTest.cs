@@ -49,20 +49,42 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Ctor_OneArgument ()
     {
-      ScriptContext scriptContext = ScriptContextTestHelper.GetTestScriptContext ();
-      const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
-      const string scriptFunctionName = "Test";
-
       const string scriptText =
 @"def Test(s) :
   return 'Test: ' + s";
 
-      ScriptScope scriptScope = CreateScriptScope(scriptLanguageType);
-
-      var script = new Script<string, string> (scriptContext, scriptLanguageType, scriptText, scriptScope, scriptFunctionName);
-
+      ScriptScope scriptScope = CreateScriptScope(ScriptingHost.ScriptLanguageType.Python);
+      var script = new Script<string, string> (ScriptContextTestHelper.GetTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
       Assert.That (script.Execute ("works"), Is.EqualTo ("Test: works"));
     }
+
+
+    [Test]
+    public void Ctor_TwoArguments ()
+    {
+      const string scriptText =
+@"def Test(s0,s1) :
+  return 'Test: ' + s0 + ' ' + s1";
+
+      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      var script = new Script<string, string, string> (ScriptContextTestHelper.GetTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      Assert.That (script.Execute ("really","works"), Is.EqualTo ("Test: really works"));
+    }
+
+
+    [Test]
+    public void Ctor_ManyArguments ()
+    {
+      const string scriptText =
+@"def Test(s0,s1,s2,s3,s4,s5,s6,s7) :
+  return 'Test: '+s0+s1+s2+s3+s4+s5+s6+s7";
+
+      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      var script = new Script<string, string, string, string, string, string, string, string, string> (ScriptContextTestHelper.GetTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      Assert.That (script.Execute ("a","a","a","a","a","a","a","a"), Is.EqualTo ("Test: aaaaaaaa"));
+    }
+
+
 
     private ScriptScope CreateScriptScope (ScriptingHost.ScriptLanguageType scriptLanguageType)
     {

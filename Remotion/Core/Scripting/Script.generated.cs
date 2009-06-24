@@ -92,4 +92,136 @@ namespace Remotion.Scripting
       return _func (a1, a2, a3);
     }
   }
+   
+  public partial class Script<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TResult> : ScriptBase
+  {
+    private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TResult> _func;
+
+    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
+      ScriptScope scope, string scriptFunctionName)
+      : base (scriptContext, scriptLanguageType, scriptText)
+    {
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
+      scriptSource.Execute (scope);
+
+      _func = scope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TResult>> (scriptFunctionName);
+    }
+
+    public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4)
+    {
+      // TODO: Switch context !
+      return _func (a1, a2, a3, a4);
+    }
+  }
+   
+  public partial class Script<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TResult> : ScriptBase
+  {
+    private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TResult> _func;
+
+    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
+      ScriptScope scope, string scriptFunctionName)
+      : base (scriptContext, scriptLanguageType, scriptText)
+    {
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
+      scriptSource.Execute (scope);
+
+      _func = scope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TResult>> (scriptFunctionName);
+    }
+
+    public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5)
+    {
+      // TODO: Switch context !
+      return _func (a1, a2, a3, a4, a5);
+    }
+  }
+   
+  public partial class Script<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TResult> : ScriptBase
+  {
+    private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TResult> _func;
+
+    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
+      ScriptScope scope, string scriptFunctionName)
+      : base (scriptContext, scriptLanguageType, scriptText)
+    {
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
+      scriptSource.Execute (scope);
+
+      _func = scope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TResult>> (scriptFunctionName);
+    }
+
+    public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6)
+    {
+      // TODO: Switch context !
+      return _func (a1, a2, a3, a4, a5, a6);
+    }
+  }
+   
+  public partial class Script<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TResult> : ScriptBase
+  {
+    private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TResult> _func;
+
+    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
+      ScriptScope scope, string scriptFunctionName)
+      : base (scriptContext, scriptLanguageType, scriptText)
+    {
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
+      scriptSource.Execute (scope);
+
+      _func = scope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TResult>> (scriptFunctionName);
+    }
+
+    public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6, TFixedArg7 a7)
+    {
+      // TODO: Switch context !
+      return _func (a1, a2, a3, a4, a5, a6, a7);
+    }
+  }
+   
+  public partial class Script<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TResult> : ScriptBase
+  {
+    private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TResult> _func;
+
+    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
+      ScriptScope scope, string scriptFunctionName)
+      : base (scriptContext, scriptLanguageType, scriptText)
+    {
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
+      scriptSource.Execute (scope);
+
+      _func = scope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TResult>> (scriptFunctionName);
+    }
+
+    public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6, TFixedArg7 a7, TFixedArg8 a8)
+    {
+      // TODO: Switch context !
+      return _func (a1, a2, a3, a4, a5, a6, a7, a8);
+    }
+  }
+   
+  public partial class Script<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TFixedArg9, TResult> : ScriptBase
+  {
+    private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TFixedArg9, TResult> _func;
+
+    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
+      ScriptScope scope, string scriptFunctionName)
+      : base (scriptContext, scriptLanguageType, scriptText)
+    {
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
+      scriptSource.Execute (scope);
+
+      _func = scope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TFixedArg9, TResult>> (scriptFunctionName);
+    }
+
+    public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6, TFixedArg7 a7, TFixedArg8 a8, TFixedArg9 a9)
+    {
+      // TODO: Switch context !
+      return _func (a1, a2, a3, a4, a5, a6, a7, a8, a9);
+    }
+  }
 }
