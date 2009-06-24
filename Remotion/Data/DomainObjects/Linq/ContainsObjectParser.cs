@@ -124,14 +124,13 @@ namespace Remotion.Data.DomainObjects.Linq
     public MainFromClause CreateFromClause (Type containsParameterType)
     {
       ArgumentUtility.CheckNotNull ("containsParameterType", containsParameterType);
-      string identifierName = "<<generated>>" + Guid.NewGuid().ToString ("N");
-      ParameterExpression identifier = Expression.Parameter (containsParameterType, identifierName);
+      string itemName = "<<generated>>" + Guid.NewGuid().ToString ("N");
 
       MethodInfo entityMethod = s_genericCreateQueryableMethod.MakeGenericMethod (containsParameterType);
       object queryable = entityMethod.Invoke (null, null);
       Expression querySource = Expression.Constant (queryable);
 
-      return new MainFromClause (identifier, querySource);
+      return new MainFromClause (itemName, containsParameterType, querySource);
     }
 
     public WhereClause CreateWhereClause (MainFromClause fromClause, PropertyInfo foreignKeyProperty, Expression queriedObject)

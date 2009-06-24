@@ -52,16 +52,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void GetTableName_InvalidType ()
     {
       DummyQueryable<string> stringSource = new DummyQueryable<string>();
-      MainFromClause stringClause = new MainFromClause (Expression.Parameter (typeof (string), "source"), Expression.Constant (stringSource));
+      MainFromClause stringClause = new MainFromClause ("source", typeof (string), Expression.Constant (stringSource));
 
       Assert.IsNull (_databaseInfo.GetTableName (stringClause));
-    }
-
-    private FromClauseBase CreateFromClause<T> ()
-        where T : DomainObject
-    {
-      IQueryable querySource = new DomainObjectQueryable<T> (_sqlGenerator);
-      return new MainFromClause (Expression.Parameter (querySource.ElementType, "source"), Expression.Constant (querySource));
     }
 
     [Test]
@@ -191,6 +184,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       MemberInfo actual = _databaseInfo.GetPrimaryKeyMember (typeof (string));
       Assert.IsNull (actual);
+    }
+
+    private FromClauseBase CreateFromClause<T> ()
+    where T : DomainObject
+    {
+      IQueryable querySource = new DomainObjectQueryable<T> (_sqlGenerator);
+      return new MainFromClause ("source", querySource.ElementType, Expression.Constant (querySource));
     }
   }
 }

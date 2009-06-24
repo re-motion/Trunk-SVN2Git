@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _queriedObjectExpression =
           (ParameterExpression) new ExpressionTreeNavigator (_containsObjectCallExpression).Object.MemberAccess_Expression.Expression;
 
-      _orderReference = new QuerySourceReferenceExpression (ExpressionHelper.CreateMainFromClause (Expression.Parameter (typeof (Order), "o"), _query));
+      _orderReference = new QuerySourceReferenceExpression (ExpressionHelper.CreateMainFromClause ("o", typeof (Order), _query));
 
       _parser = new ContainsObjectParser (_registryStub);
     }
@@ -73,8 +73,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateFromClause_Identifier ()
     {
       MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
-      Assert.That (mainFromClause.Identifier.Type, Is.EqualTo (typeof (OrderItem)));
-      Assert.That (mainFromClause.Identifier.Name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
+      Assert.That (mainFromClause.ItemType, Is.EqualTo (typeof (OrderItem)));
+      Assert.That (mainFromClause.ItemName, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
     }
 
     [Test]
@@ -158,8 +158,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       QueryModel queryModel = _parser.CreateQueryModel (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel (), Expression.Constant(0));
 
       MainFromClause fromClause = queryModel.MainFromClause;
-      Assert.That (fromClause.Identifier.Type, Is.EqualTo (typeof (OrderItem)));
-      Assert.That (fromClause.Identifier.Name, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
+      Assert.That (fromClause.ItemType, Is.EqualTo (typeof (OrderItem)));
+      Assert.That (fromClause.ItemName, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
 
       var whereClause = (WhereClause) queryModel.BodyClauses[0];
       Assert.That (whereClause.Predicate, Is.InstanceOfType (typeof (BinaryExpression)));
