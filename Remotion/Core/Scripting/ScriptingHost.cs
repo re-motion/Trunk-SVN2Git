@@ -93,18 +93,18 @@ namespace Remotion.Scripting
     private ScriptingHost () {}
 
     /// <summary>
-    /// Executes the passed <see cref="Script"/>, switching the global <see cref="ScriptContext"/> to the
-    /// <see cref="Script"/>|s <see cref="ScriptContext"/> beforehand.
+    /// Executes the passed <see cref="ScriptBase"/>, switching the global <see cref="ScriptContext"/> to the
+    /// <see cref="ScriptBase"/>|s <see cref="ScriptContext"/> beforehand.
     /// </summary>
-    public void ExecuteScript (Script script)
+    public object ExecuteScript (ScriptBase script)
     {
       throw new NotImplementedException();
-      var scriptEngine = GetEngine (script.ScriptLanguageType);
+      //var scriptEngine = GetEngine (script.ScriptLanguageType);
       // TODO: 
       // 1) Use ScriptEngine.CreateScriptSourceFromString in Script (?)
       // 2) Use ScriptContext shared ScriptScope
       // 3) Switch ScriptContext to script.ScriptContext before execution
-      scriptEngine.Execute (script.ScriptText);
+      //return scriptEngine.Exe (script.ScriptText);
     }
 
 

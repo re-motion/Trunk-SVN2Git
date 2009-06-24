@@ -13,43 +13,69 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Utilities;
+using System;
+using Remotion.Reflection;
 
 namespace Remotion.Scripting
 {
-  /// <summary>
-  /// Represents a re-motion script which knows its <see cref="ScriptContext"/> and <see cref="ScriptingHost.ScriptLanguageType"/>.
-  /// </summary>
-  public class Script
+  // @begin-template first=1 template=1 generate=0..3 suppressTemplate=true
+
+  // @replace "TFixedArg<n>, "
+  public partial struct FuncInvoker<TFixedArg1, TResult>
   {
-    private string _scriptText;
-    private readonly ScriptingHost.ScriptLanguageType _scriptLanguageType;
-    private readonly ScriptContext _scriptContext;
+    private DelegateSelector _delegateSelector;
 
-    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
+    // @begin-repeat
+    // @replace-one "<n>"
+    private TFixedArg1 _fixedArg1;
+    // @end-repeat
+
+    // @replace-one "c_argCount = <n>"
+    private const int c_argCount = 1;
+
+    // @replace ", TFixedArg<n> fixedArg<n>"
+    public FuncInvoker (DelegateSelector delegateSelector, TFixedArg1 fixedArg1)
     {
-      ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      // Note: null/empty script text is allowed. 
-      _scriptContext = scriptContext;
-      _scriptLanguageType = scriptLanguageType;
-      _scriptText = scriptText;
+      _delegateSelector = delegateSelector;
+      // @begin-repeat
+      // @replace-one "fixedArg<n>"
+      _fixedArg1 = fixedArg1;
+      // @end-repeat
     }
 
-
-    public string ScriptText
-    {
-      get { return _scriptText; }
-      set { _scriptText = value; }
-    }
-
-    public ScriptingHost.ScriptLanguageType ScriptLanguageType
-    {
-      get { return _scriptLanguageType; }
-    }
-
-    public ScriptContext ScriptContext
-    {
-      get { return _scriptContext; }
-    }
   }
+
+  //public class Script<TR> : ScriptBase
+  //{
+  //  private readonly Func<TR> _func;
+
+  //  public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
+  //      : base(scriptContext, scriptLanguageType, scriptText)
+  //  {
+  //    _func = GetFunc<Func<TR>>();
+  //  }
+
+  //  public TR Execute ()
+  //  {
+  //    // TODO: Switch context
+  //    return _func();
+  //  }
+  //}
+
+
+  //public class Script<TA1, TR> : ScriptBase
+  //{
+  //  private readonly Func<TA1, TR> _func;
+
+  //  public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
+  //    : base (scriptContext, scriptLanguageType, scriptText)
+  //  {
+  //    _func = GetFunc<Func<TA1, TR>> ();
+  //  }
+
+  //  public TR Execute (TA1 a1)
+  //  {
+  //    return _func (a1);
+  //  }
+  //}
 }

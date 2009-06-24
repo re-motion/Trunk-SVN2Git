@@ -25,7 +25,7 @@ namespace Remotion.Scripting
   /// Static members give access to the currently active script context.
   /// </summary>
   /// <remarks>
-  /// <seealso cref="Script"/>
+  /// <seealso cref="ScriptBase"/>
   /// </remarks>
   public class ScriptContext
   {

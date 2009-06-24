@@ -24,18 +24,18 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class ScriptTest
   {
-    [Test]
-    public void Ctor ()
-    {
-      ScriptContext scriptContext = ScriptContextTestHelper.GetTestScriptContext ();
-      const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
-      const string scriptText = "text";
+    //[Test]
+    //public void Ctor ()
+    //{
+    //  ScriptContext scriptContext = ScriptContextTestHelper.GetTestScriptContext ();
+    //  const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
+    //  const string scriptText = "text";
 
-      var script = new Script (scriptContext, scriptLanguageType, scriptText);
-      Assert.That (script.ScriptContext, Is.EqualTo (scriptContext));
-      Assert.That (script.ScriptLanguageType, Is.EqualTo (scriptLanguageType));
-      Assert.That (script.ScriptText, Is.EqualTo (scriptText));
-    }
+    //  var script = new ScriptBase (scriptContext, scriptLanguageType, scriptText);
+    //  Assert.That (script.ScriptContext, Is.EqualTo (scriptContext));
+    //  Assert.That (script.ScriptLanguageType, Is.EqualTo (scriptLanguageType));
+    //  Assert.That (script.ScriptText, Is.EqualTo (scriptText));
+    //}
 
 
     //private ScriptContext GetScriptContext ()

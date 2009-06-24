@@ -60,11 +60,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForwardingProxyBuilder.cs" />
+    <Compile Include="Script.template.cs" />
     <Compile Include="StableBindingGetCustomMemberImplementor.cs" />
     <Compile Include="ITypeArbiter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
-    <Compile Include="Script.cs" />
+    <Compile Include="ScriptBase.cs" />
     <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptingHost.cs" />
     <Compile Include="AssemblyLevelTypeArbiter.cs" />
@@ -97,4 +98,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>..\..\..\..\..\prereq\Tools\FuncGen\FuncGen.exe $(ProjectDir)*.template.cs *.generated.cs /rec</PreBuildEvent>
+  </PropertyGroup>
 </Project>
