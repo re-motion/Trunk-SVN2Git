@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Linq
       SelectClause selectClause = CreateSelectClause (whereClause, mainFromClause);
 
       var queryModel = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
-      queryModel.AddBodyClause (whereClause);
+      queryModel.BodyClauses.Add (whereClause);
 
       return queryModel;
     }
