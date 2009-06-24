@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Scripting.Hosting;
 using Remotion.Reflection;
 
 namespace Remotion.Scripting
@@ -21,31 +22,56 @@ namespace Remotion.Scripting
   // @begin-template first=1 template=1 generate=0..3 suppressTemplate=true
 
   // @replace "TFixedArg<n>, "
-  public partial struct FuncInvoker<TFixedArg1, TResult>
+  public partial class Script<TFixedArg1, TResult> : ScriptBase
   {
-    private DelegateSelector _delegateSelector;
 
-    // @begin-repeat
-    // @replace-one "<n>"
-    private TFixedArg1 _fixedArg1;
-    // @end-repeat
+    // @replace "TFixedArg<n>, "
+    private Func<TFixedArg1, TResult> _func;
 
-    // @replace-one "c_argCount = <n>"
-    private const int c_argCount = 1;
+    // TEST ONLY !
+    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
+      : base (scriptContext, scriptLanguageType, scriptText)
+    { 
+    } 
 
-    // @replace ", TFixedArg<n> fixedArg<n>"
-    public FuncInvoker (DelegateSelector delegateSelector, TFixedArg1 fixedArg1)
+    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
+      ScriptScope scope, string scriptFunctionName)
+      : base (scriptContext, scriptLanguageType, scriptText)
     {
-      _delegateSelector = delegateSelector;
-      // @begin-repeat
-      // @replace-one "fixedArg<n>"
-      _fixedArg1 = fixedArg1;
-      // @end-repeat
+      // @replace "TFixedArg<n>, "
+      _func = scope.GetVariable<Func<TFixedArg1, TResult>> (scriptFunctionName);
     }
+
 
   }
   // @end-template
 
+  
+ 
+
+
+
+
+
+
+
+  //public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, ScriptScope scope)
+  //  : base (scriptContext, scriptLanguageType, scriptText)
+  //{
+  //  _func scope.GetVariable<Func<TFixedArg1, TResult>> (name);
+  //}
+
+  //// @replace ", TFixedArg<n> fixedArg<n>"
+  //public Script (DelegateSelector delegateSelector, TFixedArg1 fixedArg1)
+  //{
+  //  _delegateSelector = delegateSelector;
+  //  // @begin-repeat
+  //  // @replace-one "fixedArg<n>"
+  //  _fixedArg1 = fixedArg1;
+  //  // @end-repeat
+  //}
+  
+  
   //public class Script<TR> : ScriptBase
   //{
   //  private readonly Func<TR> _func;
