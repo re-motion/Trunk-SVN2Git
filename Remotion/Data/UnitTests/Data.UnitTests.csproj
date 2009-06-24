@@ -599,6 +599,7 @@
     <Compile Include="Linq\Parsing\FieldResolving\OrderingFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\SelectFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\FieldResolving\WhereFieldAccessPolicyTest.cs" />
+    <Compile Include="Linq\Parsing\ParserExceptionTest.cs" />
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\ReplacingVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionResolverTest.cs" />
