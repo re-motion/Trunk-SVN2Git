@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Scripting.Hosting;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 
@@ -30,19 +31,43 @@ namespace Remotion.Scripting.UnitTests
       const string scriptFunctionName = "Test";
 
       const string scriptText =
-@"def Test(s) :
-  return 'Test: ' + s";
+@"def Test() :
+  return 'CtorTest'";
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptScope = engine.CreateScope ();
 
-      var script = new Script<string, string> (scriptContext, scriptLanguageType, scriptText, scriptScope, scriptFunctionName);
+      var script = new Script<string> (scriptContext, scriptLanguageType, scriptText, scriptScope, scriptFunctionName);
 
       Assert.That (script.ScriptContext, Is.EqualTo (scriptContext));
       Assert.That (script.ScriptLanguageType, Is.EqualTo (scriptLanguageType));
       Assert.That (script.ScriptText, Is.EqualTo (scriptText));
-      Assert.That (script.Execute("works"), Is.EqualTo ("Test: works"));
+      Assert.That (script.Execute (), Is.EqualTo ("CtorTest"));
     }
 
+
+    [Test]
+    public void Ctor_OneArgument ()
+    {
+      ScriptContext scriptContext = ScriptContextTestHelper.GetTestScriptContext ();
+      const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
+      const string scriptFunctionName = "Test";
+
+      const string scriptText =
+@"def Test(s) :
+  return 'Test: ' + s";
+
+      ScriptScope scriptScope = CreateScriptScope(scriptLanguageType);
+
+      var script = new Script<string, string> (scriptContext, scriptLanguageType, scriptText, scriptScope, scriptFunctionName);
+
+      Assert.That (script.Execute ("works"), Is.EqualTo ("Test: works"));
+    }
+
+    private ScriptScope CreateScriptScope (ScriptingHost.ScriptLanguageType scriptLanguageType)
+    {
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      return engine.CreateScope ();
+    }
   }
 }

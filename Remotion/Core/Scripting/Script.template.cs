@@ -16,7 +16,6 @@
 using System;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
-using Remotion.Reflection;
 
 namespace Remotion.Scripting
 {
