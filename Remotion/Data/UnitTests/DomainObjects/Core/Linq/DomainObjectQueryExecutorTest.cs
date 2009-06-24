@@ -278,7 +278,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1178")]
     public void CreateQuery_EagerFetchQueries_Recursive ()
     {
       var queryModel = GetParsedSimpleCustomerQuery ();
