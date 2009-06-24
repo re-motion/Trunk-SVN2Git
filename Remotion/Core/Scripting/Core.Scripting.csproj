@@ -60,9 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForwardingProxyBuilder.cs" />
-    <Compile Include="Script.generated.cs">
+    <None Include="Script.generated.cs">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="Script.template.cs">
       <SubType>Code</SubType>
     </Compile>

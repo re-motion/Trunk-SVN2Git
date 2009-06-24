@@ -29,14 +29,7 @@ namespace Remotion.Scripting
    
   public partial class Script<TResult> : ScriptBase
   {
-     
-    private Func<TResult> _func;
-
-    // TEST ONLY !
-    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
-      : base (scriptContext, scriptLanguageType, scriptText)
-    { 
-    } 
+    private readonly Func<TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptScope scope, string scriptFunctionName)
@@ -45,19 +38,16 @@ namespace Remotion.Scripting
       _func = scope.GetVariable<Func<TResult>> (scriptFunctionName);
     }
 
-
+    public TResult Execute ()
+    {
+      // TODO: Switch context !
+      return _func ();
+    }
   }
    
   public partial class Script<TFixedArg1, TFixedArg2, TResult> : ScriptBase
   {
-     
-    private Func<TFixedArg1, TFixedArg2, TResult> _func;
-
-    // TEST ONLY !
-    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
-      : base (scriptContext, scriptLanguageType, scriptText)
-    { 
-    } 
+    private readonly Func<TFixedArg1, TFixedArg2, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptScope scope, string scriptFunctionName)
@@ -66,19 +56,16 @@ namespace Remotion.Scripting
       _func = scope.GetVariable<Func<TFixedArg1, TFixedArg2, TResult>> (scriptFunctionName);
     }
 
-
+    public TResult Execute (TFixedArg1 a1, TFixedArg2 a2)
+    {
+      // TODO: Switch context !
+      return _func (a1, a2);
+    }
   }
    
   public partial class Script<TFixedArg1, TFixedArg2, TFixedArg3, TResult> : ScriptBase
   {
-     
-    private Func<TFixedArg1, TFixedArg2, TFixedArg3, TResult> _func;
-
-    // TEST ONLY !
-    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
-      : base (scriptContext, scriptLanguageType, scriptText)
-    { 
-    } 
+    private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptScope scope, string scriptFunctionName)
@@ -87,66 +74,10 @@ namespace Remotion.Scripting
       _func = scope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TResult>> (scriptFunctionName);
     }
 
-
+    public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3)
+    {
+      // TODO: Switch context !
+      return _func (a1, a2, a3);
+    }
   }
-
-  
- 
-
-
-
-
-
-
-
-  //public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, ScriptScope scope)
-  //  : base (scriptContext, scriptLanguageType, scriptText)
-  //{
-  //  _func scope.GetVariable<Func<TFixedArg1, TResult>> (name);
-  //}
-
-  //// @replace ", TFixedArg<n> fixedArg<n>"
-  //public Script (DelegateSelector delegateSelector, TFixedArg1 fixedArg1)
-  //{
-  //  _delegateSelector = delegateSelector;
-  //  // @begin-repeat
-  //  // @replace-one "fixedArg<n>"
-  //  _fixedArg1 = fixedArg1;
-  //  // @end-repeat
-  //}
-  
-  
-  //public class Script<TR> : ScriptBase
-  //{
-  //  private readonly Func<TR> _func;
-
-  //  public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
-  //      : base(scriptContext, scriptLanguageType, scriptText)
-  //  {
-  //    _func = GetFunc<Func<TR>>();
-  //  }
-
-  //  public TR Execute ()
-  //  {
-  //    // TODO: Switch context
-  //    return _func();
-  //  }
-  //}
-
-
-  //public class Script<TA1, TR> : ScriptBase
-  //{
-  //  private readonly Func<TA1, TR> _func;
-
-  //  public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
-  //    : base (scriptContext, scriptLanguageType, scriptText)
-  //  {
-  //    _func = GetFunc<Func<TA1, TR>> ();
-  //  }
-
-  //  public TR Execute (TA1 a1)
-  //  {
-  //    return _func (a1);
-  //  }
-  //}
 }

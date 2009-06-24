@@ -24,15 +24,8 @@ namespace Remotion.Scripting
   // @replace "TFixedArg<n>, "
   public partial class Script<TFixedArg1, TResult> : ScriptBase
   {
-     
     // @replace "TFixedArg<n>, "
-    private Func<TFixedArg1, TResult> _func;
-
-    // TEST ONLY !
-    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
-      : base (scriptContext, scriptLanguageType, scriptText)
-    { 
-    } 
+    private readonly Func<TFixedArg1, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptScope scope, string scriptFunctionName)
@@ -42,67 +35,13 @@ namespace Remotion.Scripting
       _func = scope.GetVariable<Func<TFixedArg1, TResult>> (scriptFunctionName);
     }
 
-
+    // @replace "TFixedArg<n> a<n>" ", "
+    public TResult Execute (TFixedArg1 a1)
+    {
+      // TODO: Switch context !
+      // @replace "a<n>" ", "
+      return _func (a1);
+    }
   }
   // @end-template
-
-  
- 
-
-
-
-
-
-
-
-  //public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, ScriptScope scope)
-  //  : base (scriptContext, scriptLanguageType, scriptText)
-  //{
-  //  _func scope.GetVariable<Func<TFixedArg1, TResult>> (name);
-  //}
-
-  //// @replace ", TFixedArg<n> fixedArg<n>"
-  //public Script (DelegateSelector delegateSelector, TFixedArg1 fixedArg1)
-  //{
-  //  _delegateSelector = delegateSelector;
-  //  // @begin-repeat
-  //  // @replace-one "fixedArg<n>"
-  //  _fixedArg1 = fixedArg1;
-  //  // @end-repeat
-  //}
-  
-  
-  //public class Script<TR> : ScriptBase
-  //{
-  //  private readonly Func<TR> _func;
-
-  //  public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
-  //      : base(scriptContext, scriptLanguageType, scriptText)
-  //  {
-  //    _func = GetFunc<Func<TR>>();
-  //  }
-
-  //  public TR Execute ()
-  //  {
-  //    // TODO: Switch context
-  //    return _func();
-  //  }
-  //}
-
-
-  //public class Script<TA1, TR> : ScriptBase
-  //{
-  //  private readonly Func<TA1, TR> _func;
-
-  //  public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
-  //    : base (scriptContext, scriptLanguageType, scriptText)
-  //  {
-  //    _func = GetFunc<Func<TA1, TR>> ();
-  //  }
-
-  //  public TR Execute (TA1 a1)
-  //  {
-  //    return _func (a1);
-  //  }
-  //}
 }
