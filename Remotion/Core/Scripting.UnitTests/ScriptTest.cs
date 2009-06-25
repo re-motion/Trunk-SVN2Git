@@ -47,7 +47,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void Ctor_OneArgument ()
+    public void Ctor_NumberTemplateArguments_1 ()
     {
       const string scriptText =
 @"def Test(s) :
@@ -60,7 +60,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void Ctor_TwoArguments ()
+    public void Ctor_NumberTemplateArguments_2 ()
     {
       const string scriptText =
 @"def Test(s0,s1) :
@@ -73,15 +73,15 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void Ctor_ManyArguments ()
+    public void Ctor_NumberTemplateArguments_9 ()
     {
       const string scriptText =
-@"def Test(s0,s1,s2,s3,s4,s5,s6,s7) :
-  return 'Test: '+s0+s1+s2+s3+s4+s5+s6+s7";
+@"def Test(s1,s2,s3,s4,s5,s6,s7,s8,s9) :
+  return 'Test: '+s1+s2+s3+s4+s5+s6+s7+s8+s9";
 
       ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-      var script = new Script<string, string, string, string, string, string, string, string, string> (ScriptContextTestHelper.GetTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
-      Assert.That (script.Execute ("a","a","a","a","a","a","a","a"), Is.EqualTo ("Test: aaaaaaaa"));
+      var script = new Script<string, string, string, string, string, string, string, string, string, string> (ScriptContextTestHelper.GetTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      Assert.That (script.Execute ("1","2","3","4","5","6","7","8","9"), Is.EqualTo ("Test: 123456789"));
     }
 
 
