@@ -42,14 +42,11 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("moduleScope", moduleScope);
       ArgumentUtility.CheckNotNull ("proxiedType", proxiedType);
-      ArgumentUtility.CheckNotNull ("interfaces", interfaces);
+      ArgumentUtility.CheckNotNullOrItemsNull ("interfaces", interfaces);
 
       _proxiedType = proxiedType;
-
       _classEmitter = CreateClassEmitter (name, interfaces, moduleScope);
-
       _proxied = CreateProxiedField();
-
       CreateProxyCtor(proxiedType);
     }
 

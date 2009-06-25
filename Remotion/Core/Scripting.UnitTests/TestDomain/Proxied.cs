@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
@@ -59,13 +60,7 @@ namespace Remotion.Scripting.UnitTests.TestDomain
 
     public string Sum (params int[] numbers)
     {
-      int sum = 0;
-      foreach (var i in numbers)
-      {
-        sum += i;
-      }
-      //return Name + ": " + numbers.Sum ();
-      return Name + ": " + sum;
+      return Name + ": " + numbers.Sum ();
     }
 
     public string PrependName (string text)
