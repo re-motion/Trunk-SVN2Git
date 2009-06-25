@@ -78,3 +78,8 @@ span.treeViewNodeHeadSelected a:hover
 	border-style: solid;
 	background-color: #fee197;	
 }
+
+span.treeViewNode ul
+{
+  right: auto;
+}

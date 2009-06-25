@@ -158,11 +158,19 @@ namespace Remotion.Web.Utilities
 
     public static void RegisterElementForBorderSpans (Control control, string elementID)
     {
+      RegisterElementForBorderSpans (control, elementID, false);
+    }
+    
+    public static void RegisterElementForBorderSpans (Control control, string elementID, bool borderSpansToOuterDiv)
+    {
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNullOrEmpty ("elementID", elementID);
 
       ScriptUtility.RegisterStartupScriptBlock (
-         control, "BorderSpans_" + elementID, string.Format ("StyleUtility.CreateBorderSpans (document.getElementById ('{0}'));", elementID));
+          control,
+          "BorderSpans_" + elementID,
+          string.Format (
+              "StyleUtility.CreateBorderSpans (document.getElementById ('{0}'), {1});", elementID, borderSpansToOuterDiv ? "true" : "false"));
     }
 
     /// <summary>

@@ -14,16 +14,11 @@
  % along with re-motion; if not, see http://www.gnu.org/licenses.
 --%>
 <%@ Page Language="c#" Codebehind="Form.aspx.cs" AutoEventWireup="True" Inherits="OBWTest.IndividualControlTests.IndividualControlTestForm" %>
-
 <%@ Register TagPrefix="obwt" TagName="NavigationTabs" Src="../UI/NavigationTabs.ascx" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" >
-<html>
-<head>
-  <title>IndividualControlTestForm</title>
+<asp:Content ContentPlaceHolderID="head" runat="server">  <title>IndividualControlTestForm</title>
   <remotion:HtmlHeadContents ID="HtmlHeadContents" runat="server" />
-</head>
-<body>
-  <form id="MyForm" runat="server">
+</asp:Content>
+<asp:Content ContentPlaceHolderID="body" runat="server">
     <asp:ScriptManager ID="ScriptManager" runat="server" />
     <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.ObjectBinding.Sample::Person" />
     <remotion:SingleView ID="SingleView" runat="server">
@@ -55,6 +50,4 @@
         </asp:UpdatePanel>
      </BottomControls>
     </remotion:SingleView>
-  </form>
-</body>
-</html>
+</asp:Content>

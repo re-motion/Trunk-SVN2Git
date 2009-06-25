@@ -14,7 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
 {
@@ -27,6 +29,14 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
 
     public override void PreRender ()
     {
+      Control control = Control as Control;
+      if (control != null)
+      {
+        ScriptUtility.RegisterElementForBorderSpans (control, Control.ClientID + "_View", false);
+        ScriptUtility.RegisterElementForBorderSpans (control, Control.TopControl.ClientID, false);
+        ScriptUtility.RegisterElementForBorderSpans (control, Control.BottomControl.ClientID, false);
+      }
+
       string key = typeof (ISingleView).FullName + "_Style";
       if (!HtmlHeadAppender.Current.IsRegistered (key))
       {

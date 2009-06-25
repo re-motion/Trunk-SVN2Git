@@ -33,8 +33,6 @@ namespace Remotion.Web.UI.Controls
     private static readonly object s_eventCommandClickEvent = new object();
     private static readonly object s_wxeFunctionCommandClickEvent = new object();
 
-    private const string c_dropDownIcon = "DropDownMenuArrow.gif";
-
     /// <summary> Only used by control developers. </summary>
     public static readonly string OnHeadTitleClickScript = "DropDownMenu_OnHeadControlClick();";
 
@@ -43,6 +41,7 @@ namespace Remotion.Web.UI.Controls
     private bool _isReadOnly;
     private bool _enableGrouping = true;
     private string _getSelectionCount = "";
+    private bool _canRender;
 
     private readonly WebMenuItemCollection _menuItems;
     private RenderMethod _renderHeadTitleMethod;
@@ -62,6 +61,25 @@ namespace Remotion.Web.UI.Controls
     public DropDownMenu ()
         : this (null, new[] { typeof (WebMenuItem) })
     {
+    }
+
+    protected override void OnInit (EventArgs e)
+    {
+      IServiceLocator locator;
+      //HACK: for unit tests that do not define a service locator, but need control initialization
+      try 
+      {
+        locator = ServiceLocator.Current;
+      }
+      catch (NullReferenceException)
+      {
+        _canRender = true;
+        return;
+      }
+
+      var factory = locator.GetInstance<IDropDownMenuRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      _canRender = preRenderer.CanRender();
     }
 
     /// <summary> Implements interface <see cref="IPostBackEventHandler"/>. </summary>
@@ -141,25 +159,6 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    protected override void OnInit (EventArgs e)
-    {
-      base.OnInit (e);
-
-      string key = typeof (DropDownMenu).FullName + "_Script";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (DropDownMenu), ResourceType.Html, "DropDownMenu.js");
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (key, url);
-      }
-
-      key = typeof (DropDownMenu).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (DropDownMenu), ResourceType.Html, "DropDownMenu.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
-    }
-
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
@@ -177,11 +176,6 @@ namespace Remotion.Web.UI.Controls
         throw new InvalidOperationException ("PreRenderChildControlsForDesignMode may only be called during design time.");
       EnsureChildControls();
       OnPreRender (EventArgs.Empty);
-    }
-
-    protected override HtmlTextWriterTag TagKey
-    {
-      get { return HtmlTextWriterTag.Div; }
     }
 
     public override void RenderControl (HtmlTextWriter writer)
@@ -254,6 +248,11 @@ namespace Remotion.Web.UI.Controls
     public bool IsDesignMode
     {
       get { return ControlHelper.IsDesignMode(this, Context); }
+    }
+
+    public bool CanRender
+    {
+      get { return IsDesignMode || _canRender; }
     }
 
     [DefaultValue (true)]

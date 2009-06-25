@@ -14,7 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 {
@@ -27,6 +29,14 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 
     public override void PreRender ()
     {
+      if (Control is Control)
+      {
+        Control control = (Control) Control;
+        ScriptUtility.RegisterElementForBorderSpans (control, Control.ActiveViewClientID);
+        ScriptUtility.RegisterElementForBorderSpans (control, Control.TopControl.ClientID);
+        ScriptUtility.RegisterElementForBorderSpans (control, Control.BottomControl.ClientID);
+      }
+
       string key = typeof (ITabbedMultiView).FullName + "_Style";
       if (!HtmlHeadAppender.Current.IsRegistered (key))
       {

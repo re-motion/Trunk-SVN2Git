@@ -21,8 +21,8 @@ div.tabbedMultiViewTopControls
 {
   position: absolute; 
   padding-bottom: 1em;
-  top: 0; 
-	left: 0; 
+  top: 15px; 
+	left: 10px; 
 	width: 100%; 
 	overflow: hidden;
 
@@ -31,8 +31,14 @@ div.tabbedMultiViewTopControls
 div.tabbedMultiViewTabStrip
 {
   position: relative;
-  left: 0;
+  left: 10px;
   width: 100%;
+}
+
+div.tabbedMultiViewTabStrip div
+{
+  position: static;
+  left: auto;
 }
 
 /* Applied to the bottom section of the multi view. Height cannot be provided in percent. */
@@ -41,16 +47,17 @@ div.tabbedMultiViewBottomControls
   position: absolute; 
   padding-top: 1em;
   overflow: hidden;
-  bottom: 0; 
-  left: 0;
+  bottom: 15px; 
+  left: 10px;
+  width: 100%;
 }
 
 
 div.tabbedMultiViewActiveView
 {
   position: relative;
-  padding: 0.2em;
   overflow: auto;
+  left: 10px;
   border-left: solid 1px #005588;
   border-right: solid 1px #005588;
   border-bottom: solid 1px #005588;

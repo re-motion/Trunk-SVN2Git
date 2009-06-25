@@ -17,6 +17,7 @@ using System;
 using System.Globalization;
 using System.Text;
 using System.Threading;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -25,6 +26,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace OBWTest
 {
@@ -77,7 +79,12 @@ public class TestWxeBasePage:
     if (! HtmlHeadAppender.Current.IsRegistered (key))
     {
       string url = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (ResourceUrlResolver), ResourceType.Html, "Style.css");
+          this,
+          new HttpContextWrapper(Context), 
+          typeof (ResourceUrlResolver),
+          ResourceType.Html,
+          Global.UseStandardModeRendering ? ResourceTheme.Standard : ResourceTheme.Legacy,
+          "Style.css");
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, url);
     }
 

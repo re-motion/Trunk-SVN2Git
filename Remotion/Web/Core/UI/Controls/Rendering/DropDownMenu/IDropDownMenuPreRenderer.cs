@@ -19,5 +19,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
 {
   public interface IDropDownMenuPreRenderer : IPreRenderer<IDropDownMenu>
   {
+    bool CanRender ();
   }
 }

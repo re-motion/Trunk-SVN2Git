@@ -14,7 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 {
@@ -27,6 +29,14 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
     public override void PreRender ()
     {
+      if (Control is Control)
+      {
+        Control control = (Control) Control;
+        ScriptUtility.RegisterElementForBorderSpans (control, Control.ActiveViewClientID, true);
+        ScriptUtility.RegisterElementForBorderSpans (control, Control.TopControl.ClientID, true);
+        ScriptUtility.RegisterElementForBorderSpans (control, Control.BottomControl.ClientID, true);
+      }
+
       string keyStyle = typeof (ITabbedMultiView).FullName + "_Style";
       string keyScript = typeof (ITabbedMultiView).FullName + "_Script";
       if (!HtmlHeadAppender.Current.IsRegistered (keyStyle))
@@ -38,28 +48,33 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme.Standard, "ViewLayout.js");
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
-      }
 
-      string keyJquery = "jQuery";
-      if (!HtmlHeadAppender.Current.IsRegistered (keyJquery))
-      {
-        string jQueryUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ITabbedMultiView), ResourceType.Html, "jquery.js");
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyJquery, jQueryUrl);
-      }
-
-      string script = 
-@"function adjustView_{0}()
+        string keyAdjust = Control.ClientID + "_AdjustView";
+        string scriptAdjust =
+            @"function adjustView_{0}()
 {{
-  ViewLayout.SetBodyHeightToWindowHeight({0});
-  ViewLayout.AdjustTop({0}, {1}); 
-  ViewLayout.Adjust({0}, {2});
-}}
-$(window).bind('resize', function(){{adjustView_{0}();}});
-$(document).ready( function(){{ setTimeout('adjustView_{0}();', 10); }} );";
+  var container = document.getElementById('{0}');
+  var topControl = document.getElementById('{1}');
+  var view = document.getElementById('{2}');
+  ViewLayout.AdjustWidth(container);
+  ViewLayout.AdjustTop(container, topControl); 
+  ViewLayout.Adjust(container, view);
+}}";
+        scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.TabStripContainerClientID, Control.ActiveViewClientID);
+        HtmlHeadAppender.Current.RegisterJavaScriptBlock (keyAdjust, scriptAdjust);
+      }
 
-      script = string.Format (script, Control.ClientID, Control.TabStripContainerClientID, Control.ActiveViewClientID);
-      Control.Page.ClientScript.RegisterClientScriptBlock (Control, Control.ClientID + "_AdjustView", script);
+      HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (Control.Page);
+
+      string bindScript =
+    @"$(document).ready( function(){{ 
+  $(window).bind('resize', function(){{ 
+    adjustView_{0}(); 
+  }}); 
+  setTimeout('adjustView_{0}();', 10); 
+}} );";
+      bindScript = string.Format (bindScript, Control.ClientID);
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, Control.ClientID + "_BindViewResize", bindScript);
     }
   }
 }

@@ -264,7 +264,7 @@ function SmartPage_Context (
     try
     {
       if (!TypeUtility.IsUndefined (window.document.activeElement) && window.document.activeElement != null
-          && window.document.body != window.document.activeElement && window.document.body.contains (window.document.activeElement)
+          && window.document.body != window.document.activeElement && ( jQuery('body').find(window.document.activeElement).length==1 )
           && !TypeUtility.IsUndefined (window.document.activeElement.tagName) && IsFocusableTag (window.document.activeElement.tagName))
       {
         _activeElement = window.document.activeElement;
@@ -655,7 +655,7 @@ function SmartPage_Context (
     for (var i = updatePanelIDs.length - 1; i >= 0; i--) 
     {
       var updatePanel = document.getElementById (UniqueIDToClientID (updatePanelIDs[i]));
-      if (updatePanel != null && updatePanel.contains (element)) 
+      if (updatePanel != null && jQuery(updatePanel).find(element).length == 1) 
         return CreatePostbackSettings(true, updatePanelIDs[i]);
     }
 
@@ -670,8 +670,7 @@ function SmartPage_Context (
     return CreatePostbackSettings (false, null);
   }
 
-  function CreatePostbackSettings (async, panelID, sourceElement) 
-  {
+  function CreatePostbackSettings (async, panelID, sourceElement) {
     return { async:async, panelID:panelID, sourceElement:sourceElement };
   }
  

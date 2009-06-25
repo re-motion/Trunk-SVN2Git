@@ -129,7 +129,7 @@ namespace Remotion.Web.UI
       if (_hasAppendExecuted)
         return;
 
-      if (ControlHelper.IsDesignMode ((IControl)htmlHeadContents))
+      if (ControlHelper.IsDesignMode ((IControl) htmlHeadContents))
         return;
       if (ControlHelper.IsDesignMode ((IControl) htmlHeadContents))
         htmlHeadContents.Controls.Clear();
@@ -276,11 +276,27 @@ namespace Remotion.Web.UI
 
     public void RegisterUtilitiesJavaScriptInclude (IControl control)
     {
+      RegisterUtilitiesJavaScriptInclude (control, ResourceTheme.Legacy);
+    }
+
+    public void RegisterUtilitiesJavaScriptInclude (IControl control, ResourceTheme theme)
+    {
       ArgumentUtility.CheckNotNull ("control", control);
       string key = typeof (HtmlHeadContents).FullName + "_Utilities";
       if (! IsRegistered (key))
       {
         string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "Utilities.js");
+        RegisterJavaScriptInclude (key, href);
+      }
+    }
+
+    public void RegisterJQueryJavaScriptInclude (IControl control)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      string key = typeof (HtmlHeadContents).FullName + "_JQuery";
+      if (!IsRegistered (key))
+      {
+        string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "jquery.js");
         RegisterJavaScriptInclude (key, href);
       }
     }
@@ -359,5 +375,13 @@ namespace Remotion.Web.UI
     //    headElement.Text = innerHtml.ToString();
     //    RegisterHeadElement (key, headElement, priority);
     //  }
+    public void RegisterJavaScriptBlock (string key, string script)
+    {
+      HtmlGenericControl scriptControl = new HtmlGenericControl ("script");
+      scriptControl.Attributes["type"] = "text/javascript";
+      scriptControl.InnerText = script;
+
+      RegisterHeadElement (key, scriptControl, Priority.Script);
+    }
   }
 }

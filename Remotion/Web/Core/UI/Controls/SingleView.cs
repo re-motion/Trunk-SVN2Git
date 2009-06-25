@@ -115,10 +115,6 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnPreRender (e);
 
-      ScriptUtility.RegisterElementForBorderSpans (this, ClientID + "_View");
-      ScriptUtility.RegisterElementForBorderSpans (this, _topControl.ClientID);
-      ScriptUtility.RegisterElementForBorderSpans (this, _bottomControl.ClientID);
-
       var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
       preRenderer.PreRender();

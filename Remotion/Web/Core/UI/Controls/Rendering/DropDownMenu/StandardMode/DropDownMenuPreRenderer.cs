@@ -15,37 +15,25 @@
 // 
 using System;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Utilities;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
+namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
 {
   public class DropDownMenuPreRenderer : DropDownMenuPreRendererBase
   {
     public DropDownMenuPreRenderer (IHttpContext context, IDropDownMenu control)
-        : base(context, control)
+        : base (context, control)
     {
     }
 
     public override bool CanRender ()
     {
-      return IsInternetExplorer55OrHigher();
+      return true;
     }
-
-    private bool IsInternetExplorer55OrHigher ()
-    {
-      bool isVersionGreaterOrEqual55 =
-              Context.Request.Browser.MajorVersion >= 6
-          || Context.Request.Browser.MajorVersion == 5
-              && Context.Request.Browser.MinorVersion >= 0.5;
-      bool isInternetExplorer55AndHigher =
-          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
-
-      return isInternetExplorer55AndHigher;
-    }
-
 
     protected override ResourceTheme ResourceTheme
     {
-      get { return Web.ResourceTheme.Legacy; }
+      get { return Web.ResourceTheme.Standard; }
     }
   }
 }

@@ -16,12 +16,14 @@
 using System;
 using System.Globalization;
 using System.Threading;
+using System.Web;
 using Remotion.Globalization;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace OBWTest.IndividualControlTests
 {
@@ -68,7 +70,13 @@ public class TestBasePage :
     if (! HtmlHeadAppender.Current.IsRegistered (key))
     {
       string href = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (ResourceUrlResolver), ResourceType.Html, "Style.css");
+          this,
+          new HttpContextWrapper(Context),
+          typeof (ResourceUrlResolver),
+          ResourceType.Html,
+          Global.UseStandardModeRendering ? ResourceTheme.Standard : ResourceTheme.Legacy,
+          "Style.css");
+      
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);
     }
 

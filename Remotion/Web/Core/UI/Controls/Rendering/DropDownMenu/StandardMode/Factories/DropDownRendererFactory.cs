@@ -14,11 +14,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
+using System.Web.UI;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
+namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode.Factories
 {
-  public interface IWebMenuItem : IWebTab
+  public class DropDownRendererFactory : IDropDownMenuRendererFactory
   {
+    public IDropDownMenuPreRenderer CreatePreRenderer (IHttpContext context, IDropDownMenu control)
+    {
+      return new DropDownMenuPreRenderer (context, control);
+    }
+
+    public IDropDownMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IDropDownMenu control)
+    {
+      return new DropDownMenuRenderer (context, writer, control);
+    }
   }
 }

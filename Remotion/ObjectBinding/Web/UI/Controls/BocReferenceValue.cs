@@ -1229,21 +1229,6 @@ public class BocReferenceValue:
     }
   }
 
-  private bool IsInternetExplorer55OrHigher()
-  {
-    if (IsDesignMode)
-      return true;
-    
-    bool isVersionGreaterOrEqual55 = 
-            Context.Request.Browser.MajorVersion >= 6
-        ||    Context.Request.Browser.MajorVersion == 5 
-            && Context.Request.Browser.MinorVersion >= 0.5;
-    bool isInternetExplorer55AndHigher = 
-        Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
-
-    return isInternetExplorer55AndHigher;
-  }
-
   /// <summary> Gets a flag describing whether the <see cref="OptionsMenu"/> is visible. </summary>
   protected bool HasOptionsMenu
   {
@@ -1251,7 +1236,7 @@ public class BocReferenceValue:
     {
       return   ! WcagHelper.Instance.IsWaiConformanceLevelARequired() 
             && _showOptionsMenu && (OptionsMenuItems.Count > 0 || IsDesignMode)
-            && IsInternetExplorer55OrHigher(); 
+            && OptionsMenu.CanRender; 
     }
   }
 

@@ -30,6 +30,11 @@ namespace OBWTest.IndividualControlTests
     private IDataEditControl _dataEditControl;
     private bool _isCurrentObjectSaved = false;
 
+    public IndividualControlTestForm ()
+    {
+      MasterPageFile = (Global.UseStandardModeRendering) ? "~/StandardMode.Master" : "~/QuirksMode.Master";
+    }
+
     protected override void RegisterEventHandlers ()
     {
       base.RegisterEventHandlers();

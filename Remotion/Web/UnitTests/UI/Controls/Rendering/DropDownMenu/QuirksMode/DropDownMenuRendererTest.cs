@@ -282,7 +282,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     {
       Type type = typeof (IDropDownMenu);
       string initializationScriptKey = type.FullName + "_Startup";
-      string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (_control, HttpContext, type, ResourceType.Html, "DropDownMenu.css");
+      string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+          _control, HttpContext, type, ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
       string initializationScript = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
 
       string menuInfoKey = _control.UniqueID;

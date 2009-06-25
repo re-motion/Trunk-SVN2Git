@@ -323,10 +323,6 @@ namespace Remotion.Web.UI.Controls
       if (Views.Count == 0)
         Views.Add (_placeHolderTabView);
 
-      ScriptUtility.RegisterElementForBorderSpans (this, ActiveViewClientID);
-      ScriptUtility.RegisterElementForBorderSpans (this, _topControl.ClientID);
-      ScriptUtility.RegisterElementForBorderSpans (this, _bottomControl.ClientID);
-
       base.OnPreRender (e);
 
       var factory = ServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory> ();
