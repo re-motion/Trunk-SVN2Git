@@ -89,39 +89,30 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       ArgumentUtility.CheckNotNull ("containsObjectCallExpression", containsObjectCallExpression);
       ArgumentUtility.CheckNotNull ("parentQuery", parentQuery);
+      ArgumentUtility.CheckNotNull ("methodCallExpression", containsObjectCallExpression);
+      ArgumentUtility.CheckNotNull ("parentQuery", parentQuery);
 
-      QueryModel queryModel = CreateQueryModel (containsObjectCallExpression, parentQuery);
+      Type collectionElementType = containsObjectCallExpression.Arguments[0].Type;
+      var collectionExpression = ParserUtility.GetTypedExpression<MemberExpression> (
+          containsObjectCallExpression.Object, "object on which ContainsObject is called");
+      var collectionProperty = ParserUtility.GetTypedExpression<PropertyInfo> (collectionExpression.Member, "member on which ContainsObject is called");
+      PropertyInfo foreignKeyProperty = GetForeignKeyProperty (collectionProperty);
+
+      var mainFromClause = CreateFromClause (collectionElementType);
+      var whereClause = CreateWhereClause (mainFromClause, foreignKeyProperty, collectionExpression.Expression);
+      var selectClause = CreateSelectClause (mainFromClause);
+
+      var queryModel1 = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
+      queryModel1.BodyClauses.Add (whereClause);
+      QueryModel queryModel = queryModel1;
       var subQuery = new SubQueryExpression (queryModel);
       return subQuery;
     }
 
-    public QueryModel CreateQueryModel (MethodCallExpression methodCallExpression, QueryModel parentQuery)
-    {
-      ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
-      ArgumentUtility.CheckNotNull ("parentQuery", parentQuery);
-
-      Type collectionElementType = methodCallExpression.Arguments[0].Type;
-      var collectionExpression = ParserUtility.GetTypedExpression<MemberExpression> (
-          methodCallExpression.Object, "object on which ContainsObject is called");
-      var collectionProperty = ParserUtility.GetTypedExpression<PropertyInfo> (collectionExpression.Member, "member on which ContainsObject is called");
-      PropertyInfo foreignKeyProperty = GetForeignKeyProperty (collectionProperty);
-
-      MainFromClause mainFromClause = CreateFromClause (collectionElementType);
-      WhereClause whereClause = CreateWhereClause (mainFromClause, foreignKeyProperty, collectionExpression.Expression);
-      SelectClause selectClause = CreateSelectClause (mainFromClause);
-
-      var queryModel = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
-      queryModel.BodyClauses.Add (whereClause);
-
-      return queryModel;
-    }
-
     // from oi in QueryFactory.CreateLinqQuery<OrderItem>
-    public MainFromClause CreateFromClause (Type containsParameterType)
+    private MainFromClause CreateFromClause (Type containsParameterType)
     {
-      ArgumentUtility.CheckNotNull ("containsParameterType", containsParameterType);
       string itemName = "<<generated>>" + Guid.NewGuid().ToString ("N");
-
       MethodInfo entityMethod = s_genericCreateQueryableMethod.MakeGenericMethod (containsParameterType);
       object queryable = entityMethod.Invoke (null, null);
       Expression querySource = Expression.Constant (queryable);
@@ -129,12 +120,8 @@ namespace Remotion.Data.DomainObjects.Linq
       return new MainFromClause (itemName, containsParameterType, querySource);
     }
 
-    public WhereClause CreateWhereClause (MainFromClause fromClause, PropertyInfo foreignKeyProperty, Expression queriedObject)
+    private WhereClause CreateWhereClause (MainFromClause fromClause, PropertyInfo foreignKeyProperty, Expression queriedObject)
     {
-      ArgumentUtility.CheckNotNull ("fromClause", fromClause);
-      ArgumentUtility.CheckNotNull ("foreignKeyProperty", foreignKeyProperty);
-      ArgumentUtility.CheckNotNull ("queriedObject", queriedObject);
-
       Expression left = Expression.MakeMemberAccess (new QuerySourceReferenceExpression (fromClause), foreignKeyProperty);
       Expression right = queriedObject;
       BinaryExpression comparison = Expression.Equal (left, right);
@@ -142,28 +129,24 @@ namespace Remotion.Data.DomainObjects.Linq
       return new WhereClause (comparison);
     }
 
-    public SelectClause CreateSelectClause (MainFromClause mainFromClause)
+    private SelectClause CreateSelectClause (MainFromClause mainFromClause)
     {
-      ArgumentUtility.CheckNotNull ("mainFromClause", mainFromClause);
-
       return new SelectClause (new QuerySourceReferenceExpression (mainFromClause));
     }
 
     public PropertyInfo GetForeignKeyProperty (PropertyInfo collectionProperty) // Order.OrderItems
     {
-      ArgumentUtility.CheckNotNull ("collectionProperty", collectionProperty);
-
-      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (collectionProperty.DeclaringType);
+      var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (collectionProperty.DeclaringType);
       string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (collectionProperty);
-      IRelationEndPointDefinition collectionEndPoint = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName); // Order.OrderItems
-      IRelationEndPointDefinition foreignKeyEndPoint = collectionEndPoint.GetOppositeEndPointDefinition(); // OrderItem.Order
+      var collectionEndPoint = classDefinition.GetMandatoryRelationEndPointDefinition (propertyName); // Order.OrderItems
+      var foreignKeyEndPoint = collectionEndPoint.GetOppositeEndPointDefinition(); // OrderItem.Order
 
       return MappingConfiguration.Current.NameResolver.GetProperty (foreignKeyEndPoint.ClassDefinition.ClassType, foreignKeyEndPoint.PropertyName);
     }
 
     public MethodCallExpression CreateExpressionForContainsParser (SubQueryExpression subQueryExpression, Expression queryParameterExpression)
     {
-      MethodInfo concreteContainsObjectMethod = s_genericContainsMethod.MakeGenericMethod (queryParameterExpression.Type);
+      var concreteContainsObjectMethod = s_genericContainsMethod.MakeGenericMethod (queryParameterExpression.Type);
       return Expression.Call (concreteContainsObjectMethod, subQueryExpression, queryParameterExpression);
     }
   }

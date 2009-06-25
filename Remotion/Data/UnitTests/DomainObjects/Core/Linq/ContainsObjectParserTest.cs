@@ -32,6 +32,7 @@ using Remotion.Data.Linq.Parsing.Details.WhereConditionParsing;
 using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Data.UnitTests.Linq;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -48,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private MockRepository _mockRepository;
     private WhereConditionParserRegistry _registryStub;
     private IWhereConditionParser _containsParserMock;
-    private QuerySourceReferenceExpression _orderReference;
+    private QueryModel _queryModel;
 
     public override void SetUp ()
     {
@@ -64,68 +65,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _queriedObjectExpression =
           (ParameterExpression) new ExpressionTreeNavigator (_containsObjectCallExpression).Object.MemberAccess_Expression.Expression;
 
-      _orderReference = new QuerySourceReferenceExpression (ExpressionHelper.CreateMainFromClause ("o", typeof (Order), _query));
-
       _parser = new ContainsObjectParser (_registryStub);
+
+      _queryModel = ExpressionHelper.ParseQuery (_query);
     }
 
     [Test]
-    public void CreateFromClause_Identifier ()
+    public void CreateEquivalentSubQuery_FromClauseIdentifier ()
     {
-      MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
+      SubQueryExpression subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, _queryModel);
+      var mainFromClause = subQuery.QueryModel.MainFromClause;
+
       Assert.That (mainFromClause.ItemType, Is.EqualTo (typeof (OrderItem)));
       Assert.That (mainFromClause.ItemName, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
     }
 
     [Test]
-    public void CreateFromClause_QuerySource ()
+    public void CreateEquivalentSubQuery_FromClause_QuerySource ()
     {
-      MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
+      var subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, _queryModel);
+      var mainFromClause = subQuery.QueryModel.MainFromClause;
+      
       Assert.That (mainFromClause.FromExpression, Is.InstanceOfType (typeof (ConstantExpression)));
       object value = ((ConstantExpression) mainFromClause.FromExpression).Value;
       Assert.That (value, Is.InstanceOfType (typeof (DomainObjectQueryable<OrderItem>)));
     }
 
     [Test]
-    public void CreateWhereClause_CreatesBinaryEqualsExpression ()
+    public void CreateEquivalentSubQuery_WhereClause_CreatesBinaryEqualsExpression ()
     {
-      var mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
+      var subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, _queryModel);
+      var whereClause = (WhereClause) subQuery.QueryModel.BodyClauses[0];
 
-      PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
-      Expression whereComparison = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference).Predicate;
-
-      Assert.That (whereComparison.NodeType, Is.EqualTo (ExpressionType.Equal));
+      Assert.That (whereClause.Predicate.NodeType, Is.EqualTo (ExpressionType.Equal));
     }
 
     [Test]
-    public void CreateWhereClause_CreatesBinaryEqualsExpression_LeftSide ()
+    public void CreateEquivalentSubQuery_WhereClause_CreatesBinaryEqualsExpression_LeftSide ()
     {
-      var mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
+      var subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, _queryModel);
+      var mainFromClause = subQuery.QueryModel.MainFromClause;
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
-
-      var whereComparison = (BinaryExpression) _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference).Predicate;
       
-      Assert.That (whereComparison.Left, Is.InstanceOfType (typeof (MemberExpression)));
+      var whereComparison = (BinaryExpression) ((WhereClause) subQuery.QueryModel.BodyClauses[0]).Predicate;
       var memberExpression = (MemberExpression) whereComparison.Left;
+
+      Assert.That (whereComparison.Left, Is.InstanceOfType (typeof (MemberExpression)));
       Assert.That (((QuerySourceReferenceExpression) memberExpression.Expression).ReferencedClause, Is.SameAs (mainFromClause));
       Assert.That (memberExpression.Member, Is.SameAs (foreignKeyProperty));
     }
 
     [Test]
-    public void CreateWhereClause_CreatesBinaryEqualsExpression_RightSide ()
+    public void CreateEquivalentSubQuery_SelectClause ()
     {
-      var mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
-      PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
+      var subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, _queryModel);
+      var mainFromClause = subQuery.QueryModel.MainFromClause;
+      var selectClause = (SelectClause) subQuery.QueryModel.SelectOrGroupClause;
 
-      var whereComparison = (BinaryExpression) _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference).Predicate;
-      Assert.That (whereComparison.Right, Is.SameAs (_orderReference));
-    }
-
-    [Test]
-    public void CreateSelectClause ()
-    {
-      MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
-      SelectClause selectClause = _parser.CreateSelectClause (mainFromClause);
       Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedClause, Is.SameAs (mainFromClause));
     }
 
@@ -134,55 +130,76 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       PropertyInfo collectionProperty = typeof (Order).GetProperty ("OrderItems");
       PropertyInfo expectedForeignKey = typeof (OrderItem).GetProperty ("Order");
+
       Assert.That (_parser.GetForeignKeyProperty (collectionProperty), Is.EqualTo (expectedForeignKey));
     }
 
     [Test]
-    public void CreateQueryModel_Clauses ()
+    public void CreateEquivalentSubQuery_Clauses ()
     {
-      QueryModel queryModel = _parser.CreateQueryModel (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
+      var collectionElementType = _containsObjectCallExpression.Arguments[0].Type;
+      var subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, _queryModel);
+      var mainFromClause = subQuery.QueryModel.MainFromClause;
 
-      MainFromClause fromClause = queryModel.MainFromClause;
+      var whereClause = (WhereClause) subQuery.QueryModel.BodyClauses[0];
+      var binaryExpression = (BinaryExpression) whereClause.Predicate;
+      var memberExpression = (MemberExpression) binaryExpression.Left;
+      var selectClause = (SelectClause) subQuery.QueryModel.SelectOrGroupClause;
+      var fromClause = subQuery.QueryModel.MainFromClause;
+
+      var queryModel1 = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
+      queryModel1.BodyClauses.Add (whereClause);
+
       Assert.That (fromClause.ItemType, Is.EqualTo (typeof (OrderItem)));
       Assert.That (fromClause.ItemName, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
-
-      var whereClause = (WhereClause) queryModel.BodyClauses[0];
       Assert.That (whereClause.Predicate, Is.InstanceOfType (typeof (BinaryExpression)));
-      var binaryExpression = (BinaryExpression) whereClause.Predicate;
       Assert.That (binaryExpression.Left, Is.InstanceOfType (typeof (MemberExpression)));
-      var memberExpression = (MemberExpression) binaryExpression.Left;
       Assert.That (((QuerySourceReferenceExpression) memberExpression.Expression).ReferencedClause, Is.SameAs (fromClause));
       Assert.That (memberExpression.Member, Is.EqualTo (typeof (OrderItem).GetProperty ("Order")));
       Assert.That (binaryExpression.Right, Is.SameAs (_queriedObjectExpression));
-
-      var selectClause = (SelectClause) queryModel.SelectOrGroupClause;
       Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedClause, Is.SameAs (fromClause));
     }
 
     [Test]
-    public void CreateQueryModel_ResultType ()
+    public void CreateEquivalentSubQuery_ResultType ()
     {
-      QueryModel queryModel = _parser.CreateQueryModel (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
+      ArgumentUtility.CheckNotNull ("methodCallExpression", _containsObjectCallExpression);
+      ArgumentUtility.CheckNotNull ("parentQuery", ExpressionHelper.CreateQueryModel ());
+
+      Type collectionElementType = _containsObjectCallExpression.Arguments[0].Type;
+
+      var subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, _queryModel);
+      var mainFromClause = subQuery.QueryModel.MainFromClause;
+      var whereClause = (WhereClause) subQuery.QueryModel.BodyClauses[0];
+      var selectClause = (SelectClause) subQuery.QueryModel.SelectOrGroupClause;
+
+      var queryModel1 = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
+      queryModel1.BodyClauses.Add (whereClause);
+      QueryModel queryModel = queryModel1;
+
       Assert.That (queryModel.ResultType, Is.EqualTo (typeof (IQueryable<OrderItem>)));
     }
 
     [Test]
     public void CreateEquivalentSubQuery_CreatesSubQuery_WithQueryModel ()
     {
-      SubQueryExpression subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
+      var subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
+
       Assert.That (subQuery.QueryModel, Is.Not.Null);
     }
 
     [Test]
+    
     public void CreateExpressionForContainsParser ()
     {
-      SubQueryExpression subQueryExpression1 = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
+      SubQueryExpression subQueryExpression = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, ExpressionHelper.CreateQueryModel ());
       Expression queryParameterExpression = Expression.Constant (null, typeof (OrderItem));
-      MethodCallExpression methodCallExpression = _parser.CreateExpressionForContainsParser (subQueryExpression1, queryParameterExpression);
+      MethodCallExpression methodCallExpression = _parser.CreateExpressionForContainsParser (subQueryExpression, queryParameterExpression);
+      MethodInfo containsMethod = GetContainsMethod ();
+
       Assert.That (methodCallExpression.Object, Is.Null);
-      MethodInfo containsMethod = GetContainsMethod();
       Assert.That (methodCallExpression.Method, Is.EqualTo (containsMethod));
-      Assert.That (methodCallExpression.Arguments, Is.EqualTo (new[] { subQueryExpression1, queryParameterExpression }));
+      Assert.That (methodCallExpression.Arguments, Is.EqualTo (new[] { subQueryExpression, queryParameterExpression }));
     }
 
     private MethodInfo GetContainsMethod ()
