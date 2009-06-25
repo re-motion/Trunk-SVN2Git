@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       MainFromClause mainFromClause = CreateFromClause (collectionElementType);
       WhereClause whereClause = CreateWhereClause (mainFromClause, foreignKeyProperty, collectionExpression.Expression);
-      SelectClause selectClause = CreateSelectClause (whereClause, mainFromClause);
+      SelectClause selectClause = CreateSelectClause (mainFromClause);
 
       var queryModel = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
       queryModel.BodyClauses.Add (whereClause);
@@ -139,15 +139,14 @@ namespace Remotion.Data.DomainObjects.Linq
       Expression right = queriedObject;
       BinaryExpression comparison = Expression.Equal (left, right);
       
-      return new WhereClause (fromClause, comparison);
+      return new WhereClause (comparison);
     }
 
-    public SelectClause CreateSelectClause (WhereClause whereClause, MainFromClause mainFromClause)
+    public SelectClause CreateSelectClause (MainFromClause mainFromClause)
     {
-      ArgumentUtility.CheckNotNull ("whereClause", whereClause);
       ArgumentUtility.CheckNotNull ("mainFromClause", mainFromClause);
 
-      return new SelectClause (whereClause, new QuerySourceReferenceExpression (mainFromClause));
+      return new SelectClause (new QuerySourceReferenceExpression (mainFromClause));
     }
 
     public PropertyInfo GetForeignKeyProperty (PropertyInfo collectionProperty) // Order.OrderItems

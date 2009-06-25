@@ -125,11 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateSelectClause ()
     {
       MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
-      PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
-
-      WhereClause whereClause = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference);
-
-      SelectClause selectClause = _parser.CreateSelectClause (whereClause, mainFromClause);
+      SelectClause selectClause = _parser.CreateSelectClause (mainFromClause);
       Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedClause, Is.SameAs (mainFromClause));
     }
 
