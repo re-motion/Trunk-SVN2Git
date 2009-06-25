@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void CreateWhereComparison_CreatesBinaryEqualsExpression ()
+    public void CreateWhereClause_CreatesBinaryEqualsExpression ()
     {
       var mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
 
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void CreateWhereComparison_CreatesBinaryEqualsExpression_LeftSide ()
+    public void CreateWhereClause_CreatesBinaryEqualsExpression_LeftSide ()
     {
       var mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
@@ -112,23 +112,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void CreateWhereComparison_CreatesBinaryEqualsExpression_RightSide ()
+    public void CreateWhereClause_CreatesBinaryEqualsExpression_RightSide ()
     {
       var mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
       PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
 
       var whereComparison = (BinaryExpression) _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference).Predicate;
       Assert.That (whereComparison.Right, Is.SameAs (_orderReference));
-    }
-
-    [Test]
-    public void CreateWhereClause ()
-    {
-      MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
-      PropertyInfo foreignKeyProperty = typeof (OrderItem).GetProperty ("Order");
-
-      WhereClause whereClause = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference);
-      Assert.That (whereClause.PreviousClause, Is.SameAs (mainFromClause));
     }
 
     [Test]
@@ -140,7 +130,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       WhereClause whereClause = _parser.CreateWhereClause (mainFromClause, foreignKeyProperty, _orderReference);
 
       SelectClause selectClause = _parser.CreateSelectClause (whereClause, mainFromClause);
-      Assert.That (selectClause.PreviousClause, Is.SameAs (whereClause));
       Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedClause, Is.SameAs (mainFromClause));
     }
 
