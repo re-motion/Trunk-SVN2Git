@@ -56,10 +56,15 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void GetScriptContext ()
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
       const string name = "Context2";
-      var scriptContext = ScriptContext.CreateScriptContext (name, typeArbiterStub);
+      ScriptContext scriptContext = CreateScriptContext(name);
       Assert.That (ScriptContext.GetScriptContext (name),Is.SameAs(scriptContext));
+    }
+
+    private ScriptContext CreateScriptContext (string name)
+    {
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+      return ScriptContext.CreateScriptContext (name, typeArbiterStub);
     }
 
     [Test]
@@ -108,8 +113,55 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
+    [Test]
+    public void SwitchAndHoldScriptContext ()
+    {
+      ScriptContext scriptContext = CreateScriptContext ("SwitchAndHoldScriptContext");
+      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
+      Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
+      ScriptContext.ReleaseScriptContext (scriptContext);
+      Assert.That (ScriptContext.Current, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (Remotion.Utilities.AssertionException), ExpectedMessage = "ReleaseScriptContext: There is already an active script context ('SwitchAndHoldScriptContext_Fails_DueToSameAlreadyActiveScriptContext') on this thread.")]
+    public void SwitchAndHoldScriptContext_Fails_DueToSameAlreadyActiveScriptContext ()
+    {
+      ScriptContext scriptContext = CreateScriptContext ("SwitchAndHoldScriptContext_Fails_DueToSameAlreadyActiveScriptContext");
+      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
+      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
+    }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (Remotion.Utilities.AssertionException), ExpectedMessage = "ReleaseScriptContext: There is already an active script context ('SwitchAndHoldScriptContext') on this thread.")]
+    public void SwitchAndHoldScriptContext_Fails_DueToDifferentAlreadyActiveScriptContext ()
+    {
+      ScriptContext scriptContext0 = CreateScriptContext ("SwitchAndHoldScriptContext");
+      ScriptContext scriptContext1 = CreateScriptContext ("SwitchAndHoldScriptContext_Fails_DueToAlreadyActiveScriptContext");
+      ScriptContext.SwitchAndHoldScriptContext (scriptContext0);
+      ScriptContext.SwitchAndHoldScriptContext (scriptContext1);
+    }
+
+    [Test]
+    public void ReleaseScriptContext ()
+    {
+      ScriptContext scriptContext = CreateScriptContext ("ReleaseScriptContext");
+      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
+      Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
+      ScriptContext.ReleaseScriptContext (scriptContext);
+      Assert.That (ScriptContext.Current, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (InvalidOperationException), ExpectedMessage = "Tried to release script context 'ReleaseScriptContext_Fails_DueToTryingToReleaseNonActiveScriptContext' while active script context is 'Remotion.Scripting.ScriptContext'.")]
+    public void ReleaseScriptContext_Fails_DueToTryingToReleaseNonActiveScriptContext ()
+    {
+      ScriptContext scriptContext0 = CreateScriptContext ("SwitchAndHoldScriptContext");
+      ScriptContext scriptContext1 = CreateScriptContext ("ReleaseScriptContext_Fails_DueToTryingToReleaseNonActiveScriptContext");
+      ScriptContext.SwitchAndHoldScriptContext (scriptContext0);
+      ScriptContext.ReleaseScriptContext (scriptContext1);
+    }
     
- 
     private class ScriptContextCreator
     {
       private readonly bool _useSafe;
@@ -167,15 +219,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
+ 
 
-    //private ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
-    //{
-    //  return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext",name,typeArbiter);
-    //}
-
-    //private void ClearScriptContexts ()
-    //{
-    //  PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ClearScriptContexts");
-    //}
   }
 }

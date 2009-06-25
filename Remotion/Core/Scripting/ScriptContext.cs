@@ -29,8 +29,34 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptContext
   {
+    [ThreadStatic]
+    private static ScriptContext s_currentScriptContext;
+
     private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
+
+    public static ScriptContext Current
+    {
+      get { return s_currentScriptContext; }
+    }
+
+    // Note: Currently switching to the same ScriptContext twice is also not supported. 
+    // Would need to implement a stack of ScriptContext|s to support interleaving of ScriptContext|s.
+    public static void SwitchAndHoldScriptContext(ScriptContext newScriptContex)
+    {
+      ArgumentUtility.CheckNotNull ("newScriptContex", newScriptContex);
+      Assertion.IsNull (s_currentScriptContext, s_currentScriptContext == null ? "" : String.Format ("ReleaseScriptContext: There is already an active script context ('{0}') on this thread.", s_currentScriptContext.Name));
+      s_currentScriptContext = newScriptContex;
+    }
+
+    public static void ReleaseScriptContext (ScriptContext scriptContexToRelease)
+    {
+      if (!Object.ReferenceEquals (scriptContexToRelease, s_currentScriptContext))
+      {
+        throw new InvalidOperationException (String.Format("Tried to release script context '{0}' while active script context is '{1}'.", scriptContexToRelease.Name, s_currentScriptContext));
+      }
+      s_currentScriptContext = null;
+    }
 
     private static Dictionary<string, ScriptContext> ScriptContexts
     {
@@ -74,7 +100,8 @@ namespace Remotion.Scripting
     {
       lock (s_scriptContextLock)
       {
-        ScriptContexts.Clear();
+        s_currentScriptContext = null;
+        ScriptContexts.Clear ();
       }
     }
  
@@ -104,6 +131,5 @@ namespace Remotion.Scripting
       get { return _typeArbiter; }
     }
 
- 
   }
 }
