@@ -83,6 +83,7 @@
     <Compile Include="ScriptingHostTest.cs" />
     <Compile Include="AssemblyLevelTypeArbiterTest.cs" />
     <Compile Include="TestDomain\ProxiedChild.cs" />
+    <Compile Include="TestDomain\ProxiedChildGeneric.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">

@@ -74,6 +74,7 @@
     <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptingHost.cs" />
     <Compile Include="AssemblyLevelTypeArbiter.cs" />
+    <Compile Include="StableBindingProxyBuilder.cs" />
     <Compile Include="StableBindingProxyProvider.cs" />
   </ItemGroup>
   <ItemGroup>

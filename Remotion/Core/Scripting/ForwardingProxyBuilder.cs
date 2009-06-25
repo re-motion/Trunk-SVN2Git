@@ -24,13 +24,11 @@ using Remotion.Utilities;
 namespace Remotion.Scripting
 {
   /// <summary>
-  /// Builds a proxy object which exposes only selected methods/properties, as decided by its <see cref="ITypeArbiter"/>. 
+  /// Helper class to create a proxy object which forwards explcitely added methods/properties to its proxied instance. 
   /// </summary>
   /// <remarks>
-  /// What methods/properties are to be exposed is dependent on whether the method/property comes from a type which is
-  /// classified as "valid" by the <see cref="ITypeArbiter"/> of the class.
   /// <para/> 
-  /// Used by <see cref="StableBindingProxyProvider"/>.
+  /// Used by <see cref="StableBindingProxyBuilder"/>.
   /// </remarks>
   public class ForwardingProxyBuilder
   {
@@ -76,6 +74,7 @@ namespace Remotion.Scripting
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       var methodEmitter = _classEmitter.CreateInterfaceMethodImplementation (methodInfo);
+      // Implement method in proxy by forwarding call to proxied instance
       methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
     }
 
@@ -83,8 +82,37 @@ namespace Remotion.Scripting
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       var methodEmitter = _classEmitter.CreatePublicInterfaceMethodImplementation (methodInfo);
+      // Implement method in proxy by forwarding call to proxied instance
       methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
     }
+
+
+    public void AddForwardingMethod (MethodInfo methodInfo)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      AddForwardingMethod (methodInfo, methodInfo.Name);
+    }
+
+
+    public void AddForwardingProperty (PropertyInfo propertyInfo)
+    {
+      string propertyName = propertyInfo.Name;
+      var propertyEmitter = _classEmitter.CreateProperty (propertyName, PropertyKind.Instance, propertyInfo.PropertyType);
+      if (propertyInfo.CanRead)
+      {
+        var getMethodEmitter = propertyEmitter.CreateGetMethod ();
+        var proxiedGetMethodInfo = propertyInfo.GetGetMethod ();
+        getMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedGetMethodInfo);
+      }
+
+      if (propertyInfo.CanWrite)
+      {
+        var setMethodEmitter = propertyEmitter.CreateSetMethod ();
+        var proxiedSetMethodInfo = propertyInfo.GetSetMethod ();
+        setMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedSetMethodInfo);
+      }
+    }
+
 
     // Create proxy ctor which takes proxied instance and stores it in field in class
     private void CreateProxyCtor (Type proxiedType)
@@ -111,6 +139,16 @@ namespace Remotion.Scripting
           interfaces,
           TypeAttributes.Public | TypeAttributes.Class,
           true);
+    }
+
+    private void AddForwardingMethod (MethodInfo methodInfo, string forwardingMethodName)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      ArgumentUtility.CheckNotNullOrEmpty ("forwardingMethodName", forwardingMethodName);
+      var methodEmitter = _classEmitter.CreateMethod (forwardingMethodName, methodInfo.Attributes);
+      methodEmitter.CopyParametersAndReturnType (methodInfo);
+      // Implement method in proxy by forwarding call to proxied instance
+      methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo);
     }
   }
 }
