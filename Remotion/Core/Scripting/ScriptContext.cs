@@ -51,6 +51,7 @@ namespace Remotion.Scripting
 
     public static void ReleaseScriptContext (ScriptContext scriptContexToRelease)
     {
+      ArgumentUtility.CheckNotNull ("scriptContexToRelease", scriptContexToRelease);
       if (!Object.ReferenceEquals (scriptContexToRelease, s_currentScriptContext))
       {
         throw new InvalidOperationException (String.Format("Tried to release script context '{0}' while active script context is '{1}'.", scriptContexToRelease.Name, s_currentScriptContext));

@@ -83,31 +83,20 @@ namespace Remotion.Scripting
     /// <summary>
     /// Retrieves the ScriptEngine given by the <paramref name="languageType"/> parameter. Throws if requested engine is not available on system.
     /// </summary>
+    /// <remarks>
+    /// Note: Executing scripts directly through a <see cref="ScriptEngine"/> will bypass re-motion's Extension Module separation
+    /// (see <see cref="ScriptContext"/>). For guaranteed re-motion mixin stable binding use re-motion  
+    /// <see cref="Remotion.Scripting.Script{T,TResult}"/>.<see cref="Script{TFixedArg1,TResult}.Execute"/> etc instead.
+    /// </remarks>
     public static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
     {
-      ArgumentUtility.CheckNotNull ("languageType", languageType);
       return Current.GetEngine (languageType);
     }
 
 
     private ScriptingHost () {}
 
-    /// <summary>
-    /// Executes the passed <see cref="ScriptBase"/>, switching the global <see cref="ScriptContext"/> to the
-    /// <see cref="ScriptBase"/>|s <see cref="ScriptContext"/> beforehand.
-    /// </summary>
-    public object ExecuteScript (ScriptBase script)
-    {
-      throw new NotImplementedException();
-      //var scriptEngine = GetEngine (script.ScriptLanguageType);
-      // TODO: 
-      // 1) Use ScriptEngine.CreateScriptSourceFromString in Script (?)
-      // 2) Use ScriptContext shared ScriptScope
-      // 3) Switch ScriptContext to script.ScriptContext before execution
-      //return scriptEngine.Exe (script.ScriptText);
-    }
-
-
+ 
 
     private ScriptRuntime GetScriptRuntime ()
     {

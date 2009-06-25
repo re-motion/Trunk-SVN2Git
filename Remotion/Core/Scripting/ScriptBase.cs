@@ -27,10 +27,8 @@ namespace Remotion.Scripting
     private readonly ScriptingHost.ScriptLanguageType _scriptLanguageType;
     private readonly ScriptContext _scriptContext;
 
-    public ScriptBase (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
+    protected ScriptBase (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
     {
-      ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      // Note: null/empty script text is allowed. 
       _scriptContext = scriptContext;
       _scriptLanguageType = scriptLanguageType;
       _scriptText = scriptText;

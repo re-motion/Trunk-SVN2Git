@@ -33,7 +33,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -49,9 +48,18 @@ namespace Remotion.Scripting
     // @replace "TFixedArg<n> a<n>" ", "
     public TResult Execute (TFixedArg1 a1)
     {
-      // TODO: Switch context !
-      // @replace "a<n>" ", "
-      return _func (a1);
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        // @replace "a<n>" ", "
+        result = _func (a1);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
   // @end-template

@@ -37,7 +37,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -51,8 +50,17 @@ namespace Remotion.Scripting
 
     public TResult Execute ()
     {
-      // TODO: Switch context !
-      return _func ();
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func ();
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
    
@@ -65,7 +73,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -79,8 +86,17 @@ namespace Remotion.Scripting
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2)
     {
-      // TODO: Switch context !
-      return _func (a1, a2);
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func (a1, a2);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
    
@@ -93,7 +109,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -107,8 +122,17 @@ namespace Remotion.Scripting
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3)
     {
-      // TODO: Switch context !
-      return _func (a1, a2, a3);
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func (a1, a2, a3);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
    
@@ -121,7 +145,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -135,8 +158,17 @@ namespace Remotion.Scripting
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4)
     {
-      // TODO: Switch context !
-      return _func (a1, a2, a3, a4);
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func (a1, a2, a3, a4);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
    
@@ -149,7 +181,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -163,8 +194,17 @@ namespace Remotion.Scripting
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5)
     {
-      // TODO: Switch context !
-      return _func (a1, a2, a3, a4, a5);
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func (a1, a2, a3, a4, a5);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
    
@@ -177,7 +217,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -191,8 +230,17 @@ namespace Remotion.Scripting
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6)
     {
-      // TODO: Switch context !
-      return _func (a1, a2, a3, a4, a5, a6);
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func (a1, a2, a3, a4, a5, a6);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
    
@@ -205,7 +253,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -219,8 +266,17 @@ namespace Remotion.Scripting
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6, TFixedArg7 a7)
     {
-      // TODO: Switch context !
-      return _func (a1, a2, a3, a4, a5, a6, a7);
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func (a1, a2, a3, a4, a5, a6, a7);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
    
@@ -233,7 +289,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -247,8 +302,17 @@ namespace Remotion.Scripting
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6, TFixedArg7 a7, TFixedArg8 a8)
     {
-      // TODO: Switch context !
-      return _func (a1, a2, a3, a4, a5, a6, a7, a8);
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func (a1, a2, a3, a4, a5, a6, a7, a8);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
    
@@ -261,7 +325,6 @@ namespace Remotion.Scripting
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       // Note: null/empty script text is allowed. 
@@ -275,8 +338,17 @@ namespace Remotion.Scripting
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6, TFixedArg7 a7, TFixedArg8 a8, TFixedArg9 a9)
     {
-      // TODO: Switch context !
-      return _func (a1, a2, a3, a4, a5, a6, a7, a8, a9);
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func (a1, a2, a3, a4, a5, a6, a7, a8, a9);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
 }

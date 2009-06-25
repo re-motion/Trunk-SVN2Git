@@ -126,7 +126,7 @@ def Test() :
 
       ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows");
       ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-      var script = new Script<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      var script = new Script<Object> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
 
       try
       {
@@ -139,7 +139,6 @@ def Test() :
 
       Assert.That (ScriptContext.Current, Is.Null);
     }
-
 
 
     private ScriptScope CreateScriptScope (ScriptingHost.ScriptLanguageType scriptLanguageType)
