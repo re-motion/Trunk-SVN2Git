@@ -16,6 +16,7 @@
 using System;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
+using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
@@ -31,6 +32,12 @@ namespace Remotion.Scripting
       ScriptScope scope, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
+      ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
+      ArgumentUtility.CheckNotNull ("scriptLanguageType", scriptLanguageType);
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
+      // Note: null/empty script text is allowed. 
+
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
       scriptSource.Execute (scope);
