@@ -10,3 +10,12 @@
     //  Assert.That (scriptRuntimeDifferentThread, Is.Not.Null);
     //  Assert.That (scriptRuntime, Is.Not.EqualTo (scriptRuntimeDifferentThread));
     //}
+    
+    
+    [Test]
+    [ExpectedException (ExceptionType = typeof (Remotion.Utilities.ArgumentItemNullException), ExpectedMessage = "Item 1 of argument validAssemblies is null.")]
+    public void Ctor_NotNull ()
+    {
+      new AssemblyLevelTypeArbiter (new[] { typeof (Object).Assembly, null });
+    }
+    

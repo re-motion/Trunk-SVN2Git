@@ -16,6 +16,7 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
@@ -29,6 +30,7 @@ namespace Remotion.Scripting
 
     public AssemblyLevelTypeArbiter (Assembly[] validAssemblies)
     {
+      ArgumentUtility.CheckNotNullOrItemsNull ("validAssemblies", validAssemblies);
       foreach (var assembly in validAssemblies)
       {
         _validAssemblies.Add (assembly, true);
@@ -37,6 +39,7 @@ namespace Remotion.Scripting
 
     public bool IsTypeValid (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
       return _validAssemblies.ContainsKey (type.Assembly);
     }
   }
