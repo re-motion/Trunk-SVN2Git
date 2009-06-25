@@ -91,7 +91,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    public void Execute_SwitchesAnReleasesScriptContext ()
+    public void Execute_SwitchesAndReleasesScriptContext ()
     {
       Assert.That (ScriptContext.Current , Is.Null);
 
@@ -108,6 +108,35 @@ def Test() :
       var script = new Script<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
       Assert.That (script.Execute (), Is.SameAs (scriptContextForScript));
       
+      Assert.That (ScriptContext.Current, Is.Null);
+    }
+
+    [Test]
+    public void Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows ()
+    {
+      Assert.That (ScriptContext.Current, Is.Null);
+
+      const string scriptText = @"
+import clr
+clr.AddReferenceByPartialName('Remotion.Scripting')
+from Remotion.Scripting import *
+def Test() :
+  raise Exception('IntentionallyRaisedIronPythonException') 
+";
+
+      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows");
+      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      var script = new Script<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+
+      try
+      {
+        script.Execute ();
+      }
+      catch (Exception e)
+      {
+        Assert.That (e.Message, Is.EqualTo ("IntentionallyRaisedIronPythonException"));
+      }
+
       Assert.That (ScriptContext.Current, Is.Null);
     }
 
