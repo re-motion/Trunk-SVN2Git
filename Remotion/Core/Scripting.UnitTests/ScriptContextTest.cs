@@ -114,6 +114,24 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
+    public void ScriptContext_Current_ThreadStatic ()
+    {
+      ScriptContext scriptContext = CreateScriptContext ("ScriptContext_Current_ThreadStatic");
+      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
+      Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
+
+      var threadRunner = new ThreadRunner (delegate {
+        var scriptContext2 = CreateScriptContext ("ScriptContext_Current_ThreadStatic_DifferentThread");
+        ScriptContext.SwitchAndHoldScriptContext (scriptContext2);
+        Assert.That (ScriptContext.Current, Is.SameAs (scriptContext2));
+        // Note that we do not call ReleaseScriptContext(scriptContext2) here, so the  ScriptContext stays active on this thread
+      });
+      threadRunner.Run ();
+      Assert.That (ScriptContext.Current, Is.SameAs (scriptContext));
+    }
+
+
+    [Test]
     public void SwitchAndHoldScriptContext ()
     {
       ScriptContext scriptContext = CreateScriptContext ("SwitchAndHoldScriptContext");
