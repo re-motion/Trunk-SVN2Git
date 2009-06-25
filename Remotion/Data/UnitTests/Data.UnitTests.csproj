@@ -604,7 +604,6 @@
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\ReplacingVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionResolverTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ResolvedExpressionCacheTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\IntermediateModel\ResultModificationExpressionNodeRegistryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\QuerySourceClauseMappingTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\CastExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\MethodCallExpressionNodeTypeRegistryTest.cs" />
