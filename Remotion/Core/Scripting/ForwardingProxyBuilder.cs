@@ -18,6 +18,7 @@ using System.Reflection;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Reflection.CodeGeneration;
+using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -54,6 +55,17 @@ namespace Remotion.Scripting
     public Type BuildProxyType ()
     {
       return _classEmitter.BuildType ();
+    }
+
+    public object CreateInstance (Object proxied)
+    {
+      return Activator.CreateInstance (BuildProxyType (), proxied);
+    }
+
+    public void AddForwardingExplicitInterfaceMethod (MethodInfo methodInfo)
+    {
+      var methodEmitter = _classEmitter.CreateInterfaceMethodImplementation (methodInfo);
+      methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
     }
 
 

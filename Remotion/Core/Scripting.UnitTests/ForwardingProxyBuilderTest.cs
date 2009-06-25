@@ -16,9 +16,14 @@
 using System;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Microsoft.Scripting;
+using Microsoft.Scripting.Hosting;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection.CodeGeneration;
+using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -73,6 +78,246 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (proxiedFieldInfo.IsInitOnly, Is.True);
       Assert.That (proxiedFieldInfo.IsPrivate, Is.True);
     }
+
+
+    [Test]
+    public void AddForwardingExplicitInterfaceMethod ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingExplicitInterfaceMethod",
+        ModuleScope, typeof (ProxiedChild), new[] { typeof (IAmbigous1) });
+      
+      var methodInfo = typeof (IAmbigous1).GetMethod ("StringTimes");
+      proxyBuilder.AddForwardingExplicitInterfaceMethod (methodInfo);
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChild ();
+      object proxy = proxyBuilder.CreateInstance (proxied);
+
+      Assert.That (((IAmbigous1) proxied).StringTimes ("aBc", 4), Is.EqualTo ("aBcaBcaBcaBc"));
+      Assert.That (((IAmbigous1) proxy).StringTimes ("aBc", 4), Is.EqualTo ("aBcaBcaBcaBc"));
+    }
+
+
+#if(false)
+    [Test]
+    public void CreateForwardingProxyWithImplicitInterface ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("CreateForwardingProxyWithImplicitInterface",
+        ModuleScope, typeof (Proxied), new[] { typeof (IProxiedGetName) });
+      proxyBuilder.AddForwardingImplicitInterfaceMethod (typeof (IProxiedGetName).GetMethod ("GetName"));
+      Type proxyType = proxyBuilder.BuildProxyType ();
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new Proxied ();
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      Assert.That (proxy.GetType ().GetInterfaces (), Is.EquivalentTo ((new[] { typeof (IProxiedGetName) })));
+      Assert.That (((IProxiedGetName) proxy).GetName (), Is.EqualTo ("Implementer.IProxiedGetName"));
+      Assert.That (proxy.GetType ().GetMethod ("GetName").Invoke (proxy, new object[0]), Is.EqualTo ("Implementer.IProxiedGetName"));
+    }
+
+
+    [Test]
+    public void CreateForwardingProxyWithMethodWithParameters ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("CreateForwardingProxyWithMethodWithParameters", ModuleScope, typeof (Proxied), new Type[0]);
+      var methodInfo = typeof (Proxied).GetMethod ("PrependName");
+      proxyBuilder.AddForwardingMethod (methodInfo);
+      Type proxyType = proxyBuilder.BuildProxyType ();
+
+      var proxied = new Proxied ("The name");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      // Check calling proxied method through reflection
+      Assert.That (methodInfo.Invoke (proxied, new object[] { "is Smith" }), Is.EqualTo ("The name is Smith"));
+
+      var proxyMethodInfo = proxy.GetType ().GetMethod ("PrependName");
+      AssertMethodInfoEqual (proxyMethodInfo, methodInfo);
+      Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { "is Smith" }), Is.EqualTo ("The name is Smith"));
+    }
+
+
+
+    [Test]
+    public void CreateForwardingProxyWithMethodWithVariableNumberOfParameters ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("CreateForwardingProxyWithMethodWithVariableNumberOfParameters", ModuleScope, typeof (Proxied), new Type[0]);
+      var methodInfo = typeof (Proxied).GetMethod ("Sum");
+      proxyBuilder.AddForwardingMethod (methodInfo);
+      Type proxyType = proxyBuilder.BuildProxyType ();
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new Proxied ("ProxiedProxySumTest");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      // Check calling proxied method through reflection
+      const string resultExpected = "ProxiedProxySumTest: 12";
+      Assert.That (proxied.Sum (3, 4, 5), Is.EqualTo (resultExpected));
+      Assert.That (methodInfo.Invoke (proxied, new object[] { new int[] { 3, 4, 5 } }), Is.EqualTo (resultExpected));
+
+      var proxyMethodInfo = proxy.GetType ().GetMethod ("Sum");
+      AssertMethodInfoEqual (proxyMethodInfo, methodInfo);
+      Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { new int[] { 3, 4, 5 } }), Is.EqualTo (resultExpected));
+
+      Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { new int[] { } }), Is.EqualTo ("ProxiedProxySumTest: 0"));
+      Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { new int[] { 1 } }), Is.EqualTo ("ProxiedProxySumTest: 1"));
+      Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { new int[] { 1000, 100, 10, 1 } }), Is.EqualTo ("ProxiedProxySumTest: 1111"));
+    }
+
+
+
+
+
+
+    [Test]
+    public void CreateForwardingProxyForGenericClass ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("CreateForwardingProxyForGenericClass",
+        ModuleScope, typeof (ProxiedChildGeneric<ProxiedChild, double>), new Type[0]);
+      var methodInfo = typeof (ProxiedChildGeneric<ProxiedChild, double>).GetMethod ("ToStringKebap");
+      proxyBuilder.AddForwardingMethod (methodInfo);
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildGeneric<ProxiedChild, double> ("PCG", new ProxiedChild ("PC"), 123.456);
+      object proxy = proxyBuilder.CreateInstance (proxied);
+
+      var proxyMethodInfo = proxy.GetType ().GetMethod ("ToStringKebap");
+      AssertMethodInfoEqual (proxyMethodInfo, methodInfo);
+      Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { 9800 }), Is.EqualTo ("PCG_[Proxied: PC]_123.456_9800"));
+    }
+
+
+
+    [Test]
+    public void CreateForwardingProxyForProperty ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("CreateForwardingProxyForProperty",
+        ModuleScope, typeof (ProxiedChildGeneric<ProxiedChild, double>), new Type[0]);
+      var propertyInfo = typeof (ProxiedChildGeneric<ProxiedChild, double>).GetProperty ("MutableName");
+      proxyBuilder.AddForwardingProperty (propertyInfo);
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildGeneric<ProxiedChild, double> ("PCG", new ProxiedChild ("PC"), 123.456);
+      object proxy = proxyBuilder.CreateInstance (proxied);
+
+      Assert.That (proxied.MutableName, Is.EqualTo ("PCG"));
+      var proxyPropertyInfo = proxy.GetType ().GetProperty ("MutableName");
+      AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("PCG"));
+
+      proxied.MutableName = "PCG_Changed";
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("PCG_Changed"));
+
+      proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
+      Assert.That (proxied.MutableName, Is.EqualTo ("PCG_Changed_Proxy"));
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("PCG_Changed_Proxy"));
+    }
+
+
+    [Test]
+    public void CreateForwardingProxyForReadOnlyProperty ()
+    {
+      Type proxiedType = typeof (Proxied);
+      var proxyBuilder = new ForwardingProxyBuilder ("CreateForwardingProxyForReadOnlyProperty", ModuleScope, proxiedType, new Type[0]);
+      var propertyInfo = proxiedType.GetProperty ("ReadonlyName");
+      proxyBuilder.AddForwardingProperty (propertyInfo);
+      Type proxyType = proxyBuilder.BuildProxyType ();
+      var proxyPropertyInfo = proxyType.GetProperty ("ReadonlyName");
+      Assert.That (proxyPropertyInfo.CanRead, Is.True);
+      Assert.That (proxyPropertyInfo.CanWrite, Is.False);
+    }
+
+    [Test]
+    public void CreateForwardingProxyForWriteOnlyProperty ()
+    {
+      Type proxiedType = typeof (Proxied);
+      var proxyBuilder = new ForwardingProxyBuilder ("CreateForwardingProxyForWriteOnlyProperty", ModuleScope, proxiedType, new Type[0]);
+      var propertyInfo = proxiedType.GetProperty ("WriteonlyName");
+      proxyBuilder.AddForwardingProperty (propertyInfo);
+      Type proxyType = proxyBuilder.BuildProxyType ();
+      var proxyPropertyInfo = proxyType.GetProperty ("WriteonlyName");
+      Assert.That (proxyPropertyInfo.CanRead, Is.False);
+      Assert.That (proxyPropertyInfo.CanWrite, Is.True);
+    }
+
+
+
+    [Test]
+    public void UseForwardingProxyFromIronPythonIntegrationTest ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("UseForwardingProxyFromIpyIntegrationTest",
+        ModuleScope, typeof (ProxiedChild), new[] { typeof (IAmbigous1) });
+      proxyBuilder.AddForwardingMethod (typeof (Proxied).GetMethod ("PrependName"));
+      proxyBuilder.AddForwardingMethod (typeof (Proxied).GetMethod ("GetName"));
+      proxyBuilder.AddForwardingExplicitInterfaceMethod (typeof (IAmbigous1).GetMethod ("StringTimes"));
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChild ("Dagobert");
+      object proxy = proxyBuilder.CreateInstance (proxied);
+
+      const string scriptText1 =
+          @"
+def ProxyTest(proxy):
+  return '(' + proxy.GetName() + ',' + proxy.PrependName('Duck') + ',' + proxy.StringTimes('$',5) + ')'
+";
+
+      ScriptEngine pythonEngine = PythonScriptEngine.ScriptEngine;
+
+      var scope1 = pythonEngine.CreateScope ();
+      ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Statements);
+      scriptSource1.Execute (scope1);
+
+      var scriptFunction1 = scope1.GetVariable<Func<object, string>> ("ProxyTest");
+      var result = scriptFunction1 (proxy);
+      Assert.That (result, Is.EqualTo ("(Implementer.IProxiedGetName,Dagobert Duck,$$$$$)"));
+      // Note: We cannot call scriptFunction1(proxied) here, since method StringTimes is ambigous.
+      var expectedResultProxied = "(" + proxied.GetName () + "," + proxied.PrependName ("Duck") + "," + ((IAmbigous1) proxied).StringTimes ("$", 5) + ")";
+      Assert.That (result, Is.EqualTo (expectedResultProxied));
+    }
+
+
+
+    [Test]
+    public void UseForwardingProxyWithOverloadedMethodFromIronPythonIntegrationTest ()
+    {
+      Type proxiedType = typeof (ProxiedChild);
+      var proxyBuilder = new ForwardingProxyBuilder ("UseForwardingProxyWithOverloadedMethodFromIronPythonIntegrationTest", ModuleScope, proxiedType, new Type[0]);
+      proxyBuilder.AddForwardingMethod (proxiedType.GetMethod ("BraKet", new Type[0]));
+      proxyBuilder.AddForwardingMethod (proxiedType.GetMethod ("BraKet", new[] { typeof (string) }));
+      proxyBuilder.AddForwardingMethod (proxiedType.GetMethod ("BraKet", new[] { typeof (string), typeof (int) }));
+      proxyBuilder.AddForwardingMethod (proxiedType.GetMethod ("BraKet", new[] { typeof (string), typeof (string), typeof (string) }));
+      Type proxyType = proxyBuilder.BuildProxyType ();
+
+      var proxied = new ProxiedChild ("The name");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      const string scriptText1 =
+          @"
+def OverloadProxyTest(proxy):
+  return '(' + proxy.BraKet() + ',' + proxy.BraKet('X') + ',' + proxy.BraKet('o',3) + ',' + proxy.BraKet('[','m',']') + ')'
+";
+
+      ScriptEngine pythonEngine = PythonScriptEngine.ScriptEngine;
+
+      var scope1 = pythonEngine.CreateScope ();
+      ScriptSource scriptSource1 = pythonEngine.CreateScriptSourceFromString (scriptText1, SourceCodeKind.Statements);
+      scriptSource1.Execute (scope1);
+
+      var scriptFunction1 = scope1.GetVariable<Func<object, string>> ("OverloadProxyTest");
+      var result = scriptFunction1 (proxy);
+      Assert.That (result, Is.EqualTo ("(<>,<X>,<o><o><o>,[m])"));
+      Assert.That (result, Is.EqualTo (scriptFunction1 (proxied)));
+    }
+
+#endif
+
+
+
+
+
+
+
+
 
 
     private void SaveAndVerifyModuleScopeAssembly (bool strongNamed)
