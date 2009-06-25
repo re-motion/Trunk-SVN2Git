@@ -98,6 +98,37 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
+    [Test]
+    public void AddForwardingImplicitInterfaceMethod ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingImplicitInterfaceMethod",
+        ModuleScope, typeof (Proxied), new[] { typeof (IProxiedGetName) });
+      proxyBuilder.AddForwardingImplicitInterfaceMethod (typeof (IProxiedGetName).GetMethod ("GetName"));
+      Type proxyType = proxyBuilder.BuildProxyType ();
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new Proxied ();
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      Assert.That (proxy.GetType ().GetInterfaces (), Is.EquivalentTo ((new[] { typeof (IProxiedGetName) })));
+      Assert.That (((IProxiedGetName) proxy).GetName (), Is.EqualTo ("Implementer.IProxiedGetName"));
+      Assert.That (proxy.GetType ().GetMethod ("GetName").Invoke (proxy, new object[0]), Is.EqualTo ("Implementer.IProxiedGetName"));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #if(false)
     [Test]
     public void CreateForwardingProxyWithImplicitInterface ()

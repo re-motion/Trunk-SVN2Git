@@ -51,23 +51,40 @@ namespace Remotion.Scripting
       CreateProxyCtor(proxiedType);
     }
 
-
+    /// <summary>
+    /// Builds the proxy <see cref="Type"/> with the members added through <see cref="AddForwardingExplicitInterfaceMethod"/> etc.
+    /// </summary>
+    /// <returns></returns>
     public Type BuildProxyType ()
     {
       return _classEmitter.BuildType ();
     }
 
+    /// <summary>
+    /// Calls <see cref="BuildProxyType"/> and returns an instance of the generated proxy type proxying the passed <see cref="object"/>.
+    /// </summary>
+    /// <param name="proxied">The <see cref="object"/> to be proxied. Must be of the <see cref="Type"/> 
+    /// the <see cref="ForwardingProxyBuilder"/> was initialized with.</param>
+    /// <returns></returns>
     public object CreateInstance (Object proxied)
     {
+      ArgumentUtility.CheckNotNullAndType ("proxied", proxied, _proxiedType);
       return Activator.CreateInstance (BuildProxyType (), proxied);
     }
 
     public void AddForwardingExplicitInterfaceMethod (MethodInfo methodInfo)
     {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       var methodEmitter = _classEmitter.CreateInterfaceMethodImplementation (methodInfo);
       methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
     }
 
+    public void AddForwardingImplicitInterfaceMethod (MethodInfo methodInfo)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+      var methodEmitter = _classEmitter.CreatePublicInterfaceMethodImplementation (methodInfo);
+      methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
+    }
 
     // Create proxy ctor which takes proxied instance and stores it in field in class
     private void CreateProxyCtor (Type proxiedType)
