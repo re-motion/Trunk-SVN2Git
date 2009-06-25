@@ -40,8 +40,8 @@ namespace Remotion.Scripting
       get { return s_currentScriptContext; }
     }
 
-    // Note: Currently switching to the same ScriptContext twice is also not supported. 
-    // Would need to implement a stack of ScriptContext|s to support interleaving of ScriptContext|s.
+    // Note: Currently switching to the same ScriptContext twice is not supported. 
+    // (Would need to use a stack of ScriptContext|s to support interleaving of ScriptContext|s).
     public static void SwitchAndHoldScriptContext(ScriptContext newScriptContex)
     {
       ArgumentUtility.CheckNotNull ("newScriptContex", newScriptContex);
