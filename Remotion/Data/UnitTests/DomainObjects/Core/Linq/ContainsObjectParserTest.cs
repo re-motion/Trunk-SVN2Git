@@ -81,8 +81,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateFromClause_QuerySource ()
     {
       MainFromClause mainFromClause = _parser.CreateFromClause (typeof (OrderItem));
-      Assert.That (mainFromClause.QuerySource, Is.InstanceOfType (typeof (ConstantExpression)));
-      object value = ((ConstantExpression) mainFromClause.QuerySource).Value;
+      Assert.That (mainFromClause.FromExpression, Is.InstanceOfType (typeof (ConstantExpression)));
+      object value = ((ConstantExpression) mainFromClause.FromExpression).Value;
       Assert.That (value, Is.InstanceOfType (typeof (DomainObjectQueryable<OrderItem>)));
     }
 
