@@ -23,10 +23,16 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class ScriptTest
   {
+    [SetUp]
+    public void SetUp ()
+    {
+      ScriptContextTestHelper.ClearScriptContexts ();
+    }
+
     [Test]
     public void Ctor ()
     {
-      ScriptContext scriptContext = ScriptContextTestHelper.GetTestScriptContext ();
+      ScriptContext scriptContext = ScriptContextTestHelper.CreateTestScriptContext ();
       const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
       const string scriptFunctionName = "Test";
 
@@ -54,7 +60,7 @@ namespace Remotion.Scripting.UnitTests
   return 'Test: ' + s";
 
       ScriptScope scriptScope = CreateScriptScope(ScriptingHost.ScriptLanguageType.Python);
-      var script = new Script<string, string> (ScriptContextTestHelper.GetTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      var script = new Script<string, string> (ScriptContextTestHelper.CreateTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
       Assert.That (script.Execute ("works"), Is.EqualTo ("Test: works"));
     }
 
@@ -67,7 +73,7 @@ namespace Remotion.Scripting.UnitTests
   return 'Test: ' + s0 + ' ' + s1";
 
       ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-      var script = new Script<string, string, string> (ScriptContextTestHelper.GetTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      var script = new Script<string, string, string> (ScriptContextTestHelper.CreateTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
       Assert.That (script.Execute ("really","works"), Is.EqualTo ("Test: really works"));
     }
 
@@ -80,8 +86,29 @@ namespace Remotion.Scripting.UnitTests
   return 'Test: '+s1+s2+s3+s4+s5+s6+s7+s8+s9";
 
       ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-      var script = new Script<string, string, string, string, string, string, string, string, string, string> (ScriptContextTestHelper.GetTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      var script = new Script<string, string, string, string, string, string, string, string, string, string> (ScriptContextTestHelper.CreateTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
       Assert.That (script.Execute ("1","2","3","4","5","6","7","8","9"), Is.EqualTo ("Test: 123456789"));
+    }
+
+    [Test]
+    public void Execute_SwitchesAnReleasesScriptContext ()
+    {
+      Assert.That (ScriptContext.Current , Is.Null);
+
+      const string scriptText = @"
+import clr
+clr.AddReferenceByPartialName('Remotion.Scripting')
+from Remotion.Scripting import *
+def Test() :
+  return ScriptContext.Current
+";
+
+      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesScriptContext_Script");
+      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      var script = new Script<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      Assert.That (script.Execute (), Is.SameAs (scriptContextForScript));
+      
+      Assert.That (ScriptContext.Current, Is.Null);
     }
 
 

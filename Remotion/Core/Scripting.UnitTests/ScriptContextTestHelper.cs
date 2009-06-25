@@ -26,10 +26,15 @@ namespace Remotion.Scripting.UnitTests
       return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeArbiter);
     }
 
-    public static ScriptContext GetTestScriptContext ()
+    public static ScriptContext CreateTestScriptContext (string name)
     {
       var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
-      return CreateTestScriptContext ("DummyScriptContext", typeArbiterStub);
+      return CreateTestScriptContext (name, typeArbiterStub);
+    }
+
+    public static ScriptContext CreateTestScriptContext ()
+    {
+      return CreateTestScriptContext ("DummyScriptContext");
     }
 
     public static void ClearScriptContexts ()

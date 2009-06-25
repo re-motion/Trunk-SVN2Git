@@ -112,7 +112,7 @@ namespace Remotion.Scripting.UnitTests
     //public void ExecuteScript ()
     //{
     //  const string pythonScriptText = "3*4";
-    //  ScriptBase script = new ScriptBase (ScriptContextTestHelper.GetTestScriptContext (),ScriptingHost.ScriptLanguageType.Python,pythonScriptText);
+    //  ScriptBase script = new ScriptBase (ScriptContextTestHelper.CreateTestScriptContext (),ScriptingHost.ScriptLanguageType.Python,pythonScriptText);
     //  ScriptingHost.Current.ExecuteScript (script);
     //}
 

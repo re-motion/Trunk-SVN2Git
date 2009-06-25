@@ -44,8 +44,17 @@ namespace Remotion.Scripting
 
     public TResult Execute ()
     {
-      // TODO: Switch context !
-      return _func ();
+      ScriptContext.SwitchAndHoldScriptContext(ScriptContext);
+      TResult result;
+      try
+      {
+        result = _func ();
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
     }
   }
    
