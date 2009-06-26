@@ -123,7 +123,13 @@ namespace Remotion.Scripting
     }
 
 
-
+    /// <summary>
+    /// Adds a forwarding method to the proxy based on the passed <see cref="MethodInfo"/>. 
+    /// </summary>
+    /// <remarks>
+    /// Note that this works for interface methods only, if the <see cref="MethodInfo"/> comes from the interface, not the 
+    /// type implementing the interface.
+    /// </remarks>
     public void AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
