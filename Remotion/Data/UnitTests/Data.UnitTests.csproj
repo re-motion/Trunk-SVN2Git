@@ -541,7 +541,6 @@
     <Compile Include="Linq\Clauses\GroupClauseTest.cs" />
     <Compile Include="Linq\Clauses\JoinClauseTest.cs" />
     <Compile Include="Linq\Clauses\MainFromClauseTest.cs" />
-    <Compile Include="Linq\Clauses\MemberFromClauseTest.cs" />
     <Compile Include="Linq\Clauses\OrderByClauseTest.cs" />
     <Compile Include="Linq\Clauses\OrderingTest.cs" />
     <Compile Include="Linq\Clauses\SelectClauseTest.cs" />
