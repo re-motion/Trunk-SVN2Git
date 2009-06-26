@@ -28,6 +28,12 @@ namespace Remotion.Scripting
   /// </remarks>
   public class StableBindingProxyBuilder
   {
-    
+    private ITypeArbiter _typeArbiter;
+    private ForwardingProxyBuilder _forwardingProxyBuilder;
+
+    public StableBindingProxyBuilder (ITypeArbiter typeArbiter)
+    {
+      _typeArbiter = typeArbiter;
+    }
   }
 }

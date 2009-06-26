@@ -74,8 +74,9 @@ namespace Remotion.Scripting
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       var methodEmitter = _classEmitter.CreateInterfaceMethodImplementation (methodInfo);
-      // Implement method in proxy by forwarding call to proxied instance
-      methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
+      
+      //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
+      ImplementForwardingMethod (methodInfo, methodEmitter);
     }
 
     public void AddForwardingImplicitInterfaceMethod (MethodInfo methodInfo)
@@ -83,7 +84,16 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       var methodEmitter = _classEmitter.CreatePublicInterfaceMethodImplementation (methodInfo);
       // Implement method in proxy by forwarding call to proxied instance
-      methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
+
+      //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
+      ImplementForwardingMethod (methodInfo, methodEmitter);
+    }
+
+    // Implement method in proxy by forwarding call to proxied instance
+    private void ImplementForwardingMethod (MethodInfo methodInfo, CustomMethodEmitter methodEmitter)
+    {
+      //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
+      methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo);
     }
 
 
@@ -92,6 +102,13 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       AddForwardingMethod (methodInfo, methodInfo.Name);
     }
+
+    //public void AddForwardingMethodFromMethodInfoCopy (MethodInfo methodInfo)
+    //{
+    //  ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+    //  var methodEmitter = _classEmitter.CreateMethodOverrideOrInterfaceImplementation (methodInfo, true, methodInfo.Attributes & MethodAttributes.MemberAccessMask);
+    //  ImplementForwardingMethod (methodInfo, methodEmitter);
+    //}
 
 
     public void AddForwardingProperty (PropertyInfo propertyInfo)
@@ -147,8 +164,10 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNullOrEmpty ("forwardingMethodName", forwardingMethodName);
       var methodEmitter = _classEmitter.CreateMethod (forwardingMethodName, methodInfo.Attributes);
       methodEmitter.CopyParametersAndReturnType (methodInfo);
-      // Implement method in proxy by forwarding call to proxied instance
-      methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo);
+     
+      //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo);
+      ImplementForwardingMethod (methodInfo, methodEmitter);
     }
+
   }
 }
