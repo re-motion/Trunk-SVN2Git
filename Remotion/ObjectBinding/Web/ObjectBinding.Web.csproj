@@ -252,6 +252,7 @@
     <Compile Include="UI\Controls\IBocEnumValue.cs" />
     <Compile Include="UI\Controls\IBocList.cs" />
     <Compile Include="UI\Controls\IBocMultilineTextValue.cs" />
+    <Compile Include="UI\Controls\IBocReferenceValue.cs" />
     <Compile Include="UI\Controls\IBocTextValue.cs" />
     <Compile Include="UI\Controls\IBocTextValueBase.cs" />
     <Compile Include="UI\Controls\IBusinessObjectBoundEditableWebControl.cs" />

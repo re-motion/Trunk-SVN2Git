@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -19,12 +19,8 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories;
 
-namespace Remotion.Web.UnitTests.UI.Controls.Rendering
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenceValue
 {
   public class StubServiceLocator : ServiceLocatorImplBase
   {
@@ -32,27 +28,17 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 
     public StubServiceLocator ()
     {
-      _instances.Add (typeof (IWebTabStripRendererFactory), new WebTabStripRendererFactory());
-      _instances.Add (typeof (ITabbedMenuRendererFactory), new WebTabStripRendererFactory());
       _instances.Add (typeof (IDropDownMenuRendererFactory), new DropDownMenuRendererFactory());
-      _instances.Add (typeof (IWebTabRendererFactory), new WebTabStripRendererFactory());
-      _instances.Add (typeof (IMenuTabRendererFactory), new TabbedMenuRendererFactory ());
-    }
-
-    public void SetFactory<T> (T factory)
-    {
-      _instances[typeof (T)] = factory;
     }
 
     protected override object DoGetInstance (Type serviceType, string key)
     {
-      return _instances.GetOrCreateValue (
-          serviceType, delegate (Type type) { throw new ArgumentException (string.Format ("No service for type '{0}' registered.", type)); });
+      return _instances[serviceType];
     }
 
     protected override IEnumerable<object> DoGetAllInstances (Type serviceType)
     {
-      throw new NotSupportedException();
+      return new[]{_instances[serviceType]};
     }
   }
 }

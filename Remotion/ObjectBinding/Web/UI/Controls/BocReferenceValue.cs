@@ -22,7 +22,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.Logging;
-using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -43,6 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 [Designer (typeof (BocReferenceValueDesigner))]
 public class BocReferenceValue: 
     BusinessObjectBoundEditableWebControl, 
+    IBocReferenceValue,
     IPostBackEventHandler, 
     IPostBackDataHandler,
     IBocMenuItemContainer,
@@ -85,7 +86,7 @@ public class BocReferenceValue:
 
   // static members
 
-  private static readonly Type[] s_supportedPropertyInterfaces = new Type[] { 
+  private static readonly Type[] s_supportedPropertyInterfaces = new[] { 
       typeof (IBusinessObjectReferenceProperty) };
   
   private static readonly ILog s_log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -100,42 +101,42 @@ public class BocReferenceValue:
 
 	// member fields
 
-  private bool _isBusinessObejectListPopulated = false;
+  private bool _isBusinessObejectListPopulated;
 
-  private DropDownList _dropDownList;
-  private Label _label;
-  private Image _icon ;
+  private readonly DropDownList _dropDownList;
+  private readonly Label _label;
+  private readonly Image _icon;
 
-  private Style _commonStyle;
-  private DropDownListStyle _dropDownListStyle;
-  private Style _labelStyle;
+  private readonly Style _commonStyle;
+  private readonly DropDownListStyle _dropDownListStyle;
+  private readonly Style _labelStyle;
 
   /// <summary> 
   ///   The object returned by <see cref="BocReferenceValue"/>. 
   ///   Does not require <see cref="System.Runtime.Serialization.ISerializable"/>. 
   /// </summary>
-  private IBusinessObjectWithIdentity _value = null;
+  private IBusinessObjectWithIdentity _value;
 
   /// <summary> The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object. </summary>
-  private string _internalValue = null;
-  private string _displayName = null;
+  private string _internalValue;
+  private string _displayName;
 
   private bool _enableIcon = true;
   private string _select = String.Empty;
-  private bool? _enableSelectStatement = null;
+  private bool? _enableSelectStatement;
 
-  private DropDownMenu _optionsMenu;
+  private readonly DropDownMenu _optionsMenu;
   private string _optionsTitle;
   private bool _showOptionsMenu = true;
   private Unit _optionsMenuWidth = Unit.Empty;
-  private bool? _hasValueEmbeddedInsideOptionsMenu = null;
-  private string[] _hiddenMenuItems = null;
+  private bool? _hasValueEmbeddedInsideOptionsMenu;
+  private string[] _hiddenMenuItems;
 
   /// <summary> The command rendered for this reference value. </summary>
-  private SingleControlItemCollection _command = null;
+  private readonly SingleControlItemCollection _command;
 
   private string _errorMessage;
-  private ArrayList _validators;
+  private readonly ArrayList _validators;
 
   // construction and disposing
 
@@ -149,7 +150,7 @@ public class BocReferenceValue:
     _label = new Label();
     _optionsMenu = new DropDownMenu (this);
     _validators = new ArrayList();
-    _command = new SingleControlItemCollection (new BocCommand(), new Type[] {typeof (BocCommand)});
+    _command = new SingleControlItemCollection (new BocCommand(), new[] {typeof (BocCommand)});
   }
 
 	// methods and properties
@@ -204,8 +205,8 @@ public class BocReferenceValue:
     
     _optionsMenu.ID = ID + "_Boc_OptionsMenu";
     Controls.Add (_optionsMenu);
-    _optionsMenu.EventCommandClick += new WebMenuItemClickEventHandler (OptionsMenu_EventCommandClick);
-    _optionsMenu.WxeFunctionCommandClick += new WebMenuItemClickEventHandler (OptionsMenu_WxeFunctionCommandClick);
+    _optionsMenu.EventCommandClick += OptionsMenu_EventCommandClick;
+    _optionsMenu.WxeFunctionCommandClick += OptionsMenu_WxeFunctionCommandClick;
   }
 
   /// <remarks> Populates the list. </remarks>
@@ -358,7 +359,7 @@ public class BocReferenceValue:
     foreach (DictionaryEntry entry in values)
     {
       string key = (string) entry.Key;
-      string[] keyParts = key.Split (new Char[] {':'}, 3);
+      string[] keyParts = key.Split (new[] {':'}, 3);
 
       //  Is a property/value entry?
       if (keyParts.Length == 1)
@@ -384,7 +385,7 @@ public class BocReferenceValue:
           default:
           {
             //  Invalid collection property
-            s_log.Debug ("BocReferenceValue '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page.ToString() + "' does not contain an element named '" + elementID + "'.");
+            s_log.Debug ("BocReferenceValue '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page + "' does not contain an element named '" + elementID + "'.");
             break;
           }
         }       
@@ -410,7 +411,7 @@ public class BocReferenceValue:
           default:
           {
             //  Invalid collection property
-            s_log.Debug ("BocReferenceValue '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page.ToString() + "' does not contain a collection property named '" + collectionID + "'.");
+            s_log.Debug ("BocReferenceValue '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page + "' does not contain a collection property named '" + collectionID + "'.");
             break;
           }
         }       
@@ -435,7 +436,7 @@ public class BocReferenceValue:
       else
       {
         //  Not supported format or invalid property
-        s_log.Debug ("BocReferenceValue '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page.ToString() + "' received a resource with an invalid or unknown key '" + key + "'. Required format: 'property' or 'collectionID:elementID:property'.");
+        s_log.Debug ("BocReferenceValue '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page + "' received a resource with an invalid or unknown key '" + key + "'. Required format: 'property' or 'collectionID:elementID:property'.");
       }
     }
 
@@ -679,7 +680,7 @@ public class BocReferenceValue:
     bool isCommandEnabled = IsCommandEnabled (isReadOnly);
 
     string argument = string.Empty;
-    string postBackEvent = null; 
+    string postBackEvent = ""; 
     if (! IsDesignMode)
       postBackEvent = Page.ClientScript.GetPostBackEventReference (this, argument) + ";";
     string objectID = string.Empty;
@@ -754,19 +755,18 @@ public class BocReferenceValue:
       }
     }
 
-    _optionsMenu.SetRenderHeadTitleMethodDelegate (new RenderMethod (RenderOptionsMenuTitle));
+    _optionsMenu.SetRenderHeadTitleMethodDelegate (RenderOptionsMenuTitle);
     _optionsMenu.RenderControl (writer);
     _optionsMenu.SetRenderHeadTitleMethodDelegate (null);
   }
 
-  private void RenderOptionsMenuTitle (HtmlTextWriter writer, Control control)
+  public void RenderOptionsMenuTitle (HtmlTextWriter writer, Control control)
   {
     bool isReadOnly = IsReadOnly;
 
     bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
     bool isDropDownListHeightEmpty = StringUtility.IsNullOrEmpty (_dropDownList.Style["height"]);
     bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-    bool isLabelWidthEmpty = StringUtility.IsNullOrEmpty (_label.Style["width"]);
     bool isDropDownListWidthEmpty = StringUtility.IsNullOrEmpty (_dropDownList.Style["width"]);
 
     bool isCommandEnabled = IsCommandEnabled (isReadOnly);
@@ -1527,7 +1527,7 @@ public class BocReferenceValue:
   /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
   public override string[] GetTrackedClientIDs()
   {
-    return IsReadOnly ? new string[0] : new string[1] { _dropDownList.ClientID };
+    return IsReadOnly ? new string[0] : new[] { _dropDownList.ClientID };
   }
 
   /// <summary> The <see cref="BocReferenceValue"/> supports only scalar properties. </summary>
@@ -1915,6 +1915,11 @@ public class BocReferenceValue:
         validator.ErrorMessage = _errorMessage;
       }
     }
+  }
+
+  bool IBocRenderableControl.IsDesignMode
+  {
+    get { return IsDesignMode; }
   }
 
   #region protected virtual string CssClass...

@@ -649,13 +649,16 @@ function SmartPage_Context (
   function GetPostbackSettings (pageRequestManager, element) 
   {
     ArgumentUtility.CheckNotNull ('pageRequestManager', pageRequestManager);
-    ArgumentUtility.CheckNotNull ('element', element);
+    ArgumentUtility.CheckNotNull('element', element);
+    if ((element.id == null) || (element.id.length == 0))
+        return CreatePostbackSettings(false, null);
+    
   
     var updatePanelIDs = pageRequestManager._updatePanelIDs;
     for (var i = updatePanelIDs.length - 1; i >= 0; i--) 
     {
       var updatePanel = document.getElementById (UniqueIDToClientID (updatePanelIDs[i]));
-      if (updatePanel != null && jQuery(updatePanel).find(element).length == 1) 
+      if (updatePanel != null && jQuery(updatePanel).find('#' + element.id).length == 1) 
         return CreatePostbackSettings(true, updatePanelIDs[i]);
     }
 

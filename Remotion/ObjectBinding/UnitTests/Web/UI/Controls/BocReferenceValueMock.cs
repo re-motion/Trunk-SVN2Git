@@ -24,7 +24,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 [ToolboxItem (false)]
 public class BocReferenceValueMock: BocReferenceValue
 {
-	public new void EvaluateWaiConformity ()
+  private bool _isDesignMode = true;
+
+  public new void EvaluateWaiConformity ()
   {
     base.EvaluateWaiConformity ();
   }
@@ -43,6 +45,26 @@ public class BocReferenceValueMock: BocReferenceValue
   public new bool IsCommandEnabled (bool isReadOnly)
   {
     return base.IsCommandEnabled (isReadOnly);
+  }
+
+  public override bool IsReadOnly
+  {
+    get{return ReadOnly.HasValue ? ReadOnly.Value : false;}
+  }
+
+  public void SetReadOnly (bool value)
+  {
+    ReadOnly = value;
+  }
+
+  protected override bool IsDesignMode
+  {
+    get { return _isDesignMode; }
+  }
+
+  public void SetDesignMode (bool value)
+  {
+    _isDesignMode = value;
   }
 }
 

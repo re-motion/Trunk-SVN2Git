@@ -14,21 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using System.Web.UI.WebControls;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenceValue
 {
-  public class DropDownRendererFactory : IDropDownMenuRendererFactory
+  public class StubDropDownList : DropDownList
   {
-    public IDropDownMenuPreRenderer CreatePreRenderer (IHttpContext context, IDropDownMenu control)
+    public override void RenderControl (System.Web.UI.HtmlTextWriter writer)
     {
-      return new DropDownMenuPreRenderer (context, control);
-    }
-
-    public IDropDownMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IDropDownMenu control)
-    {
-      return new DropDownMenuRenderer (context, writer, control);
+      writer.WriteLine ("DropDownList");
     }
   }
 }

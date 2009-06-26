@@ -64,7 +64,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      UseStandardModeRendering = false;
+      UseStandardModeRendering = true;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))

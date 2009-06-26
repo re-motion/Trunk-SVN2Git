@@ -276,11 +276,6 @@ namespace Remotion.Web.UI
 
     public void RegisterUtilitiesJavaScriptInclude (IControl control)
     {
-      RegisterUtilitiesJavaScriptInclude (control, ResourceTheme.Legacy);
-    }
-
-    public void RegisterUtilitiesJavaScriptInclude (IControl control, ResourceTheme theme)
-    {
       ArgumentUtility.CheckNotNull ("control", control);
       string key = typeof (HtmlHeadContents).FullName + "_Utilities";
       if (! IsRegistered (key))

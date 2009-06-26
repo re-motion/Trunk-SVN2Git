@@ -19,7 +19,7 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode.Factories
 {
-  public class DropDownRendererFactory : IDropDownMenuRendererFactory
+  public class DropDownMenuRendererFactory : IDropDownMenuRendererFactory
   {
     public IDropDownMenuPreRenderer CreatePreRenderer (IHttpContext context, IDropDownMenu control)
     {
