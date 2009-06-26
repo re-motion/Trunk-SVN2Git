@@ -641,6 +641,7 @@
     <Compile Include="Linq\Parsing\Structure\QueryParserTest.cs" />
     <Compile Include="Linq\QueryModelBuilderTest.cs" />
     <Compile Include="Linq\QueryModelTest.cs" />
+    <Compile Include="Linq\QueryModelVisitorBaseTest.cs" />
     <Compile Include="Linq\QueryProviderBaseTest.cs" />
     <Compile Include="Linq\QueryableBaseTest.cs" />
     <Compile Include="Linq\SqlGeneration\JoinCollectionTest.cs" />
