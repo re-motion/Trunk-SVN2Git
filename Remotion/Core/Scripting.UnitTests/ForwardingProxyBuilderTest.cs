@@ -234,6 +234,66 @@ namespace Remotion.Scripting.UnitTests
 
 
 
+
+
+    [Test]
+    public void AddForwardingMethodFromMethodInfoCopy_ExplicitInterfaceMethod ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingMethodFromMethodInfoCopy_ExplicitInterfaceMethod",
+        ModuleScope, typeof (ProxiedChild), new[] { typeof (IAmbigous1) });
+
+      var methodInfo = typeof (IAmbigous1).GetMethod ("StringTimes");
+      proxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (methodInfo);
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChild ();
+      object proxy = proxyBuilder.CreateInstance (proxied);
+
+      Assert.That (((IAmbigous1) proxied).StringTimes ("aBc", 4), Is.EqualTo ("aBcaBcaBcaBc"));
+      Assert.That (((IAmbigous1) proxy).StringTimes ("aBc", 4), Is.EqualTo ("aBcaBcaBcaBc"));
+    }
+
+
+    [Test]
+    public void AddForwardingMethodFromMethodInfoCopy_ImplicitInterfaceMethod ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingMethodFromMethodInfoCopy_ImplicitInterfaceMethod",
+        ModuleScope, typeof (Proxied), new[] { typeof (IProxiedGetName) });
+      proxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (typeof (IProxiedGetName).GetMethod ("GetName"));
+      Type proxyType = proxyBuilder.BuildProxyType ();
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new Proxied ();
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      Assert.That (proxy.GetType ().GetInterfaces (), Is.EquivalentTo ((new[] { typeof (IProxiedGetName) })));
+      Assert.That (((IProxiedGetName) proxy).GetName (), Is.EqualTo ("Implementer.IProxiedGetName"));
+      Assert.That (proxy.GetType ().GetMethod ("GetName").Invoke (proxy, new object[0]), Is.EqualTo ("Implementer.IProxiedGetName"));
+    }
+
+
+    [Test]
+    public void AddForwardingMethodFromMethodInfoCopy_Method ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingMethodFromMethodInfoCopy_Method", ModuleScope, typeof (Proxied), new Type[0]);
+      var methodInfo = typeof (Proxied).GetMethod ("PrependName");
+      proxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (methodInfo);
+      Type proxyType = proxyBuilder.BuildProxyType ();
+
+      var proxied = new Proxied ("The name");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      // Check calling proxied method through reflection
+      Assert.That (methodInfo.Invoke (proxied, new object[] { "is Smith" }), Is.EqualTo ("The name is Smith"));
+
+      var proxyMethodInfo = proxy.GetType ().GetMethod ("PrependName");
+      AssertMethodInfoEqual (proxyMethodInfo, methodInfo);
+      Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { "is Smith" }), Is.EqualTo ("The name is Smith"));
+    }
+
+
+
+
     public void AssertMethodInfoEqual (MethodInfo methodInfo0, MethodInfo methodInfo1)
     {
       Assert.That (methodInfo0, Is.Not.Null);

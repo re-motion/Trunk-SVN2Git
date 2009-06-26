@@ -83,7 +83,6 @@ namespace Remotion.Scripting
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       var methodEmitter = _classEmitter.CreatePublicInterfaceMethodImplementation (methodInfo);
-      // Implement method in proxy by forwarding call to proxied instance
 
       //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, methodInfo.DeclaringType), methodInfo);
       ImplementForwardingMethod (methodInfo, methodEmitter);
@@ -102,13 +101,6 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       AddForwardingMethod (methodInfo, methodInfo.Name);
     }
-
-    //public void AddForwardingMethodFromMethodInfoCopy (MethodInfo methodInfo)
-    //{
-    //  ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-    //  var methodEmitter = _classEmitter.CreateMethodOverrideOrInterfaceImplementation (methodInfo, true, methodInfo.Attributes & MethodAttributes.MemberAccessMask);
-    //  ImplementForwardingMethod (methodInfo, methodEmitter);
-    //}
 
 
     public void AddForwardingProperty (PropertyInfo propertyInfo)
@@ -129,6 +121,28 @@ namespace Remotion.Scripting
         setMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedSetMethodInfo);
       }
     }
+
+
+
+    public void AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo)
+    {
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+
+      CustomMethodEmitter methodEmitter;
+      if (methodInfo.DeclaringType.IsInterface)
+      {
+        methodEmitter = _classEmitter.CreateMethodOverrideOrInterfaceImplementation (
+            methodInfo, true, methodInfo.Attributes & MethodAttributes.MemberAccessMask);
+      }
+      else
+      {
+        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodInfo.Attributes & MethodAttributes.MemberAccessMask);
+      }
+
+      methodEmitter.CopyParametersAndReturnType (methodInfo); 
+      ImplementForwardingMethod (methodInfo, methodEmitter);
+    }
+
 
 
     // Create proxy ctor which takes proxied instance and stores it in field in class
