@@ -49,10 +49,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void GetTableName_ForFromClauseWithOrderCollection ()
+    {
+      var fromClause = new MainFromClause ("o", typeof (Order), Expression.Constant (new OrderCollection ()));
+      Assert.AreEqual ("OrderView", _databaseInfo.GetTableName (fromClause));
+    }
+
+    [Test]
     public void GetTableName_InvalidType ()
     {
-      DummyQueryable<string> stringSource = new DummyQueryable<string>();
-      MainFromClause stringClause = new MainFromClause ("source", typeof (string), Expression.Constant (stringSource));
+      var stringSource = new DummyQueryable<string>();
+      var stringClause = new MainFromClause ("source", typeof (string), Expression.Constant (stringSource));
 
       Assert.IsNull (_databaseInfo.GetTableName (stringClause));
     }

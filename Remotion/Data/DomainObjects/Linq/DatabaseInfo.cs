@@ -39,20 +39,12 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       ArgumentUtility.CheckNotNull ("fromClause", fromClause);
       
-      Type querySourceType = fromClause.GetQuerySourceType();
-      if (!querySourceType.IsGenericType
-          || querySourceType.IsGenericTypeDefinition
-          || querySourceType.GetGenericTypeDefinition () != typeof (DomainObjectQueryable<>))
+      Type domainObjectType = fromClause.ItemType;
+      ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[domainObjectType];
+      if (classDefinition == null)
         return null;
       else
-      {
-        Type domainObjectType = querySourceType.GetGenericArguments()[0];
-        ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions[domainObjectType];
-        if (classDefinition == null)
-          return null;
-        else
-          return classDefinition.GetViewName();
-      }
+        return classDefinition.GetViewName();
     }
 
     public bool IsTableType (Type type)

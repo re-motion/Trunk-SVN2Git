@@ -665,12 +665,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.InvalidOrder))));
     }
 
-    [Ignore ("TODO: new algo for field resolving needed")]
     [Test]
     public void QueryWithSingleAndPredicate ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order>()
-                    select o).Single (i => i.OrderNumber == 5); //extends algo to use identifiers which are used in FieldResolving (map i.OrderNumber to o.OrderNumber)
+                    select o).Single (i => i.OrderNumber == 5);
       Assert.That (query, Is.EqualTo ((TestDomainBase.GetObject (DomainObjectIDs.Order4))));
     }
 
@@ -727,7 +726,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("COMMONS-1137")]
     public void QueryWithMemberFromClause_WithLet ()
     {
       var query =
@@ -740,7 +738,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("COMMONS-1137")]
     public void QueryWithLet_AndMultipleFromClauses ()
     {
       var query =
