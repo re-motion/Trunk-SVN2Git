@@ -293,6 +293,13 @@ namespace Remotion.Scripting.UnitTests
 
 
 
+    //[Test]
+    //public void Minus ()
+    //{
+    //  var l = new System.Collections.Generic.List<string>();
+    //  l.
+    //}
+
 
     public void AssertMethodInfoEqual (MethodInfo methodInfo0, MethodInfo methodInfo1)
     {
