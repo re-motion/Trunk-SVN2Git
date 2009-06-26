@@ -15,49 +15,31 @@
 // 
 using System;
 using NUnit.Framework;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
-using Remotion.Data.Linq.Clauses.ResultModifications;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
 {
   [TestFixture]
-  public class CountResultModificationTest
+  public class ResultModificationBaseTest
   {
-    private CountResultModification _resultModification;
+    ResultModificationBase _resultModification;
 
     [SetUp]
     public void SetUp ()
     {
-      _resultModification = new CountResultModification ();
+      _resultModification = new TestResultModification (CollectionExecutionStrategy.Instance);
     }
 
     [Test]
-    public void Clone ()
+    public void Accept ()
     {
-      var clonedClauseMapping = new ClonedClauseMapping ();
-      var cloneContext = new CloneContext (clonedClauseMapping);
-      var clone = _resultModification.Clone (cloneContext);
+      var visitorMock = MockRepository.GenerateMock<IQueryModelVisitor> ();
+      _resultModification.Accept (visitorMock);
 
-      Assert.That (clone, Is.InstanceOfType (typeof (CountResultModification)));
-    }
-
-    [Test]
-    public void ExecuteInMemory ()
-    {
-      var items = new[] { 1, 2, 3 };
-      var result = _resultModification.ExecuteInMemory (items);
-
-      Assert.That (result, Is.EqualTo (new[] { 3 }));
-    }
-
-    [Test]
-    public void ExecutionStrategy ()
-    {
-      Assert.That (_resultModification.ExecutionStrategy, Is.SameAs (ScalarExecutionStrategy.Instance));
+      visitorMock.AssertWasCalled (mock => mock.VisitResultModification (_resultModification));
     }
   }
 }

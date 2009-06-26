@@ -17,7 +17,13 @@ using Remotion.Data.Linq.Clauses;
 
 namespace Remotion.Data.Linq
 {
-  public interface IQueryVisitor
+  /// <summary>
+  /// Defines an interface for visiting the clauses of a <see cref="QueryModel"/>. 
+  /// When implement this interface, implement <see cref="VisitQueryModel"/>, then call <see cref="IClause.Accept"/> on every clause that should
+  /// be visited. Note that clauses, orderings, and result modifications are never visited automatically, they always need to be explicitly visited 
+  /// via  <see cref="IClause.Accept"/>, <see cref="Ordering.Accept"/>, and <see cref="ResultModificationBase.Accept"/>.
+  /// </summary>
+  public interface IQueryModelVisitor
   {
     void VisitQueryModel (QueryModel queryModel);
     void VisitMainFromClause (MainFromClause fromClause);
@@ -29,6 +35,7 @@ namespace Remotion.Data.Linq
     void VisitOrderByClause (OrderByClause orderByClause);
     void VisitOrdering (Ordering ordering);
     void VisitSelectClause (SelectClause selectClause);
+    void VisitResultModification (ResultModificationBase resultModification);
     void VisitGroupClause (GroupClause groupClause);
   }
 }
