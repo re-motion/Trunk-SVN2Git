@@ -544,7 +544,6 @@
     <Compile Include="Linq\Clauses\OrderByClauseTest.cs" />
     <Compile Include="Linq\Clauses\OrderingTest.cs" />
     <Compile Include="Linq\Clauses\SelectClauseTest.cs" />
-    <Compile Include="Linq\Clauses\SubQueryFromClauseTest.cs" />
     <Compile Include="Linq\Clauses\WhereClauseTest.cs" />
     <Compile Include="Linq\DataObjectModel\BinaryConditionTest.cs" />
     <Compile Include="Linq\DataObjectModel\DatabaseInfoUtilityTest.cs" />
