@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Castle.DynamicProxy;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -38,6 +39,8 @@ namespace Remotion.Scripting
     private readonly ITypeArbiter _typeArbiter;
     private ForwardingProxyBuilder _forwardingProxyBuilder;
     private readonly Dictionary<MemberInfo, HashSet<MemberInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MemberInfo, HashSet<MemberInfo>> ();
+    private ModuleScope _moduleScope;
+    private readonly Type[] _knownInterfaces;
 
     public StableBindingProxyBuilder (Type proxiedType, ITypeArbiter typeArbiter)
     {
@@ -45,20 +48,26 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("typeArbiter", typeArbiter);
       _typeArbiter = typeArbiter;
       _proxiedType = proxiedType;
+      _knownInterfaces = FindKnownInterfaces();
+      //_forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, _knownInterfaces);
       BuildClassMethodToInterfaceMethodsMap();
     }
+
+ 
 
     public Type ProxiedType
     {
       get { return _proxiedType; }
     }
 
-
+    private Type[] FindKnownInterfaces ()
+    {
+      return ProxiedType.GetInterfaces ().Where (i => _typeArbiter.IsTypeValid (i)).ToArray ();
+    }
 
     private Dictionary<MemberInfo, HashSet<MemberInfo>> BuildClassMethodToInterfaceMethodsMap ()
     {
-      var knownInterfaces = ProxiedType.GetInterfaces ().Where (i => _typeArbiter.IsTypeValid (i));
-      foreach (var knownInterface in knownInterfaces)
+      foreach (var knownInterface in _knownInterfaces)
       {
         var interfaceMapping = ProxiedType.GetInterfaceMap (knownInterface);
         var classMethods = interfaceMapping.TargetMethods;
