@@ -38,7 +38,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void Initialize_WithTenantAndUserAndRoles ()
+    public void Initialize_WithRoles ()
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
       User user = _testHelper.CreateUser ("userName", null, "lastName", null, null, null);
@@ -49,10 +49,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (principal.User, Is.SameAs (user));
       Assert.That (principal.Roles, Is.Not.SameAs (roles));
       Assert.That (principal.Roles, Is.EquivalentTo (roles));
+      Assert.That (principal.IsNull, Is.False);
     }
 
     [Test]
-    public void Initialize_WithTenantAndUserAndWithoutRoles ()
+    public void Initialize_WithoutRoles ()
     {
       Tenant tenant = _testHelper.CreateTenant ("tenant");
       User user = _testHelper.CreateUser ("userName", null, "lastName", null, null, null);
@@ -61,6 +62,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (principal.Tenant, Is.SameAs (tenant));
       Assert.That (principal.User, Is.SameAs (user));
       Assert.That (principal.Roles, Is.Empty);
+      Assert.That (principal.IsNull, Is.False);
     }
 
     [Test]
@@ -74,6 +76,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (principal.User, Is.Null);
       Assert.That (principal.Roles, Is.Not.SameAs (roles));
       Assert.That (principal.Roles, Is.EquivalentTo (roles));
+      Assert.That (principal.IsNull, Is.False);
     }
 
     [Test]
@@ -85,16 +88,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (principal.Tenant, Is.SameAs (tenant));
       Assert.That (principal.User, Is.Null);
       Assert.That (principal.Roles, Is.Empty);
+      Assert.That (principal.IsNull, Is.False);
     }
 
     [Test]
-    public void Initialize_WithoutTenantAndWithoutUserAndWithoutRoles ()
+    public void GetNullPrincipal ()
     {
-      Principal principal = new Principal (null, null, new Role[0]);
+      Principal principal = Principal.Null;
 
       Assert.That (principal.Tenant, Is.Null);
       Assert.That (principal.User, Is.Null);
       Assert.That (principal.Roles, Is.Empty);
+      Assert.That (principal.IsNull, Is.True);
     }
   }
 }

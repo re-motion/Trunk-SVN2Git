@@ -40,6 +40,9 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       ArgumentUtility.CheckNotNull ("token", token);
 
+      if (token.Principal.IsNull)
+        return false;
+
       if (!MatchesTenantCondition (token))
         return false;
 

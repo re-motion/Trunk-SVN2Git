@@ -367,6 +367,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       }
     }
 
+    public SecurityToken CreateTokenWithNullPrincipal ()
+    {
+      return new SecurityToken (Principal.Null, null, null, null, new AbstractRoleDefinition[0]);
+    }
+
     public SecurityToken CreateEmptyToken ()
     {
       Principal principal = new Principal (null, null, new Role[0]);

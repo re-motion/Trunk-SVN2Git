@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     private Principal CreatePrincipal (ISecurityPrincipal principal)
     {
       if (principal.IsNull)
-        return new Principal (null, null, new Role[0]);
+        return Principal.Null;
 
       if (string.IsNullOrEmpty (principal.User))
         throw CreateAccessControlException ("No principal was provided.");

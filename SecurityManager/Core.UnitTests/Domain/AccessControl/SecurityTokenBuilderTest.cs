@@ -59,6 +59,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.Tenant, Is.SameAs (token.Principal.User.Tenant));
       Assert.That (token.Principal.Roles, Is.Not.Empty);
       Assert.That (token.Principal.Roles, Is.EquivalentTo (token.Principal.User.Roles));
+      Assert.That (token.Principal.IsNull, Is.False);
     }
 
     [Test]
@@ -83,6 +84,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.Roles[0].Group.UniqueIdentifier, Is.EqualTo ("UID: testGroup"));
       Assert.That (token.Principal.Roles[0].Position.UniqueIdentifier, Is.EqualTo ("UID: Official"));
       Assert.That (token.Principal.Roles[0].User, Is.SameAs (token.Principal.User));
+      Assert.That (token.Principal.IsNull, Is.False);
     }
 
     [Test]
@@ -108,6 +110,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.Roles[0].Group.UniqueIdentifier, Is.EqualTo ("UID: testGroup"));
       Assert.That (token.Principal.Roles[0].Position.UniqueIdentifier, Is.EqualTo ("UID: Official"));
       Assert.That (token.Principal.Roles[0].User.UserName, Is.EqualTo ("test.user"));
+      Assert.That (token.Principal.IsNull, Is.False);
     }
 
     [Test]
@@ -127,6 +130,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Not.Empty);
       Assert.That (token.Principal.Roles, Is.EquivalentTo (token.Principal.User.Roles));
+      Assert.That (token.Principal.IsNull, Is.False);
     }
 
     [Test]
@@ -149,6 +153,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
+      Assert.That (token.Principal.IsNull, Is.False);
     }
 
     [Test]
@@ -167,6 +172,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
+      Assert.That (token.Principal.IsNull, Is.False);
     }
 
     [Test]
@@ -189,6 +195,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
+      Assert.That (token.Principal.IsNull, Is.False);
     }
 
     [Test]
@@ -211,6 +218,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
+      Assert.That (token.Principal.IsNull, Is.False);
     }
 
     [Test]
@@ -230,6 +238,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.Tenant, Is.Not.Null);
       Assert.That (token.Principal.Tenant.UniqueIdentifier, Is.Not.EqualTo ("UID: testTenant"));
       Assert.That (token.Principal.Roles, Is.Empty);
+      Assert.That (token.Principal.IsNull, Is.False);
     }
 
     [Test]
@@ -245,6 +254,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       Assert.That (token.Principal.User, Is.Null);
       Assert.That (token.Principal.Tenant, Is.Null);
       Assert.That (token.Principal.Roles, Is.Empty);
+      Assert.That (token.Principal.IsNull, Is.True);
     }
 
     [Test]

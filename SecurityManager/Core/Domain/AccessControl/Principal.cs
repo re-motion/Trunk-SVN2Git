@@ -27,16 +27,26 @@ namespace Remotion.SecurityManager.Domain.AccessControl
   /// The <see cref="Principal"/> type encapsulates a <see cref="Tenant"/> object, a <see cref="User"/> object, 
   /// and one or more <see cref="Role"/> objects. Together, they specify the principal for which the permissions are evaluated.
   /// </summary>
-  public class Principal
+  public class Principal : INullObject
   {
+    public static Principal Null = new Principal();
+
+    private readonly bool _isNull;
     private readonly Tenant _tenant;
     private readonly User _user;
     private readonly IList<Role> _roles;
+
+    private Principal ()
+    {
+      _isNull = true;
+      _roles = new Role[0];
+    }
 
     public Principal (Tenant tenant, User user, IList<Role> roles)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("roles", roles);
 
+      _isNull = false;
       _tenant = tenant;
       _user = user;
       _roles = new ReadOnlyCollection<Role> (roles);
@@ -55,6 +65,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public IList<Role> Roles
     {
       get { return _roles; }
+    }
+
+    public bool IsNull
+    {
+      get { return _isNull; }
     }
   }
 }

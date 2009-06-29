@@ -45,5 +45,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.SecurityTokenM
       Assert.IsTrue (matcher.MatchesToken (token));
     }
 
+    [Test]
+    public void TokenWithNullPrincipal_NotMatches ()
+    {
+      AccessControlEntry entry = AccessControlEntry.NewObject ();
+      SecurityTokenMatcher matcher = new SecurityTokenMatcher (entry);
+      SecurityToken token = TestHelper.CreateTokenWithNullPrincipal ();
+
+      Assert.IsFalse (matcher.MatchesToken (token));
+    }
   }
 }
