@@ -77,6 +77,8 @@
     <Compile Include="TestDomain\FunctionalExtensions.cs" />
     <Compile Include="TestDomain\IAmbigous1.cs" />
     <Compile Include="TestDomain\IAmbigous2.cs" />
+    <Compile Include="TestDomain\IProcessText1.cs" />
+    <Compile Include="TestDomain\IProcessText2.cs" />
     <Compile Include="TestDomain\IProxiedGetName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="ScriptingHostTest.cs" />
     <Compile Include="AssemblyLevelTypeArbiterTest.cs" />
     <Compile Include="TestDomain\ProxiedChild.cs" />
+    <Compile Include="TestDomain\ProxiedChildChild.cs" />
     <Compile Include="TestDomain\ProxiedChildGeneric.cs" />
     <Compile Include="TypeLevelTypeArbiterTest.cs" />
   </ItemGroup>

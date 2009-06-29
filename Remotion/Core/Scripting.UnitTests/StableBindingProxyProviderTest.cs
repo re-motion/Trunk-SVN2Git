@@ -40,7 +40,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    public void BuildClassMethodToInterfaceMethodsMap ()
+    public void BuildClassMethodToInterfaceMethodsMap_OneExplicitInterfaceMethod ()
     {
       var typeIAmbigous2 = typeof (IAmbigous2);
       var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIAmbigous2 });
@@ -62,7 +62,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    public void BuildClassMethodToInterfaceMethodsMap_TwoMethods ()
+    public void BuildClassMethodToInterfaceMethodsMap_TwoExplicitInterfaceMethods ()
     {
       var typeIAmbigous1 = typeof (IAmbigous1);
       var typeIAmbigous2 = typeof (IAmbigous2);
@@ -73,17 +73,45 @@ namespace Remotion.Scripting.UnitTests
 
       var classMethodToInterfaceMethodsMap = stableBindingProxyBuilder.GetClassMethodToInterfaceMethodsMap ();
 
-
       var stringTimesIAmbigous1ClassMethod = GetAnyInstanceMethod (proxiedType, "Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.StringTimes");
+      Assert.That (stringTimesIAmbigous1ClassMethod, Is.Not.Null);
       var stringTimesIAmbigous1InterfaceMethod = GetAnyInstanceMethod (typeIAmbigous1, "StringTimes");
+      Assert.That (stringTimesIAmbigous1InterfaceMethod, Is.Not.Null);
 
       var stringTimesIAmbigous2ClassMethod = GetAnyInstanceMethod (proxiedType, "Remotion.Scripting.UnitTests.TestDomain.IAmbigous2.StringTimes");
+      Assert.That (stringTimesIAmbigous2ClassMethod, Is.Not.Null);
       var stringTimesIAmbigous2InterfaceMethod = GetAnyInstanceMethod (typeIAmbigous2, "StringTimes");
+      Assert.That (stringTimesIAmbigous2InterfaceMethod, Is.Not.Null);
 
       Assert.That (classMethodToInterfaceMethodsMap.Count, Is.EqualTo (2));
       Assert.That (classMethodToInterfaceMethodsMap[stringTimesIAmbigous1ClassMethod].ToList (), Is.EquivalentTo (ListMother.New (stringTimesIAmbigous1InterfaceMethod)));
       Assert.That (classMethodToInterfaceMethodsMap[stringTimesIAmbigous2ClassMethod].ToList (), Is.EquivalentTo (ListMother.New (stringTimesIAmbigous2InterfaceMethod)));
     }
+
+    [Test]
+    public void BuildClassMethodToInterfaceMethodsMap_TwoInterfaceMethodsImplementedAsOnePublicMethod ()
+    {
+     var typeIProcessText1 = typeof (IProcessText1);
+      var typeIProcessText2 = typeof (IProcessText2);
+      var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIProcessText2, typeof (Proxied), typeIProcessText1 });
+      // Note: ProxiedChildChild implements IProcessText1 and IProcessText2 through one public member
+      var proxiedType = typeof (ProxiedChildChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter);
+
+      var classMethodToInterfaceMethodsMap = stableBindingProxyBuilder.GetClassMethodToInterfaceMethodsMap ();
+
+      var stringTimesIProcessText1ClassMethod = GetAnyInstanceMethod (proxiedType, "ProcessText");
+      Assert.That (stringTimesIProcessText1ClassMethod, Is.Not.Null);
+
+      var stringTimesIProcessText1InterfaceMethod = GetAnyInstanceMethod (typeIProcessText1, "ProcessText");
+      Assert.That (stringTimesIProcessText1InterfaceMethod, Is.Not.Null);
+      var stringTimesIProcessText2InterfaceMethod = GetAnyInstanceMethod (typeIProcessText2, "ProcessText");
+      Assert.That (stringTimesIProcessText2InterfaceMethod, Is.Not.Null);
+
+      Assert.That (classMethodToInterfaceMethodsMap.Count, Is.EqualTo (1));
+      Assert.That (classMethodToInterfaceMethodsMap[stringTimesIProcessText1ClassMethod].ToList (), Is.EquivalentTo (ListMother.New (stringTimesIProcessText1InterfaceMethod, stringTimesIProcessText2InterfaceMethod)));
+    }
+
 
     private MethodInfo GetAnyInstanceMethod (Type type, string name)
     {
