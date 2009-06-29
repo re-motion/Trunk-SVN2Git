@@ -76,6 +76,7 @@
     <Compile Include="AssemblyLevelTypeArbiter.cs" />
     <Compile Include="StableBindingProxyBuilder.cs" />
     <Compile Include="StableBindingProxyProvider.cs" />
+    <Compile Include="TypeLevelTypeArbiter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.Core.csproj">

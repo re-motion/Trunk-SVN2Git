@@ -24,10 +24,12 @@ namespace Remotion.Scripting
   /// </summary>
   public class StableBindingGetCustomMemberImplementor
   {
-    [SpecialName]
-    public void Test ()
-    {
+    //[SpecialName]
+    //public void Test ()
+    //{
       
-    }
+    //}
+
+    // TODO: Implement GetCustomMember through forwarding of call to helper class instance. 
   }
 }

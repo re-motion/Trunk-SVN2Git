@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
+using System.Reflection;
+
 namespace Remotion.Scripting
 {
   /// <summary>
@@ -30,10 +33,13 @@ namespace Remotion.Scripting
   {
     private ITypeArbiter _typeArbiter;
     private ForwardingProxyBuilder _forwardingProxyBuilder;
+    private Dictionary<MemberInfo, List<MemberInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MemberInfo, List<MemberInfo>>();
 
     public StableBindingProxyBuilder (ITypeArbiter typeArbiter)
     {
       _typeArbiter = typeArbiter;
     }
+
+
   }
 }

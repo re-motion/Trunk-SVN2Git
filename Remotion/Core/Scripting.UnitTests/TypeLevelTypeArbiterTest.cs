@@ -20,12 +20,18 @@ using NUnit.Framework.SyntaxHelpers;
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
-  public class StableBindingProxyProviderTest
+  public class TypeLevelTypeArbiterTest
   {
     [Test]
-    public void name ()
+    public void IsTypeValid ()
     {
-      //var x = new TypeLevelTypeArbiter(new[] {});
+      var typeArbiter = new TypeLevelTypeArbiter (new[] { typeof (string), this.GetType () });
+
+      Assert.That (typeArbiter.IsTypeValid (typeof (string)), Is.True);
+      Assert.That (typeArbiter.IsTypeValid (typeof (TypeLevelTypeArbiterTest)), Is.True);
+
+      Assert.That (typeArbiter.IsTypeValid (typeof (TypeLevelTypeArbiter)), Is.False);
+      Assert.That (typeArbiter.IsTypeValid (typeof (object)), Is.False);
     }
   }
 }

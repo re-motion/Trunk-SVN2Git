@@ -14,33 +14,33 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
   /// <summary>
   /// Categorizes <see cref="Type"/>|s into "valid" and "invalid" types, 
-  /// based on whether their assembly is a member of the class's assembly collection.
+  /// based on whether the type is a member of the class's type collection.
   /// </summary>
-  public class AssemblyLevelTypeArbiter : ITypeArbiter
+  public class TypeLevelTypeArbiter : ITypeArbiter
   {
-    private readonly Dictionary<Assembly,bool> _validAssemblies = new Dictionary<Assembly, bool>();
+    private readonly Dictionary<Type, bool> _validTypes = new Dictionary<Type, bool> ();
 
-    public AssemblyLevelTypeArbiter (IEnumerable<Assembly> validAssemblies)
+    public TypeLevelTypeArbiter (IEnumerable<Type> validTypes)
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("validAssemblies", validAssemblies);
-      foreach (var assembly in validAssemblies)
+      ArgumentUtility.CheckNotNullOrItemsNull ("validTypes", validTypes);
+      foreach (var type in validTypes)
       {
-        _validAssemblies.Add (assembly, true);
+        _validTypes.Add (type, true);
       }
     }
 
     public bool IsTypeValid (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      return _validAssemblies.ContainsKey (type.Assembly);
+      return _validTypes.ContainsKey (type);
     }
   }
 }
