@@ -52,7 +52,6 @@ namespace Remotion.Scripting
     /// <summary>
     /// Builds the proxy <see cref="Type"/> with the members added through <see cref="AddForwardingExplicitInterfaceMethod"/> etc.
     /// </summary>
-    /// <returns></returns>
     public Type BuildProxyType ()
     {
       return _classEmitter.BuildType ();
@@ -63,7 +62,6 @@ namespace Remotion.Scripting
     /// </summary>
     /// <param name="proxied">The <see cref="object"/> to be proxied. Must be of the <see cref="Type"/> 
     /// the <see cref="ForwardingProxyBuilder"/> was initialized with.</param>
-    /// <returns></returns>
     public object CreateInstance (Object proxied)
     {
       ArgumentUtility.CheckNotNullAndType ("proxied", proxied, _proxiedType);

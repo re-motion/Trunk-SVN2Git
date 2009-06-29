@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Castle.DynamicProxy;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
@@ -29,12 +30,14 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class StableBindingProxyProviderTest
   {
+
+
     [Test]
     public void Ctor ()
     {
       var typeArbiter = new TypeLevelTypeArbiter(new Type[0]);
       var proxiedType = typeof (string);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("Ctor"));
       Assert.That (stableBindingProxyBuilder.ProxiedType, Is.EqualTo (proxiedType));
       Assert.That (stableBindingProxyBuilder.GetTypeArbiter (), Is.EqualTo (typeArbiter));
     }
@@ -46,7 +49,7 @@ namespace Remotion.Scripting.UnitTests
       var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIAmbigous2 });
       // Note: ProxiedChild implements IAmbigous1 and IAmbigous2
       var proxiedType = typeof(ProxiedChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_OneExplicitInterfaceMethod"));
 
       var classMethodToInterfaceMethodsMap = stableBindingProxyBuilder.GetClassMethodToInterfaceMethodsMap ();
 
@@ -69,7 +72,8 @@ namespace Remotion.Scripting.UnitTests
       var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIAmbigous2, typeof (Proxied), typeIAmbigous1 });
       // Note: ProxiedChild implements IAmbigous1 and IAmbigous2
       var proxiedType = typeof (ProxiedChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_TwoExplicitInterfaceMethods"));
+      //stableBindingProxyBuilder.BuildProxyType();
 
       var classMethodToInterfaceMethodsMap = stableBindingProxyBuilder.GetClassMethodToInterfaceMethodsMap ();
 
@@ -96,7 +100,7 @@ namespace Remotion.Scripting.UnitTests
       var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIProcessText2, typeof (Proxied), typeIProcessText1 });
       // Note: ProxiedChildChild implements IProcessText1 and IProcessText2 through one public member
       var proxiedType = typeof (ProxiedChildChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_TwoInterfaceMethodsImplementedAsOnePublicMethod"));
 
       var classMethodToInterfaceMethodsMap = stableBindingProxyBuilder.GetClassMethodToInterfaceMethodsMap ();
 
@@ -119,7 +123,7 @@ namespace Remotion.Scripting.UnitTests
       var typeIAmbigous2 = typeof (IAmbigous2);
       var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIAmbigous2 });
       var proxiedType = typeof (ProxiedChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("GetInterfaceMethodsToClassMethod"));
 
       var stringTimesIAmbigous1ClassMethod = GetAnyInstanceMethod (proxiedType, "Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.StringTimes");
       var stringTimesIAmbigous2ClassMethod = GetAnyInstanceMethod (proxiedType, "Remotion.Scripting.UnitTests.TestDomain.IAmbigous2.StringTimes");
@@ -130,6 +134,34 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
+
+
+
+    private ModuleScope CreateModuleScope(string namePostfix)
+    {
+      string name = "Remotion.Scripting.CodeGeneration.Generated.StableBindingProxyProviderTest" + namePostfix;
+      string nameSigned = name + ".Signed";
+      string nameUnsigned = name + ".Unsigned";
+      const string ext = ".dll";
+      return new ModuleScope (true, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
+    }
+
+    private void SaveAndVerifyModuleScopeAssembly (ModuleScope moduleScope)
+    {
+      if (moduleScope != null)
+      {
+        if (moduleScope.StrongNamedModule != null)
+          SaveAndVerifyModuleScopeAssembly (moduleScope, true);
+        if (moduleScope.WeakNamedModule != null)
+          SaveAndVerifyModuleScopeAssembly (moduleScope, false);
+      }
+    }
+
+    private void SaveAndVerifyModuleScopeAssembly (ModuleScope moduleScope, bool strongNamed)
+    {
+      var path = moduleScope.SaveAssembly (strongNamed);
+      PEVerifier.VerifyPEFile (path);
+    }
 
     private MethodInfo GetAnyInstanceMethod (Type type, string name)
     {

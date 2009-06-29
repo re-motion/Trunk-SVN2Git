@@ -39,26 +39,34 @@ namespace Remotion.Scripting
     private readonly ITypeArbiter _typeArbiter;
     private ForwardingProxyBuilder _forwardingProxyBuilder;
     private readonly Dictionary<MemberInfo, HashSet<MemberInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MemberInfo, HashSet<MemberInfo>> ();
-    private ModuleScope _moduleScope;
+    private readonly ModuleScope _moduleScope;
     private readonly Type[] _knownInterfaces;
 
-    public StableBindingProxyBuilder (Type proxiedType, ITypeArbiter typeArbiter)
+    public StableBindingProxyBuilder (Type proxiedType, ITypeArbiter typeArbiter, ModuleScope moduleScope)
     {
       ArgumentUtility.CheckNotNull ("proxiedType", proxiedType);
       ArgumentUtility.CheckNotNull ("typeArbiter", typeArbiter);
       _typeArbiter = typeArbiter;
+      _moduleScope = moduleScope;
       _proxiedType = proxiedType;
       _knownInterfaces = FindKnownInterfaces();
-      //_forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, _knownInterfaces);
+      _forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, _knownInterfaces);
       BuildClassMethodToInterfaceMethodsMap();
     }
 
  
-
     public Type ProxiedType
     {
       get { return _proxiedType; }
     }
+
+    ///// <summary>
+    ///// Builds the proxy <see cref="Type"/>.
+    ///// </summary>
+    //public Type BuildProxyType ()
+    //{
+    //  return _forwardingProxyBuilder.BuildProxyType ();
+    //}
 
     private Type[] FindKnownInterfaces ()
     {
