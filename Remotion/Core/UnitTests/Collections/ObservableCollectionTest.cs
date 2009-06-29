@@ -183,5 +183,15 @@ namespace Remotion.UnitTests.Collections
       _collection.Add (1);
       _collection[0] = 8;
     }
+
+    [Test]
+    public void AsChangeResistantEnumerable ()
+    {
+      var enumerable = _collection.AsChangeResistantEnumerable ();
+      using (var enumerator = enumerable.GetEnumerator ())
+      {
+        Assert.That (enumerator, Is.InstanceOfType (typeof (ChangeResistantObservableCollectionEnumerator<int>)));
+      }
+    }
   }
 }

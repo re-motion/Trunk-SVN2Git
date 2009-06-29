@@ -14,7 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
@@ -24,6 +27,27 @@ namespace Remotion.Collections
   /// <typeparam name="T">The type of items held by this <see cref="ObservableCollection{T}"/>.</typeparam>
   public class ObservableCollection<T> : Collection<T>
   {
+    private class ChangeResistantEnumerable : IEnumerable<T>
+    {
+      private readonly ObservableCollection<T> _collection;
+
+      public ChangeResistantEnumerable (ObservableCollection<T> collection)
+      {
+        ArgumentUtility.CheckNotNull ("collection", collection);
+        _collection = collection;
+      }
+
+      public IEnumerator<T> GetEnumerator ()
+      {
+        return new ChangeResistantObservableCollectionEnumerator<T> (_collection);
+      }
+
+      IEnumerator IEnumerable.GetEnumerator ()
+      {
+        return GetEnumerator ();
+      }
+    }
+
     /// <summary>
     /// Occurs after the items of this <see cref="ObservableCollection{T}"/> have been cleared.
     /// </summary>
@@ -76,6 +100,14 @@ namespace Remotion.Collections
       if (ItemSet != null)
         ItemSet (this, new ObservableCollectionChangedEventArgs<T> (index, item));
     }
-    
+
+    /// <summary>
+    /// Returns an instance of <see cref="IEnumerable{T}"/> that represents this collection but can be enumerated even while the collection changes
+    /// (see <see cref="ChangeResistantObservableCollectionEnumerator{T}"/>).
+    /// </summary>
+    public IEnumerable<T> AsChangeResistantEnumerable ()
+    {
+      return new ChangeResistantEnumerable (this);
+    }
   }
 }

@@ -136,6 +136,7 @@
     <Compile Include="AdapterRegistryMock.cs" />
     <Compile Include="AdapterRegistryTest.cs" />
     <TestAssembly Include="Reflection\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
+    <Compile Include="Collections\ChangeResistantObservableCollectionEnumeratorTest.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
     <Compile Include="Collections\EnumerableExtensionsTest.cs" />
