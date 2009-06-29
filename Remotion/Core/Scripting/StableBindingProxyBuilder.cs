@@ -13,7 +13,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Remotion.Scripting
@@ -31,15 +33,45 @@ namespace Remotion.Scripting
   /// </remarks>
   public class StableBindingProxyBuilder
   {
-    private ITypeArbiter _typeArbiter;
+    private readonly Type _proxiedType;
+    private readonly ITypeArbiter _typeArbiter;
     private ForwardingProxyBuilder _forwardingProxyBuilder;
-    private Dictionary<MemberInfo, List<MemberInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MemberInfo, List<MemberInfo>>();
+    private readonly Dictionary<MemberInfo, HashSet<MemberInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MemberInfo, HashSet<MemberInfo>> ();
 
-    public StableBindingProxyBuilder (ITypeArbiter typeArbiter)
+    public StableBindingProxyBuilder (Type proxiedType, ITypeArbiter typeArbiter)
     {
       _typeArbiter = typeArbiter;
+      _proxiedType = proxiedType;
     }
 
+    public Type ProxiedType
+    {
+      get { return _proxiedType; }
+    }
 
+    private void AddToMethodToInterfaceMethodsMap (MethodInfo classMethod, MethodInfo interfaceMethod)
+    {
+      if (!_classMethodToInterfaceMethodsMap.ContainsKey (classMethod))
+      {
+        _classMethodToInterfaceMethodsMap[classMethod] = new HashSet<MemberInfo> ();
+      }
+      _classMethodToInterfaceMethodsMap[classMethod].Add (interfaceMethod);
+    }
+
+    private Dictionary<MemberInfo, HashSet<MemberInfo>> BuildClassMethodToInterfaceMethodsMap ()
+    {
+      var knownInterfaces = ProxiedType.GetInterfaces ().Where (i => _typeArbiter.IsTypeValid (i));
+      foreach (var knownInterface in knownInterfaces)
+      {
+        var interfaceMapping = ProxiedType.GetInterfaceMap (knownInterface);
+        var classMethods = interfaceMapping.TargetMethods;
+        var interfaceMethods = interfaceMapping.InterfaceMethods;
+        for (int i = 0; i < classMethods.Length; i++) 
+        {
+          AddToMethodToInterfaceMethodsMap (classMethods[i], interfaceMethods[i]);
+        }
+      }
+      return _classMethodToInterfaceMethodsMap;
+    }
   }
 }

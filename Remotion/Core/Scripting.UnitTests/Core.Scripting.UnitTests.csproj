@@ -73,6 +73,7 @@
     <Compile Include="ScriptingHostTestHelper.cs" />
     <Compile Include="ScriptTest.cs" />
     <Compile Include="StableBindingProxyProviderTest.cs" />
+    <Compile Include="StableBindingProxyProviderTestHelper.cs" />
     <Compile Include="TestDomain\FunctionalExtensions.cs" />
     <Compile Include="TestDomain\IAmbigous1.cs" />
     <Compile Include="TestDomain\IAmbigous2.cs" />
