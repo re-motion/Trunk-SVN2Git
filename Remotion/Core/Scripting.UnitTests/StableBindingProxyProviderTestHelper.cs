@@ -31,9 +31,9 @@ namespace Remotion.Scripting.UnitTests
       return (Dictionary<MemberInfo, HashSet<MemberInfo>>) PrivateInvoke.GetNonPublicField (proxyBuilder, "_classMethodToInterfaceMethodsMap");
     }
 
-    //public static Dictionary<MemberInfo, HashSet<MemberInfo>> BuildClassMethodToInterfaceMethodsMap (this StableBindingProxyBuilder proxyBuilder)
-    //{
-    //  return (Dictionary<MemberInfo, HashSet<MemberInfo>>) PrivateInvoke.InvokeNonPublicMethod (proxyBuilder, "BuildClassMethodToInterfaceMethodsMap");
-    //}     
+    public static IEnumerable<MemberInfo> GetInterfaceMethodsToClassMethod (this StableBindingProxyBuilder proxyBuilder, MethodInfo classMethod)
+    {
+      return (IEnumerable<MemberInfo>) PrivateInvoke.InvokeNonPublicMethod (proxyBuilder, "GetInterfaceMethodsToClassMethod", classMethod);
+    }     
   }
 }

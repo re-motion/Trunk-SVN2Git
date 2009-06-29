@@ -80,7 +80,7 @@ namespace Remotion.Scripting
       _classMethodToInterfaceMethodsMap[classMethod].Add (interfaceMethod);
     }
 
-    public IEnumerable<MemberInfo> GetInterfaceMethodsToClassMethod (MethodInfo classMethod)
+    private IEnumerable<MemberInfo> GetInterfaceMethodsToClassMethod (MethodInfo classMethod)
     {
       HashSet<MemberInfo> interfaceMethodsToClassMethod;
       _classMethodToInterfaceMethodsMap.TryGetValue (classMethod, out interfaceMethodsToClassMethod);
