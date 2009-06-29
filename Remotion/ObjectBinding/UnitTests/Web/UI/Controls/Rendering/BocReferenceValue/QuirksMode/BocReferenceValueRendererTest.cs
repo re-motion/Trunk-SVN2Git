@@ -24,6 +24,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode
@@ -56,7 +57,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       _control = new BocReferenceValueMock();
       PrivateInvoke.SetNonPublicField (_control, "_optionsMenu",  _optionsMenu);
-      PrivateInvoke.SetNonPublicField (_control, "_dropDownList", new StubDropDownList());
       _control.Command.Type = CommandType.Event;
       _control.Command.Show = CommandShow.Always;
 
@@ -86,7 +86,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv(1, false);
       XmlNode table = GetAssertedTable(div, false);
-      AssertRow(table, false, false);
+      AssertRow(table, false, false, false);
     }
 
     [Test]
@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, false);
       XmlNode table = GetAssertedTable (div, false);
-      AssertRow (table, false, false);
+      AssertRow (table, false, false, false);
 
       Assert.That (_optionsMenu.Style["width"], Is.Null);
       Assert.That (_optionsMenu.Style["height"], Is.Null);
@@ -138,7 +138,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, false);
       XmlNode table = GetAssertedTable (div, false);
-      AssertRow (table, true, false);
+      AssertRow (table, true, false, false);
     }
 
     [Test]
@@ -151,7 +151,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, true);
       XmlNode table = GetAssertedTable (div, true);
-      AssertRow (table, true, false);
+      AssertRow (table, true, false, false);
     }
 
     [Test]
@@ -176,7 +176,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, true);
       XmlNode table = GetAssertedTable (div, true);
-      AssertRow (table, false, false);
+      AssertRow (table, false, false, false);
     }
 
     [Test]
@@ -187,7 +187,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     
       XmlNode div = GetAssertedDiv (1, true);
       XmlNode table = GetAssertedTable (div, true);
-      AssertRow (table, false, false);
+      AssertRow (table, false, false, false);
 
       Assert.That (_optionsMenu.Style["width"], Is.Null);
       Assert.That (_optionsMenu.Style["height"], Is.Null);
@@ -203,7 +203,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, false);
       XmlNode table = GetAssertedTable (div, false);
-      AssertRow (table, false, false);
+      AssertRow (table, false, true, false);
     }
 
     [Test]
@@ -214,7 +214,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, false);
       XmlNode table = GetAssertedTable (div, false);
-      AssertRow (table, false, false);
+      AssertRow (table, false, false, false);
     }
 
     private void SetValue ()
@@ -231,7 +231,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, false);
       XmlNode table = GetAssertedTable (div, false);
-      AssertRow (table, false, false);
+      AssertRow (table, false, false, false);
 
       Assert.That (_optionsMenu.Style["width"], Is.Null);
       Assert.That (_optionsMenu.Style["height"], Is.Null);
@@ -276,7 +276,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, false);
       XmlNode table = GetAssertedTable (div, false);
-      AssertRow (table, true, false);
+      AssertRow (table, true, false, false);
     }
 
     [Test]
@@ -290,7 +290,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, true);
       XmlNode table = GetAssertedTable (div, true);
-      AssertRow (table, true, false);
+      AssertRow (table, true, false, false);
     }
 
     [Test]
@@ -317,7 +317,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, true);
       XmlNode table = GetAssertedTable (div, true);
-      AssertRow (table, false, false);
+      AssertRow (table, false, false, false);
     }
 
     [Test]
@@ -329,7 +329,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, true);
       XmlNode table = GetAssertedTable (div, true);
-      AssertRow (table, false, false);
+      AssertRow (table, false, false, false);
 
       Assert.That (_optionsMenu.Style["width"], Is.Null);
       Assert.That (_optionsMenu.Style["height"], Is.Null);
@@ -346,7 +346,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       XmlNode div = GetAssertedDiv (1, false);
       XmlNode table = GetAssertedTable (div, false);
-      AssertRow (table, false, false);
+      AssertRow (table, false, true, false);
     }
 
     [Test]
@@ -355,13 +355,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       _control.ShowOptionsMenu = false;
       _invoker.PreRenderRecursive();
 
+      var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, _control, ()=>new StubDropDownList());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      _control.RenderOptionsMenuTitle (Html.Writer, _control);
+      renderer.RenderOptionsMenuTitle (Html.Writer, _control);
       Html.Writer.RenderEndTag();
 
       
       var document = Html.GetResultDocument();
-      AssertRow (document, false, false);
+      AssertRow (document, false, false, false);
     }
 
     [Test]
@@ -372,13 +373,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       _control.ShowOptionsMenu = false;
       _invoker.PreRenderRecursive ();
 
+      var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, _control, () => new StubDropDownList ());
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      _control.RenderOptionsMenuTitle (Html.Writer, _control);
+      renderer.RenderOptionsMenuTitle (Html.Writer, _control);
       Html.Writer.RenderEndTag ();
 
 
       var document = Html.GetResultDocument ();
-      AssertRow (document, true, false);
+      AssertRow (document, true, false, false);
     }
 
     [Test]
@@ -389,18 +391,20 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       _control.ShowOptionsMenu = false;
       _invoker.PreRenderRecursive ();
 
+      var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, _control);
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-      _control.RenderOptionsMenuTitle (Html.Writer, _control);
+      renderer.RenderOptionsMenuTitle (Html.Writer, _control);
       Html.Writer.RenderEndTag ();
 
       var document = Html.GetResultDocument ();
-      AssertRow (document, true, true);
+      AssertRow (document, true, false, true);
     }
 
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
       _invoker.PreRenderRecursive();
-      _control.RenderControl (Html.Writer);
+      var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, _control, ()=>new StubDropDownList());
+      renderer.Render();
 
       var document = Html.GetResultDocument();
       var div = document.GetAssertedChildElement ("div", 0);
@@ -441,24 +445,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       return table;
     }
 
-    private void AssertRow (XmlNode table, bool hasLabel, bool hasDummyCell)
+    private void AssertRow (XmlNode table, bool hasLabel, bool hasIcon, bool hasDummyCell)
     {
       var row = table.GetAssertedChildElement ("tr", 0);
 
       int cellCount = 1;
       if (_control.ShowOptionsMenu)
         cellCount++;
-      if (_control.Icon.Visible)
+      if (hasIcon)
         cellCount++;
       if (hasDummyCell)
         cellCount++;
 
       row.AssertChildElementCount (cellCount);
 
-      if (_control.Icon.Visible)
+      if (hasIcon)
         AssertIconCell (row);
 
-      AssertValueCell (row, hasLabel, _control.Icon.Visible ? 1 : 0);
+      AssertValueCell (row, hasLabel, hasIcon ? 1 : 0);
       
       if( _control.ShowOptionsMenu )
         AssertMenuCell(row);
@@ -518,13 +522,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
           link.AssertChildElementCount (1);
 
           var label = link.GetAssertedChildElement ("span", 0);
-          label.AssertAttributeValueEquals ("id", "_Boc_Label");
+          label.AssertAttributeValueEquals ("id", _control.ClientID + "_Boc_Label");
           label.AssertTextNode (_control.Value.DisplayName, 0);
         }
         else
         {
           var label = valueCell.GetAssertedChildElement ("span", 0);
-          label.AssertAttributeValueEquals ("id", "_Boc_Label");
+          label.AssertAttributeValueEquals ("id", _control.ClientID + "_Boc_Label");
           label.AssertTextNode ("##", 0);
         }
       }
@@ -546,8 +550,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     {
       _control.Height = s_height;
       _control.Width = s_width;
-      _control.DropDownList.Height = s_height;
-      _control.DropDownList.Width = s_width;
     }
   }
 }

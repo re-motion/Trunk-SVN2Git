@@ -143,16 +143,6 @@
       
       <h4 class="dtH4">Inner Workings</h4>
       <para>
-        During edit mode, the control is displayed using a <see cref="System.Web.UI.WebControls.DropDownList"/>.
-      </para><para>
-        During read-only mode, the control's value is displayed using a <see cref="System.Web.UI.WebControls.Label"/>.
-      </para><para>
-        The control also offers an <see cref="Image"/> to be displayed in front of the value, as well as 
-        a <see cref="BocCommand"/> and a <see cref="DropDownMenu"/> for additional functionality.
-      </para><para>
-        Use the <see cref="DropDownList"/>, <see cref="Label"/>, <see cref="Icon"/> and <see cref="OptionsMenu"/> 
-        properties to access these controls directly.
-      </para><para>
         The control uses the view state to cache the value between postbacks. If the control is data bound,
         a call to <see cref="SaveValue"/> with <b>interim</b> set <see langword="true"/> is required to save the
         value back into the data source.

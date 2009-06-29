@@ -16,7 +16,10 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
@@ -25,6 +28,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 [TestFixture]
 public class BocReferenceValueTest: BocTest
 {
+  private class GetObjectService : IGetObjectService
+  {
+    private readonly IBusinessObjectWithIdentity _objectToReturn;
+
+    public GetObjectService (IBusinessObjectWithIdentity objectToReturn)
+    {
+      _objectToReturn = objectToReturn;
+    }
+
+    public IBusinessObjectWithIdentity GetObject (BindableObjectClassWithIdentity classWithIdentity, string uniqueIdentifier)
+    {
+      return _objectToReturn;
+    }
+  }
+
   private BocReferenceValueMock _bocReferenceValue;
   private TypeWithReference _businessObject;
   private BusinessObjectReferenceDataSource _dataSource;
@@ -53,6 +71,11 @@ public class BocReferenceValueTest: BocTest
     
     _dataSource = new BusinessObjectReferenceDataSource();
     _dataSource.BusinessObject = (IBusinessObject) _businessObject;
+
+    ((IBusinessObject) _businessObject).BusinessObjectClass.BusinessObjectProvider.AddService<IGetObjectService>
+        (new GetObjectService ((IBusinessObjectWithIdentity) TypeWithReference.Create()));
+    ((IBusinessObject) _businessObject).BusinessObjectClass.BusinessObjectProvider.AddService<IBusinessObjectWebUIService>
+        (new ReflectionBusinessObjectWebUIService ());
   }
 
 
@@ -149,6 +172,9 @@ public class BocReferenceValueTest: BocTest
   [Test]
   public void IsEventCommandEnabledWithoutWcagOverride()
   {
+    _businessObject.ReferenceValue = TypeWithReference.Create ();
+    _bocReferenceValue.DataSource = _dataSource;
+    _bocReferenceValue.Property = _propertyReferenceValue;
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
     _bocReferenceValue.Command.Type = CommandType.Event;
     Assert.IsTrue (_bocReferenceValue.IsCommandEnabled (false));
@@ -179,6 +205,9 @@ public class BocReferenceValueTest: BocTest
   [Test]
   public void IsWxeFunctionCommandEnabledWithoutWcagOverride()
   {
+    _businessObject.ReferenceValue = TypeWithReference.Create ();
+    _bocReferenceValue.DataSource = _dataSource;
+    _bocReferenceValue.Property = _propertyReferenceValue;
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
     _bocReferenceValue.Command.Type = CommandType.WxeFunction;
     Assert.IsTrue (_bocReferenceValue.IsCommandEnabled (false));
@@ -224,7 +253,7 @@ public class BocReferenceValueTest: BocTest
     string[] actual = _bocReferenceValue.GetTrackedClientIDs();
     Assert.IsNotNull (actual);
     Assert.AreEqual (1, actual.Length);
-    Assert.AreEqual (_bocReferenceValue.DropDownList.ClientID, actual[0]);
+    Assert.AreEqual (_bocReferenceValue.DropDownListClientID, actual[0]);
   }
 
 
