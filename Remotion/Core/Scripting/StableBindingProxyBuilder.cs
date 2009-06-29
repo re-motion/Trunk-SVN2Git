@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -65,8 +66,15 @@ namespace Remotion.Scripting
     ///// </summary>
     //public Type BuildProxyType ()
     //{
+    //  var firstKnownBaseType = GetFirstKnownBaseType();
+
     //  return _forwardingProxyBuilder.BuildProxyType ();
     //}
+
+    private Type GetFirstKnownBaseType ()
+    {
+      return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeArbiter.IsTypeValid);
+    }
 
     private Type[] FindKnownInterfaces ()
     {

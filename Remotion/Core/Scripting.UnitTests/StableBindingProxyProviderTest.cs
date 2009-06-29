@@ -24,6 +24,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -95,7 +96,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void BuildClassMethodToInterfaceMethodsMap_TwoInterfaceMethodsImplementedAsOnePublicMethod ()
     {
-     var typeIProcessText1 = typeof (IProcessText1);
+      var typeIProcessText1 = typeof (IProcessText1);
       var typeIProcessText2 = typeof (IProcessText2);
       var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIProcessText2, typeof (Proxied), typeIProcessText1 });
       // Note: ProxiedChildChild implements IProcessText1 and IProcessText2 through one public member
@@ -132,6 +133,24 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (stableBindingProxyBuilder.GetInterfaceMethodsToClassMethod (stringTimesIAmbigous1ClassMethod).ToList (), Is.Empty);
       Assert.That (stableBindingProxyBuilder.GetInterfaceMethodsToClassMethod (stringTimesIAmbigous2ClassMethod).ToList (), Is.EquivalentTo (ListMother.New (stringTimesIAmbigous2InterfaceMethod)));
     }
+
+
+    [Test]
+    public void GetFirstKnownBaseType_ProxiedKnown ()
+    {
+      AssertGetFirstKnownBaseType( typeof (ProxiedChildChild), new TypeLevelTypeArbiter (new[] { typeof (Proxied) }), typeof (Proxied));
+      AssertGetFirstKnownBaseType (typeof (ProxiedChildChild), 
+        new TypeLevelTypeArbiter (new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild) }), typeof (ProxiedChildChild));
+      AssertGetFirstKnownBaseType (typeof (ProxiedChildChild), new TypeLevelTypeArbiter (new[] { typeof (string), typeof (Object), typeof (Type) }), typeof (Object));
+    }
+
+    private void AssertGetFirstKnownBaseType (Type proxiedType, TypeLevelTypeArbiter typeArbiter, Type expectedType)
+    {
+      var moduleScopeStub = MockRepository.GenerateStub<ModuleScope>();
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, moduleScopeStub);
+      Assert.That (stableBindingProxyBuilder.GetFirstKnownBaseType (), Is.EqualTo (expectedType));
+    }
+
 
 
 
