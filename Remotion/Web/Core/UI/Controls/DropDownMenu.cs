@@ -250,7 +250,7 @@ namespace Remotion.Web.UI.Controls
       get { return ControlHelper.IsDesignMode(this, Context); }
     }
 
-    public bool CanRender
+    public bool IsBrowserCapableOfScripting
     {
       get { return IsDesignMode || _canRender; }
     }
@@ -285,63 +285,6 @@ namespace Remotion.Web.UI.Controls
     {
       add { Events.AddHandler (s_wxeFunctionCommandClickEvent, value); }
       remove { Events.RemoveHandler (s_wxeFunctionCommandClickEvent, value); }
-    }
-
-    protected virtual string CssClassHead
-    {
-      get { return "dropDownMenuHead"; }
-    }
-
-    protected virtual string CssClassHeadFocus
-    {
-      get { return "dropDownMenuHeadFocus"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="DropDownMenu"/>'s title. </summary>
-    /// <remarks> Class: <c></c> </remarks>
-    protected virtual string CssClassHeadTitle
-    {
-      get { return "dropDownMenuHeadTitle"; }
-    }
-
-    protected virtual string CssClassHeadTitleFocus
-    {
-      get { return "dropDownMenuHeadTitleFocus"; }
-    }
-
-    protected virtual string CssClassHeadButton
-    {
-      get { return "dropDownMenuHeadButton"; }
-    }
-
-    protected virtual string CssClassMenuButtonFocus
-    {
-      get { return "dropDownMenuButtonFocus"; }
-    }
-
-    protected virtual string CssClassPopUp
-    {
-      get { return "dropDownMenuPopUp"; }
-    }
-
-    protected virtual string CssClassItem
-    {
-      get { return "dropDownMenuItem"; }
-    }
-
-    protected virtual string CssClassItemFocus
-    {
-      get { return "dropDownMenuItemFocus"; }
-    }
-
-    protected virtual string CssClassItemTextPane
-    {
-      get { return "dropDownMenuItemTextPane"; }
-    }
-
-    protected virtual string CssClassItemIconPane
-    {
-      get { return "dropDownMenuItemIconPane"; }
     }
   }
 }

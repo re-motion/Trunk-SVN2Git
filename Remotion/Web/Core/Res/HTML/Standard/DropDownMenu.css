@@ -2,21 +2,22 @@
 		color: blue;
 		position: relative;
 		font-family: sans-serif;
-       /* font-size: 0.8em;*/
 		display: inline-block;
 		width: 100%;
 	}
 	div.DropDownMenuSelect {
-		border: solid 1px blue;
-		text-align: right;
+		border: solid 1px #005588;
+		text-align: left;
 		vertical-align: top;
 		white-space: nowrap;
 		cursor: pointer;
+		line-height: 1.25em;
 	}
 
 	div.DropDownMenuSelect > span {
 		/*float: left;*/
 		left: 0;
+		margin-right: 20px;
 	}
 
    a.DropDownMenuSelectButton {
@@ -24,20 +25,24 @@
 		display: inline-block;
    }
 
-   div.DropDownMenuSelect img {
+   div.DropDownMenuSelect img 
+   {
+		position: absolute;
+		right: 1px;
 		border: 0;
+		background-color: #DFEEF5;
    }
 
 	ul.DropDownMenuOptions {
-        /*font-size: 0.7em;*/
-		border: solid 1px blue;
+    font-size: 80%;
+		border: solid 1px #005588;
 		position: absolute;
 		right: 0;
 		margin: 0;
 		margin-top: -1px;
 		padding: 0;
 		list-style: none;
-		background: #FFFFFF url(images/icons/bg_left.jpg) repeat-y top left;
+		background: #FFFFFF url(../../Image/DropDownMenuItemIconPane.gif) repeat-y top left;
 	}
 
 	ul.DropDownMenuOptions li a {
@@ -45,15 +50,15 @@
 		display: block;
 		color: blue;
 		border: solid 1px transparent;
-		margin: 2px;
-		padding-right: 2px;
+		margin: 1px;
+		padding: 0 2px 2px 2px;
 		line-height:1em;
 		white-space: nowrap;
 	}
 	 
 	ul.DropDownMenuOptions li a:hover {
 		background-color: #FFDE98;
-		border: solid 1px blue;
+		border: solid 1px #005588;
 	}
 	 
 	ul.DropDownMenuOptions li a img {
@@ -88,7 +93,7 @@
 		line-height: 0.1em;
 		margin-left: 35px; 
 		border: 0;
-		background-image: url('images/separator1px.gif');
+		background-image: url('../../Image/DropDownMenuSeparator.gif');
 		background-repeat: repeat-x;
 		background-position: center;
    }

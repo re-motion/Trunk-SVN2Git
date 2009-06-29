@@ -778,6 +778,7 @@
     <Content Include="Res\Image\DatePicker.gif" />
     <Content Include="Res\Image\DropDownMenuArrow.gif" />
     <Content Include="Res\Image\DropDownMenuItemIconPane.gif" />
+    <Content Include="Res\Image\DropDownMenuSeparator.gif" />
     <Content Include="Res\Image\Help.gif" />
     <Content Include="Res\Image\RequiredField.gif" />
     <Content Include="Res\Image\Spacer.gif" />
