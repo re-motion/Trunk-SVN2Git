@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
@@ -40,8 +41,11 @@ namespace Remotion.Scripting
 
     public StableBindingProxyBuilder (Type proxiedType, ITypeArbiter typeArbiter)
     {
+      ArgumentUtility.CheckNotNull ("proxiedType", proxiedType);
+      ArgumentUtility.CheckNotNull ("typeArbiter", typeArbiter);
       _typeArbiter = typeArbiter;
       _proxiedType = proxiedType;
+      BuildClassMethodToInterfaceMethodsMap();
     }
 
     public Type ProxiedType
@@ -49,14 +53,7 @@ namespace Remotion.Scripting
       get { return _proxiedType; }
     }
 
-    private void AddToMethodToInterfaceMethodsMap (MethodInfo classMethod, MethodInfo interfaceMethod)
-    {
-      if (!_classMethodToInterfaceMethodsMap.ContainsKey (classMethod))
-      {
-        _classMethodToInterfaceMethodsMap[classMethod] = new HashSet<MemberInfo> ();
-      }
-      _classMethodToInterfaceMethodsMap[classMethod].Add (interfaceMethod);
-    }
+
 
     private Dictionary<MemberInfo, HashSet<MemberInfo>> BuildClassMethodToInterfaceMethodsMap ()
     {
@@ -68,10 +65,19 @@ namespace Remotion.Scripting
         var interfaceMethods = interfaceMapping.InterfaceMethods;
         for (int i = 0; i < classMethods.Length; i++) 
         {
-          AddToMethodToInterfaceMethodsMap (classMethods[i], interfaceMethods[i]);
+          AddTo_MethodToInterfaceMethodsMap (classMethods[i], interfaceMethods[i]);
         }
       }
       return _classMethodToInterfaceMethodsMap;
+    }
+
+    private void AddTo_MethodToInterfaceMethodsMap (MethodInfo classMethod, MethodInfo interfaceMethod)
+    {
+      if (!_classMethodToInterfaceMethodsMap.ContainsKey (classMethod))
+      {
+        _classMethodToInterfaceMethodsMap[classMethod] = new HashSet<MemberInfo> ();
+      }
+      _classMethodToInterfaceMethodsMap[classMethod].Add (interfaceMethod);
     }
   }
 }
