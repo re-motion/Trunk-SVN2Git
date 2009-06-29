@@ -66,10 +66,30 @@ namespace Remotion.Scripting
     ///// </summary>
     //public Type BuildProxyType ()
     //{
-    //  var firstKnownBaseType = GetFirstKnownBaseType();
+    //  var methodsKnownInBaseTypeSet = CreateMethodsKnownInBaseTypeSet();
+    //  var methodsKnownInProxiedType = _proxiedType.GetMethods();
+    //  foreach (var proxiedTypeMethod in methodsKnownInProxiedType)
+    //  {
+    //    if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethod.GetBaseDefinition ()))
+    //    {
+    //      _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
+    //    }
+    //    else
+    //    {
+    //      // TODO: Add forwarding interface implementation
+    //    }
+    //  }
 
     //  return _forwardingProxyBuilder.BuildProxyType ();
     //}
+
+    private HashSet<MethodInfo> CreateMethodsKnownInBaseTypeSet ()
+    {
+      HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> ();
+      var firstKnownBaseType = GetFirstKnownBaseType ();
+      firstKnownBaseType.GetMethods().Select (m => methodsKnownInBaseTypeSet.Add ((m.GetBaseDefinition())));
+      return methodsKnownInBaseTypeSet;
+    }
 
     private Type GetFirstKnownBaseType ()
     {
