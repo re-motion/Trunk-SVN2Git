@@ -517,7 +517,7 @@
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject_ImplementingISerializable.cs" />
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
     <Compile Include="Linq\Clauses\AdditionalFromClauseTest.cs" />
-    <Compile Include="Linq\Clauses\ClonedClauseMappingTest.cs" />
+    <Compile Include="Linq\Clauses\ClauseMappingTest.cs" />
     <Compile Include="Linq\Clauses\ExecutionStrategies\CollectionExecutionStrategyTest.cs" />
     <Compile Include="Linq\Clauses\ExecutionStrategies\ScalarExecutionStrategyTest.cs" />
     <Compile Include="Linq\Clauses\ExecutionStrategies\SingleExecutionStrategyTest.cs" />
