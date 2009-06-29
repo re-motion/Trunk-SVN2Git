@@ -113,6 +113,24 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
+    [Test]
+    public void GetInterfaceMethodsToClassMethod ()
+    {
+      var typeIAmbigous2 = typeof (IAmbigous2);
+      var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIAmbigous2 });
+      var proxiedType = typeof (ProxiedChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter);
+
+      var stringTimesIAmbigous1ClassMethod = GetAnyInstanceMethod (proxiedType, "Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.StringTimes");
+      var stringTimesIAmbigous2ClassMethod = GetAnyInstanceMethod (proxiedType, "Remotion.Scripting.UnitTests.TestDomain.IAmbigous2.StringTimes");
+      var stringTimesIAmbigous2InterfaceMethod = GetAnyInstanceMethod (typeIAmbigous2, "StringTimes");
+     
+      Assert.That (stableBindingProxyBuilder.GetInterfaceMethodsToClassMethod (stringTimesIAmbigous1ClassMethod).ToList (), Is.Empty);
+      Assert.That (stableBindingProxyBuilder.GetInterfaceMethodsToClassMethod (stringTimesIAmbigous2ClassMethod).ToList (), Is.EquivalentTo (ListMother.New (stringTimesIAmbigous2InterfaceMethod)));
+    }
+
+
+
     private MethodInfo GetAnyInstanceMethod (Type type, string name)
     {
       return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
