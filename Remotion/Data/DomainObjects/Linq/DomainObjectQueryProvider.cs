@@ -40,10 +40,8 @@ namespace Remotion.Data.DomainObjects.Linq
     protected override IQueryable<T> CreateQueryable<T> (Expression expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      Type queryableType = typeof (DomainObjectQueryable<>).MakeGenericType (typeof (T));
-      return (IQueryable<T>) Activator.CreateInstance (queryableType, this, expression);
+      return new DomainObjectQueryable<T> (this, expression);
     }
-
-    
+   
   }
 }
