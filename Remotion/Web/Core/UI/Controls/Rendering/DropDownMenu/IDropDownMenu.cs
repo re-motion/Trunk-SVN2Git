@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     new IPage Page { get; }
     bool IsReadOnly { get; }
     bool IsDesignMode { get; }
-    RenderMethod RenderHeadTitleMethod { get; }
+    Action RenderHeadTitleMethod { get; }
     IconInfo TitleIcon { get; }
     string TitleText { get; }
     string GetOpenDropDownMenuEventReference (string eventReference);

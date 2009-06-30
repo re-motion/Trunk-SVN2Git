@@ -264,7 +264,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
       Control.OptionsMenu.SetRenderHeadTitleMethodDelegate (null);
     }
 
-    public void RenderOptionsMenuTitle (HtmlTextWriter writer, Control control)
+    public void RenderOptionsMenuTitle ()
     {
       DropDownList dropDownList = GetDropDownList();
       Image icon = GetIcon();
@@ -290,9 +290,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
         RenderReadOnlyValue (icon, label, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
         if (!isControlWidthEmpty)
         {
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%");
-          writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
-          writer.RenderEndTag ();
+          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "1%");
+          Writer.RenderBeginTag (HtmlTextWriterTag.Td); //  Begin td
+          Writer.RenderEndTag ();
         }
       }
       else

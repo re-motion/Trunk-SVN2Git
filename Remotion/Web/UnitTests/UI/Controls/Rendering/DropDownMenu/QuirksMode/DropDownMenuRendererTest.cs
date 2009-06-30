@@ -141,7 +141,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     }
 
     [Test]
-    [ExpectedException(typeof(InvalidCastException))] // fails because RenderMethod only accepts System.Web.UI.Control as argument
     public void RenderPopulatedMenuWithTitleAndEmptyRenderMethod ()
     {
       AddTitle (false);
@@ -149,7 +148,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
 
       PopulateMenu ();
       _control.Stub (stub => stub.Enabled).Return (true);
-      _control.Stub (stub => stub.RenderHeadTitleMethod).Return ((c, w) => { });
+      _control.Stub (stub => stub.RenderHeadTitleMethod).Return (() => { });
 
       SetUpScriptExpectations ();
       XmlNode outerDiv = GetAssertedOuterDiv ();

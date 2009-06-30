@@ -44,7 +44,7 @@ namespace Remotion.Web.UI.Controls
     private bool _canRender;
 
     private readonly WebMenuItemCollection _menuItems;
-    private RenderMethod _renderHeadTitleMethod;
+    private Action _renderHeadTitleMethod;
 
     public DropDownMenu (IControl ownerControl, Type[] supportedMenuItemTypes)
     {
@@ -198,7 +198,7 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Only used by control developers. </summary>
-    public void SetRenderHeadTitleMethodDelegate (RenderMethod renderHeadTitleMethod)
+    public void SetRenderHeadTitleMethodDelegate (Action renderHeadTitleMethod)
     {
       _renderHeadTitleMethod = renderHeadTitleMethod;
     }
@@ -212,7 +212,7 @@ namespace Remotion.Web.UI.Controls
       set { _titleText = value; }
     }
 
-    RenderMethod IDropDownMenu.RenderHeadTitleMethod
+    Action IDropDownMenu.RenderHeadTitleMethod
     {
       get { return _renderHeadTitleMethod; }
     }

@@ -108,7 +108,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
         }
       }
       else
-        Control.RenderHeadTitleMethod (writer, (Control)Control);
+        Control.RenderHeadTitleMethod();
 
       if (hasHeadTitleContents)
       {
