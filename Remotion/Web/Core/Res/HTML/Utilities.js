@@ -152,7 +152,7 @@ StyleUtility.CreateBorderSpans = function(element, standardMode) {
     var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottomLeft');
     var bottomRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottomRight');
 
-    StyleUtility.CalculateBorderSpans(element, topRight, bottomLeft, bottomRight, standardMode);
+    StyleUtility.CalculateBorderSpans(elementBody, topRight, bottomLeft, bottomRight, standardMode);
 
     var elementID = element.id;
     var resizeHandler = function() { StyleUtility.OnResize(elementID); }
@@ -175,11 +175,18 @@ StyleUtility.CreateBorderSpans = function(element, standardMode) {
 
 StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bottomRight, standardMode) {
 
-    $(topRight).css('left', $(element).position().left + $(element).width() - $(topRight).offset().left);
-
-    $(bottomLeft).css('top', $(element).position().top + $(element).outerHeight() - $(bottomLeft).offset().top);
-    $(bottomRight).css('top', $(element).position().top + $(element).outerHeight() - $(bottomRight).offset().top);
-    $(bottomRight).css('right', $(element).position().left + $(element).outerWidth() - $(bottomRight).offset().left);
+    if (standardMode) {
+        $(topRight).css('left', $(element).position().left + $(element).width() - $(topRight).offset().left);
+        $(bottomLeft).css('top', $(element).position().top + $(element).height() - $(bottomLeft).offset().top);
+        $(bottomRight).css('top', $(element).position().top + $(element).height() - $(bottomRight).offset().top);
+        $(bottomRight).css('right', $(element).position().left + $(element).width() - $(bottomRight).offset().left);
+    }
+    else {
+        topRight.style.left = topRight.offsetParent.clientLeft + topRight.offsetParent.clientWidth - topRight.offsetWidth + 'px';
+        bottomLeft.style.top = bottomLeft.offsetParent.clientTop + bottomLeft.offsetParent.clientHeight - bottomLeft.offsetHeight + 'px';
+        bottomRight.style.top = bottomRight.offsetParent.clientTop + bottomRight.offsetParent.clientHeight - bottomRight.offsetHeight + 'px';
+        bottomRight.style.left = bottomRight.offsetParent.clientLeft + bottomRight.offsetParent.clientWidth - bottomRight.offsetWidth + 'px';
+    }
 
     var scrollDiv = $(element).children(':first').children(':first');
     if ((scrollDiv.length == 1) && !TypeUtility.IsUndefined(scrollDiv[0].nodeName) && (scrollDiv[0].nodeName.toLowerCase() == 'div')) {
