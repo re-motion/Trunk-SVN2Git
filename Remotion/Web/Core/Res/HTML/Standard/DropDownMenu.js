@@ -103,6 +103,28 @@ function DropDownMenu_OpenPopUp(id, menuID, context, getSelectionCount, evt) {
         if (item != null)
             ul.append(item);
     }
+
+    // move dropdown if there is not enough space to fit it on the page
+    var titleDiv = $(context).children(':first');
+    var space_top = Math.round(titleDiv.offset().top - $(document).scrollTop());
+    var space_bottom = Math.round($(window).height() - titleDiv.offset().top - titleDiv.height() + $(document).scrollTop());
+    var space_left = titleDiv.offset().left;
+    var space_right = $(window).width() - titleDiv.offset().left - titleDiv.width();
+
+    if ( (ul.width() > space_left) && (space_left < space_right) ) {
+
+        if (ul.offset().left < 0) {
+            ul.css('left', '0');
+        } else {
+          ul.css('right', '0');
+        }
+    }
+    if ((ul.height() > space_bottom) && (space_top > space_bottom)) {
+        ul.css({ top: -ul.height() });
+    }
+    else {
+        ul.css('top', 'auto');
+    }
 }
 
 function DropDownMenu_ClosePopUp() {
