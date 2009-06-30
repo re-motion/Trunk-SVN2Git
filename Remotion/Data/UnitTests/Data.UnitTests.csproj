@@ -690,6 +690,7 @@
     <Compile Include="Linq\TestQueryGenerators\SelectTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\SubQueryTestQueryGenerator.cs" />
     <Compile Include="Linq\TestQueryGenerators\WhereTestQueryGenerator.cs" />
+    <Compile Include="Linq\TestQueryModelVisitor.cs" />
     <Compile Include="Linq\TestQueryProvider.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\ExpressionInstanceCreator.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\ExpressionTreeVisitorTest.cs" />
