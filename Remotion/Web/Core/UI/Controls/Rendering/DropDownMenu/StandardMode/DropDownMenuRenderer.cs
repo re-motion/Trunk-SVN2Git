@@ -53,7 +53,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     private void RenderTitleDiv ()
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHead);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, Control.GetOpenDropDownMenuEventReference(null));
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       //if (Control.RenderHeadTitleMethod != null)

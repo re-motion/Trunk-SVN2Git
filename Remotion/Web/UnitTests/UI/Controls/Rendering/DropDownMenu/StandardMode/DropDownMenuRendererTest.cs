@@ -48,6 +48,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       Initialize ();
       _control = MockRepository.GenerateStub<IDropDownMenu> ();
       _control.ID = "DropDownMenu1";
+      _control.Stub (stub => stub.Enabled).Return (true);
       _control.Stub (stub => stub.UniqueID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.ClientID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.MenuItems).Return (new WebMenuItemCollection (_control));
@@ -116,7 +117,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
       var titleDiv = containerDiv.GetAssertedChildElement ("div", 0);
       titleDiv.AssertAttributeValueEquals ("class", "DropDownMenuSelect");
-      titleDiv.AssertAttributeValueEquals ("onclick", _control.GetOpenDropDownMenuEventReference("eventReference"));
       titleDiv.AssertChildElementCount (2);
 
       AssertTitleSpan(titleDiv, withTitle, withIcon);
@@ -126,6 +126,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
     private void AssertDropDownButton (XmlNode titleDiv)
     {
       var dropDownButton = titleDiv.GetAssertedChildElement ("img", 1);
+      dropDownButton.AssertAttributeValueEquals ("src", "/res/Remotion.Web/Image/DropDownMenuArrow.gif");
+      dropDownButton.AssertAttributeValueEquals ("alt", "");
+      dropDownButton.AssertStyleAttribute ("vertical-align", "middle");
+      dropDownButton.AssertStyleAttribute ("border-style", "none");
     }
 
     private void AssertTitleSpan (XmlNode titleDiv, bool withTitle, bool withIcon)
@@ -154,6 +158,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       var containerDiv = document.GetAssertedChildElement ("div", 0);
       containerDiv.AssertAttributeValueEquals ("id", _control.ClientID);
       containerDiv.AssertAttributeValueEquals ("class", "DropDownMenuContainer");
+      containerDiv.AssertAttributeValueEquals ("onclick", _control.GetOpenDropDownMenuEventReference ("eventReference"));
       containerDiv.AssertChildElementCount (2);
       return containerDiv;
     }
