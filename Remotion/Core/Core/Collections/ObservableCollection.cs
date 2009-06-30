@@ -49,6 +49,35 @@ namespace Remotion.Collections
     }
 
     /// <summary>
+    /// Represents an item enumerated by <see cref="ObservableCollection{T}.AsChangeResistantEnumerableWithIndex"/>. This provides access
+    /// to the <see cref="Index"/> as well as the <see cref="Value"/> of the enumerated item.
+    /// </summary>
+    public struct IndexValuePair
+    {
+      private readonly ChangeResistantObservableCollectionEnumerator<T> _enumerator;
+
+      public IndexValuePair (ChangeResistantObservableCollectionEnumerator<T> enumerator)
+      {
+        ArgumentUtility.CheckNotNull ("enumerator", enumerator);
+        _enumerator = enumerator;
+      }
+
+      /// <summary>
+      /// Gets the index of the current enumerated item. Can only be called while enumerating, afterwards, it will throw an 
+      /// <see cref="ObjectDisposedException"/>. If an item is inserted into or removed from the collection before the current item, this
+      /// index will change.
+      /// </summary>
+      public int Index { get { return _enumerator.Index; } }
+
+      /// <summary>
+      /// Gets the value of the current enumerated item. Can only be called while enumerating, afterwards, it will throw an 
+      /// <see cref="ObjectDisposedException"/>.
+      /// </summary>
+      /// <value>The value.</value>
+      public T Value { get { return _enumerator.Current; } }
+    }
+
+    /// <summary>
     /// Occurs after the items of this <see cref="ObservableCollection{T}"/> have been cleared.
     /// </summary>
     public event EventHandler ItemsCleared;
@@ -102,12 +131,27 @@ namespace Remotion.Collections
     }
 
     /// <summary>
-    /// Returns an instance of <see cref="IEnumerable{T}"/> that represents this collection but can be enumerated even while the collection changes
-    /// (see <see cref="ChangeResistantObservableCollectionEnumerator{T}"/>).
+    /// Returns an instance of <see cref="IEnumerable{T}"/> that represents this collection and can be enumerated even while the collection changes;
+    /// the enumerator will adapt to the changes (see <see cref="ChangeResistantObservableCollectionEnumerator{T}"/>).
     /// </summary>
     public IEnumerable<T> AsChangeResistantEnumerable ()
     {
       return new ChangeResistantEnumerable (this);
+    }
+
+    /// <summary>
+    /// Returns an instance of <see cref="IEnumerable{T}"/> that represents this collection and can be enumerated even while the collection changes;
+    /// the enumerator will adapt to the changes (see <see cref="ChangeResistantObservableCollectionEnumerator{T}"/>). The enumerable will yield
+    /// instances of type <see cref="IndexValuePair"/>, which hold both the index and the value of the current item. If this collection changes
+    /// while enumerating, <see cref="IndexValuePair.Index"/> will reflect those changes.
+    /// </summary>
+    public IEnumerable<IndexValuePair> AsChangeResistantEnumerableWithIndex ()
+    {
+      using (var enumerator = (ChangeResistantObservableCollectionEnumerator<T>) AsChangeResistantEnumerable ().GetEnumerator ())
+      {
+        while (enumerator.MoveNext ())
+          yield return new IndexValuePair (enumerator);
+      }
     }
   }
 }
