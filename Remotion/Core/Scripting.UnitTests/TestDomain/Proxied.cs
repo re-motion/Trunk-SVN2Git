@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  public class Proxied : IProxiedGetName
+  public class Proxied : IProxiedGetName, ISumMe
   {
     private string _name;
 
@@ -72,5 +72,15 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
       return "[Proxied: " + Name + "]";
     }
+
+    public string SumMe (params int[] numbers)
+    {
+      return Sum (numbers);
+    }
+  }
+
+  public interface ISumMe
+  {
+    string SumMe (params int[] numbers);
   }
 }

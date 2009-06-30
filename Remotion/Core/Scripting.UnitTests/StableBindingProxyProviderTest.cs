@@ -24,6 +24,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Scripting.UnitTests
@@ -153,7 +154,20 @@ namespace Remotion.Scripting.UnitTests
 
 
 
+    [Test]
+    [Explicit]
+    public void BuildProxyType ()
+    {
+      var knownBaseType = typeof (Proxied);
+      var typeArbiter = new TypeLevelTypeArbiter (new[] { knownBaseType });
+      var proxiedType = typeof (ProxiedChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildProxyType"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType();
 
+      //Assert.That(GetAnyInstanceMethod (proxyType, "GetName"),Is.Not.Null);
+      To.ConsoleLine.e (knownBaseType.GetMethods ());
+      To.ConsoleLine.e (proxyType.GetMethods ());
+    }
 
 
     private ModuleScope CreateModuleScope(string namePostfix)
@@ -167,13 +181,11 @@ namespace Remotion.Scripting.UnitTests
 
     private void SaveAndVerifyModuleScopeAssembly (ModuleScope moduleScope)
     {
-      if (moduleScope != null)
-      {
-        if (moduleScope.StrongNamedModule != null)
-          SaveAndVerifyModuleScopeAssembly (moduleScope, true);
-        if (moduleScope.WeakNamedModule != null)
-          SaveAndVerifyModuleScopeAssembly (moduleScope, false);
-      }
+      ArgumentUtility.CheckNotNull ("moduleScope", moduleScope);
+      if (moduleScope.StrongNamedModule != null)
+        SaveAndVerifyModuleScopeAssembly (moduleScope, true);
+      if (moduleScope.WeakNamedModule != null)
+        SaveAndVerifyModuleScopeAssembly (moduleScope, false);
     }
 
     private void SaveAndVerifyModuleScopeAssembly (ModuleScope moduleScope, bool strongNamed)

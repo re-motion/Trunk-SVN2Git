@@ -51,7 +51,10 @@ namespace Remotion.Scripting
       _moduleScope = moduleScope;
       _proxiedType = proxiedType;
       _knownInterfaces = FindKnownInterfaces();
-      _forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, _knownInterfaces);
+      
+      //_forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, _knownInterfaces);
+      _forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, new Type[0]);
+
       BuildClassMethodToInterfaceMethodsMap();
     }
 
@@ -61,33 +64,38 @@ namespace Remotion.Scripting
       get { return _proxiedType; }
     }
 
-    ///// <summary>
-    ///// Builds the proxy <see cref="Type"/>.
-    ///// </summary>
-    //public Type BuildProxyType ()
-    //{
-    //  var methodsKnownInBaseTypeSet = CreateMethodsKnownInBaseTypeSet();
-    //  var methodsKnownInProxiedType = _proxiedType.GetMethods();
-    //  foreach (var proxiedTypeMethod in methodsKnownInProxiedType)
-    //  {
-    //    if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethod.GetBaseDefinition ()))
-    //    {
-    //      _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
-    //    }
-    //    else
-    //    {
-    //      // TODO: Add forwarding interface implementation
-    //    }
-    //  }
+    /// <summary>
+    /// Builds the proxy <see cref="Type"/>.
+    /// </summary>
+    public Type BuildProxyType ()
+    {
+      var methodsKnownInBaseTypeSet = CreateMethodsKnownInBaseTypeSet ();
+      var methodsKnownInProxiedType = _proxiedType.GetMethods ();
+      foreach (var proxiedTypeMethod in methodsKnownInProxiedType)
+      {
+        var proxiedTypeMethodBase = proxiedTypeMethod.GetBaseDefinition ();
+        if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase))
+        {
+          _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
+        }
+        else
+        {
+          // TODO: Add forwarding interface implementations, for methods whose target method info has not already been implemented
+          // TODO: Activate passing of known interfaces to ForwardingProxyBuilder during creation in ctor above
+        }
+      }
 
-    //  return _forwardingProxyBuilder.BuildProxyType ();
-    //}
+      return _forwardingProxyBuilder.BuildProxyType ();
+    }
 
     private HashSet<MethodInfo> CreateMethodsKnownInBaseTypeSet ()
     {
       HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> ();
       var firstKnownBaseType = GetFirstKnownBaseType ();
-      firstKnownBaseType.GetMethods().Select (m => methodsKnownInBaseTypeSet.Add ((m.GetBaseDefinition())));
+      foreach (var method in firstKnownBaseType.GetMethods ())
+      {
+        methodsKnownInBaseTypeSet.Add (method.GetBaseDefinition ());
+      }
       return methodsKnownInBaseTypeSet;
     }
 
