@@ -220,13 +220,20 @@ namespace Remotion.Mixins
     internal TThis _this;
 
     /// <summary>
-    /// Gets a reference to the mixin's target object.
+    /// Gets a reference to the concrete mixed object.
     /// </summary>
     /// <value>The target object reference.</value>
     /// <exception cref="InvalidOperationException">The mixin has not been initialized yet, probably because the property is accessed from the mixin's
     /// constructor.</exception>
-    /// <remarks>This property must not be accessed from the mixin's constructor; if you need to initialize the mixin by accessing the <see cref="This"/>
-    /// property, override the <see cref="Mixin{TThis}.OnInitialized"/> method.</remarks>
+    /// <remarks>
+    /// This property must not be accessed from the mixin's constructor; if you need to initialize the mixin by accessing the <see cref="This"/>
+    /// property, override the <see cref="Mixin{TThis}.OnInitialized"/> method.
+    /// <note type="warning">
+    /// Be careful when calling members that this mixin overrides via the <see cref="This"/> property, this can easily throw a
+    /// <see cref="StackOverflowException"/> because the <see cref="This"/> property includes all mixins defined on the target object. Use 
+    /// <see cref="Mixin{TThis,TBase}.Base"/> instead to call the base implementations of overridden members.
+    /// </note>
+    /// </remarks>
     protected TThis This
     {
       [DebuggerStepThrough]

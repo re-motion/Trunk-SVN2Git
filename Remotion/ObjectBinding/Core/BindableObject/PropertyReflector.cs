@@ -105,9 +105,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      if (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (type))
-        return TypeFactory.GetConcreteType (type);
-      return type;
+      return TypeFactory.GetConcreteType (type);
     }
 
     protected virtual Type GetUnderlyingType ()
