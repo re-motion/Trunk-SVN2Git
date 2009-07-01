@@ -137,7 +137,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void GetFirstKnownBaseType_ProxiedKnown ()
+    public void GetFirstKnownBaseType ()
     {
       AssertGetFirstKnownBaseType( typeof (ProxiedChildChild), new TypeLevelTypeArbiter (new[] { typeof (Proxied) }), typeof (Proxied));
       AssertGetFirstKnownBaseType (typeof (ProxiedChildChild), 
@@ -152,6 +152,29 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (stableBindingProxyBuilder.GetFirstKnownBaseType (), Is.EqualTo (expectedType));
     }
 
+
+    [Test]
+    public void IsMethodKnownInClass_MethodNotHiddenThroughNew ()
+    {
+      var moduleScopeStub = MockRepository.GenerateStub<ModuleScope> ();
+      var baseType = typeof (Proxied);
+      var typeArbiter = new TypeLevelTypeArbiter (new[] { baseType });
+      var proxiedType = typeof (ProxiedChildChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, moduleScopeStub);
+
+      var methodFromBaseType = GetAnyInstanceMethod (baseType, "Sum");
+      var method = GetAnyInstanceMethod (proxiedType, "Sum");
+
+      Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
+      Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
+
+      // "DeclaringType.IsAssignableFrom"-workaround for mi.GetBaseDefinition() bug.
+      bool isKnownInBaseType = method.GetBaseDefinition().DeclaringType.IsAssignableFrom (baseType);
+      Assert.That (isKnownInBaseType, Is.True);
+    }
+
+      //  stableBindingProxyBuilder.IsMethodKnownInClass(method)
+      //Assert.That (isKnownInBaseType, Is.True);
 
 
     [Test]
