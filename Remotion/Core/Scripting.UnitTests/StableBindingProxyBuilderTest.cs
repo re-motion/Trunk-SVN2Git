@@ -166,15 +166,20 @@ namespace Remotion.Scripting.UnitTests
       var method = GetAnyInstanceMethod (proxiedType, "Sum");
 
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
+      // methodInfo.GetBaseDefinition() bug (results should be equal).
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
 
+      AssertIsMethodKnownInClass (baseType, method);
+
+      AssertIsMethodKnownInClass (baseType, method);
+    }
+
+    private void AssertIsMethodKnownInClass (Type baseType, MethodInfo method)
+    {
       // "DeclaringType.IsAssignableFrom"-workaround for mi.GetBaseDefinition() bug.
       bool isKnownInBaseType = method.GetBaseDefinition().DeclaringType.IsAssignableFrom (baseType);
       Assert.That (isKnownInBaseType, Is.True);
     }
-
-      //  stableBindingProxyBuilder.IsMethodKnownInClass(method)
-      //Assert.That (isKnownInBaseType, Is.True);
 
 
     [Test]

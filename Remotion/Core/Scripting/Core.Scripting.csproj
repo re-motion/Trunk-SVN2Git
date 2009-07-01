@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="ForwardingProxyBuilder.cs" />
     <Compile Include="MethodInfoEqualityComparer.cs" />
+    <Compile Include="MethodInfoEqualityComparer2.cs" />
     <Compile Include="Script.generated.cs">
       <SubType>Code</SubType>
     </Compile>
