@@ -36,6 +36,18 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (MethodInfoEqualityComparer.Get.Equals(methodFromBaseType,method), Is.True);
     }
 
+    // Comparing MethodInfo between method and method hiding method through "new" works.
+    [Test]
+    public void Equals_HiddenMethodFromBaseType ()
+    {
+      var methodFromBaseType = GetAnyInstanceMethod (typeof (Proxied), "PrependName", new[] { typeof(string)});
+      var method = GetAnyInstanceMethod (typeof (ProxiedChildChild), "PrependName", new[] { typeof(string)});
+      Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
+      Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
+      Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.True);
+    }
+
+
     [Test]
     public void Equals_InterfaceMethodFromBaseType ()
     {
@@ -117,6 +129,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
+    [Explicit]
     public void Equals_GenericClass_GenericMethodFromBaseType2 ()
     {
       var methodFromBaseType = GetAnyGenericInstanceMethod (typeof (ProxiedChildGeneric<int, string>), "ProxiedChildGenericToString", 2);

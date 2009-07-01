@@ -21,5 +21,10 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
       return s.ToLower().Replace("abc","xyz");
     }
+
+    public new string PrependName (string text)
+    {
+      return "ProxiedChildChild " + Name + " " + text;
+    }
   }
 }
