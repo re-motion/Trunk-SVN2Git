@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
@@ -39,24 +38,24 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     [Test]
     public void Initialize ()
     {
-      IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithAllDataTypes), "String");
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithAllDataTypes), "String");
 
-      PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
-      Assert.That (propertyReflector.PropertyInfo, Is.SameAs (IPropertyInformation));
+      Assert.That (propertyReflector.PropertyInfo, Is.SameAs (propertyInfo));
       Assert.That (propertyReflector.BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
     }
 
     [Test]
     public void Initialize_WithMixin ()
     {
-      IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithAllDataTypes), "String");
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithAllDataTypes), "String");
 
       using (MixinConfiguration.BuildNew ().ForClass (typeof (PropertyReflector)).AddMixin<MixinStub> ().EnterScope ())
       {
-        PropertyReflector propertyReflector = PropertyReflector.Create (IPropertyInformation, _businessObjectProvider);
+        PropertyReflector propertyReflector = PropertyReflector.Create (propertyInfo, _businessObjectProvider);
 
-        Assert.That (propertyReflector.PropertyInfo, Is.SameAs (IPropertyInformation));
+        Assert.That (propertyReflector.PropertyInfo, Is.SameAs (propertyInfo));
         Assert.That (propertyReflector.BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
         Assert.That (propertyReflector, Is.InstanceOfType (typeof (IMixinTarget)));
       }
@@ -223,8 +222,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
 
     private IBusinessObjectProperty GetMetadataFromPropertyReflector (string propertyName)
     {
-      IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithAllDataTypes), propertyName);
-      PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithAllDataTypes), propertyName);
+      PropertyReflector propertyReflector = PropertyReflector.Create(propertyInfo, _businessObjectProvider);
 
       return propertyReflector.GetMetadata ();
     }
