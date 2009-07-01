@@ -84,17 +84,17 @@ namespace Remotion.ObjectBinding.BindableObject
         return new Int32Property (parameters);
       else if (underlyingType == typeof (Int64))
         return new Int64Property (parameters);
-      else if (typeof (IBusinessObject).IsAssignableFrom (GetConcreteType (underlyingType)))
-        return new ReferenceProperty (parameters, GetConcreteType (underlyingType));
+      else if (typeof (IBusinessObject).IsAssignableFrom (parameters.ConcreteType))
+        return new ReferenceProperty (parameters);
       else if (underlyingType == typeof (Single))
         return new SingleProperty (parameters);
       else if (underlyingType == typeof (String))
         return new StringProperty (parameters, GetMaxLength());
       else
-        return GetMetdadata (parameters);
+        return GetMetadata (parameters);
     }
 
-    protected virtual PropertyBase GetMetdadata (PropertyBase.Parameters parameters)
+    protected virtual PropertyBase GetMetadata (PropertyBase.Parameters parameters)
     {
       ArgumentUtility.CheckNotNull ("parameters", parameters);
 
@@ -176,7 +176,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private PropertyBase.Parameters CreateParameters (Type underlyingType)
     {
-      return new PropertyBase.Parameters (_businessObjectProvider, _propertyInfo, underlyingType, GetListInfo(), GetIsRequired(), GetIsReadOnly());
+      return new PropertyBase.Parameters (_businessObjectProvider, _propertyInfo, underlyingType, GetConcreteType (underlyingType), GetListInfo (), GetIsRequired (), GetIsReadOnly ());
     }
 
     private Type GetItemTypeFromAttribute ()

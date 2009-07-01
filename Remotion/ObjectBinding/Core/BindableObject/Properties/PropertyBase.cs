@@ -27,6 +27,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       public readonly BindableObjectProvider BusinessObjectProvider;
       public readonly IPropertyInformation PropertyInfo;
       public readonly Type UnderlyingType;
+      public readonly Type ConcreteType;
       public readonly IListInfo ListInfo;
       public readonly bool IsRequired;
       public readonly bool IsReadOnly;
@@ -35,16 +36,20 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
           BindableObjectProvider businessObjectProvider,
           IPropertyInformation propertyInfo,
           Type underlyingType,
+          Type concreteType,
           IListInfo listInfo,
           bool isRequired,
           bool isReadOnly)
       {
         ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
         ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+        ArgumentUtility.CheckNotNull ("underlyingType", underlyingType);
+        ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("concreteType", concreteType, underlyingType);
 
         BusinessObjectProvider = businessObjectProvider;
         PropertyInfo = propertyInfo;
         UnderlyingType = underlyingType;
+        ConcreteType = concreteType;
         ListInfo = listInfo;
         IsRequired = isRequired;
         IsReadOnly = isReadOnly;

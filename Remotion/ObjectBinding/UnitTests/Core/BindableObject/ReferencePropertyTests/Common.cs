@@ -16,7 +16,6 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
@@ -31,9 +30,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _businessObjectProvider = new BindableObjectProvider ();
+      _businessObjectProvider = new BindableObjectProvider();
     }
 
     [Test]
@@ -55,28 +54,45 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage = 
+        "Argument concreteType is a Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, "
+        +"which cannot be assigned to type Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass."
+        + "\r\nParameter name: concreteType")]
     public void Initialize_WithMissmatchedConcreteType ()
     {
-      new ReferenceProperty (
-          GetPropertyParameters (GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), "Scalar"), _businessObjectProvider),
-          TypeFactory.GetConcreteType (typeof (ClassWithAllDataTypes)));
+      PropertyBase.Parameters parameters = new PropertyBase.Parameters (
+          _businessObjectProvider,
+          GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), "Scalar"),
+          typeof (SimpleBusinessObjectClass),
+          typeof (ClassWithAllDataTypes),
+          null,
+          false,
+          false);
+      new ReferenceProperty (parameters);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentTypeException))]
+    [ExpectedException (typeof (ArgumentTypeException), ExpectedMessage =
+        "Argument parameters.ConcreteType is a Remotion.ObjectBinding.UnitTests.Core.TestDomain.SimpleBusinessObjectClass, "
+        + "which cannot be assigned to type Remotion.ObjectBinding.IBusinessObject."
+        + "\r\nParameter name: parameters.ConcreteType")]
     public void Initialize_WithConcreteTypeNotImplementingIBusinessObject ()
     {
-      new ReferenceProperty (
-          GetPropertyParameters (GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), "Scalar"), _businessObjectProvider),
-          typeof (SimpleBusinessObjectClass));
+      PropertyBase.Parameters parameters = new PropertyBase.Parameters (
+          _businessObjectProvider,
+          GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), "Scalar"),
+          typeof (SimpleBusinessObjectClass),
+          typeof (SimpleBusinessObjectClass),
+          null,
+          false,
+          false);
+      new ReferenceProperty (parameters);
     }
 
     private ReferenceProperty CreateProperty (string propertyName)
     {
       return new ReferenceProperty (
-          GetPropertyParameters (GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), propertyName), _businessObjectProvider),
-          TypeFactory.GetConcreteType (typeof (SimpleBusinessObjectClass)));
+          GetPropertyParameters (GetPropertyInfo (typeof (ClassWithReferenceType<SimpleBusinessObjectClass>), propertyName), _businessObjectProvider));
     }
   }
 }

@@ -161,13 +161,17 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     private ReferenceProperty CreateProperty (string propertyName)
     {
       PropertyBase.Parameters propertyParameters = GetPropertyParameters (propertyName);
-      return new ReferenceProperty (propertyParameters, TypeFactory.GetConcreteType (propertyParameters.UnderlyingType));
+      return new ReferenceProperty (propertyParameters);
     }
 
     private ReferenceProperty CreatePropertyWithoutMixing (string propertyName)
     {
-      PropertyBase.Parameters propertyParameters = GetPropertyParameters (propertyName);
-      return new ReferenceProperty (propertyParameters, propertyParameters.UnderlyingType);
+      PropertyBase.Parameters propertyParameters;
+      using (MixinConfiguration.BuildNew().EnterScope())
+      {
+        propertyParameters = GetPropertyParameters (propertyName);
+      }
+      return new ReferenceProperty (propertyParameters);
     }
 
     private PropertyBase.Parameters GetPropertyParameters (string propertyName)

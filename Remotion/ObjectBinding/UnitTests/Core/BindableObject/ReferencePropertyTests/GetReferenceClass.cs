@@ -53,10 +53,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
               _bindableObjectProvider,
               GetPropertyInfo (typeof (ClassWithReferenceType<ClassWithIdentity>), "Scalar"),
               typeof (ClassWithIdentity),
+              TypeFactory.GetConcreteType (typeof (ClassWithIdentity)),
               null,
               false,
-              false),
-          TypeFactory.GetConcreteType (typeof (ClassWithIdentity)));
+              false));
 
       Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProvider.GetBindableObjectClass (typeof (ClassWithIdentity))));
       Assert.That (
@@ -76,10 +76,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
               _bindableObjectProvider,
               GetPropertyInfo (typeof (ClassWithReferenceToClassDerivedFromBindableObjectBase), "ScalarReference"),
               typeof (ClassDerivedFromBindableObjectBase),
+              typeof (ClassDerivedFromBindableObjectBase),
               null,
               false,
-              false),
-          typeof (ClassDerivedFromBindableObjectBase));
+              false));
 
       Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProvider.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectBase))));
       Assert.That (
@@ -140,8 +140,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     private ReferenceProperty CreateProperty (string propertyName, Type propertyType)
     {
       return new ReferenceProperty (
-        GetPropertyParameters (GetPropertyInfo (typeof (ClassWithReferenceType<>).MakeGenericType (propertyType), propertyName), _bindableObjectProvider),
-        propertyType);
+          GetPropertyParameters (
+              GetPropertyInfo (typeof (ClassWithReferenceType<>).MakeGenericType (propertyType), propertyName), _bindableObjectProvider));
     }
   }
 }

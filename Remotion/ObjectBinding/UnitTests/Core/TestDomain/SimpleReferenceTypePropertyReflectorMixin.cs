@@ -25,18 +25,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
   {
     public interface IPropertyReflector
     {
-      PropertyBase GetMetdadata (PropertyBase.Parameters parameters);
+      PropertyBase GetMetadata (PropertyBase.Parameters parameters);
     }
 
     [OverrideTarget]
-    public PropertyBase GetMetdadata (PropertyBase.Parameters parameters)
+    public PropertyBase GetMetadata (PropertyBase.Parameters parameters)
     {
       ArgumentUtility.CheckNotNull ("parameters", parameters);
 
       if (parameters.UnderlyingType == typeof (SimpleReferenceType))
         return new SimpleReferenceTypeProperty (parameters);
 
-      return Base.GetMetdadata (parameters);
+      return Base.GetMetadata (parameters);
     }
   }
 }

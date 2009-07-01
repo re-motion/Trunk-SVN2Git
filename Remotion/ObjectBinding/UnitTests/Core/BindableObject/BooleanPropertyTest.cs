@@ -67,6 +67,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
               _businessObjectProvider,
               GetPropertyInfo (typeof (ClassWithValueType<bool>), "Array"),
               typeof (bool),
+              typeof (bool),
               new ListInfo (typeof (bool[]), typeof (bool)),
               false,
               false));
@@ -81,6 +82,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
           new PropertyBase.Parameters (
               _businessObjectProvider,
               GetPropertyInfo (typeof (ClassWithValueType<bool>), "NullableArray"),
+              typeof (bool),
               typeof (bool),
               new ListInfo (typeof (bool?[]), typeof (bool?)),
               false,
@@ -121,7 +123,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void IBusinessObjectEnumerationProperty_GetAllValues ()
     {
       IBusinessObjectEnumerationProperty property = CreateProperty ("NullableScalar");
-      BooleanEnumerationValueInfo[] expected = new BooleanEnumerationValueInfo[]
+      BooleanEnumerationValueInfo[] expected = new []
           {
               new BooleanEnumerationValueInfo (true, (IBusinessObjectBooleanProperty) property),
               new BooleanEnumerationValueInfo (false, (IBusinessObjectBooleanProperty) property)
@@ -134,7 +136,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void IBusinessObjectEnumerationProperty_GetEnabledValues ()
     {
       IBusinessObjectEnumerationProperty property = CreateProperty ("NullableScalar");
-      BooleanEnumerationValueInfo[] expected = new BooleanEnumerationValueInfo[]
+      BooleanEnumerationValueInfo[] expected = new []
           {
               new BooleanEnumerationValueInfo (true, (IBusinessObjectBooleanProperty) property),
               new BooleanEnumerationValueInfo (false, (IBusinessObjectBooleanProperty) property)

@@ -31,13 +31,13 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly DoubleCheckedLockingContainer<IBusinessObjectClass> _referenceClass;
     private readonly Tuple<SearchServiceProvider, Type> _searchServiceDefinition;
 
-    public ReferenceProperty (Parameters parameters, Type concreteType)
+    public ReferenceProperty (Parameters parameters)
         : base (parameters)
     {
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("concreteType", concreteType, UnderlyingType);
-      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("concreteType", concreteType, typeof (IBusinessObject));
+      ArgumentUtility.CheckNotNull ("parameters", parameters);
+      ArgumentUtility.CheckTypeIsAssignableFrom ("parameters.ConcreteType", parameters.ConcreteType, typeof (IBusinessObject));
 
-      _concreteType = concreteType;
+      _concreteType = parameters.ConcreteType;
       _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
       _searchServiceDefinition = GetSearchServiceType();
     }

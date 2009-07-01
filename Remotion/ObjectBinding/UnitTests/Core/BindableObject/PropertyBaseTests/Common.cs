@@ -44,19 +44,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [Test]
     public void Initialize ()
     {
-      IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar");
       PropertyBase propertyBase =
           new StubPropertyBase (
               new PropertyBase.Parameters (
                   _bindableObjectProvider,
-                  IPropertyInformation,
-                  IPropertyInformation.PropertyType,
+                  propertyInfo,
+                  propertyInfo.PropertyType,
+                  propertyInfo.PropertyType,
                   null,
                   true,
                   true));
 
-      Assert.That (propertyBase.PropertyInfo, Is.SameAs (IPropertyInformation));
-      Assert.That (propertyBase.PropertyType, Is.SameAs (IPropertyInformation.PropertyType));
+      Assert.That (propertyBase.PropertyInfo, Is.SameAs (propertyInfo));
+      Assert.That (propertyBase.PropertyType, Is.SameAs (propertyInfo.PropertyType));
       Assert.That (propertyBase.IsRequired, Is.True);
       Assert.That (propertyBase.IsReadOnly (null), Is.True);
       Assert.That (propertyBase.BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
@@ -71,6 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
           new PropertyBase.Parameters (
               _bindableObjectProvider,
               GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Array"),
+              typeof (SimpleReferenceType),
               typeof (SimpleReferenceType),
               expected,
               false,
@@ -89,6 +91,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               _bindableObjectProvider,
               GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
               typeof (SimpleReferenceType),
+              typeof (SimpleReferenceType),
               null,
               false,
               false));
@@ -106,6 +109,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               _bindableObjectProvider,
               GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
               typeof (SimpleReferenceType),
+              typeof (SimpleReferenceType),
               null,
               false,
               false));
@@ -122,6 +126,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               _bindableObjectProvider,
               GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
               typeof (SimpleReferenceType),
+              typeof (SimpleReferenceType),
               null,
               false,
               false));
@@ -133,14 +138,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
     [Test]
     public void GetDisplayName_WithGlobalizationSerivce ()
     {
-      IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
       PropertyBase property = new StubPropertyBase (
           new PropertyBase.Parameters (
-              _bindableObjectProvider, IPropertyInformation, typeof (string), null, false, false));
+              _bindableObjectProvider, propertyInfo, typeof (string), typeof (string), null, false, false));
       IBindableObjectGlobalizationService mockGlobalizationService = _mockRepository.StrictMock<IBindableObjectGlobalizationService>();
       _bindableObjectProvider.AddService (typeof (IBindableObjectGlobalizationService), mockGlobalizationService);
 
-      Expect.Call (mockGlobalizationService.GetPropertyDisplayName (IPropertyInformation)).Return ("MockString");
+      Expect.Call (mockGlobalizationService.GetPropertyDisplayName (propertyInfo)).Return ("MockString");
       _mockRepository.ReplayAll();
 
       string actual = property.DisplayName;
@@ -156,6 +161,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
           new PropertyBase.Parameters (
               _bindableObjectProvider,
               GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
+              typeof (string),
               typeof (string),
               null,
               false,
@@ -174,6 +180,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
           new PropertyBase.Parameters (
               _bindableObjectProvider,
               GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
+              typeof (string),
               typeof (string),
               null,
               false,
@@ -203,6 +210,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               provider,
               GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
               typeof (string),
+              typeof (string),
               null,
               false,
               false));
@@ -229,6 +237,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
               _bindableObjectProvider,
               GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
               typeof (string),
+              typeof (string),
               null,
               false,
               false));
@@ -249,6 +258,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
           new PropertyBase.Parameters (
               _bindableObjectProvider,
               GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
+              typeof (string),
               typeof (string),
               null,
               false,

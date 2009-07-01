@@ -48,7 +48,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       var propertyInfo = new PropertyInfoAdapter (typeof (TypeWithEnum).GetProperty ("EnumValue"));
       IBusinessObjectEnumerationProperty property =
           new EnumerationProperty (
-              new PropertyBase.Parameters ((BindableObjectProvider) businessObjectProvider, propertyInfo, typeof (TestEnum), null, true, false)
+              new PropertyBase.Parameters (
+                  (BindableObjectProvider) businessObjectProvider, propertyInfo, typeof (TestEnum), typeof (TestEnum), null, true, false)
               );
       _enumValue.Property = property;
       _enumValue.Stub (mock => mock.IsDesignMode).Return (false);

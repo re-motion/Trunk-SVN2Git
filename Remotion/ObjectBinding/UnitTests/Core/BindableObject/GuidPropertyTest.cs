@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       IBusinessObjectStringProperty property = new GuidProperty (
           new PropertyBase.Parameters (_businessObjectProvider, GetPropertyInfo (typeof (ClassWithAllDataTypes), "Guid"),
-          typeof (Guid), null, true, false));
+          typeof (Guid), typeof (Guid), null, true, false));
 
       Assert.That (property.MaxLength, Is.EqualTo (38));
     }
@@ -60,8 +60,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void ConvertFromNativePropertyType_Array ()
     {
       PropertyBase property = GetArrayProperty();
-      Guid[] guids = new Guid[] { new Guid (c_expectedGuidString), Guid.Empty, new Guid (c_expectedGuidString)};
-      string[] expectedStrings = new string[] { c_expectedGuidString, c_guidEmptyString, c_expectedGuidString };
+      Guid[] guids = new [] { new Guid (c_expectedGuidString), Guid.Empty, new Guid (c_expectedGuidString)};
+      string[] expectedStrings = new [] { c_expectedGuidString, c_guidEmptyString, c_expectedGuidString };
 
       Assert.That (property.ConvertFromNativePropertyType (guids), Is.EqualTo (expectedStrings));
       Assert.That (property.ConvertFromNativePropertyType (new Guid[0]), Is.EqualTo (new string[0]));
@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       PropertyBase property = GetNullableArrayProperty ();
       Guid?[] guids = new Guid?[] { new Guid (c_expectedGuidString), Guid.Empty, null, new Guid (c_expectedGuidString) };
-      string[] expectedStrings = new string[] { c_expectedGuidString, c_guidEmptyString, null, c_expectedGuidString };
+      string[] expectedStrings = new [] { c_expectedGuidString, c_guidEmptyString, null, c_expectedGuidString };
 
       Assert.That (property.ConvertFromNativePropertyType (guids), Is.EqualTo (expectedStrings));
     }
@@ -93,8 +93,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void ConvertToNativePropertyType_Array ()
     {
       PropertyBase property = GetArrayProperty ();
-      Guid[] expectedGuids = new Guid[] { new Guid (c_expectedGuidString), Guid.Empty, Guid.Empty, new Guid (c_expectedGuidString), Guid.Empty };
-      string[] strings = new string[] { c_expectedGuidString, string.Empty, null, c_expectedGuidString, c_guidEmptyString };
+      Guid[] expectedGuids = new [] { new Guid (c_expectedGuidString), Guid.Empty, Guid.Empty, new Guid (c_expectedGuidString), Guid.Empty };
+      string[] strings = new [] { c_expectedGuidString, string.Empty, null, c_expectedGuidString, c_guidEmptyString };
 
       Assert.That (property.ConvertToNativePropertyType (strings), Is.EqualTo (expectedGuids));
       Assert.That (property.ConvertToNativePropertyType (new string[0]), Is.EqualTo (new Guid[0]));
@@ -106,7 +106,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       PropertyBase property = GetNullableArrayProperty();
       Guid?[] expectedGuids = new Guid?[] { new Guid (c_expectedGuidString), Guid.Empty, null, new Guid (c_expectedGuidString), Guid.Empty };
-      string[] strings = new string[] { c_expectedGuidString, string.Empty, null, c_expectedGuidString, c_guidEmptyString };
+      string[] strings = new [] { c_expectedGuidString, string.Empty, null, c_expectedGuidString, c_guidEmptyString };
 
       Assert.That (property.ConvertToNativePropertyType (strings), Is.EqualTo (expectedGuids));
     }
@@ -115,7 +115,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       return new GuidProperty (
           new PropertyBase.Parameters (_businessObjectProvider, GetPropertyInfo (typeof (ClassWithValueType<Guid>), "Scalar"),
-          typeof (Guid), null, true, false));
+          typeof (Guid), typeof (Guid), null, true, false));
     }
 
     private PropertyBase GetArrayProperty ()
@@ -124,6 +124,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
           new PropertyBase.Parameters (
               _businessObjectProvider,
               GetPropertyInfo (typeof (ClassWithValueType<Guid>), "Array"),
+              typeof (Guid),
               typeof (Guid),
               new ListInfo (typeof (Guid[]), typeof (Guid)),
               false,
@@ -136,6 +137,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
           new PropertyBase.Parameters (
               _businessObjectProvider,
               GetPropertyInfo (typeof (ClassWithValueType<Guid>), "NullableArray"),
+              typeof (Guid),
               typeof (Guid),
               new ListInfo (typeof (Guid?[]), typeof (Guid?)),
               false,

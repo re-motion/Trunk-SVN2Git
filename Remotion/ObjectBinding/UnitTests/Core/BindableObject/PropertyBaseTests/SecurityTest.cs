@@ -55,23 +55,23 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyBaseTests
       _securableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (SecurableClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), null, false, false));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false));
 
       _securableExplicitInterfaceProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
               "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"),
-              typeof (SimpleReferenceType), null, false, false));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false));
       
       _nonSecurablePropertyReadOnly = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "ReadOnlyScalar"),
-              typeof (SimpleReferenceType), null,  false, true));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, true));
       
       _nonSecurableProperty = new StubPropertyBase (
           new PropertyBase.Parameters (
               _businessObjectProvider, GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
-              typeof (SimpleReferenceType), null, false, false));
+              typeof (SimpleReferenceType), typeof (SimpleReferenceType), null, false, false));
     }
 
     public override void TearDown ()
