@@ -64,5 +64,10 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
       return StringTimes (text, number);
     }
+
+    public string OverloadedGenericToString (int t0, int t1)
+    {
+      return "OverloadedGenericToString" + t0 + t1;
+    }
   }
 }

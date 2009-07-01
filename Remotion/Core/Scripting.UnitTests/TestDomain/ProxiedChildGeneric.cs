@@ -23,6 +23,11 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     private readonly T0 _t0;
     private readonly T1 _t1;
 
+    public ProxiedChildGeneric ()
+    {
+      
+    }
+
     public ProxiedChildGeneric (string name, T0 t0, T1 t1)
         : base (name)
     {
@@ -35,6 +40,21 @@ namespace Remotion.Scripting.UnitTests.TestDomain
       var s0 = String.Format (CultureInfo.InvariantCulture, "{0}", _t0);
       var s1 = String.Format (CultureInfo.InvariantCulture, "{0}", _t1);
       return Name + "_" + s0 + "_" + s1 + "_" + theNumber.ToString (CultureInfo.InvariantCulture);
+    }
+
+    public string ProxiedChildGenericToString (T0 t0, T1 t1)
+    {
+      return "ProxiedChildGenericToString: " + t0 + t1;
+    }
+
+    public string ProxiedChildGenericToString<T2> (T0 t0, T1 t1, T2 t2)
+    {
+      return "ProxiedChildGenericToString: " + t0 + t1 + t2;
+    }
+
+    public string ProxiedChildGenericToString<T2,T3> (T0 t0, T1 t1, T2 t2, T3 t3)
+    {
+      return "ProxiedChildGenericToString: " + t0 + t1 + t2 + t3;
     }
   }
 }

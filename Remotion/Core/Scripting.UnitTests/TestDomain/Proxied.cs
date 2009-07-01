@@ -77,6 +77,22 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
       return Sum (numbers);
     }
+
+    public string GenericToString<T0, T1> (T0 t0, T1 t1)
+    {
+      return t0.ToString () + t1;
+    }
+
+ 
+    public string OverloadedGenericToString<T0> (T0 t0)
+    {
+      return t0.ToString ();
+    }
+
+    public string OverloadedGenericToString<T0, T1> (T0 t0, T1 t1)
+    {
+      return t0.ToString () + t1;
+    }
   }
 
   public interface ISumMe

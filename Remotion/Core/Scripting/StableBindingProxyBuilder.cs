@@ -90,6 +90,7 @@ namespace Remotion.Scripting
 
     private HashSet<MethodInfo> CreateMethodsKnownInBaseTypeSet ()
     {
+      //HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> (MethodInfoEqualityComparer.Get);
       HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> ();
       var firstKnownBaseType = GetFirstKnownBaseType ();
       foreach (var method in firstKnownBaseType.GetMethods ())

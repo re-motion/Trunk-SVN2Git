@@ -30,7 +30,7 @@ using Rhino.Mocks;
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
-  public class StableBindingProxyProviderTest
+  public class StableBindingProxyBuilderTest
   {
 
 
@@ -169,10 +169,10 @@ namespace Remotion.Scripting.UnitTests
       To.ConsoleLine.e (proxyType.GetMethods ());
     }
 
-
+ 
     private ModuleScope CreateModuleScope(string namePostfix)
     {
-      string name = "Remotion.Scripting.CodeGeneration.Generated.StableBindingProxyProviderTest" + namePostfix;
+      string name = "Remotion.Scripting.CodeGeneration.Generated.StableBindingProxyBuilderTest" + namePostfix;
       string nameSigned = name + ".Signed";
       string nameUnsigned = name + ".Unsigned";
       const string ext = ".dll";

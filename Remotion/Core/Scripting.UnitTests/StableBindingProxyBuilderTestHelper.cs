@@ -20,7 +20,7 @@ using Remotion.Development.UnitTesting;
 
 namespace Remotion.Scripting.UnitTests
 {
-  public static class StableBindingProxyProviderTestHelper
+  public static class StableBindingProxyBuilderTestHelper
   {
     public static ITypeArbiter GetTypeArbiter (this StableBindingProxyBuilder proxyBuilder)
     {
