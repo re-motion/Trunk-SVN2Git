@@ -194,6 +194,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Scripting", "Remotion\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Scripting.UnitTests", "Remotion\Core\Scripting.UnitTests\Core.Scripting.UnitTests.csproj", "{4A626E26-F384-451A-A966-C90B961D9C8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScannerTestApp", "Dms\ScannerTestApp\ScannerTestApp.csproj", "{E1A18D12-1199-47D2-8B70-CB75749B1674}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -431,6 +433,10 @@ Global
 		{4A626E26-F384-451A-A966-C90B961D9C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A626E26-F384-451A-A966-C90B961D9C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A626E26-F384-451A-A966-C90B961D9C8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1A18D12-1199-47D2-8B70-CB75749B1674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1A18D12-1199-47D2-8B70-CB75749B1674}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1A18D12-1199-47D2-8B70-CB75749B1674}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1A18D12-1199-47D2-8B70-CB75749B1674}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -494,6 +500,7 @@ Global
 		{1763F21F-531C-4E86-ACFC-9A8BF903F945} = {41F62020-3A67-4A33-B82A-9442510269E3}
 		{F47CE8AE-22DA-4666-8371-01E7A32D539B} = {41F62020-3A67-4A33-B82A-9442510269E3}
 		{12C435C1-FE1C-4368-8FE5-A29B22A8F962} = {41F62020-3A67-4A33-B82A-9442510269E3}
+		{E1A18D12-1199-47D2-8B70-CB75749B1674} = {41F62020-3A67-4A33-B82A-9442510269E3}
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1
