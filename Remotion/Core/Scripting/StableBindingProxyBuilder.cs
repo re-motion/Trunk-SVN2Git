@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Remotion.Collections;
+using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -74,7 +75,8 @@ namespace Remotion.Scripting
       foreach (var proxiedTypeMethod in methodsKnownInProxiedType)
       {
         var proxiedTypeMethodBase = proxiedTypeMethod.GetBaseDefinition ();
-        if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase))
+        //if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase))
+        if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase, MethodInfoEqualityComparer.Get))
         {
           _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
         }
@@ -87,6 +89,36 @@ namespace Remotion.Scripting
 
       return _forwardingProxyBuilder.BuildProxyType ();
     }
+
+
+    public Type BuildProxyType_FirstKnownBaseTypeThenKnownInterfaces ()
+    {
+      // Add all methods from first known base type
+      var firstKnownBaseType = GetFirstKnownBaseType ();
+      var methodsInFirstKNownBaseType = firstKnownBaseType.GetMethods();
+      foreach (var method in methodsInFirstKNownBaseType)
+      {
+        _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (method);
+      }
+
+      // Add all methods from known interfaces which do not come from firstKnownBaseType or one of its parent classes.
+      var methodsKnownInProxiedType = _proxiedType.GetMethods ();
+      foreach (var proxiedTypeMethod in methodsKnownInProxiedType)
+      {
+        var proxiedTypeMethodBase = proxiedTypeMethod.GetBaseDefinition ();
+        if (GetInterfaceMethodsToClassMethod (proxiedTypeMethodBase) != null)
+        {
+          bool existsInBaseType = proxiedTypeMethod.GetBaseDefinition ().DeclaringType.IsAssignableFrom (firstKnownBaseType);
+          if (!existsInBaseType)
+          {
+            _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
+          }
+        }
+      }
+
+      return _forwardingProxyBuilder.BuildProxyType ();
+    }
+
 
     private HashSet<MethodInfo> CreateMethodsKnownInBaseTypeSet ()
     {

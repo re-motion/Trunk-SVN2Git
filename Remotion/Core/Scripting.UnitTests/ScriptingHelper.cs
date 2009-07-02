@@ -13,30 +13,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using System.Linq;
+using System.Reflection;
+using Remotion.Diagnostics.ToText;
 
-namespace Remotion.Scripting.UnitTests.TestDomain
+namespace Remotion.Scripting.UnitTests
 {
-  public class ProxiedChildChild : ProxiedChild, IProcessText1, IProcessText2, INotInProxied, IPrependName
+  public class ScriptingHelper
   {
-    public string ProcessText (string s)
+    public static void ToConsoleLine (MethodInfo mi)
     {
-      return s.ToLower().Replace("abc","xyz");
+      To.ConsoleLine.sb ().e (mi.Name).e (mi.ReturnType).e (mi.Attributes).e (
+          mi.GetParameters ().Select (pi => pi.ParameterType)).e (mi.GetParameters ().Select (pi => pi.Attributes)).se ();
     }
-
-    public new string PrependName (string text)
-    {
-      return "ProxiedChildChild " + Name + " " + text;
-    }
-
-    public string NotInProxied ()
-    {
-      return "ProxiedChildChild.NotInProxied";
-    }
-  }
-
-  public interface INotInProxied
-  {
-    string NotInProxied ();
   }
 }

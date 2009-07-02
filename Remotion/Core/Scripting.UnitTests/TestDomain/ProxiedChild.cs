@@ -69,5 +69,10 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
       return "OverloadedGenericToString" + t0 + t1;
     }
+
+    public override string OverrideMe (string s)
+    {
+      return "ProxiedChild: " + s;
+    }
   }
 }

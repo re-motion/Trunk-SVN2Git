@@ -133,6 +133,9 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
       CustomMethodEmitter methodEmitter;
+
+      // Note: We do not mask the attributes with MethodAttributes.MemberAccessMask below, since this removes
+      // desired attributes such as Final, Virtual and HideBySig.
       if (methodInfo.DeclaringType.IsInterface)
       {
         methodEmitter = _classEmitter.CreateMethodOverrideOrInterfaceImplementation (
@@ -140,7 +143,7 @@ namespace Remotion.Scripting
       }
       else
       {
-        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodInfo.Attributes & MethodAttributes.MemberAccessMask);
+        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodInfo.Attributes); // & MethodAttributes.MemberAccessMask);
       }
 
       methodEmitter.CopyParametersAndReturnType (methodInfo); 

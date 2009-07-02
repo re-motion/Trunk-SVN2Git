@@ -19,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMother;
@@ -169,21 +170,31 @@ namespace Remotion.Scripting.UnitTests
       // methodInfo.GetBaseDefinition() bug (results should be equal).
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
 
-      AssertIsMethodKnownInClass (baseType, method);
+      // "Sum" is defined in Proxied
+      AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (baseType, "Sum"), Is.True);
+      AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "Sum"), Is.True);
+      AssertIsMethodKnownInClass (baseType, method, Is.True);
 
-      AssertIsMethodKnownInClass (baseType, method);
+      // "OverrideMe" is overridden in ProxiedChild
+      AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (baseType, "OverrideMe"), Is.True);
+      AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "OverrideMe"), Is.True);
+      AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (proxiedType, "OverrideMe"), Is.True);
+
+      // "PrependName" is redefined with new in ProxiedChildChild
+      AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (baseType, "PrependName"), Is.True);
+      AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "PrependName"), Is.True);
+      AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (proxiedType, "PrependName"), Is.False);
     }
 
-    private void AssertIsMethodKnownInClass (Type baseType, MethodInfo method)
+    private void AssertIsMethodKnownInClass (Type baseType, MethodInfo method, Constraint constraint)
     {
       // "DeclaringType.IsAssignableFrom"-workaround for mi.GetBaseDefinition() bug.
       bool isKnownInBaseType = method.GetBaseDefinition().DeclaringType.IsAssignableFrom (baseType);
-      Assert.That (isKnownInBaseType, Is.True);
+      Assert.That (isKnownInBaseType, constraint);
     }
 
 
     [Test]
-    [Explicit]
     public void BuildProxyType ()
     {
       var knownBaseType = typeof (Proxied);
@@ -192,13 +203,38 @@ namespace Remotion.Scripting.UnitTests
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildProxyType"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType();
 
+      //To.ConsoleLine.e (knownBaseType.GetMethods ().Where(m => m.IsSpecialName == false)).nl (2).e (proxyType.GetMethods ());
+      //To.ConsoleLine.e (knownBaseType.GetMethods().Where (m => m.IsSpecialName == false).Count());
+
+      AssertHasSameMethod (knownBaseType, proxyType, "GetName");
+      AssertHasSameMethod (knownBaseType, proxyType, "Sum", typeof(Int32[]));
+
       //Assert.That(GetAnyInstanceMethod (proxyType, "GetName"),Is.Not.Null);
-      To.ConsoleLine.e (knownBaseType.GetMethods ());
-      To.ConsoleLine.e (proxyType.GetMethods ());
     }
 
- 
-    private ModuleScope CreateModuleScope(string namePostfix)
+    private void AssertHasSameMethod (Type type0, Type type1, string methodName, params Type[] parameterTypes)
+    {
+      var methodFromType0 = type0.GetMethod (methodName, parameterTypes);
+      Assert.That (methodFromType0, Is.Not.Null);
+      var methodFromType1 = type1.GetMethod (methodName, parameterTypes);
+      Assert.That (methodFromType1, Is.Not.Null);
+      //To.ConsoleLine.e (methodFromType0).e (methodFromType1);
+      //ScriptingHelper.ToConsoleLine(methodFromType0);
+      //ScriptingHelper.ToConsoleLine (methodFromType1);
+      //To.ConsoleLine.e (methodFromType0.Attributes & MethodAttributes.MemberAccessMask);
+      Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
+    }
+
+
+
+    //private void AssertHasSameMethodsAs (Type type, Type[] types)
+    //{
+    //  Assert.That (type.GetMethods ().Length, Is.EqualTo ((types.SelectMany (t => t.GetMethods ()).Count ())));
+    //  throw new NotImplementedException();
+    //}
+
+
+    public ModuleScope CreateModuleScope(string namePostfix)
     {
       string name = "Remotion.Scripting.CodeGeneration.Generated.StableBindingProxyBuilderTest" + namePostfix;
       string nameSigned = name + ".Signed";

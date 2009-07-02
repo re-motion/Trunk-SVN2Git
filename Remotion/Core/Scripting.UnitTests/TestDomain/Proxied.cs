@@ -93,6 +93,11 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
       return t0.ToString () + t1;
     }
+
+    public virtual string OverrideMe (string s)
+    {
+      return "Proxied: " + s;
+    }
   }
 
   public interface ISumMe

@@ -17,26 +17,8 @@ using System;
 
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  public class ProxiedChildChild : ProxiedChild, IProcessText1, IProcessText2, INotInProxied, IPrependName
+  public interface IPrependName
   {
-    public string ProcessText (string s)
-    {
-      return s.ToLower().Replace("abc","xyz");
-    }
-
-    public new string PrependName (string text)
-    {
-      return "ProxiedChildChild " + Name + " " + text;
-    }
-
-    public string NotInProxied ()
-    {
-      return "ProxiedChildChild.NotInProxied";
-    }
-  }
-
-  public interface INotInProxied
-  {
-    string NotInProxied ();
+    string PrependName (string text);
   }
 }

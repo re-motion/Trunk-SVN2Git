@@ -36,15 +36,69 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (MethodInfoEqualityComparer.Get.Equals(methodFromBaseType,method), Is.True);
     }
 
+
+    public class CtorTest
+    {
+      public string Foo (string text)
+      {
+        return "CtorTest " + text;
+      }
+    }
+
+    public interface ICtorTestFoo
+    {
+      string Foo (string text);
+    }
+
+    public class CtorTestChild : CtorTest, ICtorTestFoo
+    {
+      public new string Foo (string text)
+      {
+        return "CtorTestChild " + text;
+      }
+    }
+
+    [Test]
+    public void Ctor_Mask ()
+    {
+      var method = GetAnyInstanceMethod (typeof (CtorTest), "Foo", new[] { typeof (string) });
+      var childMethod = GetAnyInstanceMethod (typeof (CtorTestChild), "Foo", new[] { typeof (string) });
+
+      Assert.That (method.Attributes, Is.EqualTo (MethodAttributes.PrivateScope | MethodAttributes.Public | MethodAttributes.HideBySig));
+      const MethodAttributes childMethodAdditionalAttributes = MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.VtableLayoutMask;
+      Assert.That (childMethod.Attributes, Is.EqualTo (method.Attributes | childMethodAdditionalAttributes));
+
+      var comparerDefault = new MethodInfoEqualityComparer ();
+      Assert.That (comparerDefault.Equals (method, childMethod), Is.False);
+
+      var comparerNoVirtualNoFinal = new MethodInfoEqualityComparer (~childMethodAdditionalAttributes);
+      Assert.That (comparerNoVirtualNoFinal.Equals (method, childMethod), Is.True);
+
+      var comparerMethodFromBaseTypeAttributes = new MethodInfoEqualityComparer (method.Attributes);
+      Assert.That (comparerMethodFromBaseTypeAttributes.Equals (method, childMethod), Is.True);
+    }
+
+
     // Comparing MethodInfo between method and method hiding method through "new" works.
     [Test]
-    public void Equals_HiddenMethodFromBaseType ()
+    public void Equals_MethodFromBaseTypeHiddenByInterfaceMethod ()
     {
       var methodFromBaseType = GetAnyInstanceMethod (typeof (Proxied), "PrependName", new[] { typeof(string)});
       var method = GetAnyInstanceMethod (typeof (ProxiedChildChild), "PrependName", new[] { typeof(string)});
+
+      //ScriptingHelper.ToConsoleLine (methodFromBaseType);
+      //ScriptingHelper.ToConsoleLine (method);
+
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
-      Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.True);
+
+      // Default comparison taking all method attributes into account fails, since IPrependName adds the Final, Virtual and 
+      // VtableLayoutMask attributes.
+      Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.False);
+      
+      // Comparing ignoring method attributes coming from IPrependName works.
+      var comparerNoVirtualNoFinal = new MethodInfoEqualityComparer (~(MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.VtableLayoutMask));
+      Assert.That (comparerNoVirtualNoFinal.Equals (methodFromBaseType, method), Is.True);
     }
 
 
@@ -179,4 +233,6 @@ namespace Remotion.Scripting.UnitTests
         mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).ToArray();
     }
   }
+
+ 
 }

@@ -22,20 +22,31 @@ namespace Remotion.Scripting
 {
   public class MethodInfoEqualityComparer : CompoundValueEqualityComparer<MethodInfo> {
     private static readonly MethodInfoEqualityComparer s_equalityComparer = new MethodInfoEqualityComparer();
- 
-    
-    public MethodInfoEqualityComparer ()
+
+    public MethodInfoEqualityComparer (MethodAttributes methodAttributeMask)
         : base (
             x => new object[] {
-                x.Name, x.ReturnType, x.Attributes, //x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
+                x.Name, x.ReturnType, x.Attributes & methodAttributeMask, //x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
                 ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.ParameterType)),
                 ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) // TODO: Use ReservedMask here ?
             })
-    {}
+    {
+    }
+
+    public MethodInfoEqualityComparer ()
+      : this (MethodAttributesMaskAll)
+    {
+    }
+
 
     public static MethodInfoEqualityComparer Get
     {
       get { return s_equalityComparer; }
+    }
+
+    public static MethodAttributes MethodAttributesMaskAll
+    {
+      get { return ~MethodAttributes.ReservedMask; }
     }
   }
 }
