@@ -56,6 +56,7 @@ namespace OBWTest.UI
               (BindableObjectProvider) BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>(),
               new PropertyInfoAdapter (propertyInfo),
               propertyInfo.PropertyType,
+              propertyInfo.PropertyType,
               null,
               false,
               false));
