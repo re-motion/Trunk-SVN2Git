@@ -49,11 +49,8 @@ namespace Remotion.ObjectBinding.BindableObject
     ///   A <see cref="String"/> uniquely identifying an <see cref="IBusinessObjectProperty"/> in this
     ///   business object class.
     /// </param>
-    /// <returns> Returns the <see cref="IBusinessObjectProperty"/> or <see langword="null"/>. </returns>
-    /// <remarks> 
-    ///   It is not specified wheter an exception is thrown or <see langword="null"/> is returned if the 
-    ///   <see cref="IBusinessObjectProperty"/> could not be found.
-    /// </remarks>
+    /// <returns> Returns the <see cref="IBusinessObjectProperty"/>. </returns>
+    /// <exception cref="KeyNotFoundException">Thrown if no property with the <paramref name="propertyIdentifier"/> was found.</exception>
     public IBusinessObjectProperty GetPropertyDefinition (string propertyIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);
