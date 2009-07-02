@@ -40,15 +40,6 @@ var _bocList_rowSelectionSingleCheckBox = 1;
 var _bocList_rowSelectionSingleRadioButton = 2;
 var _bocList_rowSelectionMultiple = 3;
 
-var _bocList_listMenuInfos = new Object();
-
-var _contentMenu_itemClassName = 'contentMenuItem';
-var _contentMenu_itemFocusClassName = 'contentMenuItemFocus';
-var _contentMenu_itemDisabledClassName = 'contentMenuItemDisabled';
-var _contentMenu_requiredSelectionAny = 0;
-var _contentMenu_requiredSelectionExactlyOne = 1;
-var _contentMenu_requiredSelectionOneOrMore = 2;
-
 function BocList_SelectedRows (selection)
 {
   this.Selection = selection;
@@ -120,7 +111,7 @@ function BocList_InitializeList (bocList, selectorControlPrefix, count, selectio
 //  bocList: The BocList to which the row belongs.
 //  currentRow: The row that fired the click event.
 //  selectorControl: The selection selectorControl in this row.
-function BocList_OnRowClick (bocList, currentRow, selectorControl)
+function BocList_OnRowClick (bocList, currentRow, selectorControl, listMenu)
 {
   if (_bocList_isCommandClick)
   {
@@ -184,7 +175,7 @@ function BocList_OnRowClick (bocList, currentRow, selectorControl)
   }  
   _bocList_isSelectorControlClick = false;
 
-  BocList_UpdateListMenu (bocList);
+  ListMenu.Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
 }
 
 //  Selects a row.
@@ -243,7 +234,7 @@ function BocList_UnselectRow (bocList, rowBlock)
 //  bocList: The BocList to which the selectorControl belongs.
 //  selectorControlPrefix: The common part of the selectorControles' ID (everything before the index).
 //  count: The number of data rows in the BocList.
-function BocList_OnSelectAllSelectorControlClick (bocList, selectAllSelectorControl, selectorControlPrefix, count)
+function BocList_OnSelectAllSelectorControlClick (bocList, selectAllSelectorControl, selectorControlPrefix, count, listMenu)
 {
   var selectedRows = _bocList_selectedRows[bocList.id];
 
@@ -269,8 +260,8 @@ function BocList_OnSelectAllSelectorControlClick (bocList, selectAllSelectorCont
   
   if (! selectAllSelectorControl.checked)      
     selectedRows.Length = 0;
-    
-  BocList_UpdateListMenu (bocList);
+
+  ListMenu.Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
 }
 
 //  Event handler for the selection selectorControl in a data row.
@@ -301,122 +292,4 @@ function BocList_GetSelectionCount (bocListID)
   if (selectedRows == null)
     return 0;
   return selectedRows.Length;
-}
-
-function ContentMenu_MenuInfo (id, itemInfos)
-{
-  this.ID = id;
-  this.ItemInfos = itemInfos;
-}
-
-function BocList_AddMenuInfo (bocList, menuInfo)
-{
-  _bocList_listMenuInfos[bocList.id] = menuInfo;
-}
-
-function ContentMenu_MenuItemInfo (id, category, text, icon, iconDisabled, requiredSelection, isDisabled, href, target)
-{
-  this.ID = id;
-  this.Category = category;
-  this.Text = text;
-  this.Icon = icon;
-  this.IconDisabled = iconDisabled;
-  this.RequiredSelection = requiredSelection;
-  this.IsDisabled = isDisabled;
-  this.Href = href;
-  this.Target = target;
-}
-
-function BocList_UpdateListMenu (bocList)
-{
-  var menuInfo = _bocList_listMenuInfos[bocList.id];
-  if (menuInfo == null)
-    return;
-    
-  var itemInfos = menuInfo.ItemInfos;
-  var selectionCount = BocList_GetSelectionCount (bocList.id);
-  
-  for (var i = 0; i < itemInfos.length; i++)
-  {
-    var itemInfo = itemInfos[i];
-    var isEnabled = true;
-    if (itemInfo.IsDisabled)
-    {
-      isEnabled = false;
-    }
-    else
-    {
-      if (   itemInfo.RequiredSelection == _contentMenu_requiredSelectionExactlyOne
-          && selectionCount != 1)
-      {
-        isEnabled = false;
-      }
-      if (   itemInfo.RequiredSelection == _contentMenu_requiredSelectionOneOrMore
-          && selectionCount < 1)
-      {
-        isEnabled = false;
-      }
-    }
-    var item = document.getElementById (itemInfo.ID);
-    var anchor = item.children[0];
-    var icon = anchor.children[0];
-    if (isEnabled)
-    {
-      if (icon != null)
-        icon.src = itemInfo.Icon;
-  	  item.className = _contentMenu_itemClassName;
-  	  if (itemInfo.Href != null)
-      {
-        if (itemInfo.Href.toLowerCase().indexOf ('javascript:') >= 0)
-        {
-          anchor.href = '#';
-          anchor.removeAttribute ('target');
-          anchor.setAttribute ('javascript', itemInfo.Href);
-          anchor.onclick = function () { eval (this.getAttribute ('javascript')); };
-        }
-        else
-        {
-          anchor.href = itemInfo.Href;
-          if (itemInfo.Target != null)
-      	    anchor.target = itemInfo.Target;
-          anchor.removeAttribute ('onclick');
-          anchor.removeAttribute ('javascript');
-        }
-      }
-    }
-    else
-    {
-      if (icon != null)
-      {
-        if (itemInfo.IconDisabled != null)
-          icon.src = itemInfo.IconDisabled;
-        else
-          icon.src = itemInfo.Icon;
-      }
-      item.className = _contentMenu_itemDisabledClassName;
-      anchor.removeAttribute ('href');
-      anchor.removeAttribute ('target');
-      anchor.removeAttribute ('onclick');
-      anchor.removeAttribute ('javascript');
-    }
-  }
-}
-
-function ContentMenu_GoTo (menuItem)
-{
-  window.location = menuItem.href;
-}
-
-function ContentMenu_SelectItem (menuItem)
-{
-	if (menuItem == null)
-	  return;
-	menuItem.className = _contentMenu_itemFocusClassName;
-}
-
-function ContentMenu_UnselectItem (menuItem)
-{
-	if (menuItem == null)
-	  return;
-	menuItem.className = _contentMenu_itemClassName;
 }

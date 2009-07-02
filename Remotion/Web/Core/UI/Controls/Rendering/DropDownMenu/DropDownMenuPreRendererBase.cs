@@ -102,7 +102,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
       }
     }
 
-    public abstract bool CanRender ();
+    public abstract bool GetBrowserCapableOfScripting ();
 
     protected abstract ResourceTheme ResourceTheme { get; }
 

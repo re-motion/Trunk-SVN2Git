@@ -349,6 +349,8 @@
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\Factories\BocReferenceValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\Factories\BocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRenderer.cs" />

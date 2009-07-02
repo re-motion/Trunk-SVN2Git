@@ -55,9 +55,9 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHead);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      //if (Control.RenderHeadTitleMethod != null)
-      //  Control.RenderHeadTitleMethod (Writer, (Control) Control);
-      //else
+      if (Control.RenderHeadTitleMethod != null)
+        Control.RenderHeadTitleMethod ();
+      else
         RenderDefaultTitle();
 
       Writer.RenderEndTag ();

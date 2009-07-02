@@ -16,41 +16,30 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Design;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
   /// <include file='doc\include\UI\Controls\DropDownMenu.xml' path='DropDownMenu/Class/*' />
   [Designer (typeof (WebControlDesigner))]
-  public class DropDownMenu : WebControl, IDropDownMenu, IPostBackEventHandler, IControlWithDesignTimeSupport
+  public class DropDownMenu : MenuBase, IDropDownMenu
   {
-    private static readonly object s_eventCommandClickEvent = new object();
-    private static readonly object s_wxeFunctionCommandClickEvent = new object();
-
     /// <summary> Only used by control developers. </summary>
     public static readonly string OnHeadTitleClickScript = "DropDownMenu_OnHeadControlClick();";
 
     private string _titleText = "";
     private IconInfo _titleIcon;
-    private bool _isReadOnly;
     private bool _enableGrouping = true;
-    private string _getSelectionCount = "";
-    private bool _canRender;
+    private bool _isBrowserCapableOfScripting;
 
-    private readonly WebMenuItemCollection _menuItems;
     private Action _renderHeadTitleMethod;
 
     public DropDownMenu (IControl ownerControl, Type[] supportedMenuItemTypes)
+      :base(ownerControl, supportedMenuItemTypes)
     {
-      if (ownerControl == null)
-        ownerControl = this;
-      _menuItems = new WebMenuItemCollection (ownerControl, supportedMenuItemTypes);
     }
 
     public DropDownMenu (IControl ownerControl)
@@ -73,90 +62,13 @@ namespace Remotion.Web.UI.Controls
       }
       catch (NullReferenceException)
       {
-        _canRender = true;
+        _isBrowserCapableOfScripting = true;
         return;
       }
 
       var factory = locator.GetInstance<IDropDownMenuRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
-      _canRender = preRenderer.CanRender();
-    }
-
-    /// <summary> Implements interface <see cref="IPostBackEventHandler"/>. </summary>
-    /// <param name="eventArgument"> &lt;index&gt; </param>
-    void IPostBackEventHandler.RaisePostBackEvent (string eventArgument)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("eventArgument", eventArgument);
-
-      //  First part: index
-      int index;
-      try
-      {
-        if (eventArgument.Length == 0)
-          throw new FormatException();
-        index = int.Parse (eventArgument);
-      }
-      catch (FormatException)
-      {
-        throw new ArgumentException ("First part of argument 'eventArgument' must be an integer. Expected format: '<index>'.");
-      }
-
-      if (index >= _menuItems.Count)
-      {
-        throw new ArgumentOutOfRangeException (
-            eventArgument,
-            "Index of argument 'eventargument' was out of the range of valid values. Index must be less than the number of displayed menu items.'");
-      }
-
-      WebMenuItem item = _menuItems[index];
-      if (item.Command == null)
-      {
-        throw new ArgumentOutOfRangeException (
-            eventArgument, "The DropDownMenu '" + ID + "' does not have a command associated with menu item " + index + ".");
-      }
-
-      switch (item.Command.Type)
-      {
-        case CommandType.Event:
-        {
-          OnEventCommandClick (item);
-          break;
-        }
-        case CommandType.WxeFunction:
-        {
-          OnWxeFunctionCommandClick (item);
-          break;
-        }
-        default:
-        {
-          break;
-        }
-      }
-    }
-
-    /// <summary> Fires the <see cref="EventCommandClick"/> event. </summary>
-    protected virtual void OnEventCommandClick (WebMenuItem item)
-    {
-      WebMenuItemClickEventHandler clickHandler = (WebMenuItemClickEventHandler) Events[s_eventCommandClickEvent];
-      if (clickHandler != null)
-      {
-        WebMenuItemClickEventArgs e = new WebMenuItemClickEventArgs (item);
-        clickHandler (this, e);
-      }
-
-      if (item != null && item.Command != null)
-        item.Command.OnClick();
-    }
-
-    /// <summary> Fires the <see cref="WxeFunctionCommandClick"/> event. </summary>
-    protected virtual void OnWxeFunctionCommandClick (WebMenuItem item)
-    {
-      WebMenuItemClickEventHandler clickHandler = (WebMenuItemClickEventHandler) Events[s_wxeFunctionCommandClickEvent];
-      if (clickHandler != null)
-      {
-        WebMenuItemClickEventArgs e = new WebMenuItemClickEventArgs (item);
-        clickHandler (this, e);
-      }
+      _isBrowserCapableOfScripting = preRenderer.GetBrowserCapableOfScripting();
     }
 
     protected override void OnPreRender (EventArgs e)
@@ -166,16 +78,6 @@ namespace Remotion.Web.UI.Controls
       var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
       preRenderer.PreRender();
-    }
-
-    /// <summary> Calls <see cref="Control.OnPreRender"/> on every invocation. </summary>
-    /// <remarks> Used by the <see cref="WebControlDesigner"/>. </remarks>
-    void IControlWithDesignTimeSupport.PreRenderForDesignMode ()
-    {
-      if (!IsDesignMode)
-        throw new InvalidOperationException ("PreRenderChildControlsForDesignMode may only be called during design time.");
-      EnsureChildControls();
-      OnPreRender (EventArgs.Empty);
     }
 
     public override void RenderControl (HtmlTextWriter writer)
@@ -193,7 +95,7 @@ namespace Remotion.Web.UI.Controls
       if (string.IsNullOrEmpty (eventReference))
         eventReference = "null";
 
-      string getSelectionCount = (StringUtility.IsNullOrEmpty (_getSelectionCount) ? "null" : _getSelectionCount);
+      string getSelectionCount = (string.IsNullOrEmpty (GetSelectionCount) ? "null" : GetSelectionCount);
       return "DropDownMenu_OnClick (this, '" + ClientID + "', " + getSelectionCount + ", " + eventReference + ");";
     }
 
@@ -223,36 +125,9 @@ namespace Remotion.Web.UI.Controls
       set { _titleIcon = value; }
     }
 
-    [PersistenceMode (PersistenceMode.InnerProperty)]
-    [ListBindable (false)]
-    [Category ("Behavior")]
-    [Description ("The menu items displayed by this drop down menu.")]
-    [DefaultValue ((string) null)]
-    public WebMenuItemCollection MenuItems
-    {
-      get { return _menuItems; }
-    }
-
-    IPage IDropDownMenu.Page
-    {
-      get { return new PageWrapper (Page); }
-    }
-
-    [DefaultValue (false)]
-    public bool IsReadOnly
-    {
-      get { return _isReadOnly; }
-      set { _isReadOnly = value; }
-    }
-
-    public bool IsDesignMode
-    {
-      get { return ControlHelper.IsDesignMode(this, Context); }
-    }
-
     public bool IsBrowserCapableOfScripting
     {
-      get { return IsDesignMode || _canRender; }
+      get { return IsDesignMode || _isBrowserCapableOfScripting; }
     }
 
     [DefaultValue (true)]
@@ -262,29 +137,9 @@ namespace Remotion.Web.UI.Controls
       set { _enableGrouping = value; }
     }
 
-    [DefaultValue ("")]
-    public string GetSelectionCount
+    IPage IDropDownMenu.Page
     {
-      get { return _getSelectionCount; }
-      set { _getSelectionCount = value; }
-    }
-
-    /// <summary> Occurs when a command of type <see cref="CommandType.Event"/> is clicked. </summary>
-    [Category ("Action")]
-    [Description ("Occurs when a command of type Event is clicked.")]
-    public event WebMenuItemClickEventHandler EventCommandClick
-    {
-      add { Events.AddHandler (s_eventCommandClickEvent, value); }
-      remove { Events.RemoveHandler (s_eventCommandClickEvent, value); }
-    }
-
-    /// <summary> Occurs when a command of type <see cref="CommandType.WxeFunction"/> is clicked. </summary>
-    [Category ("Action")]
-    [Description ("Occurs when a command of type WxeFunction is clicked.")]
-    public event WebMenuItemClickEventHandler WxeFunctionCommandClick
-    {
-      add { Events.AddHandler (s_wxeFunctionCommandClickEvent, value); }
-      remove { Events.RemoveHandler (s_wxeFunctionCommandClickEvent, value); }
+      get { return new PageWrapper (Page); }
     }
   }
 }

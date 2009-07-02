@@ -14,11 +14,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode.Factories
 {
-  public interface IDropDownMenuPreRenderer : IPreRenderer<IDropDownMenu>
+  /// <summary>
+  /// Responsible for creating quirks mode renderers for <see cref="BocReferenceValue"/> controls.
+  /// </summary>
+  public class BocReferenceValueRendererFactory : IBocReferenceValueRendererFactory
   {
-    bool GetBrowserCapableOfScripting ();
+    public IBocReferenceValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocReferenceValue control)
+    {
+      return new BocReferenceValueRenderer (context, writer, control);
+    }
   }
 }

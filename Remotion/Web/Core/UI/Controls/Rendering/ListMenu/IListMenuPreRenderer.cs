@@ -15,10 +15,9 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
+namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
-  public interface IDropDownMenuPreRenderer : IPreRenderer<IDropDownMenu>
+  public interface IListMenuPreRenderer : IPreRenderer<IListMenu>
   {
-    bool GetBrowserCapableOfScripting ();
   }
 }

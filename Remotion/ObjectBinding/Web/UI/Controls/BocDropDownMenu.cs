@@ -302,7 +302,7 @@ public class BocDropDownMenu : BusinessObjectBoundWebControl, IBocMenuItemContai
   }
 
   /// <summary> 
-  ///   Handles the <see cref="Remotion.Web.UI.Controls.DropDownMenu.EventCommandClick"/> event of the 
+  ///   Handles the <see cref="Remotion.Web.UI.Controls.MenuBase.EventCommandClick"/> event of the 
   ///   <see cref="DropDownMenu"/>.
   /// </summary>
   /// <param name="sender"> The source of the event. </param>
@@ -345,7 +345,7 @@ public class BocDropDownMenu : BusinessObjectBoundWebControl, IBocMenuItemContai
   }
 
   /// <summary> 
-  ///   Handles the <see cref="Remotion.Web.UI.Controls.DropDownMenu.WxeFunctionCommandClick"/> event of the 
+  ///   Handles the <see cref="Remotion.Web.UI.Controls.MenuBase.WxeFunctionCommandClick"/> event of the 
   ///   <see cref="DropDownMenu"/>. 
   /// </summary>
   /// <param name="sender"> The source of the event. </param>

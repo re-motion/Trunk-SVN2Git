@@ -14,11 +14,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
+using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
+namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode.Factories
 {
-  public interface IDropDownMenuPreRenderer : IPreRenderer<IDropDownMenu>
+  public class ListMenuRendererFactory : IListMenuRendererFactory
   {
-    bool GetBrowserCapableOfScripting ();
+    public IListMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IListMenu control)
+    {
+      return new ListMenuRenderer (context, writer, control);
+    }
+
+    public IListMenuPreRenderer CreatePreRenderer (IHttpContext context, IListMenu control)
+    {
+      return new ListMenuPreRenderer (context, control);
+    }
   }
 }

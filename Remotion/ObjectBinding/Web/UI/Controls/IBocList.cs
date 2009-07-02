@@ -23,6 +23,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Image=System.Web.UI.WebControls.Image;
 
@@ -325,6 +326,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool HasMenuBlock { get; }
     bool IsPagingEnabled { get; }
     bool IsShowSortingOrderEnabled { get; }
+    IListMenu ListMenu { get; }
 
     /// <summary> Builds the validation error marker. </summary>
     Image GetValidationErrorMarker ();

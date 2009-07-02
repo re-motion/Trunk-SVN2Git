@@ -908,7 +908,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> 
-    ///   Handles the <see cref="DropDownMenu.EventCommandClick"/> event of the <see cref="OptionsMenu"/>.
+    ///   Handles the <see cref="MenuBase.EventCommandClick"/> event of the <see cref="OptionsMenu"/>.
     /// </summary>
     /// <param name="sender"> The source of the event. </param>
     /// <param name="e"> An <see cref="WebMenuItemClickEventArgs"/> object that contains the event data. </param>
@@ -949,7 +949,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       remove { Events.RemoveHandler (s_menuItemClickEvent, value); }
     }
 
-    /// <summary> Handles the <see cref="DropDownMenu.WxeFunctionCommandClick"/> event of the <see cref="OptionsMenu"/>. </summary>
+    /// <summary> Handles the <see cref="MenuBase.WxeFunctionCommandClick"/> event of the <see cref="OptionsMenu"/>. </summary>
     /// <param name="sender"> The source of the event. </param>
     /// <param name="e"> An <see cref="WebMenuItemClickEventArgs"/> object that contains the event data. </param>
     /// <remarks> Only called for commands of type <see cref="CommandType.Event"/>. </remarks>

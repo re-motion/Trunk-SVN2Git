@@ -24,6 +24,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
@@ -83,6 +84,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       List.Stub (list => list.IsColumnVisible (null)).IgnoreArguments().Return (true);
 
       List.Stub (list => list.SelectorControlCheckedState).Return (new List<int> ());
+
+      var listMenuStub = MockRepository.GenerateStub<IListMenu>();
+      List.Stub (list => list.ListMenu).Return (listMenuStub);
 
       StateBag stateBag = new StateBag ();
       List.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));

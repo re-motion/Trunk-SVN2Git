@@ -16,11 +16,10 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI.Controls;
-using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
@@ -69,7 +68,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       Writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, List.ClientID + "_Boc_ListMenu");
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      RenderListMenu (List.ClientID + "_Boc_ListMenu");
+      Control.ListMenu.RenderControl (Writer);
       Writer.RenderEndTag();
     }
 
@@ -115,75 +114,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       List.AvailableViewsList.Enabled = !List.EditModeController.IsRowEditModeActive && !List.EditModeController.IsListEditModeActive;
       List.AvailableViewsList.CssClass = CssClasses.AvailableViewsListDropDownList;
       List.AvailableViewsList.RenderControl (Writer);
-      Writer.RenderEndTag();
-    }
-
-    private void RenderListMenu (string menuID)
-    {
-      if (!List.HasClientScript)
-        return;
-
-      WebMenuItem[] groupedListMenuItems = List.ListMenuItems.GroupMenuItems (false);
-
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Table);
-      bool isFirstItem = true;
-      for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
-      {
-        WebMenuItem currentItem = groupedListMenuItems[idxItems];
-        // HACK: Required since ListMenuItems are not added to a ListMenu's WebMenuItemCollection.
-        currentItem.OwnerControl = List;
-        if (!currentItem.EvaluateVisible())
-          continue;
-
-        bool isLastItem = (idxItems == (groupedListMenuItems.Length - 1));
-        bool isFirstCategoryItem = (isFirstItem || (groupedListMenuItems[idxItems - 1].Category != currentItem.Category));
-        bool isLastCategoryItem = (isLastItem || (groupedListMenuItems[idxItems + 1].Category != currentItem.Category));
-        bool hasAlwaysLineBreaks = (List.ListMenuLineBreaks == ListMenuLineBreaks.All);
-
-        if (hasAlwaysLineBreaks || isFirstCategoryItem)
-        {
-          Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
-          Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, "contentMenuRow");
-          Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-        }
-        RenderListMenuItem (currentItem, menuID, List.ListMenuItems.IndexOf (currentItem));
-        if (hasAlwaysLineBreaks || isLastCategoryItem)
-        {
-          Writer.RenderEndTag();
-          Writer.RenderEndTag();
-        }
-
-        if (isFirstItem)
-          isFirstItem = false;
-      }
-      Writer.RenderEndTag();
-    }
-
-    private void RenderListMenuItem (WebMenuItem menuItem, string menuID, int index)
-    {
-      bool showIcon = menuItem.Style == WebMenuItemStyle.Icon || menuItem.Style == WebMenuItemStyle.IconAndText;
-      bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
-
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, menuID + "_" + index);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      Writer.RenderBeginTag (HtmlTextWriterTag.A);
-      if (showIcon && menuItem.Icon.HasRenderingInformation)
-      {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Src, UrlUtility.ResolveUrl (menuItem.Icon.Url));
-        Writer.AddStyleAttribute ("vertical-align", "middle");
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-        Writer.RenderBeginTag (HtmlTextWriterTag.Img);
-        Writer.RenderEndTag();
-        if (showText)
-          Writer.Write (c_whiteSpace);
-      }
-      if (showText)
-        Writer.Write (menuItem.Text); // Do not HTML encode.
-      Writer.RenderEndTag();
       Writer.RenderEndTag();
     }
   }

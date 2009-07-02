@@ -86,6 +86,14 @@ namespace OBWTest
                 .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
                 .WithService.Select ((t, b) => t.GetInterfaces())
                 .Configure (c => c.Named ("standard." + c.ServiceType.Name)));
+
+        // Remotion.ObjectBinding.Web
+        container.Register (
+            AllTypes.Pick ()
+                .FromAssembly (typeof (BocRendererBase<>).Assembly)
+                .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
+                .WithService.Select ((t, b) => t.GetInterfaces ())
+                .Configure (c => c.Named ("standard." + c.ServiceType.Name)));
       }
       container.Register (
           AllTypes.Pick ()

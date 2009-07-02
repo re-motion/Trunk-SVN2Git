@@ -170,7 +170,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
                         + "document.getElementById ('" + List.ClientID + "'), "
                         + "this , '"
                         + List.ClientID + c_dataRowSelectorControlIDSuffix + "', "
-                        + count + ");";
+                        + count + ", "
+                        + "document.getElementById ('" + List.ListMenu.ClientID + "'));";
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
       }
     }

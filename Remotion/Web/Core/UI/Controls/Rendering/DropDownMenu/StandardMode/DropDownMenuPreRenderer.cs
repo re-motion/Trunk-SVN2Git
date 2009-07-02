@@ -15,7 +15,6 @@
 // 
 using System;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
 {
@@ -26,7 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
     }
 
-    public override bool CanRender ()
+    public override bool GetBrowserCapableOfScripting ()
     {
       return true;
     }

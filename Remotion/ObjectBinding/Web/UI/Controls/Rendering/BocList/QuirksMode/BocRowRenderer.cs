@@ -219,7 +219,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
           string script = "BocList_OnRowClick ("
                           + "document.getElementById ('" + List.ClientID + "'), "
                           + "this, "
-                          + "document.getElementById ('" + selectorControlID + "'));";
+                          + "document.getElementById ('" + selectorControlID + "'), "
+                          + "document.getElementById ('" + Control.ListMenu.ClientID + "'));";
           Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
         }
       }

@@ -25,7 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
     {
     }
 
-    public override bool CanRender ()
+    public override bool GetBrowserCapableOfScripting ()
     {
       return IsInternetExplorer55OrHigher();
     }

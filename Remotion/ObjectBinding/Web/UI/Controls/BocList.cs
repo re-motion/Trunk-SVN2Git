@@ -37,6 +37,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 using StringArrayConverter=Remotion.Web.UI.Design.StringArrayConverter;
@@ -59,6 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_titleRowSelectorControlIDSuffix = "_Boc_SelectorControl_SelectAll";
     private const string c_availableViewsListIDSuffix = "_Boc_AvailableViewsList";
     private const string c_optionsMenuIDSuffix = "_Boc_OptionsMenu";
+    private const string c_listMenuIDSuffix = "_Boc_ListMenu";
 
     private const int c_titleRowIndex = -1;
 
@@ -161,7 +163,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private static readonly ILog s_log = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
 
     private static readonly object s_listItemCommandClickEvent = new object();
-    private static readonly object s_menuItemClickEvent = new object();
     private static readonly object s_customCellClickEvent = new object();
 
     private static readonly object s_sortingOrderChangingEvent = new object();
@@ -236,9 +237,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private Unit _menuBlockWidth = Unit.Empty;
     private Unit _menuBlockOffset = Unit.Empty;
     private Unit _menuBlockItemOffset = Unit.Empty;
-    private ListMenuLineBreaks _listMenuLineBreaks = ListMenuLineBreaks.All;
     private readonly DropDownMenu _optionsMenu;
-    private readonly WebMenuItemCollection _listMenuItems;
+
+    private readonly ListMenu _listMenu;
 
     /// <summary> Triplet &lt; IBusinessObject, listIndex, DropDownMenu &gt;</summary>
     private BocListRowMenuTuple[] _rowMenus;
@@ -344,7 +345,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _availableViewsList = new DropDownList();
       _editModeController = new EditModeController (this);
       _optionsMenu = new DropDownMenu (this);
-      _listMenuItems = new WebMenuItemCollection (this);
+      _listMenu = new ListMenu (this);
       _rowMenusPlaceHolder = new PlaceHolder();
       _customColumnsPlaceHolder = new PlaceHolder();
       _fixedColumns = new BocColumnDefinitionCollection (this);
@@ -359,6 +360,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _optionsMenu.ID = ID + c_optionsMenuIDSuffix;
       _optionsMenu.GetSelectionCount = "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
       Controls.Add (_optionsMenu);
+
+      _listMenu.ID = ID + c_listMenuIDSuffix;
+      _listMenu.GetSelectionCount = _optionsMenu.GetSelectionCount;
+      _listMenu.EventCommandClick += ListMenuItemEventCommandClick;
+      _listMenu.WxeFunctionCommandClick += ListMenuItemWxeFunctionCommandClick;
+      Controls.Add (_listMenu);
 
       _availableViewsList.ID = ID + c_availableViewsListIDSuffix;
       _availableViewsList.EnableViewState = false;
@@ -444,8 +451,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       eventArgument = eventArgument.Trim();
       if (eventArgument.StartsWith (c_eventListItemCommandPrefix))
         HandleListItemCommandEvent (eventArgument.Substring (c_eventListItemCommandPrefix.Length));
-      else if (eventArgument.StartsWith (c_eventMenuItemPrefix))
-        HandleMenuItemEvent (eventArgument.Substring (c_eventMenuItemPrefix.Length));
       else if (eventArgument.StartsWith (SortCommandPrefix))
         HandleResorting (eventArgument.Substring (SortCommandPrefix.Length));
       else if (eventArgument.StartsWith (c_customCellEventPrefix))
@@ -616,49 +621,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> Handles post back events raised by a menu item event. </summary>
-    private void HandleMenuItemEvent (string eventArgument)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("eventArgument", eventArgument);
-
-      int index;
-      try
-      {
-        if (eventArgument.Length == 0)
-          throw new FormatException();
-        index = int.Parse (eventArgument);
-      }
-      catch (FormatException)
-      {
-        throw new ArgumentException ("First part of argument 'eventArgument' must be an integer. Expected format: '<index>'.");
-      }
-
-      if (index >= _listMenuItems.Count)
-        throw new ArgumentOutOfRangeException ("eventargument");
-
-      WebMenuItem menuItem = (WebMenuItem) _listMenuItems[index];
-      if (menuItem.Command == null)
-        throw new ArgumentException ("The BocList '" + ID + "' does not have a command associated with list menu item " + index + ".");
-
-      switch (menuItem.Command.Type)
-      {
-        case CommandType.Event:
-        {
-          OnMenuItemEventCommandClick (menuItem);
-          break;
-        }
-        case CommandType.WxeFunction:
-        {
-          OnMenuItemWxeFunctionCommandClick (menuItem);
-          break;
-        }
-        default:
-        {
-          break;
-        }
-      }
-    }
-
     /// <summary> Handles post back events raised by a custom cell event. </summary>
     /// <param name="eventArgument"> &lt;column-index&gt;,&lt;list-index&gt;[,&lt;customArgument&gt;] </param>
     private void HandleCustomCellEvent (string eventArgument)
@@ -806,6 +768,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary> 
+    ///   Event handler for the <see cref="MenuBase.EventCommandClick"/> of the <see cref="_optionsMenu"/>.
+    /// </summary>
+    private void OptionsMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
+    {
+      //_listMenu.OnMenuItemEventCommandClick (e.Item);
+    }
+
+    /// <summary> 
+    ///   Event handler for the <see cref="MenuBase.WxeFunctionCommandClick"/> of the <see cref="_optionsMenu"/>.
+    /// </summary>
+    private void OptionsMenu_WxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
+    {
+      //_listMenu.OnMenuItemWxeFunctionCommandClick (e.Item);
+    }
+
     /// <summary> Fires the <see cref="ListItemCommandClick"/> event. </summary>
     /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnListItemCommandClick/*' />
     protected virtual void OnListItemCommandClick (
@@ -823,67 +801,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           BocListItemCommandClickEventArgs e =
               new BocListItemCommandClickEventArgs (column.Command, column, listIndex, businessObject);
           commandClickHandler (this, e);
-        }
-      }
-    }
-
-    /// <summary> 
-    ///   Event handler for the <see cref="DropDownMenu.EventCommandClick"/> of the <see cref="_optionsMenu"/>.
-    /// </summary>
-    private void OptionsMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      OnMenuItemEventCommandClick (e.Item);
-    }
-
-    /// <summary> Fires the <see cref="MenuItemClick"/> event. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemEventCommandClick/*' />
-    protected virtual void OnMenuItemEventCommandClick (WebMenuItem menuItem)
-    {
-      if (menuItem != null && menuItem.Command != null)
-      {
-        if (menuItem is BocMenuItem)
-          ((BocMenuItemCommand) menuItem.Command).OnClick ((BocMenuItem) menuItem);
-        else
-          menuItem.Command.OnClick();
-      }
-
-      WebMenuItemClickEventHandler menuItemClickHandler = (WebMenuItemClickEventHandler) Events[s_menuItemClickEvent];
-      if (menuItemClickHandler != null)
-      {
-        WebMenuItemClickEventArgs e = new WebMenuItemClickEventArgs (menuItem);
-        menuItemClickHandler (this, e);
-      }
-    }
-
-    /// <summary> 
-    ///   Event handler for the <see cref="DropDownMenu.WxeFunctionCommandClick"/> of the <see cref="_optionsMenu"/>.
-    /// </summary>
-    private void OptionsMenu_WxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      OnMenuItemWxeFunctionCommandClick (e.Item);
-    }
-
-    /// <summary> Handles the click to a WXE function command. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemWxeFunctionCommandClick/*' />
-    protected virtual void OnMenuItemWxeFunctionCommandClick (WebMenuItem menuItem)
-    {
-      if (menuItem != null && menuItem.Command != null)
-      {
-        if (menuItem is BocMenuItem)
-        {
-          BocMenuItemCommand command = (BocMenuItemCommand) menuItem.Command;
-          if (Page is IWxePage)
-            command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows(), GetSelectedBusinessObjects());
-          //else
-          //  command.ExecuteWxeFunction (Page, GetSelectedRows(), GetSelectedBusinessObjects());
-        }
-        else
-        {
-          Command command = menuItem.Command;
-          if (Page is IWxePage)
-            command.ExecuteWxeFunction ((IWxePage) Page, null);
-          //else
-          //  command.ExecuteWxeFunction (Page, null, new NameValueCollection (0));
         }
       }
     }
@@ -1164,7 +1081,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!IsDesignMode)
       {
         PreRenderMenuItems();
-        PreRenderListMenuItems (ClientID + "_Boc_ListMenu");
 
         EnsureRowMenusInitialized();
         PreRenderRowMenusItems();
@@ -1458,110 +1374,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return isInternetExplorer55AndHigher;
     }
 
-    private void PreRenderListMenuItems (string menuID)
-    {
-      if (!HasClientScript)
-        return;
-
-      WebMenuItem[] groupedListMenuItems = _listMenuItems.GroupMenuItems (false);
-
-      string key = UniqueID + "_ListMenuItems";
-      if (!Page.ClientScript.IsStartupScriptRegistered (key))
-      {
-        StringBuilder script = new StringBuilder();
-        script.AppendFormat ("BocList_AddMenuInfo (document.getElementById ('{0}'), \r\n\t", ClientID);
-        script.AppendFormat ("new ContentMenu_MenuInfo ('{0}', new Array (\r\n", menuID);
-        bool isFirstItemInGroup = true;
-
-        for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
-        {
-          WebMenuItem currentItem = groupedListMenuItems[idxItems];
-          // HACK: Required since ListMenuItems are not added to a ListMenu's WebMenuItemCollection.
-          currentItem.OwnerControl = this;
-          if (!currentItem.EvaluateVisible())
-            continue;
-
-          if (isFirstItemInGroup)
-            isFirstItemInGroup = false;
-          else
-            script.AppendFormat (",\r\n");
-          AppendListMenuItem (script, currentItem, menuID, _listMenuItems.IndexOf (currentItem));
-        }
-        script.Append (" )"); // Close Array
-        script.Append (" )"); // Close new MenuInfo
-        script.Append (" );\r\n"); // Close AddMenuInfo
-
-        script.AppendFormat (
-            "BocList_UpdateListMenu ( document.getElementById ('{0}'), document.getElementById ('{1}'));",
-            ClientID,
-            menuID);
-        ScriptUtility.RegisterStartupScriptBlock (this, key, script.ToString());
-      }
-    }
-
-    private void AppendListMenuItem (StringBuilder stringBuilder, WebMenuItem menuItem, string menuID, int menuItemIndex)
-    {
-      bool isReadOnly = IsReadOnly;
-      string href = "null";
-      string target = "null";
-      bool isCommandEnabled = true;
-      if (menuItem.Command != null)
-      {
-        bool isActive = menuItem.Command.Show == CommandShow.Always
-                        || isReadOnly && menuItem.Command.Show == CommandShow.ReadOnly
-                        || ! isReadOnly && menuItem.Command.Show == CommandShow.EditMode;
-
-        isCommandEnabled = isActive && menuItem.Command.Type != CommandType.None;
-        if (isCommandEnabled)
-        {
-          bool isPostBackCommand = menuItem.Command.Type == CommandType.Event
-                                   || menuItem.Command.Type == CommandType.WxeFunction;
-          if (isPostBackCommand)
-          {
-            // Clientside script creates an anchor with href="#" and onclick=function
-            string argument = c_eventMenuItemPrefix + menuItemIndex;
-            href = Page.ClientScript.GetPostBackClientHyperlink (this, argument) + ";";
-            href = ScriptUtility.EscapeClientScript (href);
-            href = "'" + href + "'";
-
-            menuItem.Command.RegisterForSynchronousPostBack (this, argument, string.Format ("BocList '{0}', ListMenuItem '{1}'", ID, menuItem.ItemID));
-          }
-          else if (menuItem.Command.Type == CommandType.Href)
-          {
-            href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString(), menuItem.ItemID);
-            if (! ControlHelper.IsDesignMode (this, Context))
-              href = UrlUtility.GetAbsoluteUrl (Page, href);
-            href = "'" + href + "'";
-            target = "'" + menuItem.Command.HrefCommand.Target + "'";
-          }
-        }
-      }
-
-      bool showIcon = menuItem.Style == WebMenuItemStyle.Icon || menuItem.Style == WebMenuItemStyle.IconAndText;
-      bool showText = menuItem.Style == WebMenuItemStyle.Text || menuItem.Style == WebMenuItemStyle.IconAndText;
-      string icon = "null";
-      if (showIcon && menuItem.Icon.HasRenderingInformation)
-        icon = "'" + UrlUtility.ResolveUrl (menuItem.Icon.Url) + "'";
-      string disabledIcon = "null";
-      if (showIcon && menuItem.DisabledIcon.HasRenderingInformation)
-        disabledIcon = "'" + UrlUtility.ResolveUrl (menuItem.DisabledIcon.Url) + "'";
-      string text = showText ? "'" + menuItem.Text + "'" : "null";
-
-      bool isDisabled = !menuItem.EvaluateEnabled()
-                        || _editModeController.IsRowEditModeActive
-                        || ! isCommandEnabled;
-      stringBuilder.AppendFormat (
-          "\t\tnew ContentMenu_MenuItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8})",
-          menuID + "_" + menuItemIndex,
-          menuItem.Category,
-          text,
-          icon,
-          disabledIcon,
-          (int) menuItem.RequiredSelection,
-          isDisabled ? "true" : "false",
-          href,
-          target);
-    }
+    
 
     /// <summary> Builds the input required marker. </summary>
     protected internal virtual Image GetRequiredMarker ()
@@ -1576,6 +1389,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       requiredIcon.Style["vertical-align"] = "middle";
       return requiredIcon;
+    }
+
+    IListMenu IBocList.ListMenu
+    {
+      get { return _listMenu; }
     }
 
     /// <summary> Builds the validation error marker. </summary>
@@ -1957,7 +1775,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> 
-    ///   Event handler for the <see cref="DropDownMenu.EventCommandClick"/> of the <b>RowMenu</b>.
+    ///   Event handler for the <see cref="MenuBase.EventCommandClick"/> of the <b>RowMenu</b>.
     /// </summary>
     private void RowMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
     {
@@ -1995,7 +1813,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> 
-    ///   Event handler for the <see cref="DropDownMenu.WxeFunctionCommandClick"/> of the <b>RowMenu</b>.
+    ///   Event handler for the <see cref="MenuBase.WxeFunctionCommandClick"/> of the <b>RowMenu</b>.
     /// </summary>
     private void RowMenu_WxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
     {
@@ -3568,6 +3386,32 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RemoveRows (businessObjects);
     }
 
+    private void ListMenuItemWxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
+    {
+      var menuItem = e.Item;
+      if (menuItem == null || e.Command == null)
+        return;
+
+      if (menuItem is BocMenuItem)
+      {
+        BocMenuItemCommand command = (BocMenuItemCommand) e.Command;
+        if (Page is IWxePage)
+          command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows (), GetSelectedBusinessObjects ());
+      }
+      else
+      {
+        Command command = menuItem.Command;
+        if (Page is IWxePage)
+          command.ExecuteWxeFunction ((IWxePage) Page, null);
+      }
+    }
+
+    private void ListMenuItemEventCommandClick (object sender, WebMenuItemClickEventArgs e)
+    {
+      if (e.Item is BocMenuItem)
+        ((BocMenuItemCommand) e.Item.Command).OnClick ((BocMenuItem) e.Item);
+    }
+
     IPage IBocList.Page
     {
       get { return new PageWrapper (Page); }
@@ -3994,8 +3838,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Description ("Is raised when a menu item with a command of type Event is clicked.")]
     public event WebMenuItemClickEventHandler MenuItemClick
     {
-      add { Events.AddHandler (s_menuItemClickEvent, value); }
-      remove { Events.RemoveHandler (s_menuItemClickEvent, value); }
+      add { _listMenu.EventCommandClick += value; }
+      remove { _listMenu.EventCommandClick -= value; }
     }
 
     /// <summary> Gets or sets the offset between the items in the <c>menu block</c>. </summary>
@@ -4030,7 +3874,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Editor (typeof (BocMenuItemCollectionEditor), typeof (UITypeEditor))]
     public WebMenuItemCollection ListMenuItems
     {
-      get { return _listMenuItems; }
+      get { return _listMenu.MenuItems; }
     }
 
     /// <summary> Gets or sets the width reserved for the menu block. </summary>
@@ -4112,8 +3956,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [DefaultValue (ListMenuLineBreaks.All)]
     public ListMenuLineBreaks ListMenuLineBreaks
     {
-      get { return _listMenuLineBreaks; }
-      set { _listMenuLineBreaks = value; }
+      get { return _listMenu.LineBreaks; }
+      set { _listMenu.LineBreaks = value; }
     }
 
     /// <summary> Gets or sets the validation error message. </summary>
@@ -4219,13 +4063,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     Disabled,
     InitialOrder,
     SortedOrder
-  }
-
-  public enum ListMenuLineBreaks
-  {
-    All,
-    None,
-    BetweenGroups
   }
 
   public enum RowMenuDisplay

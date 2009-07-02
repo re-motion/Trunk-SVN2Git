@@ -15,10 +15,16 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
+namespace Remotion.Web.UI.Controls.Rendering
 {
-  public interface IDropDownMenuPreRenderer : IPreRenderer<IDropDownMenu>
+  public interface IListMenu : IStyledControl
   {
-    bool GetBrowserCapableOfScripting ();
+    ListMenuLineBreaks LineBreaks { get; }
+    WebMenuItemCollection MenuItems { get; }
+    new IPage Page { get; }
+    bool Enabled { get; }
+    bool HasClientScript { get; }
+    string GetSelectionCount { get; }
+    bool IsReadOnly { get; }
   }
 }
