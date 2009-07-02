@@ -30,7 +30,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </summary>
   public class BusinessObjectBinding
   {
-    private readonly IExtendedBusinessObjectBoundWebControl _control;
+    private readonly IBusinessObjectBoundWebControl _control;
 
     private IBusinessObjectDataSource _dataSource;
     private string _dataSourceControl;
@@ -50,13 +50,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     private bool _hasDesignModePropertyChanged = false;
 
-    public BusinessObjectBinding (IExtendedBusinessObjectBoundWebControl control)
+    public BusinessObjectBinding (IBusinessObjectBoundWebControl control)
     {
       _control = control;
     }
 
     /// <summary> The <see cref="IBusinessObjectBoundWebControl"/> whose binding this instance encapsulates. </summary>
-    public IExtendedBusinessObjectBoundWebControl Control
+    public IBusinessObjectBoundWebControl Control
     {
       get { return _control; }
     }
@@ -308,7 +308,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="property">The <see cref="IBusinessObjectProperty"/> to be tested. Must not be <see langword="null"/>.</param>
     /// <returns>
     ///   <list type="bullet">
-    ///     <item><see langword="true"/> if <see cref="IExtendedBusinessObjectBoundWebControl.SupportedPropertyInterfaces"/> is null.</item>
+    ///     <item><see langword="true"/> if <see cref="IBusinessObjectBoundWebControl.SupportedPropertyInterfaces"/> is null.</item>
     ///     <item><see langword="false"/> if the <see cref="DataSource"/> is in <see cref="DataSourceMode.Search"/> mode.</item>
     ///     <item>Otherwise, <see langword="IsPropertyInterfaceSupported"/> is evaluated and returned as result.</item>
     ///   </list>

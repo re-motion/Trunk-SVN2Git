@@ -38,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   // It is required to use a Designer from the same assambly as is the control (or the GAC etc), 
   // otherwise the VS 2003 Toolbox will have trouble loading the assembly.
   [Designer (typeof (BocDesigner))]
-  public abstract class BusinessObjectBoundWebControl : WebControl, IExtendedBusinessObjectBoundWebControl
+  public abstract class BusinessObjectBoundWebControl : WebControl, IBusinessObjectBoundWebControl
   {
     #region BusinessObjectBinding implementation
 
@@ -305,7 +305,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    Type[] IExtendedBusinessObjectBoundWebControl.SupportedPropertyInterfaces
+    Type[] IBusinessObjectBoundWebControl.SupportedPropertyInterfaces
     {
       get { return SupportedPropertyInterfaces; }
     }
@@ -322,7 +322,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return null; }
     }
 
-    bool IExtendedBusinessObjectBoundWebControl.SupportsPropertyMultiplicity (bool isList)
+    bool IBusinessObjectBoundWebControl.SupportsPropertyMultiplicity (bool isList)
     {
       return SupportsPropertyMultiplicity (isList);
     }

@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <include file='doc\include\UI\Controls\BocLiteral.xml' path='BocLiteral/Class/*' />
   [ToolboxItemFilter ("System.Web.UI")]
   [Designer (typeof (BocDesigner))]
-  public class BocLiteral : Control, IExtendedBusinessObjectBoundWebControl
+  public class BocLiteral : Control, IBusinessObjectBoundWebControl
   {
     #region BusinessObjectBinding implementation
 
@@ -282,7 +282,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       OnPreRender (EventArgs.Empty);
     }
 
-    bool IExtendedBusinessObjectBoundWebControl.SupportsPropertyMultiplicity (bool isList)
+    bool IBusinessObjectBoundWebControl.SupportsPropertyMultiplicity (bool isList)
     {
       return SupportsPropertyMultiplicity (isList);
     }
@@ -296,7 +296,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return !isList;
     }
 
-    Type[] IExtendedBusinessObjectBoundWebControl.SupportedPropertyInterfaces
+    Type[] IBusinessObjectBoundWebControl.SupportedPropertyInterfaces
     {
       get { return SupportedPropertyInterfaces; }
     }

@@ -328,7 +328,15 @@ namespace Remotion.ObjectBinding.Sample
       _repeaterInternal.RegisterValidator (validator);
     }
 
+    Type[] IBusinessObjectBoundWebControl.SupportedPropertyInterfaces
+    {
+      get { return ((IBusinessObjectBoundWebControl)_repeaterInternal).SupportedPropertyInterfaces; }
+    }
 
+    bool IBusinessObjectBoundWebControl.SupportsPropertyMultiplicity (bool isList)
+    {
+      return ((IBusinessObjectBoundWebControl) _repeaterInternal).SupportsPropertyMultiplicity (isList);
+    }
 
     public bool SupportsProperty (IBusinessObjectProperty property)
     {

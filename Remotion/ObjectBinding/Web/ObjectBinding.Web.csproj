@@ -261,7 +261,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\IDataEditControl.cs" />
-    <Compile Include="UI\Controls\IExtendedBusinessObjectBoundWebControl.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocBooleanValue\BocBooleanValueResourceSet.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocDateTimeValue\DateTimeFormatter.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\BocListRowMenuTuple.cs" />

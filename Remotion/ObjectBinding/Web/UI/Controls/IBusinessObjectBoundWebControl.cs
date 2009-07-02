@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Web.UI.Controls;
 
@@ -46,5 +47,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <note type="inotes">Apply an <see cref="BusinessObjectDataSourceControlConverter"/> when implementing the property.</note>
     /// </remarks>
     string DataSourceControl { get; set; }
+
+    /// <summary>
+    ///   Gets the interfaces derived from <see cref="IBusinessObjectProperty"/> supported by this control, or <see langword="null"/> if no 
+    ///   restrictions are made.
+    /// </summary>
+    Type[] SupportedPropertyInterfaces { get; }
+
+    /// <summary> Indicates whether properties with the specified multiplicity are supported. </summary>
+    /// <param name="isList"> <see langword="true"/> if the property is a list property. </param>
+    /// <returns> <see langword="true"/> if the multiplicity specified by <paramref name="isList"/> is supported. </returns>
+    bool SupportsPropertyMultiplicity (bool isList);
   }
 }
