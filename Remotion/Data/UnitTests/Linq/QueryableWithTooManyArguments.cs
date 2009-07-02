@@ -13,35 +13,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Remotion.Data.Linq;
-using Remotion.Utilities;
-using System;
 
-namespace Remotion.Data.DomainObjects.Linq
+namespace Remotion.Data.UnitTests.Linq
 {
-  /// <summary>
-  /// The class extends <see cref="QueryProviderBase"/>.
-  /// </summary>
-  public class DomainObjectQueryProvider : QueryProviderBase
+  public class QueryableWithTooManyArguments<T1, T2> : IQueryable<T1>
   {
-    public DomainObjectQueryProvider (DomainObjectQueryExecutor executor)
-        : base (executor)
+    public IEnumerator<T1> GetEnumerator ()
     {
+      throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// The method returns a specific instance of <see cref="IQueryable"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of the expression.</typeparam>
-    /// <param name="expression">The query as expression chain.</param>
-    /// <returns></returns>
-    protected override IQueryable<T> CreateQueryable<T> (Expression expression)
+    IEnumerator IEnumerable.GetEnumerator ()
     {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      return new DomainObjectQueryable<T> (this, expression);
+      return GetEnumerator();
     }
-   
+
+    public Expression Expression
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public Type ElementType
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public IQueryProvider Provider
+    {
+      get { throw new NotImplementedException(); }
+    }
   }
 }

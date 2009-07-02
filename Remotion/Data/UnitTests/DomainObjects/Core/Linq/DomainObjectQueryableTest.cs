@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlGeneration.SqlServer;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -48,28 +49,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
       Assert.That (queryable.Provider, Is.Not.Null);
-      Assert.That (queryable.Provider, Is.InstanceOfType (typeof (DomainObjectQueryProvider)));
+      Assert.That (queryable.Provider, Is.InstanceOfType (typeof (DefaultQueryProvider)));
+      Assert.That (((DefaultQueryProvider) queryable.Provider).QueryableType, Is.SameAs (typeof (DomainObjectQueryable<>)));
     }
 
     [Test]
     public void Provider_PassedIn ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
-      var expectedProvider = new DomainObjectQueryProvider (new DomainObjectQueryExecutor (_sqlGenerator, classDefinition));
+      var expectedProvider = new DefaultQueryProvider (typeof (DomainObjectQueryable<>), new DomainObjectQueryExecutor (_sqlGenerator, classDefinition));
       var queryable = new DomainObjectQueryable<Order> (expectedProvider, Expression.Constant (null, typeof (DomainObjectQueryable<Order>)));
       Assert.That (queryable.Provider, Is.Not.Null);
       Assert.That (queryable.Provider, Is.SameAs (expectedProvider));
-    }
-
-    [Test]
-    public void Get_Executor ()
-    {
-      var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
-      Assert.That (queryable.Provider.Executor, Is.InstanceOfType (typeof (DomainObjectQueryExecutor)));
-      Assert.That (((DomainObjectQueryExecutor)queryable.Provider.Executor).StartingClassDefinition, 
-          Is.SameAs (MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order))));
-      Assert.That (queryable.GetExecutor(), Is.SameAs (queryable.Provider.Executor));
-      
     }
   }
 }

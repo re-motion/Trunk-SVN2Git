@@ -308,7 +308,6 @@
     <Compile Include="DomainObjects\Core\Linq\MethodExtendString.cs" />
     <Compile Include="DomainObjects\Core\Linq\MethodExtensions.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryExecutorTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Transaction\ClientTransactionWithCustomITransaction.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\ObjectBindingToMappingTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectProviderAttributeTest.cs" />
@@ -533,6 +532,7 @@
     <Compile Include="Linq\Clauses\ResultModifications\LastResultModificationTest.cs" />
     <Compile Include="Linq\Clauses\ResultModifications\FirstResultModificationTest.cs" />
     <Compile Include="Linq\Clauses\ResultModifications\TestResultModification.cs" />
+    <Compile Include="Linq\DefaultQueryProviderTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchOneRequestTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchRequestBaseTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchFilteringExpressionTreeVisitorTest.cs" />
@@ -637,6 +637,7 @@
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\PartialTreeEvaluatingVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTest.cs" />
     <Compile Include="Linq\Parsing\Structure\QueryParserTest.cs" />
+    <Compile Include="Linq\QueryableWithTooManyArguments.cs" />
     <Compile Include="Linq\QueryModelBuilderTest.cs" />
     <Compile Include="Linq\QueryModelTest.cs" />
     <Compile Include="Linq\QueryModelVisitorBaseTest.cs" />

@@ -32,11 +32,10 @@ namespace Remotion.Data.DomainObjects.Linq
   /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
   public class DomainObjectQueryable<T> : QueryableBase<T> 
   {
-    private static DomainObjectQueryProvider CreateProvider (ISqlGenerator sqlGenerator)
+    private static IQueryExecutor CreateExecutor (ISqlGenerator sqlGenerator)
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
-      var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (ParamList.Create (sqlGenerator, classDefinition));
-      return new DomainObjectQueryProvider (executor);
+      return ObjectFactory.Create<DomainObjectQueryExecutor> (ParamList.Create (sqlGenerator, classDefinition));
     }
 
     /// <summary>
@@ -47,7 +46,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// <remarks>
     /// This constructor is used by the standard query methods defined in <see cref="Queryable"/> when a LINQ query is constructed.
     /// </remarks>
-    public DomainObjectQueryable (DomainObjectQueryProvider provider, Expression expression)
+    public DomainObjectQueryable (QueryProviderBase provider, Expression expression)
       : base (provider, expression)
     {
     }
@@ -67,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </para>
     /// </remarks>
     public DomainObjectQueryable (ISqlGenerator sqlGenerator)
-      : base (CreateProvider(ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator)))
+      : base (CreateExecutor (ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator)))
     {
     }
 
@@ -76,17 +75,9 @@ namespace Remotion.Data.DomainObjects.Linq
       return "DomainObjectQueryable<" + typeof (T).Name + ">";
     }
 
-    public new DomainObjectQueryProvider Provider
-    {
-      get { return (DomainObjectQueryProvider) base.Provider; }
-    }
-
     public DomainObjectQueryExecutor GetExecutor ()
     {
-      return (DomainObjectQueryExecutor) Provider.Executor;
+      return (DomainObjectQueryExecutor) ((QueryProviderBase) Provider).Executor;
     }
-
-    
-
   }
 }

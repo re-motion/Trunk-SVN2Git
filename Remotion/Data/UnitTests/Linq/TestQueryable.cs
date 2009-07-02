@@ -27,7 +27,12 @@ namespace Remotion.Data.UnitTests.Linq
     }
 
     public TestQueryable (IQueryExecutor executor)
-        : base (new TestQueryProvider (executor))
+        : base (executor)
+    {
+    }
+
+    public TestQueryable (IQueryProvider provider)
+      : base (provider)
     {
     }
 

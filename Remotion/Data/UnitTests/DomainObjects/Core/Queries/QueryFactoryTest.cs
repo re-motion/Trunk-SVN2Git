@@ -20,8 +20,10 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.Data.Linq;
 using Remotion.Data.Linq.SqlGeneration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.Linq;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Mapping;
@@ -187,6 +189,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void CreateQuery_FromLinqQuery_InvalidQueryable ()
     {
       var queryable = new int[0].AsQueryable ();
+      QueryFactory.CreateQuery ("<dynamic query>", queryable);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given queryable must stem from an instance of DomainObjectQueryable. Instead, "
+        + "it is of type 'TestQueryable`1', with a query provider of type 'DefaultQueryProvider'. Be sure to use QueryFactory.CreateLinqQuery to "
+        + "create the queryable instance, and only use standard query methods on it.\r\nParameter name: queryable")]
+    public void CreateQuery_FromLinqQuery_InvalidQueryExecutor ()
+    {
+      var queryable = new TestQueryable<int>(MockRepository.GenerateMock<IQueryExecutor>()).AsQueryable ();
       QueryFactory.CreateQuery ("<dynamic query>", queryable);
     }
   }

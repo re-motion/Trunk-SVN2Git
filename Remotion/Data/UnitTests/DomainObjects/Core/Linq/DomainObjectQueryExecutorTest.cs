@@ -324,7 +324,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {
         var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
-        Assert.That (Mixin.Get<TestQueryExecutorMixin> (queryable.Provider.Executor), Is.Not.Null);
+        Assert.That (Mixin.Get<TestQueryExecutorMixin> (((DefaultQueryProvider) queryable.Provider).Executor), Is.Not.Null);
       }
     }
 
