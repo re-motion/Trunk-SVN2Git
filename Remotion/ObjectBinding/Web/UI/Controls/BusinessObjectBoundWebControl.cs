@@ -224,6 +224,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RegisterHtmlHeadContents (Context);
     }
 
+    /// <summary>Gets or sets a value that determines whether a server control is rendered as UI on the page.</summary>
     /// <value> 
     ///   <para>
     ///     The <b>set accessor</b> passes the value to the base class's <b>Visible</b> property.
@@ -272,6 +273,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    /// <value> An object or boxed value. </value>
     [Browsable (false)]
     protected abstract object ValueImplementation { get; set; }
 
@@ -285,6 +287,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       OnPreRender (EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Overrides the base method to temporarily enable the control before adding attributes.
+    /// </summary>
+    /// <param name="writer">The <see cref="HtmlTextWriter"/> object to use for adding attributes.</param>
     protected override void AddAttributesToRender (HtmlTextWriter writer)
     {
       bool tempEnabled = Enabled;
@@ -295,6 +301,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         Enabled = false;
     }
 
+    /// <summary>Gets a <see cref="ControlCollection"/> object that represents the child
+    /// controls for a specified server control in the UI hierarchy.</summary>
     /// <remarks> Calls <see cref="Control.EnsureChildControls"/>. </remarks>
     public override ControlCollection Controls
     {
@@ -340,6 +348,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="localResourcesType"> 
     ///   A type with the <see cref="MultiLingualResourcesAttribute"/> applied to it. Typically an <b>enum</b> or the derived class itself.
     /// </param>
+    /// <returns>An <see cref="IResourceManager"/> from which all resources for this control can be obtained.</returns>
     protected IResourceManager GetResourceManager (Type localResourcesType)
     {
       Remotion.Utilities.ArgumentUtility.CheckNotNull ("localResourcesType", localResourcesType);
@@ -401,6 +410,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Evalutes whether this control is in <b>Design Mode</b>. </summary>
+    /// <value><see langword="true"/> if the control is currently rendered by the Visual Studio Designer.</value>
     [Browsable (false)]
     protected internal virtual bool IsDesignMode
     {

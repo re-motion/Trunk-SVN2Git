@@ -20,6 +20,10 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 {
+  /// <summary>
+  /// Responsible for rendering a <see cref="SingleView"/> control in standard mode.
+  /// <seealso cref="ISingleView"/>
+  /// </summary>
   public class SingleViewRenderer : RendererBase<ISingleView>, ISingleViewRenderer
   {
     public SingleViewRenderer (IHttpContext context, HtmlTextWriter writer, ISingleView control)

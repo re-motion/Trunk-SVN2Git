@@ -52,8 +52,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
 
       Label labelControl = new Label { ID = Control.GetLabelClientID() };
       Image imageControl = new Image { ID = Control.GetImageClientID() };
-      HiddenField hiddenFieldControl = new HiddenField { ID = Control.GetHiddenFieldKey() };
-      HyperLink linkControl = new HyperLink { ID = Control.GetHyperLinkKey() };
+      HiddenField hiddenFieldControl = new HiddenField { ID = Control.GetHiddenFieldUniqueID() };
+      HyperLink linkControl = new HyperLink { ID = Control.GetHyperLinkUniqueID() };
 
       bool isClientScriptEnabled = DetermineClientScriptLevel();
       if (isClientScriptEnabled)

@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;

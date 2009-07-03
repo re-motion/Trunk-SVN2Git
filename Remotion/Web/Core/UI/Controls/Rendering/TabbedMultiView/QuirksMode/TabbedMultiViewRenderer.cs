@@ -22,6 +22,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 {
   /// <summary>
   /// Responsible for rendering <see cref="TabbedMultiView"/> controls in quirks mode.
+  /// <seealso cref="ITabbedMultiView"/>
   /// </summary>
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {

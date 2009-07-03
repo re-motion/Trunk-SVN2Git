@@ -1,6 +1,18 @@
-// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
-// All rights reserved.
-//
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Drawing;
 using System.Web.UI;
@@ -10,10 +22,14 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
 {
+  /// <summary>
+  /// Responsible for rendering a <see cref="TabbedMenu"/> control in quirks mode.
+  /// <seealso cref="ITabbedMenu"/>
+  /// </summary>
   public class TabbedMenuRenderer : RendererBase<ITabbedMenu>, ITabbedMenuRenderer
   {
     public TabbedMenuRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMenu control)
-        : base(context, writer, control)
+        : base (context, writer, control)
     {
     }
 
@@ -30,9 +46,9 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
       Control.MainMenuTabStrip.CssClass = CssClassMainMenu;
       Control.MainMenuTabStrip.Width = Unit.Percentage (100);
       Control.MainMenuTabStrip.RenderControl (Writer);
-      Writer.RenderEndTag (); // End main menu cell
+      Writer.RenderEndTag(); // End main menu cell
 
-      Writer.RenderEndTag (); // End main menu row
+      Writer.RenderEndTag(); // End main menu row
 
       Writer.RenderBeginTag (HtmlTextWriterTag.Tr); // Begin sub menu row
 
@@ -46,7 +62,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
       Control.SubMenuTabStrip.Style["width"] = "auto";
       Control.SubMenuTabStrip.CssClass = CssClassSubMenu;
       Control.SubMenuTabStrip.RenderControl (Writer);
-      Writer.RenderEndTag (); // End sub menu cell
+      Writer.RenderEndTag(); // End sub menu cell
 
       Control.StatusStyle.AddAttributesToRender (Writer);
       if (string.IsNullOrEmpty (Control.StatusStyle.CssClass))
@@ -58,8 +74,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
       else
         Writer.Write (Control.StatusText); // Do not HTML encode
 
-      Writer.RenderEndTag (); // End status cell
-      Writer.RenderEndTag (); // End sub menu row
+      Writer.RenderEndTag(); // End status cell
+      Writer.RenderEndTag(); // End sub menu row
       Writer.RenderEndTag(); // End table
     }
 
@@ -73,8 +89,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
-
     #region protected virtual string CssClass...
+
     /// <summary> Gets the CSS-Class applied to the <see cref="WebTabStrip"/> itself. </summary>
     /// <remarks> 
     ///   <para> Class: <c>tabStrip</c>. </para>
@@ -129,6 +145,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
     {
       get { return "tabbedMenuStatusCell"; }
     }
+
     #endregion
   }
 }

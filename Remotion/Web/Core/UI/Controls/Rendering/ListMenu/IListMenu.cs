@@ -15,8 +15,11 @@
 // 
 using System;
 
-namespace Remotion.Web.UI.Controls.Rendering
+namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
+  /// <summary>
+  /// Exposes <see cref="ListMenu"/> properties relevant to rendering.
+  /// </summary>
   public interface IListMenu : IStyledControl
   {
     ListMenuLineBreaks LineBreaks { get; }

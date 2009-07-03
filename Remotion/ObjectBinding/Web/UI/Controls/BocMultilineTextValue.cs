@@ -172,6 +172,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _text = value; }
     }
 
+    /// <summary>
+    /// Loads <see cref="Text"/> in addition to the base state.
+    /// </summary>
+    /// <param name="savedState">The state object created by <see cref="SaveControlState"/>.</param>
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
@@ -180,6 +184,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _text = (string) values[1];
     }
 
+    /// <summary>
+    /// Saves <see cref="Text"/> in addition to the base state.
+    /// </summary>
+    /// <returns>An object containing the state to be loaded in the control's next lifecycle.</returns>
     protected override object SaveControlState ()
     {
       object[] values = new object[2];
@@ -206,21 +214,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
+    /// <summary>
+    /// If applicable, validators for non-empty and maximum length are created.
+    /// </summary>
+    /// <returns>An enumeration of all applicable validators.</returns>
     protected override IEnumerable<BaseValidator> GetValidators ()
     {
       IList<BaseValidator> validators = new List<BaseValidator> (2);
 
-      RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
-      requiredValidator.ID = ID + "_ValidatorRequired";
-      requiredValidator.ControlToValidate = TargetControl.ID;
-      if (StringUtility.IsNullOrEmpty (ErrorMessage))
+      if (IsRequired)
       {
-        requiredValidator.ErrorMessage =
-            GetResourceManager().GetString (ResourceIdentifier.RequiredValidationMessage);
+        RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
+        requiredValidator.ID = ID + "_ValidatorRequired";
+        requiredValidator.ControlToValidate = TargetControl.ID;
+        if (StringUtility.IsNullOrEmpty (ErrorMessage))
+        {
+          requiredValidator.ErrorMessage =
+              GetResourceManager().GetString (ResourceIdentifier.RequiredValidationMessage);
+        }
+        else
+          requiredValidator.ErrorMessage = ErrorMessage;
+        validators.Add (requiredValidator);
       }
-      else
-        requiredValidator.ErrorMessage = ErrorMessage;
-      validators.Add (requiredValidator);
 
       if (TextBoxStyle.MaxLength != null)
       {

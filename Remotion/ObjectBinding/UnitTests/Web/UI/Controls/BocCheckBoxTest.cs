@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocCheckBox.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocCheckBox.GetCheckboxKey(), actual[0]);
+      Assert.AreEqual (_bocCheckBox.GetCheckboxUniqueID(), actual[0]);
     }
 
 

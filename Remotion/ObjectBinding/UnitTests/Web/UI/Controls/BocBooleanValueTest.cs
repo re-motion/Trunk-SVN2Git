@@ -17,12 +17,11 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
-using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
   [TestFixture]
-  public class BocBooleanValueTest: BocTest
+  public class BocBooleanValueTest : BocTest
   {
     private BocBooleanValueMock _bocBooleanValue;
     private TypeWithBoolean _businessObject;
@@ -30,13 +29,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     private IBusinessObjectBooleanProperty _propertyBooleanValue;
     private IBusinessObjectBooleanProperty _propertyNullableBooleanValue;
 
-    public BocBooleanValueTest()
+    public BocBooleanValueTest ()
     {
     }
 
 
     [SetUp]
-    public override void SetUp()
+    public override void SetUp ()
     {
       base.SetUp();
       _bocBooleanValue = new BocBooleanValueMock();
@@ -45,8 +44,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _businessObject = TypeWithBoolean.Create();
 
-      _propertyBooleanValue = (IBusinessObjectBooleanProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("BooleanValue");
-      _propertyNullableBooleanValue = (IBusinessObjectBooleanProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("NullableBooleanValue");
+      _propertyBooleanValue =
+          (IBusinessObjectBooleanProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("BooleanValue");
+      _propertyNullableBooleanValue =
+          (IBusinessObjectBooleanProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("NullableBooleanValue");
 
       _dataSource = new BusinessObjectReferenceDataSource();
       _dataSource.BusinessObject = (IBusinessObject) _businessObject;
@@ -54,7 +55,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
 
     [Test]
-    public void EvaluateWaiConformityDebugLevelUndefined()
+    public void EvaluateWaiConformityDebugLevelUndefined ()
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelUndefined();
       _bocBooleanValue.EvaluateWaiConformity();
@@ -64,7 +65,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void EvaluateWaiConformityLevelA()
+    public void EvaluateWaiConformityLevelA ()
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
       _bocBooleanValue.EvaluateWaiConformity();
@@ -75,7 +76,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
 
     [Test]
-    public void EvaluateWaiConformityDebugLevelA()
+    public void EvaluateWaiConformityDebugLevelA ()
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetDebugExceptionLevelA();
       _bocBooleanValue.EvaluateWaiConformity();
@@ -88,7 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
 
     [Test]
-    public void GetTrackedClientIDsInReadOnlyMode()
+    public void GetTrackedClientIDsInReadOnlyMode ()
     {
       _bocBooleanValue.ReadOnly = true;
       string[] actual = _bocBooleanValue.GetTrackedClientIDs();
@@ -97,18 +98,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void GetTrackedClientIDsInEditMode()
+    public void GetTrackedClientIDsInEditMode ()
     {
       _bocBooleanValue.ReadOnly = false;
       string[] actual = _bocBooleanValue.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocBooleanValue.GetHiddenFieldKey(), actual[0]);
+      Assert.AreEqual (_bocBooleanValue.GetHiddenFieldUniqueID(), actual[0]);
     }
 
 
     [Test]
-    public void SetValueToTrue()
+    public void SetValueToTrue ()
     {
       _bocBooleanValue.IsDirty = false;
       _bocBooleanValue.Value = true;
@@ -117,7 +118,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SetValueToFalse()
+    public void SetValueToFalse ()
     {
       _bocBooleanValue.IsDirty = false;
       _bocBooleanValue.Value = false;
@@ -126,7 +127,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SetValueToNull()
+    public void SetValueToNull ()
     {
       _bocBooleanValue.IsDirty = false;
       _bocBooleanValue.Value = null;
@@ -135,7 +136,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SetValueToNullableBooleanTrue()
+    public void SetValueToNullableBooleanTrue ()
     {
       _bocBooleanValue.IsDirty = false;
       _bocBooleanValue.Value = true;
@@ -144,7 +145,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SetValueToNullableBooleanFalse()
+    public void SetValueToNullableBooleanFalse ()
     {
       _bocBooleanValue.IsDirty = false;
       _bocBooleanValue.Value = false;
@@ -153,7 +154,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void SetValueToNullableBooleanNull()
+    public void SetValueToNullableBooleanNull ()
     {
       _bocBooleanValue.IsDirty = false;
       _bocBooleanValue.Value = null;
@@ -218,7 +219,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
 
     [Test]
-    public void LoadValueAndInterimTrue()
+    public void LoadValueAndInterimTrue ()
     {
       _businessObject.BooleanValue = true;
       _bocBooleanValue.DataSource = _dataSource;
@@ -232,7 +233,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadValueAndInterimFalseWithValueTrue()
+    public void LoadValueAndInterimFalseWithValueTrue ()
     {
       _businessObject.BooleanValue = true;
       _bocBooleanValue.DataSource = _dataSource;
@@ -246,7 +247,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadValueAndInterimFalseWithValueFalse()
+    public void LoadValueAndInterimFalseWithValueFalse ()
     {
       _businessObject.BooleanValue = false;
       _bocBooleanValue.DataSource = _dataSource;
@@ -260,7 +261,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadValueAndInterimFalseWithValueNullableBooelanTrue()
+    public void LoadValueAndInterimFalseWithValueNullableBooelanTrue ()
     {
       _businessObject.NullableBooleanValue = true;
       _bocBooleanValue.DataSource = _dataSource;
@@ -274,7 +275,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadValueAndInterimFalseWithValueNullableBooelanFalse()
+    public void LoadValueAndInterimFalseWithValueNullableBooelanFalse ()
     {
       _businessObject.NullableBooleanValue = false;
       _bocBooleanValue.DataSource = _dataSource;
@@ -303,7 +304,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
 
     [Test]
-    public void LoadUnboundValueAndInterimTrue()
+    public void LoadUnboundValueAndInterimTrue ()
     {
       bool value = true;
       _bocBooleanValue.Value = null;
@@ -315,7 +316,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadUnboundValueAndInterimFalseWithValueTrue()
+    public void LoadUnboundValueAndInterimFalseWithValueTrue ()
     {
       bool value = true;
       _bocBooleanValue.Value = null;
@@ -327,7 +328,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadUnboundValueAndInterimFalseWithValueFalse()
+    public void LoadUnboundValueAndInterimFalseWithValueFalse ()
     {
       bool value = false;
       _bocBooleanValue.Value = null;
@@ -339,7 +340,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadUnboundValueAndInterimFalseWithValueNull()
+    public void LoadUnboundValueAndInterimFalseWithValueNull ()
     {
       bool? value = null;
       _bocBooleanValue.Value = true;
@@ -351,7 +352,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadUnboundValueAndInterimFalseWithValueNullableBooelanTrue()
+    public void LoadUnboundValueAndInterimFalseWithValueNullableBooelanTrue ()
     {
       bool? value = true;
       _bocBooleanValue.Value = null;
@@ -363,7 +364,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadUnboundValueAndInterimFalseWithValueNullableBooelanFalse()
+    public void LoadUnboundValueAndInterimFalseWithValueNullableBooelanFalse ()
     {
       bool? value = false;
       _bocBooleanValue.Value = null;
@@ -375,7 +376,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     }
 
     [Test]
-    public void LoadUnboundValueAndInterimFalseWithValueNullableBooelanNull()
+    public void LoadUnboundValueAndInterimFalseWithValueNullableBooelanNull ()
     {
       bool? value = null;
       _bocBooleanValue.Value = true;

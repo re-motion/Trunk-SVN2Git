@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
@@ -26,11 +25,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
   /// Responsible for creating the quirks mode renderers for <see cref="IBocList"/> and its parts except columns - for that,
   /// see <see cref="BocColumnRendererFactory"/>.
   /// </summary>
-  public class BocListRendererFactory : 
-    IBocListRendererFactory,
-    IBocListMenuBlockRendererFactory, 
-    IBocListNavigationBlockRendererFactory, 
-    IBocRowRendererFactory, IBocListTableBlockRendererFactory
+  public class BocListRendererFactory
+      :
+          IBocListRendererFactory,
+          IBocListMenuBlockRendererFactory,
+          IBocListNavigationBlockRendererFactory,
+          IBocRowRendererFactory,
+          IBocListTableBlockRendererFactory
   {
     IBocRowRenderer IBocRowRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
     {
@@ -71,7 +72,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
       return new BocListRenderer (context, writer, list, CssClassContainer.Instance, serviceLocator);
     }
 
-    IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
+    IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (
+        IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);

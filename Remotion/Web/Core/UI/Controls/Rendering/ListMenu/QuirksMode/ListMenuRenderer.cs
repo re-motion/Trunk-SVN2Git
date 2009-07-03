@@ -20,6 +20,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
 {
+  /// <summary>
+  /// Responsible for rendering a <see cref="ListMenu"/> control in quirks mode.
+  /// <seealso cref="IListMenu"/>
+  /// </summary>
   public class ListMenuRenderer : RendererBase<IListMenu>, IListMenuRenderer
   {
     protected const string c_whiteSpace = "&nbsp;";

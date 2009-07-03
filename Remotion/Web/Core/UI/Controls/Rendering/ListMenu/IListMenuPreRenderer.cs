@@ -17,6 +17,10 @@ using System;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
+  /// <summary>
+  /// Interface for classes that handle markup-related actions for <see cref="ListMenu"/> controls,
+  /// such as registering HTML head contents, which have to be executed before the rendering stage.
+  /// </summary>
   public interface IListMenuPreRenderer : IPreRenderer<IListMenu>
   {
   }

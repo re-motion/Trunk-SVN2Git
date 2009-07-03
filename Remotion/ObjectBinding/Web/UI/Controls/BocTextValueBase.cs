@@ -23,19 +23,20 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  [ControlValueProperty("Text")]
-  [DefaultProperty("Text")]
+  /// <summary>
+  /// Abstract base class for <see cref="BocTextValue"/> and <see cref="BocMultilineTextValue"/>, both of which handle text input.
+  /// </summary>
+  [ControlValueProperty ("Text")]
+  [DefaultProperty ("Text")]
   [ValidationProperty ("Text")]
-  [ParseChildren(true, "Text")]
+  [ParseChildren (true, "Text")]
   [DefaultEvent ("TextChanged")]
   [ToolboxItemFilter ("System.Web.UI")]
   public abstract class BocTextValueBase : BusinessObjectBoundEditableWebControl, IBocTextValueBase, IPostBackDataHandler, IFocusableControl
@@ -58,10 +59,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   The <see cref="BocTextValue"/> supports properties of types <see cref="IBusinessObjectStringProperty"/>,
-    ///   <see cref="IBusinessObjectDateTimeProperty"/>, and <see cref="IBusinessObjectNumericProperty"/>.
+    /// Contains the types of properties supported by the control. A property assigned to <see cref="BusinessObjectBoundWebControl.Property"/>
+    /// but be assignable to one of the contained interfaces.
     /// </summary>
-    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
+    /// <value>An array of types, containing interfaces derived from <see cref="IBusinessObjectProperty"/>.</value>
     protected abstract override Type[] SupportedPropertyInterfaces { get; }
 
     /// <summary>
@@ -78,7 +79,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its 
     ///   <see cref="Control.ClientID"/>.
     /// </summary>
-    /// <value> Returns the <see cref="TextBox"/> if the control is in edit mode, otherwise the control itself. </value>
+    /// <value> The control itself. </value>
     public override Control TargetControl
     {
       get { return this; }
@@ -100,6 +101,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) 
     ///   and the <see cref="Label"/> (read-only mode).
     /// </summary>
+    /// <value>The <see cref="Style"/> object applied to both edit and read-only mode UI.</value>
     /// <remarks>
     ///   Use the <see cref="TextBoxStyle"/> and <see cref="LabelStyle"/> to assign individual style settings for
     ///   the respective modes. Note that if you set one of the <b>Font</b> attributes (Bold, Italic etc.) to 
@@ -117,6 +119,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) only. </summary>
+    /// <value>The <see cref="Style"/> object applied to edit mode UI.</value>
     /// <remarks> These style settings override the styles defined in <see cref="CommonStyle"/>. </remarks>
     [Category ("Style")]
     [Description ("The style that you want to apply to the TextBox (edit mode) only.")]
@@ -129,6 +132,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Gets the style that you want to apply to the <see cref="Label"/> (read-only mode) only. </summary>
+    /// <value>The <see cref="Style"/> object applied read-only mode UI.</value>
     /// <remarks> These style settings override the styles defined in <see cref="CommonStyle"/>. </remarks>
     [Category ("Style")]
     [Description ("The style that you want to apply to the Label (read-only mode) only.")]
@@ -163,12 +167,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Gets or sets the string representation of the current value. </summary>
+    /// <value>The text contents of the input field in edit mode and the displayed text in read-only mode.</value>
     /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
     [Description ("The string representation of the current value.")]
     [Category ("Data")]
     [DefaultValue ("")]
     public abstract string Text { get; set; }
 
+    /// <summary>
+    /// Registers the control as requiring a postback.
+    /// </summary>
+    /// <param name="e">ignored</param>
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
@@ -176,6 +185,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         Page.RegisterRequiresPostBack (this);
     }
 
+    /// <summary>
+    /// Registers the script file reference needed for enhanced textbox behavior.
+    /// </summary>
+    /// <param name="context">The context of the current request.</param>
     public override void RegisterHtmlHeadContents (HttpContext context)
     {
       base.RegisterHtmlHeadContents (context);
@@ -206,7 +219,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadPostData/*' />
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetTextBoxUniqueID());
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetTextBoxClientID());
       bool isDataChanged = newValue != null && StringUtility.NullToEmpty (Text) != newValue;
       if (isDataChanged)
       {
@@ -237,7 +250,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <exception cref="Remotion.Web.UI.WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
     protected virtual void EvaluateWaiConformity ()
     {
-      if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
+      if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
       {
         if (TextBoxStyle.AutoPostBack == true)
           WcagHelper.Instance.HandleWarning (1, this, "TextBoxStyle.AutoPostBack");
@@ -285,42 +298,45 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
     public override BaseValidator[] CreateValidators ()
     {
-      if (IsReadOnly || ! IsRequired)
+      if (IsReadOnly)
         return new BaseValidator[0];
 
       _validators.AddRange (GetValidators());
       return _validators.ToArray();
     }
 
-    bool IBocRenderableControl.IsDesignMode { get { return IsDesignMode; } }
-    public void BaseAddAttributesToRender (HtmlTextWriter writer)
+    bool IBocRenderableControl.IsDesignMode
     {
-      base.AddAttributesToRender (writer);
+      get { return IsDesignMode; }
     }
 
+    /// <summary>
+    /// Creates and configures the validators that validate the control's text value.
+    /// </summary>
+    /// <returns>An enumeration of validators to use for checking whether the control's input is valid.</returns>
     protected abstract IEnumerable<BaseValidator> GetValidators ();
 
+    /// <summary>
+    /// Loads the resources used by the control. <seealso cref="GetResourceManager"/>
+    /// </summary>
+    /// <param name="e"></param>
     protected override void OnPreRender (EventArgs e)
     {
       EnsureChildControls();
       base.OnPreRender (e);
 
-      if (!IsDesignMode)
-        Page.RegisterRequiresPostBack (this);
-
       LoadResources (GetResourceManager());
 
-      EvaluateWaiConformity ();
+      EvaluateWaiConformity();
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
     protected abstract IResourceManager GetResourceManager ();
 
-    public string GetTextBoxUniqueID ()
-    {
-      return UniqueID + IdSeparator + "Boc_TextBox";
-    }
-
+    /// <summary>
+    /// Returns the ID to use for the input field in the rendered HTML.
+    /// </summary>
+    /// <returns>The control's <see cref="Control.ClientID"/> postfixed by a constant textbox id.</returns>
     public string GetTextBoxClientID ()
     {
       return ClientID + ClientIDSeparator + "Boc_TextBox";

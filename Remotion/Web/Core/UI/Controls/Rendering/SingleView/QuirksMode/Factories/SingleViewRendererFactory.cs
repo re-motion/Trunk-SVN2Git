@@ -20,7 +20,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode.Factories
 {
   /// <summary>
-  /// Responsible for creating the quirks mode renderer for <see cref="SingleView"/> controls.
+  /// Responsible for creating quirks mode renderers and prerenderers for <see cref="SingleView"/> controls.
   /// </summary>
   public class SingleViewRendererFactory : ISingleViewRendererFactory
   {

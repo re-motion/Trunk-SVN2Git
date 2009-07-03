@@ -18,6 +18,10 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
 {
+  /// <summary>
+  /// Responsible for registering the style sheet for <see cref="WebTabStrip"/> controls in quirks mode.
+  /// <seealso cref="IWebTabStrip"/>
+  /// </summary>
   public class WebTabStripPreRenderer : PreRendererBase<IWebTabStrip>, IWebTabStripPreRenderer
   {
     public WebTabStripPreRenderer (IHttpContext context, IWebTabStrip control)

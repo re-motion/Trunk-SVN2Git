@@ -19,6 +19,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
+  /// <summary>
+  /// Interface for factories creating renderers for <see cref="TabbedMenu"/> controls.
+  /// </summary>
   public interface ITabbedMenuRendererFactory
   {
     ITabbedMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMenu control);

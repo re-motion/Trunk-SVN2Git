@@ -17,6 +17,9 @@ using System;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
 {
+  /// <summary>
+  /// Interface for classes able to render <see cref="DropDownMenu"/> controls.
+  /// </summary>
   public interface IDropDownMenuRenderer : IRenderer<IDropDownMenu>
   {
   }

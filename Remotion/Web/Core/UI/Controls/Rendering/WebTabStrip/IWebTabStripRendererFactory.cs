@@ -20,7 +20,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
   /// <summary>
-  /// Interface for factories creating renderers for <see cref="WebTabStrip"/> controls.
+  /// Interface for factories creating renderers and prerenderers for <see cref="WebTabStrip"/> controls.
   /// </summary>
   public interface IWebTabStripRendererFactory
   {

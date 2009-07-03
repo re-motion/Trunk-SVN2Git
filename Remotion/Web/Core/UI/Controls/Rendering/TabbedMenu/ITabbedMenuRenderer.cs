@@ -17,6 +17,9 @@ using System;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
+  /// <summary>
+  /// Interface for classes able to render <see cref="TabbedMenu"/> controls.
+  /// </summary>
   public interface ITabbedMenuRenderer : IRenderer<ITabbedMenu>
   {
   }

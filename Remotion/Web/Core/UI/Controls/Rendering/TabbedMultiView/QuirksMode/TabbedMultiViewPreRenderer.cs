@@ -20,6 +20,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 {
+  /// <summary>
+  /// Responsible for registering scripts, border spans and the style sheet for <see cref="TabbedMultiView"/> controls in quirks mode.
+  /// <seealso cref="ITabbedMultiView"/>
+  /// </summary>
   public class TabbedMultiViewPreRenderer : PreRendererBase<ITabbedMultiView>, ITabbedMultiViewPreRenderer
   {
     public TabbedMultiViewPreRenderer (IHttpContext context, ITabbedMultiView control)

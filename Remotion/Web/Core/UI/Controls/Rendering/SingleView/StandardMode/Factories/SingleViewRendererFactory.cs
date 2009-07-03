@@ -20,7 +20,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating the standard mode renderer for <see cref="SingleView"/> controls.
+  /// Responsible for creating standard mode renderers and prerenderers for <see cref="SingleView"/> controls.
   /// </summary>
   public class SingleViewRendererFactory : ISingleViewRendererFactory
   {

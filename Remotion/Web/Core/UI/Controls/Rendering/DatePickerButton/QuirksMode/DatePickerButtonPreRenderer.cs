@@ -19,7 +19,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 {
   /// <summary>
-  /// Responsible for registering the client script file that the <see cref="DatePickerButton"/> depends on.
+  /// Responsible for registering the client script file that the <see cref="DatePickerButton"/> depends on in quirks mode.
   /// </summary>
   public class DatePickerButtonPreRenderer : PreRendererBase<IDatePickerButton>, IDatePickerButtonPreRenderer
   {

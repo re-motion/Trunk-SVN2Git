@@ -20,6 +20,9 @@ using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
 {
+  /// <summary>
+  /// Exposes <see cref="TabbedMultiView"/> properties relevant to rendering.
+  /// </summary>
   public interface ITabbedMultiView : IStyledControl
   {
     bool IsDesignMode { get; }

@@ -20,6 +20,9 @@ using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
+  /// <summary>
+  /// Interface for factories creating renderers for <see cref="MenuTab"/> items.
+  /// </summary>
   public interface IMenuTabRendererFactory
   {
      IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab);

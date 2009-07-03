@@ -15,7 +15,6 @@
 // 
 using System;
 using System.ComponentModel;
-using System.Web.UI.WebControls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {

@@ -42,6 +42,10 @@ public interface IValidatableControl: IControl
   /// <returns> True, if all validators validated. </returns>
   bool Validate ();
 
+  /// <summary>
+  /// This method puts the control into a state in which validation can be performed. 
+  /// This may include populating control values from the view state explicitly.
+  /// </summary>
   void PrepareValidation ();
 }
 

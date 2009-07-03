@@ -23,7 +23,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Globalization;
 using Image=System.Web.UI.WebControls.Image;
 

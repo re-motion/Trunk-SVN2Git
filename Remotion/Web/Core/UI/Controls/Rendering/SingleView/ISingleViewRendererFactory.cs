@@ -20,7 +20,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.SingleView
 {
   /// <summary>
-  /// Interface for factories that create renderers for <see cref="ISingleView"/>.
+  /// Interface for factories that create renderers and prerenderers for <see cref="ISingleView"/> controls.
   /// </summary>
   public interface ISingleViewRendererFactory
   {

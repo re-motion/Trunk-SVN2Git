@@ -20,6 +20,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
+  /// <summary>
+  /// Exposes <see cref="WebTab"/> properties relevant to rendering.
+  /// </summary>
   public interface IWebTab : IControlItem
   {
     string GetPostBackClientEvent ();

@@ -20,6 +20,9 @@ using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
+  /// <summary>
+  /// Exposes <see cref="TabbedMenu"/> properties relevant to rendering.
+  /// </summary>
   public interface ITabbedMenu : IStyledControl
   {
     IWebTabStrip MainMenuTabStrip { get; }

@@ -19,6 +19,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating quirks mode renderers and prerenderers for <see cref="ListMenu"/> controls.
+  /// </summary>
   public class ListMenuRendererFactory : IListMenuRendererFactory
   {
     public IListMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IListMenu control)

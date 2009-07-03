@@ -17,6 +17,9 @@ using System;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
+  /// <summary>
+  /// Contains all the CSS class definitions needed throughout <see cref="BocList"/> rendering.
+  /// </summary>
   public class CssClassContainer
   {
     private static readonly DoubleCheckedLockingContainer<CssClassContainer> s_instance =

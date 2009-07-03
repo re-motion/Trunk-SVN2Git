@@ -23,8 +23,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool ShowDescription { get; }
     string GetLabelClientID ();
     string GetImageClientID ();
-    string GetHiddenFieldKey ();
-    string GetHyperLinkKey ();
+    string GetHiddenFieldUniqueID ();
+    string GetHyperLinkUniqueID ();
     BocBooleanValueResourceSet CreateResourceSet ();
   }
 }

@@ -19,6 +19,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
+  /// <summary>
+  /// Interface for factories creating renderers for <see cref="WebTab"/> items.
+  /// </summary>
   public interface IWebTabRendererFactory
   {
     IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IWebTab tab);

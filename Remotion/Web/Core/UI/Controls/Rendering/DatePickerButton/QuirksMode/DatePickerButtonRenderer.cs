@@ -22,7 +22,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 {
   /// <summary>
-  /// Responsible for rendering a <see cref="DatePickerButton"/> control.
+  /// Responsible for rendering a <see cref="DatePickerButton"/> control in quirks mode.
   /// <seealso cref="IDatePickerButton"/>
   /// </summary>
   public class DatePickerButtonRenderer : RendererBase<IDatePickerButton>, IDatePickerButtonRenderer

@@ -14,12 +14,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
+  /// <summary>
+  /// Interface for factories creating renderers and prerenderers for <see cref="ListMenu"/> controls.
+  /// </summary>
   public interface IListMenuRendererFactory
   {
     IListMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IListMenu control);

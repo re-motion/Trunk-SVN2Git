@@ -20,6 +20,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
 {
+  /// <summary>
+  /// Responsible for registering scripts, border spans and the style sheet for <see cref="SingleView"/> controls in quirks mode.
+  /// <seealso cref="ISingleView"/>
+  /// </summary>
   public class SingleViewPreRenderer : PreRendererBase<ISingleView>, ISingleViewPreRenderer
   {
     public SingleViewPreRenderer (IHttpContext context, ISingleView control)

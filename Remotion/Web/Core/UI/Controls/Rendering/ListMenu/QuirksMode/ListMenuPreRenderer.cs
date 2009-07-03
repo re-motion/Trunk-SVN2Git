@@ -21,6 +21,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
 {
+  /// <summary>
+  /// Responsible for registering scripts and the style sheet for <see cref="ListMenu"/> controls in quirks mode.
+  /// <seealso cref="IListMenu"/>
+  /// </summary>
   public class ListMenuPreRenderer : PreRendererBase<IListMenu>, IListMenuPreRenderer
   {
     public ListMenuPreRenderer (IHttpContext context, IListMenu control)

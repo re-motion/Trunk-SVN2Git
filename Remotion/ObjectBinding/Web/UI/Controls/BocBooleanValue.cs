@@ -23,7 +23,6 @@ using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -31,6 +30,7 @@ using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -104,6 +104,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
+    /// <summary>
+    /// Obtains a renderer factory from <see cref="ServiceLocator.Current"/>, creates a renderer and
+    /// calls the <see cref="IRenderer{TControl}.Render"/> method.
+    /// </summary>
+    /// <param name="writer">The writer used to render the control.</param>
     public override void RenderControl (HtmlTextWriter writer)
     {
       EvaluateWaiConformity ();
@@ -137,6 +142,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return validators;
     }
     
+    /// <summary>
+    /// Registers the script file needed for changing the control's value client-side.
+    /// </summary>
+    /// <param name="context">ignored</param>
     public override void RegisterHtmlHeadContents (HttpContext context)
     {
       base.RegisterHtmlHeadContents (context);
@@ -159,15 +168,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { GetHiddenFieldKey () };
+      return IsReadOnly ? new string[0] : new[] { GetHiddenFieldUniqueID () };
     }
 
-    public string GetHiddenFieldKey ()
+    /// <summary>
+    /// Gets an ID to use for the hidden field needed to store the value of the control client-side.
+    /// </summary>
+    /// <returns>The control's <see cref="Control.UniqueID"/> postfixed with a constant id for the hidden field.</returns>
+    public string GetHiddenFieldUniqueID ()
     {
       return UniqueID + IdSeparator + "Boc_HiddenField";
     }
 
-    public string GetHyperLinkKey ()
+    /// <summary>
+    /// Gets an ID to use for the hyperlink used to change the value of the control client-side.
+    /// </summary>
+    /// <returns>The control's <see cref="Control.UniqueID"/> postfixed with a constant id for the hyperlink.</returns>
+    public string GetHyperLinkUniqueID ()
     {
       return UniqueID + IdSeparator + "Boc_HyperLink";
     }
@@ -222,7 +239,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its 
     ///   <see cref="Control.ClientID"/>.
     /// </summary>
-    /// <value> The <see cref="HyperLink"/> if the control is in edit mode, otherwise the control itself. </value>
+    /// <value> The control itself. </value>
     public override Control TargetControl
     {
       get { return this; }
@@ -237,7 +254,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : GetHyperLinkKey (); }
+      get { return IsReadOnly ? null : GetHyperLinkUniqueID (); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
@@ -258,6 +275,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Gets the <see cref="Style"/> that you want to apply to the <see cref="Label"/> used for displaying the 
     ///   description. 
     /// </summary>
+    /// <value>The <see cref="Style"/> object to be applied on the label part of the control.</value>
     [Category ("Style")]
     [Description ("The style that you want to apply to the label used for displaying the description.")]
     [NotifyParentProperty (true)]
@@ -288,13 +306,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return s_supportedPropertyInterfaces; }
     }
 
-    protected override void OnInit (EventArgs e)
-    {
-      base.OnInit (e);
-      if (!IsDesignMode)
-        Page.RegisterRequiresPostBack (this);
-    }
-
     /// <summary>
     ///   Uses the <paramref name="postCollection"/> to determine whether the value of this control has been changed 
     ///   between postbacks.
@@ -302,7 +313,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadPostData/*' />
     protected override bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValueAsString = PageUtility.GetPostBackCollectionItem (Page, GetHiddenFieldKey());
+      string newValueAsString = PageUtility.GetPostBackCollectionItem (Page, GetHiddenFieldUniqueID());
       bool? newValue = null;
       bool isDataChanged = false;
       if (newValueAsString != null)
@@ -327,6 +338,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
     }
 
+    /// <summary>
+    /// Loads the necessary resources from the <see cref="IResourceManager"/> obtained from <see cref="GetResourceManager"/>.
+    /// </summary>
+    /// <param name="e">ignored</param>
     protected override void OnPreRender (EventArgs e)
     {
       EnsureChildControls();
@@ -336,6 +351,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       LoadResources (resourceManager);
     }
 
+    /// <summary>
+    /// Loads the value in addition to the base state.
+    /// </summary>
+    /// <param name="savedState">The state object created by <see cref="SaveControlState"/>.</param>
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
@@ -344,6 +363,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _value = (bool?) values[1];
     }
 
+    /// <summary>
+    /// Saves the current value in addtion to the base state.
+    /// </summary>
+    /// <returns>An object containing the state to load in the next lifecycle.</returns>
     protected override object SaveControlState ()
     {
       object[] values = new object[2];
@@ -357,6 +380,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary>
     /// Override this method to change the default look of the <see cref="BocBooleanValue"/>
     /// </summary>
+    /// <returns>A <see cref="BocBooleanValueResourceSet"/> containing the icons and descriptions to use
+    /// for representing the control's value.</returns>
     protected virtual BocBooleanValueResourceSet CreateResourceSet ()
     {
       IResourceManager resourceManager = GetResourceManager ();
@@ -414,7 +439,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { Value = ArgumentUtility.CheckType<bool?> ("value", value); }
     }
 
-    /// <summary> The <see cref="BocCheckBox"/> supports only scalar properties. </summary>
+    /// <summary> <see cref="BocBooleanValue"/> supports only scalar properties. </summary>
+    /// <param name="isList">Determines whether the property is a scalar (<see langword="false"/>) or a list (<see langword="true"/>). </param>
     /// <returns> <see langword="true"/> if <paramref name="isList"/> is <see langword="false"/>. </returns>
     /// <seealso cref="BusinessObjectBoundWebControl.SupportsPropertyMultiplicity"/>
     protected override bool SupportsPropertyMultiplicity (bool isList)

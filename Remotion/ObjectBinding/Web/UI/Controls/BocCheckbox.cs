@@ -26,6 +26,7 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -85,6 +86,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
+    /// <summary>
+    /// Registers the script file reference necessary for toggling the control's value client-side.
+    /// </summary>
+    /// <param name="context">ignored</param>
     public override void RegisterHtmlHeadContents (HttpContext context)
     {
       base.RegisterHtmlHeadContents (context);
@@ -96,6 +101,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary>
+    /// Obtains a renderer factory from <see cref="ServiceLocator.Current"/>, creates a renderer and
+    /// calls the <see cref="IRenderer{TControl}.Render"/> method.
+    /// </summary>
+    /// <param name="writer">The writer used to render the control.</param>
     public override void RenderControl (HtmlTextWriter writer)
     {
       EvaluateWaiConformity ();
@@ -103,13 +113,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       var factory = ServiceLocator.Current.GetInstance<IBocCheckboxRendererFactory> ();
       var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
       renderer.Render();
-    }
-
-    protected override void OnInit (EventArgs e)
-    {
-      base.OnInit (e);
-      if (!IsDesignMode)
-        Page.RegisterRequiresPostBack (this);
     }
 
     /// <summary>
@@ -122,7 +125,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! _isActive)
         return false;
 
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetCheckboxKey());
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetCheckboxUniqueID());
       bool newBooleanValue = ! StringUtility.IsNullOrEmpty (newValue);
       bool isDataChanged = _value != newBooleanValue;
       if (isDataChanged)
@@ -164,6 +167,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _isActive = !IsReadOnly && Enabled;
     }
 
+    /// <summary>
+    /// Loads the control's value and a flag determining whether the value can be changed in addition to the base state.
+    /// </summary>
+    /// <param name="savedState">The state object created by <see cref="SaveControlState"/>.</param>
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
@@ -173,6 +180,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _isActive = (bool) values[2];
     }
 
+    /// <summary>
+    /// Saves the control's value and a flag determining whether the value can be changed in addition to the base state.
+    /// </summary>
+    /// <returns>An object containing the state to be loaded during the next lifecycle.</returns>
     protected override object SaveControlState ()
     {
       object[] values = new object[3];
@@ -220,7 +231,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { GetCheckboxKey () };
+      return IsReadOnly ? new string[0] : new[] { GetCheckboxUniqueID () };
     }
 
     /// <summary>
@@ -251,7 +262,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : GetCheckboxKey (); }
+      get { return IsReadOnly ? null : GetCheckboxUniqueID (); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
@@ -397,12 +408,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return UniqueID + IdSeparator + "Boc_Label";
     }
 
-    public string GetCheckboxKey ()
+    /// <summary>
+    /// Gets the ID to use for the checkbox control.
+    /// </summary>
+    /// <returns>The control's ID postfixed with a constant checkbox id.</returns>
+    public string GetCheckboxUniqueID ()
     {
       return UniqueID + IdSeparator + "Boc_CheckBox";
     }
 
-    string IBocCheckBox.GetImageKey ()
+    /// <summary>
+    /// Gets the ID to use for the image control.
+    /// </summary>
+    /// <returns>The control's ID postfixed with a constant image id.</returns>
+    public string GetImageUniqueID ()
     {
       return UniqueID + IdSeparator + "Boc_Image";
     }

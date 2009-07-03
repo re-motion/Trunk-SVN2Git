@@ -18,6 +18,11 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
 {
+  /// <summary>
+  /// Overrides <see cref="GetBrowserCapableOfScripting"/> to determine if the <see cref="DropDownMenu"/> can be rendered in quirks mode.
+  /// <seealso cref="DropDownMenuPreRendererBase"/>
+  /// <seealso cref="IDropDownMenu"/>
+  /// </summary>
   public class DropDownMenuPreRenderer : DropDownMenuPreRendererBase
   {
     public DropDownMenuPreRenderer (IHttpContext context, IDropDownMenu control)

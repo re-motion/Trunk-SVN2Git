@@ -21,6 +21,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
 {
   /// <summary>
   /// Responsible for rendering <see cref="DropDownMenu"/> controls in standard mode.
+  /// <seealso cref="IDropDownMenu"/>
   /// </summary>
   public class DropDownMenuRenderer : RendererBase<IDropDownMenu>, IDropDownMenuRenderer
   {

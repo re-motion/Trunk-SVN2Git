@@ -20,7 +20,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
 {
   /// <summary>
-  /// Interface for factories creating renderers for <see cref="TabbedMultiView"/> controls.
+  /// Interface for factories creating renderers and prerenderers for <see cref="TabbedMultiView"/> controls.
   /// </summary>
   public interface ITabbedMultiViewRendererFactory
   {

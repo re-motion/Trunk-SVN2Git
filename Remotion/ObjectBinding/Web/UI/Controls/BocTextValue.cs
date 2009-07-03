@@ -340,12 +340,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _format = value; }
     }
 
+    /// <summary>
+    /// Adds a listener to the <see cref="BusinessObjectBinding.BindingChanged"/> event of the <see cref="BusinessObjectBoundWebControl.Binding"/>. 
+    /// </summary>
+    /// <param name="e">ignored</param>
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
       Binding.BindingChanged += Binding_BindingChanged;
     }
 
+    /// <summary>
+    /// Loads <see cref="Text"/>, <see cref="ValueType"/> and <see cref="ActualValueType"/> in addition to the base state.
+    /// </summary>
+    /// <param name="savedState">The control state object created by <see cref="SaveControlState"/>.</param>
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
@@ -355,6 +363,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _actualValueType = (BocTextValueType) values[3];
     }
 
+    /// <summary>
+    /// Saves <see cref="Text"/>, <see cref="ValueType"/> and <see cref="ActualValueType"/> in addition to the base state.
+    /// </summary>
+    /// <returns>An object containing the state to be loaded in the next lifecycle.</returns>
     protected override object SaveControlState ()
     {
       object[] values = new object[4];
@@ -381,6 +393,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
+    /// <summary>
+    /// If applicable, validators for non-empty, maximum length and input format are created.
+    /// </summary>
+    /// <returns>An enumeration of all applicable validators.</returns>
     protected override IEnumerable<BaseValidator> GetValidators ()
     {
       string baseID = ID + "_Validator";

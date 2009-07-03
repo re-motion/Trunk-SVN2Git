@@ -14,10 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
 {
+  /// <summary>
+  /// Exposes <see cref="DropDownMenu"/> properties relevant to rendering.
+  /// </summary>
   public interface IDropDownMenu : IStyledControl
   {
     bool Enabled { get; }

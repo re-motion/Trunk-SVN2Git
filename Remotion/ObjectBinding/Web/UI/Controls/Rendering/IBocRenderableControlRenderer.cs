@@ -18,14 +18,20 @@ using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering
 {
+  /// <summary>
+  /// Base interface for all renderers of <see cref="IBocRenderableControl"/> controls.
+  /// </summary>
+  /// <typeparam name="TControl">The interface of the control that can be rendered.</typeparam>
   public interface IBocRenderableControlRenderer<TControl> : IRenderer<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
     /// <summary>Gets the default CSS class, which is applied if no CSS class is defined on the control.</summary>
     string CssClassBase { get; }
 
+    /// <summary>Gets the CSS class which is applied in addition to the regular class if the control is disabled.</summary>
     string CssClassDisabled { get; }
 
+    /// <summary>Gets the CSS class which is applied in addition to the regular class if the control is in read-only mode.</summary>
     string CssClassReadOnly { get; }
   }
 }

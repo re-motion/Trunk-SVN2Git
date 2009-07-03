@@ -18,7 +18,7 @@ using System;
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
   /// <summary>
-  /// Interface for classes able to render <see cref="WebTab"/>.
+  /// Interface for classes able to render <see cref="WebTab"/> items.
   /// </summary>
   public interface IWebTabRenderer
   {

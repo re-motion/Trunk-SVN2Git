@@ -19,6 +19,9 @@ using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
+  /// <summary>
+  /// Exposes <see cref="MenuTab"/> properties relevant to rendering.
+  /// </summary>
   public interface IMenuTab : IWebTab
   {
     NavigationCommand Command { get; }

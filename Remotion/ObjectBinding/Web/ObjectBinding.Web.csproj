@@ -357,7 +357,6 @@
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\Factories\BocTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\IBocRenderableControlRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\PreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\IBocRenderableControl.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRenderer.cs" />

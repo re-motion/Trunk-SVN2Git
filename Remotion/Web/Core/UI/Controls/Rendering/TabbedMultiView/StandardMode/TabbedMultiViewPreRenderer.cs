@@ -20,6 +20,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 {
+  /// <summary>
+  /// Responsible for registering scripts, border spans and the style sheet for <see cref="TabbedMultiView"/> controls in standard mode.
+  /// <seealso cref="ITabbedMultiView"/>
+  /// </summary>
   public class TabbedMultiViewPreRenderer : PreRendererBase<ITabbedMultiView>, ITabbedMultiViewPreRenderer
   {
     public TabbedMultiViewPreRenderer (IHttpContext context, ITabbedMultiView control)

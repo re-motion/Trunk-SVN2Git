@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
     protected virtual TextBox GetTextBox ()
     {
       TextBox textBox = new TextBox { Text = Control.Text };
-      textBox.ID = Control.GetTextBoxUniqueID ();
+      textBox.ID = Control.GetTextBoxClientID ();
       textBox.EnableViewState = false;
       textBox.Enabled = Control.Enabled;
       textBox.ReadOnly = !Control.Enabled;

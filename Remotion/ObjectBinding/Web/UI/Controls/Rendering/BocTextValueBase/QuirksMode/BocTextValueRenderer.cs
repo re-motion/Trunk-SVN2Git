@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
     protected override Label GetLabel ()
     {
       Label label = new Label { Text = Control.Text };
-      label.ID = Control.GetTextBoxUniqueID();
+      label.ID = Control.GetTextBoxClientID ();
       label.EnableViewState = false;
 
       string text;

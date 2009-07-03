@@ -26,6 +26,10 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
+  /// <summary>
+  /// Abstract base class for <see cref="BocBooleanValue"/> and <see cref="BocCheckBox"/>, 
+  /// both of which represent boolean values with checkboxes.
+  /// </summary>
   public abstract class BocBooleanValueBase : BusinessObjectBoundEditableWebControl, IBocBooleanValueBase, IPostBackDataHandler, IFocusableControl
   {
     private bool? _autoPostBack;
@@ -39,6 +43,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected BocBooleanValueBase ()
     {
+    }
+
+    /// <summary>
+    /// Registers the control as requiring a postback. <seealso cref="T:Page.RegisterRequiresPostBack"/>.
+    /// </summary>
+    /// <param name="e">ignored</param>
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+      if (!IsDesignMode)
+        Page.RegisterRequiresPostBack (this);
     }
 
     /// <summary> Occurs when the <see cref="Value"/> property changes between postbacks. </summary>
@@ -185,6 +200,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
+    /// <value>The control's current value, which is a nullable boolean.</value>
     protected override object ValueImplementation
     {
       get { return Value; }

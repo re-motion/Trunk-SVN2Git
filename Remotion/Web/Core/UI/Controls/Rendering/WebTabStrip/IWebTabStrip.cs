@@ -20,6 +20,9 @@ using System.Web.UI.WebControls;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
 {
+  /// <summary>
+  /// Exposes <see cref="WebTabStrip"/> properties relevant to rendering.
+  /// </summary>
   public interface IWebTabStrip : IStyledControl
   {
     IList<IWebTab> GetVisibleTabs ();

@@ -19,6 +19,10 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
 {
+  /// <summary>
+  /// Responsible for rendering a <see cref="DropDownMenu"/> control in quirks mode.
+  /// <seealso cref="IDropDownMenu"/>
+  /// </summary>
   public class DropDownMenuRenderer : RendererBase<IDropDownMenu>, IDropDownMenuRenderer
   {
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";

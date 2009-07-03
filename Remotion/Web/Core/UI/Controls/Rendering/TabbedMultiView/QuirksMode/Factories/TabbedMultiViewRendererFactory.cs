@@ -19,6 +19,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating quirks mode renderers and prerenderers for <see cref="TabbedMultiView"/> controls.
+  /// </summary>
   public class TabbedMultiViewRendererFactory : ITabbedMultiViewRendererFactory
   {
     public ITabbedMultiViewRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMultiView control)

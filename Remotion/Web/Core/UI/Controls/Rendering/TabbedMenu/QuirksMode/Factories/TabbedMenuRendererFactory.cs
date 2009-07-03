@@ -20,6 +20,9 @@ using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating quirks mode renderers for <see cref="TabbedMenuRenderer"/> controls and <see cref="MenuTab"/> items.
+  /// </summary>
   public class TabbedMenuRendererFactory : ITabbedMenuRendererFactory, IMenuTabRendererFactory
   {
     public IWebTabRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)

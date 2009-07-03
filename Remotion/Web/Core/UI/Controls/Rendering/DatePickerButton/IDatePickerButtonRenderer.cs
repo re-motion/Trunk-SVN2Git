@@ -18,7 +18,7 @@ using System;
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
   /// <summary>
-  /// Interface for classes able to render <see cref="IDatePickerButton"/> controls.
+  /// Interface for classes able to render <see cref="DatePickerButton"/> controls.
   /// </summary>
   public interface IDatePickerButtonRenderer : IRenderer<IDatePickerButton>
   {

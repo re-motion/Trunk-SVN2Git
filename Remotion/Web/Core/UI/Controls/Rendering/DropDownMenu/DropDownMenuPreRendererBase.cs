@@ -21,6 +21,10 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
 {
+  /// <summary>
+  /// Responsible for registering scripts and the style sheet for <see cref="DropDownMenu"/> controls.
+  /// <seealso cref="IDropDownMenu"/>
+  /// </summary>
   public abstract class DropDownMenuPreRendererBase : PreRendererBase<IDropDownMenu>, IDropDownMenuPreRenderer
   {
     protected DropDownMenuPreRendererBase (IHttpContext context, IDropDownMenu control)

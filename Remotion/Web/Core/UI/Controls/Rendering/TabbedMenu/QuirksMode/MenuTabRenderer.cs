@@ -23,6 +23,10 @@ using Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
 {
+  /// <summary>
+  /// Responsible for rendering a <see cref="MenuTab"/> in quirks mode.
+  /// <seealso cref="IMenuTab"/>
+  /// </summary>
   public class MenuTabRenderer : WebTabRenderer, IMenuTabRenderer
   {
     public MenuTabRenderer (IHttpContext context, HtmlTextWriter writer, IWebTabStrip control, IMenuTab tab)

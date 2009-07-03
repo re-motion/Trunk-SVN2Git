@@ -47,8 +47,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       Initialize();
       _checkbox = MockRepository.GenerateMock<IBocCheckBox>();
 
-      _checkbox.Stub (mock => mock.GetCheckboxKey()).Return ("_Boc_CheckBox");
-      _checkbox.Stub (mock => mock.GetImageKey()).Return ("_Boc_Image");
+      _checkbox.Stub (mock => mock.GetCheckboxUniqueID()).Return ("_Boc_CheckBox");
+      _checkbox.Stub (mock => mock.GetImageUniqueID()).Return ("_Boc_Image");
       _checkbox.Stub (mock => mock.GetLabelKey()).Return ("_Boc_Label");
 
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();

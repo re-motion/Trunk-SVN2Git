@@ -20,7 +20,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Reflection;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -37,7 +36,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 using StringArrayConverter=Remotion.Web.UI.Design.StringArrayConverter;
@@ -507,7 +506,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                   || isTitleRowSelectorControl))
             continue;
           int rowIndex = int.Parse (postCollection[i]);
-          _selectorControlCheckedState.Add(rowIndex);
+          _selectorControlCheckedState.Add (rowIndex);
         }
       }
 
@@ -854,7 +853,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArrayList workingSortingOrder = new ArrayList (_sortingOrder);
 
       BocListSortingOrderEntry oldSortingOrderEntry = BocListSortingOrderEntry.Empty;
-      
+
       for (int i = 0; i < workingSortingOrder.Count; i++)
       {
         BocListSortingOrderEntry currentEntry = (BocListSortingOrderEntry) workingSortingOrder[i];
@@ -1052,9 +1051,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EnsureChildControls();
       base.OnPreRender (e);
 
-      var factory = ServiceLocator.Current.GetInstance<IBocListRendererFactory> ();
+      var factory = ServiceLocator.Current.GetInstance<IBocListRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
-      preRenderer.PreRender ();
+      preRenderer.PreRender();
 
       // Must be executed before CalculateCurrentPage
       if (_editModeController.IsRowEditModeActive)
@@ -1180,8 +1179,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       var serviceLocator = ServiceLocator.Current;
-      var factory = serviceLocator.GetInstance<IBocListRendererFactory> ();
-      var renderer = factory.CreateRenderer (new Remotion.Web.Infrastructure.HttpContextWrapper (Context), writer, this, serviceLocator);
+      var factory = serviceLocator.GetInstance<IBocListRendererFactory>();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this, serviceLocator);
       renderer.Render();
     }
 
@@ -1287,7 +1286,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HasListMenu; }
     }
 
-      protected bool IsEmptyList
+    protected bool IsEmptyList
     {
       get { return Value == null || Value.Count == 0; }
     }
@@ -1374,7 +1373,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return isInternetExplorer55AndHigher;
     }
 
-    
 
     /// <summary> Builds the input required marker. </summary>
     protected internal virtual Image GetRequiredMarker ()
@@ -3396,7 +3394,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         BocMenuItemCommand command = (BocMenuItemCommand) e.Command;
         if (Page is IWxePage)
-          command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows (), GetSelectedBusinessObjects ());
+          command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows(), GetSelectedBusinessObjects());
       }
       else
       {
@@ -3550,7 +3548,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return IsClientSideSortingEnabled; }
     }
 
-      /// <summary>
+    /// <summary>
     ///   Gets or sets a flag that determines whether to display the sorting order index 
     ///   after each sorting button.
     /// </summary>
@@ -3580,7 +3578,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return IsShowSortingOrderEnabled; }
     }
 
-      [Category ("Behavior")]
+    [Category ("Behavior")]
     [Description ("Enables sorting by multiple columns. Undefined is interpreted as true.")]
     [DefaultValue (typeof (bool?), "")]
     public virtual bool? EnableMultipleSorting

@@ -17,6 +17,9 @@ using System;
 
 namespace Remotion.Web.UI.Controls.Rendering.ListMenu
 {
+  /// <summary>
+  /// Interface for classes able to render <see cref="ListMenu"/> controls.
+  /// </summary>
   public interface IListMenuRenderer
   {
     void Render ();

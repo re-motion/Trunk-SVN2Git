@@ -17,17 +17,17 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 {
   /// <summary>
-  /// Responsible for rendering <see cref="TabbedMultiView"/> controls in quirks mode.
+  /// Responsible for rendering <see cref="TabbedMultiView"/> controls in standard mode.
+  /// <seealso cref="ITabbedMultiView"/>
   /// </summary>
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {
     public TabbedMultiViewRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMultiView control)
-        : base(context, writer, control)
+        : base (context, writer, control)
     {
     }
 
@@ -39,7 +39,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
       RenderTopControls();
       RenderTabStrip();
       RenderBottomControls();
-      RenderActiveView ();
+      RenderActiveView();
 
       Writer.RenderEndTag();
     }
@@ -47,7 +47,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     protected void AddAttributesToRender ()
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
-      AddStandardAttributesToRender ();
+      AddStandardAttributesToRender();
       if (Control.IsDesignMode)
       {
         Writer.AddStyleAttribute ("width", "100%");
@@ -66,7 +66,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
       Control.TabStrip.CssClass = Control.CssClassTabStrip;
       Control.TabStrip.RenderControl (Writer);
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     protected virtual void RenderActiveView ()
@@ -80,7 +80,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassActiveView);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      var view = Control.GetActiveView ();
+      var view = Control.GetActiveView();
       if (view != null)
       {
         for (int i = 0; i < view.Controls.Count; i++)
@@ -90,7 +90,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         }
       }
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     protected virtual void RenderTopControls ()
@@ -128,7 +128,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
       placeHolder.RenderControl (Writer);
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
   }
 }

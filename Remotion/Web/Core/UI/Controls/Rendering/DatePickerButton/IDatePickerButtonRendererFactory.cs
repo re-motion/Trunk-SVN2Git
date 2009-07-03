@@ -20,7 +20,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 {
   /// <summary>
-  /// Interface for factories creating <see cref="IDatePickerButtonRenderer"/> renderers.
+  /// Interface for factories creating renderers and prerenderers for <see cref="DatePickerButton"/> controls.
   /// </summary>
   public interface IDatePickerButtonRendererFactory
   {

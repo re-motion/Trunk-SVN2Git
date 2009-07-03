@@ -35,8 +35,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     void CopyBaseAttributes (WebControl controlSrc);
     void MergeStyle (Style s);
 
-    void BaseAddAttributesToRender (HtmlTextWriter writer);
-
-    string GetTextBoxUniqueID ();
+    string GetTextBoxClientID ();
   }
 }

@@ -67,8 +67,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
 
 
-      _booleanValue.Stub (mock => mock.GetHiddenFieldKey()).Return ("_Boc_HiddenField");
-      _booleanValue.Stub (mock => mock.GetHyperLinkKey()).Return ("_Boc_HyperLink");
+      _booleanValue.Stub (mock => mock.GetHiddenFieldUniqueID()).Return ("_Boc_HiddenField");
+      _booleanValue.Stub (mock => mock.GetHyperLinkUniqueID()).Return ("_Boc_HyperLink");
       _booleanValue.Stub (mock => mock.GetImageClientID()).Return ("_Boc_Image");
       _booleanValue.Stub (mock => mock.GetLabelClientID()).Return ("_Boc_Label");
 
@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
           "ResourceKey",
           _booleanValue.GetImageClientID(),
           _booleanValue.GetLabelClientID(),
-          _booleanValue.GetHiddenFieldKey());
+          _booleanValue.GetHiddenFieldUniqueID());
 
       _keyDownScript = "BocBooleanValue_OnKeyDown (this);";
 

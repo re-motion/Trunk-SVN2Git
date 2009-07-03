@@ -37,6 +37,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private bool _hasBeenRenderedInPreviousLifecycle = false;
     private bool _isRenderedInCurrentLifecycle = false;
 
+    /// <summary>
+    /// Overrides the base method to call <see cref="ISmartPage.RegisterControlForClientSideDirtyStateTracking"/>
+    /// after base initialization.
+    /// </summary>
+    /// <param name="e">ignored</param>
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
@@ -240,6 +245,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _validators.Add (validator);
     }
 
+    /// <summary>
+    /// When overridden in derived classes, this method puts the control into a state in which validation
+    /// can be performed. This may include populating control values from the view state explicitly.
+    /// </summary>
     public virtual void PrepareValidation ()
     {
     }
@@ -261,12 +270,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return isValid;
     }
 
+    /// <summary>
+    /// Overrides the base method to set a flag storing that the control has been rendered during the current lifecycle.
+    /// </summary>
+    /// <param name="e">ignored</param>
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
       _isRenderedInCurrentLifecycle = true;
     }
 
+    /// <summary>
+    /// Gets a value that determines whether a server control needs to load data from the posted form values
+    /// to its internal state.
+    /// </summary>
+    /// <value><see langword="true"/> if the control has been rendered in the previous lifecycle,
+    /// or if it is on a <see cref="IWxePage"/> and <see cref="IWxePage.IsOutOfSequencePostBack"/> is <see langword="true"/>.</value>
     protected virtual bool RequiresLoadPostData
     {
       get
@@ -279,6 +298,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <summary>
+    /// Overrides the base method to load <see cref="IsDirty"/> and a flag determining whether the control
+    /// has been rendered in the previous lifecycle in addition to the state loaded by <see cref="BusinessObjectBoundWebControl.LoadControlState"/>.
+    /// </summary>
+    /// <param name="savedState">The object saved by <see cref="SaveControlState"/>.</param>
     protected override void LoadControlState (object savedState)
     {
       object[] values = (object[]) savedState;
@@ -287,6 +311,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _hasBeenRenderedInPreviousLifecycle = (bool) values[2];
     }
 
+    /// <summary>
+    /// Overrides the base method to save <see cref="IsDirty"/> and a flag determining whether the control
+    /// has been rendered in the current lifecycle in addition to the state saved by <see cref="Control.SaveControlState"/>.
+    /// </summary>
+    /// <returns>An object containing the state required to be loaded in the next lifecycle.</returns>
     protected override object SaveControlState ()
     {
       object[] values = new object[3];

@@ -19,6 +19,9 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode.Factories
 {
+  /// <summary>
+  /// Responsible for creating standard mode renderers and prerenderers for <see cref="DropDownMenu"/> controls.
+  /// </summary>
   public class DropDownMenuRendererFactory : IDropDownMenuRendererFactory
   {
     public IDropDownMenuPreRenderer CreatePreRenderer (IHttpContext context, IDropDownMenu control)
