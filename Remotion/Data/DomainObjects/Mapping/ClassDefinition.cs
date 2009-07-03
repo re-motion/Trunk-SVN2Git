@@ -425,12 +425,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       return new ClassDefinitionValidator (this);
     }
 
-    internal static void SetClassDefinition (ClassDefinition classDefinition, PropertyDefinition propertyDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-    }
-
     internal void PropertyDefinitions_Adding (object sender, PropertyDefinitionAddingEventArgs args)
     {
       if (!ReferenceEquals (args.PropertyDefinition.ClassDefinition, this))
