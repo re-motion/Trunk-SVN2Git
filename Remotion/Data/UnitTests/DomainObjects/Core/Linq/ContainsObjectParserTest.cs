@@ -234,7 +234,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _mockRepository.ReplayAll ();
       var expectedParseContext = new ParseContext (
-          ExpressionHelper.CreateQueryModel(), new List<FieldDescriptor>(), new JoinedTableContext());
+          ExpressionHelper.CreateQueryModel(), 
+          new List<FieldDescriptor>(), 
+          new JoinedTableContext (StubDatabaseInfo.Instance));
+
       ICriterion result = _parser.Parse (_containsObjectCallExpression, expectedParseContext);
       Assert.That (result, Is.SameAs (expectedResult));
       _mockRepository.VerifyAll ();
