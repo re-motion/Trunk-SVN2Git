@@ -14,6 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
@@ -23,8 +25,8 @@ namespace Remotion.ObjectBinding.BindableObject
   {
     private readonly Type _getObjectServiceType;
 
-    public BindableObjectClassWithIdentity (Type concreteType, BindableObjectProvider businessObjectProvider)
-        : base (concreteType, businessObjectProvider)
+    public BindableObjectClassWithIdentity (Type concreteType, BindableObjectProvider businessObjectProvider, IEnumerable<PropertyBase> properties)
+        : base (concreteType, businessObjectProvider, properties)
     {
       _getObjectServiceType = GetGetObjectServiceType();
     }

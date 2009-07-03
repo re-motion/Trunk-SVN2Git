@@ -62,11 +62,9 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       BindableObjectClass bindableObjectClass;
       if (typeof (IBusinessObjectWithIdentity).IsAssignableFrom (ConcreteType))
-        bindableObjectClass = new BindableObjectClassWithIdentity (_concreteType, _businessObjectProvider);
+        bindableObjectClass = new BindableObjectClassWithIdentity (_concreteType, _businessObjectProvider, GetProperties ());
       else
-        bindableObjectClass = new BindableObjectClass (_concreteType, _businessObjectProvider);
-
-      bindableObjectClass.SetPropertyDefinitions (GetProperties());
+        bindableObjectClass = new BindableObjectClass (_concreteType, _businessObjectProvider, GetProperties ());
 
       return bindableObjectClass;
     }

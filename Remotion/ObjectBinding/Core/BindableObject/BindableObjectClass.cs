@@ -30,11 +30,12 @@ namespace Remotion.ObjectBinding.BindableObject
     private readonly PropertyCollection _properties = new PropertyCollection();
     private readonly BusinessObjectProviderAttribute _businessObjectProviderAttribute;
 
-    public BindableObjectClass (Type concreteType, BindableObjectProvider businessObjectProvider)
+    public BindableObjectClass (Type concreteType, BindableObjectProvider businessObjectProvider, IEnumerable<PropertyBase> properties)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       Assertion.IsFalse (concreteType.IsValueType, "mixed types cannot be value types");
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
+      ArgumentUtility.CheckNotNullOrItemsNull ("properties", properties);
       
       _targetType = MixinTypeUtility.GetUnderlyingTargetType (concreteType);
       _concreteType = concreteType;
@@ -42,6 +43,8 @@ namespace Remotion.ObjectBinding.BindableObject
       
       var attribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
       _businessObjectProviderAttribute = attribute;
+
+      SetPropertyDefinitions (properties);
     }
 
     /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
@@ -132,10 +135,8 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return _businessObjectProviderAttribute; }
     }
 
-    public void SetPropertyDefinitions (IEnumerable<PropertyBase> properties)
+    private void SetPropertyDefinitions (IEnumerable<PropertyBase> properties)
     {
-      ArgumentUtility.CheckNotNull ("properties", properties);
-
       foreach (PropertyBase property in properties)
       {
         property.SetReflectedClass (this);

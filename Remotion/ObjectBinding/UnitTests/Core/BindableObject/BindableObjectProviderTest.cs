@@ -1,23 +1,26 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of re-vision (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
-// The re-motion Core Framework is free software; you can redistribute it 
-// and/or modify it under the terms of the GNU Lesser General Public License 
-// version 3.0 as published by the Free Software Foundation.
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License version 3.0 
+// as published by the Free Software Foundation.
 // 
-// re-motion is distributed in the hope that it will be useful, 
+// This program is distributed in the hope that it will be useful, 
 // but WITHOUT ANY WARRANTY; without even the implied warranty of 
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-// GNU Lesser General Public License for more details.
+// GNU Affero General Public License for more details.
 // 
-// You should have received a copy of the GNU Lesser General Public License
-// along with re-motion; if not, see http://www.gnu.org/licenses.
+// You should have received a copy of the GNU Affero General Public License
+// along with this program; if not, see http://www.gnu.org/licenses.
+// 
+// Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
 
@@ -95,20 +98,18 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage =
-            "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not have the "
-            + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ManualBusinessObject' does not have the "
+        + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
     public void GetProviderForBindableObjectType_WithMissingAttributeType ()
     {
       BindableObjectProvider.GetProviderForBindableObjectType (typeof (ManualBusinessObject));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage =
-            "The business object provider associated with the type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.StubBusinessObject' "
-            + "is not of type 'Remotion.ObjectBinding.BindableObject.BindableObjectProvider'.\r\nParameter name: type")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The business object provider associated with the type 'Remotion.ObjectBinding.UnitTests.Core.TestDomain.StubBusinessObject' "
+        + "is not of type 'Remotion.ObjectBinding.BindableObject.BindableObjectProvider'.\r\nParameter name: type")]
     public void GetProviderForBindableObjectType_WithInvalidProviderType ()
     {
       BindableObjectProvider.GetProviderForBindableObjectType (typeof (StubBusinessObject));
@@ -125,7 +126,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       BindableObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), provider);
       Type targetType = typeof (SimpleBusinessObjectClass);
       Type concreteType = MixinTypeUtility.GetConcreteMixedType (targetType);
-      var expectedBindableObjectClass = new BindableObjectClass (concreteType, provider);
+      var expectedBindableObjectClass = new BindableObjectClass (concreteType, provider, new PropertyBase[0]);
 
       Expect.Call (metadataFactoryMock.CreateClassReflector (targetType, provider)).Return (classReflectorMock);
       Expect.Call (classReflectorMock.GetMetadata()).Return (expectedBindableObjectClass);
@@ -209,7 +210,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    public void IsBindableObjectImplementation_TrueWithMixin_TargetType()
+    public void IsBindableObjectImplementation_TrueWithMixin_TargetType ()
     {
       Assert.That (BindableObjectProvider.IsBindableObjectImplementation (typeof (SimpleBusinessObjectClass)), Is.True);
     }
@@ -217,7 +218,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void IsBindableObjectImplementation_TrueWithMixin_ConcreteType ()
     {
-      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (TypeFactory.GetConcreteType( typeof (SimpleBusinessObjectClass))), Is.True);
+      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (TypeFactory.GetConcreteType (typeof (SimpleBusinessObjectClass))), Is.True);
     }
 
     [Test]
