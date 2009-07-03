@@ -76,10 +76,7 @@ namespace Remotion.Scripting
         if (!proxiedTypeMethod.IsSpecialName)
         {
           var proxiedTypeMethodBase = proxiedTypeMethod.GetBaseDefinition();
-          //if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase))
-          // TODO: Move MethodInfoEqualityComparer.Get to ctor of HashSet again, as soon as BuildProxyType_FirstKnownBaseTypeThenKnownInterfaces
-          // is no longer needed
-          if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase, MethodInfoEqualityComparer.Get))
+          if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase))
           {
             _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
           }
@@ -95,39 +92,10 @@ namespace Remotion.Scripting
     }
 
 
-    public Type BuildProxyType_FirstKnownBaseTypeThenKnownInterfaces ()
-    {
-      // Add all methods from first known base type
-      var firstKnownBaseType = GetFirstKnownBaseType ();
-      var methodsInFirstKnownBaseType = firstKnownBaseType.GetMethods();
-      foreach (var method in methodsInFirstKnownBaseType)
-      {
-        _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (method);
-      }
-
-      // Add all methods from known interfaces which do not come from firstKnownBaseType or one of its parent classes.
-      var methodsKnownInProxiedType = _proxiedType.GetMethods ();
-      foreach (var proxiedTypeMethod in methodsKnownInProxiedType)
-      {
-        var proxiedTypeMethodBase = proxiedTypeMethod.GetBaseDefinition ();
-        if (GetInterfaceMethodsToClassMethod (proxiedTypeMethodBase) != null)
-        {
-          bool existsInBaseType = proxiedTypeMethod.GetBaseDefinition ().DeclaringType.IsAssignableFrom (firstKnownBaseType);
-          if (!existsInBaseType)
-          {
-            _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
-          }
-        }
-      }
-
-      return _forwardingProxyBuilder.BuildProxyType ();
-    }
-
 
     private HashSet<MethodInfo> CreateMethodsKnownInBaseTypeSet ()
     {
-      //HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> (MethodInfoEqualityComparer.Get);
-      HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> ();
+      HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> (MethodInfoEqualityComparer.Get);
       var firstKnownBaseType = GetFirstKnownBaseType ();
       foreach (var method in firstKnownBaseType.GetMethods ())
       {

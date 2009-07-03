@@ -76,7 +76,6 @@
     <Compile Include="ScriptingHostTestHelper.cs" />
     <Compile Include="ScriptTest.cs" />
     <Compile Include="SpikeTests.cs" />
-    <Compile Include="StableBindingProxyBuilderTestSpikes.cs" />
     <Compile Include="StableBindingProxyBuilderTest.cs" />
     <Compile Include="StableBindingProxyBuilderTestHelper.cs" />
     <Compile Include="TestDomain\FunctionalExtensions.cs" />
