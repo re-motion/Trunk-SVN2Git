@@ -34,7 +34,7 @@ namespace Remotion.Scripting
     }
 
     public MethodInfoEqualityComparer ()
-      : this (MethodAttributesMaskAll)
+      : this (~MethodAttributes.ReservedMask)
     {
     }
 
@@ -44,9 +44,6 @@ namespace Remotion.Scripting
       get { return s_equalityComparer; }
     }
 
-    public static MethodAttributes MethodAttributesMaskAll
-    {
-      get { return ~MethodAttributes.ReservedMask; }
-    }
+ 
   }
 }
