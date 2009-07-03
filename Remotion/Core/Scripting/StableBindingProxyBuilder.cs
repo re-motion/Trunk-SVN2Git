@@ -19,7 +19,6 @@ using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Remotion.Collections;
-using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
