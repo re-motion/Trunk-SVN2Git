@@ -534,7 +534,8 @@
     <call target="buildtest" />
   </target>
 
-  <target name="Dms.UnitTests" depends="Development.Core, Dms.Shared, Dms.DesktopConnector, Dms.Clients.Windows.Tray, Dms.Web, Dms.Core">
+  <target name="Dms.UnitTests" depends="Development.Core, Development.Web, Dms.Core, 
+          Dms.DesktopConnector, Dms.Clients.Windows.Tray, Dms.Web, ObjectBinding.Web">
     <property name="project.name" value="Dms.UnitTests" />
     <property name="project.dir" value="Dms/UnitTests" />
     <property name="project.output" value="Remotion.Dms.UnitTests" />
