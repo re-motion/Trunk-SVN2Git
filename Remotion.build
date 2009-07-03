@@ -170,20 +170,21 @@
   <target name="all" depends="prereq,
       Core.Interfaces, Core.Core, Core.Mixins.MixerTool.Console, Core.Scripting,
       Development.CodeDom, Development.Core, Development.Data, 
-      Dms.Core, Dms.Shared, Dms.Clients.Windows.Tray, Dms.DesktopConnector, Dms.Web,
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
       ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, ObjectBinding.Web.Preview, 
       ObjectBinding.Web.CodeGenerator, ObjectBinding.Web.CodeGenerator.Templates, 
       Data.Interfaces, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security, 
       Data.DomainObjects.RdbmsTools, Data.DomainObjects.RdbmsTools.Console, 
       Security.Interfaces, Security, Security.Metadata.Extractor, Security.MSBuild.Tasks, 
+      Dms.Core, Dms.Shared, Dms.Clients.Windows.Tray, Dms.DesktopConnector, Dms.Web,
       SecurityManager.Core, SecurityManager.AclTools.Expander, SecurityManager.Metadata.Importer, SecurityManager.Clients.Web">
     <echo message="Target has executed."/>
   </target>
 
-  <target name="all-test" depends="prereq, Core.Mixins.Samples, Core.UnitTests, Core.Scripting.UnitTests, Development.UnitTests, Web.UnitTests, ObjectBinding.UnitTests, 
-      Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests, 
-      Security.UnitTests.TestDomain, Security.UnitTests, SecurityManager.Core.UnitTests, Dms.UnitTests">
+  <target name="all-test" depends="prereq, Core.Mixins.Samples, Core.UnitTests, Core.Scripting.UnitTests, 
+      Development.UnitTests, Web.UnitTests, ObjectBinding.UnitTests, 
+      Data.UnitTests, Data.DomainObjects.RdbmsTools.UnitTests,       
+      Security.UnitTests.TestDomain, Security.UnitTests, Dms.UnitTests, SecurityManager.Core.UnitTests">
     <echo message="Target has executed."/>
   </target>
 
@@ -299,7 +300,7 @@
     <call target="execute-buildstep" />
   </target>
 
-  <target name="Dms.Web" depends="Dms.Core, Dms.Shared, Web">
+  <target name="Dms.Web" depends="Dms.Core, Dms.Shared, ObjectBinding.Web">
     <property name="project.name" value="Dms.Web" />
     <property name="project.dir" value="Dms/Web" />
     <property name="project.output" value="Remotion.Dms.Web" />
