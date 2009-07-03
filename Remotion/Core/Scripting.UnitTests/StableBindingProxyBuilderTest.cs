@@ -195,7 +195,33 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void BuildProxyType ()
+    public void BuildProxyType_ObjectMethods ()
+    {
+      var knownBaseType = typeof (Proxied);
+      var typeArbiter = new TypeLevelTypeArbiter (new[] { knownBaseType });
+      var proxiedType = typeof (ProxiedChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildProxyType_ObjectMethods"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      var proxied = new ProxiedChild ();
+      var proxy = Activator.CreateInstance (proxyType, proxied);
+
+      Assert.That (InvokeMethod (proxy, "ToString"), Is.EqualTo (proxied.ToString ()));
+      Assert.That (InvokeMethod (proxy, "GetType"), Is.EqualTo (proxied.GetType ()));
+      Assert.That (InvokeMethod (proxy, "GetHashCode"), Is.EqualTo (proxied.GetHashCode ()));
+      Assert.That (InvokeMethod (proxy, "Equals", proxied), Is.True);
+      Assert.That (InvokeMethod (proxy, "Equals", proxy), Is.False);
+    }
+
+    public Object InvokeMethod (object instance, string name, params object[] arguments)
+    {
+      return instance.GetType().InvokeMember (
+          name, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, instance, arguments);
+    }
+
+
+    [Test]
+    public void BuildProxyType_CheckMembers ()
     {
       var knownBaseType = typeof (Proxied);
       var typeArbiter = new TypeLevelTypeArbiter (new[] { knownBaseType });
@@ -203,13 +229,30 @@ namespace Remotion.Scripting.UnitTests
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildProxyType"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType();
 
-      //To.ConsoleLine.e (knownBaseType.GetMethods ().Where(m => m.IsSpecialName == false)).nl (2).e (proxyType.GetMethods ());
-      //To.ConsoleLine.e (knownBaseType.GetMethods().Where (m => m.IsSpecialName == false).Count());
+      var knownBaseTypeMethods = knownBaseType.GetMethods ().Where (m => m.IsSpecialName == false);
+      var proxyMethods = proxyType.GetMethods ().Where (m => m.IsSpecialName == false && m.DeclaringType != typeof(Object));
+
+      Assert.That (knownBaseTypeMethods.Count (), Is.EqualTo (proxyMethods.Count()));
+
+      //To.ConsoleLine.e (knownBaseTypeMethods).nl (2).e (proxyMethods);
 
       AssertHasSameMethod (knownBaseType, proxyType, "GetName");
       AssertHasSameMethod (knownBaseType, proxyType, "Sum", typeof(Int32[]));
+      AssertHasSameMethod (knownBaseType, proxyType, "PrependName", typeof (String));
+      AssertHasSameMethod (knownBaseType, proxyType, "SumMe", typeof(Int32[]));
+      
+      // TODO: Check why comparison fails (even though method exists in proxy)
+      //AssertHasSameMethod (knownBaseType, proxyType, "OverrideMe", typeof (String));
 
-      //Assert.That(GetAnyInstanceMethod (proxyType, "GetName"),Is.Not.Null);
+      AssertHasSameGenericMethod (knownBaseType, proxyType, "GenericToString", 2);
+      AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 1);
+      AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 2);
+
+      // {System.String GetName(),System.String Sum(Int32[]),System.String PrependName(System.String),System.String ToString(),
+      //System.String SumMe(Int32[]),
+      //System.String GenericToString[T0,T1](T0, T1),System.String OverloadedGenericToString[T0](T0),
+      //System.String OverloadedGenericToString[T0,T1](T0, T1),
+      //System.String OverrideMe(System.String),Boolean Equals(System.Object),Int32 GetHashCode(),System.Type GetType()} 
     }
 
     private void AssertHasSameMethod (Type type0, Type type1, string methodName, params Type[] parameterTypes)
@@ -218,14 +261,28 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (methodFromType0, Is.Not.Null);
       var methodFromType1 = type1.GetMethod (methodName, parameterTypes);
       Assert.That (methodFromType1, Is.Not.Null);
-      //To.ConsoleLine.e (methodFromType0).e (methodFromType1);
-      //ScriptingHelper.ToConsoleLine(methodFromType0);
-      //ScriptingHelper.ToConsoleLine (methodFromType1);
-      //To.ConsoleLine.e (methodFromType0.Attributes & MethodAttributes.MemberAccessMask);
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
     }
 
+    private void AssertHasSameGenericMethod (Type type0, Type type1, string methodName, int numberOfGenericArguments)
+    {
+      var methodFromType0 = GetGenericMethod(type0, methodName, numberOfGenericArguments);
+      Assert.That (methodFromType0, Is.Not.Null);
+      var methodFromType1 = GetGenericMethod (type1, methodName, numberOfGenericArguments);
+      Assert.That (methodFromType1, Is.Not.Null);
+      //ScriptingHelper.ToConsoleLine (methodFromType0); ScriptingHelper.ToConsoleLine (methodFromType1);
+      Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
+    }
 
+    public static MethodInfo GetGenericMethod (Type type, string methodName, int numberOfGenericArguments)
+    {
+      return GetGenericMethods (type, methodName, numberOfGenericArguments).Single();
+    } 
+    
+    public static IEnumerable<MethodInfo> GetGenericMethods (Type type, string methodName, int numberOfGenericArguments)
+    {
+      return type.GetMethods().Where (m => m.Name == methodName && m.IsGenericMethod && m.GetGenericArguments().Length == numberOfGenericArguments);
+    }
 
     //private void AssertHasSameMethodsAs (Type type, Type[] types)
     //{

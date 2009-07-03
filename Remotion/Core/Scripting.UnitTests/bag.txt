@@ -19,3 +19,30 @@
       new AssemblyLevelTypeArbiter (new[] { typeof (Object).Assembly, null });
     }
     
+    
+    
+      To.ConsoleLine.e (knownBaseTypeMethods).nl (2).e (proxyMethods);
+      To.ConsoleLine.nl().e (knownBaseTypeMethods.Count()).nl(2).e(proxyMethods.Count());
+
+      To.ConsoleLine.e (
+          proxyMethods.Where (m => m.Name == "GetHashCode").Select (
+              delegate (MethodInfo m)
+              {
+                ScriptingHelper.ToConsoleLine (m);
+                return m;
+              }));
+
+      var proxied = new ProxiedChild ();
+      var proxy = Activator.CreateInstance (proxyType, proxied);
+      To.ConsoleLine.nl ().e (PrivateInvoke.InvokePublicMethod (proxy, "ToString"));
+
+      To.ConsoleLine.nl ().e (proxyType.InvokeMember ("GetHashCode", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, proxy, new object[0]));
+      To.ConsoleLine.nl ().e (proxyType.InvokeMember ("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, proxy, new object[] { proxied }));
+      To.ConsoleLine.nl ().e (proxyType.InvokeMember ("Equals", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, proxy, new object[] { proxy }));
+
+      To.ConsoleLine.nl ().e (proxyType.InvokeMember ("GetType", BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, proxy, new object[0]));
+
+      //To.ConsoleLine.nl ().e (PrivateInvoke.InvokePublicMethod (proxy, "GetHashCode"));
+      //To.ConsoleLine.nl ().e (PrivateInvoke.InvokePublicMethod (proxy, "Equals", proxy));
+      //To.ConsoleLine.nl ().e (PrivateInvoke.InvokePublicMethod (proxy, "GetType"));    
+    

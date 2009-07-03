@@ -73,16 +73,21 @@ namespace Remotion.Scripting
       var methodsKnownInProxiedType = _proxiedType.GetMethods ();
       foreach (var proxiedTypeMethod in methodsKnownInProxiedType)
       {
-        var proxiedTypeMethodBase = proxiedTypeMethod.GetBaseDefinition ();
-        //if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase))
-        if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase, MethodInfoEqualityComparer.Get))
+        if (!proxiedTypeMethod.IsSpecialName)
         {
-          _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
-        }
-        else
-        {
-          // TODO: Add forwarding interface implementations, for methods whose target method info has not already been implemented
-          // TODO: Activate passing of known interfaces to ForwardingProxyBuilder during creation in ctor above
+          var proxiedTypeMethodBase = proxiedTypeMethod.GetBaseDefinition();
+          //if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase))
+          // TODO: Move MethodInfoEqualityComparer.Get to ctor of HashSet again, as soon as BuildProxyType_FirstKnownBaseTypeThenKnownInterfaces
+          // is no longer needed
+          if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase, MethodInfoEqualityComparer.Get))
+          {
+            _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
+          }
+          else
+          {
+            // TODO: Add forwarding interface implementations, for methods whose target method info has not already been implemented
+            // TODO: Activate passing of known interfaces to ForwardingProxyBuilder during creation in ctor above
+          }
         }
       }
 
@@ -94,8 +99,8 @@ namespace Remotion.Scripting
     {
       // Add all methods from first known base type
       var firstKnownBaseType = GetFirstKnownBaseType ();
-      var methodsInFirstKNownBaseType = firstKnownBaseType.GetMethods();
-      foreach (var method in methodsInFirstKNownBaseType)
+      var methodsInFirstKnownBaseType = firstKnownBaseType.GetMethods();
+      foreach (var method in methodsInFirstKnownBaseType)
       {
         _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (method);
       }

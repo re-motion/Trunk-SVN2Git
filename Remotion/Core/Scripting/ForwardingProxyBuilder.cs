@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
@@ -132,24 +133,54 @@ namespace Remotion.Scripting
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
+      var methodAttributes = methodInfo.Attributes;
+
+      // Proxy shall expose methods derived from Object base class coming from proxied type, not its own.
+      // TODO: Test !
+      //if (ObjectMethods.Contains (methodInfo))
+      //{
+      //  if (methodInfo.Name == "GetType")
+      //  {
+      //    methodAttributes |= MethodAttributes.NewSlot | MethodAttributes.HideBySig;
+      //  }
+      //  else
+      //  {
+      //    methodAttributes |= MethodAttributes.Virtual | MethodAttributes.ReuseSlot;
+      //  }
+      //}
+
       CustomMethodEmitter methodEmitter;
 
-      // Note: We do not mask the attributes with MethodAttributes.MemberAccessMask below, since this removes
-      // desired attributes such as Final, Virtual and HideBySig.
+
       if (methodInfo.DeclaringType.IsInterface)
       {
         methodEmitter = _classEmitter.CreateMethodOverrideOrInterfaceImplementation (
-            methodInfo, true, methodInfo.Attributes & MethodAttributes.MemberAccessMask);
+            methodInfo, true, methodAttributes & MethodAttributes.MemberAccessMask);
       }
       else
       {
-        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodInfo.Attributes); // & MethodAttributes.MemberAccessMask);
+        // Note: Masking the attributes with MethodAttributes.MemberAccessMask below, would remove 
+        // desired attributes such as Final, Virtual and HideBySig.
+        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
       }
 
       methodEmitter.CopyParametersAndReturnType (methodInfo); 
       ImplementForwardingMethod (methodInfo, methodEmitter);
     }
 
+    private static HashSet<MethodInfo> s_objectMethods;
+
+    protected HashSet<MethodInfo> ObjectMethods
+    {
+      get
+      {
+        if (s_objectMethods == null)
+        {
+          s_objectMethods = new HashSet<MethodInfo> (typeof (Object).GetMethods (), MethodInfoEqualityComparer.Get);
+        }
+        return s_objectMethods;
+      }
+    }
 
 
     // Create proxy ctor which takes proxied instance and stores it in field in class

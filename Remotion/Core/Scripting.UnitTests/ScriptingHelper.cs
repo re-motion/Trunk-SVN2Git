@@ -23,8 +23,20 @@ namespace Remotion.Scripting.UnitTests
   {
     public static void ToConsoleLine (MethodInfo mi)
     {
-      To.ConsoleLine.sb ().e (mi.Name).e (mi.ReturnType).e (mi.Attributes).e (
-          mi.GetParameters ().Select (pi => pi.ParameterType)).e (mi.GetParameters ().Select (pi => pi.Attributes)).se ();
+      var pis = mi.GetParameters ();
+      if (mi.IsGenericMethod)
+      {
+        To.ConsoleLine.sb().e (mi.Name).e (mi.ReturnType).e (mi.Attributes).
+            e (pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes)).e (pis.Select (pi => pi.Position)).
+            e (pis.Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1)).e (
+            pis.Select (pi => pi.MetadataToken)).e (pis.Select (pi => pi.ToString())).se().
+            e (mi.DeclaringType);
+      }
+      else
+      {
+        To.ConsoleLine.sb().e (mi.Name).e (mi.ReturnType).e (mi.DeclaringType).e (mi.Attributes).e (
+            pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes)).se();
+      }
     }
   }
 }

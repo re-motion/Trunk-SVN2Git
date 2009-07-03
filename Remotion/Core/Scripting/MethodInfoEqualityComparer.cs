@@ -26,8 +26,13 @@ namespace Remotion.Scripting
     public MethodInfoEqualityComparer (MethodAttributes methodAttributeMask)
         : base (
             x => new object[] {
-                x.Name, x.ReturnType, x.Attributes & methodAttributeMask, //x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
-                ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.ParameterType)),
+                //x.Name, x.ReturnType, x.Attributes & methodAttributeMask, //x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
+                //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.ParameterType)),
+                //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) // TODO: Use ReservedMask here ?
+
+                x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
+                ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? new Type[0] : x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? typeof(Object) : pi.ParameterType)),
+                ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1) : new int[0]),
                 ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) // TODO: Use ReservedMask here ?
             })
     {

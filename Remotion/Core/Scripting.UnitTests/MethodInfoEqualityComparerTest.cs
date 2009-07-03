@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -158,13 +159,88 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.False);
     }
 
-    //[Test]
-    //public void Equals_GenericClass_GenericMethodFromBaseType ()
-    //{
-    //  var methodFromBaseType = GetAnyGenericInstanceMethod (typeof (ProxiedChildGeneric<int, string>), "ProxiedChildGenericToString", 2);
-    //  var method = GetAnyGenericInstanceMethod (typeof (ProxiedChildChildGeneric<int, string>), "ProxiedChildGenericToString", 2);
-    //  Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.True);
-    //}
+
+    private class Test1
+    {
+      public string OverloadedGenericToString<Tx> (Tx tx)
+      {
+        return "Test1:" + tx;
+      }
+      
+      public string OverloadedGenericToString<Tx, Ty> (Tx tx, Ty ty)
+      {
+        return "Test1.OverloadedGenericToString:" + tx + ty;
+      }
+
+      public string MixedArgumentsTest<Tx,Ty> (string s, Tx tx, object o, Ty ty)
+      {
+        return "Test1.MixedArgumentsTest:" + tx + s + o + ty;
+      }
+
+      public string ComplexGenericArgumentTest<Tx, Ty> (Dictionary<Tx,Ty> d)
+      {
+        return "Test1.ComplexGenericArgumentTest:" + d;
+      }
+    }
+
+    private class Test2
+    {
+      public string OverloadedGenericToString<Tx, Ty> (Ty ty, Tx tx)
+      {
+        return "Test1.OverloadedGenericToString:" + tx + ty;
+      }
+
+      public string MixedArgumentsTest<Tx, Ty> (string s, Tx tx, object o, Ty ty)
+      {
+        return "Test1.MixedArgumentsTest:" + tx + s + o + ty;
+      }
+    }
+
+    private class Test3
+    {
+      public string OverloadedGenericToString<Tx, Ty> (Ty ty, Tx tx)
+      {
+        return "Test1.OverloadedGenericToString:" + tx + ty;
+      }
+
+      public string MixedArgumentsTest<Tx, Ty> (string s, Ty ty, object o, Tx tx)
+      {
+        return "Test1.MixedArgumentsTest:" + tx + s + o + ty;
+      }
+    }
+
+    [Test]
+    public void Equals_GenericMethodFromNonRelatedTypes ()
+    {
+      var method = GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
+      var methodWithSameSignature = GetAnyGenericInstanceMethod (typeof (Test1), "OverloadedGenericToString", 2);
+      var methodWithSwappedGenericArguments = GetAnyGenericInstanceMethod (typeof (Test2), "OverloadedGenericToString", 2);
+      //var method3 = GetAnyGenericInstanceMethod (typeof (Test1), "MixedArgumentsTest", 2);
+      //var method4 = GetAnyGenericInstanceMethod (typeof (Test1), "ComplexGenericArgumentTest", 2);
+
+      //ScriptingHelper.ToConsoleLine (method);
+      //ScriptingHelper.ToConsoleLine (methodWithSameSignature);
+      //ScriptingHelper.ToConsoleLine (methodWithSwappedGenericArguments);
+      //ScriptingHelper.ToConsoleLine (method3);
+      //ScriptingHelper.ToConsoleLine (method4);
+
+      Assert.That (MethodInfoEqualityComparer.Get.Equals (method, methodWithSameSignature), Is.True);
+      Assert.That (MethodInfoEqualityComparer.Get.Equals (method, methodWithSwappedGenericArguments), Is.False);
+    }
+
+    [Test]
+    public void Equals_MixedArgumentGenericMethodFromNonRelatedTypes ()
+    {
+      var method = GetAnyGenericInstanceMethod (typeof (Test1), "MixedArgumentsTest", 2);
+      var methodWithSameSignature = GetAnyGenericInstanceMethod (typeof (Test2), "MixedArgumentsTest", 2);
+      var methodWithSwappedGenericArguments = GetAnyGenericInstanceMethod (typeof (Test3), "MixedArgumentsTest", 2);
+
+      Assert.That (MethodInfoEqualityComparer.Get.Equals (method, methodWithSameSignature), Is.True);
+      Assert.That (MethodInfoEqualityComparer.Get.Equals (method, methodWithSwappedGenericArguments), Is.False);
+    }
+
+
+ 
 
     [Test]
     public void Equals_GenericClass_MethodWithGenericClassArgumentsFromBaseType ()
