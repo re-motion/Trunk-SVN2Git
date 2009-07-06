@@ -960,6 +960,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckQueryResult (query, domainObjectIDs.PersonForUnidirectionalRelationTest, domainObjectIDs.Person);
     }
 
+    [Test]
+    [Ignore ("TODO 1268")]
+    public void SubQueryWithNonConstantFromExpression ()
+    {
+      var query = from o in QueryFactory.CreateLinqQuery<Order> ()
+                  from oi in (from oi1 in o.OrderItems select oi1)
+                  where o.OrderNumber == 1
+                  select oi;
+
+      CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
     public static void CheckQueryResult<T> (IEnumerable<T> query, params ObjectID[] expectedObjectIDs)
         where T : DomainObject
     {
