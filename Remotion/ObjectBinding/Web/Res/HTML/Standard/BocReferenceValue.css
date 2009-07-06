@@ -1,17 +1,17 @@
 div.bocReferenceValue
 {
                 position: relative;
-                width: 100%;
                 height: auto;
                 display: inline-block;
                 vertical-align: middle
 }
 div.bocReferenceValueContent
 {
-                text-align: left;
-                line-height: 1.25em;
-                white-space: nowrap;
-                vertical-align: top;
+  position:relative;
+  text-align: left;
+  line-height: 1.25em;
+  white-space: nowrap;
+  vertical-align: top;
 }
 
 div.bocReferenceValueContent a
@@ -34,11 +34,11 @@ div.bocReferenceValueContent img.bocReferenceValueContent
 }
 
 div.bocReferenceValueOptionsMenu {
-                position: absolute; 
-                display: block; 
-                right: 0;
-                /*right:1px;   same like right border if you have */
-                top: 1px;
+  position: absolute; 
+  display: block; 
+  right: 0;
+  /*right:1px;   same like right border if you have */
+  top: 1px;
 }
 
 div.bocReferenceValueContent span.readOnly
@@ -48,10 +48,10 @@ div.bocReferenceValueContent span.readOnly
 
 span.bocReferenceValueContent
 {
-                position: absolute;
+  position: absolute;
 }
 
 span.bocReferenceValueContent * {
-                width: 100%; 
-                margin: 0;
+  width: 100%; 
+  margin: 0;
 }

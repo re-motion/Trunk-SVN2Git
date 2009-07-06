@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -36,7 +37,6 @@ using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 using StringArrayConverter=Remotion.Web.UI.Design.StringArrayConverter;
-using System.Collections.Generic;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -237,7 +237,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_internalValue == null)
         _displayName = null;
       else
-        _displayName = GetDisplayName(Value);
+        _displayName = GetDisplayName (Value);
 
       if (! IsReadOnly && Enabled)
         OnSelectionChanged();
@@ -483,7 +483,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         //  No null item in the list?
         if (dropDownList.Items.FindByValue (c_nullIdentifier) == null)
-          dropDownList.Items.Add (CreateNullItem ());
+          dropDownList.Items.Add (CreateNullItem());
       }
 
       if (BusinessObjects != null)
@@ -582,13 +582,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private bool ShowIcon
     {
-      get 
+      get
       {
         if (!EnableIcon)
           return false;
         if (Property == null)
           return false;
-        if(GetIcon (Value, Property.ReferenceClass.BusinessObjectProvider) == null)
+        if (GetIcon (Value, Property.ReferenceClass.BusinessObjectProvider) == null)
           return false;
 
         return true;
@@ -1501,8 +1501,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected IList<IBusinessObjectWithIdentity> BusinessObjects
     {
-      get { return (IList<IBusinessObjectWithIdentity>)ViewState["BusinessObjects"]; }
+      get
+      {
+        object list = ViewState["BusinessObjects"];
+        if (list == null)
+          return new List<IBusinessObjectWithIdentity>();
+
+        return (IList<IBusinessObjectWithIdentity>) list;
+      }
       set { ViewState["BusinessObjects"] = value; }
+    }
+
+    bool IBocReferenceValue.EmbedInOptionsMenu
+    {
+      get
+      {
+        return HasValueEmbeddedInsideOptionsMenu == true && HasOptionsMenu
+                || HasValueEmbeddedInsideOptionsMenu == null && IsReadOnly && HasOptionsMenu;
+      }
+    }
+
+    IEnumerable<IBusinessObjectWithIdentity> IBocReferenceValue.BusinessObjects
+    {
+      get { return BusinessObjects; }
     }
 
     bool IBocRenderableControl.IsDesignMode

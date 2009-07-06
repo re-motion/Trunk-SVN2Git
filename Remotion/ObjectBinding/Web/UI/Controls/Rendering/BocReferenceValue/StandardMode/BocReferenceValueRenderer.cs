@@ -50,6 +50,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
 
     public void Render ()
     {
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
@@ -58,8 +59,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       Image icon = GetIcon();
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      if (Control.HasValueEmbeddedInsideOptionsMenu == true && Control.HasOptionsMenu
-          || Control.HasValueEmbeddedInsideOptionsMenu == null && Control.IsReadOnly && Control.HasOptionsMenu)
+      if (Control.EmbedInOptionsMenu)
       {
         RenderContentsWithIntegratedOptionsMenu(dropDownList, label);
       }
@@ -197,10 +197,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
           RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
 
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-        Unit left = new Unit(icon.Width.Value + 5, icon.Width.Type);
-        Unit right = new Unit (Control.OptionsMenu.Width.Value + 5, Control.OptionsMenu.Width.Type);
-        Writer.AddStyleAttribute ("left", left.ToString ());
-        Writer.AddStyleAttribute ("right", right.ToString());
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         RenderEditModeValue (dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty);
@@ -292,8 +288,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
         {
           RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
         }
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
         dropDownList.Attributes.Add ("onClick", DropDownMenu.OnHeadTitleClickScript);
         RenderEditModeValue (dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty);
+
+        Writer.RenderEndTag();
       }
     }
 
@@ -315,13 +316,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       if (isCommandEnabled)
         Control.Command.RenderBegin (Writer, postBackEvent, onClick, objectID, null);
 
-      Unit left = Unit.Pixel (2);
       if (icon.Visible)
       {
         icon.RenderControl (Writer);
-        left =  Unit.Pixel ((int)icon.Width.Value + 2);
       }
-      label.Style.Add (HtmlTextWriterStyle.Left, left.ToString());
       label.RenderControl (Writer);
       if (isCommandEnabled)
         Control.Command.RenderEnd (Writer);

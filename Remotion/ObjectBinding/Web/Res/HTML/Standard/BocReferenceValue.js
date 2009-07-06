@@ -33,16 +33,35 @@ function BocReferenceValue_GetSelectionCount (referenceValueDropDownListID)
   return 1;
 }
 
-//function BocReferenceValue_OnMouseOver (context, cssClass) 
-//{
-//  var className = context.className;
-//  className = className.substr (0, className.lastIndexOf (' '));
-//  context.className = className + ' ' + cssClass;
-//}
+function BocReferenceValue_AdjustPosition(control, isEmbedded) {
 
-//function BocReferenceValue_OnMouseOut (context, cssClass) 
-//{
-//  var className = context.className;
-//  className = className.substr (0, className.lastIndexOf (' '));
-//  context.className = className + ' ' + cssClass;
-//}
+    var totalWidth = $(control).width();
+    var totalHeight = $(control).height();
+    
+    var icon = $(control).find('img.bocReferenceValueContent');
+    var left = 0;
+    if (icon.length > 0)
+        left = icon.outerWidth(true);
+
+    var optionsMenu = $(control).find('div.bocReferenceValueOptionsMenu');
+    var right = 0;
+    if (!isEmbedded && optionsMenu.length > 0)
+        right = optionsMenu.outerWidth(true);
+
+    var contentSpan = $(control).find('span.bocReferenceValueContent');
+    contentSpan.css('left', left + 'px');
+    contentSpan.css('right', right + 'px');
+
+    if (isEmbedded) 
+    {
+        $(control).find('select').css('margin', '3px');
+        var dropDownMenu = $(control).find('select').parent().parent();
+        dropDownMenu.height(dropDownMenu.height() + 6);
+
+        if (dropDownMenu.length > 0) {
+            icon.css('position', 'relative');
+            icon.css('top', (icon.position().top + 3) + 'px');
+            icon.css('left', '2px');
+        }
+    }
+}

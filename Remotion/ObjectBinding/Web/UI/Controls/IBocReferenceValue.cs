@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Web.UI;
@@ -45,5 +46,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string LabelClientID { get; }
     string IconClientID { get; }
     string NullIdentifier { get; }
+    IEnumerable<IBusinessObjectWithIdentity> BusinessObjects { get; }
+    bool EmbedInOptionsMenu { get; }
   }
 }

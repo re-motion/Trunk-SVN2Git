@@ -313,7 +313,9 @@
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocColumnRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\BocListRendererFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocListRendererTestBase.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\BocReferenceValueRendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\QuirksMode\BocReferenceValueRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StubDropDownList.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StubDropDownMenu.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StubServiceLocator.cs" />

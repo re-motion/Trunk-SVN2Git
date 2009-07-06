@@ -15,7 +15,7 @@
 		line-height: 1.25em;
 	}
 
-	div.DropDownMenuSelect > span:first {
+	div.DropDownMenuSelect > span {
 		/*float: left;*/
 		left: 0;
 		margin-right: 20px;
@@ -30,10 +30,12 @@
    {
      display: block;
      position: absolute;
+     left: auto;
      top: 1px;
      bottom: 1px;
 		 right: 1px;
 		 background-color: #DFEEF5;
+		 margin-right: 0;
    }
 
    div.DropDownMenuSelect img 

@@ -26,6 +26,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     {
     }
 
+    public override void PreRender ()
+    {
+      base.PreRender ();
+      string key = Control.ClientID + "_AdjustPositionScript";
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          key,
+          string.Format (
+              "BocReferenceValue_AdjustPosition(document.getElementById('{0}'), {1});", 
+              Control.ClientID, 
+              Control.EmbedInOptionsMenu ? "true" : "false"));
+    }
+
     protected override ResourceTheme ResourceTheme
     {
       get { return ResourceTheme.Standard; }

@@ -16,7 +16,6 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
@@ -28,8 +27,6 @@ namespace Remotion.Web.UI.Controls
   [Designer (typeof (WebControlDesigner))]
   public class DropDownMenu : MenuBase, IDropDownMenu
   {
-    private static readonly Unit s_defaultWidth = Unit.Point (60);
-
     /// <summary> Only used by control developers. </summary>
     public static readonly string OnHeadTitleClickScript = "DropDownMenu_OnHeadControlClick();";
 
@@ -107,18 +104,6 @@ namespace Remotion.Web.UI.Controls
     public void SetRenderHeadTitleMethodDelegate (Action renderHeadTitleMethod)
     {
       _renderHeadTitleMethod = renderHeadTitleMethod;
-    }
-
-    public override Unit Width
-    {
-      get
-      {
-        if (base.Width.IsEmpty)
-          return s_defaultWidth;
-
-        return base.Width;
-      }
-      set{ base.Width = value; }
     }
 
     /// <remarks>

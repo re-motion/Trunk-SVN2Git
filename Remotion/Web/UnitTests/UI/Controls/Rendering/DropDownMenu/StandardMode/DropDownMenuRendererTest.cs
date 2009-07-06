@@ -125,11 +125,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
 
     private void AssertDropDownButton (XmlNode titleDiv)
     {
-      var dropDownButton = titleDiv.GetAssertedChildElement ("img", 1);
-      dropDownButton.AssertAttributeValueEquals ("src", "/res/Remotion.Web/Image/DropDownMenuArrow.gif");
-      dropDownButton.AssertAttributeValueEquals ("alt", "");
-      dropDownButton.AssertStyleAttribute ("vertical-align", "middle");
-      dropDownButton.AssertStyleAttribute ("border-style", "none");
+      var span = titleDiv.GetAssertedChildElement ("span", 1);
+
+      var image = span.GetAssertedChildElement ("img", 0);
+      image.AssertAttributeValueEquals ("src", "/res/Remotion.Web/Image/DropDownMenuArrow.gif");
+      image.AssertAttributeValueEquals ("alt", "");
+      image.AssertStyleAttribute ("vertical-align", "middle");
+      image.AssertStyleAttribute ("border-style", "none");
     }
 
     private void AssertTitleSpan (XmlNode titleDiv, bool withTitle, bool withIcon)
