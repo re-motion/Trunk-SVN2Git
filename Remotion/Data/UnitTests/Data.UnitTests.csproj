@@ -611,7 +611,7 @@
     <Compile Include="Linq\Parsing\AnonymousType.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\MethodCallExpressionNodeFactoryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\TestDomain\ExpressionNodeWithTooManyCtors.cs" />
-    <Compile Include="Linq\Parsing\Structure\IntermediateModel\ConstantExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\MainSouceExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionNodeObjectMother.cs" />
     <Compile Include="Linq\Clauses\Expressions\QuerySourceReferenceExpressionTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\WhereExpressionNodeTest.cs" />
