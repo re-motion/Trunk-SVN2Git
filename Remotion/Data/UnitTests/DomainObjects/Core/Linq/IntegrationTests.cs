@@ -961,7 +961,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [Ignore ("TODO 1268")]
     public void SubQueryWithNonConstantFromExpression ()
     {
       var query = from o in QueryFactory.CreateLinqQuery<Order> ()
