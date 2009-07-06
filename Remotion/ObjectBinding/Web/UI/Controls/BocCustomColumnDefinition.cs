@@ -20,8 +20,11 @@ using System.Drawing.Design;
 using System.Globalization;
 using System.Reflection;
 using System.Web.UI;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Design;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -168,6 +171,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return _mode; }
       set { _mode = value; }
+    }
+
+    protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator, IHttpContext context, HtmlTextWriter writer, IBocList list)
+    {
+      var factory = locator.GetInstance<IBocColumnRendererFactory<BocCustomColumnDefinition>>();
+      return factory.CreateRenderer (context, writer, list, this);
     }
 
     /// <summary> Gets the displayed value of the column title. </summary>

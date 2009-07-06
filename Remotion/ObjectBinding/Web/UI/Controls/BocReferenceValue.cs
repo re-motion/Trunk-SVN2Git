@@ -29,7 +29,6 @@ using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
-using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -64,11 +63,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
-
-    private const string c_defaultControlWidth = "150pt";
-
-    private const string c_scriptFileUrl = "BocReferenceValue.js";
-    private const string c_styleFileUrl = "BocReferenceValue.css";
 
     /// <summary> The key identifying a options menu item resource entry. </summary>
     private const string c_resourceKeyOptionsMenuItems = "OptionsMenuItems";
@@ -106,10 +100,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private static readonly object s_selectionChangedEvent = new object();
     private static readonly object s_menuItemClickEvent = new object();
     private static readonly object s_commandClickEvent = new object();
-
-    private static readonly string s_scriptFileKey = typeof (BocReferenceValue).FullName + "_Script";
-    private static readonly string s_startUpScriptKey = typeof (BocReferenceValue).FullName + "_Startup";
-    private static readonly string s_styleFileKey = typeof (BocReferenceValue).FullName + "_Style";
 
     // member fields
 
@@ -169,24 +159,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         Page.RegisterRequiresPostBack (this);
         InitializeMenusItems();
-      }
-    }
-
-    public override void RegisterHtmlHeadContents (HttpContext context)
-    {
-      base.RegisterHtmlHeadContents (context);
-
-      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (this, context, typeof (BocReferenceValue), ResourceType.Html, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
-      }
-
-      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            this, Context, typeof (BocReferenceValue), ResourceType.Html, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
     }
 
@@ -550,11 +522,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EnsureChildControls();
       base.OnPreRender (e);
 
-      if (!IsDesignMode && !Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey))
-      {
-        const string script = "BocReferenceValue_InitializeGlobals ('" + c_nullIdentifier + "');";
-        ScriptUtility.RegisterStartupScriptBlock (this, s_startUpScriptKey, script);
-      }
+      var factory = ServiceLocator.Current.GetInstance<IBocReferenceValueRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      preRenderer.PreRender();
 
       LoadResources (GetResourceManager());
 
@@ -1583,6 +1553,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string IBocReferenceValue.IconClientID
     {
       get { return ClientID + "_Boc_Icon"; }
+    }
+
+    string IBocReferenceValue.NullIdentifier
+    {
+      get { return c_nullIdentifier; }
     }
 
     #region protected virtual string CssClass...

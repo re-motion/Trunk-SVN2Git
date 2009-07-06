@@ -97,7 +97,6 @@ function DropDownMenu_OpenPopUp(id, menuID, context, getSelectionCount, evt) {
     };
     setTimeout("$('body').bind('click', DropDownMenu_ClosePopUp);", 10);
 
-    var itemInfos = _dropDownMenu_menuInfos[menuID].ItemInfos;
     for (var i = 0; i < itemInfos.length; i++) {
         var item = DropDownMenu_CreateItem(itemInfos[i], selectionCount, true);
         if (item != null)

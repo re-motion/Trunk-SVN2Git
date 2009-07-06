@@ -82,7 +82,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, menuID + "_" + index);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuItem");
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      if (!menuItem.IsDisabled)
+      if (!menuItem.IsDisabled )
       {
         menuItem.Command.RenderBegin (
             Writer, Control.Page.ClientScript.GetPostBackClientHyperlink (Control, index.ToString ()), new[] { index.ToString () }, "", null);

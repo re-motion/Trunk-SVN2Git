@@ -53,13 +53,18 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
 
     private void RenderTitleDiv ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassHead);
+      string cssClass = CssClassHead;
+      if (!Control.Enabled)
+        cssClass += " " + CssClassDisabled;
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       if (Control.RenderHeadTitleMethod != null)
         Control.RenderHeadTitleMethod ();
       else
         RenderDefaultTitle();
+
+      RenderDropdownButton ();
 
       Writer.RenderEndTag ();
     }
@@ -75,6 +80,12 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       else
         Writer.Write (Control.TitleText);
       Writer.RenderEndTag();
+    }
+
+    private void RenderDropdownButton ()
+    {
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       Writer.AddStyleAttribute ("vertical-align", "middle");
       Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
@@ -83,6 +94,13 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       Writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
       Writer.RenderBeginTag (HtmlTextWriterTag.Img);
       Writer.RenderEndTag();
+
+      Writer.RenderEndTag();
+    }
+
+    protected string CssClassDropDownButton
+    {
+      get { return "DropDownMenuButton"; }
     }
 
     private void AddAttributesToRender ()
@@ -91,6 +109,9 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       AddStandardAttributesToRender();
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+
+      if (Control.ControlStyle.Width.IsEmpty)
+        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
 
       if (Control.Enabled)
       {
@@ -112,6 +133,11 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     protected string CssClassList
     {
       get { return "DropDownMenuOptions"; }
+    }
+
+    protected string CssClassDisabled
+    {
+      get { return "disabled"; }
     }
   }
 }

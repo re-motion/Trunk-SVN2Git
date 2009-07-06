@@ -5,6 +5,7 @@
 		display: inline-block;
 		width: 100%;
 	}
+	
 	div.DropDownMenuSelect {
 		border: solid 1px #005588;
 		text-align: left;
@@ -14,7 +15,7 @@
 		line-height: 1.25em;
 	}
 
-	div.DropDownMenuSelect > span {
+	div.DropDownMenuSelect > span:first {
 		/*float: left;*/
 		left: 0;
 		margin-right: 20px;
@@ -24,13 +25,20 @@
 		background-color: #DFEEF5;
 		display: inline-block;
    }
+   
+   div.DropDownMenuSelect span.DropDownMenuButton
+   {
+     display: block;
+     position: absolute;
+     top: 1px;
+     bottom: 1px;
+		 right: 1px;
+		 background-color: #DFEEF5;
+   }
 
    div.DropDownMenuSelect img 
    {
-		position: absolute;
-		right: 1px;
 		border: 0;
-		background-color: #DFEEF5;
    }
 
 	ul.DropDownMenuOptions {

@@ -145,6 +145,7 @@
     <Compile Include="IBusinessObjectWebUIService.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocAllPropertiesPlaceholderColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocBooleanValue.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -161,6 +162,9 @@
     <Compile Include="UI\Controls\BocCommand.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocCommandColumnDefinition.cs" />
+    <Compile Include="UI\Controls\BocCommandEnabledColumnDefinition.cs" />
+    <Compile Include="UI\Controls\BocCompundColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocCustomColumnDefinition.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -173,6 +177,7 @@
     <Compile Include="UI\Controls\BocDropDownMenu.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocDropDownMenuColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocEnumValue.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -209,6 +214,9 @@
     <Compile Include="UI\Controls\BocReferenceValue.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocRowEditColumnDefinitionShow.cs" />
+    <Compile Include="UI\Controls\BocRowEditModeColumnDefinition.cs" />
+    <Compile Include="UI\Controls\BocSimpleColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocTextValue.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -224,6 +232,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\BocTreeViewMenuItemProvider.cs" />
+    <Compile Include="UI\Controls\BocValueColumnDefinition.cs" />
     <Compile Include="UI\Controls\BusinessObjectBinding.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -253,6 +262,7 @@
     <Compile Include="UI\Controls\IBocList.cs" />
     <Compile Include="UI\Controls\IBocMultilineTextValue.cs" />
     <Compile Include="UI\Controls\IBocReferenceValue.cs" />
+    <Compile Include="UI\Controls\IBocSortableColumnDefinition.cs" />
     <Compile Include="UI\Controls\IBocTextValue.cs" />
     <Compile Include="UI\Controls\IBocTextValueBase.cs" />
     <Compile Include="UI\Controls\IBusinessObjectBoundEditableWebControl.cs" />
@@ -345,10 +355,14 @@
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocSimpleColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocValueColumnRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocReferenceValue\BocReferenceValuePreRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValuePreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\BocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\BocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\QuirksMode\Factories\BocReferenceValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\Factories\BocReferenceValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRenderer.cs" />
@@ -432,11 +446,13 @@
     <Content Include="Res\HTML\BocList.css" />
     <Content Include="Res\HTML\BocList.js" />
     <Content Include="Res\HTML\BocMultilineTextValue.css" />
-    <Content Include="Res\HTML\BocReferenceValue.css" />
-    <Content Include="Res\HTML\BocReferenceValue.js">
+    <Content Include="Res\HTML\Legacy\BocReferenceValue.css" />
+    <Content Include="Res\HTML\Legacy\BocReferenceValue.js">
       <SubType>Code</SubType>
     </Content>
     <Content Include="Res\HTML\BocTextValue.css" />
+    <Content Include="Res\HTML\Standard\BocReferenceValue.css" />
+    <Content Include="Res\HTML\Standard\BocReferenceValue.js" />
     <Content Include="Res\HTML\TextBoxStyle.js" />
     <Content Include="Res\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Image\CheckBoxNull.gif" />

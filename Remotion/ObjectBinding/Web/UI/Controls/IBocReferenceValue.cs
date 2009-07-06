@@ -44,5 +44,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string DropDownListClientID { get; }
     string LabelClientID { get; }
     string IconClientID { get; }
+    string NullIdentifier { get; }
   }
 }

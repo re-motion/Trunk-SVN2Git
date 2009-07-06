@@ -20,13 +20,18 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="BocReferenceValue"/> controls.
+  /// Responsible for creating quirks mode renderers and prerenderers for <see cref="BocReferenceValue"/> controls.
   /// </summary>
   public class BocReferenceValueRendererFactory : IBocReferenceValueRendererFactory
   {
     public IBocReferenceValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocReferenceValue control)
     {
       return new BocReferenceValueRenderer (context, writer, control);
+    }
+
+    public IBocReferenceValuePreRenderer CreatePreRenderer (IHttpContext context, IBocReferenceValue control)
+    {
+      return new BocReferenceValuePreRenderer (context, control);
     }
   }
 }

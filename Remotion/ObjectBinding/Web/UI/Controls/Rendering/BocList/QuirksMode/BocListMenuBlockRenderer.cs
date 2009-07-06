@@ -56,10 +56,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 
       RenderOptionsMenu (menuBlockItemOffset);
 
-      RenderWrappedListMenu (menuBlockItemOffset);
+      RenderListMenu (menuBlockItemOffset);
     }
 
-    private void RenderWrappedListMenu (string menuBlockItemOffset)
+    private void RenderListMenu (string menuBlockItemOffset)
     {
       if (!List.HasListMenu)
         return;

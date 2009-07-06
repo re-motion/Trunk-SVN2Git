@@ -14,18 +14,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode
 {
-  /// <summary>
-  /// Interface for factory creating renderers and prerenderers for <see cref="BocReferenceValue"/> controls.
-  /// </summary>
-  public interface IBocReferenceValueRendererFactory
+  public class BocReferenceValuePreRenderer : BocReferenceValuePreRendererBase
   {
-    IBocReferenceValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocReferenceValue control);
+    public BocReferenceValuePreRenderer (IHttpContext context, IBocReferenceValue control)
+        : base (context, control)
+    {
+    }
 
-    IBocReferenceValuePreRenderer CreatePreRenderer (IHttpContext context, IBocReferenceValue control);
+    protected override ResourceTheme ResourceTheme
+    {
+      get { return Remotion.Web.ResourceTheme.Legacy; }
+    }
   }
 }

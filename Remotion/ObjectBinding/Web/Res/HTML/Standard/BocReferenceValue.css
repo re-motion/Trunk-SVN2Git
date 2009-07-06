@@ -1,0 +1,57 @@
+div.bocReferenceValue
+{
+                position: relative;
+                width: 100%;
+                height: auto;
+                display: inline-block;
+                vertical-align: middle
+}
+div.bocReferenceValueContent
+{
+                text-align: left;
+                line-height: 1.25em;
+                white-space: nowrap;
+                vertical-align: top;
+}
+
+div.bocReferenceValueContent a
+{
+  padding: 1px;
+}
+
+div.bocReferenceValueContent a:hover
+{
+  border: solid 1px #005588;
+  background-color: #fee197;
+}
+
+div.bocReferenceValueContent img.bocReferenceValueContent
+{
+    background-color: Transparent;
+    border-style: none;
+    position: static;    
+    margin: 2px;
+}
+
+div.bocReferenceValueOptionsMenu {
+                position: absolute; 
+                display: block; 
+                right: 0;
+                /*right:1px;   same like right border if you have */
+                top: 1px;
+}
+
+div.bocReferenceValueContent span.readOnly
+{
+  position : static;
+}
+
+span.bocReferenceValueContent
+{
+                position: absolute;
+}
+
+span.bocReferenceValueContent * {
+                width: 100%; 
+                margin: 0;
+}

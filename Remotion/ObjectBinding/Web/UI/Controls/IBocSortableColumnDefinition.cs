@@ -14,18 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
+namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  /// <summary>
-  /// Interface for factory creating renderers and prerenderers for <see cref="BocReferenceValue"/> controls.
-  /// </summary>
-  public interface IBocReferenceValueRendererFactory
+  public interface IBocSortableColumnDefinition : IControlItem
   {
-    IBocReferenceValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocReferenceValue control);
-
-    IBocReferenceValuePreRenderer CreatePreRenderer (IHttpContext context, IBocReferenceValue control);
+    bool IsSortable { get; }
   }
 }
