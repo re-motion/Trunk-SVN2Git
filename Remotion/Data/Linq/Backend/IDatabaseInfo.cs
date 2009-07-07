@@ -18,12 +18,11 @@ using System.Reflection;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Collections;
 
-namespace Remotion.Data.Linq
+namespace Remotion.Data.Linq.Backend
 {
   /// <summary>
   /// The interface has to be implemented so that the linq provider can use the underlying system to get information of the data source.
   /// </summary>
-  // TODO 1293: Move to other namespace.
   public interface IDatabaseInfo
   {
     /// <summary>
