@@ -13,10 +13,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.Linq.DataObjectModel
+using Remotion.Data.Linq.Backend.DataObjectModel;
+
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public interface IValue : IEvaluation
+  public interface IEvaluationVisitor
   {
-    
+    void VisitBinaryEvaluation (BinaryEvaluation binaryEvaluation);
+    void VisitComplexCriterion (ComplexCriterion complexCriterion);
+    void VisitNotCriterion (NotCriterion notCriterion);
+    void VisitConstant (Constant constant);
+    void VisitColumn (Column column);
+    void VisitBinaryCondition (BinaryCondition binaryCondition);
+    void VisitSubQuery (SubQuery subQuery);
+    void VisitMethodCall (MethodCall methodCall);
+    void VisitNewObjectEvaluation (NewObject newObject);
+    //void VisitSourceMarkerEvaluation (SourceMarkerEvaluation sourceMarkerEvaluation);
   }
 }

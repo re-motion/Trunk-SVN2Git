@@ -13,10 +13,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.Linq.DataObjectModel
+using Remotion.Utilities;
+
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public interface IEvaluation
+  // LetColumnSource
+  public struct LetColumnSource : IColumnSource
   {
-    void Accept (IEvaluationVisitor visitor);
+    public LetColumnSource (string alias, bool isTable) : this()
+    {
+      ArgumentUtility.CheckNotNull ("alias", alias);
+      ArgumentUtility.CheckNotNull ("isTable", isTable);
+      Alias = alias;
+      IsTable = isTable;
+    }
+
+    public bool IsTable { get; private set; }
+
+    public string Alias {get; private set; }
+    public string AliasString { get { return Alias; }
+    }
   }
 }

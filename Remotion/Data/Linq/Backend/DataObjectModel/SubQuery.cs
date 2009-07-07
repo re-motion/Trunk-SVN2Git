@@ -13,63 +13,52 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public class Table : IColumnSource
+  public class SubQuery : IColumnSource, ICriterion
   {
-    public Table ()
+    public SubQuery (QueryModel queryModel, ParseMode parseMode, string alias)
     {
-    }
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("parseMode", parseMode);
 
-    public Table(string name, string alias)
-    {
-      ArgumentUtility.CheckNotNull ("name", name);
-      Name = name;
+      QueryModel = queryModel;
       Alias = alias;
+      ParseMode = parseMode;
     }
 
-    public string Name { get; private set; }
+    public QueryModel QueryModel { get; private set; }
     public string Alias { get; private set; }
-
-    public override string ToString ()
-    {
-      return Name + " " + AliasString;
-    }
+    public ParseMode ParseMode { get; private set; }
 
     public string AliasString
     {
-      get { return Alias ?? "_"; }
+      get { return Alias; }
     }
 
     public bool IsTable
     {
       get { return true; }
     }
-
+    
     public override bool Equals (object obj)
     {
-      Table other = obj as Table;
-      return other != null && other.Name == Name && other.Alias == Alias;
+      var other = obj as SubQuery;
+      return other != null && object.Equals (QueryModel, other.QueryModel) && object.Equals (Alias, other.Alias);
     }
 
     public override int GetHashCode ()
     {
-      return EqualityUtility.GetRotatedHashCode (Name, Alias);
+      return EqualityUtility.GetRotatedHashCode (Alias, QueryModel);
     }
 
-    public void SetAlias (string newAlias)
+    public void Accept (IEvaluationVisitor visitor)
     {
-      ArgumentUtility.CheckNotNull ("newAlias", newAlias);
-
-      if (Alias != null)
-      {
-        string message = string.Format ("Table '{0}' already has alias '{1}', new alias '{2}' cannot be set.", Name, Alias, newAlias);
-        throw new InvalidOperationException (message);
-      }
-      Alias = newAlias;
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      visitor.VisitSubQuery (this);
     }
   }
 }

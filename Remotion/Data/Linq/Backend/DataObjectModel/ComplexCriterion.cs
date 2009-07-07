@@ -15,41 +15,36 @@
 // 
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public struct Column : ICriterion
+  public struct ComplexCriterion : ICriterion
   {
-    private readonly IColumnSource _columnSource;
-    // If Name is null, the column represents access to the whole ColumnSource. For tables, this would be the whole table; for let clauses either a
-    // table, a column, or a computed value.
-    private readonly string _name;
+    public enum JunctionKind { And, Or }
 
-    public Column (IColumnSource columnSource, string name)
+    public ComplexCriterion (ICriterion left, ICriterion right, JunctionKind kind) : this()
     {
-      ArgumentUtility.CheckNotNull ("fromSource", columnSource);
-      _name = name;
-      _columnSource = columnSource;
+      ArgumentUtility.CheckNotNull ("kind", kind);
+      ArgumentUtility.CheckNotNull ("left", left);
+      ArgumentUtility.CheckNotNull ("right", right);
+
+      Left = left;
+      Kind = kind;
+      Right = right;
     }
 
-    public IColumnSource ColumnSource
-    {
-      get { return _columnSource; }
-    }
-
-    public string Name
-    {
-      get { return _name; }
-    }
+    public ICriterion Left { get; private set; }
+    public ICriterion Right { get; private set; }
+    public JunctionKind Kind { get; private set; }
 
     public override string ToString ()
     {
-      return (_columnSource != null ? _columnSource.AliasString : "<null>") + "." + _name;
+      return "(" + Left + " " + Kind + " " + Right + ")";
     }
 
     public void Accept (IEvaluationVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
-      visitor.VisitColumn (this);
+      visitor.VisitComplexCriterion (this);
     }
   }
 }

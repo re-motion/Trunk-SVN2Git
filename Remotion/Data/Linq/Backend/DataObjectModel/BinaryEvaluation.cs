@@ -15,35 +15,31 @@
 // 
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public struct SingleJoin
+  public struct BinaryEvaluation : IEvaluation
   {
-    public Column RightColumn { get; private set; }
-    public Column LeftColumn { get; private set; }
+    public enum EvaluationKind { Add, Divide, Modulo, Multiply, Subtract }
 
-    public SingleJoin (Column leftColumn, Column rightColumn) : this()
+    public BinaryEvaluation (IEvaluation left, IEvaluation right, EvaluationKind kind) : this()
     {
-      ArgumentUtility.CheckNotNull ("leftColumn", leftColumn);
-      ArgumentUtility.CheckNotNull ("rightColumn", rightColumn);
+      ArgumentUtility.CheckNotNull ("left", left);
+      ArgumentUtility.CheckNotNull ("right", right);
+      ArgumentUtility.CheckNotNull ("kind", kind);
 
-      LeftColumn = leftColumn;
-      RightColumn = rightColumn;
+      Left = left;
+      Right = right;
+      Kind = kind;
     }
 
-    public IColumnSource LeftSide
-    {
-      get { return LeftColumn.ColumnSource; }
-    }
+    public IEvaluation Left { get; private set; }
+    public IEvaluation Right { get; private set; }
+    public EvaluationKind Kind { get; private set; }
 
-    public IColumnSource RightSide
+    public void Accept (IEvaluationVisitor visitor)
     {
-      get { return RightColumn.ColumnSource; }
-    }
-
-    public override string ToString ()
-    {
-      return string.Format ("({0} left join {1} on {2} = {3})", RightSide, LeftSide, RightColumn, LeftColumn);
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      visitor.VisitBinaryEvaluation (this);
     }
   }
 }

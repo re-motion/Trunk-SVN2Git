@@ -13,35 +13,41 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Utilities;
+using Remotion.Data.Linq.Clauses;
 
-namespace Remotion.Data.Linq.DataObjectModel
+namespace Remotion.Data.Linq.Backend.DataObjectModel
 {
-  public struct NotCriterion : ICriterion
+  public struct OrderingField
   {
-    private readonly ICriterion _negatedCriterion;
+    private readonly FieldDescriptor _fieldDescriptor;
+    private readonly OrderingDirection _direction;
 
-    public NotCriterion (ICriterion negatedCriterion)
+    public OrderingField (FieldDescriptor fieldDescriptor, OrderingDirection direction)
     {
-      ArgumentUtility.CheckNotNull ("negatedCriterion", negatedCriterion);
-      _negatedCriterion = negatedCriterion;
+      fieldDescriptor.GetMandatoryColumn (); // assert that there is a column for ordering
+
+      _fieldDescriptor = fieldDescriptor;
+      _direction = direction;
     }
 
-    public ICriterion NegatedCriterion
+    public Column Column
     {
-      get { return _negatedCriterion; }
+      get { return _fieldDescriptor.GetMandatoryColumn(); }
+    }
+
+    public FieldDescriptor FieldDescriptor
+    {
+      get { return _fieldDescriptor; }
+    }
+
+    public OrderingDirection Direction
+    {
+      get { return _direction; }
     }
 
     public override string ToString ()
     {
-      return "NOT (" + _negatedCriterion + ")";
+      return _fieldDescriptor.ToString()+ " " + _direction.ToString();
     }
-
-    public void Accept (IEvaluationVisitor visitor)
-    {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-      visitor.VisitNotCriterion (this);
-    }
-
   }
 }
