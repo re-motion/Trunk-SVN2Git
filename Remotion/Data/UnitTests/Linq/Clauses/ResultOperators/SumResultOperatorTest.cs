@@ -20,17 +20,17 @@ using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 
-namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
+namespace Remotion.Data.UnitTests.Linq.Clauses.ResultOperators
 {
   [TestFixture]
-  public class MinResultOperatorTest
+  public class SumResultOperatorTest
   {
-    private MinResultOperator _resultOperator;
+    private SumResultOperator _resultOperator;
 
     [SetUp]
     public void SetUp ()
     {
-      _resultOperator = new MinResultOperator ();
+      _resultOperator = new SumResultOperator ();
     }
 
     [Test]
@@ -40,18 +40,24 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
       var cloneContext = new CloneContext (clonedClauseMapping);
       var clone = _resultOperator.Clone (cloneContext);
 
-      Assert.That (clone, Is.InstanceOfType (typeof (MinResultOperator)));
+      Assert.That (clone, Is.InstanceOfType (typeof (SumResultOperator)));
     }
 
     [Test]
     public void ExecuteInMemory ()
     {
-      var items = new[] { 1, 2, 3, 0, 2 };
-      var resultModification = new MinResultOperator ();
+      var items = new[] { 1, 2, 3 };
+      var result = _resultOperator.ExecuteInMemory(items);
 
-      var result = resultModification.ExecuteInMemory (items);
+      Assert.That (result, Is.EqualTo (new[] { 6 }));
+    }
 
-      Assert.That (result, Is.EqualTo (new[] { 0 }));
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot calculate the sum of elements of type 'System.String' in memory.")]
+    public void ExecuteInMemory_UnsupportedType ()
+    {
+      var items = new[] { "1", "2", "3" };
+      _resultOperator.ExecuteInMemory (items);
     }
 
     [Test]
