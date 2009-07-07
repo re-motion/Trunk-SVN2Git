@@ -13,15 +13,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.Linq.Clauses.Expressions;
 
-namespace Remotion.Data.Linq.Parsing.FieldResolving
+namespace Remotion.Data.Linq.Backend.FieldResolving
 {
-  public class OrderingFieldAccessPolicy : IResolveFieldAccessPolicy
+  public class SelectFieldAccessPolicy : IResolveFieldAccessPolicy
   {
     public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForDirectAccessOfQuerySource (QuerySourceReferenceExpression referenceExpression)
     {
@@ -30,11 +29,9 @@ namespace Remotion.Data.Linq.Parsing.FieldResolving
 
     public Tuple<MemberInfo, IEnumerable<MemberInfo>> AdjustMemberInfosForRelation (MemberInfo accessedMember, IEnumerable<MemberInfo> joinMembers)
     {
-      string message = string.Format (
-          "Ordering by '{0}.{1}' is not supported because it is a relation member.", 
-          accessedMember.DeclaringType.FullName,
-          accessedMember.Name);
-      throw new NotSupportedException (message);
+        var newJoinMembers = new List<MemberInfo> (joinMembers);
+        newJoinMembers.Add (accessedMember);
+        return new Tuple<MemberInfo, IEnumerable<MemberInfo>> (null, newJoinMembers); // select full table if relation member is accessed
     }
 
     public bool OptimizeRelatedKeyAccess ()

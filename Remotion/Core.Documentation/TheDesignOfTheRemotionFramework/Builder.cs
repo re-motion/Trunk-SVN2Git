@@ -15,7 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.RdbmsTools.SchemaGeneration.SqlServer;
-using Remotion.Data.Linq.Parsing.FieldResolving;
+using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Mixins.Definitions.Building;
 
 namespace Core.Documentation.TheDesignOfTheRemotionFramework
