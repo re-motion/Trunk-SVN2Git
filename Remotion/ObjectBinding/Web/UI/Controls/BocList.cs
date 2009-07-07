@@ -1048,6 +1048,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void OnPreRender (EventArgs e)
     {
+      _listMenu.Visible = HasListMenu;
+      _optionsMenu.Visible = HasOptionsMenu;
+
       EnsureChildControls();
       base.OnPreRender (e);
 
