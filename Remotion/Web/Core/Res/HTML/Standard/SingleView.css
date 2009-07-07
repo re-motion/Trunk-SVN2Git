@@ -39,7 +39,6 @@ html > body div.singleViewView
 /* Applied to the top section of the multi view. Height cannot be provided in percent. */
 div.singleViewTopControls
 {
-  position: absolute; 
   padding-bottom: 1em;
   top: 15px; 
 	left: 10px; 

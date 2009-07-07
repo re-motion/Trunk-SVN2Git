@@ -14,6 +14,9 @@ ViewLayout.AdjustWidth = function(containerElement) {
             borderWidth = 0;
         $(this).width(parentWidth - 2 * margin - 2 * borderWidth);
     });
+
+    var topControls = $(containerElement).children(':first');
+    topControls.css('position', 'absolute');
 }
 
 ViewLayout.Adjust = function(containerElement, elementToAdjust) {
@@ -21,11 +24,10 @@ ViewLayout.Adjust = function(containerElement, elementToAdjust) {
     ViewLayout.AdjustHeight(containerElement, elementToAdjust);
 };
 
-ViewLayout.AdjustTop = function(containerElement, elementToAdjust)
-{
-    var topControls = $(containerElement).children()[0];
+ViewLayout.AdjustTop = function(containerElement, elementToAdjust) {
+    var topControls = $(containerElement).children(':first');
     var siblings = ViewLayout.GetLayoutParts(containerElement, elementToAdjust)
-    $(elementToAdjust).css('top', $(topControls).outerHeight() + ViewLayout.GetTopControlMargin(siblings) );
+    $(elementToAdjust).css('top', topControls.outerHeight() + ViewLayout.GetTopControlMargin(siblings));
 };
 
 ViewLayout.AdjustHeight = function(containerElement, elementToAdjust) {

@@ -19,7 +19,6 @@ div.tabbedMultiView
 /* Applied to the top section of the multi view. Height cannot be provided in percent. */
 div.tabbedMultiViewTopControls
 {
-  position: absolute; 
   padding-bottom: 1em;
   top: 15px; 
 	left: 10px; 
