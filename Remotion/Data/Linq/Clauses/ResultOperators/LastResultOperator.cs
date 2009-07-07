@@ -16,36 +16,44 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
 using Remotion.Utilities;
-using System.Linq;
 
-namespace Remotion.Data.Linq.Clauses.ResultModifications
+namespace Remotion.Data.Linq.Clauses.ResultOperators
 {
-  public class TakeResultOperator : ResultOperatorBase
+  public class LastResultOperator : ResultOperatorBase
   {
-    public int Count { get; set; }
-
-    public TakeResultOperator (int count)
-        : base (CollectionExecutionStrategy.Instance)
+    public LastResultOperator (bool returnDefaultWhenEmpty)
+        : base (
+            returnDefaultWhenEmpty ? SingleExecutionStrategy.InstanceWithDefaultWhenEmpty : SingleExecutionStrategy.InstanceNoDefaultWhenEmpty)
     {
-      Count = count;
+      ReturnDefaultWhenEmpty = returnDefaultWhenEmpty;
     }
+
+    public bool ReturnDefaultWhenEmpty { get; set; }
 
     public override ResultOperatorBase Clone (CloneContext cloneContext)
     {
-      return new TakeResultOperator (Count);
+      return new LastResultOperator (ReturnDefaultWhenEmpty);
     }
 
     public override IEnumerable ExecuteInMemory<T> (IEnumerable<T> items)
     {
       ArgumentUtility.CheckNotNull ("items", items);
-      return items.Take (Count);
+
+      if (ReturnDefaultWhenEmpty)
+        return new[] { items.LastOrDefault() };
+      else
+        return new[] { items.Last() };
     }
 
     public override string ToString ()
     {
-      return "Take(" + Count + ")";
+      if (ReturnDefaultWhenEmpty)
+        return "LastOrDefault()";
+      else
+        return "Last()";
     }
   }
 }

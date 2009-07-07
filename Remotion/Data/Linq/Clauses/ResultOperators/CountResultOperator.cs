@@ -15,34 +15,34 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Clauses.ResultModifications
+namespace Remotion.Data.Linq.Clauses.ResultOperators
 {
-  public class MinResultOperator : ResultOperatorBase
+  public class CountResultOperator : ResultOperatorBase
   {
-    public MinResultOperator ()
+    public CountResultOperator ()
         : base (ScalarExecutionStrategy.Instance)
     {
     }
 
     public override ResultOperatorBase Clone (CloneContext cloneContext)
     {
-      return new MinResultOperator ();
+      return new CountResultOperator ();
     }
 
     public override IEnumerable ExecuteInMemory<T> (IEnumerable<T> items)
     {
       ArgumentUtility.CheckNotNull ("items", items);
-      return new[] { items.Min () };
+      return new[] { items.Count () };
     }
 
     public override string ToString ()
     {
-      return "Min()";
+      return "Count()";
     }
   }
 }

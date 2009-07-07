@@ -15,34 +15,45 @@
 // 
 using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Clauses.ResultModifications
+namespace Remotion.Data.Linq.Clauses.ResultOperators
 {
-  public class CountResultOperator : ResultOperatorBase
+  public class FirstResultOperator : ResultOperatorBase
   {
-    public CountResultOperator ()
-        : base (ScalarExecutionStrategy.Instance)
+    public FirstResultOperator (bool returnDefaultWhenEmpty)
+        : base (
+            returnDefaultWhenEmpty ? SingleExecutionStrategy.InstanceWithDefaultWhenEmpty : SingleExecutionStrategy.InstanceNoDefaultWhenEmpty)
     {
+      ReturnDefaultWhenEmpty = returnDefaultWhenEmpty;
     }
+
+    public bool ReturnDefaultWhenEmpty { get; set; }
 
     public override ResultOperatorBase Clone (CloneContext cloneContext)
     {
-      return new CountResultOperator ();
+      return new FirstResultOperator (ReturnDefaultWhenEmpty);
     }
 
     public override IEnumerable ExecuteInMemory<T> (IEnumerable<T> items)
     {
       ArgumentUtility.CheckNotNull ("items", items);
-      return new[] { items.Count () };
+
+      if (ReturnDefaultWhenEmpty)
+        return new[] { items.FirstOrDefault () };
+      else
+        return new[] { items.First () };
     }
 
     public override string ToString ()
     {
-      return "Count()";
+      if (ReturnDefaultWhenEmpty)
+        return "FirstOrDefault()";
+      else
+        return "First()";
     }
   }
 }
