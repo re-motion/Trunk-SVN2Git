@@ -21,8 +21,8 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.SqlGeneration;
-using Remotion.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries

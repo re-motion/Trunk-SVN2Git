@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
-using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;

@@ -24,8 +24,8 @@ using Remotion.Data.DomainObjects.Configuration.StorageProviders;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.Linq.Parsing.Details.WhereConditionParsing;
-using Remotion.Data.Linq.SqlGeneration;
-using Remotion.Data.Linq.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Mixins;
 using Remotion.Utilities;
 

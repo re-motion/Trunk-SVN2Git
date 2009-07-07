@@ -16,7 +16,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.SqlGeneration;
+using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
