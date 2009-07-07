@@ -37,17 +37,16 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       AddAttributesToRender();
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      RenderIFrame();
       RenderTitleDiv();
-      RenderList();
 
       Writer.RenderEndTag();
     }
 
-    private void RenderList ()
+    private void RenderIFrame ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassList);
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "none");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Ul);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Iframe);
       Writer.RenderEndTag();
     }
 
@@ -71,7 +70,10 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
 
     private void RenderDefaultTitle ()
     {
-      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+      Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, "return false;");
+      Writer.RenderBeginTag (HtmlTextWriterTag.A);
+
       if (Control.TitleIcon != null && !string.IsNullOrEmpty (Control.TitleIcon.Url))
         Control.TitleIcon.Render (Writer);
 
@@ -79,7 +81,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
         Writer.Write ("&nbsp;");
       else
         Writer.Write (Control.TitleText);
-      Writer.RenderEndTag();
+      Writer.RenderEndTag ();
     }
 
     private void RenderDropdownButton ()

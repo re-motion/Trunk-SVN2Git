@@ -33,6 +33,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     IconInfo TitleIcon { get; }
     string TitleText { get; }
     Unit Width { get; }
+    string GetSelectionCount { get; }
     string GetOpenDropDownMenuEventReference (string eventReference);
   }
 }

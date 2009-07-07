@@ -30,6 +30,19 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
     }
 
+    public override void PreRender ()
+    {
+      base.PreRender();
+
+      string key = Control.ClientID + "_KeyDownEventHandlerBindScript";
+      string getSelectionCount = (string.IsNullOrEmpty (Control.GetSelectionCount) ? "null" : Control.GetSelectionCount);
+      string script = string.Format (
+          "$('#{0}').keydown( function(event){{ DropDownMenu_OnKeyDown(event, document.getElementById('{0}'), {1}); }} );",
+          Control.ClientID,
+          getSelectionCount);
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, key, script);
+    }
+
     public override bool GetBrowserCapableOfScripting ()
     {
       return true;

@@ -14,11 +14,22 @@
 		cursor: pointer;
 		line-height: 1.25em;
 	}
-
+	
 	div.DropDownMenuSelect > span {
-		/*float: left;*/
 		left: 0;
 		margin-right: 20px;
+	}
+
+	div.DropDownMenuSelect > a {
+		left: 0;
+		margin-right: 20px;
+		border-style: none;
+		background-color: Transparent;
+	}
+	
+	div.DropDownMenuSelect > a:hover {
+		border-style: none;
+		background-color: Transparent;
 	}
 
    a.DropDownMenuSelectButton {
@@ -53,6 +64,13 @@
 		padding: 0;
 		list-style: none;
 		background: #FFFFFF url(../../Image/DropDownMenuItemIconPane.gif) repeat-y top left;
+		z-index: 1000;
+	}
+	
+	ul.DropDownMenuOptions li.selected a
+	{
+	  background-color: #FFDE98;
+		border: solid 1px #005588;
 	}
 
 	ul.DropDownMenuOptions li a {

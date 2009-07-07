@@ -28,6 +28,8 @@ var _dropDownMenu_requiredSelectionAny = 0;
 var _dropDownMenu_requiredSelectionExactlyOne = 1;
 var _dropDownMenu_requiredSelectionOneOrMore = 2;
 
+var _dropDownMenu_currentItemIndex = -1;
+
 var _itemClickHandler = null;
 var _itemClicked = false;
 
@@ -57,33 +59,41 @@ function DropDownMenu_ItemInfo(id, category, text, icon, iconDisabled, requiredS
 }
 
 function DropDownMenu_OnClick(context, menuID, getSelectionCount, evt) {
-    var id = context.id + '_PopUp';
-    if (_itemClicked) 
-    {
+    if (_itemClicked) {
         _itemClicked = false;
         return;
     }
-    if (context != _dropDownMenu_currentMenu) 
-    {
+    if (context != _dropDownMenu_currentMenu) {
         DropDownMenu_ClosePopUp();
     }
-    if(_dropDownMenu_currentMenu == null )
-    {
-        DropDownMenu_OpenPopUp(id, menuID, context, getSelectionCount, evt);
+    if (_dropDownMenu_currentMenu == null) {
+        DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt);
         _dropDownMenu_currentMenu = context;
     }
 }
 
-function DropDownMenu_OpenPopUp(id, menuID, context, getSelectionCount, evt) {
+function DropDownMenu_GetZIndexParent(element) {
+    var parent = element;
+    while (parent.parent('div').length > 0)
+        parent = parent.parent();
+    return parent;
+}
+
+function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt) {
     var itemInfos = _dropDownMenu_menuInfos[menuID].ItemInfos;
     var selectionCount = -1;
     if (getSelectionCount != null)
         selectionCount = getSelectionCount();
 
-    var ul = $(context).children('ul');
-    ul.empty();
-    ul.show();
-    ul.parent().css('zIndex', '1000');
+    if (itemInfos.length == 0)
+        return;
+
+    var ul = document.createElement('ul');
+    ul.className = 'DropDownMenuOptions';
+    context.appendChild(ul);
+
+    $(context).css('zIndex', '1000');
+    DropDownMenu_GetZIndexParent($(context)).css('zIndex', '1000');
 
     _itemClickHandler = function() {
         DropDownMenu_ClosePopUp();
@@ -100,7 +110,7 @@ function DropDownMenu_OpenPopUp(id, menuID, context, getSelectionCount, evt) {
     for (var i = 0; i < itemInfos.length; i++) {
         var item = DropDownMenu_CreateItem(itemInfos[i], selectionCount, true);
         if (item != null)
-            ul.append(item);
+            ul.appendChild(item);
     }
 
     // move dropdown if there is not enough space to fit it on the page
@@ -110,20 +120,29 @@ function DropDownMenu_OpenPopUp(id, menuID, context, getSelectionCount, evt) {
     var space_left = titleDiv.offset().left;
     var space_right = $(window).width() - titleDiv.offset().left - titleDiv.width();
 
-    if ( (ul.width() > space_left) && (space_left < space_right) ) {
+    if (($(ul).width() > space_left) && (space_left < space_right)) {
 
-        if (ul.offset().left < 0) {
-            ul.css('left', '0');
+        if ($(ul).offset().left < 0) {
+            $(ul).css('left', '0');
         } else {
-          ul.css('right', '0');
+            $(ul).css('right', '0');
         }
     }
-    if ((ul.height() > space_bottom) && (space_top > space_bottom)) {
-        ul.css({ top: -ul.height() });
+    if (($(ul).height() > space_bottom) && (space_top > space_bottom)) {
+        $(ul).css({ top: -$(ul).height() });
     }
     else {
-        ul.css('top', 'auto');
+        $(ul).css('top', 'auto');
     }
+
+    var iframe = $(context).children('iframe');
+    iframe.css('top', $(ul).position().top + 'px');
+    iframe.css('left', $(ul).position().left + 'px');
+    iframe.width($(ul).width());
+    iframe.height($(ul).height());
+    iframe.css('position', 'absolute');
+    iframe.css('zIndex', '999');
+    iframe.show();
 }
 
 function DropDownMenu_ClosePopUp() {
@@ -131,11 +150,17 @@ function DropDownMenu_ClosePopUp() {
         return;
 
     var ul = $(_dropDownMenu_currentMenu).children('ul');
-    ul.hide();
-    ul.parent().css('zIndex', '0');
-    $('body').unbind('click', DropDownMenu_ClosePopUp);
 
+    $('body').unbind('click', DropDownMenu_ClosePopUp);
+    DropDownMenu_GetZIndexParent($(_dropDownMenu_currentMenu)).css('zIndex', '0');
     _dropDownMenu_currentMenu = null;
+
+    var iframe = ul.siblings('iframe');
+    iframe.hide();
+
+    ul.remove();
+
+    _dropDownMenu_currentItemIndex = -1;
 }
 
 function DropDownMenu_CreateItem(itemInfo, selectionCount) {
@@ -182,7 +207,7 @@ function DropDownMenu_CreateTextItem(itemInfo, selectionCount) {
     anchor.setAttribute('href', '#');
     item.appendChild(anchor);
     if (isEnabled && itemInfo.Href != null) {
-     
+
         var isJavaScript = itemInfo.Href.toLowerCase().indexOf('javascript:') >= 0;
         if (isJavaScript) {
             item.setAttribute('javascript', itemInfo.Href);
@@ -236,4 +261,56 @@ function DropDownMenu_CreateSeparatorItem() {
     item.appendChild(textPane);
 
     return textPane;
+}
+
+function DropDownMenu_OnKeyDown(event, dropDownMenu, getSelectionCount) {
+    // alert(event.keyCode + ', ' + dropDownMenu.nodeName + '#' + dropDownMenu.id);
+    
+    var itemInfos = _dropDownMenu_menuInfos[dropDownMenu.id].ItemInfos;
+
+    switch (event.keyCode) {
+        case 13: //enter
+        case 32: //space
+            if (_dropDownMenu_currentItemIndex >= 0) {
+                var itemAnchor = $($(dropDownMenu).find('ul').children()[_dropDownMenu_currentItemIndex]).children('a');
+                itemAnchor.click();
+            }
+
+            if (dropDownMenu != _dropDownMenu_currentMenu)
+                DropDownMenu_OnClick(dropDownMenu, dropDownMenu.id, getSelectionCount, null);
+            else
+                DropDownMenu_ClosePopUp();
+            break;
+        case 27: //escape
+            DropDownMenu_ClosePopUp();
+            break;
+        case 39: // right arrow
+        case 40: // down arrow
+            if (_dropDownMenu_currentItemIndex < itemInfos.length - 1) {
+                _dropDownMenu_currentItemIndex++;
+                if( itemInfos[_dropDownMenu_currentItemIndex].ID == -1 )
+                    _dropDownMenu_currentItemIndex++;
+            }
+            else
+                _dropDownMenu_currentItemIndex = 0;
+            break;
+        case 37: // left arrow
+        case 38: // up arrow
+            if (_dropDownMenu_currentItemIndex > 0) {
+                _dropDownMenu_currentItemIndex--;
+                if( itemInfos[_dropDownMenu_currentItemIndex].ID == -1 )
+                    _dropDownMenu_currentItemIndex--;
+            }
+            else
+                _dropDownMenu_currentItemIndex = itemInfos.length - 1;
+            break;
+    }
+    if (0 <= _dropDownMenu_currentItemIndex && _dropDownMenu_currentItemIndex < itemInfos.length) {
+        ul = $(dropDownMenu).find('ul');
+        ul.children('li').removeAttr('class');
+        if (ul.length > 0) {
+            var li = ul.children()[_dropDownMenu_currentItemIndex];
+            $(li).attr('class', 'selected');
+        }
+    }
 }

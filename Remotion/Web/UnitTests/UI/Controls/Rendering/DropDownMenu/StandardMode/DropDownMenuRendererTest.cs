@@ -71,7 +71,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
       XmlNode containerDiv = GetAssertedContainerDiv();
       AssertTitleDiv(containerDiv, false, false);
-      AssertList(containerDiv);
     }
 
     [Test]
@@ -81,7 +80,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
 
       XmlNode containerDiv = GetAssertedContainerDiv ();
       AssertTitleDiv (containerDiv, true, false);
-      AssertList (containerDiv);
     }
 
     [Test]
@@ -92,7 +90,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
 
       XmlNode containerDiv = GetAssertedContainerDiv ();
       AssertTitleDiv (containerDiv, true, true);
-      AssertList (containerDiv);
     }
 
     [Test]
@@ -102,24 +99,15 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
 
       XmlNode containerDiv = GetAssertedContainerDiv ();
       AssertTitleDiv (containerDiv, false, false);
-      AssertList (containerDiv);
-    }
-
-    private void AssertList (XmlNode containerDiv)
-    {
-      var list = containerDiv.GetAssertedChildElement ("ul", 1);
-      list.AssertAttributeValueEquals ("class", "DropDownMenuOptions");
-      list.AssertStyleAttribute ("display", "none");
-      list.AssertChildElementCount (0);
     }
 
     private void AssertTitleDiv (XmlNode containerDiv, bool withTitle, bool withIcon)
     {
-      var titleDiv = containerDiv.GetAssertedChildElement ("div", 0);
+      var titleDiv = containerDiv.GetAssertedChildElement ("div", 1);
       titleDiv.AssertAttributeValueEquals ("class", "DropDownMenuSelect");
       titleDiv.AssertChildElementCount (2);
 
-      AssertTitleSpan(titleDiv, withTitle, withIcon);
+      AssertTitleAnchor(titleDiv, withTitle, withIcon);
       AssertDropDownButton(titleDiv);
     }
 
@@ -134,15 +122,17 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       image.AssertStyleAttribute ("border-style", "none");
     }
 
-    private void AssertTitleSpan (XmlNode titleDiv, bool withTitle, bool withIcon)
+    private void AssertTitleAnchor (XmlNode titleDiv, bool withTitle, bool withIcon)
     {
-      var titleSpan = titleDiv.GetAssertedChildElement ("span", 0);
-      titleSpan.AssertChildElementCount (withIcon ? 1 : 0);
-      titleSpan.AssertTextNode (withTitle ? c_MenuTitle : "&nbsp;", withIcon ? 1 : 0);
+      var titleAnchor = titleDiv.GetAssertedChildElement ("a", 0);
+      titleAnchor.AssertAttributeValueEquals ("href", "#");
+      titleAnchor.AssertAttributeValueEquals ("onclick", "return false;");
+      titleAnchor.AssertChildElementCount (withIcon ? 1 : 0);
+      titleAnchor.AssertTextNode (withTitle ? c_MenuTitle : "&nbsp;", withIcon ? 1 : 0);
 
       if (withIcon)
       {
-        var icon = titleSpan.GetAssertedChildElement ("img", 0);
+        var icon = titleAnchor.GetAssertedChildElement ("img", 0);
         icon.AssertAttributeValueEquals ("src", c_Icon_Url);
         icon.AssertAttributeValueEquals ("alt", c_IconAlternateText);
         icon.AssertAttributeValueEquals ("width", s_iconWidth.ToString ());
@@ -162,6 +152,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       containerDiv.AssertAttributeValueEquals ("class", "DropDownMenuContainer");
       containerDiv.AssertAttributeValueEquals ("onclick", _control.GetOpenDropDownMenuEventReference ("eventReference"));
       containerDiv.AssertChildElementCount (2);
+
+      var iframe = containerDiv.GetAssertedChildElement ("iframe", 0);
+      iframe.AssertStyleAttribute ("display", "none");
+
       return containerDiv;
     }
 
