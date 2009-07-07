@@ -23,14 +23,14 @@ using Remotion.Data.Linq.Clauses.ResultModifications;
 namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
 {
   [TestFixture]
-  public class MaxResultModificationTest
+  public class MaxResultOperatorTest
   {
-    private MaxResultModification _resultModification;
+    private MaxResultOperator _resultOperator;
 
     [SetUp]
     public void SetUp ()
     {
-      _resultModification = new MaxResultModification ();
+      _resultOperator = new MaxResultOperator ();
     }
 
     [Test]
@@ -38,16 +38,16 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
     {
       var clonedClauseMapping = new ClauseMapping ();
       var cloneContext = new CloneContext (clonedClauseMapping);
-      var clone = _resultModification.Clone (cloneContext);
+      var clone = _resultOperator.Clone (cloneContext);
 
-      Assert.That (clone, Is.InstanceOfType (typeof (MaxResultModification)));
+      Assert.That (clone, Is.InstanceOfType (typeof (MaxResultOperator)));
     }
 
     [Test]
     public void ExecuteInMemory ()
     {
       var items = new[] { 1, 2, 3, 0, 2 };
-      var resultModification = new MaxResultModification ();
+      var resultModification = new MaxResultOperator ();
 
       var result = resultModification.ExecuteInMemory (items);
 
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
     [Test]
     public void ExecutionStrategy ()
     {
-      Assert.That (_resultModification.ExecutionStrategy, Is.SameAs (ScalarExecutionStrategy.Instance));
+      Assert.That (_resultOperator.ExecutionStrategy, Is.SameAs (ScalarExecutionStrategy.Instance));
     }
   }
 }

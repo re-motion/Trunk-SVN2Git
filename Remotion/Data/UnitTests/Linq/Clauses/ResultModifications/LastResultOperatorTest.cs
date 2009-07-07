@@ -23,18 +23,18 @@ using Remotion.Data.Linq.Clauses.ResultModifications;
 namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
 {
   [TestFixture]
-  public class LastResultModificationTest
+  public class LastResultOperatorTest
   {
-    private LastResultModification _resultModificationNoDefault;
-    private LastResultModification _resultModificationWithDefault;
+    private LastResultOperator _resultOperatorNoDefault;
+    private LastResultOperator _resultOperatorWithDefault;
     private ClauseMapping _clauseMapping;
     private CloneContext _cloneContext;
 
     [SetUp]
     public void SetUp ()
     {
-      _resultModificationNoDefault = new LastResultModification (false);
-      _resultModificationWithDefault = new LastResultModification (true);
+      _resultOperatorNoDefault = new LastResultOperator (false);
+      _resultOperatorWithDefault = new LastResultOperator (true);
       _clauseMapping = new ClauseMapping ();
       _cloneContext = new CloneContext(_clauseMapping);
     }
@@ -42,19 +42,19 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
     [Test]
     public void Clone ()
     {
-      var clone = _resultModificationWithDefault.Clone (_cloneContext);
+      var clone = _resultOperatorWithDefault.Clone (_cloneContext);
 
-      Assert.That (clone, Is.InstanceOfType (typeof (LastResultModification)));
-      Assert.That (((LastResultModification) clone).ReturnDefaultWhenEmpty, Is.True);
+      Assert.That (clone, Is.InstanceOfType (typeof (LastResultOperator)));
+      Assert.That (((LastResultOperator) clone).ReturnDefaultWhenEmpty, Is.True);
     }
 
     [Test]
     public void Clone_ReturnDefaultIfEmpty_False ()
     {
-      var clone = _resultModificationNoDefault.Clone (_cloneContext);
+      var clone = _resultOperatorNoDefault.Clone (_cloneContext);
 
-      Assert.That (clone, Is.InstanceOfType (typeof (LastResultModification)));
-      Assert.That (((LastResultModification) clone).ReturnDefaultWhenEmpty, Is.False);
+      Assert.That (clone, Is.InstanceOfType (typeof (LastResultOperator)));
+      Assert.That (((LastResultOperator) clone).ReturnDefaultWhenEmpty, Is.False);
     }
 
 
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
     public void ExecuteInMemory ()
     {
       var items = new[] { 1, 2, 3 };
-      var result = _resultModificationWithDefault.ExecuteInMemory (items);
+      var result = _resultOperatorWithDefault.ExecuteInMemory (items);
 
       Assert.That (result, Is.EqualTo (new[] { 3 }));
     }
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
     public void ExecuteInMemory_Empty_Default ()
     {
       var items = new int[0];
-      var result = _resultModificationWithDefault.ExecuteInMemory (items);
+      var result = _resultOperatorWithDefault.ExecuteInMemory (items);
 
       Assert.That (result, Is.EqualTo (new[] { 0 }));
     }
@@ -81,19 +81,19 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
     public void ExecuteInMemory_Empty_NoDefault ()
     {
       var items = new int[0];
-      _resultModificationNoDefault.ExecuteInMemory (items);
+      _resultOperatorNoDefault.ExecuteInMemory (items);
     }
 
     [Test]
     public void ExecutionStrategy_Default ()
     {
-      Assert.That (_resultModificationWithDefault.ExecutionStrategy, Is.SameAs (SingleExecutionStrategy.InstanceWithDefaultWhenEmpty));
+      Assert.That (_resultOperatorWithDefault.ExecutionStrategy, Is.SameAs (SingleExecutionStrategy.InstanceWithDefaultWhenEmpty));
     }
 
     [Test]
     public void ExecutionStrategy_NoDefault ()
     {
-      Assert.That (_resultModificationNoDefault.ExecutionStrategy, Is.SameAs (SingleExecutionStrategy.InstanceNoDefaultWhenEmpty));
+      Assert.That (_resultOperatorNoDefault.ExecutionStrategy, Is.SameAs (SingleExecutionStrategy.InstanceNoDefaultWhenEmpty));
     }
   }
 }

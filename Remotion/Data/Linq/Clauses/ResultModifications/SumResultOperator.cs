@@ -17,32 +17,39 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
 using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Clauses.ResultModifications
 {
-  public class DistinctResultModification : ResultModificationBase
+  public class SumResultOperator : ResultOperatorBase
   {
-    public DistinctResultModification ()
-        : base (CollectionExecutionStrategy.Instance)
+    public SumResultOperator ()
+        : base (ScalarExecutionStrategy.Instance)
     {
     }
 
-    public override ResultModificationBase Clone (CloneContext cloneContext)
+    public override ResultOperatorBase Clone (CloneContext cloneContext)
     {
-      return new DistinctResultModification ();
+      return new SumResultOperator ();
     }
 
     public override IEnumerable ExecuteInMemory<T> (IEnumerable<T> items)
     {
       ArgumentUtility.CheckNotNull ("items", items);
-      return items.Distinct ();
+      var method = typeof (Enumerable).GetMethod ("Sum", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof (IEnumerable<T>) }, null);
+      if (method == null)
+      {
+        var message = string.Format ("Cannot calculate the sum of elements of type '{0}' in memory.", typeof (T).FullName);
+        throw new NotSupportedException (message);
+      }
+      return new[] { (T) method.Invoke (null, new object[] { items }) };
     }
 
     public override string ToString ()
     {
-      return "Distinct()";
+      return "Sum()";
     }
   }
 }

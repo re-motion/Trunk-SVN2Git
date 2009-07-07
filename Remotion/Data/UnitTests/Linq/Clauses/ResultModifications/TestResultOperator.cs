@@ -15,34 +15,26 @@
 // 
 using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
-using Remotion.Data.Linq.Clauses.ExecutionStrategies;
-using Remotion.Utilities;
+using Remotion.Data.Linq.Clauses;
 
-namespace Remotion.Data.Linq.Clauses.ResultModifications
+namespace Remotion.Data.UnitTests.Linq.Clauses.ResultModifications
 {
-  public class CountResultModification : ResultModificationBase
+  public class TestResultOperator : ResultOperatorBase
   {
-    public CountResultModification ()
-        : base (ScalarExecutionStrategy.Instance)
+    public TestResultOperator (IExecutionStrategy executionStrategy)
+        : base(executionStrategy)
     {
     }
 
-    public override ResultModificationBase Clone (CloneContext cloneContext)
+    public override ResultOperatorBase Clone (CloneContext cloneContext)
     {
-      return new CountResultModification ();
+      throw new NotImplementedException();
     }
 
     public override IEnumerable ExecuteInMemory<T> (IEnumerable<T> items)
     {
-      ArgumentUtility.CheckNotNull ("items", items);
-      return new[] { items.Count () };
-    }
-
-    public override string ToString ()
-    {
-      return "Count()";
+      throw new NotImplementedException();
     }
   }
 }
