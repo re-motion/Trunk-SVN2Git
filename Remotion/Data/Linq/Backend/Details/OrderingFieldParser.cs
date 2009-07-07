@@ -14,30 +14,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Backend;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Clauses.Expressions;
+using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.Details
 {
-  public class SubQueryExpressionParser : IWhereConditionParser
+  public class OrderingFieldParser
   {
-    public ICriterion Parse (SubQueryExpression subQueryExpression, ParseContext parseContext)
+    private readonly FieldResolver _resolver;
+
+    public OrderingFieldParser (IDatabaseInfo databaseInfo)
     {
-      ArgumentUtility.CheckNotNull ("subQueryExpression", subQueryExpression);
-      return new SubQuery (subQueryExpression.QueryModel, ParseMode.SubQueryInWhere, null);
+      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
+
+      _resolver = new FieldResolver (databaseInfo, new OrderingFieldAccessPolicy());
     }
 
-    public bool CanParse (Expression expression)
+    public OrderingField Parse (Expression expression, ParseContext parseContext, OrderingDirection orderingDirection)
     {
-      return expression is SubQueryExpression;
+      FieldDescriptor fieldDescriptor = _resolver.ResolveField (expression, parseContext.JoinedTableContext);
+      var orderingField = new OrderingField (fieldDescriptor, orderingDirection);
+      return orderingField;
     }
-
-    ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
-    {
-      return Parse ((SubQueryExpression) expression, parseContext);
-    }
-
-    
   }
 }

@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration.StorageProviders;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.Linq.Parsing.Details;
+using Remotion.Data.Linq.Backend.Details;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
 using Remotion.Mixins;

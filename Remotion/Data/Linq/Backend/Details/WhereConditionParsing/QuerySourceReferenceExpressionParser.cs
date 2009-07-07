@@ -13,39 +13,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Parsing.FieldResolving;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
 {
-  public class MemberExpressionParser : IWhereConditionParser
+  public class QuerySourceReferenceExpressionParser : IWhereConditionParser
   {
     private readonly FieldResolver _resolver;
 
-    public MemberExpressionParser (FieldResolver resolver)
+    public QuerySourceReferenceExpressionParser (FieldResolver resolver)
     {
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       _resolver = resolver;
     }
 
-    public virtual ICriterion Parse (MemberExpression memberExpression, ParseContext parseContext)
+    public ICriterion Parse (QuerySourceReferenceExpression referenceExpression, ParseContext parseContext)
     {
-      FieldDescriptor fieldDescriptor = _resolver.ResolveField (memberExpression, parseContext.JoinedTableContext);
+      FieldDescriptor fieldDescriptor = _resolver.ResolveField (referenceExpression, parseContext.JoinedTableContext);
       parseContext.FieldDescriptors.Add (fieldDescriptor);
       return fieldDescriptor.GetMandatoryColumn ();
     }
 
     ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
     {
-      return Parse ((MemberExpression) expression, parseContext);
+      return Parse ((QuerySourceReferenceExpression) expression, parseContext);
     }
 
     public bool CanParse(Expression expression)
     {
-      return expression is MemberExpression;
+      return expression is QuerySourceReferenceExpression;
     }
   }
 }

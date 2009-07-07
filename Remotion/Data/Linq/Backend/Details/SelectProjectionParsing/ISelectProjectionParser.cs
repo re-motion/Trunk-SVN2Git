@@ -13,29 +13,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Parsing.FieldResolving;
-using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Parsing.Details
+namespace Remotion.Data.Linq.Backend.Details.SelectProjectionParsing
 {
-  public class ParseContext
+  public interface ISelectProjectionParser : IParser
   {
-    public QueryModel QueryModel { get; private set; }
-    public List<FieldDescriptor> FieldDescriptors { get; private set; }
-    public JoinedTableContext JoinedTableContext { get; private set; }
-
-    public ParseContext (QueryModel queryModel, List<FieldDescriptor> fieldDescriptors, JoinedTableContext joinedTableContext)
-    {
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-      ArgumentUtility.CheckNotNull ("fieldDescriptors", fieldDescriptors);
-      ArgumentUtility.CheckNotNull ("joinedTableContext", joinedTableContext);
-
-      QueryModel = queryModel;
-      FieldDescriptors = fieldDescriptors;
-      JoinedTableContext = joinedTableContext;
-    }
+    IEvaluation Parse (Expression expression, ParseContext parseContext);
   }
 }
