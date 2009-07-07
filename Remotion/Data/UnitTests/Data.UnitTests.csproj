@@ -605,6 +605,7 @@
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionResolverTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\MethodCallExpressionNodeBaseTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ResolvedExpressionCacheTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\TestDomain\TestMethodCallExpressionNode.cs" />
     <Compile Include="Linq\Parsing\Structure\QuerySourceClauseMappingTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\CastExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\MethodCallExpressionNodeTypeRegistryTest.cs" />
