@@ -51,7 +51,7 @@ namespace Remotion.Web.Infrastructure
       _page = page;
     }
 
-    private Page WrappedInstance
+    public Page WrappedInstance
     {
       get { return _page; }
     }
@@ -63,12 +63,12 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public void AddParsedSubObject (object obj)
     {
-      ((IParserAccessor) WrappedInstance).AddParsedSubObject (obj);
+      ((IParserAccessor) _page).AddParsedSubObject (obj);
     }
 
     public DataBindingCollection DataBindings
     {
-      get { return ((IDataBindingsAccessor) WrappedInstance).DataBindings; }
+      get { return ((IDataBindingsAccessor) _page).DataBindings; }
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool HasDataBindings
     {
-      get { return ((IDataBindingsAccessor)WrappedInstance).HasDataBindings; }
+      get { return ((IDataBindingsAccessor)_page).HasDataBindings; }
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public ControlBuilder ControlBuilder
     {
-      get { return ((IControlBuilderAccessor)WrappedInstance).ControlBuilder; }
+      get { return ((IControlBuilderAccessor)_page).ControlBuilder; }
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public IDictionary GetDesignModeState ()
     {
-      return ((IControlDesignerAccessor) WrappedInstance).GetDesignModeState();
+      return ((IControlDesignerAccessor) _page).GetDesignModeState();
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public void SetDesignModeState (IDictionary data)
     {
-      ((IControlDesignerAccessor) WrappedInstance).SetDesignModeState (data);
+      ((IControlDesignerAccessor) _page).SetDesignModeState (data);
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public void SetOwnerControl (Control owner)
     {
-      ((IControlDesignerAccessor) WrappedInstance).SetOwnerControl (owner);
+      ((IControlDesignerAccessor) _page).SetOwnerControl (owner);
     }
 
     /// <summary>
@@ -132,7 +132,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public IDictionary UserData
     {
-      get { return ((IControlDesignerAccessor) WrappedInstance).UserData; }
+      get { return ((IControlDesignerAccessor) _page).UserData; }
     }
 
     /// <summary>
@@ -143,7 +143,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool HasExpressions
     {
-      get { return ((IExpressionsAccessor) WrappedInstance).HasExpressions; }
+      get { return ((IExpressionsAccessor) _page).HasExpressions; }
     }
 
     /// <summary>
@@ -155,7 +155,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public ExpressionBindingCollection Expressions
     {
-      get { return ((IExpressionsAccessor) WrappedInstance).Expressions; }
+      get { return ((IExpressionsAccessor) _page).Expressions; }
     }
 
     /// <summary>
@@ -166,7 +166,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void ApplyStyleSheetSkin (Page page)
     {
-      WrappedInstance.ApplyStyleSheetSkin (page);
+      _page.ApplyStyleSheetSkin (page);
     }
 
     /// <summary>
@@ -174,7 +174,7 @@ namespace Remotion.Web.Infrastructure
     /// </summary>
     public void DataBind ()
     {
-      WrappedInstance.DataBind();
+      _page.DataBind();
     }
 
     /// <summary>
@@ -182,7 +182,7 @@ namespace Remotion.Web.Infrastructure
     /// </summary>
     public void Focus ()
     {
-      WrappedInstance.Focus();
+      _page.Focus();
     }
 
     /// <summary>
@@ -193,7 +193,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public void RenderControl (HtmlTextWriter writer)
     {
-      WrappedInstance.RenderControl (writer);
+      _page.RenderControl (writer);
     }
 
     /// <summary>
@@ -201,7 +201,7 @@ namespace Remotion.Web.Infrastructure
     /// </summary>
     public void Dispose ()
     {
-      WrappedInstance.Dispose();
+      _page.Dispose();
     }
 
     /// <summary>
@@ -215,7 +215,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public string ResolveUrl (string relativeUrl)
     {
-      return WrappedInstance.ResolveUrl (relativeUrl);
+      return _page.ResolveUrl (relativeUrl);
     }
 
     /// <summary>
@@ -229,7 +229,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public string ResolveClientUrl (string relativeUrl)
     {
-      return WrappedInstance.ResolveClientUrl (relativeUrl);
+      return _page.ResolveClientUrl (relativeUrl);
     }
 
     /// <summary>
@@ -240,7 +240,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool HasControls ()
     {
-      return WrappedInstance.HasControls();
+      return _page.HasControls();
     }
 
     /// <summary>
@@ -250,7 +250,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public void SetRenderMethodDelegate (RenderMethod renderMethod)
     {
-      WrappedInstance.SetRenderMethodDelegate (renderMethod);
+      _page.SetRenderMethodDelegate (renderMethod);
     }
 
     /// <summary>
@@ -261,7 +261,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string ClientID
     {
-      get { return WrappedInstance.ClientID; }
+      get { return _page.ClientID; }
     }
 
     /// <summary>
@@ -278,8 +278,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public string SkinID
     {
-      get { return WrappedInstance.SkinID; }
-      set { WrappedInstance.SkinID = value; }
+      get { return _page.SkinID; }
+      set { _page.SkinID = value; }
     }
 
     /// <summary>
@@ -291,7 +291,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public Control NamingContainer
     {
-      get { return WrappedInstance.NamingContainer; }
+      get { return _page.NamingContainer; }
     }
 
     /// <summary>
@@ -302,7 +302,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public Control BindingContainer
     {
-      get { return WrappedInstance.BindingContainer; }
+      get { return _page.BindingContainer; }
     }
 
     /// <summary>
@@ -326,8 +326,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public TemplateControl TemplateControl
     {
-      get { return WrappedInstance.TemplateControl; }
-      set { WrappedInstance.TemplateControl = value; }
+      get { return _page.TemplateControl; }
+      set { _page.TemplateControl = value; }
     }
 
     /// <summary>
@@ -338,7 +338,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public Control Parent
     {
-      get { return WrappedInstance.Parent; }
+      get { return _page.Parent; }
     }
 
     /// <summary>
@@ -350,7 +350,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string TemplateSourceDirectory
     {
-      get { return WrappedInstance.TemplateSourceDirectory; }
+      get { return _page.TemplateSourceDirectory; }
     }
 
     /// <summary>
@@ -362,8 +362,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string AppRelativeTemplateSourceDirectory
     {
-      get { return WrappedInstance.AppRelativeTemplateSourceDirectory; }
-      set { WrappedInstance.AppRelativeTemplateSourceDirectory = value; }
+      get { return _page.AppRelativeTemplateSourceDirectory; }
+      set { _page.AppRelativeTemplateSourceDirectory = value; }
     }
 
     /// <summary>
@@ -376,8 +376,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public ISite Site
     {
-      get { return WrappedInstance.Site; }
-      set { WrappedInstance.Site = value; }
+      get { return _page.Site; }
+      set { _page.Site = value; }
     }
 
     /// <summary>
@@ -388,7 +388,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string UniqueID
     {
-      get { return WrappedInstance.UniqueID; }
+      get { return _page.UniqueID; }
     }
 
     /// <summary>
@@ -400,43 +400,43 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public ControlCollection Controls
     {
-      get { return WrappedInstance.Controls; }
+      get { return _page.Controls; }
     }
 
     public event EventHandler Disposed
     {
-      add { WrappedInstance.Disposed += value; }
-      remove { WrappedInstance.Disposed -= value; }
+      add { _page.Disposed += value; }
+      remove { _page.Disposed -= value; }
     }
 
     public event EventHandler DataBinding
     {
-      add { WrappedInstance.DataBinding += value; }
-      remove { WrappedInstance.DataBinding -= value; }
+      add { _page.DataBinding += value; }
+      remove { _page.DataBinding -= value; }
     }
 
     public event EventHandler Init
     {
-      add { WrappedInstance.Init += value; }
-      remove { WrappedInstance.Init -= value; }
+      add { _page.Init += value; }
+      remove { _page.Init -= value; }
     }
 
     public event EventHandler Load
     {
-      add { WrappedInstance.Load += value; }
-      remove { WrappedInstance.Load -= value; }
+      add { _page.Load += value; }
+      remove { _page.Load -= value; }
     }
 
     public event EventHandler PreRender
     {
-      add { WrappedInstance.PreRender += value; }
-      remove { WrappedInstance.PreRender -= value; }
+      add { _page.PreRender += value; }
+      remove { _page.PreRender -= value; }
     }
 
     public event EventHandler Unload
     {
-      add { WrappedInstance.Unload += value; }
-      remove { WrappedInstance.Unload -= value; }
+      add { _page.Unload += value; }
+      remove { _page.Unload -= value; }
     }
 
     /// <summary>
@@ -449,7 +449,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public bool EvaluateFilter (string filterName)
     {
-      return ((IFilterResolutionService) WrappedInstance).EvaluateFilter (filterName);
+      return ((IFilterResolutionService) _page).EvaluateFilter (filterName);
     }
 
     /// <summary>
@@ -465,7 +465,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public int CompareFilters (string filter1, string filter2)
     {
-      return ((IFilterResolutionService) WrappedInstance).CompareFilters (filter1, filter2);
+      return ((IFilterResolutionService) _page).CompareFilters (filter1, filter2);
     }
 
     /// <summary>
@@ -479,7 +479,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public object ReadStringResource ()
     {
-      return WrappedInstance.ReadStringResource();
+      return _page.ReadStringResource();
     }
 
     /// <summary>
@@ -493,7 +493,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public bool TestDeviceFilter (string filterName)
     {
-      return WrappedInstance.TestDeviceFilter (filterName);
+      return _page.TestDeviceFilter (filterName);
     }
 
     /// <summary>
@@ -507,7 +507,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public Control LoadControl (string virtualPath)
     {
-      return WrappedInstance.LoadControl (virtualPath);
+      return _page.LoadControl (virtualPath);
     }
 
     /// <summary>
@@ -522,7 +522,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public Control LoadControl (Type t, object[] parameters)
     {
-      return WrappedInstance.LoadControl (t, parameters);
+      return _page.LoadControl (t, parameters);
     }
 
     /// <summary>
@@ -535,7 +535,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public ITemplate LoadTemplate (string virtualPath)
     {
-      return WrappedInstance.LoadTemplate (virtualPath);
+      return _page.LoadTemplate (virtualPath);
     }
 
     /// <summary>
@@ -548,7 +548,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public Control ParseControl (string content)
     {
-      return WrappedInstance.ParseControl (content);
+      return _page.ParseControl (content);
     }
 
     /// <summary>
@@ -562,7 +562,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public Control ParseControl (string content, bool ignoreParserFilter)
     {
-      return WrappedInstance.ParseControl (content, ignoreParserFilter);
+      return _page.ParseControl (content, ignoreParserFilter);
     }
 
     /// <summary>
@@ -574,8 +574,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool EnableTheming
     {
-      get { return WrappedInstance.EnableTheming; }
-      set { WrappedInstance.EnableTheming = value; }
+      get { return _page.EnableTheming; }
+      set { _page.EnableTheming = value; }
     }
 
     /// <summary>
@@ -589,26 +589,26 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public string AppRelativeVirtualPath
     {
-      get { return WrappedInstance.AppRelativeVirtualPath; }
-      set { WrappedInstance.AppRelativeVirtualPath = value; }
+      get { return _page.AppRelativeVirtualPath; }
+      set { _page.AppRelativeVirtualPath = value; }
     }
 
     public event EventHandler CommitTransaction
     {
-      add { WrappedInstance.CommitTransaction += value; }
-      remove { WrappedInstance.CommitTransaction -= value; }
+      add { _page.CommitTransaction += value; }
+      remove { _page.CommitTransaction -= value; }
     }
 
     public event EventHandler AbortTransaction
     {
-      add { WrappedInstance.AbortTransaction += value; }
-      remove { WrappedInstance.AbortTransaction -= value; }
+      add { _page.AbortTransaction += value; }
+      remove { _page.AbortTransaction -= value; }
     }
 
     public event EventHandler Error
     {
-      add { WrappedInstance.Error += value; }
-      remove { WrappedInstance.Error -= value; }
+      add { _page.Error += value; }
+      remove { _page.Error -= value; }
     }
 
     /// <summary>
@@ -621,7 +621,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public Control FindControl (string id)
     {
-      return WrappedInstance.FindControl (id);
+      return _page.FindControl (id);
     }
 
     /// <summary>
@@ -633,7 +633,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public int GetTypeHashCode ()
     {
-      return WrappedInstance.GetTypeHashCode();
+      return _page.GetTypeHashCode();
     }
 
     /// <summary>
@@ -642,7 +642,7 @@ namespace Remotion.Web.Infrastructure
     /// </summary>
     public void DesignerInitialize ()
     {
-      WrappedInstance.DesignerInitialize();
+      _page.DesignerInitialize();
     }
 
     /// <summary>
@@ -657,7 +657,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void SetFocus (Control control)
     {
-      WrappedInstance.SetFocus (control);
+      _page.SetFocus (control);
     }
 
     /// <summary>
@@ -672,7 +672,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void SetFocus (string clientID)
     {
-      WrappedInstance.SetFocus (clientID);
+      _page.SetFocus (clientID);
     }
 
     /// <summary>
@@ -687,7 +687,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public string GetPostBackEventReference (Control control)
     {
-      return WrappedInstance.GetPostBackEventReference (control);
+      return _page.GetPostBackEventReference (control);
     }
 
     /// <summary>
@@ -703,7 +703,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public string GetPostBackEventReference (Control control, string argument)
     {
-      return WrappedInstance.GetPostBackEventReference (control, argument);
+      return _page.GetPostBackEventReference (control, argument);
     }
 
     /// <summary>
@@ -721,7 +721,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public string GetPostBackClientEvent (Control control, string argument)
     {
-      return WrappedInstance.GetPostBackClientEvent (control, argument);
+      return _page.GetPostBackClientEvent (control, argument);
     }
 
     /// <summary>
@@ -737,7 +737,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public string GetPostBackClientHyperlink (Control control, string argument)
     {
-      return WrappedInstance.GetPostBackClientHyperlink (control, argument);
+      return _page.GetPostBackClientHyperlink (control, argument);
     }
 
     /// <summary>
@@ -751,7 +751,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public bool IsClientScriptBlockRegistered (string key)
     {
-      return WrappedInstance.IsClientScriptBlockRegistered (key);
+      return _page.IsClientScriptBlockRegistered (key);
     }
 
     /// <summary>
@@ -765,7 +765,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public bool IsStartupScriptRegistered (string key)
     {
-      return WrappedInstance.IsStartupScriptRegistered (key);
+      return _page.IsStartupScriptRegistered (key);
     }
 
     /// <summary>
@@ -777,7 +777,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public void RegisterArrayDeclaration (string arrayName, string arrayValue)
     {
-      WrappedInstance.RegisterArrayDeclaration (arrayName, arrayValue);
+      _page.RegisterArrayDeclaration (arrayName, arrayValue);
     }
 
     /// <summary>
@@ -791,7 +791,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public void RegisterHiddenField (string hiddenFieldName, string hiddenFieldInitialValue)
     {
-      WrappedInstance.RegisterHiddenField (hiddenFieldName, hiddenFieldInitialValue);
+      _page.RegisterHiddenField (hiddenFieldName, hiddenFieldInitialValue);
     }
 
     /// <summary>
@@ -803,7 +803,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public void RegisterClientScriptBlock (string key, string script)
     {
-      WrappedInstance.RegisterClientScriptBlock (key, script);
+      _page.RegisterClientScriptBlock (key, script);
     }
 
     /// <summary>
@@ -815,7 +815,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public void RegisterStartupScript (string key, string script)
     {
-      WrappedInstance.RegisterStartupScript (key, script);
+      _page.RegisterStartupScript (key, script);
     }
 
     /// <summary>
@@ -827,7 +827,7 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public void RegisterOnSubmitStatement (string key, string script)
     {
-      WrappedInstance.RegisterOnSubmitStatement (key, script);
+      _page.RegisterOnSubmitStatement (key, script);
     }
 
     /// <summary>
@@ -841,7 +841,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void RegisterRequiresControlState (Control control)
     {
-      WrappedInstance.RegisterRequiresControlState (control);
+      _page.RegisterRequiresControlState (control);
     }
 
     /// <summary>
@@ -854,7 +854,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public bool RequiresControlState (Control control)
     {
-      return WrappedInstance.RequiresControlState (control);
+      return _page.RequiresControlState (control);
     }
 
     /// <summary>
@@ -865,7 +865,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void UnregisterRequiresControlState (Control control)
     {
-      WrappedInstance.UnregisterRequiresControlState (control);
+      _page.UnregisterRequiresControlState (control);
     }
 
     /// <summary>
@@ -877,7 +877,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void RegisterRequiresPostBack (Control control)
     {
-      WrappedInstance.RegisterRequiresPostBack (control);
+      _page.RegisterRequiresPostBack (control);
     }
 
     /// <summary>
@@ -888,7 +888,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public void RegisterRequiresRaiseEvent (IPostBackEventHandler control)
     {
-      WrappedInstance.RegisterRequiresRaiseEvent (control);
+      _page.RegisterRequiresRaiseEvent (control);
     }
 
     /// <summary>
@@ -901,7 +901,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public string MapPath (string virtualPath)
     {
-      return WrappedInstance.MapPath (virtualPath);
+      return _page.MapPath (virtualPath);
     }
 
     /// <summary>
@@ -913,7 +913,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void RegisterRequiresViewStateEncryption ()
     {
-      WrappedInstance.RegisterRequiresViewStateEncryption();
+      _page.RegisterRequiresViewStateEncryption();
     }
 
     /// <summary>
@@ -927,7 +927,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public void ProcessRequest (HttpContext context)
     {
-      WrappedInstance.ProcessRequest (context);
+      _page.ProcessRequest (context);
     }
 
     /// <summary>
@@ -935,7 +935,7 @@ namespace Remotion.Web.Infrastructure
     /// </summary>
     public void RegisterViewStateHandler ()
     {
-      WrappedInstance.RegisterViewStateHandler();
+      _page.RegisterViewStateHandler();
     }
 
     /// <summary>
@@ -945,7 +945,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void ExecuteRegisteredAsyncTasks ()
     {
-      WrappedInstance.ExecuteRegisteredAsyncTasks();
+      _page.ExecuteRegisteredAsyncTasks();
     }
 
     /// <summary>
@@ -956,7 +956,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void RegisterAsyncTask (PageAsyncTask task)
     {
-      WrappedInstance.RegisterAsyncTask (task);
+      _page.RegisterAsyncTask (task);
     }
 
     /// <summary>
@@ -977,7 +977,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void AddOnPreRenderCompleteAsync (BeginEventHandler beginHandler, EndEventHandler endHandler)
     {
-      WrappedInstance.AddOnPreRenderCompleteAsync (beginHandler, endHandler);
+      _page.AddOnPreRenderCompleteAsync (beginHandler, endHandler);
     }
 
     /// <summary>
@@ -1000,7 +1000,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void AddOnPreRenderCompleteAsync (BeginEventHandler beginHandler, EndEventHandler endHandler, object state)
     {
-      WrappedInstance.AddOnPreRenderCompleteAsync (beginHandler, endHandler, state);
+      _page.AddOnPreRenderCompleteAsync (beginHandler, endHandler, state);
     }
 
     /// <summary>
@@ -1008,7 +1008,7 @@ namespace Remotion.Web.Infrastructure
     /// </summary>
     public void Validate ()
     {
-      WrappedInstance.Validate();
+      _page.Validate();
     }
 
     /// <summary>
@@ -1018,7 +1018,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public void Validate (string validationGroup)
     {
-      WrappedInstance.Validate (validationGroup);
+      _page.Validate (validationGroup);
     }
 
     /// <summary>
@@ -1031,7 +1031,7 @@ namespace Remotion.Web.Infrastructure
     /// </param>
     public ValidatorCollection GetValidators (string validationGroup)
     {
-      return WrappedInstance.GetValidators (validationGroup);
+      return _page.GetValidators (validationGroup);
     }
 
     /// <summary>
@@ -1048,7 +1048,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public void VerifyRenderingInServerForm (Control control)
     {
-      WrappedInstance.VerifyRenderingInServerForm (control);
+      _page.VerifyRenderingInServerForm (control);
     }
 
     /// <summary>
@@ -1061,7 +1061,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public object GetDataItem ()
     {
-      return WrappedInstance.GetDataItem();
+      return _page.GetDataItem();
     }
 
     /// <summary>
@@ -1072,7 +1072,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public HttpApplicationState Application
     {
-      get { return WrappedInstance.Application; }
+      get { return _page.Application; }
     }
 
     /// <summary>
@@ -1083,7 +1083,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public IClientScriptManager ClientScript
     {
-      get { return new ClientScriptManagerWrapper (WrappedInstance.ClientScript); }
+      get { return new ClientScriptManagerWrapper (_page.ClientScript); }
     }
 
     /// <summary>
@@ -1095,8 +1095,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string ClientTarget
     {
-      get { return WrappedInstance.ClientTarget; }
-      set { WrappedInstance.ClientTarget = value; }
+      get { return _page.ClientTarget; }
+      set { _page.ClientTarget = value; }
     }
 
     /// <summary>
@@ -1107,7 +1107,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string ClientQueryString
     {
-      get { return WrappedInstance.ClientQueryString; }
+      get { return _page.ClientQueryString; }
     }
 
     /// <summary>
@@ -1118,8 +1118,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string ErrorPage
     {
-      get { return WrappedInstance.ErrorPage; }
-      set { WrappedInstance.ErrorPage = value; }
+      get { return _page.ErrorPage; }
+      set { _page.ErrorPage = value; }
     }
 
     /// <summary>
@@ -1130,7 +1130,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool IsCallback
     {
-      get { return WrappedInstance.IsCallback; }
+      get { return _page.IsCallback; }
     }
 
     /// <summary>
@@ -1141,7 +1141,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool IsReusable
     {
-      get { return WrappedInstance.IsReusable; }
+      get { return _page.IsReusable; }
     }
 
     /// <summary>
@@ -1152,8 +1152,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public Control AutoPostBackControl
     {
-      get { return WrappedInstance.AutoPostBackControl; }
-      set { WrappedInstance.AutoPostBackControl = value; }
+      get { return _page.AutoPostBackControl; }
+      set { _page.AutoPostBackControl = value; }
     }
 
     /// <summary>
@@ -1164,7 +1164,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public HtmlHead Header
     {
-      get { return WrappedInstance.Header; }
+      get { return _page.Header; }
     }
 
     /// <summary>
@@ -1177,7 +1177,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public char IdSeparator
     {
-      get { return WrappedInstance.IdSeparator; }
+      get { return _page.IdSeparator; }
     }
 
     /// <summary>
@@ -1189,8 +1189,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool MaintainScrollPositionOnPostBack
     {
-      get { return WrappedInstance.MaintainScrollPositionOnPostBack; }
-      set { WrappedInstance.MaintainScrollPositionOnPostBack = value; }
+      get { return _page.MaintainScrollPositionOnPostBack; }
+      set { _page.MaintainScrollPositionOnPostBack = value; }
     }
 
     /// <summary>
@@ -1201,7 +1201,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public MasterPage Master
     {
-      get { return WrappedInstance.Master; }
+      get { return _page.Master; }
     }
 
     /// <summary>
@@ -1221,8 +1221,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public string MasterPageFile
     {
-      get { return WrappedInstance.MasterPageFile; }
-      set { WrappedInstance.MasterPageFile = value; }
+      get { return _page.MasterPageFile; }
+      set { _page.MasterPageFile = value; }
     }
 
     /// <summary>
@@ -1239,8 +1239,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public int MaxPageStateFieldLength
     {
-      get { return WrappedInstance.MaxPageStateFieldLength; }
-      set { WrappedInstance.MaxPageStateFieldLength = value; }
+      get { return _page.MaxPageStateFieldLength; }
+      set { _page.MaxPageStateFieldLength = value; }
     }
 
     /// <summary>
@@ -1251,7 +1251,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public TraceContext Trace
     {
-      get { return WrappedInstance.Trace; }
+      get { return _page.Trace; }
     }
 
     /// <summary>
@@ -1264,7 +1264,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public HttpRequest Request
     {
-      get { return WrappedInstance.Request; }
+      get { return _page.Request; }
     }
 
     /// <summary>
@@ -1278,7 +1278,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public HttpResponse Response
     {
-      get { return WrappedInstance.Response; }
+      get { return _page.Response; }
     }
 
     /// <summary>
@@ -1289,7 +1289,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public HttpServerUtility Server
     {
-      get { return WrappedInstance.Server; }
+      get { return _page.Server; }
     }
 
     /// <summary>
@@ -1302,7 +1302,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public Cache Cache
     {
-      get { return WrappedInstance.Cache; }
+      get { return _page.Cache; }
     }
 
     /// <summary>
@@ -1315,7 +1315,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public HttpSessionState Session
     {
-      get { return WrappedInstance.Session; }
+      get { return _page.Session; }
     }
 
     /// <summary>
@@ -1329,8 +1329,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public string Title
     {
-      get { return WrappedInstance.Title; }
-      set { WrappedInstance.Title = value; }
+      get { return _page.Title; }
+      set { _page.Title = value; }
     }
 
     /// <summary>
@@ -1347,8 +1347,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public string Theme
     {
-      get { return WrappedInstance.Theme; }
-      set { WrappedInstance.Theme = value; }
+      get { return _page.Theme; }
+      set { _page.Theme = value; }
     }
 
     /// <summary>
@@ -1362,8 +1362,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public string StyleSheetTheme
     {
-      get { return WrappedInstance.StyleSheetTheme; }
-      set { WrappedInstance.StyleSheetTheme = value; }
+      get { return _page.StyleSheetTheme; }
+      set { _page.StyleSheetTheme = value; }
     }
 
     /// <summary>
@@ -1374,7 +1374,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public IPrincipal User
     {
-      get { return WrappedInstance.User; }
+      get { return _page.User; }
     }
 
     /// <summary>
@@ -1385,7 +1385,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool IsCrossPagePostBack
     {
-      get { return WrappedInstance.IsCrossPagePostBack; }
+      get { return _page.IsCrossPagePostBack; }
     }
 
     /// <summary>
@@ -1397,7 +1397,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool IsPostBack
     {
-      get { return WrappedInstance.IsPostBack; }
+      get { return _page.IsPostBack; }
     }
 
     /// <summary>
@@ -1411,8 +1411,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public bool EnableEventValidation
     {
-      get { return WrappedInstance.EnableEventValidation; }
-      set { WrappedInstance.EnableEventValidation = value; }
+      get { return _page.EnableEventValidation; }
+      set { _page.EnableEventValidation = value; }
     }
 
     /// <summary>
@@ -1424,8 +1424,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool EnableViewState
     {
-      get { return WrappedInstance.EnableViewState; }
-      set { WrappedInstance.EnableViewState = value; }
+      get { return _page.EnableViewState; }
+      set { _page.EnableViewState = value; }
     }
 
     /// <summary>
@@ -1444,8 +1444,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public ViewStateEncryptionMode ViewStateEncryptionMode
     {
-      get { return WrappedInstance.ViewStateEncryptionMode; }
-      set { WrappedInstance.ViewStateEncryptionMode = value; }
+      get { return _page.ViewStateEncryptionMode; }
+      set { _page.ViewStateEncryptionMode = value; }
     }
 
     /// <summary>
@@ -1459,8 +1459,8 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public string ViewStateUserKey
     {
-      get { return WrappedInstance.ViewStateUserKey; }
-      set { WrappedInstance.ViewStateUserKey = value; }
+      get { return _page.ViewStateUserKey; }
+      set { _page.ViewStateUserKey = value; }
     }
 
     /// <summary>
@@ -1471,8 +1471,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string ID
     {
-      get { return WrappedInstance.ID; }
-      set { WrappedInstance.ID = value; }
+      get { return _page.ID; }
+      set { _page.ID = value; }
     }
 
     /// <summary>
@@ -1483,8 +1483,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool Visible
     {
-      get { return WrappedInstance.Visible; }
-      set { WrappedInstance.Visible = value; }
+      get { return _page.Visible; }
+      set { _page.Visible = value; }
     }
 
     /// <summary>
@@ -1495,7 +1495,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool IsPostBackEventControlRegistered
     {
-      get { return WrappedInstance.IsPostBackEventControlRegistered; }
+      get { return _page.IsPostBackEventControlRegistered; }
     }
 
     /// <summary>
@@ -1508,7 +1508,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public bool IsValid
     {
-      get { return WrappedInstance.IsValid; }
+      get { return _page.IsValid; }
     }
 
     /// <summary>
@@ -1519,7 +1519,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public ValidatorCollection Validators
     {
-      get { return WrappedInstance.Validators; }
+      get { return _page.Validators; }
     }
 
     /// <summary>
@@ -1532,7 +1532,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     public Page PreviousPage
     {
-      get { return WrappedInstance.PreviousPage; }
+      get { return _page.PreviousPage; }
     }
 
     /// <summary>
@@ -1543,8 +1543,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool Buffer
     {
-      get { return WrappedInstance.Buffer; }
-      set { WrappedInstance.Buffer = value; }
+      get { return _page.Buffer; }
+      set { _page.Buffer = value; }
     }
 
     /// <summary>
@@ -1555,8 +1555,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string ContentType
     {
-      get { return WrappedInstance.ContentType; }
-      set { WrappedInstance.ContentType = value; }
+      get { return _page.ContentType; }
+      set { _page.ContentType = value; }
     }
 
     /// <summary>
@@ -1567,8 +1567,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public int CodePage
     {
-      get { return WrappedInstance.CodePage; }
-      set { WrappedInstance.CodePage = value; }
+      get { return _page.CodePage; }
+      set { _page.CodePage = value; }
     }
 
     /// <summary>
@@ -1579,8 +1579,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string ResponseEncoding
     {
-      get { return WrappedInstance.ResponseEncoding; }
-      set { WrappedInstance.ResponseEncoding = value; }
+      get { return _page.ResponseEncoding; }
+      set { _page.ResponseEncoding = value; }
     }
 
     /// <summary>
@@ -1591,8 +1591,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string Culture
     {
-      get { return WrappedInstance.Culture; }
-      set { WrappedInstance.Culture = value; }
+      get { return _page.Culture; }
+      set { _page.Culture = value; }
     }
 
     /// <summary>
@@ -1603,8 +1603,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public int LCID
     {
-      get { return WrappedInstance.LCID; }
-      set { WrappedInstance.LCID = value; }
+      get { return _page.LCID; }
+      set { _page.LCID = value; }
     }
 
     /// <summary>
@@ -1615,8 +1615,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public string UICulture
     {
-      get { return WrappedInstance.UICulture; }
-      set { WrappedInstance.UICulture = value; }
+      get { return _page.UICulture; }
+      set { _page.UICulture = value; }
     }
 
     /// <summary>
@@ -1628,8 +1628,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public TimeSpan AsyncTimeout
     {
-      get { return WrappedInstance.AsyncTimeout; }
-      set { WrappedInstance.AsyncTimeout = value; }
+      get { return _page.AsyncTimeout; }
+      set { _page.AsyncTimeout = value; }
     }
 
     /// <summary>
@@ -1640,8 +1640,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool TraceEnabled
     {
-      get { return WrappedInstance.TraceEnabled; }
-      set { WrappedInstance.TraceEnabled = value; }
+      get { return _page.TraceEnabled; }
+      set { _page.TraceEnabled = value; }
     }
 
     /// <summary>
@@ -1652,8 +1652,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public TraceMode TraceModeValue
     {
-      get { return WrappedInstance.TraceModeValue; }
-      set { WrappedInstance.TraceModeValue = value; }
+      get { return _page.TraceModeValue; }
+      set { _page.TraceModeValue = value; }
     }
 
     /// <summary>
@@ -1665,8 +1665,8 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool EnableViewStateMac
     {
-      get { return WrappedInstance.EnableViewStateMac; }
-      set { WrappedInstance.EnableViewStateMac = value; }
+      get { return _page.EnableViewStateMac; }
+      set { _page.EnableViewStateMac = value; }
     }
 
     /// <summary>
@@ -1678,8 +1678,8 @@ namespace Remotion.Web.Infrastructure
     [Obsolete]
     public bool SmartNavigation
     {
-      get { return WrappedInstance.SmartNavigation; }
-      set { WrappedInstance.SmartNavigation = value; }
+      get { return _page.SmartNavigation; }
+      set { _page.SmartNavigation = value; }
     }
 
     /// <summary>
@@ -1690,7 +1690,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool IsAsync
     {
-      get { return WrappedInstance.IsAsync; }
+      get { return _page.IsAsync; }
     }
 
     /// <summary>
@@ -1701,7 +1701,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public HtmlForm Form
     {
-      get { return WrappedInstance.Form; }
+      get { return _page.Form; }
     }
 
     /// <summary>
@@ -1712,7 +1712,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public PageAdapter PageAdapter
     {
-      get { return WrappedInstance.PageAdapter; }
+      get { return _page.PageAdapter; }
     }
 
     /// <summary>
@@ -1723,43 +1723,43 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public IDictionary Items
     {
-      get { return WrappedInstance.Items; }
+      get { return _page.Items; }
     }
 
     public event EventHandler LoadComplete
     {
-      add { WrappedInstance.LoadComplete += value; }
-      remove { WrappedInstance.LoadComplete -= value; }
+      add { _page.LoadComplete += value; }
+      remove { _page.LoadComplete -= value; }
     }
 
     public event EventHandler PreInit
     {
-      add { WrappedInstance.PreInit += value; }
-      remove { WrappedInstance.PreInit -= value; }
+      add { _page.PreInit += value; }
+      remove { _page.PreInit -= value; }
     }
 
     public event EventHandler PreLoad
     {
-      add { WrappedInstance.PreLoad += value; }
-      remove { WrappedInstance.PreLoad -= value; }
+      add { _page.PreLoad += value; }
+      remove { _page.PreLoad -= value; }
     }
 
     public event EventHandler PreRenderComplete
     {
-      add { WrappedInstance.PreRenderComplete += value; }
-      remove { WrappedInstance.PreRenderComplete -= value; }
+      add { _page.PreRenderComplete += value; }
+      remove { _page.PreRenderComplete -= value; }
     }
 
     public event EventHandler InitComplete
     {
-      add { WrappedInstance.InitComplete += value; }
-      remove { WrappedInstance.InitComplete -= value; }
+      add { _page.InitComplete += value; }
+      remove { _page.InitComplete -= value; }
     }
 
     public event EventHandler SaveStateComplete
     {
-      add { WrappedInstance.SaveStateComplete += value; }
-      remove { WrappedInstance.SaveStateComplete -= value; }
+      add { _page.SaveStateComplete += value; }
+      remove { _page.SaveStateComplete -= value; }
     }
   }
 }
