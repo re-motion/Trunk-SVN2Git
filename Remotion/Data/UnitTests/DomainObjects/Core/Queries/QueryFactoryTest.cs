@@ -22,12 +22,12 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.Linq;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.Linq.ExtensionMethods;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {

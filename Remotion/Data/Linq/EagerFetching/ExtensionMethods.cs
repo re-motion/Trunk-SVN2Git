@@ -17,10 +17,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.EagerFetching;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.ExtensionMethods
+namespace Remotion.Data.Linq.EagerFetching
 {
   public static class ExtensionMethods
   {

@@ -23,11 +23,11 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Customer=Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer;
 using Order=Remotion.Data.UnitTests.DomainObjects.TestDomain.Order;
-using Remotion.Data.Linq.ExtensionMethods;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
