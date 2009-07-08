@@ -28,16 +28,15 @@ namespace Remotion.Web.ExecutionEngine
   /// Encapsulates execute logic for WXE functions.
   /// </summary>
   /// <remarks>
-  /// Dispose the <see cref="WxeExecutor{TWxePage}"/> at the end of the page life cycle, i.e. in the <see cref="Control.Dispose"/> method.
+  /// Dispose the <see cref="WxeExecutor"/> at the end of the page life cycle, i.e. in the <see cref="Control.Dispose"/> method.
   /// </remarks>
-  public class WxeExecutor<TWxePage> : IDisposable, IWxeExecutor
-    where TWxePage: Page, IWxePage
+  public class WxeExecutor : IDisposable, IWxeExecutor
   {
     private readonly HttpContext _httpContext;
-    private readonly TWxePage _page;
-    private readonly WxePageInfo<TWxePage> _wxePageInfo;
+    private readonly IWxePage _page;
+    private readonly WxePageInfo _wxePageInfo;
 
-    public WxeExecutor (HttpContext context, TWxePage page, WxePageInfo<TWxePage> wxePageInfo)
+    public WxeExecutor (HttpContext context, IWxePage page, WxePageInfo wxePageInfo)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("page", page);
@@ -109,7 +108,7 @@ namespace Remotion.Web.ExecutionEngine
       string href = WxeContext.Current.GetDestinationUrlForExternalFunction (function, functionToken, options.PermaUrlOptions);
 
       string openScript = string.Format ("window.open('{0}', '{1}', '{2}');", href, options.Target, StringUtility.NullToEmpty (options.Features));
-      ((IPage) _page).ClientScript.RegisterStartupScriptBlock (_page, "WxeExecuteFunction", openScript);
+      _page.ClientScript.RegisterStartupScriptBlock (_page, "WxeExecuteFunction", openScript);
 
       function.ReturnUrl = "javascript:" + GetClosingScriptForExternalFunction (functionToken, sender, options.ReturningPostback);
     }
@@ -181,7 +180,7 @@ if (   window.opener != null
 }}
 window.close();
 ",
-          WxePageInfo<TWxePage>.PageTokenID,
+          WxePageInfo.PageTokenID,
           pageToken,
           eventTarget,
           eventArgument,
@@ -205,7 +204,7 @@ if (   window.opener != null
 }}
 window.close();
 ",
-          WxePageInfo<TWxePage>.PageTokenID,
+          WxePageInfo.PageTokenID,
           pageToken,
           senderID,
           functionToken);

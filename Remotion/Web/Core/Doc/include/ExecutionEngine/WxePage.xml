@@ -122,7 +122,7 @@
       <h4 class="dtH4">Localization Support</h4>
       <para>
         The resources required by the <see cref="WxePage"/> are defined by the 
-        <see cref="WxePageInfo{TWxePage}.ResourceIdentifier"/> enum. See the <b>ResourceIdentifier</b>'s documentation for 
+        <see cref="WxePageInfo.ResourceIdentifier"/> enum. See the <b>ResourceIdentifier</b>'s documentation for 
         details on localization.
       </para><para>
         The <see cref="WxePage"/> supports resource dispatching to its properties through the 
@@ -154,7 +154,7 @@
     </remarks>
     <seealso cref="IWxePage"/>
     <seealso cref="SmartPage"/>
-    <seealso cref="WxePageInfo{TWxePage}"/>
+    <seealso cref="WxePageInfo"/>
     <seealso cref="WxePageStep"/>
   </Class>
   <GetPermanentUrl>

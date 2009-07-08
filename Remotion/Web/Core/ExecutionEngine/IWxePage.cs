@@ -75,7 +75,7 @@ namespace Remotion.Web.ExecutionEngine
 
     /// <summary> Gets the message displayed when the user attempts to submit while the page is already aborting. </summary>
     /// <remarks> 
-    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="WxePageInfo{TWxePage}"/>. 
+    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="WxePageInfo"/>. 
     /// </remarks>
     string StatusIsAbortingMessage { get; }
 
@@ -83,7 +83,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   Gets the message displayed when the user returnes to a cached page that has already been submited or aborted. 
     /// </summary>
     /// <remarks> 
-    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="WxePageInfo{TWxePage}"/>. 
+    ///   In case of an empty <see cref="String"/>, the text is read from the resources for <see cref="WxePageInfo"/>. 
     /// </remarks>
     string StatusIsCachedMessage { get; }
 

@@ -26,8 +26,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public class WxePageInfo<TWxePage> : WxeTemplateControlInfo, IDisposable
-    where TWxePage: Page, IWxePage
+  public class WxePageInfo : WxeTemplateControlInfo, IDisposable
   {
     /// <summary> A list of resources. </summary>
     /// <remarks> 
@@ -53,13 +52,13 @@ namespace Remotion.Web.ExecutionEngine
     private const string c_styleFileUrl = "ExecutionEngine.css";
     private const string c_styleFileUrlForIE = "ExecutionEngineIE.css";
 
-    private static readonly string s_scriptFileKey = typeof (WxePageInfo<>).FullName + "_Script";
-    private static readonly string s_styleFileKey = typeof (WxePageInfo<>).FullName + "_Style";
-    private static readonly string s_styleFileKeyForIE = typeof (WxePageInfo<>).FullName + "_StyleIE";
+    private static readonly string s_scriptFileKey = typeof (WxePageInfo).FullName + "_Script";
+    private static readonly string s_styleFileKey = typeof (WxePageInfo).FullName + "_Style";
+    private static readonly string s_styleFileKeyForIE = typeof (WxePageInfo).FullName + "_StyleIE";
 
-    private readonly TWxePage _page;
+    private readonly IWxePage _page;
     private WxeForm _wxeForm;
-    private WxeExecutor<TWxePage> _wxeExecutor;
+    private WxeExecutor _wxeExecutor;
     private bool _postbackCollectionInitialized = false;
     private bool _isPostDataHandled = false;
     private NameValueCollection _postbackCollection = null;
@@ -76,7 +75,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   The <see cref="IWxePage"/> containing this <b>WxePageInfo</b> object. 
     ///   The page must be derived from <see cref="System.Web.UI.Page">System.Web.UI.Page</see>.
     /// </param>
-    public WxePageInfo (TWxePage page)
+    public WxePageInfo (IWxePage page)
       : base (page)
     {
       ArgumentUtility.CheckNotNull ("page", page);
@@ -105,7 +104,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("context", context);
       base.Initialize (context);
 
-      _wxeExecutor = new WxeExecutor<TWxePage> (context, _page, this);
+      _wxeExecutor = new WxeExecutor (context, _page, this);
 
       if (ControlHelper.IsDesignMode (_page, context))
         return;
@@ -114,14 +113,14 @@ namespace Remotion.Web.ExecutionEngine
       _page.HtmlForm = _wxeForm;
 
       if (CurrentPageStep != null)
-        ((IPage) _page).ClientScript.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PageTokenID, CurrentPageStep.PageToken);
+        _page.ClientScript.RegisterHiddenField (_page, WxePageInfo.PageTokenID, CurrentPageStep.PageToken);
 
       _wxeForm.LoadPostData += Form_LoadPostData;
 
-      string url = ResourceUrlResolver.GetResourceUrl ((Control) _page, typeof (WxePageInfo<>), ResourceType.Html, c_scriptFileUrl);
+      string url = ResourceUrlResolver.GetResourceUrl ((Control) _page, typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
 
-      url = ResourceUrlResolver.GetResourceUrl ((Control) _page, typeof (WxePageInfo<>), ResourceType.Html, c_styleFileUrl);
+      url = ResourceUrlResolver.GetResourceUrl ((Control) _page, typeof (WxePageInfo), ResourceType.Html, c_styleFileUrl);
       HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
     }
 
@@ -198,11 +197,11 @@ namespace Remotion.Web.ExecutionEngine
 
       WxeContext wxeContext = WxeContext.Current;
 
-      int postBackID = int.Parse (postBackCollection[WxePageInfo<TWxePage>.PostBackSequenceNumberID]);
+      int postBackID = int.Parse (postBackCollection[WxePageInfo.PostBackSequenceNumberID]);
       if (postBackID != wxeContext.PostBackID)
         CurrentPageStep.SetIsOutOfSequencePostBack (true);
 
-      string returningToken = postBackCollection[WxePageInfo<TWxePage>.ReturningTokenID];
+      string returningToken = postBackCollection[WxePageInfo.ReturningTokenID];
       if (!StringUtility.IsNullOrEmpty (returningToken))
       {
         WxeFunctionStateManager functionStates = WxeFunctionStateManager.Current;
@@ -219,24 +218,24 @@ namespace Remotion.Web.ExecutionEngine
     {
       WxeContext wxeContext = WxeContext.Current;
 
-      ((IPage) _page).ClientScript.RegisterHiddenField (_page, WxeHandler.Parameters.WxeFunctionToken, wxeContext.FunctionToken);
-      ((IPage) _page).ClientScript.RegisterHiddenField (_page, WxePageInfo<TWxePage>.ReturningTokenID, null);
+      _page.ClientScript.RegisterHiddenField (_page, WxeHandler.Parameters.WxeFunctionToken, wxeContext.FunctionToken);
+      _page.ClientScript.RegisterHiddenField (_page, WxePageInfo.ReturningTokenID, null);
       int nextPostBackID = wxeContext.PostBackID + 1;
-      ((IPage) _page).ClientScript.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PostBackSequenceNumberID, nextPostBackID.ToString ());
+       _page.ClientScript.RegisterHiddenField (_page, WxePageInfo.PostBackSequenceNumberID, nextPostBackID.ToString ());
 
       string key = "wxeDoSubmit";
-      ((IPage) _page).ClientScript.RegisterClientScriptBlock (_page, key,
+      _page.ClientScript.RegisterClientScriptBlock (_page, key,
             "function wxeDoSubmit (button, pageToken) { \r\n"
           + "  var theForm = document." + _wxeForm.ClientID + "; \r\n"
-          + "  theForm." + WxePageInfo<TWxePage>.ReturningTokenID + ".value = pageToken; \r\n"
+          + "  theForm." + WxePageInfo.ReturningTokenID + ".value = pageToken; \r\n"
           + "  document.getElementById(button).click(); \r\n"
           + "}");
 
       key = "wxeDoPostBack";
-      ((IPage) _page).ClientScript.RegisterClientScriptBlock (_page, key,
+      _page.ClientScript.RegisterClientScriptBlock (_page, key,
             "function wxeDoPostBack (control, argument, returningToken) { \r\n"
           + "  var theForm = document." + _wxeForm.ClientID + "; \r\n"
-          + "  theForm." + WxePageInfo<TWxePage>.ReturningTokenID + ".value = returningToken; \r\n"
+          + "  theForm." + WxePageInfo.ReturningTokenID + ".value = returningToken; \r\n"
           + "  __doPostBack (control, argument); \r\n"
           + "}");
 
@@ -314,7 +313,7 @@ namespace Remotion.Web.ExecutionEngine
       initScript.AppendLine ("    ").Append (statusIsAbortingMessage).AppendLine (",");
       initScript.AppendLine ("    ").Append (statusIsCachedMessage).AppendLine (");");
 
-      ((IPage) _page).ClientScript.RegisterClientScriptBlock (_page, "wxeInitialize", initScript.ToString ());
+      _page.ClientScript.RegisterClientScriptBlock (_page, "wxeInitialize", initScript.ToString ());
     }
 
 
@@ -498,14 +497,9 @@ namespace Remotion.Web.ExecutionEngine
       WindowState[key] = value;
     }
 
-    public WxeExecutor<TWxePage> Executor
+    public WxeExecutor Executor
     {
       get { return _wxeExecutor; }
-    }
-
-    public void SaveAllState ()
-    {
-      ControlHelper.SaveAllState (_page);
     }
   }
 }

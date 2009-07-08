@@ -59,7 +59,7 @@ namespace Remotion.Web.UnitTests.ExecutionEngine.Infrastructure.WxePageStepExecu
 
       MockRepository.VerifyAll();
 
-      Assert.That (PostBackCollection[WxePageInfo<WxePage>.PostBackSequenceNumberID], Is.EqualTo ("100"));
+      Assert.That (PostBackCollection[WxePageInfo.PostBackSequenceNumberID], Is.EqualTo ("100"));
     }
 
     [Test]

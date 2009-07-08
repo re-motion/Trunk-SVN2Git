@@ -84,13 +84,13 @@
         <see cref="Control.Dispose"/> methods to include the initialization and clean-up logic. Override the 
         <see cref="Control.OnPreRender"/> method to include the pre-render logic. Override the
         <see cref="Page.SavePageStateToPersistenceMedium"/> and <see cref="Page.LoadPageStateFromPersistenceMedium"/> 
-        methods to save and restore the page's viewstate. Use <see cref="WxePageInfo{TWxePage}"/> to implement all methods and 
+        methods to save and restore the page's viewstate. Use <see cref="WxePageInfo"/> to implement all methods and 
         properties.
       </note>
     </remarks>
     <seealso cref="ISmartPage"/>
     <seealso cref="WxePage"/>
-    <seealso cref="WxePageInfo{TWxePage}"/>
+    <seealso cref="WxePageInfo"/>
     <seealso cref="WxePageStep"/>
     <example>
       Sample implementation of the <b>Constructor</b>.
