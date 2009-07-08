@@ -69,19 +69,19 @@ namespace Remotion.Web.Infrastructure
       return ((IServiceProvider) _httpContext).GetService(serviceType);
     }
 
-    ///// <summary>
-    ///// Enables you to specify a handler for the request.
-    ///// </summary>
-    ///// <param name="handler">
-    ///// The object that should process the request.
-    ///// </param>
-    ///// <exception cref="T:System.InvalidOperationException">
-    ///// The <see cref="M:System.Web.HttpContext.RemapHandler(System.Web.IHttpHandler)" /> method was called after the <see cref="E:System.Web.HttpApplication.MapRequestHandler" /> event occurred.
-    ///// </exception>
-    //public void RemapHandler (IHttpHandler handler)
-    //{
-    //  _httpContext.RemapHandler(handler);
-    //}
+    /// <summary>
+    /// Enables you to specify a handler for the request.
+    /// </summary>
+    /// <param name="handler">
+    /// The object that should process the request.
+    /// </param>
+    /// <exception cref="T:System.InvalidOperationException">
+    /// The <see cref="M:System.Web.HttpContext.RemapHandler(System.Web.IHttpHandler)" /> method was called after the <see cref="E:System.Web.HttpApplication.MapRequestHandler" /> event occurred.
+    /// </exception>
+    public void RemapHandler (IHttpHandler handler)
+    {
+      _httpContext.RemapHandler (handler);
+    }
 
     /// <summary>
     /// Adds an exception to the exception collection for the current HTTP request.

@@ -35,17 +35,16 @@ namespace Remotion.Web.Infrastructure
     /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpContext"/>. </exception>
     HttpContext WrappedInstance { get; }
 
-    //TODO: DotNet 3.5 SP1
-    ///// <summary>
-    ///// Enables you to specify a handler for the request.
-    ///// </summary>
-    ///// <param name="handler">
-    ///// The object that should process the request.
-    ///// </param>
-    ///// <exception cref="T:System.InvalidOperationException">
-    ///// The <see cref="M:System.Web.HttpContext.RemapHandler(System.Web.IHttpHandler)" /> method was called after the <see cref="E:System.Web.HttpApplication.MapRequestHandler" /> event occurred.
-    ///// </exception>
-    //void RemapHandler (IHttpHandler handler);
+    /// <summary>
+    /// Enables you to specify a handler for the request.
+    /// </summary>
+    /// <param name="handler">
+    /// The object that should process the request.
+    /// </param>
+    /// <exception cref="T:System.InvalidOperationException">
+    /// The <see cref="M:System.Web.HttpContext.RemapHandler(System.Web.IHttpHandler)" /> method was called after the <see cref="E:System.Web.HttpApplication.MapRequestHandler" /> event occurred.
+    /// </exception>
+    void RemapHandler (IHttpHandler handler);
 
     /// <summary>
     /// Adds an exception to the exception collection for the current HTTP request.
