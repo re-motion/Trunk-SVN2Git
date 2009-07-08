@@ -13,25 +13,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
-using NUnit.Framework;
+using System;
+using System.Linq.Expressions;
 using System.Reflection;
-using Remotion.Collections;
-using Remotion.Data.Linq.Backend.FieldResolving;
+using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.UnitTests.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.FieldResolving
+namespace Remotion.Data.UnitTests.Linq.Backend.FieldResolving
 {
   [TestFixture]
-  public class SelectFieldAccessPolicyTest : FieldAccessPolicyTestBase
+  public class OrderingFieldAccessPolicyTest : FieldAccessPolicyTestBase
   {
-    private SelectFieldAccessPolicy _policy;
+    private OrderingFieldAccessPolicy _policy;
 
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp ();
-      _policy = new SelectFieldAccessPolicy ();
+      _policy = new OrderingFieldAccessPolicy ();
     }
 
     [Test]
@@ -43,13 +45,11 @@ namespace Remotion.Data.UnitTests.Linq.Parsing.FieldResolving
     }
 
     [Test]
-    public void AdjustMemberInfosForRelation()
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Ordering by 'Remotion.Data.UnitTests.Linq.Student_Detail.Student' "
+        + "is not supported because it is a relation member.")]
+    public void AdjustMemberInfosForRelation ()
     {
-      Tuple<MemberInfo, IEnumerable<MemberInfo>> result = _policy.AdjustMemberInfosForRelation (StudentDetail_Student_Member, new[] { StudentDetailDetail_StudentDetail_Member });
-      var expected = new Tuple<MemberInfo, IEnumerable<MemberInfo>> (null, new[] {StudentDetailDetail_StudentDetail_Member, StudentDetail_Student_Member});
-
-      Assert.AreEqual (expected.A, result.A);
-      Assert.That (result.B, Is.EqualTo (expected.B));
+      _policy.AdjustMemberInfosForRelation (StudentDetail_Student_Member, new[] { StudentDetailDetail_StudentDetail_Member });
     }
 
     [Test]
