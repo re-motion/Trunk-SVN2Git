@@ -13,38 +13,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
-using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Clauses.ResultOperators
 {
-  public class TakeResultOperator : NonScalarResultOperatorBase
+  /// <summary>
+  /// Represents a result operator that returns a scalar value, e.g. <see cref="CountResultOperator"/> or <see cref="SumResultOperator"/>.
+  /// </summary>
+  public abstract class ScalarResultOperatorBase : ResultOperatorBase
   {
-    public int Count { get; set; }
-
-    public TakeResultOperator (int count)
-        : base (CollectionExecutionStrategy.Instance)
+    protected ScalarResultOperatorBase ()
+        : base (ScalarExecutionStrategy.Instance)
     {
-      Count = count;
     }
 
-    public override ResultOperatorBase Clone (CloneContext cloneContext)
-    {
-      return new TakeResultOperator (Count);
-    }
-
-    public override IEnumerable<T> ExecuteInMemory<T> (IEnumerable<T> items)
-    {
-      ArgumentUtility.CheckNotNull ("items", items);
-      return items.Take (Count);
-    }
-
-    public override string ToString ()
-    {
-      return "Take(" + Count + ")";
-    }
+    /// <summary>
+    /// Executes this result operator in memory, on a given enumeration of items. Executing result operator in memory should only be 
+    /// performed if the target query system does not support the operator.
+    /// </summary>
+    /// <returns>A scalar value representing the result of the operator. </returns>
+    public abstract TScalar ExecuteInMemory<TItem, TScalar> (IEnumerable<TItem> items);
   }
 }
