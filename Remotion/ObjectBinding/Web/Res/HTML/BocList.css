@@ -176,6 +176,28 @@ td.bocListDataCellEven div td.dropDownMenuHeadButton a:hover
   background-color: Transparent;
 }
 
+/* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
+td.bocListDataCellOdd div.DropDownMenuContainer a,
+td.bocListDataCellEven div td.DropDownMenuContainer a,
+td.bocListDataCellOdd div.DropDownMenuContainer a:hover,
+td.bocListDataCellEven div.DropDownMenuContainer a:hover
+{
+  color: Blue;
+  padding: 0;
+}
+
+/* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
+td.bocListDataCellOdd div.DropDownMenuContainer a,
+td.bocListDataCellEven div.DropDownMenuContainer a,
+td.bocListDataCellOdd div.DropDownMenuContainer a:hover,
+td.bocListDataCellEven div.DropDownMenuContainer a:hover
+{
+  color: Blue;
+	padding: 0px;
+	border: none;
+  background-color: Transparent;
+}
+
 /*  Style applied to the text providing the sorting order's index. */
 span.bocListSortingOrder
 {

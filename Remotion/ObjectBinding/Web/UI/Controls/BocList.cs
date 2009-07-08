@@ -358,12 +358,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       _optionsMenu.ID = ID + c_optionsMenuIDSuffix;
       _optionsMenu.GetSelectionCount = "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
+      _optionsMenu.WxeFunctionCommandClick += MenuItemWxeFunctionCommandClick;
+      _optionsMenu.EventCommandClick += MenuItemEventCommandClick;
       Controls.Add (_optionsMenu);
 
       _listMenu.ID = ID + c_listMenuIDSuffix;
       _listMenu.GetSelectionCount = _optionsMenu.GetSelectionCount;
-      _listMenu.EventCommandClick += ListMenuItemEventCommandClick;
-      _listMenu.WxeFunctionCommandClick += ListMenuItemWxeFunctionCommandClick;
+      _listMenu.EventCommandClick += MenuItemEventCommandClick;
+      _listMenu.WxeFunctionCommandClick += MenuItemWxeFunctionCommandClick;
       Controls.Add (_listMenu);
 
       _availableViewsList.ID = ID + c_availableViewsListIDSuffix;
@@ -383,9 +385,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
-
-      _optionsMenu.EventCommandClick += OptionsMenu_EventCommandClick;
-      _optionsMenu.WxeFunctionCommandClick += OptionsMenu_WxeFunctionCommandClick;
 
       _availableViews.CollectionChanged += AvailableViews_CollectionChanged;
       Binding.BindingChanged += Binding_BindingChanged;
@@ -767,22 +766,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    /// <summary> 
-    ///   Event handler for the <see cref="MenuBase.EventCommandClick"/> of the <see cref="_optionsMenu"/>.
-    /// </summary>
-    private void OptionsMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      //_listMenu.OnMenuItemEventCommandClick (e.Item);
-    }
-
-    /// <summary> 
-    ///   Event handler for the <see cref="MenuBase.WxeFunctionCommandClick"/> of the <see cref="_optionsMenu"/>.
-    /// </summary>
-    private void OptionsMenu_WxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      //_listMenu.OnMenuItemWxeFunctionCommandClick (e.Item);
-    }
-
     /// <summary> Fires the <see cref="ListItemCommandClick"/> event. </summary>
     /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnListItemCommandClick/*' />
     protected virtual void OnListItemCommandClick (
@@ -1049,7 +1032,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override void OnPreRender (EventArgs e)
     {
       _listMenu.Visible = HasListMenu;
+      _listMenu.Enabled = !_editModeController.IsRowEditModeActive;
       _optionsMenu.Visible = HasOptionsMenu;
+      _optionsMenu.Enabled = !_editModeController.IsRowEditModeActive;
 
       EnsureChildControls();
       base.OnPreRender (e);
@@ -1773,6 +1758,31 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         IBusinessObject businessObject,
         int listIndex)
     {
+    }
+
+    /// <summary> Handles the click to a WXE function command. </summary>
+    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemWxeFunctionCommandClick/*' />
+    protected virtual void OnMenuItemWxeFunctionCommandClick (WebMenuItem menuItem)
+    {
+      if (menuItem != null && menuItem.Command != null)
+      {
+        if (menuItem is BocMenuItem)
+        {
+          BocMenuItemCommand command = (BocMenuItemCommand) menuItem.Command;
+          if (Page is IWxePage)
+            command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows (), GetSelectedBusinessObjects ());
+          //else
+          //  command.ExecuteWxeFunction (Page, GetSelectedRows(), GetSelectedBusinessObjects());
+        }
+        else
+        {
+          Command command = menuItem.Command;
+          if (Page is IWxePage)
+            command.ExecuteWxeFunction ((IWxePage) Page, null);
+          //else
+          //  command.ExecuteWxeFunction (Page, null, new NameValueCollection (0));
+        }
+      }
     }
 
     /// <summary> 
@@ -3387,7 +3397,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RemoveRows (businessObjects);
     }
 
-    private void ListMenuItemWxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
+    private void MenuItemWxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
     {
       var menuItem = e.Item;
       if (menuItem == null || e.Command == null)
@@ -3407,7 +3417,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    private void ListMenuItemEventCommandClick (object sender, WebMenuItemClickEventArgs e)
+    private void MenuItemEventCommandClick (object sender, WebMenuItemClickEventArgs e)
     {
       if (e.Item is BocMenuItem)
         ((BocMenuItemCommand) e.Item.Command).OnClick ((BocMenuItem) e.Item);
@@ -3834,8 +3844,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Description ("Is raised when a menu item with a command of type Event is clicked.")]
     public event WebMenuItemClickEventHandler MenuItemClick
     {
-      add { _listMenu.EventCommandClick += value; }
-      remove { _listMenu.EventCommandClick -= value; }
+      add
+      {
+        _listMenu.EventCommandClick += value;
+        _optionsMenu.EventCommandClick += value;
+      }
+      remove
+      {
+        _listMenu.EventCommandClick -= value;
+        _optionsMenu.EventCommandClick -= value;
+      }
     }
 
     /// <summary> Gets or sets the offset between the items in the <c>menu block</c>. </summary>

@@ -1,5 +1,6 @@
 	div.DropDownMenuContainer {
 		color: blue;
+		background-color: White;
 		position: relative;
 		font-family: sans-serif;
 		display: inline-block;
@@ -76,12 +77,12 @@
 	ul.DropDownMenuOptions li a {
 		text-decoration: none;
 		display: block;
-		color: blue;
-		border: solid 1px transparent;
 		margin: 1px;
 		padding: 0 2px 2px 2px;
 		line-height:1em;
 		white-space: nowrap;
+	  color: blue;
+		border: solid 1px transparent;
 	}
 	 
 	ul.DropDownMenuOptions li a:hover {
@@ -104,12 +105,12 @@
 		height: 16px;
 	}
 
-	ul.DropDownMenuOptions li a.disabled {
+	ul.DropDownMenuOptions li.DropDownMenuItemDisabled a {
 		border: solid 1px transparent;
 		color: #808080
 	}
 
-	ul.DropDownMenuOptions li a:hover.disabled {
+	ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover {
 		background-color: transparent;
 		border: solid 1px transparent;
 		cursor: default;

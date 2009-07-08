@@ -175,7 +175,7 @@ function BocList_OnRowClick (bocList, currentRow, selectorControl, listMenu)
   }  
   _bocList_isSelectorControlClick = false;
 
-  ListMenu.Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
+  ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
 }
 
 //  Selects a row.
@@ -261,7 +261,7 @@ function BocList_OnSelectAllSelectorControlClick (bocList, selectAllSelectorCont
   if (! selectAllSelectorControl.checked)      
     selectedRows.Length = 0;
 
-  ListMenu.Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
+  ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
 }
 
 //  Event handler for the selection selectorControl in a data row.

@@ -7,7 +7,7 @@ var _listMenu_requiredSelectionAny = 0;
 var _listMenu_requiredSelectionExactlyOne = 1;
 var _listMenu_requiredSelectionOneOrMore = 2;
 
-function ListMenuInfo (id, itemInfos) {
+function ListMenu_MenuInfo (id, itemInfos) {
     this.ID = id;
     this.ItemInfos = itemInfos;
 }
@@ -26,11 +26,11 @@ function ListMenuItemInfo (id, category, text, icon, iconDisabled, requiredSelec
 
 function ListMenu() { }
 
-ListMenu.AddMenuInfo = function(listMenu, menuInfo) {
+function ListMenu_AddMenuInfo (listMenu, menuInfo) {
     _listMenu_listMenuInfos[listMenu.id] = menuInfo;
 }
 
-ListMenu.Update = function(listMenu, getSelectionCount) {
+function ListMenu_Update (listMenu, getSelectionCount) {
     var menuInfo = _listMenu_listMenuInfos[listMenu.id];
     if (menuInfo == null)
         return;
@@ -72,7 +72,7 @@ ListMenu.Update = function(listMenu, getSelectionCount) {
                     anchor.href = itemInfo.Href;
                     if (itemInfo.Target != null)
                         anchor.target = itemInfo.Target;
-                    anchor.removeAttribute('onclick');
+                    anchor.onclick = null;
                     anchor.removeAttribute('javascript');
                 }
             }
@@ -87,7 +87,7 @@ ListMenu.Update = function(listMenu, getSelectionCount) {
             item.className = _listMenu_itemDisabledClassName;
             anchor.removeAttribute('href');
             anchor.removeAttribute('target');
-            anchor.removeAttribute('onclick');
+            anchor.onclick = null;
             anchor.removeAttribute('javascript');
         }
     }

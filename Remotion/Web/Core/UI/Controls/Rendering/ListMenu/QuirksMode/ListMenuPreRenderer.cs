@@ -51,8 +51,8 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
       if (!Control.Page.ClientScript.IsStartupScriptRegistered (key))
       {
         StringBuilder script = new StringBuilder ();
-        script.AppendFormat ("ListMenu.AddMenuInfo (document.getElementById ('{0}'), \r\n\t", Control.ClientID);
-        script.AppendFormat ("new ListMenuInfo ('{0}', new Array (\r\n", Control.ClientID);
+        script.AppendFormat ("ListMenu_AddMenuInfo (document.getElementById ('{0}'), \r\n\t", Control.ClientID);
+        script.AppendFormat ("new ListMenu_MenuInfo ('{0}', new Array (\r\n", Control.ClientID);
         bool isFirstItemInGroup = true;
 
         for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
@@ -72,7 +72,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
         script.Append (" );\r\n"); // Close AddMenuInfo
 
         script.AppendFormat (
-            "ListMenu.Update ( document.getElementById ('{0}'), {1} );",
+            "ListMenu_Update ( document.getElementById ('{0}'), {1} );",
             Control.ClientID,
             Control.GetSelectionCount);
         Control.Page.ClientScript.RegisterStartupScriptBlock (Control, key, script.ToString ());
