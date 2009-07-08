@@ -176,7 +176,7 @@ namespace Remotion.Web.ExecutionEngine
     {
       if (!ControlHelper.IsDesignMode (this))
       {
-        ScriptManager scriptManager = ScriptManager.GetCurrent (Page);
+        var scriptManager = ScriptManager.GetCurrent (Page);
         if (!Remotion.Web.UI.HtmlHeadAppender.Current.HasAppended && (scriptManager == null || !scriptManager.IsInAsyncPostBack))
         {
           throw new WxeException ("The Remotion.Web.UI.Controls.HtmlHeadContents control is missing on the page. Please add this control to the 'head' section of the document or specify the runat=server attribute for the 'head' section to allow for an automatically generated HtmlHeadContents control.");

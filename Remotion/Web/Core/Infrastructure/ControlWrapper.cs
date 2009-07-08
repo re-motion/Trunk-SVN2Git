@@ -293,7 +293,7 @@ namespace Remotion.Web.Infrastructure
     /// true to use themes; otherwise, false. The default is true. 
     /// </returns>
     /// <exception cref="T:System.InvalidOperationException">The Page_PreInit event has already occurred.
-    ///     - or -
+    ///     <para>- or -</para>
     ///     The control has already been added to the Controls collection.
     /// </exception>
     public bool EnableTheming
@@ -309,9 +309,9 @@ namespace Remotion.Web.Infrastructure
     /// The name of the skin to apply to the control. The default is <see cref="F:System.String.Empty"/>.
     /// </returns>
     /// <exception cref="T:System.InvalidOperationException">The style sheet has already been applied.
-    ///     - or -
+    ///     <para>- or -</para>
     ///     The Page_PreInit event has already occurred.
-    ///     - or -
+    ///     <para>- or -</para>
     ///     The control was already added to the Controls collection.
     /// </exception>
     public string SkinID

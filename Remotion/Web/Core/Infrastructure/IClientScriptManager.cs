@@ -1,6 +1,7 @@
 using System;
 using System.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI;
 
 namespace Remotion.Web.Infrastructure
 {
@@ -329,6 +330,34 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     [Obsolete ("Use RegisterHiddenField(IPage, string, string) or RegisterHiddenField(IControl, string, string) for compatibility with UpdatePanel.")]
     void RegisterHiddenField (string hiddenFieldName, string hiddenFieldInitialValue);
+
+    /// <summary>
+    /// Registers a hidden field with the <see cref="ScriptManager"/> control during every asynchronous postback.
+    /// </summary>
+    /// <param name="page">The page object that is registering the hidden field.</param>
+    /// <param name="hiddenFieldName">The name of the hidden field to register.
+    /// </param><param name="hiddenFieldInitialValue">The initial value of the field to register.
+    /// </param>
+    /// <exception cref="T:System.ArgumentNullException">
+    ///   <paramref name="page"/> is null 
+    ///   <para>- or -</para>
+    ///   <paramref name="hiddenFieldName"/> is null.
+    /// </exception>
+    void RegisterHiddenField (IPage page, string hiddenFieldName, string hiddenFieldInitialValue);
+
+    /// <summary>
+    /// Registers a hidden field with the <see cref="ScriptManager"/> control for a control that is inside an <see cref="UpdatePanel"/> control.
+    /// </summary>
+    /// <param name="control">The control that is registering the hidden field.</param>
+    /// <param name="hiddenFieldName">The name of the hidden field to register.
+    /// </param><param name="hiddenFieldInitialValue">The initial value of the field to register.
+    /// </param>
+    /// <exception cref="T:System.ArgumentNullException">
+    ///   <paramref name="control"/> is null 
+    ///   <para>- or -</para>
+    ///   <paramref name="hiddenFieldName"/> is null.
+    /// </exception>
+    void RegisterHiddenField (IControl control, string hiddenFieldName, string hiddenFieldInitialValue);
 
     /// <summary>
     /// Registers the client script with the <see cref="T:System.Web.UI.Page"/> object using a type, key, and script literal.

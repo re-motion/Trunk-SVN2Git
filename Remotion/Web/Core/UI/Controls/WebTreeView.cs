@@ -461,7 +461,7 @@ namespace Remotion.Web.UI.Controls
 
       if (_requiresSynchronousPostBack)
       {
-        ScriptManager scriptManager = ScriptManager.GetCurrent (Page);
+        var scriptManager = ScriptManager.GetCurrent (Page);
         if (scriptManager != null)
         {
           bool hasUpdatePanelAsParent = false;

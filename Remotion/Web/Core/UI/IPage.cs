@@ -150,7 +150,7 @@ namespace Remotion.Web.UI
     /// </exception>
     /// <exception cref="T:System.Web.HttpException">
     ///   The file specified in the <see cref="P:System.Web.UI.Page.MasterPageFile"/> property does not exist.
-    ///     - or -
+    ///     <para>- or -</para>
     ///     The page does not have a <see cref="T:System.Web.UI.WebControls.Content"/> control as the top level control.
     /// </exception>
     string MasterPageFile { get; set; }
@@ -550,7 +550,7 @@ namespace Remotion.Web.UI
     /// </param><exception cref="T:System.ArgumentNullException"><paramref name="control"/> is null. 
     /// </exception><exception cref="T:System.InvalidOperationException">
     /// <see cref="M:System.Web.UI.Page.SetFocus(System.Web.UI.Control)"/> is called when the control is not part of a Web Forms page. 
-    ///     - or -
+    ///     <para>- or -</para>
     /// <see cref="M:System.Web.UI.Page.SetFocus(System.Web.UI.Control)"/> is called after the <see cref="E:System.Web.UI.Control.PreRender"/> event. 
     /// </exception>
     void SetFocus (Control control);
@@ -562,7 +562,7 @@ namespace Remotion.Web.UI
     /// </param><exception cref="T:System.ArgumentNullException"><paramref name="clientID"/> is null.
     /// </exception><exception cref="T:System.InvalidOperationException">
     /// <see cref="M:System.Web.UI.Page.SetFocus(System.String)"/> is called when the control is not part of a Web Forms page.
-    ///     - or -
+    ///     <para>- or -</para>
     /// <see cref="M:System.Web.UI.Page.SetFocus(System.String)"/> is called after the <see cref="E:System.Web.UI.Control.PreRender"/> event.
     /// </exception>
     void SetFocus (string clientID);
@@ -661,7 +661,7 @@ namespace Remotion.Web.UI
     /// </param>
     /// <exception cref="T:System.InvalidOperationException">
     /// The &lt;async&gt; page directive is not set to true.
-    ///     - or -
+    ///     <para>- or -</para>
     ///     The <see cref="M:System.Web.UI.Page.AddOnPreRenderCompleteAsync(System.Web.BeginEventHandler,System.Web.EndEventHandler)"/> 
     ///     method is called after the <see cref="E:System.Web.UI.Control.PreRender"/> event.
     /// </exception>
@@ -681,7 +681,7 @@ namespace Remotion.Web.UI
     /// </param>
     /// <exception cref="T:System.InvalidOperationException">
     ///   The &lt;async&gt; page directive is not set to true.
-    ///     - or -
+    ///     <para>- or -</para>
     ///     The <see cref="M:System.Web.UI.Page.AddOnPreRenderCompleteAsync(System.Web.BeginEventHandler,System.Web.EndEventHandler)"/> 
     ///     method is called after the <see cref="E:System.Web.UI.Control.PreRender"/> event.
     /// </exception>

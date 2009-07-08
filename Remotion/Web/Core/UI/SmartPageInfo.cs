@@ -329,7 +329,7 @@ namespace Remotion.Web.UI
 
     private void PreRenderSmartPage ()
     {
-      ScriptManager.RegisterHiddenField ((Page) _page, CacheDetectionID, null);
+      _page.ClientScript.RegisterHiddenField (_page, CacheDetectionID, null);
 
       RegisterSmartPageInitializationScript();
     }
@@ -408,13 +408,13 @@ namespace Remotion.Web.UI
       initScript.AppendLine ("SmartPage_Initialize ();");
       initScript.AppendLine();
 
-      ScriptUtility.RegisterClientScriptBlock ((Page)_page, "smartPageInitialize", initScript.ToString());
+      _page.ClientScript.RegisterClientScriptBlock (_page, "smartPageInitialize", initScript.ToString ());
 
       string isAsynchronous = "false";
-      ScriptManager scriptManager = ScriptManager.GetCurrent ((Page) _page);
+      var scriptManager = ScriptManager.GetCurrent ((Page) _page);
       if (scriptManager != null && scriptManager.IsInAsyncPostBack)
         isAsynchronous = "true";
-      ScriptUtility.RegisterStartupScriptBlock ((Page) _page, "smartPageStartUp", "SmartPage_OnStartUp (" + isAsynchronous + ", " + isDirty + ");");
+      _page.ClientScript.RegisterStartupScriptBlock (_page, "smartPageStartUp", "SmartPage_OnStartUp (" + isAsynchronous + ", " + isDirty + ");");
 
       // Ensure the __doPostBack function on the rendered page
       _page.ClientScript.GetPostBackEventReference (_page, string.Empty);
@@ -530,14 +530,13 @@ namespace Remotion.Web.UI
         return;
 
       NameValueCollection postBackCollection = _page.GetPostBackCollection();
-      Page page = (Page) _page;
 
       if (smartNavigablePage.IsSmartScrollingEnabled)
       {
         string smartScrollingValue = null;
         if (postBackCollection != null && ! _isSmartNavigationDataDisacarded)
           smartScrollingValue = postBackCollection[c_smartScrollingID];
-        ScriptManager.RegisterHiddenField (page, c_smartScrollingID, smartScrollingValue);
+        _page.ClientScript.RegisterHiddenField (_page, c_smartScrollingID, smartScrollingValue);
       }
 
       if (smartNavigablePage.IsSmartFocusingEnabled)
@@ -547,7 +546,7 @@ namespace Remotion.Web.UI
           smartFocusValue = postBackCollection[c_smartFocusID];
         if (! StringUtility.IsNullOrEmpty (_smartFocusID))
           smartFocusValue = _smartFocusID;
-        ScriptManager.RegisterHiddenField (page, c_smartFocusID, smartFocusValue);
+        _page.ClientScript.RegisterHiddenField (_page, c_smartFocusID, smartFocusValue);
       }
     }
 

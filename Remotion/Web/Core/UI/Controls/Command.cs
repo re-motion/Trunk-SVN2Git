@@ -829,7 +829,7 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNullOrEmpty ("commandID", commandID);
 
-      ScriptManager scriptManager = ScriptManager.GetCurrent (control.Page);
+      var scriptManager = ScriptManager.GetCurrent (control.Page);
       if (scriptManager != null)
       {
         bool hasUpdatePanelAsParent = false;

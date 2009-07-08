@@ -18,6 +18,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
+using Remotion.Web.UI;
 
 namespace Remotion.Web.Infrastructure
 {
@@ -466,17 +467,41 @@ namespace Remotion.Web.Infrastructure
     }
 
     /// <summary>
-    /// Registers a hidden value with the <see cref="T:System.Web.UI.Page"/> object.
+    /// Registers a hidden field with the <see cref="ScriptManager"/> control for a control that is inside an <see cref="UpdatePanel"/> control.
     /// </summary>
-    /// <param name="control">The control registering the hidden field.</param>
+    /// <param name="control">The control that is registering the hidden field.</param>
     /// <param name="hiddenFieldName">The name of the hidden field to register.
     /// </param><param name="hiddenFieldInitialValue">The initial value of the field to register.
-    /// </param><exception cref="T:System.ArgumentNullException"><paramref name="hiddenFieldName"/> is null.
+    /// </param>
+    /// <exception cref="T:System.ArgumentNullException">
+    ///   <paramref name="control"/> is null 
+    ///   <para>- or -</para>
+    ///   <paramref name="hiddenFieldName"/> is null.
     /// </exception>
+    /// <seealso cref="ScriptManager.RegisterHiddenField(System.Web.UI.Control,string,string)"/>
     public void RegisterHiddenField (IControl control, string hiddenFieldName, string hiddenFieldInitialValue)
     {
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
       ScriptManager.RegisterHiddenField ((Control) control, hiddenFieldName, StringUtility.NullToEmpty (hiddenFieldInitialValue));
+    }
+
+    /// <summary>
+    /// Registers a hidden field with the <see cref="ScriptManager"/> control during every asynchronous postback.
+    /// </summary>
+    /// <param name="page">The page object that is registering the hidden field.</param>
+    /// <param name="hiddenFieldName">The name of the hidden field to register.
+    /// </param><param name="hiddenFieldInitialValue">The initial value of the field to register.
+    /// </param>
+    /// <exception cref="T:System.ArgumentNullException">
+    ///   <paramref name="page"/> is null 
+    ///   <para>- or -</para>
+    ///   <paramref name="hiddenFieldName"/> is null.
+    /// </exception>
+    /// <seealso cref="ScriptManager.RegisterHiddenField(System.Web.UI.Page,string,string)"/>
+    public void RegisterHiddenField (IPage page, string hiddenFieldName, string hiddenFieldInitialValue)
+    {
+      ArgumentUtility.CheckNotNullAndType<Page> ("page", page);
+      ScriptManager.RegisterHiddenField ((Page) page, hiddenFieldName, StringUtility.NullToEmpty (hiddenFieldInitialValue));
     }
 
     /// <summary>
@@ -518,7 +543,7 @@ namespace Remotion.Web.Infrastructure
     /// <param name="javascript"> 
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
-    /// <seealso cref="ScriptManager.RegisterClientScriptBlock"/>
+    /// <seealso cref="ScriptManager.RegisterClientScriptBlock(System.Web.UI.Control,System.Type,string,string,bool)"/>
     public void RegisterClientScriptBlock (IControl control, string key, string javascript)
     {
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
@@ -538,7 +563,7 @@ namespace Remotion.Web.Infrastructure
     /// <param name="javascript"> 
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
-    /// <seealso cref="ScriptManager.RegisterStartupScript"/>
+    /// <seealso cref="ScriptManager.RegisterStartupScript(System.Web.UI.Control,System.Type,string,string,bool)"/>
     public void RegisterStartupScriptBlock (IControl control, string key, string javascript)
     {
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);

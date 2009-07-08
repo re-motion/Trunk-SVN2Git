@@ -114,7 +114,7 @@ namespace Remotion.Web.ExecutionEngine
       _page.HtmlForm = _wxeForm;
 
       if (CurrentPageStep != null)
-        ScriptManager.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PageTokenID, CurrentPageStep.PageToken);
+        ((IPage) _page).ClientScript.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PageTokenID, CurrentPageStep.PageToken);
 
       _wxeForm.LoadPostData += Form_LoadPostData;
 
@@ -219,13 +219,13 @@ namespace Remotion.Web.ExecutionEngine
     {
       WxeContext wxeContext = WxeContext.Current;
 
-      ScriptManager.RegisterHiddenField (_page, WxeHandler.Parameters.WxeFunctionToken, wxeContext.FunctionToken);
-      ScriptManager.RegisterHiddenField (_page, WxePageInfo<TWxePage>.ReturningTokenID, null);
+      ((IPage) _page).ClientScript.RegisterHiddenField (_page, WxeHandler.Parameters.WxeFunctionToken, wxeContext.FunctionToken);
+      ((IPage) _page).ClientScript.RegisterHiddenField (_page, WxePageInfo<TWxePage>.ReturningTokenID, null);
       int nextPostBackID = wxeContext.PostBackID + 1;
-      ScriptManager.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PostBackSequenceNumberID, nextPostBackID.ToString ());
+      ((IPage) _page).ClientScript.RegisterHiddenField (_page, WxePageInfo<TWxePage>.PostBackSequenceNumberID, nextPostBackID.ToString ());
 
       string key = "wxeDoSubmit";
-      ScriptUtility.RegisterClientScriptBlock (_page, key,
+      ((IPage) _page).ClientScript.RegisterClientScriptBlock (_page, key,
             "function wxeDoSubmit (button, pageToken) { \r\n"
           + "  var theForm = document." + _wxeForm.ClientID + "; \r\n"
           + "  theForm." + WxePageInfo<TWxePage>.ReturningTokenID + ".value = pageToken; \r\n"
@@ -233,7 +233,7 @@ namespace Remotion.Web.ExecutionEngine
           + "}");
 
       key = "wxeDoPostBack";
-      ScriptUtility.RegisterClientScriptBlock (_page, key,
+      ((IPage) _page).ClientScript.RegisterClientScriptBlock (_page, key,
             "function wxeDoPostBack (control, argument, returningToken) { \r\n"
           + "  var theForm = document." + _wxeForm.ClientID + "; \r\n"
           + "  theForm." + WxePageInfo<TWxePage>.ReturningTokenID + ".value = returningToken; \r\n"
@@ -314,7 +314,7 @@ namespace Remotion.Web.ExecutionEngine
       initScript.AppendLine ("    ").Append (statusIsAbortingMessage).AppendLine (",");
       initScript.AppendLine ("    ").Append (statusIsCachedMessage).AppendLine (");");
 
-      ScriptUtility.RegisterClientScriptBlock (_page, "wxeInitialize", initScript.ToString ());
+      ((IPage) _page).ClientScript.RegisterClientScriptBlock (_page, "wxeInitialize", initScript.ToString ());
     }
 
 

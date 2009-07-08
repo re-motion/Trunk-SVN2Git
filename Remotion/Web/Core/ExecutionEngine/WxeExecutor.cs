@@ -20,6 +20,7 @@ using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using Remotion.Web.Utilities;
+using Remotion.Web.UI;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -108,7 +109,7 @@ namespace Remotion.Web.ExecutionEngine
       string href = WxeContext.Current.GetDestinationUrlForExternalFunction (function, functionToken, options.PermaUrlOptions);
 
       string openScript = string.Format ("window.open('{0}', '{1}', '{2}');", href, options.Target, StringUtility.NullToEmpty (options.Features));
-      ScriptUtility.RegisterStartupScriptBlock (_page, "WxeExecuteFunction", openScript);
+      ((IPage) _page).ClientScript.RegisterStartupScriptBlock (_page, "WxeExecuteFunction", openScript);
 
       function.ReturnUrl = "javascript:" + GetClosingScriptForExternalFunction (functionToken, sender, options.ReturningPostback);
     }
