@@ -22,7 +22,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
+using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.ExtensionMethods;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
