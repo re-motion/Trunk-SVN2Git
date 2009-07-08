@@ -33,6 +33,5 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView
     bool IsDesignMode { get; }
     
     string ViewClientID { get; }
-    new IPage Page { get; }
   }
 }

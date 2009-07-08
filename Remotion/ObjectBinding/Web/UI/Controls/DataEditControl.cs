@@ -16,6 +16,9 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -77,5 +80,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///// <summary> Gets the control's data source. </summary>
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public abstract IBusinessObjectDataSourceControl DataSource { get; }
+
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
+    }
   }
 }

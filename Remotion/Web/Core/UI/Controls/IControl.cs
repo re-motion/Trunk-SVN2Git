@@ -48,7 +48,7 @@ public interface IControl : IComponent, IDataBindingsAccessor, IParserAccessor, 
   bool EnableViewState { get; set; }
   string ID { get; set; }
   Control NamingContainer { get; }
-  Page Page { get; set; }
+  IPage Page { get; }
   Control Parent { get; }
   string TemplateSourceDirectory { get; }
   string UniqueID { get; }

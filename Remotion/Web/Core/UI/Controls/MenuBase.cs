@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI.Design;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -167,6 +168,11 @@ namespace Remotion.Web.UI.Controls
         WebMenuItemClickEventArgs e = new WebMenuItemClickEventArgs (item);
         WxeFunctionCommandClick (this, e);
       }
+    }
+
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
   }
 }

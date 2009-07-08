@@ -23,6 +23,7 @@ using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -465,6 +466,11 @@ namespace Remotion.Web.UI.Controls
     {
       get { return _requiresSynchronousPostBack; }
       set { _requiresSynchronousPostBack = value; }
+    }
+  
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
 
     #region protected virtual string CssClass...

@@ -21,6 +21,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -724,6 +726,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
     {
       get { return _rows; }
       set { _rows = value; }
+    }
+
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
   }
 }

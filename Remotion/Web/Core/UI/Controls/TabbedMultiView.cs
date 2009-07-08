@@ -308,9 +308,9 @@ namespace Remotion.Web.UI.Controls
       return view;
     }
 
-    IPage ITabbedMultiView.Page
+    IPage IControl.Page
     {
-      get { return new PageWrapper (Page); }
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
 
     protected override HtmlTextWriterTag TagKey

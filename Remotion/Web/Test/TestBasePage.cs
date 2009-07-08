@@ -39,5 +39,10 @@ namespace Remotion.Web.Test
     {
       get { return new ClientScriptManagerWrapper (ClientScript); }
     }
+
+    IPage IControl.Page
+    {
+      get { return this; }
+    }
   }
 }

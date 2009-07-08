@@ -24,6 +24,7 @@ using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -1016,6 +1017,11 @@ namespace Remotion.Web.UI.Controls
     {
       get { return _menuItemProvider; }
       set { _menuItemProvider = value; }
+    }
+
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
 
     private bool IsTreeNodeReachable (WebTreeNode node)

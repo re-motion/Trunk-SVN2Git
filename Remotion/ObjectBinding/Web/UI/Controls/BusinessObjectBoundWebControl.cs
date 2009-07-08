@@ -23,6 +23,7 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -425,6 +426,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     BaseValidator[] ISmartControl.CreateValidators ()
     {
       return new BaseValidator[0];
+    }
+
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
 
     /// <summary> Gets a flag whether the control already existed in the previous page life cycle. </summary>

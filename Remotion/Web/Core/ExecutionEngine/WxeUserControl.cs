@@ -23,6 +23,8 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.ControlReplacing;
 using Remotion.Web.Utilities;
+using Remotion.Web.UI;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -228,5 +230,9 @@ namespace Remotion.Web.ExecutionEngine
       }
     }
 
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
+    }
   }
 }

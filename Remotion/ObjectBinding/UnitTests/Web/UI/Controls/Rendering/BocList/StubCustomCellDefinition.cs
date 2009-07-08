@@ -17,6 +17,8 @@ using System;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
@@ -40,6 +42,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
     public StubCustomCellControl () : base ("div")
     {
       Attributes.Add ("class", "mockedCustomCellControl");
+    }
+
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
   }
 }

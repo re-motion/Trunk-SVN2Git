@@ -31,6 +31,7 @@ using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -533,6 +534,11 @@ namespace Remotion.ObjectBinding.Sample
 
     void ISmartControl.RegisterHtmlHeadContents (HttpContext context)
     {
+    }
+
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
   }
 }

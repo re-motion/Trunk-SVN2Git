@@ -131,10 +131,10 @@ namespace Remotion.Web.UI.Controls
     {
       get { return ClientID + "_View"; }
     }
-
-    IPage ISingleView.Page
+ 
+    IPage IControl.Page
     {
-      get { return new PageWrapper(Page); }
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -166,8 +166,8 @@ namespace Remotion.Web.UI.Controls
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
     [Browsable (false)]
     //[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-      //[Browsable (false)]
-      public ControlCollection View
+    //[Browsable (false)]
+    public ControlCollection View
     {
       get { return _view.Controls; }
       //get { return ViewTemplateContainer.Controls; }

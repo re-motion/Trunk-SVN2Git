@@ -732,6 +732,11 @@ namespace Remotion.Web.UI.Controls
       get { return SubMenuTabStrip; }
     }
 
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
+    }
+
     #region protected virtual string CssClass...
     /// <summary> Gets the CSS-Class applied to the <see cref="WebTabStrip"/> itself. </summary>
     /// <remarks> 

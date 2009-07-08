@@ -523,6 +523,11 @@ namespace Remotion.Web.UI.Controls
       get { return _disabledTabStyle; }
     }
 
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
+    }
+
     #region protected virtual string CssClass...
 
     /// <summary> Gets the CSS-Class applied to the <see cref="WebTabStrip"/> itself. </summary>

@@ -34,6 +34,11 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
 {
   #region ISmartPage Implementation
 
+  IPage IControl.Page
+  {
+    get { return this; }
+  }
+
   /// <summary> 
   ///   Registers Java Script functions to be executed when the respective <paramref name="pageEvent"/> is raised.
   /// </summary>

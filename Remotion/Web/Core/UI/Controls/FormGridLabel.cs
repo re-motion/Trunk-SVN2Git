@@ -22,6 +22,7 @@ using Remotion.Globalization;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -83,6 +84,11 @@ public class FormGridLabel: Label, ISmartControl
   string ISmartControl.DisplayName
   {
     get { return base.Text; }
+  }
+
+  IPage IControl.Page
+  {
+    get { return PageWrapper.CastOrCreate (base.Page); }
   }
 
   protected override void OnPreRender (EventArgs e)

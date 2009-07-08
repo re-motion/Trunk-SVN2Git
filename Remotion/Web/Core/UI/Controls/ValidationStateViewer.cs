@@ -22,6 +22,7 @@ using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -314,6 +315,11 @@ public class ValidationStateViewer : WebControl, IControl
   {
     get { return _showLabels; }
     set { _showLabels = value; }
+  }
+
+  IPage IControl.Page
+  {
+    get { return PageWrapper.CastOrCreate (base.Page); }
   }
 
   /// <summary> CSS-Class applied to the individual validation messages. </summary>

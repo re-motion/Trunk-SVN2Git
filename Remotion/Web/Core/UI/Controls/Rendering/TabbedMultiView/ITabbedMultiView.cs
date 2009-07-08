@@ -43,6 +43,5 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
     IWebTabStrip TabStrip { get; }
     string TabStripContainerClientID { get; }
     Control GetActiveView ();
-    new IPage Page { get; }
   }
 }

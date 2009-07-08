@@ -87,6 +87,10 @@ public class HtmlHeadContents : Control, IControl
     get { return s_isDesignMode; }
   }
 
+  IPage IControl.Page
+  {
+    get { return PageWrapper.CastOrCreate (base.Page); }
+  }
 }
 
 }

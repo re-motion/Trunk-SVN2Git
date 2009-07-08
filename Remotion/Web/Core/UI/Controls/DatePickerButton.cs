@@ -66,5 +66,10 @@ namespace Remotion.Web.UI.Controls
     {
       get { return (IControl) Parent; }
     }
+
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
+    }
   }
 }

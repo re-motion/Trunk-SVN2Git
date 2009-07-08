@@ -21,6 +21,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Design;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
@@ -343,6 +345,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     BaseValidator[] ISmartControl.CreateValidators ()
     {
       return new BaseValidator[0];
+    }
+
+    IPage IControl.Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
     }
 
     /// <summary> Evalutes whether this control is in <b>Design Mode</b>. </summary>

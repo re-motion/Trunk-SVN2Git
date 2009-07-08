@@ -26,6 +26,7 @@ using Remotion.Utilities;
 using Remotion.Web.UI.Design;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
+using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -1036,6 +1037,11 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
   }
   
   // methods and properties
+
+  IPage IControl.Page
+  {
+    get { return PageWrapper.CastOrCreate (base.Page); }
+  }
 
   /// <summary> Prepares all all <c>FormGrid</c> objects managed by this <c>FormGridManager</c> for validation. </summary>
   public void PrepareValidation()
