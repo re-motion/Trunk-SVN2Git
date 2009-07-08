@@ -678,7 +678,7 @@
     <Compile Include="Linq\Backend\SqlGeneration\SqlServer\SqlServerGeneratorTest.cs" />
     <Compile Include="Linq\Backend\SqlGeneration\SqlServer\WhereBuilderTest.cs" />
     <Compile Include="Linq\Backend\SqlGeneration\SqlUtilityTest.cs" />
-    <Compile Include="Linq\StringBuilding\FormattingExpressionTreeVisitorTest.cs" />
+    <Compile Include="Linq\Clauses\ExpressionTreeVisitors\FormattingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\StubDatabaseInfo.cs" />
     <Compile Include="Linq\StubParameterCollection.cs" />
     <Compile Include="Linq\Student.cs" />
