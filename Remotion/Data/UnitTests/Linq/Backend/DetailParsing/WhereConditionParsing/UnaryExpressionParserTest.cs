@@ -14,25 +14,32 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Backend.DetailParser;
 using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
-using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details.WhereConditionParsing
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsing
 {
   [TestFixture]
-  public class MemberExpressionParserTest : DetailParserTestBase
+  public class UnaryExpressionParserTest : DetailParserTestBase
   {
     [Test]
     public void Parse ()
     {
-      var resolver =
-          new FieldResolver (StubDatabaseInfo.Instance, new WhereFieldAccessPolicy (StubDatabaseInfo.Instance));
-      var parser = new MemberExpressionParser (resolver);
+      UnaryExpression unaryExpression = Expression.Not (Expression.Constant (5));
+      ICriterion expectedCriterion = new NotCriterion (new Constant (5));
 
-      parser.Parse (Student_ID_Expression, ParseContext);
-      Assert.That (ParseContext.FieldDescriptors, SyntaxHelper.Not.Empty);
+      var parserRegistry = new WhereConditionParserRegistry (StubDatabaseInfo.Instance);
+      parserRegistry.RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (StubDatabaseInfo.Instance));
+
+      var parser = new UnaryExpressionParser (parserRegistry);
+
+      ICriterion actualCriterion = parser.Parse (unaryExpression, ParseContext);
+      Assert.That (actualCriterion, Is.EqualTo (expectedCriterion));
     }
   }
 }

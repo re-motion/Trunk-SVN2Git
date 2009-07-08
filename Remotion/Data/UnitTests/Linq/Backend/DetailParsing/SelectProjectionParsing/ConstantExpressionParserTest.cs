@@ -19,8 +19,9 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing;
+using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details.SelectProjectionParsing
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.SelectProjectionParsing
 {
   [TestFixture]
   public class ConstantExpressionParserTest : DetailParserTestBase

@@ -14,23 +14,26 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
-using Remotion.Data.Linq.Backend.DataObjectModel;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
+using Remotion.Data.Linq.Backend.FieldResolving;
+using Remotion.Data.UnitTests.Linq.Backend.DetailParsing;
 
-namespace Remotion.Data.UnitTests.Linq.Parsing.Details.WhereConditionParsing
+namespace Remotion.Data.UnitTests.Linq.Backend.DetailParsing.WhereConditionParsing
 {
   [TestFixture]
-  public class ConstantExpressionParserTest : DetailParserTestBase
+  public class MemberExpressionParserTest : DetailParserTestBase
   {
     [Test]
     public void Parse ()
     {
-      object expected = new Constant (5);
-      var parser = new ConstantExpressionParser (StubDatabaseInfo.Instance);
-      object result = parser.Parse (Expression.Constant (5, typeof (int)), ParseContext);
-      Assert.AreEqual (expected, result);
+      var resolver =
+          new FieldResolver (StubDatabaseInfo.Instance, new WhereFieldAccessPolicy (StubDatabaseInfo.Instance));
+      var parser = new MemberExpressionParser (resolver);
+
+      parser.Parse (Student_ID_Expression, ParseContext);
+      Assert.That (ParseContext.FieldDescriptors, SyntaxHelper.Not.Empty);
     }
   }
 }
