@@ -13,31 +13,38 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using Remotion.Data.Linq.Backend;
 using Remotion.Data.Linq.Backend.DataObjectModel;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing
 {
-  public class SubQueryExpressionParser : IWhereConditionParser
+  public class ConstantExpressionParser : IWhereConditionParser
   {
-    public ICriterion Parse (SubQueryExpression subQueryExpression, ParseContext parseContext)
+    private readonly IDatabaseInfo _databaseInfo;
+
+    public ConstantExpressionParser(IDatabaseInfo databaseInfo)
     {
-      ArgumentUtility.CheckNotNull ("subQueryExpression", subQueryExpression);
-      return new SubQuery (subQueryExpression.QueryModel, ParseMode.SubQueryInWhere, null);
+      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
+      _databaseInfo = databaseInfo;
     }
 
-    public bool CanParse (Expression expression)
+    public ICriterion Parse (ConstantExpression constantExpression, ParseContext parseContext)
     {
-      return expression is SubQueryExpression;
+      object newValue = _databaseInfo.ProcessWhereParameter (constantExpression.Value);
+      return new Constant (newValue);
     }
 
-    ICriterion IWhereConditionParser.Parse (Expression expression, ParseContext parseContext)
+    public bool CanParse(Expression expression)
     {
-      return Parse ((SubQueryExpression) expression, parseContext);
+      return expression is ConstantExpression;
     }
 
-    
+    ICriterion IWhereConditionParser.Parse(Expression expression, ParseContext parseContext)
+    {
+      return Parse ((ConstantExpression) expression, parseContext);
+    }
   }
 }

@@ -18,44 +18,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Backend.Details.WhereConditionParsing;
+using Remotion.Data.Linq.Backend.DetailParser.SelectProjectionParsing;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.FieldResolving;
 
-namespace Remotion.Data.Linq.Backend.Details
+namespace Remotion.Data.Linq.Backend.DetailParser
 {
-  public class WhereConditionParserRegistry
+  public class SelectProjectionParserRegistry
   {
     private readonly ParserRegistry _parserRegistry;
 
-    public WhereConditionParserRegistry (IDatabaseInfo databaseInfo)
+    public SelectProjectionParserRegistry (IDatabaseInfo databaseInfo, ParseMode parseMode)
     {
-      _parserRegistry = new ParserRegistry ();
-      var resolver = new FieldResolver (databaseInfo, new WhereFieldAccessPolicy (databaseInfo));
+      _parserRegistry = new ParserRegistry();
+
+      IResolveFieldAccessPolicy policy;
+      if (parseMode == ParseMode.SubQueryInWhere)
+        policy = new WhereFieldAccessPolicy (databaseInfo);
+      else
+        policy = new SelectFieldAccessPolicy();
+
+      var resolver = new FieldResolver (databaseInfo, policy);
 
       RegisterParser (typeof (BinaryExpression), new BinaryExpressionParser (this));
-      RegisterParser (typeof (MemberExpression), new MemberExpressionParser (resolver));
       RegisterParser (typeof (ConstantExpression), new ConstantExpressionParser (databaseInfo));
+      RegisterParser (typeof (MemberExpression), new MemberExpressionParser (resolver));
       RegisterParser (typeof (MethodCallExpression), new MethodCallExpressionParser (this));
-      RegisterParser (typeof (MethodCallExpression), new LikeParser (this));
-      RegisterParser (typeof (MethodCallExpression), new ContainsParser (this));
-      RegisterParser (typeof (MethodCallExpression), new ContainsFullTextParser (this));
-      RegisterParser (typeof (SubQueryExpression), new SubQueryExpressionParser ());
-      RegisterParser (typeof (UnaryExpression), new UnaryExpressionParser (this));
+      RegisterParser (typeof (NewExpression), new NewExpressionParser (this));
+      RegisterParser (typeof (SubQueryExpression), new SubQueryExpressionParser());
       RegisterParser (typeof (QuerySourceReferenceExpression), new QuerySourceReferenceExpressionParser (resolver));
     }
 
-    public IEnumerable<IWhereConditionParser> GetParsers (Type expressionType)
+    public IEnumerable<ISelectProjectionParser> GetParsers (Type expressionType)
     {
-      return _parserRegistry.GetParsers (expressionType).Cast<IWhereConditionParser> ();
-    }
-    
-    public virtual IWhereConditionParser GetParser (Expression expression)
-    {
-      return (IWhereConditionParser) _parserRegistry.GetParser (expression);
+      return _parserRegistry.GetParsers (expressionType).Cast<ISelectProjectionParser>();
     }
 
-    public void RegisterParser (Type expressionType, IWhereConditionParser parser)
+    public ISelectProjectionParser GetParser (Expression expression)
+    {
+      return (ISelectProjectionParser) _parserRegistry.GetParser (expression);
+    }
+
+    public void RegisterParser (Type expressionType, ISelectProjectionParser parser)
     {
       _parserRegistry.RegisterParser (expressionType, parser);
     }

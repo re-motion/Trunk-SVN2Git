@@ -13,38 +13,45 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Remotion.Data.Linq.Backend;
-using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Collections;
+using Remotion.Data.Linq.Backend.DetailParser;
+using Remotion.Data.Linq.Parsing;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.Backend.Details.WhereConditionParsing
+namespace Remotion.Data.Linq.Backend.DetailParser
 {
-  public class ConstantExpressionParser : IWhereConditionParser
+  public class ParserRegistry
   {
-    private readonly IDatabaseInfo _databaseInfo;
+    private readonly MultiDictionary<Type, IParser> _parsers;
 
-    public ConstantExpressionParser(IDatabaseInfo databaseInfo)
+    public ParserRegistry()
     {
-      ArgumentUtility.CheckNotNull ("databaseInfo", databaseInfo);
-      _databaseInfo = databaseInfo;
+      _parsers = new MultiDictionary<Type, IParser> ();
     }
 
-    public ICriterion Parse (ConstantExpression constantExpression, ParseContext parseContext)
+    public void RegisterParser (Type expressionType, IParser parser)
     {
-      object newValue = _databaseInfo.ProcessWhereParameter (constantExpression.Value);
-      return new Constant (newValue);
+      _parsers[expressionType].Insert (0, parser);
     }
 
-    public bool CanParse(Expression expression)
+    public IEnumerable<IParser> GetParsers (Type expressionType)
     {
-      return expression is ConstantExpression;
+      return _parsers[expressionType];
     }
 
-    ICriterion IWhereConditionParser.Parse(Expression expression, ParseContext parseContext)
+    public IParser GetParser (Expression expression)
     {
-      return Parse ((ConstantExpression) expression, parseContext);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+
+      foreach (IParser parser in GetParsers (expression.GetType()))
+      {
+        if (parser.CanParse (expression))
+          return parser;
+      }
+      throw new ParserException ("Cannot parse " + expression + ", no appropriate parser found");
     }
   }
 }
