@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
-using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -29,7 +28,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string InternalValue { get; }
     bool IsCommandEnabled (bool readOnly);
 
-    new IPage Page { get; }
     DropDownMenu OptionsMenu { get; }
     Unit OptionsMenuWidth { get; }
     BocCommand Command { get; }

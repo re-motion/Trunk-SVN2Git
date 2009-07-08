@@ -1546,11 +1546,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return IsCommandEnabled (readOnly);
     }
 
-    IPage IBocReferenceValue.Page
-    {
-      get { return new PageWrapper (Page); }
-    }
-
     DropDownMenu IBocReferenceValue.OptionsMenu
     {
       get { return OptionsMenu; }

@@ -3413,11 +3413,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         ((BocMenuItemCommand) e.Item.Command).OnClick ((BocMenuItem) e.Item);
     }
 
-    IPage IBocList.Page
-    {
-      get { return new PageWrapper (Page); }
-    }
-
     bool IBocMenuItemContainer.IsReadOnly
     {
       get { return IsReadOnly; }

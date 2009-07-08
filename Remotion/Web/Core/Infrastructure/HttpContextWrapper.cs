@@ -48,7 +48,6 @@ namespace Remotion.Web.Infrastructure
     /// <summary>
     /// Gets the concrete instance wrapped by this <see cref="IHttpContext"/> wrapper.
     /// </summary>
-    /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpContext"/>. </exception>
     public HttpContext WrappedInstance
     {
       get { return _httpContext; }

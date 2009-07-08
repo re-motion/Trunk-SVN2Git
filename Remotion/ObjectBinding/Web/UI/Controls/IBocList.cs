@@ -21,7 +21,6 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
-using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Globalization;
@@ -45,8 +44,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Is raised when the sorting order of the <see cref="BocList"/> has changed. </summary>
     /// <remarks> Will only be raised, if the change was caused by an UI action. </remarks>
     event BocListSortingOrderChangeEventHandler SortingOrderChanged;
-
-    new IPage Page { get; }
 
     new bool IsReadOnly { get; }
 

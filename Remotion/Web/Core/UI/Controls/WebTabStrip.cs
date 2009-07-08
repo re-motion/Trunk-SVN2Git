@@ -470,11 +470,6 @@ namespace Remotion.Web.UI.Controls
       set { _enableSelectedTab = value; }
     }
 
-    IPage IWebTabStrip.Page
-    {
-      get { return new PageWrapper (Page); }
-    }
-
     /// <summary> Occurs when a node is clicked. </summary>
     [Category ("Action")]
     [Description ("Occurs when the selected tab has been changed.")]

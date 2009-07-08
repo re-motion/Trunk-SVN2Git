@@ -24,7 +24,6 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu
   {
     ListMenuLineBreaks LineBreaks { get; }
     WebMenuItemCollection MenuItems { get; }
-    new IPage Page { get; }
     bool Enabled { get; }
     bool HasClientScript { get; }
     string GetSelectionCount { get; }

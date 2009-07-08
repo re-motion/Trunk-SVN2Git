@@ -16,7 +16,6 @@
 using System;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
-using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -53,7 +52,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   description. 
     /// </summary>
     Style LabelStyle { get; }
-
-    new IPage Page { get; }
   }
 }

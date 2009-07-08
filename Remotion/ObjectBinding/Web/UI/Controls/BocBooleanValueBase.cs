@@ -20,8 +20,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
-using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -271,11 +269,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool IBocBooleanValueBase.IsAutoPostBackEnabled
     {
       get { return IsAutoPostBackEnabled; }
-    }
-
-    IPage IBocBooleanValueBase.Page
-    {
-      get { return new PageWrapper (base.Page); }
     }
 
     bool IBocRenderableControl.IsDesignMode

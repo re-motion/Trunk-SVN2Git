@@ -32,7 +32,6 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip
     WebTabStyle SelectedTabStyle { get; }
     bool EnableSelectedTab { get; }
 
-    new IPage Page { get; }
     Unit Width { get; set; }
     CssStyleCollection Style { get; }
   }

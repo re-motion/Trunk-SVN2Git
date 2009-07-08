@@ -38,7 +38,6 @@ namespace Remotion.Web.Infrastructure
     /// <summary>
     /// Gets the concrete instance wrapped by this <see cref="IHttpApplicationState"/> wrapper.
     /// </summary>
-    /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpApplicationState"/>. </exception>
     public HttpApplicationState WrappedInstance
     {
       get { return _applicationState; }

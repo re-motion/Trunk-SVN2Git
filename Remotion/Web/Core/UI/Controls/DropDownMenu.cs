@@ -137,10 +137,5 @@ namespace Remotion.Web.UI.Controls
       get { return _enableGrouping; }
       set { _enableGrouping = value; }
     }
-
-    IPage IDropDownMenu.Page
-    {
-      get { return new PageWrapper (Page); }
-    }
   }
 }

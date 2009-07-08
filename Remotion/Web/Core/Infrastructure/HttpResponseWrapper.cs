@@ -40,7 +40,6 @@ namespace Remotion.Web.Infrastructure
     /// <summary>
     /// Gets the concrete instance wrapped by this <see cref="IHttpResponse"/> wrapper.
     /// </summary>
-    /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="HttpResponse"/>. </exception>
     public HttpResponse WrappedInstance
     {
       get { return _response; }

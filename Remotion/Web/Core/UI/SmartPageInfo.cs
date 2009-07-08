@@ -417,7 +417,7 @@ namespace Remotion.Web.UI
       ScriptUtility.RegisterStartupScriptBlock ((Page) _page, "smartPageStartUp", "SmartPage_OnStartUp (" + isAsynchronous + ", " + isDirty + ");");
 
       // Ensure the __doPostBack function on the rendered page
-      _page.GetPostBackEventReference ((Page) _page);
+      _page.ClientScript.GetPostBackEventReference (_page, string.Empty);
     }
 
     private string GetAbortMessage ()

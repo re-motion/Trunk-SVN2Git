@@ -18,24 +18,49 @@ using System.Web.UI;
 
 namespace Remotion.Web.UI.Controls
 {
+  /// <summary>
+  ///   This interface contains all public members of <see cref="TemplateControl"/>. It is used to 
+  ///   derive interfaces that will be implemented by deriving from <see cref="TemplateControl"/>.
+  /// </summary>
+  /// <remarks>
+  ///   The reason for providing this interface is that derived interfaces do not need to be casted 
+  ///   to <see cref="TemplateControl"/>.
+  /// </remarks>
+  public interface ITemplateControl : IControl, INamingContainer, IFilterResolutionService
+  {
+    event EventHandler AbortTransaction;
+    event EventHandler CommitTransaction;
+    event EventHandler Error;
 
-/// <summary>
-///   This interface contains all public members of System.Web.UI.TemplateControl. It is used to 
-///   derive interfaces that will be implemented by deriving from System.Web.UI.TemplateControl.
-/// </summary>
-/// <remarks>
-///   The reason for providing this interface is that derived interfaces do not need to be casted 
-///   to System.Web.UI.TemplateControl.
-/// </remarks>
-public interface ITemplateControl: IControl, INamingContainer
-{
-  event EventHandler AbortTransaction;
-  event EventHandler CommitTransaction;
-  event EventHandler Error;
+    /// <summary>
+    /// Loads a <see cref="T:System.Web.UI.Control"/> object from a file based on a specified virtual path.
+    /// </summary>
+    /// <returns>
+    /// Returns the specified <see cref="T:System.Web.UI.Control"/>.
+    /// </returns>
+    /// <param name="virtualPath">The virtual path to a control file. 
+    /// </param><exception cref="T:System.ArgumentNullException">The virtual path is null or empty.
+    /// </exception>
+    Control LoadControl (string virtualPath);
 
-  Control LoadControl(string virtualPath);
-  ITemplate LoadTemplate(string virtualPath);
-  Control ParseControl(string content);
-}
+    /// <summary>
+    /// Obtains an instance of the <see cref="T:System.Web.UI.ITemplate"/> interface from an external file.
+    /// </summary>
+    /// <returns>
+    /// An instance of the specified template.
+    /// </returns>
+    /// <param name="virtualPath">The virtual path to a user control file. 
+    /// </param>
+    ITemplate LoadTemplate (string virtualPath);
 
+    /// <summary>
+    /// Parses an input string into a <see cref="T:System.Web.UI.Control"/> object on the Web Forms page or user control.
+    /// </summary>
+    /// <returns>
+    /// The parsed <see cref="T:System.Web.UI.Control"/>.
+    /// </returns>
+    /// <param name="content">A string that contains a user control. 
+    /// </param>
+    Control ParseControl (string content);
+  }
 }

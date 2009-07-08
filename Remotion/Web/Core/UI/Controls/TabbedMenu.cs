@@ -320,11 +320,6 @@ namespace Remotion.Web.UI.Controls
       get { return ControlHelper.IsDesignMode (this, Context); }
     }
 
-    IPage ITabbedMenu.Page
-    {
-      get { return new PageWrapper (Page); }
-    }
-
     /// <summary> Gets the IDs of the tabs to be selected from the query string. </summary>
     /// <returns> 
     ///   A string array containing the ID of the <see cref="MainMenuTab"/> at index 0 and the ID of the 

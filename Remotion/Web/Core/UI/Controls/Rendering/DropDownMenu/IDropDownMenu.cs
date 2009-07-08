@@ -26,7 +26,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     bool Enabled { get; }
     bool EnableGrouping { get; }
     WebMenuItemCollection MenuItems { get; }
-    new IPage Page { get; }
     bool IsReadOnly { get; }
     bool IsDesignMode { get; }
     Action RenderHeadTitleMethod { get; }

@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Caching;
@@ -31,7 +30,7 @@ namespace Remotion.Web.Infrastructure
   /// <summary>
   /// The <see cref="PageWrapper"/> type is the default implementation of the <see cref="IPage"/> interface.
   /// </summary>
-  public class PageWrapper : IPage
+  public class PageWrapper : ControlWrapper, IPage
   {
     public static IPage CastOrCreate (Page page)
     {
@@ -45,13 +44,18 @@ namespace Remotion.Web.Infrastructure
 
     private readonly Page _page;
 
-    public PageWrapper (Page page)
+    private PageWrapper (Page page)
+        : base (page)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       _page = page;
     }
 
-    public Page WrappedInstance
+    /// <summary>
+    /// Gets the concrete instance wrapped by this <see cref="IControl"/> wrapper.
+    /// </summary>
+    /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="Control"/>. </exception>
+    public new Page WrappedInstance
     {
       get { return _page; }
     }
@@ -79,7 +83,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public bool HasDataBindings
     {
-      get { return ((IDataBindingsAccessor)_page).HasDataBindings; }
+      get { return ((IDataBindingsAccessor) _page).HasDataBindings; }
     }
 
     /// <summary>
@@ -90,7 +94,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public ControlBuilder ControlBuilder
     {
-      get { return ((IControlBuilderAccessor)_page).ControlBuilder; }
+      get { return ((IControlBuilderAccessor) _page).ControlBuilder; }
     }
 
     /// <summary>
@@ -159,153 +163,6 @@ namespace Remotion.Web.Infrastructure
     }
 
     /// <summary>
-    /// Applies the style properties defined in the page style sheet to the control.
-    /// </summary>
-    /// <param name="page">The <see cref="T:System.Web.UI.Page"/> containing the control.
-    /// </param><exception cref="T:System.InvalidOperationException">The style sheet is already applied.
-    /// </exception>
-    public void ApplyStyleSheetSkin (Page page)
-    {
-      _page.ApplyStyleSheetSkin (page);
-    }
-
-    /// <summary>
-    /// Binds a data source to the invoked server control and all its child controls.
-    /// </summary>
-    public void DataBind ()
-    {
-      _page.DataBind();
-    }
-
-    /// <summary>
-    /// Sets input focus to a control.
-    /// </summary>
-    public void Focus ()
-    {
-      _page.Focus();
-    }
-
-    /// <summary>
-    /// Outputs server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter"/> object 
-    /// and stores tracing information about the control if tracing is enabled.
-    /// </summary>
-    /// <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter"/> object that receives the control content. 
-    /// </param>
-    public void RenderControl (HtmlTextWriter writer)
-    {
-      _page.RenderControl (writer);
-    }
-
-    /// <summary>
-    /// Enables a server control to perform final clean up before it is released from memory.
-    /// </summary>
-    public void Dispose ()
-    {
-      _page.Dispose();
-    }
-
-    /// <summary>
-    /// Converts a URL into one that is usable on the requesting client.
-    /// </summary>
-    /// <returns>
-    /// The converted URL.
-    /// </returns>
-    /// <param name="relativeUrl">The URL associated with the <see cref="P:System.Web.UI.Control.TemplateSourceDirectory"/> property. 
-    /// </param><exception cref="T:System.ArgumentNullException">Occurs if the <paramref name="relativeUrl"/> parameter contains null. 
-    /// </exception>
-    public string ResolveUrl (string relativeUrl)
-    {
-      return _page.ResolveUrl (relativeUrl);
-    }
-
-    /// <summary>
-    /// Gets a URL that can be used by the browser.
-    /// </summary>
-    /// <returns>
-    /// A fully qualified URL to the specified resource suitable for use on the browser.
-    /// </returns>
-    /// <param name="relativeUrl">A URL relative to the current page.
-    /// </param><exception cref="T:System.ArgumentNullException"><paramref name="relativeUrl"/> is null.
-    /// </exception>
-    public string ResolveClientUrl (string relativeUrl)
-    {
-      return _page.ResolveClientUrl (relativeUrl);
-    }
-
-    /// <summary>
-    /// Determines if the server control contains any child controls.
-    /// </summary>
-    /// <returns>
-    /// true if the control contains other controls; otherwise, false.
-    /// </returns>
-    public bool HasControls ()
-    {
-      return _page.HasControls();
-    }
-
-    /// <summary>
-    /// Assigns an event handler delegate to render the server control and its content into its parent control.
-    /// </summary>
-    /// <param name="renderMethod">The information necessary to pass to the delegate so that it can render the server control. 
-    /// </param>
-    public void SetRenderMethodDelegate (RenderMethod renderMethod)
-    {
-      _page.SetRenderMethodDelegate (renderMethod);
-    }
-
-    /// <summary>
-    /// Gets the server control identifier generated by ASP.NET.
-    /// </summary>
-    /// <returns>
-    /// The server control identifier generated by ASP.NET.
-    /// </returns>
-    public string ClientID
-    {
-      get { return _page.ClientID; }
-    }
-
-    /// <summary>
-    /// Gets or sets the skin to apply to the control.
-    /// </summary>
-    /// <returns>
-    /// The name of the skin to apply to the control. The default is <see cref="F:System.String.Empty"/>.
-    /// </returns>
-    /// <exception cref="T:System.InvalidOperationException">The style sheet has already been applied.
-    ///     - or -
-    ///     The Page_PreInit event has already occurred.
-    ///     - or -
-    ///     The control was already added to the Controls collection.
-    /// </exception>
-    public string SkinID
-    {
-      get { return _page.SkinID; }
-      set { _page.SkinID = value; }
-    }
-
-    /// <summary>
-    /// Gets a reference to the server control's naming container, which creates a unique namespace 
-    /// for differentiating between server controls with the same <see cref="P:System.Web.UI.Control.ID"/> property value.
-    /// </summary>
-    /// <returns>
-    /// The server control's naming container.
-    /// </returns>
-    public Control NamingContainer
-    {
-      get { return _page.NamingContainer; }
-    }
-
-    /// <summary>
-    /// Gets the control that contains this control's data binding.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="T:System.Web.UI.Control"/> that contains this control's data binding.
-    /// </returns>
-    public Control BindingContainer
-    {
-      get { return _page.BindingContainer; }
-    }
-
-    /// <summary>
     /// Gets a reference to the <see cref="T:System.Web.UI.Page"/> instance that contains the server control.
     /// </summary>
     /// <returns>
@@ -313,130 +170,9 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <exception cref="T:System.InvalidOperationException">The control is a <see cref="T:System.Web.UI.WebControls.Substitution"/> control.
     /// </exception>
-    public IPage Page
+    public override IPage Page
     {
       get { return this; }
-    }
-
-    /// <summary>
-    /// Gets or sets a reference to the template that contains this control. 
-    /// </summary>
-    /// <returns>
-    /// The <see cref="T:System.Web.UI.TemplateControl"/> instance that contains this control. 
-    /// </returns>
-    public TemplateControl TemplateControl
-    {
-      get { return _page.TemplateControl; }
-      set { _page.TemplateControl = value; }
-    }
-
-    /// <summary>
-    /// Gets a reference to the server control's parent control in the page control hierarchy.
-    /// </summary>
-    /// <returns>
-    /// A reference to the server control's parent control.
-    /// </returns>
-    public Control Parent
-    {
-      get { return _page.Parent; }
-    }
-
-    /// <summary>
-    /// Gets the virtual directory of the <see cref="T:System.Web.UI.Page"/> or 
-    /// <see cref="T:System.Web.UI.UserControl"/> that contains the current server control.
-    /// </summary>
-    /// <returns>
-    /// The virtual directory of the page or user control that contains the server control.
-    /// </returns>
-    public string TemplateSourceDirectory
-    {
-      get { return _page.TemplateSourceDirectory; }
-    }
-
-    /// <summary>
-    /// Gets or sets the application-relative virtual directory of the <see cref="T:System.Web.UI.Page"/> or 
-    /// <see cref="T:System.Web.UI.UserControl"/> object that contains this control.
-    /// </summary>
-    /// <returns>
-    /// The application-relative virtual directory of the page or user control that contains this control.
-    /// </returns>
-    public string AppRelativeTemplateSourceDirectory
-    {
-      get { return _page.AppRelativeTemplateSourceDirectory; }
-      set { _page.AppRelativeTemplateSourceDirectory = value; }
-    }
-
-    /// <summary>
-    /// Gets information about the container that hosts the current control when rendered on a design surface.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="T:System.ComponentModel.ISite"/> that contains information about the container that the control is hosted in.
-    /// </returns>
-    /// <exception cref="T:System.InvalidOperationException">The control is a <see cref="T:System.Web.UI.WebControls.Substitution"/> control.
-    /// </exception>
-    public ISite Site
-    {
-      get { return _page.Site; }
-      set { _page.Site = value; }
-    }
-
-    /// <summary>
-    /// Gets the unique, hierarchically qualified identifier for the server control.
-    /// </summary>
-    /// <returns>
-    /// The fully qualified identifier for the server control.
-    /// </returns>
-    public string UniqueID
-    {
-      get { return _page.UniqueID; }
-    }
-
-    /// <summary>
-    /// Gets a <see cref="T:System.Web.UI.ControlCollection"/> object that represents the child controls 
-    /// for a specified server control in the UI hierarchy.
-    /// </summary>
-    /// <returns>
-    /// The collection of child controls for the specified server control.
-    /// </returns>
-    public ControlCollection Controls
-    {
-      get { return _page.Controls; }
-    }
-
-    public event EventHandler Disposed
-    {
-      add { _page.Disposed += value; }
-      remove { _page.Disposed -= value; }
-    }
-
-    public event EventHandler DataBinding
-    {
-      add { _page.DataBinding += value; }
-      remove { _page.DataBinding -= value; }
-    }
-
-    public event EventHandler Init
-    {
-      add { _page.Init += value; }
-      remove { _page.Init -= value; }
-    }
-
-    public event EventHandler Load
-    {
-      add { _page.Load += value; }
-      remove { _page.Load -= value; }
-    }
-
-    public event EventHandler PreRender
-    {
-      add { _page.PreRender += value; }
-      remove { _page.PreRender -= value; }
-    }
-
-    public event EventHandler Unload
-    {
-      add { _page.Unload += value; }
-      remove { _page.Unload -= value; }
     }
 
     /// <summary>
@@ -447,7 +183,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <param name="filterName">The name of a device filter.
     /// </param>
-    public bool EvaluateFilter (string filterName)
+    bool IFilterResolutionService.EvaluateFilter (string filterName)
     {
       return ((IFilterResolutionService) _page).EvaluateFilter (filterName);
     }
@@ -463,7 +199,7 @@ namespace Remotion.Web.Infrastructure
     /// <param name="filter1">A device filter name.
     /// </param><param name="filter2">A device filter name
     /// </param>
-    public int CompareFilters (string filter1, string filter2)
+    int IFilterResolutionService.CompareFilters (string filter1, string filter2)
     {
       return ((IFilterResolutionService) _page).CompareFilters (filter1, filter2);
     }
@@ -566,19 +302,6 @@ namespace Remotion.Web.Infrastructure
     }
 
     /// <summary>
-    /// Gets or sets a Boolean value indicating whether themes apply to the control that is derived from the 
-    /// <see cref="T:System.Web.UI.TemplateControl"/> class. 
-    /// </summary>
-    /// <returns>
-    /// true to use themes; otherwise, false. The default is true.
-    /// </returns>
-    public bool EnableTheming
-    {
-      get { return _page.EnableTheming; }
-      set { _page.EnableTheming = value; }
-    }
-
-    /// <summary>
     /// Gets or sets the application-relative, virtual directory path to the file from which the control is parsed and compiled. 
     /// </summary>
     /// <returns>
@@ -609,19 +332,6 @@ namespace Remotion.Web.Infrastructure
     {
       add { _page.Error += value; }
       remove { _page.Error -= value; }
-    }
-
-    /// <summary>
-    /// Searches the page naming container for a server control with the specified identifier.
-    /// </summary>
-    /// <returns>
-    /// The specified control, or null if the specified control does not exist.
-    /// </returns>
-    /// <param name="id">The identifier for the control to be found. 
-    /// </param>
-    public Control FindControl (string id)
-    {
-      return _page.FindControl (id);
     }
 
     /// <summary>
@@ -673,161 +383,6 @@ namespace Remotion.Web.Infrastructure
     public void SetFocus (string clientID)
     {
       _page.SetFocus (clientID);
-    }
-
-    /// <summary>
-    /// Returns a string that can be used in a client event to cause postback to the server. 
-    /// The reference string is defined by the specified <see cref="T:System.Web.UI.Control"/> object.
-    /// </summary>
-    /// <returns>
-    /// A string that, when treated as script on the client, initiates the postback.
-    /// </returns>
-    /// <param name="control">The server control to process the postback on the server. 
-    /// </param>
-    [Obsolete]
-    public string GetPostBackEventReference (Control control)
-    {
-      return _page.GetPostBackEventReference (control);
-    }
-
-    /// <summary>
-    /// Returns a string that can be used in a client event to cause postback to the server. 
-    /// The reference string is defined by the specified control that handles the postback and a string argument of additional event information. 
-    /// </summary>
-    /// <returns>
-    /// A string that, when treated as script on the client, initiates the postback.
-    /// </returns>
-    /// <param name="control">The server control to process the postback. 
-    /// </param><param name="argument">The parameter passed to the server control. 
-    /// </param>
-    [Obsolete]
-    public string GetPostBackEventReference (Control control, string argument)
-    {
-      return _page.GetPostBackEventReference (control, argument);
-    }
-
-    /// <summary>
-    /// Gets a reference that can be used in a client event to post back to the server for the specified control 
-    /// and with the specified event arguments.
-    /// </summary>
-    /// <returns>
-    /// The string that represents the client event.
-    /// </returns>
-    /// <param name="control">The server control that receives the client event postback. 
-    /// </param>
-    /// <param name="argument">A <see cref="T:System.String"/> that is passed to 
-    /// <see cref="M:System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(System.String)"/>. 
-    /// </param>
-    [Obsolete]
-    public string GetPostBackClientEvent (Control control, string argument)
-    {
-      return _page.GetPostBackClientEvent (control, argument);
-    }
-
-    /// <summary>
-    /// Gets a reference, with javascript: appended to the beginning of it, that can be used in a client event to post back 
-    /// to the server for the specified control and with the specified event arguments.
-    /// </summary>
-    /// <returns>
-    /// A string representing a JavaScript call to the postback function that includes the target control's ID and event arguments.
-    /// </returns>
-    /// <param name="control">The server control to process the postback. 
-    /// </param><param name="argument">The parameter passed to the server control. 
-    /// </param>
-    [Obsolete]
-    public string GetPostBackClientHyperlink (Control control, string argument)
-    {
-      return _page.GetPostBackClientHyperlink (control, argument);
-    }
-
-    /// <summary>
-    /// Determines whether the client script block with the specified key is registered with the page.
-    /// </summary>
-    /// <returns>
-    /// true if the script block is registered; otherwise, false.
-    /// </returns>
-    /// <param name="key">The string key of the client script to search for. 
-    /// </param>
-    [Obsolete]
-    public bool IsClientScriptBlockRegistered (string key)
-    {
-      return _page.IsClientScriptBlockRegistered (key);
-    }
-
-    /// <summary>
-    /// Determines whether the client startup script is registered with the <see cref="T:System.Web.UI.Page"/> object.
-    /// </summary>
-    /// <returns>
-    /// true if the startup script is registered; otherwise, false.
-    /// </returns>
-    /// <param name="key">The string key of the startup script to search for. 
-    /// </param>
-    [Obsolete]
-    public bool IsStartupScriptRegistered (string key)
-    {
-      return _page.IsStartupScriptRegistered (key);
-    }
-
-    /// <summary>
-    /// Declares a value that is declared as an ECMAScript array declaration when the page is rendered.
-    /// </summary>
-    /// <param name="arrayName">The name of the array in which to declare the value. 
-    /// </param><param name="arrayValue">The value to place in the array. 
-    /// </param>
-    [Obsolete]
-    public void RegisterArrayDeclaration (string arrayName, string arrayValue)
-    {
-      _page.RegisterArrayDeclaration (arrayName, arrayValue);
-    }
-
-    /// <summary>
-    /// Allows server controls to automatically register a hidden field on the form. 
-    /// The field will be sent to the <see cref="T:System.Web.UI.Page"/> object when 
-    /// the <see cref="T:System.Web.UI.HtmlControls.HtmlForm"/> server control is rendered.
-    /// </summary>
-    /// <param name="hiddenFieldName">The unique name of the hidden field to be rendered. 
-    /// </param><param name="hiddenFieldInitialValue">The value to be emitted in the hidden form. 
-    /// </param>
-    [Obsolete]
-    public void RegisterHiddenField (string hiddenFieldName, string hiddenFieldInitialValue)
-    {
-      _page.RegisterHiddenField (hiddenFieldName, hiddenFieldInitialValue);
-    }
-
-    /// <summary>
-    /// Emits client-side script blocks to the response.
-    /// </summary>
-    /// <param name="key">Unique key that identifies a script block. 
-    /// </param><param name="script">Content of script that is sent to the client. 
-    /// </param>
-    [Obsolete]
-    public void RegisterClientScriptBlock (string key, string script)
-    {
-      _page.RegisterClientScriptBlock (key, script);
-    }
-
-    /// <summary>
-    /// Emits a client-side script block in the page response. 
-    /// </summary>
-    /// <param name="key">Unique key that identifies a script block. 
-    /// </param><param name="script">Content of script that will be sent to the client. 
-    /// </param>
-    [Obsolete]
-    public void RegisterStartupScript (string key, string script)
-    {
-      _page.RegisterStartupScript (key, script);
-    }
-
-    /// <summary>
-    /// Allows a page to access the client OnSubmit event. The script should be a function call to client code registered elsewhere.
-    /// </summary>
-    /// <param name="key">Unique key that identifies a script block. 
-    /// </param><param name="script">The client-side script to be sent to the client. 
-    /// </param>
-    [Obsolete]
-    public void RegisterOnSubmitStatement (string key, string script)
-    {
-      _page.RegisterOnSubmitStatement (key, script);
     }
 
     /// <summary>
@@ -1076,10 +631,10 @@ namespace Remotion.Web.Infrastructure
     }
 
     /// <summary>
-    /// Gets a <see cref="T:System.Web.UI.ClientScriptManager"/> object used to manage, register, and add script to the page.
+    /// Gets a <see cref="IClientScriptManager"/> object used to manage, register, and add script to the page.
     /// </summary>
     /// <returns>
-    /// A <see cref="T:System.Web.UI.ClientScriptManager"/> object.
+    /// A <see cref="IClientScriptManager"/> object.
     /// </returns>
     public IClientScriptManager ClientScript
     {
@@ -1182,7 +737,6 @@ namespace Remotion.Web.Infrastructure
 
     /// <summary>
     /// Gets or sets a value indicating whether to return the user to the same position in the client browser after postback. 
-    /// This property replaces the obsolete <see cref="P:System.Web.UI.Page.SmartNavigation"/> property.
     /// </summary>
     /// <returns>
     /// true if the client position should be maintained; otherwise, false.
@@ -1416,19 +970,6 @@ namespace Remotion.Web.Infrastructure
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the page maintains its view state, 
-    /// and the view state of any server controls it contains, when the current page request ends.
-    /// </summary>
-    /// <returns>
-    /// true if the page maintains its view state; otherwise, false. The default is true.
-    /// </returns>
-    public bool EnableViewState
-    {
-      get { return _page.EnableViewState; }
-      set { _page.EnableViewState = value; }
-    }
-
-    /// <summary>
     /// Gets or sets the encryption mode of the view state.
     /// </summary>
     /// <returns>
@@ -1461,30 +1002,6 @@ namespace Remotion.Web.Infrastructure
     {
       get { return _page.ViewStateUserKey; }
       set { _page.ViewStateUserKey = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets an identifier for a particular instance of the <see cref="T:System.Web.UI.Page"/> class.
-    /// </summary>
-    /// <returns>
-    /// The identifier for the instance of the <see cref="T:System.Web.UI.Page"/> class. The default value is '_Page'.
-    /// </returns>
-    public string ID
-    {
-      get { return _page.ID; }
-      set { _page.ID = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the <see cref="T:System.Web.UI.Page"/> object is rendered.
-    /// </summary>
-    /// <returns>
-    /// true if the <see cref="T:System.Web.UI.Page"/> is to be rendered; otherwise, false. The default is true.
-    /// </returns>
-    public bool Visible
-    {
-      get { return _page.Visible; }
-      set { _page.Visible = value; }
     }
 
     /// <summary>
@@ -1667,19 +1184,6 @@ namespace Remotion.Web.Infrastructure
     {
       get { return _page.EnableViewStateMac; }
       set { _page.EnableViewStateMac = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether smart navigation is enabled. This property is deprecated.
-    /// </summary>
-    /// <returns>
-    /// true if smart navigation is enabled; otherwise, false.
-    /// </returns>
-    [Obsolete]
-    public bool SmartNavigation
-    {
-      get { return _page.SmartNavigation; }
-      set { _page.SmartNavigation = value; }
     }
 
     /// <summary>

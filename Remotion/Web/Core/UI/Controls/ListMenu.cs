@@ -47,11 +47,6 @@ namespace Remotion.Web.UI.Controls
       set { _lineBreaks = value; }
     }
 
-    IPage IListMenu.Page
-    {
-      get { return new PageWrapper (Page); }
-    }
-
     public override void RenderControl (HtmlTextWriter writer)
     {
       if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
