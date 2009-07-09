@@ -179,15 +179,9 @@ namespace Remotion.Web.ExecutionEngine
 
     /// <summary> Gets the post-back data for the page. </summary>
     /// <remarks> Application developers should only rely on this collection for accessing the post-back data. </remarks>
-    public NameValueCollection GetPostBackCollection ()
+    protected override NameValueCollection GetPostBackCollection ()
     {
       return _wxePageInfo.EnsurePostBackModeDetermined (Context);
-    }
-
-    /// <summary> Gets the value returned by <see cref="GetPostBackCollection"/>. </summary>
-    NameValueCollection ISmartPage.GetPostBackCollection ()
-    {
-      return GetPostBackCollection ();
     }
 
     /// <remarks> Uses <see cref="WxePageInfo.SavePageStateToPersistenceMedium"/> to save the viewstate. </remarks>

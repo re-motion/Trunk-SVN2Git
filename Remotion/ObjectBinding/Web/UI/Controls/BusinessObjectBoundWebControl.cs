@@ -428,7 +428,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return new BaseValidator[0];
     }
 
-    IPage IControl.Page
+    public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
     }

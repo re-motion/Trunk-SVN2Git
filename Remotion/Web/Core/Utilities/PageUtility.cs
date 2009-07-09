@@ -20,6 +20,7 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.UI;
 
 namespace Remotion.Web.Utilities
 {
@@ -35,15 +36,15 @@ namespace Remotion.Web.Utilities
     /// <param name="page"> The page to query for the request collection. Must not be <see langword="null"/>. </param>
     /// <returns> 
     ///   The <see cref="NameValueCollection"/> returned by 
-    ///   <see cref="Remotion.Web.UI.ISmartPage.GetPostBackCollection">IWxePage.GetPostBackCollection</see> or the 
+    ///   <see cref="Remotion.Web.UI.ISmartPage.GetPostBackCollection">ISmartPage.GetPostBackCollection</see> or the 
     ///   <see cref="HttpRequest.Form"/> collection of the <see cref="Page.Request"/>, depending on whether or not the
     ///   <paramref name="page"/> implements <see cref="IWxePage"/>.
     /// </returns>
-    public static NameValueCollection GetPostBackCollection (Page page)
+    public static NameValueCollection GetPostBackCollection (IPage page)
     {
-      IWxePage wxePage = page as IWxePage;
-      if (wxePage != null)
-        return wxePage.GetPostBackCollection();
+      ISmartPage smartPage = page as ISmartPage;
+      if (smartPage != null)
+        return smartPage.GetPostBackCollection();
       else
         return page.Request.Form;
     }
@@ -57,7 +58,7 @@ namespace Remotion.Web.Utilities
     /// <returns> 
     ///   The item identified by <paramref name="name"/> or <see langword="null"/> if the item could not be found. 
     /// </returns>
-    public static string GetPostBackCollectionItem (Page page, string name)
+    public static string GetPostBackCollectionItem (IPage page, string name)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);

@@ -233,13 +233,20 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
   /// <summary> Gets the post back data for the page. </summary>
   NameValueCollection ISmartPage.GetPostBackCollection ()
   {
+    return GetPostBackCollection();
+  }
+
+  /// <summary> Gets the post-back data for the page. </summary>
+  /// <remarks> Application developers should only rely on this collection for accessing the post-back data. </remarks>
+  protected virtual NameValueCollection GetPostBackCollection ()
+  {
     if (string.Compare (Request.HttpMethod, "POST", true) == 0)
       return Request.Form;
     else
       return Request.QueryString;
   }
-  
-  /// <summary> Gets or sets the <b>HtmlForm</b> of this page. </summary>
+
+    /// <summary> Gets or sets the <b>HtmlForm</b> of this page. </summary>
   /// <remarks> Redirects the call to the <see cref="HtmlForm"/> property. </remarks>
   HtmlForm ISmartPage.HtmlForm
   {

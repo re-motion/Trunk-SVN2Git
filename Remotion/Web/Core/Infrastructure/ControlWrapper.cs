@@ -496,5 +496,10 @@ namespace Remotion.Web.Infrastructure
       add { _control.Unload += value; }
       remove { _control.Unload -= value; }
     }
+
+    public override string ToString ()
+    {
+      return _control.ToString ();
+    }
   }
 }
