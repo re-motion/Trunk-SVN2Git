@@ -56,16 +56,11 @@ namespace Remotion.Web.UI.Controls
       renderer.Render();
     }
 
-    protected override void OnInit (EventArgs e)
-    {
-      base.OnInit (e);
-      var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
-      preRenderer.RegisterHtmlHeadContents ();
-    }
-
     protected override void OnPreRender (EventArgs e)
     {
+      var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.PreRender ();
     }
 
     IControl IDatePickerButton.Parent
@@ -76,6 +71,13 @@ namespace Remotion.Web.UI.Controls
     IPage IControl.Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
+    }
+
+    public void RegisterHtmlHeadContents ()
+    {
+      var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHtmlHeadContents ();
     }
   }
 }

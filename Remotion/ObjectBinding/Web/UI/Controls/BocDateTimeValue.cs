@@ -132,6 +132,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         Page.RegisterRequiresPostBack (this);
     }
 
+    public override void RegisterHtmlHeadContents (System.Web.HttpContext context)
+    {
+      base.RegisterHtmlHeadContents (context);
+      _datePickerButton.RegisterHtmlHeadContents();
+    }
+
     /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
     bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
