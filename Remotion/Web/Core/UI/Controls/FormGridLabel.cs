@@ -112,7 +112,7 @@ public class FormGridLabel: Label, ISmartControl
       Text = resourceManager.GetString (key);
   }
 
-  void ISmartControl.RegisterHtmlHeadContents (HttpContext context)
+  void ISmartControl.RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
   {
   }
 

@@ -99,12 +99,12 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
 
-      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
-      preRenderer.RegisterHtmlHeadContents ();
-
       if (!IsDesignMode)
       {
+      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
+
         Page.RegisterRequiresControlState (this);
         Page.RegisterRequiresPostBack (this);
       }

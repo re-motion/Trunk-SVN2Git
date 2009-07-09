@@ -382,13 +382,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       textBox.TextMode = _textMode;
     }
 
-    public void RegisterJavaScriptInclude (IControl control, IHttpContext context)
+    public void RegisterJavaScriptInclude (IControl control, IHttpContext context, HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("control", control);
-      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (control, context, typeof (TextBoxStyle), ResourceType.Html, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
     }
 

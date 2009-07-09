@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
@@ -31,8 +32,10 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     {
     }
 
-    public override void RegisterHtmlHeadContents ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       if (Control is Control)
       {
         Control control = (Control) Control;
@@ -41,19 +44,19 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         ScriptUtility.RegisterElementForBorderSpans (control, Control.BottomControl.ClientID, true);
       }
 
-      HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (Control.Page);
+      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
 
       string keyStyle = typeof (ITabbedMultiView).FullName + "_Style";
       string keyScript = typeof (ITabbedMultiView).FullName + "_Script";
-      if (!HtmlHeadAppender.Current.IsRegistered (keyStyle))
+      if (!htmlHeadAppender.IsRegistered (keyStyle))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme.Standard, "TabbedMultiView.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
         string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme.Standard, "ViewLayout.js");
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
+        htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
       }
     }
 

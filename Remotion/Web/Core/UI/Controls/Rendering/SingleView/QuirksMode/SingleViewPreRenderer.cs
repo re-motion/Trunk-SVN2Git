@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
@@ -31,8 +32,10 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     {
     }
 
-    public override void RegisterHtmlHeadContents ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       Control control = Control as Control;
       if (control != null)
       {
@@ -42,11 +45,11 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
       }
 
       string key = typeof (ISingleView).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
+      if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 

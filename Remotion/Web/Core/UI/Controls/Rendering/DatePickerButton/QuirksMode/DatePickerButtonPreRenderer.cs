@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
@@ -32,13 +33,15 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
     {
     }
 
-    public override void RegisterHtmlHeadContents ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      if (HtmlHeadAppender.Current.IsRegistered (ScriptFileKey))
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      if (htmlHeadAppender.IsRegistered (ScriptFileKey))
         return;
 
-      string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (DatePickerPage), ResourceType.Html, ScriptFileName);
-      HtmlHeadAppender.Current.RegisterJavaScriptInclude (ScriptFileKey, scriptUrl);
+      string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (Controls.DatePickerButton), ResourceType.Html, ScriptFileName);
+      htmlHeadAppender.RegisterJavaScriptInclude (ScriptFileKey, scriptUrl);
     }
 
     /// <summary>

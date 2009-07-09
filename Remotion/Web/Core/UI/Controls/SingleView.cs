@@ -71,9 +71,12 @@ namespace Remotion.Web.UI.Controls
       //CreateTemplatedControls (DesignMode);
       EnsureChildControls();
 
-      var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
-      preRenderer.RegisterHtmlHeadContents ();
+      if (!ControlHelper.IsDesignMode (this, Context))
+      {
+        var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
+        var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+        preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
+      }
     }
 
     //private void CreateTemplatedControls (bool recreate)

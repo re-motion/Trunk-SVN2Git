@@ -392,13 +392,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    public override void RegisterHtmlHeadContents (HttpContext context)
+    public override void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
-      base.RegisterHtmlHeadContents (context);
+      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.Current.GetInstance<IBocListRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
-      preRenderer.RegisterHtmlHeadContents();
+      var preRenderer = factory.CreatePreRenderer (httpContext, this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected override void OnLoad (EventArgs e)

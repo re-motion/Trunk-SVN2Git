@@ -23,6 +23,7 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -186,16 +187,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         Page.RegisterRequiresPostBack (this);
     }
 
-    /// <summary>
-    /// Registers the script file reference needed for enhanced textbox behavior.
-    /// </summary>
-    /// <param name="context">The context of the current request.</param>
-    public override void RegisterHtmlHeadContents (HttpContext context)
+    public override void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
-      base.RegisterHtmlHeadContents (context);
+      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       EnsureChildControls();
-      _textBoxStyle.RegisterJavaScriptInclude (this, context);
+      _textBoxStyle.RegisterJavaScriptInclude (this, httpContext, htmlHeadAppender);
     }
 
     /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>

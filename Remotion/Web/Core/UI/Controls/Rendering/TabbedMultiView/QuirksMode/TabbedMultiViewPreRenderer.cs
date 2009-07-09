@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
@@ -31,8 +32,10 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
     {
     }
 
-    public override void RegisterHtmlHeadContents ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       if (Control is Control)
       {
         Control control = (Control) Control;
@@ -42,11 +45,11 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
       }
 
       string key = typeof (ITabbedMultiView).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
+      if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme.Legacy, "TabbedMultiView.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 

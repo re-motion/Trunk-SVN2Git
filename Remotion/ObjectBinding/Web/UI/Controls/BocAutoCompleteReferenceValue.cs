@@ -27,6 +27,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
@@ -141,14 +142,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         Page.RegisterRequiresPostBack (this);
     }
 
-    public override void RegisterHtmlHeadContents (HttpContext context)
+    public override void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
-      base.RegisterHtmlHeadContents (context);
+      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
+      base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+
+      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocAutoCompleteReferenceValue), ResourceType.Html, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+        string url = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocAutoCompleteReferenceValue), ResourceType.Html, c_styleFileUrl);
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
     }
 

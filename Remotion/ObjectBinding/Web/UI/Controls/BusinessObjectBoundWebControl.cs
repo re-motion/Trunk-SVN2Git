@@ -220,9 +220,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!IsDesignMode)
       {
         Page.RegisterRequiresControlState (this);
+        RegisterHtmlHeadContents (new HttpContextWrapper(Context), HtmlHeadAppender.Current);
       }
-
-      RegisterHtmlHeadContents (Context);
     }
 
     /// <summary>Gets or sets a value that determines whether a server control is rendered as UI on the page.</summary>
@@ -380,7 +379,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>Regsiteres stylesheet and script files with the <see cref="HtmlHeadAppender"/>.</summary>
-    public virtual void RegisterHtmlHeadContents (HttpContext context)
+    public virtual void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
     }
 

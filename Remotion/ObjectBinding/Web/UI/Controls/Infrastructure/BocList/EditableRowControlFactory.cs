@@ -18,6 +18,8 @@ using System.Web;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
 {
@@ -53,25 +55,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
       return (IBusinessObjectBoundEditableWebControl) ControlFactory.CreateControl (propertyPath.LastProperty, ControlFactory.EditMode.InlineEdit);
     }
 
-    public virtual void RegisterHtmlHeadContents (HttpContext context)
+    public virtual void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       var bocBooleanValue = new Controls.BocBooleanValue();
-      bocBooleanValue.RegisterHtmlHeadContents (context);
+      bocBooleanValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var bocDateTimeValue = new Controls.BocDateTimeValue();
-      bocDateTimeValue.RegisterHtmlHeadContents (context);
+      bocDateTimeValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var bocEnumValue = new BocEnumValue();
-      bocEnumValue.RegisterHtmlHeadContents (context);
+      bocEnumValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var bocMultilineTextValue = new BocMultilineTextValue();
-      bocMultilineTextValue.RegisterHtmlHeadContents (context);
+      bocMultilineTextValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var bocReferenceValue = new BocReferenceValue();
-      bocReferenceValue.RegisterHtmlHeadContents (context);
+      bocReferenceValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var bocTextValue = new BocTextValue();
-      bocTextValue.RegisterHtmlHeadContents (context);
+      bocTextValue.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
     }
   }
 }

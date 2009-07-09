@@ -142,18 +142,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return validators;
     }
     
-    /// <summary>
-    /// Registers the script file needed for changing the control's value client-side.
-    /// </summary>
-    /// <param name="context">ignored</param>
-    public override void RegisterHtmlHeadContents (HttpContext context)
+    public override void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
-      base.RegisterHtmlHeadContents (context);
+      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
+      base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+
+      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (this, context, typeof (BocBooleanValue), ResourceType.Html, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocBooleanValue), ResourceType.Html, c_scriptFileUrl);
+        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
     }
 

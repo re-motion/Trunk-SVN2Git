@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -38,21 +39,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       _cssClasses = cssClasses;
     }
 
-    public override void RegisterHtmlHeadContents ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
 
-      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
+      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
 
-      Control.EditModeControlFactory.RegisterHtmlHeadContents (Context.WrappedInstance);
+      Control.EditModeControlFactory.RegisterHtmlHeadContents (Context, htmlHeadAppender);
     }
 
     public override void PreRender ()

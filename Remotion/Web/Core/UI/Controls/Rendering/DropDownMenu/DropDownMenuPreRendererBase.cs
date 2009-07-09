@@ -32,7 +32,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     {
     }
 
-    public override void RegisterHtmlHeadContents ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (Control.Page);
 

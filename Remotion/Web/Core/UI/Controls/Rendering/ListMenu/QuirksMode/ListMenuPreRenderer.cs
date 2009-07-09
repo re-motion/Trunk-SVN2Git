@@ -16,6 +16,7 @@
 using System;
 using System.Text;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
@@ -32,16 +33,17 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
     {
     }
 
-    public override void RegisterHtmlHeadContents ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       string scriptFileKey = typeof (IListMenu).FullName + "_Script";
       string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.js");
-      HtmlHeadAppender.Current.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
+      htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
 
       string styleSheetKey = typeof (IListMenu).FullName + "_Style";
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.css");
-      HtmlHeadAppender.Current.RegisterStylesheetLink (styleSheetKey, styleSheetUrl);
-
+      htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl);
     }
 
     public override void PreRender ()

@@ -17,9 +17,9 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
-using Remotion.Web.UI.Design;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -73,11 +73,14 @@ namespace Remotion.Web.UI.Controls
       get { return PageWrapper.CastOrCreate (base.Page); }
     }
 
-    public void RegisterHtmlHeadContents ()
+    public void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
-      preRenderer.RegisterHtmlHeadContents ();
+      var preRenderer = factory.CreatePreRenderer (httpContext, this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
   }
 }

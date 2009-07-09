@@ -318,7 +318,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return (Property != null) ? Property.DisplayName : null; }
     }
 
-    void ISmartControl.RegisterHtmlHeadContents (HttpContext context)
+    void ISmartControl.RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
     }
 

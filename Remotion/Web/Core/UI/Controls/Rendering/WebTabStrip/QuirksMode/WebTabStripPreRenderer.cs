@@ -29,14 +29,14 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
     {
     }
 
-    public override void RegisterHtmlHeadContents ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       string key = typeof (IWebTabStrip).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
+      if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (IWebTabStrip), ResourceType.Html, ResourceTheme.Legacy, "TabStrip.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+            Control, Context, typeof (IWebTabStrip), ResourceType.Html, ResourceTheme.Legacy, "TabStrip.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 

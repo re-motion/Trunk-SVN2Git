@@ -17,9 +17,11 @@ using System;
 using System.ComponentModel;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Design;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -56,16 +58,22 @@ namespace Remotion.Web.UI.Controls
     protected override void OnInit (EventArgs e)
     {
       var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
-      _isBrowserCapableOfScripting = preRenderer.GetBrowserCapableOfScripting();
-      RegisterHtmlHeadContents();
+      if (!IsDesignMode)
+      {
+        var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+        _isBrowserCapableOfScripting = preRenderer.GetBrowserCapableOfScripting();
+        RegisterHtmlHeadContents (new HttpContextWrapper (Context), HtmlHeadAppender.Current);
+      }
     }
 
-    public void RegisterHtmlHeadContents ()
+    public void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
+      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
       var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
-      preRenderer.RegisterHtmlHeadContents ();
+      var preRenderer = factory.CreatePreRenderer (httpContext, this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     protected override void OnPreRender (EventArgs e)

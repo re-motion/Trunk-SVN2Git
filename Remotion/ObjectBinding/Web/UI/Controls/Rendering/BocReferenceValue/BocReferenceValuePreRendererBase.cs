@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -35,18 +36,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
     {
     }
 
-    public void RegisterHeadContents ()
+    public void RegisterHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocReferenceValue), ResourceType.Html, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
 
-      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
+      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocReferenceValue), ResourceType.Html, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
     }
 
@@ -61,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 
     protected abstract ResourceTheme ResourceTheme { get; }
 
-    public override void RegisterHtmlHeadContents ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       
     }
