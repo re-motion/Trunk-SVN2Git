@@ -333,7 +333,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private readonly EditModeController _editModeController;
     private EditableRowDataSourceFactory _editModeDataSourceFactory = new EditableRowDataSourceFactory();
-    private EditableRowControlFactory _editModeControlFactory = new EditableRowControlFactory();
+    private EditableRowControlFactory _editModeControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
     private string _errorMessage;
     private readonly ArrayList _validators;

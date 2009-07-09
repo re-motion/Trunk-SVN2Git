@@ -31,7 +31,7 @@ public class EditModeControllerInRowEditModeTest : EditModeControllerTestBase
   public void GetFactoriesFromOwnerControl ()
   {
     Controller.OwnerControl.EditModeDataSourceFactory = new EditableRowDataSourceFactory();
-    Controller.OwnerControl.EditModeControlFactory = new EditableRowControlFactory();
+    Controller.OwnerControl.EditModeControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
     Invoker.InitRecursive();
     Controller.SwitchRowIntoEditMode (0, Columns, Columns);

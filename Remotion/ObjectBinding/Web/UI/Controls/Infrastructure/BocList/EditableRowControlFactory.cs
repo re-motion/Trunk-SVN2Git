@@ -15,13 +15,20 @@
 // 
 using System;
 using System.Web;
+using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList
 {
   public class EditableRowControlFactory
   {
-    public EditableRowControlFactory ()
+    public static EditableRowControlFactory CreateEditableRowControlFactory ()
+    {
+      return ObjectFactory.Create<EditableRowControlFactory> (true, ParamList.Empty);
+    }
+
+    protected EditableRowControlFactory ()
     {
     }
 

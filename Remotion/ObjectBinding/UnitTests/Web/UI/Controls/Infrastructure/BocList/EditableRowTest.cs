@@ -113,7 +113,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Assert.IsFalse (_editableRow.HasValidators());
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       _editableRow.CreateControls (_value01, new BocColumnDefinition[0]);
 
@@ -138,7 +138,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Assert.IsFalse (_editableRow.HasEditControl (0));
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[8];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;
@@ -188,7 +188,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     public void CreateControlsDataSourceFactoryNull ()
     {
       Invoker.InitRecursive();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
       _editableRow.CreateControls (_value01, new BocColumnDefinition[0]);
     }
 
@@ -210,7 +210,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Assert.IsFalse (_editableRow.HasValidators());
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[7];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;
@@ -253,7 +253,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Assert.IsFalse (_editableRow.HasValidators());
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       _editableRow.EnsureValidatorsRestored();
 
@@ -326,7 +326,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;
@@ -350,7 +350,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;
@@ -387,7 +387,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Assert.IsFalse (_editableRow.HasEditControl (1));
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -407,7 +407,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -425,7 +425,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -447,7 +447,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Assert.IsFalse (_editableRow.HasEditControl (0));
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -473,7 +473,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -491,7 +491,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -513,7 +513,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Assert.IsFalse (_editableRow.HasValidators (1));
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -542,7 +542,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Assert.IsFalse (_editableRow.HasValidators (1));
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       _editableRow.EnsureValidatorsRestored();
 
@@ -574,7 +574,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -593,7 +593,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -612,7 +612,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -640,7 +640,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       _editableRow.EnsureValidatorsRestored();
 
@@ -671,7 +671,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -690,7 +690,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[2];
       columns[0] = _typeWithAllDataTypesInt32ValueSimpleColumn;
@@ -709,7 +709,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[3];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;
@@ -730,7 +730,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[3];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;
@@ -756,7 +756,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[3];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;
@@ -783,7 +783,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[3];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;
@@ -807,7 +807,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[3];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;
@@ -832,7 +832,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       Invoker.InitRecursive();
 
       _editableRow.DataSourceFactory = new EditableRowDataSourceFactory();
-      _editableRow.ControlFactory = new EditableRowControlFactory();
+      _editableRow.ControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
       BocColumnDefinition[] columns = new BocColumnDefinition[3];
       columns[0] = _typeWithAllDataTypesStringValueSimpleColumn;

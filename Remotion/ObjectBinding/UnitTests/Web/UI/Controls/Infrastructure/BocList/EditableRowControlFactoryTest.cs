@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
       _stringValueColumn = new BocSimpleColumnDefinition();
       _stringValueColumn.SetPropertyPath (_stringValuePropertyPath);
 
-      _factory = new EditableRowControlFactory();
+      _factory = EditableRowControlFactory.CreateEditableRowControlFactory();
     }
 
     [Test]
