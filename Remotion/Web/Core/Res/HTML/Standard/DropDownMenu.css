@@ -32,6 +32,11 @@
 		border-style: none;
 		background-color: Transparent;
 	}
+	
+	div.DropDownMenuContainer > div.disabled > a 
+	{
+	  color: Gray;
+	}
 
    a.DropDownMenuSelectButton {
 		background-color: #DFEEF5;
