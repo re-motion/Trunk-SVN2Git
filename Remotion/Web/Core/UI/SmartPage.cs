@@ -37,6 +37,11 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
 {
   #region IPage Implementation
 
+  public Page WrappedInstance
+  {
+    get { return this; }
+  }
+
   IHttpContext IPage.Context
   {
     get { return _httpContext; }

@@ -37,6 +37,12 @@ namespace Remotion.Web.UI
   public interface IPage : ITemplateControl, IHttpHandler
   {
     /// <summary>
+    /// Gets the concrete instance wrapped by this <see cref="IPage"/> wrapper.
+    /// </summary>
+    /// <exception cref="NotSupportedException">This is a stub implementation which does not contain an <see cref="Page"/>. </exception>
+    Page WrappedInstance { get; }
+
+    /// <summary>
     /// Gets or sets the application-relative, virtual directory path to the file from which the control is parsed and compiled. 
     /// </summary>
     /// <returns>

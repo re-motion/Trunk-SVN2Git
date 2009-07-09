@@ -501,7 +501,7 @@ namespace Remotion.Web.Infrastructure
     public void RegisterHiddenField (IPage page, string hiddenFieldName, string hiddenFieldInitialValue)
     {
       ArgumentUtility.CheckNotNullAndType<Page> ("page", page);
-      ScriptManager.RegisterHiddenField ((Page) page, hiddenFieldName, StringUtility.NullToEmpty (hiddenFieldInitialValue));
+      ScriptManager.RegisterHiddenField (page.WrappedInstance, hiddenFieldName, StringUtility.NullToEmpty (hiddenFieldInitialValue));
     }
 
     /// <summary>

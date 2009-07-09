@@ -193,9 +193,8 @@ namespace Remotion.Web.UI
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager =
-          MultiLingualResources.GetResourceManager (localResourcesType, true);
-      IResourceManager pageResourceManager = ResourceManagerUtility.GetResourceManager ((Page) _page, true);
+      IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
+      IResourceManager pageResourceManager = ResourceManagerUtility.GetResourceManager (_page.WrappedInstance, true);
 
       if (pageResourceManager == null)
         _cachedResourceManager = new ResourceManagerSet (localResourceManager);
@@ -212,7 +211,7 @@ namespace Remotion.Web.UI
       {
         bool isDesignMode = ControlHelper.IsDesignMode (_page);
 
-        Control page = (Page) _page;
+        Control page = _page.WrappedInstance;
         MemberInfo[] fields;
         do
         {
@@ -289,10 +288,10 @@ namespace Remotion.Web.UI
 
     private void Page_Init (object sender, EventArgs e)
     {
-      if (((Page) _page).Header != null)
+      if (_page.Header != null)
       {
         bool hasHeadContents = false;
-        foreach (Control control in ((Page) _page).Header.Controls)
+        foreach (Control control in _page.Header.Controls)
         {
           if (control is HtmlHeadContents)
           {
@@ -301,7 +300,7 @@ namespace Remotion.Web.UI
           }
         }
         if (! hasHeadContents)
-          ((Page) _page).Header.Controls.AddAt (0, new HtmlHeadContents());
+          _page.Header.Controls.AddAt (0, new HtmlHeadContents());
       }
 
       if (!ControlHelper.IsDesignMode (_page, HttpContext.Current))
@@ -411,7 +410,7 @@ namespace Remotion.Web.UI
       _page.ClientScript.RegisterClientScriptBlock (_page, "smartPageInitialize", initScript.ToString ());
 
       string isAsynchronous = "false";
-      var scriptManager = ScriptManager.GetCurrent ((Page) _page);
+      var scriptManager = ScriptManager.GetCurrent (_page.WrappedInstance);
       if (scriptManager != null && scriptManager.IsInAsyncPostBack)
         isAsynchronous = "true";
       _page.ClientScript.RegisterStartupScriptBlock (_page, "smartPageStartUp", "SmartPage_OnStartUp (" + isAsynchronous + ", " + isDirty + ");");
