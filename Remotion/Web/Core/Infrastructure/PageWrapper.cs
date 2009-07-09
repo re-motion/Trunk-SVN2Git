@@ -43,6 +43,13 @@ namespace Remotion.Web.Infrastructure
     }
 
     private readonly Page _page;
+    private HttpContextWrapper _httpContext;
+    private HttpResponseWrapper _httpResponse;
+    private HttpRequestWrapper _httpRequest;
+    private HttpSessionStateWrapper _httpSessionState;
+    private HttpServerUtilityWrapper _httpServerUtility;
+    private HttpApplicationStateWrapper _httpApplicationState;
+    private ClientScriptManagerWrapper _clientScriptManager;
 
     private PageWrapper (Page page)
         : base (page)
@@ -625,9 +632,14 @@ namespace Remotion.Web.Infrastructure
     /// <returns>
     /// The current data in the <see cref="T:System.Web.HttpApplicationState"/> class.
     /// </returns>
-    public HttpApplicationState Application
+    public IHttpApplicationState Application
     {
-      get { return _page.Application; }
+      get
+      {
+        if (_httpApplicationState == null)
+          _httpApplicationState = new HttpApplicationStateWrapper (_page.Application);
+        return _httpApplicationState;
+      }
     }
 
     /// <summary>
@@ -638,7 +650,12 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     public IClientScriptManager ClientScript
     {
-      get { return new ClientScriptManagerWrapper (_page.ClientScript); }
+      get
+      {
+        if (_clientScriptManager == null)
+          _clientScriptManager = new ClientScriptManagerWrapper (_page.ClientScript);
+        return _clientScriptManager;
+      }
     }
 
     /// <summary>
@@ -663,6 +680,22 @@ namespace Remotion.Web.Infrastructure
     public string ClientQueryString
     {
       get { return _page.ClientQueryString; }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="HttpContext"/> object for the current Web request.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="HttpContext"/> wrapped in a class implementing <see cref="IHttpContext"/>.
+    /// </returns>
+    public IHttpContext Context
+    {
+      get
+      {
+        if (_httpContext == null && HttpContext.Current != null)
+          _httpContext = new HttpContextWrapper (HttpContext.Current);
+        return _httpContext;
+      }
     }
 
     /// <summary>
@@ -816,9 +849,14 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <exception cref="T:System.Web.HttpException">Occurs when the <see cref="T:System.Web.HttpRequest"/> object is not available. 
     /// </exception>
-    public HttpRequest Request
+    public IHttpRequest Request
     {
-      get { return _page.Request; }
+      get
+      {
+        if (_httpRequest == null)
+          _httpRequest = new HttpRequestWrapper (_page.Request);
+        return _httpRequest;
+      }
     }
 
     /// <summary>
@@ -830,9 +868,14 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <exception cref="T:System.Web.HttpException">The <see cref="T:System.Web.HttpResponse"/> object is not available. 
     /// </exception>
-    public HttpResponse Response
+    public IHttpResponse Response
     {
-      get { return _page.Response; }
+      get
+      {
+        if (_httpResponse == null)
+          _httpResponse = new HttpResponseWrapper (_page.Response);
+        return _httpResponse;
+      }
     }
 
     /// <summary>
@@ -841,9 +884,14 @@ namespace Remotion.Web.Infrastructure
     /// <returns>
     /// The current Server object associated with the page.
     /// </returns>
-    public HttpServerUtility Server
+    public IHttpServerUtility Server
     {
-      get { return _page.Server; }
+      get
+      {
+        if (_httpServerUtility == null)
+          _httpServerUtility = new HttpServerUtilityWrapper (_page.Server);
+        return _httpServerUtility;
+      }
     }
 
     /// <summary>
@@ -867,9 +915,14 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <exception cref="T:System.Web.HttpException">Occurs when the session information is set to null. 
     /// </exception>
-    public HttpSessionState Session
+    public IHttpSessionState Session
     {
-      get { return _page.Session; }
+      get
+      {
+        if (_httpSessionState == null)
+          _httpSessionState = new HttpSessionStateWrapper (_page.Session);
+        return _httpSessionState;
+      }
     }
 
     /// <summary>

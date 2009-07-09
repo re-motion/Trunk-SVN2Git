@@ -19,9 +19,8 @@ using System.ComponentModel;
 using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Utilities;
-using Remotion.Web.UI;
 using Remotion.Web.ExecutionEngine.Obsolete;
-using Remotion.Web.Utilities;
+using Remotion.Web.UI;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -189,11 +188,6 @@ namespace Remotion.Web.ExecutionEngine
     NameValueCollection ISmartPage.GetPostBackCollection ()
     {
       return GetPostBackCollection ();
-    }
-
-    void ISmartPage.SaveAllState ()
-    {
-      ControlHelper.SaveAllState (this);
     }
 
     /// <remarks> Uses <see cref="WxePageInfo.SavePageStateToPersistenceMedium"/> to save the viewstate. </remarks>

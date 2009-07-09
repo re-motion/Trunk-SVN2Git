@@ -14,14 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Test
 {
-  public class TestBasePage : Page, IPage
+  public class TestBasePage : SmartPage
   {
     protected override void OnPreRender (EventArgs e)
     {
@@ -33,16 +31,6 @@ namespace Remotion.Web.Test
       HtmlHeadAppender.Current.RegisterStylesheetLink (
           "fontsize080",
           ResourceUrlResolver.GetResourceUrl ((IControl) this, typeof (SmartPage), ResourceType.Html, "FontSize080.css"));
-    }
-
-    IClientScriptManager IPage.ClientScript
-    {
-      get { return new ClientScriptManagerWrapper (ClientScript); }
-    }
-
-    IPage IControl.Page
-    {
-      get { return this; }
     }
   }
 }

@@ -570,14 +570,6 @@ namespace Remotion.Web.UI
     }
 
     /// <summary>
-    ///   Implements <see cref="Remotion.Web.UI.ISmartPage.SaveAllState">ISmartPage.SaveAllState</see>.
-    /// </summary>
-    public void SaveAllState ()
-    {
-      ControlHelper.SaveAllState ((Page) _page);
-    }
-
-    /// <summary>
     ///   Implements <see cref="ISmartNavigablePage.DiscardSmartNavigationData">ISmartNavigablePage.DiscardSmartNavigationData</see>.
     /// </summary>
     public void DiscardSmartNavigationData ()

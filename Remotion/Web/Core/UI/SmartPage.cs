@@ -16,8 +16,11 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Web;
+using System.Web.SessionState;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
+using Remotion.Utilities;
 using Remotion.Web.Configuration;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
@@ -32,12 +35,46 @@ namespace Remotion.Web.UI
 /// <include file='doc\include\UI\SmartPage.xml' path='SmartPage/Class/*' />
 public class SmartPage: Page, ISmartPage, ISmartNavigablePage
 {
-  #region ISmartPage Implementation
+  #region IPage Implementation
 
-  IPage IControl.Page
+  IHttpContext IPage.Context
   {
-    get { return this; }
+    get { return _httpContext; }
   }
+
+  IClientScriptManager IPage.ClientScript
+  {
+    get { return new ClientScriptManagerWrapper (ClientScript); }
+  }
+
+  IHttpApplicationState IPage.Application
+  {
+    get { return _httpContext.Application; }
+  }
+
+  IHttpRequest IPage.Request
+  {
+    get { return _httpContext.Request; }
+  }
+
+  IHttpResponse IPage.Response
+  {
+    get { return _httpContext.Response; }
+  }
+
+  IHttpServerUtility IPage.Server
+  {
+    get { return _httpContext.Server; }
+  }
+
+  IHttpSessionState IPage.Session
+  {
+    get { return _httpContext.Session; }
+  }
+
+  #endregion
+
+  #region ISmartPage Implementation
 
   /// <summary> 
   ///   Registers Java Script functions to be executed when the respective <paramref name="pageEvent"/> is raised.
@@ -170,10 +207,11 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
 
   #endregion
 
-  private SmartPageInfo _smartPageInfo;
-  private ValidatableControlInitializer _validatableControlInitializer;
-  private PostLoadInvoker _postLoadInvoker;
-  private bool _isDirty = false;
+  private IHttpContext _httpContext;
+  private readonly SmartPageInfo _smartPageInfo;
+  private readonly ValidatableControlInitializer _validatableControlInitializer;
+  private readonly PostLoadInvoker _postLoadInvoker;
+  private bool _isDirty;
   private ShowAbortConfirmation _showAbortConfirmation = ShowAbortConfirmation.OnlyIfDirty;
   private bool? _enableStatusIsSubmittingMessage;
   private bool? _enableSmartScrolling;
@@ -185,7 +223,6 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
     _validatableControlInitializer = new ValidatableControlInitializer (this);
     _postLoadInvoker = new PostLoadInvoker (this);
   }
-
 
   protected override NameValueCollection DeterminePostBackMode()
   {
@@ -201,8 +238,7 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
     else
       return Request.QueryString;
   }
-
-
+  
   /// <summary> Gets or sets the <b>HtmlForm</b> of this page. </summary>
   /// <remarks> Redirects the call to the <see cref="HtmlForm"/> property. </remarks>
   HtmlForm ISmartPage.HtmlForm
@@ -475,13 +511,18 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
 
   void ISmartPage.SaveAllState ()
   {
-    _smartPageInfo.SaveAllState();
+    ControlHelper.SaveAllState (this);
   }
 
-  IClientScriptManager IPage.ClientScript
+  void IHttpHandler.ProcessRequest (HttpContext httpContext)
   {
-    get { return new ClientScriptManagerWrapper (ClientScript); }
+    ArgumentUtility.CheckNotNull ("httpContext", httpContext);
+    _httpContext = new HttpContextWrapper (httpContext);
+  }
+
+  IPage IControl.Page
+  {
+    get { return this; }
   }
 }
-
 }

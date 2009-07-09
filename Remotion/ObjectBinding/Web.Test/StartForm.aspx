@@ -63,7 +63,7 @@ document.onkeydown = document.onkeypress = function (evt)
 }
 </script>
 <p>Wxe-Enabled Tests for individual Business Object Controls<br>
-<a href="IndividualControlTest.wxe?UserControl=BocAutoCompleteReferenceValueUserControl.ascx&WxeReturnToSelf=True&TabbedMenuSelection=IndividualControlTests,BocAutoCompleteReferenceValue">IndividualControlTest.wxe</a></p>
+<a href="IndividualControlTest.wxe?UserControl=BocListUserControl.ascx&WxeReturnToSelf=True&TabbedMenuSelection=IndividualControlTests,BocList">IndividualControlTest.wxe</a></p>
 
 <p>Wxe-Enabled Tests containing all the Business Object 
 Controls in a single Form or User Control<br><A href="WxeHandler.ashx?WxeFunctionType=OBWTest.CompleteBocTestMainWxeFunction,OBWTest" >WxeHandler.ashx?WxeFunctionType=OBWTest.CompleteBocTestMainWxeFunction,OBWTest</A></p>
