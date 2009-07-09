@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, _queryModel);
       var mainFromClause = subQuery.QueryModel.MainFromClause;
-      var selectClause = (SelectClause) subQuery.QueryModel.SelectOrGroupClause;
+      var selectClause = subQuery.QueryModel.SelectClause;
 
       Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedClause, Is.SameAs (mainFromClause));
     }
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var whereClause = (WhereClause) subQuery.QueryModel.BodyClauses[0];
       var binaryExpression = (BinaryExpression) whereClause.Predicate;
       var memberExpression = (MemberExpression) binaryExpression.Left;
-      var selectClause = (SelectClause) subQuery.QueryModel.SelectOrGroupClause;
+      var selectClause = subQuery.QueryModel.SelectClause;
       var fromClause = subQuery.QueryModel.MainFromClause;
 
       var queryModel1 = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var subQuery = _parser.CreateEquivalentSubQuery (_containsObjectCallExpression, _queryModel);
       var mainFromClause = subQuery.QueryModel.MainFromClause;
       var whereClause = (WhereClause) subQuery.QueryModel.BodyClauses[0];
-      var selectClause = (SelectClause) subQuery.QueryModel.SelectOrGroupClause;
+      var selectClause = subQuery.QueryModel.SelectClause;
 
       var queryModel1 = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
       queryModel1.BodyClauses.Add (whereClause);
