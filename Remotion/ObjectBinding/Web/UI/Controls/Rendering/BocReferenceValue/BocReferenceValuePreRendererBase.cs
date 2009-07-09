@@ -42,13 +42,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocReferenceValue), ResourceType.Html, c_scriptFileUrl);
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IBocReferenceValue), ResourceType.Html, ResourceTheme, c_scriptFileUrl);
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
 
       if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocReferenceValue), ResourceType.Html, c_styleFileUrl);
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IBocReferenceValue), ResourceType.Html, ResourceTheme, c_styleFileUrl);
+
         htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
     }
