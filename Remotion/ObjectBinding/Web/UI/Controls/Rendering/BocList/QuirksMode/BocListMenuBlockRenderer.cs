@@ -16,7 +16,6 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
@@ -77,14 +76,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       if (!List.HasOptionsMenu)
         return;
 
-      if (StringUtility.IsNullOrEmpty (List.OptionsTitle))
-        List.OptionsMenu.TitleText = List.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.OptionsTitle);
-      else
-        List.OptionsMenu.TitleText = List.OptionsTitle;
-
       List.OptionsMenu.Style.Add ("margin-bottom", menuBlockItemOffset);
-      List.OptionsMenu.Enabled = !List.EditModeController.IsRowEditModeActive;
-      List.OptionsMenu.IsReadOnly = List.IsReadOnly;
       List.OptionsMenu.RenderControl (Writer);
     }
 

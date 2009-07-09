@@ -36,6 +36,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -356,14 +357,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void CreateChildControls ()
     {
+      string getSelectionCountScript = "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
+
       _optionsMenu.ID = ID + c_optionsMenuIDSuffix;
-      _optionsMenu.GetSelectionCount = "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
-      _optionsMenu.WxeFunctionCommandClick += MenuItemWxeFunctionCommandClick;
+      _optionsMenu.GetSelectionCount = getSelectionCountScript;
       _optionsMenu.EventCommandClick += MenuItemEventCommandClick;
+      _optionsMenu.WxeFunctionCommandClick += MenuItemWxeFunctionCommandClick;
       Controls.Add (_optionsMenu);
 
       _listMenu.ID = ID + c_listMenuIDSuffix;
-      _listMenu.GetSelectionCount = _optionsMenu.GetSelectionCount;
+      _listMenu.GetSelectionCount = getSelectionCountScript;
       _listMenu.EventCommandClick += MenuItemEventCommandClick;
       _listMenu.WxeFunctionCommandClick += MenuItemWxeFunctionCommandClick;
       Controls.Add (_listMenu);
@@ -1031,10 +1034,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void OnPreRender (EventArgs e)
     {
-      _listMenu.Visible = HasListMenu;
-      _listMenu.Enabled = !_editModeController.IsRowEditModeActive;
       _optionsMenu.Visible = HasOptionsMenu;
       _optionsMenu.Enabled = !_editModeController.IsRowEditModeActive;
+      _listMenu.Visible = HasListMenu;
+      _listMenu.Enabled = !_editModeController.IsRowEditModeActive;
 
       EnsureChildControls();
       base.OnPreRender (e);
@@ -1375,11 +1378,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       requiredIcon.Style["vertical-align"] = "middle";
       return requiredIcon;
-    }
-
-    IListMenu IBocList.ListMenu
-    {
-      get { return _listMenu; }
     }
 
     /// <summary> Builds the validation error marker. </summary>
@@ -3846,13 +3844,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       add
       {
-        _listMenu.EventCommandClick += value;
         _optionsMenu.EventCommandClick += value;
+        _listMenu.EventCommandClick += value;
       }
       remove
       {
-        _listMenu.EventCommandClick -= value;
         _optionsMenu.EventCommandClick -= value;
+        _listMenu.EventCommandClick -= value;
       }
     }
 
@@ -4011,14 +4009,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return (!IsDesignMode && EnableClientScript); }
     }
 
-    public DropDownList AvailableViewsList
+    DropDownList IBocList.AvailableViewsList
     {
       get { return _availableViewsList; }
     }
 
-    public DropDownMenu OptionsMenu
+    IDropDownMenu IBocList.OptionsMenu
     {
-      get { return _optionsMenu; }
+      get
+      {
+        if (string.IsNullOrEmpty (OptionsTitle))
+          _optionsMenu.TitleText = GetResourceManager ().GetString (ResourceIdentifier.OptionsTitle);
+        else
+          _optionsMenu.TitleText = OptionsTitle;
+
+        _optionsMenu.Enabled = !_editModeController.IsRowEditModeActive;
+        _optionsMenu.IsReadOnly = IsReadOnly;
+
+        return _optionsMenu;
+      }
+    }
+
+    IListMenu IBocList.ListMenu
+    {
+      get { return _listMenu; }
     }
 
     IList<int> IBocList.SelectorControlCheckedState

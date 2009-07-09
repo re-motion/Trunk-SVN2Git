@@ -17,9 +17,9 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.QuirksMode
@@ -63,7 +63,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
     [Test]
     public void RenderWithOptions ()
     {
-      DropDownMenu optionsMenu = MockRepository.GenerateStub<DropDownMenu> (List);
+      IDropDownMenu optionsMenu = MockRepository.GenerateStub<IDropDownMenu> ();
+      StateBag bag = new StateBag();
+      AttributeCollection attributes = new AttributeCollection (bag);
+      optionsMenu.Stub (stub => stub.Style).Return (attributes.CssStyle);
+
       List.Stub (mock => mock.OptionsMenu).Return (optionsMenu);
       List.Stub (mock => mock.HasOptionsMenu).Return (true);
       List.Stub (mock => mock.OptionsTitle).Return ("Options Menu Title");
@@ -76,9 +80,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Qui
       renderer.Render();
 
       Assert.That (Html.GetDocumentText().StartsWith ("mocked dropdown menu"));
-
-      Assert.IsFalse (optionsMenu.IsReadOnly);
-      Assert.IsTrue (optionsMenu.Enabled);
     }
 
     [Test]

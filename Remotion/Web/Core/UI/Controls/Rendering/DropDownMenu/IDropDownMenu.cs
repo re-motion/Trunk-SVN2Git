@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
@@ -33,6 +34,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     string TitleText { get; }
     Unit Width { get; }
     string GetSelectionCount { get; }
+    CssStyleCollection Style { get; }
     string GetOpenDropDownMenuEventReference (string eventReference);
   }
 }

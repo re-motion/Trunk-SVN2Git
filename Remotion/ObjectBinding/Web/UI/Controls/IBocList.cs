@@ -22,6 +22,7 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Globalization;
 using Image=System.Web.UI.WebControls.Image;
@@ -288,7 +289,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     int PageCount { get; }
     bool HasClientScript { get; }
     DropDownList AvailableViewsList { get; }
-    DropDownMenu OptionsMenu { get; }
+    IDropDownMenu OptionsMenu { get; }
 
     /// <summary>Gets the <see cref="BusinessObjectBinding"/> object used to manage the binding for this <see cref="BusinessObjectBoundWebControl"/>.</summary>
     /// <value> The <see cref="BusinessObjectBinding"/> instance used to manage this control's binding. </value>
@@ -300,15 +301,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     Unit BorderWidth { get; }
     BorderStyle BorderStyle { get; }
     bool ControlStyleCreated { get; }
-    bool EnableTheming { get; }
     FontInfo Font { get; }
     Color ForeColor { get; }
     bool HasAttributes { get; }
-    string SkinID { get; }
     short TabIndex { get; }
     string ToolTip { get; }
-    TemplateControl TemplateControl { get; }
-    string AppRelativeTemplateSourceDirectory { get; }
     System.Collections.Generic.IList<int> SelectorControlCheckedState { get; }
     IEditModeController EditModeController { get; }
     ArrayList SortingOrder { get; }
@@ -394,9 +391,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     void MergeStyle (Style s);
     void RenderBeginTag (HtmlTextWriter writer);
     void RenderEndTag (HtmlTextWriter writer);
-    void ApplyStyleSheetSkin (Page page);
-    void Focus ();
-    string ResolveUrl (string relativeUrl);
     IResourceManager GetResourceManager ();
     BocColumnDefinition[] GetColumns ();
     bool IsColumnVisible (BocColumnDefinition columnDefinition);
