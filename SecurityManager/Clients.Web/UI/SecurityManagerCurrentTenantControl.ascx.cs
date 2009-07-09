@@ -106,7 +106,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
     protected void CurrentTenantField_SelectionChanged (object sender, EventArgs e)
     {
-      string tenantID = CurrentTenantField.BusinessObjectID;
+      string tenantID = CurrentTenantField.BusinessObjectUniqueIdentifier;
       Assertion.IsNotNull (tenantID);
 
       ApplicationInstance.SetCurrentPrincipal (
@@ -121,7 +121,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
     protected void CurrentSubstitutionField_SelectionChanged (object sender, EventArgs e)
     {
-      string substitutionID = CurrentSubstitutionField.BusinessObjectID;
+      string substitutionID = CurrentSubstitutionField.BusinessObjectUniqueIdentifier;
 
       ApplicationInstance.SetCurrentPrincipal (
           new SecurityManagerPrincipal (

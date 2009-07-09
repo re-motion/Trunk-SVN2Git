@@ -52,7 +52,6 @@
         <include name="${build.outputdir}/Remotion.ObjectBinding.dll" />
         <include name="${build.outputdir}/Remotion.ObjectBinding.Interfaces.dll" />
         <include name="${build.outputdir}/Remotion.ObjectBinding.Web.dll" />
-        <include name="${build.outputdir}/Remotion.ObjectBinding.Web.Preview.dll" />
         <include name="${build.outputdir}/Remotion.Security.dll" />
         <include name="${build.outputdir}/Remotion.Security.Interfaces.dll" />
         <include name="${build.outputdir}/Remotion.SecurityManager.dll" />

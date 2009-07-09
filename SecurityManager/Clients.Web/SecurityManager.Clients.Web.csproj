@@ -640,10 +640,6 @@
       <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
       <Name>ObjectBinding.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Remotion\ObjectBinding\Web.Preview\ObjectBinding.Web.Preview.csproj">
-      <Project>{6D58BB53-8709-48F9-8EF9-0D65B11A162C}</Project>
-      <Name>ObjectBinding.Web.Preview</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Remotion\ObjectBinding\Web\ObjectBinding.Web.csproj">
       <Project>{390FBB93-A757-47A7-B769-A64A7465FF84}</Project>
       <Name>ObjectBinding.Web</Name>

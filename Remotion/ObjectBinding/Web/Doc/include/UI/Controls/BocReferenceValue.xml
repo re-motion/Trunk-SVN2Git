@@ -78,7 +78,7 @@
       </para><para>
         The <see cref="Property"/> must be set in order to get the <see cref="Value"/> after a postback. 
         This means the latest time to set the <b>Property</b> is before a call to <see cref="SaveValue"/>.
-        If it is not possible to assign a <see cref="Property"/>, you can use <see cref="BusinessObjectID"/> to get
+        If it is not possible to assign a <see cref="Property"/>, you can use <see cref="BusinessObjectUniqueIdentifier"/> to get
         the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object.
       </para><para>
         The control provides a default <b>CSS Class</b>, applied to the top level element: <c>bocReferenceValue</c>.
@@ -310,7 +310,7 @@
         In order to return a value, the control requires the <see cref="Property"/> to be set. 
         The <see cref="Property"/>'s <see cref="IBusinessObjectReferenceProperty.ReferenceClass"/> is then used to get 
         the <see cref="IBusinessObjectWithIdentity"/> for the cached <b>ID</b>. If it is not possible to assign a <see cref="Property"/>, 
-        you can use <see cref="BusinessObjectID"/> to get the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object.
+        you can use <see cref="BusinessObjectUniqueIdentifier"/> to get the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object.
       </para><para>
         The dirty state is reset when the value is set.
       </para>

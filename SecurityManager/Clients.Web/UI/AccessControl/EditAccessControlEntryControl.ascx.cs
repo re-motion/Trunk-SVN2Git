@@ -26,7 +26,6 @@ using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -250,7 +249,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       if (CurrentFunction.TenantID == null)
         throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
-      SpecificGroupField.Args = SpecificTenantField.BusinessObjectID ?? CurrentFunction.TenantID.ToString();
+      SpecificGroupField.Args = SpecificTenantField.BusinessObjectUniqueIdentifier ?? CurrentFunction.TenantID.ToString();
 
       SpecificGroupField.Visible = (GroupCondition?) GroupConditionField.Value == GroupCondition.SpecificGroup;
     }
@@ -285,7 +284,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       if (CurrentFunction.TenantID == null)
         throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
-      SpecificUserField.Args = SpecificTenantField.BusinessObjectID ?? CurrentFunction.TenantID.ToString();
+      SpecificUserField.Args = SpecificTenantField.BusinessObjectUniqueIdentifier ?? CurrentFunction.TenantID.ToString();
 
       SpecificUserField.Visible = (UserCondition?) UserConditionField.Value == UserCondition.SpecificUser;
     }

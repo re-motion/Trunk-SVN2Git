@@ -54,13 +54,13 @@ namespace Remotion.SecurityManager.Clients.Web
 
     protected void UsersField_SelectionChanged (object sender, EventArgs e)
     {
-      if (UsersField.BusinessObjectID == null)
+      if (UsersField.BusinessObjectUniqueIdentifier == null)
       {
         ApplicationInstance.SetCurrentPrincipal (null);
       }
       else
       {
-        var user = SecurityManagerUser.GetObject (ObjectID.Parse (UsersField.BusinessObjectID));
+        var user = SecurityManagerUser.GetObject (ObjectID.Parse (UsersField.BusinessObjectUniqueIdentifier));
         ApplicationInstance.SetCurrentPrincipal (new SecurityManagerPrincipal (user.Tenant, user, null));
       }
     }

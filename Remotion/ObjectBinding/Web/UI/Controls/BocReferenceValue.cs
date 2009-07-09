@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> This control can be used to display or edit reference values. </summary>
   /// <include file='doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/Class/*' />
   // TODO: see "Doc\Bugs and ToDos.txt"
-  [ValidationProperty ("BusinessObjectID")]
+  [ValidationProperty ("BusinessObjectUniqueIdentifier")]
   [DefaultEvent ("SelectionChanged")]
   [ToolboxItemFilter ("System.Web.UI")]
   [Designer (typeof (BocReferenceValueDesigner))]
@@ -1043,7 +1043,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     /// <value> A string or <see langword="null"/> if no  <see cref="IBusinessObjectWithIdentity"/> is selected. </value>
     [Browsable (false)]
-    public string BusinessObjectID
+    public string BusinessObjectUniqueIdentifier
     {
       get
       {

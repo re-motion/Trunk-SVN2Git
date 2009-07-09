@@ -427,14 +427,6 @@
     </copy>
   </target>
 
-  <target name="ObjectBinding.Web.Preview" depends="Core.Core, Web, ObjectBinding, ObjectBinding.Web">
-    <property name="project.name" value="ObjectBinding.Web.Preview" />
-    <property name="project.dir" value="Remotion/ObjectBinding/Web.Preview" />
-    <property name="project.output" value="Remotion.ObjectBinding.Web.Preview" />
-    <property name="project.extension" value="dll" />
-    <call target="execute-buildstep" />
-  </target>
-
   <target name="Security.Interfaces" depends="Core.Core, Core.Interfaces">
     <property name="project.name" value="Security.Interfaces" />
     <property name="project.dir" value="Remotion/Security/Interfaces" />

@@ -253,6 +253,8 @@
     <Compile Include="Web\Domain\TypeWithReference.cs" />
     <Compile Include="Web\Domain\TypeWithString.cs" />
     <Compile Include="Web\UI\Controls\BaseBocListRowTest.cs" />
+    <Compile Include="Web\UI\Controls\BocAutoCompleteReferenceValueMock.cs" />
+    <Compile Include="Web\UI\Controls\BocAutoCompleteReferenceValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocCheckBoxMock.cs" />

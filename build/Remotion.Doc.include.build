@@ -50,7 +50,6 @@
       <include name="Remotion.ObjectBinding.dll" />
       <include name="Remotion.ObjectBinding.Interfaces.dll" />
       <include name="Remotion.ObjectBinding.Web.dll" />
-      <include name="Remotion.ObjectBinding.Web.Preview.dll" />
       <include name="Remotion.Security.dll" />
       <include name="Remotion.Security.Interfaces.dll" />
       <include name="Remotion.Security.Metadata.Extractor.exe" />

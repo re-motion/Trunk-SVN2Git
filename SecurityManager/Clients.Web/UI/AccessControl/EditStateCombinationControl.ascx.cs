@@ -136,7 +136,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       if (CurrentStateCombination.Class.StateProperties.Count == 1)
       {
-        string id = StateDefinitionField.BusinessObjectID;
+        string id = StateDefinitionField.BusinessObjectUniqueIdentifier;
         StateDefinition stateDefinition = StateDefinition.GetObject (ObjectID.Parse (id));
         StateUsage stateUsage;
         if (CurrentStateCombination.StateUsages.Count == 0)
@@ -168,7 +168,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected void RequiredStateCombinationValidator_ServerValidate (object source, ServerValidateEventArgs args)
     {
-      args.IsValid = !StringUtility.IsNullOrEmpty (StateDefinitionField.BusinessObjectID);
+      args.IsValid = !StringUtility.IsNullOrEmpty (StateDefinitionField.BusinessObjectUniqueIdentifier);
     }
   }
 }
