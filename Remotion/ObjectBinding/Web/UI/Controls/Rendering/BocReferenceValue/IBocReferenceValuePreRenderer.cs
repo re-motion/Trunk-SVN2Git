@@ -20,5 +20,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 {
   public interface IBocReferenceValuePreRenderer : IPreRenderer<IBocReferenceValue>
   {
+    void RegisterHeadContents ();
   }
 }

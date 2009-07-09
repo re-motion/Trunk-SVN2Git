@@ -70,6 +70,10 @@ namespace Remotion.Web.UI.Controls
       base.OnInit (e);
       //CreateTemplatedControls (DesignMode);
       EnsureChildControls();
+
+      var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHtmlHeadContents ();
     }
 
     //private void CreateTemplatedControls (bool recreate)

@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
 
@@ -28,6 +30,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
     public StubServiceLocator ()
     {
+      _instances.Add (typeof (IBocReferenceValueRendererFactory), new BocReferenceValueRendererFactory());
       _instances.Add (typeof (IDropDownMenuRendererFactory), new DropDownMenuRendererFactory());
     }
 

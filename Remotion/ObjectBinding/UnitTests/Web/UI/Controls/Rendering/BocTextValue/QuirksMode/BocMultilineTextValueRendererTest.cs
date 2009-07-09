@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
@@ -39,6 +40,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
 
       Renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, TextValue);
+
+      SetUpAddAndRemoveControlExpectation<Control> (TextValue);
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      ControlCollectionMock.VerifyAllExpectations();
     }
 
     [Test]

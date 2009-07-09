@@ -55,6 +55,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       DropDownList dropDownList = GetDropDownList();
+      Control.Controls.Add (dropDownList);
       Label label = GetLabel();
       Image icon = GetIcon();
 
@@ -67,6 +68,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       {
         RenderContentsWithSeparateOptionsMenu(dropDownList, label, icon);
       }
+
+      Control.Controls.Remove (dropDownList);
       Writer.RenderEndTag();
     }
 
@@ -261,6 +264,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     public void RenderOptionsMenuTitle ()
     {
       DropDownList dropDownList = GetDropDownList();
+      Control.Controls.Add (dropDownList);
+
       Image icon = GetIcon();
       Label label = GetLabel();
       label.CssClass = CssClassReadOnly;
@@ -296,6 +301,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
 
         Writer.RenderEndTag();
       }
+
+      Control.Controls.Remove (dropDownList);
     }
 
     private void RenderSeparateIcon (Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)

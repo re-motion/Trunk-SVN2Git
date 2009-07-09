@@ -55,21 +55,17 @@ namespace Remotion.Web.UI.Controls
 
     protected override void OnInit (EventArgs e)
     {
-      IServiceLocator locator;
-      //HACK: for unit tests that do not define a service locator, but need control initialization
-      try 
-      {
-        locator = ServiceLocator.Current;
-      }
-      catch (NullReferenceException)
-      {
-        _isBrowserCapableOfScripting = true;
-        return;
-      }
-
-      var factory = locator.GetInstance<IDropDownMenuRendererFactory>();
+      var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
       _isBrowserCapableOfScripting = preRenderer.GetBrowserCapableOfScripting();
+      RegisterHtmlHeadContents();
+    }
+
+    public void RegisterHtmlHeadContents ()
+    {
+      var factory = ServiceLocator.Current.GetInstance<IDropDownMenuRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      preRenderer.RegisterHtmlHeadContents ();
     }
 
     protected override void OnPreRender (EventArgs e)

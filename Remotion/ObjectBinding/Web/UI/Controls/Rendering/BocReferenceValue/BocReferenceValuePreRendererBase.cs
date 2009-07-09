@@ -35,6 +35,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
     {
     }
 
+    public void RegisterHeadContents ()
+    {
+      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocReferenceValue), ResourceType.Html, c_scriptFileUrl);
+        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+      }
+
+      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocReferenceValue), ResourceType.Html, c_styleFileUrl);
+        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
     public override void PreRender ()
     {
       if (!Control.IsDesignMode && !Control.Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey))
@@ -42,22 +57,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
         string script = "BocReferenceValue_InitializeGlobals ('" + Control.NullIdentifier + "');";
         Control.Page.ClientScript.RegisterStartupScriptBlock (Control, s_startUpScriptKey, script);
       }
-
-      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IBocReferenceValue), ResourceType.Html, ResourceTheme, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
-      }
-
-      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IBocReferenceValue), ResourceType.Html, ResourceTheme, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
-      }
     }
 
     protected abstract ResourceTheme ResourceTheme { get; }
+
+    public override void RegisterHtmlHeadContents ()
+    {
+      
+    }
   }
 }

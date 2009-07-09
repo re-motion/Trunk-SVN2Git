@@ -57,6 +57,20 @@ namespace Remotion.Web.UI.Controls
       renderer.Render();
     }
 
+    protected override void OnInit (EventArgs e)
+    {
+      base.OnInit (e);
+      RegisterHtmlHeadContents();
+    }
+
+    public void RegisterHtmlHeadContents ()
+    {
+      var factory = ServiceLocator.Current.GetInstance<IListMenuRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      preRenderer.RegisterHtmlHeadContents ();
+
+    }
+
     protected override void OnPreRender (EventArgs e)
     {
       var factory = ServiceLocator.Current.GetInstance<IListMenuRendererFactory>();

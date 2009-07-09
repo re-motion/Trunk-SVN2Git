@@ -19,6 +19,7 @@ using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
+using Remotion.Web.UI.Design;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -55,11 +56,16 @@ namespace Remotion.Web.UI.Controls
       renderer.Render();
     }
 
-    protected override void OnPreRender (EventArgs e)
+    protected override void OnInit (EventArgs e)
     {
+      base.OnInit (e);
       var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
       var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
-      preRenderer.PreRender ();
+      preRenderer.RegisterHtmlHeadContents ();
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
     }
 
     IControl IDatePickerButton.Parent

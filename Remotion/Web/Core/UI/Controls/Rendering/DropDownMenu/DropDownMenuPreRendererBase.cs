@@ -32,7 +32,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     {
     }
 
-    public override void PreRender ()
+    public override void RegisterHtmlHeadContents ()
     {
       HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (Control.Page);
 
@@ -51,6 +51,11 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
             Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme, "DropDownMenu.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
+    }
+
+    public override void PreRender ()
+    {
+      string key;
 
       //  Startup script initalizing the global values of the script.
       key = typeof (IDropDownMenu).FullName + "_Startup";

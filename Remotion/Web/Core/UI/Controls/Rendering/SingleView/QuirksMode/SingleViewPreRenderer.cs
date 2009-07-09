@@ -31,7 +31,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     {
     }
 
-    public override void PreRender ()
+    public override void RegisterHtmlHeadContents ()
     {
       Control control = Control as Control;
       if (control != null)
@@ -48,6 +48,11 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
             Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Legacy, "SingleView.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
+    }
+
+    public override void PreRender ()
+    {
+      
     }
   }
 }

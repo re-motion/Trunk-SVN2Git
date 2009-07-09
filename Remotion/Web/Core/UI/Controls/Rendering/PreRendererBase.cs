@@ -41,6 +41,7 @@ namespace Remotion.Web.UI.Controls.Rendering
       _context = context;
     }
 
+    public abstract void RegisterHtmlHeadContents ();
     public abstract void PreRender ();
 
     /// <summary>Gets the <see cref="IHttpContext"/> that contains the response for which this renderer generates output.</summary>

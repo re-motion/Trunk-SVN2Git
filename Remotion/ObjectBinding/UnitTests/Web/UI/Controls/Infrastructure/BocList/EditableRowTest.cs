@@ -16,8 +16,10 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
@@ -47,6 +49,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
     private BocCommandColumnDefinition _commandColumn;
     private BocRowEditModeColumnDefinition _rowEditModeColumn;
     private BocDropDownMenuColumnDefinition _dropDownMenuColumn;
+
+    [TestFixtureSetUp]
+    public void TestFixtureSetUp ()
+    {
+      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator ());
+    }
 
     [SetUp]
     public override void SetUp ()

@@ -14,6 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Web;
 using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
@@ -49,6 +51,14 @@ public class BocTest
     _page.Controls.Add (_namingContainer);
 
     _invoker = new ControlInvoker (_namingContainer);
+
+    var context = HttpContextHelper.CreateHttpContext ("GET", "/", "");
+    HttpContextHelper.SetCurrent (context);
+    HttpBrowserCapabilities browser = new HttpBrowserCapabilities ();
+    browser.Capabilities = new Hashtable ();
+    browser.Capabilities.Add ("browser", "IE");
+    browser.Capabilities.Add ("majorversion", "7");
+    context.Request.Browser = browser;
   }
 
   [TearDown]

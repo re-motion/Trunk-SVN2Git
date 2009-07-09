@@ -14,13 +14,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
   public class BocListPreRenderer : PreRendererBase<IBocList>, IBocListPreRenderer
   {
+    private const string c_scriptFileUrl = "BocList.js";
+    private const string c_styleFileUrl = "BocList.css";
+
+    private static readonly string s_scriptFileKey = typeof (IBocList).FullName + "_Script";
+    private static readonly string s_styleFileKey = typeof (IBocList).FullName + "_Style";
     private static readonly string s_startUpScriptKey = typeof (IBocList).FullName + "_Startup";
 
     private readonly CssClassContainer _cssClasses;
@@ -29,6 +36,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
         : base (context, control)
     {
       _cssClasses = cssClasses;
+    }
+
+    public override void RegisterHtmlHeadContents ()
+    {
+      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, c_styleFileUrl);
+        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+      }
+
+      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, c_scriptFileUrl);
+        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+      }
+
+      Control.EditModeControlFactory.RegisterHtmlHeadContents (Context.WrappedInstance);
     }
 
     public override void PreRender ()

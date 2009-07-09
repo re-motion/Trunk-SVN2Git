@@ -26,6 +26,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValue.QuirksMode
@@ -54,6 +55,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Property = property;
       _enumValue.Stub (mock => mock.IsDesignMode).Return (false);
 
+      SetUpAddAndRemoveControlExpectation<Control> (_enumValue);
+
       var values = new List<EnumerationValueInfo>(3);
       foreach (TestEnum value in Enum.GetValues (typeof (TestEnum)))
         values.Add (new EnumerationValueInfo (value, value.ToString(), value.ToString(), true));
@@ -70,6 +73,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
       _enumValue.Stub (mock => mock.ListControlStyle).Return (new ListControlStyle ());
       _enumValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      ControlCollectionMock.VerifyAllExpectations();
     }
 
     [Test]

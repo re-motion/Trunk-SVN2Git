@@ -33,8 +33,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
   {
     private IBusinessObjectProvider _provider;
     private BusinessObjectReferenceDataSource _dataSource;
-    protected static readonly Unit s_width = Unit.Pixel (250);
-    protected static readonly Unit s_height = Unit.Point (12);
+    protected static readonly Unit Width = Unit.Pixel (250);
+    protected static readonly Unit Height = Unit.Point (12);
     public IClientScriptManager ClientScriptManagerMock { get; set; }
     public IBocReferenceValue Control { get; set; }
     public TypeWithReference BusinessObject { get; set; }
@@ -74,6 +74,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       _provider = ((IBusinessObject) BusinessObject).BusinessObjectClass.BusinessObjectProvider;
       _provider.AddService<IBusinessObjectWebUIService> (new ReflectionBusinessObjectWebUIService());
 
+      SetUpAddAndRemoveControlExpectation<DropDownMenu>(Control);
+
       StateBag stateBag = new StateBag();
       Control.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
       Control.Stub (mock => mock.Style).Return (Control.Attributes.CssStyle);
@@ -105,12 +107,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     public void TearDown ()
     {
       ClientScriptManagerMock.VerifyAllExpectations();
+      ControlCollectionMock.VerifyAllExpectations();
     }
 
     protected void AddStyle ()
     {
-      Control.Height = s_height;
-      Control.Width = s_width;
+      Control.Height = Height;
+      Control.Width = Width;
       Control.Style["height"] = Control.Height.ToString();
       Control.Style["width"] = Control.Width.ToString();
     }

@@ -349,8 +349,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       div.AssertStyleAttribute ("display", "inline");
       if (withStyle)
       {
-        div.AssertStyleAttribute ("height", s_height.ToString());
-        div.AssertStyleAttribute ("width", s_width.ToString());
+        div.AssertStyleAttribute ("height", Height.ToString());
+        div.AssertStyleAttribute ("width", Width.ToString());
       }
 
       div.AssertChildElementCount (expectedChildElements);

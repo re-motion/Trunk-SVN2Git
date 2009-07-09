@@ -158,6 +158,7 @@ public class BocListWcagTest: BocTest
     WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
     _bocList.ShowAvailableViewsList = true;
     _bocList.AvailableViews.Add (new BocListView ());
+    _bocList.AvailableViews.Add (new BocListView ());
     Assert.IsTrue (_bocList.HasAvailableViewsList);
   }
 

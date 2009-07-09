@@ -31,7 +31,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     {
     }
 
-    public override void PreRender ()
+    public override void RegisterHtmlHeadContents ()
     {
       Control control = Control as Control;
       if (control != null)
@@ -40,6 +40,8 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
         ScriptUtility.RegisterElementForBorderSpans (control, Control.TopControl.ClientID, true);
         ScriptUtility.RegisterElementForBorderSpans (control, Control.BottomControl.ClientID, true);
       }
+
+      HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (Control.Page);
 
       string keyStyle = typeof (ISingleView).FullName + "_Style";
       string keyScript = typeof (ISingleView).FullName + "_Script";
@@ -52,10 +54,14 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Standard, "ViewLayout.js");
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyScript, scriptUrl);
+      }
+    }
 
-        string keyAdjust = Control.ClientID + "_AdjustView";
-        string scriptAdjust =
-            @"function adjustView_{0}()
+    public override void PreRender ()
+    {
+      string keyAdjust = Control.ClientID + "_AdjustView";
+      string scriptAdjust =
+          @"function adjustView_{0}()
 {{
   var control = document.getElementById('{0}');
   var view = document.getElementById('{1}');
@@ -63,11 +69,8 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
   ViewLayout.Adjust(control, view);
 }}";
 
-        scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.ViewClientID);
-        HtmlHeadAppender.Current.RegisterJavaScriptBlock (keyAdjust, scriptAdjust);
-      }
-
-      HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (Control.Page);
+      scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.ViewClientID);
+      Control.Page.ClientScript.RegisterClientScriptBlock (Control, keyAdjust, scriptAdjust);
 
       string bindScript =
           @"$(document).ready( function()

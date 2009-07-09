@@ -162,6 +162,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    public override void RegisterHtmlHeadContents (HttpContext context)
+    {
+      base.RegisterHtmlHeadContents (context);
+      var factory = ServiceLocator.Current.GetInstance<IBocReferenceValueRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHeadContents();
+    }
+
     /// <remarks>
     ///   If the <see cref="DropDownList"/> could not be created from <see cref="DropDownListStyle"/>,
     ///   the control is set to read-only.

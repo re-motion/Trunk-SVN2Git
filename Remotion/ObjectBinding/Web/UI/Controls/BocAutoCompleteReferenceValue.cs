@@ -23,11 +23,13 @@ using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -40,6 +42,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocAutoCompleteReferenceValue
       :
           BusinessObjectBoundEditableWebControl,
+          IBocAutoCompleteReferenceValue,
           IPostBackDataHandler,
           IFocusableControl
   {
@@ -964,5 +967,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     #endregion
+
+    bool IBocRenderableControl.IsDesignMode
+    {
+      get { return base.IsDesignMode; }
+    }
+
+    IDropDownMenu IBocAutoCompleteReferenceValue.OptionsMenu
+    {
+      get { return _optionsMenu; }
+    }
+
+    string IBocAutoCompleteReferenceValue.GetLabelText ()
+    {
+      throw new NotImplementedException();
+    }
   }
 }

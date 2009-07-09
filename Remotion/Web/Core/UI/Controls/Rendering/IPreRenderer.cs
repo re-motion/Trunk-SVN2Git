@@ -31,6 +31,9 @@ namespace Remotion.Web.UI.Controls.Rendering
     /// <summary>Gets the context in which rendering occurs.</summary>
     IHttpContext Context { get; }
 
+    /// <summary>Registers script and stylesheet file includes, which has to be done during the initialization stage.</summary>
+    void RegisterHtmlHeadContents ();
+
     /// <summary>Executes rendering-related actions that have to be finished before the control can enter the rendering stage.</summary>
     void PreRender ();
   }

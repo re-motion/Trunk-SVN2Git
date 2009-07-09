@@ -31,7 +31,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     {
     }
 
-    public override void PreRender ()
+    public override void RegisterHtmlHeadContents ()
     {
       if (Control is Control)
       {
@@ -40,6 +40,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         ScriptUtility.RegisterElementForBorderSpans (control, Control.TopControl.ClientID, true);
         ScriptUtility.RegisterElementForBorderSpans (control, Control.BottomControl.ClientID, true);
       }
+
+      HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (Control.Page);
 
       string keyStyle = typeof (ITabbedMultiView).FullName + "_Style";
       string keyScript = typeof (ITabbedMultiView).FullName + "_Script";
@@ -52,10 +54,14 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme.Standard, "ViewLayout.js");
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
+      }
+    }
 
-        string keyAdjust = Control.ClientID + "_AdjustView";
-        string scriptAdjust =
-            @"function adjustView_{0}()
+    public override void PreRender ()
+    {
+      string keyAdjust = Control.ClientID + "_AdjustView";
+      string scriptAdjust =
+          @"function adjustView_{0}()
 {{
   var container = document.getElementById('{0}');
   var topControl = document.getElementById('{1}');
@@ -64,14 +70,11 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
   ViewLayout.AdjustTop(container, topControl); 
   ViewLayout.Adjust(container, view);
 }}";
-        scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.TabStripContainerClientID, Control.ActiveViewClientID);
-        HtmlHeadAppender.Current.RegisterJavaScriptBlock (keyAdjust, scriptAdjust);
-      }
-
-      HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (Control.Page);
+      scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.TabStripContainerClientID, Control.ActiveViewClientID);
+      Control.Page.ClientScript.RegisterClientScriptBlock (Control, keyAdjust, scriptAdjust);
 
       string bindScript =
-    @"$(document).ready( function(){{ 
+          @"$(document).ready( function(){{ 
   $(window).bind('resize', function(){{ 
     adjustView_{0}(); 
   }}); 

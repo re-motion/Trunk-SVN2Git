@@ -32,11 +32,8 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
     {
     }
 
-    public override void PreRender ()
+    public override void RegisterHtmlHeadContents ()
     {
-      if (!Control.HasClientScript)
-        return;
-
       string scriptFileKey = typeof (IListMenu).FullName + "_Script";
       string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.js");
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
@@ -45,6 +42,13 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.css");
       HtmlHeadAppender.Current.RegisterStylesheetLink (styleSheetKey, styleSheetUrl);
 
+    }
+
+    public override void PreRender ()
+    {
+      if (!Control.HasClientScript)
+        return;
+      
       WebMenuItem[] groupedListMenuItems = Control.MenuItems.GroupMenuItems (false);
 
       string key = Control.UniqueID + "_MenuItems";

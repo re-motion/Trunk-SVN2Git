@@ -36,11 +36,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
     {
     }
 
-    public void PreRender ()
-    {
-      
-    }
-
     /// <summary>
     /// Renders a click-enabled image that shows a <see cref="DatePickerPage"/> on click, which puts the selected value
     /// into the control specified by <see cref="P:Control.TargetControlID"/>.

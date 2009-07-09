@@ -216,6 +216,9 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
       _isInitialized = true;
+      var factory = ServiceLocator.Current.GetInstance<ITabbedMultiViewRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (Context == null ? null : new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHtmlHeadContents ();
     }
 
     protected override void OnLoad (EventArgs e)

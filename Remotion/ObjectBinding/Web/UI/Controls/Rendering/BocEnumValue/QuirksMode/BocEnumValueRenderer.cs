@@ -56,8 +56,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
       bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);
       Label label = GetLabel();
       ListControl listControl = GetListControl();
-
       WebControl innerControl = Control.IsReadOnly ? (WebControl) label : listControl;
+      Control.Controls.Add (innerControl);
 
       bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && string.IsNullOrEmpty (innerControl.Style["height"]);
       if (!isControlHeightEmpty && isInnerControlHeightEmpty)
@@ -87,6 +87,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
       }
 
       innerControl.RenderControl (Writer);
+
+      Control.Controls.Remove (innerControl);
       Writer.RenderEndTag();
     }
 

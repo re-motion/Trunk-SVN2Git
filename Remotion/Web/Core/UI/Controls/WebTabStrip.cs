@@ -99,6 +99,10 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
 
+      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      preRenderer.RegisterHtmlHeadContents ();
+
       if (!IsDesignMode)
       {
         Page.RegisterRequiresControlState (this);
@@ -231,10 +235,6 @@ namespace Remotion.Web.UI.Controls
 
         ScriptUtility.RegisterElementForBorderSpans (this, ClientID + "_" + visibleTab.ItemID);
       }
-
-      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
-      preRenderer.PreRender ();
     }
 
     /// <summary> Calls <see cref="Control.OnPreRender"/> on every invocation. </summary>

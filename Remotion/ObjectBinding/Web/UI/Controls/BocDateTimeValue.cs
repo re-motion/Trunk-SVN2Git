@@ -17,7 +17,6 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -26,7 +25,6 @@ using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.Utilities;
-using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -101,6 +99,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private string _errorMessage;
     private readonly ArrayList _validators;
+    private const string c_dateTextBoxIDPostfix = "_Boc_DateTextBox";
+    private const string c_timeTextBoxIDPostfix = "_Boc_TimeTextBox";
 
     // construction and disposing
 
@@ -156,7 +156,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       //  Date input field
 
-      string newDateValue = PageUtility.GetPostBackCollectionItem (Page, GetDateTextboxID());
+      string newDateValue = PageUtility.GetPostBackCollectionItem (Page, GetDateTextboxUniqueID());
       bool isDateChanged = newDateValue != null
                            && StringUtility.NullToEmpty (_internalDateValue) != newDateValue;
       if (isDateChanged)
@@ -171,7 +171,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       //  Time input field
 
-      string newTimeValue = PageUtility.GetPostBackCollectionItem (Page, GetTimeTextboxID());
+      string newTimeValue = PageUtility.GetPostBackCollectionItem (Page, GetTimeTextboxUniqueID());
       bool isTimeChanged = newTimeValue != null
                            && StringUtility.NullToEmpty (_internalTimeValue) != newTimeValue;
       if (isTimeChanged)
@@ -237,7 +237,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       LoadResources (GetResourceManager());
 
       _datePickerButton.ContainerControlID = UniqueID;
-      _datePickerButton.TargetControlID = GetDateTextboxID();
+      _datePickerButton.TargetControlID = GetDateTextboxUniqueID();
 
       EvaluateWaiConformity ();
     }
@@ -602,12 +602,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public string GetTimeTextboxClientID ()
     {
-      return GetTimeTextboxID ().Replace (IdSeparator, ClientIDSeparator);
+      return ClientID + c_dateTextBoxIDPostfix;
     }
 
     public string GetDateTextboxClientID ()
     {
-      return GetDateTextboxID().Replace (IdSeparator, ClientIDSeparator);
+      return ClientID + c_timeTextBoxIDPostfix;
     }
 
     /// <summary> The <see cref="BocDateTimeValue"/> supports only scalar properties. </summary>
@@ -810,19 +810,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    public string GetDateTextboxID ()
+    private string GetDateTextboxUniqueID ()
     {
-      return UniqueID + IdSeparator + "_Boc_DateTextBox";
+      return UniqueID + c_dateTextBoxIDPostfix;
+    }
+
+    private string GetTimeTextboxUniqueID ()
+    {
+      return UniqueID + c_timeTextBoxIDPostfix;
+    }
+
+    string IBocDateTimeValue.DateTextboxID
+    {
+      get { return ID + c_dateTextBoxIDPostfix; }
+    }
+
+    string IBocDateTimeValue.TimeTextboxID
+    {
+      get { return ID + c_timeTextBoxIDPostfix; }
     }
 
     string IBocDateTimeValue.GetDatePickerText ()
     {
       return GetResourceManager ().GetString (BocDateTimeValue.ResourceIdentifier.DataPickerButtonAlternateText);
-    }
-
-    public string GetTimeTextboxID ()
-    {
-      return UniqueID + IdSeparator + "_Boc_TimeTextBox";
     }
 
     /// <summary> Gets the <see cref="BocDateTimeValueType"/> actually used by the cotnrol. </summary>

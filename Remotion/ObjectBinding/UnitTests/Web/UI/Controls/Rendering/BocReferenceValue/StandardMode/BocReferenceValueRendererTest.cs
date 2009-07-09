@@ -383,8 +383,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       if (withStyle)
       {
-        containerDiv.AssertStyleAttribute ("width", s_width.ToString());
-        containerDiv.AssertStyleAttribute ("height", s_height.ToString ());
+        containerDiv.AssertStyleAttribute ("width", Width.ToString());
+        containerDiv.AssertStyleAttribute ("height", Height.ToString ());
       }
 
       return containerDiv;

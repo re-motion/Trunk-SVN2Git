@@ -67,9 +67,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Prefix applied to the post back argument of the event type column commands. </summary>
     private const string c_eventListItemCommandPrefix = "ListCommand=";
 
-    /// <summary> Prefix applied to the post back argument of the event type menu commands. </summary>
-    private const string c_eventMenuItemPrefix = "MenuItem=";
-
     /// <summary> Prefix applied to the post back argument of the custom columns. </summary>
     private const string c_customCellEventPrefix = "CustomCell=";
 
@@ -82,8 +79,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     internal const string c_goToCommandPrefix = "GoTo=";
 
-    private const string c_scriptFileUrl = "BocList.js";
-    private const string c_styleFileUrl = "BocList.css";
 
     /// <summary> The key identifying a fixed column resource entry. </summary>
     private const string c_resourceKeyFixedColumns = "FixedColumns";
@@ -175,8 +170,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private static readonly object s_editableRowChangesCancelingEvent = new object();
     private static readonly object s_editableRowChangesCanceledEvent = new object();
 
-    private static readonly string s_scriptFileKey = typeof (BocList).FullName + "_Script";
-    private static readonly string s_styleFileKey = typeof (BocList).FullName + "_Style";
 
     // member fields
 
@@ -403,19 +396,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       base.RegisterHtmlHeadContents (context);
 
-      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (this, context, typeof (BocList), ResourceType.Html, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
-      }
-
-      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (this, context, typeof (BocList), ResourceType.Html, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
-      }
-
-      _editModeControlFactory.RegisterHtmlHeadContents (context);
+      var factory = ServiceLocator.Current.GetInstance<IBocListRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHtmlHeadContents();
     }
 
     protected override void OnLoad (EventArgs e)

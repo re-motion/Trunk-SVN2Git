@@ -31,7 +31,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
     {
     }
 
-    public override void PreRender ()
+    public override void RegisterHtmlHeadContents ()
     {
       if (Control is Control)
       {
@@ -48,6 +48,11 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
             Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme.Legacy, "TabbedMultiView.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
+    }
+
+    public override void PreRender ()
+    {
+      
     }
   }
 }

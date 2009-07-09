@@ -15,9 +15,11 @@
 // 
 using System;
 using System.Collections.Specialized;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
@@ -45,6 +47,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
     private BocSimpleColumnDefinition _stringValueSimpleColumn;
     private BocSimpleColumnDefinition _int32ValueSimpleColumn;
+
+    [TestFixtureSetUp]
+    public void TestFixtureSetUp ()
+    {
+      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator ());
+    }
 
     public override void SetUp ()
     {

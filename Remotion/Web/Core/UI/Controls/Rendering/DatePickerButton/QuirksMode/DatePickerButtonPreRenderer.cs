@@ -32,16 +32,21 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
     {
     }
 
-    /// <summary>
-    /// Registers the JavaScript file that contains the necessary functions for showing the pop-up calendar and retrieving the date.
-    /// </summary>
-    public override void PreRender ()
+    public override void RegisterHtmlHeadContents ()
     {
       if (HtmlHeadAppender.Current.IsRegistered (ScriptFileKey))
         return;
 
       string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (DatePickerPage), ResourceType.Html, ScriptFileName);
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (ScriptFileKey, scriptUrl);
+    }
+
+    /// <summary>
+    /// Registers the JavaScript file that contains the necessary functions for showing the pop-up calendar and retrieving the date.
+    /// </summary>
+    public override void PreRender ()
+    {
+      
     }
 
     /// <summary>

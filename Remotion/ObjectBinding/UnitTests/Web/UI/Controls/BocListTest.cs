@@ -14,8 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
@@ -32,11 +34,17 @@ public class BocListTest: BocTest
   {
   }
 
-  
+  [TestFixtureSetUp]
+  public void TestFixtureSetUp ()
+  {
+    ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
+  }
+
   [SetUp]
   public override void SetUp()
   {
     base.SetUp();
+
     Invoker.InitRecursive();
 
     _bocList = new BocListMock();
