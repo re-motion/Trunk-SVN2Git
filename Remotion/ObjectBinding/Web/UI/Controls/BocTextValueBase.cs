@@ -41,6 +41,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [ToolboxItemFilter ("System.Web.UI")]
   public abstract class BocTextValueBase : BusinessObjectBoundEditableWebControl, IBocTextValueBase, IPostBackDataHandler, IFocusableControl
   {
+    private const string c_textboxIDPostfix = "_Boc_TextBox";
     private readonly Style _commonStyle = new Style();
     private readonly TextBoxStyle _textBoxStyle;
     private readonly Style _labelStyle = new Style();
@@ -219,7 +220,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocTextValue.xml' path='BocTextValue/LoadPostData/*' />
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetTextBoxClientID());
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetTextBoxUniqueID());
       bool isDataChanged = newValue != null && StringUtility.NullToEmpty (Text) != newValue;
       if (isDataChanged)
       {
@@ -339,7 +340,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <returns>The control's <see cref="Control.ClientID"/> postfixed by a constant textbox id.</returns>
     public string GetTextBoxClientID ()
     {
-      return ClientID + ClientIDSeparator + "Boc_TextBox";
+      return ClientID + c_textboxIDPostfix;
+    }
+
+    private string GetTextBoxUniqueID ()
+    {
+      return UniqueID + c_textboxIDPostfix;
+    }
+
+    string IBocTextValueBase.TextBoxID
+    {
+      get { return ID + c_textboxIDPostfix; }
     }
   }
 }

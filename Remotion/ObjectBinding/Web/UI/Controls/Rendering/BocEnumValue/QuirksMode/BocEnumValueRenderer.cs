@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
     private ListControl GetListControl ()
     {
       ListControl listControl = Control.ListControlStyle.Create (false);
-      listControl.ID = Control.GetListControlClientID();
+      listControl.ID = Control.ListControlID;
       listControl.Enabled = Control.Enabled;
 
       listControl.Width = Unit.Empty;
@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
 
     private Label GetLabel ()
     {
-      Label label = new Label { ID = Control.GetLabelClientID() };
+      Label label = new Label { ID = Control.LabelID };
       string text = null;
       if (Control.IsDesignMode && string.IsNullOrEmpty (label.Text))
       {

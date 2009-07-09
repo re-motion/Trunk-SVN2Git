@@ -64,8 +64,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       _enumValue.Stub (mock => mock.GetEnabledValues()).Return (_enumerationInfos);
 
       _enumValue.Stub (mock => mock.GetNullItemText()).Return ("null");
-      _enumValue.Stub (mock => mock.GetLabelClientID()).Return ("LabelClientID");
-      _enumValue.Stub (mock => mock.GetListControlClientID ()).Return ("ListControlClientID");
+      _enumValue.Stub (mock => mock.LabelID).Return ("LabelClientID");
+      _enumValue.Stub (mock => mock.ListControlID).Return ("ListControlClientID");
 
       StateBag stateBag = new StateBag ();
       _enumValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
@@ -318,7 +318,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
 
 
       var span = Html.GetAssertedChildElement (div, "span", 0);
-      Html.AssertAttribute (span, "id", _enumValue.GetLabelClientID());
+      Html.AssertAttribute (span, "id", _enumValue.LabelID);
 
       if (withStyle)
       {
@@ -364,7 +364,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       var div = GetAssertedDiv (document, false, false, false, renderer);
 
       var select = Html.GetAssertedChildElement (div, "select", 0);
-      Html.AssertAttribute (select, "name", _enumValue.GetListControlClientID());
       Html.AssertAttribute (select, "id", _enumValue.GetListControlClientID());
 
       if (withStyle)

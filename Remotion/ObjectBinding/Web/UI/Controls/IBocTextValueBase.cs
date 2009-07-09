@@ -36,5 +36,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     void MergeStyle (Style s);
 
     string GetTextBoxClientID ();
+    string TextBoxID { get; }
   }
 }

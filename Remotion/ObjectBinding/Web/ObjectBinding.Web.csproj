@@ -257,6 +257,7 @@
     <Compile Include="UI\Controls\DataEditControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UI\Controls\IBocAutoCompleteReferenceValue.cs" />
     <Compile Include="UI\Controls\IBocBooleanValue.cs" />
     <Compile Include="UI\Controls\IBocBooleanValueBase.cs" />
     <Compile Include="UI\Controls\IBocCheckBox.cs" />
@@ -297,6 +298,7 @@
     </Compile>
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditableRow.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditModeController.cs" />
+    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\BocAutoCompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocCheckboxRenderer.cs" />

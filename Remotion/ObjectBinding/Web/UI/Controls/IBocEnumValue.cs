@@ -26,9 +26,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     Style LabelStyle { get; }
     ListControlStyle ListControlStyle { get; }
     string NullIdentifier { get; }
-    string GetListControlClientID ();
-    string GetLabelClientID ();
     IEnumerationValueInfo[] GetEnabledValues();
     string GetNullItemText ();
+    string LabelID { get; }
+    string ListControlID { get; }
+    string GetListControlClientID ();
   }
 }

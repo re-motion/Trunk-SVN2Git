@@ -43,6 +43,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // constants
 
     private const string c_nullIdentifier = "==null==";
+    private const string c_labelIDPostfix = "_Boc_Label";
+    private const string c_listControlIDPostfix = "_Boc_ListControl";
 
     // types
 
@@ -225,24 +227,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return new string[0];
     }
 
-    public string GetLabelID ()
+    private string GetListControlUniqueID ()
     {
-      return UniqueID + IdSeparator + "Boc_Label";
-    }
-
-    public string GetListControlID ()
-    {
-      return UniqueID + IdSeparator + "Boc_ListControl";
+      return UniqueID + c_listControlIDPostfix;
     }
 
     public string GetListControlClientID ()
     {
-      return GetListControlID ().Replace (IdSeparator, ClientIDSeparator);
+      return ClientID + c_listControlIDPostfix;
     }
 
     public string GetLabelClientID ()
     {
-      return GetLabelID ().Replace (IdSeparator, ClientIDSeparator);
+      return ClientID + c_labelIDPostfix;
+    }
+
+    string IBocEnumValue.LabelID
+    {
+      get { return ID + c_labelIDPostfix; }
+    }
+
+    string IBocEnumValue.ListControlID
+    {
+      get { return ID + c_listControlIDPostfix; }
     }
 
     /// <summary> This event is fired when the selection is changed between postbacks. </summary>
@@ -454,7 +461,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadPostData/*' />
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetListControlClientID ());
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetListControlUniqueID ());
       bool isDataChanged = false;
       if (newValue != null)
       {
@@ -686,6 +693,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       else
         return false;
     }
+
+
 
     /// <summary> Invokes the <see cref="RaisePostDataChangedEvent"/> method. </summary>
     void IPostBackDataHandler.RaisePostDataChangedEvent ()
