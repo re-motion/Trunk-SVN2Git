@@ -253,6 +253,9 @@ function DropDownMenu_OnKeyDown(event, dropDownMenu, getSelectionCount) {
 
     var itemInfos = _dropDownMenu_menuInfos[dropDownMenu.id].ItemInfos;
     var oldIndex = _dropDownMenu_currentItemIndex;
+    var selectionCount = -1;
+    if (getSelectionCount != null)
+        selectionCount = getSelectionCount();
 
     switch (event.keyCode) {
         case 13: //enter
@@ -277,7 +280,7 @@ function DropDownMenu_OnKeyDown(event, dropDownMenu, getSelectionCount) {
                     _dropDownMenu_currentItemIndex++;
                 else
                     _dropDownMenu_currentItemIndex = 0;
-            } while (!DropDownMenu_IsSelectableItem(itemInfos, _dropDownMenu_currentItemIndex, getSelectionCount()))
+            } while (!DropDownMenu_IsSelectableItem(itemInfos, _dropDownMenu_currentItemIndex, selectionCount))
             break;
         case 37: // left arrow
         case 38: // up arrow
@@ -286,7 +289,7 @@ function DropDownMenu_OnKeyDown(event, dropDownMenu, getSelectionCount) {
                     _dropDownMenu_currentItemIndex--;
                 else
                     _dropDownMenu_currentItemIndex = itemInfos.length - 1;
-            } while (!DropDownMenu_IsSelectableItem(itemInfos, _dropDownMenu_currentItemIndex, getSelectionCount()))
+            } while (!DropDownMenu_IsSelectableItem(itemInfos, _dropDownMenu_currentItemIndex, selectionCount))
             break;
     }
     if (0 <= _dropDownMenu_currentItemIndex && _dropDownMenu_currentItemIndex < itemInfos.length) {

@@ -177,25 +177,33 @@ td.bocListDataCellEven div td.dropDownMenuHeadButton a:hover
 }
 
 /* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
-td.bocListDataCellOdd div.DropDownMenuContainer a,
-td.bocListDataCellEven div td.DropDownMenuContainer a,
-td.bocListDataCellOdd div.DropDownMenuContainer a:hover,
-td.bocListDataCellEven div.DropDownMenuContainer a:hover
+td.bocListDataCellOdd div.DropDownMenuSelect a,
+td.bocListDataCellEven div.DropDownMenuSelect a,
+td.bocListDataCellOdd div.DropDownMenuSelect a:hover,
+td.bocListDataCellEven div.DropDownMenuSelect a:hover
 {
   color: Blue;
   padding: 0;
 }
 
 /* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
-td.bocListDataCellOdd div.DropDownMenuContainer a,
-td.bocListDataCellEven div.DropDownMenuContainer a,
-td.bocListDataCellOdd div.DropDownMenuContainer a:hover,
-td.bocListDataCellEven div.DropDownMenuContainer a:hover
+td.bocListDataCellOdd div.DropDownMenuSelect a,
+td.bocListDataCellEven div.DropDownMenuSelect a,
+td.bocListDataCellOdd div.DropDownMenuSelect a:hover,
+td.bocListDataCellEven div.DropDownMenuSelect a:hover
 {
   color: Blue;
 	padding: 0px;
 	border: none;
   background-color: Transparent;
+}
+
+td.bocListDataCellOdd div.DropDownMenuContainer ul a,
+td.bocListDataCellEven div.DropDownMenuContainer ul a,
+td.bocListDataCellOdd div.DropDownMenuContainer ul a:hover,
+td.bocListDataCellEven div.DropDownMenuContainer ul a:hover
+{
+	padding: 0px;
 }
 
 /*  Style applied to the text providing the sorting order's index. */

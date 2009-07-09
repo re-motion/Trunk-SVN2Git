@@ -36,7 +36,9 @@ function ListMenu_Update (listMenu, getSelectionCount) {
         return;
 
     var itemInfos = menuInfo.ItemInfos;
-    var selectionCount = getSelectionCount();
+    var selectionCount = -1;
+    if (getSelectionCount != null)
+        selectionCount = getSelectionCount();
 
     for (var i = 0; i < itemInfos.length; i++) {
         var itemInfo = itemInfos[i];
