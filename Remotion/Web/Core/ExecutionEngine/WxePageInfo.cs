@@ -223,16 +223,14 @@ namespace Remotion.Web.ExecutionEngine
       int nextPostBackID = wxeContext.PostBackID + 1;
        _page.ClientScript.RegisterHiddenField (_page, WxePageInfo.PostBackSequenceNumberID, nextPostBackID.ToString ());
 
-      string key = "wxeDoSubmit";
-      _page.ClientScript.RegisterClientScriptBlock (_page, key,
+      _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxePageInfo),  "wxeDoSubmit",
             "function wxeDoSubmit (button, pageToken) { \r\n"
           + "  var theForm = document." + _wxeForm.ClientID + "; \r\n"
           + "  theForm." + WxePageInfo.ReturningTokenID + ".value = pageToken; \r\n"
           + "  document.getElementById(button).click(); \r\n"
           + "}");
 
-      key = "wxeDoPostBack";
-      _page.ClientScript.RegisterClientScriptBlock (_page, key,
+      _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxePageInfo), "wxeDoPostBack",
             "function wxeDoPostBack (control, argument, returningToken) { \r\n"
           + "  var theForm = document." + _wxeForm.ClientID + "; \r\n"
           + "  theForm." + WxePageInfo.ReturningTokenID + ".value = returningToken; \r\n"
@@ -313,7 +311,7 @@ namespace Remotion.Web.ExecutionEngine
       initScript.AppendLine ("    ").Append (statusIsAbortingMessage).AppendLine (",");
       initScript.AppendLine ("    ").Append (statusIsCachedMessage).AppendLine (");");
 
-      _page.ClientScript.RegisterClientScriptBlock (_page, "wxeInitialize", initScript.ToString ());
+      _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxePageInfo), "wxeInitialize", initScript.ToString ());
     }
 
 

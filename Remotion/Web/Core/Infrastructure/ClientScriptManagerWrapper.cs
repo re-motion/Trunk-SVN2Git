@@ -486,25 +486,6 @@ namespace Remotion.Web.Infrastructure
     }
 
     /// <summary>
-    /// Registers a hidden field with the <see cref="ScriptManager"/> control during every asynchronous postback.
-    /// </summary>
-    /// <param name="page">The page object that is registering the hidden field.</param>
-    /// <param name="hiddenFieldName">The name of the hidden field to register.
-    /// </param><param name="hiddenFieldInitialValue">The initial value of the field to register.
-    /// </param>
-    /// <exception cref="T:System.ArgumentNullException">
-    ///   <paramref name="page"/> is null 
-    ///   <para>- or -</para>
-    ///   <paramref name="hiddenFieldName"/> is null.
-    /// </exception>
-    /// <seealso cref="ScriptManager.RegisterHiddenField(System.Web.UI.Page,string,string)"/>
-    public void RegisterHiddenField (IPage page, string hiddenFieldName, string hiddenFieldInitialValue)
-    {
-      ArgumentUtility.CheckNotNullAndType<Page> ("page", page);
-      ScriptManager.RegisterHiddenField (page.WrappedInstance, hiddenFieldName, StringUtility.NullToEmpty (hiddenFieldInitialValue));
-    }
-
-    /// <summary>
     /// Registers the client script with the <see cref="T:System.Web.UI.Page"/> object using a type, key, and script literal.
     /// </summary>
     /// <param name="type">The type of the client script to register. 
@@ -531,43 +512,33 @@ namespace Remotion.Web.Infrastructure
     }
 
     /// <summary>
-    ///   Used to register a client javascript script to be rendered  at the beginning of the HTML page.
+    ///   Used to register a client script script to be rendered  at the beginning of the HTML page.
     ///   The script is automatically surrounded by &lt;script&gt; tags.
     /// </summary>
     /// <param name="control"> 
     ///   The <see cref="Control"/> which the script file will be registered. Must not be <see langword="null"/>.
     /// </param>
+    /// <param name="type">
+    ///   The type of the client script block. This parameter is usually specified by using the typeof operator (C#) or the 
+    ///   GetType operator (Visual Basic) to retrieve the type of the control that is registering the script. 
+    /// </param>
     /// <param name="key"> 
     ///   The key identifying the registered script file. Must not be <see langword="null"/> or empty.
     /// </param>
-    /// <param name="javascript"> 
+    /// <param name="script"> 
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
     /// <seealso cref="ScriptManager.RegisterClientScriptBlock(System.Web.UI.Control,System.Type,string,string,bool)"/>
-    public void RegisterClientScriptBlock (IControl control, string key, string javascript)
+    public void RegisterClientScriptBlock (IControl control, Type type, string key, string script)
     {
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-      ScriptUtility.RegisterClientScriptBlock ((Control) control, key, javascript);
-    }
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+      ArgumentUtility.CheckNotNullOrEmpty ("script", script);
 
-    /// <summary>
-    ///   Used to register a client javascript script to be rendered at the end of the HTML page. 
-    ///   The script is automatically surrounded by &lt;script&gt; tags.
-    /// </summary>
-    /// <param name="control"> 
-    ///   The <see cref="Control"/> for which the script file will be registered. Must not be <see langword="null"/>.
-    /// </param>
-    /// <param name="key"> 
-    ///   The key identifying the registered script block. Must not be <see langword="null"/> or empty.
-    /// </param>
-    /// <param name="javascript"> 
-    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
-    /// </param>
-    /// <seealso cref="ScriptManager.RegisterStartupScript(System.Web.UI.Control,System.Type,string,string,bool)"/>
-    public void RegisterStartupScriptBlock (IControl control, string key, string javascript)
-    {
-      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-      ScriptUtility.RegisterStartupScriptBlock ((Control) control, key, javascript);
+      script += "\r\n";
+
+      ScriptManager.RegisterClientScriptBlock ((Control) control, type, key, script, true);
     }
 
     /// <summary>
@@ -671,17 +642,25 @@ namespace Remotion.Web.Infrastructure
     }
 
     /// <summary>
-    /// Registers the startup script with the <see cref="T:System.Web.UI.Page"/> object using a type, a key, a script literal, and a Boolean value indicating whether to add script tags.
+    /// Registers a startup script block for a control that is inside an <see cref="UpdatePanel"/> by using the <see cref="ScriptManager"/> control, 
+    /// and adds the script block to the page. 
     /// </summary>
     /// <param name="control">The control that is registering the client script block.</param>
-    /// <param name="type">The type of the startup script to register.</param>
+    /// <param name="type">The type of the client script block. This parameter is usually specified by using the typeof operator (C#) 
+    /// or the GetType operator (Visual Basic) to retrieve the type of the control that is registering the script. </param>
     /// <param name="key">The key of the startup script to register.</param>
     /// <param name="script">The startup script literal to register.</param>
-    /// <param name="addScriptTags">A Boolean value indicating whether to add script tags.</param>
-    public void RegisterStartupScript (IControl control, Type type, string key, string script, bool addScriptTags)
+    /// <seealso cref="ScriptManager.RegisterStartupScript(System.Web.UI.Control,System.Type,string,string,bool)"/>
+    public void RegisterStartupScriptBlock (IControl control, Type type, string key, string script)
     {
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-      ScriptManager.RegisterStartupScript ((Control) control, type, key, StringUtility.NullToEmpty (script), addScriptTags);
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+      ArgumentUtility.CheckNotNullOrEmpty ("script", script);
+
+      script += "\r\n";
+
+      ScriptManager.RegisterStartupScript ((Control) control, type, key, script, true);
     }
   }
 }

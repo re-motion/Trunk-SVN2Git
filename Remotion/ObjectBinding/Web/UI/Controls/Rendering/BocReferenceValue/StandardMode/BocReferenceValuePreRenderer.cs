@@ -32,6 +32,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       string key = Control.ClientID + "_AdjustPositionScript";
       Control.Page.ClientScript.RegisterStartupScriptBlock (
           Control,
+          typeof (BocReferenceValuePreRenderer),
           key,
           string.Format (
               "BocReferenceValue_AdjustPosition(document.getElementById('{0}'), {1});", 

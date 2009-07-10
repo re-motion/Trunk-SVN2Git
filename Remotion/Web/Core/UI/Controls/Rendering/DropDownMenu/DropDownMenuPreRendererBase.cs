@@ -60,7 +60,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     public override void PreRender ()
     {
       string key = Control.UniqueID;
-      if (Control.Enabled && !Control.Page.ClientScript.IsStartupScriptRegistered (key))
+      if (Control.Enabled && !Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuPreRendererBase), key))
       {
         StringBuilder script = new StringBuilder ();
         script.Append ("DropDownMenu_AddMenuInfo" + " (\r\n\t");
@@ -98,7 +98,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
         script.Append (" )"); // Close Array
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );"); // Close AddMenuInfo
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, key, script.ToString ());
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRendererBase), key, script.ToString ());
       }
     }
 

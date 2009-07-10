@@ -118,6 +118,7 @@ namespace Remotion.Web.Utilities
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
     /// <seealso cref="Page.RegisterClientScriptBlock"/>
+    [Obsolete ("Use IPage.ClientScript.RegisterClientScriptBlock (IControl, Type, string, string) instead.")]
     public static void RegisterClientScriptBlock (Control control, string key, string javascript)
     {
       ArgumentUtility.CheckNotNull ("control", control);

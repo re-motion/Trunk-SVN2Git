@@ -106,7 +106,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
     private void RegisterStarupScriptIfNeeded (BocBooleanValueResourceSet resourceSet)
     {
       string startUpScriptKey = s_startUpScriptKeyPrefix + resourceSet.ResourceKey;
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (startUpScriptKey))
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocBooleanValueRenderer), startUpScriptKey))
       {
         string trueValue = true.ToString();
         string falseValue = false.ToString();
@@ -124,7 +124,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
             resourceSet.TrueIconUrl,
             resourceSet.FalseIconUrl,
             resourceSet.NullIconUrl);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, startUpScriptKey, startupScript);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (BocBooleanValueRenderer), startUpScriptKey, startupScript);
       }
     }
 

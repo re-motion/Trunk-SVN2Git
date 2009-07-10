@@ -85,8 +85,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocBooleanV
           resourceSet.TrueIconUrl,
           resourceSet.FalseIconUrl,
           resourceSet.NullIconUrl);
-      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_booleanValue, startupScriptKey, _startupScript));
-      clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<string>.Is.NotNull)).Return (false);
+      clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_booleanValue, typeof (BocBooleanValueRenderer), startupScriptKey, _startupScript));
+      clientScriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
       clientScriptManagerMock.Stub (mock => mock.GetPostBackEventReference (_booleanValue, string.Empty)).Return (c_postbackEventReference);
 
       _clickScript = string.Format (

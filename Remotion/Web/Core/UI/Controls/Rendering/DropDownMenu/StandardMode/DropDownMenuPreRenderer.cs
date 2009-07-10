@@ -40,7 +40,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
           "$('#{0}').keydown( function(event){{ DropDownMenu_OnKeyDown(event, document.getElementById('{0}'), {1}); }} );",
           Control.ClientID,
           getSelectionCount);
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, key, script);
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
     }
 
     public override bool GetBrowserCapableOfScripting ()

@@ -74,7 +74,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
   ViewLayout.Adjust(container, view);
 }}";
       scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.TabStripContainerClientID, Control.ActiveViewClientID);
-      Control.Page.ClientScript.RegisterClientScriptBlock (Control, keyAdjust, scriptAdjust);
+      Control.Page.ClientScript.RegisterClientScriptBlock (Control, typeof (TabbedMultiViewPreRenderer), keyAdjust, scriptAdjust);
 
       string bindScript =
           @"$(document).ready( function(){{ 
@@ -84,7 +84,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
   setTimeout('adjustView_{0}();', 10); 
 }} );";
       bindScript = string.Format (bindScript, Control.ClientID);
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, Control.ClientID + "_BindViewResize", bindScript);
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (TabbedMultiViewPreRenderer), Control.ClientID + "_BindViewResize", bindScript);
     }
   }
 }

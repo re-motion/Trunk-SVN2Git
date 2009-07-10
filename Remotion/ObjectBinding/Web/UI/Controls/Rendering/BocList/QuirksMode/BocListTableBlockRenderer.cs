@@ -191,7 +191,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
             + count + ","
             + (int) List.Selection + ");";
         List.Page.ClientScript.RegisterStartupScriptBlock (
-            List, typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
+            List, typeof(BocListTableBlockRenderer), typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
       }
     }
 

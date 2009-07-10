@@ -54,7 +54,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
       WebMenuItem[] groupedListMenuItems = Control.MenuItems.GroupMenuItems (false);
 
       string key = Control.UniqueID + "_MenuItems";
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (key))
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (ListMenuPreRenderer), key))
       {
         StringBuilder script = new StringBuilder ();
         script.AppendFormat ("ListMenu_AddMenuInfo (document.getElementById ('{0}'), \r\n\t", Control.ClientID);
@@ -81,7 +81,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
             "ListMenu_Update ( document.getElementById ('{0}'), {1} );",
             Control.ClientID,
             string.IsNullOrEmpty(Control.GetSelectionCount) ? "null" : Control.GetSelectionCount);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, key, script.ToString ());
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (ListMenuPreRenderer), key, script.ToString ());
       }
     }
 

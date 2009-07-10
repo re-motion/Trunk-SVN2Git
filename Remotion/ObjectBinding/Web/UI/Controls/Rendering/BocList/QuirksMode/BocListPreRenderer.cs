@@ -63,13 +63,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
       if (Control.HasClientScript)
       {
         //  Startup script initalizing the global values of the script.
-        if (!Control.Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey))
+        if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocListPreRenderer), s_startUpScriptKey))
         {
           string script = string.Format (
               "BocList_InitializeGlobals ('{0}', '{1}');",
               CssClasses.DataRow,
               CssClasses.DataRowSelected);
-          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, s_startUpScriptKey, script);
+          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof(BocListPreRenderer), s_startUpScriptKey, script);
         }
       }
     }

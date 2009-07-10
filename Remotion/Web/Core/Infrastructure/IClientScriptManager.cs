@@ -203,6 +203,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     string GetWebResourceUrl (Type type, string resourceName);
 
+
     /// <summary>
     /// Determines whether the client script block is registered with the <see cref="T:System.Web.UI.Page"/> object using the specified key. 
     /// </summary>
@@ -211,6 +212,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <param name="key">The key of the client script block to search for.
     /// </param>
+    [Obsolete ("Use IsClientScriptBlockRegistered (Type, string).")]
     bool IsClientScriptBlockRegistered (string key);
 
     /// <summary>
@@ -225,6 +227,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     bool IsClientScriptBlockRegistered (Type type, string key);
 
+
     /// <summary>
     /// Determines whether the client script include is registered with the <see cref="T:System.Web.UI.Page"/> object using the specified key. 
     /// </summary>
@@ -233,6 +236,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <param name="key">The key of the client script include to search for. 
     /// </param>
+    [Obsolete ("Use IsClientScriptIncludeRegistered (Type, string).")]
     bool IsClientScriptIncludeRegistered (string key);
 
     /// <summary>
@@ -247,6 +251,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     bool IsClientScriptIncludeRegistered (Type type, string key);
 
+
     /// <summary>
     /// Determines whether the startup script is registered with the <see cref="T:System.Web.UI.Page"/> object using the specified key.
     /// </summary>
@@ -255,6 +260,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <param name="key">The key of the startup script to search for.
     /// </param>
+    [Obsolete ("Use IsStartupScriptRegistered (Type, string).")]
     bool IsStartupScriptRegistered (string key);
 
     /// <summary>
@@ -269,6 +275,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     bool IsStartupScriptRegistered (Type type, string key);
 
+
     /// <summary>
     /// Determines whether the OnSubmit statement is registered with the <see cref="T:System.Web.UI.Page"/> object using the specified key. 
     /// </summary>
@@ -277,6 +284,7 @@ namespace Remotion.Web.Infrastructure
     /// </returns>
     /// <param name="key">The key of the OnSubmit statement to search for.
     /// </param>
+    [Obsolete ("Use IsOnSubmitStatementRegistered (Type, string).")]
     bool IsOnSubmitStatementRegistered (string key);
 
     /// <summary>
@@ -291,6 +299,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     bool IsOnSubmitStatementRegistered (Type type, string key);
 
+
     /// <summary>
     /// Registers a JavaScript array declaration with the <see cref="T:System.Web.UI.Page"/> object using an array name and array value.
     /// </summary>
@@ -299,6 +308,7 @@ namespace Remotion.Web.Infrastructure
     /// </param><exception cref="T:System.ArgumentNullException"><paramref name="arrayName"/> is null.
     /// </exception>
     void RegisterArrayDeclaration (string arrayName, string arrayValue);
+
 
     /// <summary>
     /// Registers a name/value pair as a custom (expando) attribute of the specified control given a control ID, attribute name, and attribute value.
@@ -322,6 +332,18 @@ namespace Remotion.Web.Infrastructure
     void RegisterExpandoAttribute (string controlId, string attributeName, string attributeValue, bool encode);
 
     /// <summary>
+    /// Registers a name/value pair as a custom (expando) attribute of the specified control given a control ID, an attribute name, an attribute value, and a Boolean value indicating whether to encode the attribute value.
+    /// </summary>
+    /// <param name="registratorControl">The control registering the attribute.</param>
+    /// <param name="controlId">The <see cref="T:System.Web.UI.Control"/> on the page that contains the custom attribute.
+    /// </param><param name="attributeName">The name of the custom attribute to register.
+    /// </param><param name="attributeValue">The value of the custom attribute.
+    /// </param><param name="encode">A Boolean value indicating whether to encode the custom attribute to register.
+    /// </param>
+    void RegisterExpandoAttribute (IControl registratorControl, string controlId, string attributeName, string attributeValue, bool encode);
+
+
+    /// <summary>
     /// Registers a hidden value with the <see cref="T:System.Web.UI.Page"/> object.
     /// </summary>
     /// <param name="hiddenFieldName">The name of the hidden field to register.
@@ -330,20 +352,6 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     [Obsolete ("Use RegisterHiddenField(IPage, string, string) or RegisterHiddenField(IControl, string, string) for compatibility with UpdatePanel.")]
     void RegisterHiddenField (string hiddenFieldName, string hiddenFieldInitialValue);
-
-    /// <summary>
-    /// Registers a hidden field with the <see cref="ScriptManager"/> control during every asynchronous postback.
-    /// </summary>
-    /// <param name="page">The page object that is registering the hidden field.</param>
-    /// <param name="hiddenFieldName">The name of the hidden field to register.
-    /// </param><param name="hiddenFieldInitialValue">The initial value of the field to register.
-    /// </param>
-    /// <exception cref="T:System.ArgumentNullException">
-    ///   <paramref name="page"/> is null 
-    ///   <para>- or -</para>
-    ///   <paramref name="hiddenFieldName"/> is null.
-    /// </exception>
-    void RegisterHiddenField (IPage page, string hiddenFieldName, string hiddenFieldInitialValue);
 
     /// <summary>
     /// Registers a hidden field with the <see cref="ScriptManager"/> control for a control that is inside an <see cref="UpdatePanel"/> control.
@@ -359,6 +367,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     void RegisterHiddenField (IControl control, string hiddenFieldName, string hiddenFieldInitialValue);
 
+    
     /// <summary>
     /// Registers the client script with the <see cref="T:System.Web.UI.Page"/> object using a type, key, and script literal.
     /// </summary>
@@ -366,7 +375,7 @@ namespace Remotion.Web.Infrastructure
     /// </param><param name="key">The key of the client script to register. 
     /// </param><param name="script">The client script literal to register. 
     /// </param>
-    [Obsolete ("Use RegisterClientScriptBlock (IControl, string, string) for compatibility with UpdatePanel.")]
+    [Obsolete ("Use RegisterClientScriptBlock (IControl, Type, string, string) for compatibility with UpdatePanel.")]
     void RegisterClientScriptBlock (Type type, string key, string script);
 
     /// <summary>
@@ -378,40 +387,29 @@ namespace Remotion.Web.Infrastructure
     /// </param><param name="addScriptTags">A Boolean value indicating whether to add script tags.
     /// </param><exception cref="T:System.ArgumentNullException">The client script block type is null.
     /// </exception>
-    [Obsolete ("Use RegisterClientScriptBlock (IControl, string, string) for compatibility with UpdatePanel.")]
+    [Obsolete ("Use RegisterClientScriptBlock (IControl, Type, string, string) for compatibility with UpdatePanel.")]
     void RegisterClientScriptBlock (Type type, string key, string script, bool addScriptTags);
 
     /// <summary>
-    ///   Used to register a client javascript script to be rendered  at the beginning of the HTML page.
+    ///   Used to register a client script script to be rendered  at the beginning of the HTML page.
     ///   The script is automatically surrounded by &lt;script&gt; tags.
     /// </summary>
     /// <param name="control"> 
     ///   The <see cref="Control"/> which the script file will be registered. Must not be <see langword="null"/>.
     /// </param>
+    /// <param name="type">
+    ///   The type of the client script block. This parameter is usually specified by using the typeof operator (C#) or the 
+    ///   GetType operator (Visual Basic) to retrieve the type of the control that is registering the script. 
+    /// </param>
     /// <param name="key"> 
     ///   The key identifying the registered script file. Must not be <see langword="null"/> or empty.
     /// </param>
-    /// <param name="javascript"> 
+    /// <param name="script"> 
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
-    /// <seealso cref="ScriptManager.RegisterClientScriptBlock"/>
-    void RegisterClientScriptBlock (IControl control, string key, string javascript);
+    /// <seealso cref="ScriptManager.RegisterClientScriptBlock(System.Web.UI.Control,System.Type,string,string,bool)"/>
+    void RegisterClientScriptBlock (IControl control, Type type, string key, string script);
 
-    /// <summary>
-    ///   Used to register a client javascript script to be rendered at the end of the HTML page. 
-    ///   The script is automatically surrounded by &lt;script&gt; tags.
-    /// </summary>
-    /// <param name="control"> 
-    ///   The <see cref="Control"/> for which the script file will be registered. Must not be <see langword="null"/>.
-    /// </param>
-    /// <param name="key"> 
-    ///   The key identifying the registered script block. Must not be <see langword="null"/> or empty.
-    /// </param>
-    /// <param name="javascript"> 
-    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
-    /// </param>
-    /// <seealso cref="ScriptManager.RegisterStartupScript"/>
-    void RegisterStartupScriptBlock (IControl control, string key, string javascript);
 
     /// <summary>
     /// Registers the client script with the <see cref="T:System.Web.UI.Page"/> object using a key and a URL.
@@ -445,6 +443,7 @@ namespace Remotion.Web.Infrastructure
     /// <param name="url">The URL of the client script include to register.</param>
     void RegisterClientScriptInclude (IControl control, Type type, string key, string url);
 
+
     /// <summary>
     /// Registers the client script resource with the <see cref="T:System.Web.UI.Page"/> object using a type and a resource name.
     /// </summary>
@@ -466,6 +465,7 @@ namespace Remotion.Web.Infrastructure
     /// <param name="resourceName">The name of the client script resource to register.</param>
     void RegisterClientScriptResource (IControl control, Type type, string resourceName);
 
+
     /// <summary>
     /// Registers an OnSubmit statement with the <see cref="T:System.Web.UI.Page"/> object using a type, a key, and a script literal. The statement executes when the <see cref="T:System.Web.UI.HtmlControls.HtmlForm"/> is submitted.
     /// </summary>
@@ -486,6 +486,7 @@ namespace Remotion.Web.Infrastructure
     /// <param name="script">The script literal of the OnSubmit statement to register.</param>
     void RegisterOnSubmitStatement (IControl control, Type type, string key, string script);
 
+
     /// <summary>
     /// Registers the startup script with the <see cref="T:System.Web.UI.Page"/> object using a type, a key, and a script literal.
     /// </summary>
@@ -493,7 +494,7 @@ namespace Remotion.Web.Infrastructure
     /// </param><param name="key">The key of the startup script to register. 
     /// </param><param name="script">The startup script literal to register. 
     /// </param>
-    [Obsolete ("Use RegisterStartupScript (IControl, Type, string, string, bool) for compatibility with UpdatePanel.")]
+    [Obsolete ("Use RegisterStartupScriptBlock (IControl, Type, string, string, bool) for compatibility with UpdatePanel.")]
     void RegisterStartupScript (Type type, string key, string script);
 
     /// <summary>
@@ -505,17 +506,19 @@ namespace Remotion.Web.Infrastructure
     /// </param><param name="addScriptTags">A Boolean value indicating whether to add script tags. 
     /// </param><exception cref="T:System.ArgumentNullException"><paramref name="type"/> is null.
     /// </exception>
-    [Obsolete ("Use RegisterStartupScript (IControl, Type, string, string, bool) for compatibility with UpdatePanel.")]
+    [Obsolete ("Use RegisterStartupScriptBlock (IControl, Type, string, string, bool) for compatibility with UpdatePanel.")]
     void RegisterStartupScript (Type type, string key, string script, bool addScriptTags);
 
     /// <summary>
-    /// Registers the startup script with the <see cref="T:System.Web.UI.Page"/> object using a type, a key, a script literal, and a Boolean value indicating whether to add script tags.
+    /// Registers a startup script block for a control that is inside an <see cref="UpdatePanel"/> by using the <see cref="ScriptManager"/> control, 
+    /// and adds the script block to the page. 
     /// </summary>
     /// <param name="control">The control that is registering the client script block.</param>
-    /// <param name="type">The type of the startup script to register.</param>
+    /// <param name="type">The type of the client script block. This parameter is usually specified by using the typeof operator (C#) 
+    /// or the GetType operator (Visual Basic) to retrieve the type of the control that is registering the script. </param>
     /// <param name="key">The key of the startup script to register.</param>
     /// <param name="script">The startup script literal to register.</param>
-    /// <param name="addScriptTags">A Boolean value indicating whether to add script tags.</param>
-    void RegisterStartupScript (IControl control, Type type, string key, string script, bool addScriptTags);
+    /// <seealso cref="ScriptManager.RegisterStartupScript(System.Web.UI.Control,System.Type,string,string,bool)"/>
+    void RegisterStartupScriptBlock (IControl control, Type type, string key, string script);
   }
 }

@@ -58,10 +58,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
 
     public override void PreRender ()
     {
-      if (!Control.IsDesignMode && !Control.Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey))
+      if (!Control.IsDesignMode && !Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocReferenceValuePreRendererBase), s_startUpScriptKey))
       {
         string script = "BocReferenceValue_InitializeGlobals ('" + Control.NullIdentifier + "');";
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, s_startUpScriptKey, script);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (BocReferenceValuePreRendererBase), s_startUpScriptKey, script);
       }
     }
 

@@ -73,7 +73,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.ListMenu
 
       script = string.Format (script, _control.ClientID, GetItemScript (0), GetItemScript (1), GetItemScript (2), GetItemScript (4));
      
-      _clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, _control.UniqueID + "_MenuItems", script));
+      _clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuPreRenderer), _control.UniqueID + "_MenuItems", script));
 
       var preRenderer = new ListMenuPreRenderer (HttpContext, _control);
       preRenderer.PreRender();

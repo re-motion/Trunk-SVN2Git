@@ -25,7 +25,6 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode;
-using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
@@ -309,10 +308,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       menuInfoScript = string.Format (menuInfoScript, _control.ClientID, menuItems);
 
       var scriptManagerMock = _control.Page.ClientScript;
-      scriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (type, initializationScriptKey)).Return (false);
-      scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, initializationScriptKey, initializationScript));
+      scriptManagerMock.Stub (mock => mock.IsStartupScriptRegistered (Arg<Type>.Is.NotNull, Arg<string>.Is.NotNull)).Return (false);
+      scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuPreRenderer), initializationScriptKey, initializationScript));
       if(_control.Enabled)
-        scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, menuInfoKey, menuInfoScript));
+        scriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (DropDownMenuPreRendererBase), menuInfoKey, menuInfoScript));
       _control.Page.ClientScript.Replay ();
     }
 

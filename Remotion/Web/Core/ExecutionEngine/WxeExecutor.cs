@@ -108,7 +108,7 @@ namespace Remotion.Web.ExecutionEngine
       string href = WxeContext.Current.GetDestinationUrlForExternalFunction (function, functionToken, options.PermaUrlOptions);
 
       string openScript = string.Format ("window.open('{0}', '{1}', '{2}');", href, options.Target, StringUtility.NullToEmpty (options.Features));
-      _page.ClientScript.RegisterStartupScriptBlock (_page, "WxeExecuteFunction", openScript);
+      _page.ClientScript.RegisterStartupScriptBlock (_page, typeof (WxeExecutor), "WxeExecuteFunction", openScript);
 
       function.ReturnUrl = "javascript:" + GetClosingScriptForExternalFunction (functionToken, sender, options.ReturningPostback);
     }

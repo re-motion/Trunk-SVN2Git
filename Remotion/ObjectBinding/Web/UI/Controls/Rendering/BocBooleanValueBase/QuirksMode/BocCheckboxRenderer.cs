@@ -125,14 +125,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
 
     private void RegisterStartupScriptIfNeeded ()
     {
-      if (Control.Page.ClientScript.IsStartupScriptRegistered (s_startUpScriptKey))
+      if (Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocCheckboxRenderer), s_startUpScriptKey))
         return;
 
       string startupScript = string.Format (
           "BocCheckBox_InitializeGlobals ('{0}', '{1}');",
           Control.DefaultTrueDescription,
           Control.DefaultFalseDescription);
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, s_startUpScriptKey, startupScript);
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof(BocCheckboxRenderer), s_startUpScriptKey, startupScript);
     }
 
     private void PrepareImage (Image imageControl, string description)

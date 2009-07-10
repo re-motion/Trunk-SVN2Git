@@ -73,7 +73,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 }}";
 
       scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.ViewClientID);
-      Control.Page.ClientScript.RegisterClientScriptBlock (Control, keyAdjust, scriptAdjust);
+      Control.Page.ClientScript.RegisterClientScriptBlock (Control, typeof (SingleViewPreRenderer), keyAdjust, scriptAdjust);
 
       string bindScript =
           @"$(document).ready( function()
@@ -85,7 +85,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     setTimeout('adjustView_{0}();', 10); 
   }} );";
       bindScript = string.Format (bindScript, Control.ClientID);
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, Control.ClientID + "_BindViewResize", bindScript);
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (SingleViewPreRenderer), Control.ClientID + "_BindViewResize", bindScript);
     }
   }
 }
