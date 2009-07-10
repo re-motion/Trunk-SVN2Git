@@ -19,6 +19,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -39,6 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     public IBocReferenceValue Control { get; set; }
     public TypeWithReference BusinessObject { get; set; }
     public StubDropDownMenu OptionsMenu { get; set; }
+    public StubDropDownList DropDownList { get; set; }
 
     [SetUp]
     public void SetUp ()
@@ -46,6 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       Initialize();
 
       OptionsMenu = new StubDropDownMenu();
+      DropDownList = new StubDropDownList();
 
       Control = MockRepository.GenerateStub<IBocReferenceValue>();
       Control.Stub (stub => stub.ClientID).Return ("MyReferenceValue");
@@ -56,6 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       Control.Stub (stub => stub.OptionsMenu).Return (OptionsMenu);
 
       IPage pageStub = MockRepository.GenerateStub<IPage>();
+      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
       Control.Stub (stub => stub.Page).Return (pageStub);
 
       ClientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
@@ -73,8 +77,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
       _provider = ((IBusinessObject) BusinessObject).BusinessObjectClass.BusinessObjectProvider;
       _provider.AddService<IBusinessObjectWebUIService> (new ReflectionBusinessObjectWebUIService());
-
-      SetUpAddAndRemoveControlExpectation<DropDownMenu>(Control);
 
       StateBag stateBag = new StateBag();
       Control.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
@@ -107,7 +109,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
     public void TearDown ()
     {
       ClientScriptManagerMock.VerifyAllExpectations();
-      ControlCollectionMock.VerifyAllExpectations();
     }
 
     protected void AddStyle ()

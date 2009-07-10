@@ -296,7 +296,7 @@
     <Compile Include="Web\UI\Controls\Rendering\BocAutoCompleteRefenceValue\StandardMode\BocAutoCompleteReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\BocBooleanValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\BocCheckboxRendererTest.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocDateTimeValue\BocDateTimeValueRendererTest.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\BocDateTimeValue\QuirksMode\BocDateTimeValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocEnumValue\QuirksMode\BocEnumValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\QuirksMode\BocCommandColumnRendererTest.cs" />

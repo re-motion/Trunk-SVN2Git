@@ -57,13 +57,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       Html.AssertAttribute (span, "class", cssClass, HtmlHelper.AttributeValueCompareMode.Contains);
     }
 
-    protected virtual void SetStyle (bool withStyle, bool withCssClass, bool inStyleProperty)
+    protected virtual void SetStyle (bool withStyle, bool withCssClass, bool inStyleProperty, bool autoPostBack)
     {
       StateBag stateBag = new StateBag();
       TextValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
       TextValue.Stub (mock => mock.Style).Return (TextValue.Attributes.CssStyle);
       TextValue.Stub (mock => mock.TextBoxStyle).Return (new TextBoxStyle());
       TextValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+
+      TextValue.TextBoxStyle.AutoPostBack = autoPostBack;
 
       if (withCssClass)
       {

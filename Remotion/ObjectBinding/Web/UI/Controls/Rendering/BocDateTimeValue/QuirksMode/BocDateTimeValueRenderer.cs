@@ -66,12 +66,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       var dateTextBox = new TextBox { ID = Control.DateTextboxID };
       Initialize (dateTextBox, Control.DateTextBoxStyle, GetDateMaxLength());
       dateTextBox.Text = Control.Value.HasValue ? _formatter.FormatDateValue (Control.Value.Value) : Control.DateString;
-      Control.Controls.Add (dateTextBox);
+      dateTextBox.Page = Control.Page.WrappedInstance;
       
       var timeTextBox = new TextBox { ID = Control.TimeTextboxID };
       Initialize (timeTextBox, Control.TimeTextBoxStyle, GetTimeMaxLength ());
       timeTextBox.Text = Control.Value.HasValue ? _formatter.FormatTimeValue (Control.Value.Value, Control.ShowSeconds) : Control.TimeString;
-      Control.Controls.Add (timeTextBox);
+      timeTextBox.Page = Control.Page.WrappedInstance;
 
       var datePickerButton = Control.DatePickerButton;
       datePickerButton.AlternateText = Control.GetDatePickerText();
@@ -110,9 +110,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
       Writer.RenderEndTag(); // End tr
       Writer.RenderEndTag(); // End table
-
-      Control.Controls.Remove (dateTextBox);
-      Control.Controls.Remove (timeTextBox);
     }
 
     private bool DetermineClientScriptLevel (IDatePickerButton datePickerButton)

@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
       bool isControlWidthEmpty = string.IsNullOrEmpty (controlWidth);
 
       WebControl innerControl = Control.IsReadOnly ? (WebControl) GetLabel() : GetTextBox();
-      Control.Controls.Add (innerControl);
+      innerControl.Page = Control.Page.WrappedInstance;
 
       bool isInnerControlHeightEmpty = innerControl.Height.IsEmpty && string.IsNullOrEmpty (innerControl.Style["height"]);
       bool isInnerControlWidthEmpty = innerControl.Width.IsEmpty && string.IsNullOrEmpty (innerControl.Style["width"]);
@@ -77,8 +77,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
           Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, controlWidth);
       }
       innerControl.RenderControl (Writer);
-
-      Control.Controls.Remove (innerControl);
 
       Writer.RenderEndTag();
     }

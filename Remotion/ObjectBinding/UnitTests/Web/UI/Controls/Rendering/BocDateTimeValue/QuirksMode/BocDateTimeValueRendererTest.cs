@@ -14,20 +14,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Globalization;
-using System.Threading;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTimeValue
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
 {
   [TestFixture]
   public class BocDateTimeValueRendererTest : RendererTestBase
@@ -53,8 +53,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
 
       _dateTimeValue.Stub (mock => mock.ProvideMaxLength).Return (true);
 
-      _dateTimeValue.Stub (mock => mock.DateTextboxID).Return ("DateTextboxId");
-      _dateTimeValue.Stub (mock => mock.TimeTextboxID).Return ("TimeTextboxId");
+      _dateTimeValue.Stub (mock => mock.DateTextboxID).Return ("MyDateTime$DateTextboxId");
+      _dateTimeValue.Stub (mock => mock.TimeTextboxID).Return ("MyDateTime$TimeTextboxId");
+
+      var pageStub = MockRepository.GenerateStub<IPage>();
+      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
+      _dateTimeValue.Stub (stub => stub.Page).Return (pageStub);
 
       StateBag stateBag = new StateBag();
       _dateTimeValue.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
@@ -71,11 +75,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, false);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -85,11 +85,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, false);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -99,11 +95,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
+      AssertDocument (false, false, false);
+    }
+
+    [Test]
+    public void RenderDateTimeAutoPostback ()
+    {
+      _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.DateTime);
+      _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
+      _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
+      _dateTimeValue.Stub (mock => mock.DateTextBoxStyle).Return (new SingleRowTextBoxStyle());
+      _dateTimeValue.Stub (mock => mock.TimeTextBoxStyle).Return (new SingleRowTextBoxStyle ());
+      _dateTimeValue.DateTextBoxStyle.AutoPostBack = true;
+      _dateTimeValue.TimeTextBoxStyle.AutoPostBack = true;
 
       AssertDocument (false, false, false);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -113,11 +119,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, false);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -125,11 +127,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     {
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, true, false);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -138,11 +136,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, true, false);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -151,11 +145,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.Date);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, true, false);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -197,11 +187,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -212,11 +198,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -227,11 +209,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -240,11 +218,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       SetStyle (false);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, true, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -254,11 +228,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, true, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -268,11 +238,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.Date);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, true, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -317,11 +283,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -332,11 +294,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -347,11 +305,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -360,11 +314,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       SetStyle (true);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, true, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -374,11 +324,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, true, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -388,11 +334,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.Date);
       _dateTimeValue.Stub (mock => mock.Value).Return (DateTime.Today);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, true, true);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -436,11 +378,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       _dateTimeValue.Stub (mock => mock.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _dateTimeValue.Stub (mock => mock.Enabled).Return (true);
 
-      SetUpAddAndRemoveControlExpectation<TextBox> (_dateTimeValue);
-
       AssertDocument (false, false, false);
-
-      ControlCollectionMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -561,7 +499,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
       }
       int maxLength = new DateTime (2009, 12, 31, 12, 30, 30).ToString (timeFormat).Length;
 
-      AssertTextBox (timeBox, _dateTimeValue.TimeTextboxID, maxLength, isDisabled, withStyle);
+      AssertTextBox (timeBox, _dateTimeValue.TimeTextboxID, maxLength, isDisabled, withStyle, _dateTimeValue.DateTextBoxStyle.AutoPostBack==true);
       if (_dateTimeValue.Value.HasValue)
         Html.AssertAttribute (timeBox, "value", _dateTimeValue.Value.Value.ToString (timeFormat));
       else
@@ -571,20 +509,25 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private void AssertDateTextBox (XmlNode dateBoxCell, bool isDisabled, bool withStyle)
     {
       var dateBox = Html.GetAssertedChildElement (dateBoxCell, "input", 0);
-      AssertTextBox (dateBox, _dateTimeValue.DateTextboxID, 10, isDisabled, withStyle);
+      AssertTextBox (dateBox, _dateTimeValue.DateTextboxID, 10, isDisabled, withStyle, _dateTimeValue.TimeTextBoxStyle.AutoPostBack==true);
       if (_dateTimeValue.Value.HasValue)
         Html.AssertAttribute (dateBox, "value", _dateTimeValue.Value.Value.ToString ("d"));
       else
         Html.AssertNoAttribute (dateBox, "value");
     }
 
-    private void AssertTextBox (XmlNode textBox, string id, int maxLength, bool isDisabled, bool withStyle)
+    private void AssertTextBox (XmlNode textBox, string id, int maxLength, bool isDisabled, bool withStyle, bool autoPostBack)
     {
       Html.AssertAttribute (textBox, "type", "text");
-      Html.AssertAttribute (textBox, "id", id);
+      Html.AssertAttribute (textBox, "id", id.Replace('$', '_'));
       Html.AssertAttribute (textBox, "name", id);
       Html.AssertAttribute (textBox, "maxlength", maxLength.ToString());
       Html.AssertStyleAttribute (textBox, "width", "100%");
+
+      if (autoPostBack)
+      {
+        Html.AssertAttribute (textBox, "onchange", string.Format ("javascript:__doPostBack('{0}','')", id));
+      }
 
       if (isDisabled)
       {

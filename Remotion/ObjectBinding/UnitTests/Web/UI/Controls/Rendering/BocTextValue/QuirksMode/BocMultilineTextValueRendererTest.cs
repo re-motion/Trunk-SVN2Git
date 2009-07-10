@@ -14,13 +14,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue.QuirksMode
@@ -37,47 +38,51 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       TextValue.Stub (mock => mock.Text).Return (c_firstLineText + Environment.NewLine + c_secondLineText);
       TextValue.Stub (mock => mock.Value).Return (new[] { c_firstLineText, c_secondLineText });
 
+      TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");
+
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
 
-      Renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, TextValue);
+      var pageStub = MockRepository.GenerateStub<IPage> ();
+      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock ());
+      TextValue.Stub (stub => stub.Page).Return (pageStub);
 
-      SetUpAddAndRemoveControlExpectation<Control> (TextValue);
+      Renderer = new BocMultilineTextValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, TextValue);
     }
 
-    [TearDown]
-    public void TearDown ()
+    [Test]
+    public void RenderMultiLineEditableAutoPostback ()
     {
-      ControlCollectionMock.VerifyAllExpectations();
+      RenderMultiLineEditable (false, false, false, false, true);
     }
 
     [Test]
     public void RenderMultiLineEditable ()
     {
-      RenderMultiLineEditable (false, false, false, false);
+      RenderMultiLineEditable (false, false, false, false, false);
     }
 
     [Test]
     public void RenderMultiLineEditableWithStyle ()
     {
-      RenderMultiLineEditable (false, true, false, false);
+      RenderMultiLineEditable (false, true, false, false, false);
     }
 
     [Test]
     public void RenderMultiLineEditableWithStyleInStandardProperties ()
     {
-      RenderMultiLineEditable (false, true, false, true);
+      RenderMultiLineEditable (false, true, false, true, false);
     }
 
     [Test]
     public void RenderMultiLineEditableWithStyleAndCssClass ()
     {
-      RenderMultiLineEditable (false, true, true, false);
+      RenderMultiLineEditable (false, true, true, false, false);
     }
 
     [Test]
     public void RenderMultiLineEditableWithStyleAndCssClassInStandardProperties ()
     {
-      RenderMultiLineEditable (false, true, true, true);
+      RenderMultiLineEditable (false, true, true, true, false);
     }
 
     [Test]
@@ -113,24 +118,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     [Test]
     public void RenderMultiLineDisabled ()
     {
-      RenderMultiLineEditable (true, false, false, false);
+      RenderMultiLineEditable (true, false, false, false, false);
     }
 
     [Test]
     public void RenderMultiLineDisabledWithStyle ()
     {
-      RenderMultiLineEditable (true, true, false, false);
+      RenderMultiLineEditable (true, true, false, false, false);
     }
 
     [Test]
     public void RenderMultiLineDisabledWithStyleInStandardProperties ()
     {
-      RenderMultiLineEditable (true, true, false, true);
+      RenderMultiLineEditable (true, true, false, true, false);
     }
 
-    private void RenderMultiLineEditable (bool isDisabled, bool withStyle, bool withCssClass, bool inStandardProperties)
+    private void RenderMultiLineEditable (bool isDisabled, bool withStyle, bool withCssClass, bool inStandardProperties, bool autoPostBack)
     {
-      SetStyle (withStyle, withCssClass, inStandardProperties);
+      SetStyle (withStyle, withCssClass, inStandardProperties, autoPostBack);
 
       TextValue.Stub (mock => mock.Enabled).Return (!isDisabled);
 
@@ -147,6 +152,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       Html.AssertChildElementCount (span, 1);
 
       var textarea = Html.GetAssertedChildElement (span, "textarea", 0);
+      if (TextValue.TextBoxStyle.AutoPostBack == true)
+        Html.AssertAttribute (textarea, "onchange", string.Format("javascript:__doPostBack('{0}','')", TextValue.TextBoxID));
       CheckTextAreaStyle (textarea, false, withStyle);
       Html.AssertTextNode (textarea, TextValue.Text, 0);
       Html.AssertChildElementCount (textarea, 0);
@@ -154,7 +161,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
     private void RenderMultiLineReadOnly (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
-      SetStyle (withStyle, withCssClass, inStandardProperties);
+      SetStyle (withStyle, withCssClass, inStandardProperties, false);
 
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
 
@@ -200,9 +207,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       }
     }
 
-    protected override void SetStyle (bool withStyle, bool withCssClass, bool inStyleProperty)
+    protected override void SetStyle (bool withStyle, bool withCssClass, bool inStyleProperty, bool autoPostBack)
     {
-      base.SetStyle (withStyle, withCssClass, inStyleProperty);
+      base.SetStyle (withStyle, withCssClass, inStyleProperty, autoPostBack);
       TextValue.TextBoxStyle.TextMode = TextBoxMode.MultiLine;
     }
   }

@@ -24,7 +24,7 @@
           <td colSpan=4><remotion:boctextvalue id=FirstNameField runat="server" ReadOnly="True" PropertyIdentifier="FirstName" datasourcecontrol="CurrentObject"></remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" ReadOnly="True" PropertyIdentifier="LastName" datasourcecontrol="CurrentObject"></remotion:boctextvalue></td></tr>
         <tr>
           <td></td>
-          <td><remotion:bocdatetimevalue id=BirthdayField runat="server" PropertyIdentifier="DateOfBirth" datasourcecontrol="CurrentObject"  invalidtimeerrormessage="Ungültige Zeit" invaliddateerrormessage="Ungültiges Datum" invaliddateandtimeerrormessage="Ungültiges Datum oder Zeit" incompleteerrormessage="Unvollständige Daten" width="300px" showseconds="False"></remotion:bocdatetimevalue></td>
+          <td><remotion:bocdatetimevalue id=BirthdayField runat="server" DateTextBoxStyle-AutoPostBack="true" PropertyIdentifier="DateOfBirth" datasourcecontrol="CurrentObject"  invalidtimeerrormessage="Ungültige Zeit" invaliddateerrormessage="Ungültiges Datum" invaliddateandtimeerrormessage="Ungültiges Datum oder Zeit" incompleteerrormessage="Unvollständige Daten" width="300px" showseconds="False"></remotion:bocdatetimevalue></td>
           <td>
             <p>bound</p></td>
           <td style="WIDTH: 20%"><asp:label id=BirthdayFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>

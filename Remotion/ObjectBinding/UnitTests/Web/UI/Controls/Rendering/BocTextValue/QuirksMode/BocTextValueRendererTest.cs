@@ -14,13 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValue.QuirksMode
@@ -35,21 +37,25 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
       Renderer = new BocTextValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, TextValue);
 
+      TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
 
-      SetUpAddAndRemoveControlExpectation<Control> (TextValue);
+      var pageStub = MockRepository.GenerateStub<IPage>();
+      pageStub.Stub (stub => stub.WrappedInstance).Return (new PageMock());
+
+      TextValue.Stub (stub => stub.Page).Return (pageStub);
     }
 
-    [TearDown]
-    public void TearDown ()
+    [Test]
+    public void RenderSingleLineEditabaleAutoPostback ()
     {
-      ControlCollectionMock.VerifyAllExpectations();
+      RenderSingleLineEditable (false, false, false, true);
     }
 
     [Test]
     public void RenderSingleLineEditable ()
     {
-      RenderSingleLineEditable (false, false, false);
+      RenderSingleLineEditable (false, false, false, false);
     }
 
     [Test]
@@ -73,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     [Test]
     public void RenderSingleLineEditableWithStyle ()
     {
-      RenderSingleLineEditable (true, false, false);
+      RenderSingleLineEditable (true, false, false, false);
     }
 
     [Test]
@@ -97,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     [Test]
     public void RenderSingleLineEditableWithStyleAndCssClass ()
     {
-      RenderSingleLineEditable (true, true, false);
+      RenderSingleLineEditable (true, true, false, false);
     }
 
     [Test]
@@ -121,7 +127,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     [Test]
     public void RenderSingleLineEditableWithStyleInStandardProperties ()
     {
-      RenderSingleLineEditable (true, false, true);
+      RenderSingleLineEditable (true, false, true, false);
     }
 
     [Test]
@@ -145,7 +151,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     [Test]
     public void RenderSingleLineEditableWithStyleAndCssClassInStandardProperties ()
     {
-      RenderSingleLineEditable (true, true, true);
+      RenderSingleLineEditable (true, true, true, false);
     }
 
     [Test]
@@ -166,11 +172,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       RenderMultiLineReadonly (true, true, true);
     }
 
-    private void RenderSingleLineEditable (bool withStyle, bool withCssClass, bool inStandardProperties)
+    private void RenderSingleLineEditable (bool withStyle, bool withCssClass, bool inStandardProperties, bool autoPostBack)
     {
       TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
-      SetStyle (withStyle, withCssClass, inStandardProperties);
+      SetStyle (withStyle, withCssClass, inStandardProperties, autoPostBack);
 
       Renderer.Render();
 
@@ -185,6 +191,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       var input = Html.GetAssertedChildElement (span, "input", 0);
       Html.AssertAttribute (input, "type", "text");
       Html.AssertAttribute (input, "value", c_firstLineText);
+      if (TextValue.TextBoxStyle.AutoPostBack == true)
+        Html.AssertAttribute (input, "onchange", string.Format ("javascript:__doPostBack('{0}','')", TextValue.TextBoxID));
 
       CheckStyle (withStyle, span, input);
     }
@@ -193,7 +201,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     {
       TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
-      SetStyle (withStyle, withCssClass, inStandardProperties);
+      SetStyle (withStyle, withCssClass, inStandardProperties, false);
 
       TextValue.Stub (mock => mock.Enabled).Return (false);
       Renderer.Render();
@@ -203,7 +211,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
       var span = Html.GetAssertedChildElement (document, "span", 0);
       CheckCssClass (span, withCssClass, inStandardProperties);
-      Html.AssertAttribute (span, "class", Renderer.CssClassDisabled, HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (span, "class", Renderer.CssClassDisabled, HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
@@ -219,7 +227,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
     {
       TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
-      SetStyle (withStyle, withCssClass, inStandardProperties);
+      SetStyle (withStyle, withCssClass, inStandardProperties, false);
 
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
       Renderer.Render();
@@ -229,7 +237,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
 
       var span = Html.GetAssertedChildElement (document, "span", 0);
       CheckCssClass (span, withCssClass, inStandardProperties);
-      Html.AssertAttribute (span, "class", Renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (span, "class", Renderer.CssClassReadOnly, HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 
@@ -244,7 +252,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       TextValue.Stub (mock => mock.Text).Return (c_firstLineText + Environment.NewLine + c_secondLineText);
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
 
-      SetStyle (withStyle, withCssClass, inStandardProperties);
+      SetStyle (withStyle, withCssClass, inStandardProperties, false);
       TextValue.TextBoxStyle.TextMode = TextBoxMode.MultiLine;
 
       Renderer.Render();
@@ -255,7 +263,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       var span = Html.GetAssertedChildElement (document, "span", 0);
 
       CheckCssClass (span, withCssClass, inStandardProperties);
-      Html.AssertAttribute (span, "class", Renderer.CssClassReadOnly, HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (span, "class", Renderer.CssClassReadOnly, HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertStyleAttribute (span, "width", "auto");
       Html.AssertChildElementCount (span, 1);
 

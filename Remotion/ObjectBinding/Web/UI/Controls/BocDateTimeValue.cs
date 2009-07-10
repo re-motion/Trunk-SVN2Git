@@ -609,12 +609,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    public string GetTimeTextboxClientID ()
+    public string GetDateTextboxClientID ()
     {
       return ClientID + c_dateTextBoxIDPostfix;
     }
 
-    public string GetDateTextboxClientID ()
+    public string GetTimeTextboxClientID ()
     {
       return ClientID + c_timeTextBoxIDPostfix;
     }
@@ -831,12 +831,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocDateTimeValue.DateTextboxID
     {
-      get { return ID + c_dateTextBoxIDPostfix; }
+      get { return GetDateTextboxUniqueID(); }
     }
 
     string IBocDateTimeValue.TimeTextboxID
     {
-      get { return ID + c_timeTextBoxIDPostfix; }
+      get { return GetTimeTextboxUniqueID(); }
     }
 
     string IBocDateTimeValue.GetDatePickerText ()

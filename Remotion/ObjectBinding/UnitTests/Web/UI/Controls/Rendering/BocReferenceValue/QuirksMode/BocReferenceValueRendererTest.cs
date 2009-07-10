@@ -18,6 +18,7 @@ using System.Web.UI;
 using System.Xml;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode;
 using Rhino.Mocks;
 
@@ -26,6 +27,23 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
   [TestFixture]
   public class BocReferenceValueRendererTest : BocReferenceValueRendererTestBase
   {
+    [Test]
+    public void RenderReferenceValueAutoPostback ()
+    {
+      DropDownList.AutoPostBack = false;
+      Control.Stub (stub => stub.Enabled).Return (true);
+      SetUpClientScriptExpectations ();
+      SetValue ();
+
+      Control.Stub (stub => stub.DropDownListStyle).Return (new DropDownListStyle ());
+      Control.DropDownListStyle.AutoPostBack = true;
+
+      XmlNode div = GetAssertedDiv (1, false);
+      XmlNode table = GetAssertedTable (div, false);
+      AssertRow (table, false, false, false);
+      Assert.IsTrue (DropDownList.AutoPostBack);
+    }
+
     [Test]
     public void RenderNullReferenceValue ()
     {
@@ -337,7 +355,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
 
     private XmlNode GetAssertedDiv (int expectedChildElements, bool withStyle)
     {
-      var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => new StubDropDownList());
+      var renderer = new BocReferenceValueRenderer (HttpContext, Html.Writer, Control, () => DropDownList);
       renderer.Render();
 
       var document = Html.GetResultDocument();

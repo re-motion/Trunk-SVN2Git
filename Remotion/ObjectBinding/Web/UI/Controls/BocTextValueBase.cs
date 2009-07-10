@@ -350,7 +350,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocTextValueBase.TextBoxID
     {
-      get { return ID + c_textboxIDPostfix; }
+      get { return GetTextBoxUniqueID(); }
     }
   }
 }

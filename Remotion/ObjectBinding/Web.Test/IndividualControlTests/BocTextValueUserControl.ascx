@@ -24,7 +24,7 @@
     <td colSpan=4>Person</td></tr>
   <tr>
     <td></td>
-    <td><remotion:boctextvalue id=FirstNameField runat="server" Width="150px" PropertyIdentifier="FirstName" required="True" datasourcecontrol="CurrentObject"></remotion:boctextvalue></td>
+    <td><remotion:boctextvalue id=FirstNameField runat="server" TextBoxStyle-AutoPostBack="true" Width="150px" PropertyIdentifier="FirstName" required="True" datasourcecontrol="CurrentObject"></remotion:boctextvalue></td>
     <td>
       <p>bound, required=true</p></td>
     <td style="WIDTH: 20%"><asp:label id=FirstNameFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>

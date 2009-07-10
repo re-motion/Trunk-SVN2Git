@@ -35,6 +35,9 @@ namespace Remotion.Development.Web.UnitTesting.AspNetFramework
 
     public PageMock ()
     {
+      PrivateInvoke.SetNonPublicField (this, "_clientSupportsJavaScriptChecked", true);
+      PrivateInvoke.SetNonPublicField (this, "_clientSupportsJavaScript", true);
+      base.EnableEventValidation = false;
     }
 
     // methods and properties

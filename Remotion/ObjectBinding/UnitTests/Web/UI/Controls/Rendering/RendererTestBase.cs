@@ -16,71 +16,39 @@
 using System;
 using System.Collections;
 using System.Web;
-using System.Web.UI;
-using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
-using RhinoMocksExtensions=Rhino.Mocks.RhinoMocksExtensions;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
 {
   public class RendererTestBase
   {
-    private ControlCollection _controlCollectionMock;
-    private MockRepository _mockRepository;
     protected IHttpContext HttpContext { get; private set; }
     protected HtmlHelper Html { get; private set; }
 
-    public ControlCollection ControlCollectionMock
-    {
-      get { return _controlCollectionMock; }
-    }
-
-    public MockRepository MockRepository
-    {
-      get { return _mockRepository; }
-    }
-
     protected RendererTestBase ()
     {
-      
     }
 
     protected virtual void Initialize ()
     {
-      Html = new HtmlHelper ();
+      Html = new HtmlHelper();
 
-      HttpContext = MockRepository.GenerateMock<IHttpContext> ();
-      IHttpResponse response = MockRepository.GenerateMock<IHttpResponse> ();
+      HttpContext = MockRepository.GenerateMock<IHttpContext>();
+      IHttpResponse response = MockRepository.GenerateMock<IHttpResponse>();
       HttpContext.Stub (mock => mock.Response).Return (response);
       response.Stub (mock => mock.ContentType).Return ("text/html");
 
-      HttpBrowserCapabilities browser = new HttpBrowserCapabilities ();
-      browser.Capabilities = new Hashtable ();
+      HttpBrowserCapabilities browser = new HttpBrowserCapabilities();
+      browser.Capabilities = new Hashtable();
       browser.Capabilities.Add ("browser", "IE");
       browser.Capabilities.Add ("majorversion", "7");
 
-      var request = MockRepository.GenerateStub<IHttpRequest> ();
+      var request = MockRepository.GenerateStub<IHttpRequest>();
       request.Browser = browser;
 
-      HttpContext = MockRepository.GenerateStub<IHttpContext> ();
+      HttpContext = MockRepository.GenerateStub<IHttpContext>();
       HttpContext.Stub (stub => stub.Request).Return (request);
-    }
-
-    protected void SetUpAddAndRemoveControlExpectation<T> (IControl control)
-        where T:Control
-    {
-      if (_mockRepository == null)
-      {
-        _mockRepository = new MockRepository();
-      }
-      _controlCollectionMock = _mockRepository.PartialMock<ControlCollection> (new Control());
-      ControlCollectionMock.BackToRecord ();
-      ControlCollectionMock.Expect (mock => mock.Add (Arg<T>.Is.NotNull));
-      ControlCollectionMock.Expect (mock => mock.Remove (Arg<T>.Is.NotNull));
-      ControlCollectionMock.Replay();
-      control.Stub (stub => stub.Controls).Return (ControlCollectionMock);
     }
   }
 }

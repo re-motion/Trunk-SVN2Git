@@ -244,12 +244,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocEnumValue.LabelID
     {
-      get { return ID + c_labelIDPostfix; }
+      get { return UniqueID + c_labelIDPostfix; }
     }
 
     string IBocEnumValue.ListControlID
     {
-      get { return ID + c_listControlIDPostfix; }
+      get { return UniqueID + c_listControlIDPostfix; }
     }
 
     /// <summary> This event is fired when the selection is changed between postbacks. </summary>
