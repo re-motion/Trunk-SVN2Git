@@ -80,7 +80,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
         script.AppendFormat (
             "ListMenu_Update ( document.getElementById ('{0}'), {1} );",
             Control.ClientID,
-            Control.GetSelectionCount);
+            string.IsNullOrEmpty(Control.GetSelectionCount) ? "null" : Control.GetSelectionCount);
         Control.Page.ClientScript.RegisterStartupScriptBlock (Control, key, script.ToString ());
       }
     }

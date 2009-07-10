@@ -69,7 +69,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.ListMenu
 
       string script = "ListMenu_AddMenuInfo (document.getElementById ('{0}'), \r\n\tnew ListMenu_MenuInfo ('{0}', new Array (\r\n" +
                       "\t\t{1},\r\n\t\t{2},\r\n\t\t{3},\r\n\t\t{4} ) ) );\r\n" +
-                      "ListMenu_Update ( document.getElementById ('" + _control.ClientID + "'), " + _control.GetSelectionCount + " );";
+                      "ListMenu_Update ( document.getElementById ('" + _control.ClientID + "'), null );";
 
       script = string.Format (script, _control.ClientID, GetItemScript (0), GetItemScript (1), GetItemScript (2), GetItemScript (4));
      
@@ -148,6 +148,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.ListMenu
       var document = Html.GetResultDocument();
 
       var table = Html.GetAssertedChildElement (document, "table", 0);
+      table.AssertAttributeValueEquals ("id", _control.ClientID);
       table.AssertAttributeValueEquals ("cellspacing", "0");
       table.AssertAttributeValueEquals ("cellpadding", "0");
       table.AssertAttributeValueEquals ("border", "0");

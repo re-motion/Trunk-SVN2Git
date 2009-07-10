@@ -37,6 +37,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
     {
       WebMenuItem[] groupedListMenuItems = Control.MenuItems.GroupMenuItems (false);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
       Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
       Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
