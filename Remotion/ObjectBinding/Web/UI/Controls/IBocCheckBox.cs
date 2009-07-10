@@ -19,11 +19,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   public interface IBocCheckBox : IBocBooleanValueBase
   {
-    string GetLabelKey ();
-    string GetCheckboxUniqueID ();
+    string LabelID { get; }
+    string CheckboxID { get; }
+    string ImageID { get; }
     bool IsDescriptionEnabled { get; }
     string DefaultTrueDescription { get; }
     string DefaultFalseDescription { get; }
+    string GetLabelUniqueID ();
+    string GetCheckboxUniqueID ();
     string GetImageUniqueID ();
   }
 }

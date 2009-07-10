@@ -42,6 +42,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // constants
 
     private const string c_scriptFileUrl = "BocCheckBox.js";
+    private const string c_labelIDPostfix = "Boc_Label";
+    private const string c_checkboxIDPostfix = "Boc_CheckBox";
+    private const string c_imageIDPostfix = "Boc_Image";
 
     // types
 
@@ -402,27 +405,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return !WcagHelper.Instance.IsWaiConformanceLevelARequired () && _showDescription == true; }
     }
 
-    string IBocCheckBox.GetLabelKey ()
+    string IBocCheckBox.LabelID
     {
-      return UniqueID + IdSeparator + "Boc_Label";
+      get { return ClientID + ClientIDSeparator + c_labelIDPostfix; }
     }
 
-    /// <summary>
-    /// Gets the ID to use for the checkbox control.
-    /// </summary>
-    /// <returns>The control's ID postfixed with a constant checkbox id.</returns>
+    string IBocCheckBox.CheckboxID
+    {
+      get { return ClientID + ClientIDSeparator + c_checkboxIDPostfix; }
+    }
+
+    string IBocCheckBox.ImageID
+    {
+      get { return ClientID + ClientIDSeparator + c_imageIDPostfix; }
+    }
+
+    public string GetLabelUniqueID ()
+    {
+      return UniqueID + IdSeparator + c_labelIDPostfix;
+    }
+
     public string GetCheckboxUniqueID ()
     {
-      return UniqueID + IdSeparator + "Boc_CheckBox";
+      return UniqueID + IdSeparator + c_checkboxIDPostfix;
     }
 
-    /// <summary>
-    /// Gets the ID to use for the image control.
-    /// </summary>
-    /// <returns>The control's ID postfixed with a constant image id.</returns>
     public string GetImageUniqueID ()
     {
-      return UniqueID + IdSeparator + "Boc_Image";
+      return UniqueID + IdSeparator + c_imageIDPostfix;
     }
 
     bool IBocCheckBox.IsDescriptionEnabled

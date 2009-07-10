@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Label labelControl = new Label { ID = Control.GetLabelKey() };
+      Label labelControl = new Label { ID = Control.GetLabelUniqueID() };
       HtmlInputCheckBox checkBoxControl = new HtmlInputCheckBox { ID = Control.GetCheckboxUniqueID() };
       Image imageControl = new Image { ID = Control.GetImageUniqueID() };
 
@@ -110,8 +110,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
 
     private string GetScriptParameters ()
     {
-      string label = Control.IsDescriptionEnabled ? "document.getElementById ('" + Control.GetLabelKey() + "')" : "null";
-      string checkBox = "document.getElementById ('" + Control.GetCheckboxUniqueID() + "')";
+      string label = Control.IsDescriptionEnabled ? "document.getElementById ('" + Control.LabelID + "')" : "null";
+      string checkBox = "document.getElementById ('" + Control.CheckboxID + "')";
       string script = " ("
                       + checkBox + ", "
                       + label + ", "
