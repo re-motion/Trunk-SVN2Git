@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -117,8 +116,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object. </summary>
     private string _internalValue;
-
     private string _displayName;
+    private readonly ListItemCollection _listItems;
 
     private bool _enableIcon = true;
     private string _select = String.Empty;
@@ -141,6 +140,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public BocReferenceValue ()
     {
+      _listItems = new ListItemCollection();
       _commonStyle = new Style();
       _dropDownListStyle = new DropDownListStyle();
       _labelStyle = new Style();
@@ -184,6 +184,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       Controls.Add (_optionsMenu);
       _optionsMenu.EventCommandClick += OptionsMenu_EventCommandClick;
       _optionsMenu.WxeFunctionCommandClick += OptionsMenu_WxeFunctionCommandClick;
+      ((IStateManager) _listItems).TrackViewState();
     }
 
     /// <remarks> Populates the list. </remarks>
@@ -247,9 +248,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual void RaisePostDataChangedEvent ()
     {
       if (_internalValue == null)
+      {
         _displayName = null;
+      }
       else
-        _displayName = GetDisplayName (Value);
+      {
+        ListItem selectedItem = _listItems.FindByValue (_internalValue);
+        if (selectedItem == null)
+          throw new InvalidOperationException (string.Format ("The key '{0}' does not correspond to a known element.", _internalValue));
+        _displayName = selectedItem.Text;
+      }
 
       if (! IsReadOnly && Enabled)
         OnSelectionChanged();
@@ -476,9 +484,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (_showOptionsMenu)
           WcagHelper.Instance.HandleError (1, this, "ShowOptionsMenu");
-        bool hasPostBackCommand = Command != null
-                                  && (Command.Type == CommandType.Event
-                                      || Command.Type == CommandType.WxeFunction);
+        bool hasPostBackCommand = Command != null && (Command.Type == CommandType.Event || Command.Type == CommandType.WxeFunction);
         if (hasPostBackCommand)
           WcagHelper.Instance.HandleError (1, this, "Command");
 
@@ -489,25 +495,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     void IBocReferenceValue.PopulateDropDownList (DropDownList dropDownList)
     {
+      ArgumentUtility.CheckNotNull ("dropDownList", dropDownList);
+      dropDownList.Items.Clear();
+
       bool isNullItem = (InternalValue == null);
 
       if (isNullItem || !IsRequired)
-      {
-        //  No null item in the list?
-        if (dropDownList.Items.FindByValue (c_nullIdentifier) == null)
           dropDownList.Items.Add (CreateNullItem());
-      }
 
-      if (BusinessObjects != null)
-      {
-        //  Populate _dropDownList
-        for (int i = 0; i < BusinessObjects.Count; i++)
-        {
-          var businessObject = BusinessObjects[i];
-          var item = new ListItem (GetDisplayName (businessObject), businessObject.UniqueIdentifier);
-          dropDownList.Items.Add (item);
-        }
-      }
+      foreach (ListItem listItem in _listItems)
+        dropDownList.Items.Add (new ListItem (listItem.Text, listItem.Value));
 
       //  Check if null item is to be selected
       if (isNullItem)
@@ -615,15 +612,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (values[1] != null)
         InternalValue = (string) values[1];
       _displayName = (string) values[2];
+      ((IStateManager) _listItems).LoadViewState (values[3]);
     }
 
     protected override object SaveControlState ()
     {
-      object[] values = new object[3];
+      object[] values = new object[4];
 
       values[0] = base.SaveControlState();
       values[1] = _internalValue;
       values[2] = _displayName;
+      values[3] = ((IStateManager) _listItems).SaveViewState ();
 
       return values;
     }
@@ -637,8 +636,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (Property != null && DataSource != null && DataSource.BusinessObject != null)
         {
-          IBusinessObjectWithIdentity value =
-              (IBusinessObjectWithIdentity) DataSource.BusinessObject.GetProperty (Property);
+          IBusinessObjectWithIdentity value = (IBusinessObjectWithIdentity) DataSource.BusinessObject.GetProperty (Property);
           LoadValueInternal (value, interim);
         }
       }
@@ -797,18 +795,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <remarks> This method controls the actual refilling of the <see cref="DropDownList"/>. </remarks>
     protected virtual void RefreshBusinessObjectList (IList businessObjects)
     {
-      if (businessObjects == null)
-      {
-        BusinessObjects = null;
-        return;
-      }
-
-      var list = new List<IBusinessObjectWithIdentity> (businessObjects.Count);
-      foreach (IBusinessObjectWithIdentity businessObject in businessObjects)
-        list.Add (businessObject);
-      BusinessObjects = list;
-
       _isBusinessObejectListPopulated = true;
+      _listItems.Clear();
+
+      if (businessObjects != null)
+      {
+        foreach (IBusinessObjectWithIdentity businessObject in businessObjects)
+        {
+          ListItem item = new ListItem (GetDisplayName (businessObject), businessObject.UniqueIdentifier);
+          _listItems.Add (item);
+        }
+      }
     }
 
     protected virtual void InitializeMenusItems ()
@@ -994,12 +991,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get
       {
         if (InternalValue == null)
+        {
           _value = null;
-            //  Only reload if value is outdated
-        else if (Property != null
-                 && (_value == null
-                     || _value.UniqueIdentifier != InternalValue))
+        } 
+        else if (Property != null && (_value == null || _value.UniqueIdentifier != InternalValue))
+        {
+          //  Only reload if value is outdated
           _value = ((IBusinessObjectClassWithIdentity) Property.ReferenceClass).GetObject (InternalValue);
+        }
 
         return _value;
       }
@@ -1132,6 +1131,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     protected virtual string GetDisplayName (IBusinessObjectWithIdentity businessObject)
     {
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       return businessObject.DisplayNameSafe;
     }
 
@@ -1511,19 +1511,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected IList<IBusinessObjectWithIdentity> BusinessObjects
-    {
-      get
-      {
-        object list = ViewState["BusinessObjects"];
-        if (list == null)
-          return new List<IBusinessObjectWithIdentity>();
-
-        return (IList<IBusinessObjectWithIdentity>) list;
-      }
-      set { ViewState["BusinessObjects"] = value; }
-    }
-
     bool IBocReferenceValue.EmbedInOptionsMenu
     {
       get
@@ -1531,11 +1518,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return HasValueEmbeddedInsideOptionsMenu == true && HasOptionsMenu
                 || HasValueEmbeddedInsideOptionsMenu == null && IsReadOnly && HasOptionsMenu;
       }
-    }
-
-    IEnumerable<IBusinessObjectWithIdentity> IBocReferenceValue.BusinessObjects
-    {
-      get { return BusinessObjects; }
     }
 
     bool IBocRenderableControl.IsDesignMode
