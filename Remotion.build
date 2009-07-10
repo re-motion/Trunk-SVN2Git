@@ -171,7 +171,7 @@
       Core.Interfaces, Core.Core, Core.Mixins.MixerTool.Console, Core.Scripting,
       Development.CodeDom, Development.Core, Development.Data, 
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
-      ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, ObjectBinding.Web.Preview, 
+      ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, 
       ObjectBinding.Web.CodeGenerator, ObjectBinding.Web.CodeGenerator.Templates, 
       Data.Interfaces, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security, 
       Data.DomainObjects.RdbmsTools, Data.DomainObjects.RdbmsTools.Console, 
