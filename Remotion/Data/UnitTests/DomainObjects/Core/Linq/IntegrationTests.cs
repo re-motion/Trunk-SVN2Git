@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.Linq.Parsing;
+using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Customer=Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer;
 using Order=Remotion.Data.UnitTests.DomainObjects.TestDomain.Order;
@@ -34,6 +35,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   [TestFixture]
   public class IntegrationTests : ClientTransactionBaseTest
   {
+    [Test]
+    public void name ()
+    {
+      var Customers = QueryFactory.CreateLinqQuery<Customer> ();
+
+      var query = from c in Customers
+                  orderby c.Name descending 
+                  from oi in
+                    (from o in c.Orders
+                     where o.OrderNumber > 100
+                     from oi1 in o.OrderItems
+                     orderby c.Name
+                     select oi1)
+                  where oi.Product == "Comb"
+                  select new { c, oi };
+
+      var querz = from c in Customers
+                  orderby c.Name descending
+                  from o in c.Orders
+                  where o.OrderNumber > 100
+                  from oi1 in o.OrderItems
+                  orderby c.Name
+                  where oi1.Product == "Comb"
+                  select oi1;
+
+      var querk = from c in Customers
+                  orderby c.Name descending
+                  from oi in
+                    (from o in c.Orders
+                     where o.OrderNumber > 100
+                     from oi1 in o.OrderItems
+                     orderby o.OrderNumber
+                     select oi1)
+                  where oi.Product == "Comb"
+                  select new { c, oi };
+
+      var queryModel = new QueryParser ().GetParsedQuery (query.Expression);
+      Console.WriteLine (queryModel);
+    }
+
+
     [Test]
     public void SimpleQuery ()
     {
