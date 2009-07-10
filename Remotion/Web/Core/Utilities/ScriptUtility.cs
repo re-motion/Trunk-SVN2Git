@@ -145,6 +145,7 @@ namespace Remotion.Web.Utilities
     ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
     /// </param>
     /// <seealso cref="ScriptManager.RegisterStartupScript"/>
+    [Obsolete ("Use IPage.ClientScript.RegisterStartupScriptBlock (IControl, Type, string, string) instead.")]
     public static void RegisterStartupScriptBlock (Control control, string key, string javascript)
     {
       ArgumentUtility.CheckNotNull ("control", control);
@@ -157,18 +158,19 @@ namespace Remotion.Web.Utilities
       ScriptManager.RegisterStartupScript (control, typeof (Page), key, javascript, true);
     }
 
-    public static void RegisterElementForBorderSpans (Control control, string elementID)
+    public static void RegisterElementForBorderSpans (IControl control, string elementID)
     {
       RegisterElementForBorderSpans (control, elementID, false);
     }
     
-    public static void RegisterElementForBorderSpans (Control control, string elementID, bool borderSpansToOuterDiv)
+    public static void RegisterElementForBorderSpans (IControl control, string elementID, bool borderSpansToOuterDiv)
     {
-      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
       ArgumentUtility.CheckNotNullOrEmpty ("elementID", elementID);
 
-      ScriptUtility.RegisterStartupScriptBlock (
+      control.Page.ClientScript.RegisterStartupScriptBlock (
           control,
+          typeof (Page),
           "BorderSpans_" + elementID,
           string.Format (
               "StyleUtility.CreateBorderSpans (document.getElementById ('{0}'), {1});", elementID, borderSpansToOuterDiv ? "true" : "false"));

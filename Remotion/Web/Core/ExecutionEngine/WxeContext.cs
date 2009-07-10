@@ -20,9 +20,9 @@ using System.Web;
 using System.Web.UI;
 using Remotion.Context;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Obsolete;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
@@ -131,8 +131,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   Executes a <see cref="WxeFunction"/> in the current window from any <see cref="Page"/> by using a redirect.
     /// </summary>
     /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/ExecuteFunctionExternal/param[@name="page" or @name="function" or @name="urlParameters" or @name="returnToCaller"]' />
-    public static void ExecuteFunctionExternal (
-        Page page, WxeFunction function, NameValueCollection urlParameters, bool returnToCaller)
+    public static void ExecuteFunctionExternal (Page page, WxeFunction function, NameValueCollection urlParameters, bool returnToCaller)
     {
       ExecuteFunctionExternal (page, function, false, urlParameters, returnToCaller);
     }
@@ -158,8 +157,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   by using java script.
     /// </summary>
     /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/ExecuteFunctionExternal/param[@name="page" or @name="function" or @name="target" or @name="features" or @name="urlParameters"]' />
-    public static void ExecuteFunctionExternal (
-        Page page, WxeFunction function, string target, string features, NameValueCollection urlParameters)
+    public static void ExecuteFunctionExternal (Page page, WxeFunction function, string target, string features, NameValueCollection urlParameters)
     {
       ExecuteFunctionExternal (page, function, target, features, false, urlParameters);
     }
@@ -170,8 +168,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     /// <include file='doc\include\ExecutionEngine\WxeContext.xml' path='WxeContext/ExecuteFunctionExternal/param[@name="page" or @name="function" or @name="target" or @name="features" or @name="createPermaUrl" or @name="urlParameters"]' />
     public static void ExecuteFunctionExternal (
-        Page page, WxeFunction function, string target, string features,
-        bool createPermaUrl, NameValueCollection urlParameters)
+        Page page, WxeFunction function, string target, string features, bool createPermaUrl, NameValueCollection urlParameters)
     {
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNull ("function", function);
@@ -181,10 +178,10 @@ namespace Remotion.Web.ExecutionEngine
 
       string openScript;
       if (features != null)
-        openScript = string.Format ("window.open('{0}', '{1}', '{2}');", href, target, features);
+        openScript = string.Format ("window.open('{0}', '{1}', '{2}');\r\n", href, target, features);
       else
-        openScript = string.Format ("window.open('{0}', '{1}');", href, target);
-      ScriptUtility.RegisterStartupScriptBlock (page, "WxeExecuteFunction", openScript);
+        openScript = string.Format ("window.open('{0}', '{1}');\r\n", href, target);
+      ScriptManager.RegisterStartupScript (page, typeof (WxeContext), "WxeExecuteFunction", openScript, true);
 
       function.ReturnUrl = "javascript:window.close();";
     }

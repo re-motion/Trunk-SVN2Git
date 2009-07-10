@@ -36,13 +36,9 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      Control control = Control as Control;
-      if (control != null)
-      {
-        ScriptUtility.RegisterElementForBorderSpans (control, Control.ClientID + "_View", true);
-        ScriptUtility.RegisterElementForBorderSpans (control, Control.TopControl.ClientID, true);
-        ScriptUtility.RegisterElementForBorderSpans (control, Control.BottomControl.ClientID, true);
-      }
+      ScriptUtility.RegisterElementForBorderSpans (Control, Control.ClientID + "_View", true);
+      ScriptUtility.RegisterElementForBorderSpans (Control, Control.TopControl.ClientID, true);
+      ScriptUtility.RegisterElementForBorderSpans (Control, Control.BottomControl.ClientID, true);
 
       htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
 

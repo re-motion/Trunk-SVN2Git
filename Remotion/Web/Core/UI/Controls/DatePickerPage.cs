@@ -132,10 +132,10 @@ public class DatePickerPage : Page
 
   private void Calendar_SelectionChanged(object sender, EventArgs e)
   {
-    string key = typeof (DatePickerPage).FullName + "_Calendar_SelectionChanged";
-    string script = "DatePicker_Calendar_SelectionChanged ('" + Calendar.SelectedDate.ToShortDateString() + "');";
+    string key = "Calendar_SelectionChanged";
+    string script = "DatePicker_Calendar_SelectionChanged ('" + Calendar.SelectedDate.ToShortDateString () + "');\r\n";
     if (!Page.ClientScript.IsStartupScriptRegistered (key))
-      ScriptUtility.RegisterStartupScriptBlock (this, key, script);
+      Page.ClientScript.RegisterStartupScript (typeof (DatePickerPage), key, script, true);
   }
 }
 

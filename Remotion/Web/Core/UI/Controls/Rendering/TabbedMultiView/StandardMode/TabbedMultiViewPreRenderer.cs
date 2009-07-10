@@ -36,13 +36,9 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      if (Control is Control)
-      {
-        Control control = (Control) Control;
-        ScriptUtility.RegisterElementForBorderSpans (control, Control.ActiveViewClientID, true);
-        ScriptUtility.RegisterElementForBorderSpans (control, Control.TopControl.ClientID, true);
-        ScriptUtility.RegisterElementForBorderSpans (control, Control.BottomControl.ClientID, true);
-      }
+      ScriptUtility.RegisterElementForBorderSpans (Control, Control.ActiveViewClientID, true);
+      ScriptUtility.RegisterElementForBorderSpans (Control, Control.TopControl.ClientID, true);
+      ScriptUtility.RegisterElementForBorderSpans (Control, Control.BottomControl.ClientID, true);
 
       htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
 

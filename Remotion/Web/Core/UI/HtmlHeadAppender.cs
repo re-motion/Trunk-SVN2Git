@@ -370,13 +370,5 @@ namespace Remotion.Web.UI
     //    headElement.Text = innerHtml.ToString();
     //    RegisterHeadElement (key, headElement, priority);
     //  }
-    public void RegisterJavaScriptBlock (string key, string script)
-    {
-      HtmlGenericControl scriptControl = new HtmlGenericControl ("script");
-      scriptControl.Attributes["type"] = "text/javascript";
-      scriptControl.InnerText = script;
-
-      RegisterHeadElement (key, scriptControl, Priority.Script);
-    }
   }
 }
