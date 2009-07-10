@@ -52,5 +52,19 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
     {
       get { return Web.ResourceTheme.Legacy; }
     }
+
+    public override void PreRender ()
+    {
+      base.PreRender ();
+      string key = typeof (IDropDownMenu).FullName + "_Startup";
+
+      if (!Control.Page.ClientScript.IsStartupScriptRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme, "DropDownMenu.css");
+        string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, key, script);
+      }
+    }
   }
 }

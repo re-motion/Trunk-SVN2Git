@@ -142,8 +142,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-      
-      base.RegisterHtmlHeadContents (httpContext, HtmlHeadAppender.Current);
+
+      base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {

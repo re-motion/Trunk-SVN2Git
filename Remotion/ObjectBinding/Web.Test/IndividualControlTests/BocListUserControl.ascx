@@ -29,7 +29,7 @@
     <td></td>
     <td></td></tr>
   <tr>
-    <td colSpan=2><ros:TestBocList id=ChildrenList runat="server" datasourcecontrol="CurrentObject" propertyidentifier="ChildrenAsObjects" alwaysshowpageinfo="True" listmenulinebreaks="BetweenGroups" pagesize="4" indexoffset="100" RowMenuDisplay="Manual" ShowEmptyListMessage="True" enableselection="True" Index="InitialOrder" Selection="Multiple">
+    <td colSpan=2><ros:TestBocList id=ChildrenList runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Children" alwaysshowpageinfo="True" listmenulinebreaks="BetweenGroups" pagesize="4" indexoffset="100" RowMenuDisplay="Manual" ShowEmptyListMessage="True" enableselection="True" Index="InitialOrder" Selection="Multiple">
 <fixedcolumns>
 <remotion:BocRowEditModeColumnDefinition ItemID="EditRow" SaveText="Save" CancelText="Cancel" Width="2em" EditText="Edit"></remotion:BocRowEditModeColumnDefinition>
 <remotion:BocCommandColumnDefinition ItemID="E1" Text="E 1" ColumnTitle="Cmd">
@@ -53,27 +53,27 @@
 <remotion:BocListItemCommand></remotion:BocListItemCommand>
 </PersistedCommand>
 <propertypathbindings>
-<remotion:PropertyPathBinding PropertyPathIdentifier="LastName" IsDynamic="True"></remotion:PropertyPathBinding>
-<remotion:PropertyPathBinding PropertyPathIdentifier="FirstName" IsDynamic="True"></remotion:PropertyPathBinding>
+<remotion:PropertyPathBinding PropertyPathIdentifier="LastName"></remotion:PropertyPathBinding>
+<remotion:PropertyPathBinding PropertyPathIdentifier="FirstName"></remotion:PropertyPathBinding>
 </PropertyPathBindings>
 </remotion:BocCompoundColumnDefinition>
-<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Partner" EnforceWidth="True" Width="6em" ColumnTitle="Partner" IsDynamic="True" EnableIcon="True" >
+<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Partner" EnforceWidth="True" Width="6em" ColumnTitle="Partner" EnableIcon="True" >
 <persistedcommand>
 <remotion:BocListItemCommand></remotion:BocListItemCommand>
 </PersistedCommand>
 </remotion:BocSimpleColumnDefinition>
-<remotion:BocSimpleColumnDefinition ItemID="PartnerFirstName" PropertyPathIdentifier="Partner.FirstName" ColumnTitle="Parter" IsDynamic="True">
+<remotion:BocSimpleColumnDefinition ItemID="PartnerFirstName" PropertyPathIdentifier="Partner.FirstName" ColumnTitle="Parter" >
 <persistedcommand>
 <remotion:BocListItemCommand Type="Event"></remotion:BocListItemCommand>
 </PersistedCommand>
 </remotion:BocSimpleColumnDefinition>
-<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="LastName" ColumnTitle="LastName" IsReadOnly="True" IsDynamic="True">
+<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="LastName" ColumnTitle="LastName" IsReadOnly="True">
 <persistedcommand>
 <remotion:BocListItemCommand></remotion:BocListItemCommand>
 </PersistedCommand>
 </remotion:BocSimpleColumnDefinition>
-<remotion:BocCustomColumnDefinition ItemID="CustomCell" PropertyPathIdentifier="LastName" CustomCellType="Remotion.ObjectBinding.Sample::PersonCustomCell" Mode="ControlInEditedRow" ColumnTitle="Custom Cell" IsDynamic="True"></remotion:BocCustomColumnDefinition>
-<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Deceased" IsSortable="False" ColumnTitle="Deceased" IsDynamic="True">
+<remotion:BocCustomColumnDefinition ItemID="CustomCell" PropertyPathIdentifier="LastName" CustomCellType="Remotion.ObjectBinding.Sample::PersonCustomCell" Mode="ControlInEditedRow" ColumnTitle="Custom Cell"></remotion:BocCustomColumnDefinition>
+<remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Deceased" IsSortable="False" ColumnTitle="Deceased">
 <persistedcommand>
 <remotion:BocListItemCommand></remotion:BocListItemCommand>
 </PersistedCommand>

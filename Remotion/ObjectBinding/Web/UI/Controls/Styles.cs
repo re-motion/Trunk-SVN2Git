@@ -375,7 +375,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           && CheckClientSideMaxLength != false
           && ! ControlHelper.IsDesignMode (textBox))
       {
-        RegisterJavaScriptInclude (textBox, HttpContext.Current);
         textBox.Attributes.Add ("onkeydown", "return TextBoxStyle_OnKeyDown (this, " + MaxLength.Value + ");");
       }
 
@@ -392,16 +391,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (control, context, typeof (TextBoxStyle), ResourceType.Html, c_scriptFileUrl);
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
-      }
-    }
-
-    public void RegisterJavaScriptInclude (Control control, HttpContext context)
-    {
-      ArgumentUtility.CheckNotNull ("control", control);
-      if (!HtmlHeadAppender.Current.IsRegistered (s_scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (control, context, typeof (TextBoxStyle), ResourceType.Html, c_scriptFileUrl);
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
     }
 

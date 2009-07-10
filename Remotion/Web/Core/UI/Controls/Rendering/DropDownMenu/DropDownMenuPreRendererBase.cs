@@ -16,6 +16,7 @@
 using System;
 using System.Text;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
@@ -34,42 +35,32 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (Control.Page);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
 
       string key = typeof (IDropDownMenu).FullName + "_Script";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
+      if (!htmlHeadAppender.IsRegistered (key))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme, "DropDownMenu.js");
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (key, url);
+        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
       }
 
+
       key = typeof (IDropDownMenu).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
+      if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme, "DropDownMenu.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 
     public override void PreRender ()
     {
-      string key;
-
-      //  Startup script initalizing the global values of the script.
-      key = typeof (IDropDownMenu).FullName + "_Startup";
-      if (!Control.Page.ClientScript.IsStartupScriptRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme, "DropDownMenu.css");
-        string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
-        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, key, script);
-      }
-
-      key = Control.UniqueID;
-      if (Control.Enabled
-          && !Control.Page.ClientScript.IsStartupScriptRegistered (key))
+      string key = Control.UniqueID;
+      if (Control.Enabled && !Control.Page.ClientScript.IsStartupScriptRegistered (key))
       {
         StringBuilder script = new StringBuilder ();
         script.Append ("DropDownMenu_AddMenuInfo" + " (\r\n\t");

@@ -21,7 +21,6 @@ var _dropDownMenu_itemIconClassName = 'DropDownMenuItemIcon';
 var _dropDownMenu_itemSeparatorClassName = 'DropDownMenuSeparator';
 var _dropDownMenu_currentMenu = null;
 
-var _dropDownMenu_styleSheetLink = null;
 var _dropDownMenu_menuItemIDPrefix = 'menuItem_';
 
 var _dropDownMenu_requiredSelectionAny = 0;
@@ -32,10 +31,6 @@ var _dropDownMenu_currentItemIndex = -1;
 
 var _itemClickHandler = null;
 var _itemClicked = false;
-
-function DropDownMenu_InitializeGlobals(styleSheetLink) {
-    _dropDownMenu_styleSheetLink = styleSheetLink;
-}
 
 function DropDownMenu_MenuInfo(id, itemInfos) {
     this.ID = id;
