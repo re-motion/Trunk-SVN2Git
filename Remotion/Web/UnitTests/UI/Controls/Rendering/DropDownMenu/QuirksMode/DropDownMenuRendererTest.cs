@@ -63,7 +63,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     public void TearDown ()
     {
       _itemInfos.Clear ();
-      _control.Page.ClientScript.VerifyAllExpectations();
     }
 
     [Test]
@@ -75,6 +74,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv();
       XmlNode clickDiv = GetAssertedClickDiv(outerDiv);
       AssertHeadDiv (clickDiv, false, false, false);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     [Test]
@@ -88,6 +88,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
       AssertHeadDiv (clickDiv, false, false, false);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     [Test]
@@ -100,6 +101,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
       AssertHeadDiv (clickDiv, false, false, false);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     [Test]
@@ -112,6 +114,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
       AssertHeadDiv (clickDiv, true, false, false);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     [Test]
@@ -124,6 +127,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
       AssertHeadDiv (clickDiv, true, true, false);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     [Test]
@@ -138,6 +142,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
       AssertHeadDiv (clickDiv, true, false, false);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     [Test]
@@ -154,6 +159,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
       AssertHeadDiv (clickDiv, true, false, true);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     [Test]
@@ -167,6 +173,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
       AssertHeadDiv (clickDiv, true, false, false);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     [Test]
@@ -183,6 +190,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
       AssertHeadDiv (clickDiv, true, false, false);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     [Test]
@@ -198,6 +206,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       XmlNode outerDiv = GetAssertedOuterDiv ();
       XmlNode clickDiv = GetAssertedClickDiv (outerDiv);
       AssertHeadDiv (clickDiv, true, false, false);
+      _control.Page.ClientScript.VerifyAllExpectations ();
     }
 
     private void PopulateMenu ()
