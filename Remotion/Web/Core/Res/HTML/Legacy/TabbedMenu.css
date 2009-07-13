@@ -109,7 +109,7 @@ div.tabbedMainMenu a span.bottom
 /* Top Left tab corner */
 div.tabbedMainMenu li span.topLeft
 {
-  background-image: url(../Image/TabbedMainMenuTabTopLeftCorner.gif);
+  background-image: url(../../Image/TabbedMainMenuTabTopLeftCorner.gif);
   background-repeat: no-repeat;
   background-position: left top;
   width: 5px;
@@ -121,7 +121,7 @@ div.tabbedMainMenu li span.topLeft
 /* Top Right tab corner */
 div.tabbedMainMenu li span.topRight
 {
-  background-image: url(../Image/TabbedMainMenuTabTopRightCorner.gif);
+  background-image: url(../../Image/TabbedMainMenuTabTopRightCorner.gif);
   background-repeat: no-repeat;
   background-position: right top;
   width: 5px;

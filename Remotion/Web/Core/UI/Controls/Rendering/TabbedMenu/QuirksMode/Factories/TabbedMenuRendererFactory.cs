@@ -34,5 +34,10 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories
     {
       return new TabbedMenuRenderer (context, writer, control);
     }
+
+    public ITabbedMenuPreRenderer CreatePreRenderer (IHttpContext context, ITabbedMenu menu)
+    {
+      return new TabbedMenuPreRenderer (context, menu);
+    }
   }
 }

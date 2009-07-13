@@ -306,6 +306,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     {
       if (isCommandEnabled)
       {
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
         Control.Command.RenderBegin (Writer, postBackEvent, onClick, objectID, null);
         if (!string.IsNullOrEmpty (Control.Command.ToolTip))
           icon.ToolTip = Control.Command.ToolTip;
@@ -318,7 +319,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     private void RenderReadOnlyValue (Image icon, Label label, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
       if (isCommandEnabled)
+      {
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
         Control.Command.RenderBegin (Writer, postBackEvent, onClick, objectID, null);
+      }
 
       if (icon.Visible)
       {
@@ -327,6 +331,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       label.RenderControl (Writer);
       if (isCommandEnabled)
         Control.Command.RenderEnd (Writer);
+    }
+
+    protected string CssClassCommand
+    {
+      get { return "bocReferenceValueCommand"; }
     }
 
     private void RenderEditModeValue (DropDownList dropDownList, bool isControlHeightEmpty, bool isDropDownListHeightEmpty)

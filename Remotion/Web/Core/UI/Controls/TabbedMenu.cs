@@ -41,10 +41,8 @@ namespace Remotion.Web.UI.Controls
   public class TabbedMenu : WebControl, INavigationControl, ITabbedMenu
   {
     // constants
-    private const string c_styleFileUrl = "TabbedMenu.css";
 
     // statics
-    private static readonly string s_styleFileKey = typeof (TabbedMenu).FullName + "_Style";
     private static readonly object s_eventCommandClickEvent = new object ();
 
     // types
@@ -92,11 +90,9 @@ namespace Remotion.Web.UI.Controls
       }
       LoadSelection ();
 
-      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (TabbedMenu), ResourceType.Html, c_styleFileUrl);
-        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
-      }
+      var factory = ServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
     }
 
     /// <summary> Overrides the <see cref="Control.CreateChildControls"/> method. </summary>

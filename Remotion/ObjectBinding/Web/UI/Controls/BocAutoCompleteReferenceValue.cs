@@ -24,9 +24,9 @@ using System.Web.UI.Design;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.StandardMode;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
-using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -52,10 +52,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
 
-    private const string c_defaultControlWidth = "150pt";
-
-    private const string c_styleFileUrl = "BocAutoCompleteReferenceValue.css";
-
     // types
 
     /// <summary> A list of control specific resources. </summary>
@@ -77,8 +73,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectReferenceProperty) };
 
     private static readonly object s_selectionChangedEvent = new object();
-
-    private static readonly string s_styleFileKey = typeof (BocAutoCompleteReferenceValue).FullName + "_Style";
 
     // member fields
 
@@ -149,11 +143,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocAutoCompleteReferenceValue), ResourceType.Html, c_styleFileUrl);
-        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
-      }
+      var preRenderer = new BocAutoCompleteReferenceValuePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <remarks>
@@ -287,107 +278,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         PreRenderEditModeValue();
     }
 
-    protected override void AddAttributesToRender (HtmlTextWriter writer)
-    {
-      string backUpStyleWidth = Style["width"];
-      if (!StringUtility.IsNullOrEmpty (Style["width"]))
-        Style["width"] = null;
-      Unit backUpWidth = Width; // base.Width and base.ControlStyle.Width
-      if (!Width.IsEmpty)
-        Width = Unit.Empty;
-
-      bool isReadOnly = IsReadOnly;
-      bool isDisabled = !Enabled;
-
-      string backUpCssClass = CssClass; // base.CssClass and base.ControlStyle.CssClass
-      if ((isReadOnly || isDisabled) && !StringUtility.IsNullOrEmpty (CssClass))
-      {
-        if (isReadOnly)
-          CssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          CssClass += " " + CssClassDisabled;
-      }
-      string backUpAttributeCssClass = Attributes["class"];
-      if ((isReadOnly || isDisabled) && !StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        if (isReadOnly)
-          Attributes["class"] += " " + CssClassReadOnly;
-        else if (isDisabled)
-          Attributes["class"] += " " + CssClassDisabled;
-      }
-
-      base.AddAttributesToRender (writer);
-
-      if ((isReadOnly || isDisabled) && !StringUtility.IsNullOrEmpty (CssClass))
-        CssClass = backUpCssClass;
-      if ((isReadOnly || isDisabled) && !StringUtility.IsNullOrEmpty (Attributes["class"]))
-        Attributes["class"] = backUpAttributeCssClass;
-
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-      {
-        string cssClass = CssClassBase;
-        if (isReadOnly)
-          cssClass += " " + CssClassReadOnly;
-        else if (isDisabled)
-          cssClass += " " + CssClassDisabled;
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      }
-
-      if (!StringUtility.IsNullOrEmpty (backUpStyleWidth))
-        Style["width"] = backUpStyleWidth;
-      if (!backUpWidth.IsEmpty)
-        Width = backUpWidth;
-
-      writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "auto");
-    }
-
-    protected override void RenderContents (HtmlTextWriter writer)
+    public override void RenderControl (HtmlTextWriter writer)
     {
       EvaluateWaiConformity();
 
-      if (IsReadOnly)
-      {
-        bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-        bool isLabelHeightEmpty = _label.Height.IsEmpty && StringUtility.IsNullOrEmpty (_label.Style["height"]);
-        if (!isControlHeightEmpty && isLabelHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-        bool isLabelWidthEmpty = _label.Width.IsEmpty && StringUtility.IsNullOrEmpty (_label.Style["width"]);
-        if (!isControlWidthEmpty && isLabelWidthEmpty)
-        {
-          if (!Width.IsEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-          else
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-        }
-
-        _label.RenderControl (writer);
-      }
-      else
-      {
-        bool isControlHeightEmpty = Height.IsEmpty && StringUtility.IsNullOrEmpty (Style["height"]);
-        bool isTextBoxHeightEmpty = _textBox.Height.IsEmpty && StringUtility.IsNullOrEmpty (_textBox.Style["height"]);
-        if (!isControlHeightEmpty && isTextBoxHeightEmpty)
-          writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "100%");
-
-        bool isControlWidthEmpty = Width.IsEmpty && StringUtility.IsNullOrEmpty (Style["width"]);
-        bool isTextBoxWidthEmpty = _textBox.Width.IsEmpty && StringUtility.IsNullOrEmpty (_textBox.Style["width"]);
-        if (isTextBoxWidthEmpty)
-        {
-          if (isControlWidthEmpty)
-            writer.AddStyleAttribute (HtmlTextWriterStyle.Width, c_defaultControlWidth);
-          else
-          {
-            if (!Width.IsEmpty)
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Width.ToString());
-            else
-              writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Style["width"]);
-          }
-        }
-        _textBox.RenderControl (writer);
-        _hiddenField.RenderControl (writer);
-      }
+      var renderer = new BocAutoCompleteReferenceValueRenderer (new HttpContextWrapper (Context), writer, this);
+      renderer.Render();
     }
 
     protected override void LoadControlState (object savedState)

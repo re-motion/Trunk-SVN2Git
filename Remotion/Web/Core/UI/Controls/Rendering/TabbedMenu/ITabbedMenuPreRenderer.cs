@@ -14,17 +14,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu
 {
   /// <summary>
-  /// Interface for factories creating renderers for <see cref="TabbedMenu"/> controls.
+  /// Interface for classes that handle markup-related actions for <see cref="TabbedMenu"/> controls,
+  /// such as registering HTML head contents, which have to be executed before the rendering stage.
   /// </summary>
-  public interface ITabbedMenuRendererFactory
+  public interface ITabbedMenuPreRenderer : IPreRenderer<ITabbedMenu>
   {
-    ITabbedMenuRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, ITabbedMenu control);
-    ITabbedMenuPreRenderer CreatePreRenderer (IHttpContext context, ITabbedMenu menu);
   }
 }

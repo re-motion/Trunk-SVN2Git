@@ -19,7 +19,7 @@ div.bocReferenceValueContent a
   padding: 1px;
 }
 
-div.bocReferenceValueContent a:hover
+div.bocReferenceValueContent a.bocReferenceValueCommand:hover
 {
   border: solid 1px #005588;
   background-color: #fee197;

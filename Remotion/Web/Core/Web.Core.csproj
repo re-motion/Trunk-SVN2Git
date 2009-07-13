@@ -188,6 +188,7 @@
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleViewRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\Factories\SingleViewRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRenderer.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\TabbedMenuRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewPreRenderer.cs" />
@@ -781,7 +783,7 @@
     <Content Include="Res\HTML\Standard\TabStrip.css" />
     <Content Include="Res\HTML\Standard\ViewLayout.js" />
     <Content Include="Res\HTML\Style.css" />
-    <Content Include="Res\HTML\TabbedMenu.css" />
+    <Content Include="Res\HTML\Legacy\TabbedMenu.css" />
     <Content Include="Res\HTML\Legacy\TabbedMultiView.css" />
     <Content Include="Res\HTML\Legacy\TabStrip.css" />
     <Content Include="Res\HTML\TreeView.css" />
