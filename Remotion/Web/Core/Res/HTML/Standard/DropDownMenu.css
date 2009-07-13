@@ -16,24 +16,24 @@
 		line-height: 1.25em;
 	}
 	
-	div.DropDownMenuSelect > span {
+	div.DropDownMenuSelect span {
 		left: 0;
-		margin-right: 20px;
+		margin-right: 15px;
 	}
 
-	div.DropDownMenuSelect > a {
+	div.DropDownMenuSelect a {
 		left: 0;
-		margin-right: 20px;
+		margin-right: 15px;
 		border-style: none;
 		background-color: Transparent;
 	}
 	
-	div.DropDownMenuSelect > a:hover {
+	div.DropDownMenuSelect a:hover {
 		border-style: none;
 		background-color: Transparent;
 	}
 	
-	div.DropDownMenuContainer > div.disabled > a 
+	div.DropDownMenuContainer div.disabled a 
 	{
 	  color: Gray;
 	}
@@ -45,7 +45,7 @@
    
    div.DropDownMenuSelect span.DropDownMenuButton
    {
-     display: block;
+     display: inline-block;
      position: absolute;
      left: auto;
      top: 1px;
@@ -83,16 +83,17 @@
 		text-decoration: none;
 		display: block;
 		margin: 1px;
-		padding: 0 2px 2px 2px;
+		padding: 1px 3px 3px 3px;
 		line-height:1em;
 		white-space: nowrap;
 	  color: blue;
-		border: solid 1px transparent;
+		
 	}
 	 
 	ul.DropDownMenuOptions li a:hover {
 		background-color: #FFDE98;
 		border: solid 1px #005588;
+		padding: 0px 2px 2px 2px;
 	}
 	 
 	ul.DropDownMenuOptions li a img {
@@ -110,14 +111,17 @@
 		height: 16px;
 	}
 
-	ul.DropDownMenuOptions li.DropDownMenuItemDisabled a {
-		border: solid 1px transparent;
+	ul.DropDownMenuOptions li.DropDownMenuItemDisabled a 
+	{
+	  border-style: none;
+		padding: 1px 3px 3px 3px;
 		color: #808080
 	}
 
 	ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover {
 		background-color: transparent;
-		border: solid 1px transparent;
+		border-style: none;
+		padding: 1px 3px 3px 3px;
 		cursor: default;
 	}
 

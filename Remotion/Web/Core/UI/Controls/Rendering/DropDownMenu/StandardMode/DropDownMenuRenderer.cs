@@ -25,6 +25,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
   /// </summary>
   public class DropDownMenuRenderer : RendererBase<IDropDownMenu>, IDropDownMenuRenderer
   {
+    private const string c_whiteSpace = "&nbsp;";
     private const string c_dropDownIcon = "DropDownMenuArrow.gif";
 
     public DropDownMenuRenderer (IHttpContext context, HtmlTextWriter writer, IDropDownMenu control)
@@ -37,16 +38,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       AddAttributesToRender();
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      //RenderIFrame();
       RenderTitleDiv();
 
-      Writer.RenderEndTag();
-    }
-
-    private void RenderIFrame ()
-    {
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "none");
-      Writer.RenderBeginTag (HtmlTextWriterTag.Iframe);
       Writer.RenderEndTag();
     }
 
@@ -77,10 +70,11 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       if (Control.TitleIcon != null && !string.IsNullOrEmpty (Control.TitleIcon.Url))
         Control.TitleIcon.Render (Writer);
 
-      if (string.IsNullOrEmpty (Control.TitleText))
-        Writer.Write ("&nbsp;");
-      else
+      if (!string.IsNullOrEmpty (Control.TitleText))
+      {
         Writer.Write (Control.TitleText);
+        Writer.Write (c_whiteSpace);
+      }
       Writer.RenderEndTag ();
     }
 

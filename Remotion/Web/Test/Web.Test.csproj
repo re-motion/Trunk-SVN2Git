@@ -152,6 +152,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DropDownMenu.aspx.cs">
+      <DependentUpon>DropDownMenu.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DropDownMenu.aspx.designer.cs">
+      <DependentUpon>DropDownMenu.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ExecutionEngine\RedirectHandler.ashx.cs">
       <DependentUpon>RedirectHandler.ashx</DependentUpon>
     </Compile>
@@ -375,6 +382,7 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <Content Include="DropDownMenu.aspx" />
     <Content Include="ExecutionEngine\RedirectHandler.ashx" />
   </ItemGroup>
   <ItemGroup>

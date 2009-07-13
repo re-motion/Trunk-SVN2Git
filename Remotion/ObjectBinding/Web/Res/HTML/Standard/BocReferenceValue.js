@@ -52,9 +52,8 @@ function BocReferenceValue_AdjustPosition(control, isEmbedded) {
     contentSpan.css('left', left + 'px');
     contentSpan.css('right', right + 'px');
 
-    if (isEmbedded) 
+    if (isEmbedded)
     {
-        $(control).find('select').css('margin', '3px');
         var dropDownMenu = $(control).find('select').parent().parent();
         dropDownMenu.height(dropDownMenu.height() + 6);
 

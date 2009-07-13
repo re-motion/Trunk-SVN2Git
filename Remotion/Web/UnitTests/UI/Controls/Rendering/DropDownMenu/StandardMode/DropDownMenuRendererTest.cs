@@ -128,7 +128,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       titleAnchor.AssertAttributeValueEquals ("href", "#");
       titleAnchor.AssertAttributeValueEquals ("onclick", "return false;");
       titleAnchor.AssertChildElementCount (withIcon ? 1 : 0);
-      titleAnchor.AssertTextNode (withTitle ? c_MenuTitle : "&nbsp;", withIcon ? 1 : 0);
+      if (withTitle)
+        titleAnchor.AssertTextNode (c_MenuTitle + HtmlHelper.WhiteSpace, withIcon ? 1 : 0);
 
       if (withIcon)
       {

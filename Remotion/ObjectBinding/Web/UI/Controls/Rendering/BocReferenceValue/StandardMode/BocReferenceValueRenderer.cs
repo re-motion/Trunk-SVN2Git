@@ -84,6 +84,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       dropDownList.Width = Unit.Empty;
       dropDownList.ApplyStyle (Control.CommonStyle);
       Control.DropDownListStyle.ApplyStyle (dropDownList);
+      dropDownList.Style[HtmlTextWriterStyle.Margin] = "0";
 
       return dropDownList;
     }

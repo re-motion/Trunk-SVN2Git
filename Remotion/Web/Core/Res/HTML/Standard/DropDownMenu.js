@@ -67,13 +67,6 @@ function DropDownMenu_OnClick(context, menuID, getSelectionCount, evt) {
     }
 }
 
-function DropDownMenu_GetZIndexParent(element) {
-    var parent = element;
-    while (parent.parent('div').length > 0)
-        parent = parent.parent();
-    return parent;
-}
-
 function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt) {
     var itemInfos = _dropDownMenu_menuInfos[menuID].ItemInfos;
     var selectionCount = -1;
@@ -86,8 +79,6 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt) {
     var ul = document.createElement('ul');
     ul.className = 'DropDownMenuOptions';
     $('body')[0].appendChild(ul);
-
-    $(context).css('zIndex', '1000');
 
     _itemClickHandler = function() {
         DropDownMenu_ClosePopUp();
@@ -130,16 +121,27 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt) {
         $(ul).css('bottom', $(window).height() - titleDiv.offset().top - (titleDiv.outerHeight()-titleDiv.height()));
     }
 
-    /*
-    var iframe = $(context).children('iframe');
-    iframe.css('top', $(ul).position().top + 'px');
-    iframe.css('left', $(ul).position().left + 'px');
-    iframe.width($(ul).width());
-    iframe.height($(ul).height());
-    iframe.css('position', 'absolute');
-    iframe.css('zIndex', '999');
-    iframe.show();
-    */
+    if( ClientNeedsIFrame() )
+        DropDownMenu_CreateIFrame(ul);
+}
+
+function ClientNeedsIFrame() {
+    var isIE = jQuery.browser.msie;
+    var version = parseFloat(jQuery.browser.version);
+
+    return isIE && (version < 7);
+}
+
+function DropDownMenu_CreateIFrame(listElement) {
+    var iFrame = document.createElement('iframe');
+    iFrame.setAttribute('src', 'javascript:false');
+    $(iFrame).css('position', 'absolute');
+    $(iFrame).css('zIndex', '999');
+    $(iFrame).css('top', $(listElement).offset().top);
+    $(iFrame).css('height', $(listElement).outerHeight());
+    $(iFrame).css('left', $(listElement).offset().left);
+    $(iFrame).css('width', $(listElement).outerWidth());
+    $(listElement).parent()[0].appendChild(iFrame);
 }
 
 function DropDownMenu_ClosePopUp() {
