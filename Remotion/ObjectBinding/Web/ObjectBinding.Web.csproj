@@ -298,6 +298,7 @@
     </Compile>
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditableRow.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditModeController.cs" />
+    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\BocAutoCompleteReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\BocAutoCompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRendererFactory.cs" />
@@ -456,12 +457,17 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Res\HTML\BocTextValue.css" />
+    <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.css" />
+    <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.js" />
+    <Content Include="Res\HTML\Standard\jquery.bgiframe.min.js" />
     <Content Include="Res\HTML\Standard\BocReferenceValue.css" />
     <Content Include="Res\HTML\Standard\BocReferenceValue.js" />
+    <Content Include="Res\HTML\Standard\jquery.autocomplete.js" />
     <Content Include="Res\HTML\TextBoxStyle.js" />
     <Content Include="Res\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Image\CheckBoxNull.gif" />
     <Content Include="Res\Image\CheckBoxTrue.gif" />
+    <Content Include="Res\Image\DropDownMenuArrow.gif" />
     <Content Include="Res\Image\MoveFirst.gif" />
     <Content Include="Res\Image\MoveFirstInactive.gif" />
     <Content Include="Res\Image\MoveLast.gif" />
@@ -474,6 +480,12 @@
     <Content Include="Res\Image\SortAscending.gif" />
     <Content Include="Res\Image\SortDescending.gif" />
     <Content Include="Res\Image\ValidationError.gif" />
+    <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\BocBooleanValue.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

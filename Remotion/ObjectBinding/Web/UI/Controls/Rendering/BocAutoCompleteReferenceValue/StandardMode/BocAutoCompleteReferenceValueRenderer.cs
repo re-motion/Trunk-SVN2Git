@@ -15,34 +15,54 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.StandardMode
 {
-  public class BocAutoCompleteReferenceValueRenderer 
-    : BocRendererBase<IBocAutoCompleteReferenceValue>, IBocRenderableControlRenderer<IBocAutoCompleteReferenceValue>
+  public class BocAutoCompleteReferenceValueRenderer
+      : BocRendererBase<IBocAutoCompleteReferenceValue>, IBocRenderableControlRenderer<IBocAutoCompleteReferenceValue>
   {
     public BocAutoCompleteReferenceValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control)
-        : base(context, writer, control)
+        : base (context, writer, control)
     {
     }
 
     public void Render ()
     {
-      AddAttributesToRender (false);
+      AddAttributesToRender (true);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-      
+
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.TextBoxClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInput);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Type, "text");
       Writer.RenderBeginTag (HtmlTextWriterTag.Input);
-
-      Writer.RenderEndTag ();
       Writer.RenderEndTag();
-      
+      Writer.RenderEndTag();
+
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
+      string imgUrl = ResourceUrlResolver.GetResourceUrl (
+          Control, Context, typeof (IBocAutoCompleteReferenceValue), ResourceType.Image, "DropDownMenuArrow.gif");
+      Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format("url('{0}')", imgUrl));
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      IconInfo.Spacer.Render (Writer);
+      Writer.RenderEndTag();
+
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.HiddenFieldClientID);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Type, "hidden");
+      Writer.RenderBeginTag (HtmlTextWriterTag.Input);
+      Writer.RenderEndTag();
+
       Writer.RenderEndTag();
     }
-    
+
+    public string CssClassButton
+    {
+      get { return "bocAutoCompleteReferenceValueButton"; }
+    }
+
     protected override void AddAdditionalAttributes ()
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);

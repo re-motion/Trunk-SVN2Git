@@ -41,7 +41,7 @@
   </tr>
   <tr>
     <td></td>
-    <td><remotion:bocbooleanvalue id=UnboundReadOnlyDeceasedField runat="server" Width="150px" ReadOnly="True" height="8px"></remotion:bocbooleanvalue></td>
+    <td><remotion:bocbooleanvalue id=UnboundReadOnlyDeceasedField runat="server" Width="150px" ReadOnly="True" height="20px"></remotion:bocbooleanvalue></td>
     <td>unbound, value set, read only</td>
     <td style="WIDTH: 20%"><asp:label id="UnboundReadOnlyDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td>
   </tr>
@@ -65,12 +65,12 @@
   </tr>
   <tr>
     <td></td>
-    <td><remotion:bocbooleanvalue id=DisabledUnboundReadOnlyDeceasedField runat="server" Width="150px" ReadOnly="True" height="8px" enabled=false></remotion:bocbooleanvalue></td>
+    <td><remotion:bocbooleanvalue id=DisabledUnboundReadOnlyDeceasedField runat="server" Width="150px" ReadOnly="True" height="20px" enabled=false></remotion:bocbooleanvalue></td>
     <td>disabled, unbound, value set, read only</td>
     <td style="WIDTH: 20%"><asp:label id="DisabledUnboundReadOnlyDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td>
   </tr></table>
 <p>Deceased Field Checked Changed: <asp:label id="DeceasedFieldCheckedChangedLabel" runat="server" enableviewstate="False">#</asp:label></p>
-<p><remotion:webbutton id="DeceasedTestSetNullButton" runat="server" Text="Deceased Set Null" width="220px"/><remotion:webbutton id="DeceasedTestToggleValueButton" runat="server" Text="Deceased Toggle Value" width="220px"/></p>
+<p><remotion:webbutton id="DeceasedTestSetNullButton" runat="server" UseLegacyButton="true" Text="Deceased Set Null" width="220px"/><remotion:webbutton id="DeceasedTestToggleValueButton" runat="server" Text="Deceased Toggle Value" width="220px"/></p>
 <p><remotion:webbutton id="ReadOnlyDeceasedTestSetNullButton" runat="server" Text="Read Only Deceased Set Null" width="220px"/><remotion:webbutton id="ReadOnlyDeceasedTestToggleValueButton" runat="server" Text="Read Only Deceased Toggle Value" width="220px"/></p>
 <div style="BORDER-RIGHT: black thin solid; BORDER-TOP: black thin solid; BORDER-LEFT: black thin solid; BORDER-BOTTOM: black thin solid; BACKGROUND-COLOR: #ffff99" runat="server" visible="false" ID="NonVisualControls">
 <remotion:formgridmanager id=FormGridManager runat="server"/><remotion:BindableObjectDataSourceControl id=CurrentObject runat="server" Type="Remotion.ObjectBinding.Sample::Person"/></div>

@@ -1,0 +1,26 @@
+﻿div.bocAutoCompleteReferenceValue {
+	position: relative;
+	width: 100%;
+	display: inline-block;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+div.bocAutoCompleteReferenceValue > span {
+	position: absolute;
+	right: 20px; /* width of the dropdown arrow image*/
+	left: 0;
+}
+
+div.bocAutoCompleteReferenceValue input {
+	width: 100%;
+	vertical-align: middle;
+}
+
+div.bocAutoCompleteReferenceValue > span.bocAutoCompleteReferenceValueButton {
+	position: absolute;
+	right: 0;
+	background-color: #083779;
+	background-position: center center;
+	background-repeat:no-repeat;
+}

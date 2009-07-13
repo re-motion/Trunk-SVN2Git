@@ -49,6 +49,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
 
       Control = MockRepository.GenerateStub<IBocAutoCompleteReferenceValue> ();
       Control.Stub (stub => stub.ClientID).Return ("MyReferenceValue");
+      Control.Stub (stub => stub.TextBoxClientID).Return ("MyReferenceValue_Boc_TextBox");
+      Control.Stub (stub => stub.HiddenFieldClientID).Return ("MyReferenceValue_Boc_HiddenField");
       Control.Stub (stub => stub.Command).Return (new BocCommand ());
       Control.Command.Type = CommandType.Event;
       Control.Command.Show = CommandShow.Always;
@@ -83,7 +85,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
     }
 
     [Test]
-    [Ignore]
     public void RenderNullReferenceValue ()
     {
       Control.Stub (stub => stub.Enabled).Return (true);
@@ -104,11 +105,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
       input.AssertAttributeValueContains ("class", renderer.CssClassInput);
       input.AssertAttributeValueEquals ("type", "text");
 
-      var dropDownButton = containerDiv.GetAssertedChildElement ("img", 1);
+      var dropDownButton = containerDiv.GetAssertedChildElement ("span", 1);
+      dropDownButton.AssertAttributeValueEquals ("class", renderer.CssClassButton);
+      dropDownButton.AssertChildElementCount (1);
+
+      var dropDownSpacer = dropDownButton.GetAssertedChildElement ("img", 0);
+      dropDownSpacer.AssertAttributeValueEquals ("src", Control.ResolveClientUrl(IconInfo.Spacer.Url));
+      dropDownSpacer.AssertChildElementCount (0);
 
       var hiddenField = containerDiv.GetAssertedChildElement ("input", 2);
       hiddenField.AssertAttributeValueEquals ("id", Control.HiddenFieldClientID);
       hiddenField.AssertAttributeValueEquals ("type", "hidden");
+      hiddenField.AssertChildElementCount (0);
     }
   }
 }
