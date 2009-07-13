@@ -24,17 +24,17 @@ namespace Remotion.Data.Linq.Clauses
   /// </summary>
   public class CloneContext
   {
-    public CloneContext (ClauseMapping clauseMapping)
+    public CloneContext (QuerySourceMapping querySourceMapping)
     {
-      ArgumentUtility.CheckNotNull ("clauseMapping", clauseMapping);
+      ArgumentUtility.CheckNotNull ("querySourceMapping", querySourceMapping);
 
-      ClauseMapping = clauseMapping;
+      QuerySourceMapping = querySourceMapping;
     }
 
     /// <summary>
     /// Gets the clause mapping used during the cloning process. This is used to adjust the <see cref="QuerySourceReferenceExpression"/> instances
     /// of clauses to point to clauses in the cloned <see cref="QueryModel"/>.
     /// </summary>
-    public ClauseMapping ClauseMapping { get; private set; }
+    public QuerySourceMapping QuerySourceMapping { get; private set; }
   }
 }
