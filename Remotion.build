@@ -172,7 +172,6 @@
       Development.CodeDom, Development.Core, Development.Data, 
       Web, Web.ExecutionEngine.CodeGenerator, Web.Security,
       ObjectBinding.Interfaces, ObjectBinding, ObjectBinding.Web, 
-      ObjectBinding.Web.CodeGenerator, ObjectBinding.Web.CodeGenerator.Templates, 
       Data.Interfaces, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security, 
       Data.DomainObjects.RdbmsTools, Data.DomainObjects.RdbmsTools.Console, 
       Security.Interfaces, Security, Security.Metadata.Extractor, Security.MSBuild.Tasks, 
@@ -402,29 +401,6 @@
     <property name="project.output" value="Remotion.ObjectBinding.Web" />
     <property name="project.extension" value="dll" />
     <call target="execute-buildstep" />
-  </target>
-
-  <target name="ObjectBinding.Web.CodeGenerator" 
-      depends="Core.Core, Web, ObjectBinding, ObjectBinding.Web, Data.DomainObjects">
-    <property name="project.name" value="ObjectBinding.Web.CodeGenerator" />
-    <property name="project.dir" value="Remotion/ObjectBinding/Web.CodeGenerator/Core" />
-    <property name="project.output" value="UIGen" />
-    <property name="project.extension" value="exe" />
-    <call target="execute-buildstep" />
-  </target>
-
-  <target name="ObjectBinding.Web.CodeGenerator.Templates">
-    <property name="project.name" value="ObjectBinding.Web.CodeGenerator.Templates" />
-    <property name="project.dir" value="Remotion/ObjectBinding/Web.CodeGenerator/Templates" />
-    <property name="project.output" value="" />
-    <property name="project.extension" value="" />
-    <call target="execute-buildstep" if="${build.step.get-sourcefiles}" />
-    
-    <copy todir="${build.basedir}/UIGenTemplates" flatten="false" overwrite="true" if="${build.step.copy-resources}">
-      <fileset basedir="${project.basedir}">
-        <include name="**/*.*" />
-      </fileset>
-    </copy>
   </target>
 
   <target name="Security.Interfaces" depends="Core.Core, Core.Interfaces">
