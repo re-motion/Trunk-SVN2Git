@@ -521,6 +521,7 @@
     <Compile Include="Linq\Clauses\ExecutionStrategies\CollectionExecutionStrategyTest.cs" />
     <Compile Include="Linq\Clauses\ExecutionStrategies\ScalarExecutionStrategyTest.cs" />
     <Compile Include="Linq\Clauses\ExecutionStrategies\SingleExecutionStrategyTest.cs" />
+    <Compile Include="Linq\Clauses\ExpressionTreeVisitors\CloningExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Clauses\ExpressionTreeVisitors\ReferenceReplacingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\InputDependentExpressionTest.cs" />
