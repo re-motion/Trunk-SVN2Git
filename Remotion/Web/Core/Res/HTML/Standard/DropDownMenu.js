@@ -85,10 +85,9 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt) {
 
     var ul = document.createElement('ul');
     ul.className = 'DropDownMenuOptions';
-    context.appendChild(ul);
+    $('body')[0].appendChild(ul);
 
     $(context).css('zIndex', '1000');
-    DropDownMenu_GetZIndexParent($(context)).css('zIndex', '1000');
 
     _itemClickHandler = function() {
         DropDownMenu_ClosePopUp();
@@ -115,21 +114,23 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt) {
     var space_left = titleDiv.offset().left;
     var space_right = $(window).width() - titleDiv.offset().left - titleDiv.width();
 
-    if (($(ul).width() > space_left) && (space_left < space_right)) {
+    $(ul).css('top', titleDiv.offset().top + titleDiv.outerHeight());
+    $(ul).css('bottom', 'auto');
+    $(ul).css('right', $(window).width() - titleDiv.offset().left - titleDiv.outerWidth());
+    $(ul).css('left', 'auto');
 
+    if (($(ul).width() > space_left) && (space_left < space_right)) {
         if ($(ul).offset().left < 0) {
-            $(ul).css('left', '0');
-        } else {
-            $(ul).css('right', '0');
+            $(ul).css('left', titleDiv.offset().left);
+            $(ul).css('right', 'auto');
         }
     }
     if (($(ul).height() > space_bottom) && (space_top > space_bottom)) {
-        $(ul).css({ top: -$(ul).height() });
-    }
-    else {
         $(ul).css('top', 'auto');
+        $(ul).css('bottom', $(window).height() - titleDiv.offset().top - (titleDiv.outerHeight()-titleDiv.height()));
     }
 
+    /*
     var iframe = $(context).children('iframe');
     iframe.css('top', $(ul).position().top + 'px');
     iframe.css('left', $(ul).position().left + 'px');
@@ -138,16 +139,16 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt) {
     iframe.css('position', 'absolute');
     iframe.css('zIndex', '999');
     iframe.show();
+    */
 }
 
 function DropDownMenu_ClosePopUp() {
     if (_dropDownMenu_currentMenu == null)
         return;
 
-    var ul = $(_dropDownMenu_currentMenu).children('ul');
+    var ul = $('body').children('ul');
 
     $('body').unbind('click', DropDownMenu_ClosePopUp);
-    DropDownMenu_GetZIndexParent($(_dropDownMenu_currentMenu)).css('zIndex', '0');
     _dropDownMenu_currentMenu = null;
 
     var iframe = ul.siblings('iframe');

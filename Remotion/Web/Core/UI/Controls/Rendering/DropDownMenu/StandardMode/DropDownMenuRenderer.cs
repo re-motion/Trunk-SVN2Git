@@ -37,7 +37,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       AddAttributesToRender();
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      RenderIFrame();
+      //RenderIFrame();
       RenderTitleDiv();
 
       Writer.RenderEndTag();
