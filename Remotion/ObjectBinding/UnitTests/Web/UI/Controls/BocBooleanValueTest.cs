@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       string[] actual = _bocBooleanValue.GetTrackedClientIDs();
       Assert.IsNotNull (actual);
       Assert.AreEqual (1, actual.Length);
-      Assert.AreEqual (_bocBooleanValue.GetHiddenFieldUniqueID(), actual[0]);
+      Assert.AreEqual (_bocBooleanValue.GetHiddenFieldClientID(), actual[0]);
     }
 
 

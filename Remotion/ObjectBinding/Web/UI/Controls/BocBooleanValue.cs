@@ -52,6 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_nullString = "null";
 
     private const string c_defaultResourceGroup = "default";
+    private const string c_hiddenfieldIDPostfix = "Boc_HiddenField";
 
     // types
 
@@ -167,7 +168,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { GetHiddenFieldUniqueID () };
+      return IsReadOnly ? new string[0] : new[] { GetHiddenFieldClientID() };
     }
 
     /// <summary>
@@ -176,7 +177,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <returns>The control's <see cref="Control.UniqueID"/> postfixed with a constant id for the hidden field.</returns>
     public string GetHiddenFieldUniqueID ()
     {
-      return UniqueID + IdSeparator + "Boc_HiddenField";
+      return UniqueID + IdSeparator + c_hiddenfieldIDPostfix;
+    }
+
+    /// <summary>
+    /// Gets an ID to use for the hidden field needed to store the value of the control client-side.
+    /// </summary>
+    /// <returns>The control's <see cref="Control.UniqueID"/> postfixed with a constant id for the hidden field.</returns>
+    public string GetHiddenFieldClientID ()
+    {
+      return ClientID + ClientIDSeparator + c_hiddenfieldIDPostfix;
     }
 
     /// <summary>
