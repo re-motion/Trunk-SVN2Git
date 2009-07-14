@@ -28,8 +28,8 @@ namespace Remotion.Scripting.UnitTests
 
     public static ScriptContext CreateTestScriptContext (string name)
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter> ();
-      return CreateTestScriptContext (name, typeArbiterStub);
+      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
+      return CreateTestScriptContext (name, typeFilterStub);
     }
 
     public static ScriptContext CreateTestScriptContext ()

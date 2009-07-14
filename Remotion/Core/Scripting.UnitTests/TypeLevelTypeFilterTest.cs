@@ -14,33 +14,24 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Remotion.Utilities;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.UnitTests
 {
-  /// <summary>
-  /// Categorizes <see cref="Type"/>|s into "valid" and "invalid" types, 
-  /// based on whether the type is a member of the class's type collection.
-  /// </summary>
-  public class TypeLevelTypeArbiter : ITypeFilter
+  [TestFixture]
+  public class TypeLevelTypeFilterTest
   {
-    private readonly Dictionary<Type, bool> _validTypes = new Dictionary<Type, bool> ();
-
-    public TypeLevelTypeArbiter (IEnumerable<Type> validTypes)
+    [Test]
+    public void IsTypeValid ()
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("validTypes", validTypes);
-      foreach (var type in validTypes)
-      {
-        _validTypes.Add (type, true);
-      }
-    }
+      var typeFilter = new TypeLevelTypeFilter (new[] { typeof (string), this.GetType () });
 
-    public bool IsTypeValid (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      return _validTypes.ContainsKey (type);
+      Assert.That (typeFilter.IsTypeValid (typeof (string)), Is.True);
+      Assert.That (typeFilter.IsTypeValid (typeof (TypeLevelTypeFilterTest)), Is.True);
+
+      Assert.That (typeFilter.IsTypeValid (typeof (TypeLevelTypeFilter)), Is.False);
+      Assert.That (typeFilter.IsTypeValid (typeof (object)), Is.False);
     }
   }
 }

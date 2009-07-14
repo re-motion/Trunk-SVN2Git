@@ -38,21 +38,21 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Ctor ()
     {
-      var typeArbiter = new TypeLevelTypeArbiter(new Type[0]);
+      var typeFilter = new TypeLevelTypeFilter(new Type[0]);
       var proxiedType = typeof (string);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("Ctor"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("Ctor"));
       Assert.That (stableBindingProxyBuilder.ProxiedType, Is.EqualTo (proxiedType));
-      Assert.That (stableBindingProxyBuilder.GetTypeFilter (), Is.EqualTo (typeArbiter));
+      Assert.That (stableBindingProxyBuilder.GetTypeFilter (), Is.EqualTo (typeFilter));
     }
 
     [Test]
     public void BuildClassMethodToInterfaceMethodsMap_OneExplicitInterfaceMethod ()
     {
       var typeIAmbigous2 = typeof (IAmbigous2);
-      var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIAmbigous2 });
+      var typeFilter = new TypeLevelTypeFilter (new[] { typeIAmbigous2 });
       // Note: ProxiedChild implements IAmbigous1 and IAmbigous2
       var proxiedType = typeof(ProxiedChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_OneExplicitInterfaceMethod"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_OneExplicitInterfaceMethod"));
 
       var classMethodToInterfaceMethodsMap = stableBindingProxyBuilder.GetClassMethodToInterfaceMethodsMap ();
 
@@ -72,10 +72,10 @@ namespace Remotion.Scripting.UnitTests
     {
       var typeIAmbigous1 = typeof (IAmbigous1);
       var typeIAmbigous2 = typeof (IAmbigous2);
-      var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIAmbigous2, typeof (Proxied), typeIAmbigous1 });
+      var typeFilter = new TypeLevelTypeFilter (new[] { typeIAmbigous2, typeof (Proxied), typeIAmbigous1 });
       // Note: ProxiedChild implements IAmbigous1 and IAmbigous2
       var proxiedType = typeof (ProxiedChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_TwoExplicitInterfaceMethods"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_TwoExplicitInterfaceMethods"));
       //stableBindingProxyBuilder.BuildProxyType();
 
       var classMethodToInterfaceMethodsMap = stableBindingProxyBuilder.GetClassMethodToInterfaceMethodsMap ();
@@ -100,10 +100,10 @@ namespace Remotion.Scripting.UnitTests
     {
       var typeIProcessText1 = typeof (IProcessText1);
       var typeIProcessText2 = typeof (IProcessText2);
-      var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIProcessText2, typeof (Proxied), typeIProcessText1 });
+      var typeFilter = new TypeLevelTypeFilter (new[] { typeIProcessText2, typeof (Proxied), typeIProcessText1 });
       // Note: ProxiedChildChild implements IProcessText1 and IProcessText2 through one public member
       var proxiedType = typeof (ProxiedChildChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_TwoInterfaceMethodsImplementedAsOnePublicMethod"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_TwoInterfaceMethodsImplementedAsOnePublicMethod"));
 
       var classMethodToInterfaceMethodsMap = stableBindingProxyBuilder.GetClassMethodToInterfaceMethodsMap ();
 
@@ -124,9 +124,9 @@ namespace Remotion.Scripting.UnitTests
     public void GetInterfaceMethodsToClassMethod ()
     {
       var typeIAmbigous2 = typeof (IAmbigous2);
-      var typeArbiter = new TypeLevelTypeArbiter (new[] { typeIAmbigous2 });
+      var typeFilter = new TypeLevelTypeFilter (new[] { typeIAmbigous2 });
       var proxiedType = typeof (ProxiedChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("GetInterfaceMethodsToClassMethod"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("GetInterfaceMethodsToClassMethod"));
 
       var stringTimesIAmbigous1ClassMethod = GetAnyInstanceMethod (proxiedType, "Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.StringTimes");
       var stringTimesIAmbigous2ClassMethod = GetAnyInstanceMethod (proxiedType, "Remotion.Scripting.UnitTests.TestDomain.IAmbigous2.StringTimes");
@@ -140,16 +140,16 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void GetFirstKnownBaseType ()
     {
-      AssertGetFirstKnownBaseType( typeof (ProxiedChildChild), new TypeLevelTypeArbiter (new[] { typeof (Proxied) }), typeof (Proxied));
+      AssertGetFirstKnownBaseType( typeof (ProxiedChildChild), new TypeLevelTypeFilter (new[] { typeof (Proxied) }), typeof (Proxied));
       AssertGetFirstKnownBaseType (typeof (ProxiedChildChild), 
-        new TypeLevelTypeArbiter (new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild) }), typeof (ProxiedChildChild));
-      AssertGetFirstKnownBaseType (typeof (ProxiedChildChild), new TypeLevelTypeArbiter (new[] { typeof (string), typeof (Object), typeof (Type) }), typeof (Object));
+        new TypeLevelTypeFilter (new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild) }), typeof (ProxiedChildChild));
+      AssertGetFirstKnownBaseType (typeof (ProxiedChildChild), new TypeLevelTypeFilter (new[] { typeof (string), typeof (Object), typeof (Type) }), typeof (Object));
     }
 
-    private void AssertGetFirstKnownBaseType (Type proxiedType, TypeLevelTypeArbiter typeArbiter, Type expectedType)
+    private void AssertGetFirstKnownBaseType (Type proxiedType, TypeLevelTypeFilter typeFilter, Type expectedType)
     {
       var moduleScopeStub = MockRepository.GenerateStub<ModuleScope>();
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, moduleScopeStub);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, moduleScopeStub);
       Assert.That (stableBindingProxyBuilder.GetFirstKnownBaseType (), Is.EqualTo (expectedType));
     }
 
@@ -159,9 +159,9 @@ namespace Remotion.Scripting.UnitTests
     {
       var moduleScopeStub = MockRepository.GenerateStub<ModuleScope> ();
       var baseType = typeof (Proxied);
-      var typeArbiter = new TypeLevelTypeArbiter (new[] { baseType });
+      var typeFilter = new TypeLevelTypeFilter (new[] { baseType });
       var proxiedType = typeof (ProxiedChildChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, moduleScopeStub);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, moduleScopeStub);
 
       var methodFromBaseType = GetAnyInstanceMethod (baseType, "Sum");
       var method = GetAnyInstanceMethod (proxiedType, "Sum");
@@ -198,9 +198,9 @@ namespace Remotion.Scripting.UnitTests
     public void BuildProxyType_ObjectMethods ()
     {
       var knownBaseType = typeof (Proxied);
-      var typeArbiter = new TypeLevelTypeArbiter (new[] { knownBaseType });
+      var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType });
       var proxiedType = typeof (ProxiedChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildProxyType_ObjectMethods"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_ObjectMethods"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType ();
 
       var proxied = new ProxiedChild ();
@@ -224,9 +224,9 @@ namespace Remotion.Scripting.UnitTests
     public void BuildProxyType_CheckMembers ()
     {
       var knownBaseType = typeof (Proxied);
-      var typeArbiter = new TypeLevelTypeArbiter (new[] { knownBaseType });
+      var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType });
       var proxiedType = typeof (ProxiedChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("BuildProxyType"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType();
 
       var knownBaseTypeMethods = knownBaseType.GetMethods ().Where (m => m.IsSpecialName == false);
