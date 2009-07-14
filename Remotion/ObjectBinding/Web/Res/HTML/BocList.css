@@ -198,6 +198,17 @@ td.bocListDataCellEven div.DropDownMenuSelect a:hover
   background-color: Transparent;
 }
 
+td.bocListDataCellOdd div.DropDownMenuSelect.disabled a,
+td.bocListDataCellEven div.DropDownMenuSelect.disabled a,
+td.bocListDataCellOdd div.DropDownMenuSelect.disabled a:hover,
+td.bocListDataCellEven div.DropDownMenuSelect.disabled a:hover
+{
+  color: Gray;
+	padding: 0px;
+	border: none;
+  background-color: Transparent;
+}
+
 td.bocListDataCellOdd div.DropDownMenuContainer ul a,
 td.bocListDataCellEven div.DropDownMenuContainer ul a,
 td.bocListDataCellOdd div.DropDownMenuContainer ul a:hover,
