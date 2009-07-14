@@ -39,7 +39,7 @@ namespace Remotion.Scripting.UnitTests
       const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
 
       const string scriptText = 
-@"'ExpressionScriptCtorTest'";
+"'ExpressionScriptCtorTest'";
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptScope = engine.CreateScope ();
@@ -58,7 +58,7 @@ namespace Remotion.Scripting.UnitTests
     public void Execute ()
     {
       const string scriptText =
-@"'Document Name: ' + rmDoc.DocumentName";
+"'Document Name: ' + rmDoc.DocumentName";
 
       ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
       var document = new Document ("Test Doc");
@@ -76,7 +76,7 @@ namespace Remotion.Scripting.UnitTests
     public void Execute_ImportedTypeIntoScriptScope ()
     {
       const string scriptText =
-@"Document('New ' + rmDoc.DocumentName)";
+"Document('New ' + rmDoc.DocumentName)";
 
       ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
       ImportFromAssemblyIntoScriptScope(scriptScope,"Remotion.Scripting.UnitTests","Remotion.Scripting.UnitTests.TestDomain","Document");
@@ -90,55 +90,46 @@ namespace Remotion.Scripting.UnitTests
 
 
 
-//    [Test]
-//    public void Execute_SwitchesAndReleasesScriptContext ()
-//    {
-//      Assert.That (ScriptContext.Current, Is.Null);
+    [Test]
+    public void Execute_SwitchesAndReleasesScriptContext ()
+    {
+      Assert.That (ScriptContext.Current, Is.Null);
 
-//      const string scriptText = @"
-//import clr
-//clr.AddReferenceByPartialName('Remotion.Scripting')
-//from Remotion.Scripting import *
-//def Test() :
-//  return ScriptContext.Current
-//";
+      const string scriptText = 
+"ScriptContext.Current";
 
-//      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesScriptContext_Script");
-//      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-//      var script = new Script<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
-//      Assert.That (script.Execute (), Is.SameAs (scriptContextForScript));
+      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesScriptContext_Script");
+      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      ImportFromAssemblyIntoScriptScope (scriptScope, "Remotion.Scripting", "Remotion.Scripting", "ScriptContext");
+      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
+      Assert.That (script.Execute (), Is.SameAs (scriptContextForScript));
 
-//      Assert.That (ScriptContext.Current, Is.Null);
-//    }
+      Assert.That (ScriptContext.Current, Is.Null);
+    }
 
-//    [Test]
-//    public void Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows ()
-//    {
-//      Assert.That (ScriptContext.Current, Is.Null);
+    [Test]
+    public void Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows ()
+    {
+      Assert.That (ScriptContext.Current, Is.Null);
 
-//      const string scriptText = @"
-//import clr
-//clr.AddReferenceByPartialName('Remotion.Scripting')
-//from Remotion.Scripting import *
-//def Test() :
-//  raise Exception('IntentionallyRaisedIronPythonException') 
-//";
+      const string scriptText = 
+"RaiseCommandNotSupportedInIronPythonExpressioSoUsingUnkownSymbol";
 
-//      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows");
-//      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-//      var script = new Script<Object> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows");
+      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
 
-//      try
-//      {
-//        script.Execute ();
-//      }
-//      catch (Exception e)
-//      {
-//        Assert.That (e.Message, Is.EqualTo ("IntentionallyRaisedIronPythonException"));
-//      }
+      try
+      {
+        script.Execute ();
+      }
+      catch (Exception e)
+      {
+        Assert.That (e.Message, Is.EqualTo ("name 'RaiseCommandNotSupportedInIronPythonExpressioSoUsingUnkownSymbol' is not defined"));
+      }
 
-//      Assert.That (ScriptContext.Current, Is.Null);
-//    }
+      Assert.That (ScriptContext.Current, Is.Null);
+    }
 
 
 
