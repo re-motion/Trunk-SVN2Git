@@ -69,6 +69,7 @@
     <Compile Include="Script.template.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ScriptEnvironment.cs" />
     <Compile Include="StableBindingGetCustomMemberImplementor.cs" />
     <Compile Include="ITypeFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

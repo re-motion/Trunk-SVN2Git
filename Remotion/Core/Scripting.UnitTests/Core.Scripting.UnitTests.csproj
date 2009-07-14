@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ScriptEnvironmentTest.cs" />
     <Compile Include="TestDomain\Document.cs" />
     <Compile Include="ExpressionScriptTest.cs" />
     <Compile Include="ForwardingProxyBuilderTest.cs" />

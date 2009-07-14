@@ -59,7 +59,7 @@ namespace Remotion.Scripting.UnitTests
       const string scriptText =
 "'Document Name: ' + rmDoc.DocumentName";
 
-      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      ScriptScope scriptScope = ScriptingHelper.CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
       var document = new Document ("Test Doc");
       scriptScope.SetVariable ("rmDoc", document);
 
@@ -77,7 +77,7 @@ namespace Remotion.Scripting.UnitTests
       const string scriptText =
 "Document('New ' + rmDoc.DocumentName)";
 
-      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      ScriptScope scriptScope = ScriptingHelper.CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
       ImportFromAssemblyIntoScriptScope(scriptScope,"Remotion.Scripting.UnitTests","Remotion.Scripting.UnitTests.TestDomain","Document");
       var document = new Document ("Test Doc");
       scriptScope.SetVariable ("rmDoc", document);
@@ -98,7 +98,7 @@ namespace Remotion.Scripting.UnitTests
 "ScriptContext.Current";
 
       ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesScriptContext_Script");
-      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      ScriptScope scriptScope = ScriptingHelper.CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
       ImportFromAssemblyIntoScriptScope (scriptScope, "Remotion.Scripting", "Remotion.Scripting", "ScriptContext");
       var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
       Assert.That (script.Execute (), Is.SameAs (scriptContextForScript));
@@ -115,7 +115,7 @@ namespace Remotion.Scripting.UnitTests
 "RaiseCommandNotSupportedInIronPythonExpressioSoUsingUnkownSymbol";
 
       ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows");
-      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      ScriptScope scriptScope = ScriptingHelper.CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
       var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
 
       try
@@ -147,10 +147,10 @@ from " + nameSpace + " import " + symbol;
     }
 
 
-    private ScriptScope CreateScriptScope (ScriptingHost.ScriptLanguageType scriptLanguageType)
-    {
-      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
-      return engine.CreateScope ();
-    }
+    //private ScriptScope CreateScriptScope (ScriptingHost.ScriptLanguageType scriptLanguageType)
+    //{
+    //  var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+    //  return engine.CreateScope ();
+    //}
   }
 }

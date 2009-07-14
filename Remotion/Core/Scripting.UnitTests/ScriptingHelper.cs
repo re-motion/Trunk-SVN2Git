@@ -15,12 +15,19 @@
 // 
 using System.Linq;
 using System.Reflection;
+using Microsoft.Scripting.Hosting;
 using Remotion.Diagnostics.ToText;
 
 namespace Remotion.Scripting.UnitTests
 {
   public class ScriptingHelper
   {
+    public static ScriptScope CreateScriptScope (ScriptingHost.ScriptLanguageType scriptLanguageType)
+    {
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      return engine.CreateScope ();
+    }
+
     public static void ToConsoleLine (MethodInfo mi)
     {
       var pis = mi.GetParameters ();
