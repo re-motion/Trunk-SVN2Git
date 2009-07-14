@@ -29,8 +29,8 @@ var _dropDownMenu_requiredSelectionOneOrMore = 2;
 
 var _dropDownMenu_currentItemIndex = -1;
 
-var _itemClickHandler = null;
-var _itemClicked = false;
+var _dropDownMenu_itemClickHandler = null;
+var _dropDownMenu_itemClicked = false;
 
 function DropDownMenu_MenuInfo(id, itemInfos) {
     this.ID = id;
@@ -54,8 +54,8 @@ function DropDownMenu_ItemInfo(id, category, text, icon, iconDisabled, requiredS
 }
 
 function DropDownMenu_OnClick(context, menuID, getSelectionCount, evt) {
-    if (_itemClicked) {
-        _itemClicked = false;
+    if (_dropDownMenu_itemClicked) {
+        _dropDownMenu_itemClicked = false;
         return;
     }
     if (context != _dropDownMenu_currentMenu) {
@@ -80,15 +80,15 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt) {
     ul.className = 'DropDownMenuOptions';
     $('body')[0].appendChild(ul);
 
-    _itemClickHandler = function() {
+    _dropDownMenu_itemClickHandler = function() {
         DropDownMenu_ClosePopUp();
-        _itemClicked = true;
+        _dropDownMenu_itemClicked = true;
         try {
             eval(this.getAttribute('javascript'));
         }
         catch (e) {
         }
-        setTimeout('_itemClicked = false;', 10);
+        setTimeout('_dropDownMenu_itemClicked = false;', 10);
     };
     setTimeout("$('body').bind('click', DropDownMenu_ClosePopUp);", 10);
 
@@ -186,7 +186,7 @@ function DropDownMenu_CreateTextItem(itemInfo, selectionCount) {
     item.className = className;
 
     if (isEnabled)
-        $(item).bind('click', _itemClickHandler);
+        $(item).bind('click', _dropDownMenu_itemClickHandler);
 
     var anchor = document.createElement("a");
     anchor.setAttribute('href', '#');
@@ -244,6 +244,10 @@ function DropDownMenu_CreateSeparatorItem() {
     item.appendChild(textPane);
 
     return textPane;
+}
+
+function DropDownMenu_OnHeadControlClick() {
+    _dropDownMenu_itemClicked = true;
 }
 
 function DropDownMenu_OnKeyDown(event, dropDownMenu, getSelectionCount) {

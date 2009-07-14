@@ -5,6 +5,7 @@ div.bocReferenceValue
                 display: inline-block;
                 vertical-align: middle
 }
+
 div.bocReferenceValueContent
 {
   position:relative;
@@ -14,8 +15,10 @@ div.bocReferenceValueContent
   vertical-align: top;
 }
 
-div.bocReferenceValueContent a
+div.bocReferenceValueContent *.bocReferenceValueCommand
 {
+  display:inline-block;
+  position: relative;
   padding: 1px;
 }
 
@@ -23,6 +26,17 @@ div.bocReferenceValueContent a.bocReferenceValueCommand:hover
 {
   border: solid 1px #005588;
   background-color: #fee197;
+  padding: 0;
+}
+
+div.bocReferenceValueContent *.bocReferenceValueCommand
+{
+  margin: auto;
+}
+
+div.bocReferenceValueContent *.bocReferenceValueCommand span
+{
+  margin-right: 2px;
 }
 
 div.bocReferenceValueContent img.bocReferenceValueContent
@@ -30,15 +44,20 @@ div.bocReferenceValueContent img.bocReferenceValueContent
     background-color: Transparent;
     border-style: none;
     position: static;    
-    margin: 2px;
+    padding: 1px 3px 1px 1px;
 }
 
-div.bocReferenceValueOptionsMenu {
+div.bocReferenceValueOptionsMenu 
+{
   position: absolute; 
   display: block; 
   right: 0;
-  /*right:1px;   same like right border if you have */
   top: 1px;
+}
+
+div.bocReferenceValueOptionsMenu div.DropDownMenuSelect
+{
+  margin-left: 4px;
 }
 
 div.bocReferenceValueContent span.readOnly

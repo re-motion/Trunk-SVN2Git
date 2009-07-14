@@ -17,28 +17,27 @@ var _bocReferenceValue_nullValue;
 
 //  Initializes the strings used to represent the true, false and null values.
 //  Call this method once in a startup script.
-function BocReferenceValue_InitializeGlobals (nullValue) 
-{
-  _bocReferenceValue_nullValue = nullValue;
+function BocReferenceValue_InitializeGlobals(nullValue) {
+    _bocReferenceValue_nullValue = nullValue;
 }
 
 //  Returns the number of rows selected for the specified BocList
-function BocReferenceValue_GetSelectionCount (referenceValueDropDownListID)
-{
-  var dropDownList = document.getElementById (referenceValueDropDownListID);
-  if (dropDownList == null || dropDownList.selectedIndex < 0)
-    return 0;
-  if (dropDownList.children[dropDownList.selectedIndex].value == _bocReferenceValue_nullValue)
-    return 0;
-  return 1;
+function BocReferenceValue_GetSelectionCount(referenceValueDropDownListID) {
+    var dropDownList = document.getElementById(referenceValueDropDownListID);
+    if (dropDownList == null || dropDownList.selectedIndex < 0)
+        return 0;
+    if (dropDownList.children[dropDownList.selectedIndex].value == _bocReferenceValue_nullValue)
+        return 0;
+    return 1;
 }
 
 function BocReferenceValue_AdjustPosition(control, isEmbedded) {
 
-    var totalWidth = $(control).width();
-    var totalHeight = $(control).height();
-    
-    var icon = $(control).find('img.bocReferenceValueContent');
+    var totalWidth = $(control).innerWidth();
+    var totalHeight = $(control).innerHeight();
+
+    var icon = $(control).find('img.bocReferenceValueContent').parent();
+
     var left = 0;
     if (icon.length > 0)
         left = icon.outerWidth(true);
@@ -52,15 +51,20 @@ function BocReferenceValue_AdjustPosition(control, isEmbedded) {
     contentSpan.css('left', left + 'px');
     contentSpan.css('right', right + 'px');
 
-    if (isEmbedded)
-    {
+    var verticalAlignParent = $(control);
+    if (isEmbedded) {
         var dropDownMenu = $(control).find('select').parent().parent();
-        dropDownMenu.height(dropDownMenu.height() + 6);
-
         if (dropDownMenu.length > 0) {
-            icon.css('position', 'relative');
-            icon.css('top', (icon.position().top + 3) + 'px');
-            icon.css('left', '2px');
+            dropDownMenu.height($(control).find('select').parent().outerHeight(true));
+            icon.css('top', (dropDownMenu.innerHeight() - icon.outerHeight()) / 2);
         }
+        verticalAlignParent = dropDownMenu;
     }
+
+/*
+    verticalAlignParent.children().each(
+        function(index) {
+            $(this).css('top', ($(this).parent().innerHeight() - $(this).outerHeight()) / 2);
+        });
+*/
 }

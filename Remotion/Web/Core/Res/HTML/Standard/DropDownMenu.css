@@ -7,7 +7,9 @@
 		width: 100%;
 	}
 	
-	div.DropDownMenuSelect {
+	div.DropDownMenuSelect 
+	{
+	  position: relative;
 		border: solid 1px #005588;
 		text-align: left;
 		vertical-align: top;
@@ -48,9 +50,9 @@
      display: inline-block;
      position: absolute;
      left: auto;
-     top: 1px;
-     bottom: 1px;
-		 right: 1px;
+     top: 0;
+     bottom: 0;
+		 right: 0;
 		 background-color: #DFEEF5;
 		 margin-right: 0;
    }

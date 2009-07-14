@@ -305,33 +305,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
 
     private void RenderSeparateIcon (Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
       if (isCommandEnabled)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
         Control.Command.RenderBegin (Writer, postBackEvent, onClick, objectID, null);
         if (!string.IsNullOrEmpty (Control.Command.ToolTip))
           icon.ToolTip = Control.Command.ToolTip;
       }
+      else
+      {
+        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      }
       icon.RenderControl (Writer);
+
       if (isCommandEnabled)
         Control.Command.RenderEnd (Writer);
+      else
+        Writer.RenderEndTag();
     }
 
     private void RenderReadOnlyValue (Image icon, Label label, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
     {
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
       if (isCommandEnabled)
-      {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
         Control.Command.RenderBegin (Writer, postBackEvent, onClick, objectID, null);
-      }
+      else
+        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       if (icon.Visible)
       {
         icon.RenderControl (Writer);
       }
       label.RenderControl (Writer);
+
       if (isCommandEnabled)
         Control.Command.RenderEnd (Writer);
+      else
+        Writer.RenderEndTag();
     }
 
     protected string CssClassCommand
