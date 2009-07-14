@@ -39,7 +39,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
-      // Note: null/empty script text is allowed. 
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
@@ -75,7 +75,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
-      // Note: null/empty script text is allowed. 
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
@@ -111,7 +111,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
-      // Note: null/empty script text is allowed. 
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
@@ -147,7 +147,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
-      // Note: null/empty script text is allowed. 
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
@@ -183,7 +183,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
-      // Note: null/empty script text is allowed. 
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
@@ -219,7 +219,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
-      // Note: null/empty script text is allowed. 
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
@@ -255,7 +255,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
-      // Note: null/empty script text is allowed. 
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
@@ -291,7 +291,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
-      // Note: null/empty script text is allowed. 
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
@@ -327,7 +327,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
-      // Note: null/empty script text is allowed. 
+      ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);

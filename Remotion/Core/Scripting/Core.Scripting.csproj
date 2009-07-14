@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExpressionScript.cs" />
     <Compile Include="ForwardingProxyBuilder.cs" />
     <Compile Include="MethodInfoEqualityComparer.cs" />
     <Compile Include="MethodInfoEqualityComparer2.cs" />

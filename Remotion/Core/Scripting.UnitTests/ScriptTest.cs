@@ -17,6 +17,7 @@ using System;
 using Microsoft.Scripting.Hosting;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -138,6 +139,43 @@ def Test() :
       }
 
       Assert.That (ScriptContext.Current, Is.Null);
+    }
+
+
+    [Test]
+    public void ScriptExecute_ImportIntoScriptScope ()
+    {
+      const string scriptText = @"
+import clr
+clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
+from Remotion.Scripting.UnitTests.TestDomain import Document
+def Test() :
+  return Document('Knows Document')
+";
+
+      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_ImportIntoScriptScope");
+      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      var script = new Script<Document> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      Document resultDocument = script.Execute ();
+      Assert.That (resultDocument.DocumentName, Is.EqualTo ("Knows Document"));
+    }
+
+    [Test]
+    public void ScriptExecute_ImportMultipleIntoScriptScope ()
+    {
+      const string scriptText = @"
+import clr
+clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
+from Remotion.Scripting.UnitTests import *
+def Test() :
+  return TestDomain.Document('Knows Document')
+";
+
+      ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_ImportIntoScriptScope");
+      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      var script = new Script<Document> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope, "Test");
+      Document resultDocument = script.Execute ();
+      Assert.That (resultDocument.DocumentName, Is.EqualTo ("Knows Document"));
     }
 
 

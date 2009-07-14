@@ -20,40 +20,44 @@ using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
-  // @begin-template first=1 template=1 generate=0..9 suppressTemplate=true
-   
-  // @replace "TFixedArg<n>, "
-  public partial class Script<TFixedArg1, TResult> : ScriptBase
+  /// <summary>
+  /// An <see cref="ExpressionScript{TResult}"/> is a script which contains only a single expression. During script execution this 
+  /// expression is evaluated and the result returned. 
+  /// </summary>
+  /// <remarks>
+  /// Under IronPython <see cref="ExpressionScript{TResult}"/>|s are more safe than 
+  /// full blown <see cref="Script{TResult}"/>|s, since they cannot contain import statements, i.e. they can only access the objects
+  /// which can be reached from within their <see cref="ScriptScope"/>.
+  /// </remarks>
+  /// <typeparam name="TResult">The expression result type.</typeparam>
+  public class ExpressionScript<TResult> : ScriptBase
   {
-    // @replace "TFixedArg<n>, "
-    private readonly Func<TFixedArg1, TResult> _func;
+    private readonly ScriptSource _scriptSource;
+    private readonly ScriptScope _scriptScope;
 
-    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptScope scope, string scriptFunctionName)
-      : base (scriptContext, scriptLanguageType, scriptText)
+    public ExpressionScript (
+        ScriptContext scriptContext,
+        ScriptingHost.ScriptLanguageType scriptLanguageType,
+        string scriptText,
+        ScriptScope scope)
+        : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
       ArgumentUtility.CheckNotNull ("scope", scope);
-      ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
-      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope);
-
-      // @replace "TFixedArg<n>, "
-      _func = scope.GetVariable<Func<TFixedArg1, TResult>> (scriptFunctionName);
+      _scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Expression);
+      _scriptScope = scope;
     }
 
-    // @replace "TFixedArg<n> a<n>" ", "
-    public TResult Execute (TFixedArg1 a1)
+    public TResult Execute ()
     {
       ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
       TResult result;
       try
       {
-        // @replace "a<n>" ", "
-        result = _func (a1);
+        result = _scriptSource.Execute<TResult> (_scriptScope);
       }
       finally
       {
@@ -62,5 +66,4 @@ namespace Remotion.Scripting
       return result;
     }
   }
-  // @end-template
 }
