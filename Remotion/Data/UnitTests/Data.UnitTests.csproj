@@ -604,7 +604,7 @@
     <Compile Include="Linq\Backend\FieldResolving\WhereFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\ParserExceptionTest.cs" />
     <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
-    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\ReplacingVisitorTest.cs" />
+    <Compile Include="Linq\Parsing\ExpressionTreeVisitors\ReplacingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionResolverTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\GroupByExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\JoinExpressionNodeTest.cs" />
