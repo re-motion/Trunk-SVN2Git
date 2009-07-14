@@ -336,7 +336,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       div.AssertAttributeValueEquals ("class", "bocReferenceValueContent");
       div.AssertChildElementCount (Control.HasOptionsMenu ? 2 : 1);
 
-      var span = div.GetAssertedChildElement ("span", 0);
+      var commandSpan = div.GetAssertedChildElement ("span", 0);
+      commandSpan.AssertAttributeValueEquals ("class", "bocReferenceValueCommand");
+      commandSpan.AssertChildElementCount (1);
+
+      var span = commandSpan.GetAssertedChildElement ("span", 0);
       span.AssertAttributeValueEquals ("id", Control.LabelClientID);
       span.AssertChildElementCount (0);
       span.AssertTextNode ("MyText", 0);
@@ -369,7 +373,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       }
 
       if (withIcon)
-        AssertIcon (contentDiv);
+        AssertIcon (contentDiv, true);
 
       var contentSpan = contentDiv.GetAssertedChildElement ("span", withIcon ? 1 : 0);
       contentSpan.AssertAttributeValueEquals ("class", "bocReferenceValueContent");

@@ -116,7 +116,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       var span = titleDiv.GetAssertedChildElement ("span", 1);
 
       var image = span.GetAssertedChildElement ("img", 0);
-      image.AssertAttributeValueEquals ("src", "/res/Remotion.Web/Image/DropDownMenuArrow.gif");
+      image.AssertAttributeValueEquals ("src", IconInfo.Spacer.Url);
       image.AssertAttributeValueEquals ("alt", "");
       image.AssertStyleAttribute ("vertical-align", "middle");
       image.AssertStyleAttribute ("border-style", "none");

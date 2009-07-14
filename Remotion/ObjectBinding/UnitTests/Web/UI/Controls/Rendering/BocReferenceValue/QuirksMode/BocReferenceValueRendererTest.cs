@@ -435,7 +435,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       iconCell.AssertStyleAttribute ("padding-right", "0.3em");
       iconCell.AssertChildElementCount (1);
 
-      AssertIcon(iconCell);
+      AssertIcon(iconCell, false);
     }
 
     private void AssertValueCell (XmlNode row, bool hasLabel, int index)

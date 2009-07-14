@@ -83,14 +83,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      Writer.AddStyleAttribute ("vertical-align", "middle");
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-      string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IDropDownMenu), ResourceType.Image, c_dropDownIcon);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Img);
-      Writer.RenderEndTag();
-
+      IconInfo.Spacer.Render (Writer);
+      
       Writer.RenderEndTag();
     }
 

@@ -129,11 +129,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       ClientScriptManagerMock.Expect (mock => mock.GetPostBackEventReference (Control, string.Empty)).Return ("PostBackEventReference");
     }
 
-    protected void AssertIcon (XmlNode parent)
+    protected void AssertIcon (XmlNode parent, bool wrapNonCommandIcon)
     {
       if (Control.IsCommandEnabled (Control.IsReadOnly))
       {
         var link = parent.GetAssertedChildElement ("a", 0);
+        link.AssertAttributeValueEquals ("class", "bocReferenceValueCommand");
         link.AssertAttributeValueEquals ("href", "#");
         link.AssertAttributeValueEquals ("onclick", "");
         link.AssertChildElementCount (1);
@@ -144,7 +145,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       }
       else
       {
-        var icon = parent.GetAssertedChildElement ("img", 0);
+        var iconParent = parent;
+        if (wrapNonCommandIcon)
+        {
+          var span = parent.GetAssertedChildElement ("span", 0);
+          span.AssertAttributeValueEquals ("class", "bocReferenceValueCommand");
+
+          iconParent = span;
+        }
+
+        var icon = iconParent.GetAssertedChildElement ("img", 0);
         icon.AssertAttributeValueEquals ("src", "~/Images/NullIcon.gif");
         icon.AssertStyleAttribute ("border-width", "0px");
       }

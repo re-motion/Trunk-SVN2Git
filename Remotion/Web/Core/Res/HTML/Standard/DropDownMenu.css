@@ -53,8 +53,12 @@
      top: 0;
      bottom: 0;
 		 right: 0;
+		 width: 16px;
 		 background-color: #DFEEF5;
 		 margin-right: 0;
+		 background-image: url("../../Image/DropDownMenuArrow.gif");
+		 background-position: center center;
+		 background-repeat: no-repeat;
    }
 
    div.DropDownMenuSelect img 
@@ -79,6 +83,7 @@
 	{
 	  background-color: #FFDE98;
 		border: solid 1px #005588;
+		padding: 0px 2px 2px 2px;
 	}
 
 	ul.DropDownMenuOptions li a {
