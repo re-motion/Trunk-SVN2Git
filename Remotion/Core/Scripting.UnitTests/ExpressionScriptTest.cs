@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Runtime.Remoting;
+using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -71,19 +72,21 @@ namespace Remotion.Scripting.UnitTests
 
 
 
-//    [Test]
-//    public void Execute2 ()
-//    {
-//      const string scriptText =
-//@"Document('New ' + rmDoc.DocumentName)";
+    [Test]
+    public void Execute_ImportedTypeIntoScriptScope ()
+    {
+      const string scriptText =
+@"Document('New ' + rmDoc.DocumentName)";
 
-//      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-//      var document = new Document ("Test Doc");
-//      scriptScope.SetVariable ("rmDoc", document);
+      ScriptScope scriptScope = CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      ImportFromAssemblyIntoScriptScope(scriptScope,"Remotion.Scripting.UnitTests","Remotion.Scripting.UnitTests.TestDomain","Document");
+      var document = new Document ("Test Doc");
+      scriptScope.SetVariable ("rmDoc", document);
 
-//      var script = new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
-//      Assert.That (script.Execute (), Is.EqualTo ("Document Name: Test Doc"));
-//    }
+      var script = new ExpressionScript<Document> (ScriptContextTestHelper.CreateTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
+      var result = script.Execute ();
+      Assert.That (result.DocumentName, Is.EqualTo ("New Test Doc"));
+    }
 
 
 
@@ -139,7 +142,20 @@ namespace Remotion.Scripting.UnitTests
 
 
 
+    public void ImportFromAssemblyIntoScriptScope (ScriptScope scriptScope, string assembly, string nameSpace, string symbol)
+    {
+      string scriptText = @"
+import clr
+clr.AddReferenceByPartialName('" + assembly + "')" +
+ @"
+from " + nameSpace + " import " + symbol;
 
+      const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      //ScriptScope scriptScope = CreateScriptScope (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
+      scriptSource.Execute (scriptScope);
+    }
 
 
     private ScriptScope CreateScriptScope (ScriptingHost.ScriptLanguageType scriptLanguageType)
