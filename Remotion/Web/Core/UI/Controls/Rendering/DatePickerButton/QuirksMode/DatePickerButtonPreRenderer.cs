@@ -25,8 +25,10 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
   public class DatePickerButtonPreRenderer : PreRendererBase<IDatePickerButton>, IDatePickerButtonPreRenderer
   {
     private const string c_datePickerScriptFileName = "DatePicker.js";
+    private const string c_datePickerStyleFileName = "DatePicker.css";
 
-    private static readonly string s_datePickerScriptFileKey = typeof (Controls.DatePickerButton).FullName + "_Script";
+    private static readonly string s_datePickerScriptFileKey = typeof (IDatePickerButton).FullName + "_Script";
+    private static readonly string s_datePickerStyleFileKey = typeof (IDatePickerButton).FullName + "_Style";
 
     public DatePickerButtonPreRenderer (IHttpContext context, IDatePickerButton control)
         : base (context, control)
@@ -37,11 +39,19 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      if (htmlHeadAppender.IsRegistered (ScriptFileKey))
-        return;
+      if (!htmlHeadAppender.IsRegistered (s_datePickerScriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IDatePickerButton), ResourceType.Html, ResourceTheme.Standard, c_datePickerScriptFileName);
+        htmlHeadAppender.RegisterJavaScriptInclude (s_datePickerScriptFileKey, scriptUrl);
+      }
 
-      string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (Controls.DatePickerButton), ResourceType.Html, ScriptFileName);
-      htmlHeadAppender.RegisterJavaScriptInclude (ScriptFileKey, scriptUrl);
+      if (!htmlHeadAppender.IsRegistered (s_datePickerStyleFileKey))
+      {
+        string styleUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IDatePickerButton), ResourceType.Html, ResourceTheme.Standard, c_datePickerStyleFileName);
+        htmlHeadAppender.RegisterStylesheetLink (s_datePickerStyleFileKey, styleUrl);
+      }
     }
 
     /// <summary>
@@ -50,22 +60,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
     public override void PreRender ()
     {
       
-    }
-
-    /// <summary>
-    /// Gets the key with which to register the script file.
-    /// </summary>
-    public string ScriptFileKey
-    {
-      get { return s_datePickerScriptFileKey; }
-    }
-
-    /// <summary>
-    /// Gets the name of the script file.
-    /// </summary>
-    public string ScriptFileName
-    {
-      get { return c_datePickerScriptFileName; }
     }
   }
 }

@@ -44,6 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // constants
 
     private const string c_scriptFileUrl = "BocBooleanValue.js";
+    private const string c_styleFileUrl = "BocBooleanValue.css";
 
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";
@@ -84,6 +85,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                                                                    };
 
     private static readonly string s_scriptFileKey = typeof (BocBooleanValue).FullName + "_Script";
+    private static readonly string s_styleFileKey = typeof (BocBooleanValue).FullName + "_Style";
 
     // member fields
     private bool? _value;
@@ -154,6 +156,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocBooleanValue), ResourceType.Html, c_scriptFileUrl);
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+      }
+
+      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
+      {
+        string styleUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocBooleanValue), ResourceType.Html, c_styleFileUrl);
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, styleUrl);
       }
     }
 

@@ -1,0 +1,37 @@
+/*  Style applied to the BocDateTimeValue's layout table.  */
+div.bocDateTimeValue
+{
+  position: relative;
+  white-space: nowrap;
+}
+
+/*  Style applied to the BocDateTimeValue's layout table's cells.  */
+div.bocDateTimeValue input.Date
+{
+  position: absolute;
+  left: 0;
+}
+
+div.bocDateTimeValue input.Time
+{
+  position: absolute;
+  right: 0;
+}
+
+div.bocDateTimeValue a
+{
+  position : relative;
+  margin: 0 5px 0 5px;
+}
+
+.bocDateTimeValue
+{
+}
+
+.bocDateTimeValue.readOnly
+{
+}
+
+.bocDateTimeValue.disabled
+{
+}

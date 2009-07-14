@@ -308,10 +308,16 @@
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocBooleanValueRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocCheckboxRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\Factories\BocBooleanValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\BocDateTimeValueRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\IBocDateTimeValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\IBocDateTimeValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\BocDateTimeValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\BocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\IBocDateTimeValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\QuirksMode\Factories\BocDateTimeValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\BocDateTimeValuePreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\BocDateTimeValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\Factories\BocDateTimeValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\BocEnumValueRenderer.cs" />
@@ -447,7 +453,7 @@
     <Content Include="Res\HTML\BocBooleanValue.js" />
     <Content Include="Res\HTML\BocCheckBox.js" />
     <Content Include="Res\HTML\BocCheckboxValue.css" />
-    <Content Include="Res\HTML\BocDateTimeValue.css" />
+    <Content Include="Res\HTML\Legacy\BocDateTimeValue.css" />
     <Content Include="Res\HTML\BocEnumValue.css" />
     <Content Include="Res\HTML\BocList.css" />
     <Content Include="Res\HTML\BocList.js" />
@@ -459,6 +465,8 @@
     <Content Include="Res\HTML\BocTextValue.css" />
     <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.css" />
     <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.js" />
+    <Content Include="Res\HTML\Standard\BocDateTimeValue.css" />
+    <Content Include="Res\HTML\Standard\BocDateTimeValue.js" />
     <Content Include="Res\HTML\Standard\jquery.bgiframe.min.js" />
     <Content Include="Res\HTML\Standard\BocReferenceValue.css" />
     <Content Include="Res\HTML\Standard\BocReferenceValue.js" />

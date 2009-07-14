@@ -99,16 +99,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DatePickerButton.QuirksMo
         Html.AssertAttribute (button, "onclick", script);
         Html.AssertAttribute (button, "href", "#");
       }
-      Html.AssertStyleAttribute (button, "padding", "0px");
-      Html.AssertStyleAttribute (button, "border", "none");
-      Html.AssertStyleAttribute (button, "background-color", "transparent");
 
       if (hasClientScript)
       {
         var image = Html.GetAssertedChildElement (button, "img", 0);
         Html.AssertAttribute (image, "alt", _datePickerButton.AlternateText);
         Html.AssertAttribute (image, "src", renderer.GetResolvedImageUrl());
-        Html.AssertStyleAttribute (image, "border-width", "0px");
       }
     }
   }

@@ -19,6 +19,7 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
@@ -93,7 +94,12 @@ public class DatePickerPage : Page
     if (!HtmlHeadAppender.Current.IsRegistered (key))
     {
       string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (DatePickerPage), ResourceType.Html, c_datePickerScriptUrl);
+          new ControlWrapper (this),
+          new HttpContextWrapper (Context),
+          typeof (DatePickerPage),
+          ResourceType.Html,
+          ResourceTheme.Standard,
+          c_datePickerScriptUrl);
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (key, scriptUrl);
     }
   }

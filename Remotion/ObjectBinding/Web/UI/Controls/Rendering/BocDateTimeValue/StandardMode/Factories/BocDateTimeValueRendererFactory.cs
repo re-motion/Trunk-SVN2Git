@@ -17,14 +17,21 @@ using System;
 using System.Web.UI;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode.Factories
 {
   /// <summary>
-  /// Interface for factories creating <see cref="IBocDateTimeValueRenderer"/> renderers.
+  /// Responsible for creating quirks mode renderers for <see cref="IBocDateTimeValue"/> controls.
   /// </summary>
-  public interface IBocDateTimeValueRendererFactory
+  public class BocDateTimeValueRendererFactory : IBocDateTimeValueRendererFactory
   {
-    IBocDateTimeValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control);
-    IBocDateTimeValuePreRenderer CreatePreRenderer (IHttpContext context, IBocDateTimeValue control);
+    IBocDateTimeValueRenderer IBocDateTimeValueRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control)
+    {
+      return new BocDateTimeValueRenderer (context, writer, control);
+    }
+
+    public IBocDateTimeValuePreRenderer CreatePreRenderer (IHttpContext context, IBocDateTimeValue control)
+    {
+      return new BocDateTimeValuePreRenderer (context, control);
+    }
   }
 }

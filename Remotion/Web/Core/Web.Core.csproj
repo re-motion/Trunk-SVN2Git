@@ -754,7 +754,8 @@
     <Content Include="Doc\include\Utilities\UrlUtility.xml" />
     <Content Include="Doc\WhatsNew_Remotion.Web.txt" />
     <Content Include="Res\HTML\ColorScheme_1_3_26.css" />
-    <Content Include="Res\HTML\DatePicker.js" />
+    <Content Include="Res\HTML\Standard\DatePicker.css" />
+    <Content Include="Res\HTML\Standard\DatePicker.js" />
     <Content Include="Res\HTML\FontSize080Quirks.css" />
     <Content Include="Res\HTML\FontSize100Quirks.css" />
     <Content Include="Res\HTML\Legacy\DropDownMenu.css" />
@@ -817,7 +818,7 @@
     <Content Include="Res\Image\TreeViewWhite.gif" />
     <Content Include="Res\Image\ValidationError.gif" />
     <Content Include="Res\UI\DatePickerForm.aspx">
-      <SubType>Form</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>

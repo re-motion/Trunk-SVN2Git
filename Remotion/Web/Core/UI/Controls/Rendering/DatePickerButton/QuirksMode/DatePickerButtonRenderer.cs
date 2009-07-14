@@ -45,9 +45,11 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
       bool hasClientScript = DetermineClientScriptLevel ();
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.Padding, "0px");
-      Writer.AddStyleAttribute ("border", "none");
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundColor, "transparent");
+      string cssClass = CssClassBase;
+      if (!Control.Enabled)
+        cssClass += " " + CssClassDisabled;
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      
       // TODO: hyperLink.ApplyStyle (Control.DatePickerButtonStyle);
 
       bool canScript = (Control.EnableClientScript && Control.IsDesignMode) || hasClientScript;
@@ -73,7 +75,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 
         Writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
         Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty(Control.AlternateText));
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderWidth, "0px");
         Writer.RenderBeginTag (HtmlTextWriterTag.Img);
         Writer.RenderEndTag ();
       }
@@ -83,12 +84,12 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
 
     public string CssClassBase
     {
-      get { throw new NotSupportedException (); }
+      get { return "DatePickerButton"; }
     }
 
     public string CssClassDisabled
     {
-      get { throw new NotSupportedException (); }
+      get { return "disabled"; }
     }
 
     public string CssClassReadOnly

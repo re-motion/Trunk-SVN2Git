@@ -14,24 +14,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode.Factories
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode
 {
-  /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="IBocDateTimeValue"/> controls.
-  /// </summary>
-  public class BocDateTimeValueRendererFactory : IBocDateTimeValueRendererFactory
+  public class BocDateTimeValuePreRenderer : PreRendererBase<IBocDateTimeValue>, IBocDateTimeValuePreRenderer
   {
-    IBocDateTimeValueRenderer IBocDateTimeValueRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control)
+    public BocDateTimeValuePreRenderer (IHttpContext context, IBocDateTimeValue control)
+        : base (context, control)
     {
-      return new BocDateTimeValueRenderer (context, writer, control);
     }
 
-    public IBocDateTimeValuePreRenderer CreatePreRenderer (IHttpContext context, IBocDateTimeValue control)
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      return new BocDateTimeValuePreRenderer (context, control);
+      string styleKey = typeof (IBocDateTimeValue).FullName + "_Style";
+      string styleFile = ResourceUrlResolver.GetResourceUrl (
+          Control, Context, typeof (IBocDateTimeValue), ResourceType.Html, ResourceTheme.Legacy, "BocDateTimeValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile);
+    }
+
+    public override void PreRender ()
+    {
     }
   }
 }
