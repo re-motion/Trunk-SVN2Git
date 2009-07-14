@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Runtime.Remoting;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using NUnit.Framework;
@@ -143,7 +142,6 @@ from " + nameSpace + " import " + symbol;
 
       const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
-      //ScriptScope scriptScope = CreateScriptScope (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
       scriptSource.Execute (scriptScope);
     }
