@@ -24,11 +24,11 @@ namespace Remotion.Scripting
   /// Categorizes <see cref="Type"/>|s into "valid" and "invalid" types, 
   /// based on whether their assembly is a member of the class's assembly collection.
   /// </summary>
-  public class AssemblyLevelTypeArbiter : ITypeFilter
+  public class AssemblyLevelTypeFilter : ITypeFilter
   {
     private readonly Dictionary<Assembly,bool> _validAssemblies = new Dictionary<Assembly, bool>();
 
-    public AssemblyLevelTypeArbiter (IEnumerable<Assembly> validAssemblies)
+    public AssemblyLevelTypeFilter (IEnumerable<Assembly> validAssemblies)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("validAssemblies", validAssemblies);
       foreach (var assembly in validAssemblies)

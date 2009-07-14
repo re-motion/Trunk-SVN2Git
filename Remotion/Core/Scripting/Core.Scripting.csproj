@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{58B51BBB-23D9-4B96-9F1F-8696B71F73C8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -75,7 +75,7 @@
     <Compile Include="ScriptBase.cs" />
     <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptingHost.cs" />
-    <Compile Include="AssemblyLevelTypeArbiter.cs" />
+    <Compile Include="AssemblyLevelTypeFilter.cs" />
     <Compile Include="StableBindingProxyBuilder.cs" />
     <Compile Include="StableBindingProxyProvider.cs" />
     <Compile Include="TypeLevelTypeArbiter.cs" />

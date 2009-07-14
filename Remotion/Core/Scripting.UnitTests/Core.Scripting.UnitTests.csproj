@@ -89,7 +89,7 @@
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="TestDomain\Proxied.cs" />
     <Compile Include="ScriptingHostTest.cs" />
-    <Compile Include="AssemblyLevelTypeArbiterTest.cs" />
+    <Compile Include="AssemblyLevelTypeFilterTest.cs" />
     <Compile Include="TestDomain\ProxiedChild.cs" />
     <Compile Include="TestDomain\ProxiedChildChild.cs" />
     <Compile Include="TestDomain\ProxiedChildChildGeneric.cs" />

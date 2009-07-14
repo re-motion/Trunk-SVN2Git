@@ -20,17 +20,17 @@ using NUnit.Framework.SyntaxHelpers;
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
-  public class AssemblyLevelTypeArbiterTest
+  public class AssemblyLevelTypeFilterTest
   {
     [Test]
     public void IsTypeValid ()
     {
-      var typeArbiter = new AssemblyLevelTypeArbiter (new[] { typeof(Object).Assembly, this.GetType().Assembly });
+      var typeFilter = new AssemblyLevelTypeFilter (new[] { typeof(Object).Assembly, this.GetType().Assembly });
       
-      Assert.That (typeArbiter.IsTypeValid (typeof (string)), Is.True);
-      Assert.That (typeArbiter.IsTypeValid (typeof (AssemblyLevelTypeArbiterTest)), Is.True);
+      Assert.That (typeFilter.IsTypeValid (typeof (string)), Is.True);
+      Assert.That (typeFilter.IsTypeValid (typeof (AssemblyLevelTypeFilterTest)), Is.True);
 
-      Assert.That (typeArbiter.IsTypeValid (typeof (AssemblyLevelTypeArbiter)), Is.False);
+      Assert.That (typeFilter.IsTypeValid (typeof (AssemblyLevelTypeFilter)), Is.False);
     }
   }
 }

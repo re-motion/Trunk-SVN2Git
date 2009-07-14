@@ -36,21 +36,21 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    public void Name_And_TypeArbiter_Properties ()
+    public void Name_And_TypeFilter_Properties ()
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter>();
-      var scriptContext = ScriptContextTestHelper.CreateTestScriptContext ("Context0", typeArbiterStub);
+      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter>();
+      var scriptContext = ScriptContextTestHelper.CreateTestScriptContext ("Context0", typeFilterStub);
       Assert.That (scriptContext.Name, Is.EqualTo ("Context0"));
-      Assert.That (scriptContext.TypeFilter, Is.SameAs (typeArbiterStub));
+      Assert.That (scriptContext.TypeFilter, Is.SameAs (typeFilterStub));
     }
 
     [Test]
     public void CreateScriptContext ()
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter>();
-      var scriptContext = ScriptContext.CreateScriptContext ("Context1", typeArbiterStub);
+      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter>();
+      var scriptContext = ScriptContext.CreateScriptContext ("Context1", typeFilterStub);
       Assert.That (scriptContext.Name, Is.EqualTo ("Context1"));
-      Assert.That (scriptContext.TypeFilter, Is.SameAs (typeArbiterStub));
+      Assert.That (scriptContext.TypeFilter, Is.SameAs (typeFilterStub));
     }
 
     [Test]
@@ -63,8 +63,8 @@ namespace Remotion.Scripting.UnitTests
 
     private ScriptContext CreateScriptContext (string name)
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter> ();
-      return ScriptContext.CreateScriptContext (name, typeArbiterStub);
+      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
+      return ScriptContext.CreateScriptContext (name, typeFilterStub);
     }
 
     [Test]
@@ -79,11 +79,11 @@ namespace Remotion.Scripting.UnitTests
     [ExpectedException (ExceptionType = typeof (ArgumentException), ExpectedMessage = "ScriptContext named \"DuplicateContext\" already exists.")]
     public void CreateScriptContext_CreatingSameNamedContextFails ()
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter> ();
+      var typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
       const string name = "DuplicateContext";
-      var scriptContext = ScriptContext.CreateScriptContext (name, typeArbiterStub);
+      var scriptContext = ScriptContext.CreateScriptContext (name, typeFilterStub);
       Assert.That (scriptContext, Is.Not.Null);
-      ScriptContext.CreateScriptContext (name, typeArbiterStub);
+      ScriptContext.CreateScriptContext (name, typeFilterStub);
     }
 
     public delegate void CreateScriptContextsDelegate ();
