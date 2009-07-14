@@ -24,7 +24,7 @@ namespace Remotion.Scripting
   /// Categorizes <see cref="Type"/>|s into "valid" and "invalid" types, 
   /// based on whether the type is a member of the class's type collection.
   /// </summary>
-  public class TypeLevelTypeArbiter : ITypeArbiter
+  public class TypeLevelTypeArbiter : ITypeFilter
   {
     private readonly Dictionary<Type, bool> _validTypes = new Dictionary<Type, bool> ();
 

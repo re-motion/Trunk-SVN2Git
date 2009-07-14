@@ -64,23 +64,23 @@ namespace Remotion.Scripting
       get { return s_scriptContexts; }
     }
 
-    public static ScriptContext CreateScriptContext (string name, ITypeArbiter typeArbiter)
+    public static ScriptContext CreateScriptContext (string name, ITypeFilter typeFilter)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-      ArgumentUtility.CheckNotNull ("typeArbiter", typeArbiter);
+      ArgumentUtility.CheckNotNull ("typeFilter", typeFilter);
       lock (s_scriptContextLock)
       {
-        return CreateScriptContextUnsafe(name, typeArbiter);
+        return CreateScriptContextUnsafe(name, typeFilter);
       }
     }
 
-    private static ScriptContext CreateScriptContextUnsafe (string name, ITypeArbiter typeArbiter)
+    private static ScriptContext CreateScriptContextUnsafe (string name, ITypeFilter typeFilter)
     {
       if (GetScriptContext (name) != null)
       {
         throw new ArgumentException (String.Format ("ScriptContext named \"{0}\" already exists.", name));
       }
-      var scriptContext = new ScriptContext (name, typeArbiter);
+      var scriptContext = new ScriptContext (name, typeFilter);
       ScriptContexts[name] = scriptContext;
       return scriptContext;
     }
@@ -107,12 +107,12 @@ namespace Remotion.Scripting
     }
  
     private readonly string _name;
-    private readonly ITypeArbiter _typeArbiter;
+    private readonly ITypeFilter _typeFilter;
 
-    private ScriptContext (string name, ITypeArbiter typeArbiter)
+    private ScriptContext (string name, ITypeFilter typeFilter)
     {
       _name = name;
-      _typeArbiter = typeArbiter;
+      _typeFilter = typeFilter;
     }
 
     /// <summary>
@@ -124,12 +124,12 @@ namespace Remotion.Scripting
     }
 
     /// <summary>
-    /// The <see cref="ITypeArbiter"/> used in this <see cref="ScriptContext"/> to discern which methods/properties 
+    /// The <see cref="ITypeFilter"/> used in this <see cref="ScriptContext"/> to discern which methods/properties 
     /// shall be exposed to the DLR (see <see cref="ForwardingProxyBuilder"/>).
     /// </summary>
-    public ITypeArbiter TypeArbiter
+    public ITypeFilter TypeFilter
     {
-      get { return _typeArbiter; }
+      get { return _typeFilter; }
     }
 
   }

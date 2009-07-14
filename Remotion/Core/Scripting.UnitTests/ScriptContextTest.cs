@@ -38,19 +38,19 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Name_And_TypeArbiter_Properties ()
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter>();
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter>();
       var scriptContext = ScriptContextTestHelper.CreateTestScriptContext ("Context0", typeArbiterStub);
       Assert.That (scriptContext.Name, Is.EqualTo ("Context0"));
-      Assert.That (scriptContext.TypeArbiter, Is.SameAs (typeArbiterStub));
+      Assert.That (scriptContext.TypeFilter, Is.SameAs (typeArbiterStub));
     }
 
     [Test]
     public void CreateScriptContext ()
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter>();
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter>();
       var scriptContext = ScriptContext.CreateScriptContext ("Context1", typeArbiterStub);
       Assert.That (scriptContext.Name, Is.EqualTo ("Context1"));
-      Assert.That (scriptContext.TypeArbiter, Is.SameAs (typeArbiterStub));
+      Assert.That (scriptContext.TypeFilter, Is.SameAs (typeArbiterStub));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.Scripting.UnitTests
 
     private ScriptContext CreateScriptContext (string name)
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter> ();
       return ScriptContext.CreateScriptContext (name, typeArbiterStub);
     }
 
@@ -79,7 +79,7 @@ namespace Remotion.Scripting.UnitTests
     [ExpectedException (ExceptionType = typeof (ArgumentException), ExpectedMessage = "ScriptContext named \"DuplicateContext\" already exists.")]
     public void CreateScriptContext_CreatingSameNamedContextFails ()
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter> ();
       const string name = "DuplicateContext";
       var scriptContext = ScriptContext.CreateScriptContext (name, typeArbiterStub);
       Assert.That (scriptContext, Is.Not.Null);
@@ -183,7 +183,7 @@ namespace Remotion.Scripting.UnitTests
     private class ScriptContextCreator
     {
       private readonly bool _useSafe;
-      private static readonly ITypeArbiter s_typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+      private static readonly ITypeFilter s_typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
 
       public ScriptContextCreator (bool useSafe)
       {
@@ -203,11 +203,11 @@ namespace Remotion.Scripting.UnitTests
             ScriptContext scriptContext;
             if(_useSafe)
             {
-              scriptContext = ScriptContext.CreateScriptContext (name, s_typeArbiterStub);
+              scriptContext = ScriptContext.CreateScriptContext (name, s_typeFilterStub);
             }
             else
             {
-              scriptContext = (ScriptContext) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "CreateScriptContextUnsafe", name, s_typeArbiterStub);
+              scriptContext = (ScriptContext) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "CreateScriptContextUnsafe", name, s_typeFilterStub);
             }
             scriptContexts[name] = scriptContext;
             //To.ConsoleLine.e (() => name).e (scriptContext);

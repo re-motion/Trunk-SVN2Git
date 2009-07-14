@@ -21,7 +21,7 @@ namespace Remotion.Scripting
   /// Supplies functionality to categorize passed <see cref="Type"/>|s into "valid" and "invalid" types 
   /// through its <see cref="IsTypeValid"/> member.
   /// </summary>
-  public interface ITypeArbiter
+  public interface ITypeFilter
   {
     /// <summary>
     /// Decides whether passed <see cref="Type"/> is valid.

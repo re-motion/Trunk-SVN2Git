@@ -24,7 +24,7 @@ namespace Remotion.Scripting
   /// Categorizes <see cref="Type"/>|s into "valid" and "invalid" types, 
   /// based on whether their assembly is a member of the class's assembly collection.
   /// </summary>
-  public class AssemblyLevelTypeArbiter : ITypeArbiter
+  public class AssemblyLevelTypeArbiter : ITypeFilter
   {
     private readonly Dictionary<Assembly,bool> _validAssemblies = new Dictionary<Assembly, bool>();
 

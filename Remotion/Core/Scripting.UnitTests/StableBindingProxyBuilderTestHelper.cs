@@ -22,9 +22,9 @@ namespace Remotion.Scripting.UnitTests
 {
   public static class StableBindingProxyBuilderTestHelper
   {
-    public static ITypeArbiter GetTypeArbiter (this StableBindingProxyBuilder proxyBuilder)
+    public static ITypeFilter GetTypeFilter (this StableBindingProxyBuilder proxyBuilder)
     {
-      return (ITypeArbiter) PrivateInvoke.GetNonPublicField (proxyBuilder, "_typeArbiter");
+      return (ITypeFilter) PrivateInvoke.GetNonPublicField (proxyBuilder, "_typeFilter");
     }
 
     public static Dictionary<MemberInfo, HashSet<MemberInfo>> GetClassMethodToInterfaceMethodsMap (this StableBindingProxyBuilder proxyBuilder)

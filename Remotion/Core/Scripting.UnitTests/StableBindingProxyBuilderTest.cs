@@ -42,7 +42,7 @@ namespace Remotion.Scripting.UnitTests
       var proxiedType = typeof (string);
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeArbiter, CreateModuleScope ("Ctor"));
       Assert.That (stableBindingProxyBuilder.ProxiedType, Is.EqualTo (proxiedType));
-      Assert.That (stableBindingProxyBuilder.GetTypeArbiter (), Is.EqualTo (typeArbiter));
+      Assert.That (stableBindingProxyBuilder.GetTypeFilter (), Is.EqualTo (typeArbiter));
     }
 
     [Test]

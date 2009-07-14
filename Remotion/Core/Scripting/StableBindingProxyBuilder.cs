@@ -24,11 +24,11 @@ using Remotion.Utilities;
 namespace Remotion.Scripting
 {
   /// <summary>
-  /// Builds a proxy object which exposes only selected methods/properties, as decided by its <see cref="ITypeArbiter"/>. 
+  /// Builds a proxy object which exposes only selected methods/properties, as decided by its <see cref="ITypeFilter"/>. 
   /// </summary>
   /// <remarks>
   /// What methods/properties are to be exposed is dependent on whether the method/property comes from a type which is
-  /// classified as "valid" by the <see cref="ITypeArbiter"/> of the class.
+  /// classified as "valid" by the <see cref="ITypeFilter"/> of the class.
   /// <para/> 
   /// Used by <see cref="StableBindingProxyProvider"/>.
   /// <para/> 
@@ -37,17 +37,17 @@ namespace Remotion.Scripting
   public class StableBindingProxyBuilder
   {
     private readonly Type _proxiedType;
-    private readonly ITypeArbiter _typeArbiter;
+    private readonly ITypeFilter _typeFilter;
     private ForwardingProxyBuilder _forwardingProxyBuilder;
     private readonly Dictionary<MemberInfo, HashSet<MemberInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MemberInfo, HashSet<MemberInfo>> ();
     private readonly ModuleScope _moduleScope;
     private readonly Type[] _knownInterfaces;
 
-    public StableBindingProxyBuilder (Type proxiedType, ITypeArbiter typeArbiter, ModuleScope moduleScope)
+    public StableBindingProxyBuilder (Type proxiedType, ITypeFilter typeFilter, ModuleScope moduleScope)
     {
       ArgumentUtility.CheckNotNull ("proxiedType", proxiedType);
-      ArgumentUtility.CheckNotNull ("typeArbiter", typeArbiter);
-      _typeArbiter = typeArbiter;
+      ArgumentUtility.CheckNotNull ("typeFilter", typeFilter);
+      _typeFilter = typeFilter;
       _moduleScope = moduleScope;
       _proxiedType = proxiedType;
       _knownInterfaces = FindKnownInterfaces();
@@ -106,12 +106,12 @@ namespace Remotion.Scripting
 
     private Type GetFirstKnownBaseType ()
     {
-      return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeArbiter.IsTypeValid);
+      return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeFilter.IsTypeValid);
     }
 
     private Type[] FindKnownInterfaces ()
     {
-      return ProxiedType.GetInterfaces ().Where (i => _typeArbiter.IsTypeValid (i)).ToArray ();
+      return ProxiedType.GetInterfaces ().Where (i => _typeFilter.IsTypeValid (i)).ToArray ();
     }
 
     private Dictionary<MemberInfo, HashSet<MemberInfo>> BuildClassMethodToInterfaceMethodsMap ()

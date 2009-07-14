@@ -69,7 +69,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="StableBindingGetCustomMemberImplementor.cs" />
-    <Compile Include="ITypeArbiter.cs" />
+    <Compile Include="ITypeFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
     <Compile Include="ScriptBase.cs" />

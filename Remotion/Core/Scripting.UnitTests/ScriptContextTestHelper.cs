@@ -21,14 +21,14 @@ namespace Remotion.Scripting.UnitTests
 {
   public class ScriptContextTestHelper
   {
-    public static ScriptContext CreateTestScriptContext (string name, ITypeArbiter typeArbiter)
+    public static ScriptContext CreateTestScriptContext (string name, ITypeFilter typeFilter)
     {
-      return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeArbiter);
+      return (ScriptContext) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ScriptContext).Assembly, "Remotion.Scripting.ScriptContext", name, typeFilter);
     }
 
     public static ScriptContext CreateTestScriptContext (string name)
     {
-      var typeArbiterStub = MockRepository.GenerateStub<ITypeArbiter> ();
+      var typeArbiterStub = MockRepository.GenerateStub<ITypeFilter> ();
       return CreateTestScriptContext (name, typeArbiterStub);
     }
 
