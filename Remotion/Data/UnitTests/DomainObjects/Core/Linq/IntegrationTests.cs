@@ -831,6 +831,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [Ignore ("TODO 1366: Fix this")]
+    public void QueryWithTake_AndNonConstant ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<Order>()
+          where o.OrderNumber == 1
+          from oi in o.OrderItems.Take (o.OrderNumber + 1)
+          select oi;
+      CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
     public void EagerFetching ()
     {
       var query = (from c in QueryFactory.CreateLinqQuery<Customer> ()
