@@ -66,7 +66,7 @@ namespace Remotion.Scripting
       ArgumentUtility.CheckNotNullOrEmpty ("nameSpace", nameSpace);
       ArgumentUtility.CheckNotNullOrEmpty ("symbols", symbols);
 
-      // TODO: Implement ToString(sb,ss,se) etc extension methods for IEnumerable instead
+      // TODO: Implement Stringify(sb,ss,se,elementToStringFunc) etc extension methods for IEnumerable instead
       var toString = To.String;
       toString.ToTextProvider.Settings.UseAutomaticStringEnclosing = false;
 
@@ -80,6 +80,40 @@ from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (sym
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
       scriptSource.Execute (_scriptScope);
+    }
+
+    public void SetVariable (string name, Object value)
+    {
+      _scriptScope.SetVariable (name, value);
+    }
+
+    public Variable<T> GetVariable<T> (string name)
+    {
+      T value;
+      bool isValid = _scriptScope.TryGetVariable<T> (name, out value);
+      return new Variable<T>(value,isValid);
+    }
+
+    public struct Variable<T>
+    {
+      private readonly T _value;
+      private readonly bool _isValid;
+
+      public Variable (T value, bool isValid)
+      {
+        _value = value;
+        _isValid = isValid;
+      }
+
+      public T Value
+      {
+        get { return _value; }
+      }
+
+      public bool IsValid
+      {
+        get { return _isValid; }
+      }
     }
   }
 }
