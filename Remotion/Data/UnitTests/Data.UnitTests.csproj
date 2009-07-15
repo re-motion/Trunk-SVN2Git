@@ -253,6 +253,10 @@
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectTransactionContextTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectCheckUtilityTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\InterceptedDomainObjectCreatorTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\StringObjectIDValueParserTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\GuidObjectIDValueParserTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\Int32ObjectIDValueParserTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectIDStringSerialization\ObjectIDStringSerializerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransaction.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistingSubTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PropertyTest.cs" />

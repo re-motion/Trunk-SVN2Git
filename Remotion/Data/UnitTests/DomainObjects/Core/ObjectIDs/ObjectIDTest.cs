@@ -14,8 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -34,55 +34,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     }
 
     [Test]
-    public void SerializeStringValue ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Value cannot contain '&amp;pipe;'.\r\nParameter name: value")]
+    public void EscapedDelimiterPlaceholderInValue ()
     {
-      ObjectID id = new ObjectID ("Official", "Arthur Dent");
-      Assert.AreEqual ("Official|Arthur Dent|System.String", id.ToString ());
-    }
-
-    [Test]
-    public void SerializeInt32Value ()
-    {
-      ObjectID id = new ObjectID ("Official", 42);
-      Assert.AreEqual ("Official|42|System.Int32", id.ToString ());
+      new ObjectID ("Official", "Arthur|Dent &pipe; &amp;pipe; Zaphod Beeblebrox");
     }
 
     [Test]
     public void SerializeGuidValue ()
     {
-      ObjectID id = new ObjectID ("Order", new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}"));
-      Assert.AreEqual ("Order|5d09030c-25c2-4735-b514-46333bd28ac8|System.Guid", id.ToString ());
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Value cannot contain '&amp;pipe;'.\r\nParameter name: value")]
-    public void EscapedDelimiterPlaceholderInValue ()
-    {
-      ObjectID id = new ObjectID ("Official", "Arthur|Dent &pipe; &amp;pipe; Zaphod Beeblebrox");
-    }
-
-    [Test]
-    public void DeserializeStringValue ()
-    {
-      string idString = "Official|Arthur Dent|System.String";
-      ObjectID id = ObjectID.Parse (idString);
-
-      Assert.AreEqual ("UnitTestStorageProviderStub", id.StorageProviderID);
-      Assert.AreEqual ("Official", id.ClassID);
-      Assert.AreEqual (typeof (string), id.Value.GetType ());
-      Assert.AreEqual ("Arthur Dent", id.Value);
-    }
-
-    [Test]
-    public void DeserializeInt32Value ()
-    {
-      string idString = "Official|42|System.Int32";
-      ObjectID id = ObjectID.Parse (idString);
-
-      Assert.AreEqual ("UnitTestStorageProviderStub", id.StorageProviderID);
-      Assert.AreEqual ("Official", id.ClassID);
-      Assert.AreEqual (typeof (int), id.Value.GetType ());
-      Assert.AreEqual (42, id.Value);
+      var id = new ObjectID ("Order", new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}"));
+      Assert.That (id.ToString (), Is.EqualTo ("Order|5d09030c-25c2-4735-b514-46333bd28ac8|System.Guid"));
     }
 
     [Test]
@@ -91,194 +53,177 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
       string idString = "Order|5d09030c-25c2-4735-b514-46333bd28ac8|System.Guid";
       ObjectID id = ObjectID.Parse (idString);
 
-      Assert.AreEqual ("TestDomain", id.StorageProviderID);
-      Assert.AreEqual ("Order", id.ClassID);
-      Assert.AreEqual (typeof (Guid), id.Value.GetType ());
-      Assert.AreEqual (new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}"), id.Value);
+      Assert.That (id.StorageProviderID, Is.EqualTo ("TestDomain"));
+      Assert.That (id.ClassID, Is.EqualTo ("Order"));
+      Assert.That (id.Value.GetType (), Is.EqualTo (typeof (Guid)));
+      Assert.That (id.Value, Is.EqualTo (new Guid ("{5D09030C-25C2-4735-B514-46333BD28AC8}")));
     }
-
-    [Test]
-    [ExpectedException (typeof (FormatException),
-        ExpectedMessage = "Serialized ObjectID 'Order|5d09030c-25"
-         + "c2-4735-b514-46333bd28ac8|System.Guid|Zaphod' is not correctly formatted.")]
-    public void ObjectIDStringWithTooManyParts ()
-    {
-      string idString = "Order|5d09030c-25c2-4735-b514-46333bd28ac8|System.Guid|Zaphod";
-      ObjectID id = ObjectID.Parse (idString);
-    }
-
-    [Test]
-    [ExpectedException (typeof (FormatException), ExpectedMessage = "Type 'System.Double' is not supported.")]
-    public void ObjectIDStringWithInvalidValueType ()
-    {
-      string idString = "Order|5d09030c-25c2-4735-b514-46333bd28ac8|System.Double";
-      ObjectID id = ObjectID.Parse (idString);
-    }
-
+    
     [Test]
     public void HashCode ()
     {
-      ObjectID id1 = new ObjectID ("Official", 42);
-      ObjectID id2 = new ObjectID ("Official", 42);
-      ObjectID id3 = new ObjectID ("Official", 41);
+      var id1 = new ObjectID ("Official", 42);
+      var id2 = new ObjectID ("Official", 42);
+      var id3 = new ObjectID ("Official", 41);
 
-      Assert.IsTrue (id1.GetHashCode () == id2.GetHashCode ());
-      Assert.IsFalse (id1.GetHashCode () == id3.GetHashCode ());
-      Assert.IsFalse (id2.GetHashCode () == id3.GetHashCode ());
+      Assert.That (id1.GetHashCode () == id2.GetHashCode (), Is.True);
+      Assert.That (id1.GetHashCode () == id3.GetHashCode (), Is.False);
+      Assert.That (id2.GetHashCode () == id3.GetHashCode (), Is.False);
     }
 
     [Test]
     public void TestEqualsForClassID ()
     {
-      ObjectID id1 = new ObjectID ("Official", 42);
-      ObjectID id2 = new ObjectID ("Official", 42);
-      ObjectID id3 = new ObjectID ("SpecialOfficial", 42);
+      var id1 = new ObjectID ("Official", 42);
+      var id2 = new ObjectID ("Official", 42);
+      var id3 = new ObjectID ("SpecialOfficial", 42);
 
-      Assert.IsTrue (id1.Equals (id2));
-      Assert.IsFalse (id1.Equals (id3));
-      Assert.IsFalse (id2.Equals (id3));
-      Assert.IsTrue (id2.Equals (id1));
-      Assert.IsFalse (id3.Equals (id1));
-      Assert.IsFalse (id3.Equals (id2));
+      Assert.That (id1.Equals (id2), Is.True);
+      Assert.That (id1.Equals (id3), Is.False);
+      Assert.That (id2.Equals (id3), Is.False);
+      Assert.That (id2.Equals (id1), Is.True);
+      Assert.That (id3.Equals (id1), Is.False);
+      Assert.That (id3.Equals (id2), Is.False);
     }
 
     [Test]
     public void TestEqualsForValue ()
     {
-      ObjectID id1 = new ObjectID ("Official", 42);
-      ObjectID id2 = new ObjectID ("Official", 42);
-      ObjectID id3 = new ObjectID ("Official", 41);
+      var id1 = new ObjectID ("Official", 42);
+      var id2 = new ObjectID ("Official", 42);
+      var id3 = new ObjectID ("Official", 41);
 
-      Assert.IsTrue (id1.Equals (id2));
-      Assert.IsFalse (id1.Equals (id3));
-      Assert.IsFalse (id2.Equals (id3));
-      Assert.IsTrue (id2.Equals (id1));
-      Assert.IsFalse (id3.Equals (id1));
-      Assert.IsFalse (id3.Equals (id2));
+      Assert.That (id1.Equals (id2), Is.True);
+      Assert.That (id1.Equals (id3), Is.False);
+      Assert.That (id2.Equals (id3), Is.False);
+      Assert.That (id2.Equals (id1), Is.True);
+      Assert.That (id3.Equals (id1), Is.False);
+      Assert.That (id3.Equals (id2), Is.False);
     }
 
     [Test]
     public void EqualsWithOtherType ()
     {
-      ObjectID id = new ObjectID ("Official", 42);
-      Assert.IsFalse (id.Equals (new ObjectIDTest ()));
-      Assert.IsFalse (id.Equals (42));
+      var id = new ObjectID ("Official", 42);
+      Assert.That (id.Equals (new ObjectIDTest ()), Is.False);
+      Assert.That (id.Equals (42), Is.False);
     }
 
     [Test]
     public void EqualsWithNull ()
     {
-      ObjectID id = new ObjectID ("Official", 42);
-      Assert.IsFalse (id.Equals (null));
+      var id = new ObjectID ("Official", 42);
+      Assert.That (id.Equals (null), Is.False);
     }
 
     [Test]
     public void EqualityOperatorTrue ()
     {
-      ObjectID id1 = new ObjectID ("Official", 42);
-      ObjectID id2 = new ObjectID ("Official", 42);
+      var id1 = new ObjectID ("Official", 42);
+      var id2 = new ObjectID ("Official", 42);
 
-      Assert.IsTrue (id1 == id2);
-      Assert.IsFalse (id1 != id2);
+      Assert.That (id1 == id2, Is.True);
+      Assert.That (id1 != id2, Is.False);
     }
 
     [Test]
     public void EqualityOperatorFalse ()
     {
-      ObjectID id1 = new ObjectID ("Official", 42);
-      ObjectID id2 = new ObjectID ("SpecialOfficial", 1);
+      var id1 = new ObjectID ("Official", 42);
+      var id2 = new ObjectID ("SpecialOfficial", 1);
 
-      Assert.IsFalse (id1 == id2);
-      Assert.IsTrue (id1 != id2);
+      Assert.That (id1 == id2, Is.False);
+      Assert.That (id1 != id2, Is.True);
     }
 
     [Test]
     public void EqualityOperatorForSameObject ()
     {
-      ObjectID id1 = new ObjectID ("Official", 42);
+      var id1 = new ObjectID ("Official", 42);
       ObjectID id2 = id1;
 
-      Assert.IsTrue (id1 == id2);
-      Assert.IsFalse (id1 != id2);
+      Assert.That (id1 == id2, Is.True);
+      Assert.That (id1 != id2, Is.False);
     }
 
     [Test]
     public void EqualityOperatorWithBothNull ()
     {
-      Assert.IsTrue ((ObjectID) null == (ObjectID) null);
-      Assert.IsFalse ((ObjectID) null != (ObjectID) null);
-
+// ReSharper disable RedundantCast
+      Assert.That ((ObjectID) null == (ObjectID) null, Is.True);
+      Assert.That ((ObjectID) null != (ObjectID) null, Is.False);
+// ReSharper restore RedundantCast
     }
 
     [Test]
     public void EqualityOperatorID1Null ()
     {
-      ObjectID id2 = new ObjectID ("Official", 42);
+      var id2 = new ObjectID ("Official", 42);
 
-      Assert.IsFalse (null == id2);
-      Assert.IsTrue (null != id2);
+      Assert.That (null == id2, Is.False);
+      Assert.That (null != id2, Is.True);
     }
 
     [Test]
     public void EqualityOperatorID2Null ()
     {
-      ObjectID id1 = new ObjectID ("Official", 42);
+      var id1 = new ObjectID ("Official", 42);
 
-      Assert.IsFalse (id1 == null);
-      Assert.IsTrue (id1 != null);
+      Assert.That (id1 == null, Is.False);
+      Assert.That (id1 != null, Is.True);
     }
 
     [Test]
     public void StaticEquals ()
     {
-      ObjectID id1 = new ObjectID ("Official", 42);
-      ObjectID id2 = new ObjectID ("Official", 42);
+      var id1 = new ObjectID ("Official", 42);
+      var id2 = new ObjectID ("Official", 42);
 
-      Assert.IsTrue (ObjectID.Equals (id1, id2));
+      Assert.That (ObjectID.Equals (id1, id2), Is.True);
     }
 
     [Test]
     public void StaticNotEquals ()
     {
-      ObjectID id1 = new ObjectID ("Official", 42);
-      ObjectID id2 = new ObjectID ("SpecialOfficial", 1);
+      var id1 = new ObjectID ("Official", 42);
+      var id2 = new ObjectID ("SpecialOfficial", 1);
 
-      Assert.IsFalse (ObjectID.Equals (id1, id2));
+      Assert.That (ObjectID.Equals (id1, id2), Is.False);
     }
 
     [Test]
     public void InitializeWithClassID ()
     {
-      Guid value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
-      ObjectID id = new ObjectID ("Order", value);
+      var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
+      var id = new ObjectID ("Order", value);
 
-      Assert.AreEqual ("TestDomain", id.StorageProviderID);
-      Assert.AreEqual ("Order", id.ClassID);
-      Assert.AreEqual (value, id.Value);
+      Assert.That (id.StorageProviderID, Is.EqualTo ("TestDomain"));
+      Assert.That (id.ClassID, Is.EqualTo ("Order"));
+      Assert.That (id.Value, Is.EqualTo (value));
     }
 
     [Test]
     public void InitializeWithClassType ()
     {
-      Guid value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
-      ObjectID id = new ObjectID (typeof (Order), value);
+      var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
+      var id = new ObjectID (typeof (Order), value);
 
-      Assert.AreEqual ("TestDomain", id.StorageProviderID);
-      Assert.AreEqual ("Order", id.ClassID);
-      Assert.AreEqual (value, id.Value);
+      Assert.That (id.StorageProviderID, Is.EqualTo ("TestDomain"));
+      Assert.That (id.ClassID, Is.EqualTo ("Order"));
+      Assert.That (id.Value, Is.EqualTo (value));
     }
 
     [Test]
     public void InitializeWithClassDefinition ()
     {
       ClassDefinition orderDefinition = MappingConfiguration.Current.ClassDefinitions["Order"];
-      Guid value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
+      var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
 
-      ObjectID id = new ObjectID (orderDefinition, value);
+      var id = new ObjectID (orderDefinition, value);
 
-      Assert.AreEqual (orderDefinition.StorageProviderID, id.StorageProviderID);
-      Assert.AreEqual (orderDefinition.ID, id.ClassID);
-      Assert.AreEqual (value, id.Value);
+      Assert.That (id.StorageProviderID, Is.EqualTo (orderDefinition.StorageProviderID));
+      Assert.That (id.ClassID, Is.EqualTo (orderDefinition.ID));
+      Assert.That (id.Value, Is.EqualTo (value));
     }
 
     [Test]
@@ -286,9 +231,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     public void InitializeWithUnknownClassDefinitionID ()
     {
       ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("UnknownClass", "UnknownTable", "TestDomain", typeof (Order), false);
-      Guid value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
+      var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
 
-      ObjectID id = new ObjectID (unknownDefinition, value);
+      new ObjectID (unknownDefinition, value);
     }
 
     [Test]
@@ -298,23 +243,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     public void InitializeWithUnknownClassDefinitionType ()
     {
       ReflectionBasedClassDefinition unknownDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (InvalidDomainObject), false);
-      Guid value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
+      var value = new Guid ("{5682F032-2F0B-494b-A31C-C97F02B89C36}");
 
-      ObjectID id = new ObjectID (unknownDefinition, value);
+      new ObjectID (unknownDefinition, value);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentEmptyException))]
     public void InitializeWithEmptyGuid ()
     {
-      ObjectID id = new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], Guid.Empty);
+      new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], Guid.Empty);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentEmptyException))]
     public void InitializeWithEmptyString ()
     {
-      ObjectID id = new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], string.Empty);
+      new ObjectID (MappingConfiguration.Current.ClassDefinitions["Order"], string.Empty);
     }
 
     [Test]
@@ -324,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     public void InitializeWithInvalidClassDefinition ()
     {
       ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Customer), false);
-      ObjectID id = new ObjectID (invalidDefinition, Guid.NewGuid ());
+      new ObjectID (invalidDefinition, Guid.NewGuid ());
     }
 
     [Test]
@@ -333,42 +278,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
     public void InitializeWithClassDefinitionNotPartOfMappingConfiguration ()
     {
       ReflectionBasedClassDefinition invalidDefinition = ClassDefinitionFactory.CreateReflectionBasedClassDefinition ("Order", "Order", "TestDomain", typeof (Order), false);
-      ObjectID id = new ObjectID (invalidDefinition, Guid.NewGuid ());
+      new ObjectID (invalidDefinition, Guid.NewGuid ());
     }
 
     [Test]
     [ExpectedException (typeof (IdentityTypeNotSupportedException))]
     public void InitializeWithInvalidIdentityType ()
     {
-      ObjectID id = new ObjectID ("Order", 1);
+      new ObjectID ("Order", 1);
     }
 
     [Test]
     public void InitializeWithGuid ()
     {
       Guid idValue = Guid.NewGuid ();
-      ObjectID id = new ObjectID ("Official", idValue);
+      var id = new ObjectID ("Official", idValue);
 
-      Assert.AreEqual ("Official", id.ClassID);
-      Assert.AreEqual (idValue, id.Value);
+      Assert.That (id.ClassID, Is.EqualTo ("Official"));
+      Assert.That (id.Value, Is.EqualTo (idValue));
     }
 
     [Test]
     public void InitializeWithInt32 ()
     {
-      ObjectID id = new ObjectID ("Official", 1);
+      var id = new ObjectID ("Official", 1);
 
-      Assert.AreEqual ("Official", id.ClassID);
-      Assert.AreEqual (1, id.Value);
+      Assert.That (id.ClassID, Is.EqualTo ("Official"));
+      Assert.That (id.Value, Is.EqualTo (1));
     }
 
     [Test]
     public void InitializeWithString ()
     {
-      ObjectID id = new ObjectID ("Official", "StringValue");
+      var id = new ObjectID ("Official", "StringValue");
 
-      Assert.AreEqual ("Official", id.ClassID);
-      Assert.AreEqual ("StringValue", id.Value);
+      Assert.That (id.ClassID, Is.EqualTo ("Official"));
+      Assert.That (id.Value, Is.EqualTo ("StringValue"));
     }
 
     [Test]
@@ -376,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.ObjectIDs
         ExpectedMessage = "Remotion.Data.DomainObjects.ObjectID does not support values of type 'System.Byte'.\r\nParameter name: value")]
     public void InitializeWithInvalidType ()
     {
-      ObjectID id = new ObjectID ("Official", (byte) 1);
+      new ObjectID ("Official", (byte) 1);
     }
   }
 }

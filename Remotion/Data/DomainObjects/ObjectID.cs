@@ -15,9 +15,9 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Configuration;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -34,10 +34,6 @@ namespace Remotion.Data.DomainObjects
     // types
 
     // static members and constants
-
-    private const char c_delimiter = '|';
-    private const string c_escapedDelimiter = "&pipe;";
-    private const string c_escapedDelimiterPlaceholder = "&amp;pipe;";
 
     /// <summary>
     /// Tests whether two specified <see cref="ObjectID"/> objects are equivalent.
@@ -78,7 +74,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Converts the string representation of the ID to an <see cref="ObjectID"/> instance.
+    /// Converts the string representation of the ID to an <see cref="ObjectID"/> instance. If the operation fails, an exception is thrown.
     /// </summary>
     /// <param name="objectIDString">A string containing the object ID to convert.</param>
     /// <returns>
@@ -89,51 +85,34 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="System.FormatException">
     ///   <paramref name="objectIDString"/> does not contain the string representation of an object ID.
     /// </exception>
+    /// <remarks>
+    /// If the probability that parsing fails is high, consider using <see cref="TryParse"/> instead, as it is more performant in the error case.
+    /// </remarks>
     public static ObjectID Parse (string objectIDString)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("objectIDString", objectIDString);
-
-      string[] parts = objectIDString.Split (c_delimiter);
-
-      if (parts.Length != 3)
-      {
-        throw new FormatException (
-            string.Format (
-                "Serialized ObjectID '{0}' is not correctly formatted.",
-                objectIDString));
-      }
-
-      for (int i = 0; i < parts.Length; i++)
-        parts[i] = Unescape (parts[i]);
-
-      object value = GetValue (parts[2], parts[1]);
-
-      return new ObjectID (parts[0], value);
+      ArgumentUtility.CheckNotNull ("objectIDString", objectIDString);
+      return ObjectIDStringSerializer.Instance.Parse (objectIDString);
     }
 
-    private static object GetValue (string typeName, string value)
+    /// <summary>
+    /// Converts the string representation of the ID to an <see cref="ObjectID"/> instance. A return value indicates whether the operation succeeded.
+    /// </summary>
+    /// <param name="objectIDString">A string containing the object ID to convert.</param>
+    /// <param name="result">If the conversion completes successfully, this parameter is set to an <see cref="ObjectID"/> instance equivalent to the 
+    /// object ID contained in <paramref name="objectIDString"/>. Otherwise, it is set to <see langword="null" />.</param>
+    /// <returns>
+    /// <see langword="true" /> if the conversion completed successfully, <see langword="false" /> otherwise.
+    /// </returns>
+    /// <exception cref="System.ArgumentNullException"><paramref name="objectIDString"/> is <see langword="null"/>.</exception>
+    /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="objectIDString"/> is an empty string.</exception>
+    /// <remarks>
+    /// If you expect <paramref name="objectIDString"/> to always hold a valid <see cref="ObjectID"/> string, use <see cref="Parse"/> instead. Use
+    /// this method only if an invalid string constitutes a supported use case.
+    /// </remarks>
+    public static bool TryParse (string objectIDString, out ObjectID result)
     {
-      Type type = ContextAwareTypeDiscoveryUtility.GetType (typeName, true);
-
-      if (type == typeof (Guid))
-        return new Guid (value);
-      else if (type == typeof (int))
-        return int.Parse (value);
-      else if (type == typeof (string))
-        return value;
-      else
-        throw new FormatException (string.Format ("Type '{0}' is not supported.", typeName));
-    }
-
-    private static string Unescape (string value)
-    {
-      if (value.IndexOf (c_escapedDelimiter) >= 0)
-        value = value.Replace (c_escapedDelimiter, c_delimiter.ToString());
-
-      if (value.IndexOf (c_escapedDelimiterPlaceholder) >= 0)
-        value = value.Replace (c_escapedDelimiterPlaceholder, c_escapedDelimiter);
-
-      return value;
+      ArgumentUtility.CheckNotNull ("objectIDString", objectIDString);
+      return ObjectIDStringSerializer.Instance.TryParse (objectIDString, out result);
     }
 
     // member fields
@@ -323,11 +302,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>A <see cref="String"/> that represents the current <see cref="ObjectID"/>.</returns>
     public override string ToString ()
     {
-      Type valueType = Value.GetType();
-
-      return Escape (ClassID) + c_delimiter +
-          Escape (Value.ToString()) + c_delimiter +
-              Escape (valueType.FullName);
+      return ObjectIDStringSerializer.Instance.Serialize (this);
     }
 
     /// <summary>
@@ -348,13 +323,13 @@ namespace Remotion.Data.DomainObjects
     {
       if (obj == null)
         return false;
-      if (this.GetType() != obj.GetType())
+      if (GetType() != obj.GetType())
         return false;
 
-      ObjectID other = (ObjectID) obj;
-      if (!object.Equals (this.ClassID, other.ClassID))
+      var other = (ObjectID) obj;
+      if (!object.Equals (ClassID, other.ClassID))
         return false;
-      if (!object.Equals (this.Value, other.Value))
+      if (!object.Equals (Value, other.Value))
         return false;
 
       return true;
@@ -367,30 +342,14 @@ namespace Remotion.Data.DomainObjects
       if (valueType != typeof (Guid) && valueType != typeof (int) && valueType != typeof (string))
         throw CreateArgumentException (argumentName, "Remotion.Data.DomainObjects.ObjectID does not support values of type '{0}'.", valueType);
 
-      if (valueType == typeof (string) && ((string) value).IndexOf (c_escapedDelimiterPlaceholder) >= 0)
-      {
-        throw new ArgumentException (
-            string.Format (
-                "Value cannot contain '{0}'.", c_escapedDelimiterPlaceholder),
-            "value");
-      }
+      if (valueType == typeof (string))
+        ObjectIDStringSerializer.Instance.CheckSerializableStringValue ((string) value);
 
       if (valueType == typeof (string) && string.Empty.Equals (value))
         throw new ArgumentEmptyException (argumentName);
 
       if (valueType == typeof (Guid) && Guid.Empty.Equals (value))
         throw new ArgumentEmptyException (argumentName);
-    }
-
-    private string Escape (string value)
-    {
-      if (value.IndexOf (c_escapedDelimiter) >= 0)
-        value = value.Replace (c_escapedDelimiter, c_escapedDelimiterPlaceholder);
-
-      if (value.IndexOf (c_delimiter) >= 0)
-        value = value.Replace (c_delimiter.ToString(), c_escapedDelimiter);
-
-      return value;
     }
 
     private ArgumentException CreateArgumentException (string argumentName, string message, params object[] args)
