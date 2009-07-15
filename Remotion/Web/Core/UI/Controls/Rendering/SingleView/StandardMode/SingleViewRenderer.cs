@@ -44,11 +44,15 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       }
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      RenderTopControls();
-      RenderBottomControls();
-      RenderView();
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      RenderTopControls();
+      RenderView ();
+      RenderBottomControls();
+      
       Writer.RenderEndTag();
+      Writer.RenderEndTag ();
     }
 
     private void RenderTopControls ()

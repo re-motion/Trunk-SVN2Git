@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
@@ -59,14 +58,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     public override void PreRender ()
     {
       string keyAdjust = Control.ClientID + "_AdjustView";
-      string scriptAdjust =
-          @"function adjustView_{0}()
-{{
-  var control = document.getElementById('{0}');
-  var view = document.getElementById('{1}');
-  ViewLayout.AdjustWidth(control);
-  ViewLayout.Adjust(control, view);
-}}";
+      string scriptAdjust = "function adjustView_{0}() {{ ViewLayout.AdjustSingleView($('#{0}')); }}";
 
       scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.ViewClientID);
       Control.Page.ClientScript.RegisterClientScriptBlock (Control, typeof (SingleViewPreRenderer), keyAdjust, scriptAdjust);

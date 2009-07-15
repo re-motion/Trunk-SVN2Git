@@ -208,9 +208,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
         outerDiv.AssertStyleAttribute ("width", "100%");
         outerDiv.AssertStyleAttribute ("height", "75%");
       }
-      outerDiv.AssertChildElementCount (4);
+      outerDiv.AssertChildElementCount (1);
 
-      return outerDiv;
+      var contentDiv = outerDiv.GetAssertedChildElement ("div", 0);
+      contentDiv.AssertAttributeValueEquals ("class", _control.CssClassContent);
+
+      return contentDiv;
     }
 
     private void AssertBottomControls (XmlNode container, bool withCssClass, bool isEmpty)
@@ -219,7 +222,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
       if (withCssClass)
         cssClass = c_cssClass;
 
-      var divBottomControls = container.GetAssertedChildElement ("div", 2);
+      var divBottomControls = container.GetAssertedChildElement ("div", 3);
       divBottomControls.AssertChildElementCount (0);
 
       divBottomControls.AssertAttributeValueEquals ("id", _control.BottomControl.ClientID);
@@ -237,7 +240,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
       if (withCssClass)
         cssClassActiveView = c_cssClass;
 
-      var divActiveView = container.GetAssertedChildElement ("div", 3);
+      var divActiveView = container.GetAssertedChildElement ("div", 2);
       divActiveView.AssertChildElementCount (0);
 
       divActiveView.AssertAttributeValueEquals ("id", _control.ActiveViewClientID);

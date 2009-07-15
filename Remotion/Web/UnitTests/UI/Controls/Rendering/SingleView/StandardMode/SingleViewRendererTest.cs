@@ -166,15 +166,18 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.StandardMode
         Html.AssertStyleAttribute (outerDiv, "height", "75%");
       }
 
-      var topControls = outerDiv.GetAssertedChildElement ("div", 0);
+      var contentDiv = outerDiv.GetAssertedChildElement ("div", 0);
+      contentDiv.AssertAttributeValueEquals ("class", renderer.CssClassContent);
+
+      var topControls = contentDiv.GetAssertedChildElement ("div", 0);
       topControls.AssertAttributeValueEquals ("id", _control.TopControl.ClientID);
       topControls.AssertAttributeValueEquals ("class", renderer.CssClassTopControls);
 
-      var bottomControls = outerDiv.GetAssertedChildElement ("div", 1);
+      var bottomControls = contentDiv.GetAssertedChildElement ("div", 2);
       bottomControls.AssertAttributeValueEquals ("id", _control.BottomControl.ClientID);
       bottomControls.AssertAttributeValueEquals ("class", renderer.CssClassBottomControls);
 
-      var viewContainer = outerDiv.GetAssertedChildElement ("div", 2);
+      var viewContainer = contentDiv.GetAssertedChildElement ("div", 1);
       viewContainer.AssertAttributeValueEquals ("id", _control.ViewClientID);
       viewContainer.AssertAttributeValueEquals ("class", renderer.CssClassView);
 

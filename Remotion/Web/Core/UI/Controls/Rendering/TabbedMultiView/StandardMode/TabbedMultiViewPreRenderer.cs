@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
@@ -59,16 +58,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     public override void PreRender ()
     {
       string keyAdjust = Control.ClientID + "_AdjustView";
-      string scriptAdjust =
-          @"function adjustView_{0}()
-{{
-  var container = document.getElementById('{0}');
-  var topControl = document.getElementById('{1}');
-  var view = document.getElementById('{2}');
-  ViewLayout.AdjustWidth(container);
-  ViewLayout.AdjustTop(container, topControl); 
-  ViewLayout.Adjust(container, view);
-}}";
+      string scriptAdjust = "function adjustView_{0}(){{ ViewLayout.AdjustTabbedMultiView($('#{0}')); }}";
       scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.TabStripContainerClientID, Control.ActiveViewClientID);
       Control.Page.ClientScript.RegisterClientScriptBlock (Control, typeof (TabbedMultiViewPreRenderer), keyAdjust, scriptAdjust);
 

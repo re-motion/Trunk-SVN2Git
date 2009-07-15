@@ -36,12 +36,16 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
       AddAttributesToRender();
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassContent);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
       RenderTopControls();
       RenderTabStrip();
-      RenderBottomControls();
       RenderActiveView();
+      RenderBottomControls();
 
       Writer.RenderEndTag();
+      Writer.RenderEndTag ();
     }
 
     protected void AddAttributesToRender ()

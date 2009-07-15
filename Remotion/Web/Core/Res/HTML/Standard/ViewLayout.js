@@ -1,74 +1,64 @@
-﻿function ViewLayout()
-{
+﻿function ViewLayout() {
 }
 
-ViewLayout.AdjustWidth = function(containerElement) {
-    var children = $(containerElement).children('div');
+ViewLayout.AdjustWidth = function(contentElement) {
+    var children = contentElement.children('div');
     children.each(function(i) {
-        var parentWidth = $(this).parent().width();
-        var margin = parseInt($(this).css('left'));
-        var borderWidth = parseInt($(this).css('border-width'));
-        if (isNaN(margin))
-            margin = 0;
-        if (isNaN(borderWidth))
-            borderWidth = 0;
-        $(this).width(parentWidth - 2 * margin - 2 * borderWidth);
+        $(this).css('position', 'absolute');
+        $(this).css('left', '0');
+        $(this).css('right', '0');
     });
-
-    var topControls = $(containerElement).children(':first');
-    topControls.css('position', 'absolute');
-}
-
-ViewLayout.Adjust = function(containerElement, elementToAdjust) {
-    ViewLayout.AdjustTop(containerElement, elementToAdjust);
-    ViewLayout.AdjustHeight(containerElement, elementToAdjust);
 };
 
-ViewLayout.AdjustTop = function(containerElement, elementToAdjust) {
-    var topControls = $(containerElement).children(':first');
-    var siblings = ViewLayout.GetLayoutParts(containerElement, elementToAdjust)
-    $(elementToAdjust).css('top', topControls.outerHeight() + ViewLayout.GetTopControlMargin(siblings));
+ViewLayout.AdjustHeight = function(contentElement) {
+    var margin = contentElement.outerHeight(true) - contentElement.innerHeight();
+    contentElement.height(contentElement.parent().height() - margin);
 };
 
-ViewLayout.AdjustHeight = function(containerElement, elementToAdjust) {
-    ArgumentUtility.CheckNotNull('containerElement', containerElement);
-    ArgumentUtility.CheckNotNull('elementToAdjust', elementToAdjust);
-    var height = $(containerElement).height();
-
-    var siblings = ViewLayout.GetLayoutParts(containerElement, elementToAdjust)
-    for (var iSibling = 0; iSibling < siblings.length; iSibling++) {
-        var sibling = $(siblings[iSibling])
-        height -= sibling.outerHeight();
-    }
-
-    height -= ViewLayout.GetTopControlMargin(siblings);
-    height -= ViewLayout.GetBottomControlMargin(siblings);
-
-    if (height > 0)
-        $(elementToAdjust).css('height', height);
+ViewLayout.AdjustTop = function(topSibling, elementToAdjust) {
+    $(elementToAdjust).css('top', topSibling.position().top + topSibling.outerHeight(true));
 };
 
-ViewLayout.GetTopControlMargin = function(siblings) {
-var topControls = $(siblings[0]);
-    var top = parseInt(topControls.css('top'));
-    if (!isNaN(top))
-        return top;
-    return 0;
-}
+ViewLayout.AdjustBottom = function(bottomSibling, elementToAdjust) {
+    $(elementToAdjust).css('bottom', bottomSibling.parent().height() - bottomSibling.position().top);
+};
 
-ViewLayout.GetBottomControlMargin = function(siblings) {
-    var bottomControls = $(siblings[siblings.length - 1]);
-    var bottom = parseInt(bottomControls.css('bottom'));
-    if (!isNaN(bottom))
-        return bottom;
-    return 0;
-}
+ViewLayout.AdjustSingleView = function(containerElement) {
+    var contentElement = containerElement.children('div:first');
 
-ViewLayout.GetLayoutParts = function(containerElement, elementToIgnore)
-{
-    var children = $(containerElement).children();
-    var siblings = children.filter(function(index) { return (children[index].nodeName == 'DIV') && (children[index] != elementToIgnore); });
-    return siblings;
-}
+    ViewLayout.AdjustHeight(contentElement);
+    ViewLayout.AdjustWidth(contentElement);
 
+    var top = contentElement.children('div:eq(0)');
+    var view = contentElement.children('div:eq(1)');
+    var bottom = contentElement.children('div:eq(2)');
 
+    top.css('top', '0');
+    bottom.css('bottom', '0');
+    ViewLayout.AdjustTop(top, view);
+    ViewLayout.AdjustBottom(bottom, view);
+
+    // setting UpdatePanel height prevents horizontal scrollbar in IE7
+    view.children('div').css('height', '100%');
+};
+
+ViewLayout.AdjustTabbedMultiView = function(containerElement) {
+    var contentElement = containerElement.children('div:first');
+
+    ViewLayout.AdjustHeight(contentElement);
+    ViewLayout.AdjustWidth(contentElement);
+
+    var top = contentElement.children('div:eq(0)');
+    var tabs = contentElement.children('div:eq(1)');
+    var view = contentElement.children('div:eq(2)');
+    var bottom = contentElement.children('div:eq(3)');
+
+    top.css('top', '0');
+    bottom.css('bottom', '0');
+    ViewLayout.AdjustTop(top, tabs);
+    ViewLayout.AdjustTop(tabs, view);
+    ViewLayout.AdjustBottom(bottom, view);
+
+    // setting UpdatePanel height prevents horizontal scrollbar in IE7
+    view.children('div').css('height', '100%');
+};
