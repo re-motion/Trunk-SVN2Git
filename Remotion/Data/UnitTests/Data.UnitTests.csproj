@@ -712,7 +712,6 @@
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\ExpressionTreeVisitor_SpecificExpressionsTestBase.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\SimpleClass.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitorTests\SpecialExpressionNode.cs" />
-    <Compile Include="Linq\QueryModelComparer.cs" />
     <Compile Include="Linq\Transformations\SubQueryFromClauseFlattenerTest.cs" />
     <Compile Include="Linq\UniqueIdentifierGeneratorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
