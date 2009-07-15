@@ -40,7 +40,7 @@
     <td style="WIDTH: 20%"><asp:label id="UnboundDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boccheckbox id="UnboundReadOnlyDeceasedField" runat="server" ReadOnly="True" Width="150px" height="8px"></remotion:boccheckbox></td>
+    <td><remotion:boccheckbox id="UnboundReadOnlyDeceasedField" runat="server" ReadOnly="True" Width="150px" height="24px"></remotion:boccheckbox></td>
     <td>unbound, value set, read only</td>
     <td style="WIDTH: 20%"><asp:label id="UnboundReadOnlyDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
@@ -60,7 +60,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledUnboundDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boccheckbox id="DisabledUnboundReadOnlyDeceasedField" runat="server" ReadOnly="True" Width="150px" height="8px" enabled="false"></remotion:boccheckbox></td>
+    <td><remotion:boccheckbox id="DisabledUnboundReadOnlyDeceasedField" runat="server" ReadOnly="True" Width="150px" height="24px" enabled="false"></remotion:boccheckbox></td>
     <td>disabled, unbound, value set, read only</td>
     <td style="WIDTH: 20%"><asp:label id="DisabledUnboundReadOnlyDeceasedFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr></table>
 <p>Deceased Field Checked Changed: <asp:label id="DeceasedFieldCheckedChangedLabel" runat="server" enableviewstate="False">#</asp:label></p>
