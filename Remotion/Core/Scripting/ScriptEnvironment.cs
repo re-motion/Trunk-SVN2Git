@@ -38,7 +38,7 @@ namespace Remotion.Scripting
     }
     
     /// <summary>
-    /// Wraps the passed <see cref="ScriptScope"/> in a <see cref="ScriptEnvironment"/>. Only use this if you know what you are doing.
+    /// Wraps the passed <see cref="ScriptScope"/> in a <see cref="ScriptEnvironment"/>. Only use this ctor if you know what you are doing.
     /// </summary>
     /// <param name="scriptScope"></param>
     public ScriptEnvironment (ScriptScope scriptScope)
