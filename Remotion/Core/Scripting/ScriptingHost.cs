@@ -94,6 +94,13 @@ namespace Remotion.Scripting
     }
 
 
+
+    //public static ScriptEnvironment CreateScriptEnvironment ()
+    //{
+    //  return ScriptContext.Current
+    //}
+
+
     private ScriptingHost () {}
 
  

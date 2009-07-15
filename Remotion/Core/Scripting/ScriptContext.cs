@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Contexts;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting

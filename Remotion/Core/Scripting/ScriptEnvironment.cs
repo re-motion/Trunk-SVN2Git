@@ -30,18 +30,19 @@ namespace Remotion.Scripting
     private readonly ScriptScope _scriptScope;
 
     /// <summary>
-    /// Default ctor. Recommended way to create a <see cref="ScriptEnvironment"/>.
+    /// <see cref="ScriptEnvironment"/> factory method.
     /// </summary>
-    public ScriptEnvironment ()
-      : this (ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.Python).CreateScope ())
+    public static ScriptEnvironment Create ()
     {
+      return new ScriptEnvironment (ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.Python).CreateScope ());
     }
-    
+
+ 
     /// <summary>
-    /// Wraps the passed <see cref="ScriptScope"/> in a <see cref="ScriptEnvironment"/>. Only use this ctor if you know what you are doing.
+    /// Wraps the passed <see cref="ScriptScope"/> in a <see cref="ScriptEnvironment"/>. 
     /// </summary>
     /// <param name="scriptScope"></param>
-    public ScriptEnvironment (ScriptScope scriptScope)
+    private ScriptEnvironment (ScriptScope scriptScope)
     {
       ArgumentUtility.CheckNotNull ("scriptScope", scriptScope);
       _scriptScope = scriptScope;
@@ -82,11 +83,19 @@ from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (sym
       scriptSource.Execute (_scriptScope);
     }
 
+    /// <summary>
+    /// Sets a variable with the passe <paramref name="name"/> to the passed <paramref name="value"/> within the <see cref="ScriptEnvironment"/>.
+    /// </summary>
     public void SetVariable (string name, Object value)
     {
       _scriptScope.SetVariable (name, value);
     }
 
+    /// <summary>
+    /// Gets the value of the variable with the passe <paramref name="name"/> as a <see cref="Variable{T}"/> struct.
+    /// If the variable does not exist within the <see cref="ScriptEnvironment"/>, the 
+    /// <see cref="Variable{T}"/>.<see cref="Variable{T}.IsValid"/>-property is <see langword="false" />.
+    /// </summary> 
     public Variable<T> GetVariable<T> (string name)
     {
       T value;
@@ -94,6 +103,11 @@ from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (sym
       return new Variable<T>(value,isValid);
     }
 
+    /// <summary>
+    /// Contains the value of a variable retrieved from a <see cref="ScriptEnvironment"/>, together with the information 
+    /// whether the value is valid (i.e. the variable existed).
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public struct Variable<T>
     {
       private readonly T _value;
@@ -105,11 +119,17 @@ from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (sym
         _isValid = isValid;
       }
 
+      /// <summary>
+      /// Value of the variable. Defined only if <see cref="IsValid"/> is <see langword="true"/>.
+      /// </summary>
       public T Value
       {
         get { return _value; }
       }
 
+      /// <summary>
+      /// <see langword="true"/> if the variable existed, <see langword="false"/> otherwise.
+      /// </summary>
       public bool IsValid
       {
         get { return _isValid; }

@@ -25,26 +25,19 @@ namespace Remotion.Scripting.UnitTests
   public class ScriptEnvironmentTest
   {
     [Test]
-    public void Ctor_ScriptScope ()
+    public void Create ()
     {
-      ScriptScope scriptScope = ScriptingHelper.CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-      var scriptEnvironment = new ScriptEnvironment (scriptScope);
-      Assert.That (scriptEnvironment.ScriptScope, Is.EqualTo (scriptScope));
-    }
-
-    [Test]
-    public void DefaultCtor ()
-    {
-      var scriptEnvironment = new ScriptEnvironment ();
-      var scriptEnvironment2 = new ScriptEnvironment ();
+      var scriptEnvironment = ScriptEnvironment.Create ();
+      var scriptEnvironment2 = ScriptEnvironment.Create ();
       Assert.That (scriptEnvironment.ScriptScope, Is.Not.Null);
+      Assert.That (scriptEnvironment2.ScriptScope, Is.Not.Null);
       Assert.That (scriptEnvironment.ScriptScope, Is.Not.SameAs (scriptEnvironment2.ScriptScope));
     }
 
     [Test]
     public void Import ()
     {
-      var scriptEnvironment = new ScriptEnvironment ();
+      var scriptEnvironment = ScriptEnvironment.Create ();
       scriptEnvironment.Import ("Remotion", "Remotion.Diagnostics.ToText", "To", "ToTextBuilder");
       Assert.That (scriptEnvironment.ScriptScope.GetVariable("To"), Is.Not.Null);
       Assert.That (scriptEnvironment.ScriptScope.GetVariable ("ToTextBuilder"), Is.Not.Null);
@@ -53,7 +46,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void SetVariable ()
     {
-      var scriptEnvironment = new ScriptEnvironment ();
+      var scriptEnvironment = ScriptEnvironment.Create ();
       var doc = new Document ("ScriptEnvironmentTest_SetVariable");
       scriptEnvironment.SetVariable ("ScriptEnvironmentTest_SetVariable", doc);
       Assert.That (scriptEnvironment.ScriptScope.GetVariable ("ScriptEnvironmentTest_SetVariable"), Is.SameAs (doc));
@@ -62,7 +55,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void GetVariable ()
     {
-      var scriptEnvironment = new ScriptEnvironment ();
+      var scriptEnvironment = ScriptEnvironment.Create ();
       const string variableName = "ScriptEnvironmentTest_GetVariable";
       var variableInvalid = scriptEnvironment.GetVariable<Document> (variableName);
       Assert.That (variableInvalid.IsValid , Is.False);
