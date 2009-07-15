@@ -147,7 +147,7 @@
   Partner Menu Click:
   <asp:Label ID="PartnerFieldMenuClickEventArgsLabel" runat="server" EnableViewState="False">#</asp:Label></p>
 <p>
-  <br>
+  <br />
   <remotion:WebButton ID="PartnerTestSetNullButton" runat="server" Text="Partner Set Null" />
   <remotion:WebButton ID="PartnerTestSetNewItemButton" runat="server" Text="Partner Set New Item" />
 </p>

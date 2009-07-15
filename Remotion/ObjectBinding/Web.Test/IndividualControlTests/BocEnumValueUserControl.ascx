@@ -194,6 +194,6 @@
       <p> bound, radio buttons, nullvalue not visible</p></td>
     <td style="WIDTH: 20%"><asp:label id="EnumUndefinedRadioButtonWithoutNullvalueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
     </table>
-<p><br>Gender Selection Changed: <asp:label id=GenderFieldSelectionChangedLabel runat="server" EnableViewState="False">#</asp:label></p>
+<p><br />Gender Selection Changed: <asp:label id=GenderFieldSelectionChangedLabel runat="server" EnableViewState="False">#</asp:label></p>
 <p><remotion:webbutton id=GenderTestSetNullButton runat="server" Text="Gender Set Null" width="165px"/><remotion:webbutton id=GenderTestSetDisabledGenderButton runat="server" Text="Gender Set Disabled Gender" width="165px"/><remotion:webbutton id=GenderTestSetMarriedButton runat="server" Text="Gender Set Married" width="165px"/></p>
-<p><br><remotion:webbutton id=ReadOnlyGenderTestSetNullButton runat="server" Text="Read Only Gender Set Null" width="220px"/><remotion:webbutton id=ReadOnlyGenderTestSetNewItemButton runat="server" Text="Read Only Gender Set Female" width="220px"/></p>
+<p><br /><remotion:webbutton id=ReadOnlyGenderTestSetNullButton runat="server" Text="Read Only Gender Set Null" width="220px"/><remotion:webbutton id=ReadOnlyGenderTestSetNewItemButton runat="server" Text="Read Only Gender Set Female" width="220px"/></p>

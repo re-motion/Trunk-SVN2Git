@@ -95,4 +95,4 @@
           <td style="WIDTH: 20%"><asp:label id=DisabledUnboundReadOnlyCVFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr></table>
       <p>CV Field Text Changed: <asp:label id=CVFieldTextChangedLabel runat="server" EnableViewState="False">#</asp:label></p>
       <p><remotion:webbutton id=CVTestSetNullButton runat="server" Text="VC Set Null" width="220px"/><remotion:webbutton id=CVTestSetNewValueButton runat="server" Text="CVSet New Value" width="220px"/></p>
-      <p><br><remotion:webbutton id=ReadOnlyCVTestSetNullButton runat="server" Text="Read Only CV Set Null" width="220px"/><remotion:webbutton id=ReadOnlyCVTestSetNewValueButton runat="server" Text="Read Only CV Set New Value" width="220px"/></p>
+      <p><br /><remotion:webbutton id=ReadOnlyCVTestSetNullButton runat="server" Text="Read Only CV Set Null" width="220px"/><remotion:webbutton id=ReadOnlyCVTestSetNewValueButton runat="server" Text="Read Only CV Set New Value" width="220px"/></p>

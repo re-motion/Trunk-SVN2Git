@@ -62,13 +62,13 @@ document.onkeydown = document.onkeypress = function (evt)
   }
 }
 </script>
-<p>Wxe-Enabled Tests for individual Business Object Controls<br>
+<p>Wxe-Enabled Tests for individual Business Object Controls<br />
 <a href="IndividualControlTest.wxe?UserControl=BocListUserControl.ascx&WxeReturnToSelf=True&TabbedMenuSelection=IndividualControlTests,BocList">IndividualControlTest.wxe</a></p>
 
 <p>Wxe-Enabled Tests containing all the Business Object 
-Controls in a single Form or User Control<br><A href="WxeHandler.ashx?WxeFunctionType=OBWTest.CompleteBocTestMainWxeFunction,OBWTest" >WxeHandler.ashx?WxeFunctionType=OBWTest.CompleteBocTestMainWxeFunction,OBWTest</A></p>
-<p>Wxe-Enabled Test for a Tabbed Form<br><A href="WxeHandler.ashx?WxeFunctionType=OBWTest.TestTabbedFormWxeFunction,OBWTest&amp;ReadOnly=false" >WxeHandler.ashx?WxeFunctionType=OBWTest.TestTabbedFormWxeFunction,OBWTest&amp;ReadOnly=false</A></p>
-<p>Test Tree View<br><A href="SingleTestTreeView.aspx" >SingleTestTreeView.aspx</A></p>
+Controls in a single Form or User Control<br /><A href="WxeHandler.ashx?WxeFunctionType=OBWTest.CompleteBocTestMainWxeFunction,OBWTest" >WxeHandler.ashx?WxeFunctionType=OBWTest.CompleteBocTestMainWxeFunction,OBWTest</A></p>
+<p>Wxe-Enabled Test for a Tabbed Form<br /><A href="WxeHandler.ashx?WxeFunctionType=OBWTest.TestTabbedFormWxeFunction,OBWTest&amp;ReadOnly=false" >WxeHandler.ashx?WxeFunctionType=OBWTest.TestTabbedFormWxeFunction,OBWTest&amp;ReadOnly=false</A></p>
+<p>Test Tree View<br /><A href="SingleTestTreeView.aspx" >SingleTestTreeView.aspx</A></p>
 <p><A href="javascript:OpenClientWindow ('WxeHandler.ashx?WxeFunctionType=OBWTest.ClientFormWxeFunction,OBWTest&amp;ReadOnly=false');" >OpenClientWindow 
 ('WxeHandler.ashx?WxeFunctionType=OBWTest.ClientFormWxeFunction,OBWTest&amp;ReadOnly=false')</A></p>
 <p><a href="javascript:OpenClientWindow ('WxeHandler.ashx?WxeFunctionType=OBWTest.ClientFormWxeFunction,OBWTest&amp;ReadOnly=true');" >OpenClientWindow 
@@ -76,7 +76,7 @@ Controls in a single Form or User Control<br><A href="WxeHandler.ashx?WxeFunctio
 <p><a 
 href="javascript:OpenClientWindow ('ClientFormFrameset.htm');">OpenClientWindow 
 ('ClientFormFrameset.htm')</a></p>
-<p>Design Test<br><a 
+<p>Design Test<br /><a 
 href="WxeHandler.ashx?WxeFunctionType=OBWTest.Design.DesignTestFunction,OBWTest">WxeHandler.ashx?WxeFunctionType=OBWTest.Design.DesignTestFunction,OBWTest</a></p>
 </form>
   </body>

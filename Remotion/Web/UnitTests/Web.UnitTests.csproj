@@ -184,17 +184,17 @@
     <Compile Include="UI\Controls\Rendering\DropDownMenu\QuirksMode\DropDownMenuRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\DropDownMenu\StandardMode\DropDownMenuRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\HtmlHelper.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\ListMenuRendererTest.cs" />
+    <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\ListMenuRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\RendererTestBase.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\QuirksMode\SingleViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\StandardMode\SingleViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\StubServiceLocator.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuRendererTest.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\WebTabStripRendererTest.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuRendererTest.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\WebTabStripRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\QuirksMode\TabbedMultiViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\StandardMode\TabbedMultiViewRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\TabbedMultiViewMock.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRendererTest.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripRendererTest.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\WebTabStripMock.cs" />
     <Compile Include="UI\Controls\Rendering\XmlNodeExtensions.cs" />
     <Compile Include="UI\Controls\ReplaceableControlMock.cs" />
@@ -407,6 +407,10 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\" />
+    <Folder Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -111,7 +111,7 @@ public class BocMultilineTextValueUserControl : BaseUserControl
   private void SetDebugLabel (BocMultilineTextValue control, Label label)
   {
    if (control.Value != null)
-      label.Text = StringUtility.ConcatWithSeparator (control.Value, "<br>");
+      label.Text = StringUtility.ConcatWithSeparator (control.Value, "<br />");
     else
       label.Text = "not set";
   }
@@ -139,7 +139,7 @@ public class BocMultilineTextValueUserControl : BaseUserControl
   private void CVField_TextChanged(object sender, EventArgs e)
   {
     if (CVField.Value != null)
-      CVFieldTextChangedLabel.Text = StringUtility.ConcatWithSeparator (CVField.Value, "<br>");
+      CVFieldTextChangedLabel.Text = StringUtility.ConcatWithSeparator (CVField.Value, "<br />");
     else
       CVFieldTextChangedLabel.Text = "not set";
   }

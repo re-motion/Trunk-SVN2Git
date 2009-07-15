@@ -98,10 +98,10 @@ public class TestWxeBasePage:
     LiteralControl stack = new LiteralControl();
 
     StringBuilder sb = new StringBuilder();
-    sb.Append ("<br><div>");
-    sb.Append ("<b>Stack:</b><br>");
+    sb.Append ("<br /><div>");
+    sb.Append ("<b>Stack:</b><br />");
     for (WxeStep step = CurrentPageStep; step != null; step = step.ParentStep)
-      sb.AppendFormat ("{0}<br>", step.ToString());      
+      sb.AppendFormat ("{0}<br />", step.ToString());      
     sb.Append ("</div>");
     stack.Text = sb.ToString();
     

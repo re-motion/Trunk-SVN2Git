@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -21,7 +21,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
@@ -29,7 +29,7 @@ using Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
-using Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode.Factories;
+using Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode.Factories;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
 {

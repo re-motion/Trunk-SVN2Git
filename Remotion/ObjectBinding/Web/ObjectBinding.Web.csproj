@@ -304,10 +304,10 @@
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocCheckboxRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocCheckboxRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocBooleanValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocBooleanValueRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\BocCheckboxRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\Factories\BocBooleanValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\BocBooleanValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\BocBooleanValueRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\BocCheckboxRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\StandardMode\Factories\BocBooleanValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\BocDateTimeValueRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\IBocDateTimeValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\IBocDateTimeValueRenderer.cs" />
@@ -320,8 +320,8 @@
     <Compile Include="UI\Controls\Rendering\BocDateTimeValue\StandardMode\Factories\BocDateTimeValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\BocEnumValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\Factories\BocEnumValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocEnumValue\StandardMode\BocEnumValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocEnumValue\StandardMode\Factories\BocEnumValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />
@@ -338,12 +338,12 @@
     <Compile Include="UI\Controls\Rendering\BocList\IBocListNavigationBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocSelectorColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocSelectorColumnRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocIndexColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocListPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocListTableBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocSelectorColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\CssClassContainer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\Factories\BocColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocIndexColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListTableBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocSelectorColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\CssClassContainer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\Factories\BocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\BocListCustomColumnTuple.cs" />
     <Compile Include="UI\Controls\PropertyPathBinding.cs">
       <SubType>Code</SubType>
@@ -351,21 +351,21 @@
     <Compile Include="UI\Controls\PropertyPathBindingCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocCommandColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocCommandEnabledColumnRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocCompoundColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocCustomColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocDropDownMenuColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\Factories\BocListRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocColumnRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocListMenuBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocListNavigationBlockRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocListRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocListRendererBase.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocRowRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocRowEditModeColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocSimpleColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocValueColumnRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocCommandColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocCommandEnabledColumnRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocCompoundColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocCustomColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocDropDownMenuColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\Factories\BocListRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocColumnRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListMenuBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListNavigationBlockRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocRowRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocRowEditModeColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocSimpleColumnRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocValueColumnRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\BocReferenceValuePreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\IBocReferenceValuePreRenderer.cs" />
@@ -381,12 +381,12 @@
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\Factories\BocTextValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\Factories\BocTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\IBocRenderableControlRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IBocRenderableControl.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocMultilineTextValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\BocTextValueRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocMultilineTextValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocTextValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocTextValueRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocRendererBase.cs" />
     <Compile Include="UI\Controls\Styles.cs">
       <SubType>Component</SubType>
@@ -547,7 +547,10 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="UI\Controls\Rendering\BocList\StandardMode\" />
+    <Folder Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocList\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\Factories\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -20,9 +20,9 @@ using Remotion.Collections;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
-using Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode.Factories;
+using Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
-using Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode.Factories;
+using Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories;
 
 namespace Remotion.Web.UnitTests.UI.Controls.Rendering
 {

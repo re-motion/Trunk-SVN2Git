@@ -327,10 +327,10 @@ public class BocListUserControl : BaseUserControl
   private void ChildrenList_ListItemCommandClick(object sender, BocListItemCommandClickEventArgs e)
   {
     ChildrenListEventCheckBox.Checked = true;
-    ChildrenListEventArgsLabel.Text += string.Format ("ColumnID: {0}<br>", e.Column.ItemID);
+    ChildrenListEventArgsLabel.Text += string.Format ("ColumnID: {0}<br />", e.Column.ItemID);
     if (e.BusinessObject is IBusinessObjectWithIdentity)
-      ChildrenListEventArgsLabel.Text += string.Format ("BusinessObjectID: {0}<br>", ((IBusinessObjectWithIdentity) e.BusinessObject).UniqueIdentifier);
-    ChildrenListEventArgsLabel.Text += string.Format ("ListIndex: {0}<br>", e.ListIndex);
+      ChildrenListEventArgsLabel.Text += string.Format ("BusinessObjectID: {0}<br />", ((IBusinessObjectWithIdentity) e.BusinessObject).UniqueIdentifier);
+    ChildrenListEventArgsLabel.Text += string.Format ("ListIndex: {0}<br />", e.ListIndex);
 
     if (e.Column.ItemID == "Edit")
       ChildrenList.SwitchRowIntoEditMode (e.ListIndex);

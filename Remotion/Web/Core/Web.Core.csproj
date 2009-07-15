@@ -179,9 +179,9 @@
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\Factories\ListMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\ListMenuPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\ListMenu\QuirksMode\ListMenuRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\Factories\ListMenuRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\ListMenuPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\ListMenu\StandardMode\ListMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\SingleView\ISingleView.cs" />
     <Compile Include="UI\Controls\Rendering\PreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\RendererBase.cs" />
@@ -199,9 +199,9 @@
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenu.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMenu\ITabbedMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\TabbedMenuRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\TabbedMenuRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\Factories\TabbedMenuRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\TabbedMenuRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiView.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\TabbedMultiView\ITabbedMultiViewRenderer.cs" />
@@ -221,11 +221,11 @@
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\WebTabStrip\IWebTabStripRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\Factories\WebTabStripRendererFactory.cs" />
-    <Compile Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\MenuTabRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripPreRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\WebTabStripRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\Factories\WebTabStripRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\TabbedMenu\StandardMode\MenuTabRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\WebTabStrip\StandardMode\WebTabStripRenderer.cs" />
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
@@ -763,8 +763,8 @@
     <Content Include="Res\HTML\ExecutionEngine.css" />
     <Content Include="Res\HTML\ExecutionEngine.js" />
     <Content Include="Res\HTML\ExecutionEngineIE.css" />
-    <Content Include="Res\HTML\Legacy\ListMenu.css" />
-    <Content Include="Res\HTML\Legacy\ListMenu.js" />
+    <Content Include="Res\HTML\Standard\ListMenu.css" />
+    <Content Include="Res\HTML\Standard\ListMenu.js" />
     <Content Include="Res\HTML\Standard\FontSize080.css" />
     <Content Include="Res\HTML\Legacy\FontSize080Quirks.css" />
     <Content Include="Res\HTML\Standard\FontSize100.css" />
@@ -784,9 +784,8 @@
     <Content Include="Res\HTML\Standard\TabStrip.css" />
     <Content Include="Res\HTML\Standard\ViewLayout.js" />
     <Content Include="Res\HTML\Style.css" />
-    <Content Include="Res\HTML\Legacy\TabbedMenu.css" />
+    <Content Include="Res\HTML\Standard\TabbedMenu.css" />
     <Content Include="Res\HTML\Legacy\TabbedMultiView.css" />
-    <Content Include="Res\HTML\Legacy\TabStrip.css" />
     <Content Include="Res\HTML\TreeView.css" />
     <Content Include="Res\HTML\Utilities.js" />
     <Content Include="Res\HTML\WebButton.css" />
@@ -843,7 +842,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="UI\Controls\Rendering\WebTabStrip\StandardMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\ListMenu\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\" />
+    <Folder Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\Factories\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

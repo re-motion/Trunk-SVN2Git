@@ -72,9 +72,9 @@ namespace OBWTest.IndividualControlTests
       base.OnPreRender (e);
 
       StringBuilder sb = new StringBuilder();
-      sb.Append ("<b>Stack:</b><br>");
+      sb.Append ("<b>Stack:</b><br />");
       for (WxeStep step = CurrentPageStep; step != null; step = step.ParentStep)
-        sb.AppendFormat ("{0}<br>", step.ToString());
+        sb.AppendFormat ("{0}<br />", step.ToString());
       Stack.Text = sb.ToString();
     }
 
