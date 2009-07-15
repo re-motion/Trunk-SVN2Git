@@ -33,19 +33,19 @@ namespace Remotion.Scripting
     private readonly Func<TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      _func = scope.ScriptScope.GetVariable<Func<TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TResult>> (scriptFunctionName);
     }
 
     public TResult Execute ()
@@ -69,19 +69,19 @@ namespace Remotion.Scripting
     private readonly Func<TFixedArg1, TFixedArg2, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      _func = scope.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TResult>> (scriptFunctionName);
     }
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2)
@@ -105,19 +105,19 @@ namespace Remotion.Scripting
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      _func = scope.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TResult>> (scriptFunctionName);
     }
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3)
@@ -141,19 +141,19 @@ namespace Remotion.Scripting
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      _func = scope.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TResult>> (scriptFunctionName);
     }
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4)
@@ -177,19 +177,19 @@ namespace Remotion.Scripting
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      _func = scope.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TResult>> (scriptFunctionName);
     }
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5)
@@ -213,19 +213,19 @@ namespace Remotion.Scripting
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      _func = scope.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TResult>> (scriptFunctionName);
     }
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6)
@@ -249,19 +249,19 @@ namespace Remotion.Scripting
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      _func = scope.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TResult>> (scriptFunctionName);
     }
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6, TFixedArg7 a7)
@@ -285,19 +285,19 @@ namespace Remotion.Scripting
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      _func = scope.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TResult>> (scriptFunctionName);
     }
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6, TFixedArg7 a7, TFixedArg8 a8)
@@ -321,19 +321,19 @@ namespace Remotion.Scripting
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TFixedArg9, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
-      _func = scope.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TFixedArg9, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TFixedArg9, TResult>> (scriptFunctionName);
     }
 
     public TResult Execute (TFixedArg1 a1, TFixedArg2 a2, TFixedArg3 a3, TFixedArg4 a4, TFixedArg5 a5, TFixedArg6 a6, TFixedArg7 a7, TFixedArg8 a8, TFixedArg9 a9)

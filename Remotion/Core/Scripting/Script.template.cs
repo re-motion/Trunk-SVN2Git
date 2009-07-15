@@ -29,20 +29,20 @@ namespace Remotion.Scripting
     private readonly Func<TFixedArg1, TResult> _func;
 
     public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
-      ScriptEnvironment scope, string scriptFunctionName)
+      ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("scriptEnvironment", scriptEnvironment);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptFunctionName", scriptFunctionName);
       ArgumentUtility.CheckNotNullOrEmpty ("scriptText", scriptText);
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      scriptSource.Execute (scope.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       // @replace "TFixedArg<n>, "
-      _func = scope.ScriptScope.GetVariable<Func<TFixedArg1, TResult>> (scriptFunctionName);
+      _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TResult>> (scriptFunctionName);
     }
 
     // @replace "TFixedArg<n> a<n>" ", "

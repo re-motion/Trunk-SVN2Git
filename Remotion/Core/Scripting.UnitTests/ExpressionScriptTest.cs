@@ -149,11 +149,5 @@ from " + nameSpace + " import " + symbol;
       scriptSource.Execute (scriptScope);
     }
 
-
-    //private ScriptScope CreateScriptScope (ScriptingHost.ScriptLanguageType scriptLanguageType)
-    //{
-    //  var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
-    //  return engine.CreateScope ();
-    //}
   }
 }
