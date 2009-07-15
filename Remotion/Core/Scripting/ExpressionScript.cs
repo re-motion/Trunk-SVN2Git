@@ -33,13 +33,14 @@ namespace Remotion.Scripting
   public class ExpressionScript<TResult> : ScriptBase
   {
     private readonly ScriptSource _scriptSource;
-    private readonly ScriptScope _scriptScope;
+    //private readonly ScriptScope _scriptScope;
+    private readonly ScriptEnvironment _scriptScope;
 
     public ExpressionScript (
         ScriptContext scriptContext,
         ScriptingHost.ScriptLanguageType scriptLanguageType,
         string scriptText,
-        ScriptScope scope)
+        ScriptEnvironment scope)
         : base (scriptContext, scriptLanguageType, scriptText)
     {
       ArgumentUtility.CheckNotNull ("scriptContext", scriptContext);
@@ -57,7 +58,7 @@ namespace Remotion.Scripting
       TResult result;
       try
       {
-        result = _scriptSource.Execute<TResult> (_scriptScope);
+        result = _scriptSource.Execute<TResult> (_scriptScope.ScriptScope);
       }
       finally
       {

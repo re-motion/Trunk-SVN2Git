@@ -40,10 +40,8 @@ namespace Remotion.Scripting.UnitTests
       const string scriptText = 
 "'ExpressionScriptCtorTest'";
 
-      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
-      var scriptScope = engine.CreateScope ();
-
-      var script = new ExpressionScript<string> (scriptContext, scriptLanguageType, scriptText, scriptScope);
+      var scriptEnvironment = new ScriptEnvironment ();
+      var script = new ExpressionScript<string> (scriptContext, scriptLanguageType, scriptText, scriptEnvironment);
 
       Assert.That (script.ScriptContext, Is.EqualTo (scriptContext));
       Assert.That (script.ScriptLanguageType, Is.EqualTo (scriptLanguageType));
@@ -59,11 +57,12 @@ namespace Remotion.Scripting.UnitTests
       const string scriptText =
 "'Document Name: ' + rmDoc.DocumentName";
 
-      ScriptScope scriptScope = ScriptingHelper.CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
+      var scriptEnvironment = new ScriptEnvironment ();
       var document = new Document ("Test Doc");
-      scriptScope.SetVariable ("rmDoc", document);
+      scriptEnvironment.SetVariable ("rmDoc", document);
 
-      var script = new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
+      var script = new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext (),
+        ScriptingHost.ScriptLanguageType.Python, scriptText, scriptEnvironment);
       Assert.That (script.Execute (), Is.EqualTo ("Document Name: Test Doc"));
     }
 
@@ -77,12 +76,14 @@ namespace Remotion.Scripting.UnitTests
       const string scriptText =
 "Document('New ' + rmDoc.DocumentName)";
 
-      ScriptScope scriptScope = ScriptingHelper.CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-      ImportFromAssemblyIntoScriptScope(scriptScope,"Remotion.Scripting.UnitTests","Remotion.Scripting.UnitTests.TestDomain","Document");
+      var scriptEnvironment = new ScriptEnvironment ();
+      //ImportFromAssemblyIntoScriptScope (scriptScope, "Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
+      scriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
       var document = new Document ("Test Doc");
-      scriptScope.SetVariable ("rmDoc", document);
+      scriptEnvironment.SetVariable ("rmDoc", document);
 
-      var script = new ExpressionScript<Document> (ScriptContextTestHelper.CreateTestScriptContext (), ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
+      var script = new ExpressionScript<Document> (ScriptContextTestHelper.CreateTestScriptContext (),
+        ScriptingHost.ScriptLanguageType.Python, scriptText, scriptEnvironment);
       var result = script.Execute ();
       Assert.That (result.DocumentName, Is.EqualTo ("New Test Doc"));
     }
@@ -98,9 +99,10 @@ namespace Remotion.Scripting.UnitTests
 "ScriptContext.Current";
 
       ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesScriptContext_Script");
-      ScriptScope scriptScope = ScriptingHelper.CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-      ImportFromAssemblyIntoScriptScope (scriptScope, "Remotion.Scripting", "Remotion.Scripting", "ScriptContext");
-      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
+      var scriptEnvironment = new ScriptEnvironment ();
+      scriptEnvironment.Import ("Remotion.Scripting", "Remotion.Scripting", "ScriptContext");
+      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python,
+        scriptText, scriptEnvironment);
       Assert.That (script.Execute (), Is.SameAs (scriptContextForScript));
 
       Assert.That (ScriptContext.Current, Is.Null);
@@ -115,8 +117,9 @@ namespace Remotion.Scripting.UnitTests
 "RaiseCommandNotSupportedInIronPythonExpressioSoUsingUnkownSymbol";
 
       ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows");
-      ScriptScope scriptScope = ScriptingHelper.CreateScriptScope (ScriptingHost.ScriptLanguageType.Python);
-      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python, scriptText, scriptScope);
+      var scriptEnvironment = new ScriptEnvironment ();
+      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python,
+        scriptText, scriptEnvironment);
 
       try
       {
