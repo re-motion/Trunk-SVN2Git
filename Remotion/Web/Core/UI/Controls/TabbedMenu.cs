@@ -90,9 +90,17 @@ namespace Remotion.Web.UI.Controls
       }
       LoadSelection ();
 
+      if (!IsDesignMode)
+      {
+        RegisterHtmlHeadContents(new HttpContextWrapper (Context), HtmlHeadAppender.Current);
+      }
+    }
+
+    public void RegisterHtmlHeadContents (IHttpContext context, HtmlHeadAppender htmlHeadAppender)
+    {
       var factory = ServiceLocator.Current.GetInstance<ITabbedMenuRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
-      preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
+      var preRenderer = factory.CreatePreRenderer (context, this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <summary> Overrides the <see cref="Control.CreateChildControls"/> method. </summary>

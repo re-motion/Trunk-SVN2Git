@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reflection;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -101,13 +100,18 @@ namespace Remotion.Web.UI.Controls
 
       if (!IsDesignMode)
       {
-      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
-      preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents(new HttpContextWrapper (Context), HtmlHeadAppender.Current);
 
         Page.RegisterRequiresControlState (this);
         Page.RegisterRequiresPostBack (this);
       }
+    }
+
+    public void RegisterHtmlHeadContents (IHttpContext context, HtmlHeadAppender htmlHeadAppender)
+    {
+      var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (context, this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
@@ -255,7 +259,7 @@ namespace Remotion.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
 
       var factory = ServiceLocator.Current.GetInstance<IWebTabStripRendererFactory>();
-      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper(Context) : null, writer, this);
+      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper (Context) : null, writer, this);
       renderer.Render();
     }
 
@@ -287,12 +291,12 @@ namespace Remotion.Web.UI.Controls
 
     IList<IWebTab> IWebTabStrip.GetVisibleTabs ()
     {
-      return GetVisibleTabs().ConvertAll<IWebTab>(tab=>tab);
+      return GetVisibleTabs().ConvertAll<IWebTab> (tab => tab);
     }
 
     public virtual bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode(this, Context); }
+      get { return ControlHelper.IsDesignMode (this, Context); }
     }
 
     /// <summary> Dispatches the resources passed in <paramref name="values"/> to the control's properties. </summary>

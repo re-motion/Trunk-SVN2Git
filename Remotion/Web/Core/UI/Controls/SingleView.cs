@@ -71,12 +71,17 @@ namespace Remotion.Web.UI.Controls
       //CreateTemplatedControls (DesignMode);
       EnsureChildControls();
 
-      if (!ControlHelper.IsDesignMode (this, Context))
+      if (!IsDesignMode )
       {
-        var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
-        var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
-        preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents(new HttpContextWrapper (Context), HtmlHeadAppender.Current);
       }
+    }
+
+    public void RegisterHtmlHeadContents (IHttpContext context, HtmlHeadAppender htmlHeadAppender)
+    {
+      var factory = ServiceLocator.Current.GetInstance<ISingleViewRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (context, this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     //private void CreateTemplatedControls (bool recreate)
@@ -252,7 +257,7 @@ namespace Remotion.Web.UI.Controls
       get { return _bottomControlsStyle; }
     }
 
-    bool ISingleView.IsDesignMode
+    public bool IsDesignMode
     {
       get { return ControlHelper.IsDesignMode(this, Context); }
     }

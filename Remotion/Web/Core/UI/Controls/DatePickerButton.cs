@@ -48,12 +48,12 @@ namespace Remotion.Web.UI.Controls
     public string ContainerControlID { get; set; }
 
     public string TargetControlID { get; set; }
-    
-    public override void RenderControl (HtmlTextWriter writer)
+
+    protected override void OnInit (EventArgs e)
     {
-      var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render();
+      base.OnInit (e);
+      if (!IsDesignMode)
+        RegisterHtmlHeadContents (new HttpContextWrapper (Context), HtmlHeadAppender.Current);
     }
 
     protected override void OnPreRender (EventArgs e)
@@ -61,6 +61,13 @@ namespace Remotion.Web.UI.Controls
       var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
       var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
       preRenderer.PreRender ();
+    }
+    
+    public override void RenderControl (HtmlTextWriter writer)
+    {
+      var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory> ();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      renderer.Render();
     }
 
     IControl IDatePickerButton.Parent
