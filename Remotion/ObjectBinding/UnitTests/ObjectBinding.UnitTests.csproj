@@ -413,12 +413,6 @@
       <LastGenOutput>EnumWithResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Web\UI\Controls\Rendering\BocBooleanValue\QuirksMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocEnumValue\QuirksMode\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocList\QuirksMode\Factories\" />
-    <Folder Include="Web\UI\Controls\Rendering\BocTextValue\QuirksMode\" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

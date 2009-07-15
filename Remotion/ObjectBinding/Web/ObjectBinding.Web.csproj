@@ -546,12 +546,6 @@
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Controls\Rendering\BocBooleanValueBase\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\BocEnumValue\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\BocList\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\BocTextValueBase\QuirksMode\Factories\" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

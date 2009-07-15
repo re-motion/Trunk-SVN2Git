@@ -841,11 +841,6 @@
       <Name>Security.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\Controls\Rendering\ListMenu\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\TabbedMenu\QuirksMode\Factories\" />
-    <Folder Include="UI\Controls\Rendering\WebTabStrip\QuirksMode\Factories\" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
