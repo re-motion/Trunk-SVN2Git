@@ -67,7 +67,7 @@ public class SingleBocTestBasePage:
           new HttpContextWrapper(Context), 
           typeof (ResourceUrlResolver),
           ResourceType.Html,
-          Global.UseStandardModeRendering ? ResourceTheme.Standard : ResourceTheme.Legacy,
+          Global.PreferStandardModeRendering ? ResourceTheme.Standard : ResourceTheme.Legacy,
           "Style.css");
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, url);
     }

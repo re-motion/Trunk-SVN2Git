@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Web;
 using Castle.MicroKernel.Registration;
@@ -35,11 +34,6 @@ namespace OBWTest
 {
   public class Global : HttpApplication // , IResourceUrlResolver
   {
-    /// <summary>
-    /// Required designer variable.
-    /// </summary>
-    private IContainer components = null;
-
     private WaiConformanceLevel _waiConformanceLevelBackup;
 
     public Global ()
@@ -49,7 +43,7 @@ namespace OBWTest
       InitializeComponent();
     }
 
-    public static bool UseStandardModeRendering{get;private set;}
+    public static bool PreferStandardModeRendering { get; private set; }
 
     public XmlReflectionBusinessObjectStorageProvider XmlReflectionBusinessObjectStorageProvider
     {
@@ -64,7 +58,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      UseStandardModeRendering = true;
+      PreferStandardModeRendering = true;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))
@@ -73,44 +67,41 @@ namespace OBWTest
       XmlReflectionBusinessObjectStorageProvider provider = new XmlReflectionBusinessObjectStorageProvider (objectPath);
       XmlReflectionBusinessObjectStorageProvider.SetCurrent (provider);
       BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (IGetObjectService), provider);
-      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (ISearchAvailableObjectsService), new BindableXmlObjectSearchService ());
-      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService ());
+      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (
+          typeof (ISearchAvailableObjectsService), new BindableXmlObjectSearchService());
+      BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>().AddService (
+          typeof (IBusinessObjectWebUIService), new ReflectionBusinessObjectWebUIService());
 
-      IWindsorContainer container = new WindsorContainer ();
-      // Remotion.Web.Core
-      if (UseStandardModeRendering)
-      {
-        container.Register (
-            AllTypes.Pick()
-                .FromAssembly (typeof (RendererBase<>).Assembly)
-                .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
-                .WithService.Select ((t, b) => t.GetInterfaces())
-                .Configure (c => c.Named ("standard." + c.ServiceType.Name)));
+      IWindsorContainer container = new WindsorContainer();
 
-        // Remotion.ObjectBinding.Web
-        container.Register (
-            AllTypes.Pick ()
-                .FromAssembly (typeof (BocRendererBase<>).Assembly)
-                .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
-                .WithService.Select ((t, b) => t.GetInterfaces ())
-                .Configure (c => c.Named ("standard." + c.ServiceType.Name)));
-      }
-      container.Register (
-          AllTypes.Pick ()
-              .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("legacy." + c.ServiceType.Name)));
-      // Remotion.ObjectBinding.Web
-      container.Register (
-          AllTypes.Pick ()
-              .FromAssembly (typeof (BocRendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("legacy." + c.ServiceType.Name)));
+      if (PreferStandardModeRendering)
+        RegisterRendererFactories (container, "StandardMode");
+
+      RegisterRendererFactories (container, "QuirksMode");
+      
+      if (!PreferStandardModeRendering)
+        RegisterRendererFactories (container, "StandardMode");
 
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
+    }
+
+    private void RegisterRendererFactories (IWindsorContainer container, string namespaceQualifier)
+    {
+      // Remotion.Web.Core
+      container.Register (
+          AllTypes.Pick()
+              .FromAssembly (typeof (RendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (string.Format (".{0}.Factories", namespaceQualifier)))
+              .WithService.Select ((t, b) => t.GetInterfaces())
+              .Configure (c => c.Named ("legacy." + c.ServiceType.Name)));
+      // Remotion.ObjectBinding.Web
+      container.Register (
+          AllTypes.Pick()
+              .FromAssembly (typeof (BocRendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (string.Format (".{0}.Factories", namespaceQualifier)))
+              .WithService.Select ((t, b) => t.GetInterfaces())
+              .Configure (c => c.Named ("legacy." + c.ServiceType.Name)));
     }
 
     protected void Session_Start (Object sender, EventArgs e)
@@ -159,7 +150,6 @@ namespace OBWTest
     /// </summary>
     private void InitializeComponent ()
     {
-      this.components = new System.ComponentModel.Container();
     }
 
     #endregion
