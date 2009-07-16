@@ -17,18 +17,16 @@ using System;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq.Backend;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
   [TestFixture]
-  public class FulltextIntegrationTests : ClientTransactionBaseTest
+  public class FulltextIntegrationTests : IntegrationTestBase
   {
     public override void TestFixtureSetUp ()
     {
@@ -55,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var query = QueryFactory.CreateQuery (queryDefinition);
 
       var orders = ClientTransactionMock.QueryManager.GetCollection<Ceo> (query).AsEnumerable();
-      IntegrationTests.CheckQueryResult (orders, DomainObjectIDs.Ceo4);
+      IntegrationTestBase.CheckQueryResult (orders, DomainObjectIDs.Ceo4);
     }
 
     [Test]
@@ -64,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var ceos = from c in QueryFactory.CreateLinqQuery<Ceo>()
                  where c.Name.ContainsFulltext ("Fischer")
                  select c;
-      IntegrationTests.CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
+      IntegrationTestBase.CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
     }
 
     private void WaitForIndices ()
