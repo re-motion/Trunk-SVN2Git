@@ -24,8 +24,8 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class ScriptTest
   {
-    [SetUp]
-    public void SetUp ()
+    [TearDown]
+    public void TearDown ()
     {
       ScriptContextTestHelper.ClearScriptContexts ();
     }

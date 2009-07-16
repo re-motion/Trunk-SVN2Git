@@ -24,6 +24,12 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class ScriptEnvironmentTest
   {
+    [TearDown]
+    public void TearDown ()
+    {
+      ScriptContextTestHelper.ClearScriptContexts ();
+    }
+
     [Test]
     public void Create ()
     {
@@ -33,6 +39,31 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (scriptEnvironment2.ScriptScope, Is.Not.Null);
       Assert.That (scriptEnvironment.ScriptScope, Is.Not.SameAs (scriptEnvironment2.ScriptScope));
     }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (MissingMemberException), ExpectedMessage = "'str' object has no attribute 'Substring'")]
+    public void NotImportClr ()
+    {
+      var scriptEnvironment = ScriptEnvironment.Create ();
+      AssertSubstringMethodExists(scriptEnvironment);
+    }
+
+    [Test]
+    public void ImportClr ()
+    {
+      var scriptEnvironment = ScriptEnvironment.Create ();
+      scriptEnvironment.ImportClr ();
+      AssertSubstringMethodExists (scriptEnvironment);
+    }
+
+    private void AssertSubstringMethodExists (ScriptEnvironment scriptEnvironment)
+    {
+      const string scriptText = "'ABcd'.Substring(1,2)";
+      var expressionScript =
+          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportClr"), ScriptLanguageType.Python, scriptText, scriptEnvironment);
+      Assert.That (expressionScript.Execute (), Is.EqualTo ("Bc"));
+    }
+
 
     [Test]
     public void Import ()

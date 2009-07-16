@@ -56,6 +56,18 @@ namespace Remotion.Scripting
 
 
     /// <summary>
+    /// Makes the <see cref="ScriptEnvironment"/> CLR aware. 
+    /// </summary>
+    public void ImportClr ()
+    {
+      const string scriptText = "import clr";
+
+      var engine = ScriptingHost.GetScriptEngine (ScriptLanguageType.Python);
+      var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
+      scriptSource.Execute (_scriptScope);
+    }
+
+    /// <summary>
     /// Imports the passed symbols from the given namespace in the given assembly into the <see cref="ScriptEnvironment"/>. 
     /// </summary>
     /// <param name="assembly">Partial name of the assembly to import from (e.g. "Remotion")</param>
