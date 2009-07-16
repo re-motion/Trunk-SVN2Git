@@ -16,11 +16,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.Linq
+namespace Remotion.Data.UnitTests.Linq.Backend.SqlGeneration
 {
   public class StubParameterCollection : DbParameterCollection
   {

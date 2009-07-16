@@ -24,7 +24,7 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.Linq;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Mapping;

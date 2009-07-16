@@ -13,13 +13,41 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections;
 using System.Collections.Generic;
-namespace Remotion.Data.UnitTests.Linq
+using System.Linq;
+using System.Linq.Expressions;
+
+namespace Remotion.Data.UnitTests.Linq.TestDomain
 {
-  public class IndustrialSector
+// ReSharper disable UnusedTypeParameter
+  public class QueryableWithTooManyArguments<T1, T2> : IQueryable<T1>
+// ReSharper restore UnusedTypeParameter
   {
-    public int ID { get; set; }
-    public Student_Detail Student_Detail { get; set; }
-    public IEnumerable<Student> Students { get; set; }
+    public IEnumerator<T1> GetEnumerator ()
+    {
+      throw new NotImplementedException();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
+
+    public Expression Expression
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public Type ElementType
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public IQueryProvider Provider
+    {
+      get { throw new NotImplementedException(); }
+    }
   }
 }

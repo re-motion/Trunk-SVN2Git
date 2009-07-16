@@ -32,6 +32,7 @@ using Remotion.Data.Linq.Backend.DetailParser.WhereConditionParsing;
 using Remotion.Data.Linq.Backend.FieldResolving;
 using Remotion.Data.UnitTests.Linq;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.Linq.TestDomain;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using ReflectionUtility=Remotion.Data.Linq.ReflectionUtility;
