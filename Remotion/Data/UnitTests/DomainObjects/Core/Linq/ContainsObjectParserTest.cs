@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var selectClause = subQuery.QueryModel.SelectClause;
       var fromClause = subQuery.QueryModel.MainFromClause;
 
-      var queryModel1 = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
+      var queryModel1 = new QueryModel (mainFromClause, selectClause);
       queryModel1.BodyClauses.Add (whereClause);
 
       Assert.That (fromClause.ItemType, Is.EqualTo (typeof (OrderItem)));
@@ -174,11 +174,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var whereClause = (WhereClause) subQuery.QueryModel.BodyClauses[0];
       var selectClause = subQuery.QueryModel.SelectClause;
 
-      var queryModel1 = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
+      var queryModel1 = new QueryModel (mainFromClause, selectClause);
       queryModel1.BodyClauses.Add (whereClause);
       QueryModel queryModel = queryModel1;
 
-      Assert.That (queryModel.ResultType, Is.EqualTo (typeof (IQueryable<OrderItem>)));
+      Assert.That (queryModel.GetResultType(), Is.EqualTo (typeof (IQueryable<OrderItem>)));
     }
 
     [Test]

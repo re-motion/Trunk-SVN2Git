@@ -113,7 +113,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var whereClause = CreateWhereClause (mainFromClause, foreignKeyProperty, collectionExpression.Expression);
       var selectClause = CreateSelectClause (mainFromClause);
 
-      var queryModel1 = new QueryModel (typeof (IQueryable<>).MakeGenericType (collectionElementType), mainFromClause, selectClause);
+      var queryModel1 = new QueryModel (mainFromClause, selectClause);
       queryModel1.BodyClauses.Add (whereClause);
       QueryModel queryModel = queryModel1;
       var subQuery = new SubQueryExpression (queryModel);
