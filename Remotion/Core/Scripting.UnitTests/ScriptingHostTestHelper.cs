@@ -22,7 +22,7 @@ namespace Remotion.Scripting.UnitTests
 {
   static class ScriptingHostTestHelper 
   {
-    //public static ScriptEngine GetScriptEngine (ScriptingHost.ScriptLanguageType languageType)
+    //public static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
     //{
     //  return (ScriptEngine) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptingHost), "GetScriptEngine", languageType);
     //}
@@ -32,19 +32,19 @@ namespace Remotion.Scripting.UnitTests
       return (ScriptRuntime) PrivateInvoke.InvokeNonPublicMethod (scriptingHost, "GetScriptRuntime");
     }
 
-    public static ReadOnlyDictionarySpecific<ScriptingHost.ScriptLanguageType, ScriptEngine> GetScriptEngines (this ScriptingHost scriptingHost)
+    public static ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> GetScriptEngines (this ScriptingHost scriptingHost)
     {
-      return (ReadOnlyDictionarySpecific<ScriptingHost.ScriptLanguageType, ScriptEngine>)
+      return (ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine>)
              PrivateInvoke.InvokeNonPublicMethod (scriptingHost, "GetScriptEngines");
     }
 
-    public static ReadOnlyDictionarySpecific<ScriptingHost.ScriptLanguageType, ScriptEngine> FindScriptEngines (this ScriptingHost scriptingHost)
+    public static ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> FindScriptEngines (this ScriptingHost scriptingHost)
     {
-      return (ReadOnlyDictionarySpecific<ScriptingHost.ScriptLanguageType, ScriptEngine>) 
+      return (ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine>) 
              PrivateInvoke.InvokeNonPublicMethod (scriptingHost, "FindScriptEngines");
     }
 
-    public static ScriptEngine GetEngine (this ScriptingHost scriptingHost, ScriptingHost.ScriptLanguageType languageType)
+    public static ScriptEngine GetEngine (this ScriptingHost scriptingHost, ScriptLanguageType languageType)
     {
       return (ScriptEngine) PrivateInvoke.InvokeNonPublicMethod (scriptingHost, "GetEngine", languageType);
     }

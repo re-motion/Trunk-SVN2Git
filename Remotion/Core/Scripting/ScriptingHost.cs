@@ -43,21 +43,21 @@ namespace Remotion.Scripting
   /// <example>
   /// <code  escaped="true" lang="C#">
   /// // Retrieve IronPython DLR ScriptEngine
-  /// var pythonEngine = ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.Python);
+  /// var pythonEngine = ScriptingHost.GetScriptEngine (ScriptLanguageType.Python);
   /// </code>
   /// </example>
   /// </para>
   /// </remarks>
   public class ScriptingHost
   {
-    /// <summary>
-    /// Script languages supported by re-motion.
-    /// </summary>
-    public enum ScriptLanguageType
-    {
-      Python,
-      None
-    }
+    ///// <summary>
+    ///// Script languages supported by re-motion.
+    ///// </summary>
+    //public enum ScriptLanguageType
+    //{
+    //  Python,
+    //  None
+    //}
 
     // ScriptingHost encapsulates Microsoft.Scripting.Hosting.ScriptRuntime, which is not thread safe. We therefore supply a seperate 
     // singleton instance to every thread through a thread static member.
@@ -95,15 +95,7 @@ namespace Remotion.Scripting
 
 
 
-    //public static ScriptEnvironment CreateScriptEnvironment ()
-    //{
-    //  return ScriptContext.Current
-    //}
-
-
     private ScriptingHost () {}
-
- 
 
     private ScriptRuntime GetScriptRuntime ()
     {

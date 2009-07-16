@@ -19,15 +19,15 @@ using Remotion.Utilities;
 namespace Remotion.Scripting
 {
   /// <summary>
-  /// Represents a re-motion script which knows its <see cref="ScriptContext"/> and <see cref="ScriptingHost.ScriptLanguageType"/>.
+  /// Represents a re-motion script which knows its <see cref="ScriptContext"/> and <see cref="Scripting.ScriptLanguageType"/>.
   /// </summary>
   public abstract class ScriptBase
   {
     private string _scriptText;
-    private readonly ScriptingHost.ScriptLanguageType _scriptLanguageType;
+    private readonly ScriptLanguageType _scriptLanguageType;
     private readonly ScriptContext _scriptContext;
 
-    protected ScriptBase (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText)
+    protected ScriptBase (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText)
     {
       _scriptContext = scriptContext;
       _scriptLanguageType = scriptLanguageType;
@@ -41,7 +41,7 @@ namespace Remotion.Scripting
       set { _scriptText = value; }
     }
 
-    public ScriptingHost.ScriptLanguageType ScriptLanguageType
+    public ScriptLanguageType ScriptLanguageType
     {
       get { return _scriptLanguageType; }
     }

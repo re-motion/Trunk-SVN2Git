@@ -28,7 +28,7 @@ namespace Remotion.Scripting
     // @replace "TFixedArg<n>, "
     private readonly Func<TFixedArg1, TResult> _func;
 
-    public Script (ScriptContext scriptContext, ScriptingHost.ScriptLanguageType scriptLanguageType, string scriptText, 
+    public Script (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {

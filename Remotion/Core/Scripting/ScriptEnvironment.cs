@@ -34,7 +34,7 @@ namespace Remotion.Scripting
     /// </summary>
     public static ScriptEnvironment Create ()
     {
-      return new ScriptEnvironment (ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.Python).CreateScope ());
+      return new ScriptEnvironment (ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).CreateScope ());
     }
 
  
@@ -77,7 +77,7 @@ clr.AddReferenceByPartialName('" + assembly + "')" +
  @"
 from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (symbols).se ();
 
-      const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
+      const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
       scriptSource.Execute (_scriptScope);

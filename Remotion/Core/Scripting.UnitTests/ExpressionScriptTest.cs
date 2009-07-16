@@ -35,7 +35,7 @@ namespace Remotion.Scripting.UnitTests
     public void Ctor ()
     {
       ScriptContext scriptContext = ScriptContextTestHelper.CreateTestScriptContext ();
-      const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
+      const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
 
       const string scriptText = 
 "'ExpressionScriptCtorTest'";
@@ -62,7 +62,7 @@ namespace Remotion.Scripting.UnitTests
       scriptEnvironment.SetVariable ("rmDoc", document);
 
       var script = new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext (),
-        ScriptingHost.ScriptLanguageType.Python, scriptText, scriptEnvironment);
+        ScriptLanguageType.Python, scriptText, scriptEnvironment);
       Assert.That (script.Execute (), Is.EqualTo ("Document Name: Test Doc"));
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Scripting.UnitTests
       scriptEnvironment.SetVariable ("rmDoc", document);
 
       var script = new ExpressionScript<Document> (ScriptContextTestHelper.CreateTestScriptContext (),
-        ScriptingHost.ScriptLanguageType.Python, scriptText, scriptEnvironment);
+        ScriptLanguageType.Python, scriptText, scriptEnvironment);
       var result = script.Execute ();
       Assert.That (result.DocumentName, Is.EqualTo ("New Test Doc"));
     }
@@ -100,7 +100,7 @@ namespace Remotion.Scripting.UnitTests
       ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesScriptContext_Script");
       var scriptEnvironment = ScriptEnvironment.Create ();
       scriptEnvironment.Import ("Remotion.Scripting", "Remotion.Scripting", "ScriptContext");
-      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python,
+      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptLanguageType.Python,
         scriptText, scriptEnvironment);
       Assert.That (script.Execute (), Is.SameAs (scriptContextForScript));
 
@@ -117,7 +117,7 @@ namespace Remotion.Scripting.UnitTests
 
       ScriptContext scriptContextForScript = ScriptContextTestHelper.CreateTestScriptContext ("Execute_SwitchesAndReleasesScriptContextIfScriptExecutionThrows");
       var scriptEnvironment = ScriptEnvironment.Create ();
-      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptingHost.ScriptLanguageType.Python,
+      var script = new ExpressionScript<ScriptContext> (scriptContextForScript, ScriptLanguageType.Python,
         scriptText, scriptEnvironment);
 
       try
@@ -142,7 +142,7 @@ clr.AddReferenceByPartialName('" + assembly + "')" +
  @"
 from " + nameSpace + " import " + symbol;
 
-      const ScriptingHost.ScriptLanguageType scriptLanguageType = ScriptingHost.ScriptLanguageType.Python;
+      const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
       scriptSource.Execute (scriptScope);

@@ -37,7 +37,7 @@ namespace Remotion.Scripting
 
     public ExpressionScript (
         ScriptContext scriptContext,
-        ScriptingHost.ScriptLanguageType scriptLanguageType,
+        ScriptLanguageType scriptLanguageType,
         string scriptText,
         ScriptEnvironment scriptEnvironment)
         : base (scriptContext, scriptLanguageType, scriptText)

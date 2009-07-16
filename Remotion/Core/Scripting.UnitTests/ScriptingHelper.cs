@@ -22,7 +22,7 @@ namespace Remotion.Scripting.UnitTests
 {
   public class ScriptingHelper
   {
-    public static ScriptScope CreateScriptScope (ScriptingHost.ScriptLanguageType scriptLanguageType)
+    public static ScriptScope CreateScriptScope (ScriptLanguageType scriptLanguageType)
     {
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       return engine.CreateScope ();

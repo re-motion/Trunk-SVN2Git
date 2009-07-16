@@ -31,7 +31,7 @@ namespace Remotion.Scripting.UnitTests
       var scriptEngines = scriptingHost.FindScriptEngines ();
       Assert.That (scriptEngines, Is.Not.Null);
       Assert.That (scriptEngines.Count, Is.EqualTo(1));
-      Assert.That (scriptEngines[ScriptingHost.ScriptLanguageType.Python], Is.Not.Null);
+      Assert.That (scriptEngines[ScriptLanguageType.Python], Is.Not.Null);
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.Scripting.UnitTests
     public void GetEngine ()
     {
       ScriptingHost scriptingHost = CreateScriptingHost ();
-      var pythonEngine = scriptingHost.GetEngine (ScriptingHost.ScriptLanguageType.Python);
+      var pythonEngine = scriptingHost.GetEngine (ScriptLanguageType.Python);
       Assert.That (pythonEngine, Is.Not.Null);
     }
 
@@ -88,14 +88,14 @@ namespace Remotion.Scripting.UnitTests
     public void GetEngine_Fails ()
     {
       ScriptingHost scriptingHost = CreateScriptingHost ();
-      scriptingHost.GetEngine (ScriptingHost.ScriptLanguageType.None);
+      scriptingHost.GetEngine (ScriptLanguageType.None);
     } 
 
 
     [Test]
     public void GetEngine_Static ()
     {
-      var pythonEngine = ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.Python);
+      var pythonEngine = ScriptingHost.GetScriptEngine (ScriptLanguageType.Python);
       Assert.That (pythonEngine, Is.Not.Null);
     }
 
@@ -103,7 +103,7 @@ namespace Remotion.Scripting.UnitTests
     [ExpectedException (ExceptionType = typeof (NotSupportedException), ExpectedMessage = "ScriptEngine for ScriptLanguageType None cannot be supplied. Check App.config <microsoft.scripting>-section.")]
     public void GetEngine_Static_Fails ()
     {
-      ScriptingHost.GetScriptEngine (ScriptingHost.ScriptLanguageType.None);
+      ScriptingHost.GetScriptEngine (ScriptLanguageType.None);
     }
 
 
@@ -112,7 +112,7 @@ namespace Remotion.Scripting.UnitTests
     //public void ExecuteScript ()
     //{
     //  const string pythonScriptText = "3*4";
-    //  ScriptBase script = new ScriptBase (ScriptContextTestHelper.CreateTestScriptContext (),ScriptingHost.ScriptLanguageType.Python,pythonScriptText);
+    //  ScriptBase script = new ScriptBase (ScriptContextTestHelper.CreateTestScriptContext (),ScriptLanguageType.Python,pythonScriptText);
     //  ScriptingHost.Current.ExecuteScript (script);
     //}
 
