@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var memberExpression = (MemberExpression) whereComparison.Left;
 
       Assert.That (whereComparison.Left, Is.InstanceOfType (typeof (MemberExpression)));
-      Assert.That (((QuerySourceReferenceExpression) memberExpression.Expression).ReferencedClause, Is.SameAs (mainFromClause));
+      Assert.That (((QuerySourceReferenceExpression) memberExpression.Expression).ReferencedQuerySource, Is.SameAs (mainFromClause));
       Assert.That (memberExpression.Member, Is.SameAs (foreignKeyProperty));
     }
 
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var mainFromClause = subQuery.QueryModel.MainFromClause;
       var selectClause = subQuery.QueryModel.SelectClause;
 
-      Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedClause, Is.SameAs (mainFromClause));
+      Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedQuerySource, Is.SameAs (mainFromClause));
     }
 
     [Test]
@@ -156,10 +156,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (fromClause.ItemName, NUnit.Framework.SyntaxHelpers.Text.StartsWith ("<<generated>>"));
       Assert.That (whereClause.Predicate, Is.InstanceOfType (typeof (BinaryExpression)));
       Assert.That (binaryExpression.Left, Is.InstanceOfType (typeof (MemberExpression)));
-      Assert.That (((QuerySourceReferenceExpression) memberExpression.Expression).ReferencedClause, Is.SameAs (fromClause));
+      Assert.That (((QuerySourceReferenceExpression) memberExpression.Expression).ReferencedQuerySource, Is.SameAs (fromClause));
       Assert.That (memberExpression.Member, Is.EqualTo (typeof (OrderItem).GetProperty ("Order")));
       Assert.That (binaryExpression.Right, Is.SameAs (_queriedObjectExpression));
-      Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedClause, Is.SameAs (fromClause));
+      Assert.That (((QuerySourceReferenceExpression) selectClause.Selector).ReferencedQuerySource, Is.SameAs (fromClause));
     }
 
     [Test]
