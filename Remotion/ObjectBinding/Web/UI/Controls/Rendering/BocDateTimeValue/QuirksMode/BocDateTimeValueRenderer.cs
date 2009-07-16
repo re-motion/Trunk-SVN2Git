@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
 
       int dateTextBoxWidthPercentage = GetDateTextBoxWidthPercentage (hasDateField, hasTimeField);
       string dateTextBoxSize = GetDateTextBoxSize (dateTextBoxWidthPercentage);
-      string timeTextBoxSize = GetTimeTextBoxSize (dateTextBoxWidthPercentage);
+      string timeTextBoxSize = GetTimeTextBoxSize (100 - dateTextBoxWidthPercentage);
 
       RenderDateCell (hasDateField, dateTextBox, dateTextBoxSize);
       RenderDatePickerCell (hasDatePicker, datePickerButton);

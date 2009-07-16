@@ -9,19 +9,25 @@ div.bocDateTimeValue
 div.bocDateTimeValue input.Date
 {
   position: absolute;
+  top: 0;
   left: 0;
+  z-index:1;
 }
 
 div.bocDateTimeValue input.Time
 {
   position: absolute;
+  top: 0;
   right: 0;
+  z-index:1;
 }
 
 div.bocDateTimeValue a
 {
   position : relative;
   margin: 0 5px 0 5px;
+  padding: 0;
+  z-index:0;
 }
 
 .bocDateTimeValue

@@ -44,9 +44,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
     public override void PreRender ()
     {
       string key = Control.UniqueID + "_AdjustPositions";
-      string script = string.Format("$(document).ready( " +
-        "function(){{ $(window).bind('resize', " + 
-        "function(e){{ BocDateTimeValue.AdjustPositions(document.getElementById('{0}')); }}) }});", Control.ClientID);
+      string script = string.Format(@"$(document).ready( function(){{ 
+  $(window).bind('resize', function(e){{ 
+      BocDateTimeValue.AdjustPositions($('#{0}')); 
+  }});
+  " + "setTimeout(\"BocDateTimeValue.AdjustPositions($('#{0}'));\", 10);" + @"
+}});"
+      , Control.ClientID);
       Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocDateTimeValue), key, script);
     }
   }

@@ -94,13 +94,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
       return dateTextBoxSize;
     }
 
-    protected string GetTimeTextBoxSize (int dateTextBoxWidthPercentage)
+    protected string GetTimeTextBoxSize (int timeTextBoxWidthPercentage)
     {
       string timeTextBoxSize;
       if (!Control.TimeTextBoxStyle.Width.IsEmpty)
         timeTextBoxSize = Control.TimeTextBoxStyle.Width.ToString();
       else
-        timeTextBoxSize = (100 - dateTextBoxWidthPercentage) + "%";
+        timeTextBoxSize = timeTextBoxWidthPercentage + "%";
       return timeTextBoxSize;
     }
 

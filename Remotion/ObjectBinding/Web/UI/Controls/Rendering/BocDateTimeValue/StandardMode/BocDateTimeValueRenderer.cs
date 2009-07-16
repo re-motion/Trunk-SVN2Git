@@ -64,6 +64,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
       bool canScript = DetermineClientScriptLevel (datePickerButton);
       bool hasDatePicker = hasDateField && canScript;
 
+      int dateTextBoxWidthPercentage = GetDateTextBoxWidthPercentage (hasDateField, hasTimeField);
+      string dateTextBoxSize = GetDateTextBoxSize (dateTextBoxWidthPercentage - 5);
+      string timeTextBoxSize = GetTimeTextBoxSize (95 - dateTextBoxWidthPercentage);
+      dateTextBox.Style["width"] = dateTextBoxSize;
+      timeTextBox.Style["width"] = timeTextBoxSize;
+
       if (hasDateField)
       {
         dateTextBox.RenderControl (Writer);
