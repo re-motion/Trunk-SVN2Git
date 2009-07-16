@@ -577,6 +577,7 @@
     <Compile Include="Linq\ExpressionHelper.cs" />
     <Compile Include="Linq\ExpressionTreeNavigator.cs" />
     <Compile Include="Linq\ExtensionMethodsTest.cs" />
+    <Compile Include="Linq\GoodStudent.cs" />
     <Compile Include="Linq\IndustrialSector.cs" />
     <Compile Include="Linq\Backend\DetailParsing\DetailParserTestBase.cs" />
     <Compile Include="Linq\Backend\DetailParsing\OrderingFieldParserTest.cs" />
