@@ -77,7 +77,6 @@ namespace Remotion.Scripting.UnitTests
 "Document('New ' + rmDoc.DocumentName)";
 
       var scriptEnvironment = ScriptEnvironment.Create ();
-      //ImportFromAssemblyIntoScriptScope (scriptScope, "Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
       scriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
       var document = new Document ("Test Doc");
       scriptEnvironment.SetVariable ("rmDoc", document);
