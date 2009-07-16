@@ -47,6 +47,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void CreateAndUseExpressionScript ()
     {
+      // TODO: Show iif and lambda
       const string scriptText = "doc.DocumentName.Contains('Rec') or doc.DocumentNumber == 123456";
 
       var doc = new Document ("Receipt");
