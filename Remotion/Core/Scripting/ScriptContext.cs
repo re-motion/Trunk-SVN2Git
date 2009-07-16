@@ -104,6 +104,13 @@ namespace Remotion.Scripting
         ScriptContexts.Clear ();
       }
     }
+
+    // Test-only method
+    private static void ReleaseAllScriptContexts ()
+    {
+      s_currentScriptContext = null;
+    }
+
  
     private readonly string _name;
     private readonly ITypeFilter _typeFilter;

@@ -20,10 +20,16 @@ namespace Remotion.Scripting.UnitTests.TestDomain
   public class Document 
   {
     public string DocumentName { get; set; }
+    public int DocumentNumber { get; set; }
 
-    public Document (string name)
+    public Document (string name) : this (name,0)
+    {
+    }
+
+    public Document (string name, int number)
     {
       DocumentName = name;
+      DocumentNumber = number;
     }
   }
 }

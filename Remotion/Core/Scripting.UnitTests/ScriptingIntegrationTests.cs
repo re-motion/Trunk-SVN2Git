@@ -28,7 +28,7 @@ namespace Remotion.Scripting.UnitTests
     // on the same class.
     // Note: For this example it is more convenient to use a TypeLevelTypeFilter here; in practice, using a 
     // AssemblyLevelTypeFilter will in most cases be the more fitting choice.
-    private readonly ScriptContext _scriptContext = ScriptContext.Create ("Remotion.ScriptingIntegrationTests",
+    private readonly ScriptContext _scriptContext = ScriptContext.Create ("YourModuleName.ScriptingIntegrationTests",
       new TypeLevelTypeFilter(new[] {typeof(ProxiedChild), typeof(IAmbigous2), typeof(Document)}));
 
     // Create a ScriptEnvironment for shared use between all the scripts in your re-motion module (to insulate scripts
@@ -39,7 +39,7 @@ namespace Remotion.Scripting.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      ScriptContextTestHelper.ClearScriptContexts ();
+      ScriptContextTestHelper.ReleaseAllScriptContexts ();
     }
 
     [Test]
@@ -49,16 +49,45 @@ namespace Remotion.Scripting.UnitTests
 import clr
 clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
 from Remotion.Scripting.UnitTests.TestDomain import Document
-def PythonFunction() :
-  return Document('Knows Document')
+def CreateDocumentPythonFunction() :
+  return Document('Here is your document, sir.')
 ";
 
-      var script = new Script<Document> (_scriptContext, ScriptLanguageType.Python, scriptText, _sharedScriptEnvironment, "PythonFunction");
+      // Create a script function called "CreateDocumentPythonFunction" which returns a Document object from scriptText.
+      // Note: "CreateDocumentPythonFunction" was only chosen for this tutorial; in practice calling the Python function just "CreateDocument"
+      // makes more sense.
+      var createDocumentScript = new Script<Document> (_scriptContext, ScriptLanguageType.Python, scriptText,
+        _sharedScriptEnvironment, "CreateDocumentPythonFunction");
       
-      Document resultDocument = script.Execute ();
-      Assert.That (resultDocument.DocumentName, Is.EqualTo ("Knows Document"));
+      Document resultDocument = createDocumentScript.Execute ();
+      Assert.That (resultDocument.DocumentName, Is.EqualTo ("Here is your document, sir."));
 
-      // ScriptContext.GetScriptContext ("Remotion.ScriptingIntegrationTests")
+      // ScriptContext.GetScriptContext ("YourModuleName.ScriptingIntegrationTests")
+    }
+
+
+    [Test]
+    public void CreateAndUseScriptWithPrivateScriptEnvironment ()
+    {
+      const string scriptText = @"
+import clr
+clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
+from Remotion.Scripting.UnitTests.TestDomain import Document
+def CheckDocumentPythonFunction(doc) :
+  return doc.DocumentName.Contains('Rec') or doc.DocumentNumber == 123456
+";
+
+      var privateScriptEnvironment = ScriptEnvironment.Create ();
+      // Create a script function called CheckDocumentPythonFunction which takes a Document and returns a bool.
+      var script = new Script<Document,bool> (
+        ScriptContext.GetScriptContext ("YourModuleName.ScriptingIntegrationTests"), ScriptLanguageType.Python,
+        scriptText, privateScriptEnvironment, "CheckDocumentPythonFunction");
+
+      Assert.That (script.Execute (new Document ("Receipt", 123456)), Is.True);
+      Assert.That (script.Execute (new Document ("XXX", 123456)), Is.True);
+      Assert.That (script.Execute (new Document ("Rec", 0)), Is.True);
+      Assert.That (script.Execute (new Document ("XXX", 0)), Is.False);
+
     } 
   }
 }

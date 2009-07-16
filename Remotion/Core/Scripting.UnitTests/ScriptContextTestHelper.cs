@@ -41,5 +41,10 @@ namespace Remotion.Scripting.UnitTests
     {
       PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ClearScriptContexts");
     }
+
+    public static void ReleaseAllScriptContexts ()
+    {
+      PrivateInvoke.InvokeNonPublicStaticMethod (typeof (ScriptContext), "ReleaseAllScriptContexts");
+    }
   }
 }
