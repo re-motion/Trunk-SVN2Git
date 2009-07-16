@@ -47,16 +47,27 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </remarks>
   public class ContainsObjectParser : IWhereConditionParser
   {
+    private static T GetTypedExpression<T> (object expression, string context)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      if (!(expression is T))
+        throw new ParserException (typeof (T).Name, expression, context);
+      else
+        return (T) expression;
+    }
+
     private static readonly MethodInfo s_genericContainsMethod =
-        ParserUtility.GetMethod (() => Queryable.Contains (null, (object) null)).GetGenericMethodDefinition();
+        Data.Linq.ReflectionUtility.GetMethod (() => Queryable.Contains (null, (object) null)).GetGenericMethodDefinition();
 
 // ReSharper disable PossibleNullReferenceException
     private static readonly MethodInfo s_containsObjectMethod =
-        ParserUtility.GetMethod (() => ((DomainObjectCollection) null).ContainsObject (null));
+        Data.Linq.ReflectionUtility.GetMethod (() => ((DomainObjectCollection) null).ContainsObject (null));
 // ReSharper restore PossibleNullReferenceException
 
     private static readonly MethodInfo s_genericCreateQueryableMethod =
-        ParserUtility.GetMethod (() => QueryFactory.CreateLinqQuery<DomainObject>()).GetGenericMethodDefinition();
+        Data.Linq.ReflectionUtility.GetMethod (() => QueryFactory.CreateLinqQuery<DomainObject>()).GetGenericMethodDefinition();
 
     private readonly WhereConditionParserRegistry _registry;
 
@@ -77,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("fieldDescriptors", parseContext);
 
-      var containsObjectCallExpression = ParserUtility.GetTypedExpression<MethodCallExpression> (expression, "ContainsObject parser");
+      var containsObjectCallExpression = GetTypedExpression<MethodCallExpression> (expression, "ContainsObject parser");
 
       SubQueryExpression subQueryExpression = CreateEquivalentSubQuery (
           containsObjectCallExpression, parseContext.QueryModel);
@@ -93,9 +104,9 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("parentQuery", parentQuery);
 
       Type collectionElementType = containsObjectCallExpression.Arguments[0].Type;
-      var collectionExpression = ParserUtility.GetTypedExpression<MemberExpression> (
+      var collectionExpression = GetTypedExpression<MemberExpression> (
           containsObjectCallExpression.Object, "object on which ContainsObject is called");
-      var collectionProperty = ParserUtility.GetTypedExpression<PropertyInfo> (collectionExpression.Member, "member on which ContainsObject is called");
+      var collectionProperty = GetTypedExpression<PropertyInfo> (collectionExpression.Member, "member on which ContainsObject is called");
       PropertyInfo foreignKeyProperty = GetForeignKeyProperty (collectionProperty);
 
       var mainFromClause = CreateFromClause (collectionElementType);

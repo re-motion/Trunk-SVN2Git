@@ -34,6 +34,7 @@ using Remotion.Data.UnitTests.Linq;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
 using Rhino.Mocks;
+using ReflectionUtility=Remotion.Data.Linq.ReflectionUtility;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -204,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private MethodInfo GetContainsMethod ()
     {
-      return ParserUtility.GetMethod (() => (from oi in QueryFactory.CreateLinqQuery<OrderItem>() select oi).Contains (_orderItem1));
+      return ReflectionUtility.GetMethod (() => (from oi in QueryFactory.CreateLinqQuery<OrderItem>() select oi).Contains (_orderItem1));
     }
 
     [Test]

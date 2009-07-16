@@ -618,7 +618,7 @@
     <Compile Include="Linq\Backend\FieldResolving\SelectFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Backend\FieldResolving\WhereFieldAccessPolicyTest.cs" />
     <Compile Include="Linq\Parsing\ParserExceptionTest.cs" />
-    <Compile Include="Linq\Parsing\ParserUtilityTest.cs" />
+    <Compile Include="Linq\ReflectionUtilityTest.cs" />
     <Compile Include="Linq\Parsing\ExpressionTreeVisitors\ReplacingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExpressionResolverTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\GroupByExpressionNodeTest.cs" />
