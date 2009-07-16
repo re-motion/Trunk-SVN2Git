@@ -63,7 +63,7 @@ namespace Remotion.Scripting
       get { return s_scriptContexts; }
     }
 
-    public static ScriptContext CreateScriptContext (string name, ITypeFilter typeFilter)
+    public static ScriptContext Create (string name, ITypeFilter typeFilter)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("typeFilter", typeFilter);

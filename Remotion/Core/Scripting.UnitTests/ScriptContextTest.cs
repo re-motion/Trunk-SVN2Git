@@ -48,7 +48,7 @@ namespace Remotion.Scripting.UnitTests
     public void CreateScriptContext ()
     {
       var typeFilterStub = MockRepository.GenerateStub<ITypeFilter>();
-      var scriptContext = ScriptContext.CreateScriptContext ("Context1", typeFilterStub);
+      var scriptContext = ScriptContext.Create ("Context1", typeFilterStub);
       Assert.That (scriptContext.Name, Is.EqualTo ("Context1"));
       Assert.That (scriptContext.TypeFilter, Is.SameAs (typeFilterStub));
     }
@@ -64,7 +64,7 @@ namespace Remotion.Scripting.UnitTests
     private ScriptContext CreateScriptContext (string name)
     {
       var typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
-      return ScriptContext.CreateScriptContext (name, typeFilterStub);
+      return ScriptContext.Create (name, typeFilterStub);
     }
 
     [Test]
@@ -81,9 +81,9 @@ namespace Remotion.Scripting.UnitTests
     {
       var typeFilterStub = MockRepository.GenerateStub<ITypeFilter> ();
       const string name = "DuplicateContext";
-      var scriptContext = ScriptContext.CreateScriptContext (name, typeFilterStub);
+      var scriptContext = ScriptContext.Create (name, typeFilterStub);
       Assert.That (scriptContext, Is.Not.Null);
-      ScriptContext.CreateScriptContext (name, typeFilterStub);
+      ScriptContext.Create (name, typeFilterStub);
     }
 
     public delegate void CreateScriptContextsDelegate ();
@@ -203,7 +203,7 @@ namespace Remotion.Scripting.UnitTests
             ScriptContext scriptContext;
             if(_useSafe)
             {
-              scriptContext = ScriptContext.CreateScriptContext (name, s_typeFilterStub);
+              scriptContext = ScriptContext.Create (name, s_typeFilterStub);
             }
             else
             {
