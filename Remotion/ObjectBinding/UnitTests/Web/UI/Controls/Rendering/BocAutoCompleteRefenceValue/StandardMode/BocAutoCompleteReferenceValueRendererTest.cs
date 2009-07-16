@@ -49,8 +49,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
 
       Control = MockRepository.GenerateStub<IBocAutoCompleteReferenceValue> ();
       Control.Stub (stub => stub.ClientID).Return ("MyReferenceValue");
+      Control.Stub (stub => stub.TextBoxUniqueID).Return ("MyReferenceValue_Boc_TextBox");
       Control.Stub (stub => stub.TextBoxClientID).Return ("MyReferenceValue_Boc_TextBox");
+      Control.Stub (stub => stub.HiddenFieldUniqueID).Return ("MyReferenceValue_Boc_HiddenField");
       Control.Stub (stub => stub.HiddenFieldClientID).Return ("MyReferenceValue_Boc_HiddenField");
+      Control.Stub (stub => stub.DropDownButtonClientID).Return ("MyReferenceValue_Boc_DropDownButton");
       Control.Stub (stub => stub.Command).Return (new BocCommand ());
       Control.Command.Type = CommandType.Event;
       Control.Command.Show = CommandShow.Always;
@@ -79,9 +82,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
       StateBag stateBag = new StateBag ();
       Control.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
       Control.Stub (mock => mock.Style).Return (Control.Attributes.CssStyle);
+      Control.Stub (mock => mock.CommonStyle).Return (new Style (stateBag));
       Control.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
+      Control.Stub (mock => mock.TextBoxStyle).Return (new SingleRowTextBoxStyle());
       Control.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
-      Control.Stub (stub => stub.GetLabelText ()).Return ("MyText");
     }
 
     [Test]
@@ -93,10 +97,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
       renderer.Render();
 
       var document = Html.GetResultDocument();
-      var containerDiv = document.GetAssertedChildElement ("div", 0);
+      var containerDiv = document.GetAssertedChildElement ("span", 0);
       containerDiv.AssertAttributeValueEquals ("id", Control.ClientID);
       containerDiv.AssertAttributeValueContains ("class", renderer.CssClassBase);
-      containerDiv.AssertChildElementCount (3);
+      containerDiv.AssertChildElementCount (4);
 
       var inputSpan = containerDiv.GetAssertedChildElement ("span", 0);
       inputSpan.AssertChildElementCount (1);
@@ -117,6 +121,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
       hiddenField.AssertAttributeValueEquals ("id", Control.HiddenFieldClientID);
       hiddenField.AssertAttributeValueEquals ("type", "hidden");
       hiddenField.AssertChildElementCount (0);
+
+      var dummy = containerDiv.GetAssertedChildElement ("span", 3);
+      dummy.AssertAttributeValueEquals ("class", renderer.CssClassDummy);
     }
   }
 }

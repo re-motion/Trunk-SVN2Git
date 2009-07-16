@@ -140,7 +140,7 @@
                     }
                     break;
 
-                // matches also semicolon 
+                // matches also semicolon      
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.TAB:
                 case KEY.RETURN:
@@ -166,7 +166,7 @@
             // results if the field no longer has focus
             hasFocus++;
         }).blur(function() {
-            hasFocus = 0;
+        hasFocus = 0;
             if (!config.mouseDownOnSelect) {
                 hideResults();
             }
@@ -382,18 +382,31 @@
                     extraParams[key] = typeof param == "function" ? param() : param;
                 });
 
+                // MS: build a JSON string from the parameters or jQuery will serialize it, causing an error
+                // see http://encosia.com/2008/06/05/3-mistakes-to-avoid-when-using-jquery-with-aspnet-ajax/
+                // under "JSON, objects, and strings: oh my!"
+                var jsonObject = $.extend({
+                    prefixText: lastWord(term), //RB - query parameter for search
+                    completionSetCount: options.max
+                }, extraParams);
+                var jsonString = "{";
+                $.each(jsonObject, function(key, value) {
+                    jsonString += "'" + key + "': " + "'" + value + "', "
+                });
+                jsonString = jsonString.substring(0, jsonString.length - 2) + " }";
+
                 $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
                     // try to leverage ajaxQueue plugin to abort previous requests
                     mode: "abort",
                     // limit abortion to this input
                     port: "autocomplete" + input.name,
                     dataType: options.dataType,
                     url: options.url,
-                    data: $.extend({
-                        q: lastWord(term), //RB - query parameter for search
-                        limit: options.max
-                    }, extraParams),
+                    data: jsonString,
                     success: function(data) {
+                        var dummy = "";
                         var parsed = options.parse && options.parse(data) || parse(data);
                         cache.add(term, parsed);
                         success(term, parsed);

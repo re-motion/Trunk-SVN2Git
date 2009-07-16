@@ -22,8 +22,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.StandardMode;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
@@ -143,7 +145,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var preRenderer = new BocAutoCompleteReferenceValuePreRenderer (new HttpContextWrapper (Context), this);
+      var factory = ServiceLocator.Current.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
       preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
@@ -276,6 +279,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         PreRenderReadOnlyValue();
       else
         PreRenderEditModeValue();
+
+      var factory = ServiceLocator.Current.GetInstance<IBocAutoCompleteReferenceValueRendererFactory> ();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.PreRender();
     }
 
     public override void RenderControl (HtmlTextWriter writer)
@@ -744,11 +751,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    public string TextBoxClientID
-    {
-      get { return _textBox.ClientID; }
-    }
-
     [Category ("AutoCompleteExtender")]
     [DefaultValue ("")]
     public string ServiceMethod
@@ -861,12 +863,32 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return "bocAutoCompleteReferenceValueDropDownPanel"; }
     }
 
+    #endregion
+
+    string IBocAutoCompleteReferenceValue.TextBoxUniqueID
+    {
+      get { return _textBox.UniqueID; }
+    }
+
+    public string TextBoxClientID
+    {
+      get { return _textBox.ClientID; }
+    }
+
+    string IBocAutoCompleteReferenceValue.DropDownButtonClientID
+    {
+      get { return ClientID + "_Boc_DropDownButton"; }
+    }
+
     public string HiddenFieldClientID
     {
       get { return _hiddenField.ClientID; }
     }
 
-    #endregion
+    string IBocAutoCompleteReferenceValue.HiddenFieldUniqueID
+    {
+      get { return _hiddenField.UniqueID; }
+    }
 
     bool IBocRenderableControl.IsDesignMode
     {
@@ -876,11 +898,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     IDropDownMenu IBocAutoCompleteReferenceValue.OptionsMenu
     {
       get { return _optionsMenu; }
-    }
-
-    string IBocAutoCompleteReferenceValue.GetLabelText ()
-    {
-      throw new NotImplementedException();
     }
   }
 }

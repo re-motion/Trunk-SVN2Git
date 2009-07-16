@@ -18,10 +18,11 @@ using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.StandardMode
 {
-  public class BocAutoCompleteReferenceValuePreRenderer : PreRendererBase<IBocAutoCompleteReferenceValue>
+  public class BocAutoCompleteReferenceValuePreRenderer : PreRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValuePreRenderer
   {
     public BocAutoCompleteReferenceValuePreRenderer (IHttpContext context, IBocAutoCompleteReferenceValue control)
         : base(context, control)
@@ -41,6 +42,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               ResourceTheme.Standard,
               "BocAutoCompleteReferenceValue.js"));
 
+      string jqueryBgiFrameKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_JQueryBgiFrame";
+      htmlHeadAppender.RegisterJavaScriptInclude (
+          jqueryBgiFrameKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (IBocAutoCompleteReferenceValue),
+              ResourceType.Html,
+              ResourceTheme.Standard,
+              "jquery.bgiframe.min.js"));
+
+      string jqueryAutocompleteScriptKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_JQueryAutoCompleteScript";
+      htmlHeadAppender.RegisterJavaScriptInclude (
+          jqueryAutocompleteScriptKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (IBocAutoCompleteReferenceValue),
+              ResourceType.Html,
+              ResourceTheme.Standard,
+              "jquery.autocomplete.js"));
+
       string styleKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_Style";
       htmlHeadAppender.RegisterStylesheetLink (
           styleKey,
@@ -51,11 +74,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               ResourceType.Html,
               ResourceTheme.Standard,
               "BocAutoCompleteReferenceValue.css"));
+
+      string jqueryAutocompleteStyleKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_JQueryAutoCompleteStyle";
+      htmlHeadAppender.RegisterStylesheetLink (
+          jqueryAutocompleteStyleKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (IBocAutoCompleteReferenceValue),
+              ResourceType.Html,
+              ResourceTheme.Standard,
+              "jquery.autocomplete.css"));
     }
 
     public override void PreRender ()
     {
-      
+      string key = Control.UniqueID + "_BindScript";
+      const string scriptTemplate =
+          @"$(document).ready( function(){{ BocAutoCompleteReferenceValue.Bind($('#{0}'), $('#{1}'), $('#{2}'), '{3}', "
+          + "'{4}', '{5}', '{6}', '{7}'); }} );";
+
+      string businessObjectClass = Control.DataSource!=null ? Control.DataSource.BusinessObjectClass.Identifier : "";
+      string businessObjectProperty = Control.Property!=null ? Control.Property.Identifier : "";
+      string businessObjectId = Control.DataSource!=null ? ((IBusinessObjectWithIdentity)Control.DataSource.BusinessObject).UniqueIdentifier : "";
+      string script = string.Format (
+          scriptTemplate,
+          Control.TextBoxClientID,
+          Control.HiddenFieldClientID,
+          Control.DropDownButtonClientID,
+          string.IsNullOrEmpty (Control.ServicePath)
+              ? ""
+              : UrlUtility.GetAbsoluteUrl (Context, Control.ServicePath + "/" + Control.ServiceMethod, true),
+          businessObjectClass,
+          businessObjectProperty,
+          businessObjectId,
+          ""
+          );
+      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script);
     }
   }
 }

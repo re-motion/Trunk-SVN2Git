@@ -148,6 +148,7 @@ namespace OBWTest.IndividualControlTests
     #endregion
 
     [WebMethod]
+    [ScriptMethod(UseHttpGet=false, ResponseFormat=ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy[] GetPersonList (
         string prefixText,
         int? completionSetCount,

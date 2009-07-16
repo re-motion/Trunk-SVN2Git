@@ -1,26 +1,56 @@
-﻿div.bocAutoCompleteReferenceValue {
+﻿*.bocAutoCompleteReferenceValue 
+{
+  display: inline-block;
 	position: relative;
 	width: 100%;
-	display: inline-block;
 	vertical-align: middle;
 	white-space: nowrap;
 }
 
-div.bocAutoCompleteReferenceValue > span {
+*.bocAutoCompleteReferenceValue span.bocAutoCompleteReferenceValueInput 
+{
+  display: block;
 	position: absolute;
-	right: 20px; /* width of the dropdown arrow image*/
+	right: 17px; /* width of the dropdown arrow image*/
+	padding-right: 6px; /* compensation for input field borders and padding */
+	top: 0;
 	left: 0;
 }
 
-div.bocAutoCompleteReferenceValue input {
-	width: 100%;
-	vertical-align: middle;
+*.bocAutoCompleteReferenceValue.disabled span.bocAutoCompleteReferenceValueInput
+{
+  right: 0px;
 }
 
-div.bocAutoCompleteReferenceValue > span.bocAutoCompleteReferenceValueButton {
+*.bocAutoCompleteReferenceValue input {
+	width: 100%;
+	vertical-align: middle;
+	position: relative;
+}
+
+span.bocAutoCompleteReferenceValueButton 
+{
+  display: block;
 	position: absolute;
-	right: 0;
+	top: 1px;
+	right: 0px;
 	background-color: #083779;
 	background-position: center center;
 	background-repeat:no-repeat;
+}
+
+span.bocAutoCompleteReferenceValueButton img
+{
+  height: 21px;
+	width: 17px;
+}
+
+/* Since both the span containing the text input and the drop-dow button are positioned absolutely,
+   the containing div has zero height. To fix this, a relatively positioned dummy element is needed */
+*.bocAutoCompleteReferenceValueDummy
+{
+  display: inline-block;
+  position: relative;
+  visibility: hidden; /* don't show, but reserve space on the page */
+  padding: 4px 0px; /* compensate textbox margin, border and padding vertically */
 }

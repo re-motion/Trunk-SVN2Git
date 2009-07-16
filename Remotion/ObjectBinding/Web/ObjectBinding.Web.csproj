@@ -298,8 +298,12 @@
     </Compile>
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditableRow.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\IEditModeController.cs" />
+    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\IBocAutoCompleteReferenceValuePreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\IBocAutoCompleteReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\BocAutoCompleteReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\BocAutoCompleteReferenceValueRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\IBocAutoCompleteReferenceValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocAutoCompleteReferenceValue\StandardMode\Factories\BocAutoCompleteReferenceValueRendereFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocBooleanValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocBooleanValueBase\IBocCheckboxRenderer.cs" />
@@ -467,6 +471,7 @@
     <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.js" />
     <Content Include="Res\HTML\Standard\BocDateTimeValue.css" />
     <Content Include="Res\HTML\Standard\BocDateTimeValue.js" />
+    <Content Include="Res\HTML\Standard\jquery.autocomplete.css" />
     <Content Include="Res\HTML\Standard\jquery.bgiframe.min.js" />
     <Content Include="Res\HTML\Standard\BocReferenceValue.css" />
     <Content Include="Res\HTML\Standard\BocReferenceValue.js" />
