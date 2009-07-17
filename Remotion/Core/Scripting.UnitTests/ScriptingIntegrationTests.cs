@@ -47,7 +47,6 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void CreateAndUseExpressionScript ()
     {
-      // TODO: Show iif and lambda
       const string expressionScriptSourceCode = "doc.Name.Contains('Rec') or doc.Number == 123456";
 
       var doc = new Document ("Receipt");
@@ -70,6 +69,29 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
       doc.Number = 21;
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
+    }
+
+    [Test]
+    public void ExpressionScript_HelperFunctions ()
+    {
+      const string expressionScriptSourceCode = 
+        "IIf( doc.Name.Contains('Rec'), doc.Number, LazyIIf(doc.Number == 0, lambda:-1, lambda:1.0/doc.Number) )";
+
+      var privateScriptEnvironment = ScriptEnvironment.Create ();
+      privateScriptEnvironment.ImportClr ();
+      // Import script helper functions (IIf and LazyIIf)
+      privateScriptEnvironment.ImportHelperFunctions();
+
+      var checkDocumentExpressionScript =
+        new ExpressionScript<float> (_scriptContext, ScriptLanguageType.Python, expressionScriptSourceCode, privateScriptEnvironment);
+
+      var doc = new Document ("Receipt", 4);
+      privateScriptEnvironment.SetVariable ("doc", doc);
+      Assert.That (checkDocumentExpressionScript.Execute (), Is.EqualTo (4.0));
+      doc.Name = "Document";
+      Assert.That (checkDocumentExpressionScript.Execute (), Is.EqualTo (0.25));
+      doc.Number = 0;
+      Assert.That (checkDocumentExpressionScript.Execute (), Is.EqualTo (-1.0));
     }
 
     [Test]
