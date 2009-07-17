@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Scripting.Hosting;
 using Remotion.Collections;
-using Remotion.Utilities;
 
 
 namespace Remotion.Scripting
@@ -50,15 +49,6 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptingHost
   {
-    ///// <summary>
-    ///// Script languages supported by re-motion.
-    ///// </summary>
-    //public enum ScriptLanguageType
-    //{
-    //  Python,
-    //  None
-    //}
-
     // ScriptingHost encapsulates Microsoft.Scripting.Hosting.ScriptRuntime, which is not thread safe. We therefore supply a seperate 
     // singleton instance to every thread through a thread static member.
     [ThreadStatic]

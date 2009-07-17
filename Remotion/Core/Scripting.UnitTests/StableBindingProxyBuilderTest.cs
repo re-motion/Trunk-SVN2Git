@@ -23,7 +23,6 @@ using NUnit.Framework.Constraints;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMother;
-using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -284,13 +283,7 @@ namespace Remotion.Scripting.UnitTests
       return type.GetMethods().Where (m => m.Name == methodName && m.IsGenericMethod && m.GetGenericArguments().Length == numberOfGenericArguments);
     }
 
-    //private void AssertHasSameMethodsAs (Type type, Type[] types)
-    //{
-    //  Assert.That (type.GetMethods ().Length, Is.EqualTo ((types.SelectMany (t => t.GetMethods ()).Count ())));
-    //  throw new NotImplementedException();
-    //}
-
-
+ 
     public ModuleScope CreateModuleScope(string namePostfix)
     {
       string name = "Remotion.Scripting.CodeGeneration.Generated.StableBindingProxyBuilderTest" + namePostfix;

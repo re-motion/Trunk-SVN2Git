@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Microsoft.Scripting.Hosting;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.UnitTests.TestDomain;
@@ -180,11 +179,5 @@ def Test() :
       Assert.That (resultDocument.Name, Is.EqualTo ("Knows Document"));
     }
 
-
-    //private ScriptScope CreateScriptScope (ScriptLanguageType scriptLanguageType)
-    //{
-    //  var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
-    //  return engine.CreateScope ();
-    //}
   }
 }

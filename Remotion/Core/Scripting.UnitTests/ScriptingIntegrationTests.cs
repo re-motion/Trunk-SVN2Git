@@ -43,7 +43,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     // Shows how to create and use an ExpressionScript. ExpressionScript|s can only contain a single line and automatically return 
-    // the result of evaluating them (wihtout the need for a return statement).
+    // the result of evaluating them (without the need for a return statement).
     [Test]
     public void CreateAndUseExpressionScript ()
     {
