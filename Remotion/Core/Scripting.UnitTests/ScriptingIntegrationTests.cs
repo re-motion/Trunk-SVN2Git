@@ -152,8 +152,8 @@ def CreateScriptDocSuccessor() :
 ";
 
       const string scriptFunctionSourceCode1 = @"
-def ModifyDocument(newNamePrefix, addToNumber) :
-  scriptDoc.Name += newNamePrefix
+def ModifyDocument(newNamePostfix, addToNumber) :
+  scriptDoc.Name += newNamePostfix
   scriptDoc.Number += addToNumber
   return scriptDoc
 ";
