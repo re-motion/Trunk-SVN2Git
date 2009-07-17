@@ -15,6 +15,7 @@
 // 
 using System;
 using Microsoft.Scripting.Hosting;
+using Microsoft.Scripting.Runtime;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Scripting.UnitTests.TestDomain;
@@ -96,5 +97,47 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (variableValid.IsValid, Is.True);
       Assert.That (variableValid.Value, Is.SameAs (doc));
     }
+
+    [Test]
+    public void ImportHelperFunctions_IIf ()
+    {
+      var scriptEnvironment = ScriptEnvironment.Create ();
+      scriptEnvironment.ImportHelperFunctions();
+      scriptEnvironment.SetVariable ("x", 100000);
+      const string scriptText = "IIf(x > 1000,'big','small')";
+      var expressionScript =
+          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportHelperFunctions"), ScriptLanguageType.Python, 
+            scriptText, scriptEnvironment);
+      Assert.That (expressionScript.Execute (), Is.EqualTo ("big"));
+    }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (UnboundNameException), ExpectedMessage = "name 'NonExistingSymbol' is not defined")]
+    public void ImportHelperFunctions_IIfIsNotLazy ()
+    {
+      var scriptEnvironment = ScriptEnvironment.Create ();
+      scriptEnvironment.ImportHelperFunctions ();
+      scriptEnvironment.SetVariable ("x", 100000);
+      const string scriptText = "IIf(x > 1000,'big',NonExistingSymbol)";
+      var expressionScript =
+          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportHelperFunctions"), ScriptLanguageType.Python,
+            scriptText, scriptEnvironment);
+      Assert.That (expressionScript.Execute (), Is.EqualTo ("big"));
+    }
+
+
+    [Test]
+    public void ImportHelperFunctions_LazyIIf ()
+    {
+      var scriptEnvironment = ScriptEnvironment.Create ();
+      scriptEnvironment.ImportHelperFunctions ();
+      scriptEnvironment.SetVariable ("x", 100000);
+      const string scriptText = "LazyIIf(x > 1000,lambda:'big',lambda:NonExistingSymbol)";
+      var expressionScript =
+          new ExpressionScript<string> (ScriptContextTestHelper.CreateTestScriptContext ("ImportHelperFunctions"), ScriptLanguageType.Python,
+            scriptText, scriptEnvironment);
+      Assert.That (expressionScript.Execute (), Is.EqualTo ("big"));
+    }
+
   }
 }

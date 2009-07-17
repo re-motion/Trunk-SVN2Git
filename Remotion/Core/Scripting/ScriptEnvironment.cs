@@ -68,6 +68,16 @@ namespace Remotion.Scripting
     }
 
     /// <summary>
+    /// Introduces IIf(condition,trueValue,falseValue) and LazyIIf(condition,lambda:trueValue,lambda:falseValue)
+    /// functions into the <see cref="ScriptEnvironment"/>.
+    /// </summary>
+    public void ImportHelperFunctions ()
+    {
+      _scriptScope.SetVariable ("IIf", new Func<bool, object, object, object> ((cond, trueVal, falseVal) => cond ? trueVal : falseVal));
+      _scriptScope.SetVariable ("LazyIIf", new Func<bool, Func<object>, Func<object>, object> ((cond, trueVal, falseVal) => cond ? trueVal () : falseVal ()));
+    }
+
+    /// <summary>
     /// Imports the passed symbols from the given namespace in the given assembly into the <see cref="ScriptEnvironment"/>. 
     /// </summary>
     /// <param name="assembly">Partial name of the assembly to import from (e.g. "Remotion")</param>
@@ -96,7 +106,7 @@ from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (sym
     }
 
     /// <summary>
-    /// Sets a variable with the passe <paramref name="name"/> to the passed <paramref name="value"/> within the <see cref="ScriptEnvironment"/>.
+    /// Sets a variable with the passed <paramref name="name"/> to the passed <paramref name="value"/> within the <see cref="ScriptEnvironment"/>.
     /// </summary>
     public void SetVariable (string name, Object value)
     {
@@ -104,7 +114,7 @@ from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (sym
     }
 
     /// <summary>
-    /// Gets the value of the variable with the passe <paramref name="name"/> as a <see cref="Variable{T}"/> struct.
+    /// Gets the value of the variable with the passed <paramref name="name"/> as a <see cref="Variable{T}"/> struct.
     /// If the variable does not exist within the <see cref="ScriptEnvironment"/>, the 
     /// <see cref="Variable{T}"/>.<see cref="Variable{T}.IsValid"/>-property is <see langword="false" />.
     /// </summary> 
@@ -147,5 +157,6 @@ from " + nameSpace + " import " + toString.sbLiteral ("", ",", "").elements (sym
         get { return _isValid; }
       }
     }
+
   }
 }
