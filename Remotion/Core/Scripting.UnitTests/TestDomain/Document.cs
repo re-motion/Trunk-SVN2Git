@@ -31,5 +31,11 @@ namespace Remotion.Scripting.UnitTests.TestDomain
       Name = name;
       Number = number;
     }
+
+    public Document (Document doc)
+    {
+      Name = doc.Name;
+      Number = doc.Number;
+    }
   }
 }

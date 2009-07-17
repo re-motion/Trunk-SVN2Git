@@ -120,8 +120,6 @@ def CreateDocument() :
     {
       const string scriptFunctionSourceCode = @"
 import clr
-clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
-from Remotion.Scripting.UnitTests.TestDomain import Document
 def CheckDocument(doc) :
   return doc.Name.Contains('Rec') or doc.Number == 123456
 ";
@@ -142,35 +140,48 @@ def CheckDocument(doc) :
     [Test]
     public void CreateAndUseScriptsInSameScriptEnvironment ()
     {
-      // Import the Document class into the shared script environment
+      // Import CLR (for CLR string functionality)
+      _sharedScriptEnvironment.ImportClr ();
+      // Import the Document class into the shared script environment (otherwise we would not be able to call the Document ctors within
+      // the script).
       _sharedScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
 
       const string scriptFunctionSourceCode0 = @"
-def CreateDocument() :
-  return Document('invoice',1)
+def CreateScriptDocSuccessor() :
+  return Document(scriptDoc.Name,scriptDoc.Number+1)
 ";
 
       const string scriptFunctionSourceCode1 = @"
-def ModifyDocument(doc, newNamePrefix, addToNumber) :
-  doc.Name += newNamePrefix
-  doc.Number += addToNumber
-  return doc
+def ModifyDocument(newNamePrefix, addToNumber) :
+  scriptDoc.Name += newNamePrefix
+  scriptDoc.Number += addToNumber
+  return scriptDoc
 ";
 
       // Create a script function which creates a new Document.
-      var createDocumentScript = new ScriptFunction<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode0,
-        _sharedScriptEnvironment, "CreateDocument");
+      var createScriptDocSuccessorScript = new ScriptFunction<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode0,
+        _sharedScriptEnvironment, "CreateScriptDocSuccessor");
 
       // Create a script function which modifies the passed Document.
-      var modifyDocumentScript = new ScriptFunction<Document, string, int, Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode1,
+      var modifyDocumentScript = new ScriptFunction<string, int, Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode1,
         _sharedScriptEnvironment, "ModifyDocument");
 
 
-      Document doc = createDocumentScript.Execute ();
-      modifyDocumentScript.Execute (doc," - processed",1000);
+      Document doc = new Document ("invoice", 1);
 
-      Assert.That (doc.Name, Is.EqualTo ("invoice - processed"));
-      Assert.That (doc.Number, Is.EqualTo (1001));
+      Assert.That (doc.Name, Is.EqualTo ("invoice"));
+      Assert.That (doc.Number, Is.EqualTo (1));
+
+      _sharedScriptEnvironment.SetVariable ("scriptDoc", doc);
+
+      Document successorDoc = createScriptDocSuccessorScript.Execute ();
+      Document scriptDoc = modifyDocumentScript.Execute (" - processed", 1000);
+
+      Assert.That (successorDoc.Name, Is.EqualTo ("invoice"));
+      Assert.That (successorDoc.Number, Is.EqualTo (2));
+
+      Assert.That (scriptDoc.Name, Is.EqualTo ("invoice - processed"));
+      Assert.That (scriptDoc.Number, Is.EqualTo (1001));
     }
   }
 }
