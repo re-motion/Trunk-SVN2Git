@@ -159,7 +159,7 @@ def Test() :
       var scriptEnvironment = ScriptEnvironment.Create ();
       var script = new Script<Document> (scriptContextForScript, ScriptLanguageType.Python, scriptText, scriptEnvironment, "Test");
       Document resultDocument = script.Execute ();
-      Assert.That (resultDocument.DocumentName, Is.EqualTo ("Knows Document"));
+      Assert.That (resultDocument.Name, Is.EqualTo ("Knows Document"));
     }
 
     [Test]
@@ -177,7 +177,7 @@ def Test() :
       var scriptEnvironment = ScriptEnvironment.Create ();
       var script = new Script<Document> (scriptContextForScript, ScriptLanguageType.Python, scriptText, scriptEnvironment, "Test");
       Document resultDocument = script.Execute ();
-      Assert.That (resultDocument.DocumentName, Is.EqualTo ("Knows Document"));
+      Assert.That (resultDocument.Name, Is.EqualTo ("Knows Document"));
     }
 
 

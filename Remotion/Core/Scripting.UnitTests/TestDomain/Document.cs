@@ -19,8 +19,8 @@ namespace Remotion.Scripting.UnitTests.TestDomain
 {
   public class Document 
   {
-    public string DocumentName { get; set; }
-    public int DocumentNumber { get; set; }
+    public string Name { get; set; }
+    public int Number { get; set; }
 
     public Document (string name) : this (name,0)
     {
@@ -28,8 +28,8 @@ namespace Remotion.Scripting.UnitTests.TestDomain
 
     public Document (string name, int number)
     {
-      DocumentName = name;
-      DocumentNumber = number;
+      Name = name;
+      Number = number;
     }
   }
 }

@@ -55,7 +55,7 @@ namespace Remotion.Scripting.UnitTests
     public void Execute ()
     {
       const string scriptText =
-"'Document Name: ' + rmDoc.DocumentName";
+"'Document Name: ' + rmDoc.Name";
 
       var scriptEnvironment = ScriptEnvironment.Create ();
       var document = new Document ("Test Doc");
@@ -74,7 +74,7 @@ namespace Remotion.Scripting.UnitTests
     public void Execute_ImportedTypeIntoScriptScope ()
     {
       const string scriptText =
-"Document('New ' + rmDoc.DocumentName)";
+"Document('New ' + rmDoc.Name)";
 
       var scriptEnvironment = ScriptEnvironment.Create ();
       scriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
@@ -84,7 +84,7 @@ namespace Remotion.Scripting.UnitTests
       var script = new ExpressionScript<Document> (ScriptContextTestHelper.CreateTestScriptContext (),
         ScriptLanguageType.Python, scriptText, scriptEnvironment);
       var result = script.Execute ();
-      Assert.That (result.DocumentName, Is.EqualTo ("New Test Doc"));
+      Assert.That (result.Name, Is.EqualTo ("New Test Doc"));
     }
 
 

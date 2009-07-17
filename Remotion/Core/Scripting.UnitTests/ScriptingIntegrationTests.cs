@@ -48,7 +48,7 @@ namespace Remotion.Scripting.UnitTests
     public void CreateAndUseExpressionScript ()
     {
       // TODO: Show iif and lambda
-      const string expressionScriptSourceCode = "doc.DocumentName.Contains('Rec') or doc.DocumentNumber == 123456";
+      const string expressionScriptSourceCode = "doc.Name.Contains('Rec') or doc.Number == 123456";
 
       var doc = new Document ("Receipt");
 
@@ -64,11 +64,11 @@ namespace Remotion.Scripting.UnitTests
         new ExpressionScript<bool> (_scriptContext, ScriptLanguageType.Python, expressionScriptSourceCode, privateScriptEnvironment);
 
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
-      doc.DocumentName = "Record";
+      doc.Name = "Record";
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
-      doc.DocumentNumber = 123456;
+      doc.Number = 123456;
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
-      doc.DocumentNumber = 21;
+      doc.Number = 21;
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
     }
 
@@ -89,7 +89,7 @@ def CreateDocument() :
       
       Document resultDocument = createDocumentScript.Execute ();
 
-      Assert.That (resultDocument.DocumentName, Is.EqualTo ("Here is your document, sir."));
+      Assert.That (resultDocument.Name, Is.EqualTo ("Here is your document, sir."));
     }
 
 
@@ -101,7 +101,7 @@ import clr
 clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
 from Remotion.Scripting.UnitTests.TestDomain import Document
 def CheckDocument(doc) :
-  return doc.DocumentName.Contains('Rec') or doc.DocumentNumber == 123456
+  return doc.Name.Contains('Rec') or doc.Number == 123456
 ";
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
@@ -130,8 +130,8 @@ def CreateDocument() :
 
       const string scriptFunctionSourceCode1 = @"
 def ModifyDocument(doc, newNamePrefix, addToNumber) :
-  doc.DocumentName += newNamePrefix
-  doc.DocumentNumber += addToNumber
+  doc.Name += newNamePrefix
+  doc.Number += addToNumber
   return doc
 ";
 
@@ -147,8 +147,8 @@ def ModifyDocument(doc, newNamePrefix, addToNumber) :
       Document doc = createDocumentScript.Execute ();
       modifyDocumentScript.Execute (doc," - processed",1000);
 
-      Assert.That (doc.DocumentName, Is.EqualTo ("invoice - processed"));
-      Assert.That (doc.DocumentNumber, Is.EqualTo (1001));
+      Assert.That (doc.Name, Is.EqualTo ("invoice - processed"));
+      Assert.That (doc.Number, Is.EqualTo (1001));
     }
   }
 }
