@@ -22,12 +22,12 @@ namespace Remotion.Scripting
   // @begin-template first=1 template=1 generate=0..9 suppressTemplate=true
    
   // @replace "TFixedArg<n>, "
-  public partial class Script<TFixedArg1, TResult> : ScriptBase
+  public partial class ScriptFunction<TFixedArg1, TResult> : ScriptBase
   {
     // @replace "TFixedArg<n>, "
     private readonly Func<TFixedArg1, TResult> _func;
 
-    public Script (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
+    public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
       : base (scriptContext, scriptLanguageType, scriptText)
     {

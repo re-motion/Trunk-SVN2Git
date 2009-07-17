@@ -106,7 +106,7 @@ def CreateDocument() :
 ";
 
       // Create a script function called "CreateDocument" which returns a Document object.
-      var createDocumentScript = new Script<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode,
+      var createDocumentScript = new ScriptFunction<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode,
         _sharedScriptEnvironment, "CreateDocument");
       
       Document resultDocument = createDocumentScript.Execute ();
@@ -128,7 +128,7 @@ def CheckDocument(doc) :
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
       // Create a script function called CheckDocument which takes a Document and returns a bool.
-      var checkDocumentScript = new Script<Document,bool> (
+      var checkDocumentScript = new ScriptFunction<Document,bool> (
         ScriptContext.GetScriptContext ("YourModuleName.ScriptingIntegrationTests"), ScriptLanguageType.Python,
         scriptFunctionSourceCode, privateScriptEnvironment, "CheckDocument");
 
@@ -158,11 +158,11 @@ def ModifyDocument(doc, newNamePrefix, addToNumber) :
 ";
 
       // Create a script function which creates a new Document.
-      var createDocumentScript = new Script<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode0,
+      var createDocumentScript = new ScriptFunction<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode0,
         _sharedScriptEnvironment, "CreateDocument");
 
       // Create a script function which modifies the passed Document.
-      var modifyDocumentScript = new Script<Document, string, int, Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode1,
+      var modifyDocumentScript = new ScriptFunction<Document, string, int, Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode1,
         _sharedScriptEnvironment, "ModifyDocument");
 
 

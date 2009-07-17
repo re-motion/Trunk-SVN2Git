@@ -76,7 +76,7 @@ namespace Remotion.Scripting
     /// <remarks>
     /// Note: Executing scripts directly through a <see cref="ScriptEngine"/> will bypass re-motion's Extension Module separation
     /// (see <see cref="ScriptContext"/>). For guaranteed re-motion mixin stable binding use re-motion  
-    /// <see cref="Remotion.Scripting.Script{T,TResult}"/>.<see cref="Script{TFixedArg1,TResult}.Execute"/> etc instead.
+    /// <see cref="ScriptFunction{TFixedArg1,TResult}"/>.<see cref="ScriptFunction{TFixedArg1,TResult}.Execute"/> etc instead.
     /// </remarks>
     public static ScriptEngine GetScriptEngine (ScriptLanguageType languageType)
     {

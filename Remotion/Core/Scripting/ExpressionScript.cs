@@ -26,7 +26,7 @@ namespace Remotion.Scripting
   /// </summary>
   /// <remarks>
   /// Under IronPython <see cref="ExpressionScript{TResult}"/>|s are more safe than 
-  /// full blown <see cref="Script{TResult}"/>|s, since they cannot contain import statements, i.e. they can only access the objects
+  /// full blown <see cref="ScriptFunction{TResult}"/>|s, since they cannot contain import statements, i.e. they can only access the objects
   /// which can be reached from within their <see cref="ScriptScope"/>.
   /// </remarks>
   /// <typeparam name="TResult">The expression result type.</typeparam>

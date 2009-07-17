@@ -63,10 +63,10 @@
     <Compile Include="ForwardingProxyBuilder.cs" />
     <Compile Include="MethodInfoEqualityComparer.cs" />
     <Compile Include="MethodInfoEqualityComparer2.cs" />
-    <Compile Include="Script.generated.cs">
+    <Compile Include="ScriptFunction.generated.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Script.template.cs">
+    <Compile Include="ScriptFunction.template.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ScriptEnvironment.cs" />
