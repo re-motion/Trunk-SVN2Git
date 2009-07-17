@@ -42,13 +42,13 @@ namespace Remotion.Scripting.UnitTests
       ScriptContextTestHelper.ReleaseAllScriptContexts ();
     }
 
-    // Shows how to create and use a script expression. ExpressionScript|s can only contain a single line and automatically return 
+    // Shows how to create and use an ExpressionScript. ExpressionScript|s can only contain a single line and automatically return 
     // the result of evaluating them (wihtout the need for a return statement).
     [Test]
     public void CreateAndUseExpressionScript ()
     {
       // TODO: Show iif and lambda
-      const string scriptText = "doc.DocumentName.Contains('Rec') or doc.DocumentNumber == 123456";
+      const string expressionScriptSourceCode = "doc.DocumentName.Contains('Rec') or doc.DocumentNumber == 123456";
 
       var doc = new Document ("Receipt");
 
@@ -63,7 +63,7 @@ namespace Remotion.Scripting.UnitTests
 
       // Create a script expression which checks the Document object stored in the variable "doc".
       var checkDocumentExpressionScript = 
-        new ExpressionScript<bool> (_scriptContext, ScriptLanguageType.Python, scriptText, privateScriptEnvironment);
+        new ExpressionScript<bool> (_scriptContext, ScriptLanguageType.Python, expressionScriptSourceCode, privateScriptEnvironment);
 
       Assert.That (checkDocumentExpressionScript.Execute (), Is.True);
       doc.DocumentName = "Record";
@@ -77,19 +77,17 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void CreateAndUseScript ()
     {
-      const string scriptText = @"
+      const string scriptFunctionSourceCode = @"
 import clr
 clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
 from Remotion.Scripting.UnitTests.TestDomain import Document
-def CreateDocumentPythonFunction() :
+def CreateDocument() :
   return Document('Here is your document, sir.')
 ";
 
-      // Create a script function called "CreateDocumentPythonFunction" which returns a Document object from scriptText.
-      // Note: "CreateDocumentPythonFunction" was only chosen for this tutorial; in practice calling the Python function just "CreateDocument"
-      // makes more sense.
-      var createDocumentScript = new Script<Document> (_scriptContext, ScriptLanguageType.Python, scriptText,
-        _sharedScriptEnvironment, "CreateDocumentPythonFunction");
+      // Create a script function called "CreateDocument" which returns a Document object.
+      var createDocumentScript = new Script<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode,
+        _sharedScriptEnvironment, "CreateDocument");
       
       Document resultDocument = createDocumentScript.Execute ();
 
@@ -100,24 +98,55 @@ def CreateDocumentPythonFunction() :
     [Test]
     public void CreateAndUseScriptWithPrivateScriptEnvironment ()
     {
-      const string scriptText = @"
+      const string scriptFunctionSourceCode = @"
 import clr
 clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
 from Remotion.Scripting.UnitTests.TestDomain import Document
-def CheckDocumentPythonFunction(doc) :
+def CheckDocument(doc) :
   return doc.DocumentName.Contains('Rec') or doc.DocumentNumber == 123456
 ";
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
-      // Create a script function called CheckDocumentPythonFunction which takes a Document and returns a bool.
+      // Create a script function called CheckDocument which takes a Document and returns a bool.
       var checkDocumentScript = new Script<Document,bool> (
         ScriptContext.GetScriptContext ("YourModuleName.ScriptingIntegrationTests"), ScriptLanguageType.Python,
-        scriptText, privateScriptEnvironment, "CheckDocumentPythonFunction");
+        scriptFunctionSourceCode, privateScriptEnvironment, "CheckDocument");
 
       Assert.That (checkDocumentScript.Execute (new Document ("Receipt", 123456)), Is.True);
       Assert.That (checkDocumentScript.Execute (new Document ("XXX", 123456)), Is.True);
       Assert.That (checkDocumentScript.Execute (new Document ("Rec", 0)), Is.True);
       Assert.That (checkDocumentScript.Execute (new Document ("XXX", 0)), Is.False);
-    } 
+    }
+
+
+    [Test]
+    public void CreateAndUseScriptsAndScriptExpressionInSameScriptEnvironment ()
+    {
+      const string scriptText1 = @"
+import clr
+clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
+from Remotion.Scripting.UnitTests.TestDomain import Document
+def CreateDocument() :
+  return Document('Here is your document, sir.')
+";
+
+      const string scriptText2 = @"
+import clr
+clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
+from Remotion.Scripting.UnitTests.TestDomain import Document
+def CreateDocument() :
+  return Document('Here is your document, sir.')
+";
+
+      // Create a script function called "CreateDocument" which returns a Document object from scriptFunctionSourceCode.
+      // Note: "CreateDocument" was only chosen for this tutorial; in practice calling the Python function just "CreateDocument"
+      // makes more sense.
+      var createDocumentScript = new Script<Document> (_scriptContext, ScriptLanguageType.Python, scriptText1,
+        _sharedScriptEnvironment, "CreateDocument");
+
+      Document resultDocument = createDocumentScript.Execute ();
+
+      Assert.That (resultDocument.DocumentName, Is.EqualTo ("Here is your document, sir."));
+    }
   }
 }
