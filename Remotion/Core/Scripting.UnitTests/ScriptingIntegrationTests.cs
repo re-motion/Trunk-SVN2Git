@@ -54,8 +54,6 @@ namespace Remotion.Scripting.UnitTests
 
       // Create a separate script environment for the script expression
       var privateScriptEnvironment = ScriptEnvironment.Create ();
-      // Import the Document class
-      //privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
       // Import the CLR (e.g. string etc)
       privateScriptEnvironment.ImportClr();
       // Set variable doc to a Document instance
@@ -120,33 +118,37 @@ def CheckDocument(doc) :
 
 
     [Test]
-    public void CreateAndUseScriptsAndScriptExpressionInSameScriptEnvironment ()
+    public void CreateAndUseScriptsInSameScriptEnvironment ()
     {
-      const string scriptText1 = @"
-import clr
-clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
-from Remotion.Scripting.UnitTests.TestDomain import Document
+      // Import the Document class into the shared script environment
+      _sharedScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests.TestDomain", "Document");
+
+      const string scriptFunctionSourceCode0 = @"
 def CreateDocument() :
-  return Document('Here is your document, sir.')
+  return Document('invoice',1)
 ";
 
-      const string scriptText2 = @"
-import clr
-clr.AddReferenceByPartialName('Remotion.Scripting.UnitTests')
-from Remotion.Scripting.UnitTests.TestDomain import Document
-def CreateDocument() :
-  return Document('Here is your document, sir.')
+      const string scriptFunctionSourceCode1 = @"
+def ModifyDocument(doc, newNamePrefix, addToNumber) :
+  doc.DocumentName += newNamePrefix
+  doc.DocumentNumber += addToNumber
+  return doc
 ";
 
-      // Create a script function called "CreateDocument" which returns a Document object from scriptFunctionSourceCode.
-      // Note: "CreateDocument" was only chosen for this tutorial; in practice calling the Python function just "CreateDocument"
-      // makes more sense.
-      var createDocumentScript = new Script<Document> (_scriptContext, ScriptLanguageType.Python, scriptText1,
+      // Create a script function which creates a new Document.
+      var createDocumentScript = new Script<Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode0,
         _sharedScriptEnvironment, "CreateDocument");
 
-      Document resultDocument = createDocumentScript.Execute ();
+      // Create a script function which modifies the passed Document.
+      var modifyDocumentScript = new Script<Document, string, int, Document> (_scriptContext, ScriptLanguageType.Python, scriptFunctionSourceCode1,
+        _sharedScriptEnvironment, "ModifyDocument");
 
-      Assert.That (resultDocument.DocumentName, Is.EqualTo ("Here is your document, sir."));
+
+      Document doc = createDocumentScript.Execute ();
+      modifyDocumentScript.Execute (doc," - processed",1000);
+
+      Assert.That (doc.DocumentName, Is.EqualTo ("invoice - processed"));
+      Assert.That (doc.DocumentNumber, Is.EqualTo (1001));
     }
   }
 }
