@@ -166,6 +166,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IndividualControlTests\BocAutoCompleteReferenceValueUserControl2.ascx.cs">
+      <DependentUpon>BocAutoCompleteReferenceValueUserControl2.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="QuirksMode.Master.cs">
       <DependentUpon>QuirksMode.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -484,6 +488,9 @@
     <Content Include="IndividualControlTests\BocLiteralUserControl.ascx">
       <SubType>UserControl</SubType>
     </Content>
+    <Content Include="IndividualControlTests\BocAutoCompleteReferenceValueUserControl2.ascx">
+      <SubType>UserControl</SubType>
+    </Content>
     <Content Include="IndividualControlTests\EmptyUserControl.ascx">
       <SubType>UserControl</SubType>
     </Content>
@@ -541,6 +548,9 @@
     <None Include="WxeLauncher.ashx" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Globalization\IndividualControlTests.BocAutoCompleteReferenceValueUserControl.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\IndividualControlTests.BocListUserControl.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

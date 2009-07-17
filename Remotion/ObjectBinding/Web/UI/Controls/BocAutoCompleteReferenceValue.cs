@@ -29,10 +29,10 @@ using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceV
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.StandardMode;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -46,6 +46,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       :
           BusinessObjectBoundEditableWebControl,
           IBocAutoCompleteReferenceValue,
+          IBocMenuItemContainer,
           IPostBackDataHandler,
           IFocusableControl
   {
@@ -66,15 +67,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocAutoCompleteReferenceValue")]
     protected enum ResourceIdentifier
     {
+      /// <summary> Label displayed in the OptionsMenu. </summary>
+      OptionsTitle,
       /// <summary> The validation error message displayed when the null item is selected. </summary>
-      NullItemValidationMessage
+      NullItemValidationMessage,
     }
 
     // static members
 
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectReferenceProperty) };
 
-    private static readonly object s_selectionChangedEvent = new object();
+    private static readonly object s_selectionChangedEvent = new object ();
+    private static readonly object s_menuItemClickEvent = new object ();
+    private static readonly object s_commandClickEvent = new object ();
 
     // member fields
 
@@ -119,7 +124,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _textBox = new TextBox();
       _hiddenField = new HiddenField();
       _label = new Label();
-      _optionsMenu = new DropDownMenu();
+      _optionsMenu = new DropDownMenu(this);
       _validators = new ArrayList();
 
       _command = new SingleControlItemCollection (new BocCommand (), new[] { typeof (BocCommand) });
@@ -167,6 +172,121 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _label.ID = ID + "_Boc_Label";
       _label.EnableViewState = false;
       Controls.Add (_label);
+
+      _optionsMenu.ID = ID + "_Boc_OptionsMenu";
+      Controls.Add (_optionsMenu);
+      _optionsMenu.EventCommandClick += OptionsMenu_EventCommandClick;
+      _optionsMenu.WxeFunctionCommandClick += OptionsMenu_WxeFunctionCommandClick;
+    }
+
+    /// <summary> Gets or sets the encapsulated <see cref="BocCommand"/> for this control's <see cref="Value"/>. </summary>
+    /// <value> 
+    ///   A <see cref="SingleControlItemCollection"/> containing a <see cref="BocCommand"/> in its 
+    ///   <see cref="SingleControlItemCollection.ControlItem"/> property.
+    /// </value>
+    /// <remarks> This property is used for persisting the <see cref="Command"/> into the <b>ASPX</b> source code. </remarks>
+    [PersistenceMode (PersistenceMode.InnerProperty)]
+    [Browsable (false)]
+    [NotifyParentProperty (true)]
+    public SingleControlItemCollection PersistedCommand
+    {
+      get { return _command; }
+    }
+
+    /// <summary> This event is fired when the value's command is clicked. </summary>
+    [Category ("Action")]
+    [Description ("Fires when the value's command is clicked.")]
+    public event BocCommandClickEventHandler CommandClick
+    {
+      add { Events.AddHandler (s_commandClickEvent, value); }
+      remove { Events.RemoveHandler (s_commandClickEvent, value); }
+    }
+
+    /// <summary> Is raised when a menu item with a command of type <see cref="CommandType.Event"/> is clicked. </summary>
+    [Category ("Action")]
+    [Description ("Is raised when a menu item with a command of type Event is clicked.")]
+    public event WebMenuItemClickEventHandler MenuItemClick
+    {
+      add { Events.AddHandler (s_menuItemClickEvent, value); }
+      remove { Events.RemoveHandler (s_menuItemClickEvent, value); }
+    }
+
+    /// <summary> 
+    ///   Handles the <see cref="MenuBase.EventCommandClick"/> event of the <see cref="OptionsMenu"/>.
+    /// </summary>
+    /// <param name="sender"> The source of the event. </param>
+    /// <param name="e"> An <see cref="WebMenuItemClickEventArgs"/> object that contains the event data. </param>
+    private void OptionsMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
+    {
+      OnMenuItemEventCommandClick (e.Item);
+    }
+
+    /// <summary> 
+    ///   Calls the <see cref="BocMenuItemCommand.OnClick"/> method of the <paramref name="menuItem"/>'s 
+    ///   <see cref="BocMenuItem.Command"/> and raises <see cref="MenuItemClick"/> event. 
+    /// </summary>
+    /// <param name="menuItem"> The <see cref="BocMenuItem"/> that has been clicked. </param>
+    /// <remarks> Only called for commands of type <see cref="CommandType.Event"/>. </remarks>
+    protected virtual void OnMenuItemEventCommandClick (WebMenuItem menuItem)
+    {
+      WebMenuItemClickEventHandler menuItemClickHandler = (WebMenuItemClickEventHandler) Events[s_menuItemClickEvent];
+      if (menuItem != null && menuItem.Command != null)
+      {
+        if (menuItem is BocMenuItem)
+          ((BocMenuItemCommand) menuItem.Command).OnClick ((BocMenuItem) menuItem);
+        else
+          menuItem.Command.OnClick ();
+      }
+      if (menuItemClickHandler != null)
+      {
+        WebMenuItemClickEventArgs e = new WebMenuItemClickEventArgs (menuItem);
+        menuItemClickHandler (this, e);
+      }
+    }
+
+    /// <summary> Handles the <see cref="MenuBase.WxeFunctionCommandClick"/> event of the <see cref="OptionsMenu"/>. </summary>
+    /// <param name="sender"> The source of the event. </param>
+    /// <param name="e"> An <see cref="WebMenuItemClickEventArgs"/> object that contains the event data. </param>
+    /// <remarks> Only called for commands of type <see cref="CommandType.Event"/>. </remarks>
+    private void OptionsMenu_WxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
+    {
+      OnMenuItemWxeFunctionCommandClick (e.Item);
+    }
+
+    /// <summary> 
+    ///   Calls the <see cref="BocMenuItemCommand.ExecuteWxeFunction"/> method of the <paramref name="menuItem"/>'s 
+    ///   <see cref="BocMenuItem.Command"/>.
+    /// </summary>
+    /// <param name="menuItem"> The <see cref="BocMenuItem"/> that has been clicked. </param>
+    /// <remarks> Only called for commands of type <see cref="CommandType.WxeFunction"/>. </remarks>
+    protected virtual void OnMenuItemWxeFunctionCommandClick (WebMenuItem menuItem)
+    {
+      if (menuItem != null && menuItem.Command != null)
+      {
+        if (menuItem is BocMenuItem)
+        {
+          int[] indices = new int[0];
+          IBusinessObject[] businessObjects;
+          if (Value != null)
+            businessObjects = new IBusinessObject[] { Value };
+          else
+            businessObjects = new IBusinessObject[0];
+
+          BocMenuItemCommand command = (BocMenuItemCommand) menuItem.Command;
+          if (Page is IWxePage)
+            command.ExecuteWxeFunction ((IWxePage) Page, indices, businessObjects);
+          //else
+          //  command.ExecuteWxeFunction (Page, indices, businessObjects);
+        }
+        else
+        {
+          Command command = menuItem.Command;
+          if (Page is IWxePage)
+            command.ExecuteWxeFunction ((IWxePage) Page, null);
+          //else
+          //  command.ExecuteWxeFunction (Page, null, new NameValueCollection (0));
+        }
+      }
     }
 
     /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
@@ -280,10 +400,48 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       else
         PreRenderEditModeValue();
 
+      if(HasOptionsMenu)
+        PreRenderOptionsMenu();
+
       var factory = ServiceLocator.Current.GetInstance<IBocAutoCompleteReferenceValueRendererFactory> ();
       var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
       preRenderer.PreRender();
     }
+
+    private void PreRenderOptionsMenu ()
+    {
+      _optionsMenu.Enabled = Enabled;
+      _optionsMenu.IsReadOnly = IsReadOnly;
+      if (StringUtility.IsNullOrEmpty (OptionsTitle))
+        _optionsMenu.TitleText = GetResourceManager ().GetString (ResourceIdentifier.OptionsTitle);
+      else
+        _optionsMenu.TitleText = OptionsTitle;
+      _optionsMenu.Style["vertical-align"] = "middle";
+
+      if (!IsDesignMode)
+      {
+        string getSelectionCount;
+        if (IsReadOnly)
+        {
+          if (BusinessObjectUniqueIdentifier != null)
+            getSelectionCount = "function() { return 1; }";
+          else
+            getSelectionCount = "function() { return 0; }";
+        }
+        else
+          getSelectionCount = "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "'); }";
+        _optionsMenu.GetSelectionCount = getSelectionCount;
+      }
+    }
+
+    /// <summary> Gets or sets the text that is rendered as a label for the <see cref="OptionsMenu"/>. </summary>
+    /// <value> 
+    ///   The text rendered as the <see cref="OptionsMenu"/>'s label. The default value is an empty <see cref="String"/>. 
+    /// </value>
+    [Category ("Menu")]
+    [Description ("The text that is rendered as a label for the options menu.")]
+    [DefaultValue ("")]
+    public string OptionsTitle { get; set; }
 
     public override void RenderControl (HtmlTextWriter writer)
     {
@@ -466,7 +624,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected bool EnableIcon { get; set; }
+    public bool EnableIcon { get; set; }
 
     /// <summary> Gets or sets the <see cref="IBusinessObjectReferenceProperty"/> object this control is bound to. </summary>
     /// <value> An <see cref="IBusinessObjectReferenceProperty"/> object. </value>
@@ -723,6 +881,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _label; }
     }
 
+    /// <summary> Gets or sets flag that determines whether to use the value as the <see cref="OptionsMenu"/>'s head. </summary>
+    /// <value> 
+    ///   <see langword="true"/> to embed the value inside the options menu's head. 
+    ///   The default value is <see langword="true"/>. 
+    /// </value>
+    [Category ("Menu")]
+    [Description ("Determines whether to use the value as the options menu's head.")]
+    [DefaultValue (typeof (bool?), "")]
+    public bool? HasValueEmbeddedInsideOptionsMenu{ get; set; }
+
     /// <summary> Gets the <see cref="DropDownMenu"/> offering additional commands for the current <see cref="Value"/>. </summary>
     protected DropDownMenu OptionsMenu
     {
@@ -815,6 +983,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _args = value; }
     }
 
+    /// <summary> Removes the <paramref name="businessObjects"/> from the <see cref="Value"/> collection. </summary>
+    /// <remarks> Sets the dirty state. </remarks>
+    protected virtual void RemoveBusinessObjects (IBusinessObject[] businessObjects)
+    {
+      if (Value == null)
+        return;
+
+      if (businessObjects.Length > 0 && businessObjects[0] is IBusinessObjectWithIdentity)
+      {
+        if (((IBusinessObjectWithIdentity) businessObjects[0]).UniqueIdentifier == Value.UniqueIdentifier)
+        {
+          Value = null;
+          IsDirty = true;
+        }
+      }
+    }
+
+    /// <summary> Adds the <paramref name="businessObjects"/> to the <see cref="Value"/> collection. </summary>
+    /// <remarks> Sets the dirty state. </remarks>
+    protected virtual void InsertBusinessObjects (IBusinessObject[] businessObjects)
+    {
+      if (businessObjects.Length > 0)
+      {
+        Value = (IBusinessObjectWithIdentity) businessObjects[0];
+        IsDirty = true;
+      }
+    }
+
     #region protected virtual string CssClass...
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocAutoCompleteReferenceValue"/> itself. </summary>
@@ -864,6 +1060,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     #endregion
+   
+    public Unit OptionsMenuWidth { get; set; }
+
+    /// <summary> Gets a flag describing whether the <see cref="OptionsMenu"/> is visible. </summary>
+    public bool HasOptionsMenu
+    {
+      get
+      {
+        return !WcagHelper.Instance.IsWaiConformanceLevelARequired ()
+               && ShowOptionsMenu && (OptionsMenuItems.Count > 0 || IsDesignMode)
+               && OptionsMenu.IsBrowserCapableOfScripting;
+      }
+    }
+
+    public WebMenuItemCollection OptionsMenuItems
+    {
+      get { return OptionsMenu.MenuItems; }
+    }
+
+    bool IBocAutoCompleteReferenceValue.IsCommandEnabled (bool readOnly)
+    {
+      return IsCommandEnabled (readOnly);
+    }
 
     string IBocAutoCompleteReferenceValue.TextBoxUniqueID
     {
@@ -895,9 +1114,50 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return base.IsDesignMode; }
     }
 
-    IDropDownMenu IBocAutoCompleteReferenceValue.OptionsMenu
+    IconInfo IBocAutoCompleteReferenceValue.GetIcon()
+    {
+      if( Value != null && Property != null)
+        return GetIcon (Value, Property.ReferenceClass.BusinessObjectProvider);
+      return IconInfo.Spacer;
+    }
+
+    DropDownMenu IBocAutoCompleteReferenceValue.OptionsMenu
     {
       get { return _optionsMenu; }
+    }
+
+    bool IBocMenuItemContainer.IsReadOnly
+    {
+      get { return IsReadOnly; }
+    }
+
+    bool IBocMenuItemContainer.IsSelectionEnabled
+    {
+      get { return true; }
+    }
+
+    IBusinessObject[] IBocMenuItemContainer.GetSelectedBusinessObjects ()
+    {
+      return (Value == null) ? new IBusinessObject[0] : new IBusinessObject[] { Value };
+    }
+
+    void IBocMenuItemContainer.RemoveBusinessObjects (IBusinessObject[] businessObjects)
+    {
+      RemoveBusinessObjects (businessObjects);
+    }
+
+    void IBocMenuItemContainer.InsertBusinessObjects (IBusinessObject[] businessObjects)
+    {
+      InsertBusinessObjects (businessObjects);
+    }
+
+    bool IBocAutoCompleteReferenceValue.EmbedInOptionsMenu
+    {
+      get
+      {
+        return HasValueEmbeddedInsideOptionsMenu == true && HasOptionsMenu
+                || HasValueEmbeddedInsideOptionsMenu == null && IsReadOnly && HasOptionsMenu;
+      }
     }
   }
 }

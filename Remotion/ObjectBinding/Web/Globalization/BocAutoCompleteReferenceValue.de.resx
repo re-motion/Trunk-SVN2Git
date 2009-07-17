@@ -120,4 +120,7 @@
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.NullItemValidationMessage" xml:space="preserve">
     <value>Bitte wählen Sie einen Eintrag aus.</value>
   </data>
+  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.OptionsTitle" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
 </root>

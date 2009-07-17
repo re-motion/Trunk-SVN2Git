@@ -111,6 +111,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
           ""
           );
       Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script);
+
+      key = Control.ClientID + "_AdjustPositionScript";
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (BocAutoCompleteReferenceValuePreRenderer),
+          key,
+          string.Format ("BocAutoCompleteReferenceValue.AdjustPosition($('#{0}'), {1});",
+//              @"$(document).ready( function(){{ 
+//  $(window).bind('resize', function(e){{ 
+//    BocAutoCompleteReferenceValue.AdjustPosition($('#{0}'), {1}) 
+//  }});
+//" + "setTimeout('BocAutoCompleteReferenceValue.AdjustPosition($(\"#{0}\"), {1});', 10);" + @"
+//}});",
+              Control.ClientID,
+              Control.EmbedInOptionsMenu ? "true" : "false"));
     }
   }
 }

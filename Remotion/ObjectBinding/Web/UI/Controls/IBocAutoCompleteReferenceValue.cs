@@ -14,18 +14,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
-using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   public interface IBocAutoCompleteReferenceValue : IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
     BocCommand Command { get; }
-    IDropDownMenu OptionsMenu { get; }
+    DropDownMenu OptionsMenu { get; }
     string TextBoxUniqueID { get; }
     string TextBoxClientID { get; }
     string HiddenFieldUniqueID { get; }
@@ -55,5 +53,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see cref="TextBoxStyle"/> and <see cref="LabelStyle"/>  properties.
     /// </remarks>
     Style CommonStyle { get; }
+
+    bool EmbedInOptionsMenu { get; }
+    bool HasOptionsMenu { get; }
+    Unit OptionsMenuWidth { get; }
+    bool EnableIcon { get; }
+    bool? HasValueEmbeddedInsideOptionsMenu { get; }
+    bool IsCommandEnabled (bool readOnly);
+    IconInfo GetIcon();
+
+    new IBusinessObjectReferenceProperty Property { get; }
+    new IBusinessObjectWithIdentity Value { get; }
   }
 }

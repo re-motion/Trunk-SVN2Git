@@ -76,7 +76,7 @@
 
 <remotion:submenutab Text="Auto Complete Reference" ItemID="BocAutoCompleteReferenceValue">
 <persistedcommand>
-<remotion:navigationcommand Type="WxeFunction" WxeFunctionCommand-Parameters="&quot;BocAutoCompleteReferenceValueUserControl.ascx&quot;" WxeFunctionCommand-MappingID="IndividualControlTest"></remotion:navigationcommand>
+<remotion:navigationcommand Type="WxeFunction" WxeFunctionCommand-Parameters="&quot;BocAutoCompleteReferenceValueUserControl2.ascx&quot;" WxeFunctionCommand-MappingID="IndividualControlTest"></remotion:navigationcommand>
 </PersistedCommand>
 </remotion:submenutab>
 

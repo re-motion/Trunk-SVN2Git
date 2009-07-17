@@ -29,7 +29,55 @@ BocAutoCompleteReferenceValue.Bind = function(textbox, hiddenField, button, webS
         }
     ).result(function(e, item) {
         var dummy = "";
-        hiddenField.val(item.UniqueIdentifier); //What we polulate on hidden box
+        hiddenField.val(item.UniqueIdentifier); //What we populate on hidden box
         textbox.trigger('change');
     });
 };
+
+BocAutoCompleteReferenceValue.AdjustPosition = function(control, isEmbedded) {
+
+    var totalWidth = control.innerWidth();
+    var totalHeight = control.innerHeight();
+
+    var icon = control.find('img.bocAutoCompleteReferenceValueContent').parent();
+
+    var left = 0;
+    if (icon.length > 0)
+        left = icon.outerWidth(true);
+
+    var optionsMenu = control.find('div.bocAutoCompleteReferenceValueOptionsMenu');
+    var right = 0;
+    if (!isEmbedded && optionsMenu.length > 0)
+        right = optionsMenu.outerWidth(true);
+
+    var contentSpan = control.find('span.bocAutoCompleteReferenceValueContent');
+    contentSpan.height(totalHeight);
+    contentSpan.css('left', left + 'px');
+    contentSpan.css('right', right + 'px');
+
+    if (isEmbedded) {
+        var dropDownMenu = control.find('.bocAutoCompleteReferenceValueDropDownList').parent().parent();
+        if (dropDownMenu.length > 0) {
+            dropDownMenu.height(control.find('.bocAutoCompleteReferenceValueDropDownList').parent().outerHeight(true));
+            icon.css('top', (dropDownMenu.innerHeight() - icon.outerHeight()) / 2);
+        }
+        
+    }
+    else {
+        var dropDownList = control.find('.bocAutoCompleteReferenceValueDropDownList');
+        if (dropDownList.length > 0) {
+            var heightDifference = dropDownList.height() - optionsMenu.height();
+            var offset = heightDifference / 2;
+            optionsMenu.css('top', offset);
+        }
+    }
+};
+
+//  Returns the number of rows selected for the specified BocList
+BocAutoCompleteReferenceValue.GetSelectionCount = function(referenceValueHiddenFieldId) {
+    var hiddenField = document.getElementById(referenceValueHiddenFieldId);
+    if (hiddenField == null || hiddenField.value == null || hiddenField.value.length == 0)
+        return 0;
+    
+    return 1;
+}
