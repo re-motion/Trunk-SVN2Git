@@ -77,7 +77,8 @@ namespace Remotion.Mixins
     /// currently configured for the type have been taken into account.
     /// </summary>
     /// <param name="baseOrInterface">The base or interface to assign to.</param>
-    /// <param name="typeToAssign">The type to check for assignment compatibility to <paramref name="baseOrInterface"/>.</param>
+    /// <param name="typeToAssign">The type to check for assignment compatibility to <paramref name="baseOrInterface"/>. This must not be a generic
+    /// type definition.</param>
     /// <returns>
     /// True if the type returned by <see cref="GetConcreteMixedType"/> for <paramref name="typeToAssign"/> is the same as, derived from, or an
     /// implementation of <paramref name="baseOrInterface"/>; otherwise, false.
