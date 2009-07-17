@@ -151,23 +151,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1366: Fix this")]
     public void QueryWithTake ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Take (3);
       CheckQueryResult (query, DomainObjectIDs.InvalidOrder, DomainObjectIDs.Order3, DomainObjectIDs.OrderWithoutOrderItem);
-    }
-
-    [Test]
-    [Ignore ("TODO 1366: Fix this")]
-    public void QueryWithTake_AndNonConstant ()
-    {
-      var query =
-          from o in QueryFactory.CreateLinqQuery<Order>()
-          where o.OrderNumber == 1
-          from oi in o.OrderItems.Take (o.OrderNumber + 1)
-          select oi;
-      CheckQueryResult (query, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
     }
 
     [Test]
