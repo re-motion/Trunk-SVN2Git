@@ -41,6 +41,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       TextValue.Stub (mock => mock.Value).Return (
           new[] { BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText });
 
+      TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
       TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");
 
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();

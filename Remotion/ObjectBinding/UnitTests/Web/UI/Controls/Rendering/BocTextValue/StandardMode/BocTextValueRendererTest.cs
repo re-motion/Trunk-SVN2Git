@@ -37,6 +37,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocTextValu
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
       Renderer = new BocTextValueRenderer (MockRepository.GenerateMock<IHttpContext>(), Html.Writer, TextValue);
 
+      TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
       TextValue.Stub (stub => stub.TextBoxID).Return ("MyTextValue_Boc_Textbox");
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
 
