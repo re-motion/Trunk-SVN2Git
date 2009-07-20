@@ -540,6 +540,7 @@
     <Compile Include="Linq\Clauses\ResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\AverageResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\InputDependentExpressionTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\LongCountResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\SumResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\MaxResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\MinResultOperatorTest.cs" />
