@@ -27,14 +27,14 @@ namespace Remotion.Scripting.UnitTests
       return (ITypeFilter) PrivateInvoke.GetNonPublicField (proxyBuilder, "_typeFilter");
     }
 
-    public static Dictionary<MemberInfo, HashSet<MemberInfo>> GetClassMethodToInterfaceMethodsMap (this StableBindingProxyBuilder proxyBuilder)
+    public static Dictionary<MethodInfo, HashSet<MethodInfo>> GetClassMethodToInterfaceMethodsMap (this StableBindingProxyBuilder proxyBuilder)
     {
-      return (Dictionary<MemberInfo, HashSet<MemberInfo>>) PrivateInvoke.GetNonPublicField (proxyBuilder, "_classMethodToInterfaceMethodsMap");
+      return (Dictionary<MethodInfo, HashSet<MethodInfo>>) PrivateInvoke.GetNonPublicField (proxyBuilder, "_classMethodToInterfaceMethodsMap");
     }
 
-    public static IEnumerable<MemberInfo> GetInterfaceMethodsToClassMethod (this StableBindingProxyBuilder proxyBuilder, MethodInfo classMethod)
+    public static IEnumerable<MethodInfo> GetInterfaceMethodsToClassMethod (this StableBindingProxyBuilder proxyBuilder, MethodInfo classMethod)
     {
-      return (IEnumerable<MemberInfo>) PrivateInvoke.InvokeNonPublicMethod (proxyBuilder, "GetInterfaceMethodsToClassMethod", classMethod);
+      return (IEnumerable<MethodInfo>) PrivateInvoke.InvokeNonPublicMethod (proxyBuilder, "GetInterfaceMethodsToClassMethod", classMethod);
     }
 
     public static Type GetFirstKnownBaseType (this StableBindingProxyBuilder proxyBuilder)

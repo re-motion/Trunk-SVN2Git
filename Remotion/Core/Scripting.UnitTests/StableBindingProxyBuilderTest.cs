@@ -273,8 +273,7 @@ namespace Remotion.Scripting.UnitTests
       AssertHasSameMethod (knownBaseType, proxyType, "PrependName", typeof (String));
       AssertHasSameMethod (knownBaseType, proxyType, "SumMe", typeof(Int32[]));
       
-      // TODO: Check why comparison fails (even though method exists in proxy)
-      //AssertHasSameMethod (knownBaseType, proxyType, "OverrideMe", typeof (String));
+      AssertHasSameMethod (knownBaseType, proxyType, "OverrideMe", typeof (String));
 
       AssertHasSameGenericMethod (knownBaseType, proxyType, "GenericToString", 2);
       AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 1);
@@ -287,12 +286,71 @@ namespace Remotion.Scripting.UnitTests
       //System.String OverrideMe(System.String),Boolean Equals(System.Object),Int32 GetHashCode(),System.Type GetType()} 
     }
 
+
+    [Test]
+    public void BuildProxyType_CheckInterfaceMembers ()
+    {
+      var knownBaseType = typeof (Proxied);
+      var knownInterfaceType = typeof (IAmbigous2);
+      var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType, knownInterfaceType });
+      var proxiedType = typeof (ProxiedChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      var knownBaseTypeMethods = knownBaseType.GetMethods ().Where (m => m.IsSpecialName == false);
+      //var publicProxyMethods = proxyType.GetMethods ().Where (m => m.IsSpecialName == false && m.DeclaringType != typeof (Object));
+      var proxyMethods = proxyType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (m => m.IsSpecialName == false && m.DeclaringType != typeof (Object));
+      var interfaceMethods = knownInterfaceType.GetMethods (BindingFlags.Instance | BindingFlags.Public); 
+
+      //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (proxyMethods).nl (4);
+      //To.ConsoleLine.e (knownInterfaceType.GetMethods()).nl (3).e (interfaceProxyMethods).nl (3);
+
+      Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count(), Is.EqualTo (proxyMethods.Count ()));
+
+      // Adding IAmbigous2 interface adds StringTimes(string,int) explicit interface implementation
+      AssertHasSameExplicitInterfaceMethod (knownInterfaceType, proxiedType, proxyType, "StringTimes", typeof (String), typeof (Int32));
+
+      // Methods coming from knownBaseType Proxied are still here
+      AssertHasSameMethod (knownBaseType, proxyType, "GetName");
+      AssertHasSameMethod (knownBaseType, proxyType, "Sum", typeof (Int32[]));
+      AssertHasSameMethod (knownBaseType, proxyType, "PrependName", typeof (String));
+      AssertHasSameMethod (knownBaseType, proxyType, "SumMe", typeof (Int32[]));
+
+      AssertHasSameMethod (knownBaseType, proxyType, "OverrideMe", typeof (String));
+
+      AssertHasSameGenericMethod (knownBaseType, proxyType, "GenericToString", 2);
+      AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 1);
+      AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 2);
+
+      // {System.String GetName(),System.String Sum(Int32[]),System.String PrependName(System.String),System.String ToString(),
+      //System.String SumMe(Int32[]),
+      //System.String GenericToString[T0,T1](T0, T1),System.String OverloadedGenericToString[T0](T0),
+      //System.String OverloadedGenericToString[T0,T1](T0, T1),
+      //System.String OverrideMe(System.String),Boolean Equals(System.Object),Int32 GetHashCode(),System.Type GetType()} 
+    }
+
+
+    // TODO: Test w multiple known base classes and interfaces
+
+
+
+
     private void AssertHasSameMethod (Type type0, Type type1, string methodName, params Type[] parameterTypes)
     {
       var methodFromType0 = type0.GetMethod (methodName, parameterTypes);
       Assert.That (methodFromType0, Is.Not.Null);
       var methodFromType1 = type1.GetMethod (methodName, parameterTypes);
       Assert.That (methodFromType1, Is.Not.Null);
+      Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
+    }
+
+    private void AssertHasSameExplicitInterfaceMethod (Type interfaceType, Type type0, Type type1, string methodName, params Type[] parameterTypes)
+    {
+      var methodFromType0 = ScriptingHelper.GetExplicitInterfaceMethod (interfaceType, type0, methodName, parameterTypes);
+      Assert.That (methodFromType0, Is.Not.Null);
+      var methodFromType1 = ScriptingHelper.GetExplicitInterfaceMethod (interfaceType, type1, methodName, parameterTypes);
+      Assert.That (methodFromType1, Is.Not.Null);
+      //var methodFromType1 = type1.GetMethod (methodName, parameterTypes);
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
     }
 

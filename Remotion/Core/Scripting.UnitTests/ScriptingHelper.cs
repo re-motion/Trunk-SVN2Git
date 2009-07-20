@@ -57,6 +57,8 @@ namespace Remotion.Scripting.UnitTests
       return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
     }
 
+ 
+
     public static MethodInfo GetAnyGenericInstanceMethod (Type type, string name, int numberGenericParameters)
     {
       return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (
@@ -67,6 +69,25 @@ namespace Remotion.Scripting.UnitTests
     {
       return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (
         mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).ToArray ();
+    }
+
+
+    public static MethodInfo[] GetAnyExplicitInterfaceMethodArray (Type type, string name, Type[] argumentTypes)
+    {
+      return type.GetMethods (BindingFlags.Instance | BindingFlags.NonPublic).Where (
+        mi => (mi.Name.EndsWith (name) && mi.GetParameters ().Select (pi => pi.ParameterType).SequenceEqual (argumentTypes))).ToArray ();
+    }
+
+    public static MethodInfo GetExplicitInterfaceMethod (Type interfaceType, Type type, string name, Type[] argumentTypes)
+    {
+      //type.GetMethods (BindingFlags.Instance | BindingFlags.NonPublic).Select (mi => To.ConsoleLine.e(mi.Name).e(mi.ReflectedType)).ToArray();
+      
+      //var interfaceMethod = interfaceType.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.Public, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
+      //return type.GetMethod (interfaceMethod.Name, BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
+      return type.GetMethod (interfaceType.FullName + "." + name, BindingFlags.Instance | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
+      
+      //return type.GetMethods (BindingFlags.Instance | BindingFlags.NonPublic).Where (
+      //  mi => (mi.Name == interfaceMethod.Name && mi.GetParameters ().Select (pi => pi.ParameterType).SequenceEqual (argumentTypes))).Single ();
     }
   }
 }

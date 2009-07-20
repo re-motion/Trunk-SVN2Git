@@ -39,8 +39,8 @@ namespace Remotion.Scripting
   {
     private readonly Type _proxiedType;
     private readonly ITypeFilter _typeFilter;
-    private ForwardingProxyBuilder _forwardingProxyBuilder;
-    private readonly Dictionary<MemberInfo, HashSet<MemberInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MemberInfo, HashSet<MemberInfo>> ();
+    private readonly ForwardingProxyBuilder _forwardingProxyBuilder;
+    private readonly Dictionary<MethodInfo, HashSet<MethodInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MethodInfo, HashSet<MethodInfo>> ();
     private readonly ModuleScope _moduleScope;
     private readonly Type[] _knownInterfaces;
     private readonly List<MethodInfo> _methodsKnownInBaseType;
@@ -53,10 +53,10 @@ namespace Remotion.Scripting
       _typeFilter = typeFilter;
       _moduleScope = moduleScope;
       _proxiedType = proxiedType;
-      _knownInterfaces = FindKnownInterfaces();
       
-      //_forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, _knownInterfaces);
-      _forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, new Type[0]);
+      _knownInterfaces = FindKnownInterfaces();
+      _forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, _knownInterfaces);
+      //_forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, new Type[0]);
 
       BuildClassMethodToInterfaceMethodsMap();
       _firstKnownBaseType = GetFirstKnownBaseType();
@@ -79,8 +79,8 @@ namespace Remotion.Scripting
     public Type BuildProxyType ()
     {
       //var methodsKnownInBaseTypeSet_ApproximateEqual = CreateMethodsKnownInBaseTypeSet_ApproximateEqual ();
-      var methodsKnownInProxiedType = _proxiedType.GetMethods ();
-      foreach (var proxiedTypeMethod in methodsKnownInProxiedType)
+      var methodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      foreach (var proxiedTypeMethod in methodsInProxiedType)
       {
         if (IsMethodKnownInBaseType(proxiedTypeMethod))
         {
@@ -88,6 +88,12 @@ namespace Remotion.Scripting
         }
         else
         {
+          var interfaceMethodsToClassMethod = GetInterfaceMethodsToClassMethod (proxiedTypeMethod);
+          foreach (var interfaceMethod in interfaceMethodsToClassMethod)
+          {
+            //_forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (interfaceMethod);
+            _forwardingProxyBuilder.AddForwardingExplicitInterfaceMethod (interfaceMethod);
+          }
           // TODO: Add forwarding interface implementations, for methods whose target method info has not already been implemented
           // TODO: Activate passing of known interfaces to ForwardingProxyBuilder during creation in ctor above
         }
@@ -118,7 +124,7 @@ namespace Remotion.Scripting
       #if(false)
         if (method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.ReflectedType))
         {
-          return true;
+          // ...
         }
       #endif
       
@@ -154,7 +160,7 @@ namespace Remotion.Scripting
       return ProxiedType.GetInterfaces ().Where (i => _typeFilter.IsTypeValid (i)).ToArray ();
     }
 
-    private Dictionary<MemberInfo, HashSet<MemberInfo>> BuildClassMethodToInterfaceMethodsMap ()
+    private void BuildClassMethodToInterfaceMethodsMap ()
     {
       foreach (var knownInterface in _knownInterfaces)
       {
@@ -166,23 +172,22 @@ namespace Remotion.Scripting
           AddTo_MethodToInterfaceMethodsMap (classMethods[i], interfaceMethods[i]);
         }
       }
-      return _classMethodToInterfaceMethodsMap;
     }
 
     private void AddTo_MethodToInterfaceMethodsMap (MethodInfo classMethod, MethodInfo interfaceMethod)
     {
       if (!_classMethodToInterfaceMethodsMap.ContainsKey (classMethod))
       {
-        _classMethodToInterfaceMethodsMap[classMethod] = new HashSet<MemberInfo> ();
+        _classMethodToInterfaceMethodsMap[classMethod] = new HashSet<MethodInfo> ();
       }
       _classMethodToInterfaceMethodsMap[classMethod].Add (interfaceMethod);
     }
 
-    private IEnumerable<MemberInfo> GetInterfaceMethodsToClassMethod (MethodInfo classMethod)
+    private IEnumerable<MethodInfo> GetInterfaceMethodsToClassMethod (MethodInfo classMethod)
     {
-      HashSet<MemberInfo> interfaceMethodsToClassMethod;
+      HashSet<MethodInfo> interfaceMethodsToClassMethod;
       _classMethodToInterfaceMethodsMap.TryGetValue (classMethod, out interfaceMethodsToClassMethod);
-      return (IEnumerable<MemberInfo>) interfaceMethodsToClassMethod ?? new MemberInfo[0];
+      return (IEnumerable<MethodInfo>) interfaceMethodsToClassMethod ?? new MethodInfo[0];
     }
   }
 
