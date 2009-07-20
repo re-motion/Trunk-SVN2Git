@@ -579,6 +579,7 @@
     <Compile Include="Linq\ExpressionTreeNavigator.cs" />
     <Compile Include="Linq\ExtensionMethodsTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\AverageExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\LongCountExpressionNodeTest.cs" />
     <Compile Include="Linq\TestDomain\GoodStudent.cs" />
     <Compile Include="Linq\TestDomain\IndustrialSector.cs" />
     <Compile Include="Linq\Backend\DetailParsing\DetailParserTestBase.cs" />
