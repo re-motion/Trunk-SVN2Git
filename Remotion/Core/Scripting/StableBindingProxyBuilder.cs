@@ -114,14 +114,19 @@ namespace Remotion.Scripting
 
     public bool IsMethodEqualToBaseTypeMethod (MethodInfo method, MethodInfo baseTypeMethod)
     {
-      if (method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.ReflectedType))
+      // TODO: Check workaround with FS again
+      #if(false)
+        if (method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.ReflectedType))
+        {
+          return true;
+        }
+      #endif
+      
+      if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
       {
         return true;
       }
-      //else if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
-      //{
-      //  return true;
-      //}
+
       return false;
     }
 

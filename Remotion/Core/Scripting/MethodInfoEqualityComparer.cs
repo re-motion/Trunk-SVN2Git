@@ -30,7 +30,13 @@ namespace Remotion.Scripting
                 //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.ParameterType)),
                 //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) // TODO: Use ReservedMask here ?
 
-                x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
+                //x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
+                //ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? new Type[0] : x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? typeof(Object) : pi.ParameterType)),
+                //ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1) : new int[0]),
+                //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) // TODO: Use ReservedMask here ?
+
+                // masking out VtableLayoutMask is necessary, otherwise a virtual method and its override will not compare equal
+                x.Name, x.ReturnType, x.Attributes & methodAttributeMask & ~MethodAttributes.VtableLayoutMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
                 ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? new Type[0] : x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? typeof(Object) : pi.ParameterType)),
                 ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1) : new int[0]),
                 ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) // TODO: Use ReservedMask here ?

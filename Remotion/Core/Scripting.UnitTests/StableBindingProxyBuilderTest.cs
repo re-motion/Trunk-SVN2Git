@@ -23,6 +23,7 @@ using NUnit.Framework.Constraints;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMother;
+using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -198,8 +199,6 @@ namespace Remotion.Scripting.UnitTests
     public void IsMethodEqualToBaseTypeMethod ()
     {
       var moduleScopeStub = MockRepository.GenerateStub<ModuleScope> ();
-      //var baseType = typeof (Proxied);
-      //var proxiedType = typeof (ProxiedChildChild);
 
       var baseType = typeof (ProxiedChildGeneric<int, string>);
       var proxiedType = typeof (ProxiedChildChildGeneric<int, string>);
@@ -207,8 +206,6 @@ namespace Remotion.Scripting.UnitTests
       var typeFilter = new TypeLevelTypeFilter (new[] { baseType });
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, moduleScopeStub);
 
-      //var methodFromBaseType = GetAnyInstanceMethod (baseType, "Sum");
-      //var method = GetAnyInstanceMethod (proxiedType, "Sum");
       var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (baseType, "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
       var method = ScriptingHelper.GetAnyInstanceMethod (proxiedType, "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
 
@@ -217,25 +214,12 @@ namespace Remotion.Scripting.UnitTests
       // Shows methodInfo.GetBaseDefinition()-bug: Results should be equal.
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
 
+      Assert.That (methodFromBaseType.ReflectedType, Is.EqualTo (baseType));
+
       Assert.That (stableBindingProxyBuilder.IsMethodEqualToBaseTypeMethod (method, method), Is.True);
       Assert.That (stableBindingProxyBuilder.IsMethodEqualToBaseTypeMethod (method, methodFromBaseType), Is.True);
-
-
-
-      //// "Sum" is defined in Proxied
-      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (baseType, "Sum"), Is.True);
-      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "Sum"), Is.True);
-      //AssertIsMethodKnownInClass (baseType, method, Is.True);
-
-      //// "OverrideMe" is overridden in ProxiedChild
-      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (baseType, "OverrideMe"), Is.True);
-      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "OverrideMe"), Is.True);
-      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (proxiedType, "OverrideMe"), Is.True);
-
-      //// "PrependName" is redefined with new in ProxiedChildChild
-      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (baseType, "PrependName"), Is.True);
-      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "PrependName"), Is.True);
-      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (proxiedType, "PrependName"), Is.False);
+      Assert.That (stableBindingProxyBuilder.IsMethodEqualToBaseTypeMethod (
+        ScriptingHelper.GetAnyInstanceMethod (proxiedType, "Sum"), methodFromBaseType), Is.False);
     }
 
 
@@ -278,9 +262,11 @@ namespace Remotion.Scripting.UnitTests
       var knownBaseTypeMethods = knownBaseType.GetMethods ().Where (m => m.IsSpecialName == false);
       var proxyMethods = proxyType.GetMethods ().Where (m => m.IsSpecialName == false && m.DeclaringType != typeof(Object));
 
-      Assert.That (knownBaseTypeMethods.Count (), Is.EqualTo (proxyMethods.Count()));
+      //ScriptingHelper.ToConsoleLine (ScriptingHelper.GetAnyInstanceMethod (knownBaseType,"OverrideMe"));
+      //ScriptingHelper.ToConsoleLine (ScriptingHelper.GetAnyInstanceMethod (proxiedType, "OverrideMe"));
+      //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (proxyMethods);
 
-      //To.ConsoleLine.e (knownBaseTypeMethods).nl (2).e (proxyMethods);
+      Assert.That (knownBaseTypeMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
 
       AssertHasSameMethod (knownBaseType, proxyType, "GetName");
       AssertHasSameMethod (knownBaseType, proxyType, "Sum", typeof(Int32[]));

@@ -281,33 +281,12 @@ namespace Remotion.Scripting.UnitTests
 
       var x = methods[0].GetParameters()[2];
 
+      Assert.That (methodFromBaseType, Is.Not.EqualTo (methods[0]));
       Assert.That (methodFromBaseType, Is.Not.EqualTo (methods[1]));
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, methods[1]), Is.True);
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, methods[0]), Is.True);
     }
-
-
-    //private MethodInfo GetAnyInstanceMethod (Type type, string name)
-    //{
-    //  return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-    //}
-
-    //private MethodInfo GetAnyInstanceMethod (Type type, string name, Type[] argumentTypes)
-    //{
-    //  return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
-    //}
-
-    //private MethodInfo GetAnyGenericInstanceMethod (Type type, string name, int numberGenericParameters)
-    //{
-    //  return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(
-    //    mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).Single();
-    //}
-
-    //private MethodInfo[] GetAnyGenericInstanceMethodArray (Type type, string name, int numberGenericParameters)
-    //{
-    //  return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (
-    //    mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).ToArray();
-    //}
+ 
   }
 
  
