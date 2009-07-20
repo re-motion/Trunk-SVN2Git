@@ -76,12 +76,9 @@ namespace OBWTest
 
       if (PreferStandardModeRendering)
         RegisterRendererFactories (container, "StandardMode");
-
-      RegisterRendererFactories (container, "QuirksMode");
+      else
+        RegisterRendererFactories (container, "QuirksMode");
       
-      if (!PreferStandardModeRendering)
-        RegisterRendererFactories (container, "StandardMode");
-
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
     }
@@ -94,14 +91,14 @@ namespace OBWTest
               .FromAssembly (typeof (RendererBase<>).Assembly)
               .If (t => t.Namespace.EndsWith (string.Format (".{0}.Factories", namespaceQualifier)))
               .WithService.Select ((t, b) => t.GetInterfaces())
-              .Configure (c => c.Named ("legacy." + c.ServiceType.Name)));
+              .Configure (c => c.Named (c.ServiceType.Name)));
       // Remotion.ObjectBinding.Web
       container.Register (
           AllTypes.Pick()
               .FromAssembly (typeof (BocRendererBase<>).Assembly)
               .If (t => t.Namespace.EndsWith (string.Format (".{0}.Factories", namespaceQualifier)))
               .WithService.Select ((t, b) => t.GetInterfaces())
-              .Configure (c => c.Named ("legacy." + c.ServiceType.Name)));
+              .Configure (c => c.Named (c.ServiceType.Name)));
     }
 
     protected void Session_Start (Object sender, EventArgs e)

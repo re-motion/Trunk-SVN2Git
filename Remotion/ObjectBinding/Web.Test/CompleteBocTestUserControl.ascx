@@ -33,7 +33,7 @@
 </textBoxStyle></remotion:BocMultilineTextValue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:BocDateTimeValue id="DateTimeField" runat="server" propertyidentifier="DateOfBirth" datasourcecontrol="CurrentObject"  incompleteerrormessage="Unvollständige Daten" invaliddateandtimeerrormessage="Ungültiges Datum oder Zeit" invaliddateerrormessage="Ungültiges Datum" invalidtimeerrormessage="Ungültige Zeit" ></remotion:BocDateTimeValue></td></tr>
+    <td><remotion:BocDateTimeValue id="DateTimeField" runat="server" propertyidentifier="DateOfBirth" datasourcecontrol="CurrentObject" incompleteerrormessage="Unvollständige Daten" ></remotion:BocDateTimeValue></td></tr>
   <tr>
     <td style="HEIGHT: 18px"></td>
     <td style="HEIGHT: 18px"><remotion:BocEnumValue id="EnumField" runat="server" propertyidentifier="MarriageStatus" datasourcecontrol="CurrentObject">
@@ -50,7 +50,7 @@
     <td></td>
     <td></td></tr>
   <tr>
-    <td colspan="2"><remotion:BocList id="ListField" runat="server" propertyidentifier="Jobs" datasourcecontrol="CurrentObject" showsortingorder="True" enableselection="True" alwaysshowpageinfo="True" selection="Multiple">
+    <td colspan="2"><remotion:BocList id="ListField" runat="server" propertyidentifier="Jobs" datasourcecontrol="CurrentObject" showsortingorder="True" alwaysshowpageinfo="True" selection="Multiple">
 <fixedcolumns>
 <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Title">
 <persistedcommand>

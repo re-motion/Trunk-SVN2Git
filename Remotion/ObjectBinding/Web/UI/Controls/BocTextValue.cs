@@ -21,6 +21,8 @@ using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode.Factories;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
@@ -140,9 +142,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void RenderControl (HtmlTextWriter writer)
     {
-      var factory = ServiceLocator.Current.GetInstance<IBocTextValueRendererFactory> ();
+      var factory = !IsDesignMode ? ServiceLocator.Current.GetInstance<IBocTextValueRendererFactory>() : new BocTextValueRendererFactory();
       var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render();
+      renderer.Render ();
     }
 
     /// <summary> Gets or sets the current value. </summary>

@@ -34,22 +34,22 @@
 </DateTimeTextBoxStyle></remotion:bocdatetimevalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocbooleanvalue id="DeceasedField" runat="server" propertyidentifier="Deceased" datasourcecontrol="CurrentObject" nullitemerrormessage="Eingabe erforderlich" AutoPostBack="True"></remotion:bocbooleanvalue></td></tr>
+    <td><remotion:bocbooleanvalue id="DeceasedField" runat="server" propertyidentifier="Deceased" datasourcecontrol="CurrentObject" AutoPostBack="True"></remotion:bocbooleanvalue></td></tr>
   <tr>
     <td></td>
     <td><remotion:bocdatetimevalue id="DateOfDeathField" runat="server" propertyidentifier="DateOfDeath" datasourcecontrol="CurrentObject" ></remotion:bocdatetimevalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocenumvalue id="MarriageStatusField" runat="server" propertyidentifier="MarriageStatus" datasourcecontrol="CurrentObject" nullitemerrormessage="Eingabe erforderlich">
+    <td><remotion:bocenumvalue id="MarriageStatusField" runat="server" propertyidentifier="MarriageStatus" datasourcecontrol="CurrentObject" >
 <listcontrolstyle autopostback="True">
 </ListControlStyle></remotion:bocenumvalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id="PartnerField" runat="server" propertyidentifier="Partner" datasourcecontrol="CurrentObject" nullitemerrormessage="Eingabe erforderlich">
+    <td><remotion:bocreferencevalue id="PartnerField" runat="server" propertyidentifier="Partner" datasourcecontrol="CurrentObject" >
 <dropdownliststyle autopostback="True">
 </DropDownListStyle>
 
-<persistedcommand>
+<PersistedCommand>
 <remotion:BocCommand WxeFunctionCommand-Parameters="id" WxeFunctionCommand-TypeName="OBWTest.ViewPersonDetailsWxeFunction,OBWTest" Type="WxeFunction"></remotion:BocCommand>
 </PersistedCommand></remotion:bocreferencevalue></td></tr>
 </table>

@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 
@@ -145,7 +146,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
           Control.Value.Value ? c_trueIcon : c_falseIcon);
 
       imageControl.ImageUrl = imageUrl;
-      imageControl.AlternateText = description;
+      imageControl.AlternateText = StringUtility.NullToEmpty(description);
+      imageControl.GenerateEmptyAlternateText = true;
       imageControl.Style["vertical-align"] = "middle";
     }
 

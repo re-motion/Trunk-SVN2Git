@@ -52,6 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_textBoxIDPostfix = "Boc_TextBox";
     private const string c_hiddenFieldIDPostfix = "Boc_HiddenField";
     private const string c_buttonIDPostfix = "Boc_DropDownButton";
+    private const string c_iconIDPostfix = "Boc_Icon";
 
     // types
 
@@ -96,6 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private int? _completionSetCount = 10;
     private int _completionInterval = 1000;
     private int _suggestionInterval = 200;
+    
 
     // construction and disposing
 
@@ -560,6 +562,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return UniqueID + IdSeparator + c_hiddenFieldIDPostfix; }
     }
 
+    string IBocAutoCompleteReferenceValue.IconUniqueID
+    {
+      get { return UniqueID + IdSeparator + c_iconIDPostfix; }
+    }
+
     bool IBocRenderableControl.IsDesignMode
     {
       get { return base.IsDesignMode; }
@@ -567,9 +574,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     IconInfo IBocAutoCompleteReferenceValue.GetIcon ()
     {
-      if (Value != null && Property != null)
-        return GetIcon (Value, Property.ReferenceClass.BusinessObjectProvider);
-      return IconInfo.Spacer;
+      return GetIcon (Value, Property==null ? null : Property.ReferenceClass.BusinessObjectProvider);
     }
 
     DropDownMenu IBocAutoCompleteReferenceValue.OptionsMenu

@@ -54,7 +54,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       Label label = GetLabel ();
       Image icon = GetIcon ();
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       if (Control.EmbedInOptionsMenu)
       {
         RenderContentsWithIntegratedOptionsMenu (textBox, label);
@@ -98,6 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
         }
       }
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
@@ -275,7 +275,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-        textBox.Attributes.Add ("onClick", DropDownMenu.OnHeadTitleClickScript);
+        textBox.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
         RenderEditModeValue (textBox);
 
         Writer.RenderEndTag ();
@@ -294,7 +294,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
     private Image GetIcon ()
     {
-      var icon = new Image { EnableViewState = false, Visible = false };
+      var icon = new Image { EnableViewState = false, ID = Control.IconUniqueID, GenerateEmptyAlternateText = true, Visible = false };
       if (Control.EnableIcon && Control.Property != null)
       {
         IconInfo iconInfo = Control.GetIcon();

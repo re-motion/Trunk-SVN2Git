@@ -28,6 +28,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string TextBoxClientID { get; }
     string HiddenFieldUniqueID { get; }
     string HiddenFieldClientID { get; }
+    string IconUniqueID { get; }
     string BusinessObjectDisplayName { get; }
     string BusinessObjectUniqueIdentifier { get; }
     string DropDownButtonClientID { get; }

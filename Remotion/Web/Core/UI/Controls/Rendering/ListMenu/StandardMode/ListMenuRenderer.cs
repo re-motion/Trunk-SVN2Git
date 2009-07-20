@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 
@@ -96,6 +97,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
       if (showIcon && menuItem.Icon.HasRenderingInformation)
       {
         Writer.AddAttribute (HtmlTextWriterAttribute.Src, UrlUtility.ResolveUrl (menuItem.Icon.Url));
+        Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (menuItem.Icon.AlternateText));
         Writer.AddStyleAttribute ("vertical-align", "middle");
         Writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
         Writer.RenderBeginTag (HtmlTextWriterTag.Img);

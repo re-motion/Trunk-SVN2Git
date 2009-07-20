@@ -26,7 +26,7 @@
     <td colSpan=4><remotion:boctextvalue id=FirstNameField runat="server" PropertyIdentifier="FirstName" datasourcecontrol="CurrentObject" readonly="True"></remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" PropertyIdentifier="LastName" datasourcecontrol="CurrentObject" readonly="True"></remotion:boctextvalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocenumvalue id=GenderField runat="server" PropertyIdentifier="Gender" datasourcecontrol="CurrentObject" nullitemerrormessage="Eingabe erforderlich">
+    <td><remotion:bocenumvalue id=GenderField runat="server" PropertyIdentifier="Gender" datasourcecontrol="CurrentObject" >
 <listcontrolstyle controltype="RadioButtonList" radiobuttonlistrepeatdirection="Horizontal" >
 </ListControlStyle>
 </remotion:bocenumvalue></td>
@@ -78,7 +78,7 @@
     <td style="WIDTH: 20%"><asp:label id=DeceasedAsEnumFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocenumvalue id=DisabledGenderField runat="server" PropertyIdentifier="Gender" datasourcecontrol="CurrentObject" nullitemerrormessage="Eingabe erforderlich" enabled=false>
+    <td><remotion:bocenumvalue id=DisabledGenderField runat="server" PropertyIdentifier="Gender" datasourcecontrol="CurrentObject" enabled=false>
 <listcontrolstyle controltype="RadioButtonList" radiobuttonlistrepeatdirection="Horizontal">
 </ListControlStyle>
 </remotion:bocenumvalue></td>

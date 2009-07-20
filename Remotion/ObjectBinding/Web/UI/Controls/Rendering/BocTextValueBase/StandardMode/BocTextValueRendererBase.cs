@@ -110,6 +110,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
 
     protected override void AddAdditionalAttributes ()
     {
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "inline-block");
     }
   }

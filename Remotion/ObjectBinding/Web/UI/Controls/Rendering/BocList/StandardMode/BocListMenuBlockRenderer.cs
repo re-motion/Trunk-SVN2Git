@@ -65,7 +65,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       Writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, List.ClientID + "_Boc_ListMenu");
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
       Control.ListMenu.RenderControl (Writer);
       Writer.RenderEndTag();

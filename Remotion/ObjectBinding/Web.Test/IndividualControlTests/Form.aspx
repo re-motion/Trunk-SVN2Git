@@ -13,9 +13,10 @@
  % You should have received a copy of the GNU Lesser General Public License
  % along with re-motion; if not, see http://www.gnu.org/licenses.
 --%>
-<%@ Page Language="c#" Codebehind="Form.aspx.cs" AutoEventWireup="True" Inherits="OBWTest.IndividualControlTests.IndividualControlTestForm" %>
+<%@ Page Language="c#" Codebehind="Form.aspx.cs" AutoEventWireup="True" Inherits="OBWTest.IndividualControlTests.IndividualControlTestForm" 
+  Title="IndividualControlTestForm" %>
 <%@ Register TagPrefix="obwt" TagName="NavigationTabs" Src="../UI/NavigationTabs.ascx" %>
-<asp:Content ContentPlaceHolderID="head" runat="server">  <title>IndividualControlTestForm</title>
+<asp:Content ContentPlaceHolderID="head" runat="server">
   <remotion:HtmlHeadContents ID="HtmlHeadContents" runat="server" />
 </asp:Content>
 <asp:Content ContentPlaceHolderID="body" runat="server">

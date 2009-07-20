@@ -53,7 +53,7 @@
 <dropdownliststyle autopostback="True">
 </DropDownListStyle>
 
-<persistedcommand>
+<PersistedCommand>
 <remotion:BocCommand Type="Event"></remotion:BocCommand>
 </PersistedCommand></remotion:bocreferencevalue></td></tr>
   <tr>
@@ -75,7 +75,7 @@
 </TextBoxStyle></remotion:BocMultilineTextValue></td></tr>
         <tr>
           <td style="HEIGHT: 17px"></td>
-          <td style="HEIGHT: 17px"><remotion:BocList id="JobList" runat="server" PropertyIdentifier="Jobs" DataSourceControl="CurrentObject" ShowAvailableViewsList="false" ShowAllProperties="True" EnableSelection="True" showemptylistmenu="False">
+          <td style="HEIGHT: 17px"><remotion:BocList id="JobList" runat="server" PropertyIdentifier="Jobs" DataSourceControl="CurrentObject" ShowAvailableViewsList="false" ShowAllProperties="True">
 </remotion:BocList></td></tr>
           </table>
       <p><asp:button id=SaveButton runat="server" Width="80px" Text="Save"></asp:button><asp:button id="PostBackButton" runat="server" Text="Post Back"></asp:button></p>

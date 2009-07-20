@@ -73,3 +73,10 @@ div.bocReferenceValueContent span.bocReferenceValueContent * {
 div.bocReferenceValueContent div.disabled span.bocReferenceValueContent {
   padding: 3px;
 }
+
+.bocReferenceValue.disabled img
+{
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  -moz-opacity: 0.4
+}

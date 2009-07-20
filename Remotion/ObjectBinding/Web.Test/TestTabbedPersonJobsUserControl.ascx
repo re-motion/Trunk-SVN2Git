@@ -29,7 +29,7 @@
     <td></td>
   </tr>
   <tr>
-    <td colspan="2"><remotion:boclist id="ListField" runat="server" propertyidentifier="Jobs" datasourcecontrol="CurrentObject" showsortingorder="True" enableselection="True" alwaysshowpageinfo="True" selection="Multiple" >
+    <td colspan="2"><remotion:boclist id="ListField" runat="server" propertyidentifier="Jobs" datasourcecontrol="CurrentObject" showsortingorder="True" alwaysshowpageinfo="True" selection="Multiple" >
 <fixedcolumns>
 <remotion:BocRowEditModeColumnDefinition SaveText="Save" CancelText="Cancel" EditText="Edit"></remotion:BocRowEditModeColumnDefinition>
 <remotion:BocCommandColumnDefinition Text="Event">

@@ -26,7 +26,7 @@
 </remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" readonly="True" datasourcecontrol="CurrentObject" PropertyIdentifier="LastName"></remotion:boctextvalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=PartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" TextBoxStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%" EnableSelectStatement="True">
+    <td><remotion:bocAutoCompleteReferenceValue id=PartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" TextBoxStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%">
 <persistedcommand>
 <remotion:BocCommand Type="Event"></remotion:BocCommand>
 </PersistedCommand>
@@ -61,7 +61,7 @@
     <td style="WIDTH: 20%"><asp:label id=ReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=UnboundPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" required="True" hasvalueembeddedinsideoptionsmenu="False" width="250px" showoptionsmenu="False" EnableSelectStatement="False">
+    <td><remotion:bocAutoCompleteReferenceValue id=UnboundPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" required="True" hasvalueembeddedinsideoptionsmenu="False" width="250px" showoptionsmenu="False" >
 <persistedcommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand></remotion:bocAutoCompleteReferenceValue></td>
@@ -70,7 +70,7 @@
     <td style="WIDTH: 20%"><asp:label id=UnboundPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=UnboundReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" enableicon="False" hasvalueembeddedinsideoptionsmenu="False" width="250px" EnableSelectStatement="False">
+    <td><remotion:bocAutoCompleteReferenceValue id=UnboundReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" enableicon="False" hasvalueembeddedinsideoptionsmenu="False" width="250px">
 <persistedcommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand>
@@ -81,7 +81,7 @@
     <td style="WIDTH: 20%"><asp:label id=UnboundReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=DisabledPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" embeddedvalue="False" hasvalueembeddedinsideoptionsmenu="True" enabled="False" EnableSelectStatement="False">
+    <td><remotion:bocAutoCompleteReferenceValue id=DisabledPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" hasvalueembeddedinsideoptionsmenu="True" enabled="False">
 
 <persistedcommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
@@ -90,7 +90,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=DisabledReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" enabled="False" embeddedvalue="False" EnableSelectStatement="False">
+    <td><remotion:bocAutoCompleteReferenceValue id=DisabledReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" enabled="False">
 
 <persistedcommand>
 <remotion:boccommand WxeFunctionCommand-Parameters="id" WxeFunctionCommand-TypeName="OBWTest.ViewPersonDetailsWxeFunction,OBWTest" Type="WxeFunction"></remotion:boccommand>
@@ -99,7 +99,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledReadOnlyPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=DisabledUnboundPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" required="True" enabled="False" embeddedvalue="False" width="250px" EnableSelectStatement="False">
+    <td><remotion:bocAutoCompleteReferenceValue id=DisabledUnboundPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" required="True" enabled="False" width="250px" >
 <persistedcommand>
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand></remotion:bocAutoCompleteReferenceValue></td>
@@ -108,7 +108,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledUnboundPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=DisabledUnboundReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" enableicon="False" enabled="False" embeddedvalue="False" width="250px" EnableSelectStatement="False" >
+    <td><remotion:bocAutoCompleteReferenceValue id=DisabledUnboundReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" enableicon="False" enabled="False" width="250px" >
 <persistedcommand>
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand>

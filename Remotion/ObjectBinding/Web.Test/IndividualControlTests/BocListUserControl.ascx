@@ -29,7 +29,7 @@
     <td></td>
     <td></td></tr>
   <tr>
-    <td colSpan=2><ros:TestBocList id=ChildrenList runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Children" alwaysshowpageinfo="True" listmenulinebreaks="BetweenGroups" pagesize="4" indexoffset="100" RowMenuDisplay="Manual" ShowEmptyListMessage="True" enableselection="True" Index="InitialOrder" Selection="Multiple">
+    <td colSpan=2><ros:TestBocList id=ChildrenList runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Children" alwaysshowpageinfo="True" listmenulinebreaks="BetweenGroups" pagesize="4" indexoffset="100" RowMenuDisplay="Manual" ShowEmptyListMessage="True" Index="InitialOrder" Selection="Multiple">
 <fixedcolumns>
 <remotion:BocRowEditModeColumnDefinition ItemID="EditRow" SaveText="Save" CancelText="Cancel" Width="2em" EditText="Edit"></remotion:BocRowEditModeColumnDefinition>
 <remotion:BocCommandColumnDefinition ItemID="E1" Text="E 1" ColumnTitle="Cmd">
@@ -85,7 +85,7 @@
     <td></td>
     <td></td></tr>
   <tr>
-    <td colSpan=2><ros:testboclist id=Testboclist1 runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Children" alwaysshowpageinfo="True" listmenulinebreaks="BetweenGroups" indexoffset="100" ShowEmptyListMessage="True" enableselection="True" Index="SortedOrder" Selection="Multiple" rowmenudisplay="Automatic" readonly="True">
+    <td colSpan=2><ros:testboclist id=Testboclist1 runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Children" alwaysshowpageinfo="True" listmenulinebreaks="BetweenGroups" indexoffset="100" ShowEmptyListMessage="True" Index="SortedOrder" Selection="Multiple" rowmenudisplay="Automatic" readonly="True">
 <fixedcolumns>
 <remotion:BocSimpleColumnDefinition ItemID="LastName" PropertyPathIdentifier="LastName">
 <persistedcommand>
@@ -128,7 +128,7 @@
     <td></td>
     <td></td></tr>
   <tr>
-    <td colSpan=2><ros:testboclist id=EmptyList runat="server" datasourcecontrol="EmptyDataSourceControl" alwaysshowpageinfo="True" listmenulinebreaks="BetweenGroups" pagesize="4" RowMenuDisplay="Manual" ShowEmptyListMessage="True" enableselection="True" Index="InitialOrder" Selection="Multiple" required="True" readonly="False">
+    <td colSpan=2><ros:testboclist id=EmptyList runat="server" datasourcecontrol="EmptyDataSourceControl" alwaysshowpageinfo="True" listmenulinebreaks="BetweenGroups" pagesize="4" RowMenuDisplay="Manual" ShowEmptyListMessage="True" Index="InitialOrder" Selection="Multiple" required="True" readonly="False">
 <listmenuitems>
 <remotion:BocMenuItem Text="test" ItemID="test">
 <persistedcommand>

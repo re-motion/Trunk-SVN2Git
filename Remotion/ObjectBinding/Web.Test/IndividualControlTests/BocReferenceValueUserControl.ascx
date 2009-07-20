@@ -81,7 +81,7 @@
     <td style="WIDTH: 20%"><asp:label id=UnboundReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=DisabledPartnerField runat="server" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" embeddedvalue="False" hasvalueembeddedinsideoptionsmenu="True" enabled="False" EnableSelectStatement="False">
+    <td><remotion:bocreferencevalue id=DisabledPartnerField runat="server" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" hasvalueembeddedinsideoptionsmenu="True" enabled="False" EnableSelectStatement="False">
 
 <PersistedCommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
@@ -90,7 +90,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=DisabledReadOnlyPartnerField runat="server" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" enabled="False" embeddedvalue="False" EnableSelectStatement="False">
+    <td><remotion:bocreferencevalue id=DisabledReadOnlyPartnerField runat="server" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" enabled="False" EnableSelectStatement="False">
 
 <PersistedCommand>
 <remotion:boccommand WxeFunctionCommand-Parameters="id" WxeFunctionCommand-TypeName="OBWTest.ViewPersonDetailsWxeFunction,OBWTest" Type="WxeFunction"></remotion:boccommand>
@@ -99,7 +99,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledReadOnlyPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=DisabledUnboundPartnerField runat="server" required="True" enabled="False" embeddedvalue="False" width="250px" EnableSelectStatement="False">
+    <td><remotion:bocreferencevalue id=DisabledUnboundPartnerField runat="server" required="True" enabled="False" width="250px" EnableSelectStatement="False">
 <PersistedCommand>
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>
@@ -108,7 +108,7 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledUnboundPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=DisabledUnboundReadOnlyPartnerField runat="server" readonly="True" EnableIcon="False" enabled="False" embeddedvalue="False" width="250px" EnableSelectStatement="False" >
+    <td><remotion:bocreferencevalue id=DisabledUnboundReadOnlyPartnerField runat="server" readonly="True" EnableIcon="False" enabled="False" width="250px" EnableSelectStatement="False" >
 <PersistedCommand>
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand>

@@ -17,7 +17,6 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -206,6 +205,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return UniqueID + IdSeparator + "Boc_HyperLink";
     }
 
+    private string GetHyperLinkClientID ()
+    {
+      return ClientID + ClientIDSeparator + "Boc_HyperLink";
+    }
+
     /// <summary> Gets or sets the current value. </summary>
     /// <value> The boolean value currently displayed or <see langword="null"/>. </value>
     /// <remarks> The dirty state is reset when the value is set. </remarks>
@@ -271,7 +275,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : GetHyperLinkUniqueID (); }
+      get { return IsReadOnly ? null : GetHyperLinkClientID (); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>

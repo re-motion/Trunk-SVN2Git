@@ -101,7 +101,7 @@
     <td style="WIDTH: 20%"><asp:label id=DisabledUnboundReadOnlyFirstNameFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:boctextvalue id="BocTextValue1" runat="server" ValueType="Int32" required="True" numberstyle="AllowThousands"></remotion:boctextvalue></td>
+    <td><remotion:boctextvalue id="BocTextValue1" runat="server" ValueType="Int32" required="True"></remotion:boctextvalue></td>
     <td></td>
     <td style="WIDTH: 20%"></td></tr>
   <tr>

@@ -59,7 +59,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       Label label = GetLabel();
       Image icon = GetIcon();
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       if (Control.EmbedInOptionsMenu)
       {
         RenderContentsWithIntegratedOptionsMenu(dropDownList, label);
@@ -100,7 +99,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
 
     private Image GetIcon ()
     {
-      var icon = new Image { EnableViewState = false, ID = Control.IconClientID, Visible = false };
+      var icon = new Image { EnableViewState = false, ID = Control.IconClientID, Visible = false, GenerateEmptyAlternateText = true };
       if (Control.EnableIcon && Control.Property != null)
       {
         IconInfo iconInfo = Control.GetIcon (Control.Value, Control.Property.ReferenceClass.BusinessObjectProvider);
@@ -121,7 +120,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
             if (string.IsNullOrEmpty (iconInfo.AlternateText))
             {
               if (Control.Value == null)
-                icon.AlternateText = String.Empty;
+                icon.AlternateText = string.Empty;
               else
                 icon.AlternateText = HttpUtility.HtmlEncode (Control.Value.DisplayNameSafe);
             }
@@ -178,6 +177,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
         }
       }
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
@@ -296,7 +296,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-        dropDownList.Attributes.Add ("onClick", DropDownMenu.OnHeadTitleClickScript);
+        dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
         RenderEditModeValue (dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty);
 
         Writer.RenderEndTag();

@@ -55,11 +55,11 @@
 </ListControlStyle></remotion:bocenumvalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=ReferenceField runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Partner" errormessage="Fehler">
+    <td><remotion:bocreferencevalue id=ReferenceField runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Partner" ErrorMessage="Fehler">
 <dropdownliststyle autopostback="True">
 </DropDownListStyle>
 
-<persistedcommand>
+<PersistedCommand>
 <remotion:BocCommand Type="None"></remotion:BocCommand>
 </PersistedCommand></remotion:bocreferencevalue></td></tr>
   <tr>
@@ -69,7 +69,7 @@
     <td></td>
     <td></td></tr>
   <tr>
-    <td colSpan=2><remotion:boclist id=ListField runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Jobs" showsortingorder="True" alwaysshowpageinfo="True" enableselection="True">
+    <td colSpan=2><remotion:boclist id=ListField runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Jobs" showsortingorder="True" alwaysshowpageinfo="True">
 <fixedcolumns>
 <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Title">
 <persistedcommand>

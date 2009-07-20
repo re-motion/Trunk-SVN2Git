@@ -264,7 +264,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : GetCheckboxUniqueID (); }
+      get { return IsReadOnly ? null : GetCheckboxClientID (); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
@@ -412,7 +412,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocCheckBox.CheckboxID
     {
-      get { return ClientID + ClientIDSeparator + c_checkboxIDPostfix; }
+      get { return GetCheckboxClientID(); }
     }
 
     string IBocCheckBox.ImageID
@@ -428,6 +428,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string GetCheckboxUniqueID ()
     {
       return UniqueID + IdSeparator + c_checkboxIDPostfix;
+    }
+
+    private string GetCheckboxClientID ()
+    {
+      return ClientID + ClientIDSeparator + c_checkboxIDPostfix;
     }
 
     public string GetImageUniqueID ()

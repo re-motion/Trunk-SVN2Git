@@ -302,7 +302,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
       {
         if (icon.Visible)
           RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
-        dropDownList.Attributes.Add ("onClick", DropDownMenu.OnHeadTitleClickScript);
+        dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
         RenderEditModeValue (dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty, isDropDownListWidthEmpty);
       }
     }

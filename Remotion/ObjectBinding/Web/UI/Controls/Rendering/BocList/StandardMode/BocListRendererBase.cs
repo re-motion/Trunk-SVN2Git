@@ -128,7 +128,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       if (isChecked)
         Writer.AddAttribute (HtmlTextWriterAttribute.Checked, "checked");
       if (List.EditModeController.IsRowEditModeActive)
-        Writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "true");
+        Writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Value, value);
 

@@ -2903,7 +2903,7 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
     helpAnchor.HRef = UrlUtility.ResolveUrl (helpInfo.NavigateUrl);
     helpAnchor.Target = helpInfo.Target;
     if (!string.IsNullOrEmpty (helpInfo.OnClick))
-      helpAnchor.Attributes.Add ("onClick", helpInfo.OnClick);
+      helpAnchor.Attributes.Add ("onclick", helpInfo.OnClick);
 
     return helpAnchor;
   }
