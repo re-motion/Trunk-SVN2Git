@@ -50,7 +50,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
             Control, Context, typeof (IDatePickerButton), ResourceType.Html, ResourceTheme.Standard, c_datePickerStyleFileName);
-        htmlHeadAppender.RegisterStylesheetLink (s_datePickerStyleFileKey, styleUrl);
+        htmlHeadAppender.RegisterStylesheetLink (s_datePickerStyleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 

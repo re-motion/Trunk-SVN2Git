@@ -73,7 +73,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               typeof (IBocAutoCompleteReferenceValue),
               ResourceType.Html,
               ResourceTheme.Standard,
-              "BocAutoCompleteReferenceValue.css"));
+              "BocAutoCompleteReferenceValue.css"),
+          HtmlHeadAppender.Priority.Library);
 
       string jqueryAutocompleteStyleKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_JQueryAutoCompleteStyle";
       htmlHeadAppender.RegisterStylesheetLink (
@@ -84,7 +85,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               typeof (IBocAutoCompleteReferenceValue),
               ResourceType.Html,
               ResourceTheme.Standard,
-              "jquery.autocomplete.css"));
+              "jquery.autocomplete.css"),
+          HtmlHeadAppender.Priority.Library);
     }
 
     public override void PreRender ()

@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
       string styleKey = typeof (IBocDateTimeValue).FullName + "_Style";
       string styleFile = ResourceUrlResolver.GetResourceUrl (
           Control, Context, typeof (IBocDateTimeValue), ResourceType.Html, ResourceTheme.Legacy, "BocDateTimeValue.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile);
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 
     public override void PreRender ()

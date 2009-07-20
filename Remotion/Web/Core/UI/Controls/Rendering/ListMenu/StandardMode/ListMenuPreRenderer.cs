@@ -43,7 +43,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode
 
       string styleSheetKey = typeof (IListMenu).FullName + "_Style";
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, ResourceTheme.Standard, "ListMenu.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl);
+      htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
     }
 
     public override void PreRender ()
