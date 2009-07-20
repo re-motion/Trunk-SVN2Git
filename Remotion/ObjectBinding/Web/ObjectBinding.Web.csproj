@@ -217,6 +217,7 @@
     <Compile Include="UI\Controls\BocReferenceValue.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UI\Controls\BocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocRowEditColumnDefinitionShow.cs" />
     <Compile Include="UI\Controls\BocRowEditModeColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocSimpleColumnDefinition.cs" />
@@ -441,6 +442,7 @@
     <Content Include="Doc\include\UI\Controls\BocList.xml" />
     <Content Include="Doc\include\UI\Controls\BocMultilineTextValue.xml" />
     <Content Include="Doc\include\UI\Controls\BocReferenceValue.xml" />
+    <Content Include="Doc\include\UI\Controls\BocReferenceValueBase.xml" />
     <Content Include="Doc\include\UI\Controls\BocTextValue.xml" />
     <Content Include="Doc\include\UI\Controls\BocTreeView.xml" />
     <Content Include="Doc\include\UI\Controls\BocLiteral.xml" />

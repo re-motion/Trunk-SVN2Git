@@ -330,7 +330,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       PrivateInvoke.InvokeNonPublicMethod (_control, "CreateChildControls");
 
-      var key = _control.HiddenFieldClientID;
+      var key = _control.HiddenFieldUniqueID;
       var postbackCollection = new NameValueCollection ();
 
       postbackCollection.Add (key, string.Empty);
@@ -354,7 +354,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       var postbackCollection = new NameValueCollection();
 
       Guid value = Guid.NewGuid();
-      postbackCollection.Add (_control.HiddenFieldClientID, value.ToString ());
+      postbackCollection.Add (_control.HiddenFieldUniqueID, value.ToString ());
       postbackCollection.Add (_control.TextBoxClientID, "NewValue");
 
       _control.IsDirty = false;

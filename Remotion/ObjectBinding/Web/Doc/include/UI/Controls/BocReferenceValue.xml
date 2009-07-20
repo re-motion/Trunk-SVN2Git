@@ -22,7 +22,7 @@
         The control's <see cref="Value"/> can be assigned <see cref="IBusinessObjectWithIdentity"/> values 
         or <see langword="null"/>. 
       </para><para>
-        The control's <see cref="Property"/> supports the <see cref="IBusinessObjectReferenceProperty"/>.
+        The control's <see cref="BocReferenceValueBase.Property"/> supports the <see cref="IBusinessObjectReferenceProperty"/>.
       </para>
       
       <h4 class="dtH4">Standards Conformance</h4>
@@ -72,13 +72,13 @@
       </para><para>
         If the <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
         the <see cref="BusinessObjectBoundWebControl.PropertyIdentifier"/> properties are not set, the 
-        control is unbound. In that case, the <see cref="Property"/> and the <see cref="Value"/> properties must be 
-        set programmatically. In order to get the value after the user has changed it, <see cref="Value"/> must be
+        control is unbound. In that case, the <see cref="BocReferenceValueBase.Property"/> and the <see cref="BocReferenceValueBase.Value"/> properties must be 
+        set programmatically. In order to get the value after the user has changed it, <see cref="BocReferenceValueBase.Value"/> must be
         read.
       </para><para>
-        The <see cref="Property"/> must be set in order to get the <see cref="Value"/> after a postback. 
+        The <see cref="BocReferenceValueBase.Property"/> must be set in order to get the <see cref="Value"/> after a postback. 
         This means the latest time to set the <b>Property</b> is before a call to <see cref="SaveValue"/>.
-        If it is not possible to assign a <see cref="Property"/>, you can use <see cref="BusinessObjectUniqueIdentifier"/> to get
+        If it is not possible to assign a <see cref="BocReferenceValueBase.Property"/>, you can use <see cref="BocReferenceValueBase.BusinessObjectUniqueIdentifier"/> to get
         the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object.
       </para><para>
         The control provides a default <b>CSS Class</b>, applied to the top level element: <c>bocReferenceValue</c>.
@@ -112,21 +112,21 @@
           <description>Resource Identifier</description>
         </listheader>
         <item>
-          <term> <see cref="ErrorMessage"/> </term>
+          <term> <see cref="BocReferenceValueBase.ErrorMessage"/> </term>
           <description>
             <para> &lt;BocReferenceValue Resource ID&gt;:ErrorMessage </para>
             <para> e.g. auto:MyBocReferenceValue:ErrorMessage </para>
           </description>
         </item>
         <item>
-          <term> <see cref="OptionsTitle"/> </term>
+          <term> <see cref="BocReferenceValueBase.OptionsTitle"/> </term>
           <description>
             <para> &lt;BocReferenceValue Resource ID&gt;:OptionsTitle </para>
             <para> e.g. auto:MyBocReferenceValue:OptionsTitle </para>
           </description>
         </item>
         <item>
-          <term> <see cref="OptionsMenuItems"/>[x].Text </term>
+          <term> <see cref="BocReferenceValueBase.OptionsMenuItems"/>[x].Text </term>
           <description>
             <para> &lt;BocReferenceValue Resource ID&gt;:OptionsMenuItems:&lt;Menu Item ID&gt;:Text </para>
             <para> e.g. auto:MyBocReferenceValue:OptionsMenuItems:MyItem:Text </para>
@@ -160,7 +160,7 @@
           <description>
             Displays the <see cref="IBusinessObject.DisplayName"/> for <see cref="Value"/> 
             and the icon returned by <see cref="IBusinessObjectWebUIService.GetIcon"/>, 
-            if <see cref="EnableIcon"/> is <see langword="true"/>.
+            if <see cref="BocReferenceValueBase.EnableIcon"/> is <see langword="true"/>.
           </description>
         </item>
         <item>
@@ -169,7 +169,7 @@
           </term>
           <description>
             Displays no text and the icon returned by <see cref="IBusinessObjectWebUIService.GetIcon"/> for
-            <see langword="null"/>, if <see cref="EnableIcon"/> is <see langword="true"/>.
+            <see langword="null"/>, if <see cref="BocReferenceValueBase.EnableIcon"/> is <see langword="true"/>.
           </description>
         </item>
         <item>
@@ -179,7 +179,7 @@
           <description>
             Text is automatically provided by the <see cref="DropDownList"/>.
             Displays the icon returned by <see cref="IBusinessObjectWebUIService.GetIcon"/>, 
-            if <see cref="EnableIcon"/> is <see langword="true"/>.
+            if <see cref="BocReferenceValueBase.EnableIcon"/> is <see langword="true"/>.
           </description>
         </item>
         <item>
@@ -190,7 +190,7 @@
             <para>
               Text is automatically provided by the <see cref="DropDownList"/>.
               Displays the icon returned by <see cref="IBusinessObjectWebUIService.GetIcon"/> for
-              <see langword="null"/>, if <see cref="EnableIcon"/> is <see langword="true"/>.
+              <see langword="null"/>, if <see cref="BocReferenceValueBase.EnableIcon"/> is <see langword="true"/>.
             </para><para>
               If the control is required, the undefined item is removed once a valid item is
               selected.
@@ -214,34 +214,14 @@
       </list>
     </remarks>
   </Class>
-  <LoadPostData>
-    <remarks>
-      <para>
-        Sets the new value and the <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> flag if the value 
-        has changed.
-      </para><para>
-        Evaluates the value of the <see cref="DropDownList"/>.
-      </para>
-      <note type="inheritinfo">
-        Overrive this method to change the way of detecting a changed value when read from the 
-        <paramref name="postCollection"/>.
-      </note>
-    </remarks>
-    <param name="postDataKey"> The key identifier for this control. </param>
-    <param name="postCollection"> The collection of all incoming name values.  </param>
-    <returns>
-      <see langword="true"/> if the server control's state changes as a result of the post back; 
-      otherwise <see langword="false"/>.
-    </returns>
-  </LoadPostData>
   <LoadValue>
     <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     <remarks>
       <para>
-        Loads the <see cref="Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/> 
+        Loads the <see cref="BocReferenceValueBase.Value"/> from the <see cref="BusinessObjectBoundWebControl.DataSource"/> 
         if <paramref name="interim"/> is <see langword="false"/>. 
       </para><para>
-        Requires a <see cref="Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
+        Requires a <see cref="BocReferenceValueBase.Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
         a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
       </para>
     </remarks>
@@ -251,10 +231,10 @@
     <param name="interim"> Specifies whether this is the initial loading, or an interim loading. </param>
     <remarks>
       <para>
-        Populates the <see cref="Value"/> with the provided <paramref name="value"/> if <paramref name="interim"/> 
+        Populates the <see cref="BocReferenceValueBase.Value"/> with the provided <paramref name="value"/> if <paramref name="interim"/> 
         is <see langword="false"/>. 
       </para><para>
-        Requires a <see cref="Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
+        Requires a <see cref="BocReferenceValueBase.Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
         a <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
       </para>
     </remarks>
@@ -267,7 +247,7 @@
         if <paramref name="interim"/> is <see langword="false"/> and the control's 
         <see cref="BusinessObjectBoundEditableWebControl.IsReadOnly"/> property evaluates <see langword="false"/>. 
       </para><para>
-        Requires a <see cref="Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and a 
+        Requires a <see cref="BocReferenceValueBase.Property"/>, a <see cref="BusinessObjectBoundWebControl.DataSource"/> and a 
         <see cref="BusinessObjectDataSourceControl.BusinessObject">DataSource.BusinessObject</see>.
       </para><para>
         <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> will be <see langword="false"/> after invoking
@@ -299,21 +279,5 @@
       Use this method to change the menu items' properties (such as their visibility).
     </remarks>
   </PreRenderMenusItems>
-  <Value>
-    <value> 
-      The <see cref="IBusinessObjectWithIdentity"/> currently displayed 
-      or <see langword="null"/> if no item / the null item is selected.
-    </value>
-    <remarks>
-      <para>
-        Only the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the value is cached between postbacks. 
-        In order to return a value, the control requires the <see cref="Property"/> to be set. 
-        The <see cref="Property"/>'s <see cref="IBusinessObjectReferenceProperty.ReferenceClass"/> is then used to get 
-        the <see cref="IBusinessObjectWithIdentity"/> for the cached <b>ID</b>. If it is not possible to assign a <see cref="Property"/>, 
-        you can use <see cref="BusinessObjectUniqueIdentifier"/> to get the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object.
-      </para><para>
-        The dirty state is reset when the value is set.
-      </para>
-    </remarks>
-  </Value>
+  
 </BocReferenceValue>

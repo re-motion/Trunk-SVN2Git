@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocAutoComp
       Control.Stub (mock => mock.TextBoxStyle).Return (new SingleRowTextBoxStyle());
       Control.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
 
-      Control.Stub (stub => stub.BusinessObjectDisplayName).Return ("MyText");
+      Control.Stub (stub => stub.GetLabelText()).Return ("MyText");
     }
 
     [TestFixtureSetUp]

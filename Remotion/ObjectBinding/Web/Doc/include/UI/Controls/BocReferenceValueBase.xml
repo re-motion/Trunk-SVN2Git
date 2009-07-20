@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<BocReferenceValueBase>
+  <LoadPostData>
+    <remarks>
+      <para>
+        Sets the new value and the <see cref="BusinessObjectBoundEditableWebControl.IsDirty"/> flag if the value
+        has changed.
+      </para>
+      <para>
+        Evaluates the value of the <see cref="DropDownList"/>.
+      </para>
+      <note type="inheritinfo">
+        Overrive this method to change the way of detecting a changed value when read from the
+        <paramref name="postCollection"/>.
+      </note>
+    </remarks>
+    <param name="postDataKey"> The key identifier for this control. </param>
+    <param name="postCollection"> The collection of all incoming name values.  </param>
+    <returns>
+      <see langword="true"/> if the server control's state changes as a result of the post back;
+      otherwise <see langword="false"/>.
+    </returns>
+  </LoadPostData>
+  <Value>
+    <value>
+      The <see cref="IBusinessObjectWithIdentity"/> currently displayed
+      or <see langword="null"/> if no item / the null item is selected.
+    </value>
+    <remarks>
+      <para>
+        Only the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the value is cached between postbacks.
+        In order to return a value, the control requires the <see cref="Property"/> to be set.
+        The <see cref="Property"/>'s <see cref="IBusinessObjectReferenceProperty.ReferenceClass"/> is then used to get
+        the <see cref="IBusinessObjectWithIdentity"/> for the cached <b>ID</b>. If it is not possible to assign a <see cref="Property"/>,
+        you can use <see cref="BocReferenceValueBase.BusinessObjectUniqueIdentifier"/> to get the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object.
+      </para>
+      <para>
+        The dirty state is reset when the value is set.
+      </para>
+    </remarks>
+  </Value>
+</BocReferenceValueBase>

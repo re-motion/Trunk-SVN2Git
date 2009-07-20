@@ -40,6 +40,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     DropDownListStyle DropDownListStyle { get; }
     Style LabelStyle { get; }
     string DropDownListClientID { get; }
+    string DropDownListUniqueID { get; }
     string LabelClientID { get; }
     string IconClientID { get; }
     string NullIdentifier { get; }

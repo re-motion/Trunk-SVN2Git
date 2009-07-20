@@ -75,7 +75,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     private DropDownList GetDropDownList ()
     {
       var dropDownList = _dropDownListFactoryMethod();
-      dropDownList.ID = Control.DropDownListClientID;
+      dropDownList.ID = Control.DropDownListUniqueID;
       dropDownList.EnableViewState = false;
       Control.PopulateDropDownList (dropDownList);
 

@@ -288,7 +288,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       var label = new Label { ID = Control.TextBoxUniqueID, EnableViewState = false, Height = Unit.Empty, Width = Unit.Empty };
       label.ApplyStyle (Control.CommonStyle);
       label.ApplyStyle (Control.LabelStyle);
-      label.Text = Control.BusinessObjectDisplayName;
+      label.Text = Control.GetLabelText();
       return label;
     }
 

@@ -27,7 +27,7 @@
   <tr>
     <td></td>
     <td><remotion:bocreferencevalue id=PartnerField runat="server" DropDownListStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%" EnableSelectStatement="True">
-<persistedcommand>
+<PersistedCommand>
 <remotion:BocCommand Type="Event"></remotion:BocCommand>
 </PersistedCommand>
 
@@ -51,7 +51,7 @@
   <tr>
     <td></td>
     <td><remotion:bocreferencevalue id=ReadOnlyPartnerField runat="server" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%" >
-<persistedcommand>
+<PersistedCommand>
 <remotion:BocCommand WxeFunctionCommand-Parameters="id" WxeFunctionCommand-TypeName="OBWTest.ViewPersonDetailsWxeFunction,OBWTest" Type="Event"></remotion:BocCommand>
 </PersistedCommand>
 
@@ -62,7 +62,7 @@
   <tr>
     <td></td>
     <td><remotion:bocreferencevalue id=UnboundPartnerField runat="server" required="True" hasvalueembeddedinsideoptionsmenu="False" width="250px" showoptionsmenu="False" EnableSelectStatement="False">
-<persistedcommand>
+<PersistedCommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>
     <td>
@@ -70,8 +70,8 @@
     <td style="WIDTH: 20%"><asp:label id=UnboundPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=UnboundReadOnlyPartnerField runat="server" readonly="True" enableicon="False" hasvalueembeddedinsideoptionsmenu="False" width="250px" EnableSelectStatement="False">
-<persistedcommand>
+    <td><remotion:bocreferencevalue id=UnboundReadOnlyPartnerField runat="server" readonly="True" EnableIcon="False" hasvalueembeddedinsideoptionsmenu="False" width="250px" EnableSelectStatement="False">
+<PersistedCommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand>
 
@@ -83,7 +83,7 @@
     <td></td>
     <td><remotion:bocreferencevalue id=DisabledPartnerField runat="server" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" embeddedvalue="False" hasvalueembeddedinsideoptionsmenu="True" enabled="False" EnableSelectStatement="False">
 
-<persistedcommand>
+<PersistedCommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>
     <td>disabled, bound</td>
@@ -92,7 +92,7 @@
     <td></td>
     <td><remotion:bocreferencevalue id=DisabledReadOnlyPartnerField runat="server" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" enabled="False" embeddedvalue="False" EnableSelectStatement="False">
 
-<persistedcommand>
+<PersistedCommand>
 <remotion:boccommand WxeFunctionCommand-Parameters="id" WxeFunctionCommand-TypeName="OBWTest.ViewPersonDetailsWxeFunction,OBWTest" Type="WxeFunction"></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>
     <td>disabled, bound, read-only</td>
@@ -100,7 +100,7 @@
   <tr>
     <td></td>
     <td><remotion:bocreferencevalue id=DisabledUnboundPartnerField runat="server" required="True" enabled="False" embeddedvalue="False" width="250px" EnableSelectStatement="False">
-<persistedcommand>
+<PersistedCommand>
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>
     <td>
@@ -108,8 +108,8 @@
     <td style="WIDTH: 20%"><asp:label id="DisabledUnboundPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=DisabledUnboundReadOnlyPartnerField runat="server" readonly="True" enableicon="False" enabled="False" embeddedvalue="False" width="250px" EnableSelectStatement="False" >
-<persistedcommand>
+    <td><remotion:bocreferencevalue id=DisabledUnboundReadOnlyPartnerField runat="server" readonly="True" EnableIcon="False" enabled="False" embeddedvalue="False" width="250px" EnableSelectStatement="False" >
+<PersistedCommand>
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand>
 

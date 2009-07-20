@@ -15,7 +15,6 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Web;
@@ -26,14 +25,11 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue.StandardMode;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
-using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -44,16 +40,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [Designer (typeof (BocDesigner))]
   public class BocAutoCompleteReferenceValue
       :
-          BusinessObjectBoundEditableWebControl,
+          BocReferenceValueBase,
           IBocAutoCompleteReferenceValue,
-          IBocMenuItemContainer,
-          IPostBackDataHandler,
           IFocusableControl
   {
     // constants
 
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
+
+    private const string c_textBoxIDPostfix = "Boc_TextBox";
+    private const string c_hiddenFieldIDPostfix = "Boc_HiddenField";
+    private const string c_buttonIDPostfix = "Boc_DropDownButton";
 
     // types
 
@@ -75,18 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // static members
 
-    private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectReferenceProperty) };
-
-    private static readonly object s_selectionChangedEvent = new object ();
-    private static readonly object s_menuItemClickEvent = new object ();
-    private static readonly object s_commandClickEvent = new object ();
-
     // member fields
-
-    private readonly TextBox _textBox;
-    private readonly HiddenField _hiddenField;
-    private readonly Label _label;
-    private readonly DropDownMenu _optionsMenu;
 
     private readonly Style _commonStyle;
     private readonly SingleRowTextBoxStyle _textBoxStyle;
@@ -99,11 +86,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private IBusinessObjectWithIdentity _value;
 
     /// <summary> The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the current object. </summary>
-    private string _internalValue;
-
     private string _displayName;
 
-    private string _errorMessage;
     private readonly ArrayList _validators;
 
     private string _serviceMethod = string.Empty;
@@ -112,7 +96,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private int? _completionSetCount = 10;
     private int _completionInterval = 1000;
     private int _suggestionInterval = 200;
-    private readonly SingleControlItemCollection _command;
 
     // construction and disposing
 
@@ -121,27 +104,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _commonStyle = new Style();
       _textBoxStyle = new SingleRowTextBoxStyle();
       _labelStyle = new Style();
-      _textBox = new TextBox();
-      _hiddenField = new HiddenField();
-      _label = new Label();
-      _optionsMenu = new DropDownMenu(this);
       _validators = new ArrayList();
-
-      _command = new SingleControlItemCollection (new BocCommand (), new[] { typeof (BocCommand) });
 
       EnableIcon = true;
       ShowOptionsMenu = true;
     }
 
     // methods and properties
-
-    protected override void OnInit (EventArgs e)
-    {
-      base.OnInit (e);
-
-      if (!IsDesignMode)
-        Page.RegisterRequiresPostBack (this);
-    }
 
     public override void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
@@ -155,212 +124,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
-    /// <remarks>
-    ///   If the <see cref="DropDownList"/> could not be created from <see cref="DropDownListStyle"/>,
-    ///   the control is set to read-only.
-    /// </remarks>
-    protected override void CreateChildControls ()
+    protected override string ValueContainingControlID
     {
-      _hiddenField.ID = ID + "_Boc_HiddenField";
-      _hiddenField.EnableViewState = false;
-      Controls.Add (_hiddenField);
-
-      _textBox.ID = ID + "_Boc_TextBox";
-      _textBox.EnableViewState = true;
-      Controls.Add (_textBox);
-
-      _label.ID = ID + "_Boc_Label";
-      _label.EnableViewState = false;
-      Controls.Add (_label);
-
-      _optionsMenu.ID = ID + "_Boc_OptionsMenu";
-      Controls.Add (_optionsMenu);
-      _optionsMenu.EventCommandClick += OptionsMenu_EventCommandClick;
-      _optionsMenu.WxeFunctionCommandClick += OptionsMenu_WxeFunctionCommandClick;
+      get { return HiddenFieldUniqueID; }
     }
 
-    /// <summary> Gets or sets the encapsulated <see cref="BocCommand"/> for this control's <see cref="Value"/>. </summary>
-    /// <value> 
-    ///   A <see cref="SingleControlItemCollection"/> containing a <see cref="BocCommand"/> in its 
-    ///   <see cref="SingleControlItemCollection.ControlItem"/> property.
-    /// </value>
-    /// <remarks> This property is used for persisting the <see cref="Command"/> into the <b>ASPX</b> source code. </remarks>
-    [PersistenceMode (PersistenceMode.InnerProperty)]
-    [Browsable (false)]
-    [NotifyParentProperty (true)]
-    public SingleControlItemCollection PersistedCommand
+    protected override void OnDataChanged ()
     {
-      get { return _command; }
+      _displayName = PageUtility.GetPostBackCollectionItem (Page, TextBoxClientID);
     }
 
-    /// <summary> This event is fired when the value's command is clicked. </summary>
-    [Category ("Action")]
-    [Description ("Fires when the value's command is clicked.")]
-    public event BocCommandClickEventHandler CommandClick
+    protected override bool IsNullValue (string newValue)
     {
-      add { Events.AddHandler (s_commandClickEvent, value); }
-      remove { Events.RemoveHandler (s_commandClickEvent, value); }
-    }
-
-    /// <summary> Is raised when a menu item with a command of type <see cref="CommandType.Event"/> is clicked. </summary>
-    [Category ("Action")]
-    [Description ("Is raised when a menu item with a command of type Event is clicked.")]
-    public event WebMenuItemClickEventHandler MenuItemClick
-    {
-      add { Events.AddHandler (s_menuItemClickEvent, value); }
-      remove { Events.RemoveHandler (s_menuItemClickEvent, value); }
-    }
-
-    /// <summary> 
-    ///   Handles the <see cref="MenuBase.EventCommandClick"/> event of the <see cref="OptionsMenu"/>.
-    /// </summary>
-    /// <param name="sender"> The source of the event. </param>
-    /// <param name="e"> An <see cref="WebMenuItemClickEventArgs"/> object that contains the event data. </param>
-    private void OptionsMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      OnMenuItemEventCommandClick (e.Item);
-    }
-
-    /// <summary> 
-    ///   Calls the <see cref="BocMenuItemCommand.OnClick"/> method of the <paramref name="menuItem"/>'s 
-    ///   <see cref="BocMenuItem.Command"/> and raises <see cref="MenuItemClick"/> event. 
-    /// </summary>
-    /// <param name="menuItem"> The <see cref="BocMenuItem"/> that has been clicked. </param>
-    /// <remarks> Only called for commands of type <see cref="CommandType.Event"/>. </remarks>
-    protected virtual void OnMenuItemEventCommandClick (WebMenuItem menuItem)
-    {
-      WebMenuItemClickEventHandler menuItemClickHandler = (WebMenuItemClickEventHandler) Events[s_menuItemClickEvent];
-      if (menuItem != null && menuItem.Command != null)
-      {
-        if (menuItem is BocMenuItem)
-          ((BocMenuItemCommand) menuItem.Command).OnClick ((BocMenuItem) menuItem);
-        else
-          menuItem.Command.OnClick ();
-      }
-      if (menuItemClickHandler != null)
-      {
-        WebMenuItemClickEventArgs e = new WebMenuItemClickEventArgs (menuItem);
-        menuItemClickHandler (this, e);
-      }
-    }
-
-    /// <summary> Handles the <see cref="MenuBase.WxeFunctionCommandClick"/> event of the <see cref="OptionsMenu"/>. </summary>
-    /// <param name="sender"> The source of the event. </param>
-    /// <param name="e"> An <see cref="WebMenuItemClickEventArgs"/> object that contains the event data. </param>
-    /// <remarks> Only called for commands of type <see cref="CommandType.Event"/>. </remarks>
-    private void OptionsMenu_WxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      OnMenuItemWxeFunctionCommandClick (e.Item);
-    }
-
-    /// <summary> 
-    ///   Calls the <see cref="BocMenuItemCommand.ExecuteWxeFunction"/> method of the <paramref name="menuItem"/>'s 
-    ///   <see cref="BocMenuItem.Command"/>.
-    /// </summary>
-    /// <param name="menuItem"> The <see cref="BocMenuItem"/> that has been clicked. </param>
-    /// <remarks> Only called for commands of type <see cref="CommandType.WxeFunction"/>. </remarks>
-    protected virtual void OnMenuItemWxeFunctionCommandClick (WebMenuItem menuItem)
-    {
-      if (menuItem != null && menuItem.Command != null)
-      {
-        if (menuItem is BocMenuItem)
-        {
-          int[] indices = new int[0];
-          IBusinessObject[] businessObjects;
-          if (Value != null)
-            businessObjects = new IBusinessObject[] { Value };
-          else
-            businessObjects = new IBusinessObject[0];
-
-          BocMenuItemCommand command = (BocMenuItemCommand) menuItem.Command;
-          if (Page is IWxePage)
-            command.ExecuteWxeFunction ((IWxePage) Page, indices, businessObjects);
-          //else
-          //  command.ExecuteWxeFunction (Page, indices, businessObjects);
-        }
-        else
-        {
-          Command command = menuItem.Command;
-          if (Page is IWxePage)
-            command.ExecuteWxeFunction ((IWxePage) Page, null);
-          //else
-          //  command.ExecuteWxeFunction (Page, null, new NameValueCollection (0));
-        }
-      }
-    }
-
-    /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
-    bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
-    {
-      if (RequiresLoadPostData)
-        return LoadPostData (postDataKey, postCollection);
-      else
-        return false;
-    }
-
-    /// <summary> Invokes the <see cref="RaisePostDataChangedEvent"/> method. </summary>
-    void IPostBackDataHandler.RaisePostDataChangedEvent ()
-    {
-      RaisePostDataChangedEvent();
-    }
-
-    /// <summary>
-    ///   Uses the <paramref name="postCollection"/> to determine whether the value of this control has been changed
-    ///   between postbacks.
-    /// </summary>
-    /// <include file='..\Web\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/LoadPostData/*' />
-    protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
-    {
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, _hiddenField.UniqueID);
-      bool isDataChanged = false;
-      if (newValue != null)
-      {
-        if (_internalValue == null && newValue.Length > 0)
-          isDataChanged = true;
-        else if (_internalValue != null && newValue != _internalValue)
-          isDataChanged = true;
-      }
-
-      if (isDataChanged)
-      {
-        if (newValue.Length == 0)
-          _internalValue = null;
-        else
-          _internalValue = newValue;
-
-        _displayName = PageUtility.GetPostBackCollectionItem (Page, _textBox.UniqueID);
-        IsDirty = true;
-      }
-      return isDataChanged;
+      return string.IsNullOrEmpty (newValue);
     }
 
     /// <summary> Called when the state of the control has changed between postbacks. </summary>
-    protected virtual void RaisePostDataChangedEvent ()
+    protected override void RaisePostDataChangedEvent ()
     {
       if (!IsReadOnly && Enabled)
         OnSelectionChanged();
-    }
-
-    /// <summary> Fires the <see cref="SelectionChanged"/> event. </summary>
-    protected virtual void OnSelectionChanged ()
-    {
-      EventHandler eventHandler = (EventHandler) Events[s_selectionChangedEvent];
-      if (eventHandler != null)
-        eventHandler (this, EventArgs.Empty);
-    }
-
-    /// <summary> Loads the resources into the control's properties. </summary>
-    protected override void LoadResources (IResourceManager resourceManager)
-    {
-      if (resourceManager == null)
-        return;
-      if (IsDesignMode)
-        return;
-      base.LoadResources (resourceManager);
-
-      string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
-      if (!StringUtility.IsNullOrEmpty (key))
-        ErrorMessage = resourceManager.GetString (key);
     }
 
     /// <summary> Checks whether the control conforms to the required WAI level. </summary>
@@ -381,11 +164,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void SetEditModeValue ()
     {
-      _hiddenField.Value = _internalValue;
       IBusinessObjectWithIdentity obj = Value;
       if (obj != null)
         _displayName = GetDisplayName (obj);
-      _textBox.Text = _displayName;
     }
 
     protected override void OnPreRender (EventArgs e)
@@ -395,59 +176,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       LoadResources (GetResourceManager());
 
-      if (IsReadOnly)
-        PreRenderReadOnlyValue();
-      else
-        PreRenderEditModeValue();
+      if (!IsDesignMode)
+        PreRenderMenuItems();
 
-      if(HasOptionsMenu)
+      if (HasOptionsMenu)
         PreRenderOptionsMenu();
 
-      var factory = ServiceLocator.Current.GetInstance<IBocAutoCompleteReferenceValueRendererFactory> ();
+      if (Command != null)
+        Command.RegisterForSynchronousPostBack (this, null, string.Format ("BocAutoCompleteReferenceValue '{0}', Object Command", ID));
+
+      var factory = ServiceLocator.Current.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
       preRenderer.PreRender();
+
+      if (!IsReadOnly)
+        PreRenderEditModeValue();
     }
 
-    private void PreRenderOptionsMenu ()
+    protected override string GetOptionsMenuTitle ()
     {
-      _optionsMenu.Enabled = Enabled;
-      _optionsMenu.IsReadOnly = IsReadOnly;
-      if (StringUtility.IsNullOrEmpty (OptionsTitle))
-        _optionsMenu.TitleText = GetResourceManager ().GetString (ResourceIdentifier.OptionsTitle);
-      else
-        _optionsMenu.TitleText = OptionsTitle;
-      _optionsMenu.Style["vertical-align"] = "middle";
-
-      if (!IsDesignMode)
-      {
-        string getSelectionCount;
-        if (IsReadOnly)
-        {
-          if (BusinessObjectUniqueIdentifier != null)
-            getSelectionCount = "function() { return 1; }";
-          else
-            getSelectionCount = "function() { return 0; }";
-        }
-        else
-          getSelectionCount = "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "'); }";
-        _optionsMenu.GetSelectionCount = getSelectionCount;
-      }
+      return GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
     }
-
-    /// <summary> Gets or sets the text that is rendered as a label for the <see cref="OptionsMenu"/>. </summary>
-    /// <value> 
-    ///   The text rendered as the <see cref="OptionsMenu"/>'s label. The default value is an empty <see cref="String"/>. 
-    /// </value>
-    [Category ("Menu")]
-    [Description ("The text that is rendered as a label for the options menu.")]
-    [DefaultValue ("")]
-    public string OptionsTitle { get; set; }
 
     public override void RenderControl (HtmlTextWriter writer)
     {
       EvaluateWaiConformity();
 
-      var renderer = new BocAutoCompleteReferenceValueRenderer (new HttpContextWrapper (Context), writer, this);
+      var factory = ServiceLocator.Current.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
+      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
       renderer.Render();
     }
 
@@ -456,11 +212,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       object[] values = (object[]) savedState;
 
       base.LoadControlState (values[0]);
-      _internalValue = (string) values[1];
+      InternalValue = (string) values[1];
       _displayName = (string) values[2];
-
-      _hiddenField.Value = _internalValue;
-      _textBox.Text = _displayName;
     }
 
     protected override object SaveControlState ()
@@ -468,7 +221,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       object[] values = new object[3];
 
       values[0] = base.SaveControlState();
-      values[1] = _internalValue;
+      values[1] = InternalValue;
       values[2] = _displayName;
 
       return values;
@@ -525,7 +278,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
-    protected virtual IResourceManager GetResourceManager ()
+    protected override IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
     }
@@ -542,20 +295,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RequiredFieldValidator notNullItemValidator = new RequiredFieldValidator();
       notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
       notNullItemValidator.ControlToValidate = ID;
-      if (StringUtility.IsNullOrEmpty (_errorMessage))
+      if (string.IsNullOrEmpty (ErrorMessage))
         notNullItemValidator.ErrorMessage = GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
       else
-        notNullItemValidator.ErrorMessage = _errorMessage;
+        notNullItemValidator.ErrorMessage = ErrorMessage;
       validators[0] = notNullItemValidator;
 
       _validators.AddRange (validators);
       return validators;
     }
 
-    private void PreRenderReadOnlyValue ()
+    string IBocAutoCompleteReferenceValue.GetLabelText ()
     {
       string text;
-      if (_internalValue != null)
+      if (InternalValue != null)
         text = HttpUtility.HtmlEncode (_displayName);
       else
         text = String.Empty;
@@ -570,87 +323,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         else
           text = "&nbsp;";
       }
-      _label.Text = text;
-
-      _label.Height = Unit.Empty;
-      _label.Width = Unit.Empty;
-      _label.ApplyStyle (_commonStyle);
-      _label.ApplyStyle (_labelStyle);
+      return text;
     }
 
     private void PreRenderEditModeValue ()
     {
       SetEditModeValue();
-
-      _textBox.Enabled = Enabled;
-      _textBox.Height = Unit.Empty;
-      _textBox.Width = Unit.Empty;
-      _textBox.ApplyStyle (_commonStyle);
-      _textBoxStyle.ApplyStyle (_textBox);
-    }
-
-    protected bool IsCommandEnabled (bool isReadOnly)
-    {
-      if (WcagHelper.Instance.IsWaiConformanceLevelARequired ())
-        return false;
-
-      bool isCommandEnabled = false;
-      if (Command != null)
-      {
-        bool isActive = Command.Show == CommandShow.Always
-                        || isReadOnly && Command.Show == CommandShow.ReadOnly
-                        || !isReadOnly && Command.Show == CommandShow.EditMode;
-        bool isCommandLinkPossible = (IsReadOnly || ShowIcon) && Value != null;
-        if (isActive
-            && Command.Type != CommandType.None
-            && isCommandLinkPossible)
-          isCommandEnabled = Enabled;
-      }
-      return isCommandEnabled;
-    }
-
-    private bool ShowIcon
-    {
-      get
-      {
-        if (!EnableIcon)
-          return false;
-        if (Property == null)
-          return false;
-        if (GetIcon (Value, Property.ReferenceClass.BusinessObjectProvider) == null)
-          return false;
-
-        return true;
-      }
-    }
-
-    public bool EnableIcon { get; set; }
-
-    /// <summary> Gets or sets the <see cref="IBusinessObjectReferenceProperty"/> object this control is bound to. </summary>
-    /// <value> An <see cref="IBusinessObjectReferenceProperty"/> object. </value>
-    [Browsable (false)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    public new IBusinessObjectReferenceProperty Property
-    {
-      get { return (IBusinessObjectReferenceProperty) base.Property; }
-      set { base.Property = value; }
     }
 
     /// <summary> Gets or sets the current value. </summary>
     [Browsable (false)]
-    public new IBusinessObjectWithIdentity Value
+    public override IBusinessObjectWithIdentity Value
     {
       get
       {
-        if (_internalValue == null)
+        if (InternalValue == null)
           _value = null;
             //  Only reload if value is outdated
-        else if (_value == null || _value.UniqueIdentifier != _internalValue)
+        else if (_value == null || _value.UniqueIdentifier != InternalValue)
         {
           if (Property != null)
-            _value = ((IBusinessObjectClassWithIdentity) Property.ReferenceClass).GetObject (_internalValue);
+            _value = ((IBusinessObjectClassWithIdentity) Property.ReferenceClass).GetObject (InternalValue);
           else if (DataSource != null)
-            _value = ((IBusinessObjectClassWithIdentity) DataSource.BusinessObjectClass).GetObject (_internalValue);
+            _value = ((IBusinessObjectClassWithIdentity) DataSource.BusinessObjectClass).GetObject (InternalValue);
         }
         return _value;
       }
@@ -662,52 +357,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         if (value != null)
         {
-          _internalValue = value.UniqueIdentifier;
+          InternalValue = value.UniqueIdentifier;
           _displayName = GetDisplayName (value);
         }
         else
         {
-          _internalValue = null;
+          InternalValue = null;
           _displayName = null;
         }
       }
-    }
-
-    /// <summary> See <see cref="BusinessObjectBoundWebControl.Value"/> for details on this property. </summary>
-    /// <value> The value must be of type <see cref="IBusinessObjectWithIdentity"/>. </value>
-    protected override object ValueImplementation
-    {
-      get { return Value; }
-      set { Value = (IBusinessObjectWithIdentity) value; }
-    }
-
-    /// <summary> Gets or sets the <see cref="BocCommand"/> for this control's <see cref="Value"/>. </summary>
-    /// <value> A <see cref="BocCommand"/>. </value>
-    /// <remarks> This property is used for accessing the <see cref="BocCommand"/> at run time and for Designer support. </remarks>
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    [Category ("Menu")]
-    [Description ("The command rendered for this control's Value.")]
-    [NotifyParentProperty (true)]
-    public BocCommand Command
-    {
-      get { return (BocCommand) _command.ControlItem; }
-      set
-      {
-        _command.ControlItem = value;
-        if (value != null)
-          _command.ControlItem.OwnerControl = this;
-      }
-    }
-
-    /// <summary>
-    ///   Gets the <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the selected 
-    ///   <see cref="IBusinessObjectWithIdentity"/>.
-    /// </summary>
-    /// <value> A string or <see langword="null"/> if no  <see cref="IBusinessObjectWithIdentity"/> is selected. </value>
-    [Browsable (false)]
-    public string BusinessObjectUniqueIdentifier
-    {
-      get { return _internalValue; }
     }
 
     /// <summary>
@@ -721,23 +379,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _displayName; }
     }
 
-    /// <summary>
-    ///   Returns the string to be used in the drop down list for the specified <see cref="IBusinessObjectWithIdentity"/>.
-    /// </summary>
-    /// <param name="businessObject"> The <see cref="IBusinessObjectWithIdentity"/> to get the display name for. </param>
-    /// <returns> The display name for the specified <see cref="IBusinessObjectWithIdentity"/>. </returns>
-    /// <remarks> 
-    ///   <para>
-    ///     Override this method to change the way the display name is composed. 
-    ///   </para><para>
-    ///     The default implementation used the <see cref="IBusinessObject.DisplayName"/> property to get the display name.
-    ///   </para>
-    /// </remarks>
-    protected virtual string GetDisplayName (IBusinessObjectWithIdentity businessObject)
-    {
-      return businessObject.DisplayNameSafe;
-    }
-
     /// <summary> 
     ///   Returns the <see cref="Control.ClientID"/> values of all controls whose value can be modified in the user interface.
     /// </summary>
@@ -748,7 +389,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { _textBox.ClientID };
+      return IsReadOnly ? new string[0] : new[] { TextBoxClientID };
     }
 
     /// <summary> The <see cref="BocReferenceValue"/> supports only scalar properties. </summary>
@@ -760,32 +401,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    ///   The <see cref="BocReferenceValue"/> supports properties of types <see cref="IBusinessObjectReferenceProperty"/>.
-    /// </summary>
-    /// <seealso cref="BusinessObjectBoundWebControl.SupportedPropertyInterfaces"/>
-    protected override Type[] SupportedPropertyInterfaces
-    {
-      get { return s_supportedPropertyInterfaces; }
-    }
-
-    /// <summary>
     ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
-    ///   <see cref="TargetControl"/>.
+    ///   <see cref="BocReferenceValueBase.TargetControl"/>.
     /// </summary>
     /// <value> Always <see langword="false"/>. </value>
     public override bool UseLabel
     {
       get { return false; }
-    }
-
-    /// <summary>
-    ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its 
-    ///   <see cref="Control.ClientID"/>.
-    /// </summary>
-    /// <value> The <see cref="DropDownList"/> if the control is in edit mode, otherwise the control itself. </value>
-    public override Control TargetControl
-    {
-      get { return IsReadOnly ? (Control) this : _textBox; }
     }
 
     /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
@@ -797,24 +419,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public string FocusID
     {
-      get { return IsReadOnly ? null : _textBox.ClientID; }
+      get { return IsReadOnly ? null : TextBoxClientID; }
     }
-
-    /// <summary> This event is fired when the selection is changed between postbacks. </summary>
-    [Category ("Action")]
-    [Description ("Fires when the value of the control has changed.")]
-    public event EventHandler SelectionChanged
-    {
-      add { Events.AddHandler (s_selectionChangedEvent, value); }
-      remove { Events.RemoveHandler (s_selectionChangedEvent, value); }
-    }
-
-    /// <summary> Gets or sets a flag that determines whether to display the <see cref="OptionsMenu"/>. </summary>
-    /// <value> <see langword="true"/> to show the <see cref="OptionsMenu"/>. The default value is <see langword="true"/>. </value>
-    [Category ("Menu")]
-    [Description ("Enables the options menu.")]
-    [DefaultValue (true)]
-    public bool ShowOptionsMenu { get; set; }
 
     /// <summary>
     ///   Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) 
@@ -858,65 +464,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public Style LabelStyle
     {
       get { return _labelStyle; }
-    }
-
-    /// <summary> Gets the <see cref="TextBox"/> used in edit mode. </summary>
-    [Browsable (false)]
-    public TextBox TextBox
-    {
-      get { return _textBox; }
-    }
-
-    /// <summary> Gets the <see cref="HiddenField"/> used for posting the value back to the server.  </summary>
-    [Browsable (false)]
-    public HiddenField HiddenField
-    {
-      get { return _hiddenField; }
-    }
-
-    /// <summary> Gets the <see cref="Label"/> used in read-only mode. </summary>
-    [Browsable (false)]
-    public Label Label
-    {
-      get { return _label; }
-    }
-
-    /// <summary> Gets or sets flag that determines whether to use the value as the <see cref="OptionsMenu"/>'s head. </summary>
-    /// <value> 
-    ///   <see langword="true"/> to embed the value inside the options menu's head. 
-    ///   The default value is <see langword="true"/>. 
-    /// </value>
-    [Category ("Menu")]
-    [Description ("Determines whether to use the value as the options menu's head.")]
-    [DefaultValue (typeof (bool?), "")]
-    public bool? HasValueEmbeddedInsideOptionsMenu{ get; set; }
-
-    /// <summary> Gets the <see cref="DropDownMenu"/> offering additional commands for the current <see cref="Value"/>. </summary>
-    protected DropDownMenu OptionsMenu
-    {
-      get { return _optionsMenu; }
-    }
-
-    /// <summary> Gets or sets the validation error message. </summary>
-    /// <value> 
-    ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
-    ///   In case of the default value, the text is read from the resources for this control.
-    /// </value>
-    [Description ("Validation message displayed if there is an error.")]
-    [Category ("Validator")]
-    [DefaultValue ("")]
-    public string ErrorMessage
-    {
-      get { return _errorMessage; }
-      set
-      {
-        _errorMessage = value;
-        for (int i = 0; i < _validators.Count; i++)
-        {
-          BaseValidator validator = (BaseValidator) _validators[i];
-          validator.ErrorMessage = _errorMessage;
-        }
-      }
     }
 
     [Category ("AutoCompleteExtender")]
@@ -983,130 +530,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _args = value; }
     }
 
-    /// <summary> Removes the <paramref name="businessObjects"/> from the <see cref="Value"/> collection. </summary>
-    /// <remarks> Sets the dirty state. </remarks>
-    protected virtual void RemoveBusinessObjects (IBusinessObject[] businessObjects)
-    {
-      if (Value == null)
-        return;
-
-      if (businessObjects.Length > 0 && businessObjects[0] is IBusinessObjectWithIdentity)
-      {
-        if (((IBusinessObjectWithIdentity) businessObjects[0]).UniqueIdentifier == Value.UniqueIdentifier)
-        {
-          Value = null;
-          IsDirty = true;
-        }
-      }
-    }
-
-    /// <summary> Adds the <paramref name="businessObjects"/> to the <see cref="Value"/> collection. </summary>
-    /// <remarks> Sets the dirty state. </remarks>
-    protected virtual void InsertBusinessObjects (IBusinessObject[] businessObjects)
-    {
-      if (businessObjects.Length > 0)
-      {
-        Value = (IBusinessObjectWithIdentity) businessObjects[0];
-        IsDirty = true;
-      }
-    }
-
-    #region protected virtual string CssClass...
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocAutoCompleteReferenceValue"/> itself. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocAutoCompleteReferenceValue</c>. </para>
-    ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
-    /// </remarks>
-    protected virtual string CssClassBase
-    {
-      get { return "bocAutoCompleteReferenceValue"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocAutoCompleteReferenceValue"/>'s value. </summary>
-    /// <remarks> Class: <c>bocAutoCompleteReferenceValue</c> </remarks>
-    protected virtual string CssClassContent
-    {
-      get { return "bocReferenceValueContent"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocAutoCompleteReferenceValue"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>readOnly</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocAutoCompleteReferenceValue.readOnly</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassReadOnly
-    {
-      get { return "readOnly"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocAutoCompleteReferenceValue"/> when it is displayed in read-only mode. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>disabled</c>. </para>
-    ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocAutoCompleteReferenceValue.disabled</c> as a selector. </para>
-    /// </remarks>
-    protected virtual string CssClassDisabled
-    {
-      get { return "disabled"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the drop down panel of the <see cref="BocAutoCompleteReferenceValue"/>. </summary>
-    /// <remarks> 
-    ///   <para> Class: <c>bocAutoCompleteReferenceValueDropDownPanel</c>. </para>
-    /// </remarks>
-    protected virtual string CssClassDropDownPanel
-    {
-      get { return "bocAutoCompleteReferenceValueDropDownPanel"; }
-    }
-
-    #endregion
-   
-    public Unit OptionsMenuWidth { get; set; }
-
-    /// <summary> Gets a flag describing whether the <see cref="OptionsMenu"/> is visible. </summary>
-    public bool HasOptionsMenu
-    {
-      get
-      {
-        return !WcagHelper.Instance.IsWaiConformanceLevelARequired ()
-               && ShowOptionsMenu && (OptionsMenuItems.Count > 0 || IsDesignMode)
-               && OptionsMenu.IsBrowserCapableOfScripting;
-      }
-    }
-
-    public WebMenuItemCollection OptionsMenuItems
-    {
-      get { return OptionsMenu.MenuItems; }
-    }
-
     bool IBocAutoCompleteReferenceValue.IsCommandEnabled (bool readOnly)
     {
       return IsCommandEnabled (readOnly);
     }
 
-    string IBocAutoCompleteReferenceValue.TextBoxUniqueID
+    public string TextBoxUniqueID
     {
-      get { return _textBox.UniqueID; }
+      get { return UniqueID + IdSeparator + c_textBoxIDPostfix; }
     }
 
     public string TextBoxClientID
     {
-      get { return _textBox.ClientID; }
+      get { return ClientID + ClientIDSeparator + c_textBoxIDPostfix; }
     }
 
     string IBocAutoCompleteReferenceValue.DropDownButtonClientID
     {
-      get { return ClientID + "_Boc_DropDownButton"; }
+      get { return ClientID + ClientIDSeparator + c_buttonIDPostfix; }
     }
 
     public string HiddenFieldClientID
     {
-      get { return _hiddenField.ClientID; }
+      get { return ClientID + ClientIDSeparator + c_hiddenFieldIDPostfix; }
     }
 
-    string IBocAutoCompleteReferenceValue.HiddenFieldUniqueID
+    public string HiddenFieldUniqueID
     {
-      get { return _hiddenField.UniqueID; }
+      get { return UniqueID + IdSeparator + c_hiddenFieldIDPostfix; }
     }
 
     bool IBocRenderableControl.IsDesignMode
@@ -1114,41 +565,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return base.IsDesignMode; }
     }
 
-    IconInfo IBocAutoCompleteReferenceValue.GetIcon()
+    IconInfo IBocAutoCompleteReferenceValue.GetIcon ()
     {
-      if( Value != null && Property != null)
+      if (Value != null && Property != null)
         return GetIcon (Value, Property.ReferenceClass.BusinessObjectProvider);
       return IconInfo.Spacer;
     }
 
     DropDownMenu IBocAutoCompleteReferenceValue.OptionsMenu
     {
-      get { return _optionsMenu; }
-    }
-
-    bool IBocMenuItemContainer.IsReadOnly
-    {
-      get { return IsReadOnly; }
-    }
-
-    bool IBocMenuItemContainer.IsSelectionEnabled
-    {
-      get { return true; }
-    }
-
-    IBusinessObject[] IBocMenuItemContainer.GetSelectedBusinessObjects ()
-    {
-      return (Value == null) ? new IBusinessObject[0] : new IBusinessObject[] { Value };
-    }
-
-    void IBocMenuItemContainer.RemoveBusinessObjects (IBusinessObject[] businessObjects)
-    {
-      RemoveBusinessObjects (businessObjects);
-    }
-
-    void IBocMenuItemContainer.InsertBusinessObjects (IBusinessObject[] businessObjects)
-    {
-      InsertBusinessObjects (businessObjects);
+      get { return OptionsMenu; }
     }
 
     bool IBocAutoCompleteReferenceValue.EmbedInOptionsMenu
@@ -1156,8 +582,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get
       {
         return HasValueEmbeddedInsideOptionsMenu == true && HasOptionsMenu
-                || HasValueEmbeddedInsideOptionsMenu == null && IsReadOnly && HasOptionsMenu;
+               || HasValueEmbeddedInsideOptionsMenu == null && IsReadOnly && HasOptionsMenu;
       }
+    }
+
+    bool IBocAutoCompleteReferenceValue.HasOptionsMenu
+    {
+      get { return HasOptionsMenu; }
+    }
+
+    protected override string GetSelectionCountFunction ()
+    {
+      return "function() { return BocAutoCompleteReferenceValue.GetSelectionCount ('" + HiddenFieldClientID + "'); }";
     }
   }
 }

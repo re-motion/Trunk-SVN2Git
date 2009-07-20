@@ -64,5 +64,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     new IBusinessObjectReferenceProperty Property { get; }
     new IBusinessObjectWithIdentity Value { get; }
+    string GetLabelText ();
   }
 }
