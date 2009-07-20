@@ -583,8 +583,12 @@
     <Compile Include="Linq\ExtensionMethodsTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\AverageExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ContainsExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExceptExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\IntersectExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\LongCountExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\ReverseExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SkipExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\UnionExpressionNodeTest.cs" />
     <Compile Include="Linq\TestDomain\GoodStudent.cs" />
     <Compile Include="Linq\TestDomain\IndustrialSector.cs" />
     <Compile Include="Linq\Backend\DetailParsing\DetailParserTestBase.cs" />
