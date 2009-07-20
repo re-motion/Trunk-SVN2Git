@@ -538,6 +538,7 @@
     <Compile Include="Linq\Clauses\ExpressionTreeVisitors\CloningExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Clauses\ExpressionTreeVisitors\ReferenceReplacingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperatorBaseTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\AverageResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\InputDependentExpressionTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\SumResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\MaxResultOperatorTest.cs" />
