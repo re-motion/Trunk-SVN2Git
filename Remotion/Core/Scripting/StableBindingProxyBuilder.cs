@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -42,6 +43,8 @@ namespace Remotion.Scripting
     private readonly Dictionary<MemberInfo, HashSet<MemberInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MemberInfo, HashSet<MemberInfo>> ();
     private readonly ModuleScope _moduleScope;
     private readonly Type[] _knownInterfaces;
+    private readonly List<MethodInfo> _methodsKnownInBaseType;
+    private readonly Type _firstKnownBaseType;
 
     public StableBindingProxyBuilder (Type proxiedType, ITypeFilter typeFilter, ModuleScope moduleScope)
     {
@@ -56,6 +59,12 @@ namespace Remotion.Scripting
       _forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, new Type[0]);
 
       BuildClassMethodToInterfaceMethodsMap();
+      _firstKnownBaseType = GetFirstKnownBaseType();
+      if (_firstKnownBaseType != null)
+      {
+        _methodsKnownInBaseType = _firstKnownBaseType.GetMethods().ToList();
+      }
+      //_methodsKnownInBaseType.Sort (MethodInfoApproximateEqualityComparer.Get);
     }
 
  
@@ -69,40 +78,66 @@ namespace Remotion.Scripting
     /// </summary>
     public Type BuildProxyType ()
     {
-      var methodsKnownInBaseTypeSet = CreateMethodsKnownInBaseTypeSet ();
+      //var methodsKnownInBaseTypeSet_ApproximateEqual = CreateMethodsKnownInBaseTypeSet_ApproximateEqual ();
       var methodsKnownInProxiedType = _proxiedType.GetMethods ();
       foreach (var proxiedTypeMethod in methodsKnownInProxiedType)
       {
-        if (!proxiedTypeMethod.IsSpecialName)
+        if (IsMethodKnownInBaseType(proxiedTypeMethod))
         {
-          var proxiedTypeMethodBase = proxiedTypeMethod.GetBaseDefinition();
-          if (methodsKnownInBaseTypeSet.Contains (proxiedTypeMethodBase))
-          {
-            _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
-          }
-          else
-          {
-            // TODO: Add forwarding interface implementations, for methods whose target method info has not already been implemented
-            // TODO: Activate passing of known interfaces to ForwardingProxyBuilder during creation in ctor above
-          }
+           _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
+        }
+        else
+        {
+          // TODO: Add forwarding interface implementations, for methods whose target method info has not already been implemented
+          // TODO: Activate passing of known interfaces to ForwardingProxyBuilder during creation in ctor above
         }
       }
 
       return _forwardingProxyBuilder.BuildProxyType ();
     }
 
-
-
-    private HashSet<MethodInfo> CreateMethodsKnownInBaseTypeSet ()
+    public bool IsMethodKnownInBaseType (MethodInfo method)
     {
-      HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> (MethodInfoEqualityComparer.Get);
-      var firstKnownBaseType = GetFirstKnownBaseType ();
-      foreach (var method in firstKnownBaseType.GetMethods ())
+      foreach (var baseTypeMethod in _methodsKnownInBaseType)
       {
-        methodsKnownInBaseTypeSet.Add (method.GetBaseDefinition ());
+        if (!baseTypeMethod.IsSpecialName)
+        {
+          if (IsMethodEqualToBaseTypeMethod (method, baseTypeMethod))
+          {
+            return true;
+          }
+        }
       }
-      return methodsKnownInBaseTypeSet;
+
+      return false; 
     }
+
+    public bool IsMethodEqualToBaseTypeMethod (MethodInfo method, MethodInfo baseTypeMethod)
+    {
+      if (method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.ReflectedType))
+      {
+        return true;
+      }
+      //else if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
+      //{
+      //  return true;
+      //}
+      return false;
+    }
+
+ 
+
+
+    //private HashSet<MethodInfo> CreateMethodsKnownInBaseTypeSet ()
+    //{
+    //  HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> (MethodInfoEqualityComparer.Get);
+    //  var firstKnownBaseType = GetFirstKnownBaseType ();
+    //  foreach (var method in firstKnownBaseType.GetMethods ())
+    //  {
+    //    methodsKnownInBaseTypeSet.Add (method.GetBaseDefinition ());
+    //  }
+    //  return methodsKnownInBaseTypeSet;
+    //}
 
     private Type GetFirstKnownBaseType ()
     {
@@ -143,6 +178,42 @@ namespace Remotion.Scripting
       HashSet<MemberInfo> interfaceMethodsToClassMethod;
       _classMethodToInterfaceMethodsMap.TryGetValue (classMethod, out interfaceMethodsToClassMethod);
       return (IEnumerable<MemberInfo>) interfaceMethodsToClassMethod ?? new MemberInfo[0];
+    }
+  }
+
+  /// <summary>
+  /// Approximate equality for <see cref="MethodInfo"/>.
+  /// </summary>
+  public class MethodInfoApproximateEqualityComparer : CompoundValueEqualityComparer<MethodInfo>, IComparer<MethodInfo>
+  {
+    private static readonly MethodInfoApproximateEqualityComparer s_equalityComparer = new MethodInfoApproximateEqualityComparer ();
+
+    public MethodInfoApproximateEqualityComparer (MethodAttributes methodAttributeMask)
+      : base (
+          x => new object[] {
+                x.Name, x.ReturnType, x.Attributes & methodAttributeMask, 
+                x.GetParameters().Length,
+                x.IsGenericMethod ? x.GetGenericArguments().Length : 0
+            })
+    {
+    }
+
+    public MethodInfoApproximateEqualityComparer ()
+      : this (~MethodAttributes.ReservedMask)
+    {
+    }
+
+
+    public static MethodInfoApproximateEqualityComparer Get
+    {
+      get { return s_equalityComparer; }
+    }
+
+
+    public int Compare (MethodInfo x, MethodInfo y)
+    {
+      return Comparer<int>.Default.Compare (
+          MethodInfoApproximateEqualityComparer.Get.GetHashCode (x), MethodInfoApproximateEqualityComparer.Get.GetHashCode (y));  
     }
   }
 }

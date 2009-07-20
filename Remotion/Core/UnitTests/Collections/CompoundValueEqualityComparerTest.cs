@@ -89,6 +89,16 @@ namespace Remotion.UnitTests.Collections
       Assert.That (comparerIgnoreText.GetHashCode (testClass), Is.EqualTo (comparerIgnoreText.GetHashCode (testClass2)));
     }
 
+    [Test]
+    public void EqualsEverything ()
+    {
+      var equal = CompoundValueEqualityComparer<Object>.Equal;
+      Assert.That (equal == equal, Is.True);
+      Assert.That (equal.Equals(new object ()), Is.True);
+      Assert.That (equal.Equals (true), Is.True);
+      Assert.That (equal.Equals (false), Is.True);
+    }
+
   }
 
 

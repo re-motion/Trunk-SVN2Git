@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting.Hosting;
@@ -44,6 +45,28 @@ namespace Remotion.Scripting.UnitTests
         To.ConsoleLine.sb().e (mi.Name).e (mi.ReturnType).e (mi.DeclaringType).e (mi.Attributes).e (
             pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes)).se();
       }
+    }
+
+    public static MethodInfo GetAnyInstanceMethod (Type type, string name)
+    {
+      return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+    }
+
+    public static MethodInfo GetAnyInstanceMethod (Type type, string name, Type[] argumentTypes)
+    {
+      return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
+    }
+
+    public static MethodInfo GetAnyGenericInstanceMethod (Type type, string name, int numberGenericParameters)
+    {
+      return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (
+        mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).Single ();
+    }
+
+    public static MethodInfo[] GetAnyGenericInstanceMethodArray (Type type, string name, int numberGenericParameters)
+    {
+      return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (
+        mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).ToArray ();
     }
   }
 }

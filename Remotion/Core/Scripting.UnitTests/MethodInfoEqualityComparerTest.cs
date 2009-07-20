@@ -30,8 +30,8 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_MethodFromBaseType ()
     {
-      var methodFromBaseType = GetAnyInstanceMethod (typeof (Proxied), "Sum");
-      var method = GetAnyInstanceMethod (typeof (ProxiedChildChild), "Sum");
+      var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (typeof (Proxied), "Sum");
+      var method = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChildChild), "Sum");
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
       Assert.That (MethodInfoEqualityComparer.Get.Equals(methodFromBaseType,method), Is.True);
@@ -62,8 +62,8 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Ctor_Mask ()
     {
-      var method = GetAnyInstanceMethod (typeof (CtorTest), "Foo", new[] { typeof (string) });
-      var childMethod = GetAnyInstanceMethod (typeof (CtorTestChild), "Foo", new[] { typeof (string) });
+      var method = ScriptingHelper.GetAnyInstanceMethod (typeof (CtorTest), "Foo", new[] { typeof (string) });
+      var childMethod = ScriptingHelper.GetAnyInstanceMethod (typeof (CtorTestChild), "Foo", new[] { typeof (string) });
 
       Assert.That (method.Attributes, Is.EqualTo (MethodAttributes.PrivateScope | MethodAttributes.Public | MethodAttributes.HideBySig));
       const MethodAttributes childMethodAdditionalAttributes = MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.VtableLayoutMask;
@@ -84,8 +84,8 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_MethodFromBaseTypeHiddenByInterfaceMethod ()
     {
-      var methodFromBaseType = GetAnyInstanceMethod (typeof (Proxied), "PrependName", new[] { typeof(string)});
-      var method = GetAnyInstanceMethod (typeof (ProxiedChildChild), "PrependName", new[] { typeof(string)});
+      var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (typeof (Proxied), "PrependName", new[] { typeof (string) });
+      var method = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChildChild), "PrependName", new[] { typeof (string) });
 
       //ScriptingHelper.ToConsoleLine (methodFromBaseType);
       //ScriptingHelper.ToConsoleLine (method);
@@ -106,8 +106,8 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_InterfaceMethodFromBaseType ()
     {
-      var methodFromBaseType = GetAnyInstanceMethod (typeof (Proxied), "GetName");
-      var method = GetAnyInstanceMethod (typeof (ProxiedChildChild), "GetName");
+      var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (typeof (Proxied), "GetName");
+      var method = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChildChild), "GetName");
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.EqualTo (method.GetBaseDefinition ()));
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.True);
@@ -116,8 +116,8 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_DifferingArgumentsMethodFromBaseType ()
     {
-      var methodFromBaseType = GetAnyInstanceMethod (typeof (ProxiedChild), "BraKet", new []  {typeof(string), typeof(int)});
-      var method = GetAnyInstanceMethod (typeof (ProxiedChildChild), "BraKet", new Type[0]);
+      var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChild), "BraKet", new[] { typeof (string), typeof (int) });
+      var method = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChildChild), "BraKet", new Type[0]);
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.False);
     }
@@ -126,8 +126,8 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_GenericMethodFromBaseType ()
     {
-      var methodFromBaseType = GetAnyInstanceMethod (typeof (Proxied), "GenericToString");
-      var method = GetAnyInstanceMethod (typeof (ProxiedChildChild), "GenericToString");
+      var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (typeof (Proxied), "GenericToString");
+      var method = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChildChild), "GenericToString");
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.True);
@@ -136,8 +136,8 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_OverloadedGenericMethodFromBaseType ()
     {
-      var methodFromBaseType = GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
-      var method = GetAnyGenericInstanceMethod (typeof (ProxiedChildChild), "OverloadedGenericToString", 2);
+      var methodFromBaseType = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
+      var method = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (ProxiedChildChild), "OverloadedGenericToString", 2);
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.True);
@@ -146,16 +146,16 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_Differing_OverloadedGenericMethodFromBaseType ()
     {
-      var methodFromBaseType = GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
-      var method = GetAnyGenericInstanceMethod (typeof (ProxiedChildChild), "OverloadedGenericToString", 1);
+      var methodFromBaseType = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
+      var method = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (ProxiedChildChild), "OverloadedGenericToString", 1);
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.False);
     }
 
     [Test]
     public void Equals_GenericMethodFromBaseType_NonGenericOverloadInType ()
     {
-      var methodFromBaseType = GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
-      var method = GetAnyInstanceMethod (typeof (ProxiedChildChild), "OverloadedGenericToString", new[] { typeof (int), typeof (int) });
+      var methodFromBaseType = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
+      var method = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChildChild), "OverloadedGenericToString", new[] { typeof (int), typeof (int) });
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.False);
     }
 
@@ -212,9 +212,9 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_GenericMethodFromNonRelatedTypes ()
     {
-      var method = GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
-      var methodWithSameSignature = GetAnyGenericInstanceMethod (typeof (Test1), "OverloadedGenericToString", 2);
-      var methodWithSwappedGenericArguments = GetAnyGenericInstanceMethod (typeof (Test2), "OverloadedGenericToString", 2);
+      var method = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Proxied), "OverloadedGenericToString", 2);
+      var methodWithSameSignature = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Test1), "OverloadedGenericToString", 2);
+      var methodWithSwappedGenericArguments = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Test2), "OverloadedGenericToString", 2);
       //var method3 = GetAnyGenericInstanceMethod (typeof (Test1), "MixedArgumentsTest", 2);
       //var method4 = GetAnyGenericInstanceMethod (typeof (Test1), "ComplexGenericArgumentTest", 2);
 
@@ -231,9 +231,9 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_MixedArgumentGenericMethodFromNonRelatedTypes ()
     {
-      var method = GetAnyGenericInstanceMethod (typeof (Test1), "MixedArgumentsTest", 2);
-      var methodWithSameSignature = GetAnyGenericInstanceMethod (typeof (Test2), "MixedArgumentsTest", 2);
-      var methodWithSwappedGenericArguments = GetAnyGenericInstanceMethod (typeof (Test3), "MixedArgumentsTest", 2);
+      var method = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Test1), "MixedArgumentsTest", 2);
+      var methodWithSameSignature = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Test2), "MixedArgumentsTest", 2);
+      var methodWithSwappedGenericArguments = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (Test3), "MixedArgumentsTest", 2);
 
       Assert.That (MethodInfoEqualityComparer.Get.Equals (method, methodWithSameSignature), Is.True);
       Assert.That (MethodInfoEqualityComparer.Get.Equals (method, methodWithSwappedGenericArguments), Is.False);
@@ -245,16 +245,16 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void Equals_GenericClass_MethodWithGenericClassArgumentsFromBaseType ()
     {
-      var methodFromBaseType = GetAnyInstanceMethod (typeof (ProxiedChildGeneric<int, string>), "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
-      var method = GetAnyInstanceMethod (typeof (ProxiedChildChildGeneric<int, string>), "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
+      var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChildGeneric<int, string>), "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
+      var method = ScriptingHelper.GetAnyInstanceMethod (typeof (ProxiedChildChildGeneric<int, string>), "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.True);
     }
 
     [Test]
     public void Equals_GenericClass_GenericMethodFromBaseType ()
     {
-      var methodFromBaseType = GetAnyGenericInstanceMethod (typeof (ProxiedChildGeneric<int, string>), "ProxiedChildGenericToString", 1);
-      var method = GetAnyGenericInstanceMethod (typeof (ProxiedChildChildGeneric<int, string>), "ProxiedChildGenericToString", 1);
+      var methodFromBaseType = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (ProxiedChildGeneric<int, string>), "ProxiedChildGenericToString", 1);
+      var method = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (ProxiedChildChildGeneric<int, string>), "ProxiedChildGenericToString", 1);
       Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromBaseType, method), Is.True);
     }
 
@@ -263,8 +263,8 @@ namespace Remotion.Scripting.UnitTests
     [Explicit]
     public void Equals_GenericClass_GenericMethodFromBaseType2 ()
     {
-      var methodFromBaseType = GetAnyGenericInstanceMethod (typeof (ProxiedChildGeneric<int, string>), "ProxiedChildGenericToString", 2);
-      var methods = GetAnyGenericInstanceMethodArray (typeof (ProxiedChildChildGeneric<int, string>), "ProxiedChildGenericToString", 2);
+      var methodFromBaseType = ScriptingHelper.GetAnyGenericInstanceMethod (typeof (ProxiedChildGeneric<int, string>), "ProxiedChildGenericToString", 2);
+      var methods = ScriptingHelper.GetAnyGenericInstanceMethodArray (typeof (ProxiedChildChildGeneric<int, string>), "ProxiedChildGenericToString", 2);
       Assert.That (methods.Length, Is.EqualTo (2));
 
       //To.ToTextProvider.Settings.UseAutomaticObjectToText = true;
@@ -287,27 +287,27 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    private MethodInfo GetAnyInstanceMethod (Type type, string name)
-    {
-      return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-    }
+    //private MethodInfo GetAnyInstanceMethod (Type type, string name)
+    //{
+    //  return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+    //}
 
-    private MethodInfo GetAnyInstanceMethod (Type type, string name, Type[] argumentTypes)
-    {
-      return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
-    }
+    //private MethodInfo GetAnyInstanceMethod (Type type, string name, Type[] argumentTypes)
+    //{
+    //  return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
+    //}
 
-    private MethodInfo GetAnyGenericInstanceMethod (Type type, string name, int numberGenericParameters)
-    {
-      return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(
-        mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).Single();
-    }
+    //private MethodInfo GetAnyGenericInstanceMethod (Type type, string name, int numberGenericParameters)
+    //{
+    //  return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(
+    //    mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).Single();
+    //}
 
-    private MethodInfo[] GetAnyGenericInstanceMethodArray (Type type, string name, int numberGenericParameters)
-    {
-      return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (
-        mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).ToArray();
-    }
+    //private MethodInfo[] GetAnyGenericInstanceMethodArray (Type type, string name, int numberGenericParameters)
+    //{
+    //  return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (
+    //    mi => (mi.IsGenericMethodDefinition && mi.Name == name && mi.GetGenericArguments ().Length == numberGenericParameters)).ToArray();
+    //}
   }
 
  

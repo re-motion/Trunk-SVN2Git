@@ -156,17 +156,18 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void IsMethodKnownInClass_MethodNotHiddenThroughNew ()
     {
-      var moduleScopeStub = MockRepository.GenerateStub<ModuleScope> ();
+      //var moduleScopeStub = MockRepository.GenerateStub<ModuleScope> ();
       var baseType = typeof (Proxied);
-      var typeFilter = new TypeLevelTypeFilter (new[] { baseType });
+      //var typeFilter = new TypeLevelTypeFilter (new[] { baseType });
       var proxiedType = typeof (ProxiedChildChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, moduleScopeStub);
+      //var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, moduleScopeStub);
 
       var methodFromBaseType = GetAnyInstanceMethod (baseType, "Sum");
       var method = GetAnyInstanceMethod (proxiedType, "Sum");
 
       Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
-      // methodInfo.GetBaseDefinition() bug (results should be equal).
+      
+      // Shows methodInfo.GetBaseDefinition()-bug: Results should be equal.
       Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
 
       // "Sum" is defined in Proxied
@@ -194,6 +195,56 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
+    public void IsMethodEqualToBaseTypeMethod ()
+    {
+      var moduleScopeStub = MockRepository.GenerateStub<ModuleScope> ();
+      //var baseType = typeof (Proxied);
+      //var proxiedType = typeof (ProxiedChildChild);
+
+      var baseType = typeof (ProxiedChildGeneric<int, string>);
+      var proxiedType = typeof (ProxiedChildChildGeneric<int, string>);
+
+      var typeFilter = new TypeLevelTypeFilter (new[] { baseType });
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, moduleScopeStub);
+
+      //var methodFromBaseType = GetAnyInstanceMethod (baseType, "Sum");
+      //var method = GetAnyInstanceMethod (proxiedType, "Sum");
+      var methodFromBaseType = ScriptingHelper.GetAnyInstanceMethod (baseType, "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
+      var method = ScriptingHelper.GetAnyInstanceMethod (proxiedType, "ProxiedChildGenericToString", new[] { typeof (int), typeof (string) });
+
+      Assert.That (methodFromBaseType, Is.Not.EqualTo (method));
+
+      // Shows methodInfo.GetBaseDefinition()-bug: Results should be equal.
+      Assert.That (methodFromBaseType.GetBaseDefinition (), Is.Not.EqualTo (method.GetBaseDefinition ()));
+
+      Assert.That (stableBindingProxyBuilder.IsMethodEqualToBaseTypeMethod (method, method), Is.True);
+      Assert.That (stableBindingProxyBuilder.IsMethodEqualToBaseTypeMethod (method, methodFromBaseType), Is.True);
+
+
+
+      //// "Sum" is defined in Proxied
+      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (baseType, "Sum"), Is.True);
+      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "Sum"), Is.True);
+      //AssertIsMethodKnownInClass (baseType, method, Is.True);
+
+      //// "OverrideMe" is overridden in ProxiedChild
+      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (baseType, "OverrideMe"), Is.True);
+      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "OverrideMe"), Is.True);
+      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (proxiedType, "OverrideMe"), Is.True);
+
+      //// "PrependName" is redefined with new in ProxiedChildChild
+      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (baseType, "PrependName"), Is.True);
+      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (typeof (ProxiedChild), "PrependName"), Is.True);
+      //AssertIsMethodKnownInClass (baseType, GetAnyInstanceMethod (proxiedType, "PrependName"), Is.False);
+    }
+
+
+
+
+
+
+
+    [Test]
     public void BuildProxyType_ObjectMethods ()
     {
       var knownBaseType = typeof (Proxied);
@@ -212,11 +263,7 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (InvokeMethod (proxy, "Equals", proxy), Is.False);
     }
 
-    public Object InvokeMethod (object instance, string name, params object[] arguments)
-    {
-      return instance.GetType().InvokeMember (
-          name, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, instance, arguments);
-    }
+
 
 
     [Test]
@@ -311,6 +358,12 @@ namespace Remotion.Scripting.UnitTests
     private MethodInfo GetAnyInstanceMethod (Type type, string name)
     {
       return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+    }
+
+    public Object InvokeMethod (object instance, string name, params object[] arguments)
+    {
+      return instance.GetType ().InvokeMember (
+          name, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, instance, arguments);
     }
   }
 }
