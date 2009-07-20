@@ -150,6 +150,11 @@
     <Compile Include="UI\Controls\DatePickerButton.cs" />
     <Compile Include="UI\Controls\IControlItem.cs" />
     <Compile Include="UI\Controls\ListMenuLineBreaks.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\DatePickerButtonPreRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\DatePickerButtonRendererBase.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\DatePickerButtonPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\DatePickerButtonRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\DatePickerButton\StandardMode\Factories\DatePickerButtonRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\ListMenu\IListMenu.cs" />
     <Compile Include="UI\Controls\ListMenu.cs" />
     <Compile Include="UI\Controls\MenuBase.cs" />

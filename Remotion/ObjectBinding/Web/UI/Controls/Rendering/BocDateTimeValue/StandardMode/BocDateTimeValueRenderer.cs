@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode
 {
@@ -84,6 +85,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
       {
         timeTextBox.RenderControl (Writer);
       }
+    }
+
+    protected override bool DetermineClientScriptLevel (IDatePickerButton datePickerButton)
+    {
+      return true;
     }
   }
 }

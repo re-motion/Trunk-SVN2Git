@@ -199,5 +199,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     {
       Writer.AddStyleAttribute ("display", "inline");
     }
+
+    protected override bool DetermineClientScriptLevel (IDatePickerButton datePickerButton)
+    {
+      if (!datePickerButton.EnableClientScript)
+        return false;
+
+      if (Control.IsDesignMode)
+        return true;
+
+      bool isVersionGreaterOrEqual55 =
+          Context.Request.Browser.MajorVersion >= 6
+          || Context.Request.Browser.MajorVersion == 5
+             && Context.Request.Browser.MinorVersion >= 0.5;
+      bool isInternetExplorer55AndHigher =
+          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
+
+      return isInternetExplorer55AndHigher;
+    }
   }
 }

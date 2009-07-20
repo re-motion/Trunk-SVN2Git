@@ -14,26 +14,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
+namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
 {
   /// <summary>
-  /// Responsible for registering the client script file that the <see cref="DatePickerButton"/> depends on in quirks mode.
+  /// Responsible for rendering a <see cref="DatePickerButton"/> control in quirks mode.
+  /// <seealso cref="IDatePickerButton"/>
   /// </summary>
-  public class DatePickerButtonPreRenderer : DatePickerButtonPreRendererBase
+  public class DatePickerButtonRenderer: DatePickerButtonRendererBase
   {
-    public DatePickerButtonPreRenderer (IHttpContext context, IDatePickerButton control)
-        : base (context, control)
+    public DatePickerButtonRenderer (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control)
+        : base (context, writer, control)
     {
     }
 
-    /// <summary>
-    /// Registers the JavaScript file that contains the necessary functions for showing the pop-up calendar and retrieving the date.
-    /// </summary>
-    public override void PreRender ()
+    protected override bool DetermineClientScriptLevel ()
     {
-      
+      return true;
     }
   }
 }

@@ -16,7 +16,7 @@
 using System;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
+namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
 {
   /// <summary>
   /// Responsible for registering the client script file that the <see cref="DatePickerButton"/> depends on in quirks mode.
