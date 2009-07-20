@@ -161,7 +161,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocBooleanValue), ResourceType.Html, c_styleFileUrl);
-        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, styleUrl);
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 
