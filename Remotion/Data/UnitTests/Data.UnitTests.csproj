@@ -539,6 +539,7 @@
     <Compile Include="Linq\Clauses\ExpressionTreeVisitors\ReferenceReplacingExpressionTreeVisitorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\AverageResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\ContainsResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\InputDependentExpressionTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\LongCountResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\SkipResultOperatorTest.cs" />
@@ -581,6 +582,7 @@
     <Compile Include="Linq\ExpressionTreeNavigator.cs" />
     <Compile Include="Linq\ExtensionMethodsTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\AverageExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\ContainsExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\LongCountExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SkipExpressionNodeTest.cs" />
     <Compile Include="Linq\TestDomain\GoodStudent.cs" />
