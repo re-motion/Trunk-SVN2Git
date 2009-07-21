@@ -76,7 +76,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1313")]
     public void Query_WithCastOnResultSet ()
     {
       var query =
