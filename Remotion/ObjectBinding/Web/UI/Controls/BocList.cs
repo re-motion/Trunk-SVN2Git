@@ -330,6 +330,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private string _errorMessage;
     private readonly ArrayList _validators;
+    private bool? _isBrowserCapableOfSCripting;
 
     // construction and disposing
 
@@ -1192,7 +1193,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
           return false;
 
-        if (! IsInternetExplorer55OrHigher())
+        if (! IsBrowserCapableOfScripting)
           return false;
 
         bool showAvailableViewsList = _showAvailableViewsList
@@ -1203,6 +1204,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                                 || ! isReadOnly && _showEmptyListEditMode;
         return showAvailableViewsList
                && (! IsEmptyList || showForEmptyList);
+      }
+    }
+
+    protected bool IsBrowserCapableOfScripting
+    {
+      get {
+        if (!_isBrowserCapableOfSCripting.HasValue)
+        {
+          var factory = ServiceLocator.Current.GetInstance<IBocListRendererFactory> ();
+          var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+          _isBrowserCapableOfSCripting = preRenderer.IsBrowserCapableOfScripting;
+        }
+        return _isBrowserCapableOfSCripting.Value; 
       }
     }
 
@@ -1218,7 +1232,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
           return false;
 
-        if (! IsInternetExplorer55OrHigher())
+        if (! IsBrowserCapableOfScripting)
           return false;
 
         bool showOptionsMenu = ShowOptionsMenu
@@ -1244,7 +1258,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
           return false;
 
-        if (! IsInternetExplorer55OrHigher())
+        if (! IsBrowserCapableOfScripting)
           return false;
 
         bool showListMenu = ShowListMenu
@@ -1304,7 +1318,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
           return false;
-        return IsInternetExplorer55OrHigher();
+        return IsBrowserCapableOfScripting;
       }
 
 
@@ -1334,22 +1348,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         }
       }
     }
-
-    protected virtual bool IsInternetExplorer55OrHigher ()
-    {
-      if (IsDesignMode)
-        return true;
-
-      bool isVersionGreaterOrEqual55 =
-          Context.Request.Browser.MajorVersion >= 6
-          || Context.Request.Browser.MajorVersion == 5
-             && Context.Request.Browser.MinorVersion >= 0.5;
-      bool isInternetExplorer55AndHigher =
-          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
-
-      return isInternetExplorer55AndHigher;
-    }
-
 
     /// <summary> Builds the input required marker. </summary>
     protected internal virtual Image GetRequiredMarker ()
@@ -3704,7 +3702,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       return HasClientScript
              && ! WcagHelper.Instance.IsWaiConformanceLevelARequired()
-             && IsInternetExplorer55OrHigher();
+             && IsBrowserCapableOfScripting;
     }
 
     bool IBocList.AreDataRowsClickSensitive ()

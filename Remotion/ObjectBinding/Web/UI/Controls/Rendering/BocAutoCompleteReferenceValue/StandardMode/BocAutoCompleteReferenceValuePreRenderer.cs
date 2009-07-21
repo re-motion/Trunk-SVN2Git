@@ -31,17 +31,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      string scriptKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_Script";
-      htmlHeadAppender.RegisterJavaScriptInclude (
-          scriptKey,
-          ResourceUrlResolver.GetResourceUrl (
-              Control,
-              Context,
-              typeof (IBocAutoCompleteReferenceValue),
-              ResourceType.Html,
-              ResourceTheme.Standard,
-              "BocAutoCompleteReferenceValue.js"));
-
       string jqueryBgiFrameKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_JQueryBgiFrame";
       htmlHeadAppender.RegisterJavaScriptInclude (
           jqueryBgiFrameKey,
@@ -62,7 +51,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               typeof (IBocAutoCompleteReferenceValue),
               ResourceType.Html,
               ResourceTheme.Standard,
-              "jquery.autocomplete.js"));
+              "BocAutoCompleteReferenceValue.jquery.js"));
+
+      string scriptKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_Script";
+      htmlHeadAppender.RegisterJavaScriptInclude (
+          scriptKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (IBocAutoCompleteReferenceValue),
+              ResourceType.Html,
+              ResourceTheme.Standard,
+              "BocAutoCompleteReferenceValue.js"));
 
       string styleKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_Style";
       htmlHeadAppender.RegisterStylesheetLink (
@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               typeof (IBocAutoCompleteReferenceValue),
               ResourceType.Html,
               ResourceTheme.Standard,
-              "jquery.autocomplete.css"),
+              "BocAutoCompleteReferenceValue.jquery.css"),
           HtmlHeadAppender.Priority.Library);
     }
 

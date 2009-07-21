@@ -20,5 +20,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
   public interface IBocListPreRenderer : IPreRenderer<IBocList>
   {
+    bool IsBrowserCapableOfScripting { get; }
   }
 }

@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;

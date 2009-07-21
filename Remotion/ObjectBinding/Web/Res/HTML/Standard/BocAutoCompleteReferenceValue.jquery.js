@@ -1,4 +1,21 @@
-﻿/*
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2008 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+
+// Original license header
+/*
 * Autocomplete - jQuery plugin 1.1pre
 *
 * Copyright (c) 2007 Dylan Verheul, Dan G. Switzer, Anjesh Tuladhar, JÃ¶rn Zaefferer
@@ -374,6 +391,22 @@
                 success(term, data);
                 // if an AJAX url has been supplied, try loading the data now
             } else if ((typeof options.url == "string") && (options.url.length > 0)) {
+
+
+            /*
+      var params = {
+        prefixText: (ignorePrefix ? '' : this._currentPrefix),
+        completionSetCount : this._completionSetCount,
+        businessObjectClass : this._businessObjectClass,
+        businessObjectProperty : this._businessObjectProperty,
+        businessObjectID : this._businessObjectID,
+        args : this._args };
+      Sys.Net.WebServiceProxy.invoke(this._serviceUrl, this._serviceMethod, false, params,
+                                  Function.createDelegate(this, this._onMethodComplete),
+                                  Function.createDelegate(this, this._onMethodFailed));
+
+*/
+
 
                 var extraParams = {
                     timestamp: +new Date()

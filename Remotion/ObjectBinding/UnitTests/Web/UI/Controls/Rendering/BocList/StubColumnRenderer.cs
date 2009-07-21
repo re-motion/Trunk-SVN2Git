@@ -16,6 +16,7 @@
 using System;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Remotion.Web.Infrastructure;
 

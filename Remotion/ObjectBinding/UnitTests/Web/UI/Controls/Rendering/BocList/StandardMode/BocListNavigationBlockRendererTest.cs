@@ -16,6 +16,7 @@
 using System;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Rhino.Mocks;
 

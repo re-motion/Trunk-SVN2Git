@@ -17,6 +17,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;

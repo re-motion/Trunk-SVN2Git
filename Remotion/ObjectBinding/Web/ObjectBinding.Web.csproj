@@ -327,6 +327,7 @@
     <Compile Include="UI\Controls\Rendering\BocEnumValue\IBocEnumValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\StandardMode\BocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocEnumValue\StandardMode\Factories\BocEnumValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\BocListPreRendererBase.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocIndexColumnRendererFactory.cs" />
@@ -343,11 +344,13 @@
     <Compile Include="UI\Controls\Rendering\BocList\IBocListNavigationBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocSelectorColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\IBocSelectorColumnRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\BocListPreRenderer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\QuirksMode\Factories\BocListRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocIndexColumnRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListPreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocListTableBlockRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\BocSelectorColumnRenderer.cs" />
-    <Compile Include="UI\Controls\Rendering\BocList\StandardMode\CssClassContainer.cs" />
+    <Compile Include="UI\Controls\Rendering\BocList\CssClassContainer.cs" />
     <Compile Include="UI\Controls\Rendering\BocList\StandardMode\Factories\BocColumnRendererFactory.cs" />
     <Compile Include="UI\Controls\Infrastructure\BocList\BocListCustomColumnTuple.cs" />
     <Compile Include="UI\Controls\PropertyPathBinding.cs">
@@ -473,11 +476,11 @@
     <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.js" />
     <Content Include="Res\HTML\Standard\BocDateTimeValue.css" />
     <Content Include="Res\HTML\Standard\BocDateTimeValue.js" />
-    <Content Include="Res\HTML\Standard\jquery.autocomplete.css" />
+    <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.jquery.css" />
     <Content Include="Res\HTML\Standard\jquery.bgiframe.min.js" />
     <Content Include="Res\HTML\Standard\BocReferenceValue.css" />
     <Content Include="Res\HTML\Standard\BocReferenceValue.js" />
-    <Content Include="Res\HTML\Standard\jquery.autocomplete.js" />
+    <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.jquery.js" />
     <Content Include="Res\HTML\TextBoxStyle.js" />
     <Content Include="Res\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Image\CheckBoxNull.gif" />

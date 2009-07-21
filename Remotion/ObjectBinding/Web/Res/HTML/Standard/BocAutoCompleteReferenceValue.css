@@ -117,3 +117,10 @@ span.bocAutoCompleteReferenceValueDummy
   visibility: hidden; /* don't show, but reserve space on the page */
   padding: 4px 0px; /* compensate textbox margin, border and padding vertically */
 }
+
+.bocAutoCompleteReferenceValue.disabled img
+{
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  -moz-opacity: 0.4
+}

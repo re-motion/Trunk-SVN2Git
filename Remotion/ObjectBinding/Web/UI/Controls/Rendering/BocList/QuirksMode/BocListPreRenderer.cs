@@ -16,7 +16,7 @@
 using System;
 using Remotion.Web.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
   public class BocListPreRenderer : BocListPreRendererBase
   {
@@ -27,7 +27,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
     public override bool IsBrowserCapableOfScripting
     {
-      get { return true; }
+      get { return IsInternetExplorer55OrHigher(); }
+    }
+
+    protected virtual bool IsInternetExplorer55OrHigher ()
+    {
+      if (Control.IsDesignMode)
+        return true;
+
+      bool isVersionGreaterOrEqual55 =
+          Context.Request.Browser.MajorVersion >= 6
+          || Context.Request.Browser.MajorVersion == 5
+             && Context.Request.Browser.MinorVersion >= 0.5;
+      bool isInternetExplorer55AndHigher =
+          Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
+
+      return isInternetExplorer55AndHigher;
     }
   }
 }

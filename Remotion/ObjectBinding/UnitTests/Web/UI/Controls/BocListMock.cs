@@ -75,11 +75,6 @@ public class BocListMock: BocList
     }
   }
 
-  protected override bool IsInternetExplorer55OrHigher ()
-  {
-    return true;
-  }
-
   protected override WebMenuItem[] InitializeRowMenuItems (IBusinessObject businessObject, int listIndex)
   {
 

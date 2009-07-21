@@ -15,7 +15,7 @@
 // 
 using System;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
+namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 {
   /// <summary>
   /// Contains all the CSS class definitions needed throughout <see cref="BocList"/> rendering.
