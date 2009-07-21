@@ -40,27 +40,40 @@ def PropertyPathAccess(cascade) :
   return 'FAILED'
 ";
 
+      const string expressionScriptSourceCode =
+"IIf( GLOBAL_cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == 'C0',GLOBAL_cascade.Child.Child.Child.Child.Child.Child.Child.Name,'FAILED')";
+
+
+      var cascade = new Cascade (10);
+
       var privateScriptEnvironment = ScriptEnvironment.Create ();
+      privateScriptEnvironment.ImportHelperFunctions();
+      privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
 
       privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
-
 
       var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
         _scriptContext, ScriptLanguageType.Python,
         scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
       );
 
-      ExecuteAndTimeLongPropertyPathAccess (TestMethod);
-      ExecuteAndTimeLongPropertyPathAccess (  delegate(Cascade c)
+      var propertyPathAccessExpressionScript = new ExpressionScript<string> (
+        _scriptContext, ScriptLanguageType.Python, expressionScriptSourceCode, privateScriptEnvironment
+      );
+
+      //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
+      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
+      ExecuteAndTime ("C# method", nrLoopsArray, delegate
       {
-        if (c.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
+        if (cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
         {
-          return c.Child.Child.Child.Child.Child.Child.Child.Name;
+          return cascade.Child.Child.Child.Child.Child.Child.Child.Name;
         }
         return "FAILED";
       }
       );
-      ExecuteAndTimeLongPropertyPathAccess (c => propertyPathAccessScript.Execute (c));
+      ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ExecuteAndTime ("expression script", nrLoopsArray, () => propertyPathAccessExpressionScript.Execute ());
     }
 
 
@@ -85,35 +98,51 @@ def Empty() :
         "None", privateScriptEnvironment
       );
 
-      const int nrLoops = 1;
-      ExecuteAndTime ("empty script",nrLoops, emptyScript.Execute);
-      ExecuteAndTime ("empty expression", nrLoops, emptyExpression.Execute);
-      ExecuteAndTime ("empty expression (uncompiled)", nrLoops, emptyExpression.ExecuteUncompiled);
+      var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
+      ExecuteAndTime ("empty script function", nrLoopsArray, emptyScript.Execute);
+      ExecuteAndTime ("empty expression", nrLoopsArray, emptyExpression.Execute);
+      //ExecuteAndTime ("empty expression (uncompiled)", nrLoopsArray, emptyExpression.ExecuteUncompiled);
     }
 
 
-    public void ExecuteAndTime ( string testName, int nrLoops,Func<Object> func)
+    public void ExecuteAndTime (string testName, int nrLoops, Func<Object> func)
+    {
+      ExecuteAndTime (testName, new[] { nrLoops }, func);
+    }
+
+    public void ExecuteAndTime ( string testName, int[] nrLoopsArray, Func<Object> func)
     {
       object result = null;
 
-      System.GC.Collect (2);
-      System.GC.WaitForPendingFinalizers ();
+      var timings = new System.Collections.Generic.List<long>();
 
-      Stopwatch stopwatch = new Stopwatch ();
-      stopwatch.Start ();
-
-      for (int i = 0; i < nrLoops; i++)
+      foreach (var nrLoops in nrLoopsArray)
       {
-        result = func ();
+        System.GC.Collect (2);
+        System.GC.WaitForPendingFinalizers ();
+
+        Stopwatch stopwatch = new Stopwatch ();
+        stopwatch.Start ();
+
+        for (int i = 0; i < nrLoops; i++)
+        {
+          result = func ();
+        }
+
+        stopwatch.Stop ();
+        timings.Add (stopwatch.ElapsedMilliseconds);
       }
 
-      stopwatch.Stop ();
-      double milliSeconds = stopwatch.ElapsedMilliseconds;
-      To.ConsoleLine.e (testName).e (() => nrLoops).e (() => milliSeconds).e (() => result);
+      To.ConsoleLine.s ("Timings ").e (testName).s(",").e (() => nrLoopsArray).s (": ").nl ().sb ();
+      foreach (var timing in timings)
+      {
+        To.Console.e (timing);
+      }
+      To.Console.se();
     }
 
 
-    public void ExecuteAndTimeLongPropertyPathAccess (Func<Cascade,string> func)
+    public void ExecuteAndTimeLongPropertyPathAccess (string testName, int nrLoops, Func<Cascade, string> func)
     {
       var cascade = new Cascade (10);
       object result = "xyz";
