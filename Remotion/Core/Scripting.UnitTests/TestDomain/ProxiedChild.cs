@@ -50,6 +50,17 @@ namespace Remotion.Scripting.UnitTests.TestDomain
       return BraKet ("<", "", ">");
     }
 
+    public string OverloadedGenericToString (int t0, int t1)
+    {
+      return "OverloadedGenericToString" + t0 + t1;
+    }
+
+    public override string OverrideMe (string s)
+    {
+      return "ProxiedChild: " + s;
+    }
+
+
     private string StringTimes (string text, int number)
     {
       return text.ToSequence (number).Aggregate ((sa, s) => sa + s);
@@ -65,14 +76,22 @@ namespace Remotion.Scripting.UnitTests.TestDomain
       return StringTimes (text, number);
     }
 
-    public string OverloadedGenericToString (int t0, int t1)
+
+
+    public string StringTimes2 (string text, int number)
     {
-      return "OverloadedGenericToString" + t0 + t1;
+      return text.ToSequence (number).Aggregate ((sa, s) => sa + s);
     }
 
-    public override string OverrideMe (string s)
-    {
-      return "ProxiedChild: " + s;
-    }
+    //string IAmbigous3.StringTimes2 (string text, int number)
+    //{
+    //  return StringTimes (text, number);
+    //}
+
+    //string IAmbigous4.StringTimes2 (string text, int number)
+    //{
+    //  return StringTimes (text, number);
+    //}
+
   }
 }

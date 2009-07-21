@@ -15,8 +15,8 @@
 // 
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  public interface IAmbigous1
+  public interface IAmbigous4
   {
-    string StringTimes (string text, int number);
+    string StringTimes2 (string text, int number);
   }
 }

@@ -86,6 +86,8 @@
     <Compile Include="TestDomain\FunctionalExtensions.cs" />
     <Compile Include="TestDomain\IAmbigous1.cs" />
     <Compile Include="TestDomain\IAmbigous2.cs" />
+    <Compile Include="TestDomain\IAmbigous3.cs" />
+    <Compile Include="TestDomain\IAmbigous4.cs" />
     <Compile Include="TestDomain\IPrependName.cs" />
     <Compile Include="TestDomain\IProcessText1.cs" />
     <Compile Include="TestDomain\IProcessText2.cs" />
