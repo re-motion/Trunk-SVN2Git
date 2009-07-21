@@ -33,6 +33,7 @@ namespace Remotion.Scripting
   public class ExpressionScript<TResult> : ScriptBase
   {
     private readonly ScriptSource _scriptSource;
+    private readonly CompiledCode _compiledScript;
     private readonly ScriptEnvironment _scriptEnvironment;
 
     public ExpressionScript (
@@ -48,10 +49,26 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       _scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Expression);
+      _compiledScript = _scriptSource.Compile ();
       _scriptEnvironment = scriptEnvironment;
     }
 
     public TResult Execute ()
+    {
+      ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
+      TResult result;
+      try
+      {
+        result = _compiledScript.Execute<TResult> (_scriptEnvironment.ScriptScope);
+      }
+      finally
+      {
+        ScriptContext.ReleaseScriptContext (ScriptContext);
+      }
+      return result;
+    }
+
+    public TResult ExecuteUncompiled ()
     {
       ScriptContext.SwitchAndHoldScriptContext (ScriptContext);
       TResult result;

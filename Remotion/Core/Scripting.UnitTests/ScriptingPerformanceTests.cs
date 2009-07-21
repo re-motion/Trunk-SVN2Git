@@ -50,8 +50,8 @@ def PropertyPathAccess(cascade) :
         scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
       );
 
-      ExecuteAndTime (TestMethod);
-      ExecuteAndTime (  delegate(Cascade c)
+      ExecuteAndTimeLongPropertyPathAccess (TestMethod);
+      ExecuteAndTimeLongPropertyPathAccess (  delegate(Cascade c)
       {
         if (c.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
         {
@@ -60,13 +60,63 @@ def PropertyPathAccess(cascade) :
         return "FAILED";
       }
       );
-      ExecuteAndTime (c => propertyPathAccessScript.Execute (c));
+      ExecuteAndTimeLongPropertyPathAccess (c => propertyPathAccessScript.Execute (c));
     }
 
-    public void ExecuteAndTime (Func<Cascade,string> func)
+
+    [Test]
+    [Explicit]
+    public void EmptyScriptCall ()
+    {
+      const string scriptFunctionSourceCode = @"
+def Empty() :
+  return None
+";
+
+      var privateScriptEnvironment = ScriptEnvironment.Create ();
+
+      var emptyScript = new ScriptFunction<Object> (
+        _scriptContext, ScriptLanguageType.Python,
+        scriptFunctionSourceCode, privateScriptEnvironment, "Empty"
+      );
+
+      var emptyExpression = new ExpressionScript<Object> (
+        _scriptContext, ScriptLanguageType.Python,
+        "None", privateScriptEnvironment
+      );
+
+      const int nrLoops = 1;
+      ExecuteAndTime ("empty script",nrLoops, emptyScript.Execute);
+      ExecuteAndTime ("empty expression", nrLoops, emptyExpression.Execute);
+      ExecuteAndTime ("empty expression (uncompiled)", nrLoops, emptyExpression.ExecuteUncompiled);
+    }
+
+
+    public void ExecuteAndTime ( string testName, int nrLoops,Func<Object> func)
+    {
+      object result = null;
+
+      System.GC.Collect (2);
+      System.GC.WaitForPendingFinalizers ();
+
+      Stopwatch stopwatch = new Stopwatch ();
+      stopwatch.Start ();
+
+      for (int i = 0; i < nrLoops; i++)
+      {
+        result = func ();
+      }
+
+      stopwatch.Stop ();
+      double milliSeconds = stopwatch.ElapsedMilliseconds;
+      To.ConsoleLine.e (testName).e (() => nrLoops).e (() => milliSeconds).e (() => result);
+    }
+
+
+    public void ExecuteAndTimeLongPropertyPathAccess (Func<Cascade,string> func)
     {
       var cascade = new Cascade (10);
-      string result = "xyz";
+      object result = "xyz";
 
       System.GC.Collect (2);
       System.GC.WaitForPendingFinalizers ();
