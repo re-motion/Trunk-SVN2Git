@@ -540,8 +540,11 @@
     <Compile Include="Linq\Clauses\ResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\AverageResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ContainsResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\ExceptResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\InputDependentExpressionTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\IntersectResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\LongCountResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\ReverseResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\SkipResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\SumResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\MaxResultOperatorTest.cs" />
@@ -553,6 +556,7 @@
     <Compile Include="Linq\Clauses\ResultOperators\LastResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\FirstResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\TestResultOperator.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\UnionResultOperatorTest.cs" />
     <Compile Include="Linq\DefaultQueryProviderTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchOneRequestTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchRequestBaseTest.cs" />
