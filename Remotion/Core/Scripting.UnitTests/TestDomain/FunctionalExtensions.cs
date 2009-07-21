@@ -27,5 +27,13 @@ namespace Remotion.Scripting.UnitTests.TestDomain
         yield return element;
       }
     }
+
+    public static void Process<T> (this IEnumerable<T> enumerable, Action<T> action)
+    {
+      foreach (var element in enumerable)
+      {
+        action (element);
+      }
+    }
   }
 }
