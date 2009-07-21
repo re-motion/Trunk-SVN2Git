@@ -175,18 +175,29 @@ StyleUtility.CreateBorderSpans = function(element, standardMode) {
 
 StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bottomRight, standardMode) {
 
-    if (standardMode) {
-        $(topRight).css('left', $(element).position().left + $(element).width() - $(topRight).offset().left);
-        $(bottomLeft).css('top', $(element).position().top + $(element).height() - $(bottomLeft).offset().top);
-        $(bottomRight).css('top', $(element).position().top + $(element).height() - $(bottomRight).offset().top);
-        $(bottomRight).css('right', $(element).position().left + $(element).width() - $(bottomRight).offset().left);
+    var right = $(element).position().left + $(element).width();
+    var bottom = $(element).position().top + $(element).height();
+    var topRightOffset = $(topRight).offset().left;
+    var bottomLeftOffset = $(bottomLeft).offset().top;
+    var bottomRightVerticalOffset = $(bottomRight).offset().top;
+    var bottomRightHorizontalOffset = $(bottomRight).offset().left;
+    
+    if (!standardMode) { // QuirksMode calculations for IE - Firefox places borders correctly with jQuery positioning
+        var offsetParent = topRight.offsetParent;
+        if (offsetParent) { // this is null in Firefox
+            right = offsetParent.clientLeft + offsetParent.clientWidth;
+            bottom = offsetParent.clientTop + offsetParent.clientHeight;
+            topRightOffset = topRight.offsetWidth;
+            bottomLeftOffset = bottomLeft.offsetHeight;
+            bottomRightVerticalOffset = bottomRight.offsetHeight;
+            bottomRightHorizontalOffset = bottomRight.offsetWidth;
+        }
     }
-    else {
-        topRight.style.left = topRight.offsetParent.clientLeft + topRight.offsetParent.clientWidth - topRight.offsetWidth + 'px';
-        bottomLeft.style.top = bottomLeft.offsetParent.clientTop + bottomLeft.offsetParent.clientHeight - bottomLeft.offsetHeight + 'px';
-        bottomRight.style.top = bottomRight.offsetParent.clientTop + bottomRight.offsetParent.clientHeight - bottomRight.offsetHeight + 'px';
-        bottomRight.style.left = bottomRight.offsetParent.clientLeft + bottomRight.offsetParent.clientWidth - bottomRight.offsetWidth + 'px';
-    }
+    
+    $(topRight).css('left', right - topRightOffset);
+    $(bottomLeft).css('top', bottom - bottomLeftOffset);
+    $(bottomRight).css('top', bottom - bottomRightVerticalOffset);
+    $(bottomRight).css('right', right - bottomRightHorizontalOffset);
 
     var scrollDiv = $(element).children(':first').children(':first');
     if ((scrollDiv.length == 1) && !TypeUtility.IsUndefined(scrollDiv[0].nodeName) && (scrollDiv[0].nodeName.toLowerCase() == 'div')) {
