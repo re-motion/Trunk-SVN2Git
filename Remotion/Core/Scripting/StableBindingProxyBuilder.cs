@@ -91,11 +91,9 @@ namespace Remotion.Scripting
           var interfaceMethodsToClassMethod = GetInterfaceMethodsToClassMethod (proxiedTypeMethod);
           foreach (var interfaceMethod in interfaceMethodsToClassMethod)
           {
-            //_forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (interfaceMethod);
+            // Add forwarding interface implementations for methods whose target method info has not already been implemented.
             _forwardingProxyBuilder.AddForwardingExplicitInterfaceMethod (interfaceMethod);
           }
-          // TODO: Add forwarding interface implementations, for methods whose target method info has not already been implemented
-          // TODO: Activate passing of known interfaces to ForwardingProxyBuilder during creation in ctor above
         }
       }
 
@@ -120,15 +118,11 @@ namespace Remotion.Scripting
 
     public bool IsMethodEqualToBaseTypeMethod (MethodInfo method, MethodInfo baseTypeMethod)
     {
-      // TODO: Check workaround with FS again
-      #if(false)
-        if (method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.ReflectedType))
-        {
-          // ...
-        }
-      #endif
-      
-      if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
+      if (!method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.GetBaseDefinition ().DeclaringType))
+      {
+        return false;
+      }
+      else if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
       {
         return true;
       }

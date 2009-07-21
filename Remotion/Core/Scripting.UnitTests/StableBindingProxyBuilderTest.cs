@@ -397,7 +397,6 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    [Explicit]
     public void BuildProxyType_GenericClassesAndMethods ()
     {
       Assert_BuildProxyType_GenericClassesAndMethods (
@@ -424,29 +423,24 @@ namespace Remotion.Scripting.UnitTests
       var numberInterfaceMethods = interfaceMethods.Count ();
       var numberProxyMethods = proxyMethods.Count ();
      
-      #if(false)
+      #if(true)
         Assert.That (numberKnownBaseTypeMethods + numberInterfaceMethods, Is.EqualTo (numberProxyMethods));
       #endif
 
       AssertHasSameMethod (knownBaseType, proxyType, "ProxiedChildGenericToString", typeof (int), typeof (string));
 
-      To.ConsoleLine.nl (2).s("Base Type:");
-      ScriptingHelper.GetAnyGenericInstanceMethodArray (knownBaseType, "ProxiedChildGenericToString", 2).Process (mi => ScriptingHelper.ToConsoleLine (mi));
-      To.ConsoleLine.nl ().s ("Proxied Type:");
-      ScriptingHelper.GetAnyGenericInstanceMethodArray (proxiedType, "ProxiedChildGenericToString", 2).Process (mi => ScriptingHelper.ToConsoleLine (mi));
-      To.ConsoleLine.nl ().s ("Proxy Type:");
-      ScriptingHelper.GetAnyGenericInstanceMethodArray (proxyType, "ProxiedChildGenericToString", 2).Process (mi => ScriptingHelper.ToConsoleLine (mi));
-
-      // Same methods:
-      //    System.String ToStringKebap(Int32),System.String ProxiedChildGenericToString(Int32, System.String),System.String ProxiedChildGenericToString[T2](Int32, System.String, T2),System.String ProxiedChildGenericToString[T2,T3](Int32, System.String, T2, T3),System.String BraKet(System.String, System.String, System.String),System.String BraKet(System.String),System.String BraKet(System.String, Int32),System.String BraKet(),System.String OverloadedGenericToString(Int32, Int32),System.String OverrideMe(System.String),System.String StringTimes2(System.String, Int32),System.String AnotherMethod(System.String, Int32),System.String GetName(),System.String Sum(Int32[]),System.String PrependName(System.String),System.String ToString(),System.String SumMe(Int32[]),System.String GenericToString[T0,T1](T0, T1),System.String OverloadedGenericToString[T0](T0),System.String OverloadedGenericToString[T0,T1](T0, T1),Boolean Equals(System.Object),Int32 GetHashCode(),System.Type GetType()
-      //    System.String ToStringKebap(Int32),System.String ProxiedChildGenericToString(Int32, System.String),System.String ProxiedChildGenericToString[T2](Int32, System.String, T2),System.String ProxiedChildGenericToString[T2,T3](Int32, System.String, T2, T3),System.String BraKet(System.String, System.String, System.String),System.String BraKet(System.String),System.String BraKet(System.String, Int32),System.String BraKet(),System.String OverloadedGenericToString(Int32, Int32),System.String OverrideMe(System.String),System.String StringTimes2(System.String, Int32),System.String AnotherMethod(System.String, Int32),System.String GetName(),System.String Sum(Int32[]),System.String PrependName(System.String),System.String ToString(),System.String SumMe(Int32[]),System.String GenericToString[T0,T1](T0, T1),System.String OverloadedGenericToString[T0](T0),System.String OverloadedGenericToString[T0,T1](T0, T1),Boolean Equals(System.Object),Int32 GetHashCode(),System.Type GetType()
-      // Additional method in proxyType (coming from new slot [TODO: Check this]; this method should NOT be here):
-      //    System.String ProxiedChildGenericToString[T2,T3](Int32, System.String, T2, T3) 
+      //To.ConsoleLine.nl (2).s("Base Type:");
+      //ScriptingHelper.GetAnyGenericInstanceMethodArray (knownBaseType, "ProxiedChildGenericToString", 2).Process (mi => ScriptingHelper.ToConsoleLine (mi));
+      //To.ConsoleLine.nl ().s ("Proxied Type:");
+      //ScriptingHelper.GetAnyGenericInstanceMethodArray (proxiedType, "ProxiedChildGenericToString", 2).Process (mi => ScriptingHelper.ToConsoleLine (mi));
+      //To.ConsoleLine.nl ().s ("Proxy Type:");
+      //ScriptingHelper.GetAnyGenericInstanceMethodArray (proxyType, "ProxiedChildGenericToString", 2).Process (mi => ScriptingHelper.ToConsoleLine (mi));
 
       // Base Type:
       //  ("ProxiedChildGenericToString",System.String,PrivateScope, Public, HideBySig,{System.Int32,System.String,T2,T3},{None,None,None,None},{0,1,2,3},{-1,-1,0,1},{134217835,134217836,134217837,134217838},{"Int32 t0","System.String t1","T2 t2","T3 t3"}) Remotion.Scripting.UnitTests.TestDomain.ProxiedChildGeneric`2[System.Int32,System.String] 
 
-      // Proxied Type:
+      // Proxied Type 
+      // TODO: MetadataToken is the same as in Base Type ONLY for the correct method => use in MethodInfoEqualityComparer => Can get rid of "method.GetBaseDefinition ().DeclaringType.IsAssignableFrom..."
       //  ("ProxiedChildGenericToString",System.String,PrivateScope, Public, HideBySig,{System.Int32,System.String,T2,T3},{None,None,None,None},{0,1,2,3},{-1,-1,0,1},{134217976,134217977,134217978,134217979},{"Int32 t0","System.String t1","T2 t2","T3 t3"}) Remotion.Scripting.UnitTests.TestDomain.ProxiedChildChildGeneric`2[System.Int32,System.String] 
       //  ("ProxiedChildGenericToString",System.String,PrivateScope, Public, HideBySig,{System.Int32,System.String,T2,T3},{None,None,None,None},{0,1,2,3},{-1,-1,0,1},{134217835,134217836,134217837,134217838},{"Int32 t0","System.String t1","T2 t2","T3 t3"}) Remotion.Scripting.UnitTests.TestDomain.ProxiedChildGeneric`2[System.Int32,System.String] 
 
