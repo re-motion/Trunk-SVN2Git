@@ -30,33 +30,7 @@ namespace Remotion.Scripting.UnitTests
 
     [Test]
     [Explicit]
-    public void LongPropertyPathAccess ()
-    {
-      var cascade = new Cascade (10);
-      string result = "xyz";
-
-      System.GC.Collect (2);
-      System.GC.WaitForPendingFinalizers ();
-      
-      Stopwatch stopwatch = new Stopwatch ();
-      stopwatch.Start ();
-
-      for (int i = 0; i < 1000000; i++)
-      {
-        if (cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
-        {
-          result = cascade.Child.Child.Child.Child.Child.Child.Child.Name;
-        }
-      }
-
-      stopwatch.Stop ();
-      double milliSeconds = stopwatch.ElapsedMilliseconds;
-      To.ConsoleLine.e (() => result).e (() => milliSeconds);
-    }
-
-    [Test]
-    [Explicit]
-    public void LongPropertyPathAccess_Script ()
+    public void LongPropertyPathAccess_DlrVsClr ()
     {
       const string scriptFunctionSourceCode = @"
 import clr
@@ -76,27 +50,8 @@ def PropertyPathAccess(cascade) :
         scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
       );
 
-
-      //var cascade = new Cascade (10);
-      //To.ConsoleLine.e (propertyPathAccessScript.Execute(cascade));
-
-
-      //System.GC.Collect (2);
-      //System.GC.WaitForPendingFinalizers ();
-      //Stopwatch stopwatch = new Stopwatch ();
-      //stopwatch.Start ();
-
-      //string result = "xyz";
-      //for (int i = 0; i < 1000000; i++)
-      //{
-      //  result = propertyPathAccessScript.Execute (cascade);
-      //}
-
-      //stopwatch.Stop ();
-      //double milliSeconds = stopwatch.ElapsedMilliseconds;
-      //To.ConsoleLine.e (() => result).e (() => milliSeconds);
-
-      Execute (  delegate(Cascade c)
+      ExecuteAndTime (TestMethod);
+      ExecuteAndTime (  delegate(Cascade c)
       {
         if (c.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
         {
@@ -105,10 +60,10 @@ def PropertyPathAccess(cascade) :
         return "FAILED";
       }
       );
-      Execute (c => propertyPathAccessScript.Execute (c));
+      ExecuteAndTime (c => propertyPathAccessScript.Execute (c));
     }
 
-    public void Execute (Func<Cascade,string> func)
+    public void ExecuteAndTime (Func<Cascade,string> func)
     {
       var cascade = new Cascade (10);
       string result = "xyz";
@@ -131,6 +86,14 @@ def PropertyPathAccess(cascade) :
     }
 
 
+    private string TestMethod (Cascade c)
+    {
+      if (c.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
+      {
+        return c.Child.Child.Child.Child.Child.Child.Child.Name;
+      }
+      return "FAILED";
+    }
   }
 
   public class Cascade
