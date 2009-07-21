@@ -73,12 +73,15 @@ BocAutoCompleteReferenceValue.AdjustPosition = function(control, isEmbedded) {
     contentSpan.css('right', right + 'px');
 
     if (isEmbedded) {
-        var dropDownMenu = control.find('.bocAutoCompleteReferenceValueDropDownList').parent().parent();
+        var dropDownList = control.find('.bocAutoCompleteReferenceValueDropDownList');
+        var dropDownMenu = dropDownList.parent().parent();
+
         if (dropDownMenu.length > 0) {
+            dropDownMenu.css('height', dropDownList.parent().outerWidth(true));
             dropDownMenu.height(control.find('.bocAutoCompleteReferenceValueDropDownList').parent().outerHeight(true));
             icon.css('top', (dropDownMenu.innerHeight() - icon.outerHeight()) / 2);
         }
-        
+
     }
     else {
         var dropDownList = control.find('.bocAutoCompleteReferenceValueDropDownList');

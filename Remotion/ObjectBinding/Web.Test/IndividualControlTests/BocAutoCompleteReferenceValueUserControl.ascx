@@ -13,145 +13,112 @@
  % You should have received a copy of the GNU Lesser General Public License
  % along with re-motion; if not, see http://www.gnu.org/licenses.
 --%>
-<%@ Control Language="c#" AutoEventWireup="True" Codebehind="BocAutoCompleteReferenceValueUserControl.ascx.cs" Inherits="OBWTest.IndividualControlTests.BocAutoCompleteReferenceValueUserControl"
-  TargetSchema="http://schemas.microsoft.com/intellisense/ie5" %>
-<remotion:FormGridManager ID="FormGridManager" runat="server" />
-<remotion:BindableObjectDataSourceControl id=CurrentObject runat="server" Type="Remotion.ObjectBinding.Sample::Person"/>
-<table id="FormGrid" runat="server">
+<%@ Control Language="c#" AutoEventWireup="false" Codebehind="BocAutoCompleteReferenceValueUserControl.ascx.cs" Inherits="OBWTest.IndividualControlTests.BocAutoCompleteReferenceValueUserControl" TargetSchema="http://schemas.microsoft.com/intellisense/ie5"%>
+
+
+<div style="BORDER-RIGHT: black thin solid; BORDER-TOP: black thin solid; BORDER-LEFT: black thin solid; BORDER-BOTTOM: black thin solid; BACKGROUND-COLOR: #ffff99" runat="server" visible="false" ID="NonVisualControls">
+<remotion:formgridmanager id=FormGridManager runat="server"/>
+<remotion:BindableObjectDataSourceControl id=CurrentObject runat="server" Type="Remotion.ObjectBinding.Sample::Person"/></div>
+
+<table id=FormGrid runat="server">
   <tr>
-    <td colspan="4">
-      <remotion:BocTextValue ID="FirstNameField" runat="server" ReadOnly="True" DataSourceControl="CurrentObject" PropertyIdentifier="FirstName">
-      </remotion:BocTextValue>
-      &nbsp;<remotion:BocTextValue ID="LastNameField" runat="server" ReadOnly="True" DataSourceControl="CurrentObject" PropertyIdentifier="LastName">
-      </remotion:BocTextValue>
-    </td>
-  </tr>
+    <td colSpan=4><remotion:boctextvalue id=FirstNameField runat="server" readonly="True" datasourcecontrol="CurrentObject" PropertyIdentifier="FirstName">
+</remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" readonly="True" datasourcecontrol="CurrentObject" PropertyIdentifier="LastName"></remotion:boctextvalue></td></tr>
   <tr>
-    <td>
-    </td>
-    <td>
-      <remotion:BocAutoCompleteReferenceValue ID="PartnerField" runat="server" ReadOnly="False" DataSourceControl="CurrentObject" PropertyIdentifier="Partner"
-        Width="75%" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" args="Test">
-        <TextBoxStyle AutoPostBack="True" />
-      </remotion:BocAutoCompleteReferenceValue>
-    </td>
-    <td>
-      bound, 75%</td>
-    <td style="width: 20%">
-      <asp:Label ID="PartnerFieldValueLabel" runat="server" EnableViewState="False">#</asp:Label></td>
-  </tr>
+    <td></td>
+    <td><remotion:bocAutoCompleteReferenceValue id=PartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" TextBoxStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%">
+<persistedcommand>
+<remotion:BocCommand Type="Event"></remotion:BocCommand>
+</PersistedCommand>
+
+<optionsmenuitems>
+<remotion:BocMenuItem Text="intern">
+<persistedcommand>
+<remotion:BocMenuItemCommand Type="Href" HrefCommand-Href="~/startForm.aspx"></remotion:BocMenuItemCommand>
+</PersistedCommand>
+</remotion:BocMenuItem>
+<remotion:BocMenuItem Text="extern">
+<persistedcommand>
+<remotion:BocMenuItemCommand Type="Href" HrefCommand-Target="_blank" HrefCommand-Href="~/startForm.aspx"></remotion:BocMenuItemCommand>
+</PersistedCommand>
+</remotion:BocMenuItem>
+</OptionsMenuItems>
+
+<labelstyle cssclass="class">
+</LabelStyle></remotion:bocAutoCompleteReferenceValue></td>
+    <td>bound</td>
+    <td style="WIDTH: 20%"><asp:label id=PartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
-    <td><br /><br /><br /><br /><br /><br />
-    </td>
-    <td>
-      <remotion:BocAutoCompleteReferenceValue ID="ReadOnlyPartnerField" runat="server" ReadOnly="True" DataSourceControl="CurrentObject" PropertyIdentifier="Partner"
-        Width="75%">
-      </remotion:BocAutoCompleteReferenceValue>
-    </td>
-    <td>
-      bound, read-only, 75%</td>
-    <td style="width: 20%">
-      <asp:Label ID="ReadOnlyPartnerFieldValueLabel" runat="server" EnableViewState="False">#</asp:Label></td>
-  </tr>
+    <td></td>
+    <td><remotion:bocAutoCompleteReferenceValue id=ReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%" >
+<persistedcommand>
+<remotion:BocCommand WxeFunctionCommand-Parameters="id" WxeFunctionCommand-TypeName="OBWTest.ViewPersonDetailsWxeFunction,OBWTest" Type="Event"></remotion:BocCommand>
+</PersistedCommand>
+
+<labelstyle cssclass="class">
+</LabelStyle></remotion:bocAutoCompleteReferenceValue></td>
+    <td>bound, read-only</td>
+    <td style="WIDTH: 20%"><asp:label id=ReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
+    <td></td>
+    <td><remotion:bocAutoCompleteReferenceValue id=UnboundPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" required="True" hasvalueembeddedinsideoptionsmenu="False" width="250px" showoptionsmenu="False" >
+<persistedcommand>
+<remotion:boccommand Type="Event"></remotion:boccommand>
+</PersistedCommand></remotion:bocAutoCompleteReferenceValue></td>
     <td>
-    </td>
-    <td>
-      <remotion:BocAutoCompleteReferenceValue ID="UnboundPartnerField" runat="server" Required="True" Width="15em" ServiceMethod="GetPersonList" 
-      ServicePath="~/IndividualControlTests/AutoCompleteService.asmx">
-      </remotion:BocAutoCompleteReferenceValue>
-    </td>
-    <td>
-      <p>
-        unbound, value not set, 15em</p>
-    </td>
-    <td style="width: 20%">
-      <asp:Label ID="UnboundPartnerFieldValueLabel" runat="server" EnableViewState="False">#</asp:Label></td>
-  </tr>
+      <p> unbound, value not set</p></td>
+    <td style="WIDTH: 20%"><asp:label id=UnboundPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
+    <td></td>
+    <td><remotion:bocAutoCompleteReferenceValue id=UnboundReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" enableicon="False" hasvalueembeddedinsideoptionsmenu="False" width="250px">
+<persistedcommand>
+<remotion:boccommand Type="Event"></remotion:boccommand>
+</PersistedCommand>
+
+</remotion:bocAutoCompleteReferenceValue></td>
     <td>
-    </td>
-    <td>
-      <remotion:BocAutoCompleteReferenceValue ID="UnboundReadOnlyPartnerField" runat="server" ReadOnly="True" Width="15em">
-      </remotion:BocAutoCompleteReferenceValue>
-    </td>
-    <td>
-      <p>
-        unbound, value set, read only, 15em</p>
-    </td>
-    <td style="width: 20%">
-      <asp:Label ID="UnboundReadOnlyPartnerFieldValueLabel" runat="server" EnableViewState="False">#</asp:Label></td>
-  </tr>
+      <p>unbound, value set, read only</p></td>
+    <td style="WIDTH: 20%"><asp:label id=UnboundReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
-    <td>
-    </td>
-    <td>
-      <remotion:BocAutoCompleteReferenceValue ID="DisabledPartnerField" runat="server" ReadOnly="False" DataSourceControl="CurrentObject" PropertyIdentifier="Partner"
-        Enabled="False" Width="75%" >
-      </remotion:BocAutoCompleteReferenceValue>
-    </td>
-    <td>
-      disabled, bound, 75%</td>
-    <td style="width: 20%">
-      <asp:Label ID="DisabledPartnerFieldValueLabel" runat="server" EnableViewState="False" >#</asp:Label></td>
-  </tr>
+    <td></td>
+    <td><remotion:bocAutoCompleteReferenceValue id=DisabledPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" hasvalueembeddedinsideoptionsmenu="True" enabled="False">
+
+<persistedcommand>
+<remotion:boccommand Type="Event"></remotion:boccommand>
+</PersistedCommand></remotion:bocAutoCompleteReferenceValue></td>
+    <td>disabled, bound</td>
+    <td style="WIDTH: 20%"><asp:label id="DisabledPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
-    <td>
-    </td>
-    <td>
-      <remotion:BocAutoCompleteReferenceValue ID="DisabledReadOnlyPartnerField" runat="server" ReadOnly="True" DataSourceControl="CurrentObject" PropertyIdentifier="Partner"
-        Enabled="False">
-      </remotion:BocAutoCompleteReferenceValue>
-    </td>
-    <td>
-      disabled, bound, read-only</td>
-    <td style="width: 20%">
-      <asp:Label ID="DisabledReadOnlyPartnerFieldValueLabel" runat="server" EnableViewState="False">#</asp:Label></td>
-  </tr>
+    <td></td>
+    <td><remotion:bocAutoCompleteReferenceValue id=DisabledReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" datasourcecontrol="CurrentObject" propertyidentifier="Partner" enabled="False">
+
+<persistedcommand>
+<remotion:boccommand WxeFunctionCommand-Parameters="id" WxeFunctionCommand-TypeName="OBWTest.ViewPersonDetailsWxeFunction,OBWTest" Type="WxeFunction"></remotion:boccommand>
+</PersistedCommand></remotion:bocAutoCompleteReferenceValue></td>
+    <td>disabled, bound, read-only</td>
+    <td style="WIDTH: 20%"><asp:label id="DisabledReadOnlyPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
+    <td></td>
+    <td><remotion:bocAutoCompleteReferenceValue id=DisabledUnboundPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" required="True" enabled="False" width="250px" >
+<persistedcommand>
+<remotion:boccommand></remotion:boccommand>
+</PersistedCommand></remotion:bocAutoCompleteReferenceValue></td>
     <td>
-    </td>
-    <td>
-      <remotion:BocAutoCompleteReferenceValue ID="DisabledUnboundPartnerField" runat="server" Required="True" Enabled="False" Width="15em">
-      </remotion:BocAutoCompleteReferenceValue>
-    </td>
-    <td>
-      <p>
-        disabled, unbound, value set, 15em</p>
-    </td>
-    <td style="width: 20%">
-      <asp:Label ID="DisabledUnboundPartnerFieldValueLabel" runat="server" EnableViewState="False">#</asp:Label></td>
-  </tr>
+      <p> disabled, unbound, value set</p></td>
+    <td style="WIDTH: 20%"><asp:label id="DisabledUnboundPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
+    <td></td>
+    <td><remotion:bocAutoCompleteReferenceValue id=DisabledUnboundReadOnlyPartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" readonly="True" enableicon="False" enabled="False" width="250px" >
+<persistedcommand>
+<remotion:boccommand></remotion:boccommand>
+</PersistedCommand>
+
+</remotion:bocAutoCompleteReferenceValue></td>
     <td>
-    </td>
-    <td>
-      <remotion:BocAutoCompleteReferenceValue ID="DisabledUnboundReadOnlyPartnerField" runat="server" ReadOnly="True" Enabled="False" Width="15em">
-      </remotion:BocAutoCompleteReferenceValue>
-    </td>
-    <td>
-      <p>
-        disabled, unbound, value set, read only, 15em</p>
-    </td>
-    <td style="width: 20%">
-      <asp:Label ID="DisabledUnboundReadOnlyPartnerFieldValueLabel" runat="server" EnableViewState="False">#</asp:Label></td>
-  </tr>
-</table>
-<p>
-  Partner Command Click:
-  <asp:Label ID="PartnerCommandClickLabel" runat="server" EnableViewState="False">#</asp:Label></p>
-<p>
-  Partner Selection Changed:
-  <asp:Label ID="PartnerFieldSelectionChangedLabel" runat="server" EnableViewState="False">#</asp:Label></p>
-<p>
-  Partner Menu Click:
-  <asp:Label ID="PartnerFieldMenuClickEventArgsLabel" runat="server" EnableViewState="False">#</asp:Label></p>
-<p>
-  <br />
-  <remotion:WebButton ID="PartnerTestSetNullButton" runat="server" Text="Partner Set Null" />
-  <remotion:WebButton ID="PartnerTestSetNewItemButton" runat="server" Text="Partner Set New Item" />
-</p>
-<p>
-  <remotion:WebButton ID="ReadOnlyPartnerTestSetNullButton" runat="server" Text="Read Only Partner Set Null" />
-  <remotion:WebButton ID="ReadOnlyPartnerTestSetNewItemButton" runat="server" Text="Read Only Partner Set New Item" />
-</p>
+      <p>disabled, unbound, value set, read only</p></td>
+    <td style="WIDTH: 20%"><asp:label id="DisabledUnboundReadOnlyPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr></table>
+<p>Partner Command Click: <asp:label id="PartnerCommandClickLabel" runat="server" enableviewstate="False">#</asp:label></p>
+<p>Partner Selection Changed: <asp:label id=PartnerFieldSelectionChangedLabel runat="server" enableviewstate="False">#</asp:label></p>
+<p>Partner Menu Click: <asp:label id=PartnerFieldMenuClickEventArgsLabel runat="server" enableviewstate="False">#</asp:label></p>
+<p><br /><remotion:webbutton id=PartnerTestSetNullButton runat="server" width="220px" Text="Partner Set Null"/><remotion:webbutton id=PartnerTestSetNewItemButton runat="server" width="220px" Text="Partner Set New Item"/></p>
+<p><remotion:webbutton id=ReadOnlyPartnerTestSetNullButton runat="server" width="220px" Text="Read Only Partner Set Null"/><remotion:webbutton id=ReadOnlyPartnerTestSetNewItemButton runat="server" width="220px" Text="Read Only Partner Set New Item"/></p>

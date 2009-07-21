@@ -166,8 +166,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IndividualControlTests\BocAutoCompleteReferenceValueUserControl2.ascx.cs">
-      <DependentUpon>BocAutoCompleteReferenceValueUserControl2.ascx</DependentUpon>
+    <Compile Include="IndividualControlTests\BocAutoCompleteReferenceValueUserControl.ascx.cs">
+      <DependentUpon>BocAutoCompleteReferenceValueUserControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="QuirksMode.Master.cs">
@@ -180,13 +180,6 @@
     <Compile Include="IndividualControlTests\AutoCompleteService.asmx.cs">
       <DependentUpon>AutoCompleteService.asmx</DependentUpon>
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="IndividualControlTests\BocAutoCompleteReferenceValueUserControl.ascx.cs">
-      <DependentUpon>BocAutoCompleteReferenceValueUserControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="IndividualControlTests\BocAutoCompleteReferenceValueUserControl.ascx.designer.cs">
-      <DependentUpon>BocAutoCompleteReferenceValueUserControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="IndividualControlTests\Form.aspx.designer.cs">
       <DependentUpon>Form.aspx</DependentUpon>
@@ -457,7 +450,6 @@
     <Content Include="Images\Remotion.ObjectBinding.Sample.Job.gif" />
     <Content Include="Images\Remotion.ObjectBinding.Sample.Person.gif" />
     <Content Include="IndividualControlTests\AutoCompleteService.asmx" />
-    <Content Include="IndividualControlTests\BocAutoCompleteReferenceValueUserControl.ascx" />
     <Content Include="IndividualControlTests\BocBooleanValueUserControl.ascx">
       <SubType>UserControl</SubType>
     </Content>
@@ -488,7 +480,7 @@
     <Content Include="IndividualControlTests\BocLiteralUserControl.ascx">
       <SubType>UserControl</SubType>
     </Content>
-    <Content Include="IndividualControlTests\BocAutoCompleteReferenceValueUserControl2.ascx">
+    <Content Include="IndividualControlTests\BocAutoCompleteReferenceValueUserControl.ascx">
       <SubType>UserControl</SubType>
     </Content>
     <Content Include="IndividualControlTests\EmptyUserControl.ascx">

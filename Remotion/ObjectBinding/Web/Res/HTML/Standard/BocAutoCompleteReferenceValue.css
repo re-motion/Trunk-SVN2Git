@@ -14,13 +14,13 @@ div.bocAutoCompleteReferenceValueContent
   padding: 2px 0px;
 }
 
-div.bocAutoCompleteReferenceValueContent span.bocAutoCompleteReferenceValueContent
+div.bocAutoCompleteReferenceValue span.bocAutoCompleteReferenceValueContent
 {
   position: absolute;
   top: 0px;
 }
 
-div.bocAutoCompleteReferenceValueContent *.bocAutoCompleteReferenceValueCommand
+div.bocAutoCompleteReferenceValue *.bocAutoCompleteReferenceValueCommand
 {
   display:inline-block;
   position: relative;
@@ -28,19 +28,19 @@ div.bocAutoCompleteReferenceValueContent *.bocAutoCompleteReferenceValueCommand
   margin: auto;
 }
 
-div.bocAutoCompleteReferenceValueContent a.bocAutoCompleteReferenceValueCommand:hover
+div.bocAutoCompleteReferenceValue a.bocAutoCompleteReferenceValueCommand:hover
 {
   border: solid 1px #005588;
   background-color: #fee197;
   padding: 0;
 }
 
-div.bocAutoCompleteReferenceValueContent *.bocAutoCompleteReferenceValueCommand span
+div.bocAutoCompleteReferenceValue *.bocAutoCompleteReferenceValueCommand span
 {
   margin-right: 2px;
 }
 
-div.bocAutoCompleteReferenceValueContent img.bocAutoCompleteReferenceValueContent
+div.bocAutoCompleteReferenceValue img.bocAutoCompleteReferenceValueContent
 {
     background-color: Transparent;
     border-style: none;
@@ -48,9 +48,10 @@ div.bocAutoCompleteReferenceValueContent img.bocAutoCompleteReferenceValueConten
     padding: 1px 3px 1px 1px;
 }
 
-div.bocAutoCompleteReferenceValueContent div.bocAutoCompleteReferenceValueOptionsMenu
+div.bocAutoCompleteReferenceValue div.bocAutoCompleteReferenceValueOptionsMenu
 {
   position: absolute;
+  top: 0px;
   right: 0px;
   margin-left: 5px;
 }
@@ -58,6 +59,7 @@ div.bocAutoCompleteReferenceValueContent div.bocAutoCompleteReferenceValueOption
 span.bocAutoCompleteReferenceValueDropDownList
 {
 	position: absolute;
+	top: 1px;
 	height: 100%;
 	width: 100%;
 	vertical-align: middle;
@@ -116,6 +118,10 @@ span.bocAutoCompleteReferenceValueDummy
   position: relative;
   visibility: hidden; /* don't show, but reserve space on the page */
   padding: 4px 0px; /* compensate textbox margin, border and padding vertically */
+}
+
+div.bocAutoCompleteReferenceValue div.disabled span.bocAutoCompleteReferenceValueContent {
+  padding: 3px;
 }
 
 .bocAutoCompleteReferenceValue.disabled img

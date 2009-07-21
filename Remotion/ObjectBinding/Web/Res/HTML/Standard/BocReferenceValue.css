@@ -14,7 +14,7 @@ div.bocReferenceValueContent
   vertical-align: top;
 }
 
-div.bocReferenceValueContent *.bocReferenceValueCommand
+div.bocReferenceValue *.bocReferenceValueCommand
 {
   display:inline-block;
   position: relative;
@@ -22,19 +22,19 @@ div.bocReferenceValueContent *.bocReferenceValueCommand
   margin: auto;
 }
 
-div.bocReferenceValueContent a.bocReferenceValueCommand:hover
+div.bocReferenceValue a.bocReferenceValueCommand:hover
 {
   border: solid 1px #005588;
   background-color: #fee197;
   padding: 0;
 }
 
-div.bocReferenceValueContent *.bocReferenceValueCommand span
+div.bocReferenceValue *.bocReferenceValueCommand span
 {
   margin-right: 2px;
 }
 
-div.bocReferenceValueContent img.bocReferenceValueContent
+div.bocReferenceValue img.bocReferenceValueContent
 {
     background-color: Transparent;
     border-style: none;
@@ -65,12 +65,12 @@ span.bocReferenceValueContent
   position: absolute;
 }
 
-div.bocReferenceValueContent span.bocReferenceValueContent * {
+div.bocReferenceValue span.bocReferenceValueContent * {
   width: 100%; 
   margin: 0px;
 }
 
-div.bocReferenceValueContent div.disabled span.bocReferenceValueContent {
+div.bocReferenceValue div.disabled span.bocReferenceValueContent {
   padding: 3px;
 }
 
