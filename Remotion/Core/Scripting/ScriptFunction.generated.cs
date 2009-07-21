@@ -43,11 +43,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TResult>> (scriptFunctionName);
     }
@@ -84,11 +80,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TResult>> (scriptFunctionName);
     }
@@ -125,11 +117,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TResult>> (scriptFunctionName);
     }
@@ -166,11 +154,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TResult>> (scriptFunctionName);
     }
@@ -207,11 +191,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TResult>> (scriptFunctionName);
     }
@@ -248,11 +228,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TResult>> (scriptFunctionName);
     }
@@ -289,11 +265,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TResult>> (scriptFunctionName);
     }
@@ -330,11 +302,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TResult>> (scriptFunctionName);
     }
@@ -371,11 +339,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TFixedArg9, TResult>> (scriptFunctionName);
     }

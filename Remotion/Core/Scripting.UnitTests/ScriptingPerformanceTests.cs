@@ -61,8 +61,8 @@ def PropertyPathAccess(cascade) :
         _scriptContext, ScriptLanguageType.Python, expressionScriptSourceCode, privateScriptEnvironment
       );
 
-      //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
-      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
+      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
+      //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
       ExecuteAndTime ("C# method", nrLoopsArray, delegate
       {
         if (cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
@@ -73,7 +73,7 @@ def PropertyPathAccess(cascade) :
       }
       );
       ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndTime ("expression script", nrLoopsArray, () => propertyPathAccessExpressionScript.Execute ());
+      ExecuteAndTime ("expression script", nrLoopsArray, propertyPathAccessExpressionScript.Execute);
     }
 
 
@@ -98,10 +98,11 @@ def Empty() :
         "None", privateScriptEnvironment
       );
 
-      var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
+      //var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
+      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
       ExecuteAndTime ("empty script function", nrLoopsArray, emptyScript.Execute);
-      ExecuteAndTime ("empty expression", nrLoopsArray, emptyExpression.Execute);
-      //ExecuteAndTime ("empty expression (uncompiled)", nrLoopsArray, emptyExpression.ExecuteUncompiled);
+      ExecuteAndTime ("empty expression script", nrLoopsArray, emptyExpression.Execute);
+      ExecuteAndTime ("empty expression script (uncompiled)", nrLoopsArray, emptyExpression.ExecuteUncompiled);
     }
 
 

@@ -39,11 +39,7 @@ namespace Remotion.Scripting
 
       var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
       var scriptSource = engine.CreateScriptSourceFromString (scriptText, SourceCodeKind.Statements);
-      
-      //scriptSource.Execute (scriptEnvironment.ScriptScope);
-
-      var compiledScript = scriptSource.Compile ();
-      compiledScript.Execute (scriptEnvironment.ScriptScope);
+      scriptSource.Execute (scriptEnvironment.ScriptScope);
 
       // @replace "TFixedArg<n>, "
       _func = scriptEnvironment.ScriptScope.GetVariable<Func<TFixedArg1, TResult>> (scriptFunctionName);
