@@ -528,6 +528,7 @@
     <Compile Include="DomainObjects\Core\Configuration\Mapping\TestDomainFactory.cs" />
     <Compile Include="DomainObjects\TestDomain\ClassDerivedFromSimpleDomainObject_ImplementingISerializable.cs" />
     <Compile Include="DomainObjects\TestDomain\EnumNotDefiningZero.cs" />
+    <Compile Include="Linq\Backend\DataObjectModel\ContainsCriterionTest.cs" />
     <Compile Include="Linq\Backend\DetailParserUtilityTest.cs" />
     <Compile Include="Linq\Clauses\AdditionalFromClauseTest.cs" />
     <Compile Include="Linq\Clauses\GroupJoinClauseTest.cs" />

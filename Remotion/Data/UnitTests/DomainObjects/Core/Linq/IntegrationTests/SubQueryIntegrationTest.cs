@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1157: Fix this")]
+    [Ignore ("TODO 1313")]
     public void QueryWithSubQueryInWhere_AccessingOuterVariable_InMainFromClause ()
     {
       var orderItem2 = OrderItem.GetObject (DomainObjectIDs.OrderItem2);
