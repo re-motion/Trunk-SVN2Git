@@ -540,6 +540,7 @@
     <Compile Include="Linq\Clauses\ResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\AverageResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ContainsResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\DefaultIfEmptyResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ExceptResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\InputDependentExpressionTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\IntersectResultOperatorTest.cs" />
@@ -587,6 +588,7 @@
     <Compile Include="Linq\ExtensionMethodsTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\AverageExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ContainsExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\DefaultIfEmptyExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExceptExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\IntersectExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\LongCountExpressionNodeTest.cs" />
