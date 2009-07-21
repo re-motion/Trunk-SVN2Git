@@ -346,14 +346,24 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation ()
     {
-      var knownBaseTypes = new[] { typeof (ProxiedChild) };
-      var knownInterfaceTypes = new[] { typeof (IAmbigous2), typeof(IAmbigous1), typeof (IAmbigous3), typeof (IAmbigous4) };
-      var proxiedType = typeof (ProxiedChild);
-      
-      Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation(knownBaseTypes, knownInterfaceTypes, proxiedType);
+      Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation(
+        new[] { typeof (ProxiedChild) }, 
+        new[] { typeof (IAmbigous2), typeof(IAmbigous1), typeof (IAmbigous3), typeof (IAmbigous4) }, 
+        typeof (ProxiedChild));
+
+      Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation (
+        new[] { typeof (ProxiedChild) },
+        new[] { typeof (IAmbigous2), typeof (IAmbigous1), typeof (IAmbigous3), typeof (IAmbigous4) },
+        typeof (ProxiedChildChild));
+
+      Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation (
+        new[] { typeof (ProxiedChild) },
+        new[] { typeof (IAmbigous2), typeof (IAmbigous1), typeof (IAmbigous3), typeof (IAmbigous4) },
+        typeof (ProxiedChildChildGeneric<string,object>));
     }
 
-    private void Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation (Type[] knownBaseTypes, Type[] knownInterfaceTypes, Type proxiedType)
+    private void Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation (
+      Type[] knownBaseTypes, Type[] knownInterfaceTypes, Type proxiedType)
     {
       var knownTypes = knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
       var typeFilter = new TypeLevelTypeFilter (knownTypes);
