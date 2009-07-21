@@ -303,7 +303,8 @@ namespace Remotion.Scripting.UnitTests
       //---------------------------------------------------------------------------------------------------------------------------------
       // Adding IAmbigous2 interface adds StringTimes(string,int) explicit interface implementation.
       // Note: StringTimes(string,int) exists 3x in ProxiedChild, as a regular member and as an explicit interface implementation from
-      // IAmbigous1 and IAmbigous2. Since the first 2 are not known, only the StringTimes coming from IAmbigous2 is exposed.
+      // IAmbigous1 and IAmbigous2. Since the first is private and the second is not known, only the StringTimes coming from 
+      // IAmbigous2 is exposed.
       //---------------------------------------------------------------------------------------------------------------------------------
       AssertHasSameExplicitInterfaceMethod (knownInterfaceType, proxiedType, proxyType, "StringTimes", typeof (String), typeof (Int32));
 
