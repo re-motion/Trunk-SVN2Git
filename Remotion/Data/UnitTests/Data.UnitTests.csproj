@@ -547,6 +547,7 @@
     <Compile Include="Linq\Clauses\ResultOperators\InputDependentExpressionTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\IntersectResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\LongCountResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\OfTypeResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ReverseResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\SkipResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\SumResultOperatorTest.cs" />
@@ -594,6 +595,7 @@
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ExceptExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\IntersectExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\LongCountExpressionNodeTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\OfTypeExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ReverseExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\SkipExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\UnionExpressionNodeTest.cs" />
