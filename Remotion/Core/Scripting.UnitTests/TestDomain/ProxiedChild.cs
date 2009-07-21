@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  public class ProxiedChild : Proxied, IAmbigous1, IAmbigous2
+  public class ProxiedChild : Proxied, IAmbigous1, IAmbigous2, IAmbigous3, IAmbigous4
   {
     public ProxiedChild ()
     {
@@ -83,15 +83,30 @@ namespace Remotion.Scripting.UnitTests.TestDomain
       return text.ToSequence (number).Aggregate ((sa, s) => sa + s);
     }
 
-    //string IAmbigous3.StringTimes2 (string text, int number)
-    //{
-    //  return StringTimes (text, number);
-    //}
+    string IAmbigous3.StringTimes2 (string text, int number)
+    {
+      return StringTimes2 (text, number);
+    }
 
-    //string IAmbigous4.StringTimes2 (string text, int number)
-    //{
-    //  return StringTimes (text, number);
-    //}
+    string IAmbigous4.StringTimes2 (string text, int number)
+    {
+      return StringTimes2 (text, number);
+    }
+
+    public string AnotherMethod (string text, int number)
+    {
+      return text + number;
+    }
+
+    string IAmbigous3.AnotherMethod (string text, int number)
+    {
+      return AnotherMethod (text, number);
+    }
+
+    string IAmbigous4.AnotherMethod (string text, int number)
+    {
+      return AnotherMethod (text, number);
+    }
 
   }
 }

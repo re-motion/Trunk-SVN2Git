@@ -318,16 +318,15 @@ namespace Remotion.Scripting.UnitTests
       AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 2);
     }
 
-    // WIP
     [Test]
-    public void BuildProxyType_MultipleKnownClassesAndInterfaces ()
+    public void BuildProxyType_MultipleKnownInterfaces ()
     {
       var knownBaseTypes = new[] { typeof (ProxiedChild) };
       var knownInterfaceTypes = new[] { typeof (IAmbigous2), typeof(IAmbigous1) };
       var knownTypes = knownBaseTypes.Union (knownInterfaceTypes).ToArray();
       var typeFilter = new TypeLevelTypeFilter (knownTypes);
       var proxiedType = typeof (ProxiedChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_MultipleKnownClassesAndInterfaces"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_MultipleKnownInterfaces"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType ();
 
       var knownBaseTypeMethods = knownBaseTypes.SelectMany(t => t.GetMethods ()).Where (m => m.IsSpecialName == false);
@@ -341,23 +340,47 @@ namespace Remotion.Scripting.UnitTests
       // Adding IAmbigous2 interface adds StringTimes(string,int) explicit interface implementation
       AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous1), proxiedType, proxyType, "StringTimes", typeof (String), typeof (Int32));
       AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous2), proxiedType, proxyType, "StringTimes", typeof (String), typeof (Int32));
-      //AssertHasSameMethod (typeof (ProxiedChild), proxyType, "StringTimes", typeof (String), typeof (Int32));
-
-      //// Methods coming from knownBaseType Proxied are still here
-      //AssertHasSameMethod (knownBaseType, proxyType, "GetName");
-      //AssertHasSameMethod (knownBaseType, proxyType, "Sum", typeof (Int32[]));
-      //AssertHasSameMethod (knownBaseType, proxyType, "PrependName", typeof (String));
-      //AssertHasSameMethod (knownBaseType, proxyType, "SumMe", typeof (Int32[]));
-
-      //AssertHasSameMethod (knownBaseType, proxyType, "OverrideMe", typeof (String));
-
-      //AssertHasSameGenericMethod (knownBaseType, proxyType, "GenericToString", 2);
-      //AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 1);
-      //AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 2);
-
     }
 
-    
+
+    [Test]
+    public void BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation ()
+    {
+      var knownBaseTypes = new[] { typeof (ProxiedChild) };
+      var knownInterfaceTypes = new[] { typeof (IAmbigous2), typeof(IAmbigous1), typeof (IAmbigous3), typeof (IAmbigous4) };
+      var proxiedType = typeof (ProxiedChild);
+      
+      Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation(knownBaseTypes, knownInterfaceTypes, proxiedType);
+    }
+
+    private void Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation (Type[] knownBaseTypes, Type[] knownInterfaceTypes, Type proxiedType)
+    {
+      var knownTypes = knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
+      var typeFilter = new TypeLevelTypeFilter (knownTypes);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      var knownBaseTypeMethods = knownBaseTypes.SelectMany (t => t.GetMethods ()).Where (m => m.IsSpecialName == false);
+      var proxyMethods = proxyType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (m => m.IsSpecialName == false && m.DeclaringType != typeof (Object));
+      var interfaceMethods = knownInterfaceTypes.SelectMany (t => t.GetMethods (BindingFlags.Instance | BindingFlags.Public));
+
+      //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (interfaceMethods).nl (3).e (proxyMethods).nl (3);
+
+      Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
+
+      AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous3), proxiedType, proxyType, "StringTimes2", typeof (String), typeof (Int32));
+      AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous4), proxiedType, proxyType, "StringTimes2", typeof (String), typeof (Int32));
+      AssertHasSameMethod (typeof (ProxiedChild), proxyType, "StringTimes2", typeof (String), typeof (Int32));
+
+      AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous3), proxiedType, proxyType, "AnotherMethod", typeof (String), typeof (Int32));
+      AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous4), proxiedType, proxyType, "AnotherMethod", typeof (String), typeof (Int32));
+      AssertHasSameMethod (typeof (ProxiedChild), proxyType, "AnotherMethod", typeof (String), typeof (Int32));
+
+      AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous1), proxiedType, proxyType, "StringTimes", typeof (String), typeof (Int32));
+      AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous2), proxiedType, proxyType, "StringTimes", typeof (String), typeof (Int32));
+    }
+
+
     // TODO: Test w multiple known base classes and interfaces
 
 

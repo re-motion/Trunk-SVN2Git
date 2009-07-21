@@ -18,5 +18,6 @@ namespace Remotion.Scripting.UnitTests.TestDomain
   public interface IAmbigous4
   {
     string StringTimes2 (string text, int number);
+    string AnotherMethod (string text, int number);
   }
 }
