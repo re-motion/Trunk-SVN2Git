@@ -173,6 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void QueryWithContainsInWhere_OnEmptyCollection ()
     {
       var possibleItems = new ObjectID[] {  };

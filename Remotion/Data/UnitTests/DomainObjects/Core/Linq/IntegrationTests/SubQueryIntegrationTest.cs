@@ -48,6 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void QueryWithSubQueryInWhere ()
     {
       var orders =
@@ -71,6 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void QueryWithSubQueryAndJoinInWhere ()
     {
       var orders =
@@ -83,6 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void QueryWithSubQueryAndJoinInWhere_WithOuterVariable ()
     {
       OrderItem myOrderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
@@ -95,6 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void QueryWithSubQuery ()
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);

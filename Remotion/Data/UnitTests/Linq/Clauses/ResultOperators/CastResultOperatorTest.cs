@@ -16,12 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
-using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 using Remotion.Utilities;
@@ -29,21 +27,14 @@ using Remotion.Utilities;
 namespace Remotion.Data.UnitTests.Linq.Clauses.ResultOperators
 {
   [TestFixture]
-  public class TakeResultOperatorTest
+  public class CastResultOperatorTest
   {
-    private TakeResultOperator _resultOperator;
+    private CastResultOperator _resultOperator;
 
     [SetUp]
     public void SetUp ()
     {
-      _resultOperator = new TakeResultOperator (Expression.Constant (2));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException))]
-    public void Initialization_NoIntExpression ()
-    {
-      new TakeResultOperator (Expression.Constant ("12"));
+      _resultOperator = new CastResultOperator (typeof (GoodStudent));
     }
 
     [Test]
@@ -53,16 +44,20 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultOperators
       var cloneContext = new CloneContext (clonedClauseMapping);
       var clone = _resultOperator.Clone (cloneContext);
 
-      Assert.That (clone, Is.InstanceOfType (typeof (TakeResultOperator)));
+      Assert.That (clone, Is.InstanceOfType (typeof (CastResultOperator)));
+      Assert.That (((CastResultOperator) clone).CastItemType, Is.SameAs (_resultOperator.CastItemType));
     }
 
     [Test]
     public void ExecuteInMemory ()
     {
-      object items = new[] { 1, 2, 3, 0, 2 };
+      var student1 = new GoodStudent ();
+      var student2 = new GoodStudent ();
+      object items = new Student[] { student1, student2 };
+
       var result = _resultOperator.ExecuteInMemory (items);
 
-      Assert.That (((IEnumerable<int>) result).ToArray(), Is.EqualTo (new[] { 1, 2 }));
+      Assert.That (((IEnumerable<GoodStudent>) result).ToArray (), Is.EquivalentTo (new[] { student1, student2 }));
     }
 
     [Test]
@@ -72,23 +67,9 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultOperators
     }
 
     [Test]
-    public void GetConstantCount ()
-    {
-      Assert.That (_resultOperator.GetConstantCount (), Is.EqualTo (2));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void GetConstantCount_NoConstantExpression ()
-    {
-      var resultOperator = new TakeResultOperator (new QuerySourceReferenceExpression (ExpressionHelper.CreateMainFromClause ()));
-      resultOperator.GetConstantCount ();
-    }
-
-    [Test]
     public void GetResultType ()
     {
-      Assert.That (_resultOperator.GetResultType (typeof (IQueryable<Student>)), Is.SameAs (typeof (IQueryable<Student>)));
+      Assert.That (_resultOperator.GetResultType (typeof (IQueryable<Student>)), Is.SameAs (typeof (IQueryable<GoodStudent>)));
     }
 
     [Test]

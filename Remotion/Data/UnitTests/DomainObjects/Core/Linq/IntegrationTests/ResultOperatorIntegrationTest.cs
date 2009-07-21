@@ -76,6 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void Query_WithCastOnResultSet ()
     {
       var query =
@@ -158,6 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void QueryWithContainsInWhere_OnCollection ()
     {
       var possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 };

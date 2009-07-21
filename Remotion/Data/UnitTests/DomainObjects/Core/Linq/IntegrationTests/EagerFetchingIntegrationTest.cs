@@ -35,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void EagerFetching ()
     {
       var query = (from c in QueryFactory.CreateLinqQuery<Customer> ()
@@ -49,6 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void EagerFetching_FetchAfterMultipleFromsWithDistinct ()
     {
       var query = (from c1 in QueryFactory.CreateLinqQuery<Customer> ()
@@ -99,6 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 1313")]
     public void EagerFetching_ThenFetchOne ()
     {
       var query = (from c in QueryFactory.CreateLinqQuery<Customer> ()
