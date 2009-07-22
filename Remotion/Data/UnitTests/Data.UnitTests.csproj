@@ -615,7 +615,6 @@
     <Compile Include="Linq\Backend\DetailParsing\WhereConditionParsing\BinaryExpressionParserTest.cs" />
     <Compile Include="Linq\Backend\DetailParsing\WhereConditionParsing\ConstantExpressionParserTest.cs" />
     <Compile Include="Linq\Backend\DetailParsing\WhereConditionParsing\ContainsFulltextParserTest.cs" />
-    <Compile Include="Linq\Backend\DetailParsing\WhereConditionParsing\ContainsParserTest.cs" />
     <Compile Include="Linq\Backend\DetailParsing\WhereConditionParsing\QuerySourceReferenceExpressionParserTest.cs" />
     <Compile Include="Linq\Backend\DetailParsing\WhereConditionParsing\LikeParserTest.cs" />
     <Compile Include="Linq\Backend\DetailParsing\WhereConditionParsing\MemberExpressionParserTest.cs" />
