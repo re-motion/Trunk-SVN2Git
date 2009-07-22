@@ -131,6 +131,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       if (List.HasMenuBlock)
       {
         //  Menu Block
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.MenuBlock);
         Writer.AddStyleAttribute ("vertical-align", "top");
         Writer.RenderBeginTag (HtmlTextWriterTag.Td);
         MenuBlockRenderer.Render();

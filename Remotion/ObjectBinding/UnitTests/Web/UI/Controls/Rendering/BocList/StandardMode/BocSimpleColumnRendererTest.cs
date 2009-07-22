@@ -57,7 +57,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
-      Html.AssertTextNode (span, "referencedObject1", 0);
+      var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertStyleAttribute (textWrapper, "vertical-align", "middle");
+      Html.AssertTextNode (textWrapper, "referencedObject1", 0);
     }
 
     [Test]
@@ -74,10 +76,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Html.AssertAttribute (td, "class", CssClassContainer.Instance.DataCellOdd);
 
       var a = Html.GetAssertedChildElement (td, "a", 0);
-
-      Html.AssertTextNode (a, "referencedObject1", 0);
       Html.AssertAttribute (a, "href", "");
       Html.AssertAttribute (a, "onclick", "BocList_OnCommandClick();");
+
+      var span = Html.GetAssertedChildElement (a, "span", 0);
+      Html.AssertTextNode (span, "referencedObject1", 0);
     }
 
     [Test]
@@ -95,8 +98,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
       Html.AssertIcon (span, EventArgs.BusinessObject, null);
+      Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 1);
 
-      Html.AssertTextNode (span, HtmlHelper.WhiteSpace + BusinessObject.GetPropertyString ("FirstValue"), 1);
+      var textWrapper = Html.GetAssertedChildElement (span, "span", 2);
+      Html.AssertStyleAttribute (textWrapper, "vertical-align", "middle");
+      Html.AssertTextNode(textWrapper, BusinessObject.GetPropertyString ("FirstValue"), 0);
     }
 
     [Test]

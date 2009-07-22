@@ -435,7 +435,7 @@ public class EditableRow : PlaceHolder, INamingContainer, IEditableRow
       writer.AddStyleAttribute (HtmlTextWriterStyle.Width, column.Width.ToString());
     else
       writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
-    writer.AddStyleAttribute ("display", "block");
+    writer.AddStyleAttribute ("display", "inline-block");
     writer.RenderBeginTag (HtmlTextWriterTag.Span); // Span Container
 
     if (showEditModeValidationMarkers)

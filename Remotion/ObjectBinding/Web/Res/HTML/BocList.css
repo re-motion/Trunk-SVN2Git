@@ -22,8 +22,14 @@ div.bocListTable
 /*  Style applied to the BocList's table's outer structure.  */
 table.bocListTable
 {
+  width: 100%;
   border-collapse: collapse;
   border-style: none;
+}
+
+td.bocListMenuBlock
+{
+  padding-left: 5pt;
 }
 
 /*  Style applied to the table head block of the BocList's table.  */
@@ -154,6 +160,20 @@ tr.bocListDataRowSelected td.bocListDataCellEven a:hover
 	border-style: solid;
 	background-color: #fee197;	
 }
+
+/*  Style applied to the disabled anchor tags during hovering in BocList's selected odd and even data rows.  */
+tr.bocListDataRow td.bocListDataCellOdd a.disabled:hover,
+tr.bocListDataRow td.bocListDataCellEven a.disabled:hover,
+tr.bocListDataRowSelected td.bocListDataCellOdd a.disabled:hover,
+tr.bocListDataRowSelected td.bocListDataCellEven a.disabled:hover
+{
+  color: Blue;
+	padding: 2px;
+	border-width: 0px;
+	border-style: none;
+	background-color: transparent;	
+}
+
 
 /* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
 td.bocListDataCellOdd div td.dropDownMenuHeadTitle a,

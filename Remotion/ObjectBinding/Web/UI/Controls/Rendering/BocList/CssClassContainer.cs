@@ -135,5 +135,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
     {
       get { return "bocListAvailableViewsListLabel"; }
     }
+
+    public string MenuBlock
+    {
+      get { return "bocListMenuBlock"; }
+    }
   }
 }

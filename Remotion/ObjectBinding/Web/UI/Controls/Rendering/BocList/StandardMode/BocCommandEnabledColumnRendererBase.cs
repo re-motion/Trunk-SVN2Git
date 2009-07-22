@@ -53,10 +53,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
     protected void RenderValueColumnCellText (string contents)
     {
+      Writer.AddStyleAttribute (HtmlTextWriterStyle.VerticalAlign, "middle");
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      
       contents = HtmlUtility.HtmlEncode (contents);
       if (StringUtility.IsNullOrEmpty (contents))
         contents = c_whiteSpace;
       Writer.Write (contents);
+
+      Writer.RenderEndTag();
     }
 
     protected bool RenderBeginTagDataCellCommand (
@@ -91,6 +96,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       string argument = List.GetListItemCommandArgument (ColumnIndex, originalRowIndex);
       string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ( List, argument) + ";";
       string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
+      if (command.Type == CommandType.None)
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDisabled);
       command.RenderBegin (Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
 
       return true;

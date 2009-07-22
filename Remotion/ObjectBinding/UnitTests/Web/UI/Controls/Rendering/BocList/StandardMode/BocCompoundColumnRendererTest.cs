@@ -56,7 +56,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
-      Html.AssertTextNode (span, HtmlHelper.WhiteSpace, 0);
+      var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertStyleAttribute (textWrapper, "vertical-align", "middle");
+      Html.AssertTextNode (textWrapper, HtmlHelper.WhiteSpace, 0);
     }
 
     [Test]
@@ -73,7 +75,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       var span = Html.GetAssertedChildElement (td, "span", 0);
       Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
-      Html.AssertTextNode (span, "referencedObject1", 0);
+      var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertStyleAttribute (textWrapper, "vertical-align", "middle");
+      Html.AssertTextNode (textWrapper, "referencedObject1", 0);
     }
 
     [Test]
@@ -100,7 +104,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       var span = Html.GetAssertedChildElement (cropSpan, "span", 0);
       Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
-      Html.AssertTextNode (span, "referencedObject1", 0);
+      var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertStyleAttribute (textWrapper, "vertical-align", "middle");
+      Html.AssertTextNode (textWrapper, "referencedObject1", 0);
     }
   }
 }

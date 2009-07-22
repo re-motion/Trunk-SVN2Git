@@ -66,7 +66,7 @@
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>
     <td>
-      <p> unbound, value not set</p></td>
+       unbound, value not set</td>
     <td style="WIDTH: 20%"><asp:label id=UnboundPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
@@ -77,7 +77,7 @@
 
 </remotion:bocreferencevalue></td>
     <td>
-      <p>unbound, value set, read only</p></td>
+      unbound, value set, read only</td>
     <td style="WIDTH: 20%"><asp:label id=UnboundReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
@@ -104,7 +104,7 @@
 <remotion:boccommand></remotion:boccommand>
 </PersistedCommand></remotion:bocreferencevalue></td>
     <td>
-      <p> disabled, unbound, value set</p></td>
+       disabled, unbound, value set</td>
     <td style="WIDTH: 20%"><asp:label id="DisabledUnboundPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
@@ -115,7 +115,7 @@
 
 </remotion:bocreferencevalue></td>
     <td>
-      <p>disabled, unbound, value set, read only</p></td>
+      disabled, unbound, value set, read only</td>
     <td style="WIDTH: 20%"><asp:label id="DisabledUnboundReadOnlyPartnerFieldValueLabel" runat="server" enableviewstate="False">#</asp:label></td></tr></table>
 <p>Partner Command Click: <asp:label id="PartnerCommandClickLabel" runat="server" enableviewstate="False">#</asp:label></p>
 <p>Partner Selection Changed: <asp:label id=PartnerFieldSelectionChangedLabel runat="server" enableviewstate="False">#</asp:label></p>

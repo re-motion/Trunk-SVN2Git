@@ -14,18 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using System.Web.UI;
-using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
 {
-  /// <summary>
-  /// Interface for factories creating <see cref="IBocMultilineTextValueRenderer"/> renderers.
-  /// </summary>
-  public interface IBocMultilineTextValueRendererFactory
+  public interface IBocMultilineTextValuePreRenderer : IPreRenderer<IBocMultilineTextValue>
   {
-    IBocMultilineTextValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocMultilineTextValue control);
-    IBocMultilineTextValuePreRenderer CreatePreRenderer (IHttpContext context, IBocMultilineTextValue control);
   }
 }

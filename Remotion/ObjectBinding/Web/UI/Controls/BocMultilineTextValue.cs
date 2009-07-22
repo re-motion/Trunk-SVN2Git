@@ -67,6 +67,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
+    public override void RegisterHtmlHeadContents (IHttpContext httpContext, Remotion.Web.UI.HtmlHeadAppender htmlHeadAppender)
+    {
+      base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+
+      var factory = ServiceLocator.Current.GetInstance<IBocMultilineTextValueRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+    }
+
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/LoadValue/*' />
     public override void LoadValue (bool interim)

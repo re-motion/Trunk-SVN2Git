@@ -385,10 +385,12 @@
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocReferenceValue\StandardMode\Factories\BocReferenceValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocMultilineTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\IBocTextValueRendererFactory.cs" />
+    <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\BocMultiLineTextValuePreRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\BocTextValueBase\StandardMode\Factories\BocTextValueRendererFactory.cs" />
     <Compile Include="UI\Controls\Rendering\IBocRenderableControlRenderer.cs" />
     <Compile Include="UI\Controls\Rendering\IBocRenderableControl.cs" />

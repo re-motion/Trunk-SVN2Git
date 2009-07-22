@@ -18,6 +18,7 @@ function BocDateTimeValue() {
 }
 
 BocDateTimeValue.AdjustPositions = function(control) {
+    console.log(control.attr('id'));
     var pixelsPerCharacter = 7;
 
     var date = control.children(':eq(0)');
@@ -26,8 +27,6 @@ BocDateTimeValue.AdjustPositions = function(control) {
 
     var dateMinWidth = parseInt(date.attr('maxLength')) * pixelsPerCharacter;
     var timeMinWidth = parseInt(time.attr('maxLength')) * pixelsPerCharacter;
-
-    var totalWidth = control.innerWidth();
 
     var buttonMargin = button.outerWidth(true) - button.outerWidth(false);
     var marginLeft = parseInt(button.css('margin-left'));
@@ -52,6 +51,8 @@ BocDateTimeValue.AdjustPositions = function(control) {
         marginRight = 0;
     }
 
+    var totalWidth = control.innerWidth();
+    var controlWidthBefore = control.width();
     var inputWidth = totalWidth - button.outerWidth(false) - marginLeft - marginRight;
     var dateWidth = Math.round(dateWidthPart * inputWidth) - inputBordersDate;
     var timeWidth = Math.round(timeWidthPart * inputWidth) - inputBordersTime;
@@ -66,11 +67,18 @@ BocDateTimeValue.AdjustPositions = function(control) {
         timeWidth = timeMinWidth;
     }
 
-    if (parentWidthIncrease > 0)
-        control.width(control.width() + parentWidthIncrease);
+    var cell = control.parents('td.bocListDataCellOdd, td.bocListDataCellEven');
+    var cellWidth = cell.width();
+    console.log('cell width before: ' + cellWidth + ', controlWidthBefore: ' + controlWidthBefore + ', parentWidthIncrease: ' + parentWidthIncrease);
+    control.width(controlWidthBefore + parentWidthIncrease);
+
+    console.log('cell width after: ' + cellWidth + ', parentWidthIncrease: ' + parentWidthIncrease);
+    cell.width(cellWidth);
+
     date.width(dateWidth);
     time.width(timeWidth);
 
-    button.css('left', date.outerWidth());
+    var dateOuterWidth = date.outerWidth();
+    button.css('left', dateOuterWidth);
     button.css('zIndex', '2');
 };

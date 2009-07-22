@@ -91,7 +91,6 @@
 		display: block;
 		margin: 1px;
 		padding: 1px 3px 3px 3px;
-		line-height:1em;
 		white-space: nowrap;
 	  color: blue;
 		
@@ -112,10 +111,8 @@
 	ul.DropDownMenuOptions li a span 
 	{
 	  display: inline-block;
-		margin-right: 15px;
-		vertical-align: middle;
-		width: 16px;
-		height: 16px;
+		/*height: 16px;*/
+		padding: 2px 0px;
 	}
 
 	ul.DropDownMenuOptions li.DropDownMenuItemDisabled a 
@@ -141,4 +138,11 @@
 		background-image: url('../../Image/DropDownMenuSeparator.gif');
 		background-repeat: repeat-x;
 		background-position: center;
+   }
+   
+   span.DropDownMenuItemIcon
+   {
+		 margin-right: 15px;
+		 width: 16px;
+		 padding: 0px;
    }

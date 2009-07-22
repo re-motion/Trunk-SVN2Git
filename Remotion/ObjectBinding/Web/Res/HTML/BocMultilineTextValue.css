@@ -12,3 +12,8 @@
 .bocMultilineTextValue.disabled
 {
 }
+
+.bocMultilineTextValue textarea
+{
+  font-size: 100%;
+}

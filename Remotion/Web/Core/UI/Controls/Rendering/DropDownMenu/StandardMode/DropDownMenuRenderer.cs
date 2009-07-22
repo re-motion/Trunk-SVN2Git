@@ -26,7 +26,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
   public class DropDownMenuRenderer : RendererBase<IDropDownMenu>, IDropDownMenuRenderer
   {
     private const string c_whiteSpace = "&nbsp;";
-    private const string c_dropDownIcon = "DropDownMenuArrow.gif";
 
     public DropDownMenuRenderer (IHttpContext context, HtmlTextWriter writer, IDropDownMenu control)
         : base (context, writer, control)

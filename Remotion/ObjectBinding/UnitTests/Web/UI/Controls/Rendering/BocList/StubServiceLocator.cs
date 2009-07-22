@@ -24,6 +24,8 @@ using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
@@ -61,6 +63,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
       _instances.Add (typeof (IDatePickerButtonRendererFactory), new DatePickerButtonRendererFactory ()); 
       _instances.Add (typeof (IBocReferenceValueRendererFactory), new BocReferenceValueRendererFactory ());
       _instances.Add (typeof (IBocDateTimeValueRendererFactory), new BocDateTimeValueRendererFactory());
+      _instances.Add (typeof (IBocMultilineTextValueRendererFactory), new BocTextValueRendererFactory());
       
     }
 

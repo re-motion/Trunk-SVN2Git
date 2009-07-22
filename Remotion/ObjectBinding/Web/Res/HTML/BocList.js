@@ -127,7 +127,9 @@ function BocList_OnRowClick (bocList, currentRow, selectorControl, listMenu)
 
   var currentRowBlock = new BocList_RowBlock (currentRow, selectorControl);
   var selectedRows = _bocList_selectedRows[bocList.id];
-  var isCtrlKeyPress = window.event.ctrlKey;
+  var isCtrlKeyPress = false;
+  if (window.event)
+    isCtrlKeyPress = window.event.ctrlKey;
     
   if (   selectedRows.Selection == _bocList_rowSelectionUndefined
       || selectedRows.Selection == _bocList_rowSelectionDisabled)

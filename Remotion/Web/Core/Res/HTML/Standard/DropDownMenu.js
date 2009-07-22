@@ -227,12 +227,15 @@ function DropDownMenu_CreateTextItem(itemInfo, selectionCount) {
         anchor.appendChild(iconPlaceholder);
     }
 
+    var span = document.createElement('span');
+    anchor.appendChild(span);
+    
     var text = ''
     if (itemInfo.Text != null)
         text = itemInfo.Text;
 
     var textNode = document.createTextNode(text);
-    anchor.appendChild(textNode);
+    span.appendChild(textNode);
 
     return item;
 }
