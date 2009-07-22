@@ -29,6 +29,11 @@ div.bocReferenceValue a.bocReferenceValueCommand:hover
   padding: 0;
 }
 
+div.bocReferenceValue span.bocReferenceValueCommand
+{
+  cursor: default;
+}
+
 div.bocReferenceValue *.bocReferenceValueCommand span
 {
   margin-right: 2px;

@@ -136,11 +136,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _displayName = PageUtility.GetPostBackCollectionItem (Page, TextBoxClientID);
     }
 
-    protected override bool IsNullValue (string newValue)
-    {
-      return string.IsNullOrEmpty (newValue);
-    }
-
     /// <summary> Called when the state of the control has changed between postbacks. </summary>
     protected override void RaisePostDataChangedEvent ()
     {
@@ -594,6 +589,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     bool IBocAutoCompleteReferenceValue.HasOptionsMenu
     {
       get { return HasOptionsMenu; }
+    }
+
+    string IBocAutoCompleteReferenceValue.NullValueString
+    {
+      get { return c_nullIdentifier; }
     }
 
     protected override string GetSelectionCountFunction ()

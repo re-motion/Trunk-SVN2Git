@@ -36,7 +36,7 @@
 
     $.fn.extend({
         autocomplete: function(serviceUrl, serviceMethod, options) {
-        options = $.extend({}, $.Autocompleter.defaults, {
+            options = $.extend({}, $.Autocompleter.defaults, {
                 // re-motion: instead of a single URL property, use separate service URL and service method properties. 
                 //           data cannot be inserted directly any more
                 serviceUrl: serviceUrl,
@@ -157,12 +157,19 @@
                     }
                     break;
 
-                // matches also semicolon           
+                // matches also semicolon            
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.TAB:
                 case KEY.RETURN:
                     if (selectCurrent()) {
                         // stop default to prevent a form submit, Opera needs special handling
+                        event.preventDefault();
+                        blockSubmit = true;
+                        return false;
+                    }
+                    // re-motion: allow deletion of current value by entering the empty string
+                    else if ($input.val() == '') {
+                        $input.trigger("result", {DisplayName: '', UniqueIdentifier: options.nullValue});
                         event.preventDefault();
                         blockSubmit = true;
                         return false;
@@ -228,7 +235,7 @@
 
         // re-motion: bind onChange to the dropDownButton's click event
         var dropdownButton = $('#' + options.dropDownButtonId);
-        if (dropdownButton.length>0) {
+        if (dropdownButton.length > 0) {
             dropdownButton.click(function() {
                 $input.focus();
                 onChange(1, true);
@@ -295,14 +302,14 @@
                 $input.addClass(options.loadingClass);
                 if (!options.matchCase)
                     currentValue = currentValue.toLowerCase();
-                
+
                 // re-motion: if triggered by dropDownButton, get the full list
                 if (isDropDown == 1) {
                     request('', receiveData, hideResultsNow);
                 } else {
                     request(currentValue, receiveData, hideResultsNow);
                 }
-                
+
             } else {
                 stopLoading();
                 select.hide();
@@ -393,7 +400,7 @@
             if (data && data.length) {
                 success(term, data);
 
-            // re-motion: if a webservice url and a method name have been supplied, try loading the data now
+                // re-motion: if a webservice url and a method name have been supplied, try loading the data now
             } else if ((typeof options.serviceUrl == "string") && (options.serviceUrl.length > 0)
                         && (typeof options.serviceMethod == "string") && (options.serviceMethod.length > 0)) {
 

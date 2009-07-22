@@ -19,11 +19,12 @@ function BocAutoCompleteReferenceValue()
 }
 
 BocAutoCompleteReferenceValue.Bind =
-function(textbox, hiddenField, button, webServiceUrl, webServiceMethod, businessObjectClass, businessObjectPropery, businessObjectID, args) {
+function(textbox, hiddenField, button, webServiceUrl, webServiceMethod, nullValueString, businessObjectClass, businessObjectPropery, businessObjectID, args) {
     var dummy = "";
     textbox.autocomplete(webServiceUrl, webServiceMethod,
         {
             extraParams: { 'businessObjectClass': businessObjectClass, 'businessObjectProperty': businessObjectPropery, 'businessObjectID': businessObjectID, 'args': args },
+            nullValue: nullValueString, // the hidden field value indicating that no value has been selected
             minChars: 0,
             max: 30, // Set query limit
             mustMatch: false, //set true if should clear input on no results

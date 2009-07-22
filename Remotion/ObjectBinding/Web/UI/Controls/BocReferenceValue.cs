@@ -51,8 +51,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     // constants
 
-    private const string c_nullIdentifier = "==null==";
-
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
 
@@ -157,11 +155,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void OnDataChanged ()
     {
-    }
-
-    protected override bool IsNullValue (string newValue)
-    {
-      return newValue == c_nullIdentifier;
     }
 
     public string DropDownListUniqueID

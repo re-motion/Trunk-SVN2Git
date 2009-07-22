@@ -34,6 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   public abstract class BocReferenceValueBase : BusinessObjectBoundEditableWebControl, IPostBackDataHandler, IPostBackEventHandler, IBocMenuItemContainer
   {
+    protected const string c_nullIdentifier = "==null==";
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectReferenceProperty) };
 
     protected static readonly object SelectionChangedEvent = new object();
@@ -533,7 +534,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     protected abstract void OnDataChanged ();
-    protected abstract bool IsNullValue (string newValue);
 
     /// <summary> Fires the <see cref="SelectionChanged"/> event. </summary>
     protected virtual void OnSelectionChanged ()
@@ -758,6 +758,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           isCommandEnabled = Enabled;
       }
       return isCommandEnabled;
+    }
+
+    private bool IsNullValue (string newValue)
+    {
+      return newValue == c_nullIdentifier;
     }
   }
 }

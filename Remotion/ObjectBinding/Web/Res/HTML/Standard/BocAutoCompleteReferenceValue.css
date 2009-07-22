@@ -35,6 +35,11 @@ div.bocAutoCompleteReferenceValue a.bocAutoCompleteReferenceValueCommand:hover
   padding: 0;
 }
 
+div.bocAutoCompleteReferenceValue span.bocAutoCompleteReferenceValueCommand
+{
+  cursor: default;
+}
+
 div.bocAutoCompleteReferenceValue *.bocAutoCompleteReferenceValueCommand span
 {
   margin-right: 2px;

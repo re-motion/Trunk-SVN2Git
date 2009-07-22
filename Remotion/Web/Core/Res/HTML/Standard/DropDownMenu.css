@@ -18,6 +18,11 @@
 		line-height: 1.25em;
 	}
 	
+	div.DropDownMenuSelect.disabled
+	{
+	  cursor: default;
+	}
+	
 	div.DropDownMenuSelect span {
 		left: 0;
 		margin-right: 15px;
