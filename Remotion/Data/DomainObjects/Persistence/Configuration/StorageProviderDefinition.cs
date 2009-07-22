@@ -106,9 +106,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public void ResetLinqSqlGenerator ()
     {
       _linqSqlGenerator = ObjectFactory.Create<SqlServerGenerator> (ParamList.Create (DatabaseInfo.Instance));
-
-      WhereConditionParserRegistry whereConditionParserRegistry = _linqSqlGenerator.DetailParserRegistries.WhereConditionParser;
-      whereConditionParserRegistry.RegisterParser (typeof (MethodCallExpression), new ContainsObjectParser (whereConditionParserRegistry));
     }
   }
 }

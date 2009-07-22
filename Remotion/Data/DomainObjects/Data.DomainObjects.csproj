@@ -195,7 +195,7 @@
     <Compile Include="Infrastructure\Serialization\IFlattenedSerializable.cs" />
     <Compile Include="Infrastructure\RepositoryAccessor.cs" />
     <Compile Include="IGraphTraversalStrategy.cs" />
-    <Compile Include="Linq\ContainsObjectParser.cs" />
+    <Compile Include="Linq\ContainsObjectExpressionNode.cs" />
     <Compile Include="Linq\DatabaseInfo.cs" />
     <Compile Include="Linq\DomainObjectQueryable.cs" />
     <Compile Include="Linq\ExtensionMethods.cs" />

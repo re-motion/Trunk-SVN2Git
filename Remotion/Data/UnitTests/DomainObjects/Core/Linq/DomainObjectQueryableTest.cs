@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -51,6 +52,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (queryable.Provider, Is.Not.Null);
       Assert.That (queryable.Provider, Is.InstanceOfType (typeof (DefaultQueryProvider)));
       Assert.That (((DefaultQueryProvider) queryable.Provider).QueryableType, Is.SameAs (typeof (DomainObjectQueryable<>)));
+    }
+
+    [Test]
+    public void Provider_AutoInitialized_ContainsObjectIsRegistered ()
+    {
+      var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+      var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
+      Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry.IsRegistered (containsObjectMethod));
     }
 
     [Test]

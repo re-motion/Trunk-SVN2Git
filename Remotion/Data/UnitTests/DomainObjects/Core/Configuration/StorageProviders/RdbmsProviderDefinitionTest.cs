@@ -88,17 +88,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration.StorageProvid
       Assert.That (generator2, Is.Not.Null);
       Assert.That (generator2, Is.Not.SameAs (generator));
     }
-
-    [Test]
-    public void SqlGenerator_HasOPFDetailParsers ()
-    {
-      var providerDefinition = new RdbmsProviderDefinition ("Provider", typeof (SqlProvider), "ConnectionString");
-      ISqlGenerator generator = providerDefinition.LinqSqlGenerator;
-      IEnumerable<IWhereConditionParser> whereConditionParsers = generator.DetailParserRegistries.WhereConditionParser.GetParsers (
-          typeof (MethodCallExpression));
-      IEnumerable<Type> parserTypes = from p in whereConditionParsers select p.GetType ();
-      Assert.That (parserTypes.ToArray (), List.Contains (typeof (ContainsObjectParser)));
-    }
-
   }
 }

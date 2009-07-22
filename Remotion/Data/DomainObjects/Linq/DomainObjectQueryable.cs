@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.Parsing.Structure;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -32,10 +33,17 @@ namespace Remotion.Data.DomainObjects.Linq
   /// <typeparam name="T">The <see cref="DomainObject"/> type to be queried.</typeparam>
   public class DomainObjectQueryable<T> : QueryableBase<T> 
   {
-    private static IQueryExecutor CreateExecutor (ISqlGenerator sqlGenerator)
+    private static IQueryProvider CreateProvider (ISqlGenerator sqlGenerator)
     {
+      ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator);
+
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (T));
-      return ObjectFactory.Create<DomainObjectQueryExecutor> (ParamList.Create (sqlGenerator, classDefinition));
+      var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (ParamList.Create (sqlGenerator, classDefinition));
+      
+      var nodeTypeRegistry = MethodCallExpressionNodeTypeRegistry.CreateDefault();
+      nodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
+
+      return new DefaultQueryProvider (typeof (DomainObjectQueryable<>), executor, nodeTypeRegistry);
     }
 
     /// <summary>
@@ -66,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </para>
     /// </remarks>
     public DomainObjectQueryable (ISqlGenerator sqlGenerator)
-      : base (CreateExecutor (ArgumentUtility.CheckNotNull ("sqlGenerator", sqlGenerator)))
+      : base (CreateProvider(sqlGenerator))
     {
     }
 
