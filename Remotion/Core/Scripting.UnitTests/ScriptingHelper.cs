@@ -18,6 +18,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Scripting.Hosting;
 using Remotion.Diagnostics.ToText;
+using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -32,18 +33,36 @@ namespace Remotion.Scripting.UnitTests
     public static void ToConsoleLine (MethodInfo mi)
     {
       var pis = mi.GetParameters ();
+      //if (mi.IsGenericMethod)
+      //{
+      //  To.ConsoleLine.sb().e (mi.Name).e (mi.ReturnType).e (mi.Attributes).
+      //      e (pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes)).e (pis.Select (pi => pi.Position)).
+      //      e (pis.Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1)).e (
+      //      pis.Select (pi => pi.MetadataToken)).e (pis.Select (pi => pi.ToString())).se().
+      //      e (mi.DeclaringType);
+      //}
+      //else
+
+      To.ConsoleLine.sb().e (mi.Name).e (mi.MetadataToken).e (mi.GetBaseDefinition().MetadataToken).e (mi.ReturnType).e (
+          mi.Attributes).e (
+          pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes));
       if (mi.IsGenericMethod)
       {
-        To.ConsoleLine.sb().e (mi.Name).e (mi.ReturnType).e (mi.Attributes).
-            e (pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes)).e (pis.Select (pi => pi.Position)).
-            e (pis.Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1)).e (
-            pis.Select (pi => pi.MetadataToken)).e (pis.Select (pi => pi.ToString())).se().
-            e (mi.DeclaringType);
+        To.Console.e (pis.Select (pi => pi.Position)).
+            e (pis.Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1));
       }
-      else
+      To.Console.e (pis.Select (pi => pi.MetadataToken)).e (pis.Select (pi => pi.ToString ())).se ().
+          e (mi.DeclaringType);
+    }
+
+
+    public static void ToConsoleLine (string methodName, params Type[] types)
+    {
+      To.ConsoleLine.nl (2).s ("Method: ").e (methodName);
+      foreach (var type in types)
       {
-        To.ConsoleLine.sb().e (mi.Name).e (mi.ReturnType).e (mi.DeclaringType).e (mi.Attributes).e (
-            pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes)).se();
+        To.ConsoleLine.nl ().e (type.Name).s(": ");
+        ScriptingHelper.GetAnyInstanceMethodArray (type, methodName).Process (mi => ScriptingHelper.ToConsoleLine (mi));
       }
     }
 
@@ -57,7 +76,11 @@ namespace Remotion.Scripting.UnitTests
       return type.GetMethod (name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.DefaultBinder, argumentTypes, new ParameterModifier[0]);
     }
 
- 
+    public static MethodInfo[] GetAnyInstanceMethodArray (Type type, string name)
+    {
+      return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (
+        mi => (mi.Name == name)).ToArray ();
+    } 
 
     public static MethodInfo GetAnyGenericInstanceMethod (Type type, string name, int numberGenericParameters)
     {

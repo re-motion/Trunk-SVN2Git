@@ -20,40 +20,37 @@ using Remotion.Collections;
 
 namespace Remotion.Scripting
 {
-  public class MethodInfoEqualityComparer : CompoundValueEqualityComparer<MethodInfo> {
-    private static readonly MethodInfoEqualityComparer s_equalityComparer = new MethodInfoEqualityComparer();
+  public class MethodInfoFromRelatedTypesEqualityComparer : CompoundValueEqualityComparer<MethodInfo> {
+    private static readonly MethodInfoFromRelatedTypesEqualityComparer s_equalityComparer = new MethodInfoFromRelatedTypesEqualityComparer();
 
-    public MethodInfoEqualityComparer (MethodAttributes methodAttributeMask)
+    public MethodInfoFromRelatedTypesEqualityComparer (MethodAttributes methodAttributeMask)
         : base (
             x => new object[] {
-                //x.Name, x.ReturnType, x.Attributes & methodAttributeMask, //x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
-                //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.ParameterType)),
-                //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) 
-
                 //x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
                 //ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? new Type[0] : x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? typeof(Object) : pi.ParameterType)),
                 //ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1) : new int[0]),
                 //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) 
 
+                //x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
+                //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.MetadataToken)) 
+
                 x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
                 ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? new Type[0] : x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? typeof(Object) : pi.ParameterType)),
                 ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1) : new int[0]),
-                ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) 
-
-                //x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
-                //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.MetadataToken)) 
+                ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)),
+                ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.MetadataToken)) 
             })
     {
     }
 
     // Masking out VtableLayoutMask is necessary, otherwise a virtual method and its override will not compare equal
-    public MethodInfoEqualityComparer ()
+    public MethodInfoFromRelatedTypesEqualityComparer ()
       : this (~(MethodAttributes.ReservedMask | MethodAttributes.VtableLayoutMask))
     {
     }
 
 
-    public static MethodInfoEqualityComparer Get
+    public static MethodInfoFromRelatedTypesEqualityComparer Get
     {
       get { return s_equalityComparer; }
     }

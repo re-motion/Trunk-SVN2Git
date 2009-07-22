@@ -118,16 +118,19 @@ namespace Remotion.Scripting
 
     public bool IsMethodEqualToBaseTypeMethod (MethodInfo method, MethodInfo baseTypeMethod)
     {
-      if (!method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.GetBaseDefinition ().DeclaringType))
-      {
-        return false;
-      }
-      else if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
-      {
-        return true;
-      }
+      return method.GetBaseDefinition().MetadataToken == baseTypeMethod.GetBaseDefinition().MetadataToken;
 
-      return false;
+      //if (!method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.GetBaseDefinition ().DeclaringType))
+      //{
+      //  return false;
+      //}
+      ////else if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
+      //else if (MethodInfoFromRelatedTypesEqualityComparer.Get.Equals (method, baseTypeMethod))
+      //{
+      //  return true;
+      //}
+
+      //return false;
     }
 
  
@@ -143,6 +146,19 @@ namespace Remotion.Scripting
     //  }
     //  return methodsKnownInBaseTypeSet;
     //}
+
+
+    ///// <summary>
+    ///// Calls <see cref="BuildProxyType"/> and returns an instance of the generated proxy type proxying the passed <see cref="object"/>.
+    ///// </summary>
+    ///// <param name="proxied">The <see cref="object"/> to be proxied. Must be of the <see cref="Type"/> 
+    ///// the <see cref="ForwardingProxyBuilder"/> was initialized with.</param>
+    //public object CreateInstance (Object proxied)
+    //{
+    //  ArgumentUtility.CheckNotNullAndType ("proxied", proxied, _proxiedType);
+    //  return Activator.CreateInstance (BuildProxyType (), proxied);
+    //}
+
 
     private Type GetFirstKnownBaseType ()
     {

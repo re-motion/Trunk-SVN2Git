@@ -262,9 +262,16 @@ namespace Remotion.Scripting.UnitTests
       var knownBaseTypeMethods = knownBaseType.GetMethods ().Where (m => m.IsSpecialName == false);
       var proxyMethods = proxyType.GetMethods ().Where (m => m.IsSpecialName == false && m.DeclaringType != typeof(Object));
 
-      //ScriptingHelper.ToConsoleLine (ScriptingHelper.GetAnyInstanceMethod (knownBaseType,"OverrideMe"));
-      //ScriptingHelper.ToConsoleLine (ScriptingHelper.GetAnyInstanceMethod (proxiedType, "OverrideMe"));
       //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (proxyMethods);
+
+      //ScriptingHelper.ToConsoleLine ("OverrideMe", knownBaseType, proxiedType, proxyType);
+      //ScriptingHelper.ToConsoleLine ("PrependName", knownBaseType, proxiedType, proxyType);
+
+      //var misPrependName_BaseType = ScriptingHelper.GetAnyInstanceMethodArray (knownBaseType, "PrependName");
+      //var misPrependName_ProxiedeType = ScriptingHelper.GetAnyInstanceMethodArray (proxiedType, "PrependName");
+
+      //To.ConsoleLine.e(misPrependName_BaseType.Select (mi => mi.GetBaseDefinition ().MetadataToken));
+      //To.ConsoleLine.e (misPrependName_ProxiedeType.Select (mi => mi.GetBaseDefinition ().MetadataToken));
 
       Assert.That (knownBaseTypeMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
 
@@ -278,6 +285,38 @@ namespace Remotion.Scripting.UnitTests
       AssertHasSameGenericMethod (knownBaseType, proxyType, "GenericToString", 2);
       AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 1);
       AssertHasSameGenericMethod (knownBaseType, proxyType, "OverloadedGenericToString", 2);
+    }
+
+
+
+
+    [Test]
+    public void BuildProxyType_MethodHiddenWithNew ()
+    {
+      var knownBaseType = typeof (Proxied);
+      var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType });
+      var proxiedType = typeof (ProxiedChildChild); 
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      var knownBaseTypeMethods = knownBaseType.GetMethods ().Where (m => m.IsSpecialName == false);
+      var proxyMethods = proxyType.GetMethods ().Where (m => m.IsSpecialName == false && m.DeclaringType != typeof (Object));
+
+      //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (proxyMethods);
+      //ScriptingHelper.ToConsoleLine ("OverrideMe", knownBaseType, proxiedType, proxyType);
+      //ScriptingHelper.ToConsoleLine ("PrependName", knownBaseType, proxiedType, proxyType);
+
+      Assert.That (knownBaseTypeMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
+
+      AssertHasSameMethod (knownBaseType, proxyType, "PrependName",typeof(String));
+
+      var proxied = new ProxiedChildChild("Peter");
+      var proxy = Activator.CreateInstance (proxyType, proxied);
+      const string argument = "Fox";
+      const string expected = "Peter Fox";
+      Assert.That (((Proxied)proxied).PrependName (argument), Is.EqualTo (expected));
+      Assert.That (PrivateInvoke.InvokePublicMethod (proxy, "PrependName", argument), Is.EqualTo (expected));
+      Assert.That (proxied.PrependName (argument), Is.Not.EqualTo (expected));
     }
 
 

@@ -19,6 +19,10 @@ namespace Remotion.Scripting.UnitTests.TestDomain
 {
   public class ProxiedChildChild : ProxiedChild, IProcessText1, IProcessText2, INotInProxied, IPrependName
   {
+    public ProxiedChildChild (string name) : base (name)
+    {
+    }
+
     public string ProcessText (string s)
     {
       return s.ToLower().Replace("abc","xyz");
