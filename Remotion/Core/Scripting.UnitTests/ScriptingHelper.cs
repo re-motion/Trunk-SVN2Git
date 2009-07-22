@@ -43,9 +43,10 @@ namespace Remotion.Scripting.UnitTests
       //}
       //else
 
-      To.ConsoleLine.sb().e (mi.Name).e (mi.MetadataToken).e (mi.GetBaseDefinition().MetadataToken).e (mi.ReturnType).e (
-          mi.Attributes).e (
-          pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes));
+
+      To.ConsoleLine.sb().e (mi.Name).e (mi.MetadataToken).e (mi.GetBaseDefinition().MetadataToken).
+      e(mi.MemberType.GetTypeCode()).e(mi.MethodHandle.Value).
+        e (mi.ReturnType).e (mi.Attributes).e (pis.Select (pi => pi.ParameterType)).e (pis.Select (pi => pi.Attributes));
       if (mi.IsGenericMethod)
       {
         To.Console.e (pis.Select (pi => pi.Position)).

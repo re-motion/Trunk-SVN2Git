@@ -99,6 +99,7 @@
     <Compile Include="AssemblyLevelTypeFilterTest.cs" />
     <Compile Include="TestDomain\ProxiedChild.cs" />
     <Compile Include="TestDomain\ProxiedChildChild.cs" />
+    <Compile Include="TestDomain\ProxiedChildChildChild.cs" />
     <Compile Include="TestDomain\ProxiedChildChildGeneric.cs" />
     <Compile Include="TestDomain\ProxiedChildGeneric.cs" />
     <Compile Include="TypeLevelTypeFilterTest.cs" />

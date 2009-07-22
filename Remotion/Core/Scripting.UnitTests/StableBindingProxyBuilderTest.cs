@@ -293,28 +293,34 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void BuildProxyType_MethodHiddenWithNew ()
     {
-      AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (ProxiedChildChild),true);
-      AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (ProxiedChild), false);
-      AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (Proxied), false);
+      AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (ProxiedChildChild),true, "PrependName");
+      AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (ProxiedChild), false, "PrependName");
+      AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (Proxied), false, "PrependName");
 
-      AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChild), typeof (ProxiedChildChild), true);
+      AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChild), typeof (ProxiedChildChild), true, "PrependName");
       //AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChild), false);
-      AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (ProxiedChild), false);
+      AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (ProxiedChild), false, "PrependName");
     }
 
     [Test]
-    [Ignore]
+    [Explicit]
     public void BuildProxyType_MethodHiddenWithNew_ProxiedTypeIsKnownBaseType ()
     {
       // FAILS with "AmbiguousMethodNameException : Method name "PrependName" is ambiguous in type ProxiedChildChild."
       // Problem: Both PrependName methods (one coming from Proxied base class and one coming from proxied class ProxiedChildChild) 
-      // get implemented in the proxy, since they both are known due to knownBaseType== proxiedType.
+      // get implemented in the proxy, since they both are known due to knownBaseType == proxiedType.
       // The difference to ProxiedChildChild lies in the fact that the DeclaringType of both PrependName methods in the proxy
       // is the proxyType itself, whereas in ProxiedChildChild one method has Proxied and the other ProxiedChildChild.
-      AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChild), false);
+
+      ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild), 
+        typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
+
+      AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChildChild), false, "PrependName");
+      AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChild), false, "PrependName");
+
     }
 
-    private void AssertBuildProxyType_MethodHiddenWithNew (Type knownBaseType, Type proxiedType, bool expectProxiedCallDifferent)
+    private void AssertBuildProxyType_MethodHiddenWithNew (Type knownBaseType, Type proxiedType, bool expectProxiedCallDifferent, string methodName)
     {
       var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType });
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType"));
@@ -325,23 +331,65 @@ namespace Remotion.Scripting.UnitTests
 
       //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (proxyMethods);
       //ScriptingHelper.ToConsoleLine ("OverrideMe", knownBaseType, proxiedType, proxyType);
-      ScriptingHelper.ToConsoleLine ("PrependName", knownBaseType, proxiedType, proxyType);
+      //ScriptingHelper.ToConsoleLine ("PrependName", knownBaseType, proxiedType, proxyType);
 
       Assert.That (knownBaseTypeMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
 
       //AssertHasSameMethod (knownBaseType, proxyType, "PrependName",typeof(String));
 
       //var proxied = new ProxiedChildChild("Peter");
-      var proxied = Activator.CreateInstance (proxiedType, "Peter");
-      var proxy = Activator.CreateInstance (proxyType, proxied);
+      var proxiedTypeInstance = Activator.CreateInstance (proxiedType, "Peter");
+      var knownBaseTypeInstance = Activator.CreateInstance (knownBaseType, "Peter");
+      var proxy = Activator.CreateInstance (proxyType, proxiedTypeInstance);
       const string argument = "Fox";
       const string expected = "Peter Fox";
-      Assert.That (((Proxied)proxied).PrependName (argument), Is.EqualTo (expected));
-      Assert.That (PrivateInvoke.InvokePublicMethod (proxy, "PrependName", argument), Is.EqualTo (expected));
+
+      // TODO: After AmbiguousMethodNameException workaround has been found, pass expected result into method.
+
+      //Assert.That (((Proxied)proxiedTypeInstance).PrependName (argument), Is.EqualTo (expected));
+      Assert.That (InvokeMethod (knownBaseTypeInstance, methodName, argument), Is.EqualTo (expected));
+      Assert.That (PrivateInvoke.InvokePublicMethod (proxy, methodName, argument), Is.EqualTo (expected));
+
       if (expectProxiedCallDifferent)
       {
-        Assert.That (InvokeMethod (proxied, "PrependName", argument), Is.Not.EqualTo (expected));
+        Assert.That (InvokeMethod (proxiedTypeInstance, methodName, argument), Is.Not.EqualTo (expected));
       }
+    }
+
+
+    [Test]
+    [Explicit]
+    public void BuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType ()
+    {
+      ScriptingHelper.ToConsoleLine ("PrependNameVirtual", typeof (Proxied), typeof (ProxiedChild),
+        typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
+
+      AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (typeof (ProxiedChildChild), typeof (ProxiedChildChildChild), false, "PrependNameVirtual");
+      AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (typeof (ProxiedChildChild), typeof (ProxiedChildChild), false, "PrependNameVirtual");
+
+    }
+
+    private void AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (Type knownBaseType, Type proxiedType, bool expectProxiedCallDifferent, string methodName)
+    {
+      var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType });
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      var proxiedTypeInstance = Activator.CreateInstance (proxiedType, "Peter");
+      var knownBaseTypeInstance = Activator.CreateInstance (knownBaseType, "Peter");
+      var proxy = Activator.CreateInstance (proxyType, proxiedTypeInstance);
+      const string argument = "Fox";
+      const string expected = "ProxiedChildChild Peter Fox";
+
+      InvokeMethod (proxy, methodName, argument);
+
+      Assert.That (InvokeMethod (knownBaseTypeInstance, methodName, argument), Is.EqualTo (expected));
+      Assert.That (InvokeMethod (proxy, methodName, argument), Is.EqualTo (expected));
+
+      //if (expectProxiedCallDifferent)
+      //{
+      //  Assert.That (InvokeMethod (proxiedTypeInstance, methodName, argument), Is.Not.EqualTo (expected));
+      //}
     }
 
 

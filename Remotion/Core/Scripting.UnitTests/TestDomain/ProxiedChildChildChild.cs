@@ -13,39 +13,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  public class ProxiedChildChild : ProxiedChild, IProcessText1, IProcessText2, INotInProxied, IPrependName
+  public class ProxiedChildChildChild : ProxiedChildChild
   {
-    public ProxiedChildChild (string name) : base (name)
+    public ProxiedChildChildChild (string name)
+      : base (name)
     {
     }
 
-    public string ProcessText (string s)
+    public new string ProcessText (string s)
     {
-      return s.ToLower().Replace("abc","xyz");
+      return "ProxiedChildChildChild: " + s.ToUpper().Replace("holla","die waldfee");
     }
 
     public new string PrependName (string text)
     {
-      return "ProxiedChildChild " + Name + " " + text;
+      return "ProxiedChildChildChild " + Name + " " + text.ToUpper() + " " + text.ToLower();
     }
-
+    
     public override string PrependNameVirtual (string text)
     {
       return PrependName (text);
-    }
-
-    public string NotInProxied ()
-    {
-      return "ProxiedChildChild.NotInProxied";
-    }
-  }
-
-  public interface INotInProxied
-  {
-    string NotInProxied ();
+    }  
   }
 }

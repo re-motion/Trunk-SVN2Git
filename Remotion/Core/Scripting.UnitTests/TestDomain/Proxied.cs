@@ -68,6 +68,11 @@ namespace Remotion.Scripting.UnitTests.TestDomain
       return Name + " " + text;
     }
 
+    public virtual string PrependNameVirtual (string text)
+    {
+      return PrependName (text);
+    }
+
     public override string ToString ()
     {
       return "[Proxied: " + Name + "]";

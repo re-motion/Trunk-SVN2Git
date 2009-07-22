@@ -118,19 +118,21 @@ namespace Remotion.Scripting
 
     public bool IsMethodEqualToBaseTypeMethod (MethodInfo method, MethodInfo baseTypeMethod)
     {
-      return method.GetBaseDefinition().MetadataToken == baseTypeMethod.GetBaseDefinition().MetadataToken;
+      #if(true)
+        return method.GetBaseDefinition().MetadataToken == baseTypeMethod.GetBaseDefinition().MetadataToken;
+      #else
+        if (!method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.GetBaseDefinition ().DeclaringType))
+        {
+          return false;
+        }
+        else if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
+        //else if (MethodInfoFromRelatedTypesEqualityComparer.Get.Equals (method, baseTypeMethod))
+        {
+          return true;
+        }
 
-      //if (!method.GetBaseDefinition ().DeclaringType.IsAssignableFrom (baseTypeMethod.GetBaseDefinition ().DeclaringType))
-      //{
-      //  return false;
-      //}
-      ////else if(MethodInfoEqualityComparer.Get.Equals(method, baseTypeMethod))
-      //else if (MethodInfoFromRelatedTypesEqualityComparer.Get.Equals (method, baseTypeMethod))
-      //{
-      //  return true;
-      //}
-
-      //return false;
+        return false;
+      #endif
     }
 
  

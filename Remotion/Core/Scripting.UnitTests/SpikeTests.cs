@@ -32,7 +32,15 @@ namespace Remotion.Scripting.UnitTests
 
     class Derived1 : Base
     {
-      public override void Test ()
+      public sealed override void Test ()
+      {
+        base.Test ();
+      }
+    }
+
+    class Derived1Child : Derived1
+    {
+      public new void Test ()
       {
         base.Test ();
       }
