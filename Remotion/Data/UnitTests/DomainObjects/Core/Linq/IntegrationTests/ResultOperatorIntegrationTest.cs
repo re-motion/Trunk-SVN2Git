@@ -46,9 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckQueryResult (ceos, DomainObjectIDs.Ceo4);
     }
 
-
     [Test]
-    [Ignore ("TODO 1157")]
     public void QueryWithContainsObject ()
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
@@ -159,7 +157,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1313")]
     public void QueryWithContainsInWhere_OnCollection ()
     {
       var possibleItems = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 };

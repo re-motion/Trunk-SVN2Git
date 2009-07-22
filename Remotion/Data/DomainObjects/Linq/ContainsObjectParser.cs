@@ -23,6 +23,7 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.Expressions;
 using Remotion.Data.Linq.Backend.DataObjectModel;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Backend.DetailParsing;
 using Remotion.Data.Linq.Backend.DetailParsing.WhereConditionParsing;
@@ -90,10 +91,9 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var containsObjectCallExpression = GetTypedExpression<MethodCallExpression> (expression, "ContainsObject parser");
 
-      SubQueryExpression subQueryExpression = CreateEquivalentSubQuery (
-          containsObjectCallExpression, parseContext.QueryModel);
-      MethodCallExpression containsExpression = CreateExpressionForContainsParser (subQueryExpression, containsObjectCallExpression.Arguments[0]);
-      return _registry.GetParser (containsExpression).Parse (containsExpression, parseContext);
+      SubQueryExpression subQueryExpression = CreateEquivalentSubQuery (containsObjectCallExpression, parseContext.QueryModel);
+      subQueryExpression.QueryModel.ResultOperators.Add (new ContainsResultOperator (containsObjectCallExpression.Arguments[0]));
+      return _registry.GetParser (subQueryExpression).Parse (subQueryExpression, parseContext);
     }
 
     public SubQueryExpression CreateEquivalentSubQuery (MethodCallExpression containsObjectCallExpression, QueryModel parentQuery)
@@ -145,7 +145,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return new SelectClause (new QuerySourceReferenceExpression (mainFromClause));
     }
 
-    public PropertyInfo GetForeignKeyProperty (PropertyInfo collectionProperty) // Order.OrderItems
+    private PropertyInfo GetForeignKeyProperty (PropertyInfo collectionProperty) // Order.OrderItems
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (collectionProperty.DeclaringType);
       string propertyName = MappingConfiguration.Current.NameResolver.GetPropertyName (collectionProperty);
@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.Linq
       return MappingConfiguration.Current.NameResolver.GetProperty (foreignKeyEndPoint.ClassDefinition.ClassType, foreignKeyEndPoint.PropertyName);
     }
 
-    public MethodCallExpression CreateExpressionForContainsParser (SubQueryExpression subQueryExpression, Expression queryParameterExpression)
+    private MethodCallExpression CreateExpressionForContainsParser (SubQueryExpression subQueryExpression, Expression queryParameterExpression)
     {
       var concreteContainsObjectMethod = s_genericContainsMethod.MakeGenericMethod (queryParameterExpression.Type);
       return Expression.Call (concreteContainsObjectMethod, subQueryExpression, queryParameterExpression);
