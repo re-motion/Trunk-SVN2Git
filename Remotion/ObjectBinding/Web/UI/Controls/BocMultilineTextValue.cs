@@ -23,6 +23,7 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -67,12 +68,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // methods and properties
 
-    public override void RegisterHtmlHeadContents (IHttpContext httpContext, Remotion.Web.UI.HtmlHeadAppender htmlHeadAppender)
+    public override void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
     {
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       var factory = ServiceLocator.Current.GetInstance<IBocMultilineTextValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      var preRenderer = factory.CreatePreRenderer (httpContext, this);
       preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
