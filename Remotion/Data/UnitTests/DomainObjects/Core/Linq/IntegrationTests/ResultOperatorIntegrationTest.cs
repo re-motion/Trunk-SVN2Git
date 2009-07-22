@@ -48,6 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
 
     [Test]
+    [Ignore ("TODO 1157")]
     public void QueryWithContainsObject ()
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
