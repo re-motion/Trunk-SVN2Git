@@ -108,5 +108,10 @@ namespace Remotion.Scripting.UnitTests.TestDomain
       return AnotherMethod (text, number);
     }
 
+
+    public string PrependName (string text, int number)
+    {
+      return "ProxiedChild " + Name + " " + text + ", THE NUMBER=" + number;
+    } 
   }
 }

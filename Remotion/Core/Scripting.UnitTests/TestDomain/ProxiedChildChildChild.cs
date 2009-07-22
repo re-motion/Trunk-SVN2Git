@@ -31,7 +31,12 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
       return "ProxiedChildChildChild " + Name + " " + text.ToUpper() + " " + text.ToLower();
     }
-    
+
+    public new string PrependName (string text, int number)
+    {
+      return "ProxiedChildChildChild " + Name + " " + text.ToUpper () + " " + text.ToLower () + ", number=" + number;
+    }    
+
     public override string PrependNameVirtual (string text)
     {
       return PrependName (text);
