@@ -18,9 +18,10 @@ function BocAutoCompleteReferenceValue()
 {
 }
 
-BocAutoCompleteReferenceValue.Bind = 
-function(textbox, hiddenField, button, webServiceUrl, businessObjectClass, businessObjectPropery, businessObjectID, args) {
-    textbox.autocomplete(webServiceUrl,
+BocAutoCompleteReferenceValue.Bind =
+function(textbox, hiddenField, button, webServiceUrl, webServiceMethod, businessObjectClass, businessObjectPropery, businessObjectID, args) {
+    var dummy = "";
+    textbox.autocomplete(webServiceUrl, webServiceMethod,
         {
             extraParams: { 'businessObjectClass': businessObjectClass, 'businessObjectProperty': businessObjectPropery, 'businessObjectID': businessObjectID, 'args': args },
             minChars: 0,
@@ -28,11 +29,11 @@ function(textbox, hiddenField, button, webServiceUrl, businessObjectClass, busin
             mustMatch: false, //set true if should clear input on no results
             matchContains: true,
             scrollHeight: 220,
-            width: 200, //Define width of results
-            extraBind: button.attr('id'),
+            dropDownButtonId: button.attr('id'),
             dataType: 'json',
             parse: function(data) {
-                return $.map(data.d, function(row) {
+                return $.map(data, function(row) {
+                    var dummy = "";
                     return {
                         data: row,
                         value: row.UniqueIdentifier,

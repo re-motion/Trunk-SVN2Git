@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -93,8 +94,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     {
       string key = Control.UniqueID + "_BindScript";
       const string scriptTemplate =
-          @"$(document).ready( function(){{ BocAutoCompleteReferenceValue.Bind($('#{0}'), $('#{1}'), $('#{2}'), '{3}', "
-          + "'{4}', '{5}', '{6}', '{7}'); }} );";
+          @"$(document).ready( function(){{ BocAutoCompleteReferenceValue.Bind($('#{0}'), $('#{1}'), $('#{2}'), '{3}', '{4}', "
+          + "'{5}', '{6}', '{7}', '{8}'); }} );";
 
       string businessObjectClass = Control.DataSource!=null ? Control.DataSource.BusinessObjectClass.Identifier : "";
       string businessObjectProperty = Control.Property!=null ? Control.Property.Identifier : "";
@@ -106,7 +107,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
           Control.DropDownButtonClientID,
           string.IsNullOrEmpty (Control.ServicePath)
               ? ""
-              : UrlUtility.GetAbsoluteUrl (Context, Control.ServicePath + "/" + Control.ServiceMethod, true),
+              : UrlUtility.GetAbsoluteUrl (Context, Control.ServicePath, true),
+          StringUtility.NullToEmpty(Control.ServiceMethod),
           businessObjectClass,
           businessObjectProperty,
           businessObjectId,

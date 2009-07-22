@@ -28,20 +28,24 @@
 *
 */
 
+// ************************************************
+// Changes have been commented with "// re-motion:"
+// ************************************************
+
 ; (function($) {
 
     $.fn.extend({
-        autocomplete: function(urlOrData, options) {
-            var isUrl = typeof urlOrData == "string";
-            options = $.extend({}, $.Autocompleter.defaults, {
-                url: isUrl ? urlOrData : null,
-                data: isUrl ? null : urlOrData,
-                delay: isUrl ? $.Autocompleter.defaults.delay : 10,
+        autocomplete: function(serviceUrl, serviceMethod, options) {
+        options = $.extend({}, $.Autocompleter.defaults, {
+                // re-motion: instead of a single URL property, use separate service URL and service method properties. 
+                //           data cannot be inserted directly any more
+                serviceUrl: serviceUrl,
+                serviceMethod: serviceMethod,
+                data: null,
+                delay: $.Autocompleter.defaults.delay,
                 max: options && !options.scroll ? 10 : 150,
-                /////////////////////////////////////////////////////////////////////////////////
-                //RB
-                extraBind: isUrl ? urlOrData : null
-                /////////////////////////////////////////////////////////////////////////////////
+                // re-motion: clicking this control will display the dropdown list with an assumed input of '' (regardless of textbox value)
+                dropDownButtonId: null
             }, options);
 
             // if highlight is set to false, replace it with a do-nothing function
@@ -89,10 +93,6 @@
         // Create $ object for input element
         var $input = $(input).attr("autocomplete", "off").addClass(options.inputClass);
 
-        /////////////////////////////////////////////////////////////////////////////////
-        //RB
-        var $myTrigger = $(options.extraBind);
-        /////////////////////////////////////////////////////////////////////////////////
         var timeout;
         var previousValue = "";
         var cache = $.Autocompleter.Cache(options);
@@ -157,7 +157,7 @@
                     }
                     break;
 
-                // matches also semicolon      
+                // matches also semicolon           
                 case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.TAB:
                 case KEY.RETURN:
@@ -183,7 +183,7 @@
             // results if the field no longer has focus
             hasFocus++;
         }).blur(function() {
-        hasFocus = 0;
+            hasFocus = 0;
             if (!config.mouseDownOnSelect) {
                 hideResults();
             }
@@ -226,15 +226,18 @@
             $(input.form).unbind(".autocomplete");
         });
 
-        /////////////////////////////////////////////////////////////////////////////////
-        //RB
-        $myTrigger.click(function() {
-            $input.focus();
-            onChange(1, true);
-            //adjustSelection( $input.val() );
-            clearTimeout(timeout);
-        });
+        // re-motion: bind onChange to the dropDownButton's click event
+        var dropdownButton = $('#' + options.dropDownButtonId);
+        if (dropdownButton.length>0) {
+            dropdownButton.click(function() {
+                $input.focus();
+                onChange(1, true);
+                //adjustSelection( $input.val() );
+                clearTimeout(timeout);
+            });
+        }
 
+        // re-motion: when clicking the dropDownButton, highlight the currently selected value in the list
         function adjustSelection(selectedValue) {
             if (selectedValue != "") {
                 var currentIndex = 0;
@@ -251,7 +254,6 @@
                 } while (!finished && currentIndex < stopIndex)
             }
         }
-        /////////////////////////////////////////////////////////////////////////////////
 
         function selectCurrent() {
             var selected = select.selected();
@@ -275,7 +277,8 @@
             return true;
         }
 
-        function onChange(crap, skipPrevCheck) {
+        // re-motion: use obsolete first parameter to indicate whether the onChange event is triggered by input (0) or the dropdownButton (1)
+        function onChange(isDropDown, skipPrevCheck) {
             if (lastKeyPressCode == KEY.DEL) {
                 select.hide();
                 return;
@@ -292,14 +295,14 @@
                 $input.addClass(options.loadingClass);
                 if (!options.matchCase)
                     currentValue = currentValue.toLowerCase();
-                /////////////////////////////////////////////////////////////////////////////////
-                //RB
-                if (crap == 1) {
+                
+                // re-motion: if triggered by dropDownButton, get the full list
+                if (isDropDown == 1) {
                     request('', receiveData, hideResultsNow);
                 } else {
                     request(currentValue, receiveData, hideResultsNow);
                 }
-                /////////////////////////////////////////////////////////////////////////////////
+                
             } else {
                 stopLoading();
                 select.hide();
@@ -389,62 +392,31 @@
             // recieve the cached data
             if (data && data.length) {
                 success(term, data);
-                // if an AJAX url has been supplied, try loading the data now
-            } else if ((typeof options.url == "string") && (options.url.length > 0)) {
 
+            // re-motion: if a webservice url and a method name have been supplied, try loading the data now
+            } else if ((typeof options.serviceUrl == "string") && (options.serviceUrl.length > 0)
+                        && (typeof options.serviceMethod == "string") && (options.serviceMethod.length > 0)) {
 
-            /*
-      var params = {
-        prefixText: (ignorePrefix ? '' : this._currentPrefix),
-        completionSetCount : this._completionSetCount,
-        businessObjectClass : this._businessObjectClass,
-        businessObjectProperty : this._businessObjectProperty,
-        businessObjectID : this._businessObjectID,
-        args : this._args };
-      Sys.Net.WebServiceProxy.invoke(this._serviceUrl, this._serviceMethod, false, params,
-                                  Function.createDelegate(this, this._onMethodComplete),
-                                  Function.createDelegate(this, this._onMethodFailed));
-
-*/
-
-
-                var extraParams = {
-                    timestamp: +new Date()
+                // re-motion: replaced jQuery AJAX call with .NET call because of the following problem:
+                //           when extending the parameter list with the necessary arguments for the web service method call,
+                //           the JSON object is serialized to "key=value;" format, but the service expects JSON format ("{ key: value, ... }")
+                //           see http://encosia.com/2008/06/05/3-mistakes-to-avoid-when-using-jquery-with-aspnet-ajax/ 
+                //           under "JSON, objects, and strings: oh my!" for details.
+                var params = {
+                    prefixText: (options.ignoreInput ? '' : lastWord(term)),
+                    completionSetCount: options.max,
+                    businessObjectClass: options.extraParams['businessObjectClass'],
+                    businessObjectProperty: options.extraParams['businessObjectProperty'],
+                    businessObjectID: options.extraParams['businessObjectID'],
+                    args: options.extraParams['args']
                 };
-                $.each(options.extraParams, function(key, param) {
-                    extraParams[key] = typeof param == "function" ? param() : param;
-                });
-
-                // MS: build a JSON string from the parameters or jQuery will serialize it, causing an error
-                // see http://encosia.com/2008/06/05/3-mistakes-to-avoid-when-using-jquery-with-aspnet-ajax/
-                // under "JSON, objects, and strings: oh my!"
-                var jsonObject = $.extend({
-                    prefixText: lastWord(term), //RB - query parameter for search
-                    completionSetCount: options.max
-                }, extraParams);
-                var jsonString = "{";
-                $.each(jsonObject, function(key, value) {
-                    jsonString += "'" + key + "': " + "'" + value + "', "
-                });
-                jsonString = jsonString.substring(0, jsonString.length - 2) + " }";
-
-                $.ajax({
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    // try to leverage ajaxQueue plugin to abort previous requests
-                    mode: "abort",
-                    // limit abortion to this input
-                    port: "autocomplete" + input.name,
-                    dataType: options.dataType,
-                    url: options.url,
-                    data: jsonString,
-                    success: function(data) {
-                        var dummy = "";
-                        var parsed = options.parse && options.parse(data) || parse(data);
-                        cache.add(term, parsed);
-                        success(term, parsed);
-                    }
-                });
+                Sys.Net.WebServiceProxy.invoke(options.serviceUrl, options.serviceMethod, false, params,
+                                          function(result, context, methodName) {
+                                              var parsed = options.parse && options.parse(result) || parse(result);
+                                              cache.add(term, parsed);
+                                              success(term, parsed);
+                                          },
+                                          function(err, context, methodName) { });
             } else {
                 // if we have a failure, we need to empty the list -- this prevents the the [TAB] key from selecting the last successful match
                 select.emptyList();
@@ -535,7 +507,7 @@
 			nullData = 0;
 
             // no url was specified, we need to adjust the cache length to make sure it fits the local data store
-            if (!options.url) options.cacheLength = 1;
+            if (!options.serviceUrl) options.cacheLength = 1;
 
             // track all options for minChars = 0
             stMatchSets[""] = [];
@@ -595,31 +567,9 @@
             load: function(q) {
                 if (!options.cacheLength || !length)
                     return null;
-                /* 
-                * if dealing w/local data and matchContains than we must make sure
-                * to loop through all the data collections looking for matches
-                */
-                if (!options.url && options.matchContains) {
-                    // track all matches
-                    var csub = [];
-                    // loop through all the data grids for matches
-                    for (var k in data) {
-                        // don't search through the stMatchSets[""] (minChars: 0) cache
-                        // this prevents duplicates
-                        if (k.length > 0) {
-                            var c = data[k];
-                            $.each(c, function(i, x) {
-                                // if we've got a match, add it to the array
-                                if (matchSubset(x.value, q)) {
-                                    csub.push(x);
-                                }
-                            });
-                        }
-                    }
-                    return csub;
-                } else
+
                 // if the exact item exists, use it
-                    if (data[q]) {
+                if (data[q]) {
                     return data[q];
                 } else
                     if (options.matchSubset) {
@@ -792,7 +742,8 @@
             show: function() {
                 var offset = $(input).offset();
                 element.css({
-                    width: typeof options.width == "string" || options.width > 0 ? options.width : $(input).width(),
+                    // changed width to span the entire control, including dropdown button
+                    width: $(input).parents('span.bocAutoCompleteReferenceValueDropDownList').width() - 2,
                     top: offset.top + input.offsetHeight,
                     left: offset.left
                 }).show();
@@ -819,11 +770,10 @@
                 }
             },
             selected: function() {
-                /////////////////////////////////////////////////////////////////////////////////
-                //var selected = listItems && listItems.filter("." + CLASSES.ACTIVE).removeClass(CLASSES.ACTIVE);
-                //RB
+                // re-motion: removing the CSS class does not provide any benefits, but prevents us from highlighting the currently selected value
+                // on dropDownButton Click
+                // Original: var selected = listItems && listItems.filter("." + CLASSES.ACTIVE).removeClass(CLASSES.ACTIVE);
                 var selected = listItems && listItems.filter("." + CLASSES.ACTIVE);
-                /////////////////////////////////////////////////////////////////////////////////
                 return selected && selected.length && $.data(selected[0], "ac_data");
             },
             emptyList: function() {
