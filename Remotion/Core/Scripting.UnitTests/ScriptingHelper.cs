@@ -81,6 +81,12 @@ namespace Remotion.Scripting.UnitTests
     {
       return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (
         mi => (mi.Name == name)).ToArray ();
+    }
+
+    public static MethodInfo[] GetAnyPublicInstanceMethodArray (Type type, string name)
+    {
+      return type.GetMethods (BindingFlags.Instance | BindingFlags.Public).Where (
+        mi => (mi.Name == name)).ToArray ();
     } 
 
     public static MethodInfo GetAnyGenericInstanceMethod (Type type, string name, int numberGenericParameters)

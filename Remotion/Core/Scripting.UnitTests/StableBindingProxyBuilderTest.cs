@@ -312,12 +312,33 @@ namespace Remotion.Scripting.UnitTests
       // The difference to ProxiedChildChild lies in the fact that the DeclaringType of both PrependName methods in the proxy
       // is the proxyType itself, whereas in ProxiedChildChild one method has Proxied and the other ProxiedChildChild.
 
-      ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild), 
+      ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild),
         typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
 
       AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChildChild), false, "PrependName");
       AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChild), false, "PrependName");
 
+    }
+
+
+    [Test]
+    [Explicit]
+    public void Binder_SelectMethod()
+    {
+      var type = typeof (ProxiedChildChildChild);
+      const string name = "PrependName";
+      var methods = type.GetMethods (BindingFlags.Instance | BindingFlags.Public).Where (
+        mi => (mi.Name == name)).ToArray ();
+      var method = methods[0];
+      var parameterTypes = method.GetParameters().Select (pi => pi.ParameterType).ToArray();
+      //To.ConsoleLine.e (ScriptingHelper.GetAnyPublicInstanceMethodArray (typeof (ProxiedChildChildChild), "PrependName"));
+      var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, methods, parameterTypes, null);
+
+      ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild),
+        typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
+      To.ConsoleLine.nl();
+
+      ScriptingHelper.ToConsoleLine ((MethodInfo) boundMethod);
     }
 
     private void AssertBuildProxyType_MethodHiddenWithNew (Type knownBaseType, Type proxiedType, bool expectProxiedCallDifferent, string methodName)
@@ -380,6 +401,8 @@ namespace Remotion.Scripting.UnitTests
       var proxy = Activator.CreateInstance (proxyType, proxiedTypeInstance);
       const string argument = "Fox";
       const string expected = "ProxiedChildChild Peter Fox";
+
+      //ScriptingHelper.ToConsoleLine ("PrependNameVirtual", proxyType);
 
       InvokeMethod (proxy, methodName, argument);
 
