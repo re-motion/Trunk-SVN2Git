@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Remotion.Collections;
+using Remotion.Diagnostics.ToText;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -43,7 +44,7 @@ namespace Remotion.Scripting
     private readonly Dictionary<MethodInfo, HashSet<MethodInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MethodInfo, HashSet<MethodInfo>> ();
     private readonly ModuleScope _moduleScope;
     private readonly Type[] _knownInterfaces;
-    private readonly List<MethodInfo> _methodsKnownInBaseType;
+    private readonly List<MethodInfo> _publicMethodsInFirstKnwonBaseType;
     private readonly Type _firstKnownBaseType;
 
     public StableBindingProxyBuilder (Type proxiedType, ITypeFilter typeFilter, ModuleScope moduleScope)
@@ -62,9 +63,8 @@ namespace Remotion.Scripting
       _firstKnownBaseType = GetFirstKnownBaseType();
       if (_firstKnownBaseType != null)
       {
-        _methodsKnownInBaseType = _firstKnownBaseType.GetMethods().ToList();
+        _publicMethodsInFirstKnwonBaseType = _firstKnownBaseType.GetMethods().ToList();
       }
-      //_methodsKnownInBaseType.Sort (MethodInfoApproximateEqualityComparer.Get);
     }
 
  
@@ -78,7 +78,7 @@ namespace Remotion.Scripting
     /// </summary>
     public Type BuildProxyType ()
     {
-      //var methodsKnownInBaseTypeSet_ApproximateEqual = CreateMethodsKnownInBaseTypeSet_ApproximateEqual ();
+#if(false)
       var methodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
       foreach (var proxiedTypeMethod in methodsInProxiedType)
       {
@@ -96,13 +96,54 @@ namespace Remotion.Scripting
           }
         }
       }
+#else
+      var methodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      foreach (var proxiedTypeMethod in methodsInProxiedType)
+      {
+        // TODO: Fix: Check if method is bound (visible) in knownBaseType
+        if (IsMethodKnownInBaseType (proxiedTypeMethod) && IsMethodBound (proxiedTypeMethod, methodsInProxiedType))
+        {
+          _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
+        }
+        else
+        {
+          var interfaceMethodsToClassMethod = GetInterfaceMethodsToClassMethod (proxiedTypeMethod);
+          foreach (var interfaceMethod in interfaceMethodsToClassMethod)
+          {
+            // Add forwarding interface implementations for methods whose target method info has not already been implemented.
+            _forwardingProxyBuilder.AddForwardingExplicitInterfaceMethod (interfaceMethod);
+          }
+        }
+      }
+
+#endif
 
       return _forwardingProxyBuilder.BuildProxyType ();
     }
 
+    /// <summary>
+    /// Returns <see langword="true"/> if the passed <paramref name="method"/> would be picked by C#
+    /// out of the passed methods when calling a method with the <paramref name="method"/>|s name and parameter <see cref="Type"/>|s.
+    /// </summary>
+    public static bool IsMethodBound (MethodInfo method, MethodInfo[] canditateMethods)
+    {
+      var parameterTypes = method.GetParameters ().Select (pi => pi.ParameterType).ToArray ();
+      //To.ConsoleLine.e (method.Name).nl ().e (canditateMethods).nl ().e (parameterTypes);
+
+      // Note: SelectMethod needs the canditateMethods already to have been filtered by name, otherwise AmbiguousMatchException|s may occur.
+      canditateMethods = canditateMethods.Where (mi => (mi.Name == method.Name)).ToArray ();
+
+      var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, canditateMethods, parameterTypes, null);
+      return Object.ReferenceEquals (method, boundMethod);
+    }
+
+
+    // TODO: If IsMethodEqualToBaseTypeMethod can be expressed as a CompoundValueEqualityComparer<MethodInfo>,
+    // (MethodInfoFromRelatedTypesEqualityComparer) refactor back to initial implementation using HashSet, 
+    // to get rid of quadratic runtime behavior.
     public bool IsMethodKnownInBaseType (MethodInfo method)
     {
-      foreach (var baseTypeMethod in _methodsKnownInBaseType)
+      foreach (var baseTypeMethod in _publicMethodsInFirstKnwonBaseType)
       {
         if (!baseTypeMethod.IsSpecialName)
         {
