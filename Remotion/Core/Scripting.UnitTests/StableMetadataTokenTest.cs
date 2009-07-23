@@ -63,5 +63,8 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (stableMetadateToken0.GetHashCode (), Is.Not.EqualTo (stableMetadateToken2.GetHashCode ()));
       Assert.That (stableMetadateToken1.GetHashCode (), Is.Not.EqualTo (stableMetadateToken2.GetHashCode ()));
     }
+
+
+ 
   }
 }

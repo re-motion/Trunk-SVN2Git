@@ -22,38 +22,32 @@ using Remotion.Utilities;
 namespace Remotion.Scripting
 {
   /// <summary>
-  /// Wrapper around a <see cref="MethodInfo"/>.<see cref="MetadataToken"/> which is the same 
-  /// between <see cref="MethodInfo"/>|s coming from related types.
+  /// Map between <see cref="StableMetadataToken"/> and <see cref="MethodInfo"/>.
   /// </summary>
-  /// <remarks>
-  /// <see cref="MemberInfo.MetadataToken"/>|s referring to the the same method  but coming from different,
-  /// related types are not the same if the method was overridden in a child type.
-  /// </remarks>
-  public class StableMetadataToken
+  public class StableMetadataTokenToMethodInfoMap
   {
-    private readonly int _token;
+    private Dictionary<StableMetadataToken, MethodInfo> _map = new Dictionary<StableMetadataToken, MethodInfo>();
 
-    public StableMetadataToken (MethodInfo method)
+    public StableMetadataTokenToMethodInfoMap (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+      _map = type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToDictionary (
+        mi => new StableMetadataToken(mi), mi => mi);
+    }
+
+
+    public MethodInfo GetMethod (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
-      _token = method.GetBaseDefinition().MetadataToken;
+      return GetMethod (new StableMetadataToken (method));
     }
 
-    public override bool Equals (object obj)
+    public MethodInfo GetMethod (StableMetadataToken stableMetadataToken)
     {
-      return Equals (obj as StableMetadataToken);
-    }
-
-    public bool Equals (StableMetadataToken other)
-    {
-      if (ReferenceEquals (null, other))
-        return false;
-      return other._token == _token;
-    }
-
-    public override int GetHashCode ()
-    {
-      return _token;
+      ArgumentUtility.CheckNotNull ("stableMetadataToken", stableMetadataToken);
+      MethodInfo correspondingMethod;
+      _map.TryGetValue (stableMetadataToken, out correspondingMethod);
+      return correspondingMethod;
     }
   }
 }

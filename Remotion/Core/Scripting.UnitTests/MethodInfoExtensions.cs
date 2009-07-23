@@ -19,17 +19,17 @@ namespace Remotion.Scripting.UnitTests
 {
   public static partial class MethodInfoExtensions 
   {
-    /// <summary>
-    /// Returns a <see cref="MetadataToken"/> which is the same between <see cref="MethodInfo"/>|s 
-    /// coming from related types.
-    /// </summary>
-    /// <remarks>
-    /// <see cref="MemberInfo.MetadataToken"/>|s referring to the the same method  but coming from different,
-    /// related types are not the same if the method was overridden in a child type.
-    /// </remarks>
-    public static int GetStableMetadataToken (this MethodInfo method)
-    {
-      return method.GetBaseDefinition ().MetadataToken;
-    }
+    ///// <summary>
+    ///// Returns a <see cref="MetadataToken"/> which is the same between <see cref="MethodInfo"/>|s 
+    ///// coming from related types.
+    ///// </summary>
+    ///// <remarks>
+    ///// <see cref="MemberInfo.MetadataToken"/>|s referring to the the same method  but coming from different,
+    ///// related types are not the same if the method was overridden in a child type.
+    ///// </remarks>
+    //public static int GetStableMetadataToken (this MethodInfo method)
+    //{
+    //  return method.GetBaseDefinition ().MetadataToken;
+    //}
   }
 }

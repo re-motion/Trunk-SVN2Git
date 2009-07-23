@@ -112,17 +112,18 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    public Dictionary<int, MethodInfo> BuildMetadataTokenToMethodInfoMap (Type type)
+    public Dictionary<StableMetadataToken, MethodInfo> BuildMetadataTokenToMethodInfoMap (Type type)
     {
       return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToDictionary (
-          mi => mi.GetBaseDefinition ().MetadataToken, mi => mi);
+          mi => new StableMetadataToken(mi), mi => mi);
     }
 
-    private MethodInfo GetCorrespondingMethod (Dictionary<int, MethodInfo> dictionary, MethodInfo method)
+    private MethodInfo GetCorrespondingMethod (Dictionary<StableMetadataToken, MethodInfo> dictionary, MethodInfo method)
     {
-      // TODO: Return null, if does not exist => can at the same time check if method is known
-      //return dictionary[method.GetBaseDefinition().MetadataToken];
-      return dictionary[method.GetStableMetadataToken()];
+      var stableMetadataToken = new StableMetadataToken(method);
+      MethodInfo correspondingMethod;
+      dictionary.TryGetValue (stableMetadataToken, out correspondingMethod);
+      return correspondingMethod;
     }
   }
 }
