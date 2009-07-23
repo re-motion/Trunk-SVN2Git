@@ -542,8 +542,10 @@
     <Compile Include="Linq\Clauses\ResultOperators\AverageResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\CastResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ContainsResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\ExecuteInMemorySequenceDataTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\DefaultIfEmptyResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ExceptResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\ExecuteInMemoryValueDataTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\InputDependentExpressionTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\IntersectResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\LongCountResultOperatorTest.cs" />
