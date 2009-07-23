@@ -26,7 +26,7 @@ namespace Remotion.Scripting
   /// </summary>
   public class StableMetadataTokenToMethodInfoMap
   {
-    private Dictionary<StableMetadataToken, MethodInfo> _map = new Dictionary<StableMetadataToken, MethodInfo>();
+    private readonly Dictionary<StableMetadataToken, MethodInfo> _map = new Dictionary<StableMetadataToken, MethodInfo>();
 
     public StableMetadataTokenToMethodInfoMap (Type type)
     {

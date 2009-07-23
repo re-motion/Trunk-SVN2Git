@@ -48,17 +48,17 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    public void AssertMethodBound (MethodInfo method, MethodInfo[] canditateMethods)
+    public void AssertMethodBound (MethodInfo method, MethodInfo[] candidateMethods)
     {
 
       var parameterTypes = method.GetParameters ().Select (pi => pi.ParameterType).ToArray ();
-      //To.ConsoleLine.e (method.Name).nl ().e (canditateMethods).nl ().e (parameterTypes);
+      //To.ConsoleLine.e (method.Name).nl ().e (candidateMethods).nl ().e (parameterTypes);
 
-      // Note: SelectMethod needs the canditateMethods already to have been filtered by name, otherwise AmbiguousMatchException|s may occur.
-      canditateMethods = canditateMethods.Where (mi => (mi.Name == method.Name)).ToArray ();
+      // Note: SelectMethod needs the candidateMethods already to have been filtered by name, otherwise AmbiguousMatchException|s may occur.
+      candidateMethods = candidateMethods.Where (mi => (mi.Name == method.Name)).ToArray ();
 
       var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public,
-        canditateMethods, parameterTypes, null);
+        candidateMethods, parameterTypes, null);
 
       Assert.That (method, Is.SameAs((boundMethod)));
     }
@@ -76,38 +76,38 @@ namespace Remotion.Scripting.UnitTests
     }
 
     private void Assert_IsMethodBound_MethodInfosNotFromSameTypeAsMethodToTest (
-      Type type, Type canditateMethodsType, int expectedNumberOfMethods)
+      Type type, Type candidateMethodsType, int expectedNumberOfMethods)
     {
-      var metadataTokenToMethodInfoMap = BuildMetadataTokenToMethodInfoMap (canditateMethodsType);
+      var metadataTokenToMethodInfoMap = BuildMetadataTokenToMethodInfoMap (candidateMethodsType);
 
 
       const string name = "PrependName";
-      var canditateMethods = canditateMethodsType.GetPublicInstanceMethods (name, typeof (string));
+      var candidateMethods = candidateMethodsType.GetPublicInstanceMethods (name, typeof (string));
       var methods = type.GetPublicInstanceMethods (name, typeof (string));
         
-      Assert.That (canditateMethods.Length, Is.EqualTo (expectedNumberOfMethods));
+      Assert.That (candidateMethods.Length, Is.EqualTo (expectedNumberOfMethods));
 
-      var methodWhichExistsInCanditateMethodsType = methods.Where (mi => mi.DeclaringType == canditateMethodsType).Single();
-      var methodFromCanditateMethodsType = canditateMethods.Where (mi => 
+      var methodWhichExistsInCanditateMethodsType = methods.Where (mi => mi.DeclaringType == candidateMethodsType).Single();
+      var methodFromCanditateMethodsType = candidateMethods.Where (mi => 
         MethodInfoFromRelatedTypesEqualityComparer.Get.Equals (mi,methodWhichExistsInCanditateMethodsType)).Single();
 
-      // Using the MethodInfo from the canditate methods type works
+      // Using the MethodInfo from the candidate methods type works
       Assert.That (StableBindingProxyBuilder.IsMethodBound (
-        methodFromCanditateMethodsType, canditateMethods), Is.True);
+        methodFromCanditateMethodsType, candidateMethods), Is.True);
 
       Assert.That (StableBindingProxyBuilder.IsMethodBound (
         GetCorrespondingMethod (metadataTokenToMethodInfoMap, methodWhichExistsInCanditateMethodsType), 
-        canditateMethods), Is.True);
+        candidateMethods), Is.True);
 
       // Using the MethodInfo from the type directly fails
       // TODO: Adapt IsMethodBound to work as above
       Assert.That (StableBindingProxyBuilder.IsMethodBound (
-        methodWhichExistsInCanditateMethodsType, canditateMethods), Is.False);
+        methodWhichExistsInCanditateMethodsType, candidateMethods), Is.False);
 
       foreach (var method in methods)
       {
         if (!MethodInfoFromRelatedTypesEqualityComparer.Get.Equals (method, methodWhichExistsInCanditateMethodsType))
-          Assert.That (StableBindingProxyBuilder.IsMethodBound (method, canditateMethods), Is.False);
+          Assert.That (StableBindingProxyBuilder.IsMethodBound (method, candidateMethods), Is.False);
       }
     }
 

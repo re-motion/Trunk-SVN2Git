@@ -46,6 +46,7 @@ namespace Remotion.Scripting
     private readonly Type[] _knownInterfaces;
     private readonly MethodInfo[] _publicMethodsInFirstKnwonBaseType;
     private readonly Type _firstKnownBaseType;
+    private readonly StableMetadataTokenToMethodInfoMap _knownBaseTypeStableMetadataTokenToMethodInfoMap;
 
     public StableBindingProxyBuilder (Type proxiedType, ITypeFilter typeFilter, ModuleScope moduleScope)
     {
@@ -64,6 +65,7 @@ namespace Remotion.Scripting
       if (_firstKnownBaseType != null)
       {
         _publicMethodsInFirstKnwonBaseType = _firstKnownBaseType.GetMethods().ToArray();
+        _knownBaseTypeStableMetadataTokenToMethodInfoMap = new StableMetadataTokenToMethodInfoMap (_firstKnownBaseType);
       }
     }
 
@@ -100,10 +102,13 @@ namespace Remotion.Scripting
       var methodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
       foreach (var proxiedTypeMethod in methodsInProxiedType)
       {
-        // TODO: Use new MethodInfoFromRelatedTypesEqualityComparer to get MethodInfo from knownBaseType
-        // that corresponds to proxiedTypeMethod, and pass that as 1st argument to IsMethodBound
-        if (IsMethodKnownInBaseType (proxiedTypeMethod) && 
-          IsMethodBound (proxiedTypeMethod, _publicMethodsInFirstKnwonBaseType))
+        var proxiedTypeMethodInKnownBaseType = 
+          _knownBaseTypeStableMetadataTokenToMethodInfoMap.GetMethod (proxiedTypeMethod);
+
+        //if (IsMethodKnownInBaseType (proxiedTypeMethod) && 
+        //  IsMethodBound (proxiedTypeMethod, _publicMethodsInFirstKnwonBaseType))
+        if (proxiedTypeMethodInKnownBaseType != null && // method exists in first known base type
+          IsMethodBound (proxiedTypeMethodInKnownBaseType, _publicMethodsInFirstKnwonBaseType)) // method is visible in first known base type
         {
           _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
         }
@@ -127,16 +132,22 @@ namespace Remotion.Scripting
     /// Returns <see langword="true"/> if the passed <paramref name="method"/> would be picked by C#
     /// out of the passed methods when calling a method with the <paramref name="method"/>|s name and parameter <see cref="Type"/>|s.
     /// </summary>
-    public static bool IsMethodBound (MethodInfo method, MethodInfo[] canditateMethods)
+    public static bool IsMethodBound (MethodInfo method, MethodInfo[] candidateMethods)
     {
       var parameterTypes = method.GetParameters ().Select (pi => pi.ParameterType).ToArray ();
-      //To.ConsoleLine.e (method.Name).nl ().e (canditateMethods).nl ().e (parameterTypes);
+      //To.ConsoleLine.e (method.Name).nl ().e (candidateMethods).nl ().e (parameterTypes);
 
-      // Note: SelectMethod needs the canditateMethods already to have been filtered by name, otherwise AmbiguousMatchException|s may occur.
-      canditateMethods = canditateMethods.Where (mi => (mi.Name == method.Name)).ToArray ();
+      // Note: SelectMethod needs the candidateMethods already to have been filtered by name, otherwise AmbiguousMatchException|s may occur.
+      candidateMethods = candidateMethods.Where (mi => (mi.Name == method.Name)).ToArray ();
+
+      // Binder.SelectMethod throws when candidateMethods are empty.
+      if (candidateMethods.Length == 0)
+      {
+        return false;
+      }
 
       var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, 
-        canditateMethods, parameterTypes, null);
+        candidateMethods, parameterTypes, null);
 
       return Object.ReferenceEquals (method, boundMethod);
     }

@@ -31,7 +31,6 @@ using Rhino.Mocks;
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
-  [Ignore] 
   public class StableBindingProxyBuilderTest
   {
 
@@ -295,7 +294,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    [Ignore] 
+    //[Ignore] 
     public void BuildProxyType_MethodHiddenWithNew ()
     {
       AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (ProxiedChildChild),true, "PrependName");
@@ -495,7 +494,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    [Ignore] 
+    //[Ignore] 
     public void BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation ()
     {
       Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation(
