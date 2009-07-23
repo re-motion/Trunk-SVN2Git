@@ -71,6 +71,7 @@
     <Compile Include="ScriptEnvironmentTest.cs" />
     <Compile Include="ScriptingIntegrationTests.cs" />
     <Compile Include="ScriptingPerformanceTests.cs" />
+    <Compile Include="StableBindingProxyBuilder_ReflectionTests.cs" />
     <Compile Include="TestDomain\Document.cs" />
     <Compile Include="ExpressionScriptTest.cs" />
     <Compile Include="ForwardingProxyBuilderTest.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="TestDomain\ProxiedChildChildChild.cs" />
     <Compile Include="TestDomain\ProxiedChildChildGeneric.cs" />
     <Compile Include="TestDomain\ProxiedChildGeneric.cs" />
+    <Compile Include="TypeExtensions.cs" />
     <Compile Include="TypeLevelTypeFilterTest.cs" />
   </ItemGroup>
   <ItemGroup>

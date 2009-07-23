@@ -194,7 +194,6 @@ namespace Remotion.Scripting.UnitTests
 
     private void AssertIsMethodKnownInBaseType (Type baseType, MethodInfo method, Constraint constraint)
     {
-      // "DeclaringType.IsAssignableFrom"-workaround for mi.GetBaseDefinition() bug.
       bool isKnownInBaseType = method.GetBaseDefinition().DeclaringType.IsAssignableFrom (baseType);
       Assert.That (isKnownInBaseType, constraint);
     }
@@ -390,32 +389,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    [Test]
-    public void IsMethodBound ()
-    {
-      Assert_IsMethodBound (typeof (ProxiedChildChildChild), 3);
-      Assert_IsMethodBound (typeof (ProxiedChildChild), 2);
-      Assert_IsMethodBound (typeof (ProxiedChild), 1);
-      Assert_IsMethodBound (typeof (Proxied), 1);
-    }
 
-    private void Assert_IsMethodBound (Type type, int expectedNumberOfMethods)
-    {
-      const string name = "PrependName";
-      var methods = type.GetMethods (BindingFlags.Instance | BindingFlags.Public).Where (
-          mi => (mi.Name == name) && mi.GetParameters ().Length == 1 && mi.GetParameters ()[0].ParameterType == typeof(string)).ToArray ();
-
-      Assert.That (methods.Length, Is.EqualTo (expectedNumberOfMethods));
-
-      var method = methods[0];
-
-      // Note: For this to work, the first method with a matching name must be the one which was added in the leaf class.
-      Assert.That(StableBindingProxyBuilder.IsMethodBound (method, methods),Is.True);
-      for (int i = 1; i < methods.Length; i++)
-      {
-        Assert.That (StableBindingProxyBuilder.IsMethodBound (methods[i], methods), Is.False);
-      }
-    }
 
     [Test]
     [Explicit]

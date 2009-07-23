@@ -83,6 +83,8 @@ namespace Remotion.Scripting.UnitTests
         mi => (mi.Name == name)).ToArray ();
     }
 
+
+
     public static MethodInfo[] GetAnyPublicInstanceMethodArray (Type type, string name)
     {
       return type.GetMethods (BindingFlags.Instance | BindingFlags.Public).Where (
