@@ -57,8 +57,8 @@ function ListMenu_Update (listMenu, getSelectionCount) {
             }
         }
         var item = document.getElementById(itemInfo.ID);
-        var anchor = item.children[0];
-        var icon = anchor.children[0];
+        var anchor = item.childNodes[0];
+        var icon = anchor.childNodes[0];
         if (isEnabled) {
             if (icon != null)
                 icon.src = itemInfo.Icon;
