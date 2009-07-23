@@ -2,6 +2,7 @@
 // All rights reserved.
 //
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -39,7 +40,34 @@ namespace Remotion.Scripting.UnitTests
         Assert.That (StableBindingProxyBuilder.IsMethodBound (methods[i], methods), Is.False);
       }
     }
-  
+
+
+    [Test]
+    public void Binder_SelectMethod ()
+    {
+    }
+
+
+    public void AssertMethodBound (MethodInfo method, MethodInfo[] canditateMethods)
+    {
+
+      var parameterTypes = method.GetParameters ().Select (pi => pi.ParameterType).ToArray ();
+      //To.ConsoleLine.e (method.Name).nl ().e (canditateMethods).nl ().e (parameterTypes);
+
+      // Note: SelectMethod needs the canditateMethods already to have been filtered by name, otherwise AmbiguousMatchException|s may occur.
+      canditateMethods = canditateMethods.Where (mi => (mi.Name == method.Name)).ToArray ();
+
+      var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public,
+        canditateMethods, parameterTypes, null);
+
+      Assert.That (method, Is.SameAs((boundMethod)));
+    }
+
+    public Dictionary<int, MethodInfo> BuildMetadataTokenToMethodInfoMap (Type type)
+    {
+      return type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToDictionary (
+          mi => mi.GetBaseDefinition().MetadataToken, mi => mi);
+    }
 
 
     [Test]
@@ -54,6 +82,9 @@ namespace Remotion.Scripting.UnitTests
     private void Assert_IsMethodBound_MethodInfosNotFromSameTypeAsMethodToTest (
       Type type, Type canditateMethodsType, int expectedNumberOfMethods)
     {
+      var metadataTokenToMethodInfoMap = BuildMetadataTokenToMethodInfoMap (canditateMethodsType);
+
+
       const string name = "PrependName";
       var canditateMethods = canditateMethodsType.GetPublicInstanceMethods (name, typeof (string));
       var methods = type.GetPublicInstanceMethods (name, typeof (string));
@@ -67,6 +98,11 @@ namespace Remotion.Scripting.UnitTests
       // Using the MethodInfo from the canditate methods type works
       Assert.That (StableBindingProxyBuilder.IsMethodBound (
         methodFromCanditateMethodsType, canditateMethods), Is.True);
+
+      Assert.That (StableBindingProxyBuilder.IsMethodBound (
+        GetCorrespondingMethod (metadataTokenToMethodInfoMap, methodWhichExistsInCanditateMethodsType), 
+        canditateMethods), Is.True);
+
       // Using the MethodInfo from the type directly fails
       // TODO: Adapt IsMethodBound to work as above
       Assert.That (StableBindingProxyBuilder.IsMethodBound (
@@ -77,6 +113,12 @@ namespace Remotion.Scripting.UnitTests
         if (!MethodInfoFromRelatedTypesEqualityComparer.Get.Equals (method, methodWhichExistsInCanditateMethodsType))
           Assert.That (StableBindingProxyBuilder.IsMethodBound (method, canditateMethods), Is.False);
       }
+    }
+
+    private MethodInfo GetCorrespondingMethod (Dictionary<int, MethodInfo> dictionary, MethodInfo type)
+    {
+      // TODO: Return null, if does not exist => can at the same time check if method is known
+      return dictionary[type.GetBaseDefinition().MetadataToken];
     }
   }
 }

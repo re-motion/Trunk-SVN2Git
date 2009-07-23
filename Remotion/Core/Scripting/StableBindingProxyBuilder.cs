@@ -135,7 +135,9 @@ namespace Remotion.Scripting
       // Note: SelectMethod needs the canditateMethods already to have been filtered by name, otherwise AmbiguousMatchException|s may occur.
       canditateMethods = canditateMethods.Where (mi => (mi.Name == method.Name)).ToArray ();
 
-      var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, canditateMethods, parameterTypes, null);
+      var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, 
+        canditateMethods, parameterTypes, null);
+
       return Object.ReferenceEquals (method, boundMethod);
     }
 
