@@ -19,11 +19,12 @@ using System.Reflection;
 
 namespace Remotion.Scripting.UnitTests
 {
-  /// <summary>
-  /// Same as <see cref="Type.GetMethod(string,System.Reflection.BindingFlags)"/>, but also matches the
-  /// passed parameter types.
-  /// </summary>
-  public static class TypeExtensions {
+ 
+  public static partial class TypeExtensions {
+    /// <summary>
+    /// Same as <see cref="Type.GetMethod(string,System.Reflection.BindingFlags)"/>, but also matches the
+    /// passed parameter types.
+    /// </summary>
     public static MethodInfo[] GetMethods (this Type type, string name,
                                            BindingFlags bindingFlags, params Type[] parameterTypes)
     {
@@ -45,5 +46,7 @@ namespace Remotion.Scripting.UnitTests
     {
       return type.GetMethods (name, BindingFlags.Instance | BindingFlags.NonPublic, parameterTypes);
     }
+
+
   }
 }

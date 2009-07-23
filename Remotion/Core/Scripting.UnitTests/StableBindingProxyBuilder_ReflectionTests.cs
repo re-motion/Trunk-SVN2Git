@@ -115,10 +115,11 @@ namespace Remotion.Scripting.UnitTests
       }
     }
 
-    private MethodInfo GetCorrespondingMethod (Dictionary<int, MethodInfo> dictionary, MethodInfo type)
+    private MethodInfo GetCorrespondingMethod (Dictionary<int, MethodInfo> dictionary, MethodInfo method)
     {
       // TODO: Return null, if does not exist => can at the same time check if method is known
-      return dictionary[type.GetBaseDefinition().MetadataToken];
+      //return dictionary[method.GetBaseDefinition().MetadataToken];
+      return dictionary[method.GetStableMetaDataToken()];
     }
   }
 }
