@@ -57,10 +57,10 @@ function ListMenu_Update (listMenu, getSelectionCount) {
             }
         }
         var item = document.getElementById(itemInfo.ID);
-        var anchor = item.childNodes[0];
-        var icon = anchor.childNodes[0];
+        var anchor = $(item).children(':first')[0];
+        var icon = $(anchor).children(':first')[0];
         if (isEnabled) {
-            if (icon != null)
+            if (icon != null && icon.nodeType==1)
                 icon.src = itemInfo.Icon;
             item.className = _listMenu_itemClassName;
             if (itemInfo.Href != null) {
@@ -80,7 +80,7 @@ function ListMenu_Update (listMenu, getSelectionCount) {
             }
         }
         else {
-            if (icon != null) {
+            if (icon != null && icon.nodeType == 1) {
                 if (itemInfo.IconDisabled != null)
                     icon.src = itemInfo.IconDisabled;
                 else
