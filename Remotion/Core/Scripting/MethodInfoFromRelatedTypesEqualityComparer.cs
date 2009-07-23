@@ -23,32 +23,11 @@ namespace Remotion.Scripting
   public class MethodInfoFromRelatedTypesEqualityComparer : CompoundValueEqualityComparer<MethodInfo> {
     private static readonly MethodInfoFromRelatedTypesEqualityComparer s_equalityComparer = new MethodInfoFromRelatedTypesEqualityComparer();
 
-    public MethodInfoFromRelatedTypesEqualityComparer (MethodAttributes methodAttributeMask)
-        : base (
-            x => new object[] {
-                //x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
-                //ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? new Type[0] : x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? typeof(Object) : pi.ParameterType)),
-                //ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1) : new int[0]),
-                //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)) 
-
-                //x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
-                //ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.MetadataToken)) 
-
-                x.Name, x.ReturnType, x.Attributes & methodAttributeMask, x.IsGenericMethod ? x.GetGenericArguments().Length : 0,
-                ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? new Type[0] : x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? typeof(Object) : pi.ParameterType)),
-                ComponentwiseEqualsAndHashcodeWrapper.New (x.IsGenericMethod ? x.GetParameters ().Select (pi => pi.ParameterType.IsGenericParameter ? pi.ParameterType.GenericParameterPosition : -1) : new int[0]),
-                ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.Attributes)),
-                ComponentwiseEqualsAndHashcodeWrapper.New (x.GetParameters ().Select (pi => pi.MetadataToken)) 
-            })
-    {
-    }
-
-    // Masking out VtableLayoutMask is necessary, otherwise a virtual method and its override will not compare equal
     public MethodInfoFromRelatedTypesEqualityComparer ()
-      : this (~(MethodAttributes.ReservedMask | MethodAttributes.VtableLayoutMask))
+        : base (
+            x => new object[] { x.GetBaseDefinition().MetadataToken })
     {
     }
-
 
     public static MethodInfoFromRelatedTypesEqualityComparer Get
     {

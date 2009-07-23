@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MethodInfoFromRelatedTypesEqualityComparerTest.cs" />
     <Compile Include="ScriptEnvironmentTest.cs" />
     <Compile Include="ScriptingIntegrationTests.cs" />
     <Compile Include="ScriptingPerformanceTests.cs" />
