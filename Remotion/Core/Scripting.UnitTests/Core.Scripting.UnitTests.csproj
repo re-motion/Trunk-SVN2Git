@@ -73,6 +73,7 @@
     <Compile Include="ScriptingIntegrationTests.cs" />
     <Compile Include="ScriptingPerformanceTests.cs" />
     <Compile Include="StableBindingProxyBuilder_ReflectionTests.cs" />
+    <Compile Include="StableMetadataTokenTest.cs" />
     <Compile Include="TestDomain\Document.cs" />
     <Compile Include="ExpressionScriptTest.cs" />
     <Compile Include="ForwardingProxyBuilderTest.cs" />

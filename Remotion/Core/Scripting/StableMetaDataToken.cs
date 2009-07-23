@@ -15,21 +15,32 @@
 // 
 using System.Reflection;
 
-namespace Remotion.Scripting.UnitTests
+namespace Remotion.Scripting
 {
-  public static partial class MethodInfoExtensions 
+  public class StableMetadataToken
   {
-    /// <summary>
-    /// Returns a <see cref="MetadataToken"/> which is the same between <see cref="MethodInfo"/>|s 
-    /// coming from related types.
-    /// </summary>
-    /// <remarks>
-    /// <see cref="MemberInfo.MetadataToken"/>|s referring to the the same method  but coming from different,
-    /// related types are not the same if the method was overridden in a child type.
-    /// </remarks>
-    public static int GetStableMetadataToken (this MethodInfo method)
+    private readonly int _token;
+
+    public StableMetadataToken (MethodInfo method)
     {
-      return method.GetBaseDefinition ().MetadataToken;
+      _token = method.GetBaseDefinition().MetadataToken;
+    }
+
+    public override bool Equals (object obj)
+    {
+      return Equals (obj as StableMetadataToken);
+    }
+
+    public bool Equals (StableMetadataToken other)
+    {
+      if (ReferenceEquals (null, other))
+        return false;
+      return other._token == _token;
+    }
+
+    public override int GetHashCode ()
+    {
+      return _token;
     }
   }
 }
