@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Remotion.Scripting.UnitTests.TestDomain
@@ -55,6 +56,28 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     public string ProxiedChildGenericToString<T2,T3> (T0 t0, T1 t1, T2 t2, T3 t3)
     {
       return "ProxiedChildGenericToString: " + t0 + t1 + t2 + t3;
+    }
+
+    public virtual string ProxiedChildGeneric_ComplexGenericArguments_Virtual<T2, T3> (List<List<T0>> t0,
+      Dictionary<T2, T1> t1, List<GenericWrapper<T2>> t2, GenericWrapper<T3> t3)
+    {
+      return "ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_Virtual: " + t0 + t1 + t2 + t3;
+    }
+
+    public string ProxiedChildGeneric_ComplexGenericArguments_New<T2, T3> (List<List<T0>> t0,
+       Dictionary<T2, T1> t1, List<GenericWrapper<T2>> t2, GenericWrapper<T3> t3)
+    {
+      return "ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_New: " + t0 + t1 + t2 + t3;
+    }
+  }
+
+  public class GenericWrapper<T>
+  {
+    public T Value { get; private set; }
+
+    public GenericWrapper (T t)
+    {
+      Value = t;
     }
   }
 }

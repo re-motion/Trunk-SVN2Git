@@ -14,8 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -71,6 +74,26 @@ namespace Remotion.Scripting.UnitTests
       var method3 = typeof (Derived2).GetMethod ("Sum");
 
       Assert.That (method1.GetBaseDefinition (), Is.EqualTo (method3.GetBaseDefinition ()));
+    }
+
+    [Test]
+    [Explicit]
+    public void Binder_SelectMethod ()
+    {
+      var type = typeof (ProxiedChildChildChild);
+      const string name = "PrependName";
+      var methods = type.GetMethods (BindingFlags.Instance | BindingFlags.Public).Where (
+        mi => (mi.Name == name)).ToArray ();
+      var method = methods[0];
+      var parameterTypes = method.GetParameters ().Select (pi => pi.ParameterType).ToArray ();
+      //To.ConsoleLine.e (ScriptingHelper.GetAnyPublicInstanceMethodArray (typeof (ProxiedChildChildChild), "PrependName"));
+      var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, methods, parameterTypes, null);
+
+      ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild),
+        typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
+      To.ConsoleLine.nl ();
+
+      ScriptingHelper.ToConsoleLine ((MethodInfo) boundMethod);
     }
   }
 }

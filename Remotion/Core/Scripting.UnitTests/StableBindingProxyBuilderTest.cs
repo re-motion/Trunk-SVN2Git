@@ -336,7 +336,7 @@ namespace Remotion.Scripting.UnitTests
 
       //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (proxyMethods);
       //ScriptingHelper.ToConsoleLine ("OverrideMe", knownBaseType, proxiedType, proxyType);
-      ScriptingHelper.ToConsoleLine ("PrependName", knownBaseType, proxiedType, proxyType);
+      //ScriptingHelper.ToConsoleLine ("PrependName", knownBaseType, proxiedType, proxyType);
 
       //Assert.That (knownBaseTypeMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
 
@@ -365,29 +365,6 @@ namespace Remotion.Scripting.UnitTests
       }
 #endif
     }
-
-
-    [Test]
-    [Explicit]
-    public void Binder_SelectMethod()
-    {
-      var type = typeof (ProxiedChildChildChild);
-      const string name = "PrependName";
-      var methods = type.GetMethods (BindingFlags.Instance | BindingFlags.Public).Where (
-        mi => (mi.Name == name)).ToArray ();
-      var method = methods[0];
-      var parameterTypes = method.GetParameters().Select (pi => pi.ParameterType).ToArray();
-      //To.ConsoleLine.e (ScriptingHelper.GetAnyPublicInstanceMethodArray (typeof (ProxiedChildChildChild), "PrependName"));
-      var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, methods, parameterTypes, null);
-
-      ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild),
-        typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
-      To.ConsoleLine.nl();
-
-      ScriptingHelper.ToConsoleLine ((MethodInfo) boundMethod);
-    }
-
-
 
 
     [Test]
@@ -603,8 +580,87 @@ namespace Remotion.Scripting.UnitTests
 
 
 
+    [Test]
+    public void BuildProxyType_ComplexGenericArguments_New ()
+    {
+      var knownBaseType = typeof (ProxiedChildGeneric<Proxied,Document>);
+      var knownInterfaceType = typeof (IAmbigous2);
+      var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType, knownInterfaceType });
+      var proxiedType = typeof (ProxiedChildChildGeneric<Proxied, Document>);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_CheckInterfaceMembers"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
 
+      const string methodName = "ProxiedChildGeneric_ComplexGenericArguments_New";
+      AssertHasSameGenericMethod (knownBaseType, proxyType, methodName, 2);
 
+      var proxied = new ProxiedChildChildGeneric<Proxied, Document>();
+
+      var proxyMethodGeneric = GetGenericMethod (proxyType, methodName, 2);
+      Assert.That (proxyMethodGeneric.IsGenericMethod, Is.True);
+
+      var proxyMethod = proxyMethodGeneric.MakeGenericMethod (typeof (string), typeof (int));
+
+      var proxy = Activator.CreateInstance (proxyType,proxied);
+
+      var p0 = new Proxied ("Hello");
+      var p1 = new Document ("Doc");
+      const string p2 = "xyz";
+      const int p3 = 1234567;
+
+      var methodArguments = Create_ProxiedChildGeneric_ComplexGenericArguments_Parameters (p0, p1,p2,p3);
+
+      var resultProxy = (string) proxyMethod.Invoke (proxy, methodArguments);
+
+      To.ConsoleLine.e (() => resultProxy);
+      StringAssert.StartsWith ("ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_New", resultProxy);
+      //Assert.That (resultProxy, Is.EqualTo (((ProxiedChildGeneric<Proxied, Document>) proxied).Pro);
+    }
+
+    [Test]
+    public void BuildProxyType_ComplexGenericArguments_Virtual ()
+    {
+      var knownBaseType = typeof (ProxiedChildGeneric<Proxied, Document>);
+      var knownInterfaceType = typeof (IAmbigous2);
+      var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType, knownInterfaceType });
+      var proxiedType = typeof (ProxiedChildChildGeneric<Proxied, Document>);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_CheckInterfaceMembers"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      const string methodName = "ProxiedChildGeneric_ComplexGenericArguments_Virtual";
+      AssertHasSameGenericMethod (knownBaseType, proxyType, methodName, 2);
+
+      var proxied = new ProxiedChildChildGeneric<Proxied, Document> ();
+
+      var proxyMethodGeneric = GetGenericMethod (proxyType, methodName, 2);
+      Assert.That (proxyMethodGeneric.IsGenericMethod, Is.True);
+
+      var proxyMethod = proxyMethodGeneric.MakeGenericMethod (typeof (string), typeof (int));
+
+      var proxy = Activator.CreateInstance (proxyType, proxied);
+
+      var p0 = new Proxied ("Hello");
+      var p1 = new Document ("Doc");
+      const string p2 = "xyz";
+      const int p3 = 1234567;
+
+      var methodArguments = Create_ProxiedChildGeneric_ComplexGenericArguments_Parameters (p0, p1, p2, p3);
+
+      var resultProxy = (string) proxyMethod.Invoke (proxy, methodArguments);
+
+      To.ConsoleLine.e (() => resultProxy);
+      StringAssert.StartsWith ("ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_Virtual", resultProxy);
+    }
+
+    public object[] Create_ProxiedChildGeneric_ComplexGenericArguments_Parameters<T0,T1,T2,T3> (T0 t0, T1 t1,
+      T2 t2, T3 t3)
+    {
+      var p0 = new List<List<T0>> { new List<T0> {t0}};
+      var p1 = new Dictionary<T2, T1> { {t2,t1}};
+      var p2 = new List<GenericWrapper<T2>> { new GenericWrapper<T2> (t2) };
+      var p3 = new GenericWrapper<T3> (t3);
+
+      return new object[] { p0,p1,p2,p3};
+    }
 
 
 
