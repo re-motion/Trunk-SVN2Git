@@ -135,20 +135,6 @@ namespace Remotion.Scripting
 
       var methodAttributes = methodInfo.Attributes;
 
-      // Proxy shall expose methods derived from Object base class coming from proxied type, not its own.
-      // TODO: Test !
-      //if (ObjectMethods.Contains (methodInfo))
-      //{
-      //  if (methodInfo.Name == "GetType")
-      //  {
-      //    methodAttributes |= MethodAttributes.NewSlot | MethodAttributes.HideBySig;
-      //  }
-      //  else
-      //  {
-      //    methodAttributes |= MethodAttributes.Virtual | MethodAttributes.ReuseSlot;
-      //  }
-      //}
-
       CustomMethodEmitter methodEmitter;
 
 

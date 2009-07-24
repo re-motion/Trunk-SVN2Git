@@ -369,22 +369,28 @@ namespace Remotion.Scripting.UnitTests
 
     [Test]
     [Explicit]
-    public void BuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType ()
+    public void BuildProxyType_MethodOverridden ()
     {
       //ScriptingHelper.ToConsoleLine ("PrependNameVirtual", typeof (Proxied), typeof (ProxiedChild),
       //  typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
 
       AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (
         typeof (ProxiedChildChild), typeof (ProxiedChildChildChild), false, "PrependNameVirtual");
+    }
+
+    [Test]
+    public void BuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType ()
+    {
       AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (
         typeof (ProxiedChildChild), typeof (ProxiedChildChild), false, "PrependNameVirtual");
 
     }
 
-    private void AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (Type knownBaseType, Type proxiedType, bool expectProxiedCallDifferent, string methodName)
+    private void AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (
+      Type knownBaseType, Type proxiedType, bool expectProxiedCallDifferent, string methodName)
     {
       var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType });
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType ();
 
       var proxiedTypeInstance = Activator.CreateInstance (proxiedType, "Peter");
@@ -395,10 +401,10 @@ namespace Remotion.Scripting.UnitTests
 
       //ScriptingHelper.ToConsoleLine ("PrependNameVirtual", proxyType);
 
-      InvokeMethod (proxy, methodName, argument);
+      var proxyResult = InvokeMethod (proxy, methodName, argument);
 
       Assert.That (InvokeMethod (knownBaseTypeInstance, methodName, argument), Is.EqualTo (expected));
-      Assert.That (InvokeMethod (proxy, methodName, argument), Is.EqualTo (expected));
+      Assert.That (proxyResult, Is.EqualTo (expected));
 
       //if (expectProxiedCallDifferent)
       //{
@@ -620,8 +626,9 @@ namespace Remotion.Scripting.UnitTests
     public void BuildProxyType_ComplexGenericArguments_Virtual ()
     {
       var knownBaseType = typeof (ProxiedChildGeneric<Proxied, Document>);
-      var knownInterfaceType = typeof (IAmbigous2);
-      var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType, knownInterfaceType });
+      //var knownInterfaceType = typeof (IAmbigous2);
+      //var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType, knownInterfaceType });
+      var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType });
       var proxiedType = typeof (ProxiedChildChildGeneric<Proxied, Document>);
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_CheckInterfaceMembers"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType ();
@@ -645,10 +652,13 @@ namespace Remotion.Scripting.UnitTests
 
       var methodArguments = Create_ProxiedChildGeneric_ComplexGenericArguments_Parameters (p0, p1, p2, p3);
 
-      var resultProxy = (string) proxyMethod.Invoke (proxy, methodArguments);
+      var proxyResult = (string) proxyMethod.Invoke (proxy, methodArguments);
+      //var proxyResult = (string) InvokeMethod (proxy, methodName, methodArguments);
+      //proxy.GetType ().InvokeMember (
+      //    methodName, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, proxy, methodArguments);
 
       //To.ConsoleLine.e (() => resultProxy);
-      StringAssert.StartsWith ("ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_Virtual", resultProxy);
+      StringAssert.StartsWith ("ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_Virtual", proxyResult);
     }
 
     public object[] Create_ProxiedChildGeneric_ComplexGenericArguments_Parameters<T0,T1,T2,T3> (T0 t0, T1 t1,

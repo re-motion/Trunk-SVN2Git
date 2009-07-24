@@ -110,7 +110,8 @@ namespace Remotion.Scripting
         if (proxiedTypeMethodInKnownBaseType != null && // method exists in first known base type
           IsMethodBound (proxiedTypeMethodInKnownBaseType, _publicMethodsInFirstKnwonBaseType)) // method is visible in first known base type
         {
-          _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
+          //_forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
+          _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethodInKnownBaseType);
         }
         else
         {
