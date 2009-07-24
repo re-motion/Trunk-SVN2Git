@@ -14,8 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using Microsoft.Scripting.Runtime;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -26,21 +30,44 @@ namespace Remotion.Scripting.UnitTests
     private readonly ScriptContext _scriptContext = ScriptContext.Create ("Remotion.Scripting.StableBindingProxyProviderTest",
       new TypeLevelTypeFilter (new[] { typeof (ProxiedChildChildChild) }));
 
+
     [Test]
-    [Ignore]
+    public void BuildProxyType ()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+
+      var proxied = new ProxiedChildChildChild ("abrakadava");
+      const string attributeName = "PrependName";
+
+      var proxyType = provider.BuildProxyType (proxied);
+
+      var proxyMethod = proxyType.GetAllInstanceMethods(attributeName,typeof(string)).Single();
+
+      //proxyType.GetMethods().Process ((mi => ScriptingHelper.ToConsoleLine (mi)));
+      //To.ConsoleLine.e (proxyMethods);
+      //proxyMethods.Process((mi => ScriptingHelper.ToConsoleLine (mi)));
+
+      Assert.That (proxyMethod, Is.Not.Null);
+    }
+
+
+    [Test]
     public void GetTypeMemberProxy ()
     {
       var provider = new StableBindingProxyProvider (
         new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
 
-      var proxied = new ProxiedChildChildChild("abrakadava");
+      var proxied = new ProxiedChildChildChild ("abrakadava");
       const string attributeName = "PrependName";
 
-      var typeMemberProxy = provider.GetTypeMemberProxy (proxied.GetType(), attributeName);
+      var typeMemberProxy = provider.GetMemberProxy (proxied, attributeName);
+
+      var customMemberTester = new GetCustomMemberTester (typeMemberProxy);
 
       const string scriptFunctionSourceCode = @"
-def TestTypeMemberProxy(typeMemberProxy) :
-  return typeMemberProxy.PrependName(' simsalbum',2)
+def TestTypeMemberProxy(customMemberTester) :
+  return customMemberTester.PrependName('simsalbum',2)
 ";
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
@@ -48,9 +75,29 @@ def TestTypeMemberProxy(typeMemberProxy) :
         _scriptContext, ScriptLanguageType.Python,
         scriptFunctionSourceCode, privateScriptEnvironment, "TestTypeMemberProxy");
 
-      var result = testTypeMemberProxyScript.Execute (typeMemberProxy);
-      Assert.That (result, Is.EqualTo ("ProxiedChildChildChild "));
+      var result = testTypeMemberProxyScript.Execute (customMemberTester);
+      Assert.That (result, Is.EqualTo ("ProxiedChild abrakadava simsalbum, THE NUMBER=2"));
 
+    }
+  }
+
+  /// <summary>
+  /// Stores a pythonScriptEngine.Operations.GetMember(proxy, attributeName)-wrapper-object and returns it 
+  /// in calls to GetCustomMember.
+  /// </summary>
+  public class GetCustomMemberTester
+  {
+    private readonly object _typeMemberProxy;
+
+    public GetCustomMemberTester (Object typeMemberProxy)
+    {
+      _typeMemberProxy = typeMemberProxy;
+    }
+
+    [SpecialName]
+    public object GetCustomMember (string name)
+    {
+      return _typeMemberProxy;
     }
   }
 }
