@@ -92,11 +92,12 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void EqualsEverything ()
     {
-      var equal = CompoundValueEqualityComparer<Object>.Equal;
-      Assert.That (equal == equal, Is.True);
-      Assert.That (equal.Equals(new object ()), Is.True);
-      Assert.That (equal.Equals (true), Is.True);
-      Assert.That (equal.Equals (false), Is.True);
+      Assert.Fail ("Fix this.");
+      // var equal = CompoundValueEqualityComparer<Object>.Equal;
+      //Assert.That (equal == equal, Is.True);
+      //Assert.That (equal.Equals (new object ()), Is.True);
+      //Assert.That (equal.Equals (true), Is.True);
+      //Assert.That (equal.Equals (false), Is.True);
     }
 
   }

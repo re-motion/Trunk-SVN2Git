@@ -196,10 +196,7 @@ namespace Remotion.Web.UI
       IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
       IResourceManager pageResourceManager = ResourceManagerUtility.GetResourceManager (_page.WrappedInstance, true);
 
-      if (pageResourceManager == null)
-        _cachedResourceManager = new ResourceManagerSet (localResourceManager);
-      else
-        _cachedResourceManager = new ResourceManagerSet (localResourceManager, pageResourceManager);
+      _cachedResourceManager = new ResourceManagerSet (localResourceManager, pageResourceManager);
 
       return _cachedResourceManager;
     }

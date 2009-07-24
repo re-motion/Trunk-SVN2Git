@@ -95,14 +95,13 @@ public class FormGridLabel: Label, ISmartControl
   {
     base.OnPreRender (e);
 
-    IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true);
+    IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true) ?? NullResourceManager.Instance;
     LoadResources (resourceManager);
   }
 
   protected virtual void LoadResources (IResourceManager resourceManager)
   {
-    if (resourceManager == null)
-      return;
+    ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
     if (ControlHelper.IsDesignMode ((Control) this))
       return;

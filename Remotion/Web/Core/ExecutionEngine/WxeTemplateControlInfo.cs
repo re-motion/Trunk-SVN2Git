@@ -137,7 +137,7 @@ namespace Remotion.Web.ExecutionEngine
     /// </param>
     protected IResourceManager GetResourceManager (Type localResourcesType)
     {
-      Remotion.Utilities.ArgumentUtility.CheckNotNull ("localResourcesType", localResourcesType);
+      ArgumentUtility.CheckNotNull ("localResourcesType", localResourcesType);
 
       //  Provider has already been identified.
       if (_cachedResourceManager != null)
@@ -149,10 +149,7 @@ namespace Remotion.Web.ExecutionEngine
       Control namingContainer = _control.NamingContainer ?? (Control) _control;
       IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (namingContainer, true);
 
-      if (namingContainerResourceManager == null)
-        _cachedResourceManager = new ResourceManagerSet (localResourceManager);
-      else
-        _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
+      _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
 
       return _cachedResourceManager;
     }

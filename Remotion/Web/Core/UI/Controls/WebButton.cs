@@ -102,7 +102,7 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnPreRender (e);
 
-      IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true);
+      IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true) ?? NullResourceManager.Instance;
       LoadResources (resourceManager);
 
       if (_isDefaultButton && string.IsNullOrEmpty (Page.Form.DefaultButton))
@@ -308,8 +308,7 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Loads the resources into the control's properties. </summary>
     protected virtual void LoadResources (IResourceManager resourceManager)
     {
-      if (resourceManager == null)
-        return;
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
       if (ControlHelper.IsDesignMode ((IControl) this))
         return;

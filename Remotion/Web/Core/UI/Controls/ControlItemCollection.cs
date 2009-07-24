@@ -294,8 +294,7 @@ namespace Remotion.Web.UI.Controls
 
     public void LoadResources (IResourceManager resourceManager)
     {
-      if (resourceManager == null)
-        return;
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
       for (int i = 0; i < InnerList.Count; i++)
       {

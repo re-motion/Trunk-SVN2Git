@@ -420,8 +420,7 @@ namespace Remotion.Web.UI.Controls
 
     public virtual void LoadResources (IResourceManager resourceManager)
     {
-      if (resourceManager == null)
-        return;
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (Category);
       if (!StringUtility.IsNullOrEmpty (key))

@@ -108,8 +108,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void LoadResources (IResourceManager resourceManager)
     {
-      if (resourceManager == null)
-        return;
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+
       base.LoadResources (resourceManager);
 
       string key = ResourceManagerUtility.GetGlobalResourceKey (Text);

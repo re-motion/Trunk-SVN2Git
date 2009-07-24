@@ -351,7 +351,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <returns>An <see cref="IResourceManager"/> from which all resources for this control can be obtained.</returns>
     protected IResourceManager GetResourceManager (Type localResourcesType)
     {
-      Remotion.Utilities.ArgumentUtility.CheckNotNull ("localResourcesType", localResourcesType);
+      ArgumentUtility.CheckNotNull ("localResourcesType", localResourcesType);
 
       //  Provider has already been identified.
       if (_cachedResourceManager != null)
@@ -362,10 +362,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
       IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
 
-      if (namingContainerResourceManager == null)
-        _cachedResourceManager = new ResourceManagerSet (localResourceManager);
-      else
-        _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
+      _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
 
       return _cachedResourceManager;
     }
@@ -452,8 +449,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Loads the resources into the control's properties. </summary>
     protected virtual void LoadResources (IResourceManager resourceManager)
     {
-      if (resourceManager == null)
-        return;
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+
       if (IsDesignMode)
         return;
 

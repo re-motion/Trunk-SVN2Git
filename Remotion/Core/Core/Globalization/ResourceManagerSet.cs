@@ -69,7 +69,7 @@ namespace Remotion.Globalization
         ResourceManagerSet rmset = rm as ResourceManagerSet;
         if (rmset != null)
           list.AddRange (rmset);
-        else if (rm != null)
+        else if (rm != null && !rm.IsNull)
           list.Add (rm);
       }
 

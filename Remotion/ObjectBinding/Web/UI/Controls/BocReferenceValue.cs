@@ -304,6 +304,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Loads the resources into the control's properties. </summary>
     protected override void LoadResources (IResourceManager resourceManager)
     {
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+
       base.LoadResources (resourceManager);
 
       string key;

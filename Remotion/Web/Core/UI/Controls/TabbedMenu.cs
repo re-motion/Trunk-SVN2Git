@@ -178,7 +178,7 @@ namespace Remotion.Web.UI.Controls
       base.OnPreRender (e);
       SaveSelection ();
 
-      IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true);
+      IResourceManager resourceManager = ResourceManagerUtility.GetResourceManager (this, true) ?? NullResourceManager.Instance;
       LoadResources (resourceManager);
     }
 
@@ -537,18 +537,10 @@ namespace Remotion.Web.UI.Controls
 
       //  Get the resource managers
 
-      IResourceManager localResourceManager;
-      if (localResourcesType == null)
-        localResourceManager = NullResourceManager.Instance;
-      else
-        localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
-      IResourceManager namingContainerResourceManager =
-          ResourceManagerUtility.GetResourceManager (NamingContainer, true);
+      IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
+      IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
 
-      if (namingContainerResourceManager == null)
-        _cachedResourceManager = new ResourceManagerSet (localResourceManager);
-      else
-        _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
+      _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
 
       return _cachedResourceManager;
     }
@@ -556,8 +548,8 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Loads the resources into the control's properties. </summary>
     protected virtual void LoadResources (IResourceManager resourceManager)
     {
-      if (resourceManager == null)
-        return;
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+
       if (IsDesignMode)
         return;
 

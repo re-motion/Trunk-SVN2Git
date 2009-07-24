@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
 using Remotion.Web.UI.Controls.Rendering.WebTabStrip;
@@ -136,6 +137,8 @@ namespace Remotion.Web.UI.Controls
 
     public override void LoadResources (IResourceManager resourceManager)
     {
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+
       base.LoadResources (resourceManager);
       if (Command != null)
         Command.LoadResources (resourceManager);
