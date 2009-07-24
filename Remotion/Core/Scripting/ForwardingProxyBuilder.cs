@@ -149,12 +149,21 @@ namespace Remotion.Scripting
         // desired attributes such as Final, Virtual and HideBySig.
         
         //methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
-
-        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes & ~MethodAttributes.Virtual); 
+        // TODO: This works, but check if we can move forwarding proxy calling non-virtual to better spot.
+        // Note: Extending methodEmitter.ImplementByDelegating to accept a callVirtual flag (see below)
+        // leads to PEVerify emitting errors and warnings. 
+        //public CustomMethodEmitter ImplementByDelegating (TypeReference implementer, MethodInfo methodToCall, bool callVirtual)
+        //{
+        //  AddDelegatingCallStatements (methodToCall, implementer, callVirtual);
+        //  return this;
+        //}
+        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes & ~MethodAttributes.Virtual);  // !!!!!!!!!!!!!!!!!!!!
       }
 
-      methodEmitter.CopyParametersAndReturnType (methodInfo); 
+      methodEmitter.CopyParametersAndReturnType (methodInfo);
+
       ImplementForwardingMethod (methodInfo, methodEmitter);
+      //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo, false); // !!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     private static HashSet<MethodInfo> s_objectMethods;
