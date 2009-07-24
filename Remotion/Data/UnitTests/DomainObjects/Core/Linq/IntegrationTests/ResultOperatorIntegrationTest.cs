@@ -179,5 +179,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (orders, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4);
     }
+
+    [Test]
+    public void Query_WithGroupBy ()
+    {
+      var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+                  where oi.Order.OrderNumber == 1 || oi.Order.OrderNumber == 3
+                  orderby oi.Order.OrderNumber
+                  group oi.Product by oi.Order;
+
+      var groupings = query.ToArray ();
+      Assert.That (groupings.Length, Is.EqualTo (2));
+
+      Assert.That (groupings[0].Key, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (groupings[0].ToArray (), Is.EquivalentTo (new[] { "Mainboard", "CPU Fan" }));
+
+      Assert.That (groupings[1].Key, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order2)));
+      Assert.That (groupings[1].ToArray (), Is.EquivalentTo (new[] { "Harddisk" }));
+    }
   }
 }

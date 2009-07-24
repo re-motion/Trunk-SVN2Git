@@ -22,7 +22,9 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.EagerFetching;
+using Remotion.Logging;
 using Remotion.Utilities;
 using System.Reflection;
 using System.Linq;
@@ -35,6 +37,8 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class DomainObjectQueryExecutor : IQueryExecutor
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (DomainObjectQueryExecutor));
+
     /// <summary>
     /// Initializes a new instance of this <see cref="DomainObjectQueryExecutor"/> class.
     /// </summary>
@@ -91,8 +95,53 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests, QueryType.Collection);
-      return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable ().Cast<T>();
+      var groupResultOperator = queryModel.ResultOperators.OfType<GroupResultOperator>().FirstOrDefault();
+      if (groupResultOperator != null)
+      {
+        if (fetchRequests.Any ())
+        {
+          var message = "Cannot execute a query with a GroupBy clause that specifies fetch requests because GroupBy is simulated in-memory.";
+          throw new NotSupportedException (message);
+        }
+
+        return ExecuteCollectionWithGrouping<T> (queryModel, groupResultOperator);
+      }
+      else
+      {
+        IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests, QueryType.Collection);
+        return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable().Cast<T>();
+      }
+    }
+
+    private IEnumerable<T> ExecuteCollectionWithGrouping<T> (QueryModel queryModel, GroupResultOperator groupResultOperator)
+    {
+      if (s_log.IsWarnEnabled)
+      {
+        var message = string.Format (
+            "Executing a group-by operation in memory. This can lead to performance problems if the grouping involves properties that "
+            + "are loaded lazily. In such cases it can be better to execute a select query with respective Fetch hints on the database, and then "
+            + "group in memory via LINQ-to-Objects. Executed query: '{0}'.",
+            queryModel);
+        s_log.Warn (message);
+      }
+
+      if (queryModel.ResultOperators.Count != 1)
+      {
+        var message = "Cannot execute a query with a GroupBy clause that contains other result operators because GroupBy is simulated in-memory.";
+        throw new NotSupportedException (message);
+      }
+
+      queryModel.ResultOperators.RemoveAt (queryModel.ResultOperators.Count - 1);
+
+      var executeCollectionMethod =
+          typeof (DomainObjectQueryExecutor)
+              .GetMethod ("ExecuteCollection")
+              .GetGenericMethodDefinition ()
+              .MakeGenericMethod (queryModel.SelectClause.Selector.Type);
+
+      var databaseResult = executeCollectionMethod.Invoke (this, new object[] { queryModel, new FetchRequestBase[0] });
+      var inputData = new ExecuteInMemorySequenceData ((IEnumerable) databaseResult, queryModel.SelectClause.Selector);
+      return groupResultOperator.ExecuteInMemory (inputData).GetCurrentSequenceInfo<T> ().Sequence;
     }
 
     /// <summary>

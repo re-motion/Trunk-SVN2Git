@@ -246,18 +246,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
     #region OrderItem
 
     // Order: Order1
+    // Product: Mainboard
     public readonly ObjectID OrderItem1 = new ObjectID ("OrderItem", new Guid ("{2F4D42C7-7FFA-490d-BFCD-A9101BBF4E1A}"));
 
     // Order: Order1
+    // Product: CPU Fan
     public readonly ObjectID OrderItem2 = new ObjectID ("OrderItem", new Guid ("{AD620A11-4BC4-4791-BCF4-A0770A08C5B0}"));
 
     // Order: Order2
+    // Product: Harddisk
     public readonly ObjectID OrderItem3 = new ObjectID ("OrderItem", new Guid ("{0D7196A5-8161-4048-820D-B1BBDABE3293}"));
 
     // Order: Order3
+    // Product: Hitchhiker's guide
     public readonly ObjectID OrderItem4 = new ObjectID ("OrderItem", new Guid ("{DC20E0EB-4B55-4f23-89CF-6D6478F96D3B}"));
 
     // Order: Order4
+    // Product: Blumentopf
     public readonly ObjectID OrderItem5 = new ObjectID ("OrderItem", new Guid ("{EA505094-770A-4505-82C1-5A4F94F56FE2}"));
 
     #endregion
