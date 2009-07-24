@@ -43,7 +43,7 @@ public class TestTabbedForm : TestWxeBasePage
 
   public TestTabbedForm ()
   {
-    MasterPageFile = (Global.PreferStandardModeRendering) ? "~/StandardMode.Master" : "~/QuirksMode.Master";
+    MasterPageFile = Global.PreferQuirksModeRendering ? "~/QuirksMode.Master" : "~/StandardMode.Master";
   }
 
   protected TestTabbedFormWxeFunction Function

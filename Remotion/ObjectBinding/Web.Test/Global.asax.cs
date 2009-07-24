@@ -43,7 +43,7 @@ namespace OBWTest
       InitializeComponent();
     }
 
-    public static bool PreferStandardModeRendering { get; private set; }
+    public static bool PreferQuirksModeRendering { get; private set; }
 
     public XmlReflectionBusinessObjectStorageProvider XmlReflectionBusinessObjectStorageProvider
     {
@@ -58,7 +58,7 @@ namespace OBWTest
     protected void Application_Start (Object sender, EventArgs e)
     {
       XmlConfigurator.Configure();
-      PreferStandardModeRendering = true;
+      PreferQuirksModeRendering = false;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))
@@ -74,10 +74,10 @@ namespace OBWTest
 
       IWindsorContainer container = new WindsorContainer();
 
-      if (PreferStandardModeRendering)
-        RegisterRendererFactories (container, "StandardMode");
-      else
+      if (PreferQuirksModeRendering)
         RegisterRendererFactories (container, "QuirksMode");
+
+      RegisterRendererFactories (container, "StandardMode");
       
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));

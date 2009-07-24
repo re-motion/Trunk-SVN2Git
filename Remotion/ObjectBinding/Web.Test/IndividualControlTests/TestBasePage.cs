@@ -74,7 +74,7 @@ public class TestBasePage :
           new HttpContextWrapper(Context),
           typeof (ResourceUrlResolver),
           ResourceType.Html,
-          Global.PreferStandardModeRendering ? ResourceTheme.Standard : ResourceTheme.Legacy,
+          Global.PreferQuirksModeRendering ? ResourceTheme.Legacy : ResourceTheme.Standard,
           "Style.css");
       
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);

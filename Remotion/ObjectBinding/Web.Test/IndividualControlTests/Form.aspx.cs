@@ -32,7 +32,7 @@ namespace OBWTest.IndividualControlTests
 
     public IndividualControlTestForm ()
     {
-      MasterPageFile = (Global.PreferStandardModeRendering) ? "~/StandardMode.Master" : "~/QuirksMode.Master";
+      MasterPageFile = (Global.PreferQuirksModeRendering) ? "~/QuirksMode.Master" : "~/StandardMode.Master";
     }
 
     protected override void RegisterEventHandlers ()
