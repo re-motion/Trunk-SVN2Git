@@ -675,6 +675,26 @@ namespace Remotion.Scripting.UnitTests
 
 
 
+    [Test]
+    public void BuildProxyType_NoKnownBaseType ()
+    {
+      var typeFilter = new TypeLevelTypeFilter (new[]{typeof(IAmbigous1)});
+      var proxiedType = typeof (ProxiedChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_NoKnownBaseType"));
+      // Having no known base type must not throw
+      stableBindingProxyBuilder.BuildProxyType ();
+    }
+
+    [Test]
+    public void BuildProxyType_NoKnownBaseTypeAndNoKnownInterfaces ()
+    {
+      var typeFilter = new TypeLevelTypeFilter (new Type[0]);
+      var proxiedType = typeof (ProxiedChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_NoKnownBaseType"));
+      // Having no known base type and no known interfaces must not throw
+      stableBindingProxyBuilder.BuildProxyType ();
+    }
+
 
     private void AssertHasSameMethod (Type type0, Type type1, string methodName, params Type[] parameterTypes)
     {

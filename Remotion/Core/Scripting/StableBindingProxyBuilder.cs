@@ -44,7 +44,7 @@ namespace Remotion.Scripting
     private readonly Dictionary<MethodInfo, HashSet<MethodInfo>> _classMethodToInterfaceMethodsMap = new Dictionary<MethodInfo, HashSet<MethodInfo>> ();
     private readonly ModuleScope _moduleScope;
     private readonly Type[] _knownInterfaces;
-    private readonly MethodInfo[] _publicMethodsInFirstKnwonBaseType;
+    private readonly MethodInfo[] _publicMethodsInFirstKnownBaseType;
     private readonly Type _firstKnownBaseType;
     private readonly StableMetadataTokenToMethodInfoMap _knownBaseTypeStableMetadataTokenToMethodInfoMap;
 
@@ -64,7 +64,7 @@ namespace Remotion.Scripting
       _firstKnownBaseType = GetFirstKnownBaseType();
       if (_firstKnownBaseType != null)
       {
-        _publicMethodsInFirstKnwonBaseType = _firstKnownBaseType.GetMethods().ToArray();
+        _publicMethodsInFirstKnownBaseType = _firstKnownBaseType.GetMethods().ToArray();
         _knownBaseTypeStableMetadataTokenToMethodInfoMap = new StableMetadataTokenToMethodInfoMap (_firstKnownBaseType);
       }
     }
@@ -102,13 +102,16 @@ namespace Remotion.Scripting
       var methodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
       foreach (var proxiedTypeMethod in methodsInProxiedType)
       {
-        var proxiedTypeMethodInKnownBaseType = 
-          _knownBaseTypeStableMetadataTokenToMethodInfoMap.GetMethod (proxiedTypeMethod);
+        MethodInfo proxiedTypeMethodInKnownBaseType = null;
+        if (_firstKnownBaseType != null)
+        {
+          proxiedTypeMethodInKnownBaseType = _knownBaseTypeStableMetadataTokenToMethodInfoMap.GetMethod (proxiedTypeMethod);
+        }
 
         //if (IsMethodKnownInBaseType (proxiedTypeMethod) && 
         //  IsMethodBound (proxiedTypeMethod, _publicMethodsInFirstKnwonBaseType))
         if (proxiedTypeMethodInKnownBaseType != null && // method exists in first known base type
-          IsMethodBound (proxiedTypeMethodInKnownBaseType, _publicMethodsInFirstKnwonBaseType)) // method is visible in first known base type
+          IsMethodBound (proxiedTypeMethodInKnownBaseType, _publicMethodsInFirstKnownBaseType)) // method is visible in first known base type
         {
           //_forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
           _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethodInKnownBaseType);
@@ -159,7 +162,7 @@ namespace Remotion.Scripting
     // to get rid of quadratic runtime behavior.
     public bool IsMethodKnownInBaseType (MethodInfo method)
     {
-      foreach (var baseTypeMethod in _publicMethodsInFirstKnwonBaseType)
+      foreach (var baseTypeMethod in _publicMethodsInFirstKnownBaseType)
       {
         if (!baseTypeMethod.IsSpecialName)
         {

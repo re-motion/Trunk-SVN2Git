@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Castle.DynamicProxy;
 using Microsoft.Scripting.Hosting;
 using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
@@ -66,6 +67,17 @@ namespace Remotion.Scripting.UnitTests
         ScriptingHelper.GetAnyInstanceMethodArray (type, methodName).Process (mi => ScriptingHelper.ToConsoleLine (mi));
       }
     }
+
+
+    public static ModuleScope CreateModuleScope (string namePostfix)
+    {
+      string name = "Remotion.Scripting.CodeGeneration.Generated.Test." + namePostfix;
+      string nameSigned = name + ".Signed";
+      string nameUnsigned = name + ".Unsigned";
+      const string ext = ".dll";
+      return new ModuleScope (true, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
+    }
+
 
     public static MethodInfo GetAnyInstanceMethod (Type type, string name)
     {

@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using Castle.DynamicProxy;
+
 namespace Remotion.Scripting
 {
   /// <summary>
@@ -25,6 +28,22 @@ namespace Remotion.Scripting
   /// </remarks>
   public class StableBindingProxyProvider
   {
-    
+    private readonly ITypeFilter _typeFilter;
+    private readonly ModuleScope _moduleScope;
+
+    public StableBindingProxyProvider (ITypeFilter typeFilter, ModuleScope moduleScope)
+    {
+      _typeFilter = typeFilter;
+      _moduleScope = moduleScope;
+    }
+
+    public object GetTypeMemberProxy (Object proxied, string attributeName)
+    {
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxied.GetType(), _typeFilter, _moduleScope);
+      var proxyType = stableBindingProxyBuilder.BuildProxyType();
+      var proxy = Activator.CreateInstance (proxyType, proxied);
+      var typeMemberProxy = ScriptingHost.GetScriptEngine(ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
+      return typeMemberProxy;
+    }
   }
 }
