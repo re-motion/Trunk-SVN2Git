@@ -27,13 +27,13 @@
           <td></td>
           <td><remotion:BocLiteral id=CVField runat="server" datasourcecontrol="CurrentObject" PropertyIdentifier="CVString" /></td>
           <td>
-            <p>bound</p></td>
+            bound</td>
           <td style="WIDTH: 20%"><asp:label id=CVFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
           <td><remotion:BocLiteral id=UnboundCVField runat="server" /></td>
           <td>
-            <p>unbound, value not set</p></td>
+            unbound, value not set</td>
           <td style="WIDTH: 20%"><asp:label id=UnboundCVFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
       </table>
       <p><remotion:webbutton id=CVTestSetNullButton runat="server" Text="VC Set Null" width="220px"/><remotion:webbutton id=CVTestSetNewValueButton runat="server" Text="CVSet New Value" width="220px"/></p>
