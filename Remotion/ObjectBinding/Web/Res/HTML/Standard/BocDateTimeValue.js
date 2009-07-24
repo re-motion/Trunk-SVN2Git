@@ -18,7 +18,6 @@ function BocDateTimeValue() {
 }
 
 BocDateTimeValue.AdjustPositions = function(control) {
-    console.log(control.attr('id'));
     var pixelsPerCharacter = 7;
 
     var date = control.children(':eq(0)');
@@ -67,18 +66,12 @@ BocDateTimeValue.AdjustPositions = function(control) {
         timeWidth = timeMinWidth;
     }
 
-    var cell = control.parents('td.bocListDataCellOdd, td.bocListDataCellEven');
-    var cellWidth = cell.width();
-    console.log('cell width before: ' + cellWidth + ', controlWidthBefore: ' + controlWidthBefore + ', parentWidthIncrease: ' + parentWidthIncrease);
-    control.width(controlWidthBefore + parentWidthIncrease);
-
-    console.log('cell width after: ' + cellWidth + ', parentWidthIncrease: ' + parentWidthIncrease);
-    cell.width(cellWidth);
+    if( parentWidthIncrease > 0 )
+        control.width(controlWidthBefore + parentWidthIncrease);
 
     date.width(dateWidth);
     time.width(timeWidth);
 
-    var dateOuterWidth = date.outerWidth();
-    button.css('left', dateOuterWidth);
+    button.css('left', date.outerWidth());
     button.css('zIndex', '2');
 };
