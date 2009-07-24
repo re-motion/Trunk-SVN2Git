@@ -547,7 +547,6 @@
     <Compile Include="Linq\Clauses\ResultOperators\DefaultIfEmptyResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ExceptResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ExecuteInMemoryValueDataTest.cs" />
-    <Compile Include="Linq\Clauses\ResultOperators\InputDependentExpressionTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\IntersectResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\LongCountResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\OfTypeResultOperatorTest.cs" />
