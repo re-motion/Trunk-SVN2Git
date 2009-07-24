@@ -307,17 +307,17 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [Explicit]
     public void BuildProxyType_MethodHiddenWithNew_ProxiedTypeIsKnownBaseType ()
     {
-      // FAILS with "AmbiguousMethodNameException : Method name "PrependName" is ambiguous in type ProxiedChildChild."
+      // Failed with "AmbiguousMethodNameException : Method name "PrependName" is ambiguous in type ProxiedChildChild."
       // Problem: Both PrependName methods (one coming from Proxied base class and one coming from proxied class ProxiedChildChild) 
       // get implemented in the proxy, since they both are known due to knownBaseType == proxiedType.
       // The difference to ProxiedChildChild lies in the fact that the DeclaringType of both PrependName methods in the proxy
       // is the proxyType itself, whereas in ProxiedChildChild one method has Proxied and the other ProxiedChildChild.
+      // Solution: Use Type.DefaultBinder.SelectMethod to find the correct method to expose in the proxy.
 
-      ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild),
-        typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
+      //ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild),
+      //  typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
 
       AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChildChild), false, "PrependName");
       AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChild), false, "PrependName");
@@ -611,7 +611,7 @@ namespace Remotion.Scripting.UnitTests
 
       var resultProxy = (string) proxyMethod.Invoke (proxy, methodArguments);
 
-      To.ConsoleLine.e (() => resultProxy);
+      //To.ConsoleLine.e (() => resultProxy);
       StringAssert.StartsWith ("ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_New", resultProxy);
       //Assert.That (resultProxy, Is.EqualTo (((ProxiedChildGeneric<Proxied, Document>) proxied).Pro);
     }
@@ -647,7 +647,7 @@ namespace Remotion.Scripting.UnitTests
 
       var resultProxy = (string) proxyMethod.Invoke (proxy, methodArguments);
 
-      To.ConsoleLine.e (() => resultProxy);
+      //To.ConsoleLine.e (() => resultProxy);
       StringAssert.StartsWith ("ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_Virtual", resultProxy);
     }
 
