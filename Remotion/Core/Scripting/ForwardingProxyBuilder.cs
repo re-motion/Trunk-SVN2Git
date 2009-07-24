@@ -147,7 +147,10 @@ namespace Remotion.Scripting
       {
         // Note: Masking the attributes with MethodAttributes.MemberAccessMask below, would remove 
         // desired attributes such as Final, Virtual and HideBySig.
-        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
+        
+        //methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
+
+        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes & ~MethodAttributes.Virtual); 
       }
 
       methodEmitter.CopyParametersAndReturnType (methodInfo); 

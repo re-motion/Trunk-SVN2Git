@@ -33,6 +33,7 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class StableBindingProxyBuilderTest
   {
+    private readonly MethodInfoEqualityComparer _methodInfoEqualityComparerIgnoreVirtual = new MethodInfoEqualityComparer(~(MethodAttributes.Virtual | MethodAttributes.ReservedMask | MethodAttributes.VtableLayoutMask));
 
 
     [Test]
@@ -681,7 +682,8 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (methodFromType0, Is.Not.Null);
       var methodFromType1 = type1.GetMethod (methodName, parameterTypes);
       Assert.That (methodFromType1, Is.Not.Null);
-      Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
+      //Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
+      Assert.That (_methodInfoEqualityComparerIgnoreVirtual.Equals (methodFromType0, methodFromType1), Is.True);
     }
 
     private void AssertHasSameExplicitInterfaceMethod (Type interfaceType, Type type0, Type type1, string methodName, params Type[] parameterTypes)
@@ -691,7 +693,8 @@ namespace Remotion.Scripting.UnitTests
       var methodFromType1 = ScriptingHelper.GetExplicitInterfaceMethod (interfaceType, type1, methodName, parameterTypes);
       Assert.That (methodFromType1, Is.Not.Null);
       //var methodFromType1 = type1.GetMethod (methodName, parameterTypes);
-      Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
+      //Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
+      Assert.That (_methodInfoEqualityComparerIgnoreVirtual.Equals (methodFromType0, methodFromType1), Is.True);
     }
 
     private void AssertHasSameGenericMethod (Type type0, Type type1, string methodName, int numberOfGenericArguments)
@@ -701,7 +704,8 @@ namespace Remotion.Scripting.UnitTests
       var methodFromType1 = GetGenericMethod (type1, methodName, numberOfGenericArguments);
       Assert.That (methodFromType1, Is.Not.Null);
       //ScriptingHelper.ToConsoleLine (methodFromType0); ScriptingHelper.ToConsoleLine (methodFromType1);
-      Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
+      //Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
+      Assert.That (_methodInfoEqualityComparerIgnoreVirtual.Equals (methodFromType0, methodFromType1), Is.True);
     }
 
     public static MethodInfo GetGenericMethod (Type type, string methodName, int numberOfGenericArguments)
