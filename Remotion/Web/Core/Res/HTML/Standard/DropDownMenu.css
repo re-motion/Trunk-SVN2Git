@@ -3,7 +3,6 @@
 		background-color: White;
 		position: relative;
 		font-family: sans-serif;
-		display: inline-block;
 		width: 100%;
 	}
 	
@@ -52,18 +51,30 @@
    
    div.DropDownMenuSelect span.DropDownMenuButton
    {
-     display: inline-block;
+     display: block;
      position: absolute;
      left: auto;
-     top: 0;
+     top: 1px;
      bottom: 0;
-		 right: 0;
+		 right: 1px;
 		 width: 16px;
 		 background-color: #DFEEF5;
 		 margin-right: 0;
 		 background-image: url("../../Image/DropDownMenuArrow.gif");
 		 background-position: center center;
 		 background-repeat: no-repeat;
+   }
+   
+   div.DropDownMenuSelect > span.DropDownMenuButton
+   {
+     top: 0;
+     right: 0;
+   }
+   
+   div.DropDownMenuSelect span.DropDownMenuButton img
+   {
+     height: 12pt;
+     width: 16px;
    }
 
    div.DropDownMenuSelect img 
