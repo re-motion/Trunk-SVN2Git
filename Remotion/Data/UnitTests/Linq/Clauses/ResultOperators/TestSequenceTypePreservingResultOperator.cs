@@ -14,26 +14,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.Linq.Clauses.ExecutionStrategies;
+using Remotion.Data.Linq.Clauses;
+using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
-using Remotion.Utilities;
+using System.Linq;
 
-namespace Remotion.Data.Linq.Clauses.ResultOperators
+namespace Remotion.Data.UnitTests.Linq.Clauses.ResultOperators
 {
-  /// <summary>
-  /// Represents a <see cref="ValueFromSequenceResultOperatorBase"/> that is executed on a sequence, choosing a single item for its result.
-  /// </summary>
-  public abstract class ChoiceResultOperatorBase : ValueFromSequenceResultOperatorBase
+  public class TestSequenceTypePreservingResultOperator : SequenceTypePreservingResultOperatorBase
   {
-    protected ChoiceResultOperatorBase (bool returnDefaultWhenEmpty)
-      : base (returnDefaultWhenEmpty ? SingleExecutionStrategy.InstanceWithDefaultWhenEmpty : SingleExecutionStrategy.InstanceNoDefaultWhenEmpty)
+    public override StreamedSequence ExecuteInMemory<T> (StreamedSequence sequence)
     {
+      var sequenceInfo = sequence.GetCurrentSequenceInfo<T> ();
+      return new StreamedSequence (sequenceInfo.Sequence.Distinct(), sequenceInfo.ItemExpression);
     }
 
-    public override IStreamedDataInfo GetOutputDataInfo (IStreamedDataInfo inputInfo)
+    public override Type GetResultType (Type inputResultType)
     {
-      var inputSequenceInfo = ArgumentUtility.CheckNotNullAndType<StreamedSequenceInfo> ("inputInfo", inputInfo);
-      return new StreamedValueInfo (inputSequenceInfo.ItemExpression.Type);
+      throw new NotImplementedException();
+    }
+
+    public override ResultOperatorBase Clone (CloneContext cloneContext)
+    {
+      throw new NotImplementedException();
     }
   }
 }

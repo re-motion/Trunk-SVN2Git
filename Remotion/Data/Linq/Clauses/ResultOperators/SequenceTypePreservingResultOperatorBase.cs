@@ -14,6 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.Linq.Clauses.StreamedData;
+using Remotion.Utilities;
 
 namespace Remotion.Data.Linq.Clauses.ResultOperators
 {
@@ -23,5 +25,10 @@ namespace Remotion.Data.Linq.Clauses.ResultOperators
   /// </summary>
   public abstract class SequenceTypePreservingResultOperatorBase : SequenceFromSequenceResultOperatorBase
   {
+    public override IStreamedDataInfo GetOutputDataInfo (IStreamedDataInfo inputInfo)
+    {
+      ArgumentUtility.CheckNotNullAndType<StreamedSequenceInfo> ("inputInfo", inputInfo);
+      return inputInfo;
+    }
   }
 }

@@ -544,6 +544,7 @@
     <Compile Include="Linq\Clauses\ResultOperators\CastResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ChoiceResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ContainsResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\TestSequenceTypePreservingResultOperator.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\TestChoiceResultOperator.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\TestSequenceFromSequenceResultOperator.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\SequenceTypePreservingResultOperatorBaseTest.cs" />
