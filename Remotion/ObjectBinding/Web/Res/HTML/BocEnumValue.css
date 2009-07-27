@@ -1,6 +1,3 @@
-/*  This style file is only used for documenting the classes. 
-    It is not automatically included by the BocEnumValue. */
-
 .bocEnumValue
 {
 }
@@ -11,4 +8,14 @@
 
 .bocEnumValue.disabled
 {
+}
+
+.bocEnumValue td
+{
+  white-space: nowrap;
+}
+
+.bocEnumValue td label
+{
+  vertical-align: top;
 }

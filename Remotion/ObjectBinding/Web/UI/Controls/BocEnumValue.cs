@@ -25,6 +25,7 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -45,6 +46,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_nullIdentifier = "==null==";
     private const string c_labelIDPostfix = "_Boc_Label";
     private const string c_listControlIDPostfix = "_Boc_ListControl";
+    private const string c_styleFileName = "BocEnumValue.css";
 
     // types
 
@@ -69,6 +71,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectEnumerationProperty) };
 
     private static readonly object s_selectionChangedEvent = new object();
+    private static readonly string s_styleKey = typeof (BocEnumValue).FullName + "_Style";
 
     // member fields
 
@@ -96,6 +99,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     // methods and properties
+
+    public override void RegisterHtmlHeadContents (IHttpContext httpContext, HtmlHeadAppender htmlHeadAppender)
+    {
+      if (!htmlHeadAppender.IsRegistered (s_styleKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocEnumValue), ResourceType.Html, c_styleFileName);
+        htmlHeadAppender.RegisterStylesheetLink (s_styleKey, url, HtmlHeadAppender.Priority.Library);
+      }
+    }
 
     public override void RenderControl (HtmlTextWriter writer)
     {
