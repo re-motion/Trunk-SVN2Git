@@ -40,6 +40,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
+      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control);
+
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (

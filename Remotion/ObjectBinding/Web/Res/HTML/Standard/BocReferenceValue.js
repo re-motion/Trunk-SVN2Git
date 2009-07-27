@@ -23,10 +23,10 @@ function BocReferenceValue_InitializeGlobals(nullValue) {
 
 //  Returns the number of rows selected for the specified BocList
 function BocReferenceValue_GetSelectionCount(referenceValueDropDownListID) {
-    var dropDownList = document.getElementById(referenceValueDropDownListID);
-    if (dropDownList == null || dropDownList.selectedIndex < 0)
+    var dropDownList = $('#'+referenceValueDropDownListID);
+    if (dropDownList.length == 0 || dropDownList.attr('selectedIndex') < 0)
         return 0;
-    if (dropDownList.children[dropDownList.selectedIndex].value == _bocReferenceValue_nullValue)
+    if (dropDownList.children()[dropDownList.attr('selectedIndex')].value == _bocReferenceValue_nullValue)
         return 0;
     return 1;
 }
