@@ -26,106 +26,94 @@ BocBooleanValue_Resource = function(
   nullDescription,
   trueIconUrl,
   falseIconUrl,
-  nullIconUrl)
-{
-  var _trueValue = trueValue;
-  var _falseValue = falseValue;
-  var _nullValue = nullValue;
+  nullIconUrl) {
+    var _trueValue = trueValue;
+    var _falseValue = falseValue;
+    var _nullValue = nullValue;
 
-  var _trueDescription = trueDescription;
-  var _falseDescription = falseDescription;
-  var _nullDescription = nullDescription;
+    var _trueDescription = trueDescription;
+    var _falseDescription = falseDescription;
+    var _nullDescription = nullDescription;
 
-  var _trueIconUrl = trueIconUrl;
-  var _falseIconUrl = falseIconUrl;
-  var _nullIconUrl = nullIconUrl;
+    var _trueIconUrl = trueIconUrl;
+    var _falseIconUrl = falseIconUrl;
+    var _nullIconUrl = nullIconUrl;
 
-  this.SelectNextCheckboxValue = function(
+    this.SelectNextCheckboxValue = function(
       icon,
       label,
       hiddenField,
       isRequired,
       trueDescription,
       falseDescription,
-      nullDescription)
-  {
-    var trueValue = _trueValue;
-    var falseValue = _falseValue;
-    var nullValue =_nullValue;
+      nullDescription) {
+        var trueValue = _trueValue;
+        var falseValue = _falseValue;
+        var nullValue = _nullValue;
 
-    var oldValue = hiddenField.value;
-    var newValue;
+        var oldValue = hiddenField.value;
+        var newValue;
 
-    //  Select the next value.
-    //  true -> false -> null -> true
-    if (isRequired)
-    {
-      if (oldValue == falseValue)
-        newValue = trueValue;
-      else
-        newValue = falseValue;
-    }
-    else
-    {
-      if (oldValue == falseValue)
-        newValue = nullValue;
-      else if (oldValue == nullValue)
-        newValue = trueValue;
-      else
-        newValue = falseValue;
-    }
+        //  Select the next value.
+        //  true -> false -> null -> true
+        if (isRequired) {
+            if (oldValue == falseValue)
+                newValue = trueValue;
+            else
+                newValue = falseValue;
+        }
+        else {
+            if (oldValue == falseValue)
+                newValue = nullValue;
+            else if (oldValue == nullValue)
+                newValue = trueValue;
+            else
+                newValue = falseValue;
+        }
 
-    // Update the controls
-    hiddenField.value = newValue;
-    var iconSrc;
-    var iconAlt;
-    var labelText;
+        // Update the controls
+        hiddenField.value = newValue;
+        var iconSrc;
+        var iconAlt;
+        var labelText;
 
-    if (newValue == falseValue)
-    {
-      iconSrc = _falseIconUrl;
-      var description;
-      if (falseDescription == null)
-        description = _falseDescription;
-      else
-        description = falseDescription;
-      iconAlt = description;
-      labelText = description;
-    }
-    else if (newValue == nullValue)
-    {
-      iconSrc = _nullIconUrl;
-      var description;
-      if (nullDescription == null)
-        description = _nullDescription;
-      else
-        description = nullDescription;
-      iconAlt = description;
-      labelText = description;
-    }
-    else if (newValue == trueValue)
-    {
-      iconSrc = _trueIconUrl;
-      var description;
-      if (trueDescription == null)
-        description = _trueDescription;
-      else
-        description = trueDescription;
-      iconAlt = description;
-      labelText = description;
-    }
-    icon.src = iconSrc;
-    icon.alt = iconAlt;
-    if (label != null)
-      label.innerHTML = labelText;
+        if (newValue == falseValue) {
+            iconSrc = _falseIconUrl;
+            var description;
+            if (falseDescription == null)
+                description = _falseDescription;
+            else
+                description = falseDescription;
+            iconAlt = description;
+            labelText = description;
+        }
+        else if (newValue == nullValue) {
+            iconSrc = _nullIconUrl;
+            var description;
+            if (nullDescription == null)
+                description = _nullDescription;
+            else
+                description = nullDescription;
+            iconAlt = description;
+            labelText = description;
+        }
+        else if (newValue == trueValue) {
+            iconSrc = _trueIconUrl;
+            var description;
+            if (trueDescription == null)
+                description = _trueDescription;
+            else
+                description = trueDescription;
+            iconAlt = description;
+            labelText = description;
+        }
+        icon.src = iconSrc;
+        icon.alt = iconAlt;
+        if (label != null)
+            label.innerHTML = labelText;
 
-    if (typeof (hiddenField.fireEvent) != 'undefined')
-      hiddenField.fireEvent('onchange');
-    else if (typeof (hiddenField.dispatchEvent) != 'undefined')
-      hiddenField.dispatchEvent('change');
-    else if (hiddenField.onchange != null)
-      hiddenField.onchange();
-  };
+        $(hiddenField).change();
+    };
 }
 
 //  Initializes the strings used to represent the true, false and null values.
