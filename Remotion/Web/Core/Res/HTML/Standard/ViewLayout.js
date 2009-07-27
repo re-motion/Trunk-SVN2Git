@@ -38,8 +38,7 @@ ViewLayout.AdjustSingleView = function(containerElement) {
     ViewLayout.AdjustTop(top, view);
     ViewLayout.AdjustBottom(bottom, view);
 
-    // setting UpdatePanel height prevents horizontal scrollbar in IE7
-    view.children('div').css('height', '100%');
+    ViewLayout.FixIE6(view, bottom);
 };
 
 ViewLayout.AdjustTabbedMultiView = function(containerElement) {
@@ -59,6 +58,22 @@ ViewLayout.AdjustTabbedMultiView = function(containerElement) {
     ViewLayout.AdjustTop(tabs, view);
     ViewLayout.AdjustBottom(bottom, view);
 
-    // setting UpdatePanel height prevents horizontal scrollbar in IE7
-    view.children('div').css('height', '100%');
+    ViewLayout.FixIE6(view, bottom);
 };
+
+ViewLayout.FixIE6 = function(view, bottom) {
+
+    if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
+        return;
+
+    view.height(bottom.offset().top - view.offset().top);
+
+    // does not change style, but solves the problem that certain elements didn't show in standard mode
+    $('.tabStripTabSeparator').css('display', 'none');
+    $('.DropDownMenuContainer').css('display', 'block');
+    $('.bocListNavigator').css('display', 'block');
+    $('div.bocReferenceValueContent').css('display', 'block');
+    $('div.bocAutoCompleteReferenceValueContent').css('display', 'block');
+    $('div.bocDateTimeValue').css('display', 'block');
+    $('a.DatePickerButton').css('display', 'inline-block');
+}
