@@ -100,18 +100,22 @@ function DropDownMenu_OpenPopUp(menuID, context, getSelectionCount, evt) {
             ul.appendChild(item);
     }
 
-    // move dropdown if there is not enough space to fit it on the page
     var titleDiv = $(context).children(':first');
     var space_top = Math.round(titleDiv.offset().top - $(document).scrollTop());
     var space_bottom = Math.round($(window).height() - titleDiv.offset().top - titleDiv.height() + $(document).scrollTop());
     var space_left = titleDiv.offset().left;
     var space_right = $(window).width() - titleDiv.offset().left - titleDiv.width();
 
-    $(ul).css('top', titleDiv.offset().top + titleDiv.outerHeight());
+    // position drop-down list
+    var top = evt ? evt.clientY : titleDiv.offset().top + titleDiv.outerHeight();
+    var left = evt ? evt.clientX : 'auto';  
+    var right = evt ? 'auto' : $(window).width() - titleDiv.offset().left - titleDiv.outerWidth();
+    $(ul).css('top', top);
     $(ul).css('bottom', 'auto');
-    $(ul).css('right', $(window).width() - titleDiv.offset().left - titleDiv.outerWidth());
-    $(ul).css('left', 'auto');
+    $(ul).css('right', right);
+    $(ul).css('left', left);
 
+    // move dropdown if there is not enough space to fit it on the page
     if (($(ul).width() > space_left) && (space_left < space_right)) {
         if ($(ul).offset().left < 0) {
             $(ul).css('left', titleDiv.offset().left);

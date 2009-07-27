@@ -596,12 +596,6 @@ namespace Remotion.Web.UI.Controls
         writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "none");
         writer.RenderBeginTag (HtmlTextWriterTag.Span);
         writer.RenderEndTag();
-
-        // added for standard mode dropdown menu
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, "DropDownMenuOptions");
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "none");
-        writer.RenderBeginTag (HtmlTextWriterTag.Ul);
-        writer.RenderEndTag ();
       }
 
       writer.RenderEndTag();
