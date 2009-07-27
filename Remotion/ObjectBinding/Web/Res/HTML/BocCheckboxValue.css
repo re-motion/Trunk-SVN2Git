@@ -1,8 +1,6 @@
-/*  This style file is only used for documenting the classes. 
-    It is not automatically included by the BocCheckBox. */
-
 .bocCheckBox
 {
+
 }
 
 .bocCheckBox.readOnly
@@ -11,4 +9,22 @@
 
 .bocCheckBox.disabled
 {
+}
+
+.bocCheckBox input
+{
+  margin-left: 4px;
+  padding: 0px;
+  vertical-align: middle;
+}
+
+.bocCheckBox span
+{
+  vertical-align: middle;
+}
+
+.bocCheckBox img
+{
+  margin-left: 0px;
+  padding: 0px;
 }

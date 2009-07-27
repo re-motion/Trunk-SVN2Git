@@ -42,6 +42,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // constants
 
     private const string c_scriptFileUrl = "BocCheckBox.js";
+    private const string c_styleFileUrl = "BocCheckBoxValue.css";
     private const string c_labelIDPostfix = "Boc_Label";
     private const string c_checkboxIDPostfix = "Boc_CheckBox";
     private const string c_imageIDPostfix = "Boc_Image";
@@ -69,6 +70,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectBooleanProperty) };
 
     private static readonly string s_scriptFileKey = typeof (BocCheckBox).FullName + "_Script";
+    private static readonly string s_styleFileKey = typeof (BocCheckBox).FullName + "_Style";
 
     // member fields
 
@@ -100,6 +102,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocCheckBox), ResourceType.Html, c_scriptFileUrl);
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+      }
+
+      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
+      {
+        string styleUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocCheckBox), ResourceType.Html, c_styleFileUrl);
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }
 
