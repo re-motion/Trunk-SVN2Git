@@ -51,20 +51,11 @@ function BocReferenceValue_AdjustPosition(control, isEmbedded) {
     contentSpan.css('left', left + 'px');
     contentSpan.css('right', right + 'px');
 
-    var verticalAlignParent = $(control);
     if (isEmbedded) {
         var dropDownMenu = $(control).find('select').parent().parent();
         if (dropDownMenu.length > 0) {
             dropDownMenu.height($(control).find('select').parent().outerHeight(true));
             icon.css('top', (dropDownMenu.innerHeight() - icon.outerHeight()) / 2);
         }
-        verticalAlignParent = dropDownMenu;
     }
-
-/*
-    verticalAlignParent.children().each(
-        function(index) {
-            $(this).css('top', ($(this).parent().innerHeight() - $(this).outerHeight()) / 2);
-        });
-*/
 }
