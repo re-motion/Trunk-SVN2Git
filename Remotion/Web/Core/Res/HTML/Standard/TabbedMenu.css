@@ -213,6 +213,7 @@ div.tabbedSubMenu span.tabStripTab.disabled a:hover
 
 div.tabbedSubMenu span.tabStripTab.disabled img
 {
+  opacity: 1;
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=1),
           progid:DXImageTransform.Microsoft.BasicImage(grayscale=0);
   -moz-opacity: 1;
