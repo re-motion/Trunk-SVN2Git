@@ -141,7 +141,7 @@ StyleUtility.CreateBorderSpans = function(element, standardMode) {
 
     var elementBody = element;
     if (!standardMode) {
-        elementBody = element.firstChild;
+        elementBody = $(element).children(':first')[0];
     }
     StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'top');
     StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'left');
@@ -223,7 +223,7 @@ StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bott
 }
 
 StyleUtility.CreateAndAppendBorderSpan = function(elementBody, elementID, className) {
-    if (elementBody.noteType != 1) {
+    if (elementBody.nodeType != 1) {
         elementBody = elementBody.parentNode;
     }
 
