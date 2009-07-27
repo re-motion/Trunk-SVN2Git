@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.NullItemValidationMessage" xml:space="preserve">
-    <value>Bitte wählen Sie einen Eintrag aus.</value>
+  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocQuirksModeAutoCompleteReferenceValue.NullItemValidationMessage" xml:space="preserve">
+    <value>Please select an item.</value>
   </data>
 </root>

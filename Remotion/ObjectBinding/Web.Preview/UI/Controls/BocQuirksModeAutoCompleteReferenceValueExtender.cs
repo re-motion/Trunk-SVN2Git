@@ -19,22 +19,22 @@ using System.Web.UI;
 using System.ComponentModel;
 using AjaxControlToolkit;
 
-[assembly: WebResource (Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValueExtender.ScriptReference, "text/javascript")]
+[assembly: WebResource (Remotion.ObjectBinding.Web.UI.Controls.BocQuirksModeAutoCompleteReferenceValueExtender.ScriptReference, "text/javascript")]
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   [TargetControlType (typeof (Control))]
   [ToolboxItem (false)]
-  //[Designer (typeof (BocAutoCompleteReferenceValueExtenderDesigner))]
-  [ClientScriptResource ("Remotion.UI.BocAutoCompleteReferenceValueBehavior", BocAutoCompleteReferenceValueExtender.ScriptReference)]
+  //[Designer (typeof (BocQuirksModeAutoCompleteReferenceValueExtenderDesigner))]
+  [ClientScriptResource ("Remotion.UI.BocQuirksModeAutoCompleteReferenceValueBehavior", BocQuirksModeAutoCompleteReferenceValueExtender.ScriptReference)]
   [RequiredScript (typeof (CommonToolkitScripts))]
   [RequiredScript (typeof (PopupExtender))]
   [RequiredScript (typeof (TimerScript))]
-  public class BocAutoCompleteReferenceValueExtender : ExtenderControlBase
+  public class BocQuirksModeAutoCompleteReferenceValueExtender : ExtenderControlBase
   {
     // constants
 
-    internal const string ScriptReference = "Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValueBehavior.js";
+    internal const string ScriptReference = "Remotion.ObjectBinding.Web.UI.Controls.BocQuirksModeAutoCompleteReferenceValueBehavior.js";
 
     // types
 
@@ -52,9 +52,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       //ArgumentUtility.CheckNotNull ("properties", properties);
 
       //if (StringUtility.IsNullOrEmpty (_servicePath))
-      //  throw new InvalidOperationException ("The ServicePath must be set for BocAutoCompleteReferenceValueExtender");
+      //  throw new InvalidOperationException ("The ServicePath must be set for BocQuirksModeAutoCompleteReferenceValueExtender");
       //if (StringUtility.IsNullOrEmpty (_serviceMethod))
-      //  throw new InvalidOperationException ("The ServiceMethod must be set for BocAutoCompleteReferenceValueExtender");
+      //  throw new InvalidOperationException ("The ServiceMethod must be set for BocQuirksModeAutoCompleteReferenceValueExtender");
 
       //writer.WriteAttributeString ("dropDownPanelClass", _dropDownPanelClass);
       //writer.WriteAttributeString ("minimumPrefixLength", _minimumPrefixLength.ToString ());

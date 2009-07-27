@@ -99,7 +99,7 @@ Sys.UI.DomElement.getLocation = function (element)
 }
 
 
-Remotion.UI.BocAutoCompleteReferenceValueBehavior = function Remotion$UI$BocAutoCompleteReferenceValueBehavior (element)
+Remotion.UI.BocQuirksModeAutoCompleteReferenceValueBehavior = function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior (element)
 {
     /// <param name="element" domElement="true"></param>
     var e = Function._validateParams(arguments, [
@@ -107,91 +107,91 @@ Remotion.UI.BocAutoCompleteReferenceValueBehavior = function Remotion$UI$BocAuto
     ]);
     if (e) throw e;
 
-    Remotion.UI.BocAutoCompleteReferenceValueBehavior.initializeBase (this, [element]);
+    Remotion.UI.BocQuirksModeAutoCompleteReferenceValueBehavior.initializeBase (this, [element]);
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_appUrl () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_appUrl () 
 { return this._appUrl; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_appUrl (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_appUrl (value) 
 { this._appUrl = value;}
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_CompletionInterval ()
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_CompletionInterval ()
 { return this._completionInterval; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_CompletionInterval (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_CompletionInterval (value) 
 { this._completionInterval = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_SuggestionInterval ()
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_SuggestionInterval ()
 { return this._suggestionInterval; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_SuggestionInterval (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_SuggestionInterval (value) 
 { this._suggestionInterval = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_CompletionList () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_CompletionList () 
 { return this._completionListElement; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_CompletionList (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_CompletionList (value) 
 { this._completionListElement = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_CompletionSetCount () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_CompletionSetCount () 
 { return this._completionSetCount; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_CompletionSetCount (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_CompletionSetCount (value) 
 { this._completionSetCount = value; }
  
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_BusinessObjectClass () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_BusinessObjectClass () 
 { return this._businessObjectClass; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_BusinessObjectClass (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_BusinessObjectClass (value) 
 { this._businessObjectClass = value; }
  
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_BusinessObjectProperty () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_BusinessObjectProperty () 
 { return this._businessObjectProperty; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_BusinessObjectProperty (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_BusinessObjectProperty (value) 
 { this._businessObjectProperty = value; }
  
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_BusinessObjectID () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_BusinessObjectID () 
 { return this._businessObjectID; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_BusinessObjectID (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_BusinessObjectID (value) 
 { this._businessObjectID = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_Args () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_Args () 
 { return this._args; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_Args (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_Args (value) 
 { this._args = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_DropDownPanelClass () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_DropDownPanelClass () 
 { return this._dropDownPanelClass; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_DropDownPanelClass (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_DropDownPanelClass (value) 
 { this._dropDownPanelClass = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_MinimumPrefixLength () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_MinimumPrefixLength () 
 { return this._minimumPrefixLength; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_MinimumPrefixLength (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_MinimumPrefixLength (value) 
 { this._minimumPrefixLength = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_ServiceMethod () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_ServiceMethod () 
 { return this._serviceMethod; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_ServiceMethod (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_ServiceMethod (value) 
 { this._serviceMethod = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_ServiceUrl () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_ServiceUrl () 
 { return this._serviceUrl; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_ServiceUrl (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_ServiceUrl (value) 
 { this._serviceUrl = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_TextBoxID () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_TextBoxID () 
 { return this._textBox != null ? this._textBox.id : null; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_TextBoxID (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_TextBoxID (value) 
 {
   var element = $get(value);
   Sys.Debug.assert (element != null, String.format("No text box with ID '{0}' found.", value));
@@ -199,16 +199,16 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_TextBoxID (value)
   this._textBox.initialize ();
 }
   
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_TextBox () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_TextBox () 
 { return this._textBox; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_TextBox (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_TextBox (value) 
 { this._textBox = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_HiddenFieldID () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_HiddenFieldID () 
 { return this._hiddenField != null ? this._hiddenField.id : null; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_HiddenFieldID (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_HiddenFieldID (value) 
 {
   var element = $get(value);
   Sys.Debug.assert (element != null, String.format("No hidden field with ID '{0}' found.", value));
@@ -216,13 +216,13 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_HiddenFieldID (va
   this._hiddenField.initialize ();
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_HiddenField () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_HiddenField () 
 { return this._hiddenField; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_HiddenField (value) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_HiddenField (value) 
 { this._hiddenField = value; }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$dispose () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$dispose () 
 {
   if (this._updateTimer) 
   {
@@ -275,12 +275,12 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$dispose ()
   this._hiddenField = null;
   this._dropDownImage = null;
 
-  Remotion.UI.BocAutoCompleteReferenceValueBehavior.callBaseMethod (this, 'dispose');
+  Remotion.UI.BocQuirksModeAutoCompleteReferenceValueBehavior.callBaseMethod (this, 'dispose');
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$initialize () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$initialize () 
 {
-  Remotion.UI.BocAutoCompleteReferenceValueBehavior.callBaseMethod (this, 'initialize');
+  Remotion.UI.BocQuirksModeAutoCompleteReferenceValueBehavior.callBaseMethod (this, 'initialize');
 
   this._updateTimerTickHandler = Function.createDelegate (this, this._onUpdateTimerTick);
   this._blurTimerTickHandler = Function.createDelegate (this, this._onBlurTimerTick);
@@ -372,7 +372,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$initialize ()
   this._dropDownImage.initialize ();
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_hideCompletionList () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_hideCompletionList () 
 {
   this._popupBehavior.hide ();
   this._completionListElement.innerHTML = '';
@@ -380,7 +380,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_hideCompletionList (
   this._lastKeyWasCursorUpOrDown = false;
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_highlightItem (item, scrollIntoView) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_highlightItem (item, scrollIntoView) 
 {
   var children = this._completionListElement.childNodes;
   if (this._selectedIndex != -1)
@@ -436,7 +436,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_highlightItem (item,
   return item.index;
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListMouseDown () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListMouseDown () 
 {
   if (window.event.srcElement != this._completionListElement) 
   {
@@ -447,18 +447,18 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListMous
   }
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListMouseUp () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListMouseUp () 
 {
   this._textBox.focus ();
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListMouseOver () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListMouseOver () 
 {
   if (window.event.srcElement != this._completionListElement)
     this._selectedIndex = this._highlightItem (window.event.srcElement, false);
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxFocus () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onTextBoxFocus () 
 {
   if (this._oldText == null)
     this._oldText = this._textBox.get_element().value;
@@ -467,7 +467,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxFocus ()
   this._blurTimer.set_enabled (false);
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyDown (ev)
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onTextBoxKeyDown (ev)
 {
   if (this._oldText == null)
     this._oldText = this._textBox.get_element().value;
@@ -566,7 +566,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyDown (ev
   this._updateTimer.set_enabled (true);
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyUp ()
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onTextBoxKeyUp ()
 {
   var e = window.event;
 
@@ -605,7 +605,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyUp ()
   }
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_findItemByText ()
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_findItemByText ()
 {
   var children = this._completionListElement.childNodes;
   var text = this._textBox.get_element().value.toUpperCase();
@@ -623,7 +623,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_findItemByText ()
   return null;
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxBlur () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onTextBoxBlur () 
 {
   this._updateTimer.set_enabled (false);
   if (Sys.UI.DomElement.getVisible(this._completionListElement))
@@ -637,7 +637,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxBlur ()
   }
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onMethodComplete (result, context, methodName) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onMethodComplete (result, context, methodName) 
 {
 //  var acBehavior = context[0];
 //  var prefixText = context[1];
@@ -645,12 +645,12 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onMethodComplete (re
     this._update(context, result,  true);
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onUpdateTimerTick (sender, eventArgs) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onUpdateTimerTick (sender, eventArgs) 
 {
   this._showCompletionList (false, false);
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_showCompletionList (forceOpen, ignorePrefix)
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_showCompletionList (forceOpen, ignorePrefix)
 {
   if (this._serviceUrl && this._serviceMethod) 
   {
@@ -720,7 +720,7 @@ function Remotion$UI$AutoCompleteBehavior$_onMethodFailed(err, context, methodNa
 debugger;
         }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_setValue (completionItem, hideCompletionList)
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_setValue (completionItem, hideCompletionList)
 {
   this._updateTimer.set_enabled (false);
   var displayName = completionItem != null ? completionItem.DisplayName : '';
@@ -732,7 +732,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_setValue (completion
     this._hideCompletionList ();
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_update (prefixText, completionItems, cacheResults) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_update (prefixText, completionItems, cacheResults) 
 {
   if (cacheResults)
   {
@@ -793,7 +793,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_update (prefixText, 
   }
 }
   
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_repositionCompletionList ()
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_repositionCompletionList ()
 {
   this._popupBehavior.hide ();
   this._popupBehavior.show ();
@@ -833,7 +833,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_repositionCompletion
   }
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_isCompletionListItemVisible (element)
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_isCompletionListItemVisible (element)
 {
   if (element.offsetParent.clientHeight < (element.offsetTop + element.offsetHeight - element.offsetParent.scrollTop))
     return false;
@@ -842,7 +842,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_isCompletionListItem
   return true;
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onBlurTimerTick (sender, eventArgs) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onBlurTimerTick (sender, eventArgs) 
 {
   this._blurTimer.set_enabled (false);
   
@@ -854,22 +854,22 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onBlurTimerTick (sen
     this._hideCompletionList ();  
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListFocus () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListFocus () 
 {
   this._blurTimer.set_enabled (false);
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListBlur () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListBlur () 
 {
   this._blurTimer.set_enabled (true);
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onDropDownImageMouseDown () 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onDropDownImageMouseDown () 
 {
   this._blurTimer.set_enabled (false);
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_resetValue ()
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_resetValue ()
 {
   this._textBox.get_element().value = (this._oldText != null ? this._oldText : '');
   this._removeSelection ();
@@ -878,7 +878,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_resetValue ()
   this._hideCompletionList ();  
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_removeSelection ()
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_removeSelection ()
 {
   var start = this._textBox.get_element().value.length;
   var end = start;
@@ -894,7 +894,7 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_removeSelection ()
   }
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onDropDownImageClick (sender, eventArgs) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onDropDownImageClick (sender, eventArgs) 
 {
   if (Sys.UI.DomElement.getVisible(this._completionListElement))
   {
@@ -907,13 +907,13 @@ function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onDropDownImageClick
   }
 }
 
-function Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onSuggestionTimerTick (sender, eventArgs) 
+function Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onSuggestionTimerTick (sender, eventArgs) 
 {
   this._enableSuggestion = true;
   this._suggestionTimer.set_enabled (false);
 }
 
-Remotion.UI.BocAutoCompleteReferenceValueBehavior.prototype = {
+Remotion.UI.BocQuirksModeAutoCompleteReferenceValueBehavior.prototype = {
     
   _appUrl : null,
   _serviceUrl : null,
@@ -960,85 +960,85 @@ Remotion.UI.BocAutoCompleteReferenceValueBehavior.prototype = {
   _dropDownImageClickHandler : null,
   _dropDownImageMouseDownHandler : null,
 
-  get_CompletionInterval: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_CompletionInterval,
-  set_CompletionInterval: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_CompletionInterval,
+  get_CompletionInterval: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_CompletionInterval,
+  set_CompletionInterval: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_CompletionInterval,
 
-  get_SuggestionInterval: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_SuggestionInterval,
-  set_SuggestionInterval: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_SuggestionInterval,
+  get_SuggestionInterval: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_SuggestionInterval,
+  set_SuggestionInterval: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_SuggestionInterval,
 
-  get_CompletionList: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_CompletionList,
-  set_CompletionList: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_CompletionList,
+  get_CompletionList: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_CompletionList,
+  set_CompletionList: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_CompletionList,
 
-  get_CompletionSetCount: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_CompletionSetCount,
-  set_CompletionSetCount: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_CompletionSetCount,
+  get_CompletionSetCount: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_CompletionSetCount,
+  set_CompletionSetCount: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_CompletionSetCount,
 
-  get_BusinessObjectClass: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_BusinessObjectClass,
-  set_BusinessObjectClass: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_BusinessObjectClass,
+  get_BusinessObjectClass: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_BusinessObjectClass,
+  set_BusinessObjectClass: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_BusinessObjectClass,
 
-  get_BusinessObjectProperty: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_BusinessObjectProperty,
-  set_BusinessObjectProperty: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_BusinessObjectProperty,
+  get_BusinessObjectProperty: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_BusinessObjectProperty,
+  set_BusinessObjectProperty: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_BusinessObjectProperty,
 
-  get_BusinessObjectID: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_BusinessObjectID,
-  set_BusinessObjectID: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_BusinessObjectID,
+  get_BusinessObjectID: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_BusinessObjectID,
+  set_BusinessObjectID: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_BusinessObjectID,
 
-  get_Args: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_Args,
-  set_Args: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_Args,
+  get_Args: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_Args,
+  set_Args: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_Args,
 
-  get_DropDownPanelClass: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_DropDownPanelClass,
-  set_DropDownPanelClass: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_DropDownPanelClass,
+  get_DropDownPanelClass: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_DropDownPanelClass,
+  set_DropDownPanelClass: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_DropDownPanelClass,
 
-  get_MinimumPrefixLength: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_MinimumPrefixLength,
-  set_MinimumPrefixLength: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_MinimumPrefixLength,
+  get_MinimumPrefixLength: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_MinimumPrefixLength,
+  set_MinimumPrefixLength: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_MinimumPrefixLength,
 
-  get_ServiceMethod: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_ServiceMethod,
-  set_ServiceMethod: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_ServiceMethod,
+  get_ServiceMethod: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_ServiceMethod,
+  set_ServiceMethod: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_ServiceMethod,
 
-  get_ServiceUrl: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_ServiceUrl,
-  set_ServiceUrl: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_ServiceUrl,
+  get_ServiceUrl: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_ServiceUrl,
+  set_ServiceUrl: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_ServiceUrl,
   get_timeout: Remotion$UI$AutoCompleteBehavior$get_timeout,
 
-  get_TextBoxID: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_TextBoxID,
-  set_TextBoxID: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_TextBoxID,
+  get_TextBoxID: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_TextBoxID,
+  set_TextBoxID: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_TextBoxID,
 
-  get_HiddenFieldID: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_HiddenFieldID,
-  set_HiddenFieldID: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_HiddenFieldID,
+  get_HiddenFieldID: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_HiddenFieldID,
+  set_HiddenFieldID: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_HiddenFieldID,
 
-  get_appUrl: Remotion$UI$BocAutoCompleteReferenceValueBehavior$get_appUrl,
-  set_appUrl: Remotion$UI$BocAutoCompleteReferenceValueBehavior$set_appUrl,
+  get_appUrl: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$get_appUrl,
+  set_appUrl: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$set_appUrl,
 
-  dispose: Remotion$UI$BocAutoCompleteReferenceValueBehavior$dispose,
-  initialize: Remotion$UI$BocAutoCompleteReferenceValueBehavior$initialize,
+  dispose: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$dispose,
+  initialize: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$initialize,
 
-  _hideCompletionList: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_hideCompletionList,
-  _highlightItem: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_highlightItem,
-  _onCompletionListMouseDown: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListMouseDown,
-  _onCompletionListMouseUp: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListMouseUp,
-  _onCompletionListMouseOver: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListMouseOver,
-  _onTextBoxFocus: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxFocus,
-  _onTextBoxKeyDown: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyDown,
-  _onTextBoxKeyUp: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxKeyUp,
-  _findItemByText: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_findItemByText,
-  _onTextBoxBlur: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onTextBoxBlur,
-  _onMethodComplete: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onMethodComplete,
+  _hideCompletionList: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_hideCompletionList,
+  _highlightItem: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_highlightItem,
+  _onCompletionListMouseDown: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListMouseDown,
+  _onCompletionListMouseUp: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListMouseUp,
+  _onCompletionListMouseOver: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListMouseOver,
+  _onTextBoxFocus: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onTextBoxFocus,
+  _onTextBoxKeyDown: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onTextBoxKeyDown,
+  _onTextBoxKeyUp: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onTextBoxKeyUp,
+  _findItemByText: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_findItemByText,
+  _onTextBoxBlur: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onTextBoxBlur,
+  _onMethodComplete: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onMethodComplete,
   _onMethodFailed: Remotion$UI$AutoCompleteBehavior$_onMethodFailed,
   _get_path: Remotion$UI$AutoCompleteBehavior$_get_path,
-  _onUpdateTimerTick: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onUpdateTimerTick,
-  _showCompletionList: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_showCompletionList,
-  _setValue: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_setValue,
-  _update: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_update,
-  _repositionCompletionList: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_repositionCompletionList,
-  _isCompletionListItemVisible: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_isCompletionListItemVisible,
-  _onBlurTimerTick: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onBlurTimerTick,
-  _onCompletionListFocus: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListFocus,
-  _onCompletionListBlur: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onCompletionListBlur,
-  _onDropDownImageMouseDown: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onDropDownImageMouseDown,
-  _resetValue: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_resetValue,
-  _removeSelection: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_removeSelection,
-  _onDropDownImageClick: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onDropDownImageClick,
-  _onSuggestionTimerTick: Remotion$UI$BocAutoCompleteReferenceValueBehavior$_onSuggestionTimerTick
+  _onUpdateTimerTick: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onUpdateTimerTick,
+  _showCompletionList: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_showCompletionList,
+  _setValue: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_setValue,
+  _update: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_update,
+  _repositionCompletionList: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_repositionCompletionList,
+  _isCompletionListItemVisible: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_isCompletionListItemVisible,
+  _onBlurTimerTick: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onBlurTimerTick,
+  _onCompletionListFocus: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListFocus,
+  _onCompletionListBlur: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onCompletionListBlur,
+  _onDropDownImageMouseDown: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onDropDownImageMouseDown,
+  _resetValue: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_resetValue,
+  _removeSelection: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_removeSelection,
+  _onDropDownImageClick: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onDropDownImageClick,
+  _onSuggestionTimerTick: Remotion$UI$BocQuirksModeAutoCompleteReferenceValueBehavior$_onSuggestionTimerTick
 }
 
-Remotion.UI.BocAutoCompleteReferenceValueBehavior.descriptor = {
+Remotion.UI.BocQuirksModeAutoCompleteReferenceValueBehavior.descriptor = {
     properties: [   {name: 'CompletionInterval', type: Number},
                     {name: 'SuggestionInterval', type: Number},
                     {name: 'CompletionList', type: Sys.UI.DomElement},
@@ -1055,4 +1055,4 @@ Remotion.UI.BocAutoCompleteReferenceValueBehavior.descriptor = {
                     {name: 'HiddenFieldID', type: String},
                     {name: 'appUrl', type: String} ]
 }
-Remotion.UI.BocAutoCompleteReferenceValueBehavior.registerClass('Remotion.UI.BocAutoCompleteReferenceValueBehavior', Sys.UI.Behavior);
+Remotion.UI.BocQuirksModeAutoCompleteReferenceValueBehavior.registerClass('Remotion.UI.BocQuirksModeAutoCompleteReferenceValueBehavior', Sys.UI.Behavior);

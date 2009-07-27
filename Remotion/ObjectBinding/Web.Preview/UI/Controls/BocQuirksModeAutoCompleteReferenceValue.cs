@@ -40,7 +40,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [DefaultEvent ("SelectionChanged")]
   [ToolboxItemFilter ("System.Web.UI")]
   [Designer (typeof (BocDesigner))]
-  public class BocAutoCompleteReferenceValue :
+  public class BocQuirksModeAutoCompleteReferenceValue :
       BusinessObjectBoundEditableWebControl,
       IPostBackDataHandler,
       IFocusableControl
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_designModeEmptyLabelContents = "##";
     private const string c_defaultControlWidth = "150pt";
 
-    private const string c_styleFileUrl = "BocAutoCompleteReferenceValue.css";
+    private const string c_styleFileUrl = "BocQuirksModeAutoCompleteReferenceValue.css";
 
     // types
 
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   See the documentation of <b>GetString</b> for further details.
     /// </remarks>
     [ResourceIdentifiers]
-    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocAutoCompleteReferenceValue")]
+    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocQuirksModeAutoCompleteReferenceValue")]
     protected enum ResourceIdentifier
     {
       /// <summary> The validation error message displayed when the null item is selected. </summary>
@@ -75,18 +75,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         typeof (IBusinessObjectReferenceProperty) };
 
     /// <summary> The log4net logger. </summary>
-    private static readonly log4net.ILog s_log = log4net.LogManager.GetLogger (typeof (BocAutoCompleteReferenceValue));
+    private static readonly log4net.ILog s_log = log4net.LogManager.GetLogger (typeof (BocQuirksModeAutoCompleteReferenceValue));
 
     private static readonly object s_selectionChangedEvent = new object ();
 
-    private static readonly string s_styleFileKey = typeof (BocAutoCompleteReferenceValue).FullName + "_Style";
+    private static readonly string s_styleFileKey = typeof (BocQuirksModeAutoCompleteReferenceValue).FullName + "_Style";
 
     // member fields
 
     private TextBox _textBox;
     private HiddenField _hiddenField;
     private Label _label;
-    private BocAutoCompleteReferenceValueExtender _extender;
+    private BocQuirksModeAutoCompleteReferenceValueExtender _extender;
 
     private Style _commonStyle;
     private SingleRowTextBoxStyle _textBoxStyle;
@@ -114,7 +114,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // construction and disposing
 
-    public BocAutoCompleteReferenceValue ()
+    public BocQuirksModeAutoCompleteReferenceValue ()
     {
       _commonStyle = new Style ();
       _textBoxStyle = new SingleRowTextBoxStyle ();
@@ -123,7 +123,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _hiddenField = new HiddenField ();
       _label = new Label ();
       _validators = new ArrayList ();
-      _extender = new BocAutoCompleteReferenceValueExtender ();
+      _extender = new BocQuirksModeAutoCompleteReferenceValueExtender ();
     }
 
     // methods and properties
@@ -147,7 +147,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocAutoCompleteReferenceValue), ResourceType.Html, c_styleFileUrl);
+        string url = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocQuirksModeAutoCompleteReferenceValue), ResourceType.Html, c_styleFileUrl);
         htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
     }
@@ -237,8 +237,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Loads the resources into the control's properties. </summary>
     protected override void LoadResources (IResourceManager resourceManager)
     {
-      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-
+      if (resourceManager == null)
+        return;
       if (IsDesignMode)
         return;
       base.LoadResources (resourceManager);
@@ -891,7 +891,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     #region protected virtual string CssClass...
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocAutoCompleteReferenceValue"/> itself. </summary>
+    /// <summary> Gets the CSS-Class applied to the <see cref="BocQuirksModeAutoCompleteReferenceValue"/> itself. </summary>
     /// <remarks> 
     ///   <para> Class: <c>bocAutoCompleteReferenceValue</c>. </para>
     ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
@@ -899,12 +899,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual string CssClassBase
     { get { return "bocAutoCompleteReferenceValue"; } }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocAutoCompleteReferenceValue"/>'s value. </summary>
+    /// <summary> Gets the CSS-Class applied to the <see cref="BocQuirksModeAutoCompleteReferenceValue"/>'s value. </summary>
     /// <remarks> Class: <c>bocAutoCompleteReferenceValue</c> </remarks>
     protected virtual string CssClassContent
     { get { return "bocReferenceValueContent"; } }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocAutoCompleteReferenceValue"/> when it is displayed in read-only mode. </summary>
+    /// <summary> Gets the CSS-Class applied to the <see cref="BocQuirksModeAutoCompleteReferenceValue"/> when it is displayed in read-only mode. </summary>
     /// <remarks> 
     ///   <para> Class: <c>readOnly</c>. </para>
     ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocAutoCompleteReferenceValue.readOnly</c> as a selector. </para>
@@ -912,7 +912,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual string CssClassReadOnly
     { get { return "readOnly"; } }
 
-    /// <summary> Gets the CSS-Class applied to the <see cref="BocAutoCompleteReferenceValue"/> when it is displayed in read-only mode. </summary>
+    /// <summary> Gets the CSS-Class applied to the <see cref="BocQuirksModeAutoCompleteReferenceValue"/> when it is displayed in read-only mode. </summary>
     /// <remarks> 
     ///   <para> Class: <c>disabled</c>. </para>
     ///   <para> Applied in addition to the regular CSS-Class. Use <c>.bocAutoCompleteReferenceValue.disabled</c> as a selector. </para>
@@ -920,7 +920,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual string CssClassDisabled
     { get { return "disabled"; } }
 
-    /// <summary> Gets the CSS-Class applied to the drop down panel of the <see cref="BocAutoCompleteReferenceValue"/>. </summary>
+    /// <summary> Gets the CSS-Class applied to the drop down panel of the <see cref="BocQuirksModeAutoCompleteReferenceValue"/>. </summary>
     /// <remarks> 
     ///   <para> Class: <c>bocAutoCompleteReferenceValueDropDownPanel</c>. </para>
     /// </remarks>
