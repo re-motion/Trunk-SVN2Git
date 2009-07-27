@@ -543,10 +543,10 @@
     <Compile Include="Linq\Clauses\ResultOperators\AverageResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\CastResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ContainsResultOperatorTest.cs" />
-    <Compile Include="Linq\Clauses\ResultOperators\StreamedSequenceTest.cs" />
+    <Compile Include="Linq\Clauses\StreamedData\StreamedSequenceTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\DefaultIfEmptyResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ExceptResultOperatorTest.cs" />
-    <Compile Include="Linq\Clauses\ResultOperators\StreamedValueTest.cs" />
+    <Compile Include="Linq\Clauses\StreamedData\StreamedValueTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\IntersectResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\LongCountResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\OfTypeResultOperatorTest.cs" />

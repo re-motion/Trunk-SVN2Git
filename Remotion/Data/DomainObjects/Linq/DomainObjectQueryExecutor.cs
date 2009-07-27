@@ -23,6 +23,7 @@ using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Clauses.ResultOperators;
+using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.EagerFetching;
 using Remotion.Logging;
 using Remotion.Utilities;
