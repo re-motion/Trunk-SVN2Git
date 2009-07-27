@@ -140,7 +140,7 @@ namespace Remotion.Data.DomainObjects.Linq
               .MakeGenericMethod (queryModel.SelectClause.Selector.Type);
 
       var databaseResult = executeCollectionMethod.Invoke (this, new object[] { queryModel, new FetchRequestBase[0] });
-      var inputData = new ExecuteInMemorySequenceData ((IEnumerable) databaseResult, queryModel.SelectClause.Selector);
+      var inputData = new StreamedSequence ((IEnumerable) databaseResult, queryModel.SelectClause.Selector);
       return groupResultOperator.ExecuteInMemory (inputData).GetCurrentSequenceInfo<T> ().Sequence;
     }
 
