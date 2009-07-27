@@ -369,26 +369,74 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    [Explicit]
     public void BuildProxyType_MethodOverridden ()
     {
-      //ScriptingHelper.ToConsoleLine ("PrependNameVirtual", typeof (Proxied), typeof (ProxiedChild),
-      //  typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
-
-      AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (
-        typeof (ProxiedChildChild), typeof (ProxiedChildChildChild), false, "PrependNameVirtual");
+      AssertBuildProxyType_MethodOverridden (
+        typeof (ProxiedChildChild), typeof (ProxiedChildChildChild), "PrependNameVirtual", true);
     }
 
     [Test]
-    public void BuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType ()
+    public void BuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType1 ()
     {
-      AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (
-        typeof (ProxiedChildChild), typeof (ProxiedChildChild), false, "PrependNameVirtual");
+      AssertBuildProxyType_MethodOverridden (
+        typeof (ProxiedChildChildChild), typeof (ProxiedChildChildChild), "PrependNameVirtual", false);
+    }
+
+    [Test]
+    public void BuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType2 ()
+    {
+      AssertBuildProxyType_MethodOverridden (
+        typeof (ProxiedChildChild), typeof (ProxiedChildChild), "PrependNameVirtual", false);
 
     }
 
-    private void AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType (
-      Type knownBaseType, Type proxiedType, bool expectProxiedCallDifferent, string methodName)
+
+    [Test]
+    public void BuildProxyType_VirtualMethodNotInBaseType_IsKnown_CallIsVirtual_ProxiedChildChildChild ()
+    {
+      AssertBuildProxyType_MethodOverridden (
+        typeof (ProxiedChild), typeof (ProxiedChildChildChild), "VirtualMethodNotInBaseType", true);
+    }
+
+    [Test]
+    public void BuildProxyType_VirtualMethodNotInBaseType_IsKnown_CallIsVirtual_ProxiedChildChildChild2 ()
+    {
+      AssertBuildProxyType_MethodOverridden (
+        typeof (ProxiedChildChildChild), typeof (ProxiedChildChildChild), "VirtualMethodNotInBaseType", false);
+    }
+
+    [Test]
+    public void BuildProxyType_VirtualMethodNotInBaseType_IsKnown_CallIsVirtual_ProxiedChild ()
+    {
+      AssertBuildProxyType_MethodOverridden (
+        typeof (ProxiedChild), typeof (ProxiedChild), "VirtualMethodNotInBaseType", false);
+    }
+
+    [Test]
+    public void BuildProxyType_VirtualMethodNotInBaseType_IsKnown_CallIsVirtual_ProxiedChildChild ()
+    {
+      AssertBuildProxyType_MethodOverridden (
+        typeof (ProxiedChild), typeof (ProxiedChildChild), "VirtualMethodNotInBaseType", false);
+    }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (MissingMethodException), ExpectedMessage = "Method 'ProxiedChild.VirtualMethodNotInBaseType' not found.")]
+    public void BuildProxyType_VirtualMethodNotInBaseType_IsNotKnown_ProxiedChild ()
+    {
+      AssertBuildProxyType_MethodOverridden (
+        typeof (Proxied), typeof (ProxiedChild), "VirtualMethodNotInBaseType", true);
+    }
+
+    [Test]
+    [ExpectedException (ExceptionType = typeof (MissingMethodException), ExpectedMessage = "Method 'ProxiedChildChildChild.VirtualMethodNotInBaseType' not found.")]
+    public void BuildProxyType_VirtualMethodNotInBaseType_IsNotKnown_ProxiedChildChildChild ()
+    {
+      AssertBuildProxyType_MethodOverridden (
+        typeof (Proxied), typeof (ProxiedChildChildChild), "VirtualMethodNotInBaseType", true);
+    }
+
+
+    private void AssertBuildProxyType_MethodOverridden (Type knownBaseType, Type proxiedType, string methodName, bool expectKnownBaseTypeCallDifferent)
     {
       var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType });
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("AssertBuildProxyType_MethodOverridden_ProxiedTypeIsKnownBaseType"));
@@ -398,19 +446,17 @@ namespace Remotion.Scripting.UnitTests
       var knownBaseTypeInstance = Activator.CreateInstance (knownBaseType, "Peter");
       var proxy = Activator.CreateInstance (proxyType, proxiedTypeInstance);
       const string argument = "Fox";
-      const string expected = "ProxiedChildChild Peter Fox";
 
       //ScriptingHelper.ToConsoleLine ("PrependNameVirtual", proxyType);
 
       var proxyResult = InvokeMethod (proxy, methodName, argument);
 
-      Assert.That (InvokeMethod (knownBaseTypeInstance, methodName, argument), Is.EqualTo (expected));
-      Assert.That (proxyResult, Is.EqualTo (expected));
-
-      //if (expectProxiedCallDifferent)
-      //{
-      //  Assert.That (InvokeMethod (proxiedTypeInstance, methodName, argument), Is.Not.EqualTo (expected));
-      //}
+      // We expect the call to be virtual.
+      Assert.That (proxyResult, Is.EqualTo (InvokeMethod (proxiedTypeInstance, methodName, argument)));
+      if (expectKnownBaseTypeCallDifferent)
+      {
+        Assert.That (proxyResult, Is.Not.EqualTo (InvokeMethod (knownBaseTypeInstance, methodName, argument)));
+      }
     }
 
 

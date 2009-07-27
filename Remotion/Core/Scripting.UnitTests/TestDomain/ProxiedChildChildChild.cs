@@ -40,6 +40,11 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     public override string PrependNameVirtual (string text)
     {
       return PrependName (text);
-    }  
+    }
+
+    public override string VirtualMethodNotInBaseType (string text)
+    {
+      return "ProxiedChildChildChild::VirtualMethodNotInBaseType " + Name + " " + text.ToUpper () + " " + text.ToLower ();
+    }
   }
 }

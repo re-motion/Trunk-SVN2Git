@@ -112,6 +112,11 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     public string PrependName (string text, int number)
     {
       return "ProxiedChild " + Name + " " + text + ", THE NUMBER=" + number;
-    } 
+    }
+
+    public virtual string VirtualMethodNotInBaseType (string text)
+    {
+      return "ProxiedChild::VirtualMethodNotInBaseType " + Name + " " + text;
+    }
   }
 }
