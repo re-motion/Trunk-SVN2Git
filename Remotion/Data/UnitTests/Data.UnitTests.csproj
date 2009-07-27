@@ -542,7 +542,14 @@
     <Compile Include="Linq\Clauses\ResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\AverageResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\CastResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\ChoiceResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ContainsResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\TestChoiceResultOperator.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\TestSequenceFromSequenceResultOperator.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\SequenceTypePreservingResultOperatorBaseTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\SequenceFromSequenceResultOperatorBaseTest.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\TestValueFromSequenceResultOperator.cs" />
+    <Compile Include="Linq\Clauses\ResultOperators\ValueFromSequenceResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\StreamedData\StreamedSequenceInfoTest.cs" />
     <Compile Include="Linq\Clauses\StreamedData\StreamedValueInfoTest.cs" />
     <Compile Include="Linq\Clauses\StreamedData\StreamedSequenceTest.cs" />
