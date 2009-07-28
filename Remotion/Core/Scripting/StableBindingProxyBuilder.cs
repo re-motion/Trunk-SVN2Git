@@ -80,25 +80,6 @@ namespace Remotion.Scripting
     /// </summary>
     public Type BuildProxyType ()
     {
-#if(false)
-      var methodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-      foreach (var proxiedTypeMethod in methodsInProxiedType)
-      {
-        if (IsMethodKnownInBaseType(proxiedTypeMethod))
-        {
-           _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
-        }
-        else
-        {
-          var interfaceMethodsToClassMethod = GetInterfaceMethodsToClassMethod (proxiedTypeMethod);
-          foreach (var interfaceMethod in interfaceMethodsToClassMethod)
-          {
-            // Add forwarding interface implementations for methods whose target method info has not already been implemented.
-            _forwardingProxyBuilder.AddForwardingExplicitInterfaceMethod (interfaceMethod);
-          }
-        }
-      }
-#else
       var methodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
       foreach (var proxiedTypeMethod in methodsInProxiedType)
       {
@@ -126,8 +107,6 @@ namespace Remotion.Scripting
           }
         }
       }
-
-#endif
 
       return _forwardingProxyBuilder.BuildProxyType ();
     }
