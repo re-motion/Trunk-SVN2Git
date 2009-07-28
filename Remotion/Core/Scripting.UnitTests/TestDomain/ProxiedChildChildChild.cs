@@ -23,6 +23,59 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     }
 
 
+
+    //--------------------------------------------------------------------
+    // NameProperty
+    //--------------------------------------------------------------------
+
+    public new string NameProperty
+    {
+      get { return "ProxiedChildChildChild::NameProperty " + _name; }
+    }
+
+    public new string MutableNameProperty
+    {
+      //get { return "ProxiedChildChildChild::MutableNameProperty " + _name; }
+      set { _name = value + "-ProxiedChildChildChild::MutableNameProperty"; }
+    }
+
+    //public new string ReadonlyNameProperty
+    //{
+    //  get { return "ProxiedChildChildChild::ReadonlyNameProperty " + _name; }
+    //}
+
+    public new string WriteonlyNameProperty
+    {
+      set { _name = value + "-ProxiedChildChildChild::WriteonlyNameProperty"; }
+    }
+
+
+    //--------------------------------------------------------------------
+    // NamePropertyVirtual
+    //--------------------------------------------------------------------
+
+    public override string NamePropertyVirtual
+    {
+      get { return "ProxiedChildChildChild::NamePropertyVirtual " + _name; }
+    }
+
+    //public override string MutableNamePropertyVirtual
+    //{
+    //  get { return "ProxiedChildChildChild::MutableNamePropertyVirtual " + _name; }
+    //  set { _name = value + "-ProxiedChildChildChild::MutableNamePropertyVirtual"; }
+    //}
+
+    public override string ReadonlyNamePropertyVirtual
+    {
+      get { return "ProxiedChildChildChild::ReadonlyNameVirtual " + _name; }
+    }
+
+    public override string WriteonlyNamePropertyVirtual
+    {
+      set { _name = value + "-ProxiedChildChildChild::WriteonlyNamePropertyVirtual"; }
+    }
+
+
     public new string Name
     {
       get { return "ProxiedChildChildChild: " + _name; }

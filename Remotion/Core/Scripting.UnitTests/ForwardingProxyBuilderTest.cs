@@ -20,6 +20,7 @@ using Castle.DynamicProxy;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
+using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -142,10 +143,17 @@ namespace Remotion.Scripting.UnitTests
 
       // Create proxy instance, initializing it with class to be proxied
       var proxied = new ProxiedChildGeneric<ProxiedChild, double> ("PCG", new ProxiedChild ("PC"), 123.456);
-      object proxy = proxyBuilder.CreateInstance (proxied);
+      
+      //object proxy = proxyBuilder.CreateInstance (proxied);
+      var proxyType = proxyBuilder.BuildProxyType ();
+      //object proxy = proxyBuilder.CreateInstance (proxied);
+      object proxy = Activator.CreateInstance (proxyType, proxied);
 
       Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG"));
-      var proxyPropertyInfo = proxy.GetType ().GetProperty ("MutableName");
+      
+      //var proxyPropertyInfo = proxy.GetType ().GetProperty ("MutableName");
+      var proxyPropertyInfo = proxyType.GetProperty ("MutableName");
+      
       AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
       Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG"));
 
@@ -155,6 +163,47 @@ namespace Remotion.Scripting.UnitTests
       proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
       Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
       Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+    }
+
+
+    [Test]
+    [Ignore]
+    public void AddForwardingExplicitInterfaceProperty ()
+    {
+      var type = typeof (ProxiedChild);
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingExplicitInterfaceProperty",
+        ModuleScope, type, new Type[0]);
+      var propertyInfo = type.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", BindingFlags.Instance | BindingFlags.NonPublic);
+      Assert.That (propertyInfo, Is.Not.Null);
+      proxyBuilder.AddForwardingExplicitInterfaceProperty (propertyInfo);
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChild ("PC");
+
+      var proxyType = proxyBuilder.BuildProxyType();
+      //object proxy = proxyBuilder.CreateInstance (proxied);
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+#if(false)
+      Assert.That (((IAmbigous1) proxied).MutableNameProperty, Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty PC"));
+#endif
+
+      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+
+      // TODO: Check why "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty"
+      //var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty: PCG"));
+      AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
+
+      //proxied.MutableName = "PCG_Changed";
+      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed"));
+
+      //proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
+      //Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
     }
 
 

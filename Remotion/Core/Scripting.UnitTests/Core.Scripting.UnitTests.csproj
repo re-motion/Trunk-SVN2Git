@@ -72,6 +72,7 @@
     <Compile Include="ScriptEnvironmentTest.cs" />
     <Compile Include="ScriptingIntegrationTests.cs" />
     <Compile Include="ScriptingPerformanceTests.cs" />
+    <Compile Include="StableBindingProxyBuilder_PropertyTests.cs" />
     <Compile Include="StableBindingProxyBuilder_ReflectionTests.cs" />
     <Compile Include="StableBindingProxyProviderTest.cs" />
     <Compile Include="StableMetadataTokenTest.cs" />

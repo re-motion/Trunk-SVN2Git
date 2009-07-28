@@ -30,6 +30,66 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     }
 
 
+    //string IAmbigous1.MutableNameProperty
+    //{
+    //  get { return "ProxiedChild::IAmbigous1::NameProperty " + _name; }
+    //  set { _name = value + "-ProxiedChild::IAmbigous1::MutableNameProperty"; }
+    //}
+
+
+    //--------------------------------------------------------------------
+    // NameProperty
+    //--------------------------------------------------------------------
+
+    public new string NameProperty
+    {
+      get { return "ProxiedChild::NameProperty " + _name; }
+    }
+
+    public new string MutableNameProperty
+    {
+      get { return "ProxiedChild::MutableNameProperty " + _name; }
+      set { _name = value + "-ProxiedChild::MutableNameProperty"; }
+    }
+
+    public new string ReadonlyNameProperty
+    {
+      get { return "ProxiedChild::ReadonlyNameProperty " + _name; }
+    }
+
+    public new string WriteonlyNameProperty
+    {
+      set { _name = value + "-ProxiedChild::WriteonlyNameProperty"; }
+    }
+
+
+    //--------------------------------------------------------------------
+    // NamePropertyVirtual
+    //--------------------------------------------------------------------
+
+    public override string NamePropertyVirtual
+    {
+      get { return "ProxiedChild::NamePropertyVirtual " + _name; }
+    }
+
+    public override string MutableNamePropertyVirtual
+    {
+      get { return "ProxiedChild::MutableNamePropertyVirtual " + _name; }
+      set { _name = value + "-ProxiedChild::MutableNamePropertyVirtual"; }
+    }
+
+    public override string ReadonlyNamePropertyVirtual
+    {
+      get { return "ProxiedChild::ReadonlyNameVirtual " + _name; }
+    }
+
+    public override string WriteonlyNamePropertyVirtual
+    {
+      set { _name = value + "-ProxiedChild::WriteonlyNamePropertyVirtual"; }
+    }
+
+
+
     public new string Name
     {
       get { return "ProxiedChild: " +_name; }

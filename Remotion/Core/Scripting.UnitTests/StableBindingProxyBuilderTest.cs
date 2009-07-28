@@ -752,7 +752,7 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (_methodInfoEqualityComparerIgnoreVirtual.Equals (methodFromType0, methodFromType1), Is.True);
     }
 
-    private void AssertHasSameExplicitInterfaceMethod (Type interfaceType, Type type0, Type type1, string methodName, params Type[] parameterTypes)
+    protected void AssertHasSameExplicitInterfaceMethod (Type interfaceType, Type type0, Type type1, string methodName, params Type[] parameterTypes)
     {
       var methodFromType0 = ScriptingHelper.GetExplicitInterfaceMethod (interfaceType, type0, methodName, parameterTypes);
       Assert.That (methodFromType0, Is.Not.Null);

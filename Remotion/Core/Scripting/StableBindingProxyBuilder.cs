@@ -76,13 +76,178 @@ namespace Remotion.Scripting
     }
 
     /// <summary>
-    /// Builds the proxy <see cref="Type"/>.
+    /// Builds the proxy <see cref="Type"/> which exposes all known methods and properties and forwards calls to the proxied <see cref="Type"/>.
     /// </summary>
     public Type BuildProxyType ()
     {
-      var methodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-      foreach (var proxiedTypeMethod in methodsInProxiedType)
+      ImplementKnownMethods ();
+      ImplementKnownProperties ();
+      return _forwardingProxyBuilder.BuildProxyType ();
+    }
+
+    private void ImplementKnownProperties ()
+    {
+      //throw new NotImplementedException();
+      var specialMethodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (mi => mi.IsSpecialName);
+
+      var implementedProperties = new HashSet<PropertyInfo>();
+
+      // TODO: Turn into field, move initialization into ctor
+      Dictionary<MethodInfo,PropertyInfo> firstKnownBaseTypeSpecialMethodsToPropertyMap = null;
+      if (_firstKnownBaseType != null)
       {
+        firstKnownBaseTypeSpecialMethodsToPropertyMap = BuildSpecialMethodsToPropertyMap(_firstKnownBaseType);
+      }
+
+      // TODO: Turn into field, move initialization into ctor
+      var proxiedTypeSpecialMethodsToPropertyMap = BuildSpecialMethodsToPropertyMap (_proxiedType);
+
+      //To.ConsoleLine.e (firstKnownBaseTypeSpecialMethodsToPropertyMap).nl (2).e (proxiedTypeSpecialMethodsToPropertyMap);
+
+      foreach (var proxiedTypeMethod in specialMethodsInProxiedType)
+      {
+        PropertyInfo knownBaseTypeProperty = null;
+        if (_firstKnownBaseType != null)
+        {
+          firstKnownBaseTypeSpecialMethodsToPropertyMap.TryGetValue (proxiedTypeMethod, out knownBaseTypeProperty);
+        }
+
+        if (knownBaseTypeProperty != null && // property exists in first known base type
+            IsMethodBound (proxiedTypeMethod, _publicMethodsInFirstKnownBaseType)) // accessor method is visible in first known base type
+        {
+          _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (knownBaseTypeProperty);
+        }
+        else
+        {
+          //var interfaceMethodsToClassMethod = GetInterfaceMethodsToClassMethod (proxiedTypeMethod);
+          //foreach (var interfaceMethod in interfaceMethodsToClassMethod)
+          //{
+          //  PropertyInfo proxiedTypeProperty;
+          //  proxiedTypeSpecialMethodsToPropertyMap.TryGetValue (interfaceMethod, out proxiedTypeProperty);
+
+          //  if (proxiedTypeProperty != null)
+          //  {
+          //    // Add forwarding explicit interface implementations for properties who have not already been implemented publically.
+          //    _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (knownBaseTypeProperty);
+          //  }
+          //}
+        }
+      }
+
+
+      //var proxiedTypeNonPublicProperties =  _proxiedType.CreateSequence(t => t.BaseType).
+      //  SelectMany(t => t.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic));
+
+      //To.ConsoleLine.nl().e (() => _classMethodToInterfaceMethodsMap).nl();
+
+      //foreach (var proxiedTypeNonPublicProperty in proxiedTypeNonPublicProperties)
+      //{
+      //  var proxiedTypeNonPublicPropertyAccessors =
+      //      proxiedTypeNonPublicProperty.GetAccessors (true);
+      //  if (proxiedTypeNonPublicPropertyAccessors.Any (mi => GetInterfaceMethodsToClassMethod (mi).Any ()))
+      //  {
+      //    _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (proxiedTypeNonPublicProperty);
+      //  }
+      //}
+
+
+      Type type = _proxiedType;
+      while (type != null)
+      {
+        var typeNonPublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
+
+        To.ConsoleLine.nl ().e(type.Name).e (() => typeNonPublicProperties).nl ();
+
+        //var typeKnownInterfaceMaps = _knownInterfaces.Select(i => type.GetInterfaceMap(i));
+        //foreach (var knownInterfaceMap in typeKnownInterfaceMaps)
+        //{
+        //  for
+        //}
+
+        // Build class method to interface method map for current type
+        // TODO: Optimize (cache)
+        var classMethodToInterfaceMethodsMap = new Dictionary<MethodInfo, HashSet<MethodInfo>>();
+        var knownInterfacesInType = _knownInterfaces.Intersect(type.GetInterfaces());
+        foreach (var knownInterface in knownInterfacesInType)
+        {
+          var interfaceMapping = type.GetInterfaceMap (knownInterface);
+          var classMethods = interfaceMapping.TargetMethods;
+          var interfaceMethods = interfaceMapping.InterfaceMethods;
+
+          for (int i = 0; i < classMethods.Length; i++)
+          {
+            var classMethod = classMethods[i];
+            if (classMethod.IsSpecialName)
+            {
+              if (!classMethodToInterfaceMethodsMap.ContainsKey (classMethod))
+              {
+                classMethodToInterfaceMethodsMap[classMethod] = new HashSet<MethodInfo>();
+              }
+              classMethodToInterfaceMethodsMap[classMethod].Add (interfaceMethods[i]);
+            }
+          }
+        }
+
+        To.ConsoleLine.e (classMethodToInterfaceMethodsMap);
+
+        foreach (var property in typeNonPublicProperties)
+        {
+          // implementedProperties.Contains(property)
+
+          var typeNonPublicPropertyAccessors = property.GetAccessors (true);
+          if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)) )
+          {
+            To.ConsoleLine.s (">>>>>>>>>>>> Implementing property: ").e (property.Name);
+            //_forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (property);
+            _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (property); // !!!!!!! TEST !!!!!!!!!!!!!!!!
+          }
+        }
+        
+
+        type = type.BaseType;
+      }
+
+
+
+    }
+
+
+    private Dictionary<MethodInfo, PropertyInfo> BuildSpecialMethodsToPropertyMap (Type startType)
+    {
+      //Dictionary<MethodInfo, PropertyInfo> specialMethodsToPropertyMap;
+      const BindingFlags bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+      var specialMethodsToPropertyMap = startType.CreateSequence (t => t.BaseType).SelectMany (
+          t => t.GetProperties (bindingFlags).
+                   SelectMany (
+                   pi =>
+                   new[] { new Tuple<MethodInfo, PropertyInfo> (pi.GetGetMethod (), pi), new Tuple<MethodInfo, PropertyInfo> (pi.GetSetMethod (), pi) })).
+          Where(tu => tu.A != null).
+          ToDictionary (x => x.A, x => x.B);
+
+      //var declaredOnlyProperties = _firstKnownBaseType.CreateSequence (t => t.BaseType).SelectMany (t => t.GetProperties (bindingFlags));
+      //foreach (var property in declaredOnlyProperties)
+      //{
+      //  AddToSpecialMethodsToPropertyMap
+      //}
+      //             SelectMany (
+      //             pi =>
+      //             new[] { new Tuple<MethodInfo, PropertyInfo> (pi.GetGetMethod (), pi), new Tuple<MethodInfo, PropertyInfo> (pi.GetSetMethod (), pi) })).
+      //    ToDictionary (x => x.A, x => x.B);
+
+      return specialMethodsToPropertyMap;
+    }
+
+    private void ImplementKnownMethods ()
+    {
+      var regularMethodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(mi => !mi.IsSpecialName);
+      foreach (var proxiedTypeMethod in regularMethodsInProxiedType)
+      {
+        //// Skip property getter/setter
+        //if (proxiedTypeMethod.IsSpecialName)
+        //{
+        //  continue; 
+        //}
+
         MethodInfo proxiedTypeMethodInKnownBaseType = null;
         if (_firstKnownBaseType != null)
         {
@@ -92,7 +257,7 @@ namespace Remotion.Scripting
         //if (IsMethodKnownInBaseType (proxiedTypeMethod) && 
         //  IsMethodBound (proxiedTypeMethod, _publicMethodsInFirstKnwonBaseType))
         if (proxiedTypeMethodInKnownBaseType != null && // method exists in first known base type
-          IsMethodBound (proxiedTypeMethodInKnownBaseType, _publicMethodsInFirstKnownBaseType)) // method is visible in first known base type
+            IsMethodBound (proxiedTypeMethodInKnownBaseType, _publicMethodsInFirstKnownBaseType)) // method is visible in first known base type
         {
           //_forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethod);
           _forwardingProxyBuilder.AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (proxiedTypeMethodInKnownBaseType);
@@ -107,8 +272,6 @@ namespace Remotion.Scripting
           }
         }
       }
-
-      return _forwardingProxyBuilder.BuildProxyType ();
     }
 
     /// <summary>

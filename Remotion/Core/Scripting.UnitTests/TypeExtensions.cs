@@ -62,5 +62,10 @@ namespace Remotion.Scripting.UnitTests
       return type.GetProperties (name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
     }
 
+    public static PropertyInfo[] GetAllProperties (this Type type)
+    {
+      return type.GetProperties (BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+    }
+
   }
 }

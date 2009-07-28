@@ -175,6 +175,55 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
+    [Test]
+    [Explicit]
+    public void GetterSetterInInterfaceMap ()
+    {
+      var type = typeof (ProxiedChild);
+      var interfaceMapping = type.GetInterfaceMap (typeof (IAmbigous1));
+      interfaceMapping.InterfaceMethods.Process (mi => To.ConsoleLine.e (mi.Name));
+    }
+
+
+    [Test]
+    [Explicit]
+    public void AllProperties ()
+    {
+      var types = new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild), typeof (ProxiedChildChildChild) };
+
+      foreach (var type in types)
+      {
+        To.ConsoleLine.nl (2).e (type.Name).s (": ");
+        type.GetAllProperties ().Process (pi => To.ConsoleLine.e (pi.Name).e (pi.MetadataToken));
+      }
+    }
+
+    [Test]
+    [Explicit]
+    public void ExplicitInterfaceProperties ()
+    {
+      var types = new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild), typeof (ProxiedChildChildChild) };
+
+      foreach (var type in types)
+      {
+        To.ConsoleLine.nl (2).e (type.Name).s (": ");
+        type.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic).Process (pi => To.ConsoleLine.e (pi.Name).e(pi.GetAccessors(true)).e (pi.MetadataToken));
+        To.ConsoleLine.nl();
+        type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic).Process (pi => To.ConsoleLine.e (pi.Name).e (pi.GetAccessors (true)).e (pi.MetadataToken));
+      }
+    }    
+
+
+    //[Test]
+    //[Explicit]
+    //public void MethodsDeclaringType ()
+    //{
+    //  var type = typeof (ProxiedChild);
+    //  var interfaceMapping = type.GetInterfaceMap (typeof (IAmbigous1));
+    //  interfaceMapping.InterfaceMethods.Process (mi => To.ConsoleLine.e (mi.Name));
+    //}
+
+
     public int GetPropertyGetterSetterMetaDataToken (PropertyInfo property, bool getGetter)
     {
       //property.

@@ -106,20 +106,60 @@ namespace Remotion.Scripting
     {
       string propertyName = propertyInfo.Name;
       var propertyEmitter = _classEmitter.CreateProperty (propertyName, PropertyKind.Instance, propertyInfo.PropertyType);
+      CreateGetterAndSetter(propertyInfo, propertyEmitter);
+    }
+
+    private void CreateGetterAndSetter (PropertyInfo propertyInfo, CustomPropertyEmitter propertyEmitter)
+    {
       if (propertyInfo.CanRead)
       {
         var getMethodEmitter = propertyEmitter.CreateGetMethod ();
-        var proxiedGetMethodInfo = propertyInfo.GetGetMethod ();
+        var proxiedGetMethodInfo = propertyInfo.GetGetMethod (true);
         getMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedGetMethodInfo);
       }
 
       if (propertyInfo.CanWrite)
       {
         var setMethodEmitter = propertyEmitter.CreateSetMethod ();
-        var proxiedSetMethodInfo = propertyInfo.GetSetMethod ();
+        var proxiedSetMethodInfo = propertyInfo.GetSetMethod (true);
         setMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedSetMethodInfo);
       }
     }
+
+
+    // TODO: Test
+    public void AddForwardingExplicitInterfaceProperty (PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      var propertyEmitter = _classEmitter.CreateInterfacePropertyImplementation (propertyInfo);
+      CreateGetterAndSetter (propertyInfo, propertyEmitter);
+    }
+
+    // TODO: Test
+    /// <summary>
+    /// Adds a forwarding property to the proxy based on the passed <see cref="PropertyInfo"/>. 
+    /// </summary>
+    public void AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (PropertyInfo propertyInfo)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
+      //var methodAttributes = propertyInfo.Attributes;
+      CustomPropertyEmitter propertyEmitter;
+
+
+      if (propertyInfo.DeclaringType.IsInterface)
+      {
+        propertyEmitter = _classEmitter.CreatePublicInterfacePropertyImplementation (propertyInfo);
+      }
+      else
+      {
+        //propertyEmitter = _classEmitter.CreatePropertyOverride (propertyInfo);
+        propertyEmitter = _classEmitter.CreateProperty (propertyInfo.Name, PropertyKind.Instance, propertyInfo.PropertyType);
+      }
+
+      CreateGetterAndSetter (propertyInfo, propertyEmitter);
+    }
+
 
 
     /// <summary>
@@ -148,16 +188,16 @@ namespace Remotion.Scripting
         // Note: Masking the attributes with MethodAttributes.MemberAccessMask below, would remove 
         // desired attributes such as Final, Virtual and HideBySig.
         
-        //methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
-        // TODO: This works, but check if we can move forwarding proxy calling non-virtual to better spot.
-        // Note: Extending methodEmitter.ImplementByDelegating to accept a callVirtual flag (see below)
-        // leads to PEVerify emitting errors and warnings. 
-        //public CustomMethodEmitter ImplementByDelegating (TypeReference implementer, MethodInfo methodToCall, bool callVirtual)
-        //{
-        //  AddDelegatingCallStatements (methodToCall, implementer, callVirtual);
-        //  return this;
-        //}
-        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes & ~MethodAttributes.Virtual);  // !!!!!!!!!!!!!!!!!!!!
+        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
+        //// TODO: This works, but check if we can move forwarding proxy calling non-virtual to better spot.
+        //// Note: Extending methodEmitter.ImplementByDelegating to accept a callVirtual flag (see below)
+        //// leads to PEVerify emitting errors and warnings. 
+        ////public CustomMethodEmitter ImplementByDelegating (TypeReference implementer, MethodInfo methodToCall, bool callVirtual)
+        ////{
+        ////  AddDelegatingCallStatements (methodToCall, implementer, callVirtual);
+        ////  return this;
+        ////}
+        //methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes & ~MethodAttributes.Virtual);  // !!!!!!!!!!!!!!!!!!!!
       }
 
       methodEmitter.CopyParametersAndReturnType (methodInfo);

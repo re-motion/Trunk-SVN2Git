@@ -76,6 +76,66 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     }
 
 
+    //--------------------------------------------------------------------
+    // NameProperty
+    //--------------------------------------------------------------------
+
+    public string NameProperty
+    {
+      get { return "Proxied::NameProperty " + _name; }
+    }
+
+    public string MutableNameProperty
+    {
+      get { return "Proxied::MutableNameProperty " + _name; }
+      set { _name = value + "-Proxied::MutableNameProperty"; }
+    }
+
+    public string ReadonlyNameProperty
+    {
+      get { return "Proxied::ReadonlyNameProperty " + _name; }
+    }
+
+    public string WriteonlyNameProperty
+    {
+      set { _name = value + "-Proxied::WriteonlyNameProperty"; }
+    }
+
+
+    //--------------------------------------------------------------------
+    // NamePropertyVirtual
+    //--------------------------------------------------------------------
+
+    public virtual string NamePropertyVirtual
+    {
+      get { return "Proxied::NamePropertyVirtual " + _name; }
+    }
+
+    public virtual string MutableNamePropertyVirtual
+    {
+      get { return "Proxied::MutableNamePropertyVirtual " + _name; }
+      set { _name = value + "-Proxied::MutableNamePropertyVirtual"; }
+    }
+
+    public virtual string ReadonlyNamePropertyVirtual
+    {
+      get { return "Proxied::ReadonlyNameVirtual " + _name; }
+    }
+
+    public virtual string WriteonlyNamePropertyVirtual
+    {
+      set { _name = value + "-Proxied::WriteonlyNamePropertyVirtual"; }
+    }
+
+
+
+
+    //--------------------------------------------------------------------
+    //--------------------------------------------------------------------
+    // Methods
+    //--------------------------------------------------------------------
+    //--------------------------------------------------------------------
+
 
     public string GetName ()
     {

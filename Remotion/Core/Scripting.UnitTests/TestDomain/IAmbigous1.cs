@@ -18,5 +18,6 @@ namespace Remotion.Scripting.UnitTests.TestDomain
   public interface IAmbigous1
   {
     string StringTimes (string text, int number);
+    //string MutableNameProperty { get; set; }
   }
 }

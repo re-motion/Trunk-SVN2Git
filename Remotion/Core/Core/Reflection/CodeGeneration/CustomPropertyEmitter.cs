@@ -163,12 +163,33 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-        CustomMethodEmitter method = _declaringType.CreateMethod ("get_" + Name, flags);
+        #if(false)
+           // Leads to e.g. get_Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty()
+          CustomMethodEmitter method = _declaringType.CreateMethod ("get_" + Name, flags);
+        #else
+          CustomMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName(Name,"get"), flags);
+        #endif
+
         method.SetReturnType (PropertyType);
         method.SetParameterTypes (IndexParameters);
         GetMethod = method;
         return method;
       }
+    }
+
+
+    public static string BuildAccessorMethodName(string propertyName, string accessorName)
+    {
+      string s = propertyName;
+      string sPath = "";
+      string sPureName = s;
+      int iSplit = s.LastIndexOf ('.');
+      if (iSplit >= 0)
+      {
+        sPath = s.Substring (0, iSplit) + ".";
+        sPureName = s.Substring (iSplit + 1, s.Length - iSplit - 1);
+      }
+      return sPath + accessorName + "_" + sPureName;
     }
 
     public CustomMethodEmitter CreateSetMethod ()
@@ -181,7 +202,14 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-        CustomMethodEmitter method = _declaringType.CreateMethod ("set_" + Name, flags);
+#if(false)
+          // Leads to e.g. get_Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty()
+          CustomMethodEmitter method = _declaringType.CreateMethod ("set_" + Name, flags);
+#else
+        CustomMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName (Name,"set"), flags);
+        #endif
+
+
         Type[] setterParameterTypes = new Type[IndexParameters.Length + 1];
         IndexParameters.CopyTo (setterParameterTypes, 0);
         setterParameterTypes[IndexParameters.Length] = PropertyType;

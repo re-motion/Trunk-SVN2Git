@@ -24,6 +24,60 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     }
 
 
+    //--------------------------------------------------------------------
+    // NameProperty
+    //--------------------------------------------------------------------
+
+    public new string NameProperty
+    {
+      get { return "ProxiedChildChild::NameProperty " + _name; }
+    }
+
+    public new string MutableNameProperty
+    {
+      get { return "ProxiedChildChild::MutableNameProperty " + _name; }
+      set { _name = value + "-ProxiedChildChild::MutableNameProperty"; }
+    }
+
+    public new string ReadonlyNameProperty
+    {
+      get { return "ProxiedChildChild::ReadonlyNameProperty " + _name; }
+    }
+
+    public new string WriteonlyNameProperty
+    {
+      set { _name = value + "-ProxiedChildChild::WriteonlyNameProperty"; }
+    }
+
+
+    //--------------------------------------------------------------------
+    // NamePropertyVirtual
+    //--------------------------------------------------------------------
+
+    public override string NamePropertyVirtual
+    {
+      get { return "ProxiedChildChild::NamePropertyVirtual " + _name; }
+    }
+
+    public override string MutableNamePropertyVirtual
+    {
+      get { return "ProxiedChildChild::MutableNamePropertyVirtual " + _name; }
+      set { _name = value + "-ProxiedChildChild::MutableNamePropertyVirtual"; }
+    }
+
+    public override string ReadonlyNamePropertyVirtual
+    {
+      get { return "ProxiedChildChild::ReadonlyNameVirtual " + _name; }
+    }
+
+    public override string WriteonlyNamePropertyVirtual
+    {
+      set { _name = value + "-ProxiedChildChild::WriteonlyNamePropertyVirtual"; }
+    }
+
+
+
+
     public override string NameVirtual
     {
       get { return "ProxiedChildChild::" + _name; }
