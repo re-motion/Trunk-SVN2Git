@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ExecutionStrategies;
@@ -31,13 +32,12 @@ namespace Remotion.Data.UnitTests.Linq.Clauses.ResultOperators
 
     public override StreamedValue ExecuteInMemory<T> (StreamedSequence sequence)
     {
-      var sequenceInfo = sequence.GetTypedSequence<T> ();
-      return new StreamedValue (sequenceInfo.Count ());
+      return new StreamedValue (sequence.GetTypedSequence<T> ().Count (), (StreamedValueInfo) GetOutputDataInfo(sequence.DataInfo));
     }
 
     public override IStreamedDataInfo GetOutputDataInfo (IStreamedDataInfo inputInfo)
     {
-      throw new NotImplementedException();
+      return new StreamedScalarValueInfo (typeof (int));
     }
 
     public override ResultOperatorBase Clone (CloneContext cloneContext)

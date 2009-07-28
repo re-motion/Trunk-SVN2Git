@@ -573,6 +573,7 @@
     <Compile Include="Linq\Clauses\ResultOperators\FirstResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\TestResultOperator.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\UnionResultOperatorTest.cs" />
+    <Compile Include="Linq\Clauses\StreamedData\TestStreamedValueInfo.cs" />
     <Compile Include="Linq\DefaultQueryProviderTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchOneRequestTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchRequestBaseTest.cs" />
