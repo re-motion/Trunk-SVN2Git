@@ -144,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Linq
               .MakeGenericMethod (streamedSequenceInfo.ItemExpression.Type);
 
       var databaseResult = executeCollectionMethod.Invoke (this, new object[] { queryModel, new FetchRequestBase[0] });
-      var inputData = new StreamedSequence ((IEnumerable) databaseResult, streamedSequenceInfo.ItemExpression);
+      var inputData = new StreamedSequence (((IEnumerable) databaseResult).AsQueryable(), streamedSequenceInfo);
       var outputData = (StreamedSequence) groupResultOperator.ExecuteInMemory (inputData);
       return outputData.GetTypedSequence<T>();
     }

@@ -551,7 +551,9 @@
     <Compile Include="Linq\Clauses\ResultOperators\SequenceFromSequenceResultOperatorBaseTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\TestValueFromSequenceResultOperator.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\ValueFromSequenceResultOperatorBaseTest.cs" />
+    <Compile Include="Linq\Clauses\StreamedData\StreamedScalarValueInfoTest.cs" />
     <Compile Include="Linq\Clauses\StreamedData\StreamedSequenceInfoTest.cs" />
+    <Compile Include="Linq\Clauses\StreamedData\StreamedSingleValueInfoTest.cs" />
     <Compile Include="Linq\Clauses\StreamedData\StreamedValueInfoTest.cs" />
     <Compile Include="Linq\Clauses\StreamedData\StreamedSequenceTest.cs" />
     <Compile Include="Linq\Clauses\ResultOperators\DefaultIfEmptyResultOperatorTest.cs" />
