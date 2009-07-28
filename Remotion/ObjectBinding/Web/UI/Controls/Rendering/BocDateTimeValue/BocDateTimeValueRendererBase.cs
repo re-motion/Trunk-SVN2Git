@@ -50,19 +50,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue
     /// The first one for the date textbox, second for the <see cref="DatePickerButton"/> and third for the time textbox.
     /// The text boxes are rendered directly, the date picker is responsible for rendering itself.
     /// </summary>
-    public virtual void Render()
-    {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
-      AddAttributesToRender (true);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
-
-      if (Control.IsReadOnly)
-        RenderReadOnlyValue();
-      else
-        RenderEditModeControls();
-
-      Writer.RenderEndTag();
-    }
+    public abstract void Render();
 
     protected abstract void RenderEditModeControls ();
 

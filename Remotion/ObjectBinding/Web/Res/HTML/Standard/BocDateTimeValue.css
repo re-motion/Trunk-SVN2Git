@@ -1,43 +1,52 @@
-/*  Style applied to the BocDateTimeValue's layout table.  */
-div.bocDateTimeValue
+span.bocDateTimeValue, span.bocDateValue
 {
-  position: relative;
+  display: block;
+  text-align: left;
+  height: 1.5em;
   white-space: nowrap;
+  vertical-align: top;
+  position: relative;
+  width: 100%;
+  display: inline-block;
 }
 
-/*  Style applied to the BocDateTimeValue's layout table's cells.  */
-div.bocDateTimeValue input.Date
+
+span.bocDateTimeValue span.bocDateInputWrapper
 {
   position: absolute;
-  top: 0;
   left: 0;
-  z-index:1;
+  right: 9em;
 }
 
-div.bocDateTimeValue input.Time
+span.bocDateTimeValue span.bocTimeInputWrapper
 {
   position: absolute;
-  top: 0;
+  right: 0px;
+  width: 5.5em;
+}
+
+span.bocDateTimeValue a
+{
+  position: absolute;
+  right: 5.9em;
+  border: 0;
+}
+
+span.bocDateValue span.bocDateInputWrapper
+{
+  position: absolute;
+  left: 0;
+  right: 3.1em;
+}
+
+span.bocDateValue a
+{
+  position: absolute;
   right: 0;
-  z-index:1;
 }
 
-div.bocDateTimeValue a
+input.bocDateTimeDate, input.bocDateTimeTime
 {
-  position : relative;
-  margin: 0 5px 0 5px;
-  padding: 0;
-  z-index:0;
-}
-
-.bocDateTimeValue
-{
-}
-
-.bocDateTimeValue.readOnly
-{
-}
-
-.bocDateTimeValue.disabled
-{
+  width: 100%; 
+  margin: 0;
 }

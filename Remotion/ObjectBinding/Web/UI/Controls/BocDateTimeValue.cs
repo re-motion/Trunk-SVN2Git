@@ -99,8 +99,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private string _errorMessage;
     private readonly ArrayList _validators;
-    private const string c_dateTextBoxIDPostfix = "_Boc_DateTextBox";
-    private const string c_timeTextBoxIDPostfix = "_Boc_TimeTextBox";
+    private const string c_dateTextBoxIDPostfix = "Boc_DateTextBox";
+    private const string c_timeTextBoxIDPostfix = "Boc_TimeTextBox";
 
     // construction and disposing
 
@@ -620,12 +620,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public string GetDateTextboxClientID ()
     {
-      return ClientID + c_dateTextBoxIDPostfix;
+      return ClientID + ClientIDSeparator + c_dateTextBoxIDPostfix;
     }
 
     public string GetTimeTextboxClientID ()
     {
-      return ClientID + c_timeTextBoxIDPostfix;
+      return ClientID + ClientIDSeparator + c_timeTextBoxIDPostfix;
     }
 
     /// <summary> The <see cref="BocDateTimeValue"/> supports only scalar properties. </summary>
@@ -830,12 +830,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private string GetDateTextboxUniqueID ()
     {
-      return UniqueID + c_dateTextBoxIDPostfix;
+      return UniqueID + IdSeparator + c_dateTextBoxIDPostfix;
     }
 
     private string GetTimeTextboxUniqueID ()
     {
-      return UniqueID + c_timeTextBoxIDPostfix;
+      return UniqueID + IdSeparator + c_timeTextBoxIDPostfix;
+    }
+
+    string IBocDateTimeValue.DateTextboxClientID
+    {
+      get { return GetDateTextboxClientID (); }
+    }
+
+    string IBocDateTimeValue.TimeTextboxClientID
+    {
+      get { return GetTimeTextboxClientID (); }
     }
 
     string IBocDateTimeValue.DateTextboxID

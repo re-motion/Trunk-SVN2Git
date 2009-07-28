@@ -38,6 +38,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Quir
     {
     }
 
+    /// <summary>
+    /// Renders an inline table consisting of one row with up to three cells, depending on <see cref="IBocDateTimeValue.ActualValueType"/>.
+    /// The first one for the date textbox, second for the <see cref="DatePickerButton"/> and third for the time textbox.
+    /// The text boxes are rendered directly, the date picker is responsible for rendering itself.
+    /// </summary>
+    public override void Render ()
+    {
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+      AddAttributesToRender (true);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      if (Control.IsReadOnly)
+        RenderReadOnlyValue ();
+      else
+        RenderEditModeControls ();
+
+      Writer.RenderEndTag ();
+    }
+
     protected override void RenderEditModeControls ()
     {
       var dateTextBox = new TextBox { ID = Control.DateTextboxID };

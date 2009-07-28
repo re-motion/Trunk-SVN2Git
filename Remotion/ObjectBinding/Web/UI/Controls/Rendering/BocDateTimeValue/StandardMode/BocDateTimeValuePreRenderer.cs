@@ -30,11 +30,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      string scriptKey = typeof (IBocDateTimeValue).FullName + "_Script";
-      string scriptFile = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (IBocDateTimeValue), ResourceType.Html, ResourceTheme.Standard, "BocDateTimeValue.js");
-      htmlHeadAppender.RegisterJavaScriptInclude (scriptKey, scriptFile);
-
       string styleKey = typeof (IBocDateTimeValue).FullName + "_Style";
       string styleFile = ResourceUrlResolver.GetResourceUrl (
           Control, Context, typeof (IBocDateTimeValue), ResourceType.Html, ResourceTheme.Standard, "BocDateTimeValue.css");
@@ -43,15 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
 
     public override void PreRender ()
     {
-      string key = Control.UniqueID + "_AdjustPositions";
-      string script = string.Format(@"$(document).ready( function(){{ 
-  $(window).bind('resize', function(e){{ 
-      BocDateTimeValue.AdjustPositions($('#{0}')); 
-  }});
-  " + "setTimeout(\"BocDateTimeValue.AdjustPositions($('#{0}'));\", 10);" + @"
-}});"
-      , Control.ClientID);
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocDateTimeValue), key, script);
+      
     }
   }
 }

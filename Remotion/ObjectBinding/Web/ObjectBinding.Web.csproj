@@ -477,7 +477,6 @@
     <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.css" />
     <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.js" />
     <Content Include="Res\HTML\Standard\BocDateTimeValue.css" />
-    <Content Include="Res\HTML\Standard\BocDateTimeValue.js" />
     <Content Include="Res\HTML\Standard\BocAutoCompleteReferenceValue.jquery.css" />
     <Content Include="Res\HTML\Standard\jquery.bgiframe.min.js" />
     <Content Include="Res\HTML\Standard\BocReferenceValue.css" />

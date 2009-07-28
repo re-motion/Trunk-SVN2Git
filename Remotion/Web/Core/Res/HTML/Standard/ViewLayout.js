@@ -74,6 +74,6 @@ ViewLayout.FixIE6 = function(view, bottom) {
     $('.bocListNavigator').css('display', 'block');
     $('div.bocReferenceValueContent').css('display', 'block');
     $('div.bocAutoCompleteReferenceValueContent').css('display', 'block');
-    $('div.bocDateTimeValue').css('display', 'block');
+    $('span.bocDateTimeValue').css('display', 'inline-block');
     $('a.DatePickerButton').css('display', 'inline-block');
 }

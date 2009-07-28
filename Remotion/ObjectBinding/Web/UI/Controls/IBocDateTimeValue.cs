@@ -37,6 +37,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string TimeString { get; }
     string DateTextboxID { get; }
     string TimeTextboxID { get; }
+    string DateTextboxClientID { get; }
+    string TimeTextboxClientID { get; }
     string GetDatePickerText ();
   }
 }

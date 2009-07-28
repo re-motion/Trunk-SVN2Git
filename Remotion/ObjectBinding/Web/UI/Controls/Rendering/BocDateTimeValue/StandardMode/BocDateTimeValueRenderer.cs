@@ -17,36 +17,69 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.StandardMode
 {
   public class BocDateTimeValueRenderer : BocDateTimeValueRendererBase
   {
+    private readonly TextBox _dateTextBox;
+    private readonly TextBox _timeTextBox;
+
     public BocDateTimeValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control)
-        : base(context, writer, control)
+        : this (context, writer, control, null, null)
     {
+    }
+
+    public BocDateTimeValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocDateTimeValue control, TextBox dateTextBox, TextBox timeTextBox)
+        : base (context, writer, control)
+    {
+      _dateTextBox = dateTextBox ?? new TextBox();
+      _timeTextBox = timeTextBox ?? new TextBox();
+    }
+
+    /// <summary>
+    /// Renders an inline table consisting of one row with up to three cells, depending on <see cref="IBocDateTimeValue.ActualValueType"/>.
+    /// The first one for the date textbox, second for the <see cref="DatePickerButton"/> and third for the time textbox.
+    /// The text boxes are rendered directly, the date picker is responsible for rendering itself.
+    /// </summary>
+    public override void Render ()
+    {
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+      AddAttributesToRender (false);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+      if (Control.IsReadOnly)
+        RenderReadOnlyValue ();
+      else
+        RenderEditModeControls ();
+
+      Writer.RenderEndTag ();
     }
 
     protected override void AddAdditionalAttributes ()
     {
-      
     }
 
     protected override void RenderEditModeControls ()
     {
-      var dateTextBox = new TextBox { ID = Control.DateTextboxID, CssClass="Date" };
-      Initialize (dateTextBox, Control.DateTextBoxStyle, GetDateMaxLength ());
+      var dateTextBox = _dateTextBox;
+      dateTextBox.ID = Control.DateTextboxID;
+      dateTextBox.CssClass = CssClassDate;
+      Initialize (dateTextBox, Control.DateTextBoxStyle, GetDateMaxLength());
       dateTextBox.Text = Control.Value.HasValue ? Formatter.FormatDateValue (Control.Value.Value) : Control.DateString;
       dateTextBox.Page = Control.Page.WrappedInstance;
 
-      var timeTextBox = new TextBox { ID = Control.TimeTextboxID, CssClass = "Time" };
-      Initialize (timeTextBox, Control.TimeTextBoxStyle, GetTimeMaxLength ());
+      var timeTextBox = _timeTextBox;
+      timeTextBox.ID = Control.TimeTextboxID;
+      timeTextBox.CssClass = CssClassTime;
+      Initialize (timeTextBox, Control.TimeTextBoxStyle, GetTimeMaxLength());
       timeTextBox.Text = Control.Value.HasValue ? Formatter.FormatTimeValue (Control.Value.Value, Control.ShowSeconds) : Control.TimeString;
       timeTextBox.Page = Control.Page.WrappedInstance;
 
       var datePickerButton = Control.DatePickerButton;
-      datePickerButton.AlternateText = Control.GetDatePickerText ();
+      datePickerButton.AlternateText = Control.GetDatePickerText();
       datePickerButton.IsDesignMode = Control.IsDesignMode;
 
       bool hasDateField = false;
@@ -65,31 +98,75 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
       bool canScript = DetermineClientScriptLevel (datePickerButton);
       bool hasDatePicker = hasDateField && canScript;
 
-      int dateTextBoxWidthPercentage = GetDateTextBoxWidthPercentage (hasDateField, hasTimeField);
-      string dateTextBoxSize = GetDateTextBoxSize (dateTextBoxWidthPercentage - 5);
-      string timeTextBoxSize = GetTimeTextBoxSize (95 - dateTextBoxWidthPercentage);
-      dateTextBox.Style["width"] = dateTextBoxSize;
-      timeTextBox.Style["width"] = timeTextBoxSize;
-
       if (hasDateField)
       {
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDateInputWrapper);
+        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
         dateTextBox.RenderControl (Writer);
+        Writer.RenderEndTag();
       }
 
       if (hasDatePicker)
-      {
         datePickerButton.RenderControl (Writer);
-      }
 
       if (hasTimeField)
       {
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTimeInputWrapper);
+        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
         timeTextBox.RenderControl (Writer);
+        Writer.RenderEndTag ();
       }
     }
 
     protected override bool DetermineClientScriptLevel (IDatePickerButton datePickerButton)
     {
       return true;
+    }
+
+    public override string CssClassBase
+    {
+      get
+      {
+        switch (Control.ActualValueType)
+        {
+          case BocDateTimeValueType.DateTime:
+            return CssClassDateTime;
+          case BocDateTimeValueType.Date:
+            return CssClassDateOnly;
+          default:
+            return CssClassDateTime;
+        }
+      }
+    }
+
+    public string CssClassDateTime
+    {
+      get { return "bocDateTimeValue"; }
+    }
+
+    public string CssClassDateOnly
+    {
+      get { return "bocDateValue"; }
+    }
+
+    public string CssClassDateInputWrapper
+    {
+      get { return "bocDateInputWrapper"; }
+    }
+
+    public string CssClassTimeInputWrapper
+    {
+      get { return "bocTimeInputWrapper"; }
+    }
+
+    public string CssClassDate
+    {
+      get { return "bocDateTimeDate"; }
+    }
+
+    public string CssClassTime
+    {
+      get { return "bocDateTimeTime"; }
     }
   }
 }
