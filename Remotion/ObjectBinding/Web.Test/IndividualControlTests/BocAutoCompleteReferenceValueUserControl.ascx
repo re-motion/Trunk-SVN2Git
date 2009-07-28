@@ -26,7 +26,9 @@
 </remotion:boctextvalue>&nbsp;<remotion:boctextvalue id=LastNameField runat="server" readonly="True" datasourcecontrol="CurrentObject" PropertyIdentifier="LastName"></remotion:boctextvalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=PartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" TextBoxStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%">
+    <td><remotion:bocAutoCompleteReferenceValue id=PartnerField runat="server" ServiceMethod="GetPersonList" ServicePath="~/IndividualControlTests/AutoCompleteService.asmx" 
+    TextBoxStyle-AutoPostBack="true" readonly="False" datasourcecontrol="CurrentObject" propertyidentifier="Partner" width="100%"
+    CompletionInterval="50" SuggestionInterval="2000" CompletionSetCount="5">
 <persistedcommand>
 <remotion:BocCommand Type="Event"></remotion:BocCommand>
 </PersistedCommand>

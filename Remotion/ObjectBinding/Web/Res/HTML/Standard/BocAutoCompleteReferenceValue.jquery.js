@@ -44,7 +44,8 @@
         serviceUrl: serviceUrl,
         serviceMethod: serviceMethod,
         data: null,
-        delay: $.Autocompleter.defaults.delay,
+        displayListDelay: $.Autocompleter.defaults.displayListDelay,
+        autoFillDelay: $.Autocompleter.defaults.autoFillDelay,
         max: options && !options.scroll ? 10 : 150,
         // re-motion: clicking this control will display the dropdown list with an assumed input of '' (regardless of textbox value)
         dropDownButtonId: null
@@ -103,6 +104,7 @@
     var $input = $(input).attr("autocomplete", "off").addClass(options.inputClass);
 
     var timeout;
+    var autoFillTimeout;
     var previousValue = "";
     var cache = $.Autocompleter.Cache(options);
     var hasFocus = 0;
@@ -178,7 +180,7 @@
           }
           break;
 
-        // matches also semicolon              
+        // matches also semicolon                      
         case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
         case KEY.TAB:
         case KEY.RETURN:
@@ -205,7 +207,10 @@
 
         default:
           clearTimeout(timeout);
-          timeout = setTimeout(onChange, options.delay);
+          timeout = setTimeout(onChange, options.displayListDelay);
+
+          // re-motion: start the auto-fill enabler count-down
+          enableAutoFill();
           break;
       }
     }).focus(function()
@@ -326,7 +331,19 @@
       $input.val(v);
       hideResultsNow();
       $input.trigger("result", [selected.data, selected.value]);
+
+      // re-motion: set autoFill to false again and reset the timer
+      options.autoFill = false;
+      autoFillTimeout = null;
+
       return true;
+    }
+
+    // re-motion: auto-fill is always enabled, but only after autoFillDelay has passed while typing
+    function enableAutoFill()
+    {
+      if (!autoFillTimeout)
+        autoFillTimeout = setTimeout(function() { options.autoFill = true; }, options.autoFillDelay);
     }
 
     // re-motion: use obsolete first parameter to indicate whether the onChange event is triggered by input (0) or the dropdownButton (1)
@@ -539,7 +556,8 @@
     resultsClass: "ac_results",
     loadingClass: "ac_loading",
     minChars: 1,
-    delay: 400,
+    displayListDelay: 400,
+    autoFillDelay: 400,
     matchCase: false,
     matchSubset: true,
     matchContains: false,
@@ -550,7 +568,7 @@
     selectFirst: true,
     formatItem: function(row) { return row[0]; },
     formatMatch: null,
-    autoFill: true,
+    autoFill: false,
     width: 0,
     multiple: false,
     multipleSeparator: ", ",

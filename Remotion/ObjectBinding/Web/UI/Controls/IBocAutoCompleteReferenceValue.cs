@@ -66,6 +66,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     new IBusinessObjectReferenceProperty Property { get; }
     new IBusinessObjectWithIdentity Value { get; }
     string NullValueString { get; }
+    int? CompletionSetCount { get; }
+    int CompletionInterval { get; }
+    int SuggestionInterval { get; }
     string GetLabelText ();
   }
 }

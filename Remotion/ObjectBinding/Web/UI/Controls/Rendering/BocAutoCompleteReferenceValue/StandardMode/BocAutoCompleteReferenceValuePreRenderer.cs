@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       string key = Control.UniqueID + "_BindScript";
       const string scriptTemplate =
           @"$(document).ready( function(){{ BocAutoCompleteReferenceValue.Bind($('#{0}'), $('#{1}'), $('#{2}'), " 
-          + "'{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}'); }} );";
+          + "'{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}', '{10}', '{11}', '{12}'); }} );";
 
       string businessObjectClass = Control.DataSource!=null ? Control.DataSource.BusinessObjectClass.Identifier : "";
       string businessObjectProperty = Control.Property!=null ? Control.Property.Identifier : "";
@@ -109,6 +109,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               ? ""
               : UrlUtility.GetAbsoluteUrl (Context, Control.ServicePath, true),
           StringUtility.NullToEmpty(Control.ServiceMethod),
+          Control.CompletionSetCount.HasValue ? Control.CompletionSetCount.Value : 10,
+          Control.CompletionInterval,
+          Control.SuggestionInterval,
           Control.NullValueString,
           businessObjectClass,
           businessObjectProperty,
