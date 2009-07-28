@@ -43,9 +43,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private ClassDefinition _computerClassDefinition;
     private ClassDefinition _orderClassDefinition;
     private ClassDefinition _customerClassDefinition;
+    private ClassDefinition _companyClassDefinition;
     private DomainObjectQueryExecutor _computerExecutor;
     private DomainObjectQueryExecutor _orderExecutor;
     private DomainObjectQueryExecutor _customerExecutor;
+    private DomainObjectQueryExecutor _companyExecutor;
 
     public override void SetUp ()
     {
@@ -54,9 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _computerClassDefinition = DomainObjectIDs.Computer1.ClassDefinition;
       _orderClassDefinition = DomainObjectIDs.Order1.ClassDefinition;
       _customerClassDefinition = DomainObjectIDs.Customer1.ClassDefinition;
+      _companyClassDefinition = DomainObjectIDs.Company1.ClassDefinition;
       _computerExecutor = new DomainObjectQueryExecutor (_sqlGenerator, _computerClassDefinition);
       _orderExecutor = new DomainObjectQueryExecutor (_sqlGenerator, _orderClassDefinition);
       _customerExecutor = new DomainObjectQueryExecutor (_sqlGenerator, _customerClassDefinition);
+      _companyExecutor = new DomainObjectQueryExecutor (_sqlGenerator, _companyClassDefinition);
     }
     
     [Test]
@@ -143,9 +147,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ExecuteCollection_WithGroupBy_WithOtherOperators_Before ()
+    {
+      var query = (from company1 in QueryFactory.CreateLinqQuery<Company> ()
+                   from company2 in QueryFactory.CreateLinqQuery<Company> ()
+                   where company1.ID == DomainObjectIDs.Partner1
+                   select company1).Distinct().Cast<Partner>().GroupBy (p => p, p => p.ContactPerson);
+      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+
+      var partners = _companyExecutor.ExecuteCollection<IGrouping<Partner, Person>> (model, new FetchManyRequest[0]).ToArray();
+      Assert.That (partners.Length, Is.EqualTo (1));
+      Assert.That (partners.First().Key.ID, Is.EqualTo (DomainObjectIDs.Partner1));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot execute a query with a GroupBy clause that contains other result "
-        + "operators because GroupBy is simulated in-memory.")]
-    public void ExecuteCollection_WithGroupBy_WithOtherOperators ()
+        + "operators after the GroupResultOperator because GroupBy is simulated in-memory.")]
+    public void ExecuteCollection_WithGroupBy_WithOtherOperators_After ()
     {
       var query = (from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer).Distinct();
       QueryModel model = ExpressionHelper.ParseQuery (query.Expression);

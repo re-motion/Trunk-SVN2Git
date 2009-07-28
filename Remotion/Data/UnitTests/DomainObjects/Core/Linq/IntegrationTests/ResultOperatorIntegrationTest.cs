@@ -197,5 +197,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.That (groupings[1].Key, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order2)));
       Assert.That (groupings[1].ToArray (), Is.EquivalentTo (new[] { "Harddisk" }));
     }
+
+    [Test]
+    public void Query_WithGroupByAfterOtherOperator ()
+    {
+      var query = (from oi in QueryFactory.CreateLinqQuery<OrderItem> ()
+                  where oi.Order.OrderNumber == 1 || oi.Order.OrderNumber == 3
+                  orderby oi.Order.OrderNumber
+                  select oi)
+                  .Take (2)
+                  .GroupBy (oi => oi.Order, oi => oi.Product);
+
+      var groupings = query.ToArray ();
+      Assert.That (groupings.Length, Is.EqualTo (1));
+
+      Assert.That (groupings[0].Key, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
+      Assert.That (groupings[0].ToArray (), Is.EquivalentTo (new[] { "Mainboard", "CPU Fan" }));
+    }
   }
 }

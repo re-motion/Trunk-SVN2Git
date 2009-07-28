@@ -126,22 +126,25 @@ namespace Remotion.Data.DomainObjects.Linq
         s_log.Warn (message);
       }
 
-      if (queryModel.ResultOperators.Count != 1)
+      var lastResultOperatorIndex = queryModel.ResultOperators.Count - 1;
+      if (queryModel.ResultOperators[lastResultOperatorIndex] != groupResultOperator)
       {
-        var message = "Cannot execute a query with a GroupBy clause that contains other result operators because GroupBy is simulated in-memory.";
+        var message = "Cannot execute a query with a GroupBy clause that contains other result operators after the GroupResultOperator because "
+            + "GroupBy is simulated in-memory.";
         throw new NotSupportedException (message);
       }
 
-      queryModel.ResultOperators.RemoveAt (queryModel.ResultOperators.Count - 1);
+      queryModel.ResultOperators.RemoveAt (lastResultOperatorIndex);
 
+      var streamedSequenceInfo = (StreamedSequenceInfo) queryModel.GetOutputDataInfo ();
       var executeCollectionMethod =
           typeof (DomainObjectQueryExecutor)
               .GetMethod ("ExecuteCollection")
               .GetGenericMethodDefinition ()
-              .MakeGenericMethod (queryModel.SelectClause.Selector.Type);
+              .MakeGenericMethod (streamedSequenceInfo.ItemExpression.Type);
 
       var databaseResult = executeCollectionMethod.Invoke (this, new object[] { queryModel, new FetchRequestBase[0] });
-      var inputData = new StreamedSequence ((IEnumerable) databaseResult, queryModel.SelectClause.Selector);
+      var inputData = new StreamedSequence ((IEnumerable) databaseResult, streamedSequenceInfo.ItemExpression);
       var outputData = (StreamedSequence) groupResultOperator.ExecuteInMemory (inputData);
       return outputData.GetTypedSequence<T>();
     }
