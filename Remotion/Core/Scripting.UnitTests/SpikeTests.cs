@@ -96,7 +96,6 @@ namespace Remotion.Scripting.UnitTests
       ScriptingHelper.ToConsoleLine ((MethodInfo) boundMethod);
     }
 
-    // PrependName
 
     [Test]
     [Explicit]
@@ -105,13 +104,38 @@ namespace Remotion.Scripting.UnitTests
       var types = new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild), typeof (ProxiedChildChildChild) };
       var methodNames = new[] { "PrependName", "PrependNameVirtual" };
 
+      //var instance = new ProxiedChildChildChild("x");
+
       foreach (var methodName in methodNames)
       {
         To.ConsoleLine.nl (2).e (methodName).s (": ");
         foreach (var type in types)
         {
-          var method = type.GetAllInstanceMethods(methodName,typeof(string)).Last ();
-          To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition().MetadataToken);
+          type.GetAllInstanceMethods (methodName, typeof (string)).Process (mi => To.ConsoleLine.e (mi.MetadataToken).e (mi.GetBaseDefinition ().MetadataToken).e (mi.DeclaringType.FullName + mi.Name));
+          //To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition ().MetadataToken).e (method.DeclaringType.FullName + method.Name).e (method.Invoke (instance, new[] {"name"}));
+          //To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition ().MetadataToken).e (method.DeclaringType.FullName + method.Name);
+        }
+      }
+    }
+
+
+    [Test]
+    [Explicit]
+    public void PropertyMethodsMetaDataToken ()
+    {
+      var types = new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild), typeof (ProxiedChildChildChild) };
+      var methodNames = new[] { "get_Name", "get_NameVirtual" };
+
+      //var instance = new ProxiedChildChildChild("x");
+
+      foreach (var methodName in methodNames)
+      {
+        To.ConsoleLine.nl (2).e (methodName).s (": ");
+        foreach (var type in types)
+        {
+          type.GetAllInstanceMethods (methodName).Process (mi => To.ConsoleLine.e (mi.MetadataToken).e (mi.GetBaseDefinition ().MetadataToken).e (mi.DeclaringType.FullName + mi.Name));
+          //To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition ().MetadataToken).e (method.DeclaringType.FullName + method.Name).e (method.Invoke (instance, new[] {"name"}));
+          //To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition ().MetadataToken).e (method.DeclaringType.FullName + method.Name);
         }
       }
     }
@@ -129,9 +153,24 @@ namespace Remotion.Scripting.UnitTests
         To.ConsoleLine.nl(2).e (propertyName).s(": ");
         foreach (var type in types)
         {
-          var property = type.GetAllProperties (propertyName).Last ();
-          To.ConsoleLine.e (property.MetadataToken).e (GetPropertyGetterSetterMetaDataToken (property, true)).e (GetPropertyGetterSetterMetaDataToken (property, false));
+          type.GetAllProperties (propertyName).Process (pi => To.ConsoleLine.e (pi.MetadataToken).e (GetPropertyGetterSetterMetaDataToken (pi, true)).e (GetPropertyGetterSetterMetaDataToken (pi, false)));
+          //var property = type.GetAllProperties (propertyName).Last ();
+          //To.ConsoleLine.e (property.MetadataToken).e (GetPropertyGetterSetterMetaDataToken (property, true)).e (GetPropertyGetterSetterMetaDataToken (property, false));
         }
+      }
+    }
+
+
+    [Test]
+    [Explicit]
+    public void PropertiesGetterSetter ()
+    {
+      var types = new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild), typeof (ProxiedChildChildChild) };
+
+      foreach (var type in types)
+      {
+        To.ConsoleLine.nl (2).e (type.Name).s (": ");
+        type.GetAllMethods ().Where (mi => mi.IsSpecialName).Process (mi => To.ConsoleLine.e (mi.Name).e (mi.GetBaseDefinition ().MetadataToken));
       }
     }
 
