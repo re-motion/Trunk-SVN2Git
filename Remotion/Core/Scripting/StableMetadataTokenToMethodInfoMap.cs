@@ -22,31 +22,31 @@ using Remotion.Utilities;
 namespace Remotion.Scripting
 {
   /// <summary>
-  /// Map between <see cref="StableMetadataToken"/> and <see cref="MethodInfo"/>.
+  /// Map between <see cref="StableMethodMetadataToken"/> and <see cref="MethodInfo"/>.
   /// </summary>
   public class StableMetadataTokenToMethodInfoMap
   {
-    private readonly Dictionary<StableMetadataToken, MethodInfo> _map = new Dictionary<StableMetadataToken, MethodInfo>();
+    private readonly Dictionary<StableMethodMetadataToken, MethodInfo> _map = new Dictionary<StableMethodMetadataToken, MethodInfo>();
 
     public StableMetadataTokenToMethodInfoMap (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       _map = type.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToDictionary (
-        mi => new StableMetadataToken(mi), mi => mi);
+        mi => new StableMethodMetadataToken(mi), mi => mi);
     }
 
 
     public MethodInfo GetMethod (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
-      return GetMethod (new StableMetadataToken (method));
+      return GetMethod (new StableMethodMetadataToken (method));
     }
 
-    public MethodInfo GetMethod (StableMetadataToken stableMetadataToken)
+    public MethodInfo GetMethod (StableMethodMetadataToken stableMethodMetadataToken)
     {
-      ArgumentUtility.CheckNotNull ("stableMetadataToken", stableMetadataToken);
+      ArgumentUtility.CheckNotNull ("stableMethodMetadataToken", stableMethodMetadataToken);
       MethodInfo correspondingMethod;
-      _map.TryGetValue (stableMetadataToken, out correspondingMethod);
+      _map.TryGetValue (stableMethodMetadataToken, out correspondingMethod);
       return correspondingMethod;
     }
   }

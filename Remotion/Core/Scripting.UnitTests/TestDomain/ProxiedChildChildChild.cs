@@ -22,6 +22,51 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
     }
 
+
+    public new string Name
+    {
+      get { return "ProxiedChildChildChild: " + _name; }
+    }
+
+    public new string MutableName
+    {
+      get { return "ProxiedChildChildChild: " + _name; }
+      set { _name = value; }
+    }
+
+    public new string ReadonlyName
+    {
+      get { return "ProxiedChildChildChild: " + _name; }
+    }
+
+    public new string WriteonlyName
+    {
+      set { _name = value; }
+    }
+
+
+    public override string NameVirtual
+    {
+      get { return "ProxiedChildChildChild::" + _name; }
+    }
+
+    public override string MutableNameVirtual
+    {
+      //get { return "ProxiedChildChildChild::" + _name; }
+      set { _name = value + "-ProxiedChildChildChild"; }
+    }
+
+    public override string ReadonlyNameVirtual
+    {
+      get { return "ProxiedChildChildChild::" + _name; }
+    }
+
+    public override string WriteonlyNameVirtual
+    {
+      set { _name = value + "-ProxiedChildChildChild"; }
+    }
+
+
     public new string ProcessText (string s)
     {
       return "ProxiedChildChildChild: " + s.ToUpper().Replace("holla","die waldfee");

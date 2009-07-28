@@ -144,17 +144,17 @@ namespace Remotion.Scripting.UnitTests
       var proxied = new ProxiedChildGeneric<ProxiedChild, double> ("PCG", new ProxiedChild ("PC"), 123.456);
       object proxy = proxyBuilder.CreateInstance (proxied);
 
-      Assert.That (proxied.MutableName, Is.EqualTo ("PCG"));
+      Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG"));
       var proxyPropertyInfo = proxy.GetType ().GetProperty ("MutableName");
       AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
-      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("PCG"));
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG"));
 
       proxied.MutableName = "PCG_Changed";
-      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("PCG_Changed"));
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed"));
 
       proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
-      Assert.That (proxied.MutableName, Is.EqualTo ("PCG_Changed_Proxy"));
-      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("PCG_Changed_Proxy"));
+      Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
     }
 
 
@@ -199,7 +199,7 @@ namespace Remotion.Scripting.UnitTests
 
       var proxyMethodInfo = proxy.GetType ().GetMethod ("ToStringKebap");
       AssertMethodInfoEqual (proxyMethodInfo, methodInfo);
-      Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { 9800 }), Is.EqualTo ("PCG_[Proxied: PC]_123.456_9800"));
+      Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { 9800 }), Is.EqualTo ("ProxiedChild: PCG_[Proxied: PC]_123.456_9800"));
     }
 
 

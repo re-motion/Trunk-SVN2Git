@@ -28,7 +28,7 @@ namespace Remotion.Scripting.UnitTests
     public void Equals_Null ()
     {
       var method0 = typeof (Proxied).GetPublicInstanceMethods ("OverrideMe", typeof (string)).Last ();
-      var stableMetadateToken0 = new StableMetadataToken (method0);
+      var stableMetadateToken0 = new StableMethodMetadataToken (method0);
 
       Assert.That (stableMetadateToken0.Equals(null), Is.False);
     }
@@ -43,9 +43,9 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (method0.MetadataToken, Is.Not.EqualTo (method1.MetadataToken));
       Assert.That (method0.MetadataToken, Is.Not.EqualTo (method2.MetadataToken));
 
-      var stableMetadateToken0 = new StableMetadataToken (method0);
-      var stableMetadateToken1 = new StableMetadataToken (method1);
-      var stableMetadateToken2 = new StableMetadataToken (method2);
+      var stableMetadateToken0 = new StableMethodMetadataToken (method0);
+      var stableMetadateToken1 = new StableMethodMetadataToken (method1);
+      var stableMetadateToken2 = new StableMethodMetadataToken (method2);
 
       Assert.That (stableMetadateToken0, Is.EqualTo (stableMetadateToken0));
       Assert.That (stableMetadateToken0, Is.EqualTo (stableMetadateToken1));

@@ -82,8 +82,10 @@
     <Compile Include="AssemblyLevelTypeFilter.cs" />
     <Compile Include="StableBindingProxyBuilder.cs" />
     <Compile Include="StableBindingProxyProvider.cs" />
-    <Compile Include="StableMetaDataToken.cs" />
+    <Compile Include="StableMetadataToken.cs" />
+    <Compile Include="StableMethodMetadataToken.cs" />
     <Compile Include="StableMetadataTokenToMethodInfoMap.cs" />
+    <Compile Include="StablePropertyMetadataToken.cs" />
     <Compile Include="TypeLevelTypeFilter.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,29 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
     }
 
+
+    public override string NameVirtual
+    {
+      get { return "ProxiedChildChild::" + _name; }
+    }
+
+    public override string MutableNameVirtual
+    {
+      get { return "ProxiedChildChild::" + _name; }
+      set { _name = value + "-ProxiedChildChild"; }
+    }
+
+    public override string ReadonlyNameVirtual
+    {
+      get { return "ProxiedChildChild::" + _name; }
+    }
+
+    public override string WriteonlyNameVirtual
+    {
+      set { _name = value + "-ProxiedChildChild"; }
+    }
+
+
     public string ProcessText (string s)
     {
       return s.ToLower().Replace("abc","xyz");

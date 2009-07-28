@@ -95,5 +95,57 @@ namespace Remotion.Scripting.UnitTests
 
       ScriptingHelper.ToConsoleLine ((MethodInfo) boundMethod);
     }
+
+    // PrependName
+
+    [Test]
+    [Explicit]
+    public void MethodsMetaDataToken ()
+    {
+      var types = new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild), typeof (ProxiedChildChildChild) };
+      var methodNames = new[] { "PrependName", "PrependNameVirtual" };
+
+      foreach (var methodName in methodNames)
+      {
+        To.ConsoleLine.nl (2).e (methodName).s (": ");
+        foreach (var type in types)
+        {
+          var method = type.GetAllInstanceMethods(methodName,typeof(string)).Last ();
+          To.ConsoleLine.e (method.MetadataToken).e (method.GetBaseDefinition().MetadataToken);
+        }
+      }
+    }
+
+
+    [Test]
+    [Explicit]
+    public void PropertiesMetaDataToken ()
+    {
+      var types = new[] { typeof (Proxied), typeof (ProxiedChild), typeof (ProxiedChildChild), typeof (ProxiedChildChildChild) };
+      var propertyNames = new[] { "Name", "MutableName", "ReadonlyName", "WriteonlyName" , "NameVirtual", "MutableNameVirtual", "ReadonlyNameVirtual", "WriteonlyNameVirtual" };
+
+      foreach (var propertyName in propertyNames)
+      {
+        To.ConsoleLine.nl(2).e (propertyName).s(": ");
+        foreach (var type in types)
+        {
+          var property = type.GetAllProperties (propertyName).Last ();
+          To.ConsoleLine.e (property.MetadataToken).e (GetPropertyGetterSetterMetaDataToken (property, true)).e (GetPropertyGetterSetterMetaDataToken (property, false));
+        }
+      }
+    }
+
+
+    public int GetPropertyGetterSetterMetaDataToken (PropertyInfo property, bool getGetter)
+    {
+      //property.
+      var method = getGetter ? property.GetGetMethod() : property.GetSetMethod();
+      int token = -1;
+      if(method != null)
+      {
+        token = method.GetBaseDefinition().MetadataToken;
+      }
+      return token;
+    }
   }
 }

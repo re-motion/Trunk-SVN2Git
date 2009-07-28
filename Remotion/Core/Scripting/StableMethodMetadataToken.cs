@@ -27,11 +27,11 @@ namespace Remotion.Scripting
   /// <see cref="MemberInfo.MetadataToken"/>|s referring to the the same method  but coming from different,
   /// related types are not the same if the method was overridden in a child type.
   /// </remarks>
-  public class StableMetadataToken
+  public class StableMethodMetadataToken : StableMetadataToken
   {
     private readonly int _token;
 
-    public StableMetadataToken (MethodInfo method)
+    public StableMethodMetadataToken (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       _token = method.GetBaseDefinition().MetadataToken;
@@ -39,10 +39,10 @@ namespace Remotion.Scripting
 
     public override bool Equals (object obj)
     {
-      return Equals (obj as StableMetadataToken);
+      return Equals (obj as StableMethodMetadataToken);
     }
 
-    public bool Equals (StableMetadataToken other)
+    public bool Equals (StableMethodMetadataToken other)
     {
       if (ReferenceEquals (null, other))
         return false;

@@ -20,7 +20,7 @@ namespace Remotion.Scripting.UnitTests.TestDomain
 {
   public class Proxied : IProxiedGetName, ISumMe
   {
-    private string _name;
+    protected string _name;
 
     public Proxied ()
         : this ("default")
@@ -52,6 +52,30 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
       set { _name = value; }
     }
+
+
+    public virtual string NameVirtual
+    {
+      get { return _name; }
+    }
+
+    public virtual string MutableNameVirtual
+    {
+      get { return _name; }
+      set { _name = value; }
+    }
+
+    public virtual string ReadonlyNameVirtual
+    {
+      get { return _name; }
+    }
+
+    public virtual string WriteonlyNameVirtual
+    {
+      set { _name = value; }
+    }
+
+
 
     public string GetName ()
     {

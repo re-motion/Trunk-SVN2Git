@@ -76,7 +76,7 @@ def TestTypeMemberProxy(customMemberTester) :
         scriptFunctionSourceCode, privateScriptEnvironment, "TestTypeMemberProxy");
 
       var result = testTypeMemberProxyScript.Execute (customMemberTester);
-      Assert.That (result, Is.EqualTo ("ProxiedChild abrakadava simsalbum, THE NUMBER=2"));
+      Assert.That (result, Is.EqualTo ("ProxiedChild ProxiedChild: abrakadava simsalbum, THE NUMBER=2"));
 
     }
   }

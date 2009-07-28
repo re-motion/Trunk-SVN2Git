@@ -30,8 +30,8 @@ namespace Remotion.Scripting.UnitTests
       var type = typeof (Proxied);
       var method0 = type.GetPublicInstanceMethods ("OverrideMe", typeof (string)).Last ();
       var method1 = type.GetPublicInstanceMethods ("PrependName", typeof (string)).Last ();
-      var stableMetadateToken0 = new StableMetadataToken (method0);
-      var stableMetadateToken1 = new StableMetadataToken (method1);
+      var stableMetadateToken0 = new StableMethodMetadataToken (method0);
+      var stableMetadateToken1 = new StableMethodMetadataToken (method1);
 
       var map = new StableMetadataTokenToMethodInfoMap (type);
       Assert.That (map.GetMethod (stableMetadateToken0), Is.EqualTo (method0));

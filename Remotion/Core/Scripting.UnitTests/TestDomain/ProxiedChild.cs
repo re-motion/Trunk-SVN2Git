@@ -29,6 +29,31 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
     }
 
+
+    public new string Name
+    {
+      get { return "ProxiedChild: " +_name; }
+    }
+
+    public new string MutableName
+    {
+      get { return "ProxiedChild: " + _name; }
+      set { _name = value; }
+    }
+
+    public new string ReadonlyName
+    {
+      get { return "ProxiedChild: " + _name; }
+    }
+
+    public new string WriteonlyName
+    {
+      set { _name = value; }
+    }
+
+
+
+
     public string BraKet (string bra, string it, string ket)
     {
       return bra + it + ket;
