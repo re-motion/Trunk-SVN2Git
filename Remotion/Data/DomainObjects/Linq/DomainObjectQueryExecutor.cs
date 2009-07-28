@@ -142,7 +142,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var databaseResult = executeCollectionMethod.Invoke (this, new object[] { queryModel, new FetchRequestBase[0] });
       var inputData = new StreamedSequence ((IEnumerable) databaseResult, queryModel.SelectClause.Selector);
-      return groupResultOperator.ExecuteInMemory (inputData).GetCurrentSequenceInfo<T> ().Sequence;
+      var outputData = (StreamedSequence) groupResultOperator.ExecuteInMemory (inputData);
+      return outputData.GetTypedSequence<T>();
     }
 
     /// <summary>
