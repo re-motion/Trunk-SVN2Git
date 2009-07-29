@@ -32,7 +32,7 @@ namespace Remotion.Scripting.UnitTests.TestDomain
 
     string IProperty.MutableNameProperty
     {
-      get { return "ProxiedChild::IAmbigous1::NameProperty " + _name; }
+      get { return "ProxiedChild::IAmbigous1::MutableNameProperty " + _name; }
       set { _name = value + "-ProxiedChild::IAmbigous1::MutableNameProperty"; }
     }
 
@@ -44,6 +44,7 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     public new string NameProperty
     {
       get { return "ProxiedChild::NameProperty " + _name; }
+      set { _name = value + "-ProxiedChild::NameProperty"; }
     }
 
     public new string MutableNameProperty

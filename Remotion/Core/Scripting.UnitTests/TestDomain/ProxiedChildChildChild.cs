@@ -31,6 +31,7 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     public new string NameProperty
     {
       get { return "ProxiedChildChildChild::NameProperty " + _name; }
+      set { _name = value + "-ProxiedChildChildChild::NameProperty"; }
     }
 
     public new string MutableNameProperty
