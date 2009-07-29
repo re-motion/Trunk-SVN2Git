@@ -347,7 +347,8 @@ namespace Remotion.Scripting
     // Create the field which holds the proxied instance
     private FieldReference CreateProxiedField ()
     {
-      return _classEmitter.CreateField ("_proxied", _proxiedType, FieldAttributes.Private | FieldAttributes.InitOnly);
+      //return _classEmitter.CreateField ("_proxied", _proxiedType, FieldAttributes.Private | FieldAttributes.InitOnly);
+      return _classEmitter.CreateField ("_proxied", _proxiedType, FieldAttributes.Private);
     }
 
     private CustomClassEmitter CreateClassEmitter (string name, Type[] interfaces, ModuleScope moduleScope)

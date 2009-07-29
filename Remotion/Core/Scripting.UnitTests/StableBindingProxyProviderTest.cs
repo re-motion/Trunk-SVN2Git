@@ -82,6 +82,37 @@ def TestTypeMemberProxy(customMemberTester) :
       Assert.That (result, Is.EqualTo ("ProxiedChild ProxiedChild: abrakadava simsalbum, THE NUMBER=2"));
 
     }
+
+    [Test]
+    public void BuildProxy ()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
+
+      var proxied = new ProxiedChildChildChild ("abrakadava");
+      const string attributeName = "PrependName";
+
+      var proxy = provider.BuildProxy (proxied);
+      Assert.That (proxy, Is.Not.Null);
+
+      var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.PrependName('simsalbum',2)", proxy);
+      Assert.That (result, Is.EqualTo ("ProxiedChild ProxiedChild: abrakadava simsalbum, THE NUMBER=2"));
+    }
+
+    //[Test]
+    //public void GetCachedProxy ()
+    //{
+    //  var provider = new StableBindingProxyProvider (
+    //    new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
+
+    //  var proxied = new ProxiedChildChildChild ("abrakadava");
+    //  const string attributeName = "PrependName";
+
+    //  Assert.That (provider.GetCachedProxy (), Is.Null);
+    //  var typeMemberProxy = provider.BuildProxy (proxied);
+    //  Assert.That (typeMemberProxy, Is.Not.Null);
+    //  Assert.That (provider.GetCachedProxy (), Is.SameAs (typeMemberProxy));
+    //}
   }
 
 

@@ -81,7 +81,8 @@ namespace Remotion.Scripting.UnitTests
 
       FieldInfo proxiedFieldInfo = proxy.GetType ().GetField ("_proxied", _nonPublicInstanceFlags);
       Assert.That (proxiedFieldInfo.GetValue (proxy), Is.EqualTo (proxied));
-      Assert.That (proxiedFieldInfo.IsInitOnly, Is.True);
+      //Assert.That (proxiedFieldInfo.IsInitOnly, Is.True);
+      Assert.That (proxiedFieldInfo.IsInitOnly, Is.False);
       Assert.That (proxiedFieldInfo.IsPrivate, Is.True);
     }
 

@@ -57,6 +57,7 @@ namespace Remotion.Scripting
       return typeMemberProxy;
     }
 
+    // TODO: Make private
     public object BuildProxy (object proxied)
     {
       Type proxyType = BuildProxyType (proxied);
