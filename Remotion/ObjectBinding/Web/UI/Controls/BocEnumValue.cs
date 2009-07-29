@@ -172,36 +172,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       BaseValidator[] validators = new BaseValidator[1];
 
-      if (IsNullItemVisible)
+      RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
+      requiredValidator.ID = ID + "_ValidatorRequried";
+      requiredValidator.ControlToValidate = TargetControl.ID;
+      if (StringUtility.IsNullOrEmpty (_errorMessage))
       {
-        CompareValidator notNullItemValidator = new CompareValidator();
-        notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
-        notNullItemValidator.ControlToValidate = TargetControl.ID;
-        notNullItemValidator.ValueToCompare = c_nullIdentifier;
-        notNullItemValidator.Operator = ValidationCompareOperator.NotEqual;
-        if (StringUtility.IsNullOrEmpty (_errorMessage))
-        {
-          notNullItemValidator.ErrorMessage =
-              GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
-        }
-        else
-          notNullItemValidator.ErrorMessage = _errorMessage;
-        validators[0] = notNullItemValidator;
+        requiredValidator.ErrorMessage =
+            GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
       }
       else
-      {
-        RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
-        requiredValidator.ID = ID + "_ValidatorRequried";
-        requiredValidator.ControlToValidate = TargetControl.ID;
-        if (StringUtility.IsNullOrEmpty (_errorMessage))
-        {
-          requiredValidator.ErrorMessage =
-              GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
-        }
-        else
-          requiredValidator.ErrorMessage = _errorMessage;
-        validators[0] = requiredValidator;
-      }
+        requiredValidator.ErrorMessage = _errorMessage;
+      validators[0] = requiredValidator;
+
 
       //  No validation that only enabled enum values get selected and saved.
       //  This behaviour mimics the Fabasoft enum behaviour
@@ -667,20 +649,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private IBusinessObject GetBusinessObject ()
     {
       return (Property != null && DataSource != null) ? DataSource.BusinessObject : null;
-    }
-
-    /// <summary> Evaluates whether to show the null item as an option in the list. </summary>
-    private bool IsNullItemVisible
-    {
-      get
-      {
-        bool isRadioButtonList = _listControlStyle.ControlType == ListControlType.RadioButtonList;
-        if (!isRadioButtonList)
-          return true;
-        if (IsRequired)
-          return false;
-        return _listControlStyle.RadioButtonListNullValueVisible;
-      }
     }
 
     private string GetNullItemText ()
