@@ -61,7 +61,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    public void BuildProxyType_PublicProperty_Setter ()
+    public void BuildProxyType_PublicProperty_WithSetter ()
     {
       var knownBaseTypes = new[] { typeof (ProxiedChild) };
       //var knownInterfaceTypes = new[] { typeof (IProperty) };
@@ -88,6 +88,72 @@ namespace Remotion.Scripting.UnitTests
 
       proxyPropertyInfo.SetValue (proxy, "XXyyZZ", null);
       Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild::NameProperty XXyyZZ-ProxiedChild::NameProperty"));
+    }
+
+
+
+    [Test]
+    public void BuildProxyType_VirtualPublicProperty ()
+    {
+      var knownBaseTypes = new[] { typeof (ProxiedChild) };
+      //var knownInterfaceTypes = new[] { typeof (IProperty) };
+      var knownTypes = knownBaseTypes; //knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
+      var typeFilter = new TypeLevelTypeFilter (knownTypes);
+      var proxiedType = typeof (ProxiedChildChildChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_PublicProperty"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildChildChild ("PC");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      Assert.That (proxied.NamePropertyVirtual, Is.EqualTo ("ProxiedChildChildChild::NamePropertyVirtual PC"));
+
+      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+
+      var proxyPropertyInfo = proxyType.GetProperty ("NamePropertyVirtual", _publicInstanceFlags);
+
+
+      // Note: Virtual properties remain virtual, so the proxy calls go to ProxiedChildChildChild, not the first known base type of ProxiedChild.
+
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.CanRead, Is.True);
+      Assert.That (proxyPropertyInfo.CanWrite, Is.False);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChildChildChild::NamePropertyVirtual PC"));
+    }
+
+    [Test]
+    public void BuildProxyType_VirtualPublicProperty_WithSetter ()
+    {
+      var knownBaseTypes = new[] { typeof (ProxiedChild) };
+      //var knownInterfaceTypes = new[] { typeof (IProperty) };
+      var knownTypes = knownBaseTypes; //knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
+      var typeFilter = new TypeLevelTypeFilter (knownTypes);
+      var proxiedType = typeof (ProxiedChildChildChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_PublicProperty"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildChildChild ("PC");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      Assert.That (proxied.MutableNamePropertyVirtual, Is.EqualTo ("ProxiedChildChild::MutableNamePropertyVirtual PC"));
+
+      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+
+      var proxyPropertyInfo = proxyType.GetProperty ("MutableNamePropertyVirtual", _publicInstanceFlags);
+
+      
+      // Note: Virtual properties remain virtual, so the proxy calls go to ProxiedChildChild, not the first known base type of ProxiedChild 
+      // (ProxiedChildChildChild does not override MutableNamePropertyVirtual).
+
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.CanRead, Is.True);
+      Assert.That (proxyPropertyInfo.CanWrite, Is.True);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChildChild::MutableNamePropertyVirtual PC"));
+
+      proxyPropertyInfo.SetValue (proxy, "XXyyZZ", null);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChildChild::MutableNamePropertyVirtual XXyyZZ-ProxiedChildChild::MutableNamePropertyVirtual"));
     }
 
 
@@ -129,6 +195,8 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (((IProperty) proxied).MutableNameProperty, Is.EqualTo (expectedPropertyValue3));
       Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue3));
     }
+
+
 
 
 

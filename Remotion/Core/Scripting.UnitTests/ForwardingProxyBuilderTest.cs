@@ -258,39 +258,38 @@ namespace Remotion.Scripting.UnitTests
     [Ignore ("TODO MGi: Fix by using interface MemberInfos for forwarding, not implementation MemberInfos.")]
     public void AddForwardingExplicitInterfaceProperty ()
     {
-//      var type = typeof (ProxiedChild);
-//      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingExplicitInterfaceProperty",
-//        ModuleScope, type, new Type[0]);
-//      var propertyInfo = type.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _nonPublicInstanceFlags);
-//      Assert.That (propertyInfo, Is.Not.Null);
-//      proxyBuilder.AddForwardingExplicitInterfaceProperty (propertyInfo);
+      #if(false)
+      var type = typeof (ProxiedChild);
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingExplicitInterfaceProperty",
+        ModuleScope, type, new Type[0]);
+      var propertyInfo = type.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _nonPublicInstanceFlags);
+      Assert.That (propertyInfo, Is.Not.Null);
 
-//      // Create proxy instance, initializing it with class to be proxied
-//      var proxied = new ProxiedChild ("PC");
+      // TODO: Need to pass interface getter/setter here (extract code from StableBindingProxyBuilder).
+      proxyBuilder.AddForwardingExplicitInterfaceProperty (propertyInfo);
 
-//      var proxyType = proxyBuilder.BuildProxyType();
-//      //object proxy = proxyBuilder.CreateInstance (proxied);
-//      object proxy = Activator.CreateInstance (proxyType, proxied);
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChild ("PC");
 
-//#if(true)
-//      Assert.That (((IProperty) proxied).MutableNameProperty, Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty PC"));
-//#endif
+      var proxyType = proxyBuilder.BuildProxyType ();
+      //object proxy = proxyBuilder.CreateInstance (proxied);
+      object proxy = Activator.CreateInstance (proxyType, proxied);
 
-//      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
-//      // TODO: Check why "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty"
-//      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", _nonPublicInstanceFlags);
+      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", _nonPublicInstanceFlags);
 
-//      Assert.That (proxyPropertyInfo, Is.Not.Null);
-//      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty: PCG"));
-//      AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty: PCG"));
+      AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
 
-//      //proxied.MutableName = "PCG_Changed";
-//      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed"));
+      //proxied.MutableName = "PCG_Changed";
+      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed"));
 
-//      //proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
-//      //Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
-//      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+      //proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
+      //Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+      #endif
     }
 
     [Test]
