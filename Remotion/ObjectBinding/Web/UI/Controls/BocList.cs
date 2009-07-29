@@ -20,10 +20,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Reflection;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocList;
@@ -400,7 +398,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.Current.GetInstance<IBocListRendererFactory>();
+      var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (httpContext, this);
       preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
@@ -1029,8 +1027,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       EnsureChildControls();
       base.OnPreRender (e);
 
-      var factory = ServiceLocator.Current.GetInstance<IBocListRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
+      var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (Context, this);
       preRenderer.PreRender();
 
       // Must be executed before CalculateCurrentPage
@@ -1156,9 +1154,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _pageCount = 1;
       }
 
-      var serviceLocator = ServiceLocator.Current;
-      var factory = serviceLocator.GetInstance<IBocListRendererFactory>();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this, serviceLocator);
+      var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
+      var renderer = factory.CreateRenderer (Context, writer, this, ServiceLocator);
       renderer.Render();
     }
 
@@ -1209,14 +1206,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected bool IsBrowserCapableOfScripting
     {
-      get {
+      get
+      {
         if (!_isBrowserCapableOfSCripting.HasValue)
         {
-          var factory = ServiceLocator.Current.GetInstance<IBocListRendererFactory> ();
-          var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+          var factory = ServiceLocator.GetInstance<IBocListRendererFactory>();
+          var preRenderer = factory.CreatePreRenderer (Context, this);
           _isBrowserCapableOfSCripting = preRenderer.IsBrowserCapableOfScripting;
         }
-        return _isBrowserCapableOfSCripting.Value; 
+        return _isBrowserCapableOfSCripting.Value;
       }
     }
 
@@ -1752,7 +1750,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           BocMenuItemCommand command = (BocMenuItemCommand) menuItem.Command;
           if (Page is IWxePage)
-            command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows (), GetSelectedBusinessObjects ());
+            command.ExecuteWxeFunction ((IWxePage) Page, GetSelectedRows(), GetSelectedBusinessObjects());
           //else
           //  command.ExecuteWxeFunction (Page, GetSelectedRows(), GetSelectedBusinessObjects());
         }
@@ -4003,7 +4001,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get
       {
         if (string.IsNullOrEmpty (OptionsTitle))
-          _optionsMenu.TitleText = GetResourceManager ().GetString (ResourceIdentifier.OptionsTitle);
+          _optionsMenu.TitleText = GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
         else
           _optionsMenu.TitleText = OptionsTitle;
 

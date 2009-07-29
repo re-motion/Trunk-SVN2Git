@@ -98,7 +98,7 @@
       </para>
       <para>
         Rendering of the control is done by the <see cref="IBocBooleanValueRenderer" /> obtained from the
-        <see cref="IBocBooleanValueRendererFactory" /> registered in <see cref="ServiceLocator.Current"/>.
+        <see cref="IBocBooleanValueRendererFactory" /> registered in <see cref="BusinessObjectBoundWebControl.ServiceLocator"/>.
       </para>
       <list type="table">
         <listheader>

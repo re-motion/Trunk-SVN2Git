@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.Utilities;
@@ -72,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.Current.GetInstance<IBocMultilineTextValueRendererFactory>();
+      var factory = ServiceLocator.GetInstance<IBocMultilineTextValueRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (httpContext, this);
       preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
@@ -115,8 +114,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void RenderControl (HtmlTextWriter writer)
     {
-      var factory = ServiceLocator.Current.GetInstance<IBocMultilineTextValueRendererFactory> ();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      var factory = ServiceLocator.GetInstance<IBocMultilineTextValueRendererFactory>();
+      var renderer = factory.CreateRenderer (Context, writer, this);
       renderer.Render();
     }
 
@@ -125,8 +124,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/CreateValidators/*' />
     public override BaseValidator[] CreateValidators ()
     {
-      return base.CreateValidators ();
+      return base.CreateValidators();
     }
+
     // ReSharper restore RedundantOverridenMember
 
     /// <summary> Gets or sets the <see cref="IBusinessObjectStringProperty"/> object this control is bound to. </summary>
@@ -149,7 +149,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         string text = _text;
         if (text != null)
-          text = text.Trim ();
+          text = text.Trim();
 
         if (StringUtility.IsNullOrEmpty (text))
           return null;
@@ -202,7 +202,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       object[] values = new object[2];
 
-      values[0] = base.SaveControlState ();
+      values[0] = base.SaveControlState();
       values[1] = _text;
 
       return values;

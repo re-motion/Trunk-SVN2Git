@@ -85,7 +85,7 @@
       </para>
       <para>
         Rendering of the control is done by the <see cref="IBocCheckboxRenderer" /> obtained from the
-        <see cref="IBocCheckboxRendererFactory" /> registered in <see cref="ServiceLocator.Current"/>.
+        <see cref="IBocCheckboxRendererFactory" /> registered in <see cref="BusinessObjectBoundWebControl.ServiceLocator"/>.
       </para>
       <list type="table">
         <listheader>

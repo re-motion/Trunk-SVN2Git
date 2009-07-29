@@ -30,12 +30,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <seealso cref="IBusinessObjectBoundEditableWebControl"/>
   public abstract class BusinessObjectBoundEditableWebControl : BusinessObjectBoundWebControl, IBusinessObjectBoundEditableWebControl
   {
-    private bool? _required = null;
-    private bool? _readOnly = null;
+    private bool? _required;
+    private bool? _readOnly;
     private List<BaseValidator> _validators;
-    private bool _isDirty = false;
-    private bool _hasBeenRenderedInPreviousLifecycle = false;
-    private bool _isRenderedInCurrentLifecycle = false;
+    private bool _isDirty;
+    private bool _hasBeenRenderedInPreviousLifecycle;
+    private bool _isRenderedInCurrentLifecycle;
 
     /// <summary>
     /// Overrides the base method to call <see cref="ISmartPage.RegisterControlForClientSideDirtyStateTracking"/>
@@ -177,7 +177,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           return false;
         if (DataSource.Mode == DataSourceMode.Read) // Bound Control && Reader DataSource
           return true;
-        if (! IsDesignMode && DataSource.BusinessObject == null) // Bound Control but no BusinessObject
+        if (!IsDesignMode && DataSource.BusinessObject == null) // Bound Control but no BusinessObject
           return true;
         if (_readOnly == false) // Bound Control && ReadOnly==false
           return false;
@@ -217,7 +217,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (_required != null)
           return _required == true;
         if (Property != null)
-          return (bool) Property.IsRequired;
+          return Property.IsRequired;
         return false;
       }
     }
@@ -263,7 +263,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       bool isValid = true;
       for (int i = 0; i < _validators.Count; i++)
       {
-        BaseValidator validator = (BaseValidator) _validators[i];
+        BaseValidator validator = _validators[i];
         validator.Validate();
         isValid &= validator.IsValid;
       }
@@ -319,7 +319,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override object SaveControlState ()
     {
       object[] values = new object[3];
-      values[0] = base.SaveControlState ();
+      values[0] = base.SaveControlState();
       values[1] = _isDirty;
       values[2] = _isRenderedInCurrentLifecycle;
       return values;

@@ -19,7 +19,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocBooleanValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
@@ -107,16 +106,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // methods and properties
 
     /// <summary>
-    /// Obtains a renderer factory from <see cref="ServiceLocator.Current"/>, creates a renderer and
-    /// calls the <see cref="IRenderer{TControl}.Render"/> method.
+    /// Obtains a renderer factory from <see cref="BusinessObjectBoundWebControl.ServiceLocator"/>, 
+    /// creates a renderer and calls the <see cref="IRenderer{TControl}.Render"/> method.
     /// </summary>
     /// <param name="writer">The writer used to render the control.</param>
     public override void RenderControl (HtmlTextWriter writer)
     {
       EvaluateWaiConformity ();
 
-      var factory = ServiceLocator.Current.GetInstance<IBocBooleanValueRendererFactory> ();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      var factory = ServiceLocator.GetInstance<IBocBooleanValueRendererFactory> ();
+      var renderer = factory.CreateRenderer (Context, writer, this);
       renderer.Render();
     }
 

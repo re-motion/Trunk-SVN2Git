@@ -21,7 +21,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteReferenceValue;
@@ -97,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private int? _completionSetCount = 10;
     private int _completionInterval = 1000;
     private int _suggestionInterval = 200;
-    
+
 
     // construction and disposing
 
@@ -121,7 +120,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.Current.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
+      var factory = ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (httpContext, this);
       preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
@@ -182,8 +181,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (Command != null)
         Command.RegisterForSynchronousPostBack (this, null, string.Format ("BocAutoCompleteReferenceValue '{0}', Object Command", ID));
 
-      var factory = ServiceLocator.Current.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      var factory = ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (Context, this);
       preRenderer.PreRender();
 
       if (!IsReadOnly)
@@ -199,8 +198,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       EvaluateWaiConformity();
 
-      var factory = ServiceLocator.Current.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      var factory = ServiceLocator.GetInstance<IBocAutoCompleteReferenceValueRendererFactory>();
+      var renderer = factory.CreateRenderer (Context, writer, this);
       renderer.Render();
     }
 
@@ -569,7 +568,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     IconInfo IBocAutoCompleteReferenceValue.GetIcon ()
     {
-      return GetIcon (Value, Property==null ? null : Property.ReferenceClass.BusinessObjectProvider);
+      return GetIcon (Value, Property == null ? null : Property.ReferenceClass.BusinessObjectProvider);
     }
 
     DropDownMenu IBocAutoCompleteReferenceValue.OptionsMenu

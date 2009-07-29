@@ -20,7 +20,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue;
@@ -111,8 +110,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void RenderControl (HtmlTextWriter writer)
     {
-      var factory = ServiceLocator.Current.GetInstance<IBocEnumValueRendererFactory>();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      var factory = ServiceLocator.GetInstance<IBocEnumValueRendererFactory>();
+      var renderer = factory.CreateRenderer (Context, writer, this);
       renderer.Render();
     }
 
@@ -122,7 +121,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (interim)
         return;
-      
+
       if (Property != null && DataSource != null && DataSource.BusinessObject != null)
       {
         object value = DataSource.BusinessObject.GetProperty (Property);
@@ -134,7 +133,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="value"> The enumeration value or <see langword="null"/>. </param>
     /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadUnboundValue/*' />
     public void LoadUnboundValue<TEnum> (TEnum? value, bool interim)
-        where TEnum : struct
+        where TEnum: struct
     {
       ArgumentUtility.CheckType<Enum> ("value", value);
       LoadValueInternal (value, interim);
@@ -144,7 +143,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="value"> The enumeration value. </param>
     /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadUnboundValue/*' />
     public void LoadUnboundValue<TEnum> (TEnum value, bool interim)
-        where TEnum : struct
+        where TEnum: struct
     {
       ArgumentUtility.CheckType<Enum> ("value", value);
       LoadValueInternal (value, interim);
@@ -175,7 +174,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (IsNullItemVisible)
       {
-        CompareValidator notNullItemValidator = new CompareValidator ();
+        CompareValidator notNullItemValidator = new CompareValidator();
         notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
         notNullItemValidator.ControlToValidate = TargetControl.ID;
         notNullItemValidator.ValueToCompare = c_nullIdentifier;
@@ -183,7 +182,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (StringUtility.IsNullOrEmpty (_errorMessage))
         {
           notNullItemValidator.ErrorMessage =
-              GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
+              GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
         }
         else
           notNullItemValidator.ErrorMessage = _errorMessage;
@@ -191,13 +190,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
       else
       {
-        RequiredFieldValidator requiredValidator = new RequiredFieldValidator ();
+        RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
         requiredValidator.ID = ID + "_ValidatorRequried";
         requiredValidator.ControlToValidate = TargetControl.ID;
         if (StringUtility.IsNullOrEmpty (_errorMessage))
         {
           requiredValidator.ErrorMessage =
-              GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
+              GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
         }
         else
           requiredValidator.ErrorMessage = _errorMessage;
@@ -227,12 +226,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return new string[0];
       else if (ListControlStyle.ControlType == ListControlType.DropDownList
                || ListControlStyle.ControlType == ListControlType.ListBox)
-        return new[] { GetListControlClientID () };
+        return new[] { GetListControlClientID() };
       else if (ListControlStyle.ControlType == ListControlType.RadioButtonList)
       {
-        string[] clientIDs = new string[GetEnabledValues ().Length + (IsRequired ? 0 : 1)];
+        string[] clientIDs = new string[GetEnabledValues().Length + (IsRequired ? 0 : 1)];
         for (int i = 0; i < clientIDs.Length; i++)
-          clientIDs[i] = GetListControlClientID () + "_" + i.ToString (NumberFormatInfo.InvariantInfo);
+          clientIDs[i] = GetListControlClientID() + "_" + i.ToString (NumberFormatInfo.InvariantInfo);
         return clientIDs;
       }
       else
@@ -290,7 +289,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        EnsureValue ();
+        EnsureValue();
         return _value;
       }
       set
@@ -299,7 +298,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         _value = value;
 
         if (Property != null && _value != null)
-          _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject ());
+          _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject());
         else
           _enumerationValueInfo = null;
 
@@ -349,7 +348,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public string FocusID
     {
-      get { return IsReadOnly ? null : GetListControlClientID (); }
+      get { return IsReadOnly ? null : GetListControlClientID(); }
     }
 
     /// <summary>
@@ -432,7 +431,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    [Browsable(false)]
+    [Browsable (false)]
     public string NullIdentifier
     {
       get { return c_nullIdentifier; }
@@ -473,7 +472,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <include file='doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/LoadPostData/*' />
     protected virtual bool LoadPostData (string postDataKey, NameValueCollection postCollection)
     {
-      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetListControlUniqueID ());
+      string newValue = PageUtility.GetPostBackCollectionItem (Page, GetListControlUniqueID());
       bool isDataChanged = false;
       if (newValue != null)
       {
@@ -498,7 +497,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual void RaisePostDataChangedEvent ()
     {
       if (!IsReadOnly && Enabled)
-        OnSelectionChanged ();
+        OnSelectionChanged();
     }
 
     /// <summary> Fires the <see cref="SelectionChanged"/> event. </summary>
@@ -513,7 +512,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <exception cref="Remotion.Web.UI.WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
     protected virtual void EvaluateWaiConformity ()
     {
-      if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
+      if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
       {
         if (ListControlStyle.AutoPostBack == true)
           WcagHelper.Instance.HandleWarning (1, this, "ListControlStyle.AutoPostBack");
@@ -522,12 +521,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void OnPreRender (EventArgs e)
     {
-      EnsureChildControls ();
+      EnsureChildControls();
       base.OnPreRender (e);
 
-      LoadResources (GetResourceManager ());
+      LoadResources (GetResourceManager());
 
-      EvaluateWaiConformity ();
+      EvaluateWaiConformity();
     }
 
     /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
@@ -535,7 +534,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return HtmlTextWriterTag.Div; }
     }
-    
+
     /// <summary> Performs the actual loading for <see cref="LoadValue"/> and <see cref="LoadUnboundValue"/>. </summary>
     protected virtual void LoadValueInternal (object value, bool interim)
     {
@@ -586,7 +585,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get
       {
         if (_enumerationValueInfo == null && Property != null && _value != null)
-          _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject ());
+          _enumerationValueInfo = Property.GetValueInfoByValue (_value, GetBusinessObject());
 
         return _enumerationValueInfo;
       }
@@ -614,7 +613,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         _internalValue = value;
 
-        EnsureValue ();
+        EnsureValue();
       }
     }
 
@@ -630,7 +629,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       else if (_internalValue != null && Property != null)
       {
         //  Can get a new EnumerationValueInfo
-        _enumerationValueInfo = Property.GetValueInfoByIdentifier (_internalValue, GetBusinessObject ());
+        _enumerationValueInfo = Property.GetValueInfoByIdentifier (_internalValue, GetBusinessObject());
         _value = _enumerationValueInfo.Value;
       }
       else if (_internalValue == null)
@@ -662,7 +661,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (Property == null)
         return new IEnumerationValueInfo[0];
-      return Property.GetEnabledValues (GetBusinessObject ());
+      return Property.GetEnabledValues (GetBusinessObject());
     }
 
     private IBusinessObject GetBusinessObject ()
@@ -692,7 +691,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (IsDesignMode)
           nullDisplayName = "undefined";
         else
-          nullDisplayName = GetResourceManager ().GetString (ResourceIdentifier.UndefinedItemText);
+          nullDisplayName = GetResourceManager().GetString (ResourceIdentifier.UndefinedItemText);
       }
       return nullDisplayName;
     }
@@ -707,11 +706,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
 
-
     /// <summary> Invokes the <see cref="RaisePostDataChangedEvent"/> method. </summary>
     void IPostBackDataHandler.RaisePostDataChangedEvent ()
     {
-      RaisePostDataChangedEvent ();
+      RaisePostDataChangedEvent();
     }
 
     bool IBocRenderableControl.IsDesignMode
@@ -721,7 +719,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     IEnumerationValueInfo[] IBocEnumValue.GetEnabledValues ()
     {
-      return GetEnabledValues ();
+      return GetEnabledValues();
     }
 
     IEnumerationValueInfo IBocEnumValue.EnumerationValueInfo
@@ -731,7 +729,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocEnumValue.GetNullItemText ()
     {
-      return GetNullItemText ();
+      return GetNullItemText();
     }
   }
 }

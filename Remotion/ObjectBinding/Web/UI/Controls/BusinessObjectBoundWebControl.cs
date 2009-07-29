@@ -16,9 +16,10 @@
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Design;
@@ -151,7 +152,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
 
-      var webUIService = businessObjectProvider.GetService<IBusinessObjectWebUIService> ();
+      var webUIService = businessObjectProvider.GetService<IBusinessObjectWebUIService>();
 
       if (webUIService != null)
         return webUIService.GetIcon (businessObject);
@@ -200,13 +201,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return null;
     }
 
-    private BusinessObjectBinding _binding;
+    private readonly BusinessObjectBinding _binding;
+
     /// <summary> Caches the <see cref="ResourceManagerSet"/> for this control. </summary>
     private ResourceManagerSet _cachedResourceManager;
-    private bool _controlExistedInPreviousRequest = false;
+
+    private bool _controlExistedInPreviousRequest;
 
     /// <summary> Creates a new instance of the BusinessObjectBoundWebControl type. </summary>
-    public BusinessObjectBoundWebControl ()
+    protected BusinessObjectBoundWebControl ()
     {
       _binding = new BusinessObjectBinding (this);
     }
@@ -215,12 +218,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
-      EnsureChildControls ();
-      _binding.EnsureDataSource ();
+      EnsureChildControls();
+      _binding.EnsureDataSource();
       if (!IsDesignMode)
       {
         Page.RegisterRequiresControlState (this);
-        RegisterHtmlHeadContents (new HttpContextWrapper(Context), HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (Context, HtmlHeadAppender.Current);
       }
     }
 
@@ -283,7 +286,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (!IsDesignMode)
         throw new InvalidOperationException ("PreRenderChildControlsForDesignMode may only be called during design time.");
-      EnsureChildControls ();
+      EnsureChildControls();
       OnPreRender (EventArgs.Empty);
     }
 
@@ -308,7 +311,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        EnsureChildControls ();
+        EnsureChildControls();
         return base.Controls;
       }
     }
@@ -403,7 +406,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public virtual bool UseLabel
     {
-      get { return !(TargetControl is DropDownList || TargetControl is System.Web.UI.HtmlControls.HtmlSelect); }
+      get { return !(TargetControl is DropDownList || TargetControl is HtmlSelect); }
     }
 
     /// <summary> Evalutes whether this control is in <b>Design Mode</b>. </summary>
@@ -411,7 +414,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     protected internal virtual bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode (this, Context); }
+      get { return ControlHelper.IsDesignMode (this, Context != null ? Context.WrappedInstance : null); }
     }
 
     bool ISmartControl.IsRequired
@@ -438,6 +441,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected bool ControlExistedInPreviousRequest
     {
       get { return _controlExistedInPreviousRequest; }
+    }
+
+    protected virtual IServiceLocator ServiceLocator
+    {
+      get { return Microsoft.Practices.ServiceLocation.ServiceLocator.Current; }
+    }
+
+    protected new IHttpContext Context
+    {
+      get { return base.Context != null ? new HttpContextWrapper (base.Context) : null; }
     }
 
     protected override void LoadControlState (object savedState)
@@ -518,5 +531,4 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   //}
   //
   //public delegate void BindingChangedEventHandler (object sender, BindingChangedEventArgs e);
-
 }

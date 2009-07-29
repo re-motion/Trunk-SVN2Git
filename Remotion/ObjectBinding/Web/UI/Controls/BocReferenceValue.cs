@@ -21,7 +21,6 @@ using System.Reflection;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
@@ -123,8 +122,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
-      
-      var factory = ServiceLocator.Current.GetInstance<IBocReferenceValueRendererFactory>();
+
+      var factory = ServiceLocator.GetInstance<IBocReferenceValueRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (httpContext, this);
       preRenderer.RegisterHeadContents (htmlHeadAppender);
     }
@@ -166,9 +165,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override void RaisePostDataChangedEvent ()
     {
       if (InternalValue == null)
-      {
         _displayName = null;
-      }
       else
       {
         ListItem selectedItem = _listItems.FindByValue (InternalValue);
@@ -344,17 +341,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       base.OnPreRender (e);
 
-      var factory = ServiceLocator.Current.GetInstance<IBocReferenceValueRendererFactory> ();
-      var preRenderer = factory.CreatePreRenderer (Context != null ? new HttpContextWrapper (Context) : null, this);
-      preRenderer.PreRender ();
+      var factory = ServiceLocator.GetInstance<IBocReferenceValueRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (Context, this);
+      preRenderer.PreRender();
     }
 
     public override void RenderControl (HtmlTextWriter writer)
     {
       EvaluateWaiConformity();
 
-      var factory = ServiceLocator.Current.GetInstance<IBocReferenceValueRendererFactory>();
-      var renderer = factory.CreateRenderer (Context != null ? new HttpContextWrapper (Context) : null, writer, this);
+      var factory = ServiceLocator.GetInstance<IBocReferenceValueRendererFactory>();
+      var renderer = factory.CreateRenderer (Context, writer, this);
       renderer.Render();
     }
 
@@ -376,7 +373,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       values[0] = base.SaveControlState();
       values[1] = InternalValue;
       values[2] = _displayName;
-      values[3] = ((IStateManager) _listItems).SaveViewState ();
+      values[3] = ((IStateManager) _listItems).SaveViewState();
 
       return values;
     }
@@ -443,7 +440,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override string GetOptionsMenuTitle ()
     {
-      return GetResourceManager ().GetString (ResourceIdentifier.OptionsTitle);
+      return GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
@@ -609,9 +606,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get
       {
         if (InternalValue == null)
-        {
           _value = null;
-        } 
         else if (Property != null && (_value == null || _value.UniqueIdentifier != InternalValue))
         {
           //  Only reload if value is outdated
@@ -755,12 +750,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     void IBocReferenceValue.PopulateDropDownList (DropDownList dropDownList)
     {
       ArgumentUtility.CheckNotNull ("dropDownList", dropDownList);
-      dropDownList.Items.Clear ();
+      dropDownList.Items.Clear();
 
       bool isNullItem = (InternalValue == null);
 
       if (isNullItem || !IsRequired)
-        dropDownList.Items.Add (CreateNullItem ());
+        dropDownList.Items.Add (CreateNullItem());
 
       foreach (ListItem listItem in _listItems)
         dropDownList.Items.Add (new ListItem (listItem.Text, listItem.Value));
@@ -790,7 +785,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get
       {
         return HasValueEmbeddedInsideOptionsMenu == true && HasOptionsMenu
-                || HasValueEmbeddedInsideOptionsMenu == null && IsReadOnly && HasOptionsMenu;
+               || HasValueEmbeddedInsideOptionsMenu == null && IsReadOnly && HasOptionsMenu;
       }
     }
 
@@ -826,7 +821,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public string DropDownListClientID
     {
-      get { return ClientID + ClientIDSeparator +  c_dropDownListIDPostfix; }
+      get { return ClientID + ClientIDSeparator + c_dropDownListIDPostfix; }
     }
 
     string IBocReferenceValue.LabelClientID

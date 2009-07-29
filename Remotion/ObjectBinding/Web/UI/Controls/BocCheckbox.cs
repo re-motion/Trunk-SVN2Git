@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -118,10 +117,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="writer">The writer used to render the control.</param>
     public override void RenderControl (HtmlTextWriter writer)
     {
-      EvaluateWaiConformity ();
+      EvaluateWaiConformity();
 
-      var factory = ServiceLocator.Current.GetInstance<IBocCheckboxRendererFactory> ();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      var factory = ServiceLocator.GetInstance<IBocCheckboxRendererFactory>();
+      var renderer = factory.CreateRenderer (Context, writer, this);
       renderer.Render();
     }
 
@@ -241,7 +240,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <seealso cref="BusinessObjectBoundEditableWebControl.GetTrackedClientIDs">BusinessObjectBoundEditableWebControl.GetTrackedClientIDs</seealso>
     public override string[] GetTrackedClientIDs ()
     {
-      return IsReadOnly ? new string[0] : new[] { GetCheckboxUniqueID () };
+      return IsReadOnly ? new string[0] : new[] { GetCheckboxUniqueID() };
     }
 
     /// <summary>
@@ -272,7 +271,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public override string FocusID
     {
-      get { return IsReadOnly ? null : GetCheckboxClientID (); }
+      get { return IsReadOnly ? null : GetCheckboxClientID(); }
     }
 
     /// <summary> Gets the string representation of this control's <see cref="Value"/>. </summary>
@@ -410,7 +409,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </value>
     protected bool IsDescriptionEnabled
     {
-      get { return !WcagHelper.Instance.IsWaiConformanceLevelARequired () && _showDescription == true; }
+      get { return !WcagHelper.Instance.IsWaiConformanceLevelARequired() && _showDescription == true; }
     }
 
     string IBocCheckBox.LabelID

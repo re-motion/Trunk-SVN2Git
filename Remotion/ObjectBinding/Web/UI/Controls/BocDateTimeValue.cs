@@ -19,7 +19,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
@@ -139,7 +138,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      var factory = ServiceLocator.Current.GetInstance<IBocDateTimeValueRendererFactory>();
+      var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (httpContext, this);
       preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
 
@@ -253,23 +252,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _datePickerButton.ContainerControlID = UniqueID;
       _datePickerButton.TargetControlID = GetDateTextboxUniqueID();
 
-      var factory = ServiceLocator.Current.GetInstance<IBocDateTimeValueRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (Context, this);
       preRenderer.PreRender();
 
-      EvaluateWaiConformity ();
-    }
-
-    /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
-    protected override HtmlTextWriterTag TagKey
-    {
-      get { return HtmlTextWriterTag.Div; }
+      EvaluateWaiConformity();
     }
 
     public override void RenderControl (HtmlTextWriter writer)
     {
-      var factory = ServiceLocator.Current.GetInstance<IBocDateTimeValueRendererFactory> ();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
+      var factory = ServiceLocator.GetInstance<IBocDateTimeValueRendererFactory>();
+      var renderer = factory.CreateRenderer (Context, writer, this);
       renderer.Render();
     }
 
@@ -605,14 +598,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (IsReadOnly)
         return new string[0];
-      
-      switch( ActualValueType )
+
+      switch (ActualValueType)
       {
         case BocDateTimeValueType.DateTime:
         case BocDateTimeValueType.Undefined:
           return new[] { GetDateTextboxClientID(), GetTimeTextboxClientID() };
         case BocDateTimeValueType.Date:
-          return new[] { GetDateTextboxClientID () };
+          return new[] { GetDateTextboxClientID() };
         default:
           return new string[0];
       }
@@ -820,7 +813,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override bool Enabled
     {
-      get{return base.Enabled;}
+      get { return base.Enabled; }
       set
       {
         base.Enabled = value;
@@ -840,12 +833,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocDateTimeValue.DateTextboxClientID
     {
-      get { return GetDateTextboxClientID (); }
+      get { return GetDateTextboxClientID(); }
     }
 
     string IBocDateTimeValue.TimeTextboxClientID
     {
-      get { return GetTimeTextboxClientID (); }
+      get { return GetTimeTextboxClientID(); }
     }
 
     string IBocDateTimeValue.DateTextboxID
@@ -860,7 +853,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocDateTimeValue.GetDatePickerText ()
     {
-      return GetResourceManager ().GetString (BocDateTimeValue.ResourceIdentifier.DataPickerButtonAlternateText);
+      return GetResourceManager().GetString (ResourceIdentifier.DataPickerButtonAlternateText);
     }
 
     /// <summary> Gets the <see cref="BocDateTimeValueType"/> actually used by the cotnrol. </summary>

@@ -18,13 +18,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode.Factories;
 using Remotion.Utilities;
-using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -142,9 +139,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public override void RenderControl (HtmlTextWriter writer)
     {
-      var factory = !IsDesignMode ? ServiceLocator.Current.GetInstance<IBocTextValueRendererFactory>() : new BocTextValueRendererFactory();
-      var renderer = factory.CreateRenderer (new HttpContextWrapper (Context), writer, this);
-      renderer.Render ();
+      var factory = !IsDesignMode ? ServiceLocator.GetInstance<IBocTextValueRendererFactory>() : new BocTextValueRendererFactory();
+      var renderer = factory.CreateRenderer (Context, writer, this);
+      renderer.Render();
     }
 
     /// <summary> Gets or sets the current value. </summary>
@@ -169,7 +166,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         string text = _text;
         if (text != null)
-          text = text.Trim ();
+          text = text.Trim();
 
         if (StringUtility.IsNullOrEmpty (text))
           return null;
@@ -233,7 +230,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _text = formattable.ToString (format, null);
         }
         else
-          _text = value.ToString ();
+          _text = value.ToString();
       }
     }
 
@@ -372,7 +369,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override object SaveControlState ()
     {
       object[] values = new object[4];
-      values[0] = base.SaveControlState ();
+      values[0] = base.SaveControlState();
       values[1] = _text;
       values[2] = _valueType;
       values[3] = _actualValueType;
@@ -588,7 +585,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="e"> An <see cref="EventArgs"/> object that contains the event data. </param>
     private void Binding_BindingChanged (object sender, EventArgs e)
     {
-      RefreshPropertiesFromObjectModel ();
+      RefreshPropertiesFromObjectModel();
     }
 
     /// <summary>
@@ -640,7 +637,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         else if (numericProperty.Type == typeof (float))
           return BocTextValueType.Single;
         else
-          throw new NotSupportedException ("BocTextValue does not support property type " + property.GetType ());
+          throw new NotSupportedException ("BocTextValue does not support property type " + property.GetType());
       }
       else if (property is IBusinessObjectDateTimeProperty)
       {
@@ -651,8 +648,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           return BocTextValueType.DateTime;
       }
       else
-        throw new NotSupportedException ("BocTextValue does not support property type " + property.GetType ());
+        throw new NotSupportedException ("BocTextValue does not support property type " + property.GetType());
     }
-
   }
 }
