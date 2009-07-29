@@ -87,6 +87,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ExecuteSingle ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () orderby computer.ID select computer).First ());
+      QueryModel model = ExpressionHelper.ParseQuery (expression);
+
+      var result = _computerExecutor.ExecuteSingle<Computer> (model, new FetchManyRequest[0], true);
+      Assert.That (result, Is.SameAs (Computer.GetObject (DomainObjectIDs.Computer5)));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
+    public void QueryExecutor_ExecuteSingle_NoCurrentTransaction ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () orderby computer.ID select computer).First ());
+      QueryModel model = ExpressionHelper.ParseQuery (expression);
+
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        _computerExecutor.ExecuteSingle<int> (model, new FetchManyRequest[0], true);
+      }
+    }
+
+    [Test]
+    public void ExecuteSingle_DefaultIfEmpty_True ()
+    {
+      var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () where false select computer).First ());
+      QueryModel model = ExpressionHelper.ParseQuery (expression);
+
+      var result = _computerExecutor.ExecuteSingle<Computer> (model, new FetchManyRequest[0], true);
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
+    public void ExecuteSingle_DefaultIfEmpty_False ()
+    {
+      var expression =
+          ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() where false select computer).First());
+      QueryModel model = ExpressionHelper.ParseQuery (expression);
+
+      _computerExecutor.ExecuteSingle<Computer> (model, new FetchManyRequest[0], false);
+    }
+
+    [Test]
     public void ExecuteCollection ()
     {
       var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;

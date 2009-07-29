@@ -81,6 +81,33 @@ namespace Remotion.Data.DomainObjects.Linq
 
     /// <summary>
     /// Creates and executes a given <see cref="QueryModel"/> as an <see cref="IQuery"/> using the current <see cref="ClientTransaction"/>'s
+    /// <see cref="ClientTransaction.QueryManager"/>. The query is executed as a collection query, and its result set is expected in its result set.
+    /// </summary>
+    /// <param name="queryModel">The generated <see cref="QueryModel"/> of the LINQ query.</param>
+    /// <param name="fetchRequests">The <see cref="FetchRequestBase"/> instances to be executed together with the query.</param>
+    /// <param name="returnDefaultWhenEmpty">If <see langword="true" />, the executor returns a default value when the result set is empty; 
+    /// if <see langword="false" />, it throws an <see cref="InvalidOperationException"/> when its result set is empty.</param>
+    /// <returns>
+    /// The result of the executed query, cast to <typeparam name="T"/>.
+    /// </returns>
+    public T ExecuteSingle<T> (QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, bool returnDefaultWhenEmpty)
+    {
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
+
+      if (ClientTransaction.Current == null)
+        throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
+
+      var sequence = ExecuteCollection<T> (queryModel, fetchRequests);
+
+      if (returnDefaultWhenEmpty)
+        return sequence.SingleOrDefault ();
+      else
+        return sequence.Single();
+    }
+
+    /// <summary>
+    /// Creates and executes a given <see cref="QueryModel"/> as an <see cref="IQuery"/> using the current <see cref="ClientTransaction"/>'s
     /// <see cref="ClientTransaction.QueryManager"/>. The query is executed as a collection query.
     /// </summary>
     /// <param name="queryModel">The generated <see cref="QueryModel"/> of the LINQ query.</param>
