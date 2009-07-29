@@ -37,13 +37,30 @@ namespace Remotion.Scripting
       _moduleScope = moduleScope;
     }
 
+    public ITypeFilter TypeFilter
+    {
+      get { return _typeFilter; }
+    }
+
+    public ModuleScope ModuleScope
+    {
+      get {
+        return _moduleScope;
+      }
+    }
+
     // TODO: Cache proxyType (and maybe result of pythonScriptEngine.Operations.GetMember wrapping operation) in map.
     public object GetMemberProxy (Object proxied, string attributeName)
     {
-      Type proxyType = BuildProxyType (proxied);
-      object proxy = Activator.CreateInstance (proxyType, proxied);
+      object proxy = BuildProxy(proxied);
       var typeMemberProxy = ScriptingHost.GetScriptEngine(ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
       return typeMemberProxy;
+    }
+
+    public object BuildProxy (object proxied)
+    {
+      Type proxyType = BuildProxyType (proxied);
+      return Activator.CreateInstance (proxyType, proxied);
     }
 
     // TODO: Make private

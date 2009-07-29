@@ -69,9 +69,11 @@
   <ItemGroup>
     <Compile Include="MethodInfoExtensions.cs" />
     <Compile Include="MethodInfoFromRelatedTypesEqualityComparerTest.cs" />
+    <Compile Include="ReflectionHelperTest.cs" />
     <Compile Include="ScriptEnvironmentTest.cs" />
     <Compile Include="ScriptingIntegrationTests.cs" />
     <Compile Include="ScriptingPerformanceTests.cs" />
+    <Compile Include="StableBindingMixinTest.cs" />
     <Compile Include="StableBindingProxyBuilder_PropertyTests.cs" />
     <Compile Include="StableBindingProxyBuilder_ReflectionTests.cs" />
     <Compile Include="StableBindingProxyProviderTest.cs" />

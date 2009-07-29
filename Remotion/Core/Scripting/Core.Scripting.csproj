@@ -64,6 +64,7 @@
     <Compile Include="MethodInfoEqualityComparer.cs" />
     <Compile Include="MethodInfoEqualityComparer2.cs" />
     <Compile Include="MethodInfoFromRelatedTypesEqualityComparer.cs" />
+    <Compile Include="ReflectionHelper.cs" />
     <Compile Include="ScriptFunction.generated.cs">
       <SubType>Code</SubType>
     </Compile>

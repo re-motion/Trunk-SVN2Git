@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
@@ -132,6 +133,21 @@ namespace Remotion.Scripting.UnitTests
       
       //return type.GetMethods (BindingFlags.Instance | BindingFlags.NonPublic).Where (
       //  mi => (mi.Name == interfaceMethod.Name && mi.GetParameters ().Select (pi => pi.ParameterType).SequenceEqual (argumentTypes))).Single ();
+    }
+
+    public static TResult ExecuteScriptExpression<TResult> (string expressionScriptSourceCode, params object[] scriptParameter)
+    {
+      const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (expressionScriptSourceCode, SourceCodeKind.Expression);
+      var compiledScript = scriptSource.Compile ();
+      var scriptScope = ScriptingHost.GetScriptEngine (scriptLanguageType).CreateScope ();
+
+      for (int i = 0; i < scriptParameter.Length; i++)
+      {
+        scriptScope.SetVariable ("p" + i, scriptParameter[i]);
+      }
+      return compiledScript.Execute<TResult> (scriptScope);
     }
   }
 }

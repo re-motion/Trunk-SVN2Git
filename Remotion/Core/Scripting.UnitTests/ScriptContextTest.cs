@@ -46,9 +46,12 @@ namespace Remotion.Scripting.UnitTests
     public void CreateScriptContext ()
     {
       var typeFilterStub = MockRepository.GenerateStub<ITypeFilter>();
-      var scriptContext = ScriptContext.Create ("Context1", typeFilterStub);
-      Assert.That (scriptContext.Name, Is.EqualTo ("Context1"));
-      Assert.That (scriptContext.TypeFilter, Is.SameAs (typeFilterStub));
+      var scriptContext = ScriptContext.Create ("ContextXyz1", typeFilterStub);
+      Assert.That (scriptContext.Name, Is.EqualTo ("ContextXyz1"));
+      Assert.That (scriptContext.StableBindingProxyProvider.TypeFilter, Is.SameAs (typeFilterStub));
+      var moduleScope = scriptContext.StableBindingProxyProvider.ModuleScope;
+      Assert.That (moduleScope, Is.Not.Null);
+      StringAssert.Contains ("Scripting.ScriptContext.ContextXyz1", moduleScope.StrongNamedModuleName);
     }
 
     [Test]

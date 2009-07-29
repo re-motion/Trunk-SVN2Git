@@ -207,7 +207,7 @@ namespace Remotion.Scripting.UnitTests
 
     private void ExecuteScriptAccessPropertyAmbigous (Object obj)
     {
-      ExecuteScriptExpression<string> ("p0.PropertyAmbigous", obj);
+      ScriptingHelper.ExecuteScriptExpression<string> ("p0.PropertyAmbigous", obj);
     }
 
     [Test]
@@ -261,7 +261,7 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (((IPropertyAmbigous2) proxied).PropertyAmbigous, Is.EqualTo (expectedPropertyValue));
 
       // Script call to proxy is not ambigous
-      Assert.That (ExecuteScriptExpression<string> ("p0.PropertyAmbigous", proxy), Is.EqualTo (expectedPropertyValue));
+      Assert.That (ScriptingHelper.ExecuteScriptExpression<string> ("p0.PropertyAmbigous", proxy), Is.EqualTo (expectedPropertyValue));
       
       //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select(pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
@@ -315,7 +315,7 @@ namespace Remotion.Scripting.UnitTests
       var proxyPropertyInfoPublicProperty = proxyType.GetProperty ("PropertyAmbigous", _publicInstanceFlags);
       Assert.That (proxyPropertyInfoPublicProperty, Is.Not.Null);
 
-      Assert.That (ExecuteScriptExpression<string> ("p0.PropertyAmbigous", proxy), Is.EqualTo ("ProxiedChildChild::PropertyAmbigous PC"));
+      Assert.That (ScriptingHelper.ExecuteScriptExpression<string> ("p0.PropertyAmbigous", proxy), Is.EqualTo ("ProxiedChildChild::PropertyAmbigous PC"));
 
       var proxyPropertyInfo = proxyType.GetProperty (
         "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IPropertyAmbigous2.PropertyAmbigous", _nonPublicInstanceFlags);
@@ -341,20 +341,20 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    public TResult ExecuteScriptExpression<TResult> (string expressionScriptSourceCode, params object[] scriptParameter)
-    {
-      const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
-      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
-      var scriptSource = engine.CreateScriptSourceFromString (expressionScriptSourceCode, SourceCodeKind.Expression);
-      var compiledScript = scriptSource.Compile ();
-      var scriptScope = ScriptingHost.GetScriptEngine (scriptLanguageType).CreateScope();
+    //public TResult ExecuteScriptExpression<TResult> (string expressionScriptSourceCode, params object[] scriptParameter)
+    //{
+    //  const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
+    //  var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+    //  var scriptSource = engine.CreateScriptSourceFromString (expressionScriptSourceCode, SourceCodeKind.Expression);
+    //  var compiledScript = scriptSource.Compile ();
+    //  var scriptScope = ScriptingHost.GetScriptEngine (scriptLanguageType).CreateScope();
 
-      for (int i = 0; i < scriptParameter.Length; i++)
-      {
-        scriptScope.SetVariable ("p" + i, scriptParameter[i]);
-      }
-      return compiledScript.Execute<TResult> (scriptScope);
-    }
+    //  for (int i = 0; i < scriptParameter.Length; i++)
+    //  {
+    //    scriptScope.SetVariable ("p" + i, scriptParameter[i]);
+    //  }
+    //  return compiledScript.Execute<TResult> (scriptScope);
+    //}
 
   }
 }

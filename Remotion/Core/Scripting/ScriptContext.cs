@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Castle.DynamicProxy;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -33,6 +34,7 @@ namespace Remotion.Scripting
 
     private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
+
 
     public static ScriptContext Current
     {
@@ -113,12 +115,14 @@ namespace Remotion.Scripting
 
  
     private readonly string _name;
-    private readonly ITypeFilter _typeFilter;
+    //private readonly ITypeFilter _typeFilter;
+    private readonly StableBindingProxyProvider _proxyProvider;
 
     private ScriptContext (string name, ITypeFilter typeFilter)
     {
       _name = name;
-      _typeFilter = typeFilter;
+      //_typeFilter = typeFilter;
+      _proxyProvider = new StableBindingProxyProvider (typeFilter, ReflectionHelper.CreateModuleScope ("Scripting.ScriptContext." + name,false));
     }
 
     /// <summary>
@@ -135,7 +139,16 @@ namespace Remotion.Scripting
     /// </summary>
     public ITypeFilter TypeFilter
     {
-      get { return _typeFilter; }
+      get { return _proxyProvider.TypeFilter; }
+    }
+
+    /// <summary>
+    /// The <see cref="StableBindingProxyProvider"/> used in this <see cref="ScriptContext"/> to create stable binding proxies 
+    /// (see <see cref="ForwardingProxyBuilder"/>).
+    /// </summary>
+    public StableBindingProxyProvider StableBindingProxyProvider
+    {
+      get { return _proxyProvider; }
     }
 
   }

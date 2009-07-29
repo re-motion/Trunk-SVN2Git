@@ -34,8 +34,11 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void BuildProxyType ()
     {
+      var typeFilter = new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) });
       var provider = new StableBindingProxyProvider (
-        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+        typeFilter, ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+
+      Assert.That (provider.TypeFilter, Is.SameAs (typeFilter));
 
       var proxied = new ProxiedChildChildChild ("abrakadava");
       const string attributeName = "PrependName";
@@ -80,6 +83,9 @@ def TestTypeMemberProxy(customMemberTester) :
 
     }
   }
+
+
+
 
   /// <summary>
   /// Stores a pythonScriptEngine.Operations.GetMember(proxy, attributeName)-wrapper-object and returns it 
