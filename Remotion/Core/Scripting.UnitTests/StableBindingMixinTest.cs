@@ -102,6 +102,7 @@ namespace Remotion.Scripting.UnitTests
     [SpecialName]
     public object GetCustomMember (string name)
     {
+      To.ConsoleLine.nl(2).s("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!").e (() => name).nl(2);
       return ScriptContext.Current.StableBindingProxyProvider.GetMemberProxy (this, name);
     }
   }

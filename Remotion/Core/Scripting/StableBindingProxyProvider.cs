@@ -49,7 +49,7 @@ namespace Remotion.Scripting
       }
     }
 
-    // TODO: Cache proxyType (and maybe result of pythonScriptEngine.Operations.GetMember wrapping operation) in map.
+    // TODO: Store proxyType in map (and maybe result of pythonScriptEngine.Operations.GetMember wrapping operation in cache).
     public object GetMemberProxy (Object proxied, string attributeName)
     {
       object proxy = BuildProxy(proxied);
@@ -65,10 +65,17 @@ namespace Remotion.Scripting
     }
 
     // TODO: Make private
+
     public Type BuildProxyType (object proxied)
     {
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxied.GetType(), _typeFilter, _moduleScope);
       return stableBindingProxyBuilder.BuildProxyType();
     }
+
+    //private void SetProxied (Object proxy, Object proxied)
+    //{
+    //  proxy
+    //  //_proxied
+    //}
   }
 }
