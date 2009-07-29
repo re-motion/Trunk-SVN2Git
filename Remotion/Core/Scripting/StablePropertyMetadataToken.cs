@@ -18,6 +18,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
+  // TODO: Check if is still used
   public class StablePropertyMetadataToken : StableMetadataToken
   {
     private const int NoMethodToken = -1;

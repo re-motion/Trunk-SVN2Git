@@ -28,10 +28,41 @@ namespace Remotion.Scripting.UnitTests
   public class StableBindingProxyBuilder_PropertyTests : StableBindingProxyBuilderTest
   {
     private const BindingFlags _nonPublicInstanceFlags = BindingFlags.Instance | BindingFlags.NonPublic;
+    private const BindingFlags _publicInstanceFlags = BindingFlags.Instance | BindingFlags.Public;
     private const BindingFlags _allFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+
 
     [Test]
     [Explicit]
+    public void BuildProxyType_PublicProperty ()
+    {
+      var knownBaseTypes = new[] { typeof (ProxiedChild) };
+      //var knownInterfaceTypes = new[] { typeof (IProperty) };
+      var knownTypes = knownBaseTypes; //knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
+      var typeFilter = new TypeLevelTypeFilter (knownTypes);
+      var proxiedType = typeof (ProxiedChildChildChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_PublicProperty"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildChildChild ("PC");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      Assert.That (proxied.NameProperty, Is.EqualTo ("ProxiedChildChildChild::NameProperty PC"));
+
+      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+
+      var proxyPropertyInfo = proxyType.GetProperty ("NameProperty", _publicInstanceFlags);
+
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild::NameProperty PC"));
+      //AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
+
+    }
+
+
+    [Test]
+    //[Explicit]
     public void BuildProxyType_ExplicitInterfaceProperty ()
     {
       var knownBaseTypes = new[] { typeof (ProxiedChild) };
@@ -39,7 +70,7 @@ namespace Remotion.Scripting.UnitTests
       var knownTypes = knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
       var typeFilter = new TypeLevelTypeFilter (knownTypes);
       var proxiedType = typeof (ProxiedChildChildChild);
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_Property"));
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_ExplicitInterfaceProperty"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType ();
 
       //var knownBaseTypeMethods = knownBaseTypes.SelectMany (t => t.GetMethods ()).Where (m => m.IsSpecialName == false);
@@ -62,7 +93,7 @@ namespace Remotion.Scripting.UnitTests
       To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select(pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
       // TODO: Property should be private !
-      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _allFlags);
+      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _publicInstanceFlags);
 
       Assert.That (proxyPropertyInfo, Is.Not.Null);
       Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue));

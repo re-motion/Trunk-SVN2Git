@@ -25,6 +25,18 @@ using Remotion.Utilities;
 
 namespace Remotion.Scripting
 {
+  // TODO: Introduce MethodInfoExtended / PropertyInfoExtended. 
+  // A lot of reflection code would be much easier to write and maintain, if one would introduce a MethodInfoExtended class,
+  // which is self-contained in the sense that it holds enough context information where it comes from 
+  // (e.g. if it is an explicit interface implementation etc) so one can e.g. implement a proxying method just from a
+  // MethodInfoExtended instance.
+  // This would remove the requirement to have different methods for the different cases, which all need to be called with specific
+  // parameters, but especially would make it much simpler to write helper functions which are 99% the same but need to differ in one call or 
+  // passed attribute depending on whether the method is an explicit interface implementation.
+  // This is even more true for PropertyInfoExtended, because properties have the additional complication of being made up of 3 objects 
+  // (the property itself, getter & setter) instead of just one as in the case of a method.
+
+
   /// <summary>
   /// Helper class to create a proxy object which forwards explcitely added methods/properties to its proxied instance. 
   /// </summary>
@@ -179,6 +191,8 @@ namespace Remotion.Scripting
     private void CreateGetterAndSetterForExplicitInterfaceProperty (PropertyInfo propertyInfo, 
       MethodInfo getterMethodInfo, MethodInfo setterMethodInfo, CustomPropertyEmitter propertyEmitter)
     {
+      // TODO(!): Pass parameter to AddForwardingMethodFromClassOrInterfaceMethodInfoCopy, which makes the created methods private
+      // (otherwise the property will be public)
       if (propertyInfo.CanRead)
       {
         var getMethodEmitter = AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (getterMethodInfo);

@@ -30,11 +30,13 @@ namespace Remotion.Scripting
   public class StableMethodMetadataToken : StableMetadataToken
   {
     private readonly int _token;
+    private readonly MethodInfo _method;
 
     public StableMethodMetadataToken (MethodInfo method)
     {
       ArgumentUtility.CheckNotNull ("method", method);
       _token = method.GetBaseDefinition().MetadataToken;
+      _method = method;
     }
 
     public override bool Equals (object obj)
@@ -52,6 +54,11 @@ namespace Remotion.Scripting
     public override int GetHashCode ()
     {
       return _token;
+    }
+
+    public override string ToString ()
+    {
+      return String.Format ("({0},{1}({2}))", _token, _method, _method.MetadataToken);
     }
   }
 }
