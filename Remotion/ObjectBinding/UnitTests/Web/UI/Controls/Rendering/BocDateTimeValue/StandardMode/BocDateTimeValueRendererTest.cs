@@ -38,8 +38,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private SingleRowTextBoxStyle _timeStyle;
     private StubTextBox _dateTextBox;
     private StubTextBox _timeTextBox;
-    private static readonly DateTime s_dateTimeValue = new DateTime (2009, 7, 31, 15, 43, 0);
-    private static readonly DateTime s_dateValue = new DateTime (2009, 7, 31);
 
     [SetUp]
     public void SetUp ()
@@ -81,21 +79,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     [Test]
     public void RenderDateValue ()
     {
-      _control.Stub (stub => stub.Value).Return (s_dateValue);
-      _control.Stub (stub => stub.ActualValueType).Return (BocDateTimeValueType.Date);
-      _control.Stub (stub => stub.Enabled).Return (true);
-
-      BocDateTimeValueRenderer renderer;
-      XmlNode container = GetAssertedContainer(out renderer, true);
-
-      AssertDate(container, renderer);
-
-      container.AssertTextNode ("DatePicker", 1);
-    }
-
-    [Test]
-    public void RenderDateValueFromDateString ()
-    {
       _control.Stub (stub => stub.DateString).Return (c_dateString);
       _control.Stub (stub => stub.ActualValueType).Return (BocDateTimeValueType.Date);
       _control.Stub (stub => stub.Enabled).Return (true);
@@ -110,22 +93,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
 
     [Test]
     public void RenderDateTimeValue ()
-    {
-      _control.Stub (stub => stub.Value).Return (s_dateTimeValue);
-      _control.Stub (stub => stub.ActualValueType).Return (BocDateTimeValueType.DateTime);
-      _control.Stub (stub => stub.Enabled).Return (true);
-
-      BocDateTimeValueRenderer renderer;
-      XmlNode container = GetAssertedContainer (out renderer, false);
-
-      AssertDate (container, renderer);
-      AssertTime (container, renderer);
-
-      container.AssertTextNode ("DatePicker", 1);
-    }
-
-    [Test]
-    public void RenderDateTimeValueFromStrings ()
     {
       _control.Stub (stub => stub.DateString).Return (c_dateString);
       _control.Stub (stub => stub.TimeString).Return (c_timeString);

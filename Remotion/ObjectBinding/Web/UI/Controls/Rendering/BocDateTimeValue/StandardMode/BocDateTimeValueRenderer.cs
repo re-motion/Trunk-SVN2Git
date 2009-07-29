@@ -68,14 +68,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
       dateTextBox.ID = Control.DateTextboxID;
       dateTextBox.CssClass = CssClassDate;
       Initialize (dateTextBox, Control.DateTextBoxStyle, GetDateMaxLength());
-      dateTextBox.Text = Control.Value.HasValue ? Formatter.FormatDateValue (Control.Value.Value) : Control.DateString;
+      dateTextBox.Text = Control.DateString;
       dateTextBox.Page = Control.Page.WrappedInstance;
 
       var timeTextBox = _timeTextBox;
       timeTextBox.ID = Control.TimeTextboxID;
       timeTextBox.CssClass = CssClassTime;
       Initialize (timeTextBox, Control.TimeTextBoxStyle, GetTimeMaxLength());
-      timeTextBox.Text = Control.Value.HasValue ? Formatter.FormatTimeValue (Control.Value.Value, Control.ShowSeconds) : Control.TimeString;
+      timeTextBox.Text = Control.TimeString;
       timeTextBox.Page = Control.Page.WrappedInstance;
 
       var datePickerButton = Control.DatePickerButton;
