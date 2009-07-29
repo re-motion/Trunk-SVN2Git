@@ -679,7 +679,7 @@
     <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\WhereQueryParserIntegrationTest.cs" />
     <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\QueryParserIntegrationTestBase.cs" />
     <Compile Include="Linq\Parsing\Structure\QueryParserIntegrationTests\SelectQueryParserIntegrationTest.cs" />
-    <Compile Include="Linq\Parsing\Structure\QuerySourceClauseMappingTest.cs" />
+    <Compile Include="Linq\Parsing\Structure\IntermediateModel\ClauseGenerationContextTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\CastExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\MethodCallExpressionNodeTypeRegistryTest.cs" />
     <Compile Include="Linq\Parsing\Structure\ExpressionTreeParserTest.cs" />
