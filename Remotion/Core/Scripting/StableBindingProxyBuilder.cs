@@ -137,13 +137,14 @@ namespace Remotion.Scripting
         //    IsMethodBound (proxiedTypeMethod, methodsInFirstKnownBaseType)) // accessor method is visible in first known base type
         if (knownBaseTypeProperty != null)
         {
+          // TODO: Check if we need IsMethodBound condition.
           // property exists in first known base type
-          if (
-              IsMethodBound (proxiedTypeMethod, methodsInFirstKnownBaseType)) // accessor method is visible in first known base type
-          {
+          //if (
+          //    IsMethodBound (proxiedTypeMethod, methodsInFirstKnownBaseType)) // accessor method is visible in first known base type
+          //{
             To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property: ").e (knownBaseTypeProperty.Name);
             _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (knownBaseTypeProperty);
-          }
+          //}
         }
       }
 
@@ -345,7 +346,10 @@ namespace Remotion.Scripting
       var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, 
         candidateMethods, parameterTypes, null);
 
-      To.ConsoleLine.e ("method", new StableMethodMetadataToken (method)).e ("boundMethod", new StableMethodMetadataToken ((MethodInfo) boundMethod));
+      if (method.Name == "get_NameProperty")
+      {
+        To.ConsoleLine.e ("method", new StableMethodMetadataToken (method)).e ("boundMethod", new StableMethodMetadataToken ((MethodInfo) boundMethod));
+      }
 
       return Object.ReferenceEquals (method, boundMethod);
     }

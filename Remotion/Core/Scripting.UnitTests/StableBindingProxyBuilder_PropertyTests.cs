@@ -33,10 +33,11 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    [Explicit]
+    //[Explicit]
     public void BuildProxyType_PublicProperty ()
     {
-      var knownBaseTypes = new[] { typeof (ProxiedChild) };
+      //var knownBaseTypes = new[] { typeof (ProxiedChild) };
+      var knownBaseTypes = new[] { typeof (ProxiedChildChild) };
       //var knownInterfaceTypes = new[] { typeof (IProperty) };
       var knownTypes = knownBaseTypes; //knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
       var typeFilter = new TypeLevelTypeFilter (knownTypes);
@@ -55,7 +56,7 @@ namespace Remotion.Scripting.UnitTests
       var proxyPropertyInfo = proxyType.GetProperty ("NameProperty", _publicInstanceFlags);
 
       Assert.That (proxyPropertyInfo, Is.Not.Null);
-      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild::NameProperty PC"));
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChildChild::NameProperty PC"));
       //AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
 
     }
