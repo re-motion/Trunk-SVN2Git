@@ -195,15 +195,22 @@ namespace Remotion.Scripting
       // (otherwise the property will be public)
       if (propertyInfo.CanRead)
       {
-        var getMethodEmitter = AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (getterMethodInfo);
+        var getMethodEmitter = AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (getterMethodInfo, 
+          ModifyAccessorAttributesForExplicitInterfaceProperty(getterMethodInfo.Attributes));
         propertyEmitter.GetMethod = getMethodEmitter;
       }
 
       if (propertyInfo.CanWrite)
       {
-        var setMethodEmitter = AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (setterMethodInfo);
+        var setMethodEmitter = AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (setterMethodInfo,
+          ModifyAccessorAttributesForExplicitInterfaceProperty (setterMethodInfo.Attributes));
         propertyEmitter.SetMethod = setMethodEmitter;
       }
+    }
+
+    private MethodAttributes ModifyAccessorAttributesForExplicitInterfaceProperty (MethodAttributes attributes)
+    {
+      return attributes & ~MethodAttributes.Public | MethodAttributes.Private;
     }
 
 
