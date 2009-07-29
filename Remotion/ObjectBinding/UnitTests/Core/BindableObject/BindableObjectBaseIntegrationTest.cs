@@ -13,11 +13,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
@@ -29,14 +31,14 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     private ClassDerivedFromBindableObjectBaseOverridingDisplayName _instanceOverridingDisplayName;
 
     [SetUp]
-    public void SetUp()
+    public void SetUp ()
     {
-      _instance = new ClassDerivedFromBindableObjectBase ();
-      _instanceOverridingDisplayName = new ClassDerivedFromBindableObjectBaseOverridingDisplayName ();
+      _instance = new ClassDerivedFromBindableObjectBase();
+      _instanceOverridingDisplayName = new ClassDerivedFromBindableObjectBaseOverridingDisplayName();
     }
 
     [Test]
-    public void BusinessObjectClass()
+    public void BusinessObjectClass ()
     {
       Assert.That (_instance.BusinessObjectClass, Is.InstanceOfType (typeof (BindableObjectClass)));
       var bindableObjectClass = (BindableObjectClass) _instance.BusinessObjectClass;
@@ -46,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    public void DisplayName_Default()
+    public void DisplayName_Default ()
     {
       Assert.That (_instance.DisplayName, Is.EqualTo (TypeUtility.GetPartialAssemblyQualifiedName (typeof (ClassDerivedFromBindableObjectBase))));
     }
@@ -70,10 +72,37 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    public void GetProperty()
+    public void GetProperty ()
     {
       _instance.String = "hoo";
       Assert.That (_instance.GetProperty ("String"), Is.EqualTo ("hoo"));
+    }
+
+    [Test]
+    public void GetProperty_ExplicitInterfaceScalar ()
+    {
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+      var value = new SimpleReferenceType();
+      ((IInterfaceWithReferenceType<SimpleReferenceType>) instance).ExplicitInterfaceScalar = value;
+      Assert.That (((IBusinessObject) instance).GetProperty ("ExplicitInterfaceScalar"), Is.SameAs (value));
+    }
+
+    [Test]
+    public void GetProperty_ImplicitInterfaceScalar ()
+    {
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+      var value = new SimpleReferenceType();
+      instance.ImplicitInterfaceScalar = value;
+      Assert.That (((IBusinessObject) instance).GetProperty ("ImplicitInterfaceScalar"), Is.SameAs (value));
+    }
+
+    [Test]
+    public void GetProperty_ImplicitInterfaceReadOnlyScalar_WithReadWriteImplementation ()
+    {
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+      var value = new SimpleReferenceType();
+      instance.ImplicitInterfaceReadOnlyScalar = value;
+      Assert.That (((IBusinessObject) instance).GetProperty ("ImplicitInterfaceReadOnlyScalar"), Is.SameAs (value));
     }
 
     [Test]
@@ -84,23 +113,55 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    public void SetProperty_ExplicitInterfaceScalar ()
+    {
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+      var value = new SimpleReferenceType();
+      ((IBusinessObject) instance).SetProperty ("ExplicitInterfaceScalar", value);
+      Assert.That (((IInterfaceWithReferenceType<SimpleReferenceType>) instance).ExplicitInterfaceScalar, Is.SameAs (value));
+    }
+
+    [Test]
+    public void SetProperty_ImplicitInterfaceScalar ()
+    {
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+      var value = new SimpleReferenceType();
+      ((IBusinessObject) instance).SetProperty ("ImplicitInterfaceScalar", value);
+      Assert.That (instance.ImplicitInterfaceScalar, Is.SameAs (value));
+    }
+
+    [Test]
+    [Ignore ("COMMONS-1439")]
+    public void SetProperty_ImplicitInterfaceReadOnlyScalar_WithReadWriteImplementation ()
+    {
+      var instance = ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>> (ParamList.Empty);
+      var value = new SimpleReferenceType();
+      ((IBusinessObject) instance).SetProperty ("ImplicitInterfaceReadOnlyScalar", value);
+      Assert.That (instance.ImplicitInterfaceReadOnlyScalar, Is.SameAs (value));
+    }
+
+    [Test]
     public void GetProvider ()
     {
       Assert.That (
           BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassDerivedFromBindableObjectBase)),
-          Is.SameAs (BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute> ()));
+          Is.SameAs (BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>()));
       Assert.That (
           BindableObjectProvider.GetProviderForBindableObjectType (typeof (ClassDerivedFromBindableObjectBase)),
-          Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute> ()));
+          Is.Not.SameAs (BusinessObjectProvider.GetProvider<BindableObjectWithIdentityProviderAttribute>()));
     }
 
     [Test]
-    public void ClassDerivedFromBindableObjectBaseOverridingMixinMethod()
+    public void ClassDerivedFromBindableObjectBaseOverridingMixinMethod ()
     {
-      var instance = new ClassDerivedFromBindableObjectBaseOverridingMixinMethod ();
+      var instance = new ClassDerivedFromBindableObjectBaseOverridingMixinMethod();
       Assert.That (instance.BusinessObjectClass, Is.InstanceOfType (typeof (BindableObjectClass)));
-      Assert.That (((BindableObjectClass) instance.BusinessObjectClass).TargetType, Is.SameAs (typeof (ClassDerivedFromBindableObjectBaseOverridingMixinMethod)));
-      Assert.That (((BindableObjectClass) instance.BusinessObjectClass).ConcreteType, Is.SameAs (TypeFactory.GetConcreteType (typeof (ClassDerivedFromBindableObjectBaseOverridingMixinMethod))));
+      Assert.That (
+          ((BindableObjectClass) instance.BusinessObjectClass).TargetType,
+          Is.SameAs (typeof (ClassDerivedFromBindableObjectBaseOverridingMixinMethod)));
+      Assert.That (
+          ((BindableObjectClass) instance.BusinessObjectClass).ConcreteType,
+          Is.SameAs (TypeFactory.GetConcreteType (typeof (ClassDerivedFromBindableObjectBaseOverridingMixinMethod))));
     }
   }
 }

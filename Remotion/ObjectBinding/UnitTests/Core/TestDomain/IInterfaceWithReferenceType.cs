@@ -21,5 +21,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
     T ExplicitInterfaceScalar { get; set; }
     T ExplicitInterfaceReadOnlyScalar { get; }
     T ImplicitInterfaceScalar { get; set; }
+    T ImplicitInterfaceReadOnlyScalar { get; }
   }
 }

@@ -160,6 +160,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
                                               CreateProperty (type, "ReadOnlyNonPublicSetterScalar"),
                                               CreateProperty (type, "Array"),
                                               CreateProperty (type, "ImplicitInterfaceScalar"),
+                                              CreateProperty (type, "ImplicitInterfaceReadOnlyScalar"),
                                               CreateProperty (
                                                   type,
                                                   "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar")

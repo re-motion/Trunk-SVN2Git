@@ -174,6 +174,46 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
     }
 
     [Test]
+    public void GetMetadata_WithReadWriteImplicitInterfaceScalar_FromImplementation ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
+          typeof (IInterfaceWithReferenceType<SimpleReferenceType>), "ImplicitInterfaceScalar");
+      PropertyReflector propertyReflector = PropertyReflector.Create (propertyInfo, _businessObjectProvider);
+
+      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+
+      IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
+
+      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (PropertyBase)));
+      Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (propertyInfo));
+      Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ImplicitInterfaceScalar"));
+      Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleReferenceType)));
+      Assert.That (businessObjectProperty.IsList, Is.False);
+      Assert.That (businessObjectProperty.IsRequired, Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
+    }
+
+    [Test]
+    public void GetMetadata_WithReadOnlyImplicitInterfaceScalar_FromReadWriteImplementation ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>),
+          typeof (IInterfaceWithReferenceType<SimpleReferenceType>), "ImplicitInterfaceReadOnlyScalar");
+      PropertyReflector propertyReflector = PropertyReflector.Create (propertyInfo, _businessObjectProvider);
+
+      Assert.AreSame (typeof (SimpleReferenceType), GetUnderlyingType (propertyReflector));
+
+      IBusinessObjectProperty businessObjectProperty = propertyReflector.GetMetadata ();
+
+      Assert.That (businessObjectProperty, Is.InstanceOfType (typeof (PropertyBase)));
+      Assert.That (((PropertyBase) businessObjectProperty).PropertyInfo, Is.SameAs (propertyInfo));
+      Assert.That (businessObjectProperty.Identifier, Is.EqualTo ("ImplicitInterfaceReadOnlyScalar"));
+      Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleReferenceType)));
+      Assert.That (businessObjectProperty.IsList, Is.False);
+      Assert.That (businessObjectProperty.IsRequired, Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
+    }
+
+    [Test]
     public void GetMetadata_WithReadWriteMixedProperty ()
     {
       IPropertyInformation propertyInfo = GetPropertyInfo (MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithMixedProperty)),

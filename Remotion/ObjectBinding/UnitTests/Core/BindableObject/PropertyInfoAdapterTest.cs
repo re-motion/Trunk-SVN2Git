@@ -14,14 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Globalization;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyInfoAdapterTestDomain;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
-using NUnit.Framework.SyntaxHelpers;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -77,7 +75,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter must be a property declared on an interface.\r\nParameter name: interfacePropertyInfo")]
+    [ExpectedException (typeof (ArgumentException),
+        ExpectedMessage = "Parameter must be a property declared on an interface.\r\nParameter name: interfacePropertyInfo")]
     public void InvalidInterfaceProperty ()
     {
       new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceImplementationProperty);
@@ -106,7 +105,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void Name_ExplicitInterface ()
     {
       Assert.That (_explicitInterfaceAdapter.Name, Is.EqualTo (_explicitInterfaceImplementationProperty.Name));
-      Assert.That (_explicitInterfaceAdapter.Name, 
+      Assert.That (
+          _explicitInterfaceAdapter.Name,
           Is.EqualTo ("Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceScalar"));
     }
 
@@ -117,26 +117,62 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    public void CanBeSetFromOutside ()
+    public void CanBeSetFromOutside_Scalar ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Scalar");
-      PropertyInfoAdapter readWriteAdapter = new PropertyInfoAdapter (propertyInfo);
-      Assert.That (readWriteAdapter.CanBeSetFromOutside, Is.True);
-      PropertyInfo propertyInfo1 = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyScalar");
-      PropertyInfoAdapter readOnlyAdapter = new PropertyInfoAdapter (propertyInfo1);
-      Assert.That (readOnlyAdapter.CanBeSetFromOutside, Is.False);
+      PropertyInfoAdapter adapter = new PropertyInfoAdapter (propertyInfo);
+      Assert.That (adapter.CanBeSetFromOutside, Is.True);
+    }
 
-      PropertyInfo propertyInfo2 = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyNonPublicSetterScalar");
-      PropertyInfoAdapter readOnlyNonPublicSetterAdapter = new PropertyInfoAdapter (propertyInfo2);
-      Assert.That (readOnlyNonPublicSetterAdapter.CanBeSetFromOutside, Is.False);
+    [Test]
+    public void CanBeSetFromOutside_ReadOnlyScalar ()
+    {
+      PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyScalar");
+      PropertyInfoAdapter adapter = new PropertyInfoAdapter (propertyInfo);
+      Assert.That (adapter.CanBeSetFromOutside, Is.False);
+    }
 
-      PropertyInfoAdapter readWriteExplicitAdapter = _explicitInterfaceAdapter;
-      Assert.That (readWriteExplicitAdapter.CanBeSetFromOutside, Is.True);
+    [Test]
+    public void CanBeSetFromOutside_ReadOnlyNonPublicSetterScalar ()
+    {
+      PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyNonPublicSetterScalar");
+      PropertyInfoAdapter adapter = new PropertyInfoAdapter (propertyInfo);
+      Assert.That (adapter.CanBeSetFromOutside, Is.False);
+    }
 
-      PropertyInfo propertyInfo3 = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
-          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar", BindingFlags.NonPublic | BindingFlags.Instance);
-      PropertyInfoAdapter readOnlyExplicitAdapter = new PropertyInfoAdapter (propertyInfo3);
-      Assert.That (readOnlyExplicitAdapter.CanBeSetFromOutside, Is.False);
+    [Test]
+    public void CanBeSetFromOutside_ExplicitInterfaceScalar ()
+    {
+      PropertyInfoAdapter adapter = _explicitInterfaceAdapter;
+      Assert.That (adapter.CanBeSetFromOutside, Is.True);
+    }
+
+    [Test]
+    public void CanBeSetFromOutside_ExplicitInterfaceReadOnlyScalar ()
+    {
+      PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
+          "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar",
+          BindingFlags.NonPublic | BindingFlags.Instance);
+      PropertyInfoAdapter adapter = new PropertyInfoAdapter (propertyInfo);
+      Assert.That (adapter.CanBeSetFromOutside, Is.False);
+    }
+
+    [Test]
+    public void CanBeSetFromOutside_ImplicitInterfaceScalar_FromImplementation ()
+    {
+      PropertyInfoAdapter adapter = _implicitInterfaceAdapter;
+      Assert.That (adapter.CanBeSetFromOutside, Is.True);
+    }
+
+    [Test]
+    public void CanBeSetFromOutside_ImplicitInterfaceReadOnlyScalar_FromReadWriteImplementation ()
+    {
+      var declarationProperty = typeof (IInterfaceWithReferenceType<SimpleReferenceType>).GetProperty ("ImplicitInterfaceReadOnlyScalar");
+      var implementationProperty = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
+          "ImplicitInterfaceScalar",
+          BindingFlags.Public | BindingFlags.Instance);
+      PropertyInfoAdapter adapter = new PropertyInfoAdapter (implementationProperty, declarationProperty);
+      Assert.That (adapter.CanBeSetFromOutside, Is.True);
     }
 
     [Test]
@@ -170,7 +206,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void GetValue_UsesValueProperty ()
     {
       SimpleReferenceType scalar = new SimpleReferenceType();
-      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>> ();
+      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>>();
       instanceMock.Expect (mock => mock.ImplicitInterfaceScalar).Return (scalar);
       instanceMock.Replay();
 
@@ -182,53 +218,53 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void GetValue_ExplicitInterface_UsesValueProperty ()
     {
-      SimpleReferenceType scalar = new SimpleReferenceType ();
-      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>> ();
+      SimpleReferenceType scalar = new SimpleReferenceType();
+      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>>();
       instanceMock.Expect (mock => mock.ExplicitInterfaceScalar).Return (scalar);
-      instanceMock.Replay ();
+      instanceMock.Replay();
 
       object actualScalar = _explicitInterfaceAdapter.GetValue (instanceMock, null);
       Assert.That (actualScalar, Is.SameAs (scalar));
-      instanceMock.VerifyAllExpectations ();
+      instanceMock.VerifyAllExpectations();
     }
 
     [Test]
     public void GetValue_ExplicitInterface_Integration ()
     {
-      IInterfaceWithReferenceType<SimpleReferenceType> instance = new ClassWithReferenceType<SimpleReferenceType> ();
-      instance.ExplicitInterfaceScalar = new SimpleReferenceType ();
+      IInterfaceWithReferenceType<SimpleReferenceType> instance = new ClassWithReferenceType<SimpleReferenceType>();
+      instance.ExplicitInterfaceScalar = new SimpleReferenceType();
       Assert.That (_explicitInterfaceAdapter.GetValue (instance, null), Is.EqualTo (instance.ExplicitInterfaceScalar));
     }
-    
+
     [Test]
     public void SetValue_UsesValueProperty ()
     {
-      SimpleReferenceType scalar = new SimpleReferenceType ();
-      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>> ();
+      SimpleReferenceType scalar = new SimpleReferenceType();
+      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>>();
       instanceMock.Expect (mock => mock.ImplicitInterfaceScalar = scalar);
-      instanceMock.Replay ();
+      instanceMock.Replay();
 
       _implicitInterfaceAdapter.SetValue (instanceMock, scalar, null);
-      instanceMock.VerifyAllExpectations ();
+      instanceMock.VerifyAllExpectations();
     }
 
     [Test]
     public void SetValue_ExplicitInterface_UsesValueProperty ()
     {
-      SimpleReferenceType scalar = new SimpleReferenceType ();
-      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>> ();
+      SimpleReferenceType scalar = new SimpleReferenceType();
+      IInterfaceWithReferenceType<SimpleReferenceType> instanceMock = MockRepository.GenerateMock<IInterfaceWithReferenceType<SimpleReferenceType>>();
       instanceMock.Expect (mock => mock.ExplicitInterfaceScalar = scalar);
-      instanceMock.Replay ();
+      instanceMock.Replay();
 
       _explicitInterfaceAdapter.SetValue (instanceMock, scalar, null);
-      instanceMock.VerifyAllExpectations ();
+      instanceMock.VerifyAllExpectations();
     }
 
     [Test]
     public void SetValue_ExplicitInterface_Integration ()
     {
-      IInterfaceWithReferenceType<SimpleReferenceType> instance = new ClassWithReferenceType<SimpleReferenceType> ();
-      SimpleReferenceType value = new SimpleReferenceType ();
+      IInterfaceWithReferenceType<SimpleReferenceType> instance = new ClassWithReferenceType<SimpleReferenceType>();
+      SimpleReferenceType value = new SimpleReferenceType();
       _explicitInterfaceAdapter.SetValue (instance, value, null);
       Assert.That (instance.ExplicitInterfaceScalar, Is.SameAs (value));
     }
@@ -239,7 +275,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (
           _implicitInterfaceAdapter,
           Is.EqualTo (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
-      Assert.AreNotEqual (new PropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty), _implicitInterfaceAdapter);
+      Assert.AreNotEqual (
+          new PropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty), _implicitInterfaceAdapter);
     }
 
     [Test]
@@ -248,7 +285,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (
           _implicitInterfaceAdapter,
           Is.EqualTo (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty)));
-      Assert.AreNotEqual (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty), _implicitInterfaceAdapter);
+      Assert.AreNotEqual (
+          new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty), _implicitInterfaceAdapter);
     }
 
     [Test]
@@ -257,8 +295,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       Assert.That (
           _implicitInterfaceAdapter.GetHashCode(),
           Is.EqualTo (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode()));
-      Assert.AreNotEqual (new PropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode (), _implicitInterfaceAdapter.GetHashCode ());
-      Assert.AreNotEqual (new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty).GetHashCode (), _implicitInterfaceAdapter.GetHashCode ());
+      Assert.AreNotEqual (
+          new PropertyInfoAdapter (_explicitInterfaceImplementationProperty, _implicitInterfaceDeclarationProperty).GetHashCode(),
+          _implicitInterfaceAdapter.GetHashCode());
+      Assert.AreNotEqual (
+          new PropertyInfoAdapter (_implicitInterfaceImplementationProperty, _explicitInterfaceDeclarationProperty).GetHashCode(),
+          _implicitInterfaceAdapter.GetHashCode());
     }
 
     [Test]
@@ -268,7 +310,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 
       PropertyInfo propertyInfo = typeof (ClassWithOverridingProperty).GetProperty ("BaseProperty");
       PropertyInfoAdapter overrideAdapter = new PropertyInfoAdapter (propertyInfo);
-      Assert.AreNotEqual (overrideAdapter.DeclaringType, overrideAdapter.GetOriginalDeclaringType ());
+      Assert.AreNotEqual (overrideAdapter.DeclaringType, overrideAdapter.GetOriginalDeclaringType());
       Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.EqualTo (overrideAdapter.DeclaringType.BaseType));
       Assert.That (overrideAdapter.GetOriginalDeclaringType(), Is.EqualTo (typeof (ClassWithBaseProperty)));
     }

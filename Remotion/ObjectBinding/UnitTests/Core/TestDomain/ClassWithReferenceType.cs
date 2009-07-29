@@ -43,6 +43,8 @@ namespace Remotion.ObjectBinding.UnitTests.Core.TestDomain
 
     public T ImplicitInterfaceScalar { get; set; }
 
+    public T ImplicitInterfaceReadOnlyScalar { get; set; }
+
     public T ReadOnlyScalar
     {
       get { return _readOnlyScalar; }
