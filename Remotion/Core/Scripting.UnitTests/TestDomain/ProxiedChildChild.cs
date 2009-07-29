@@ -23,6 +23,10 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
     }
 
+ 
+
+
+
 
     //--------------------------------------------------------------------
     // NameProperty
@@ -119,6 +123,8 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
       return "ProxiedChildChild.NotInProxied";
     }
+
+
   }
 
   public interface INotInProxied

@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  public class ProxiedChild : Proxied, IAmbigous1, IAmbigous2, IAmbigous3, IAmbigous4, IProperty
+  public class ProxiedChild : Proxied, IAmbigous1, IAmbigous2, IAmbigous3, IAmbigous4, IProperty, IPropertyAmbigous1, IPropertyAmbigous2
   {
     public ProxiedChild ()
     {
@@ -30,16 +30,39 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     }
 
 
-    string IProperty.MutableNameProperty
+
+    //--------------------------------------------------------------------
+    // PropertyAmbigous
+    //--------------------------------------------------------------------
+
+    string IPropertyAmbigous1.PropertyAmbigous
     {
-      get { return "ProxiedChild::IAmbigous1::MutableNameProperty " + _name; }
-      set { _name = value + "-ProxiedChild::IAmbigous1::MutableNameProperty"; }
+      get { return "ProxiedChildChild::IPropertyAmbigous1::PropertyAmbigous " + _name; }
+      set { _name = value + "-ProxiedChildChild::IPropertyAmbigous1::PropertyAmbigous"; }
     }
+
+    string IPropertyAmbigous2.PropertyAmbigous
+    {
+      get { return "ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous " + _name; }
+      set { _name = value + "-ProxiedChildChild::IPropertyAmbigous1::PropertyAmbigous"; }
+    }
+
+    //public string PropertyAmbigous
+    //{
+    //  get { return "ProxiedChildChild::PropertyAmbigous " + _name; }
+    //  set { _name = value + "-ProxiedChildChild::PropertyAmbigous"; }
+    //}
 
 
     //--------------------------------------------------------------------
     // NameProperty
     //--------------------------------------------------------------------
+
+    string IProperty.MutableNameProperty
+    {
+      get { return "ProxiedChild::IAmbigous1::MutableNameProperty " + _name; }
+      set { _name = value + "-ProxiedChild::IAmbigous1::MutableNameProperty"; }
+    }
 
     public new string NameProperty
     {

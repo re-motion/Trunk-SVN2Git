@@ -15,7 +15,7 @@
 // 
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  public interface IPropertyAmbigous1
+  public interface IPropertyAmbigous2
   {
     string PropertyAmbigous
     {
