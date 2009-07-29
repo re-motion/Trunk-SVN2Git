@@ -16,7 +16,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Castle.DynamicProxy;
+using Microsoft.Scripting;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
@@ -198,84 +198,163 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
+    [ExpectedException (ExceptionType = typeof (MissingMemberException), ExpectedMessage = "'ProxiedChild' object has no attribute 'PropertyAmbigous'")]
+    public void AmbigousExplicitInterfaceProperties_Without_Proxy ()
+    {
+      var proxied = new ProxiedChild ("PC");
+      ExecuteScriptAccessPropertyAmbigous(proxied);
+    }
+
+    private void ExecuteScriptAccessPropertyAmbigous (Object obj)
+    {
+      ExecuteScriptExpression<string> ("p0.PropertyAmbigous", obj);
+    }
+
+    [Test]
+    public void AmbigousExplicitInterfaceProperties_With_Proxy ()
+    {
+      var proxiedType = typeof (ProxiedChildChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (
+          proxiedType, new TypeLevelTypeFilter (new[] { typeof (IPropertyAmbigous2) }), CreateModuleScope ("AmbigousExplicitInterfaceProperties_With_Proxy"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType();
+
+      var proxied = new ProxiedChildChild ("PC");
+
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      // Proxy works, since only IPropertyAmbigous2 is exposed.
+      ExecuteScriptAccessPropertyAmbigous (proxy);
+
+      // Proxied fails, since call to PropertyAmbigous is ambigous.
+      try
+      {
+        ExecuteScriptAccessPropertyAmbigous (proxied);
+      }
+      catch (MissingMemberException e)
+      {
+        Assert.That (e.Message, Is.EqualTo ("'ProxiedChild' object has no attribute 'PropertyAmbigous'"));
+      }
+    }
+
+
+    [Test]
     public void BuildProxyType_AmbigousExplicitInterfaceProperties ()
     {
       var knownBaseTypes = new[] { typeof (ProxiedChild) };
-      var knownInterfaceTypes = new[] { typeof (IProperty) };
+      var knownInterfaceTypes = new[] { typeof (IProperty), typeof (IPropertyAmbigous2) };
+      var knownTypes = knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
+      var typeFilter = new TypeLevelTypeFilter (knownTypes);
+      var proxiedType = typeof (ProxiedChildChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_ExplicitInterfaceProperty"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      Assert.That (proxyType.GetInterface ("IPropertyAmbigous2"), Is.Not.Null);
+      Assert.That (proxyType.GetInterface ("IPropertyAmbigous1"), Is.Null);
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildChild ("PC");
+
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+
+      const string expectedPropertyValue = "ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous PC";
+      Assert.That (((IPropertyAmbigous2) proxied).PropertyAmbigous, Is.EqualTo (expectedPropertyValue));
+
+      // Script call to proxy is not ambigous
+      Assert.That (ExecuteScriptExpression<string> ("p0.PropertyAmbigous", proxy), Is.EqualTo (expectedPropertyValue));
+      
+      //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select(pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+
+      var proxyPropertyInfo = proxyType.GetProperty (
+        "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IPropertyAmbigous2.PropertyAmbigous", _nonPublicInstanceFlags);
+
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue));
+      //AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
+
+      ((IPropertyAmbigous2) proxied).PropertyAmbigous = "aBc";
+      const string expectedPropertyValue2 = "ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous aBc-ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous";
+      Assert.That (((IPropertyAmbigous2) proxied).PropertyAmbigous, Is.EqualTo (expectedPropertyValue2));
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue2));
+
+      proxyPropertyInfo.SetValue (proxy, "XXyyZZ", null);
+      const string expectedPropertyValue3 = "ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous XXyyZZ-ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous";
+      Assert.That (((IPropertyAmbigous2) proxied).PropertyAmbigous, Is.EqualTo (expectedPropertyValue3));
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue3));
+
+      var proxyPropertyInfo2 = proxyType.GetProperty (
+        "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IPropertyAmbigous1.PropertyAmbigous", _nonPublicInstanceFlags);
+      Assert.That (proxyPropertyInfo2, Is.Null);
+    }
+
+    [Test]
+    public void BuildProxyType_AmbigousExplicitInterfaceProperties_With_PublicInterfaceImplementation ()
+    {
+      var knownBaseTypes = new[] { typeof (ProxiedChildChild) };
+      var knownInterfaceTypes = new[] { typeof (IProperty), typeof (IPropertyAmbigous2) };
       var knownTypes = knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
       var typeFilter = new TypeLevelTypeFilter (knownTypes);
       var proxiedType = typeof (ProxiedChildChildChild);
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_ExplicitInterfaceProperty"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType ();
 
+      Assert.That (proxyType.GetInterface ("IPropertyAmbigous2"), Is.Not.Null);
+      Assert.That (proxyType.GetInterface ("IPropertyAmbigous1"), Is.Null);
+
       // Create proxy instance, initializing it with class to be proxied
       var proxied = new ProxiedChildChildChild ("PC");
 
       object proxy = Activator.CreateInstance (proxyType, proxied);
 
-      const string expectedPropertyValue = "ProxiedChild::IAmbigous1::MutableNameProperty PC";
-      Assert.That (((IProperty) proxied).MutableNameProperty, Is.EqualTo (expectedPropertyValue));
+      const string expectedPropertyValue = "ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous PC";
+      Assert.That (((IPropertyAmbigous2) proxied).PropertyAmbigous, Is.EqualTo (expectedPropertyValue));
 
       //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select(pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
+
+      var proxyPropertyInfoPublicProperty = proxyType.GetProperty ("PropertyAmbigous", _publicInstanceFlags);
+      Assert.That (proxyPropertyInfoPublicProperty, Is.Not.Null);
+
+      Assert.That (ExecuteScriptExpression<string> ("p0.PropertyAmbigous", proxy), Is.EqualTo ("ProxiedChildChild::PropertyAmbigous PC"));
+
       var proxyPropertyInfo = proxyType.GetProperty (
-        "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _nonPublicInstanceFlags);
+        "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IPropertyAmbigous2.PropertyAmbigous", _nonPublicInstanceFlags);
 
       Assert.That (proxyPropertyInfo, Is.Not.Null);
       Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue));
       //AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
 
-      ((IProperty) proxied).MutableNameProperty = "aBc";
-      const string expectedPropertyValue2 = "ProxiedChild::IAmbigous1::MutableNameProperty aBc-ProxiedChild::IAmbigous1::MutableNameProperty";
-      Assert.That (((IProperty) proxied).MutableNameProperty, Is.EqualTo (expectedPropertyValue2));
+      ((IPropertyAmbigous2) proxied).PropertyAmbigous = "aBc";
+      const string expectedPropertyValue2 = "ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous aBc-ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous";
+      Assert.That (((IPropertyAmbigous2) proxied).PropertyAmbigous, Is.EqualTo (expectedPropertyValue2));
       Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue2));
 
       proxyPropertyInfo.SetValue (proxy, "XXyyZZ", null);
-      const string expectedPropertyValue3 = "ProxiedChild::IAmbigous1::MutableNameProperty XXyyZZ-ProxiedChild::IAmbigous1::MutableNameProperty";
-      Assert.That (((IProperty) proxied).MutableNameProperty, Is.EqualTo (expectedPropertyValue3));
+      const string expectedPropertyValue3 = "ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous XXyyZZ-ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous";
+      Assert.That (((IPropertyAmbigous2) proxied).PropertyAmbigous, Is.EqualTo (expectedPropertyValue3));
       Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue3));
+
+      var proxyPropertyInfo2 = proxyType.GetProperty (
+        "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IPropertyAmbigous1.PropertyAmbigous", _nonPublicInstanceFlags);
+      Assert.That (proxyPropertyInfo2, Is.Null);
+
     }
 
 
-    //[Test]
-    ////[Explicit]
-    //public void BuildProxyType_AmbigousExplicitInterfaceProperties ()
-    //{
-    //  var knownBaseTypes = new[] { typeof (ProxiedChild) };
-    //  var knownInterfaceTypes = new[] { typeof (IProperty) };
-    //  var knownTypes = knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
-    //  var typeFilter = new TypeLevelTypeFilter (knownTypes);
-    //  var proxiedType = typeof (ProxiedChildChildChild);
-    //  var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_ExplicitInterfaceProperty"));
-    //  var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+    public TResult ExecuteScriptExpression<TResult> (string expressionScriptSourceCode, params object[] scriptParameter)
+    {
+      const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
+      var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
+      var scriptSource = engine.CreateScriptSourceFromString (expressionScriptSourceCode, SourceCodeKind.Expression);
+      var compiledScript = scriptSource.Compile ();
+      var scriptScope = ScriptingHost.GetScriptEngine (scriptLanguageType).CreateScope();
 
-    //  //var knownBaseTypeMethods = knownBaseTypes.SelectMany (t => t.GetMethods ()).Where (m => m.IsSpecialName == false);
-    //  //var proxyMethods = proxyType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (m => m.IsSpecialName == false && m.DeclaringType != typeof (Object));
-    //  //var interfaceMethods = knownInterfaceTypes.SelectMany (t => t.GetMethods (BindingFlags.Instance | BindingFlags.Public));
-
-    //  ////To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (interfaceMethods).nl (3).e (proxyMethods).nl (3);
-
-    //  //Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
-
-
-    //  // Create proxy instance, initializing it with class to be proxied
-    //  var proxied = new ProxiedChildChildChild ("PC");
-
-    //  object proxy = Activator.CreateInstance (proxyType, proxied);
-
-    //  const string expectedPropertyValue = "ProxiedChild::IAmbigous1::MutableNameProperty PC";
-    //  Assert.That (((IProperty) proxied).MutableNameProperty, Is.EqualTo (expectedPropertyValue));
-
-    //  //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
-
-    //  var proxyPropertyInfo = proxyType.GetProperty (
-    //    "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _nonPublicInstanceFlags);
-
-    //  Assert.That (proxyPropertyInfo, Is.Not.Null);
-    //  Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue));
-    //  //AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
-
-    //}
+      for (int i = 0; i < scriptParameter.Length; i++)
+      {
+        scriptScope.SetVariable ("p" + i, scriptParameter[i]);
+      }
+      return compiledScript.Execute<TResult> (scriptScope);
+    }
 
   }
 }

@@ -22,15 +22,7 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     {
     }
 
-    //--------------------------------------------------------------------
-    // PropertyAmbigous
-    //--------------------------------------------------------------------
 
-    public string PropertyAmbigous
-    {
-      get { return "ProxiedChildChild::PropertyAmbigous " + _name; }
-      set { _name = value + "-ProxiedChildChild::PropertyAmbigous"; }
-    }
 
     //--------------------------------------------------------------------
     // NameProperty

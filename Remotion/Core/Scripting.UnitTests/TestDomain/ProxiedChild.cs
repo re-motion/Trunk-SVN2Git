@@ -44,7 +44,7 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     string IPropertyAmbigous2.PropertyAmbigous
     {
       get { return "ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous " + _name; }
-      set { _name = value + "-ProxiedChildChild::IPropertyAmbigous1::PropertyAmbigous"; }
+      set { _name = value + "-ProxiedChildChild::IPropertyAmbigous2::PropertyAmbigous"; }
     }
 
     //public string PropertyAmbigous
