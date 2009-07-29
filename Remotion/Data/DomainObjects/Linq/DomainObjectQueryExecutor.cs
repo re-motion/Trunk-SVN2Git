@@ -136,16 +136,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
       queryModel.ResultOperators.RemoveAt (lastResultOperatorIndex);
 
-      var streamedSequenceInfo = (StreamedSequenceInfo) queryModel.GetOutputDataInfo ();
-      var executeCollectionMethod =
-          typeof (DomainObjectQueryExecutor)
-              .GetMethod ("ExecuteCollection")
-              .GetGenericMethodDefinition ()
-              .MakeGenericMethod (streamedSequenceInfo.ItemExpression.Type);
-
-      var databaseResult = executeCollectionMethod.Invoke (this, new object[] { queryModel, new FetchRequestBase[0] });
-      var inputData = new StreamedSequence (((IEnumerable) databaseResult).AsQueryable(), streamedSequenceInfo);
-      var outputData = (StreamedSequence) groupResultOperator.ExecuteInMemory (inputData);
+      var databaseResult = queryModel.Execute (new FetchRequestBase[0], this);
+      var outputData = (StreamedSequence) groupResultOperator.ExecuteInMemory (databaseResult);
       return outputData.GetTypedSequence<T>();
     }
 
