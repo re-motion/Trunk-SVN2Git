@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       if (List.Selection == RowSelection.Multiple)
       {
-        string selectorControlName = List.ID + c_titleRowSelectorControlIDSuffix;
+        string selectorControlName = List.GetSelectAllControlClientID();
         bool isChecked = (List.SelectorControlCheckedState.Contains (c_titleRowIndex));
         RenderSelectorControl (selectorControlName, c_titleRowIndex.ToString(), isChecked, true);
       }

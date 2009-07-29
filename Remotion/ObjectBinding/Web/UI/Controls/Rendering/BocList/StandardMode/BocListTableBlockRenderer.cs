@@ -31,7 +31,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
     private readonly IServiceLocator _serviceLocator;
     private readonly IBocRowRenderer _rowRenderer;
 
-    public BocListTableBlockRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
+    public BocListTableBlockRenderer (
+        IHttpContext context, HtmlTextWriter writer, IBocList list, CssClassContainer cssClasses, IServiceLocator serviceLocator)
         : base (context, writer, list, cssClasses)
     {
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
@@ -140,31 +141,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableBody);
       Writer.RenderBeginTag (HtmlTextWriterTag.Tbody);
 
-      int firstRow = 0;
-      int totalRowCount = (List.Value != null) ? List.Value.Count : 0;
-      int rowCountWithOffset = totalRowCount;
-
-      if (List.IsPagingEnabled && !List.IsEmptyList)
-      {
-        firstRow = List.CurrentPage * List.PageSize.Value;
-        rowCountWithOffset = firstRow + List.PageSize.Value;
-
-        //  Check row count on last page
-        if (List.Value != null)
-          rowCountWithOffset = Math.Min (rowCountWithOffset, List.Value.Count);
-      }
-
       if (List.IsEmptyList && List.ShowEmptyListMessage)
         RowRenderer.RenderEmptyListDataRow();
       else
       {
-        BocListRow[] rows = List.GetIndexedRows();
+        int firstRow;
+        BocListRow[] rows = List.GetRowsToDisplay (out firstRow);
 
         for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
-             idxAbsoluteRows < rowCountWithOffset;
+             idxRelativeRows < rows.Length;
              idxAbsoluteRows++, idxRelativeRows++)
         {
-          BocListRow row = rows[idxAbsoluteRows];
+          BocListRow row = rows[idxRelativeRows];
           int originalRowIndex = row.Index;
           RowRenderer.RenderDataRow (row.BusinessObject, idxRelativeRows, idxAbsoluteRows, originalRowIndex);
         }
@@ -184,14 +172,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         else if (List.Value != null)
           count = List.Value.Count;
 
-        string script =
-            "BocList_InitializeList ("
-            + "document.getElementById ('" + List.ClientID + "'), '"
-            + List.ClientID + c_dataRowSelectorControlIDSuffix + "', "
-            + count + ","
-            + (int) List.Selection + ");";
+        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, $('#{4}')[0] );";
+        string script = string.Format (
+            scriptTemplate,
+            List.ClientID,
+            List.GetSelectorControlClientId(null),
+            count,
+            (int) List.Selection,
+            List.ListMenu.ClientID);
+
         List.Page.ClientScript.RegisterStartupScriptBlock (
-            List, typeof(BocListTableBlockRenderer), typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
+            List, typeof (BocListTableBlockRenderer), typeof (Controls.BocList).FullName + "_" + List.ClientID + "_InitializeListScript", script);
       }
     }
 

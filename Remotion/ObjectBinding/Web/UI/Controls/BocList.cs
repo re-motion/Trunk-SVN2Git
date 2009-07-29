@@ -54,6 +54,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocList : BusinessObjectBoundEditableWebControl, IBocList
   {
     //  constants
+    private const string c_dataRowIDSuffix = "_Boc_Row_";
     private const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
     private const string c_titleRowSelectorControlIDSuffix = "_Boc_SelectorControl_SelectAll";
     private const string c_availableViewsListIDSuffix = "_Boc_AvailableViewsList";
@@ -2430,9 +2431,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return _indexedRowsSorted;
     }
 
-    BocListRow[] IBocList.GetIndexedRows ()
+    BocListRow[] IBocList.GetRowsToDisplay (out int firstRow)
     {
-      return EnsureGotIndexedRowsSorted();
+      firstRow = 0;
+      int totalRowCount = (Value != null) ? Value.Count : 0;
+      int displayedRowCount = totalRowCount;
+
+      if (IsPagingEnabled && !IsEmptyList)
+      {
+        firstRow = CurrentPage * PageSize.Value;
+        displayedRowCount = PageSize.Value;
+     
+
+        //  Check row count on last page
+        if (Value != null && Value.Count < (firstRow + displayedRowCount))
+          displayedRowCount = Value.Count - firstRow;
+      }
+      var allRows = EnsureGotIndexedRowsSorted();
+
+      BocListRow[] rowsToDisplay = new BocListRow[displayedRowCount];
+      for (int i = 0; i < displayedRowCount; i++)
+        rowsToDisplay[i] = allRows[firstRow + i];
+        
+      return rowsToDisplay;
     }
 
     /// <summary>
@@ -4055,6 +4076,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     void IBocList.OnPreRender ()
     {
       OnPreRender (EventArgs.Empty);
+    }
+
+    string IBocList.GetSelectorControlClientId (int? rowIndex)
+    {
+      return ClientID + c_dataRowSelectorControlIDSuffix + (rowIndex.HasValue ? rowIndex.Value.ToString() : string.Empty);
+    }
+
+    string IBocList.GetSelectAllControlClientID ()
+    {
+      return ClientID + c_titleRowSelectorControlIDSuffix;
     }
   }
 

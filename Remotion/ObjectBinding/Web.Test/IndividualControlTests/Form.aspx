@@ -20,7 +20,7 @@
   <remotion:HtmlHeadContents ID="HtmlHeadContents" runat="server" />
 </asp:Content>
 <asp:Content ContentPlaceHolderID="body" runat="server">
-    <asp:ScriptManager ID="ScriptManager" runat="server" />
+    <asp:ScriptManager ID="ScriptManager" runat="server" EnablePartialRendering="true" />
     <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.ObjectBinding.Sample::Person" />
     <remotion:SingleView ID="SingleView" runat="server">
       <TopControls>

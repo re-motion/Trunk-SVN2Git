@@ -160,14 +160,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         int absoluteRowIndex,
         int originalRowIndex)
     {
-      string selectorControlID = List.ClientID + c_dataRowSelectorControlIDSuffix + rowIndex;
+      string selectorControlID = List.GetSelectorControlClientId(rowIndex);
       bool isChecked = (List.SelectorControlCheckedState.Contains(originalRowIndex));
       bool isOddRow = (rowIndex % 2 == 0); // row index is zero-based here, but one-based in rendering => invert even/odd
 
       string cssClassTableRow = GetCssClassTableRow (isChecked);
       string cssClassTableCell = GetCssClassTableCell (isOddRow);
 
-      AddRowOnClickScript (selectorControlID);
+      AddRowOnClickScript (rowIndex);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
       Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
@@ -210,18 +210,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       }
     }
 
-    private void AddRowOnClickScript (string selectorControlID)
+    private void AddRowOnClickScript (int rowIndex)
     {
       if (List.IsSelectionEnabled && !List.EditModeController.IsRowEditModeActive)
       {
         if (List.AreDataRowsClickSensitive())
         {
-          string script = "BocList_OnRowClick ("
-                          + "document.getElementById ('" + List.ClientID + "'), "
-                          + "this, "
-                          + "document.getElementById ('" + selectorControlID + "'), "
-                          + "document.getElementById ('" + Control.ListMenu.ClientID + "'));";
-          Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
+          string script = string.Format("{0}_OnRowClick_{1}", List.ClientID, rowIndex);
+          // Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
         }
       }
     }

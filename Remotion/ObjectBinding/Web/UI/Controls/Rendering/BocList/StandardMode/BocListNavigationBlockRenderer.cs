@@ -142,7 +142,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
         string argument = Controls.BocList.c_goToCommandPrefix + command;
         string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument);
-        postBackEvent += "; return false;";
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
         Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         Writer.RenderBeginTag (HtmlTextWriterTag.A);

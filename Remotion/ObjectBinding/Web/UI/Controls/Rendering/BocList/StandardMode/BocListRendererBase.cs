@@ -29,11 +29,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
   {
     private readonly CssClassContainer _cssClasses;
     // constants
-    /// <summary>Suffix for controls used for selecting or unselecting single rows.</summary>
-    protected const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
-
-    /// <summary>Suffix for the control used to select all visible rows.</summary>
-    protected const string c_titleRowSelectorControlIDSuffix = "_Boc_SelectorControl_SelectAll";
 
     /// <summary>Name of the JavaScript function to call when a command control has been clicked.</summary>
     protected const string c_onCommandClickScript = "BocList_OnCommandClick();";
@@ -169,7 +164,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         string script = "BocList_OnSelectAllSelectorControlClick ("
                         + "document.getElementById ('" + List.ClientID + "'), "
                         + "this , '"
-                        + List.ClientID + c_dataRowSelectorControlIDSuffix + "', "
+                        + List.GetSelectorControlClientId(null) + "', "
                         + count + ", "
                         + "document.getElementById ('" + List.ListMenu.ClientID + "'));";
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);

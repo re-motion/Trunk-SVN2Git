@@ -195,7 +195,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
 
     private void AssertActiveIcon (XmlNode link, string command)
     {
-      Html.AssertAttribute (link, "onclick", "postBackEventReference; return false;");
+      Html.AssertAttribute (link, "onclick", "postBackEventReference");
       Html.AssertAttribute (link, "href", "#");
 
       var icon = Html.GetAssertedChildElement (link, "img", 0);

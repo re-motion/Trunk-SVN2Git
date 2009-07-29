@@ -395,11 +395,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     BocColumnDefinition[] GetColumns ();
     bool IsColumnVisible (BocColumnDefinition columnDefinition);
     string GetListItemCommandArgument (int columnIndex, int originalRowIndex);
-    BocListRow[] GetIndexedRows ();
+    BocListRow[] GetRowsToDisplay (out int startAbsoluteIndex);
     void OnDataRowRendering (BocListDataRowRenderEventArgs args);
     bool AreDataRowsClickSensitive ();
     void OnPreRender ();
     void OnLoad ();
     void SwitchRowIntoEditMode (int rowIndex);
+    string GetSelectorControlClientId (int? absoluteRowIndex);
+    string GetSelectAllControlClientID ();
   }
 }

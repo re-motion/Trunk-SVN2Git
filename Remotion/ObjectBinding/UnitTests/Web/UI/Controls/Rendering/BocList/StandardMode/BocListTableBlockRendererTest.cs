@@ -133,7 +133,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
                               new BocListRow (sortingProvider, 0, firstObject),
                               new BocListRow (sortingProvider, 1, secondObject)
                           };
-      List.Stub (list => list.GetIndexedRows()).Return (rows);
+      int firstRow;
+      List.Stub (list => list.GetRowsToDisplay(out firstRow)).Return (rows);
     }
   }
 }

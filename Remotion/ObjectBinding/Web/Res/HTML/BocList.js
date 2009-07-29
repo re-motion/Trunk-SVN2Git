@@ -74,7 +74,8 @@ function BocList_InitializeGlobals (trClassName, trClassNameSelected)
 //  selectorControlPrefix: The common part of the selectorControles' ID (everything before the index).
 //  count: The number of data rows in the BocList.
 //  selection: The RowSelection enum value defining the selection mode (disabled/single/multiple)
-function BocList_InitializeList (bocList, selectorControlPrefix, count, selection)
+//  listMenu: The BocList's ListMenu, which has to be notified of the new selection count
+function BocList_InitializeList (bocList, selectorControlPrefix, count, selection, listMenu)
 {
   var selectedRows = new BocList_SelectedRows (selection);
   if (   selectedRows.Selection != _bocList_rowSelectionUndefined
@@ -86,7 +87,8 @@ function BocList_InitializeList (bocList, selectorControlPrefix, count, selectio
       var selectorControl = document.getElementById (selectorControlID);
       if (selectorControl == null)
         continue;
-      var row =  selectorControl.parentNode.parentNode;
+      var row = selectorControl.parentNode.parentNode;
+      BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu);
       if (selectorControl.checked)      
       {
         var rowBlock = new BocList_RowBlock (row, selectorControl);
@@ -104,14 +106,23 @@ function BocList_InitializeList (bocList, selectorControlPrefix, count, selectio
   _bocList_selectedRows[bocList.id] = selectedRows;
 }
 
+function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu)
+{
+  $(row).click( function(evt)
+  {
+    BocList_OnRowClick(evt, bocList, row, selectorControl, listMenu);
+  });
+}
+
 //  Event handler for a table row in the BocList. 
 //  Selects/unselects a row/all rows depending on its selection state,
 //      whether CTRL has been pressed and if _bocList_isSelectorControlClick is true.
 //  Aborts the execution if _bocList_isCommandClick or _bocList_isSelectorControlClick is true.
+//  evt: The jQuery event object representing the click event
 //  bocList: The BocList to which the row belongs.
 //  currentRow: The row that fired the click event.
 //  selectorControl: The selection selectorControl in this row.
-function BocList_OnRowClick (bocList, currentRow, selectorControl, listMenu)
+function BocList_OnRowClick (evt, bocList, currentRow, selectorControl, listMenu)
 {
   if (_bocList_isCommandClick)
   {
@@ -128,8 +139,8 @@ function BocList_OnRowClick (bocList, currentRow, selectorControl, listMenu)
   var currentRowBlock = new BocList_RowBlock (currentRow, selectorControl);
   var selectedRows = _bocList_selectedRows[bocList.id];
   var isCtrlKeyPress = false;
-  if (window.event)
-    isCtrlKeyPress = window.event.ctrlKey;
+  if (evt)
+    isCtrlKeyPress = evt.ctrlKey;
     
   if (   selectedRows.Selection == _bocList_rowSelectionUndefined
       || selectedRows.Selection == _bocList_rowSelectionDisabled)
