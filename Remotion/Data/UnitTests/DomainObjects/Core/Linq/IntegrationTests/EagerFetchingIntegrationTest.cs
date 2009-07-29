@@ -142,5 +142,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
       CheckObjectRelationRegistered (DomainObjectIDs.Customer1, typeof (Company), "Ceo", DomainObjectIDs.Ceo3);
     }
+
+    [Test]
+    [Ignore ("TODO 1441")]
+    public void EagerFetching_WithTakeResultOperator ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   orderby o.OrderNumber
+                   select o)
+                   .Take (1)
+                   .FetchMany (o => o.OrderItems);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    [Ignore ("TODO 1441")]
+    public void EagerFetching_WithResultOperator_AfterFetch ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   orderby o.OrderNumber
+                   select o)
+                   .FetchMany (o => o.OrderItems)
+                   .Take (1);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem3);
+    }
   }
 }

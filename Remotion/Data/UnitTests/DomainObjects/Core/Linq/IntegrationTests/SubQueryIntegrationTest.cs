@@ -106,12 +106,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void QueryWithSubQueryInMainFrom ()
+    public void QueryWithSubQuery_InMainFrom ()
     {
       var orders = from c in (from ci in QueryFactory.CreateLinqQuery<Computer> () select ci) select c;
 
       CheckQueryResult (orders, DomainObjectIDs.Computer1, DomainObjectIDs.Computer2, DomainObjectIDs.Computer3, DomainObjectIDs.Computer4, 
                         DomainObjectIDs.Computer5 );
+    }
+
+    [Test]
+    [Ignore ("TODO 1442")]
+    public void QueryWithSubQuery_WithResultOperator_InMainFrom ()
+    {
+      var orders = from c in (from ci in QueryFactory.CreateLinqQuery<Computer> () orderby ci.ID select ci).Take (1) select c;
+
+      CheckQueryResult (orders, DomainObjectIDs.Computer5);
     }
 
     [Test]

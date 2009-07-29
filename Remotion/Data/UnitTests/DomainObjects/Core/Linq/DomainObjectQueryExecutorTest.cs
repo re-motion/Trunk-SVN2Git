@@ -16,7 +16,6 @@
 using System;
 using System.Collections;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
@@ -184,8 +183,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var query = from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer;
       QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
 
-      var relatedObjectSelector = ExpressionHelper.CreateLambdaExpression<IGrouping<Computer, Computer>, Computer> (g => g.Key);
-      var fetchRequests = new[] { new FetchOneRequest (relatedObjectSelector) };
+      var relationMember = typeof (IGrouping<Computer, Computer>).GetProperty ("Key");
+      var fetchRequests = new[] { new FetchOneRequest (relationMember) };
 
       _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model, fetchRequests);
     }
@@ -315,7 +314,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var queryable = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
-      var fetchRequest = new FetchManyRequest ((Expression<Func<Order,IEnumerable<OrderItem>>>)  (o => o.OrderItems));
+      var relationMember = typeof (Order).GetProperty ("OrderItems");
+      var fetchRequest = new FetchManyRequest (relationMember);
 
       var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
 
@@ -344,7 +344,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       var queryModel = ExpressionHelper.ParseQuery (query.Expression);
-      var fetchRequest = new FetchManyRequest ((Expression<Func<Order, IEnumerable<OrderItem>>>) (o => o.NotInMappingRelatedObjects));
+      var relationMember = typeof (Order).GetProperty ("NotInMappingRelatedObjects");
+      var fetchRequest = new FetchManyRequest (relationMember);
 
       _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
     }
@@ -356,7 +357,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       var queryModel = ExpressionHelper.ParseQuery (query.Expression);
-      var fetchRequest = new FetchOneRequest ((Expression<Func<Order, LoadMode>>) (o => o.LastLoadMode));
+      var relationMember = typeof (Order).GetField ("LastLoadMode");
+      var fetchRequest = new FetchOneRequest (relationMember);
 
       _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
     }
@@ -366,7 +368,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var queryable = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
       var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
-      var fetchRequest = new FetchManyRequest ((Expression<Func<Customer, IEnumerable<Order>>>) (c => c.Orders));
+      var relationMember = typeof (Customer).GetProperty ("Orders");
+      var fetchRequest = new FetchManyRequest (relationMember);
 
       var query = _customerExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
 
@@ -392,9 +395,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryable = from c in QueryFactory.CreateLinqQuery<Customer> () where c.Name == "Kunde 1" select c;
       var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
 
-      var fetchRequest = new FetchManyRequest ((Expression<Func<Customer, IEnumerable<Order>>>) (c => c.Orders));
-      LambdaExpression relatedObjectSelector = (Expression<Func<Order, IEnumerable<OrderItem>>>)(o => o.OrderItems);
-      fetchRequest.GetOrAddInnerFetchRequest (new FetchManyRequest (relatedObjectSelector));
+      var fetchRequest = new FetchManyRequest (typeof (Customer).GetProperty ("Orders"));
+      fetchRequest.GetOrAddInnerFetchRequest (new FetchManyRequest (typeof (Order).GetProperty("OrderItems")));
 
       var query = _customerExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
 
