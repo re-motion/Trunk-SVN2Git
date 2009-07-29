@@ -29,6 +29,8 @@ namespace Remotion.Scripting.UnitTests
   public class ForwardingProxyBuilderTest
   {
     private ModuleScope _moduleScope;
+    // Added by FS
+    private BindingFlags _nonPublicInstanceFlags;
 
 
     [TestFixtureTearDown]
@@ -41,6 +43,13 @@ namespace Remotion.Scripting.UnitTests
         if (_moduleScope.WeakNamedModule != null)
           SaveAndVerifyModuleScopeAssembly (false);
       }
+    }
+
+    // Added by FS
+    [SetUp]
+    public void SetUp ()
+    {
+      _nonPublicInstanceFlags = BindingFlags.Instance | BindingFlags.NonPublic;
     }
 
     public ModuleScope ModuleScope
@@ -70,7 +79,7 @@ namespace Remotion.Scripting.UnitTests
       var proxied = new Proxied ();
       object proxy = Activator.CreateInstance (proxyType, proxied);
 
-      FieldInfo proxiedFieldInfo = proxy.GetType ().GetField ("_proxied", BindingFlags.NonPublic | BindingFlags.Instance);
+      FieldInfo proxiedFieldInfo = proxy.GetType ().GetField ("_proxied", _nonPublicInstanceFlags);
       Assert.That (proxiedFieldInfo.GetValue (proxy), Is.EqualTo (proxied));
       Assert.That (proxiedFieldInfo.IsInitOnly, Is.True);
       Assert.That (proxiedFieldInfo.IsPrivate, Is.True);
@@ -118,8 +127,12 @@ namespace Remotion.Scripting.UnitTests
     {
       var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingMethod", ModuleScope, typeof (Proxied), new Type[0]);
       var methodInfo = typeof (Proxied).GetMethod ("PrependName");
-      proxyBuilder.AddForwardingMethod (methodInfo);
+      var methodEmitter = proxyBuilder.AddForwardingMethod (methodInfo);
+
       Type proxyType = proxyBuilder.BuildProxyType ();
+
+      // Added by FS
+      AssertMethodInfoEqual (methodEmitter.MethodBuilder, methodInfo);
 
       var proxied = new Proxied ("The name");
       object proxy = Activator.CreateInstance (proxyType, proxied);
@@ -132,88 +145,38 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { "is Smith" }), Is.EqualTo ("The name is Smith"));
     }
 
-
+    // Added by FS
     [Test]
-    public void AddForwardingProperty ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Cannot add a forwarding call to method "
+        + "'Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.StringTimes' because it is not public. If the method is an explicit interface implementation, use "
+            + "AddForwardingMethodFromClassOrInterfaceMethodInfoCopy and supply the interface's MethodInfo.", MatchType = MessageMatch.Contains)]
+    public void AddForwardingMethod_NonPublicMethod ()
     {
-      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingProperty",
-        ModuleScope, typeof (ProxiedChildGeneric<ProxiedChild, double>), new Type[0]);
-      var propertyInfo = typeof (ProxiedChildGeneric<ProxiedChild, double>).GetProperty ("MutableName");
-      proxyBuilder.AddForwardingProperty (propertyInfo);
-
-      // Create proxy instance, initializing it with class to be proxied
-      var proxied = new ProxiedChildGeneric<ProxiedChild, double> ("PCG", new ProxiedChild ("PC"), 123.456);
-      
-      //object proxy = proxyBuilder.CreateInstance (proxied);
-      var proxyType = proxyBuilder.BuildProxyType ();
-      //object proxy = proxyBuilder.CreateInstance (proxied);
-      object proxy = Activator.CreateInstance (proxyType, proxied);
-
-      Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG"));
-      
-      //var proxyPropertyInfo = proxy.GetType ().GetProperty ("MutableName");
-      var proxyPropertyInfo = proxyType.GetProperty ("MutableName");
-      
-      AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
-      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG"));
-
-      proxied.MutableName = "PCG_Changed";
-      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed"));
-
-      proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
-      Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
-      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingMethod_NonPublicMethod", ModuleScope, typeof (ProxiedChild), new Type[0]);
+      var methodInfo = typeof (ProxiedChild).GetMethod (
+          "Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.StringTimes", _nonPublicInstanceFlags);
+      try
+      {
+        proxyBuilder.AddForwardingMethod (methodInfo);
+      }
+      finally
+      {
+        proxyBuilder.BuildProxyType();
+      }
     }
 
-
     [Test]
-    [Ignore]
-    public void AddForwardingExplicitInterfaceProperty ()
-    {
-      var type = typeof (ProxiedChild);
-      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingExplicitInterfaceProperty",
-        ModuleScope, type, new Type[0]);
-      var propertyInfo = type.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", BindingFlags.Instance | BindingFlags.NonPublic);
-      Assert.That (propertyInfo, Is.Not.Null);
-      proxyBuilder.AddForwardingExplicitInterfaceProperty (propertyInfo);
-
-      // Create proxy instance, initializing it with class to be proxied
-      var proxied = new ProxiedChild ("PC");
-
-      var proxyType = proxyBuilder.BuildProxyType();
-      //object proxy = proxyBuilder.CreateInstance (proxied);
-      object proxy = Activator.CreateInstance (proxyType, proxied);
-
-#if(false)
-      Assert.That (((IAmbigous1) proxied).MutableNameProperty, Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty PC"));
-#endif
-
-      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
-
-      // TODO: Check why "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty"
-      //var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-
-      Assert.That (proxyPropertyInfo, Is.Not.Null);
-      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty: PCG"));
-      AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
-
-      //proxied.MutableName = "PCG_Changed";
-      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed"));
-
-      //proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
-      //Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
-      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
-    }
-
-
-    [Test]
-    public void AddForwardingProperty_MethodWithVariableNumberOfParameters ()
+    public void AddForwardingMethod_MethodWithVariableNumberOfParameters ()
     {
       var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingProperty_MethodWithVariableNumberOfParameters", ModuleScope, typeof (Proxied), new Type[0]);
       var methodInfo = typeof (Proxied).GetMethod ("Sum");
-      proxyBuilder.AddForwardingMethod (methodInfo);
+
+      var methodEmitter = proxyBuilder.AddForwardingMethod (methodInfo);
+
       Type proxyType = proxyBuilder.BuildProxyType ();
+
+      // Added by FS
+      AssertMethodInfoEqual (methodEmitter.MethodBuilder, methodInfo);
 
       // Create proxy instance, initializing it with class to be proxied
       var proxied = new Proxied ("ProxiedProxySumTest");
@@ -240,11 +203,14 @@ namespace Remotion.Scripting.UnitTests
       var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingMethod_GenericClass",
         ModuleScope, typeof (ProxiedChildGeneric<ProxiedChild, double>), new Type[0]);
       var methodInfo = typeof (ProxiedChildGeneric<ProxiedChild, double>).GetMethod ("ToStringKebap");
-      proxyBuilder.AddForwardingMethod (methodInfo);
+      var methodEmitter = proxyBuilder.AddForwardingMethod (methodInfo);
 
       // Create proxy instance, initializing it with class to be proxied
       var proxied = new ProxiedChildGeneric<ProxiedChild, double> ("PCG", new ProxiedChild ("PC"), 123.456);
       object proxy = proxyBuilder.CreateInstance (proxied);
+
+      // Added by FS
+      AssertMethodInfoEqual (methodEmitter.MethodBuilder, methodInfo);
 
       var proxyMethodInfo = proxy.GetType ().GetMethod ("ToStringKebap");
       AssertMethodInfoEqual (proxyMethodInfo, methodInfo);
@@ -253,12 +219,91 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
+    public void AddForwardingProperty ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingProperty",
+        ModuleScope, typeof (ProxiedChildGeneric<ProxiedChild, double>), new Type[0]);
+      var propertyInfo = typeof (ProxiedChildGeneric<ProxiedChild, double>).GetProperty ("MutableName");
+      var propertyEmitter = proxyBuilder.AddForwardingProperty (propertyInfo);
+
+      // Added by FS
+      Assert.That (propertyEmitter.Name, Is.EqualTo (propertyInfo.Name));
+      Assert.That (propertyEmitter.PropertyType, Is.SameAs (propertyInfo.PropertyType));
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildGeneric<ProxiedChild, double> ("PCG", new ProxiedChild ("PC"), 123.456);
+      
+      //object proxy = proxyBuilder.CreateInstance (proxied);
+      var proxyType = proxyBuilder.BuildProxyType ();
+      //object proxy = proxyBuilder.CreateInstance (proxied);
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG"));
+      
+      //var proxyPropertyInfo = proxy.GetType ().GetProperty ("MutableName");
+      var proxyPropertyInfo = proxyType.GetProperty ("MutableName");
+      
+      AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG"));
+
+      proxied.MutableName = "PCG_Changed";
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed"));
+
+      proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
+      Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+    }
+
+    [Test]
+    [Ignore ("TODO MGi: Fix by using interface MemberInfos for forwarding, not implementation MemberInfos.")]
+    public void AddForwardingExplicitInterfaceProperty ()
+    {
+      var type = typeof (ProxiedChild);
+      var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingExplicitInterfaceProperty",
+        ModuleScope, type, new Type[0]);
+      var propertyInfo = type.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", _nonPublicInstanceFlags);
+      Assert.That (propertyInfo, Is.Not.Null);
+      proxyBuilder.AddForwardingExplicitInterfaceProperty (propertyInfo);
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChild ("PC");
+
+      var proxyType = proxyBuilder.BuildProxyType();
+      //object proxy = proxyBuilder.CreateInstance (proxied);
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      // Assert.That (((IAmbigous1) proxied).MutableNameProperty, Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty PC"));
+
+      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+
+      // TODO: Check why "Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty"
+      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", _nonPublicInstanceFlags);
+
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty: PCG"));
+      AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
+
+      //proxied.MutableName = "PCG_Changed";
+      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed"));
+
+      //proxyPropertyInfo.SetValue (proxy, "PCG_Changed_Proxy", null);
+      //Assert.That (proxied.MutableName, Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild: PCG_Changed_Proxy"));
+    }
+
+    [Test]
     public void AddForwardingProperty_ReadOnlyProperty ()
     {
       Type proxiedType = typeof (Proxied);
       var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingProperty_ReadOnlyProperty", ModuleScope, proxiedType, new Type[0]);
+      
       var propertyInfo = proxiedType.GetProperty ("ReadonlyName");
-      proxyBuilder.AddForwardingProperty (propertyInfo);
+      var propertyEmitter = proxyBuilder.AddForwardingProperty (propertyInfo);
+
+      // Added by FS
+      Assert.That (propertyEmitter.Name, Is.EqualTo (propertyInfo.Name));
+      Assert.That (propertyEmitter.PropertyType, Is.SameAs (propertyInfo.PropertyType));
+
       Type proxyType = proxyBuilder.BuildProxyType ();
       var proxyPropertyInfo = proxyType.GetProperty ("ReadonlyName");
       Assert.That (proxyPropertyInfo.CanRead, Is.True);
@@ -271,8 +316,14 @@ namespace Remotion.Scripting.UnitTests
     {
       Type proxiedType = typeof (Proxied);
       var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingProperty_WriteOnlyProperty", ModuleScope, proxiedType, new Type[0]);
+      
       var propertyInfo = proxiedType.GetProperty ("WriteonlyName");
-      proxyBuilder.AddForwardingProperty (propertyInfo);
+      var propertyEmitter = proxyBuilder.AddForwardingProperty (propertyInfo);
+      
+      // Added by FS
+      Assert.That (propertyEmitter.Name, Is.EqualTo (propertyInfo.Name));
+      Assert.That (propertyEmitter.PropertyType, Is.SameAs (propertyInfo.PropertyType));
+      
       Type proxyType = proxyBuilder.BuildProxyType ();
       var proxyPropertyInfo = proxyType.GetProperty ("WriteonlyName");
       Assert.That (proxyPropertyInfo.CanRead, Is.False);

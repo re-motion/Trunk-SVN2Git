@@ -94,35 +94,61 @@ namespace Remotion.Scripting
       methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo);
     }
 
-
-    public void AddForwardingMethod (MethodInfo methodInfo)
+    // Return type added by FS
+    // TODO : Consider unifying this with AddForwardingMethodFromClassOrInterfaceMethodInfoCopy by passing the lookup map into the
+    // ForwardingProxyBuilder via the ctor (as discussed, added by FS)
+    public CustomMethodEmitter AddForwardingMethod (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
-      AddForwardingMethod (methodInfo, methodInfo.Name);
+
+      // Added by FS
+      if (!methodInfo.IsPublic)
+      {
+        var message = string.Format (
+            "Cannot add a forwarding call to method '{0}' because it is not public. If the method is an explicit interface implementation, use "
+            + "AddForwardingMethodFromClassOrInterfaceMethodInfoCopy and supply the interface's MethodInfo.",
+            methodInfo.Name);
+        throw new ArgumentException (message, "methodInfo");
+      }
+
+      return AddForwardingMethod (methodInfo, methodInfo.Name);
     }
 
-
-    public void AddForwardingProperty (PropertyInfo propertyInfo)
+    // Return type added by FS
+    // TODO : Consider unifying this with AddForwardingExplicitInterfaceProperty and AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy by 
+    // passing the lookup map into the ForwardingProxyBuilder via the ctor (as discussed, added by FS)
+    public CustomPropertyEmitter AddForwardingProperty (PropertyInfo propertyInfo)
     {
       string propertyName = propertyInfo.Name;
       var propertyEmitter = _classEmitter.CreateProperty (propertyName, PropertyKind.Instance, propertyInfo.PropertyType);
       CreateGetterAndSetter(propertyInfo, propertyEmitter);
+      return propertyEmitter;
     }
 
     private void CreateGetterAndSetter (PropertyInfo propertyInfo, CustomPropertyEmitter propertyEmitter)
     {
       if (propertyInfo.CanRead)
       {
-        var getMethodEmitter = propertyEmitter.CreateGetMethod ();
+        // Added by FS
         var proxiedGetMethodInfo = propertyInfo.GetGetMethod (true);
-        getMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedGetMethodInfo);
+        var getMethodEmitter = AddForwardingMethod (proxiedGetMethodInfo);
+        propertyEmitter.GetMethod = getMethodEmitter;
+
+        //var getMethodEmitter = propertyEmitter.CreateGetMethod ();
+        //var proxiedGetMethodInfo = propertyInfo.GetGetMethod (true);
+        //getMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedGetMethodInfo);
       }
 
       if (propertyInfo.CanWrite)
       {
-        var setMethodEmitter = propertyEmitter.CreateSetMethod ();
+        // Added by FS
         var proxiedSetMethodInfo = propertyInfo.GetSetMethod (true);
-        setMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedSetMethodInfo);
+        var setMethodEmitter = AddForwardingMethod (proxiedSetMethodInfo);
+        propertyEmitter.SetMethod = setMethodEmitter;
+
+        //var setMethodEmitter = propertyEmitter.CreateSetMethod ();
+        //var proxiedSetMethodInfo = propertyInfo.GetSetMethod (true);
+        //setMethodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), proxiedSetMethodInfo);
       }
     }
 
@@ -131,6 +157,7 @@ namespace Remotion.Scripting
     public void AddForwardingExplicitInterfaceProperty (PropertyInfo propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+      
       var propertyEmitter = _classEmitter.CreateInterfacePropertyImplementation (propertyInfo);
       CreateGetterAndSetter (propertyInfo, propertyEmitter);
     }
@@ -248,7 +275,7 @@ namespace Remotion.Scripting
           true);
     }
 
-    private void AddForwardingMethod (MethodInfo methodInfo, string forwardingMethodName)
+    private CustomMethodEmitter AddForwardingMethod (MethodInfo methodInfo, string forwardingMethodName)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNullOrEmpty ("forwardingMethodName", forwardingMethodName);
@@ -257,6 +284,8 @@ namespace Remotion.Scripting
      
       //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo);
       ImplementForwardingMethod (methodInfo, methodEmitter);
+
+      return methodEmitter;
     }
 
   }
