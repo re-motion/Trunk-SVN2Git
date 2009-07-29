@@ -63,7 +63,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    //[Explicit]
+    [Explicit]
     public void BuildProxyType_ExplicitInterfaceProperty ()
     {
       var knownBaseTypes = new[] { typeof (ProxiedChild) };
@@ -94,7 +94,7 @@ namespace Remotion.Scripting.UnitTests
       To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select(pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
       // TODO: Property should be private !
-      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _publicInstanceFlags);
+      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _nonPublicInstanceFlags);
 
       Assert.That (proxyPropertyInfo, Is.Not.Null);
       Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue));

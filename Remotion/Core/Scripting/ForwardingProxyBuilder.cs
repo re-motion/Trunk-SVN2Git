@@ -243,9 +243,48 @@ namespace Remotion.Scripting
     /// </remarks>
     public CustomMethodEmitter AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo)
     {
+      //ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+
+      //var methodAttributes = methodInfo.Attributes;
+
+      //CustomMethodEmitter methodEmitter;
+
+      //if (methodInfo.DeclaringType.IsInterface)
+      //{
+      //  methodEmitter = _classEmitter.CreateMethodOverrideOrInterfaceImplementation (
+      //      methodInfo, true, methodAttributes & MethodAttributes.MemberAccessMask);
+      //}
+      //else
+      //{
+      //  // Note: Masking the attributes with MethodAttributes.MemberAccessMask below, would remove 
+      //  // desired attributes such as Final, Virtual and HideBySig.
+        
+      //  methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
+      //}
+
+      //methodEmitter.CopyParametersAndReturnType (methodInfo);
+
+      //ImplementForwardingMethod (methodInfo, methodEmitter);
+      ////methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo, false); // !!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      //// TODO: Test return type
+      //return methodEmitter;
+      return AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (methodInfo, methodInfo.Attributes);
+    }
+
+
+    /// <summary>
+    /// Adds a forwarding method to the proxy based on the passed <see cref="MethodInfo"/>, using the passed <see cref="MethodAttributes"/>. 
+    /// </summary>
+    /// <remarks>
+    /// Note that this works for interface methods only, if the <see cref="MethodInfo"/> comes from the interface, not the 
+    /// type implementing the interface.
+    /// </remarks>
+    public CustomMethodEmitter AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo, MethodAttributes methodAttributes)
+    {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
-      var methodAttributes = methodInfo.Attributes;
+      //var methodAttributes = methodInfo.Attributes;
 
       CustomMethodEmitter methodEmitter;
 
@@ -258,8 +297,8 @@ namespace Remotion.Scripting
       {
         // Note: Masking the attributes with MethodAttributes.MemberAccessMask below, would remove 
         // desired attributes such as Final, Virtual and HideBySig.
-        
-        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
+
+        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes);
       }
 
       methodEmitter.CopyParametersAndReturnType (methodInfo);
@@ -270,6 +309,8 @@ namespace Remotion.Scripting
       // TODO: Test return type
       return methodEmitter;
     }
+
+
 
     private static HashSet<MethodInfo> s_objectMethods;
 
