@@ -15,23 +15,57 @@
 // 
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
+using Remotion.Reflection;
 using Remotion.Scripting.UnitTests.TestDomain;
+using Remotion.Mixins;
 
 namespace Remotion.Scripting.UnitTests
 {
   [TestFixture]
   public class StableBindingMixinTest
   {
+    [SetUp]
+    public void SetUp ()
+    {
+      ScriptContextTestHelper.ClearScriptContexts ();
+    }
+
+
+    // Create Script Context which filters IAmbigous1
+    // Create class MixinTest which explicitely implements IAmbigous1 & 2
+    // Check that MixinTest is ambigous in script
+    // Create MixinTestChild derived from MixinTest which is mixed w StableBindingMixin
+    // Check that MixinTestChild is not ambigous in script
+    
     [Test]
+    [ExpectedException (ExceptionType = typeof (MissingMemberException), ExpectedMessage = "'MixinTest' object has no attribute 'StringTimes'")]
     public void MixinTest_IsAmbigous ()
     {
-      // Create Script Context which filters IAmbigous1
-      // Create class MixinTest which explicitely implements IAmbigous1 & 2
-      // Check that MixinTest is ambigous in script
-      // Create MixinTestChild derived from MixinTest which is mixed w StableBindingMixin
-      // Check that MixinTestChild is not ambigous in script
+      var mixinTest = new MixinTest();
+      ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTest);
+    }
+
+    [Test]
+    [Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
+    public void MixinTestChild_IsNotAmbigous ()
+    {
+      ScriptContext scriptContext = ScriptContext.Create ("StableBindingMixinTest.MixinTestChild_IsNotAmbigous", 
+        new TypeLevelTypeFilter (typeof(IAmbigous1)));
+      ScriptContext.SwitchAndHoldScriptContext (scriptContext);
+
+      //var mixinTestChild = new MixinTestChild ();
+
+      var mixinTestChild = ObjectFactory.Create<MixinTestChild> (ParamList.Empty);
+      //To.ConsoleLine.e ("mixinTestChild.GetType().GetAllMethods()", mixinTestChild.GetType ().GetAllMethods ().Where (mi => mi.Name == "GetCustomMember"));
+
+      var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.StringTimes('intj',3)", mixinTestChild);
+      Assert.That (result, Is.EqualTo ("IAmbigous1.StringTimesintjintjintj"));
+      
+      ScriptContext.ReleaseScriptContext (scriptContext);
     }  
   }
 
@@ -50,6 +84,25 @@ namespace Remotion.Scripting.UnitTests
     private string StringTimes (string text, int number)
     {
       return text.ToSequence (number).Aggregate ((sa, s) => sa + s);
+    }
+  }
+
+  public class MixinTestChild : MixinTest
+  {
+    //[SpecialName]
+    //public object GetCustomMember (string name)
+    //{
+    //  return ScriptContext.Current.StableBindingProxyProvider.GetMemberProxy (this, name);
+    //}
+  }
+
+  [Extends (typeof (MixinTestChild))]
+  public class StableBindingMixinForMixinTestChild //: StableBindingMixin<MixinTestChild>, IStableBindingMixin
+  {
+    [SpecialName]
+    public object GetCustomMember (string name)
+    {
+      return ScriptContext.Current.StableBindingProxyProvider.GetMemberProxy (this, name);
     }
   }
 }

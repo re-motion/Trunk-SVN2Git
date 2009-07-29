@@ -33,5 +33,17 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (typeFilter.IsTypeValid (typeof (TypeLevelTypeFilter)), Is.False);
       Assert.That (typeFilter.IsTypeValid (typeof (object)), Is.False);
     }
+
+    [Test]
+    public void ParamsCtor ()
+    {
+      var typeFilter = new TypeLevelTypeFilter (typeof (string), this.GetType ());
+
+      Assert.That (typeFilter.IsTypeValid (typeof (string)), Is.True);
+      Assert.That (typeFilter.IsTypeValid (typeof (TypeLevelTypeFilterTest)), Is.True);
+
+      Assert.That (typeFilter.IsTypeValid (typeof (TypeLevelTypeFilter)), Is.False);
+      Assert.That (typeFilter.IsTypeValid (typeof (object)), Is.False);
+    }
   }
 }

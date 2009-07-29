@@ -27,6 +27,11 @@ namespace Remotion.Scripting
   {
     private readonly Dictionary<Type, bool> _validTypes = new Dictionary<Type, bool> ();
 
+    public TypeLevelTypeFilter (params Type[] validTypes)
+      : this ((IEnumerable<Type>) validTypes)
+    {
+    }
+
     public TypeLevelTypeFilter (IEnumerable<Type> validTypes)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("validTypes", validTypes);

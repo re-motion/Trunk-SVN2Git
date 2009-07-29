@@ -81,6 +81,7 @@
     <Compile Include="ScriptContext.cs" />
     <Compile Include="ScriptingHost.cs" />
     <Compile Include="AssemblyLevelTypeFilter.cs" />
+    <Compile Include="StableBindingMixin.cs" />
     <Compile Include="StableBindingProxyBuilder.cs" />
     <Compile Include="StableBindingProxyProvider.cs" />
     <Compile Include="StableMetadataToken.cs" />
