@@ -198,8 +198,8 @@ namespace Remotion.Scripting
           if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)) )
           {
             To.ConsoleLine.s (">>>>>>>>>>>> Implementing property: ").e (property.Name);
-            //_forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (property);
-            _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (property); // !!!!!!! TEST !!!!!!!!!!!!!!!!
+            _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (property);
+            //_forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (property); // !!!!!!! TEST !!!!!!!!!!!!!!!!
           }
         }
         

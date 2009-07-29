@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace Remotion.Scripting.UnitTests.TestDomain
 {
-  public class ProxiedChild : Proxied, IAmbigous1, IAmbigous2, IAmbigous3, IAmbigous4
+  public class ProxiedChild : Proxied, IAmbigous1, IAmbigous2, IAmbigous3, IAmbigous4, IProperty
   {
     public ProxiedChild ()
     {
@@ -30,11 +30,11 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     }
 
 
-    //string IAmbigous1.MutableNameProperty
-    //{
-    //  get { return "ProxiedChild::IAmbigous1::NameProperty " + _name; }
-    //  set { _name = value + "-ProxiedChild::IAmbigous1::MutableNameProperty"; }
-    //}
+    string IProperty.MutableNameProperty
+    {
+      get { return "ProxiedChild::IAmbigous1::NameProperty " + _name; }
+      set { _name = value + "-ProxiedChild::IAmbigous1::MutableNameProperty"; }
+    }
 
 
     //--------------------------------------------------------------------

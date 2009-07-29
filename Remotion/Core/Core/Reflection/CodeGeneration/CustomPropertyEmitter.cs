@@ -153,6 +153,7 @@ namespace Remotion.Reflection.CodeGeneration
       return this;
     }
 
+    // TODO FS: Test for explicit interface implementation
     public CustomMethodEmitter CreateGetMethod ()
     {
       if (GetMethod != null)
@@ -163,12 +164,7 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-        #if(false)
-           // Leads to e.g. get_Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty()
-          CustomMethodEmitter method = _declaringType.CreateMethod ("get_" + Name, flags);
-        #else
-          CustomMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName(Name,"get"), flags);
-        #endif
+        CustomMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName(Name,"get"), flags);
 
         method.SetReturnType (PropertyType);
         method.SetParameterTypes (IndexParameters);
@@ -177,7 +173,7 @@ namespace Remotion.Reflection.CodeGeneration
       }
     }
 
-
+    // TODO FS: Test
     public static string BuildAccessorMethodName(string propertyName, string accessorName)
     {
       string s = propertyName;
@@ -192,6 +188,7 @@ namespace Remotion.Reflection.CodeGeneration
       return sPath + accessorName + "_" + sPureName;
     }
 
+    // TODO FS: Test for explicit interface implementation
     public CustomMethodEmitter CreateSetMethod ()
     {
       if (SetMethod != null)
@@ -202,13 +199,7 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-#if(false)
-          // Leads to e.g. get_Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty()
-          CustomMethodEmitter method = _declaringType.CreateMethod ("set_" + Name, flags);
-#else
         CustomMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName (Name,"set"), flags);
-        #endif
-
 
         Type[] setterParameterTypes = new Type[IndexParameters.Length + 1];
         IndexParameters.CopyTo (setterParameterTypes, 0);

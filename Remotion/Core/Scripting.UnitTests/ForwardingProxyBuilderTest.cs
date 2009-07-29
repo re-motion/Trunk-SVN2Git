@@ -261,7 +261,7 @@ namespace Remotion.Scripting.UnitTests
       var type = typeof (ProxiedChild);
       var proxyBuilder = new ForwardingProxyBuilder ("AddForwardingExplicitInterfaceProperty",
         ModuleScope, type, new Type[0]);
-      var propertyInfo = type.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.IAmbigous1.MutableNameProperty", _nonPublicInstanceFlags);
+      var propertyInfo = type.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _nonPublicInstanceFlags);
       Assert.That (propertyInfo, Is.Not.Null);
       proxyBuilder.AddForwardingExplicitInterfaceProperty (propertyInfo);
 
@@ -272,7 +272,9 @@ namespace Remotion.Scripting.UnitTests
       //object proxy = proxyBuilder.CreateInstance (proxied);
       object proxy = Activator.CreateInstance (proxyType, proxied);
 
-      // Assert.That (((IAmbigous1) proxied).MutableNameProperty, Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty PC"));
+#if(true)
+      Assert.That (((IProperty) proxied).MutableNameProperty, Is.EqualTo ("ProxiedChild::IAmbigous1::NameProperty PC"));
+#endif
 
       To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
