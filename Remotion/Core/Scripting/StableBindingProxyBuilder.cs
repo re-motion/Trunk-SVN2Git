@@ -57,10 +57,11 @@ namespace Remotion.Scripting
       _proxiedType = proxiedType;
       
       _knownInterfaces = FindKnownInterfaces();
+      BuildClassMethodToInterfaceMethodsMap ();
+
       _forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, _knownInterfaces);
       //_forwardingProxyBuilder = new ForwardingProxyBuilder (_proxiedType.Name, _moduleScope, _proxiedType, new Type[0]);
 
-      BuildClassMethodToInterfaceMethodsMap();
       _firstKnownBaseType = GetFirstKnownBaseType();
       if (_firstKnownBaseType != null)
       {
@@ -190,19 +191,21 @@ namespace Remotion.Scripting
 
         To.ConsoleLine.e (classMethodToInterfaceMethodsMap);
 
-        foreach (var property in typeNonPublicProperties)
+        foreach (var nonPublicProperty in typeNonPublicProperties)
         {
           // implementedProperties.Contains(property)
 
-          var typeNonPublicPropertyAccessors = property.GetAccessors (true);
-          if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)) )
+          var typeNonPublicPropertyAccessors = nonPublicProperty.GetAccessors (true);
+          if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)))
           {
-            To.ConsoleLine.s (">>>>>>>>>>>> Implementing property: ").e (property.Name);
-            _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (property);
+            var getter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetGetMethod (true),classMethodToInterfaceMethodsMap).Single (); 
+            var setter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetSetMethod (true),classMethodToInterfaceMethodsMap).Single ();
+
+            To.ConsoleLine.s (">>>>>>>>>>>> Implementing property: ").e (nonPublicProperty.Name);
+            _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (nonPublicProperty, getter, setter);
             //_forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (property); // !!!!!!! TEST !!!!!!!!!!!!!!!!
           }
         }
-        
 
         type = type.BaseType;
       }
@@ -401,6 +404,17 @@ namespace Remotion.Scripting
     {
       HashSet<MethodInfo> interfaceMethodsToClassMethod;
       _classMethodToInterfaceMethodsMap.TryGetValue (classMethod, out interfaceMethodsToClassMethod);
+      return (IEnumerable<MethodInfo>) interfaceMethodsToClassMethod ?? new MethodInfo[0];
+
+      // TODO: Use call below
+      // return GetInterfaceMethodsToClassMethod (classMethod, _classMethodToInterfaceMethodsMap);
+    }
+
+    private IEnumerable<MethodInfo> GetInterfaceMethodsToClassMethod (MethodInfo classMethod, 
+      Dictionary<MethodInfo, HashSet<MethodInfo>> classMethodToInterfaceMethodsMap)
+    {
+      HashSet<MethodInfo> interfaceMethodsToClassMethod;
+      classMethodToInterfaceMethodsMap.TryGetValue (classMethod, out interfaceMethodsToClassMethod);
       return (IEnumerable<MethodInfo>) interfaceMethodsToClassMethod ?? new MethodInfo[0];
     }
   }

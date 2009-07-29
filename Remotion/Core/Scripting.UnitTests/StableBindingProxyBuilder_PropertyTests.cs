@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Castle.DynamicProxy;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
@@ -26,12 +27,15 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class StableBindingProxyBuilder_PropertyTests : StableBindingProxyBuilderTest
   {
+    private const BindingFlags _nonPublicInstanceFlags = BindingFlags.Instance | BindingFlags.NonPublic;
+    private const BindingFlags _allFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+
     [Test]
     [Explicit]
-    public void BuildProxyType_Property ()
+    public void BuildProxyType_ExplicitInterfaceProperty ()
     {
       var knownBaseTypes = new[] { typeof (ProxiedChild) };
-      var knownInterfaceTypes = new[] { typeof (IAmbigous2), typeof (IAmbigous1) };
+      var knownInterfaceTypes = new[] { typeof (IProperty) };
       var knownTypes = knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
       var typeFilter = new TypeLevelTypeFilter (knownTypes);
       var proxiedType = typeof (ProxiedChildChildChild);
@@ -47,11 +51,23 @@ namespace Remotion.Scripting.UnitTests
       //Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
 
 
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildChildChild ("PC");
 
+      object proxy = Activator.CreateInstance (proxyType, proxied);
 
-      // Adding IAmbigous2 interface adds StringTimes(string,int) explicit interface implementation
-      AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous1), proxiedType, proxyType, "StringTimes", typeof (String), typeof (Int32));
-      AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous2), proxiedType, proxyType, "StringTimes", typeof (String), typeof (Int32));
+      const string expectedPropertyValue = "ProxiedChild::IAmbigous1::NameProperty PC";
+      Assert.That (((IProperty) proxied).MutableNameProperty, Is.EqualTo (expectedPropertyValue));
+
+      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select(pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+
+      // TODO: Property should be private !
+      var proxyPropertyInfo = proxyType.GetProperty ("Remotion.Scripting.UnitTests.TestDomain.ProxiedChild.Remotion.Scripting.UnitTests.TestDomain.IProperty.MutableNameProperty", _allFlags);
+
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo (expectedPropertyValue));
+      //AssertPropertyInfoEqual (proxyPropertyInfo, propertyInfo);
+
     }
 
 

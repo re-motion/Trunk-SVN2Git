@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
@@ -112,6 +113,17 @@ namespace Remotion.Scripting
       }
 
       return AddForwardingMethod (methodInfo, methodInfo.Name);
+
+      //if (methodInfo.IsPublic)
+      //{
+      //  return AddForwardingMethod (methodInfo, methodInfo.Name);
+      //}
+      //else
+      //{
+      //  // _classMethodToInterfaceMethodsMap
+      //  var forwardingMethodInfo = GetInterfaceMethodsToClassMethod (methodInfo).Single();
+      //  return AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (forwardingMethodInfo);
+      //}
     }
 
     // Return type added by FS
@@ -154,13 +166,32 @@ namespace Remotion.Scripting
 
 
     // TODO: Test
-    public void AddForwardingExplicitInterfaceProperty (PropertyInfo propertyInfo)
+    public void AddForwardingExplicitInterfaceProperty (PropertyInfo propertyInfo, MethodInfo getterMethodInfo, MethodInfo setterMethodInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       
       var propertyEmitter = _classEmitter.CreateInterfacePropertyImplementation (propertyInfo);
-      CreateGetterAndSetter (propertyInfo, propertyEmitter);
+      CreateGetterAndSetterForExplicitInterfaceProperty (propertyInfo, getterMethodInfo, setterMethodInfo, propertyEmitter);
     }
+
+
+    // TODO: Test
+    private void CreateGetterAndSetterForExplicitInterfaceProperty (PropertyInfo propertyInfo, 
+      MethodInfo getterMethodInfo, MethodInfo setterMethodInfo, CustomPropertyEmitter propertyEmitter)
+    {
+      if (propertyInfo.CanRead)
+      {
+        var getMethodEmitter = AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (getterMethodInfo);
+        propertyEmitter.GetMethod = getMethodEmitter;
+      }
+
+      if (propertyInfo.CanWrite)
+      {
+        var setMethodEmitter = AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (setterMethodInfo);
+        propertyEmitter.SetMethod = setMethodEmitter;
+      }
+    }
+
 
     // TODO: Test
     /// <summary>
@@ -196,14 +227,13 @@ namespace Remotion.Scripting
     /// Note that this works for interface methods only, if the <see cref="MethodInfo"/> comes from the interface, not the 
     /// type implementing the interface.
     /// </remarks>
-    public void AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo)
+    public CustomMethodEmitter AddForwardingMethodFromClassOrInterfaceMethodInfoCopy (MethodInfo methodInfo)
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
 
       var methodAttributes = methodInfo.Attributes;
 
       CustomMethodEmitter methodEmitter;
-
 
       if (methodInfo.DeclaringType.IsInterface)
       {
@@ -216,21 +246,15 @@ namespace Remotion.Scripting
         // desired attributes such as Final, Virtual and HideBySig.
         
         methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes); 
-        //// TODO: This works, but check if we can move forwarding proxy calling non-virtual to better spot.
-        //// Note: Extending methodEmitter.ImplementByDelegating to accept a callVirtual flag (see below)
-        //// leads to PEVerify emitting errors and warnings. 
-        ////public CustomMethodEmitter ImplementByDelegating (TypeReference implementer, MethodInfo methodToCall, bool callVirtual)
-        ////{
-        ////  AddDelegatingCallStatements (methodToCall, implementer, callVirtual);
-        ////  return this;
-        ////}
-        //methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes & ~MethodAttributes.Virtual);  // !!!!!!!!!!!!!!!!!!!!
       }
 
       methodEmitter.CopyParametersAndReturnType (methodInfo);
 
       ImplementForwardingMethod (methodInfo, methodEmitter);
       //methodEmitter.ImplementByDelegating (new TypeReferenceWrapper (_proxied, _proxiedType), methodInfo, false); // !!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+      // TODO: Test return type
+      return methodEmitter;
     }
 
     private static HashSet<MethodInfo> s_objectMethods;
