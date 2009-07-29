@@ -50,7 +50,7 @@ namespace Remotion.Scripting.UnitTests
 
       Assert.That (proxied.NameProperty, Is.EqualTo ("ProxiedChildChildChild::NameProperty PC"));
 
-      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+      //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
       var proxyPropertyInfo = proxyType.GetProperty ("NameProperty", _publicInstanceFlags);
 
@@ -77,7 +77,7 @@ namespace Remotion.Scripting.UnitTests
 
       Assert.That (proxied.NameProperty, Is.EqualTo ("ProxiedChildChildChild::NameProperty PC"));
 
-      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+      //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
       var proxyPropertyInfo = proxyType.GetProperty ("NameProperty", _publicInstanceFlags);
 
@@ -109,7 +109,7 @@ namespace Remotion.Scripting.UnitTests
 
       Assert.That (proxied.NamePropertyVirtual, Is.EqualTo ("ProxiedChildChildChild::NamePropertyVirtual PC"));
 
-      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+      //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
       var proxyPropertyInfo = proxyType.GetProperty ("NamePropertyVirtual", _publicInstanceFlags);
 
@@ -139,7 +139,7 @@ namespace Remotion.Scripting.UnitTests
 
       Assert.That (proxied.MutableNamePropertyVirtual, Is.EqualTo ("ProxiedChildChild::MutableNamePropertyVirtual PC"));
 
-      To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+      //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
       var proxyPropertyInfo = proxyType.GetProperty ("MutableNamePropertyVirtual", _publicInstanceFlags);
 

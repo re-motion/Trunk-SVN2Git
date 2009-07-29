@@ -111,7 +111,7 @@ namespace Remotion.Scripting
         //To.ConsoleLine.e ("firstKnownBaseTypeSpecialMethodsToPropertyMap(multiple entries)", 
         //  firstKnownBaseTypeSpecialMethodsToPropertyMap.Where(x => x.Value.Count > 1).Select(y => new object[] { y.Key, y.Value.Select(z => z.Name).ToArray() }));
 
-        To.ConsoleLine.e ("firstKnownBaseTypeSpecialMethodsToPropertyMap", firstKnownBaseTypeSpecialMethodsToPropertyMap.Keys);
+        //To.ConsoleLine.e ("firstKnownBaseTypeSpecialMethodsToPropertyMap", firstKnownBaseTypeSpecialMethodsToPropertyMap.Keys);
         //To.ConsoleLine.e ("firstKnownBaseTypeSpecialMethodsToPropertyMap", firstKnownBaseTypeSpecialMethodsToPropertyMap).nl (2).e (proxiedTypeSpecialMethodsToPropertyMap);
       }
 
@@ -121,10 +121,10 @@ namespace Remotion.Scripting
 
       foreach (var proxiedTypeMethod in specialMethodsInProxiedType)
       {
-        if (proxiedTypeMethod.Name == "get_NameProperty")
-        {
-          To.ConsoleLine.e ("proxiedTypeMethod", new StableMethodMetadataToken (proxiedTypeMethod)).e ("proxiedTypeMethod.MetadataToken",proxiedTypeMethod.MetadataToken);
-        }
+        //if (proxiedTypeMethod.Name == "get_NameProperty")
+        //{
+        //  To.ConsoleLine.e ("proxiedTypeMethod", new StableMethodMetadataToken (proxiedTypeMethod)).e ("proxiedTypeMethod.MetadataToken",proxiedTypeMethod.MetadataToken);
+        //}
 
         PropertyInfo knownBaseTypeProperty = null;
         if (_firstKnownBaseType != null)
@@ -142,7 +142,7 @@ namespace Remotion.Scripting
           //if (
           //    IsMethodBound (proxiedTypeMethod, methodsInFirstKnownBaseType)) // accessor method is visible in first known base type
           //{
-            To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property: ").e (knownBaseTypeProperty.Name);
+            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property: ").e (knownBaseTypeProperty.Name);
             _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (knownBaseTypeProperty);
           //}
         }
@@ -170,7 +170,7 @@ namespace Remotion.Scripting
       {
         var typeNonPublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
 
-        To.ConsoleLine.nl ().e(type.Name).e (() => typeNonPublicProperties).nl ();
+        //To.ConsoleLine.nl ().e(type.Name).e (() => typeNonPublicProperties).nl ();
 
         //var typeKnownInterfaceMaps = _knownInterfaces.Select(i => type.GetInterfaceMap(i));
         //foreach (var knownInterfaceMap in typeKnownInterfaceMaps)
@@ -202,7 +202,7 @@ namespace Remotion.Scripting
           }
         }
 
-        To.ConsoleLine.e (classMethodToInterfaceMethodsMap);
+        //To.ConsoleLine.e (classMethodToInterfaceMethodsMap);
 
         foreach (var nonPublicProperty in typeNonPublicProperties)
         {
@@ -214,7 +214,7 @@ namespace Remotion.Scripting
             var getter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetGetMethod (true),classMethodToInterfaceMethodsMap).Single (); 
             var setter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetSetMethod (true),classMethodToInterfaceMethodsMap).Single ();
 
-            To.ConsoleLine.s (">>>>>>>>>>>> Implementing property: ").e (nonPublicProperty.Name);
+            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing property: ").e (nonPublicProperty.Name);
             _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (nonPublicProperty, getter, setter);
             //_forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (property); // !!!!!!! TEST !!!!!!!!!!!!!!!!
           }
@@ -346,10 +346,10 @@ namespace Remotion.Scripting
       var boundMethod = Type.DefaultBinder.SelectMethod (BindingFlags.Instance | BindingFlags.Public, 
         candidateMethods, parameterTypes, null);
 
-      if (method.Name == "get_NameProperty")
-      {
-        To.ConsoleLine.e ("method", new StableMethodMetadataToken (method)).e ("boundMethod", new StableMethodMetadataToken ((MethodInfo) boundMethod));
-      }
+      //if (method.Name == "get_NameProperty")
+      //{
+      //  To.ConsoleLine.e ("method", new StableMethodMetadataToken (method)).e ("boundMethod", new StableMethodMetadataToken ((MethodInfo) boundMethod));
+      //}
 
       return Object.ReferenceEquals (method, boundMethod);
     }
