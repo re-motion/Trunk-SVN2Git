@@ -17,37 +17,25 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.Linq.Clauses;
-using Remotion.Data.Linq.Parsing;
 using Remotion.Data.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.EagerFetching
+namespace Remotion.Data.Linq.EagerFetching.Parsing
 {
-  public class ThenFetchOneExpressionNode : FetchExpressionNodeBase
+  public class FetchManyExpressionNode : FetchExpressionNodeBase
   {
-    public static readonly MethodInfo[] SupportedMethods = new[] { typeof (ExtensionMethods).GetMethod ("ThenFetchOne") };
+    public static readonly MethodInfo[] SupportedMethods = new[] { typeof (ExtensionMethods).GetMethod ("FetchMany") };
 
-    public ThenFetchOneExpressionNode (MethodCallExpressionParseInfo parseInfo, LambdaExpression relatedObjectSelector)
+    public FetchManyExpressionNode (MethodCallExpressionParseInfo parseInfo, LambdaExpression relatedObjectSelector)
         : base (parseInfo, ArgumentUtility.CheckNotNull ("relatedObjectSelector", relatedObjectSelector))
     {
     }
 
     protected override ResultOperatorBase CreateResultOperator (ClauseGenerationContext clauseGenerationContext)
     {
-      throw new NotImplementedException ("Call ApplyNodeSpecificSemantics instead.");
-    }
-
-    protected override QueryModel ApplyNodeSpecificSemantics (QueryModel queryModel, ClauseGenerationContext clauseGenerationContext)
-    {
-      var previousFetchRequest = clauseGenerationContext.GetContextInfo (Source) as FetchRequestBase;
-      if (previousFetchRequest == null)
-        throw new ParserException ("ThenFetchOne must directly follow another Fetch request.");
-
-      FetchRequestBase innerFetchRequest = new FetchOneRequest (RelationMember);
-      innerFetchRequest = previousFetchRequest.GetOrAddInnerFetchRequest (innerFetchRequest);
-      clauseGenerationContext.AddContextInfo (this, innerFetchRequest);
-
-      return queryModel;
+      var resultOperator = new FetchManyRequest (RelationMember);
+      clauseGenerationContext.AddContextInfo (this, resultOperator);
+      return resultOperator;
     }
   }
 }
