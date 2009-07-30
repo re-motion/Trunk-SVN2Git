@@ -59,22 +59,19 @@ namespace Remotion.Scripting
       return typeMemberProxy;
     }
 
-    // TODO: Make private
-    public object BuildProxy (object proxied)
+    private object BuildProxy (object proxied)
     {
       Type proxyType = GetProxyType (proxied.GetType());
       return Activator.CreateInstance (proxyType, proxied);
     }
 
-    // TODO: Make private
-    public Type BuildProxyType (Type proxiedType)
+    private Type BuildProxyType (Type proxiedType)
     {
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, _typeFilter, _moduleScope);
       return stableBindingProxyBuilder.BuildProxyType();
     }
 
-    // TODO: Make private
-    public Type GetProxyType (Type proxiedType)
+    private Type GetProxyType (Type proxiedType)
     {
       Type proxyType;
       if (!_proxiedTypeToProxyTypeMap.TryGetValue (proxiedType, out proxyType))

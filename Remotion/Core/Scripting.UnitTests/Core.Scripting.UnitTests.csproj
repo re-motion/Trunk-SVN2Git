@@ -81,6 +81,7 @@
     <Compile Include="StableBindingProxyBuilder_PropertyTests.cs" />
     <Compile Include="StableBindingProxyBuilder_ReflectionTests.cs" />
     <Compile Include="StableBindingProxyProviderTest.cs" />
+    <Compile Include="StableBindingProxyProviderTestHelper.cs" />
     <Compile Include="StableMetadataTokenTest.cs" />
     <Compile Include="StableMetadataTokenToMethodInfoMapTest.cs" />
     <Compile Include="TestDomain\Document.cs" />
