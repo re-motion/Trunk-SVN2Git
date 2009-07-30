@@ -32,6 +32,7 @@ using Remotion.Mixins;
 using Remotion.Reflection;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Queries.Configuration;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -74,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
-    public void QueryExecutor_ExecuteScalar_NoCurrentTransaction ()
+    public void ExecuteScalar_NoCurrentTransaction ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer).Count());
       QueryModel model = ExpressionHelper.ParseQuery (expression);
@@ -83,6 +84,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       {
         _computerExecutor.ExecuteScalar<int> (model, new FetchManyRequest[0]);
       }
+    }
+
+    [Test]
+    public void ExecuteScalar_WithFetches ()
+    {
+      var expression = ExpressionHelper.MakeExpression( () => 
+          (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Count());
+      QueryModel queryModel = ExpressionHelper.ParseQuery (expression);
+
+      var fetchRequest = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
+      queryModel.ResultOperators.Insert (0, fetchRequest);
+
+      var mockQuery = QueryFactory.CreateScalarQuery (
+          "test",
+          DomainObjectIDs.Order1.StorageProviderID,
+          "SELECT COUNT(*) FROM [Order] [o] WHERE [o].[OrderNo] = 1",
+          new QueryParameterCollection ());
+
+      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (_sqlGenerator, _orderClassDefinition);
+      executorMock
+          .Expect (mock => mock.CreateQuery (
+              Arg<string>.Is.Anything,
+              Arg.Is (queryModel),
+              Arg<IEnumerable<FetchRequestBase>>.List.Equal (new[] { fetchRequest }),
+              Arg.Is (QueryType.Scalar)))
+          .Return (mockQuery);
+
+      executorMock.Replay ();
+
+      var result = executorMock.ExecuteScalar<int> (queryModel, new FetchManyRequest[0]);
+      Assert.That (result, Is.EqualTo (1));
+
+      executorMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -149,7 +183,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                                 Computer.GetObject (DomainObjectIDs.Computer4),
                                 Computer.GetObject (DomainObjectIDs.Computer5),
                             };
-      Assert.That (computerList, Is.EquivalentTo (expected));
+      Assert.That (computerList.ToArray(), Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void ExecuteCollection_WithFetches ()
+    {
+      var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
+      QueryModel queryModel = ExpressionHelper.ParseQuery (query.Expression);
+
+      var fetchRequest = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
+      queryModel.ResultOperators.Add (fetchRequest);
+
+      var mockQuery = QueryFactory.CreateCollectionQuery (
+          "test", 
+          DomainObjectIDs.Order1.StorageProviderID, 
+          "SELECT [o].* FROM [Order] [o] WHERE [o].[OrderNo] = 1", 
+          new QueryParameterCollection(), 
+          typeof (DomainObjectCollection));
+
+      var executorMock = new MockRepository ().PartialMock<DomainObjectQueryExecutor> (_sqlGenerator, _orderClassDefinition);
+      executorMock
+          .Expect (mock => mock.CreateQuery (
+              Arg<string>.Is.Anything, 
+              Arg.Is (queryModel), 
+              Arg<IEnumerable<FetchRequestBase>>.List.Equal (new[] {fetchRequest}), 
+              Arg.Is (QueryType.Collection)))
+          .Return (mockQuery);
+
+      executorMock.Replay ();
+
+      var orders = executorMock.ExecuteCollection<Order> (queryModel, new FetchManyRequest[0]).ToArray ();
+      Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1) }));
+
+      executorMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -181,12 +248,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection_WithGroupBy_WithFetchRequests ()
     {
       var query = from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer;
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel queryModel = ExpressionHelper.ParseQuery (query.Expression);
 
       var relationMember = typeof (IGrouping<Computer, Computer>).GetProperty ("Key");
-      var fetchRequests = new[] { new FetchOneRequest (relationMember) };
+      queryModel.ResultOperators.Add (new FetchOneRequest (relationMember));
 
-      _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model, fetchRequests);
+      _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (queryModel, new FetchManyRequest[0]);
     }
 
     [Test]

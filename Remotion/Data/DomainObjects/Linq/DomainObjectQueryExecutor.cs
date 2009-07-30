@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -75,6 +74,14 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
+      // TODO 1044: Remove if
+      if (fetchRequests.Count () == 0)
+      {
+        var visitor = new FetchFilteringQueryModelVisitor ();
+        visitor.VisitQueryModel (queryModel);
+        fetchRequests = visitor.FetchRequests;
+      }
+
       IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests, QueryType.Scalar);
       return (T) ClientTransaction.Current.QueryManager.GetScalar (query);
     }
@@ -122,6 +129,14 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
+
+      // TODO 1044: Remove if
+      if (fetchRequests.Count () == 0)
+      {
+        var visitor = new FetchFilteringQueryModelVisitor ();
+        visitor.VisitQueryModel (queryModel);
+        fetchRequests = visitor.FetchRequests;
+      }
 
       var groupResultOperator = queryModel.ResultOperators.OfType<GroupResultOperator>().FirstOrDefault();
       if (groupResultOperator != null)
