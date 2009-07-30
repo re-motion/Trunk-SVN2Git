@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
-    public void QueryExecutor_ExecuteSingle_NoCurrentTransaction ()
+    public void ExecuteSingle_NoCurrentTransaction ()
     {
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () orderby computer.ID select computer).First ());
       QueryModel model = ExpressionHelper.ParseQuery (expression);
@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
-    public void QueryExecutor_ExecuteCollection_NoCurrentTransaction ()
+    public void ExecuteCollection_NoCurrentTransaction ()
     {
       var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
       QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
@@ -296,9 +296,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection_WithParameters()
     {
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
-      QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
+      QueryModel queryModel = ExpressionHelper.ParseQuery (query.Expression);
 
-      IEnumerable<Order> orders = _orderExecutor.ExecuteCollection<Order> (model, new FetchManyRequest[0]);
+      IEnumerable<Order> orders = _orderExecutor.ExecuteCollection<Order> (queryModel, new FetchManyRequest[0]);
 
       var orderList = new ArrayList ();
       foreach (Order order in orders) 
@@ -310,6 +310,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
                          };
       Assert.That (orderList, Is.EquivalentTo (expected));
+    }
+
+    [Test]
+    public void ExtractFetchRequests ()
+    {
+      var query = from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order;
+      QueryModel queryModel = ExpressionHelper.ParseQuery (query.Expression);
+
+      var fetchRequest1 = new FetchOneRequest (typeof (Order).GetProperty ("Customer"));
+      var fetchRequest2 = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
+
+      queryModel.ResultOperators.Add (fetchRequest1);
+      queryModel.ResultOperators.Add (fetchRequest2);
+
+      var result = _orderExecutor.ExtractFetchRequests (queryModel);
+      Assert.That (result, Is.EqualTo (new FetchRequestBase[] { fetchRequest1, fetchRequest2 }));
+      Assert.That (queryModel.ResultOperators, Is.Empty);
     }
 
     [Test]
@@ -499,7 +516,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void QueryExecutor_CanBeMixed ()
+    public void CanBeMixed ()
     {
       using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin> ().EnterScope ())
       {

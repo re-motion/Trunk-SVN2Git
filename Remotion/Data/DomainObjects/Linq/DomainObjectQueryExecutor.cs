@@ -76,11 +76,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       // TODO 1044: Remove if
       if (fetchRequests.Count () == 0)
-      {
-        var visitor = new FetchFilteringQueryModelVisitor ();
-        visitor.VisitQueryModel (queryModel);
-        fetchRequests = visitor.FetchRequests;
-      }
+        fetchRequests = ExtractFetchRequests(queryModel);
 
       IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests, QueryType.Scalar);
       return (T) ClientTransaction.Current.QueryManager.GetScalar (query);
@@ -132,11 +128,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       // TODO 1044: Remove if
       if (fetchRequests.Count () == 0)
-      {
-        var visitor = new FetchFilteringQueryModelVisitor ();
-        visitor.VisitQueryModel (queryModel);
-        fetchRequests = visitor.FetchRequests;
-      }
+        fetchRequests = ExtractFetchRequests (queryModel);
 
       var groupResultOperator = queryModel.ResultOperators.OfType<GroupResultOperator>().FirstOrDefault();
       if (groupResultOperator != null)
@@ -181,6 +173,18 @@ namespace Remotion.Data.DomainObjects.Linq
       var databaseResult = queryModel.Execute (new FetchRequestBase[0], this);
       var outputData = (StreamedSequence) groupResultOperator.ExecuteInMemory (databaseResult);
       return outputData.GetTypedSequence<T>();
+    }
+
+    /// <summary>
+    /// Extracts the fetch requests from the given <paramref name="queryModel"/>, returning them to the caller.
+    /// </summary>
+    /// <param name="queryModel">The query model to remove the fetch requests from.</param>
+    /// <returns>A list of the <see cref="FetchRequestBase"/> instances removed.</returns>
+    public IList<FetchRequestBase> ExtractFetchRequests (QueryModel queryModel)
+    {
+      var visitor = new FetchFilteringQueryModelVisitor ();
+      visitor.VisitQueryModel (queryModel);
+      return visitor.FetchRequests;
     }
 
     /// <summary>

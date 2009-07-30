@@ -574,6 +574,7 @@
     <Compile Include="Linq\Clauses\ResultOperators\UnionResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\StreamedData\TestStreamedValueInfo.cs" />
     <Compile Include="Linq\DefaultQueryProviderTest.cs" />
+    <Compile Include="Linq\EagerFetching\ExtensionMethodsTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchFilteringQueryModelVisitorTest.cs" />
     <Compile Include="Linq\EagerFetching\ThenFetchManyExpressionNodeTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchExpressionNode_IntegrationTest.cs" />
@@ -603,12 +604,10 @@
     <Compile Include="Linq\Backend\DataObjectModel\SubQueryTest.cs" />
     <Compile Include="Linq\Backend\DataObjectModel\TableTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchManyRequestTest.cs" />
-    <Compile Include="Linq\EagerFetching\FluentFetchRequestTest.cs" />
     <Compile Include="Linq\EagerFetching\TestFetchExpressionNodeBase.cs" />
     <Compile Include="Linq\EagerFetching\TestFetchRequest.cs" />
     <Compile Include="Linq\ExpressionHelper.cs" />
     <Compile Include="Linq\ExpressionTreeNavigator.cs" />
-    <Compile Include="Linq\ExtensionMethodsTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\AverageExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\ContainsExpressionNodeTest.cs" />
     <Compile Include="Linq\Parsing\Structure\IntermediateModel\DefaultIfEmptyExpressionNodeTest.cs" />

@@ -174,8 +174,8 @@ namespace Remotion.Data.DomainObjects.Queries
       }
 
       var expression = queryable.Expression;
-      var fetchRequests = provider.GetFetchRequests (ref expression);
       var queryModel = provider.GenerateQueryModel (expression);
+      var fetchRequests = queryExecutor.ExtractFetchRequests (queryModel);
 
       return queryExecutor.CreateQuery (id, queryModel, fetchRequests, QueryType.Collection);
     }
