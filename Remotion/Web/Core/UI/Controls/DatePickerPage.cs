@@ -90,6 +90,8 @@ public class DatePickerPage : Page
 
     base.OnInit(e);
 
+	  HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (new ControlWrapper(this));
+
     string key = typeof (DatePickerPage).FullName + "_Script";
     if (!HtmlHeadAppender.Current.IsRegistered (key))
     {
