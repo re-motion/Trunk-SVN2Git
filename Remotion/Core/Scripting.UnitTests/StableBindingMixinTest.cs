@@ -87,7 +87,7 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    [Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
+    //[Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
     public void MixinTestChildUsesMix_IsNotAmbigous ()
     {
       //ScriptContext scriptContext = ScriptContext.Create ("StableBindingMixinTest.MixinTestChild_IsNotAmbigous", 
@@ -108,7 +108,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
+    //[Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
     public void MixinTestChildAssemblyMix_IsNotAmbigous ()
     {
       //ScriptContext scriptContext = ScriptContext.Create ("StableBindingMixinTest.MixinTestChild_IsNotAmbigous",
@@ -126,7 +126,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
+    //[Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
     public void MixinTestChild_IsNotAmbigous_Scope ()
     {
       using (MixinConfiguration.BuildNew ().ForClass<MixinTestChild> ().AddMixin<StableBindingMixin> ().EnterScope ())

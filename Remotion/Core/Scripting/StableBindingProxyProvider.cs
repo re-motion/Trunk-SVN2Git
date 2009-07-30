@@ -106,11 +106,21 @@ namespace Remotion.Scripting
     }
 
 
+    //private object BuildProxy (object proxied)
+    //{
+    //  Type proxyType = GetProxyType (proxied.GetType());
+    //  return Activator.CreateInstance (proxyType, proxied);
+    //}
+
     private object BuildProxy (object proxied)
     {
-      Type proxyType = GetProxyType (proxied.GetType());
-      return Activator.CreateInstance (proxyType, proxied);
+      Type proxyType = GetProxyType (proxied.GetType ());
+      var proxy = Activator.CreateInstance (proxyType, proxied);
+      // Set proxied member in proxy to null, so it will not keep the proxied object alive.
+      SetProxiedFieldValue (proxy, null);
+      return proxy;
     }
+
 
     private object GetProxy (object proxied)
     {

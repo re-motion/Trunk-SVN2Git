@@ -77,6 +77,10 @@ namespace Remotion.Scripting.UnitTests
       const string attributeName = "PrependName";
 
       var proxy = provider.BuildProxy (proxied);
+      // Necessary since a newly built proxy has an empty proxied field
+      // TODO: Introduce BuildProxyFromType(proxiedType)
+      SetProxiedFieldValue (proxy, proxied); 
+   
       Assert.That (proxy, Is.Not.Null);
 
       var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.PrependName('simsalbum',2)", proxy);
@@ -183,12 +187,24 @@ namespace Remotion.Scripting.UnitTests
 
 
 
+    private FieldInfo GetProxiedField (object proxy)
+    {
+      Type proxyType = GetActualType (proxy);
+      return proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
+    }
 
     private object GetProxiedFieldValue (object proxy)
     {
-      Type proxyType = GetActualType(proxy);
-      var proxiedField = proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
+      //Type proxyType = GetActualType (proxy);
+      //var proxiedField = proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
+      var proxiedField = GetProxiedField (proxy);
       return proxiedField.GetValue (proxy);
+    }
+
+    private void SetProxiedFieldValue (object proxy, object value)
+    {
+      var proxiedField = GetProxiedField (proxy);
+      proxiedField.SetValue (proxy, value);
     }
 
     private Type GetActualType (object proxy)

@@ -20,7 +20,6 @@ namespace Remotion.Scripting
 {
   public class StableBindingMixin : Mixin<object>, IStableBindingMixin
   {
-    [SpecialName]
     [MemberVisibility (MemberVisibility.Public)]
     public object GetCustomMember (string name)
     {
@@ -30,6 +29,7 @@ namespace Remotion.Scripting
 
   public interface IStableBindingMixin
   {
+    [SpecialName]
     object GetCustomMember (string name);
   }
 }
