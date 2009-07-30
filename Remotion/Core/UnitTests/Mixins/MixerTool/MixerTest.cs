@@ -34,9 +34,6 @@ namespace Remotion.UnitTests.Mixins.MixerTool
 {
   [Serializable]
   [TestFixture]
-#if NET35SP1
-  [Ignore ("TODO: Due to a bug in .net 3.5 SP1 this test will cause the ExecutionEngine to crash.")]
-#endif
   public class MixerTest : MixerToolBaseTest
   {
     [Test]

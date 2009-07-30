@@ -40,9 +40,6 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     }
 
     [Test]
-#if NET35SP1
-    [Ignore ("TODO: Due to a bug in .net 3.5 SP1 this test will cause the ExecutionEngine to crash.")]
-#endif
     public void RunDefault ()
     {
       Assert.IsFalse (File.Exists (UnsignedAssemblyPath));
@@ -101,9 +98,6 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     }
 
     [Test]
-#if NET35SP1
-    [Ignore ("TODO: Due to a bug in .net 3.5 SP1 this test will cause the ExecutionEngine to crash.")]
-#endif
     public void RunWithKeepTypeNames ()
     {
       Parameters.KeepTypeNames = true;
