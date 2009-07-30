@@ -41,7 +41,7 @@ namespace Remotion.Scripting
       get { return s_currentScriptContext; }
     }
 
-    public static object GetMemberProxy (object proxied, string attributeName)
+    public static object GetAttributeProxy (object proxied, string attributeName)
     {
       return ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied, attributeName);
     }

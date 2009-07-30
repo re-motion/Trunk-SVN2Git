@@ -23,7 +23,7 @@ namespace Remotion.Scripting
     [SpecialName]
     public object GetCustomMember (string name)
     {
-      return ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy(This,name);
+      return ScriptContext.GetAttributeProxy (This, name);
     }    
   }
 

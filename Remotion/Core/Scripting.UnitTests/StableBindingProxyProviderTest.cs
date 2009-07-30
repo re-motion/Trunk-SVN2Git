@@ -17,11 +17,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Microsoft.Scripting.Runtime;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
-using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -49,10 +46,6 @@ namespace Remotion.Scripting.UnitTests
 
       var proxyMethod = proxyType.GetAllInstanceMethods(attributeName,typeof(string)).Single();
 
-      //proxyType.GetMethods().Process ((mi => ScriptingHelper.ToConsoleLine (mi)));
-      //To.ConsoleLine.e (proxyMethods);
-      //proxyMethods.Process((mi => ScriptingHelper.ToConsoleLine (mi)));
-
       Assert.That (proxyMethod, Is.Not.Null);
     }
 
@@ -69,19 +62,6 @@ namespace Remotion.Scripting.UnitTests
       var typeMemberProxy = provider.GetAttributeProxy (proxied, attributeName);
 
       var customMemberTester = new GetCustomMemberTester (typeMemberProxy);
-
-//      // Calling anything on customMemberTester which has a string and int argument will always call PrependName through GetCustomMember
-//      const string scriptFunctionSourceCode = @"
-//def TestTypeMemberProxy(customMemberTester) :
-//  return customMemberTester.XYZ('simsalbum',2)
-//";
-
-//      var privateScriptEnvironment = ScriptEnvironment.Create ();
-//      var testTypeMemberProxyScript = new ScriptFunction<Object, string> (
-//        _scriptContext, ScriptLanguageType.Python,
-//        scriptFunctionSourceCode, privateScriptEnvironment, "TestTypeMemberProxy");
-
-//      var result = testTypeMemberProxyScript.Execute (customMemberTester);
 
       var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.XYZ('simsalbum',2)", customMemberTester);
       Assert.That (result, Is.EqualTo ("ProxiedChild ProxiedChild: abrakadava simsalbum, THE NUMBER=2"));

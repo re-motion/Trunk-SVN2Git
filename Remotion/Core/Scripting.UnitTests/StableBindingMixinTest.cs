@@ -181,7 +181,8 @@ namespace Remotion.Scripting.UnitTests
     [SpecialName]
     public object GetCustomMember (string name)
     {
-      return ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (this, name);
+      //return ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (this, name);
+      return ScriptContext.GetAttributeProxy (this, name);
     }
   }
 
