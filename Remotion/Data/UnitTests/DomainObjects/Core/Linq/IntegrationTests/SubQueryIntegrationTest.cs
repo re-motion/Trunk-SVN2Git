@@ -35,20 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void QueryWithSubQueryAndWhereInAdditionalFrom ()
-    {
-      var orders =
-          from o in QueryFactory.CreateLinqQuery<Order>()
-          from o2 in
-              (from oi in QueryFactory.CreateLinqQuery<OrderItem>() where oi.Order == o select oi)
-          select o2;
-
-      CheckQueryResult (orders, DomainObjectIDs.OrderItem5, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem1,
-                        DomainObjectIDs.OrderItem3);
-    }
-
-    [Test]
-    public void QueryWithSubQueryInWhere ()
+    public void QueryWithSubQuery_InWhere ()
     {
       var orders =
           from o in QueryFactory.CreateLinqQuery<Order>()
@@ -94,18 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void QueryWithSubQuery ()
-    {
-      OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      var orders = 
-          from o in QueryFactory.CreateLinqQuery<Order>()
-          where (from y in QueryFactory.CreateLinqQuery<OrderItem>() where y == item select y.Order).Contains(o) 
-          select o;
-      CheckQueryResult (orders, DomainObjectIDs.Order1);
-
-    }
-
-    [Test]
     public void QueryWithSubQuery_InMainFrom ()
     {
       var orders = from c in (from ci in QueryFactory.CreateLinqQuery<Computer> () select ci) select c;
@@ -115,12 +90,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1442")]
     public void QueryWithSubQuery_WithResultOperator_InMainFrom ()
     {
       var orders = from c in (from ci in QueryFactory.CreateLinqQuery<Computer> () orderby ci.ID select ci).Take (1) select c;
-
       CheckQueryResult (orders, DomainObjectIDs.Computer5);
+    }
+
+    [Test]
+    public void QueryWithSubQuery_InAdditionalFrom ()
+    {
+      var orders =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          from oi in
+            (from oi in QueryFactory.CreateLinqQuery<OrderItem> () where oi.Order == o select oi)
+          select oi;
+
+      CheckQueryResult (orders, DomainObjectIDs.OrderItem5, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem1,
+                        DomainObjectIDs.OrderItem3);
+    }
+
+
+    [Test]
+    [Ignore ("TODO 1445: Should generate SELECT DISTINCT [oi].* FROM [OrderView] [o1] CROSS APPLY [OrderView] [o2] CROSS APPLY (SELECT [oi].* FROM [OrderItemView] [oi] WHERE ((([oi].[OrderID] IS NULL AND [o1].[ID] IS NULL) OR [oi].[OrderID] = [o1].[ID]) OR (([oi].[OrderID] IS NULL AND [o2].[ID] IS NULL) OR [oi].[OrderID] = [o2].[ID]))) [oi]")]
+    public void QueryWithSubQuery_InThirdFrom ()
+    {
+      var orders =
+          (from o1 in QueryFactory.CreateLinqQuery<Order> ()
+          from o2 in QueryFactory.CreateLinqQuery<Order> ()
+          from oi in
+            (from oi in QueryFactory.CreateLinqQuery<OrderItem> () where oi.Order == o1 || oi.Order == o2 select oi)
+          select oi).Distinct();
+
+      CheckQueryResult (orders, DomainObjectIDs.OrderItem5, DomainObjectIDs.OrderItem4, DomainObjectIDs.OrderItem2, DomainObjectIDs.OrderItem1,
+                        DomainObjectIDs.OrderItem3);
     }
 
     [Test]
