@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Castle.DynamicProxy;
+using Remotion.Context;
 using Remotion.Utilities;
 
 namespace Remotion.Scripting
@@ -29,8 +30,10 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptContext
   {
-    [ThreadStatic]
-    private static ScriptContext s_currentScriptContext;
+    private const string scriptContextCurrentSafeContextTag = "Remotion.Scripting.ScriptContext.Current";
+    
+    //[ThreadStatic]
+    //private static ScriptContext s_currentScriptContext;
 
     private static readonly Dictionary<string ,ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
@@ -38,7 +41,20 @@ namespace Remotion.Scripting
 
     public static ScriptContext Current
     {
-      get { return s_currentScriptContext; }
+      get { return CurrentScriptContext; }
+    }
+
+    private static ScriptContext CurrentScriptContext
+    {
+      get
+      {
+        return (ScriptContext) SafeContext.Instance.GetData (scriptContextCurrentSafeContextTag);
+      }
+
+      set
+      {
+        SafeContext.Instance.SetData (scriptContextCurrentSafeContextTag, value);
+      }
     }
 
     public static object GetAttributeProxy (object proxied, string attributeName)
@@ -53,18 +69,18 @@ namespace Remotion.Scripting
     public static void SwitchAndHoldScriptContext(ScriptContext newScriptContex)
     {
       ArgumentUtility.CheckNotNull ("newScriptContex", newScriptContex);
-      Assertion.IsNull (s_currentScriptContext, s_currentScriptContext == null ? "" : String.Format ("ReleaseScriptContext: There is already an active script context ('{0}') on this thread.", s_currentScriptContext.Name));
-      s_currentScriptContext = newScriptContex;
+      Assertion.IsNull (CurrentScriptContext, CurrentScriptContext == null ? "" : String.Format ("ReleaseScriptContext: There is already an active script context ('{0}') on this thread.", CurrentScriptContext.Name));
+      CurrentScriptContext = newScriptContex;
     }
 
     public static void ReleaseScriptContext (ScriptContext scriptContexToRelease)
     {
       ArgumentUtility.CheckNotNull ("scriptContexToRelease", scriptContexToRelease);
-      if (!Object.ReferenceEquals (scriptContexToRelease, s_currentScriptContext))
+      if (!Object.ReferenceEquals (scriptContexToRelease, CurrentScriptContext))
       {
-        throw new InvalidOperationException (String.Format("Tried to release script context '{0}' while active script context is '{1}'.", scriptContexToRelease.Name, s_currentScriptContext));
+        throw new InvalidOperationException (String.Format("Tried to release script context '{0}' while active script context is '{1}'.", scriptContexToRelease.Name, CurrentScriptContext));
       }
-      s_currentScriptContext = null;
+      CurrentScriptContext = null;
     }
 
     private static Dictionary<string, ScriptContext> ScriptContexts
@@ -109,7 +125,7 @@ namespace Remotion.Scripting
     {
       lock (s_scriptContextLock)
       {
-        s_currentScriptContext = null;
+        CurrentScriptContext = null;
         ScriptContexts.Clear ();
       }
     }
@@ -117,7 +133,7 @@ namespace Remotion.Scripting
     // Test-only method
     private static void ReleaseAllScriptContexts ()
     {
-      s_currentScriptContext = null;
+      CurrentScriptContext = null;
     }
 
  
@@ -158,5 +174,6 @@ namespace Remotion.Scripting
       get { return _proxyProvider; }
     }
 
+ 
   }
 }
