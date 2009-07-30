@@ -17,14 +17,15 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.Linq.EagerFetching;
+using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.UnitTests.Linq;
 using Remotion.Data.UnitTests.Linq.TestDomain;
 using System.Collections.Generic;
 
-namespace Remotion.Data.UnitTests.Linq.EagerFetching
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
   [TestFixture]
-  public class ExtensionMethodsTest
+  public class EagerFetchingExtensionMethodsTest
   {
     [Test]
     public void FetchOne ()
@@ -38,7 +39,7 @@ namespace Remotion.Data.UnitTests.Linq.EagerFetching
       Assert.That (expression.Arguments[0], Is.SameAs (source.Expression));
       Assert.That (((UnaryExpression) expression.Arguments[1]).Operand, Is.SameAs (relatedObjectSelector));
       Assert.That (expression.Method, 
-          Is.EqualTo (typeof (ExtensionMethods).GetMethod ("FetchOne").MakeGenericMethod (typeof (Student), typeof (bool))));
+                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne").MakeGenericMethod (typeof (Student), typeof (bool))));
     }
 
     [Test]
@@ -53,7 +54,7 @@ namespace Remotion.Data.UnitTests.Linq.EagerFetching
       Assert.That (expression.Arguments[0], Is.SameAs (source.Expression));
       Assert.That (((UnaryExpression) expression.Arguments[1]).Operand, Is.SameAs (relatedObjectSelector));
       Assert.That (expression.Method,
-          Is.EqualTo (typeof (ExtensionMethods).GetMethod ("FetchMany").MakeGenericMethod (typeof (Student), typeof (Student))));
+                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany").MakeGenericMethod (typeof (Student), typeof (Student))));
     }
 
     [Test]
@@ -68,7 +69,7 @@ namespace Remotion.Data.UnitTests.Linq.EagerFetching
       Assert.That (expression.Arguments[0], Is.SameAs (source.Expression));
       Assert.That (((UnaryExpression) expression.Arguments[1]).Operand, Is.SameAs (relatedObjectSelector));
       Assert.That (expression.Method,
-          Is.EqualTo (typeof (ExtensionMethods).GetMethod ("ThenFetchOne").MakeGenericMethod (typeof (Student_Detail), typeof (Student), typeof (bool))));
+                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne").MakeGenericMethod (typeof (Student_Detail), typeof (Student), typeof (bool))));
     }
 
     [Test]
@@ -83,7 +84,7 @@ namespace Remotion.Data.UnitTests.Linq.EagerFetching
       Assert.That (expression.Arguments[0], Is.SameAs (source.Expression));
       Assert.That (((UnaryExpression) expression.Arguments[1]).Operand, Is.SameAs (relatedObjectSelector));
       Assert.That (expression.Method,
-          Is.EqualTo (typeof (ExtensionMethods).GetMethod ("ThenFetchMany").MakeGenericMethod (typeof (Student_Detail), typeof (Student), typeof (Student))));
+                   Is.EqualTo (typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany").MakeGenericMethod (typeof (Student_Detail), typeof (Student), typeof (Student))));
     }
   }
 }

@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.EagerFetching.Parsing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
@@ -59,8 +60,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
       var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
-      Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry.IsRegistered (containsObjectMethod));
+      Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (containsObjectMethod),
+          Is.SameAs (typeof (ContainsObjectExpressionNode)));
     }
+
+    [Test]
+    public void Provider_AutoInitialized_ContainsFetchMethods ()
+    {
+      var queryable = new DomainObjectQueryable<Order> (_sqlGenerator);
+
+      var fetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne");
+      var fetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany");
+      var thenFetchOneMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne");
+      var thenFetchManyMethod = typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany");
+      
+      Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchOneMethod),
+          Is.SameAs (typeof (FetchOneExpressionNode)));
+      Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (fetchManyMethod),
+          Is.SameAs (typeof (FetchManyExpressionNode)));
+      Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchOneMethod),
+          Is.SameAs (typeof (ThenFetchOneExpressionNode)));
+      Assert.That (((DefaultQueryProvider) queryable.Provider).ExpressionTreeParser.NodeTypeRegistry.GetNodeType (thenFetchManyMethod),
+          Is.SameAs (typeof (ThenFetchManyExpressionNode)));
+    }
+
 
     [Test]
     public void Provider_PassedIn ()

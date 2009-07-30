@@ -18,11 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Data.Linq;
+using Remotion.Data.Linq.EagerFetching;
 using Remotion.Utilities;
 
-namespace Remotion.Data.Linq.EagerFetching
+namespace Remotion.Data.DomainObjects.Linq
 {
-  public static class ExtensionMethods
+  public static class EagerFetchingExtensionMethods
   {
     /// <summary>
     /// Specifies that, when the <paramref name="query"/> is executed, the relation indicated by <paramref name="relatedObjectSelector"/> should be eagerly
@@ -32,7 +34,7 @@ namespace Remotion.Data.Linq.EagerFetching
     /// <typeparam name="TRelated">The type of the related objects to be eager-fetched.</typeparam>
     /// <param name="query">The query for which the fetch request should be made.</param>
     /// <param name="relatedObjectSelector">A lambda expression selecting the related objects to be eager-fetched.</param>
-    /// <returns>A <see cref="FluentFetchRequest{TOriginating, TRelated}"/> object on which further fetch requests can be made. The subsequent fetches start from the 
+    /// <returns>A <see cref="FluentFetchRequest{TQueried,TFetch}"/> object on which further fetch requests can be made. The subsequent fetches start from the 
     /// related objects fetched by the original request created by this method.</returns>
     public static FluentFetchRequest<TOriginating, TRelated> FetchMany<TOriginating, TRelated> (
         this IQueryable<TOriginating> query, Expression<Func<TOriginating, IEnumerable<TRelated>>> relatedObjectSelector)

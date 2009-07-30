@@ -574,7 +574,7 @@
     <Compile Include="Linq\Clauses\ResultOperators\UnionResultOperatorTest.cs" />
     <Compile Include="Linq\Clauses\StreamedData\TestStreamedValueInfo.cs" />
     <Compile Include="Linq\DefaultQueryProviderTest.cs" />
-    <Compile Include="Linq\EagerFetching\ExtensionMethodsTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\EagerFetchingExtensionMethodsTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchFilteringQueryModelVisitorTest.cs" />
     <Compile Include="Linq\EagerFetching\Parsing\ThenFetchManyExpressionNodeTest.cs" />
     <Compile Include="Linq\EagerFetching\Parsing\FetchExpressionNode_IntegrationTest.cs" />

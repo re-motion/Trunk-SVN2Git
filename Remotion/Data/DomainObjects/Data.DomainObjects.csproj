@@ -198,6 +198,7 @@
     <Compile Include="Linq\ContainsObjectExpressionNode.cs" />
     <Compile Include="Linq\DatabaseInfo.cs" />
     <Compile Include="Linq\DomainObjectQueryable.cs" />
+    <Compile Include="Linq\EagerFetchingExtensionMethods.cs" />
     <Compile Include="Linq\ExtensionMethods.cs" />
     <Compile Include="Linq\DomainObjectQueryExecutor.cs" />
     <Compile Include="Mapping\ClassDefinitionValidator.cs" />
