@@ -15,20 +15,29 @@
 // 
 using System;
 using System.Runtime.CompilerServices;
+using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.SampleTypes
 {
   public interface IMixinAddingSpecialNameMethod
   {
+    [SpecialName]
     void MethodWithSpecialName ();
+    [SpecialName]
+    void PublicMethodWithSpecialName ();
   }
   
   public class MixinAddingSpecialNameMethod : IMixinAddingSpecialNameMethod
   {
-    [SpecialName]
     public void MethodWithSpecialName ()
     {
       throw new NotImplementedException();
+    }
+
+    [MemberVisibility (MemberVisibility.Public)]
+    public void PublicMethodWithSpecialName ()
+    {
+      throw new NotImplementedException ();
     }
   }
 }

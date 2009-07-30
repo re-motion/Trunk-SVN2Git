@@ -29,10 +29,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
   [TestFixture]
   public class IntroductionTest : CodeGenerationBaseTest
   {
+    private const BindingFlags c_nonPublicFlags = BindingFlags.NonPublic | BindingFlags.Instance;
+
     [Test]
     public void IntroducedInterfacesAreImplementedViaDelegation ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
+      var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
       var bt1AsMixedIface = bt1 as IBT1Mixin1;
       Assert.IsNotNull (bt1AsMixedIface);
       Assert.AreEqual ("BT1Mixin1.IntroducedMethod", bt1AsMixedIface.IntroducedMethod ());
@@ -41,7 +43,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void MixinCanImplementMethodsExplicitly ()
     {
-      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithExplicitImplementation));
+      var bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithExplicitImplementation));
       var explicito = bt1 as IExplicit;
       Assert.IsNotNull (explicito);
       Assert.AreEqual ("XXX", explicito.Explicit ());
@@ -50,7 +52,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void MixinCanIntroduceGenericInterface ()
     {
-      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingGenericInterface<>));
+      var bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingGenericInterface<>));
       var generic = bt1 as IGeneric<BaseType1>;
       Assert.IsNotNull (generic);
       Assert.AreEqual ("Generic", generic.Generic (bt1));
@@ -59,7 +61,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void InheritedIntroducedInterfaces ()
     {
-      BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingInheritedInterface));
+      var bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingInheritedInterface));
       Assert.AreEqual ("MixinIntroducingInheritedInterface.Method1", ((IMixinIII1) bt1).Method1 ());
       Assert.AreEqual ("MixinIntroducingInheritedInterface.Method1", ((IMixinIII2) bt1).Method1 ());
       Assert.AreEqual ("MixinIntroducingInheritedInterface.Method2", ((IMixinIII2) bt1).Method2 ());
@@ -73,8 +75,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinImplementingFullPropertiesWithPartialIntroduction)).EnterScope())
       {
-        BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
-        MethodInfo[] allMethods = bt1.GetType ().GetMethods (BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
+        MethodInfo[] allMethods = bt1.GetType ().GetMethods (c_nonPublicFlags | BindingFlags.DeclaredOnly);
         string[] allMethodNames = Array.ConvertAll (allMethods, mi => mi.Name);
         Assert.That (allMethodNames, List.Contains ("Remotion.UnitTests.Mixins.SampleTypes.InterfaceWithPartialProperties.get_Prop1"));
         Assert.That (allMethodNames, List.Contains ("Remotion.UnitTests.Mixins.SampleTypes.InterfaceWithPartialProperties.set_Prop2"));
@@ -95,7 +97,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void ImplicitlyNonIntroducedInterface ()
     {
-      ClassImplementingSimpleInterface o = CreateMixedObject<ClassImplementingSimpleInterface> (typeof (MixinImplementingSimpleInterface));
+      var o = CreateMixedObject<ClassImplementingSimpleInterface> (typeof (MixinImplementingSimpleInterface));
       Assert.That (o, Is.InstanceOfType (typeof (ISimpleInterface)));
       Assert.AreEqual ("ClassImplementingSimpleInterface.Method", o.Method ());
     }
@@ -130,12 +132,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       Type t = CreateMixedType (typeof (NullTarget), typeof (MixinIntroducingMembersWithDifferentVisibilities));
       MethodInfo methodInfo = t.GetMethod (
-          typeof (IMixinIntroducingMembersWithDifferentVisibilities) + ".MethodWithDefaultVisibility", BindingFlags.NonPublic | BindingFlags.Instance);
+          typeof (IMixinIntroducingMembersWithDifferentVisibilities) + ".MethodWithDefaultVisibility", c_nonPublicFlags);
       PropertyInfo propertyInfo = t.GetProperty (
           typeof (IMixinIntroducingMembersWithDifferentVisibilities) + ".PropertyWithDefaultVisibility",
-          BindingFlags.NonPublic | BindingFlags.Instance);
+          c_nonPublicFlags);
       EventInfo eventInfo = t.GetEvent (
-          typeof (IMixinIntroducingMembersWithDifferentVisibilities) + ".EventWithDefaultVisibility", BindingFlags.NonPublic | BindingFlags.Instance);
+          typeof (IMixinIntroducingMembersWithDifferentVisibilities) + ".EventWithDefaultVisibility", c_nonPublicFlags);
 
       Assert.That (methodInfo, Is.Not.Null);
       Assert.That (propertyInfo, Is.Not.Null);
@@ -146,6 +148,18 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Assert.That (propertyInfo.GetSetMethod (true).IsPrivate);
       Assert.That (eventInfo.GetAddMethod (true).IsPrivate);
       Assert.That (eventInfo.GetRemoveMethod (true).IsPrivate);
+    }
+
+    [Test]
+    public void IntroducedSpecialNameAttribute ()
+    {
+      Type t = CreateMixedType (typeof (NullTarget), typeof (MixinAddingSpecialNameMethod));
+
+      var specialNameMethod = t.GetMethod (typeof (IMixinAddingSpecialNameMethod).FullName + ".MethodWithSpecialName", c_nonPublicFlags);
+      Assert.That (specialNameMethod.IsSpecialName, Is.True);
+
+      var publicSpecialNameMethod = t.GetMethod ("PublicMethodWithSpecialName");
+      Assert.That (publicSpecialNameMethod.IsSpecialName, Is.True);
     }
   }
 }

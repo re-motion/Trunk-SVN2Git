@@ -25,82 +25,18 @@ namespace Remotion.UnitTests.Mixins.Definitions
   [TestFixture]
   public class AttributeDefinitionBuilderTest
   {
-    [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-    public class TagAttribute : Attribute
-    {
-      public int Named;
-
-      public TagAttribute () { }
-
-      public TagAttribute (string s) { }
-    }
-
-    [Tag]
-    [Tag ("Class!", Named = 5)]
-    private class ClassWithLotsaAttributes
-    {
-      [Tag]
-      [Tag ("Class!", Named = 5)]
-      public void Foo ()
-      {
-      }
-    }
-
     [Test]
     public void Attributes ()
     {
-      TargetClassDefinition targetClass = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassWithLotsaAttributes),
-          typeof (ClassWithLotsaAttributes));
-      MixinDefinition mixin = targetClass.Mixins[typeof (ClassWithLotsaAttributes)];
+      TargetClassDefinition targetClass = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassWithManyAttributes),
+          typeof (ClassWithManyAttributes));
+      MixinDefinition mixin = targetClass.Mixins[typeof (ClassWithManyAttributes)];
 
       CheckAttributes (targetClass);
       CheckAttributes (mixin);
 
-      CheckAttributes (targetClass.Methods[typeof (ClassWithLotsaAttributes).GetMethod ("Foo")]);
-      CheckAttributes (mixin.Methods[typeof (ClassWithLotsaAttributes).GetMethod ("Foo")]);
-    }
-
-    private static void CheckAttributes (IAttributableDefinition attributableDefinition)
-    {
-      Assert.IsTrue (attributableDefinition.CustomAttributes.ContainsKey (typeof (TagAttribute)));
-      Assert.AreEqual (2, attributableDefinition.CustomAttributes.GetItemCount (typeof (TagAttribute)));
-
-      List<AttributeDefinition> attributes = new List<AttributeDefinition> (attributableDefinition.CustomAttributes);
-      List<AttributeDefinition> attributes2 = new List<AttributeDefinition> (attributableDefinition.CustomAttributes[typeof (TagAttribute)]);
-      foreach (AttributeDefinition attribute in attributes2)
-      {
-        Assert.IsTrue (attributes.Contains (attribute));
-      }
-
-      AttributeDefinition attribute1 = attributes.Find (
-          delegate (AttributeDefinition a)
-          {
-            Assert.AreEqual (typeof (TagAttribute), a.AttributeType);
-            return a.Data.Constructor.Equals (typeof (TagAttribute).GetConstructor (Type.EmptyTypes));
-          });
-      Assert.IsNotNull (attribute1);
-      Assert.IsFalse (attribute1.IsCopyTemplate);
-      Assert.AreEqual (0, attribute1.Data.ConstructorArguments.Count);
-      Assert.AreEqual (0, attribute1.Data.NamedArguments.Count);
-      Assert.AreSame (attributableDefinition, attribute1.DeclaringDefinition);
-
-      AttributeDefinition attribute2 = attributes.Find (
-          delegate (AttributeDefinition a)
-          {
-            Assert.AreEqual (typeof (TagAttribute), a.AttributeType);
-            return a.Data.Constructor.Equals (typeof (TagAttribute).GetConstructor (new Type[] { typeof (string) }));
-          });
-      Assert.IsNotNull (attribute2);
-      Assert.IsFalse (attribute2.IsCopyTemplate);
-      Assert.AreEqual (1, attribute2.Data.ConstructorArguments.Count);
-      Assert.AreEqual (typeof (string), attribute2.Data.ConstructorArguments[0].ArgumentType);
-      Assert.AreEqual ("Class!", attribute2.Data.ConstructorArguments[0].Value);
-      Assert.AreEqual (1, attribute2.Data.NamedArguments.Count);
-      Assert.AreEqual (typeof (TagAttribute).GetField ("Named"), attribute2.Data.NamedArguments[0].MemberInfo);
-      Assert.AreEqual (typeof (int), attribute2.Data.NamedArguments[0].TypedValue.ArgumentType);
-      Assert.AreEqual (5, attribute2.Data.NamedArguments[0].TypedValue.Value);
-      Assert.AreSame (attributableDefinition, attribute2.DeclaringDefinition);
-      Assert.AreSame (attributableDefinition, attribute2.Parent);
+      CheckAttributes (targetClass.Methods[typeof (ClassWithManyAttributes).GetMethod ("Foo")]);
+      CheckAttributes (mixin.Methods[typeof (ClassWithManyAttributes).GetMethod ("Foo")]);
     }
 
     [Test]
@@ -139,11 +75,6 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsFalse (bt1m1.Methods[typeof (BT1Mixin1).GetMethod("VirtualMethod")].CustomAttributes.ContainsKey (typeof (OverrideTargetAttribute)));
     }
 
-    class InternalStuffAttribute : Attribute { }
-
-    [InternalStuff]
-    public class ClassWithInternalAttribute { }
-
     [Test]
     public void InternalAttributesAreIgnored()
     {
@@ -163,14 +94,13 @@ namespace Remotion.UnitTests.Mixins.Definitions
         Assert.IsFalse (definition.CustomAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)));
         Assert.IsTrue (definition.CustomAttributes.ContainsKey (typeof (AttributeWithParameters)));
 
-        List<AttributeDefinition> attributes =
-            new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters)]);
+        var attributes = new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters)]);
 
         Assert.AreEqual (1, attributes.Count);
         Assert.IsTrue (attributes[0].IsCopyTemplate);
 
         Assert.AreEqual (typeof (AttributeWithParameters), attributes[0].AttributeType);
-        Assert.AreEqual (typeof (AttributeWithParameters).GetConstructor (new Type[] { typeof (int), typeof (string) }),
+        Assert.AreEqual (typeof (AttributeWithParameters).GetConstructor (new[] { typeof (int), typeof (string) }),
             attributes[0].Data.Constructor);
         Assert.AreEqual (definition, attributes[0].DeclaringDefinition);
 
@@ -203,8 +133,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
         Assert.IsTrue (definition.CustomAttributes.ContainsKey (typeof (AttributeWithParameters2)));
         Assert.IsTrue (definition.CustomAttributes.ContainsKey (typeof (AttributeWithParameters3)));
 
-        List<AttributeDefinition> attributes =
-            new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters2)]);
+        var attributes = new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters2)]);
         Assert.AreEqual (2, attributes.Count);
 
         attributes = new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters3)]);
@@ -255,12 +184,11 @@ namespace Remotion.UnitTests.Mixins.Definitions
         Assert.IsFalse (definition.CustomAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)));
         Assert.IsTrue (definition.CustomAttributes.ContainsKey (typeof (AttributeWithParameters)));
 
-        List<AttributeDefinition> attributes =
-            new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters)]);
+        var attributes = new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters)]);
 
         Assert.AreEqual (1, attributes.Count);
         Assert.AreEqual (typeof (AttributeWithParameters), attributes[0].AttributeType);
-        Assert.AreEqual (typeof (AttributeWithParameters).GetConstructor (new Type[] { typeof (int) }), attributes[0].Data.Constructor);
+        Assert.AreEqual (typeof (AttributeWithParameters).GetConstructor (new[] { typeof (int) }), attributes[0].Data.Constructor);
 
         Assert.IsTrue (attributes[0].IsCopyTemplate);
         Assert.AreEqual (1, attributes[0].Data.ConstructorArguments.Count);
@@ -283,26 +211,11 @@ namespace Remotion.UnitTests.Mixins.Definitions
         Assert.IsTrue (definition.CustomAttributes.ContainsKey (typeof (AttributeWithParameters2)));
         Assert.IsTrue (definition.CustomAttributes.ContainsKey (typeof (AttributeWithParameters3)));
 
-        List<AttributeDefinition> attributes =
-            new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters2)]);
+        var attributes = new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters2)]);
         Assert.AreEqual (2, attributes.Count);
 
         attributes = new List<AttributeDefinition> (definition.CustomAttributes[typeof (AttributeWithParameters3)]);
         Assert.AreEqual (1, attributes.Count);
-      }
-    }
-
-    [IgnoreForMixinConfiguration]
-    public class MixinWithAmbiguousSource
-    {
-      private void Source () { }
-      private void Source (int i) { }
-
-      [OverrideTarget]
-      [CopyCustomAttributes (typeof (MixinWithAmbiguousSource), "Source")]
-      protected new string ToString()
-      {
-        return "";
       }
     }
 
@@ -319,17 +232,6 @@ namespace Remotion.UnitTests.Mixins.Definitions
       }
     }
 
-    [IgnoreForMixinConfiguration]
-    public class MixinWithUnknownSource
-    {
-      [OverrideTarget]
-      [CopyCustomAttributes (typeof (MixinWithUnknownSource), "Source")]
-      protected new string ToString ()
-      {
-        return "";
-      }
-    }
-
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The CopyCustomAttributes attribute on "
         + ".*MixinWithUnknownSource.ToString specifies an unknown attribute "
@@ -339,17 +241,6 @@ namespace Remotion.UnitTests.Mixins.Definitions
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithUnknownSource)).EnterScope())
       {
         TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
-      }
-    }
-
-    [IgnoreForMixinConfiguration]
-    public class MixinWithInvalidSourceType
-    {
-      [OverrideTarget]
-      [CopyCustomAttributes (typeof (MixinWithInvalidSourceType))]
-      protected new string ToString ()
-      {
-        return "";
       }
     }
 
@@ -365,10 +256,119 @@ namespace Remotion.UnitTests.Mixins.Definitions
       }
     }
 
+    private static void CheckAttributes (IAttributableDefinition attributableDefinition)
+    {
+      Assert.IsTrue (attributableDefinition.CustomAttributes.ContainsKey (typeof (TagAttribute)));
+      Assert.AreEqual (2, attributableDefinition.CustomAttributes.GetItemCount (typeof (TagAttribute)));
+
+      var attributes = new List<AttributeDefinition> (attributableDefinition.CustomAttributes);
+      var attributes2 = new List<AttributeDefinition> (attributableDefinition.CustomAttributes[typeof (TagAttribute)]);
+      foreach (AttributeDefinition attribute in attributes2)
+      {
+        Assert.IsTrue (attributes.Contains (attribute));
+      }
+
+      AttributeDefinition attribute1 = attributes.Find (
+          delegate (AttributeDefinition a)
+          {
+            Assert.AreEqual (typeof (TagAttribute), a.AttributeType);
+            return a.Data.Constructor.Equals (typeof (TagAttribute).GetConstructor (Type.EmptyTypes));
+          });
+      Assert.IsNotNull (attribute1);
+      Assert.IsFalse (attribute1.IsCopyTemplate);
+      Assert.AreEqual (0, attribute1.Data.ConstructorArguments.Count);
+      Assert.AreEqual (0, attribute1.Data.NamedArguments.Count);
+      Assert.AreSame (attributableDefinition, attribute1.DeclaringDefinition);
+
+      AttributeDefinition attribute2 = attributes.Find (
+          delegate (AttributeDefinition a)
+          {
+            Assert.AreEqual (typeof (TagAttribute), a.AttributeType);
+            return a.Data.Constructor.Equals (typeof (TagAttribute).GetConstructor (new[] { typeof (string) }));
+          });
+      Assert.IsNotNull (attribute2);
+      Assert.IsFalse (attribute2.IsCopyTemplate);
+      Assert.AreEqual (1, attribute2.Data.ConstructorArguments.Count);
+      Assert.AreEqual (typeof (string), attribute2.Data.ConstructorArguments[0].ArgumentType);
+      Assert.AreEqual ("Class!", attribute2.Data.ConstructorArguments[0].Value);
+      Assert.AreEqual (1, attribute2.Data.NamedArguments.Count);
+      Assert.AreEqual (typeof (TagAttribute).GetField ("Named"), attribute2.Data.NamedArguments[0].MemberInfo);
+      Assert.AreEqual (typeof (int), attribute2.Data.NamedArguments[0].TypedValue.ArgumentType);
+      Assert.AreEqual (5, attribute2.Data.NamedArguments[0].TypedValue.Value);
+      Assert.AreSame (attributableDefinition, attribute2.DeclaringDefinition);
+      Assert.AreSame (attributableDefinition, attribute2.Parent);
+    }
+  
+// ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedParameter.Local
+
+    [AttributeUsage (AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+    public class TagAttribute : Attribute
+    {
+      public TagAttribute () { }
+      public TagAttribute (string s) { }
+
+      public int Named;
+    }
+
+    [Tag]
+    [Tag ("Class!", Named = 5)]
+    private class ClassWithManyAttributes
+    {
+      [Tag]
+      [Tag ("Class!", Named = 5)]
+      public void Foo ()
+      {
+      }
+    }
+
+    class InternalStuffAttribute : Attribute { }
+
+    [InternalStuff]
+    public class ClassWithInternalAttribute { }
+
     [IgnoreForMixinConfiguration]
-    [CopyCustomAttributes(typeof (MixinWithSelfSource))]
+    public class MixinWithAmbiguousSource
+    {
+      private void Source () { }
+      private void Source (int i) { }
+
+      [OverrideTarget]
+      [CopyCustomAttributes (typeof (MixinWithAmbiguousSource), "Source")]
+      protected new string ToString ()
+      {
+        return "";
+      }
+    }
+
+    [IgnoreForMixinConfiguration]
+    [CopyCustomAttributes (typeof (MixinWithSelfSource))]
     public class MixinWithSelfSource
     {
     }
+
+    [IgnoreForMixinConfiguration]
+    public class MixinWithInvalidSourceType
+    {
+      [OverrideTarget]
+      [CopyCustomAttributes (typeof (MixinWithInvalidSourceType))]
+      protected new string ToString ()
+      {
+        return "";
+      }
+    }
+
+    [IgnoreForMixinConfiguration]
+    public class MixinWithUnknownSource
+    {
+      [OverrideTarget]
+      [CopyCustomAttributes (typeof (MixinWithUnknownSource), "Source")]
+      protected new string ToString ()
+      {
+        return "";
+      }
+    }
+// ReSharper restore UnusedMember.Local
+// ReSharper restore UnusedParameter.Local
   }
 }
