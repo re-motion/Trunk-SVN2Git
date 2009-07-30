@@ -32,7 +32,8 @@ namespace Remotion.Scripting
   {
     private readonly ITypeFilter _typeFilter;
     private readonly ModuleScope _moduleScope;
-    private readonly Cache<Type, Type> _proxiedTypeToProxyTypeMap = new Cache<Type, Type> ();
+    private readonly Cache<Type, Type> _proxiedTypeToProxyTypeCache = new Cache<Type, Type> ();
+    private readonly Cache<Type, object> _proxiedToProxyCache = new Cache<Type, object> ();
 
     public StableBindingProxyProvider (ITypeFilter typeFilter, ModuleScope moduleScope)
     {
@@ -60,23 +61,33 @@ namespace Remotion.Scripting
       return typeMemberProxy;
     }
 
+
+    private Type BuildProxyType (Type proxiedType)
+    {
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, _typeFilter, _moduleScope);
+      return stableBindingProxyBuilder.BuildProxyType ();
+    }
+
+    private Type GetProxyType (Type proxiedType)
+    {
+      Type proxyType = _proxiedTypeToProxyTypeCache.GetOrCreateValue (proxiedType, BuildProxyType);
+      return proxyType;
+    }
+
+
     private object BuildProxy (object proxied)
     {
       Type proxyType = GetProxyType (proxied.GetType());
       return Activator.CreateInstance (proxyType, proxied);
     }
 
-    private Type BuildProxyType (Type proxiedType)
+    private object GetProxy (object proxied)
     {
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, _typeFilter, _moduleScope);
-      return stableBindingProxyBuilder.BuildProxyType();
+      object proxy = _proxiedToProxyCache.GetOrCreateValue (proxied.GetType(), BuildProxy);
+      return proxy;
     }
 
-    private Type GetProxyType (Type proxiedType)
-    {
-      Type proxyType = _proxiedTypeToProxyTypeMap.GetOrCreateValue (proxiedType, BuildProxyType);
-      return proxyType;
-    }
+ 
 
 
     //private void SetProxied (Object proxy, Object proxied)
@@ -84,5 +95,7 @@ namespace Remotion.Scripting
     //  proxy
     //  //_proxied
     //}
+
+ 
   }
 }

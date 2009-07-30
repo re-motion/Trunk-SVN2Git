@@ -15,10 +15,12 @@
 // 
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Scripting.Runtime;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Development.UnitTesting;
 using Remotion.Diagnostics.ToText;
 using Remotion.Scripting.UnitTests.TestDomain;
 
@@ -111,6 +113,56 @@ def TestTypeMemberProxy(customMemberTester) :
       Assert.That (proxyType, Is.Not.Null);
       Assert.That (provider.GetProxyType (proxied.GetType ()), Is.SameAs (proxyType));
     }
+
+    [Test]
+    public void GetProxy_IsCached ()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
+
+      var proxied0 = new GetProxyTypeIsCachedTest ("abrakadava");
+      var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
+
+      var proxy0 = provider.GetProxy (proxied0);
+      Assert.That (proxy0, Is.Not.Null);
+      var proxy1 = provider.GetProxy (proxied1);
+      Assert.That (proxy0, Is.SameAs (proxy1));
+    }
+
+    [Test]
+    [Explicit]
+    public void GetProxy_IsCachedAndProxiedSet ()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("GetProxy_IsCachedAndProxiedSet"));
+
+      var proxied0 = new GetProxyTypeIsCachedTest ("abrakadava");
+      var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
+
+      var proxy0 = provider.GetProxy (proxied0);
+      Assert.That (proxy0, Is.Not.Null);
+
+      var proxiedFieldValue0 = GetProxiedFieldValue(proxy0);
+      //Assert.That (Object.ReferenceEquals(proxiedFieldValue0,proxied0),Is.True);
+      Assert.That (proxiedFieldValue0, Is.SameAs (proxied0));
+      var proxy1 = provider.GetProxy (proxied1);
+      Assert.That (proxy0, Is.SameAs (proxy1));
+      Assert.That (GetProxiedFieldValue (proxy1), Is.SameAs (proxied1));
+    }
+
+    private object GetProxiedFieldValue (object proxy)
+    {
+      Type proxyType = GetActualType(proxy);
+      var proxiedField = proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
+      return proxiedField.GetValue (proxy);
+      //return PrivateInvoke.GetNonPublicField (proxy, proxyType, "_proxied");
+    }
+
+    private Type GetActualType (object proxy)
+    {
+      var objectGetType = typeof (object).GetMethod ("GetType");
+      return (Type) objectGetType.Invoke (proxy, new object[0]);
+    }
   }
 
 
@@ -140,8 +192,9 @@ def TestTypeMemberProxy(customMemberTester) :
   public class GetProxyTypeIsCachedTest : ProxiedChildChildChild
   {
     public GetProxyTypeIsCachedTest (string name)
-        : base(name)
+     : base (name)
     {
     }
+
   }
 }

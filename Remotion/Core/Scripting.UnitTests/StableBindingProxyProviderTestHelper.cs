@@ -20,11 +20,6 @@ namespace Remotion.Scripting.UnitTests
 {
   public static class StableBindingProxyProviderTestHelper
   {
-    public static object BuildProxy (this StableBindingProxyProvider proxyProvider, object proxied)
-    {
-      return PrivateInvoke.InvokeNonPublicMethod (proxyProvider, "BuildProxy", proxied);
-    }
-
     public static Type BuildProxyType (this StableBindingProxyProvider proxyProvider, Type proxiedType)
     {
       return (Type) PrivateInvoke.InvokeNonPublicMethod (proxyProvider, "BuildProxyType", proxiedType);
@@ -34,5 +29,16 @@ namespace Remotion.Scripting.UnitTests
     {
       return (Type) PrivateInvoke.InvokeNonPublicMethod (proxyProvider, "GetProxyType", proxiedType);
     }
+
+    public static object BuildProxy (this StableBindingProxyProvider proxyProvider, object proxied)
+    {
+      return PrivateInvoke.InvokeNonPublicMethod (proxyProvider, "BuildProxy", proxied);
+    }
+
+    public static object GetProxy (this StableBindingProxyProvider proxyProvider, object proxied)
+    {
+      return PrivateInvoke.InvokeNonPublicMethod (proxyProvider, "GetProxy", proxied);
+    }
+
   }
 }
