@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () select computer).Count());
       QueryModel model = ExpressionHelper.ParseQuery (expression);
 
-      var count = _computerExecutor.ExecuteScalar<int> (model, new FetchManyRequest[0]);
+      var count = _computerExecutor.ExecuteScalar<int> (model);
       Assert.That (count, Is.EqualTo (5));
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       using (ClientTransactionScope.EnterNullScope ())
       {
-        _computerExecutor.ExecuteScalar<int> (model, new FetchManyRequest[0]);
+        _computerExecutor.ExecuteScalar<int> (model);
       }
     }
 
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       executorMock.Replay ();
 
-      var result = executorMock.ExecuteScalar<int> (queryModel, new FetchManyRequest[0]);
+      var result = executorMock.ExecuteScalar<int> (queryModel);
       Assert.That (result, Is.EqualTo (1));
 
       executorMock.VerifyAllExpectations ();
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () orderby computer.ID select computer).First ());
       QueryModel model = ExpressionHelper.ParseQuery (expression);
 
-      var result = _computerExecutor.ExecuteSingle<Computer> (model, new FetchManyRequest[0], true);
+      var result = _computerExecutor.ExecuteSingle<Computer> (model, true);
       Assert.That (result, Is.SameAs (Computer.GetObject (DomainObjectIDs.Computer5)));
     }
 
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       using (ClientTransactionScope.EnterNullScope ())
       {
-        _computerExecutor.ExecuteSingle<int> (model, new FetchManyRequest[0], true);
+        _computerExecutor.ExecuteSingle<int> (model, true);
       }
     }
 
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var expression = ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer> () where false select computer).First ());
       QueryModel model = ExpressionHelper.ParseQuery (expression);
 
-      var result = _computerExecutor.ExecuteSingle<Computer> (model, new FetchManyRequest[0], true);
+      var result = _computerExecutor.ExecuteSingle<Computer> (model, true);
       Assert.That (result, Is.Null);
     }
 
@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           ExpressionHelper.MakeExpression (() => (from computer in QueryFactory.CreateLinqQuery<Computer>() where false select computer).First());
       QueryModel model = ExpressionHelper.ParseQuery (expression);
 
-      _computerExecutor.ExecuteSingle<Computer> (model, new FetchManyRequest[0], false);
+      _computerExecutor.ExecuteSingle<Computer> (model, false);
     }
 
     [Test]
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var query = from computer in QueryFactory.CreateLinqQuery<Computer>() select computer;
       QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
 
-      IEnumerable<Computer> computers = _computerExecutor.ExecuteCollection<Computer> (model, new FetchManyRequest[0]);
+      IEnumerable<Computer> computers = _computerExecutor.ExecuteCollection<Computer> (model);
 
       var computerList = new ArrayList();
       foreach (Computer computer in computers)
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       executorMock.Replay ();
 
-      var orders = executorMock.ExecuteCollection<Order> (queryModel, new FetchManyRequest[0]).ToArray ();
+      var orders = executorMock.ExecuteCollection<Order> (queryModel).ToArray ();
       Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1) }));
 
       executorMock.VerifyAllExpectations ();
@@ -228,7 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       using (ClientTransactionScope.EnterNullScope ())
       {
-        _computerExecutor.ExecuteCollection<Computer> (model, new FetchManyRequest[0]);
+        _computerExecutor.ExecuteCollection<Computer> (model);
       }
     }
 
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var query = from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer;
       QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
 
-      var computers = _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model, new FetchManyRequest[0]).ToArray();
+      var computers = _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model).ToArray();
       Assert.That (computers.Length, Is.EqualTo (5));
     }
 
@@ -253,7 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var relationMember = typeof (IGrouping<Computer, Computer>).GetProperty ("Key");
       queryModel.ResultOperators.Add (new FetchOneRequest (relationMember));
 
-      _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (queryModel, new FetchManyRequest[0]);
+      _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (queryModel);
     }
 
     [Test]
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
                    select company1).Distinct().Cast<Partner>().GroupBy (p => p, p => p.ContactPerson);
       QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
 
-      var partners = _companyExecutor.ExecuteCollection<IGrouping<Partner, Person>> (model, new FetchManyRequest[0]).ToArray();
+      var partners = _companyExecutor.ExecuteCollection<IGrouping<Partner, Person>> (model).ToArray();
       Assert.That (partners.Length, Is.EqualTo (1));
       Assert.That (partners.First().Key.ID, Is.EqualTo (DomainObjectIDs.Partner1));
     }
@@ -278,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var query = (from computer in QueryFactory.CreateLinqQuery<Computer> () group computer by computer).Distinct();
       QueryModel model = ExpressionHelper.ParseQuery (query.Expression);
 
-      _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model, new FetchManyRequest[0]);
+      _computerExecutor.ExecuteCollection<IGrouping<Computer, Computer>> (model);
     }
 
     [Test]
@@ -287,7 +287,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var expression = ExpressionHelper.MakeExpression (() => (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Count ());
       QueryModel model = ExpressionHelper.ParseQuery (expression);
 
-      var count = _orderExecutor.ExecuteScalar<int> (model, new FetchManyRequest[0]);
+      var count = _orderExecutor.ExecuteScalar<int> (model);
 
       Assert.That (count, Is.EqualTo (1));
     }
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var query = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       QueryModel queryModel = ExpressionHelper.ParseQuery (query.Expression);
 
-      IEnumerable<Order> orders = _orderExecutor.ExecuteCollection<Order> (queryModel, new FetchManyRequest[0]);
+      IEnumerable<Order> orders = _orderExecutor.ExecuteCollection<Order> (queryModel);
 
       var orderList = new ArrayList ();
       foreach (Order order in orders) 
