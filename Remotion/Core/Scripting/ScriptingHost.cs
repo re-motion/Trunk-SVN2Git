@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Scripting.Hosting;
 using Remotion.Collections;
+using Remotion.Context;
 
 
 namespace Remotion.Scripting
@@ -49,24 +50,30 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptingHost
   {
-    // ScriptingHost encapsulates Microsoft.Scripting.Hosting.ScriptRuntime, which is not thread safe. We therefore supply a seperate 
-    // singleton instance to every thread through a thread static member.
-    [ThreadStatic]
-    private static ScriptingHost s_scriptingHost;
+    //// ScriptingHost encapsulates Microsoft.Scripting.Hosting.ScriptRuntime, which is not thread safe. We therefore supply a seperate 
+    //// singleton instance to every thread through a thread static member.
+    //[ThreadStatic]
+    //private static ScriptingHost s_scriptingHost;
+
+    private const string scriptingHostCurrentSafeContextName = "ScriptingHost.Current";
 
     private ScriptRuntime _scriptRuntime;
     private ReadOnlyDictionarySpecific<ScriptLanguageType, ScriptEngine> _scriptEngines;
 
 
+    // ScriptingHost encapsulates Microsoft.Scripting.Hosting.ScriptRuntime, which is not thread safe. We therefore supply a seperate 
+    // singleton instance to every thread through a thread static member.
     public static ScriptingHost Current
     {
       get
       {
-        if (s_scriptingHost == null)
+        var scriptingHost = (ScriptingHost) SafeContext.Instance.GetData (scriptingHostCurrentSafeContextName);
+        if (scriptingHost == null)
         {
-          s_scriptingHost = new ScriptingHost();
+          scriptingHost = new ScriptingHost ();
+          SafeContext.Instance.SetData (scriptingHostCurrentSafeContextName, scriptingHost);
         }
-        return s_scriptingHost;
+        return scriptingHost;
       }
     }
 
