@@ -72,7 +72,6 @@ function DatePicker_ShowDatePicker (button, container, target, src, width, heigh
   var datePickerHeight;
   window.document.body.insertBefore(datePicker, window.document.body.children[0]);
 
-  debugger;
   //  Adjust position so the date picker is shown below 
   //  and aligned with the right border of the button.
   $(datePicker).css('left', left - $(frame).width() + $(button).width());
