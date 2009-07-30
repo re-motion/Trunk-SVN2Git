@@ -66,23 +66,25 @@ namespace Remotion.Scripting.UnitTests
       var proxied = new ProxiedChildChildChild ("abrakadava");
       const string attributeName = "PrependName";
 
-      var typeMemberProxy = provider.GetMemberProxy (proxied, attributeName);
+      var typeMemberProxy = provider.GetAttributeProxy (proxied, attributeName);
 
       var customMemberTester = new GetCustomMemberTester (typeMemberProxy);
 
-      const string scriptFunctionSourceCode = @"
-def TestTypeMemberProxy(customMemberTester) :
-  return customMemberTester.PrependName('simsalbum',2)
-";
+//      // Calling anything on customMemberTester which has a string and int argument will always call PrependName through GetCustomMember
+//      const string scriptFunctionSourceCode = @"
+//def TestTypeMemberProxy(customMemberTester) :
+//  return customMemberTester.XYZ('simsalbum',2)
+//";
 
-      var privateScriptEnvironment = ScriptEnvironment.Create ();
-      var testTypeMemberProxyScript = new ScriptFunction<Object, string> (
-        _scriptContext, ScriptLanguageType.Python,
-        scriptFunctionSourceCode, privateScriptEnvironment, "TestTypeMemberProxy");
+//      var privateScriptEnvironment = ScriptEnvironment.Create ();
+//      var testTypeMemberProxyScript = new ScriptFunction<Object, string> (
+//        _scriptContext, ScriptLanguageType.Python,
+//        scriptFunctionSourceCode, privateScriptEnvironment, "TestTypeMemberProxy");
 
-      var result = testTypeMemberProxyScript.Execute (customMemberTester);
+//      var result = testTypeMemberProxyScript.Execute (customMemberTester);
+
+      var result = ScriptingHelper.ExecuteScriptExpression<string> ("p0.XYZ('simsalbum',2)", customMemberTester);
       Assert.That (result, Is.EqualTo ("ProxiedChild ProxiedChild: abrakadava simsalbum, THE NUMBER=2"));
-
     }
 
     [Test]
@@ -147,6 +149,58 @@ def TestTypeMemberProxy(customMemberTester) :
       Assert.That (proxy0, Is.SameAs (proxy1));
       Assert.That (GetProxiedFieldValue (proxy1), Is.SameAs (proxied1));
     }
+
+    [Test]
+    public void GetAttributeProxy ()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+
+      var proxied0 = new ProxiedChildChildChild ("ABCccccccccccccccccc");
+      var proxied1 = new ProxiedChildChildChild ("xyzzzzzzzzz");
+
+      var typeMemberProxy0 = provider.GetAttributeProxy (proxied0, "PrependName");
+      var customMemberTester0 = new GetCustomMemberTester (typeMemberProxy0);
+      var result0 = ScriptingHelper.ExecuteScriptExpression<string> ("p0.XYZ('simsalbum',2)", customMemberTester0);
+      Assert.That (result0, Is.EqualTo ("ProxiedChild ProxiedChild: ABCccccccccccccccccc simsalbum, THE NUMBER=2"));
+
+
+      var typeMemberProxy1 = provider.GetAttributeProxy (proxied1, "NamePropertyVirtual");
+
+      //Assert.That (typeMemberProxy0, Is.SameAs (typeMemberProxy1));
+
+      var customMemberTester1 = new GetCustomMemberTester (typeMemberProxy1);
+      var result1 = ScriptingHelper.ExecuteScriptExpression<string> ("p0.ABCDEFG", customMemberTester1);
+      Assert.That (result1, Is.EqualTo ("ProxiedChildChildChild::NamePropertyVirtual xyzzzzzzzzz"));
+
+    }
+
+    [Test]
+    public void GetAttributeProxy_IsCached()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+
+      var proxied0 = new ProxiedChildChildChild ("ABCccccccccccccccccc");
+      var proxied1 = new ProxiedChildChildChild ("xyzzzzzzzzz");
+
+      const string attributeName = "PrependName";
+      var typeMemberProxy0 = provider.GetAttributeProxy (proxied0, attributeName);
+      var customMemberTester0 = new GetCustomMemberTester (typeMemberProxy0);
+      var result0 = ScriptingHelper.ExecuteScriptExpression<string> ("p0.XYZ('simsalbum',2)", customMemberTester0);
+      Assert.That (result0, Is.EqualTo ("ProxiedChild ProxiedChild: ABCccccccccccccccccc simsalbum, THE NUMBER=2"));
+
+
+      var typeMemberProxy1 = provider.GetAttributeProxy (proxied1, attributeName);
+
+      Assert.That (typeMemberProxy0, Is.SameAs (typeMemberProxy1));
+
+      var customMemberTester1 = new GetCustomMemberTester (typeMemberProxy1);
+      var result1 = ScriptingHelper.ExecuteScriptExpression<string> ("p0.ABCDEFG('Schlaf')", customMemberTester1);
+      Assert.That (result1, Is.EqualTo ("xyzzzzzzzzz Schlaf"));
+      
+    }
+
 
 
 

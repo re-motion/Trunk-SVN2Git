@@ -58,7 +58,8 @@ namespace Remotion.Scripting
     private readonly ITypeFilter _typeFilter;
     private readonly ModuleScope _moduleScope;
     private readonly Cache<Type, Type> _proxiedTypeToProxyTypeCache = new Cache<Type, Type> ();
-    private readonly Cache<Type, object> _proxiedToProxyCache = new Cache<Type, object> ();
+    private readonly Cache<Type, object> _proxiedTypeToProxyCache = new Cache<Type, object> ();
+    private readonly Cache<Tuple<Type, string>, object> _proxiedTypeToAttributeProxyCache = new Cache<Tuple<Type, string>, object> ();
 
     public StableBindingProxyProvider (ITypeFilter typeFilter, ModuleScope moduleScope)
     {
@@ -79,14 +80,27 @@ namespace Remotion.Scripting
     }
 
     // TODO: Store proxyType in map (and maybe result of pythonScriptEngine.Operations.GetMember wrapping operation in cache).
-    public object GetMemberProxy (Object proxied, string attributeName)
+    //public object GetAttributeProxy (Object proxied, string attributeName)
+    //{
+    //  object proxy = BuildProxy(proxied);
+    //  var typeMemberProxy = ScriptingHost.GetScriptEngine(ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
+    //  return typeMemberProxy;
+    //}
+
+    public object GetAttributeProxy (Object proxied, string attributeName)
     {
-      object proxy = BuildProxy(proxied);
-      var typeMemberProxy = ScriptingHost.GetScriptEngine(ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
-      return typeMemberProxy;
+      object proxy = GetProxy (proxied);
+      //SetProxiedFieldValue (proxy, proxied);
+      
+      //var attributeProxy = ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
+
+      var attributeProxy = _proxiedTypeToAttributeProxyCache.GetOrCreateValue (
+        new Tuple<Type, string> (proxied.GetType (),attributeName), 
+        dummyKey => ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName));
+
+      return attributeProxy;
     }
-
-
+    
     private Type BuildProxyType (Type proxiedType)
     {
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, _typeFilter, _moduleScope);
@@ -108,7 +122,7 @@ namespace Remotion.Scripting
 
     private object GetProxy (object proxied)
     {
-      object proxy = _proxiedToProxyCache.GetOrCreateValue (proxied.GetType (), key => BuildProxy (proxied));
+      object proxy = _proxiedTypeToProxyCache.GetOrCreateValue (proxied.GetType (), dummyKey => BuildProxy (proxied));
       SetProxiedFieldValue (proxy, proxied);
       return proxy;
     }

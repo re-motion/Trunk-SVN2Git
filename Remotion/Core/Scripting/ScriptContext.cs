@@ -43,7 +43,7 @@ namespace Remotion.Scripting
 
     public static object GetMemberProxy (object proxied, string attributeName)
     {
-      return ScriptContext.Current.StableBindingProxyProvider.GetMemberProxy (proxied, attributeName);
+      return ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied, attributeName);
     }
 
 
