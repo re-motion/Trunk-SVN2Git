@@ -13,11 +13,10 @@
  % You should have received a copy of the GNU Lesser General Public License
  % along with re-motion; if not, see http://www.gnu.org/licenses.
 --%>
-<%@ Page Language="c#" Codebehind="TestTabbedForm.aspx.cs" AutoEventWireup="false" Inherits="OBWTest.TestTabbedForm" %>
+<%@ Page Language="c#" Codebehind="TestTabbedForm.aspx.cs" AutoEventWireup="false" Inherits="OBWTest.TestTabbedForm" Title="Test TabbedMultiView" %>
 <%@ Import Namespace="OBWTest"%>
 
 <asp:Content ContentPlaceHolderID="head" runat="server">
-  <title>Test Tabbed Form</title>
 </asp:Content>
 <asp:Content ContentPlaceHolderID="body" runat="server">
     <remotion:TabbedMultiView ID="MultiView" runat="server" CssClass="tabbedMultiView">

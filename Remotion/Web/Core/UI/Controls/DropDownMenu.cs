@@ -21,7 +21,6 @@ using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
 using Remotion.Web.UI.Design;
-using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -42,7 +41,7 @@ namespace Remotion.Web.UI.Controls
     public DropDownMenu (IControl ownerControl, Type[] supportedMenuItemTypes)
       :base(ownerControl, supportedMenuItemTypes)
     {
-      
+      Mode = MenuMode.DropDownMenu;
     }
 
     public DropDownMenu (IControl ownerControl)
@@ -95,13 +94,29 @@ namespace Remotion.Web.UI.Controls
       renderer.Render();
     }
 
-    public string GetOpenDropDownMenuEventReference (string eventReference)
+    public string GetBindOpenEventScript (string elementReference, string menuIDReference, bool moveToMousePosition)
     {
-      if (string.IsNullOrEmpty (eventReference))
-        eventReference = "null";
+      return string.Format (
+          "DropDownMenu_BindOpenEvent({0}, {1}, '{2}', {3}, {4});",
+          elementReference,
+          menuIDReference,
+          GetEventType(),
+          string.IsNullOrEmpty (GetSelectionCount) ? "null" : GetSelectionCount,
+          moveToMousePosition ? "true" : "false"
+          );
+    }
 
-      string getSelectionCount = (string.IsNullOrEmpty (GetSelectionCount) ? "null" : GetSelectionCount);
-      return "DropDownMenu_OnClick (this, '" + ClientID + "', " + getSelectionCount + ", " + eventReference + ");";
+    private string GetEventType ()
+    {
+      switch (Mode)
+      {
+        case MenuMode.DropDownMenu:
+          return  "click";
+        case MenuMode.ContextMenu:
+          return "contextmenu";
+        default:
+          throw new InvalidOperationException();
+      }
     }
 
     /// <summary> Only used by control developers. </summary>
@@ -124,6 +139,11 @@ namespace Remotion.Web.UI.Controls
       get { return _renderHeadTitleMethod; }
     }
 
+    string IDropDownMenu.MenuHeadClientID
+    {
+      get { return ClientID + "_MenuDiv"; }
+    }
+
     public IconInfo TitleIcon
     {
       get { return _titleIcon; }
@@ -141,5 +161,7 @@ namespace Remotion.Web.UI.Controls
       get { return _enableGrouping; }
       set { _enableGrouping = value; }
     }
+
+    public MenuMode Mode { get; set; }
   }
 }

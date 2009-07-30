@@ -14,15 +14,6 @@ namespace OBWTest.IndividualControlTests {
     public partial class IndividualControlTestForm {
         
         /// <summary>
-        /// HtmlHeadContents control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.Web.UI.Controls.HtmlHeadContents HtmlHeadContents;
-        
-        /// <summary>
         /// ScriptManager control.
         /// </summary>
         /// <remarks>

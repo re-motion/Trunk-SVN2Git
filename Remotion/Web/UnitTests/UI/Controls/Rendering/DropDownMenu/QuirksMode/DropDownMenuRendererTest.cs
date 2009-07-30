@@ -44,7 +44,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       _control.Stub (stub => stub.UniqueID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.ClientID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.MenuItems).Return (new WebMenuItemCollection (_control));
-      _control.Stub (stub => stub.GetOpenDropDownMenuEventReference(null)).IgnoreArguments().Return ("OpenDropDownMenuEventReference");
+      _control.Stub (stub => stub.GetBindOpenEventScript(null, null, true)).IgnoreArguments().Return ("OpenDropDownMenuEventReference");
+      _control.Stub (stub => stub.MenuHeadClientID).Return ("DropDownMenu1_MenuDiv");
 
       IPage pageStub = MockRepository.GenerateStub<IPage>();
       _control.Stub (stub => stub.Page).Return (pageStub);
@@ -334,10 +335,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     private XmlNode GetAssertedClickDiv (XmlNode outerDiv)
     {
       var clickDiv = outerDiv.GetAssertedChildElement ("div", 0);
-      if (_control.Enabled)
-        clickDiv.AssertAttributeValueEquals ("onclick", "OpenDropDownMenuEventReference");
-      else
-        clickDiv.AssertNoAttribute ("onclick");
+      clickDiv.AssertNoAttribute ("onclick");
 
       clickDiv.AssertAttributeValueEquals ("id", _control.ClientID + "_MenuDiv");
       clickDiv.AssertStyleAttribute ("position", "relative");

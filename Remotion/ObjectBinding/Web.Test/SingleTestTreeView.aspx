@@ -15,14 +15,9 @@
 --%>
 <%@ Page Language="c#" Codebehind="SingleTestTreeView.aspx.cs" AutoEventWireup="false" Inherits="OBWTest.SingleTestTreeView" %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
-<html>
-<head>
-  <title>SingleTestTreeView</title>
-  <remotion:HtmlHeadContents runat="server" ID="HtmlHeadContents" />
-</head>
-<body>
-  <form id="Form" method="post" runat="server">
+<asp:Content ContentPlaceHolderID="head" runat="server">
+</asp:Content>
+<asp:Content ContentPlaceHolderID="body" runat="server">
   <asp:ScriptManager ID="ScriptManager" runat="server" />
     <h1>
       SingleTest TreeView</h1>
@@ -52,6 +47,4 @@
     </table>
     <remotion:FormGridManager ID="FormGridManager" runat="server" />
     <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.ObjectBinding.Sample::Person" />
-  </form>
-</body>
-</html>
+</asp:Content>

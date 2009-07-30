@@ -42,12 +42,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
       //  Menu-Div filling the control's div is required to apply internal css attributes
       //  for position, width and height. This allows the Head and th popup-div to align themselves
       Writer.AddStyleAttribute ("position", "relative");
-      if (Control.Enabled)
-      {
-        string script = Control.GetOpenDropDownMenuEventReference (null);
-        Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-      }
-      Writer.AddAttribute ("id", Control.ClientID + "_MenuDiv");
+      Writer.AddAttribute ("id", Control.MenuHeadClientID);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div); // Begin Menu-Div
 
       RenderHead ();

@@ -65,6 +65,18 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
         string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
         Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
       }
+
+      if (Control.Enabled && Control.Visible && Control.Mode == MenuMode.DropDownMenu)
+      {
+        key = Control.ClientID + "_ClickEventHandlerBindScript";
+        if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuPreRenderer), key))
+        {
+          string elementReference = string.Format ("document.getElementById('{0}')", Control.MenuHeadClientID);
+          string menuIDReference = string.Format ("'{0}'", Control.ClientID);
+          string script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
+          Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
+        }
+      }
     }
   }
 }

@@ -684,6 +684,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (HasOptionsMenu)
         PreRenderOptionsMenu();
+      else
+        OptionsMenu.Visible = false;
 
       if (Command != null)
         Command.RegisterForSynchronousPostBack (this, null, string.Format ("BocReferenceValue '{0}', Object Command", ID));

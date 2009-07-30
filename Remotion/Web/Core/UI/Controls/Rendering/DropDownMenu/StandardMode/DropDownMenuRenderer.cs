@@ -101,12 +101,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
 
       if (Control.ControlStyle.Width.IsEmpty)
         Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
-
-      if (Control.Enabled)
-      {
-        string script = Control.GetOpenDropDownMenuEventReference (null);
-        Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
-      }
     }
 
     protected string CssClassBase

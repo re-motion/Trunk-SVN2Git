@@ -52,7 +52,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       _control.Stub (stub => stub.UniqueID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.ClientID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.MenuItems).Return (new WebMenuItemCollection (_control));
-      _control.Stub (stub => stub.GetOpenDropDownMenuEventReference (null)).IgnoreArguments ().Return ("OpenDropDownMenuEventReference");
+      _control.Stub (stub => stub.GetBindOpenEventScript (null, null, true)).IgnoreArguments ().Return ("OpenDropDownMenuEventReference");
 
       IPage pageStub = MockRepository.GenerateStub<IPage> ();
       _control.Stub (stub => stub.Page).Return (pageStub);
@@ -151,7 +151,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       var containerDiv = document.GetAssertedChildElement ("div", 0);
       containerDiv.AssertAttributeValueEquals ("id", _control.ClientID);
       containerDiv.AssertAttributeValueEquals ("class", "DropDownMenuContainer");
-      containerDiv.AssertAttributeValueEquals ("onclick", _control.GetOpenDropDownMenuEventReference ("eventReference"));
       containerDiv.AssertChildElementCount (1);
 
       return containerDiv;

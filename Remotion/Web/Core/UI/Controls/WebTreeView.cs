@@ -25,6 +25,7 @@ using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Collections;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -319,12 +320,8 @@ namespace Remotion.Web.UI.Controls
       if (Page != null && !Page.IsPostBack)
         _isLoadControlStateCompleted = true;
 
-      string key = typeof (WebTreeView).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Html, "TreeView.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
+      if( !IsDesignMode )
+        RegisterHtmlHeadContents (HtmlHeadAppender.Current, new HttpContextWrapper (Context));
     }
 
     protected override void LoadControlState (object savedState)
@@ -446,6 +443,16 @@ namespace Remotion.Web.UI.Controls
       EnsureChildControls();
       InitializeTreeNodeMenus (_nodes);
       _hasTreeNodeMenusCreated = true;
+    }
+
+    public virtual void RegisterHtmlHeadContents(HtmlHeadAppender htmlHeadAppender, IHttpContext httpContext)
+    {
+      string styleKey = typeof (WebTreeView).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (styleKey))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (WebTreeView), ResourceType.Html, "TreeView.css");
+        htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
     }
 
     /// <summary> Overrides the parent control's <c>OnPreRender</c> method. </summary>
@@ -574,13 +581,15 @@ namespace Remotion.Web.UI.Controls
         }
         if (isMenuVisible)
         {
-          string script = menu.GetOpenDropDownMenuEventReference ("window.event") + " return false;";
-          writer.AddAttribute ("oncontextmenu", script);
+          writer.AddAttribute ("oncontextmenu", "return false;");
         }
       }
 
       if (!_enableWordWrap)
         writer.AddStyleAttribute ("white-space", "nowrap");
+
+      if (menu != null)
+        writer.AddAttribute ("name", menu.ClientID); 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassNode);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
@@ -589,14 +598,6 @@ namespace Remotion.Web.UI.Controls
       if (hasExpander)
         RenderNodeExpander (writer, node, nodePath, isFirstNode, isLastNode);
       RenderNodeHead (writer, node, nodePath);
-
-      if (isMenuVisible)
-      {
-        writer.AddAttribute (HtmlTextWriterAttribute.Id, menu.ClientID);
-        writer.AddStyleAttribute (HtmlTextWriterStyle.Display, "none");
-        writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        writer.RenderEndTag();
-      }
 
       writer.RenderEndTag();
     }
@@ -1012,6 +1013,13 @@ namespace Remotion.Web.UI.Controls
       set { _menuItemProvider = value; }
     }
 
+    [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+    [Browsable (false)]
+    public bool IsDesignMode
+    {
+      get { return ControlHelper.IsDesignMode (this, Context); }
+    }
+
     IPage IControl.Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
@@ -1065,6 +1073,7 @@ namespace Remotion.Web.UI.Controls
       menu.MenuItems.AddRange (_menuItemProvider.InitalizeMenuItems (node));
       menu.EventCommandClick += Menu_EventCommandClick;
       menu.WxeFunctionCommandClick += Menu_WxeFunctionCommandClick;
+      menu.Mode = MenuMode.ContextMenu;
 
       _menus.Add (node, menu);
       _menuPlaceHolder.Controls.Add (menu);
@@ -1084,6 +1093,31 @@ namespace Remotion.Web.UI.Controls
 
     private void PreRenderTreeNodeMenus ()
     {
+      var page = PageWrapper.CastOrCreate (Page);
+      string key = ClientID + "_BindContextMenus";
+
+      try
+      {
+        var anyNodeContextMenu = _menus.Values.First (menu => (menu != null), () => new Exception ());
+        string script =
+            string.Format (
+                @"$(document).ready( function(){{ 
+  $('#{0}').find('span.treeViewNode').each(
+    function() {{
+      var menuID = $(this).attr('name');
+      if (menuID != null && menuID.length > 0)
+        {1}
+    }}
+  ); 
+}} );",
+                ClientID,
+                anyNodeContextMenu.GetBindOpenEventScript ("this", "menuID", true));
+        page.ClientScript.RegisterStartupScriptBlock (this, typeof (WebTreeView), key, script);
+      }
+      catch (Exception)
+      {
+      }
+
       List<WebTreeNode> unreachableNodes = new List<WebTreeNode>();
       foreach (KeyValuePair<WebTreeNode, DropDownMenu> entry in _menus)
       {

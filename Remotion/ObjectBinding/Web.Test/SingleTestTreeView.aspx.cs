@@ -35,6 +35,11 @@ namespace OBWTest
     protected Button Node332Button;
     protected HtmlHeadContents HtmlHeadContents;
 
+    public SingleTestTreeView ()
+    {
+      MasterPageFile = Global.PreferQuirksModeRendering ? "~/QuirksMode.Master" : "~/StandardMode.Master";
+    }
+
     private void Page_Load (object sender, EventArgs e)
     {
       Guid personID = new Guid (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);

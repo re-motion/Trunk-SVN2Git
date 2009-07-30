@@ -17,7 +17,6 @@
   Title="IndividualControlTestForm" %>
 <%@ Register TagPrefix="obwt" TagName="NavigationTabs" Src="../UI/NavigationTabs.ascx" %>
 <asp:Content ContentPlaceHolderID="head" runat="server">
-  <remotion:HtmlHeadContents ID="HtmlHeadContents" runat="server" />
 </asp:Content>
 <asp:Content ContentPlaceHolderID="body" runat="server">
     <asp:ScriptManager ID="ScriptManager" runat="server" EnablePartialRendering="true" />

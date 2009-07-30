@@ -71,6 +71,16 @@ function DropDownMenu_ItemInfo (id, category, text, icon, iconDisabled, required
   this.Target = target;
 }
 
+function DropDownMenu_BindOpenEvent(node, menuID, eventType, getSelectionCount, moveToMousePosition)
+{
+  ArgumentUtility.CheckNotNull('node', node);
+  ArgumentUtility.CheckNotNullAndTypeIsString('menuID', menuID);
+  ArgumentUtility.CheckNotNullAndTypeIsString('eventType', eventType);
+  ArgumentUtility.CheckNotNullAndTypeIsBoolean('moveToMousePosition', moveToMousePosition);
+
+  $(node).bind(eventType, function(evt) { DropDownMenu_OnClick(node, menuID, getSelectionCount, moveToMousePosition ? evt : null) });
+}
+
 function DropDownMenu_OnClick (context, menuID, getSelectionCount, evt)
 {
   var id = context.id + '_PopUp';

@@ -35,6 +35,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     Unit Width { get; }
     string GetSelectionCount { get; }
     CssStyleCollection Style { get; }
-    string GetOpenDropDownMenuEventReference (string eventReference);
+    string MenuHeadClientID { get; }
+    MenuMode Mode { get; }
+    string GetBindOpenEventScript (string elementReference, string menuIDReference, bool moveToMousePosition);
   }
 }

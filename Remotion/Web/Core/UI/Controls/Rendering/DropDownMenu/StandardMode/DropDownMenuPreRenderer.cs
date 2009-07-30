@@ -34,13 +34,26 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
       base.PreRender();
 
+      if (!Control.Enabled )
+        return;
+
       string key = Control.ClientID + "_KeyDownEventHandlerBindScript";
       string getSelectionCount = (string.IsNullOrEmpty (Control.GetSelectionCount) ? "null" : Control.GetSelectionCount);
       string script = string.Format (
           "$('#{0}').keydown( function(event){{ DropDownMenu_OnKeyDown(event, document.getElementById('{0}'), {1}); }} );",
           Control.ClientID,
           getSelectionCount);
+      
       Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
+
+      if (Control.Enabled && Control.Visible && Control.Mode==MenuMode.DropDownMenu)
+      {
+        key = Control.ClientID + "_ClickEventHandlerBindScript";
+        string elementReference = string.Format ("$('#{0}')", Control.ClientID);
+        string menuIDReference = string.Format ("'{0}'", Control.ClientID);
+        script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
+        Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
+      }
     }
 
     public override bool GetBrowserCapableOfScripting ()
