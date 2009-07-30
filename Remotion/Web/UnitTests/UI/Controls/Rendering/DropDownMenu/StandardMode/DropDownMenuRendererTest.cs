@@ -114,6 +114,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
     private void AssertDropDownButton (XmlNode titleDiv)
     {
       var span = titleDiv.GetAssertedChildElement ("span", 1);
+      string imageFileName = _control.Enabled ? "DropDownMenuArrow.gif" : "DropDownMenuArrow_disabled.gif";
+      string imageFilePath = ResourceUrlResolver.GetResourceUrl (_control, HttpContext, typeof (IDropDownMenu), ResourceType.Image, imageFileName);
+      string styleValue = string.Format ("url({0})", imageFilePath);
+
+      span.AssertStyleAttribute (
+          "background-image", styleValue);
 
       var image = span.GetAssertedChildElement ("img", 0);
       image.AssertAttributeValueEquals ("src", IconInfo.Spacer.Url);

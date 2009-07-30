@@ -3,6 +3,7 @@ div.bocReferenceValue
     position: relative;
     height: auto;
     vertical-align: middle;
+    display: inline-block;
 }
 
 div.bocReferenceValueContent
@@ -32,11 +33,6 @@ div.bocReferenceValue a.bocReferenceValueCommand:hover
 div.bocReferenceValue span.bocReferenceValueCommand
 {
   cursor: default;
-}
-
-div.bocReferenceValue *.bocReferenceValueCommand span
-{
-  margin-right: 2px;
 }
 
 div.bocReferenceValue img.bocReferenceValueContent

@@ -796,6 +796,7 @@
     <Content Include="Res\HTML\Utilities.js" />
     <Content Include="Res\HTML\WebButton.css" />
     <Content Include="Res\HTML\WebButton.js" />
+    <Content Include="Res\Image\DropDownMenuArrow_disabled.gif" />
     <Content Include="Res\Image\DatePicker.gif" />
     <Content Include="Res\Image\DropDownMenuArrow.gif" />
     <Content Include="Res\Image\DropDownMenuItemIconPane.gif" />

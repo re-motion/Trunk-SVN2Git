@@ -26,6 +26,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
   public class DropDownMenuRenderer : RendererBase<IDropDownMenu>, IDropDownMenuRenderer
   {
     private const string c_whiteSpace = "&nbsp;";
+    private const string c_dropDownIcon = "DropDownMenuArrow.gif";
+    private const string c_dropDownIconDisabled = "DropDownMenuArrow_disabled.gif";
 
     public DropDownMenuRenderer (IHttpContext context, HtmlTextWriter writer, IDropDownMenu control)
         : base (context, writer, control)
@@ -80,6 +82,10 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     private void RenderDropdownButton ()
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
+      string imageUrl = ResourceUrlResolver.GetResourceUrl (
+          Control, typeof (IDropDownMenu), ResourceType.Image, Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
+
+      Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format("url({0})", imageUrl));
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       IconInfo.Spacer.Render (Writer);
@@ -100,7 +106,13 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
 
       if (Control.ControlStyle.Width.IsEmpty)
-        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, Control.Width.ToString());
+      {
+        string width = "auto";
+        if (!Control.Width.IsEmpty)
+          width = Control.Width.ToString();
+
+        Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, width);
+      }
     }
 
     protected string CssClassBase

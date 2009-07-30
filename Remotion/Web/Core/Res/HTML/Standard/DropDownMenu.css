@@ -24,7 +24,8 @@
 	
 	div.DropDownMenuSelect span {
 		left: 0;
-		margin-right: 15px;
+		margin-right: 18px;
+		vertical-align: middle;
 	}
 
 	div.DropDownMenuSelect a {
@@ -60,7 +61,6 @@
 		 width: 16px;
 		 background-color: #DFEEF5;
 		 margin-right: 0;
-		 background-image: url("../../Image/DropDownMenuArrow.gif");
 		 background-position: center center;
 		 background-repeat: no-repeat;
    }
@@ -157,7 +157,6 @@
    
    span.DropDownMenuItemIcon
    {
-		 margin-right: 15px;
 		 width: 16px;
 		 padding: 0px;
    }
