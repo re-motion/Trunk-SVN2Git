@@ -21,6 +21,7 @@ namespace Remotion.Scripting
   public class StableBindingMixin : Mixin<object>, IStableBindingMixin
   {
     [SpecialName]
+    [MemberVisibility (MemberVisibility.Public)]
     public object GetCustomMember (string name)
     {
       return ScriptContext.GetAttributeProxy (This, name);
