@@ -18,18 +18,17 @@ using Remotion.Mixins;
 
 namespace Remotion.Scripting
 {
-  public class StableBindingMixin<T> : Mixin<T> where T : class
+  public class StableBindingMixin : Mixin<object>, IStableBindingMixin
   {
     [SpecialName]
     public object GetCustomMember (string name)
     {
-      return ScriptContext.Current.StableBindingProxyProvider.GetMemberProxy(this,name);
+      return ScriptContext.Current.StableBindingProxyProvider.GetMemberProxy(This,name);
     }    
   }
 
   public interface IStableBindingMixin
   {
-    [SpecialName]
     object GetCustomMember (string name);
   }
 }
