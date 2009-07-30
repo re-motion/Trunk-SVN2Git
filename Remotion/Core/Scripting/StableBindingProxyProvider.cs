@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Castle.DynamicProxy;
+using Remotion.Collections;
 
 namespace Remotion.Scripting
 {
@@ -31,7 +32,7 @@ namespace Remotion.Scripting
   {
     private readonly ITypeFilter _typeFilter;
     private readonly ModuleScope _moduleScope;
-    private readonly Dictionary<Type, Type> _proxiedTypeToProxyTypeMap = new Dictionary<Type, Type>();
+    private readonly Cache<Type, Type> _proxiedTypeToProxyTypeMap = new Cache<Type, Type> ();
 
     public StableBindingProxyProvider (ITypeFilter typeFilter, ModuleScope moduleScope)
     {
@@ -73,12 +74,7 @@ namespace Remotion.Scripting
 
     private Type GetProxyType (Type proxiedType)
     {
-      Type proxyType;
-      if (!_proxiedTypeToProxyTypeMap.TryGetValue (proxiedType, out proxyType))
-      {
-        proxyType = BuildProxyType (proxiedType);
-        _proxiedTypeToProxyTypeMap[proxiedType] = proxyType;
-      }
+      Type proxyType = _proxiedTypeToProxyTypeMap.GetOrCreateValue (proxiedType, BuildProxyType);
       return proxyType;
     }
 
