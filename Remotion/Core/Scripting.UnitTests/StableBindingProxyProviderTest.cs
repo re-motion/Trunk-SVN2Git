@@ -130,8 +130,7 @@ def TestTypeMemberProxy(customMemberTester) :
     }
 
     [Test]
-    [Explicit]
-    public void GetProxy_IsCachedAndProxiedSet ()
+    public void GetProxy_IsCachedAndProxiedIsSet ()
     {
       var provider = new StableBindingProxyProvider (
         new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("GetProxy_IsCachedAndProxiedSet"));
@@ -143,19 +142,19 @@ def TestTypeMemberProxy(customMemberTester) :
       Assert.That (proxy0, Is.Not.Null);
 
       var proxiedFieldValue0 = GetProxiedFieldValue(proxy0);
-      //Assert.That (Object.ReferenceEquals(proxiedFieldValue0,proxied0),Is.True);
       Assert.That (proxiedFieldValue0, Is.SameAs (proxied0));
       var proxy1 = provider.GetProxy (proxied1);
       Assert.That (proxy0, Is.SameAs (proxy1));
       Assert.That (GetProxiedFieldValue (proxy1), Is.SameAs (proxied1));
     }
 
+
+
     private object GetProxiedFieldValue (object proxy)
     {
       Type proxyType = GetActualType(proxy);
       var proxiedField = proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
       return proxiedField.GetValue (proxy);
-      //return PrivateInvoke.GetNonPublicField (proxy, proxyType, "_proxied");
     }
 
     private Type GetActualType (object proxy)

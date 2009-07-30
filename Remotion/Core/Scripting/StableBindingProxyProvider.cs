@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Castle.DynamicProxy;
 using Remotion.Collections;
 
@@ -30,6 +31,30 @@ namespace Remotion.Scripting
   /// </remarks>
   public class StableBindingProxyProvider
   {
+    //private static object GetProxiedFieldValue (object proxy)
+    //{
+    //  var proxiedField = GetProxiedField (proxy);
+    //  return proxiedField.GetValue (proxy);
+    //}
+
+    private static void SetProxiedFieldValue (object proxy, object value)
+    {
+      var proxiedField = GetProxiedField (proxy);
+      proxiedField.SetValue (proxy, value);
+    }
+
+    public static FieldInfo GetProxiedField (object proxy)
+    {
+      Type proxyType = GetActualType (proxy);
+      return proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
+    }
+    
+    private static Type GetActualType (object proxy)
+    {
+      var objectGetType = typeof (object).GetMethod ("GetType");
+      return (Type) objectGetType.Invoke (proxy, new object[0]);
+    }
+
     private readonly ITypeFilter _typeFilter;
     private readonly ModuleScope _moduleScope;
     private readonly Cache<Type, Type> _proxiedTypeToProxyTypeCache = new Cache<Type, Type> ();
@@ -83,7 +108,8 @@ namespace Remotion.Scripting
 
     private object GetProxy (object proxied)
     {
-      object proxy = _proxiedToProxyCache.GetOrCreateValue (proxied.GetType(), BuildProxy);
+      object proxy = _proxiedToProxyCache.GetOrCreateValue (proxied.GetType (), key => BuildProxy (proxied));
+      SetProxiedFieldValue (proxy, proxied);
       return proxy;
     }
 
