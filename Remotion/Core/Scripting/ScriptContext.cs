@@ -41,6 +41,13 @@ namespace Remotion.Scripting
       get { return s_currentScriptContext; }
     }
 
+    public static object GetMemberProxy (object proxied, string attributeName)
+    {
+      return ScriptContext.Current.StableBindingProxyProvider.GetMemberProxy (proxied, attributeName);
+    }
+
+
+
     // Note: Currently switching to the same ScriptContext twice is not supported. 
     // (Would need to use a stack of ScriptContext|s to support interleaving of ScriptContext|s).
     public static void SwitchAndHoldScriptContext(ScriptContext newScriptContex)

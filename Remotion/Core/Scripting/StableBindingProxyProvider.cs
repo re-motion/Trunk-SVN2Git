@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Castle.DynamicProxy;
 
 namespace Remotion.Scripting
@@ -30,6 +31,7 @@ namespace Remotion.Scripting
   {
     private readonly ITypeFilter _typeFilter;
     private readonly ModuleScope _moduleScope;
+    private readonly Dictionary<Type, Type> _proxiedTypeToProxyTypeMap = new Dictionary<Type, Type>();
 
     public StableBindingProxyProvider (ITypeFilter typeFilter, ModuleScope moduleScope)
     {
@@ -60,17 +62,29 @@ namespace Remotion.Scripting
     // TODO: Make private
     public object BuildProxy (object proxied)
     {
-      Type proxyType = BuildProxyType (proxied);
+      Type proxyType = GetProxyType (proxied.GetType());
       return Activator.CreateInstance (proxyType, proxied);
     }
 
     // TODO: Make private
-
-    public Type BuildProxyType (object proxied)
+    public Type BuildProxyType (Type proxiedType)
     {
-      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxied.GetType(), _typeFilter, _moduleScope);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, _typeFilter, _moduleScope);
       return stableBindingProxyBuilder.BuildProxyType();
     }
+
+    // TODO: Make private
+    public Type GetProxyType (Type proxiedType)
+    {
+      Type proxyType;
+      if (!_proxiedTypeToProxyTypeMap.TryGetValue (proxiedType, out proxyType))
+      {
+        proxyType = BuildProxyType (proxiedType);
+        _proxiedTypeToProxyTypeMap[proxiedType] = proxyType;
+      }
+      return proxyType;
+    }
+
 
     //private void SetProxied (Object proxy, Object proxied)
     //{

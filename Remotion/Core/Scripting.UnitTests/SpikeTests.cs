@@ -14,11 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Diagnostics.ToText;
+using Remotion.Diagnostics.ToText.Infrastructure;
+using Remotion.Reflection;
 using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
@@ -211,18 +215,37 @@ namespace Remotion.Scripting.UnitTests
         To.ConsoleLine.nl();
         type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic).Process (pi => To.ConsoleLine.e (pi.Name).e (pi.GetAccessors (true)).e (pi.MetadataToken));
       }
-    }    
+    }
 
 
     //[Test]
-    //[Explicit]
-    //public void MethodsDeclaringType ()
+    //public void DiscoverScriptContext ()
     //{
-    //  var type = typeof (ProxiedChild);
-    //  var interfaceMapping = type.GetInterfaceMap (typeof (IAmbigous1));
-    //  interfaceMapping.InterfaceMethods.Process (mi => To.ConsoleLine.e (mi.Name));
-    //}
+    //  const bool excludeGlobalTypes = true;
+    //  // TODO: Use ContextAwareTypeDiscoveryUtility.GetInstance() instead to make use of assembly caching
+    //  ITypeDiscoveryService _typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (
+    //      new AssemblyFinder (ApplicationAssemblyFinderFilter.Instance, excludeGlobalTypes));
 
+    //  ICollection types = _typeDiscoveryService.GetTypes (typeof (T), excludeGlobalTypes);
+
+    //  foreach (Type type in types)
+    //  {
+    //    if (RetrieveTextHandlerAttribute (type) != null)
+    //    {
+    //      Type baseType = type.BaseType;
+    //      //Assertion.IsTrue (baseType.Name == "ToTextSpecificTypeHandler`1");
+    //      Assertion.IsTrue (baseType.Name == baseTypeName); // Note: This check disallows use of derived type handlers
+    //      // TODO: Refactor check to use Type objects and IsAssignableFrom instead.
+    //      // TODO: Throw exception instead if attribute is attached to wrong type
+    //      // Idea: If IToTextSpecificHandler had a membler "HandledType", the check (and the following two lines) could be removed.
+    //      Type[] genericArguments = baseType.GetGenericArguments ();
+    //      Type handledType = genericArguments[0];
+
+    //      handlerMap[handledType] = (T) Activator.CreateInstance (type);
+    //    }
+    //  }
+    //  return handlerMap;
+    //}
 
     public int GetPropertyGetterSetterMetaDataToken (PropertyInfo property, bool getGetter)
     {

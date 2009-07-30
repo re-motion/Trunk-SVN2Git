@@ -43,7 +43,7 @@ namespace Remotion.Scripting.UnitTests
       var proxied = new ProxiedChildChildChild ("abrakadava");
       const string attributeName = "PrependName";
 
-      var proxyType = provider.BuildProxyType (proxied);
+      var proxyType = provider.BuildProxyType (proxied.GetType());
 
       var proxyMethod = proxyType.GetAllInstanceMethods(attributeName,typeof(string)).Single();
 
@@ -99,20 +99,18 @@ def TestTypeMemberProxy(customMemberTester) :
       Assert.That (result, Is.EqualTo ("ProxiedChild ProxiedChild: abrakadava simsalbum, THE NUMBER=2"));
     }
 
-    //[Test]
-    //public void GetCachedProxy ()
-    //{
-    //  var provider = new StableBindingProxyProvider (
-    //    new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
+    [Test]
+    public void GetProxyType_IsCached ()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
 
-    //  var proxied = new ProxiedChildChildChild ("abrakadava");
-    //  const string attributeName = "PrependName";
+      var proxied = new GetProxyTypeIsCachedTest ("abrakadava");
 
-    //  Assert.That (provider.GetCachedProxy (), Is.Null);
-    //  var typeMemberProxy = provider.BuildProxy (proxied);
-    //  Assert.That (typeMemberProxy, Is.Not.Null);
-    //  Assert.That (provider.GetCachedProxy (), Is.SameAs (typeMemberProxy));
-    //}
+      var proxyType =  provider.GetProxyType (proxied.GetType());
+      Assert.That (proxyType, Is.Not.Null);
+      Assert.That (provider.GetProxyType (proxied.GetType ()), Is.SameAs (proxyType));
+    }
   }
 
 
@@ -135,6 +133,15 @@ def TestTypeMemberProxy(customMemberTester) :
     public object GetCustomMember (string name)
     {
       return _typeMemberProxy;
+    }
+  }
+
+
+  public class GetProxyTypeIsCachedTest : ProxiedChildChildChild
+  {
+    public GetProxyTypeIsCachedTest (string name)
+        : base(name)
+    {
     }
   }
 }
