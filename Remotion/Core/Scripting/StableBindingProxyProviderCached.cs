@@ -83,13 +83,9 @@ namespace Remotion.Scripting
 
     public object GetAttributeProxy (Object proxied, string attributeName)
     {
-      object proxy = GetProxy (proxied);
-      
-      //var attributeProxy = ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
-
       var attributeProxy = _proxiedTypeToAttributeProxyCache.GetOrCreateValue (
         new Tuple<Type, string> (proxied.GetType (),attributeName), 
-        dummyKey => ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName));
+        dummyKey => ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).Operations.GetMember (GetProxy (proxied), attributeName));
 
       return attributeProxy;
     }

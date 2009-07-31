@@ -196,13 +196,38 @@ namespace Remotion.Scripting.UnitTests
       var providerUncached = new StableBindingProxyProviderUncached (
         new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
 
+      var providerCachedUsingDictionary = new StableBindingProxyProviderCachedUsingDictionary (
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+
+
       var proxied0 = new ProxiedChildChildChild ("ABC");
 
        //var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
        ScriptingHelper.ExecuteAndTime ("ProxyProviderCached",nrLoopsArray, () => providerCached.GetAttributeProxy (proxied0, "PrependName"));
        ScriptingHelper.ExecuteAndTime ("ProxyProviderUncached", nrLoopsArray, () => providerUncached.GetAttributeProxy (proxied0, "PrependName"));
+       ScriptingHelper.ExecuteAndTime ("ProxyProviderUncachedUsingDictionary", nrLoopsArray, () => providerCachedUsingDictionary.GetAttributeProxy (proxied0, "PrependName"));
     }
+
+
+    [Test]
+    [Explicit]
+    public void GetAttributeProxyChainCallPerformance ()
+    {
+      // ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied, attributeName);
+
+      var proxied0 = new ProxiedChildChildChild ("ABC");
+
+      ScriptContext.SwitchAndHoldScriptContext (_scriptContext);
+      var currentStableBindingProxyProvider = ScriptContext.Current.StableBindingProxyProvider;
+
+      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
+      ScriptingHelper.ExecuteAndTime ("Direct", nrLoopsArray, () => currentStableBindingProxyProvider.GetAttributeProxy (proxied0, "PrependName"));
+      ScriptingHelper.ExecuteAndTime ("Indirect", nrLoopsArray, () => ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied0, "PrependName"));
+
+      ScriptContext.ReleaseScriptContext (_scriptContext);
+    }
+
 
 
     private FieldInfo GetProxiedField (object proxy)

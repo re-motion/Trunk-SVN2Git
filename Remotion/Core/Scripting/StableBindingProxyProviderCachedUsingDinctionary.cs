@@ -75,23 +75,13 @@ namespace Remotion.Scripting
       }
     }
 
-    //public object GetAttributeProxy (Object proxied, string attributeName)
-    //{
-    //  object proxy = BuildProxy(proxied);
-    //  var typeMemberProxy = ScriptingHost.GetScriptEngine(ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
-    //  return typeMemberProxy;
-    //}
-
     public object GetAttributeProxy (Object proxied, string attributeName)
     {
-      object proxy = GetProxy (proxied);
-
-      //var attributeProxy = ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
-
       var key = new Tuple<Type, string> (proxied.GetType(), attributeName);
       Object attributeProxy;
       if(!_proxiedTypeToAttributeProxyCache.TryGetValue (key, out attributeProxy))
       {
+        object proxy = GetProxy (proxied);
         attributeProxy = ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
         _proxiedTypeToAttributeProxyCache[key] = attributeProxy;
       }
@@ -108,8 +98,6 @@ namespace Remotion.Scripting
 
     protected Type GetProxyType (Type proxiedType)
     {
-      //Type proxyType = _proxiedTypeToProxyTypeCache.GetOrCreateValue (proxiedType, BuildProxyType);
-
       var key = proxiedType;
       Type proxyType;
       if (!_proxiedTypeToProxyTypeCache.TryGetValue (key, out proxyType))
@@ -121,12 +109,6 @@ namespace Remotion.Scripting
       return proxyType;
     }
 
-
-    //protected object BuildProxy (object proxied)
-    //{
-    //  Type proxyType = GetProxyType (proxied.GetType());
-    //  return Activator.CreateInstance (proxyType, proxied);
-    //}
 
     protected object BuildProxy (object proxied)
     {
@@ -141,8 +123,6 @@ namespace Remotion.Scripting
 
     protected object GetProxy (object proxied)
     {
-      //object proxy = _proxiedTypeToProxyCache.GetOrCreateValue (proxied.GetType (), dummyKey => BuildProxy (proxied));
-
       var key = proxied.GetType ();
       object proxy;
       if (!_proxiedTypeToProxyCache.TryGetValue (key, out proxy))

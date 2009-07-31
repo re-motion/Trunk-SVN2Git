@@ -19,9 +19,11 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Collections;
 using Remotion.Diagnostics.ToText;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.Scripting.UnitTests.TestDomain;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -162,7 +164,13 @@ def PropertyPathAccess(cascade) :
       var cascade = new Cascade (numberChildren);
       var cascadeStableBinding = new CascadeStableBinding (numberChildren);
       //var cascadeStableBinding = ObjectFactory.Create<CascadeStableBinding> (ParamList.Create (numberChildren));
+      var cascadeLocalStableBinding = new CascadeLocalStableBinding (numberChildren);
+      
+      var cascadeGetCustomMemberReturnsAttributeProxyFromMap = new CascadeGetCustomMemberReturnsAttributeProxyFromMap (numberChildren);
+      cascadeGetCustomMemberReturnsAttributeProxyFromMap.AddAttributeProxy ("GetChild", cascade, _scriptContext);
+      cascadeGetCustomMemberReturnsAttributeProxyFromMap.AddAttributeProxy ("GetName", cascade, _scriptContext);
 
+ 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
       privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
@@ -185,6 +193,8 @@ def PropertyPathAccess(cascade) :
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
       ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
       ExecuteAndTime ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
+      ExecuteAndTime ("script function (local stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeLocalStableBinding));
+      ExecuteAndTime ("script function (from map)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
       //ExecuteAndTime ("uncompiled expression", nrLoopsArray, () => expression.Execute ());
       //ExecuteAndTime ("uncompiled expression", nrLoopsArray, () => expression.ExecuteUncompiled ());
     }
@@ -314,7 +324,7 @@ def PropertyPathAccess(cascade) :
       var cascade = new Cascade (numberChildren);
 
       var cascadeGetCustomMemberReturnsAttributeProxyFromMap = new CascadeGetCustomMemberReturnsAttributeProxyFromMap (numberChildren);
-      //cascadeGetCustomMemberReturnsAttributeProxyFromMap.AddAttributeProxy ("GetName", cascade, _scriptContext);
+      cascadeGetCustomMemberReturnsAttributeProxyFromMap.AddAttributeProxy ("GetName", cascade, _scriptContext);
       cascadeGetCustomMemberReturnsAttributeProxyFromMap.AddAttributeProxy ("GetChild", cascade, _scriptContext);
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
@@ -372,6 +382,28 @@ def PropertyPathAccess(cascade) :
 
       propertyPathAccessScript.Execute (cascadeStableBinding);
     }
+
+
+
+    [Test]
+    [Explicit]
+    public void GetAttributeProxyChainCallPerformance ()
+    {
+      // ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied, attributeName);
+
+      var proxied0 = new Cascade (10);
+
+      ScriptContext.SwitchAndHoldScriptContext (_scriptContext);
+      var currentStableBindingProxyProvider = ScriptContext.Current.StableBindingProxyProvider;
+
+      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
+      const string attributeName = "GetName";
+      ScriptingHelper.ExecuteAndTime ("Direct", nrLoopsArray, () => currentStableBindingProxyProvider.GetAttributeProxy (proxied0, attributeName));
+      ScriptingHelper.ExecuteAndTime ("Indirect", nrLoopsArray, () => ScriptContext.Current.StableBindingProxyProvider.GetAttributeProxy (proxied0, attributeName));
+
+      ScriptContext.ReleaseScriptContext (_scriptContext);
+    }
+
 
 
 
@@ -457,17 +489,32 @@ def PropertyPathAccess(cascade) :
     {
       return ScriptContext.GetAttributeProxy (this, name);
     }
-
-    //public CascadeStableBinding GetChild ()
-    //{
-    //  return (CascadeStableBinding) Child;
-    //}
-
-    //public string GetName ()
-    //{
-    //  return Name;
-    //}
   }
+
+
+  public class CascadeLocalStableBinding : Cascade
+  {
+    private StableBindingProxyProviderCachedUsingDictionary _proxyProvider = new StableBindingProxyProviderCachedUsingDictionary (
+        new TypeLevelTypeFilter (new[] { typeof (CascadeLocalStableBinding) }), ScriptingHelper.CreateModuleScope ("CascadeLocalStableBinding"));
+
+    public CascadeLocalStableBinding (int nrChildren)
+    {
+      --nrChildren;
+      Name = "C" + nrChildren;
+      if (nrChildren > 0)
+      {
+        Child = new CascadeLocalStableBinding (nrChildren);
+      }
+    }
+
+    [SpecialName]
+    public object GetCustomMember (string name)
+    {
+      return _proxyProvider.GetAttributeProxy (this, name);
+    }
+  }
+
+ 
 
   public class CascadeGetCustomMemberReturnsString : Cascade
   {
@@ -519,9 +566,41 @@ def PropertyPathAccess(cascade) :
   }
 
 
+  //public class CascadeGetCustomMemberReturnsAttributeProxyFromMap : Cascade
+  //{
+  //  private readonly Dictionary<string, object> _attributeProxyMap = new Dictionary<string, object>();
+
+  //  public CascadeGetCustomMemberReturnsAttributeProxyFromMap (int nrChildren)
+  //  {
+  //    --nrChildren;
+  //    Name = "C" + nrChildren;
+  //    if (nrChildren > 0)
+  //    {
+  //      Child = new CascadeGetCustomMemberReturnsAttributeProxyFromMap (nrChildren);
+  //    }
+  //  }
+
+  //  public void AddAttributeProxy(string name, object proxied, ScriptContext scriptContext)
+  //  {
+  //    ScriptContext.SwitchAndHoldScriptContext (scriptContext);
+  //    var attributeNameProxy = ScriptContext.GetAttributeProxy (proxied, name);
+  //    _attributeProxyMap[name] = attributeNameProxy;
+  //    ScriptContext.ReleaseScriptContext (scriptContext);
+  //  }
+
+  //  [SpecialName]
+  //  public object GetCustomMember (string name)
+  //  {
+  //    //To.ConsoleLine.s ("CascadeGetCustomMemberReturnsAttributeProxyFromMap.GetCustomMember").e(() => name);
+  //    return _attributeProxyMap[name];
+  //  }
+  //}
+
+
   public class CascadeGetCustomMemberReturnsAttributeProxyFromMap : Cascade
   {
-    private readonly Dictionary<string, object> _attributeProxyMap = new Dictionary<string, object>();
+    //private readonly Dictionary<string, object> _attributeProxyMap = new Dictionary<string, object> ();
+    protected readonly Dictionary<Tuple<Type, string>, object> _attributeProxyMap = new Dictionary<Tuple<Type, string>, object> ();
 
     public CascadeGetCustomMemberReturnsAttributeProxyFromMap (int nrChildren)
     {
@@ -533,11 +612,12 @@ def PropertyPathAccess(cascade) :
       }
     }
 
-    public void AddAttributeProxy(string name, object proxied, ScriptContext scriptContext)
+    public void AddAttributeProxy (string name, object proxied, ScriptContext scriptContext)
     {
+      var type = this.GetType ();
       ScriptContext.SwitchAndHoldScriptContext (scriptContext);
       var attributeNameProxy = ScriptContext.GetAttributeProxy (proxied, name);
-      _attributeProxyMap[name] = attributeNameProxy;
+      _attributeProxyMap[new Tuple<Type, string> (type,name)] = attributeNameProxy;
       ScriptContext.ReleaseScriptContext (scriptContext);
     }
 
@@ -545,7 +625,10 @@ def PropertyPathAccess(cascade) :
     public object GetCustomMember (string name)
     {
       //To.ConsoleLine.s ("CascadeGetCustomMemberReturnsAttributeProxyFromMap.GetCustomMember").e(() => name);
-      return _attributeProxyMap[name];
+      var type = this.GetType();
+      return _attributeProxyMap[new Tuple<Type, string> (type, name)];
     }
   }
+
+
 }
