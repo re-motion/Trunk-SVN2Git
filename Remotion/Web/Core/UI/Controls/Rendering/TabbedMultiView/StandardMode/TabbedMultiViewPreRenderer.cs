@@ -67,7 +67,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
   $(window).bind('resize', function(){{ 
     adjustView_{0}(); 
   }}); 
-  setTimeout('adjustView_{0}();', 10); 
+  setTimeout(""$(window).trigger('resize');"", 10);
 }} );";
       bindScript = string.Format (bindScript, Control.ClientID);
       Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (TabbedMultiViewPreRenderer), Control.ClientID + "_BindViewResize", bindScript);

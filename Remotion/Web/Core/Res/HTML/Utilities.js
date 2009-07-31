@@ -137,40 +137,28 @@ ArgumentUtility.CheckNotNullAndTypeIsFunction = function(name, value) {
 function StyleUtility()
 { }
 
-StyleUtility.CreateBorderSpans = function(element, standardMode) {
+StyleUtility.CreateBorderSpans = function(element, standardMode)
+{
 
-    var elementBody = element;
-    if (!standardMode) {
-        elementBody = $(element).children(':first')[0];
-    }
-    StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'top');
-    StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'left');
-    StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottom');
-    StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'right');
-    StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'topLeft');
-    var topRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'topRight');
-    var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottomLeft');
-    var bottomRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottomRight');
+  var elementBody = element;
+  if (!standardMode)
+  {
+    elementBody = $(element).children(':first')[0];
+  }
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'top');
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'left');
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottom');
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'right');
+  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'topLeft');
+  var topRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'topRight');
+  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottomLeft');
+  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottomRight');
 
-    StyleUtility.CalculateBorderSpans(elementBody, topRight, bottomLeft, bottomRight, standardMode);
+  StyleUtility.CalculateBorderSpans(elementBody, topRight, bottomLeft, bottomRight, standardMode);
 
-    var elementID = element.id;
-    var resizeHandler = function() { StyleUtility.OnResize(elementID); }
-    if (!TypeUtility.IsUndefined(window.attachEvent)) {
-        // // Make the function part of the object to provide 'this' pointer to object inside the handler.
-        // var uniqueKey = eventType + handler;
-        // object['e' + uniqueKey] = handler;
-        // object[uniqueKey] = function() { object['e' + uniqueKey](window.event); }
-        // object.attachEvent ('on' + eventType, object[uniqueKey]);
-        window.attachEvent('onresize', resizeHandler);
-        element.attachEvent('onresize', resizeHandler);
-        elementBody.attachEvent('onresize', resizeHandler);
-    }
-    else if (!TypeUtility.IsUndefined(window.addEventListener)) {
-        window.addEventListener('resize', resizeHandler, false);
-        element.addEventListener('resize', resizeHandler, false);
-        elementBody.addEventListener('resize', resizeHandler, false);
-    }
+  var elementID = element.id;
+  var resizeHandler = function() { StyleUtility.OnResize(elementID); }
+  $(window).resize(resizeHandler);
 }
 
 StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bottomRight, standardMode) {

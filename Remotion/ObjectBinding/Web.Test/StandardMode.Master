@@ -12,16 +12,24 @@
     html
     {
       height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
     body
     {
       height: 100%;
       margin: 0;
+      padding: 0;
       overflow: hidden;
     }
     form
     {
-      height: 100%;
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
     }
   </style>
 </head>

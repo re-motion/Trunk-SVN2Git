@@ -75,26 +75,23 @@ div.tabbedMultiViewTabStrip
   font-family: Arial;
 }
 
-div.tabbedMultiViewTabStrip div.tabStripTabsPane
+div.tabbedMainMenu li
 {
-  padding-bottom: 0.3em;
-  border-bottom: solid 1px #005588;
+  margin-bottom: -3px;
 }
 
-div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
+div.tabbedMultiViewTabStrip div.tabStripTabsPane
 {
-  display: inline; /* IE-only value */
-  margin-bottom: -1px; /* Moves the UL into the surrounding DIV. */
+  border-bottom: solid 1px #005588;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabWrapper
 {
-  padding-top: 0.3em;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator
 {
-  width: 1em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
+  width: 1em;
   border-bottom: solid 1px #005588;
 }
 
@@ -161,8 +158,7 @@ div.tabbedMultiViewTabStrip a span.anchorBody
   padding-right: 0.3em;
 }
 
-/* Non-IE Browsers hack \*/
-html > body div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
+div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
 {
   display: block; /* Correction for Non-IE browsers. */
 }
@@ -173,22 +169,21 @@ html > body div.tabbedMultiViewTabStrip span.tabStripTabSelected
   margin-left: 1em; /* Provides room for the separator. */
 }
 
-html > body div.tabbedMultiViewTabStrip span.tabStripTabWrapper
+div.tabbedMultiViewTabStrip span.tabStripTabWrapper
 {
-  margin-bottom: -4px; /* The border-width and padding */
+  /*margin-bottom: -5px; /* The border-width and padding */
 }
 
-html > body div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
+div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   margin-bottom: 1px; /* The width of the top-border of the tabs. */
-  padding-top: 0.1em; /* The padding used for the anchorBody span. */
-  padding-bottom: 0.1em; /* The padding used for the anchorBody span. */
+  padding-top: 1px; /* The padding used for the anchorBody span. */
+  padding-bottom: 1px; /* The padding used for the anchorBody span. */
 }
 
-html > body div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody, 
-html > body div.tabbedMultiViewTabStrip span.tabStripTabSelected span.anchorBody, 
-html > body div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
+div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody, 
+div.tabbedMultiViewTabStrip span.tabStripTabSelected span.anchorBody, 
+div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   height: 1.4em;
 }
-/* End Non-IE Browsers hack\*/
