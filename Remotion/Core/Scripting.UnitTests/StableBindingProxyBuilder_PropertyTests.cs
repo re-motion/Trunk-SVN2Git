@@ -93,6 +93,58 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
+    public void BuildProxyType_PublicProperty_WithNonPublicGetter ()
+    {
+      var knownBaseTypes = new[] { typeof (ProxiedChild) };
+      var knownTypes = knownBaseTypes; 
+      var typeFilter = new TypeLevelTypeFilter (knownTypes);
+      var proxiedType = typeof (ProxiedChildChildChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_PublicProperty"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildChildChild ("PC");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+     //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+
+      var proxyPropertyInfo = proxyType.GetProperty ("PropertyWithNonPublicGetter", _publicInstanceFlags);
+
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.CanRead, Is.False);
+      Assert.That (proxyPropertyInfo.CanWrite, Is.True);
+      //Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("ProxiedChild::NameProperty PC"));
+
+      proxyPropertyInfo.SetValue (proxy, "XXyyZZ", null);
+    }
+
+
+    [Test]
+    public void BuildProxyType_PublicProperty_WithNonPublicSetter ()
+    {
+      var knownBaseTypes = new[] { typeof (ProxiedChild) };
+      var knownTypes = knownBaseTypes;
+      var typeFilter = new TypeLevelTypeFilter (knownTypes);
+      var proxiedType = typeof (ProxiedChildChildChild);
+      var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_PublicProperty"));
+      var proxyType = stableBindingProxyBuilder.BuildProxyType ();
+
+      // Create proxy instance, initializing it with class to be proxied
+      var proxied = new ProxiedChildChildChild ("PC");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+
+      //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
+
+      var proxyPropertyInfo = proxyType.GetProperty ("PropertyWithNonPublicSetter", _publicInstanceFlags);
+
+      Assert.That (proxyPropertyInfo, Is.Not.Null);
+      Assert.That (proxyPropertyInfo.CanRead, Is.True);
+      Assert.That (proxyPropertyInfo.CanWrite, Is.False);
+      Assert.That (proxyPropertyInfo.GetValue (proxy, null), Is.EqualTo ("Proxied::PropertyWithNonPublicSetter PC"));
+    }
+
+
+    [Test]
     public void BuildProxyType_VirtualPublicProperty ()
     {
       var knownBaseTypes = new[] { typeof (ProxiedChild) };

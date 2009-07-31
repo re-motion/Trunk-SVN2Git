@@ -153,10 +153,12 @@ namespace Remotion.Scripting
     {
       if (propertyInfo.CanRead)
       {
-        // Added by FS
         var proxiedGetMethodInfo = propertyInfo.GetGetMethod (true);
-        var getMethodEmitter = AddForwardingMethod (proxiedGetMethodInfo);
-        propertyEmitter.GetMethod = getMethodEmitter;
+        if (proxiedGetMethodInfo.IsPublic) // Getter is not public => do not expose in proxy
+        {
+          var getMethodEmitter = AddForwardingMethod (proxiedGetMethodInfo);
+          propertyEmitter.GetMethod = getMethodEmitter;
+        }
 
         //var getMethodEmitter = propertyEmitter.CreateGetMethod ();
         //var proxiedGetMethodInfo = propertyInfo.GetGetMethod (true);
@@ -165,10 +167,12 @@ namespace Remotion.Scripting
 
       if (propertyInfo.CanWrite)
       {
-        // Added by FS
         var proxiedSetMethodInfo = propertyInfo.GetSetMethod (true);
-        var setMethodEmitter = AddForwardingMethod (proxiedSetMethodInfo);
-        propertyEmitter.SetMethod = setMethodEmitter;
+        if (proxiedSetMethodInfo.IsPublic) // Setter is not public => do not expose in proxy
+        {
+          var setMethodEmitter = AddForwardingMethod (proxiedSetMethodInfo);
+          propertyEmitter.SetMethod = setMethodEmitter;
+        }
 
         //var setMethodEmitter = propertyEmitter.CreateSetMethod ();
         //var proxiedSetMethodInfo = propertyInfo.GetSetMethod (true);

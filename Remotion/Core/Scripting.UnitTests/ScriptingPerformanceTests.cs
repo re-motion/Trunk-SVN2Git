@@ -275,6 +275,10 @@ def PropertyPathAccess(cascade) :
     }
 
 
+
+
+
+
     [Test]
     [Explicit]
     public void SimplePropertyAccess_GetCustomMember_FixedAttributeProxy ()
@@ -406,6 +410,33 @@ def PropertyPathAccess(cascade) :
 
 
 
+    [Test]
+    [Explicit]
+    public void SimplePropertyAccess_CascadeStableBinding_PropertyExpose ()
+    {
+      const string scriptFunctionSourceCode = @"
+import clr
+def PropertyPathAccess(cascade) :
+  return cascade.Name
+";
+
+      const int numberChildren = 10;
+      var cascadeStableBinding = new CascadeStableBinding (numberChildren);
+
+      var privateScriptEnvironment = ScriptEnvironment.Create ();
+
+      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+
+      var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
+        _scriptContext, ScriptLanguageType.Python,
+        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
+      );
+
+      propertyPathAccessScript.Execute (cascadeStableBinding);
+    }
+
+
+
 
     public void ExecuteAndTimeLongPropertyPathAccess (string testName, int nrLoops, Func<Cascade, string> func)
     {
@@ -442,8 +473,8 @@ def PropertyPathAccess(cascade) :
 
   public class Cascade
   {
-    public Cascade Child;
-    public string Name;
+    private Cascade _child;
+    private string _name;
 
     public Cascade ()
     {
@@ -458,6 +489,18 @@ def PropertyPathAccess(cascade) :
       {
         Child = new Cascade (nrChildren);
       }
+    }
+
+    public Cascade Child
+    {
+      get { return _child; }
+      protected set { _child = value; }
+    }
+
+    public string Name
+    {
+      get { return _name; }
+      protected set { _name = value; }
     }
 
     public Cascade GetChild ()

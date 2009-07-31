@@ -102,6 +102,8 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     }
 
 
+
+
     //--------------------------------------------------------------------
     // NamePropertyVirtual
     //--------------------------------------------------------------------
@@ -128,6 +130,21 @@ namespace Remotion.Scripting.UnitTests.TestDomain
     }
 
 
+    //--------------------------------------------------------------------
+    // Non-public getter/setter
+    //--------------------------------------------------------------------
+
+    public string PropertyWithNonPublicGetter
+    {
+      protected get { return "Proxied::PropertyWithNonPublicGetter " + _name; }
+      set { _name = value + "-Proxied::PropertyWithNonPublicGetter"; }
+    }
+
+    public string PropertyWithNonPublicSetter
+    {
+      get { return "Proxied::PropertyWithNonPublicSetter " + _name; }
+      protected set { _name = value + "-Proxied::PropertyWithNonPublicSetter"; }
+    }
 
 
     //--------------------------------------------------------------------

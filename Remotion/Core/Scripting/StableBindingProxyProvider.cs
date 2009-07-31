@@ -91,6 +91,7 @@ namespace Remotion.Scripting
       }
 
       attributeProxyCached.SetProxiedFieldValue (proxied);
+      //SetProxiedFieldValue (attributeProxyCached.Proxy, proxied);
 
       return attributeProxyCached.AttributeProxy;
     }
