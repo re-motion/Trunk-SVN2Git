@@ -144,7 +144,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1441")]
     public void EagerFetching_WithTakeResultOperator ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -158,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1441")]
+    [Ignore ("TODO 1441: Determine how to resolve this. Possibilities: Move the result operators to the front, issue an error, execute the take in memory.")]
     public void EagerFetching_WithResultOperator_AfterFetch ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -169,7 +168,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.Order1);
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
-      CheckCollectionRelationRegistered (DomainObjectIDs.Order2, "OrderItems", false, DomainObjectIDs.OrderItem3);
     }
   }
 }

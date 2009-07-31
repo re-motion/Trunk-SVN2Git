@@ -394,9 +394,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fetchQuery = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery.Key, Is.SameAs (orderItemsRelationEndPointDefinition));
       Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
-          "SELECT [#fetch0].* FROM [OrderView] [order], [OrderItemView] [#fetch0] "
-          + "WHERE (([order].[OrderNo] = @1) AND "
-          +        "(([order].[ID] IS NULL AND [#fetch0].[OrderID] IS NULL) OR [order].[ID] = [#fetch0].[OrderID]))"));
+          "SELECT DISTINCT [#fetch1].* FROM (SELECT [order].* FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)) [#fetch0], [OrderItemView] [#fetch1] "
+          + "WHERE (([#fetch0].[ID] IS NULL AND [#fetch1].[OrderID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[OrderID])"));
       Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery.Value.Parameters[0].Value, Is.EqualTo (1));
@@ -451,9 +450,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fetchQuery = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery.Key, Is.SameAs (ordersRelationEndPointDefinition));
       Assert.That (fetchQuery.Value.Statement, Is.EqualTo (
-          "SELECT * FROM (SELECT [#fetch0].* FROM [CustomerView] [c], [OrderView] [#fetch0] "
-          + "WHERE (([c].[Name] = @1) AND "
-          + "(([c].[ID] IS NULL AND [#fetch0].[CustomerID] IS NULL) OR [c].[ID] = [#fetch0].[CustomerID]))) [result] ORDER BY OrderNo asc"));
+        "SELECT DISTINCT [#fetch1].* FROM (SELECT [c].* FROM [CustomerView] [c] WHERE ([c].[Name] = @1)) [#fetch0], [OrderView] [#fetch1] "
+        + "WHERE (([#fetch0].[ID] IS NULL AND [#fetch1].[CustomerID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[CustomerID]) ORDER BY OrderNo asc"));
+
       Assert.That (fetchQuery.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
@@ -481,9 +480,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fetchQuery1 = query.EagerFetchQueries.Single ();
       Assert.That (fetchQuery1.Key, Is.SameAs (ordersRelationEndPointDefinition));
       Assert.That (fetchQuery1.Value.Statement, Is.EqualTo (
-          "SELECT * FROM (SELECT [#fetch0].* FROM [CustomerView] [c], [OrderView] [#fetch0] "
-          + "WHERE (([c].[Name] = @1) AND "
-          +         "(([c].[ID] IS NULL AND [#fetch0].[CustomerID] IS NULL) OR [c].[ID] = [#fetch0].[CustomerID]))) [result] ORDER BY OrderNo asc"));
+          "SELECT DISTINCT [#fetch1].* FROM (SELECT [c].* FROM [CustomerView] [c] WHERE ([c].[Name] = @1)) [#fetch0], [OrderView] [#fetch1] "
+        + "WHERE (([#fetch0].[ID] IS NULL AND [#fetch1].[CustomerID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[CustomerID]) ORDER BY OrderNo asc"));
       Assert.That (fetchQuery1.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery1.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery1.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));
@@ -493,10 +491,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var fetchQuery2 = fetchQuery1.Value.EagerFetchQueries.Single ();
       Assert.That (fetchQuery2.Key, Is.SameAs (orderItemsRelationEndPointDefinition));
       Assert.That (fetchQuery2.Value.Statement, Is.EqualTo (
-          "SELECT [#fetch1].* FROM [CustomerView] [c], [OrderView] [#fetch0], [OrderItemView] [#fetch1] "
-          + "WHERE ((([c].[Name] = @1) AND "
-          +       "(([c].[ID] IS NULL AND [#fetch0].[CustomerID] IS NULL) OR [c].[ID] = [#fetch0].[CustomerID])) AND "
-          +       "(([#fetch0].[ID] IS NULL AND [#fetch1].[OrderID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[OrderID]))"));
+          "SELECT DISTINCT [#fetch0].* FROM ("
+            + "SELECT [#fetch1].* FROM ("
+              + "SELECT [c].* FROM [CustomerView] [c] WHERE ([c].[Name] = @1)) [#fetch0]"
+            + ", [OrderView] [#fetch1] WHERE (([#fetch0].[ID] IS NULL AND [#fetch1].[CustomerID] IS NULL) OR [#fetch0].[ID] = [#fetch1].[CustomerID])) [#fetch2]"
+          + ", [OrderItemView] [#fetch0] WHERE (([#fetch2].[ID] IS NULL AND [#fetch0].[OrderID] IS NULL) OR [#fetch2].[ID] = [#fetch0].[OrderID])"));
       Assert.That (fetchQuery2.Value.Parameters.Count, Is.EqualTo (1));
       Assert.That (fetchQuery2.Value.Parameters[0].Name, Is.EqualTo ("@1"));
       Assert.That (fetchQuery2.Value.Parameters[0].Value, Is.EqualTo ("Kunde 1"));

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.DataObjectModel;
 using Remotion.Data.Linq.Backend.SqlGeneration;
+using Remotion.Data.Linq.Clauses;
 using Remotion.Data.Linq.Clauses.ResultOperators;
 using Remotion.Data.Linq.Clauses.StreamedData;
 using Remotion.Data.Linq.EagerFetching;
@@ -234,7 +235,11 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var statement = commandData.Statement;
       if (!string.IsNullOrEmpty (sortExpression))
-        statement = "SELECT * FROM (" + statement + ") [result] ORDER BY " + sortExpression;
+      {
+        Assertion.IsFalse (queryModel.BodyClauses.OfType<OrderByClause> ().Any (), 
+            "We assume that fetch request query models cannot have OrderBy clauses.");
+        statement = statement + " ORDER BY " + sortExpression;
+      }
 
       var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, commandData.Parameters, queryType);
       CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
@@ -277,12 +282,15 @@ namespace Remotion.Data.DomainObjects.Linq
         string sortExpression = GetSortExpressionForRelation (relationEndPointDefinition);
 
         var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ();
+        fetchQueryModel.ResultOperators.Add (new DistinctResultOperator ()); // fetch queries should always be distinct even when the query would return duplicates
+
         var fetchQuery = CreateQuery (
             "<fetch query for " + fetchQueryModelBuilder.FetchRequest.RelationMember.Name + ">",
             fetchQueryModel,
             fetchQueryModelBuilder.CreateInnerBuilders(),
             QueryType.Collection,
-            relationEndPointDefinition.GetOppositeClassDefinition(), sortExpression);
+            relationEndPointDefinition.GetOppositeClassDefinition(),
+            sortExpression);
 
           query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
       }
