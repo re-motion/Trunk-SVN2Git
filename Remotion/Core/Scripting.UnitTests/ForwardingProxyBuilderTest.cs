@@ -256,7 +256,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [Ignore ("TODO MGi: Fix by using interface MemberInfos for forwarding, not implementation MemberInfos.")]
+    [Ignore ("TODO: Fix by using interface MemberInfos for forwarding, not implementation MemberInfos.")]
     public void AddForwardingExplicitInterfaceProperty ()
     {
       #if(false)
@@ -393,6 +393,23 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (proxyMethodInfo.Invoke (proxy, new object[] { "is Smith" }), Is.EqualTo ("The name is Smith"));
     }
 
+
+
+    [Test]
+    public void IProxy ()
+    {
+      var proxyBuilder = new ForwardingProxyBuilder ("IProxy", ModuleScope, typeof (Proxied), new Type[0]);
+      Type proxyType = proxyBuilder.BuildProxyType ();
+
+      var proxied = new Proxied ("AAA");
+      object proxy = Activator.CreateInstance (proxyType, proxied);
+      Assert.That (ScriptingHelper.GetProxiedFieldValue (proxy), Is.SameAs (proxied));
+
+       var proxied2 = new Proxied ("BBB");
+      ((IProxy) proxy).SetProxied (proxied2);
+
+      Assert.That (ScriptingHelper.GetProxiedFieldValue (proxy), Is.SameAs (proxied2));
+    }
 
 
     public void AssertMethodInfoEqual (MethodInfo methodInfo0, MethodInfo methodInfo1)

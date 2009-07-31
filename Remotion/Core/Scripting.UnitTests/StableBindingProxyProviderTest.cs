@@ -79,7 +79,7 @@ namespace Remotion.Scripting.UnitTests
       var proxy = provider.BuildProxy (proxied);
       // Necessary since a newly built proxy has an empty proxied field
       // TODO: Introduce BuildProxyFromType(proxiedType)
-      SetProxiedFieldValue (proxy, proxied); 
+      ScriptingHelper.SetProxiedFieldValue (proxy, proxied); 
    
       Assert.That (proxy, Is.Not.Null);
 
@@ -127,11 +127,11 @@ namespace Remotion.Scripting.UnitTests
       var proxy0 = provider.GetProxy (proxied0);
       Assert.That (proxy0, Is.Not.Null);
 
-      var proxiedFieldValue0 = GetProxiedFieldValue (proxy0);
+      var proxiedFieldValue0 = ScriptingHelper.GetProxiedFieldValue (proxy0);
       Assert.That (proxiedFieldValue0, Is.SameAs (proxied0));
       var proxy1 = provider.GetProxy (proxied1);
       Assert.That (proxy0, Is.SameAs (proxy1));
-      Assert.That (GetProxiedFieldValue (proxy1), Is.SameAs (proxied1));
+      Assert.That (ScriptingHelper.GetProxiedFieldValue (proxy1), Is.SameAs (proxied1));
     }
 
     [Test]
@@ -228,31 +228,31 @@ namespace Remotion.Scripting.UnitTests
 
 
 
-    private FieldInfo GetProxiedField (object proxy)
-    {
-      Type proxyType = GetActualType (proxy);
-      return proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
-    }
+    //private FieldInfo GetProxiedField (object proxy)
+    //{
+    //  Type proxyType = GetActualType (proxy);
+    //  return proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
+    //}
 
-    private object GetProxiedFieldValue (object proxy)
-    {
-      //Type proxyType = GetActualType (proxy);
-      //var proxiedField = proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
-      var proxiedField = GetProxiedField (proxy);
-      return proxiedField.GetValue (proxy);
-    }
+    //private object GetProxiedFieldValue (object proxy)
+    //{
+    //  //Type proxyType = GetActualType (proxy);
+    //  //var proxiedField = proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
+    //  var proxiedField = GetProxiedField (proxy);
+    //  return proxiedField.GetValue (proxy);
+    //}
 
-    private void SetProxiedFieldValue (object proxy, object value)
-    {
-      var proxiedField = GetProxiedField (proxy);
-      proxiedField.SetValue (proxy, value);
-    }
+    //private void SetProxiedFieldValue (object proxy, object value)
+    //{
+    //  var proxiedField = GetProxiedField (proxy);
+    //  proxiedField.SetValue (proxy, value);
+    //}
 
-    private Type GetActualType (object proxy)
-    {
-      var objectGetType = typeof (object).GetMethod ("GetType");
-      return (Type) objectGetType.Invoke (proxy, new object[0]);
-    }
+    //private Type GetActualType (object proxy)
+    //{
+    //  var objectGetType = typeof (object).GetMethod ("GetType");
+    //  return (Type) objectGetType.Invoke (proxy, new object[0]);
+    //}
   }
 
 

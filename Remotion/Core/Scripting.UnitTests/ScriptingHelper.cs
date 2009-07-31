@@ -181,5 +181,32 @@ namespace Remotion.Scripting.UnitTests
       To.Console.se ();
     }
 
+
+    public static FieldInfo GetProxiedField (object proxy)
+    {
+      Type proxyType = GetActualType (proxy);
+      return proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
+    }
+
+    public static object GetProxiedFieldValue (object proxy)
+    {
+      //Type proxyType = GetActualType (proxy);
+      //var proxiedField = proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
+      var proxiedField = GetProxiedField (proxy);
+      return proxiedField.GetValue (proxy);
+    }
+
+    public static void SetProxiedFieldValue (object proxy, object value)
+    {
+      var proxiedField = GetProxiedField (proxy);
+      proxiedField.SetValue (proxy, value);
+    }
+
+    public static Type GetActualType (object proxy)
+    {
+      var objectGetType = typeof (object).GetMethod ("GetType");
+      return (Type) objectGetType.Invoke (proxy, new object[0]);
+    }
+
   }
 }
