@@ -1,24 +1,8 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
-// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
-// 
-// The re-motion Core Framework is free software; you can redistribute it 
-// and/or modify it under the terms of the GNU Lesser General Public License 
-// version 3.0 as published by the Free Software Foundation.
-// 
-// re-motion is distributed in the hope that it will be useful, 
-// but WITHOUT ANY WARRANTY; without even the implied warranty of 
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with re-motion; if not, see http://www.gnu.org/licenses.
-// 
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Remotion.Collections;
-using Remotion.Diagnostics.ToText;
 
 namespace Remotion.Scripting
 {
@@ -96,6 +80,7 @@ namespace Remotion.Scripting
     public object GetAttributeProxy (Object proxied, string attributeName)
     {
       var key = new Tuple<Type, string> (proxied.GetType(), attributeName);
+
       AttributeProxyCached attributeProxyCached;
       if (!_proxiedTypeToAttributeProxyCache.TryGetValue (key, out attributeProxyCached))
       {
@@ -156,26 +141,6 @@ namespace Remotion.Scripting
       return proxy;
     }
 
-
-  }
-
-  public class AttributeProxyCached
-  {
-    public object Proxy { get; private set; }
-    public object AttributeProxy { get; private set; }
-    private readonly FieldInfo _proxiedField;
-
-    public AttributeProxyCached (object proxy, object attributeProxy)
-    {
-      Proxy = proxy;
-      AttributeProxy = attributeProxy;
-      _proxiedField = StableBindingProxyProvider.GetProxiedField (Proxy);
-    }
-
-    public void SetProxiedFieldValue (object value)
-    {
-      _proxiedField.SetValue (Proxy, value);
-    }
 
   }
 }

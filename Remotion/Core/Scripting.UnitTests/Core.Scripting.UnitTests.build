@@ -41,6 +41,7 @@
         <include name="${build.test.outputdir}/Remotion.dll" />
         <include name="${build.test.outputdir}/Remotion.Scripting.dll"/>
         <include name="${build.test.outputdir}/Remotion.Development.dll"/>
+        <include name="${build.test.outputdir}/Remotion.Interfaces.dll"/>
         <include name="${build.test.outputdir}/IronPython.dll"/>
         <include name="${build.test.outputdir}/IronPython.Modules.dll"/>
         <include name="${build.test.outputdir}/Microsoft.Scripting.dll"/>
