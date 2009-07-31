@@ -30,7 +30,7 @@
 </TextBoxStyle>
             </remotion:bocmultilinetextvalue></td>
           <td>
-            <p>bound, required=true</p></td>
+            bound, required=true</td>
           <td style="WIDTH: 20%"><asp:label id=CVFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
@@ -39,7 +39,7 @@
               </textboxstyle>
             </remotion:bocmultilinetextvalue></td>
           <td>
-            <p>bound, read-only</p></td>
+            bound, read-only</td>
           <td style="WIDTH: 20%"><asp:label id=ReadOnlyCVFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
@@ -56,7 +56,7 @@
               <textboxstyle rows="5" textmode="MultiLine">
               </textboxstyle></remotion:bocmultilinetextvalue></td>
           <td>
-            <p>unbound, value set, read only</p></td>
+            unbound, value set, read only</td>
           <td style="WIDTH: 20%"><asp:label id=UnboundReadOnlyCVFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
@@ -65,7 +65,7 @@
 </TextBoxStyle>
             </remotion:bocmultilinetextvalue></td>
           <td>
-            <p>disabled, bound, required=true</p></td>
+            disabled, bound, required=true</td>
           <td style="WIDTH: 20%"><asp:label id=DisabledCVFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
@@ -74,7 +74,7 @@
               </textboxstyle>
             </remotion:bocmultilinetextvalue></td>
           <td>
-            <p>disabled, bound, read-only</p></td>
+            disabled, bound, read-only</td>
           <td style="WIDTH: 20%"><asp:label id=DisabledReadOnlyCVFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>
@@ -91,7 +91,7 @@
               <textboxstyle rows="5" textmode="MultiLine">
               </textboxstyle></remotion:bocmultilinetextvalue></td>
           <td>
-            <p>disabled, unbound, value set, read only</p></td>
+            disabled, unbound, value set, read only</td>
           <td style="WIDTH: 20%"><asp:label id=DisabledUnboundReadOnlyCVFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr></table>
       <p>CV Field Text Changed: <asp:label id=CVFieldTextChangedLabel runat="server" EnableViewState="False">#</asp:label></p>
       <p><remotion:webbutton id=CVTestSetNullButton runat="server" Text="VC Set Null" width="220px"/><remotion:webbutton id=CVTestSetNewValueButton runat="server" Text="CVSet New Value" width="220px"/></p>
