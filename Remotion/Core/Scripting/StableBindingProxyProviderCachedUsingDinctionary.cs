@@ -38,7 +38,7 @@ namespace Remotion.Scripting
       proxiedField.SetValue (proxy, value);
     }
 
-    protected static FieldInfo GetProxiedField (object proxy)
+    public static FieldInfo GetProxiedField (object proxy)
     {
       Type proxyType = GetActualType (proxy);
       return proxyType.GetField ("_proxied", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -55,7 +55,7 @@ namespace Remotion.Scripting
     protected readonly Dictionary<Type, Type> _proxiedTypeToProxyTypeCache = new Dictionary<Type, Type> ();
     protected readonly Dictionary<Type, object> _proxiedTypeToProxyCache = new Dictionary<Type, object> ();
     //protected readonly Dictionary<Tuple<Type, string>, object> _proxiedTypeToAttributeProxyCache = new Dictionary<Tuple<Type, string>, object> ();
-    protected readonly Dictionary<Tuple<Type, string>, Tuple<object, object>> _proxiedTypeToAttributeProxyCache = new Dictionary<Tuple<Type, string>, Tuple<object, object>> ();
+    protected readonly Dictionary<Tuple<Type, string>, AttributeProxyCached> _proxiedTypeToAttributeProxyCache = new Dictionary<Tuple<Type, string>, AttributeProxyCached> ();
 
     public StableBindingProxyProviderCachedUsingDictionary (ITypeFilter typeFilter, ModuleScope moduleScope)
     {
@@ -96,18 +96,18 @@ namespace Remotion.Scripting
     public object GetAttributeProxy (Object proxied, string attributeName)
     {
       var key = new Tuple<Type, string> (proxied.GetType(), attributeName);
-      Tuple<object, object> proxyAndAttributeProxy;
-      if (!_proxiedTypeToAttributeProxyCache.TryGetValue (key, out proxyAndAttributeProxy))
+      AttributeProxyCached attributeProxyCached;
+      if (!_proxiedTypeToAttributeProxyCache.TryGetValue (key, out attributeProxyCached))
       {
         object proxy = GetProxy (proxied);
         var attributeProxy = ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
-        proxyAndAttributeProxy = new Tuple<object,object>(proxy,attributeProxy);
-        _proxiedTypeToAttributeProxyCache[key] = proxyAndAttributeProxy;
+        attributeProxyCached = new AttributeProxyCached (proxy, attributeProxy);
+        _proxiedTypeToAttributeProxyCache[key] = attributeProxyCached;
       }
 
-      SetProxiedFieldValue (proxyAndAttributeProxy.A, proxied);
+      attributeProxyCached.SetProxiedFieldValue (proxied);
 
-      return proxyAndAttributeProxy.B;
+      return attributeProxyCached.AttributeProxy;
     }
 
     protected Type BuildProxyType (Type proxiedType)
@@ -156,6 +156,26 @@ namespace Remotion.Scripting
       return proxy;
     }
 
+
+  }
+
+  public class AttributeProxyCached
+  {
+    public object Proxy { get; private set; }
+    public object AttributeProxy { get; private set; }
+    private readonly FieldInfo _proxiedField;
+
+    public AttributeProxyCached (object proxy, object attributeProxy)
+    {
+      Proxy = proxy;
+      AttributeProxy = attributeProxy;
+      _proxiedField = StableBindingProxyProviderCachedUsingDictionary.GetProxiedField (Proxy);
+    }
+
+    public void SetProxiedFieldValue (object value)
+    {
+      _proxiedField.SetValue (Proxy, value);
+    }
 
   }
 }

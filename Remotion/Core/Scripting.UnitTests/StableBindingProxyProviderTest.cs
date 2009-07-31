@@ -151,8 +151,6 @@ namespace Remotion.Scripting.UnitTests
 
       var typeMemberProxy1 = provider.GetAttributeProxy (proxied1, "NamePropertyVirtual");
 
-      //Assert.That (typeMemberProxy0, Is.SameAs (typeMemberProxy1));
-
       var customMemberTester1 = new GetCustomMemberTester (typeMemberProxy1);
       var result1 = ScriptingHelper.ExecuteScriptExpression<string> ("p0.ABCDEFG", customMemberTester1);
       Assert.That (result1, Is.EqualTo ("ProxiedChildChildChild::NamePropertyVirtual xyzzzzzzzzz"));
