@@ -75,9 +75,9 @@ div.tabbedMultiViewTabStrip
   font-family: Arial;
 }
 
-div.tabbedMainMenu li
+div.tabbedMainMenu ul
 {
-  margin-bottom: -3px;
+  margin-bottom: 0px !important;
 }
 
 div.tabbedMultiViewTabStrip div.tabStripTabsPane

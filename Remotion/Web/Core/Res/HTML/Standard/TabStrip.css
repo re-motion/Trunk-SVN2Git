@@ -20,15 +20,16 @@
   width: 100%; 
 }
 
+/* HACK: Webkit-based browsers (Chrome, Safari) won't apply this, IE and Firefox will */
+*.tabStripTabsPane ul
+{
+  margin-bottom: -1px;
+}
+
+
 *.tabStripTabsPane ul li
 {
-  padding: 0;
-  margin: 0px;
-  margin-right: -4px;
-  margin-bottom: -4px;
-  border: none 0px transparent;
-
-  display: inline-block;
+   display: inline;
 }
 
 *.tabStripTab a
@@ -55,6 +56,7 @@
   color: Blue;
   text-decoration: none;
   cursor: default;
+  padding-bottom: 1px;
 }
 
 *.tabStripTab.disabled a,
