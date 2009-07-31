@@ -77,7 +77,9 @@ namespace Remotion.Scripting
       var arg = setProxiedMethod.ArgumentReferences[0];
       //var arg = new ArgumentReference (proxiedType);
       //var ctor = _classEmitter.CreateConstructor (new[] { arg });
-      setProxiedMethod.AddStatement (new AssignStatement (_proxied, arg.ToExpression ()));
+      //setProxiedMethod.AddStatement (new AssignStatement (_proxied, arg.ToExpression ()));
+      var argAsProxiedType = new ConvertExpression (proxiedType, arg.ToExpression ());
+      setProxiedMethod.AddStatement (new AssignStatement (_proxied, argAsProxiedType));
       setProxiedMethod.AddStatement (new ReturnStatement ());
     }
 
