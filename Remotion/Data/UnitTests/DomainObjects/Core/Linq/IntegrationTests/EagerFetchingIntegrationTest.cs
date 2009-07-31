@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = (from o1 in QueryFactory.CreateLinqQuery<Order> ()
                    from o2 in QueryFactory.CreateLinqQuery<Order> ()
-                   select o1).FetchMany (x => x.OrderItems).Distinct();
+                   select o1).Distinct ().FetchMany (x => x.OrderItems);
 
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4, 
                         DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);

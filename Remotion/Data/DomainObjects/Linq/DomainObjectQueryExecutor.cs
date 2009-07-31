@@ -72,9 +72,9 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      var fetchRequests = ExtractFetchRequests(queryModel);
+      var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
 
-      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests, QueryType.Scalar);
+      IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Scalar);
       return (T) ClientTransaction.Current.QueryManager.GetScalar (query);
     }
 
@@ -118,12 +118,12 @@ namespace Remotion.Data.DomainObjects.Linq
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
-      var fetchRequests = ExtractFetchRequests (queryModel);
+      var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
 
       var groupResultOperator = queryModel.ResultOperators.OfType<GroupResultOperator>().FirstOrDefault();
       if (groupResultOperator != null)
       {
-        if (fetchRequests.Any ())
+        if (fetchQueryModelBuilders.Any ())
         {
           var message = "Cannot execute a query with a GroupBy clause that specifies fetch requests because GroupBy is simulated in-memory.";
           throw new NotSupportedException (message);
@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Linq
       }
       else
       {
-        IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchRequests, QueryType.Collection);
+        IQuery query = CreateQuery ("<dynamic query>", queryModel, fetchQueryModelBuilders, QueryType.Collection);
         return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable().Cast<T>();
       }
     }
@@ -166,18 +166,6 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     /// <summary>
-    /// Extracts the fetch requests from the given <paramref name="queryModel"/>, returning them to the caller.
-    /// </summary>
-    /// <param name="queryModel">The query model to remove the fetch requests from.</param>
-    /// <returns>A list of the <see cref="FetchRequestBase"/> instances removed.</returns>
-    public IList<FetchRequestBase> ExtractFetchRequests (QueryModel queryModel)
-    {
-      var visitor = new FetchFilteringQueryModelVisitor ();
-      visitor.VisitQueryModel (queryModel);
-      return visitor.FetchRequests;
-    }
-
-    /// <summary>
     /// Check to avoid choosing a column in the select projection. This is needed because re-store does not support single columns.
     /// </summary>
     /// <param name="evaluation"></param>
@@ -205,17 +193,19 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
-    /// <param name="fetchRequests">The <see cref="FetchRequestBase"/> instances to be executed together with the query.</param>
+    /// <param name="fetchQueryModelBuilders">The <see cref="FetchQueryModelBuilder"/> instances for the fetch requests to be executed together with 
+    /// the query.</param>
     /// <param name="queryType">The type of query to create.</param>
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
-    public virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType)
+    public virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
 
-      return CreateQuery (id, queryModel, fetchRequests, queryType, StartingClassDefinition, null);
+      return CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, StartingClassDefinition, null);
     }
 
     /// <summary>
@@ -223,19 +213,20 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
-    /// <param name="fetchRequests">The <see cref="FetchRequestBase"/> instances to be executed together with the query.</param>
+    /// <param name="fetchQueryModelBuilders">The <see cref="FetchQueryModelBuilder"/> instances for the fetch requests to be executed together with 
+    /// the query.</param>
     /// <param name="queryType">The type of query to create.</param>
     /// <param name="classDefinitionOfResult">The class definition of the result objects to be returned by the query. This is used to obtain the
-    /// storage provider to execute the query and to resolve the relation properties of the <paramref name="fetchRequests"/>.</param>
+    /// storage provider to execute the query and to resolve the relation properties of the fetch requests.</param>
     /// <param name="sortExpression">A SQL expression that is used in an ORDER BY clause to sort the query results.</param>
     /// <returns>
     /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
     /// </returns>
-    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType, ClassDefinition classDefinitionOfResult, string sortExpression)
+    protected virtual IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType, ClassDefinition classDefinitionOfResult, string sortExpression)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-      ArgumentUtility.CheckNotNull ("fetchRequests", fetchRequests);
+      ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
       ArgumentUtility.CheckNotNull ("classDefinitionOfResult", classDefinitionOfResult);
 
       CommandData commandData = CreateStatement (queryModel);
@@ -246,7 +237,7 @@ namespace Remotion.Data.DomainObjects.Linq
         statement = "SELECT * FROM (" + statement + ") [result] ORDER BY " + sortExpression;
 
       var query = CreateQuery (id, classDefinitionOfResult.StorageProviderID, statement, commandData.Parameters, queryType);
-      CreateEagerFetchQueries (query, queryModel, classDefinitionOfResult, fetchRequests);
+      CreateEagerFetchQueries (query, classDefinitionOfResult, fetchQueryModelBuilders);
       return query;
     }
 
@@ -276,18 +267,20 @@ namespace Remotion.Data.DomainObjects.Linq
         return QueryFactory.CreateCollectionQuery (id, storageProviderID, statement, queryParameters, typeof (DomainObjectCollection));
     }
 
-    private void CreateEagerFetchQueries (IQuery query, QueryModel queryModel, ClassDefinition classDefinition, IEnumerable<FetchRequestBase> fetchRequests)
+    private void CreateEagerFetchQueries (IQuery query, ClassDefinition classDefinition, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
     {
-      foreach (var fetchRequest in fetchRequests)
+      foreach (var fetchQueryModelBuilder in fetchQueryModelBuilders)
       {
-        IRelationEndPointDefinition relationEndPointDefinition = GetEagerFetchRelationEndPointDefinition (fetchRequest, classDefinition);
+        IRelationEndPointDefinition relationEndPointDefinition = 
+            GetEagerFetchRelationEndPointDefinition (fetchQueryModelBuilder.FetchRequest, classDefinition);
+
         string sortExpression = GetSortExpressionForRelation (relationEndPointDefinition);
 
-        var fetchQueryModel = fetchRequest.CreateFetchQueryModel (queryModel);
+        var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ();
         var fetchQuery = CreateQuery (
-            "<fetch query for " + fetchRequest.RelationMember.Name + ">",
+            "<fetch query for " + fetchQueryModelBuilder.FetchRequest.RelationMember.Name + ">",
             fetchQueryModel,
-            fetchRequest.InnerFetchRequests,
+            fetchQueryModelBuilder.CreateInnerBuilders(),
             QueryType.Collection,
             relationEndPointDefinition.GetOppositeClassDefinition(), sortExpression);
 

@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Expect (mock => mock.CreateQuery (
               Arg<string>.Is.Anything,
               Arg.Is (queryModel),
-              Arg<IEnumerable<FetchRequestBase>>.List.Equal (new[] { fetchRequest }),
+              Arg<IEnumerable<FetchQueryModelBuilder>>.Matches (rs => rs.Count() == 1 && rs.Single().FetchRequest == fetchRequest),
               Arg.Is (QueryType.Scalar)))
           .Return (mockQuery);
 
@@ -206,8 +206,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       executorMock
           .Expect (mock => mock.CreateQuery (
               Arg<string>.Is.Anything, 
-              Arg.Is (queryModel), 
-              Arg<IEnumerable<FetchRequestBase>>.List.Equal (new[] {fetchRequest}), 
+              Arg.Is (queryModel),
+              Arg<IEnumerable<FetchQueryModelBuilder>>.Matches (rs => rs.Count () == 1 && rs.Single ().FetchRequest == fetchRequest),
               Arg.Is (QueryType.Collection)))
           .Return (mockQuery);
 
@@ -313,23 +313,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ExtractFetchRequests ()
-    {
-      var query = from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order;
-      QueryModel queryModel = ExpressionHelper.ParseQuery (query.Expression);
-
-      var fetchRequest1 = new FetchOneRequest (typeof (Order).GetProperty ("Customer"));
-      var fetchRequest2 = new FetchManyRequest (typeof (Order).GetProperty ("OrderItems"));
-
-      queryModel.ResultOperators.Add (fetchRequest1);
-      queryModel.ResultOperators.Add (fetchRequest2);
-
-      var result = _orderExecutor.ExtractFetchRequests (queryModel);
-      Assert.That (result, Is.EqualTo (new FetchRequestBase[] { fetchRequest1, fetchRequest2 }));
-      Assert.That (queryModel.ResultOperators, Is.Empty);
-    }
-
-    [Test]
     public void CreateQuery_Scalar ()
     {
       var classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Order));
@@ -367,7 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var expression = ExpressionHelper.MakeExpression (() => (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Count ());
       var queryModel = ExpressionHelper.ParseQuery (expression);
 
-      var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new FetchManyRequest[0], QueryType.Scalar);
+      var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Scalar);
       Assert.That (query.Statement, Is.EqualTo ("SELECT COUNT (*) FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
@@ -383,7 +366,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryable = from order in QueryFactory.CreateLinqQuery<Order>() where order.OrderNumber == 1 select order;
       var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
 
-      var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new FetchManyRequest[0], QueryType.Collection);
+      var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
       Assert.That (query.Statement, Is.EqualTo ("SELECT [order].* FROM [OrderView] [order] WHERE ([order].[OrderNo] = @1)"));
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.Parameters[0].Name, Is.EqualTo ("@1"));
@@ -400,8 +383,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
       var relationMember = typeof (Order).GetProperty ("OrderItems");
       var fetchRequest = new FetchManyRequest (relationMember);
+      var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
 
-      var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
+      var query = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
 
       var orderItemsRelationEndPointDefinition = 
           DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
@@ -430,8 +414,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = ExpressionHelper.ParseQuery (query.Expression);
       var relationMember = typeof (Order).GetProperty ("NotInMappingRelatedObjects");
       var fetchRequest = new FetchManyRequest (relationMember);
+      var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
 
-      _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
+      _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
     }
 
     [Test]
@@ -443,8 +428,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = ExpressionHelper.ParseQuery (query.Expression);
       var relationMember = typeof (Order).GetField ("LastLoadMode");
       var fetchRequest = new FetchOneRequest (relationMember);
+      var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
 
-      _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
+      _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
     }
 
     [Test]
@@ -454,8 +440,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
       var relationMember = typeof (Customer).GetProperty ("Orders");
       var fetchRequest = new FetchManyRequest (relationMember);
+      var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
 
-      var query = _customerExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
+      var query = _customerExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
 
       var ordersRelationEndPointDefinition =
           DomainObjectIDs.Customer1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
@@ -481,8 +468,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var fetchRequest = new FetchManyRequest (typeof (Customer).GetProperty ("Orders"));
       fetchRequest.GetOrAddInnerFetchRequest (new FetchManyRequest (typeof (Order).GetProperty("OrderItems")));
+      var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
 
-      var query = _customerExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchRequest }, QueryType.Collection);
+      var query = _customerExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
 
       var ordersRelationEndPointDefinition =
           DomainObjectIDs.Customer1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
@@ -565,7 +553,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         var queryModel = ExpressionHelper.ParseQuery (query.Expression);
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor>(ParamList.Create (_sqlGenerator, _orderClassDefinition));
 
-        executor.CreateQuery ("<dynamic query>", queryModel, new FetchManyRequest[0], QueryType.Collection);
+        executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelCalled, Is.True);
       }
     }
@@ -579,7 +567,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         var queryModel = ExpressionHelper.ParseQuery (query.Expression);
         var executor = ObjectFactory.Create<DomainObjectQueryExecutor> (ParamList.Create (_sqlGenerator, _orderClassDefinition));
 
-        executor.CreateQuery ("<dynamic query>", queryModel, new FetchManyRequest[0], QueryType.Collection);
+        executor.CreateQuery ("<dynamic query>", queryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
         Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor).CreateQueryFromModelWithClassDefinitionCalled, Is.True);
       }
     }

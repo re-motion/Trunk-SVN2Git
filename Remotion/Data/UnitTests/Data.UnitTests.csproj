@@ -605,6 +605,7 @@
     <Compile Include="Linq\Backend\DataObjectModel\TableTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchManyRequestTest.cs" />
     <Compile Include="Linq\EagerFetching\Parsing\TestFetchExpressionNodeBase.cs" />
+    <Compile Include="Linq\EagerFetching\TestFetchFilteringQueryModelVisitor.cs" />
     <Compile Include="Linq\EagerFetching\TestFetchRequest.cs" />
     <Compile Include="Linq\ExpressionHelper.cs" />
     <Compile Include="Linq\ExpressionTreeNavigator.cs" />

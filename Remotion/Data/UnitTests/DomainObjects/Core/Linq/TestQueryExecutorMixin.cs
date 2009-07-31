@@ -29,8 +29,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public interface IBaseCallRequirements
     {
       IQuery CreateQuery (string id, string storageProviderID, string statement, CommandParameter[] commandParameters, QueryType queryType);
-      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType);
-      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType, ClassDefinition classDefinitionOfResult, string sortExpression);
+      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType);
+
+      IQuery CreateQuery (
+          string id,
+          QueryModel queryModel,
+          IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
+          QueryType queryType,
+          ClassDefinition classDefinitionOfResult,
+          string sortExpression);
+
       CommandData CreateStatement (QueryModel queryModel);
     }
 
@@ -47,17 +55,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType)
+    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType)
     {
       CreateQueryFromModelCalled = true;
-      return Base.CreateQuery (id, queryModel, fetchRequests, queryType);
+      return Base.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType);
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchRequestBase> fetchRequests, QueryType queryType, ClassDefinition classDefinitionOfResult, string sortExpression)
+    public IQuery CreateQuery (
+        string id,
+        QueryModel queryModel,
+        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
+        QueryType queryType,
+        ClassDefinition classDefinitionOfResult,
+        string sortExpression)
     {
       CreateQueryFromModelWithClassDefinitionCalled = true;
-      return Base.CreateQuery (id, queryModel, fetchRequests, queryType, classDefinitionOfResult, sortExpression);
+      return Base.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, classDefinitionOfResult, sortExpression);
     }
 
     [OverrideTarget]

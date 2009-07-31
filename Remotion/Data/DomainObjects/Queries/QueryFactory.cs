@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.Linq;
 using Remotion.Data.Linq.Backend.SqlGeneration;
 using Remotion.Data.Linq.Backend.SqlGeneration.SqlServer;
+using Remotion.Data.Linq.EagerFetching;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Queries
@@ -175,9 +176,9 @@ namespace Remotion.Data.DomainObjects.Queries
 
       var expression = queryable.Expression;
       var queryModel = provider.GenerateQueryModel (expression);
-      var fetchRequests = queryExecutor.ExtractFetchRequests (queryModel);
+      var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
 
-      return queryExecutor.CreateQuery (id, queryModel, fetchRequests, QueryType.Collection);
+      return queryExecutor.CreateQuery (id, queryModel, fetchQueryModelBuilders, QueryType.Collection);
     }
 
 
