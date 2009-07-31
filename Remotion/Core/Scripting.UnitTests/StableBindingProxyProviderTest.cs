@@ -100,39 +100,39 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (provider.GetProxyType (proxied.GetType ()), Is.SameAs (proxyType));
     }
 
-    //[Test]
-    //public void GetProxy_IsCached ()
-    //{
-    //  var provider = new StableBindingProxyProvider (
-    //    new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
+    [Test]
+    public void GetProxy_IsCached ()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("BuildProxy"));
 
-    //  var proxied0 = new GetProxyTypeIsCachedTest ("abrakadava");
-    //  var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
+      var proxied0 = new GetProxyTypeIsCachedTest ("abrakadava");
+      var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
 
-    //  var proxy0 = provider.GetProxy (proxied0);
-    //  Assert.That (proxy0, Is.Not.Null);
-    //  var proxy1 = provider.GetProxy (proxied1);
-    //  Assert.That (proxy0, Is.SameAs (proxy1));
-    //}
+      var proxy0 = provider.GetProxy (proxied0);
+      Assert.That (proxy0, Is.Not.Null);
+      var proxy1 = provider.GetProxy (proxied1);
+      Assert.That (proxy0, Is.SameAs (proxy1));
+    }
 
-    //[Test]
-    //public void GetProxy_IsCachedAndProxiedIsSet ()
-    //{
-    //  var provider = new StableBindingProxyProvider (
-    //    new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("GetProxy_IsCachedAndProxiedSet"));
+    [Test]
+    public void GetProxy_IsCachedAndProxiedIsSet ()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (GetProxyTypeIsCachedTest) }), ScriptingHelper.CreateModuleScope ("GetProxy_IsCachedAndProxiedSet"));
 
-    //  var proxied0 = new GetProxyTypeIsCachedTest ("abrakadava");
-    //  var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
+      var proxied0 = new GetProxyTypeIsCachedTest ("abrakadava");
+      var proxied1 = new GetProxyTypeIsCachedTest ("simsalsabum");
 
-    //  var proxy0 = provider.GetProxy (proxied0);
-    //  Assert.That (proxy0, Is.Not.Null);
+      var proxy0 = provider.GetProxy (proxied0);
+      Assert.That (proxy0, Is.Not.Null);
 
-    //  var proxiedFieldValue0 = GetProxiedFieldValue(proxy0);
-    //  Assert.That (proxiedFieldValue0, Is.SameAs (proxied0));
-    //  var proxy1 = provider.GetProxy (proxied1);
-    //  Assert.That (proxy0, Is.SameAs (proxy1));
-    //  Assert.That (GetProxiedFieldValue (proxy1), Is.SameAs (proxied1));
-    //}
+      var proxiedFieldValue0 = GetProxiedFieldValue (proxy0);
+      Assert.That (proxiedFieldValue0, Is.SameAs (proxied0));
+      var proxy1 = provider.GetProxy (proxied1);
+      Assert.That (proxy0, Is.SameAs (proxy1));
+      Assert.That (GetProxiedFieldValue (proxy1), Is.SameAs (proxied1));
+    }
 
     [Test]
     public void GetAttributeProxy ()
@@ -159,31 +159,31 @@ namespace Remotion.Scripting.UnitTests
 
     }
 
-    //[Test]
-    //public void GetAttributeProxy_IsCached()
-    //{
-    //  var provider = new StableBindingProxyProvider (
-    //    new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+    [Test]
+    public void GetAttributeProxy_IsCached ()
+    {
+      var provider = new StableBindingProxyProvider (
+        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
 
-    //  var proxied0 = new ProxiedChildChildChild ("ABCccccccccccccccccc");
-    //  var proxied1 = new ProxiedChildChildChild ("xyzzzzzzzzz");
+      var proxied0 = new ProxiedChildChildChild ("ABCccccccccccccccccc");
+      var proxied1 = new ProxiedChildChildChild ("xyzzzzzzzzz");
 
-    //  const string attributeName = "PrependName";
-    //  var typeMemberProxy0 = provider.GetAttributeProxy (proxied0, attributeName);
-    //  var customMemberTester0 = new GetCustomMemberTester (typeMemberProxy0);
-    //  var result0 = ScriptingHelper.ExecuteScriptExpression<string> ("p0.XYZ('simsalbum',2)", customMemberTester0);
-    //  Assert.That (result0, Is.EqualTo ("ProxiedChild ProxiedChild: ABCccccccccccccccccc simsalbum, THE NUMBER=2"));
+      const string attributeName = "PrependName";
+      var typeMemberProxy0 = provider.GetAttributeProxy (proxied0, attributeName);
+      var customMemberTester0 = new GetCustomMemberTester (typeMemberProxy0);
+      var result0 = ScriptingHelper.ExecuteScriptExpression<string> ("p0.XYZ('simsalbum',2)", customMemberTester0);
+      Assert.That (result0, Is.EqualTo ("ProxiedChild ProxiedChild: ABCccccccccccccccccc simsalbum, THE NUMBER=2"));
 
 
-    //  var typeMemberProxy1 = provider.GetAttributeProxy (proxied1, attributeName);
+      var typeMemberProxy1 = provider.GetAttributeProxy (proxied1, attributeName);
 
-    //  Assert.That (typeMemberProxy0, Is.SameAs (typeMemberProxy1));
+      Assert.That (typeMemberProxy0, Is.SameAs (typeMemberProxy1));
 
-    //  var customMemberTester1 = new GetCustomMemberTester (typeMemberProxy1);
-    //  var result1 = ScriptingHelper.ExecuteScriptExpression<string> ("p0.ABCDEFG('Schlaf')", customMemberTester1);
-    //  Assert.That (result1, Is.EqualTo ("xyzzzzzzzzz Schlaf"));
-      
-    //}
+      var customMemberTester1 = new GetCustomMemberTester (typeMemberProxy1);
+      var result1 = ScriptingHelper.ExecuteScriptExpression<string> ("p0.ABCDEFG('Schlaf')", customMemberTester1);
+      Assert.That (result1, Is.EqualTo ("xyzzzzzzzzz Schlaf"));
+
+    }
 
 
     [Test]

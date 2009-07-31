@@ -17,9 +17,9 @@ using Castle.DynamicProxy;
 
 namespace Remotion.Scripting
 {
-  public class StableBindingProxyProvider : StableBindingProxyProviderUncached
+  //public class StableBindingProxyProvider : StableBindingProxyProviderUncached
   //public class StableBindingProxyProvider : StableBindingProxyProviderCached
-  //public class StableBindingProxyProvider : StableBindingProxyProviderCachedUsingDictionary
+  public class StableBindingProxyProvider : StableBindingProxyProviderCachedUsingDictionary
   {
     public StableBindingProxyProvider (ITypeFilter typeFilter, ModuleScope moduleScope) : base(typeFilter, moduleScope)
     {
