@@ -18,8 +18,13 @@ using Remotion.Mixins;
 
 namespace Remotion.Scripting
 {
+  /// <summary>
+  /// Mix (shaken not stirred) to your class to get stable binding in DLR scripts 
+  /// (see <see cref="ScriptContext"/> and <see cref="StableBindingProxyProvider"/>). 
+  /// </summary>
   public class StableBindingMixin : Mixin<object>, IStableBindingMixin
   {
+    // GetCustomMember needs to be public.
     [MemberVisibility (MemberVisibility.Public)]
     public object GetCustomMember (string name)
     {
@@ -29,6 +34,7 @@ namespace Remotion.Scripting
 
   public interface IStableBindingMixin
   {
+    // SpecialName attribute is copied from interface, not from class method.
     [SpecialName]
     object GetCustomMember (string name);
   }

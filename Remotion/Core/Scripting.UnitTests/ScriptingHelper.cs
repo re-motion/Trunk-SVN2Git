@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
@@ -150,6 +151,35 @@ namespace Remotion.Scripting.UnitTests
       return compiledScript.Execute<TResult> (scriptScope);
     }
 
+
+    public static void ExecuteAndTime (string testName, int[] nrLoopsArray, Func<Object> func)
+    {
+      var timings = new System.Collections.Generic.List<long> ();
+
+      foreach (var nrLoops in nrLoopsArray)
+      {
+        System.GC.Collect (2);
+        System.GC.WaitForPendingFinalizers ();
+
+        Stopwatch stopwatch = new Stopwatch ();
+        stopwatch.Start ();
+
+        for (int i = 0; i < nrLoops; i++)
+        {
+          func ();
+        }
+
+        stopwatch.Stop ();
+        timings.Add (stopwatch.ElapsedMilliseconds);
+      }
+
+      To.ConsoleLine.s ("Timings ").e (testName).s (",").e (() => nrLoopsArray).s (": ").nl ().sb ();
+      foreach (var timing in timings)
+      {
+        To.Console.e (timing);
+      }
+      To.Console.se ();
+    }
 
   }
 }
