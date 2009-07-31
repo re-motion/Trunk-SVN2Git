@@ -404,6 +404,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support result operators occurring after "
+        + "fetch requests. The objects on which the fetching is performed must be the same objects that are returned from the query. Rewrite the "
+        + "query to perform the fetching after applying all other result operators or call AsEnumerable after the last fetch request in order to "
+        + "execute all subsequent result operators in memory.")]
+    public void CreateQuery_EagerFetchQueries_BeforeOtherResultOperators ()
+    {
+      var queryable = (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Take (1);
+      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+      var relationMember = typeof (Order).GetProperty ("OrderItems");
+      var fetchRequest = new FetchManyRequest (relationMember);
+      var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 0);
+
+      _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
+    }
+
+    [Test]
+    public void CreateQuery_EagerFetchQueries_AfterOtherResultOperators ()
+    {
+      var queryable = (from order in QueryFactory.CreateLinqQuery<Order> () where order.OrderNumber == 1 select order).Take (1);
+      var queryModel = ExpressionHelper.ParseQuery (queryable.Expression);
+      var relationMember = typeof (Order).GetProperty ("OrderItems");
+      var fetchRequest = new FetchManyRequest (relationMember);
+      var fetchQueryModelBuilder = new FetchQueryModelBuilder (fetchRequest, queryModel, 1);
+
+      var result = _orderExecutor.CreateQuery ("<dynamic query>", queryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
+      Assert.That (result.EagerFetchQueries.Count, Is.EqualTo (1));
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "The property "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.NotInMappingRelatedObjects' is not a relation end point. Fetching it is not "
         + "supported by this LINQ provider.")]

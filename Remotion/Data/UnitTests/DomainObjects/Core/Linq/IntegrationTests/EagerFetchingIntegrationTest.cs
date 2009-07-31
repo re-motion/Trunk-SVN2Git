@@ -157,14 +157,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 1441: Determine how to resolve this. Possibilities: Move the result operators to the front, issue an error, execute the take in memory.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This query provider does not support result operators occurring after "
+        + "fetch requests. The objects on which the fetching is performed must be the same objects that are returned from the query. Rewrite the "
+        + "query to perform the fetching after applying all other result operators or call AsEnumerable after the last fetch request in order to "
+        + "execute all subsequent result operators in memory.")]
     public void EagerFetching_WithResultOperator_AfterFetch ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
-                   orderby o.OrderNumber
+                   where o.OrderNumber == 1
                    select o)
                    .FetchMany (o => o.OrderItems)
                    .Take (1);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    [Ignore ("TODO 1446")]
+    public void EagerFetching_WithOrderBy_WithoutTake ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where o.OrderNumber == 1
+                   orderby o.OrderNumber
+                   select o)
+                   .FetchMany (o => o.OrderItems);
 
       CheckQueryResult (query, DomainObjectIDs.Order1);
       CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);

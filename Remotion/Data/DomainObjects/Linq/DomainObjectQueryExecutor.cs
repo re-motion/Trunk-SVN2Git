@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -167,29 +168,6 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     /// <summary>
-    /// Check to avoid choosing a column in the select projection. This is needed because re-store does not support single columns.
-    /// </summary>
-    /// <param name="evaluation"></param>
-    private void CheckProjection (IEvaluation evaluation)
-    {
-      if (!(evaluation is Column))
-      {
-        string message = string.Format ("This query provider does not support the given select projection ('{0}'). The projection must select "
-                                        + "single DomainObject instances, because re-store does not support this kind of select projection.", evaluation.GetType ().Name);
-        throw new InvalidOperationException (message);
-      }
-      
-      var column = (Column) evaluation;
-      if (column.Name != "*")
-      {
-        string message = string.Format (
-            "This query provider does not support selecting single columns ('{0}'). The projection must select whole DomainObject instances.",
-            column.ColumnSource.AliasString + "." + column.Name);
-        throw new InvalidOperationException (message);
-      }
-    }
-
-    /// <summary>
     /// Creates an <see cref="IQuery"/> object based on the given <see cref="QueryModel"/>.
     /// </summary>
     /// <param name="id">The identifier for the linq query.</param>
@@ -232,6 +210,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       CommandData commandData = CreateStatement (queryModel);
       CheckProjection (commandData.SqlGenerationData.SelectEvaluation);
+      CheckNoResultOperatorsAfterFetch (fetchQueryModelBuilders);
 
       var statement = commandData.Statement;
       if (!string.IsNullOrEmpty (sortExpression))
@@ -281,7 +260,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
         string sortExpression = GetSortExpressionForRelation (relationEndPointDefinition);
 
-        var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ();
+        var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ().Clone(); // clone because we don't want to modify the source model of all inner requests
         fetchQueryModel.ResultOperators.Add (new DistinctResultOperator ()); // fetch queries should always be distinct even when the query would return duplicates
 
         var fetchQuery = CreateQuery (
@@ -339,6 +318,46 @@ namespace Remotion.Data.DomainObjects.Linq
     public virtual CommandData CreateStatement (QueryModel queryModel)
     {
       return SqlGenerator.BuildCommand (queryModel);
+    }
+
+    /// <summary>
+    /// Check to avoid choosing a column in the select projection. This is needed because re-store does not support single columns.
+    /// </summary>
+    private void CheckProjection (IEvaluation evaluation)
+    {
+      if (!(evaluation is Column))
+      {
+        string message = string.Format ("This query provider does not support the given select projection ('{0}'). The projection must select "
+                                        + "single DomainObject instances, because re-store does not support this kind of select projection.", evaluation.GetType ().Name);
+        throw new InvalidOperationException (message);
+      }
+
+      var column = (Column) evaluation;
+      if (column.Name != "*")
+      {
+        string message = string.Format (
+            "This query provider does not support selecting single columns ('{0}'). The projection must select whole DomainObject instances.",
+            column.ColumnSource.AliasString + "." + column.Name);
+        throw new InvalidOperationException (message);
+      }
+    }
+
+    /// <summary>
+    /// Check to avoid fetch requests that are followed by result operators. re-store cannot fetch without actually selecting the source objects.
+    /// </summary>
+    private void CheckNoResultOperatorsAfterFetch (IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
+    {
+      foreach (var fetchQueryModelBuilder in fetchQueryModelBuilders)
+      {
+        if (fetchQueryModelBuilder.ResultOperatorPosition < fetchQueryModelBuilder.SourceItemQueryModel.ResultOperators.Count)
+        {
+          string message = "This query provider does not support result operators occurring after fetch requests. The objects on which the fetching "
+              + "is performed must be the same objects that are returned from the query. Rewrite the query to perform the fetching after applying "
+              + "all other result operators or call AsEnumerable after the last fetch request in order to execute all subsequent result operators in "
+              + "memory.";
+          throw new InvalidOperationException (message);
+        }
+      }
     }
   }
 }
