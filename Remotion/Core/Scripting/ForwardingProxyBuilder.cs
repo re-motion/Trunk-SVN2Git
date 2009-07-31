@@ -50,6 +50,10 @@ namespace Remotion.Scripting
     private readonly FieldReference _proxied;
     private readonly Type _proxiedType;
 
+    private const BindingFlags _declaredInstanceBindingFlags =
+        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+
+
     public ForwardingProxyBuilder (string name, ModuleScope moduleScope, Type proxiedType, Type[] interfaces)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
@@ -61,6 +65,20 @@ namespace Remotion.Scripting
       _classEmitter = CreateClassEmitter (name, interfaces, moduleScope);
       _proxied = CreateProxiedField();
       CreateProxyCtor(proxiedType);
+
+      
+      
+      _classEmitter.TypeBuilder.AddInterfaceImplementation (typeof (IProxy));
+
+
+      // IProxy.SetProxied
+      var setProxiedMethod =_classEmitter.CreateInterfaceMethodImplementation (
+          typeof (IProxy).GetMethod ("SetProxied", _declaredInstanceBindingFlags));
+      var arg = setProxiedMethod.ArgumentReferences[0];
+      //var arg = new ArgumentReference (proxiedType);
+      //var ctor = _classEmitter.CreateConstructor (new[] { arg });
+      setProxiedMethod.AddStatement (new AssignStatement (_proxied, arg.ToExpression ()));
+      setProxiedMethod.AddStatement (new ReturnStatement ());
     }
 
     /// <summary>

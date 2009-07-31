@@ -477,7 +477,7 @@ namespace Remotion.Scripting.UnitTests
       //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (proxyMethods).nl (4);
       //To.ConsoleLine.e (knownInterfaceType.GetMethods()).nl (3).e (interfaceProxyMethods).nl (3);
 
-      Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count(), Is.EqualTo (proxyMethods.Count ()));
+      Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count () + typeof(IProxy).GetMethods().Length, Is.EqualTo (proxyMethods.Count ()));
 
       //---------------------------------------------------------------------------------------------------------------------------------
       // Adding IAmbigous2 interface adds StringTimes(string,int) explicit interface implementation.
@@ -515,7 +515,8 @@ namespace Remotion.Scripting.UnitTests
 
       //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (interfaceMethods).nl (3).e (proxyMethods).nl (3);
 
-      Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
+      Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count () + typeof (IProxy).GetMethods ().Length, // + typeof (IProxy).GetMethods ().Length, 
+        Is.EqualTo (proxyMethods.Count ()));
 
       // Adding IAmbigous2 interface adds StringTimes(string,int) explicit interface implementation
       AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous1), proxiedType, proxyType, "StringTimes", typeof (String), typeof (Int32));
@@ -557,7 +558,8 @@ namespace Remotion.Scripting.UnitTests
 
       //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (interfaceMethods).nl (3).e (proxyMethods).nl (3);
 
-      Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
+      Assert.That (knownBaseTypeMethods.Count () + interfaceMethods.Count () + typeof (IProxy).GetMethods ().Length, // + typeof (IProxy).GetMethods ().Length, 
+        Is.EqualTo (proxyMethods.Count ()));
 
       AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous3), proxiedType, proxyType, "StringTimes2", typeof (String), typeof (Int32));
       AssertHasSameExplicitInterfaceMethod (typeof (IAmbigous4), proxiedType, proxyType, "StringTimes2", typeof (String), typeof (Int32));
@@ -604,7 +606,8 @@ namespace Remotion.Scripting.UnitTests
       var numberProxyMethods = proxyMethods.Count ();
      
       #if(true)
-        Assert.That (numberKnownBaseTypeMethods + numberInterfaceMethods, Is.EqualTo (numberProxyMethods));
+      Assert.That (numberKnownBaseTypeMethods + numberInterfaceMethods + typeof (IProxy).GetMethods ().Length, // + typeof (IProxy).GetMethods ().Length,
+        Is.EqualTo (numberProxyMethods));
       #endif
 
       AssertHasSameMethod (knownBaseType, proxyType, "ProxiedChildGenericToString", typeof (int), typeof (string));

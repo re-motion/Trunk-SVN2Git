@@ -90,8 +90,9 @@ namespace Remotion.Scripting
         _proxiedTypeToAttributeProxyCache[key] = attributeProxyCached;
       }
 
-      attributeProxyCached.SetProxiedFieldValue (proxied);
+      //attributeProxyCached.SetProxiedFieldValue (proxied);
       //SetProxiedFieldValue (attributeProxyCached.Proxy, proxied);
+      ((IProxy) attributeProxyCached.Proxy).SetProxied (proxied);
 
       return attributeProxyCached.AttributeProxy;
     }

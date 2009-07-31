@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="ExpressionScript.cs" />
     <Compile Include="ForwardingProxyBuilder.cs" />
+    <Compile Include="IProxy.cs" />
     <Compile Include="MethodInfoEqualityComparer.cs" />
     <Compile Include="MethodInfoEqualityComparer2.cs" />
     <Compile Include="MethodInfoFromRelatedTypesEqualityComparer.cs" />

@@ -117,7 +117,7 @@ namespace Remotion.Scripting.UnitTests
       var proxied = new Proxied ();
       object proxy = Activator.CreateInstance (proxyType, proxied);
 
-      Assert.That (proxy.GetType ().GetInterfaces (), Is.EquivalentTo ((new[] { typeof (IProxiedGetName) })));
+      Assert.That (proxy.GetType ().GetInterfaces (), Is.EquivalentTo ((new[] { typeof (IProxiedGetName), typeof(IProxy) })));
       Assert.That (((IProxiedGetName) proxy).GetName (), Is.EqualTo ("Implementer.IProxiedGetName"));
       Assert.That (proxy.GetType ().GetMethod ("GetName").Invoke (proxy, new object[0]), Is.EqualTo ("Implementer.IProxiedGetName"));
     }
@@ -368,7 +368,7 @@ namespace Remotion.Scripting.UnitTests
       var proxied = new Proxied ();
       object proxy = Activator.CreateInstance (proxyType, proxied);
 
-      Assert.That (proxy.GetType ().GetInterfaces (), Is.EquivalentTo ((new[] { typeof (IProxiedGetName) })));
+      Assert.That (proxy.GetType ().GetInterfaces (), Is.EquivalentTo ((new[] { typeof (IProxiedGetName), typeof (IProxy) })));
       Assert.That (((IProxiedGetName) proxy).GetName (), Is.EqualTo ("Implementer.IProxiedGetName"));
       Assert.That (proxy.GetType ().GetMethod ("GetName").Invoke (proxy, new object[0]), Is.EqualTo ("Implementer.IProxiedGetName"));
     }
