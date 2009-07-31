@@ -576,6 +576,7 @@
     <Compile Include="Linq\DefaultQueryProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\EagerFetchingExtensionMethodsTest.cs" />
     <Compile Include="Linq\EagerFetching\FetchFilteringQueryModelVisitorTest.cs" />
+    <Compile Include="Linq\EagerFetching\FetchQueryModelBuilderTest.cs" />
     <Compile Include="Linq\EagerFetching\Parsing\ThenFetchManyExpressionNodeTest.cs" />
     <Compile Include="Linq\EagerFetching\Parsing\FetchExpressionNode_IntegrationTest.cs" />
     <Compile Include="Linq\EagerFetching\Parsing\ThenFetchOneExpressionNodeTest.cs" />
