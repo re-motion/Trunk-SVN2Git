@@ -154,7 +154,8 @@ namespace Remotion.Scripting
       if (propertyInfo.CanRead)
       {
         var proxiedGetMethodInfo = propertyInfo.GetGetMethod (true);
-        if (proxiedGetMethodInfo.IsPublic) // Getter is not public => do not expose in proxy
+        // If getter is not public, do not expose in proxy (Note: This is not equal to propertyInfo.CanRead above)
+        if (proxiedGetMethodInfo.IsPublic) 
         {
           var getMethodEmitter = AddForwardingMethod (proxiedGetMethodInfo);
           propertyEmitter.GetMethod = getMethodEmitter;
@@ -168,7 +169,8 @@ namespace Remotion.Scripting
       if (propertyInfo.CanWrite)
       {
         var proxiedSetMethodInfo = propertyInfo.GetSetMethod (true);
-        if (proxiedSetMethodInfo.IsPublic) // Setter is not public => do not expose in proxy
+        // If setter is not public, do not expose in proxy (Note: This is not equal to propertyInfo.CanWrite above)
+        if (proxiedSetMethodInfo.IsPublic)
         {
           var setMethodEmitter = AddForwardingMethod (proxiedSetMethodInfo);
           propertyEmitter.SetMethod = setMethodEmitter;
