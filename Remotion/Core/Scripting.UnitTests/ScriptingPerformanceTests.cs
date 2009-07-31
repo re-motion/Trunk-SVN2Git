@@ -494,7 +494,7 @@ def PropertyPathAccess(cascade) :
 
   public class CascadeLocalStableBinding : Cascade
   {
-    private StableBindingProxyProviderCachedUsingDictionary _proxyProvider = new StableBindingProxyProviderCachedUsingDictionary (
+    private StableBindingProxyProvider _proxyProvider = new StableBindingProxyProvider (
         new TypeLevelTypeFilter (new[] { typeof (CascadeLocalStableBinding) }), ScriptingHelper.CreateModuleScope ("CascadeLocalStableBinding"));
 
     public CascadeLocalStableBinding (int nrChildren)

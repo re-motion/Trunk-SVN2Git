@@ -184,28 +184,28 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    [Test]
-    [Explicit]
-    public void GetAttributeProxyPerformance ()
-    {
-      var providerCached = new StableBindingProxyProviderCached (
-        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+    //[Test]
+    //[Explicit]
+    //public void GetAttributeProxyPerformance ()
+    //{
+    //  var providerCached = new StableBindingProxyProviderCached (
+    //    new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
       
-      var providerUncached = new StableBindingProxyProviderUncached (
-        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+    //  var providerUncached = new StableBindingProxyProviderUncached (
+    //    new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
 
-      var providerCachedUsingDictionary = new StableBindingProxyProviderCachedUsingDictionary (
-        new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
+    //  var providerCachedUsingDictionary = new StableBindingProxyProvider (
+    //    new TypeLevelTypeFilter (new[] { typeof (ProxiedChild) }), ScriptingHelper.CreateModuleScope ("GetTypeMemberProxy"));
 
 
-      var proxied0 = new ProxiedChildChildChild ("ABC");
+    //  var proxied0 = new ProxiedChildChildChild ("ABC");
 
-       //var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
-      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
-       ScriptingHelper.ExecuteAndTime ("ProxyProviderCached",nrLoopsArray, () => providerCached.GetAttributeProxy (proxied0, "PrependName"));
-       ScriptingHelper.ExecuteAndTime ("ProxyProviderUncached", nrLoopsArray, () => providerUncached.GetAttributeProxy (proxied0, "PrependName"));
-       ScriptingHelper.ExecuteAndTime ("ProxyProviderUncachedUsingDictionary", nrLoopsArray, () => providerCachedUsingDictionary.GetAttributeProxy (proxied0, "PrependName"));
-    }
+    //   //var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
+    //  var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
+    //   ScriptingHelper.ExecuteAndTime ("ProxyProviderCached",nrLoopsArray, () => providerCached.GetAttributeProxy (proxied0, "PrependName"));
+    //   ScriptingHelper.ExecuteAndTime ("ProxyProviderUncached", nrLoopsArray, () => providerUncached.GetAttributeProxy (proxied0, "PrependName"));
+    //   ScriptingHelper.ExecuteAndTime ("ProxyProviderUncachedUsingDictionary", nrLoopsArray, () => providerCachedUsingDictionary.GetAttributeProxy (proxied0, "PrependName"));
+    //}
 
 
     [Test]

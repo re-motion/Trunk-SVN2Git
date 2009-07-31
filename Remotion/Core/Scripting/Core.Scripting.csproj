@@ -83,10 +83,7 @@
     <Compile Include="AssemblyLevelTypeFilter.cs" />
     <Compile Include="StableBindingMixin.cs" />
     <Compile Include="StableBindingProxyBuilder.cs" />
-    <Compile Include="StableBindingProxyProvider.cs" />
     <Compile Include="StableBindingProxyProviderCachedUsingDinctionary.cs" />
-    <Compile Include="StableBindingProxyProviderUncached.cs" />
-    <Compile Include="StableBindingProxyProviderCached.cs" />
     <Compile Include="StableMetadataToken.cs" />
     <Compile Include="StableMethodMetadataToken.cs" />
     <Compile Include="StableMetadataTokenToMethodInfoMap.cs" />

@@ -30,7 +30,7 @@ namespace Remotion.Scripting
   /// to the Dynamic Language Runtime, thereby guaranteeing that mixins coming from different re-motion modules do not 
   /// interfere with the mixins and scripts coming from a specific module.
   /// </remarks>
-  public class StableBindingProxyProviderCachedUsingDictionary
+  public class StableBindingProxyProvider
   {
     protected static void SetProxiedFieldValue (object proxy, object value)
     {
@@ -50,14 +50,14 @@ namespace Remotion.Scripting
       return (Type) objectGetType.Invoke (proxy, new object[0]);
     }
 
-    protected readonly ITypeFilter _typeFilter;
-    protected readonly ModuleScope _moduleScope;
-    protected readonly Dictionary<Type, Type> _proxiedTypeToProxyTypeCache = new Dictionary<Type, Type> ();
-    protected readonly Dictionary<Type, object> _proxiedTypeToProxyCache = new Dictionary<Type, object> ();
-    //protected readonly Dictionary<Tuple<Type, string>, object> _proxiedTypeToAttributeProxyCache = new Dictionary<Tuple<Type, string>, object> ();
-    protected readonly Dictionary<Tuple<Type, string>, AttributeProxyCached> _proxiedTypeToAttributeProxyCache = new Dictionary<Tuple<Type, string>, AttributeProxyCached> ();
+    private readonly ITypeFilter _typeFilter;
+    private readonly ModuleScope _moduleScope;
+    private readonly Dictionary<Type, Type> _proxiedTypeToProxyTypeCache = new Dictionary<Type, Type> ();
+    private readonly Dictionary<Type, object> _proxiedTypeToProxyCache = new Dictionary<Type, object> ();
+    //private readonly Dictionary<Tuple<Type, string>, object> _proxiedTypeToAttributeProxyCache = new Dictionary<Tuple<Type, string>, object> ();
+    private readonly Dictionary<Tuple<Type, string>, AttributeProxyCached> _proxiedTypeToAttributeProxyCache = new Dictionary<Tuple<Type, string>, AttributeProxyCached> ();
 
-    public StableBindingProxyProviderCachedUsingDictionary (ITypeFilter typeFilter, ModuleScope moduleScope)
+    public StableBindingProxyProvider (ITypeFilter typeFilter, ModuleScope moduleScope)
     {
       _typeFilter = typeFilter;
       _moduleScope = moduleScope;
@@ -169,7 +169,7 @@ namespace Remotion.Scripting
     {
       Proxy = proxy;
       AttributeProxy = attributeProxy;
-      _proxiedField = StableBindingProxyProviderCachedUsingDictionary.GetProxiedField (Proxy);
+      _proxiedField = StableBindingProxyProvider.GetProxiedField (Proxy);
     }
 
     public void SetProxiedFieldValue (object value)
