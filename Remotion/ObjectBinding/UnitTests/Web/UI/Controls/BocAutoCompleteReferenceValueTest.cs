@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
@@ -26,6 +27,8 @@ using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
@@ -64,12 +67,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.ID = "BocAutoCompleteReferenceValue";
       _control.Value = (IBusinessObjectWithIdentity) _businessObject;
 
-      MockRepository repository = new MockRepository();
-      _page = repository.PartialMultiMock<Page> (typeof (IWxePage));
-      _page.Expect (mock => mock.Controls).CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-      _page.Replay();
-      var controls = _page.Controls;
-      controls.Add (_control);
+      MockRepository mockRepository = new MockRepository ();
+      _page = mockRepository.PartialMultiMock<Page> (typeof (ISmartPage));
+      ((ISmartPage) _page).Stub (stub => stub.Context).Return (new HttpContextWrapper (HttpContext.Current));
+      _page.Replay ();
+      _page.Controls.Add (_control);
 
       _businessObject = TypeWithReference.Create();
 
@@ -299,7 +301,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     public void LoadPostDataNotRequired ()
     {
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", false);
-      ((IWxePage) _control.Page).Stub (stub => stub.IsOutOfSequencePostBack).Return (false);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (null, null);
       Assert.IsFalse (result);
@@ -317,8 +318,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _control.IsDirty = false;
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
-      ((IWxePage) _control.Page).Stub (stub => stub.IsOutOfSequencePostBack).Return (false);
-      ((IWxePage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (key, postbackCollection);
       Assert.IsFalse (_control.IsDirty);
@@ -337,8 +337,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _control.IsDirty = false;
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
-      ((IWxePage) _control.Page).Stub (stub => stub.IsOutOfSequencePostBack).Return (false);
-      ((IWxePage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (key, postbackCollection);
       Assert.That (_control.IsDirty);
@@ -360,8 +359,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = false;
       
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
-      ((IWxePage) _control.Page).Stub (stub => stub.IsOutOfSequencePostBack).Return (false);
-      ((IWxePage) _control.Page).Stub (stub => stub.GetPostBackCollection()).Return (postbackCollection);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.HiddenFieldClientID, postbackCollection);
       Assert.That (_control.IsDirty);
@@ -383,8 +381,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.IsDirty = false;
 
       PrivateInvoke.SetNonPublicField (_control, "_hasBeenRenderedInPreviousLifecycle", true);
-      ((IWxePage) _control.Page).Stub (stub => stub.IsOutOfSequencePostBack).Return (false);
-      ((IWxePage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
+      ((ISmartPage) _control.Page).Stub (stub => stub.GetPostBackCollection ()).Return (postbackCollection);
 
       bool result = ((IPostBackDataHandler) _control).LoadPostData (_control.HiddenFieldClientID, postbackCollection);
       Assert.IsFalse (_control.IsDirty);

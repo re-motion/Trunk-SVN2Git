@@ -526,10 +526,11 @@ public class SmartPage: Page, ISmartPage, ISmartNavigablePage
     ControlHelper.SaveAllState (this);
   }
 
-  void IHttpHandler.ProcessRequest (HttpContext httpContext)
+  public override void ProcessRequest (HttpContext httpContext)
   {
     ArgumentUtility.CheckNotNull ("httpContext", httpContext);
     _httpContext = new HttpContextWrapper (httpContext);
+    base.ProcessRequest (httpContext);
   }
 
   IPage IControl.Page

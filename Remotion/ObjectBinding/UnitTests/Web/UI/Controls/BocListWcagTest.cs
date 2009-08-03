@@ -48,6 +48,7 @@ public class BocListWcagTest: BocTest
     _bocList.EnableSorting = false;
     _bocList.RowMenuDisplay = RowMenuDisplay.Disabled;
     _bocList.Selection = RowSelection.Disabled;
+    Page.Controls.Add (_bocList);
   }
 
 

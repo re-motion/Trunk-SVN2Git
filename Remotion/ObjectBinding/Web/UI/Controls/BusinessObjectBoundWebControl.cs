@@ -450,7 +450,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected new IHttpContext Context
     {
-      get { return base.Context != null ? new HttpContextWrapper (base.Context) : null; }
+      get { return Page != null ? Page.Context : null; }
     }
 
     protected override void LoadControlState (object savedState)
