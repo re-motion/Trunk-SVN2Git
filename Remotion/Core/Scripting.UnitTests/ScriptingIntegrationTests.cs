@@ -32,7 +32,7 @@ namespace Remotion.Scripting.UnitTests
       new TypeLevelTypeFilter(new[] {typeof(ProxiedChild), typeof(IAmbigous2), typeof(Document)}));
 
     // Create a ScriptEnvironment for shared use between all the scripts in your re-motion module (to insulate scripts
-    // from each other, simply create a seaparate ScriptEnvironment for each of them).
+    // from each other, simply create a separate ScriptEnvironment for each of them).
     private readonly ScriptEnvironment _sharedScriptEnvironment = ScriptEnvironment.Create ();
 
 

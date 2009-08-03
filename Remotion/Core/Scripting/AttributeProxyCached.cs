@@ -17,6 +17,9 @@ using System.Reflection;
 
 namespace Remotion.Scripting
 {
+  /// <summary>
+  /// Used by <see cref="StableBindingProxyProvider"/> to cache the results of the DLR returned attibute proxy.
+  /// </summary>
   public class AttributeProxyCached
   {
     public object Proxy { get; private set; }
