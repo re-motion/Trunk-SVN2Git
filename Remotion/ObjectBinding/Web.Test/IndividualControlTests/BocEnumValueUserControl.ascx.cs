@@ -117,10 +117,9 @@ public class BocEnumValueUserControl : BaseUserControl
   }
   public override bool Validate ()
   {
-    if (!base.Validate ())
-      return false;
-
-    return EnumObject.Validate();
+    bool isValid = base.Validate();
+    isValid &= EnumObject.Validate();
+    return isValid;
   }
 
   override protected void OnPreRender (EventArgs e)
