@@ -579,17 +579,11 @@ namespace Remotion.Web.UI.Controls
             break;
           }
         }
-        if (isMenuVisible)
-        {
-          writer.AddAttribute ("oncontextmenu", "return false;");
-        }
       }
-
+      
       if (!_enableWordWrap)
         writer.AddStyleAttribute ("white-space", "nowrap");
 
-      if (menu != null)
-        writer.AddAttribute ("name", menu.ClientID); 
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassNode);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
@@ -597,6 +591,12 @@ namespace Remotion.Web.UI.Controls
 
       if (hasExpander)
         RenderNodeExpander (writer, node, nodePath, isFirstNode, isLastNode);
+
+      if (isMenuVisible)
+      {
+        writer.AddAttribute ("oncontextmenu", "return false;");
+        writer.AddAttribute ("name", menu.ClientID);
+      }
       RenderNodeHead (writer, node, nodePath);
 
       writer.RenderEndTag();
@@ -1102,7 +1102,7 @@ namespace Remotion.Web.UI.Controls
         string script =
             string.Format (
                 @"$(document).ready( function(){{ 
-  $('#{0}').find('span.treeViewNode').each(
+  $('#{0}').find('span.treeViewNodeHead, span.treeViewNodeHeadSelected').each(
     function() {{
       var menuID = $(this).attr('name');
       if (menuID != null && menuID.length > 0)
