@@ -80,6 +80,7 @@
     <Compile Include="StableBindingMixinTest.cs" />
     <Compile Include="StableBindingProxyBuilder_PropertyTests.cs" />
     <Compile Include="StableBindingProxyBuilder_ReflectionTests.cs" />
+    <Compile Include="StableBindingProxyProviderPerformanceTests.cs" />
     <Compile Include="StableBindingProxyProviderTest.cs" />
     <Compile Include="StableBindingProxyProviderTestHelper.cs" />
     <Compile Include="StableMetadataTokenTest.cs" />

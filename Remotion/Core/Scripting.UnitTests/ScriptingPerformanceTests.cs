@@ -461,14 +461,6 @@ def PropertyPathAccess(cascade) :
     }
 
 
-    private string TestMethod (Cascade c)
-    {
-      if (c.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
-      {
-        return c.Child.Child.Child.Child.Child.Child.Child.Name;
-      }
-      return "FAILED";
-    }
   }
 
   public class Cascade

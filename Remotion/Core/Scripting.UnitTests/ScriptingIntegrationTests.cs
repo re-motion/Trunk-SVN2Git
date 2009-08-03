@@ -28,7 +28,7 @@ namespace Remotion.Scripting.UnitTests
     // on the same class.
     // Note: For this example it is more convenient to use a TypeLevelTypeFilter here; in practice, using a 
     // AssemblyLevelTypeFilter will in most cases be the more fitting choice.
-    private readonly ScriptContext _scriptContext = ScriptContext.Create ("YourModuleName.ScriptingIntegrationTests",
+    private readonly ScriptContext _scriptContext = ScriptContext.Create ("rubicon.eu.YourModuleName.ScriptingIntegrationTests",
       new TypeLevelTypeFilter(new[] {typeof(ProxiedChild), typeof(IAmbigous2), typeof(Document)}));
 
     // Create a ScriptEnvironment for shared use between all the scripts in your re-motion module (to insulate scripts
@@ -127,7 +127,7 @@ def CheckDocument(doc) :
       var privateScriptEnvironment = ScriptEnvironment.Create ();
       // Create a script function called CheckDocument which takes a Document and returns a bool.
       var checkDocumentScript = new ScriptFunction<Document,bool> (
-        ScriptContext.GetScriptContext ("YourModuleName.ScriptingIntegrationTests"), ScriptLanguageType.Python,
+        ScriptContext.GetScriptContext ("rubicon.eu.YourModuleName.ScriptingIntegrationTests"), ScriptLanguageType.Python,
         scriptFunctionSourceCode, privateScriptEnvironment, "CheckDocument");
 
       Assert.That (checkDocumentScript.Execute (new Document ("Receipt", 123456)), Is.True);
