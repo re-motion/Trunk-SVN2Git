@@ -38,6 +38,7 @@
   $.fn.extend({
     autocomplete: function(serviceUrl, serviceMethod, options)
     {
+      var $input = $(this);
       options = $.extend({}, $.Autocompleter.defaults, {
         // re-motion: instead of a single URL property, use separate service URL and service method properties. 
         //           data cannot be inserted directly any more
@@ -48,7 +49,9 @@
         autoFillDelay: $.Autocompleter.defaults.autoFillDelay,
         max: options && !options.scroll ? 10 : 150,
         // re-motion: clicking this control will display the dropdown list with an assumed input of '' (regardless of textbox value)
-        dropDownButtonId: null
+        dropDownButtonId: null,
+        // re-motion: select first value in list unless textbox is empty
+        selectFirst: function() { return $input.val() != ''; }
       }, options);
 
       // if highlight is set to false, replace it with a do-nothing function
@@ -135,7 +138,6 @@
       lastKeyPressCode = event.keyCode;
       switch (event.keyCode)
       {
-
         case KEY.UP:
           event.preventDefault();
           if (select.visible())
@@ -180,9 +182,8 @@
           }
           break;
 
-        // matches also semicolon                      
+        // matches also semicolon             
         case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
-        case KEY.TAB:
         case KEY.RETURN:
           if (selectCurrent())
           {
@@ -194,13 +195,24 @@
           // re-motion: allow deletion of current value by entering the empty string
           else if ($input.val() == '')
           {
+            hideResults();
             $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
             event.preventDefault();
             blockSubmit = true;
             return false;
           }
           break;
-
+        // re-motion: do not block event bubbling for tab           
+        case KEY.TAB:
+          if (selectCurrent())
+          {
+          }
+          else if ($input.val() == '')
+          {
+            hideResults();
+            $input.trigger("result", { DisplayName: '', UniqueIdentifier: options.nullValue });
+          }
+          break;
         case KEY.ESC:
           select.hide();
           break;
@@ -211,6 +223,7 @@
 
           // re-motion: start the auto-fill enabler count-down
           enableAutoFill();
+
           break;
       }
     }).focus(function()
@@ -316,6 +329,7 @@
         return false;
 
       var v = selected.result;
+
       previousValue = v;
 
       if (options.multiple)
@@ -565,7 +579,8 @@
     max: 100,
     mustMatch: false,
     extraParams: {},
-    selectFirst: true,
+    // re-motion: changed selectFirst from boolean field to function
+    selectFirst: function() { return true; },
     formatItem: function(row) { return row[0]; },
     formatMatch: null,
     autoFill: false,
@@ -784,6 +799,10 @@
       listItems.slice(active, active + 1).removeClass(CLASSES.ACTIVE);
       movePosition(step);
       var activeItem = listItems.slice(active, active + 1).addClass(CLASSES.ACTIVE);
+      var result = $.data(activeItem[0], "ac_data").result;
+      $(input).val(result);
+      $.Autocompleter.Selection(input, 0, input.value.length);
+
       if (options.scroll)
       {
         var offset = 0;
@@ -835,7 +854,7 @@
         $.data(li, "ac_data", data[i]);
       }
       listItems = list.find("li");
-      if (options.selectFirst)
+      if (options.selectFirst())
       {
         listItems.slice(0, 1).addClass(CLASSES.ACTIVE);
         active = 0;
@@ -893,7 +912,7 @@
       },
       current: function()
       {
-        return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst && listItems[0]);
+        return this.visible() && (listItems.filter("." + CLASSES.ACTIVE)[0] || options.selectFirst() && listItems[0]);
       },
       show: function()
       {
@@ -951,6 +970,9 @@
 
   $.Autocompleter.Selection = function(field, start, end)
   {
+    if (field.value == '')
+      return;
+
     if (field.createTextRange)
     {
       var selRange = field.createTextRange();
