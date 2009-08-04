@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
       AddAttributesToRender (false);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       DropDownList dropDownList = GetDropDownList();
       dropDownList.Page = Control.Page.WrappedInstance;
@@ -144,7 +144,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
     /// <summary> Gets the CSS-Class applied to the <see cref="BocReferenceValue"/>'s value. </summary>
     /// <remarks> Class: <c>bocReferenceValueContent</c> </remarks>
     public virtual string CssClassContent
-    { get { return "bocReferenceValueContent"; } }
+    {
+      get { return "bocReferenceValueContent"; }
+    }
+
+    public virtual string CssClassInnerContent
+    {
+      get { return "content"; }
+    }
 
     private void RenderContentsWithSeparateOptionsMenu (DropDownList dropDownList, Label label, Image icon)
     {
@@ -178,7 +185,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       }
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
 
@@ -199,7 +206,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
         if (icon.Visible)
           RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
 
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInnerContent);
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         RenderEditModeValue (dropDownList, isControlHeightEmpty, isDropDownListHeightEmpty);
@@ -211,7 +218,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
       if (hasOptionsMenu)
       {
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassOptionsMenu);
-        Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         Control.OptionsMenu.Width = Control.OptionsMenuWidth;
         Control.OptionsMenu.RenderControl (Writer);
@@ -293,7 +300,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Sta
         {
           RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
         }
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInnerContent);
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         dropDownList.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);

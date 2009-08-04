@@ -61,19 +61,33 @@ ViewLayout.AdjustTabbedMultiView = function(containerElement) {
     ViewLayout.FixIE6(view, bottom);
 };
 
-ViewLayout.FixIE6 = function(view, bottom) {
+ViewLayout.FixIE6 = function(view, bottom)
+{
 
-    if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
-        return;
+  if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
+    return;
 
-    view.height(bottom.offset().top - view.offset().top);
+  view.height(bottom.offset().top - view.offset().top);
 
-    // does not change style, but solves the problem that certain elements didn't show in standard mode
-    $('.tabStripTabSeparator').css('display', 'none');
-    $('.DropDownMenuContainer').css('display', 'block');
-    $('.bocListNavigator').css('display', 'block');
-    $('div.bocReferenceValueContent').css('display', 'block');
-    $('div.bocAutoCompleteReferenceValueContent').css('display', 'block');
-    $('span.bocDateTimeValue').css('display', 'inline-block');
-    $('a.DatePickerButton').css('display', 'inline-block');
+  // fix absolute positioning issues
+  $('span.bocReferenceValue span.content').each(function()
+  {
+    $(this).css('width', $(this).parent().parent().width() - parseInt($(this).css('left')) - parseInt($(this).css('right')));
+  });
+  $('span.bocAutoCompleteReferenceValue span.content').each(function()
+  {
+    var newWidth = $(this).parent().width() - parseInt($(this).css('left')) - parseInt($(this).css('right'));
+    $(this).css('width', newWidth);
+  });
+
+  // does not change style, but solves the problem that certain elements didn't show in standard mode
+  $('.tabStripTabSeparator').css('display', 'none');
+  $('.DropDownMenuContainer').css('display', 'block');
+  $('.bocListNavigator').css('display', 'block');
+  $('span.bocReferenceValueContent').css('display', 'block');
+  
+  $('span.bocAutoCompleteReferenceValueContent').css('display', 'block');
+  
+  $('span.bocDateTimeValue').css('display', 'inline-block');
+  $('a.DatePickerButton').css('display', 'inline-block');
 }

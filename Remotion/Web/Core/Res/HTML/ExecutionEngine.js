@@ -70,6 +70,10 @@ function WxePage_Context (
       this.ShowStatusIsCachedMessage ();
     }
   };
+
+  this.OnUnload = function()
+  {
+  }
   
   // Handles the page abort event.
   this.OnAbort = function (hasSubmitted, isCached)

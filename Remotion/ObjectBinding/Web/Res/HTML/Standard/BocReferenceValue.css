@@ -1,21 +1,22 @@
-div.bocReferenceValue
+.bocReferenceValue
 {
-    position: relative;
-    height: auto;
-    vertical-align: middle;
-    display: inline-block;
+  display: block;
+  position: relative;
+  height: auto;
+  vertical-align: middle;
 }
 
-div.bocReferenceValueContent
+.bocReferenceValueContent
 {
+  display: inline-block;
   position:relative;
   text-align: left;
   line-height: 1.25em;
   white-space: nowrap;
-  vertical-align: top;
+  padding: 2px 0px;
 }
 
-div.bocReferenceValue *.bocReferenceValueCommand
+.bocReferenceValue *.bocReferenceValueCommand
 {
   display:inline-block;
   position: relative;
@@ -23,19 +24,19 @@ div.bocReferenceValue *.bocReferenceValueCommand
   margin: auto;
 }
 
-div.bocReferenceValue a.bocReferenceValueCommand:hover
+.bocReferenceValue a.bocReferenceValueCommand:hover
 {
   border: solid 1px #005588;
   background-color: #fee197;
   padding: 0;
 }
 
-div.bocReferenceValue span.bocReferenceValueCommand
+.bocReferenceValue span.bocReferenceValueCommand
 {
   cursor: default;
 }
 
-div.bocReferenceValue img.bocReferenceValueContent
+.bocReferenceValue img.bocReferenceValueContent
 {
     background-color: Transparent;
     border-style: none;
@@ -43,7 +44,7 @@ div.bocReferenceValue img.bocReferenceValueContent
     padding: 1px 3px 1px 1px;
 }
 
-div.bocReferenceValueOptionsMenu 
+.bocReferenceValueOptionsMenu 
 {
   position: absolute; 
   display: block; 
@@ -51,27 +52,33 @@ div.bocReferenceValueOptionsMenu
   top: 1px;
 }
 
-div.bocReferenceValueOptionsMenu div.DropDownMenuSelect
+.bocReferenceValueOptionsMenu .DropDownMenuSelect
 {
   margin-left: 4px;
 }
 
-div.bocReferenceValueContent span.readOnly
+.bocReferenceValueContent span.readOnly
 {
   position : static;
 }
 
-span.bocReferenceValueContent
+.bocReferenceValue .disabled span.readOnly
+{
+  padding-right: 18px;
+}
+
+span.content
 {
   position: absolute;
 }
 
-div.bocReferenceValue span.bocReferenceValueContent * {
+.bocReferenceValue span.content * {
   width: 100%; 
   margin: 0px;
 }
 
-div.bocReferenceValue div.disabled span.bocReferenceValueContent {
+.bocReferenceValue .disabled span.content 
+{
   padding: 3px;
 }
 

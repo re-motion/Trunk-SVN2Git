@@ -17,45 +17,59 @@ var _bocReferenceValue_nullValue;
 
 //  Initializes the strings used to represent the true, false and null values.
 //  Call this method once in a startup script.
-function BocReferenceValue_InitializeGlobals(nullValue) {
-    _bocReferenceValue_nullValue = nullValue;
+function BocReferenceValue_InitializeGlobals(nullValue)
+{
+  _bocReferenceValue_nullValue = nullValue;
 }
 
 //  Returns the number of rows selected for the specified BocList
-function BocReferenceValue_GetSelectionCount(referenceValueDropDownListID) {
-    var dropDownList = $('#'+referenceValueDropDownListID);
-    if (dropDownList.length == 0 || dropDownList.attr('selectedIndex') < 0)
-        return 0;
-    if (dropDownList.children()[dropDownList.attr('selectedIndex')].value == _bocReferenceValue_nullValue)
-        return 0;
-    return 1;
+function BocReferenceValue_GetSelectionCount(referenceValueDropDownListID)
+{
+  var dropDownList = $('#' + referenceValueDropDownListID);
+  if (dropDownList.length == 0 || dropDownList.attr('selectedIndex') < 0)
+    return 0;
+  if (dropDownList.children()[dropDownList.attr('selectedIndex')].value == _bocReferenceValue_nullValue)
+    return 0;
+  return 1;
 }
 
-function BocReferenceValue_AdjustPosition(control, isEmbedded) {
+function BocReferenceValue_AdjustPosition(control, isEmbedded)
+{
 
-    var totalWidth = $(control).innerWidth();
-    var totalHeight = $(control).innerHeight();
+  var totalWidth = $(control).innerWidth();
+  var totalHeight = $(control).innerHeight();
 
-    var icon = $(control).find('img.bocReferenceValueContent').parent();
+  var icon = $(control).find('img.bocReferenceValueContent').parent();
 
-    var left = 0;
-    if (icon.length > 0)
-        left = icon.outerWidth(true);
+  var left = 0;
+  if (icon.length > 0)
+    left = icon.outerWidth(true);
 
-    var optionsMenu = $(control).find('div.bocReferenceValueOptionsMenu');
-    var right = 0;
-    if (!isEmbedded && optionsMenu.length > 0)
-        right = optionsMenu.outerWidth(true);
+  var optionsMenu = $(control).find('.bocReferenceValueOptionsMenu');
+  var right = 0;
+  if (!isEmbedded && optionsMenu.length > 0)
+    right = optionsMenu.outerWidth(true);
 
-    var contentSpan = $(control).find('span.bocReferenceValueContent');
-    contentSpan.css('left', left + 'px');
-    contentSpan.css('right', right + 'px');
-
-    if (isEmbedded) {
-        var dropDownMenu = $(control).find('select').parent().parent();
-        if (dropDownMenu.length > 0) {
-            dropDownMenu.height($(control).find('select').parent().outerHeight(true));
-            icon.css('top', (dropDownMenu.innerHeight() - icon.outerHeight()) / 2);
-        }
+  var contentSpan = $(control).find('span.content');
+  contentSpan.css('left', left);
+  if (isEmbedded)
+  {
+    var dropDownMenu = $(control).find('select').parent().parent();
+    var dropDownButton = dropDownMenu.find('.DropDownMenuButton');
+    var commandSpan = $(control).find('span.bocReferenceValueCommand');
+    if (dropDownMenu.length > 0)
+    {
+      dropDownMenu.height($(control).find('select').parent().outerHeight(true));
+      icon.css('top', (dropDownMenu.innerHeight() - icon.outerHeight()) / 2);
+      contentSpan.css('right', dropDownButton.width());
     }
+  }
+  else
+  {
+    contentSpan.css('right', right);
+    
+    var heightDifference = $(control).height() - optionsMenu.height();
+    var offset = heightDifference / 2;
+    optionsMenu.css('top', offset);
+  }
 }

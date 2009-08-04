@@ -69,8 +69,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
     [Test]
     public void RenderEmptyMenuWithoutTitle ()
     {
-      XmlNode containerDiv = GetAssertedContainerDiv();
-      AssertTitleDiv(containerDiv, false, false);
+      XmlNode containerDiv = GetAssertedContainerSpan();
+      AssertTitleSpan(containerDiv, false, false);
     }
 
     [Test]
@@ -78,8 +78,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
       _control.Stub(stub=>stub.TitleText).Return(c_MenuTitle);
 
-      XmlNode containerDiv = GetAssertedContainerDiv ();
-      AssertTitleDiv (containerDiv, true, false);
+      XmlNode containerDiv = GetAssertedContainerSpan ();
+      AssertTitleSpan (containerDiv, true, false);
     }
 
     [Test]
@@ -88,8 +88,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       _control.Stub (stub => stub.TitleText).Return (c_MenuTitle);
       _control.Stub (stub => stub.TitleIcon).Return (s_titleIcon);
 
-      XmlNode containerDiv = GetAssertedContainerDiv ();
-      AssertTitleDiv (containerDiv, true, true);
+      XmlNode containerDiv = GetAssertedContainerSpan ();
+      AssertTitleSpan (containerDiv, true, true);
     }
 
     [Test]
@@ -97,13 +97,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
       PopulateMenu();
 
-      XmlNode containerDiv = GetAssertedContainerDiv ();
-      AssertTitleDiv (containerDiv, false, false);
+      XmlNode containerDiv = GetAssertedContainerSpan ();
+      AssertTitleSpan (containerDiv, false, false);
     }
 
-    private void AssertTitleDiv (XmlNode containerDiv, bool withTitle, bool withIcon)
+    private void AssertTitleSpan (XmlNode containerDiv, bool withTitle, bool withIcon)
     {
-      var titleDiv = containerDiv.GetAssertedChildElement ("div", 0);
+      var titleDiv = containerDiv.GetAssertedChildElement ("span", 0);
       titleDiv.AssertAttributeValueEquals ("class", "DropDownMenuSelect");
       titleDiv.AssertChildElementCount (2);
 
@@ -149,12 +149,12 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       }
     }
 
-    private XmlNode GetAssertedContainerDiv ()
+    private XmlNode GetAssertedContainerSpan ()
     {
       var renderer = new DropDownMenuRenderer (HttpContext, Html.Writer, _control);
       renderer.Render ();
       var document = Html.GetResultDocument();
-      var containerDiv = document.GetAssertedChildElement ("div", 0);
+      var containerDiv = document.GetAssertedChildElement ("span", 0);
       containerDiv.AssertAttributeValueEquals ("id", _control.ClientID);
       containerDiv.AssertAttributeValueEquals ("class", "DropDownMenuContainer");
       containerDiv.AssertChildElementCount (1);

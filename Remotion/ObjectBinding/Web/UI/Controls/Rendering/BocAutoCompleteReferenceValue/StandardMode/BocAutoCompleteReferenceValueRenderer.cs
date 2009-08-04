@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     public void Render ()
     {
       AddAttributesToRender (false);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       TextBox textBox = GetTextBox ();
       textBox.Page = Control.Page.WrappedInstance;
@@ -98,7 +98,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       }
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       bool isCommandEnabled = Control.IsCommandEnabled (isReadOnly);
 
@@ -119,7 +119,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
         if (icon.Visible)
           RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
 
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInnerContent);
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         RenderEditModeValue (textBox);
@@ -131,7 +131,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       if (hasOptionsMenu)
       {
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassOptionsMenu);
-        Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+        Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         Control.OptionsMenu.Width = Control.OptionsMenuWidth;
         Control.OptionsMenu.RenderControl (Writer);
@@ -272,7 +272,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
         {
           RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
         }
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInnerContent);
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         textBox.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
@@ -424,6 +424,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     public string CssClassContent
     {
       get { return "bocAutoCompleteReferenceValueContent"; }
+    }
+
+    public string CssClassInnerContent
+    {
+      get { return "content"; }
     }
 
     public string CssClassCommand

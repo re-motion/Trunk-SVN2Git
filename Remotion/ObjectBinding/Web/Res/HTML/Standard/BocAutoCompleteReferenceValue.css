@@ -1,4 +1,4 @@
-﻿div.bocAutoCompleteReferenceValue
+﻿.bocAutoCompleteReferenceValue
 {
     position: relative;
     height: auto;
@@ -6,8 +6,9 @@
     display: inline-block;
 }
 
-div.bocAutoCompleteReferenceValueContent
+.bocAutoCompleteReferenceValueContent
 {
+  display: inline-block;
   position: relative;
   text-align: left;
   line-height: 1.25em;
@@ -15,13 +16,14 @@ div.bocAutoCompleteReferenceValueContent
   padding: 2px 0px;
 }
 
-div.bocAutoCompleteReferenceValue span.bocAutoCompleteReferenceValueContent
+.bocAutoCompleteReferenceValue span.content
 {
+  display: inline-block;
   position: absolute;
   top: 0px;
 }
 
-div.bocAutoCompleteReferenceValue *.bocAutoCompleteReferenceValueCommand
+.bocAutoCompleteReferenceValue *.bocAutoCompleteReferenceValueCommand
 {
   display: inline-block;
   position: relative;
@@ -30,24 +32,24 @@ div.bocAutoCompleteReferenceValue *.bocAutoCompleteReferenceValueCommand
   margin: 0;
 }
 
-div.bocAutoCompleteReferenceValue .DropDownMenuSelect *.bocAutoCompleteReferenceValueCommand
+.bocAutoCompleteReferenceValue .DropDownMenuSelect *.bocAutoCompleteReferenceValueCommand
 {
   top: 0px;
 }
 
-div.bocAutoCompleteReferenceValue a.bocAutoCompleteReferenceValueCommand:hover
+.bocAutoCompleteReferenceValue a.bocAutoCompleteReferenceValueCommand:hover
 {
   border: solid 1px #005588;
   background-color: #fee197;
   padding: 0;
 }
 
-div.bocAutoCompleteReferenceValue span.bocAutoCompleteReferenceValueCommand
+.bocAutoCompleteReferenceValue span.bocAutoCompleteReferenceValueCommand
 {
   cursor: default;
 }
 
-div.bocAutoCompleteReferenceValue img.bocAutoCompleteReferenceValueContent
+.bocAutoCompleteReferenceValue img.bocAutoCompleteReferenceValueContent
 {
     background-color: Transparent;
     border-style: none;
@@ -55,7 +57,7 @@ div.bocAutoCompleteReferenceValue img.bocAutoCompleteReferenceValueContent
     padding: 1px 3px 1px 1px;
 }
 
-div.bocAutoCompleteReferenceValue div.bocAutoCompleteReferenceValueOptionsMenu
+.bocAutoCompleteReferenceValue .bocAutoCompleteReferenceValueOptionsMenu
 {
   position: absolute;
   top: 0px;
@@ -73,7 +75,7 @@ span.bocAutoCompleteReferenceValueDropDownList
 
 *.bocAutoCompleteReferenceValue span.bocAutoCompleteReferenceValueInput 
 {
-  display: block;
+  display: inline-block;
 	position: absolute;
 	right: 17px; /* width of the dropdown arrow image*/
 	padding-right: 6px; /* compensation for input field borders and padding */
@@ -81,15 +83,15 @@ span.bocAutoCompleteReferenceValueDropDownList
 	left: 0;
 }
 
-div.DropDownMenuSelect span.bocAutoCompleteReferenceValueInput 
+.DropDownMenuSelect span.bocAutoCompleteReferenceValueInput 
 {
   margin-top: 1px;
   margin-right: 3px;
 }
 
-*.bocAutoCompleteReferenceValue.disabled span.bocAutoCompleteReferenceValueInput
+*.bocAutoCompleteReferenceValue .disabled .bocAutoCompleteReferenceValueCommand .readOnly
 {
-  right: 0px;
+  padding-right: 18px;
 }
 
 span.bocAutoCompleteReferenceValueDropDownList input 
@@ -101,7 +103,7 @@ span.bocAutoCompleteReferenceValueDropDownList input
 
 span.bocAutoCompleteReferenceValueButton 
 {
-  display: block;
+  display: inline-block;
 	position: absolute;
 	margin: 0;
 	padding: 0;
@@ -114,6 +116,7 @@ span.bocAutoCompleteReferenceValueButton
 
 span.bocAutoCompleteReferenceValueButton 
 {
+  /* Hack for IE 7 */
   *top: 1px;
 }
 
@@ -124,7 +127,7 @@ span.bocAutoCompleteReferenceValueButton img
 }
 
 /* Since both the span containing the text input and the drop-dow button are positioned absolutely,
-   the containing div has zero height. To fix this, a relatively positioned dummy element is needed */
+   the containing  has zero height. To fix this, a relatively positioned dummy element is needed */
 span.bocAutoCompleteReferenceValueDummy
 {
   display: inline-block;
@@ -133,7 +136,7 @@ span.bocAutoCompleteReferenceValueDummy
   padding: 4px 0px; /* compensate textbox margin, border and padding vertically */
 }
 
-div.bocAutoCompleteReferenceValue div.disabled span.bocAutoCompleteReferenceValueContent {
+.bocAutoCompleteReferenceValue .disabled span.content {
   padding: 3px;
 }
 

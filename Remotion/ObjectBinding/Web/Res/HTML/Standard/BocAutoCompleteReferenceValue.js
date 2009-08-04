@@ -75,15 +75,15 @@ BocAutoCompleteReferenceValue.AdjustPosition = function(control, isEmbedded)
   if (icon.length > 0)
     left = icon.outerWidth(true);
 
-  var optionsMenu = control.find('div.bocAutoCompleteReferenceValueOptionsMenu');
+  var optionsMenu = control.find('.bocAutoCompleteReferenceValueOptionsMenu');
   var right = 0;
   if (!isEmbedded && optionsMenu.length > 0)
     right = optionsMenu.outerWidth(true);
 
-  var contentSpan = control.find('span.bocAutoCompleteReferenceValueContent');
+  var contentSpan = control.find('span.content');
   contentSpan.height(totalHeight);
-  contentSpan.css('left', left + 'px');
-  contentSpan.css('right', right + 'px');
+  contentSpan.css('left', left);
+  contentSpan.css('right', right);
 
   if (isEmbedded)
   {

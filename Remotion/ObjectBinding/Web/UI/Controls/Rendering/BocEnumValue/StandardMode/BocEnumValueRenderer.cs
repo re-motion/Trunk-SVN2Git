@@ -50,7 +50,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
     public void Render ()
     {
       AddAttributesToRender (false);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      var tag = Control.ListControlStyle.ControlType == ListControlType.RadioButtonList ? HtmlTextWriterTag.Div : HtmlTextWriterTag.Span;
+      Writer.RenderBeginTag (tag);
 
       bool isControlHeightEmpty = Control.Height.IsEmpty && string.IsNullOrEmpty (Control.Style["height"]);
       bool isControlWidthEmpty = Control.Width.IsEmpty && string.IsNullOrEmpty (Control.Style["width"]);

@@ -322,7 +322,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       renderer.Render ();
 
       var document = Html.GetResultDocument ();
-      XmlNode div = GetAssertedDiv (document, true, false, false, renderer);
+      XmlNode div = GetAssertedSpan (document, true, false, false, renderer);
 
 
       var span = Html.GetAssertedChildElement (div, "span", 0);
@@ -337,9 +337,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       Html.AssertTextNode (span, value.HasValue ? value.Value.ToString() : HtmlHelper.WhiteSpace, 0);
     }
 
-    private XmlNode GetAssertedDiv (XmlDocument document, bool isReadOnly, bool isDisabled, bool withStyle, IBocEnumValueRenderer renderer)
+    private XmlNode GetAssertedSpan (XmlDocument document, bool isReadOnly, bool isDisabled, bool withStyle, IBocEnumValueRenderer renderer)
     {
-      var div = Html.GetAssertedChildElement (document, "div", 0);
+      var div = Html.GetAssertedChildElement (document, "span", 0);
       string cssClass = _enumValue.CssClass;
       if (string.IsNullOrEmpty (cssClass))
         cssClass = _enumValue.Attributes["class"];
@@ -369,7 +369,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocEnumValu
       renderer.Render ();
 
       var document = Html.GetResultDocument ();
-      var div = GetAssertedDiv (document, false, false, false, renderer);
+      var div = GetAssertedSpan (document, false, false, false, renderer);
 
       var select = Html.GetAssertedChildElement (div, "select", 0);
       Html.AssertAttribute (select, "id", _enumValue.GetListControlClientID());

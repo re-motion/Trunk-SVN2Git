@@ -37,20 +37,20 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     public void Render ()
     {
       AddAttributesToRender();
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      RenderTitleDiv();
+      RenderTitle();
 
       Writer.RenderEndTag();
     }
 
-    private void RenderTitleDiv ()
+    private void RenderTitle ()
     {
       string cssClass = CssClassHead;
       if (!Control.Enabled)
         cssClass += " " + CssClassDisabled;
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       if (Control.RenderHeadTitleMethod != null)
         Control.RenderHeadTitleMethod ();
