@@ -60,7 +60,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
       bool hasClientScript = DetermineClientScriptLevel();
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
 
-      string cssClass = CssClassBase;
+      string cssClass = string.IsNullOrEmpty(Control.CssClass) ? CssClassBase : Control.CssClass;
       if (!Control.Enabled)
         cssClass += " " + CssClassDisabled;
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
