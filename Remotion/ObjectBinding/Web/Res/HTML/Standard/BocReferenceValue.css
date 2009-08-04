@@ -1,4 +1,4 @@
-.bocReferenceValue
+span.bocReferenceValue
 {
   display: block;
   position: relative;
@@ -6,37 +6,37 @@
   vertical-align: middle;
 }
 
-.bocReferenceValueContent
+span.bocReferenceValueContent
 {
-  display: inline-block;
+  display: block;
   position:relative;
   text-align: left;
   line-height: 1.25em;
   white-space: nowrap;
-  padding: 2px 0px;
+  padding: 1px 0px;
 }
 
-.bocReferenceValue *.bocReferenceValueCommand
+span.bocReferenceValue *.bocReferenceValueCommand
 {
-  display:inline-block;
+  display: inline-block;
   position: relative;
   padding: 1px;
   margin: auto;
 }
 
-.bocReferenceValue a.bocReferenceValueCommand:hover
+span.bocReferenceValue a.bocReferenceValueCommand:hover
 {
   border: solid 1px #005588;
   background-color: #fee197;
   padding: 0;
 }
 
-.bocReferenceValue span.bocReferenceValueCommand
+span.bocReferenceValue span.bocReferenceValueCommand
 {
   cursor: default;
 }
 
-.bocReferenceValue img.bocReferenceValueContent
+span.bocReferenceValue img.bocReferenceValueContent
 {
     background-color: Transparent;
     border-style: none;
@@ -62,27 +62,29 @@
   position : static;
 }
 
-.bocReferenceValue .disabled span.readOnly
+span.bocReferenceValue .disabled span.readOnly
 {
   padding-right: 18px;
 }
 
 span.content
 {
+  top: 0px;
+  display: inline-block;
   position: absolute;
 }
 
-.bocReferenceValue span.content * {
+span.bocReferenceValue span.content * {
   width: 100%; 
   margin: 0px;
 }
 
-.bocReferenceValue .disabled span.content 
+span.bocReferenceValue .disabled span.content 
 {
   padding: 3px;
 }
 
-.bocReferenceValue.disabled img
+span.bocReferenceValue.disabled img
 {
   opacity: 0.4;
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),

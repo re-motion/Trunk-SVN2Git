@@ -1,4 +1,4 @@
-﻿.bocAutoCompleteReferenceValue
+﻿span.bocAutoCompleteReferenceValue
 {
     position: relative;
     height: auto;
@@ -6,14 +6,14 @@
     display: inline-block;
 }
 
-.bocAutoCompleteReferenceValueContent
+span.bocAutoCompleteReferenceValueContent
 {
-  display: inline-block;
+  display: block;
   position: relative;
   text-align: left;
   line-height: 1.25em;
   white-space: nowrap;
-  padding: 2px 0px;
+  padding: 1px 0px;
 }
 
 .bocAutoCompleteReferenceValue span.content
@@ -28,7 +28,6 @@
   display: inline-block;
   position: relative;
   padding: 1px;
-  top: -2px;
   margin: 0;
 }
 

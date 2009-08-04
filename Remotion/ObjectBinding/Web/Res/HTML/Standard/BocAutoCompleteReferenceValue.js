@@ -100,7 +100,7 @@ BocAutoCompleteReferenceValue.AdjustPosition = function(control, isEmbedded)
   }
   else
   {
-    var dropDownList = control.find('.bocAutoCompleteReferenceValueDropDownList');
+    var dropDownList = control.find('.bocAutoCompleteReferenceValueInput');
     if (dropDownList.length > 0)
     {
       var heightDifference = dropDownList.height() - optionsMenu.height();
