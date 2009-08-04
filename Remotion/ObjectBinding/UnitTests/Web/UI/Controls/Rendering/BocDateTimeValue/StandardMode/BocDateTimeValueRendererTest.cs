@@ -111,7 +111,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private void AssertTime (XmlNode container, BocDateTimeValueRenderer renderer)
     {
       var timeInputWrapper = container.GetAssertedChildElement ("span", 2);
-      timeInputWrapper.AssertAttributeValueEquals ("class", renderer.CssClassTimeInputWrapper);
+      timeInputWrapper.AssertAttributeValueContains ("class", renderer.CssClassTimeInputWrapper);
+      timeInputWrapper.AssertAttributeValueContains ("class", renderer.GetPositioningCssClass (BocDateTimeValueRenderer.DateTimeValuePart.Time));
       timeInputWrapper.AssertChildElementCount (0);
 
       timeInputWrapper.AssertTextNode ("TextBox", 0);
@@ -125,7 +126,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocDateTime
     private void AssertDate (XmlNode container, BocDateTimeValueRenderer renderer)
     {
       var dateInputWrapper = container.GetAssertedChildElement ("span", 0);
-      dateInputWrapper.AssertAttributeValueEquals ("class", renderer.CssClassDateInputWrapper);
+      dateInputWrapper.AssertAttributeValueContains ("class", renderer.CssClassDateInputWrapper);
+      dateInputWrapper.AssertAttributeValueContains ("class", renderer.GetPositioningCssClass (BocDateTimeValueRenderer.DateTimeValuePart.Date));
       dateInputWrapper.AssertChildElementCount (0);
 
       dateInputWrapper.AssertTextNode ("TextBox", 0);

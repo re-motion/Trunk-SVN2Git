@@ -100,18 +100,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
 
       if (hasDateField)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDateInputWrapper);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDateInputWrapper + " " + GetPositioningCssClass(DateTimeValuePart.Date));
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
         dateTextBox.RenderControl (Writer);
         Writer.RenderEndTag();
       }
 
       if (hasDatePicker)
+      {
+        datePickerButton.CssClass = GetPositioningCssClass (DateTimeValuePart.Picker);
         datePickerButton.RenderControl (Writer);
+      }
 
       if (hasTimeField)
       {
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTimeInputWrapper);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTimeInputWrapper + " " + GetPositioningCssClass (DateTimeValuePart.Time));
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
         timeTextBox.RenderControl (Writer);
         Writer.RenderEndTag ();
@@ -167,6 +170,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
     public string CssClassTime
     {
       get { return "bocDateTimeTime"; }
+    }
+
+    public string GetPositioningCssClass(DateTimeValuePart part)
+    {
+      return string.Format ("boc{0}{1}Hours{2}", part, Formatter.Is12HourTimeFormat() ? 12 : 24, Control.ShowSeconds ? "WithSeconds" : string.Empty);
+    }
+
+    public enum DateTimeValuePart
+    {
+      Date, Time, Picker
     }
   }
 }

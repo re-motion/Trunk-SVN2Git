@@ -14,7 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Web;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
@@ -29,6 +31,7 @@ using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.Utilities;
 
 namespace OBWTest
 {
@@ -116,6 +119,20 @@ namespace OBWTest
     protected void Application_PreRequestHandlerExecute (Object sender, EventArgs e)
     {
       _waiConformanceLevelBackup = WebConfiguration.Current.Wcag.ConformanceLevel;
+
+      try
+      {
+        Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture (Request.UserLanguages[0]);
+      }
+      catch (ArgumentException)
+      { }
+      try
+      {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo (Request.UserLanguages[0]);
+      }
+      catch (ArgumentException)
+      { }
+
     }
 
     protected void Application_PostRequestHandlerExecute (Object sender, EventArgs e)

@@ -41,22 +41,6 @@ public class TestBasePage :
 
   protected override void OnInit(EventArgs e)
   {
-    if (! ControlHelper.IsDesignMode (this, Context))
-    {
-      try
-      {
-        Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(Request.UserLanguages[0]);
-      }
-      catch (ArgumentException)
-      {}
-      try
-      {
-        Thread.CurrentThread.CurrentUICulture = new CultureInfo(Request.UserLanguages[0]);
-      }
-      catch (ArgumentException)
-      {}
-    }
-
     RegisterEventHandlers();
     base.OnInit (e);
   }

@@ -14,23 +14,100 @@ span.bocDateTimeValue, span.bocDateValue
 span.bocDateTimeValue span.bocDateInputWrapper
 {
   position: absolute;
-  left: 0;
-  right: 9em;
+  left: 0; 
 }
 
 span.bocDateTimeValue span.bocTimeInputWrapper
 {
   position: absolute;
   right: 0px;
-  width: 5.5em;
 }
 
 span.bocDateTimeValue a
 {
   position: absolute;
-  right: 5.9em;
   border: 0;
 }
+
+span.bocDateTimeValue.disabled a
+{
+  cursor: default;
+}
+
+span.bocDateTimeValue a img
+{
+  border-style: none;
+}
+
+span.bocDateTimeValue.disabled a img
+{
+  opacity: 0.4;
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  -moz-opacity: 0.4;
+}
+
+/* === put time, date picker and date from right to left depending on time format (24 or 12 hours, with or without seconds) === */
+span.bocDateTimeValue span.bocDate24Hours
+{
+  right: 6.5em;
+}
+
+span.bocDateTimeValue a.bocPicker24Hours
+{
+  right: 3.4em;
+}
+
+span.bocDateTimeValue span.bocTime24Hours
+{
+  width: 3em;
+}
+
+span.bocDateTimeValue span.bocDate24HoursWithSeconds
+{
+  right: 7.5em;
+}
+
+span.bocDateTimeValue a.bocPicker24HoursWithSeconds
+{
+  right: 4.4em;
+}
+
+span.bocDateTimeValue span.bocTime24HoursWithSeconds
+{
+  width: 4em;
+}
+
+span.bocDateTimeValue span.bocDate12Hours
+{
+  right: 8.3em;
+}
+
+span.bocDateTimeValue a.bocPicker12Hours
+{
+  right: 5.2em;
+}
+
+span.bocDateTimeValue span.bocTime12Hours
+{
+  width: 4.8em;
+}
+
+span.bocDateTimeValue span.bocDate12HoursWithSeconds
+{
+  right: 9.8em;
+}
+
+span.bocDateTimeValue a.bocPicker12HoursWithSeconds
+{
+  right: 6.7em;
+}
+
+span.bocDateTimeValue span.bocTime12HoursWithSeconds
+{
+  width: 6.3em;
+}
+/* === === */
 
 span.bocDateValue span.bocDateInputWrapper
 {
@@ -43,6 +120,24 @@ span.bocDateValue a
 {
   position: absolute;
   right: 0;
+}
+
+span.bocDateValue a.disabled
+{
+  cursor: default;
+}
+
+span.bocDateValue a img
+{
+  border-style: none;
+}
+
+span.bocDateValue.disabled a img
+{
+  opacity: 0.4;
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
+          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  -moz-opacity: 0.4;
 }
 
 input.bocDateTimeDate, input.bocDateTimeTime

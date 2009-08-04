@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue
@@ -81,6 +82,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Infrastructure.BocDateTimeValue
     public virtual string FormatTimeValue (DateTime timeValue)
     {
       return FormatTimeValue (timeValue, false);
+    }
+
+    public bool Is12HourTimeFormat ()
+    {
+      return !string.IsNullOrEmpty(CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator);
     }
   }
 }
