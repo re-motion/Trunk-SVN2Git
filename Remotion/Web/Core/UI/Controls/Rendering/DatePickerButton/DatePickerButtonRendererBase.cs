@@ -1,6 +1,18 @@
-// Copyright (C) 2005 - 2009 rubicon informationstechnologie gmbh
-// All rights reserved.
-//
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -15,7 +27,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
     private const int c_defaultDatePickerLengthInPoints = 150;
 
     protected DatePickerButtonRendererBase (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control)
-        : base(context, writer, control)
+        : base (context, writer, control)
     {
     }
 
@@ -31,7 +43,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 
     public string CssClassReadOnly
     {
-      get { throw new NotSupportedException (); }
+      get { throw new NotSupportedException(); }
     }
 
     protected virtual string ImageFileName
@@ -45,28 +57,26 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
     /// </summary>
     public void Render ()
     {
-      bool hasClientScript = DetermineClientScriptLevel ();
+      bool hasClientScript = DetermineClientScriptLevel();
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
-      
+
       string cssClass = CssClassBase;
       if (!Control.Enabled)
         cssClass += " " + CssClassDisabled;
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
-      
+
       // TODO: hyperLink.ApplyStyle (Control.DatePickerButtonStyle);
 
       bool canScript = (Control.EnableClientScript && Control.IsDesignMode) || hasClientScript;
       if (canScript)
       {
-        string script = GetClickScript(hasClientScript);
+        string script = GetClickScript (hasClientScript);
 
         Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
         Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
       }
       if (!Control.Enabled)
-      {
         Writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
-      }
 
       Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
@@ -77,9 +87,9 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
           imageUrl = ImageFileName;
 
         Writer.AddAttribute (HtmlTextWriterAttribute.Src, imageUrl);
-        Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty(Control.AlternateText));
+        Writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (Control.AlternateText));
         Writer.RenderBeginTag (HtmlTextWriterTag.Img);
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
       }
 
       Writer.RenderEndTag();
@@ -103,8 +113,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
       if (hasClientScript && Control.Enabled)
       {
         const string pickerActionButton = "this";
-        
-        string pickerActionContainer = "document.getElementById ('" + Control.ContainerControlID.Replace('$', '_') + "')";
+
+        string pickerActionContainer = "document.getElementById ('" + Control.ContainerControlID.Replace ('$', '_') + "')";
         string pickerActionTarget = "document.getElementById ('" + Control.TargetControlID.Replace ('$', '_') + "')";
 
         string pickerUrl = "'" + GetDatePickerUrl() + "'";
