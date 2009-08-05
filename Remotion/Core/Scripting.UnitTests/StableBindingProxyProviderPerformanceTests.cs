@@ -26,13 +26,12 @@ namespace Remotion.Scripting.UnitTests
   [TestFixture]
   public class StableBindingProxyProviderPerformanceTests
   {
-    private readonly ScriptContext _scriptContext = ScriptContext.Create ("rubicon.eu.Remtoion.Scripting.StableBindingProxyProviderPerformanceTests",
+    private readonly ScriptContext _scriptContext = ScriptContext.Create ("rubicon.eu.Remotion.Scripting.StableBindingProxyProviderPerformanceTests",
       new TypeLevelTypeFilter (new[] { typeof (ICascade1) }));
 
 
 
     [Test]
-    [Explicit]
     public void SimplePropertyAccess_GetCustomMember1 ()
     {
       const string scriptFunctionSourceCode = @"
@@ -180,7 +179,7 @@ def PropertyPathAccess(cascade) :
 
 
     [Uses (typeof (StableBindingMixin))]
-     public class CascadeStableBindingFromMixin : CascadeAmbigous
+    public class CascadeStableBindingFromMixin : CascadeAmbigous
     {
       public CascadeStableBindingFromMixin (int nrChildren)
       {

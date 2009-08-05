@@ -86,6 +86,7 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
+
     [Test]
     //[Ignore ("Mixing of GetCustomMember not working. Check w FS.")]
     public void MixinTestChildUsesMix_IsNotAmbigous ()

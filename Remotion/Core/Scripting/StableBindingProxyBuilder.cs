@@ -142,7 +142,7 @@ namespace Remotion.Scripting
           //if (
           //    IsMethodBound (proxiedTypeMethod, methodsInFirstKnownBaseType)) // accessor method is visible in first known base type
           //{
-            To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property: ").e (knownBaseTypeProperty.Name);
+            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property: ").e (knownBaseTypeProperty.Name);
             _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (knownBaseTypeProperty);
           //}
         }
@@ -168,7 +168,6 @@ namespace Remotion.Scripting
       Type type = _proxiedType;
       while (type != null)
       {
-        var typeNonPublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
 
         //To.ConsoleLine.nl ().e(type.Name).e (() => typeNonPublicProperties).nl ();
 
@@ -198,6 +197,21 @@ namespace Remotion.Scripting
 
         //To.ConsoleLine.e (classMethodToInterfaceMethodsMap);
 
+        var typePublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
+
+        foreach (var publicProperty in typePublicProperties)
+        {
+          var typeNonPublicPropertyAccessors = publicProperty.GetAccessors (true);
+          if (typeNonPublicPropertyAccessors.Any (mi => classMethodToInterfaceMethodsMap.ContainsKey (mi)))
+          {
+            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property from interface: ").e (publicProperty.Name);
+            _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (publicProperty);
+          }
+        }
+
+
+        var typeNonPublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
+
         foreach (var nonPublicProperty in typeNonPublicProperties)
         {
           // implementedProperties.Contains(property)
@@ -208,9 +222,8 @@ namespace Remotion.Scripting
             var getter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetGetMethod (true),classMethodToInterfaceMethodsMap).Single (); 
             var setter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetSetMethod (true),classMethodToInterfaceMethodsMap).Single ();
 
-            To.ConsoleLine.s (">>>>>>>>>>>> Implementing property: ").e (nonPublicProperty.Name);
+            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing non-public property: ").e (nonPublicProperty.Name);
             _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (nonPublicProperty, getter, setter);
-            //_forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (property); // !!!!!!! TEST !!!!!!!!!!!!!!!!
           }
         }
 

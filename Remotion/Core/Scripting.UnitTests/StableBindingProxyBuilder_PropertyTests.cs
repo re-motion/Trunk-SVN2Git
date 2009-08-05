@@ -32,6 +32,11 @@ namespace Remotion.Scripting.UnitTests
     private const BindingFlags _allFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
 
+    private readonly ScriptContext _scriptContext = ScriptContext.Create ("rubicon.eu.Remotion.Scripting.StableBindingProxyBuilder_PropertyTests",
+      new TypeLevelTypeFilter (new[] { typeof (StableBindingProxyProviderPerformanceTests.ICascade1) }));
+
+
+
     [Test]
     public void BuildProxyType_PublicProperty ()
     {
@@ -392,21 +397,42 @@ namespace Remotion.Scripting.UnitTests
 
     }
 
+    // TODO: Remove dependency on StableBindingProxyProviderPerformanceTests.CascadeStableBinding, turn into unit test
+    [Test]
+    public void OnlyKnownInterface_PublicProperty ()
+    {
+      const string scriptFunctionSourceCode = @"
+import clr
 
-    //public TResult ExecuteScriptExpression<TResult> (string expressionScriptSourceCode, params object[] scriptParameter)
-    //{
-    //  const ScriptLanguageType scriptLanguageType = ScriptLanguageType.Python;
-    //  var engine = ScriptingHost.GetScriptEngine (scriptLanguageType);
-    //  var scriptSource = engine.CreateScriptSourceFromString (expressionScriptSourceCode, SourceCodeKind.Expression);
-    //  var compiledScript = scriptSource.Compile ();
-    //  var scriptScope = ScriptingHost.GetScriptEngine (scriptLanguageType).CreateScope();
+def Dir(x) :
+  return dir(x)
 
-    //  for (int i = 0; i < scriptParameter.Length; i++)
-    //  {
-    //    scriptScope.SetVariable ("p" + i, scriptParameter[i]);
-    //  }
-    //  return compiledScript.Execute<TResult> (scriptScope);
-    //}
+def PropertyPathAccess(cascade) :
+  # return cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name
+  return cascade.Child.Name
+";
+
+      const int numberChildren = 10;
+      var cascadeStableBinding = new StableBindingProxyProviderPerformanceTests.CascadeStableBinding (numberChildren);
+
+      var privateScriptEnvironment = ScriptEnvironment.Create ();
+
+      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+
+      //var dirScript = new ScriptFunction<object, object> (
+      //  _scriptContext, ScriptLanguageType.Python,
+      //  scriptFunctionSourceCode, privateScriptEnvironment, "Dir"
+      //);
+      //To.ConsoleLine.e (dirScript.Execute (cascadeStableBinding)).nl ().e (dirScript.Execute (cascadeStableBinding.Child)).nl ().e (dirScript.Execute (cascadeStableBinding.Child.Child));
+
+      var propertyPathAccessScript = new ScriptFunction<StableBindingProxyProviderPerformanceTests.Cascade, string> (
+        _scriptContext, ScriptLanguageType.Python,
+        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
+      );
+
+
+      propertyPathAccessScript.Execute (cascadeStableBinding);
+    }
 
   }
 }
