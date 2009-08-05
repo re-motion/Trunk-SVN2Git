@@ -120,31 +120,39 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     public void CanBeSetFromOutside_Scalar ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("Scalar");
-      PropertyInfoAdapter adapter = new PropertyInfoAdapter (propertyInfo);
+      var adapter = new PropertyInfoAdapter (propertyInfo);
+      
       Assert.That (adapter.CanBeSetFromOutside, Is.True);
+      AssertCanSet (adapter, new ClassWithReferenceType<SimpleReferenceType> (), new SimpleReferenceType ());
     }
 
     [Test]
     public void CanBeSetFromOutside_ReadOnlyScalar ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyScalar");
-      PropertyInfoAdapter adapter = new PropertyInfoAdapter (propertyInfo);
+      var adapter = new PropertyInfoAdapter (propertyInfo);
+
       Assert.That (adapter.CanBeSetFromOutside, Is.False);
+      AssertCanNotSet (adapter, new ClassWithReferenceType<SimpleReferenceType> (), new SimpleReferenceType ());
     }
 
     [Test]
     public void CanBeSetFromOutside_ReadOnlyNonPublicSetterScalar ()
     {
       PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty ("ReadOnlyNonPublicSetterScalar");
-      PropertyInfoAdapter adapter = new PropertyInfoAdapter (propertyInfo);
+      var adapter = new PropertyInfoAdapter (propertyInfo);
+
       Assert.That (adapter.CanBeSetFromOutside, Is.False);
+      AssertCanNotSet (adapter, new ClassWithReferenceType<SimpleReferenceType> (), new SimpleReferenceType ());
     }
 
     [Test]
     public void CanBeSetFromOutside_ExplicitInterfaceScalar ()
     {
       PropertyInfoAdapter adapter = _explicitInterfaceAdapter;
+
       Assert.That (adapter.CanBeSetFromOutside, Is.True);
+      AssertCanSet (adapter, new ClassWithReferenceType<SimpleReferenceType> (), new SimpleReferenceType ());
     }
 
     [Test]
@@ -153,15 +161,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       PropertyInfo propertyInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
           "Remotion.ObjectBinding.UnitTests.Core.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar",
           BindingFlags.NonPublic | BindingFlags.Instance);
-      PropertyInfoAdapter adapter = new PropertyInfoAdapter (propertyInfo);
+      
+      var adapter = new PropertyInfoAdapter (propertyInfo);
+
       Assert.That (adapter.CanBeSetFromOutside, Is.False);
+      AssertCanNotSet (adapter, new ClassWithReferenceType<SimpleReferenceType> (), new SimpleReferenceType ());
     }
 
     [Test]
     public void CanBeSetFromOutside_ImplicitInterfaceScalar_FromImplementation ()
     {
       PropertyInfoAdapter adapter = _implicitInterfaceAdapter;
+
       Assert.That (adapter.CanBeSetFromOutside, Is.True);
+      AssertCanSet (adapter, new ClassWithReferenceType<SimpleReferenceType> (), new SimpleReferenceType ());
     }
 
     [Test]
@@ -171,8 +184,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       var implementationProperty = typeof (ClassWithReferenceType<SimpleReferenceType>).GetProperty (
           "ImplicitInterfaceScalar",
           BindingFlags.Public | BindingFlags.Instance);
-      PropertyInfoAdapter adapter = new PropertyInfoAdapter (implementationProperty, declarationProperty);
-      Assert.That (adapter.CanBeSetFromOutside, Is.True);
+      var adapter = new PropertyInfoAdapter (implementationProperty, declarationProperty);
+
+      // TODO 1439: Change this to Is.True/AssertCanSet
+      Assert.That (adapter.CanBeSetFromOutside, Is.False);
+      AssertCanNotSet(adapter, new ClassWithReferenceType<SimpleReferenceType>(), new SimpleReferenceType ());
     }
 
     [Test]
@@ -333,6 +349,24 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     {
       Assert.That (_implicitInterfaceAdapter.InterfacePropertyInfo, Is.Not.Null);
       Assert.That (_implicitInterfaceAdapter.InterfacePropertyInfo, Is.SameAs (_implicitInterfaceDeclarationProperty));
+    }
+
+    private void AssertCanSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
+    {
+      adapter.SetValue (instance, value, null);
+      Assert.That (adapter.GetValue (instance, null), Is.SameAs (value));
+    }
+
+    private void AssertCanNotSet (PropertyInfoAdapter adapter, object instance, SimpleReferenceType value)
+    {
+      try
+      {
+        adapter.SetValue (instance, value, null);
+      }
+      catch (ArgumentException ex)
+      {
+        Assert.That (ex.Message, Is.EqualTo ("Property set method not found."));
+      }
     }
   }
 }

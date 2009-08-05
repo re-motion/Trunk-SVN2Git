@@ -79,13 +79,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     public bool CanBeSetFromOutside
     {
-      get
-      {
-        if (_isExplicitInterfaceProperty)
-          return _propertyInfo.GetSetMethod (true) != null; // for explicit interface properties, we allow for private setters
-        else
-          return _propertyInfo.GetSetMethod (false) != null; // for normal properties, we want a public setter
-      }
+      get { return ValuePropertyInfo.GetSetMethod (false) != null; }
     }
 
     public T GetCustomAttribute<T> (bool inherited) where T: class

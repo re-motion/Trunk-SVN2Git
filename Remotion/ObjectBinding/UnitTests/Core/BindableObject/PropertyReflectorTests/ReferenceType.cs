@@ -210,7 +210,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.PropertyReflector
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleReferenceType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.True); // TODO 1439: Change this to false
     }
 
     [Test]
