@@ -1,1 +1,4 @@
-﻿*) Add GetCustoMember stable binding implementation in mixed DomainObject type in Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGenerator
+﻿*) Implement stable binding performance tests (to make sure refactorings do not break caching and lead to e.g. 10000x worse runtime behavior)
+*) Implement "ScriptContextNone" scheme: Special ScriptContext which is enabled by default and creates no proxy but instead just returns the proxied 
+object itself. 
+*) Clean code (start with StableBindingProxyBuilder)
