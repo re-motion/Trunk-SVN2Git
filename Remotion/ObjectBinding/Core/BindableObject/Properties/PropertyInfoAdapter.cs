@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -23,7 +22,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
   public class PropertyInfoAdapter : IPropertyInformation
   {
     private readonly PropertyInfo _propertyInfo;
-    private readonly bool _isExplicitInterfaceProperty;
     private readonly PropertyInfo _interfacePropertyInfo;
 
     public PropertyInfoAdapter (PropertyInfo propertyInfo, PropertyInfo interfacePropertyInfo)
@@ -34,7 +32,6 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
       _propertyInfo = propertyInfo;
       _interfacePropertyInfo = interfacePropertyInfo;
-      _isExplicitInterfaceProperty = _interfacePropertyInfo != null && ReflectionUtility.GuessIsExplicitInterfaceProperty (propertyInfo);
     }
 
     public PropertyInfoAdapter (PropertyInfo propertyInfo)
