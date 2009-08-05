@@ -422,7 +422,10 @@ namespace Remotion.Scripting
 
     private Type GetFirstKnownBaseType ()
     {
-      return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeFilter.IsTypeValid);
+      //return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeFilter.IsTypeValid);
+
+      // Object is always known
+      return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeFilter.IsTypeValid) ?? typeof(object);
     }
 
     private Type[] FindKnownInterfaces ()

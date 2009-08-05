@@ -153,13 +153,13 @@ namespace Remotion.Scripting.UnitTests
     }
 
 
-    public static IEnumerable<long> ExecuteAndTime (int nrLoop, Func<Object> func)
+    public static long ExecuteAndTime (int nrLoop, Func<Object> func)
     {
       var timings = ExecuteAndTime (new[] { nrLoop}, func);
-      return timings;
+      return timings.Single();
     }
 
-    public static IEnumerable<long> ExecuteAndTime (int[] nrLoopsArray, Func<Object> func)
+    public static long[] ExecuteAndTime (int[] nrLoopsArray, Func<Object> func)
     {
       var timings = new System.Collections.Generic.List<long> ();
 
@@ -180,7 +180,7 @@ namespace Remotion.Scripting.UnitTests
         timings.Add (stopwatch.ElapsedMilliseconds);
       }
 
-      return timings;
+      return timings.ToArray();
     }
 
     public static void ExecuteAndTime (string testName, int[] nrLoopsArray, Func<Object> func)

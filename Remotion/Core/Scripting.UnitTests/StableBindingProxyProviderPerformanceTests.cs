@@ -14,8 +14,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using Remotion.Diagnostics.ToText;
+using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Scripting.UnitTests
 {
@@ -23,31 +27,22 @@ namespace Remotion.Scripting.UnitTests
   public class StableBindingProxyProviderPerformanceTests
   {
     private readonly ScriptContext _scriptContext = ScriptContext.Create ("rubicon.eu.Remtoion.Scripting.StableBindingProxyProviderPerformanceTests",
-      new TypeLevelTypeFilter (new[] { typeof (Cascade), typeof (CascadeStableBinding) }));
+      new TypeLevelTypeFilter (new[] { typeof (ICascade1) }));
+
 
 
     [Test]
     [Explicit]
-    public void SimplePropertyAccess_GetCustomMember ()
+    public void SimplePropertyAccess_GetCustomMember1 ()
     {
       const string scriptFunctionSourceCode = @"
 import clr
 def PropertyPathAccess(cascade) :
-  return cascade.Name
+  return cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name
 ";
 
       const int numberChildren = 10;
-      var cascade = new Cascade (numberChildren);
-      //var cascadeStableBinding = ObjectFactory.Create<CascadeStableBinding> (ParamList.Create (numberChildren));
       var cascadeStableBinding = new CascadeStableBinding (numberChildren);
-      var cascadeGetCustomMember = new CascadeGetCustomMemberReturnsString (numberChildren);
-
-      ScriptContext.SwitchAndHoldScriptContext (_scriptContext);
-      var attributeNameProxy = ScriptContext.GetAttributeProxy (cascade, "Name");
-      ScriptContext.ReleaseScriptContext (_scriptContext);
-      var cascadeGetCustomMemberReturnsFixedAttributeProxy = new CascadeGetCustomMemberReturnsFixedAttributeProxy (numberChildren, attributeNameProxy);
-
-
 
       var privateScriptEnvironment = ScriptEnvironment.Create ();
 
@@ -58,12 +53,145 @@ def PropertyPathAccess(cascade) :
         scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
       );
 
-      //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
-      var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
-      ScriptingHelper.ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ScriptingHelper.ExecuteAndTime ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
-      ScriptingHelper.ExecuteAndTime ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMember));
-      ScriptingHelper.ExecuteAndTime ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
+      var nrLoopsArray = new[] { 1, 1, 100 };
+      var timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding))[2];
+
+      To.ConsoleLine.e (() => timingStableBinding);
     }
+
+
+    [Test]
+    [Explicit]
+    public void SimplePropertyAccess_GetCustomMember2 ()
+    {
+      const string scriptFunctionSourceCode = @"
+import clr
+def PropertyPathAccess(cascade) :
+  return cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name
+";
+
+      const int numberChildren = 10;
+      var cascade = new Cascade (numberChildren);
+      var cascadeStableBinding = new CascadeStableBinding (numberChildren);
+      var cascadeStableBindingFromMixin = ObjectFactory.Create<CascadeStableBindingFromMixin> (ParamList.Create (numberChildren));
+
+      var privateScriptEnvironment = ScriptEnvironment.Create ();
+
+      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+
+      var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
+        _scriptContext, ScriptLanguageType.Python,
+        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
+      );
+
+      var nrLoopsArray = new[] { 1, 1, 100 };
+      var timing = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascade))[2];
+      var timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding))[2];
+      var timingStableBindingFromMixin = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBindingFromMixin))[2];
+
+      To.ConsoleLine.e (() => timing).e (() => timingStableBinding).e (() => timingStableBindingFromMixin);
+    }
+
+
+    public interface ICascade1
+    {
+      Cascade Child { get; set; }
+      string Name { get; set; }
+    }
+
+    public interface ICascade2
+    {
+      //Cascade Child { get; set; }
+      string Name { get; set; }
+    }
+
+    public class Cascade : ICascade1
+    {
+      protected Cascade _child;
+      protected string _name;
+
+      public Cascade ()
+      {
+
+      }
+
+      public Cascade (int nrChildren)
+      {
+        --nrChildren;
+        _name = "C" + nrChildren;
+        if (nrChildren > 0)
+        {
+          Child = new Cascade (nrChildren);
+        }
+      }
+
+      public Cascade Child
+      {
+        get { return _child; }
+        set { _child = value; }
+      }
+
+      string ICascade1.Name
+      {
+        get { return "ICascade1.Name"; }
+        set { _name = value + "-ICascade1.Name"; }
+      }
+
+      public Cascade GetChild ()
+      {
+        return Child;
+      }
+
+      public string GetName ()
+      {
+        return _name;
+      }
+    }
+
+
+     public class CascadeAmbigous : Cascade, ICascade2
+    {
+      string ICascade2.Name
+      {
+        get { return "ICascade2.Name"; }
+        set { _name = value + "-ICascade2.Name"; }
+      }
+    }
+
+
+    public class CascadeStableBinding : CascadeAmbigous
+    {
+      public CascadeStableBinding (int nrChildren)
+      {
+        --nrChildren;
+        _name = "C" + nrChildren;
+        if (nrChildren > 0)
+        {
+          Child = new CascadeStableBinding (nrChildren);
+        }
+      }
+
+      [SpecialName]
+      public object GetCustomMember (string name)
+      {
+        return ScriptContext.GetAttributeProxy (this, name);
+      }
+    }
+
+
+    [Uses (typeof (StableBindingMixin))]
+     public class CascadeStableBindingFromMixin : CascadeAmbigous
+    {
+      public CascadeStableBindingFromMixin (int nrChildren)
+      {
+        --nrChildren;
+        _name = "C" + nrChildren;
+        if (nrChildren > 0)
+        {
+          Child = new CascadeStableBindingFromMixin (nrChildren);
+        }
+      }
+    }
+
   }
 }
