@@ -142,7 +142,7 @@ namespace Remotion.Scripting
           //if (
           //    IsMethodBound (proxiedTypeMethod, methodsInFirstKnownBaseType)) // accessor method is visible in first known base type
           //{
-            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property: ").e (knownBaseTypeProperty.Name);
+            To.ConsoleLine.s (">>>>>>>>>>>> Implementing public property: ").e (knownBaseTypeProperty.Name);
             _forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (knownBaseTypeProperty);
           //}
         }
@@ -171,12 +171,6 @@ namespace Remotion.Scripting
         var typeNonPublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
 
         //To.ConsoleLine.nl ().e(type.Name).e (() => typeNonPublicProperties).nl ();
-
-        //var typeKnownInterfaceMaps = _knownInterfaces.Select(i => type.GetInterfaceMap(i));
-        //foreach (var knownInterfaceMap in typeKnownInterfaceMaps)
-        //{
-        //  for
-        //}
 
         // Build class method to interface method map for current type
         // TODO: Optimize (cache)
@@ -214,7 +208,7 @@ namespace Remotion.Scripting
             var getter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetGetMethod (true),classMethodToInterfaceMethodsMap).Single (); 
             var setter = GetInterfaceMethodsToClassMethod (nonPublicProperty.GetSetMethod (true),classMethodToInterfaceMethodsMap).Single ();
 
-            //To.ConsoleLine.s (">>>>>>>>>>>> Implementing property: ").e (nonPublicProperty.Name);
+            To.ConsoleLine.s (">>>>>>>>>>>> Implementing property: ").e (nonPublicProperty.Name);
             _forwardingProxyBuilder.AddForwardingExplicitInterfaceProperty (nonPublicProperty, getter, setter);
             //_forwardingProxyBuilder.AddForwardingPropertyFromClassOrInterfacePropertyInfoCopy (property); // !!!!!!! TEST !!!!!!!!!!!!!!!!
           }
@@ -424,7 +418,7 @@ namespace Remotion.Scripting
     {
       //return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeFilter.IsTypeValid);
 
-      // Object is always known
+      // Object is always known.
       return ProxiedType.CreateSequence (t => t.BaseType).FirstOrDefault (_typeFilter.IsTypeValid) ?? typeof(object);
     }
 
