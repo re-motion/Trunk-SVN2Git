@@ -39,7 +39,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         typeof (DebuggerBrowsableAttribute).GetConstructor (new[] { typeof (DebuggerBrowsableState) });
     private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor =
         typeof (DebuggerDisplayAttribute).GetConstructor (new[] { typeof (string) });
-    private readonly PropertyInfo[] s_debuggerDisplayNameProperty = new[] { typeof (DebuggerDisplayAttribute).GetProperty ("Name") };
+    private readonly PropertyInfo s_debuggerDisplayNameProperty = typeof (DebuggerDisplayAttribute).GetProperty ("Name");
+    private readonly ConstructorInfo s_introducedMemberAttributeCtor = 
+        typeof (IntroducedMemberAttribute).GetConstructor (new[] { typeof (Type), typeof (string), typeof (Type), typeof (string) });
 
     private readonly CodeGenerationCache _codeGenerationCache;
     private readonly ICodeGenerationModule _module;
@@ -296,7 +298,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private void AddDebuggerDisplayAttribute (IAttributableEmitter property, string displayString, string nameString)
     {
       var attributeBuilder = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor,
-          new object[] { displayString }, s_debuggerDisplayNameProperty, new object[] { nameString });
+          new object[] { displayString }, new[] { s_debuggerDisplayNameProperty }, new object[] { nameString });
       property.AddCustomAttribute (attributeBuilder);
     }
 
@@ -325,19 +327,20 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         MethodInfo interfaceMember,
         MemberVisibility visibility)
     {
-      CustomMethodEmitter introducedMethod = 
+      CustomMethodEmitter methodEmitter = 
           visibility == MemberVisibility.Public 
           ? Emitter.CreatePublicInterfaceMethodImplementation (interfaceMember) 
           : Emitter.CreateInterfaceMethodImplementation (interfaceMember);
 
       Statement initializationStatement = GetInitializationStatement ();
-      introducedMethod.AddStatement (initializationStatement);
+      methodEmitter.AddStatement (initializationStatement);
 
-      var implementer = new ExpressionReference (interfaceMember.DeclaringType, implementerExpression, introducedMethod);
-      introducedMethod.ImplementByDelegating (implementer, interfaceMember);
+      var implementer = new ExpressionReference (interfaceMember.DeclaringType, implementerExpression, methodEmitter);
+      methodEmitter.ImplementByDelegating (implementer, interfaceMember);
 
-      ReplicateAttributes (implementingMember, introducedMethod);
-      return introducedMethod;
+      ReplicateAttributes (implementingMember, methodEmitter);
+      AddIntroducedMemberAttribute (methodEmitter, implementingMember, interfaceMember);
+      return methodEmitter;
     }
 
     private void ImplementIntroducedProperty (Expression implementerExpression, PropertyIntroductionDefinition property)
@@ -362,6 +365,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
             property.Visibility);
 
       ReplicateAttributes (property.ImplementingMember, propertyEmitter);
+      AddIntroducedMemberAttribute (propertyEmitter, property.ImplementingMember, property.InterfaceMember);
       return;
     }
 
@@ -387,7 +391,20 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           eventIntro.Visibility);
 
       ReplicateAttributes (eventIntro.ImplementingMember, eventEmitter);
+      AddIntroducedMemberAttribute (eventEmitter, eventIntro.ImplementingMember, eventIntro.InterfaceMember);
       return;
+    }
+
+    private void AddIntroducedMemberAttribute (IAttributableEmitter memberEmitter, MemberDefinitionBase implementingMember, MemberInfo interfaceMember)
+    {
+      var constructorArgs = new object[] { 
+          implementingMember.DeclaringClass.Type, 
+          implementingMember.Name, 
+          interfaceMember.DeclaringType, 
+          interfaceMember.Name };
+
+      var builder = new CustomAttributeBuilder (s_introducedMemberAttributeCtor, constructorArgs);
+      memberEmitter.AddCustomAttribute (builder);
     }
 
     private void ImplementRequiredDuckMethods ()

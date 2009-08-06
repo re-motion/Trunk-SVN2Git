@@ -59,9 +59,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         PEVerifier.VerifyPEFile (path);
 
 #endif
+
       ResetGeneratedAssemblies (); // delete assemblies if everything went fine
-
-
+      
       s_savedTypeBuilder = null;
       s_alternativeTypeBuilder = null;
     }

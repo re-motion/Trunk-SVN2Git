@@ -13,13 +13,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -160,6 +163,62 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
 
       var publicSpecialNameMethod = t.GetMethod ("PublicMethodWithSpecialName");
       Assert.That (publicSpecialNameMethod.IsSpecialName, Is.True);
+    }
+
+    [Test]
+    public void IntroducedMemberAttributes_Method ()
+    {
+      Type t = CreateMixedType (typeof (NullTarget), typeof (MixinIntroducingMembersWithDifferentVisibilities));
+      
+      MethodInfo methodInfo = t.GetMethod ("MethodWithPublicVisibility", BindingFlags.Public | BindingFlags.Instance);
+      var methodAttribute = (IntroducedMemberAttribute) methodInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), false).Single ();
+
+      Assert.That (methodAttribute.Mixin, Is.SameAs (typeof (MixinIntroducingMembersWithDifferentVisibilities)));
+      Assert.That (methodAttribute.MixinMemberName, Is.EqualTo ("MethodWithPublicVisibility"));
+      Assert.That (methodAttribute.IntroducedInterface, Is.SameAs (typeof (IMixinIntroducingMembersWithDifferentVisibilities)));
+      Assert.That (methodAttribute.InterfaceMemberName, Is.EqualTo ("MethodWithPublicVisibility"));
+    }
+
+    [Test]
+    public void IntroducedMemberAttributes_Property ()
+    {
+      Type t = CreateMixedType (typeof (NullTarget), typeof (MixinIntroducingMembersWithDifferentVisibilities));
+
+      PropertyInfo propertyInfo = t.GetProperty ("PropertyWithPublicVisibility", BindingFlags.Public | BindingFlags.Instance);
+      var propertyAttribute = (IntroducedMemberAttribute) propertyInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), false).Single ();
+
+      Assert.That (propertyAttribute.Mixin, Is.SameAs (typeof (MixinIntroducingMembersWithDifferentVisibilities)));
+      Assert.That (propertyAttribute.MixinMemberName, Is.EqualTo ("PropertyWithPublicVisibility"));
+      Assert.That (propertyAttribute.IntroducedInterface, Is.SameAs (typeof (IMixinIntroducingMembersWithDifferentVisibilities)));
+      Assert.That (propertyAttribute.InterfaceMemberName, Is.EqualTo ("PropertyWithPublicVisibility"));
+    }
+
+    [Test]
+    public void IntroducedMemberAttributes_Event ()
+    {
+      Type t = CreateMixedType (typeof (NullTarget), typeof (MixinIntroducingMembersWithDifferentVisibilities));
+
+      EventInfo eventInfo = t.GetEvent ("EventWithPublicVisibility", BindingFlags.Public | BindingFlags.Instance);
+      var eventAttribute = (IntroducedMemberAttribute) eventInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), false).Single ();
+
+      Assert.That (eventAttribute.Mixin, Is.SameAs (typeof (MixinIntroducingMembersWithDifferentVisibilities)));
+      Assert.That (eventAttribute.MixinMemberName, Is.EqualTo ("EventWithPublicVisibility"));
+      Assert.That (eventAttribute.IntroducedInterface, Is.SameAs (typeof (IMixinIntroducingMembersWithDifferentVisibilities)));
+      Assert.That (eventAttribute.InterfaceMemberName, Is.EqualTo ("EventWithPublicVisibility"));
+    }
+
+    [Test]
+    public void IntroducedMemberAttributes_Explicit ()
+    {
+      Type t = CreateMixedType (typeof (NullTarget), typeof (MixinWithExplicitImplementation));
+
+      MethodInfo methodInfo = t.GetMethod (typeof (IExplicit).FullName + ".Explicit", c_nonPublicFlags);
+      var methodAttribute = (IntroducedMemberAttribute) methodInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), false).Single ();
+
+      Assert.That (methodAttribute.Mixin, Is.SameAs (typeof (MixinWithExplicitImplementation)));
+      Assert.That (methodAttribute.MixinMemberName, Is.EqualTo (typeof (IExplicit).FullName + ".Explicit"));
+      Assert.That (methodAttribute.IntroducedInterface, Is.SameAs (typeof (IExplicit)));
+      Assert.That (methodAttribute.InterfaceMemberName, Is.EqualTo ("Explicit"));
     }
   }
 }
