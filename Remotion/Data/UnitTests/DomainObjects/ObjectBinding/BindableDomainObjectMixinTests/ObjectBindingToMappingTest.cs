@@ -16,12 +16,10 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 
@@ -53,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetMappingPropertyIdentifier_Standard ()
     {
-      PropertyBase property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty");
+      var property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty");
       string identifier = _classWithPropertiesMixin.GetMappingPropertyIdentifier (property);
       Assert.That (
           identifier,
@@ -64,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetMappingPropertyIdentifier_Interface ()
     {
-      PropertyBase property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringPropertyInInterface");
+      var property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringPropertyInInterface");
       string identifier = _classWithPropertiesMixin.GetMappingPropertyIdentifier (property);
       Assert.That (
           identifier,
@@ -75,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetMappingPropertyIdentifier_ExplicitInterface ()
     {
-      PropertyBase property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringPropertyExplicitInInterface");
+      var property = (PropertyBase) _businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringPropertyExplicitInInterface");
       string identifier = _classWithPropertiesMixin.GetMappingPropertyIdentifier (property);
       Assert.That (
           identifier,
@@ -88,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetMappingPropertyIdentifier_MixedPrivate ()
     {
-      PropertyBase property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PrivateMixedProperty");
+      var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PrivateMixedProperty");
       string identifier = _classWithMixedPropertiesImplementation.GetMappingPropertyIdentifier (property);
       Assert.That (
           identifier,
@@ -99,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetMappingPropertyIdentifier_MixedPublic ()
     {
-      PropertyBase property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PublicMixedProperty");
+      var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("PublicMixedProperty");
       string identifier = _classWithMixedPropertiesImplementation.GetMappingPropertyIdentifier (property);
       Assert.That (
           identifier,
@@ -110,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void GetMappingPropertyIdentifier_Mixed_ExplicitOnMixin ()
     {
-      PropertyBase property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("ExplicitMixedProperty");
+      var property = (PropertyBase) _businessObjectClassWithMixedProperties.GetPropertyDefinition ("ExplicitMixedProperty");
       string identifier = _classWithMixedPropertiesImplementation.GetMappingPropertyIdentifier (property);
       Assert.That (
           identifier,

@@ -15,6 +15,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -78,17 +79,10 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
       if (interfacePropertyInfo != null && Mixins.MixinTypeUtility.IsGeneratedConcreteMixedType (originalDeclaringType))
       {
-        // this property was added by a mixin, associate it with the respective mixin type for the mapping
+        // this property was added by a mixin, get the correct mapping property name
 
-        IMixinTarget mixinTarget = (IMixinTarget) This;
-        var interfaceIntroduction = mixinTarget.Configuration.ReceivedInterfaces[interfacePropertyInfo.DeclaringType];
-        if (interfaceIntroduction != null)
-        {
-          var propertyIntroduction = interfaceIntroduction.IntroducedProperties[interfacePropertyInfo];
-          Assertion.IsNotNull (propertyIntroduction, "If the interface is introduced via a mixin, its properties are introduced as well.");
-          return MappingConfiguration.Current.NameResolver.GetPropertyName (interfaceIntroduction.Implementer.Type, 
-              propertyIntroduction.ImplementingMember.Name);
-        }
+        var introducedMemberAttribute = property.PropertyInfo.GetCustomAttribute<IntroducedMemberAttribute> (true);
+        return MappingConfiguration.Current.NameResolver.GetPropertyName (introducedMemberAttribute.Mixin, introducedMemberAttribute.MixinMemberName);
       }
 
       return MappingConfiguration.Current.NameResolver.GetPropertyName (originalDeclaringType, property.PropertyInfo.Name);
