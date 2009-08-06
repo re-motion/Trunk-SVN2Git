@@ -302,7 +302,7 @@
   <target name="Dms.DocumentEventMonitor" depends="Dms.DesktopConnector">
     <property name="project.name" value="Dms.DocumentEventMonitor" />
     <property name="project.dir" value="Dms/DocumentEventMonitor" />
-    <property name="project.output" value="Remotion.Dms.DocumentEventMonitor" />
+    <property name="project.output" value="DocumentEventMonitor" />
     <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
   </target>
