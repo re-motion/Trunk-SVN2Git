@@ -303,13 +303,13 @@ namespace Remotion.Web.ExecutionEngine
 
       StringBuilder initScript = new StringBuilder (500);
 
-      initScript.AppendLine ("WxePage_Context.Instance = new WxePage_Context (");
+      initScript.AppendLine ("WxePage_Context.SetInstance (new WxePage_Context (");
       initScript.AppendLine ("    ").Append (isCacheDetectionEnabled).AppendLine (",");
       initScript.AppendLine ("    ").Append (refreshIntervall).AppendLine (",");
       initScript.AppendLine ("    ").Append (refreshPath).AppendLine (",");
       initScript.AppendLine ("    ").Append (abortPath).AppendLine (",");
       initScript.AppendLine ("    ").Append (statusIsAbortingMessage).AppendLine (",");
-      initScript.AppendLine ("    ").Append (statusIsCachedMessage).AppendLine (");");
+      initScript.AppendLine ("    ").Append (statusIsCachedMessage).AppendLine ("));");
 
       _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxePageInfo), "wxeInitialize", initScript.ToString ());
     }
