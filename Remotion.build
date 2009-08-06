@@ -175,7 +175,7 @@
       Data.Interfaces, Data.Linq, Data.DomainObjects, Data.DomainObjects.Security, 
       Data.DomainObjects.RdbmsTools, Data.DomainObjects.RdbmsTools.Console, 
       Security.Interfaces, Security, Security.Metadata.Extractor, Security.MSBuild.Tasks, 
-      Dms.Core, Dms.Shared, Dms.Clients.Windows.Tray, Dms.DesktopConnector, Dms.Web,
+      Dms.Core, Dms.Shared, Dms.Clients.Windows.Tray, Dms.DesktopConnector, Dms.DocumentEventMonitor, Dms.Web,
       SecurityManager.Core, SecurityManager.AclTools.Expander, SecurityManager.Metadata.Importer, SecurityManager.Clients.Web">
     <echo message="Target has executed."/>
   </target>
@@ -296,6 +296,14 @@
     <property name="project.dir" value="Dms/DesktopConnector" />
     <property name="project.output" value="Remotion.Dms.DesktopConnector" />
     <property name="project.extension" value="dll" />
+    <call target="execute-buildstep" />
+  </target>
+
+  <target name="Dms.DocumentEventMonitor" depends="Dms.DesktopConnector">
+    <property name="project.name" value="Dms.DocumentEventMonitor" />
+    <property name="project.dir" value="Dms/DocumentEventMonitor" />
+    <property name="project.output" value="Remotion.Dms.DocumentEventMonitor" />
+    <property name="project.extension" value="exe" />
     <call target="execute-buildstep" />
   </target>
 
