@@ -157,7 +157,7 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\AttributeReplicator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\DebuggerBrowsableAttributeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\DebuggerDisplayAttributeGenerator.cs" />
-    <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\InitializationStatementGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\InitializationCodeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\IntroducedMemberAttributeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\IntroducedMemberAttribute.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />

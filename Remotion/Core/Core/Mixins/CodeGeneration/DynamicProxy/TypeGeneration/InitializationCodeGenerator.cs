@@ -14,27 +14,31 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Reflection;
-using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 {
   /// <summary>
-  /// Generates the initialization statements to initialize a concrete mixed type and its mixins.
+  /// Generates the initialization code used to initialize a concrete mixed type and its mixins.
   /// </summary>
-  public class InitializationStatementGenerator
+  public class InitializationCodeGenerator
   {
     private static readonly MethodInfo s_concreteTypeInitializationMethod =
         typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget", new[] { typeof (IInitializableMixinTarget), typeof (bool) });
 
     private readonly FieldReference _extensionsField;
+    private readonly FieldReference _firstField;
 
-    public InitializationStatementGenerator (FieldReference extensionsField)
+    public InitializationCodeGenerator (FieldReference extensionsField, FieldReference firstField)
     {
       ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
+      ArgumentUtility.CheckNotNull ("firstField", firstField);
+      
       _extensionsField = extensionsField;
+      _firstField = firstField;
     }
 
     public Statement GetInitializationStatement ()
@@ -49,5 +53,30 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
       var condition = new SameConditionExpression (_extensionsField.ToExpression(), NullExpression.Instance);
       return new IfStatement (condition, initializationMethodCall);
     }
+
+    public void ImplementIInitializableMixinTarget (IClassEmitter classEmitter, BaseCallProxyGenerator baseCallProxyGenerator)
+    {
+      ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
+      ArgumentUtility.CheckNotNull ("baseCallProxyGenerator", baseCallProxyGenerator);
+
+      CustomMethodEmitter createProxyMethod =
+          classEmitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("CreateBaseCallProxy"));
+      createProxyMethod.ImplementByReturning (new NewInstanceExpression(baseCallProxyGenerator.Ctor,
+          SelfReference.Self.ToExpression(), createProxyMethod.ArgumentReferences[0].ToExpression()));
+
+      CustomMethodEmitter setProxyMethod =
+          classEmitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetFirstBaseCallProxy"));
+      setProxyMethod.AddStatement (new AssignStatement (_firstField, 
+          new ConvertExpression(baseCallProxyGenerator.TypeBuilder, setProxyMethod.ArgumentReferences[0].ToExpression ())));
+      setProxyMethod.ImplementByReturningVoid ();
+
+      CustomMethodEmitter setExtensionsMethod =
+          classEmitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetExtensions"));
+      setExtensionsMethod.AddStatement (new AssignStatement (_extensionsField, setExtensionsMethod.ArgumentReferences[0].ToExpression ()));
+      setExtensionsMethod.ImplementByReturningVoid ();
+    }
+
+
+    
   }
 }

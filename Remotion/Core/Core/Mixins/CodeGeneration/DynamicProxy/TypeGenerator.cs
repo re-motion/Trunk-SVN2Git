@@ -46,7 +46,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly AttributeGenerator _attributeGenerator = new AttributeGenerator ();
     private readonly AttributeReplicator _attributeReplicator = new AttributeReplicator ();
 
-    private readonly InitializationStatementGenerator _initializationStatementGenerator;
+    private readonly InitializationCodeGenerator _initializationCodeGenerator;
 
     private readonly FieldReference _configurationField;
     private readonly FieldReference _extensionsField;
@@ -79,28 +79,28 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _configurationField = _emitter.CreateStaticField ("__configuration", typeof (TargetClassDefinition), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_configurationField);
-      
+
+      AddTypeInitializer ();
+
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_extensionsField);
 
       _concreteMixinTypes = GetConcreteMixinTypes (mixinNameProvider);
       _baseCallGenerator = new BaseCallProxyGenerator (this, _emitter, _concreteMixinTypes);
 
-      _initializationStatementGenerator = new InitializationStatementGenerator (_extensionsField);
-      
       _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
        _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_firstField);
 
+       _initializationCodeGenerator = new InitializationCodeGenerator (_extensionsField, _firstField);
+       _initializationCodeGenerator.ImplementIInitializableMixinTarget (Emitter, _baseCallGenerator);
+
       _emitter.ReplicateBaseTypeConstructors (
           delegate { }, 
-          emitter => emitter.CodeBuilder.AddStatement (_initializationStatementGenerator.GetInitializationStatement ()));
-
-      AddTypeInitializer ();
+          emitter => emitter.CodeBuilder.AddStatement (_initializationCodeGenerator.GetInitializationStatement ()));
 
       ImplementISerializable();
 
       ImplementIMixinTarget ();
-      ImplementIInitializableMixinTarget ();
       ImplementIntroducedInterfaces ();
       ImplementRequiredDuckMethods ();
       ImplementAttributes (configuration, _emitter);
@@ -266,25 +266,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           "FirstBaseCallProxy");
     }
 
-    private void ImplementIInitializableMixinTarget ()
-    {
-      CustomMethodEmitter createProxyMethod =
-          Emitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("CreateBaseCallProxy"));
-      createProxyMethod.ImplementByReturning (new NewInstanceExpression(_baseCallGenerator.Ctor,
-          SelfReference.Self.ToExpression(), createProxyMethod.ArgumentReferences[0].ToExpression()));
-
-      CustomMethodEmitter setProxyMethod =
-          Emitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetFirstBaseCallProxy"));
-      setProxyMethod.AddStatement (new AssignStatement (_firstField, 
-          new ConvertExpression(_baseCallGenerator.TypeBuilder, setProxyMethod.ArgumentReferences[0].ToExpression ())));
-      setProxyMethod.ImplementByReturningVoid ();
-
-      CustomMethodEmitter setExtensionsMethod =
-          Emitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetExtensions"));
-      setExtensionsMethod.AddStatement (new AssignStatement (_extensionsField, setExtensionsMethod.ArgumentReferences[0].ToExpression ()));
-      setExtensionsMethod.ImplementByReturningVoid ();
-    }
-
     private void ImplementIntroducedInterfaces ()
     {
       foreach (InterfaceIntroductionDefinition introduction in _configuration.ReceivedInterfaces)
@@ -315,7 +296,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           ? Emitter.CreatePublicInterfaceMethodImplementation (interfaceMember) 
           : Emitter.CreateInterfaceMethodImplementation (interfaceMember);
 
-      var initializationStatement = _initializationStatementGenerator.GetInitializationStatement ();
+      var initializationStatement = _initializationCodeGenerator.GetInitializationStatement ();
       methodEmitter.AddStatement (initializationStatement);
 
       var implementer = new ExpressionReference (interfaceMember.DeclaringType, implementerExpression, methodEmitter);
@@ -444,7 +425,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       MethodInfo proxyMethod = _baseCallGenerator.GetProxyMethodForOverriddenMethod (method);
       CustomMethodEmitter methodOverride = Emitter.CreateMethodOverride (method.MethodInfo);
-      var initializationStatement = _initializationStatementGenerator.GetInitializationStatement ();
+      var initializationStatement = _initializationCodeGenerator.GetInitializationStatement ();
       methodOverride.AddStatement (initializationStatement);
       methodOverride.ImplementByDelegating (new TypeReferenceWrapper (_firstField, _firstField.Reference.FieldType), proxyMethod);
       return methodOverride;

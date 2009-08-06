@@ -26,7 +26,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
-  internal class BaseCallProxyGenerator
+  public class BaseCallProxyGenerator
   {
     private readonly TypeGenerator _surroundingType;
     private readonly ConcreteMixinType[] _concreteMixinTypes;
