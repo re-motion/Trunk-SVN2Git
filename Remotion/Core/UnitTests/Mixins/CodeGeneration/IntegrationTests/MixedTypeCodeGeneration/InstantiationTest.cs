@@ -106,8 +106,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void OverriddenMethodCalledFromCtor ()
     {
-      TargetClassCallingOverriddenMethodFromCtor instance =
-          CreateMixedObject<TargetClassCallingOverriddenMethodFromCtor> (typeof (MixinOverridingMethodCalledFromCtor));
+      var instance = CreateMixedObject<TargetClassCallingOverriddenMethodFromCtor> (typeof (MixinOverridingMethodCalledFromCtor));
       var mixin = Mixin.Get<MixinOverridingMethodCalledFromCtor> (instance);
       Assert.That (instance.Result, Is.SameAs (mixin));
       Assert.That (mixin.MyThis, Is.SameAs (instance));
@@ -117,8 +116,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void IntroducedMethodCalledFromCtor ()
     {
-      TargetClassCallingIntroducedMethodFromCtor instance =
-          CreateMixedObject<TargetClassCallingIntroducedMethodFromCtor> (typeof (MixinIntroducingMethodCalledFromCtor));
+      var instance = CreateMixedObject<TargetClassCallingIntroducedMethodFromCtor> (typeof (MixinIntroducingMethodCalledFromCtor));
       
       var mixin = Mixin.Get<MixinIntroducingMethodCalledFromCtor> (instance);
       Assert.That (instance.Result, Is.SameAs (mixin));

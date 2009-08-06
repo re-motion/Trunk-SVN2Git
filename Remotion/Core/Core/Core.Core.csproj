@@ -160,6 +160,7 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\InitializationCodeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\IntroducedMemberAttributeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\IntroducedMemberAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\MixinArrayInitializer.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />

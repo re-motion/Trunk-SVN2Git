@@ -15,6 +15,7 @@
 // 
 using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
@@ -28,7 +29,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
   {
     private static readonly MethodInfo s_concreteTypeInitializationMethod =
         typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget", new[] { typeof (IInitializableMixinTarget), typeof (bool) });
+
     private static readonly MethodInfo s_initializeMethod = typeof (IInitializableMixinTarget).GetMethod ("Initialize");
+    private static readonly MethodInfo s_createBaseCallProxyMethod = typeof (IInitializableMixinTarget).GetMethod ("CreateBaseCallProxy");
+    private static readonly MethodInfo s_setFirstBaseCallProxyMethod = typeof (IInitializableMixinTarget).GetMethod ("SetFirstBaseCallProxy");
+    private readonly MethodInfo s_setExtensionsMethod = typeof (IInitializableMixinTarget).GetMethod ("SetExtensions");
 
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
@@ -59,33 +64,67 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
       ArgumentUtility.CheckNotNull ("baseCallProxyGenerator", baseCallProxyGenerator);
 
-      CustomMethodEmitter createInitializeMethod = classEmitter.CreateInterfaceMethodImplementation (s_initializeMethod);
-      createInitializeMethod.AddStatement (
-          new ExpressionStatement (
-            new MethodInvocationExpression (
-                null,
-                s_concreteTypeInitializationMethod,
-                new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression()),
-                createInitializeMethod.ArgumentReferences[0].ToExpression())));
-      createInitializeMethod.AddStatement (new ReturnStatement ());
+      ImplementInitializeMethod (classEmitter);
 
       CustomMethodEmitter createProxyMethod =
-          classEmitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("CreateBaseCallProxy"));
+          classEmitter.CreateInterfaceMethodImplementation (s_createBaseCallProxyMethod);
       createProxyMethod.ImplementByReturning (new NewInstanceExpression(baseCallProxyGenerator.Ctor,
           SelfReference.Self.ToExpression(), createProxyMethod.ArgumentReferences[0].ToExpression()));
 
       CustomMethodEmitter setProxyMethod =
-          classEmitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetFirstBaseCallProxy"));
+          classEmitter.CreateInterfaceMethodImplementation (s_setFirstBaseCallProxyMethod);
       setProxyMethod.AddStatement (new AssignStatement (_firstField, 
           new ConvertExpression(baseCallProxyGenerator.TypeBuilder, setProxyMethod.ArgumentReferences[0].ToExpression ())));
       setProxyMethod.ImplementByReturningVoid ();
 
       CustomMethodEmitter setExtensionsMethod =
-          classEmitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetExtensions"));
+          classEmitter.CreateInterfaceMethodImplementation (s_setExtensionsMethod);
       setExtensionsMethod.AddStatement (new AssignStatement (_extensionsField, setExtensionsMethod.ArgumentReferences[0].ToExpression ()));
       setExtensionsMethod.ImplementByReturningVoid ();
+    }
 
+    private void ImplementInitializeMethod (IClassEmitter classEmitter)
+    {
+      CustomMethodEmitter createInitializeMethod = classEmitter.CreateInterfaceMethodImplementation (s_initializeMethod);
 
+      //// object[] mixinInstances = MixedObjectInstantiationScope.Current.SuppliedMixinInstances;
+
+      //var mixinInstancesLocal = createInitializeMethod.DeclareLocal (typeof (object[]));
+
+      //var currentMixedObjectInstantiationScope = new PropertyReference (typeof (MixedObjectInstantiationScope).GetProperty ("Current"));
+      //var suppliedMixinInstances = new PropertyReference (
+      //    currentMixedObjectInstantiationScope,
+      //    typeof (MixedObjectInstantiationScope).GetProperty ("SuppliedMixinInstances"));
+
+      //createInitializeMethod.AddStatement (new AssignStatement (mixinInstancesLocal, suppliedMixinInstances.ToExpression ()));
+
+      //// ((IInitializableMixinTarget)this).SetFirstBaseCallProxy (((IInitializableMixinTarget)this).CreateBaseCallProxy (0));
+
+      //var selfAsInitializableTarget = new TypeReferenceWrapper (SelfReference.Self, typeof (IInitializableMixinTarget));
+      //var firstBaseCallProxyExpression = new VirtualMethodInvocationExpression (
+      //    selfAsInitializableTarget,
+      //    s_createBaseCallProxyMethod,
+      //    new ConstReference (0).ToExpression ());
+
+      //createInitializeMethod.AddStatement (
+      //    new ExpressionStatement (
+      //        new VirtualMethodInvocationExpression (
+      //            selfAsInitializableTarget,
+      //            s_setFirstBaseCallProxyMethod,
+      //            firstBaseCallProxyExpression)));
+
+      // TODO 1482: Start here <=> GeneratedClassInstanceInitializer.PrepareExtensionsWithGivenMixinInstances
+
+      createInitializeMethod.AddStatement (
+          new ExpressionStatement (
+              new MethodInvocationExpression (
+                  null,
+                  s_concreteTypeInitializationMethod,
+                  new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression()),
+                  createInitializeMethod.ArgumentReferences[0].ToExpression())));
+      
+      
+      createInitializeMethod.AddStatement (new ReturnStatement ());
     }
   }
 }
