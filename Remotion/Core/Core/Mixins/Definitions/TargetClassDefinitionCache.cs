@@ -41,6 +41,7 @@ namespace Remotion.Mixins.Definitions
       // However, this would cause the whole cache to be locked while just one definition is created.
       // We therefore risk creating definition objects twice (in the rare case of two threads simultaneously asking for uncached definitions for the
       // same contexts) and optimize for the more common case (threads concurrently asking for definitions for different contexts).
+      // Even when we create twice, we'll consistently return the same instances from this method.
 
       TargetClassDefinition definition;
       if (!_cache.TryGetValue (context, out definition))
