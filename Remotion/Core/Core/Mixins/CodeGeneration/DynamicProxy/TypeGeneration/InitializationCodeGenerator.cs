@@ -28,6 +28,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
   {
     private static readonly MethodInfo s_concreteTypeInitializationMethod =
         typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget", new[] { typeof (IInitializableMixinTarget), typeof (bool) });
+    private static readonly MethodInfo s_initializeMethod = typeof (IInitializableMixinTarget).GetMethod ("Initialize");
 
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
@@ -44,10 +45,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     public Statement GetInitializationStatement ()
     {
       var initializationMethodCall = new ExpressionStatement (
-          new MethodInvocationExpression (
-              null,
-              s_concreteTypeInitializationMethod,
-              new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression()),
+          new VirtualMethodInvocationExpression (
+              new TypeReferenceWrapper (SelfReference.Self, typeof (IInitializableMixinTarget)),
+              s_initializeMethod,
               new ConstReference (false).ToExpression()));
 
       var condition = new SameConditionExpression (_extensionsField.ToExpression(), NullExpression.Instance);
@@ -58,6 +58,16 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
       ArgumentUtility.CheckNotNull ("baseCallProxyGenerator", baseCallProxyGenerator);
+
+      CustomMethodEmitter createInitializeMethod = classEmitter.CreateInterfaceMethodImplementation (s_initializeMethod);
+      createInitializeMethod.AddStatement (
+          new ExpressionStatement (
+            new MethodInvocationExpression (
+                null,
+                s_concreteTypeInitializationMethod,
+                new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression()),
+                createInitializeMethod.ArgumentReferences[0].ToExpression())));
+      createInitializeMethod.AddStatement (new ReturnStatement ());
 
       CustomMethodEmitter createProxyMethod =
           classEmitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("CreateBaseCallProxy"));
@@ -74,9 +84,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
           classEmitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetExtensions"));
       setExtensionsMethod.AddStatement (new AssignStatement (_extensionsField, setExtensionsMethod.ArgumentReferences[0].ToExpression ()));
       setExtensionsMethod.ImplementByReturningVoid ();
+
+
     }
-
-
-    
   }
 }
