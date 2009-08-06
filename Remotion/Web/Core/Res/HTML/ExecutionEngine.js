@@ -73,6 +73,7 @@ function WxePage_Context (
 
   this.OnUnload = function()
   {
+    window.clearInterval (_refreshTimer);
   }
   
   // Handles the page abort event.
