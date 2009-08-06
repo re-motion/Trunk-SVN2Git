@@ -154,6 +154,11 @@
     <Compile Include="Diagnostics\ToText\ToTextSpecificTypeHandler.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificTypeHandlerWrapper.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificInterfaceHandlerWrapper.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\AttributeReplicator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\DebuggerBrowsableAttributeGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\DebuggerDisplayAttributeGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\InitializationStatementGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\IntroducedMemberAttributeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\IntroducedMemberAttribute.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
@@ -217,7 +222,7 @@
     <Compile Include="Reflection\CodeGeneration\CustomMethodEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomPropertyEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\AssemblySaver.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\AttributeReplicator.cs" />
+    <Compile Include="Reflection\CodeGeneration\DPExtensions\AttributeGenerator.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\ClassEmitterSupportingOpenGenericBaseType.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\ConditionExpression.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\AutomaticMethodInvocationExpression.cs" />

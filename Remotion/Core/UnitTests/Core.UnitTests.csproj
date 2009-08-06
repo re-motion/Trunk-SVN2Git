@@ -285,7 +285,7 @@
     <Compile Include="Mixins\Globalization\SampleTypes\InheritedMixinWithoutMultiLingualResourcesAttributes1.cs" />
     <Compile Include="Mixins\Globalization\SampleTypes\InheritedMixinAddingMultiLingualResourcesAttributes.cs" />
     <Compile Include="Reflection\CodeGeneration\AssemblySaverTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\AttributeReplicatorTest.cs" />
+    <Compile Include="Reflection\CodeGeneration\AttributeGeneratorTest.cs" />
     <Compile Include="Reflection\CodeGeneration\PopStatementTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\BaseClassWithDeserializationEvents.cs" />
     <Compile Include="Reflection\CodeGeneration\ClassEmitterGenericsTest.cs" />

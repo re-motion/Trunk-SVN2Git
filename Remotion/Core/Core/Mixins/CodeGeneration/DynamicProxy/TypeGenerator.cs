@@ -22,6 +22,7 @@ using System.Runtime.Serialization;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Collections;
+using Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
@@ -33,21 +34,19 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public class TypeGenerator : ITypeGenerator
   {
-    private static readonly MethodInfo s_concreteTypeInitializationMethod =
-        typeof (GeneratedClassInstanceInitializer).GetMethod ("InitializeMixinTarget", new[] { typeof (IInitializableMixinTarget), typeof (bool) });
-    private static readonly ConstructorInfo s_debuggerBrowsableAttributeConstructor =
-        typeof (DebuggerBrowsableAttribute).GetConstructor (new[] { typeof (DebuggerBrowsableState) });
-    private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor =
-        typeof (DebuggerDisplayAttribute).GetConstructor (new[] { typeof (string) });
-    private readonly PropertyInfo s_debuggerDisplayNameProperty = typeof (DebuggerDisplayAttribute).GetProperty ("Name");
-    private readonly ConstructorInfo s_introducedMemberAttributeCtor = 
-        typeof (IntroducedMemberAttribute).GetConstructor (new[] { typeof (Type), typeof (string), typeof (Type), typeof (string) });
-
     private readonly CodeGenerationCache _codeGenerationCache;
     private readonly ICodeGenerationModule _module;
     private readonly TargetClassDefinition _configuration;
     private readonly IClassEmitter _emitter;
     private readonly BaseCallProxyGenerator _baseCallGenerator;
+
+    private readonly DebuggerDisplayAttributeGenerator _debuggerDisplayAttributeGenerator = new DebuggerDisplayAttributeGenerator();
+    private readonly DebuggerBrowsableAttributeGenerator _debuggerBrowsableAttributeGenerator = new DebuggerBrowsableAttributeGenerator ();
+    private readonly IntroducedMemberAttributeGenerator _introducedMemberAttributeGenerator = new IntroducedMemberAttributeGenerator ();
+    private readonly AttributeGenerator _attributeGenerator = new AttributeGenerator ();
+    private readonly AttributeReplicator _attributeReplicator = new AttributeReplicator ();
+
+    private readonly InitializationStatementGenerator _initializationStatementGenerator;
 
     private readonly FieldReference _configurationField;
     private readonly FieldReference _extensionsField;
@@ -79,17 +78,22 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces.ToArray (), flags, forceUnsigned);
 
       _configurationField = _emitter.CreateStaticField ("__configuration", typeof (TargetClassDefinition), FieldAttributes.Private);
-      HideFieldFromDebugger (_configurationField);
+      _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_configurationField);
+      
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
-      HideFieldFromDebugger (_extensionsField);
+      _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_extensionsField);
 
       _concreteMixinTypes = GetConcreteMixinTypes (mixinNameProvider);
       _baseCallGenerator = new BaseCallProxyGenerator (this, _emitter, _concreteMixinTypes);
 
+      _initializationStatementGenerator = new InitializationStatementGenerator (_extensionsField);
+      
       _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
-      HideFieldFromDebugger (_firstField);
+       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_firstField);
 
-      _emitter.ReplicateBaseTypeConstructors (delegate { }, EmitInitializationStatements);
+      _emitter.ReplicateBaseTypeConstructors (
+          delegate { }, 
+          emitter => emitter.CodeBuilder.AddStatement (_initializationStatementGenerator.GetInitializationStatement ()));
 
       AddTypeInitializer ();
 
@@ -105,29 +109,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       AddDebuggerAttributes();
 
       ImplementOverrides ();
-    }
-
-    private void EmitInitializationStatements (ConstructorEmitter emitter)
-    {
-      IfStatement ifStatement = GetInitializationStatement();
-      emitter.CodeBuilder.AddStatement (ifStatement);
-    }
-
-    private IfStatement GetInitializationStatement()
-    {
-      ConditionExpression condition = new SameConditionExpression (_extensionsField.ToExpression (), NullExpression.Instance);
-      var initializationMethodCall = new ExpressionStatement (
-          new MethodInvocationExpression (null, s_concreteTypeInitializationMethod,
-                                          new ConvertExpression (typeof (IInitializableMixinTarget), SelfReference.Self.ToExpression()),
-                                          new ConstReference (false).ToExpression()));
-
-      return new IfStatement (condition, initializationMethodCall);
-    }
-
-    private void HideFieldFromDebugger (FieldReference field)
-    {
-      var attributeBuilder = new CustomAttributeBuilder (s_debuggerBrowsableAttributeConstructor, new object[] {DebuggerBrowsableState.Never});
-      field.Reference.SetCustomAttribute (attributeBuilder);
     }
 
     private IEnumerable<Type> GetMixinTypes ()
@@ -259,21 +240,30 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       configurationProperty.GetMethod =
           Emitter.CreateInterfaceMethodImplementation (typeof (IMixinTarget).GetMethod ("get_Configuration"));
       configurationProperty.ImplementWithBackingField (_configurationField);
-      AddDebuggerDisplayAttribute (configurationProperty, "Target class configuration for " + _configuration.Type.Name, "Configuration");
+      _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (
+          configurationProperty, 
+          "Target class configuration for " + _configuration.Type.Name, 
+          "Configuration");
 
       CustomPropertyEmitter mixinsProperty =
           Emitter.CreateInterfacePropertyImplementation (typeof (IMixinTarget).GetProperty ("Mixins"));
       mixinsProperty.GetMethod =
           Emitter.CreateInterfaceMethodImplementation (typeof (IMixinTarget).GetMethod ("get_Mixins"));
       mixinsProperty.ImplementWithBackingField (_extensionsField);
-      AddDebuggerDisplayAttribute (mixinsProperty, "Count = {__extensions.Length}", "Mixins");
+      _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (
+          mixinsProperty,
+          "Count = {__extensions.Length}", 
+          "Mixins");
 
       CustomPropertyEmitter firstProperty =
           Emitter.CreateInterfacePropertyImplementation (typeof (IMixinTarget).GetProperty ("FirstBaseCallProxy"));
       firstProperty.GetMethod =
           Emitter.CreateInterfaceMethodImplementation (typeof (IMixinTarget).GetMethod ("get_FirstBaseCallProxy"));
       firstProperty.ImplementWithBackingField (_firstField);
-      AddDebuggerDisplayAttribute (firstProperty, "Generated proxy", "FirstBaseCallProxy");
+      _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (
+          firstProperty, 
+          "Generated proxy", 
+          "FirstBaseCallProxy");
     }
 
     private void ImplementIInitializableMixinTarget ()
@@ -293,13 +283,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           Emitter.CreateInterfaceMethodImplementation (typeof (IInitializableMixinTarget).GetMethod ("SetExtensions"));
       setExtensionsMethod.AddStatement (new AssignStatement (_extensionsField, setExtensionsMethod.ArgumentReferences[0].ToExpression ()));
       setExtensionsMethod.ImplementByReturningVoid ();
-    }
-
-    private void AddDebuggerDisplayAttribute (IAttributableEmitter property, string displayString, string nameString)
-    {
-      var attributeBuilder = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor,
-          new object[] { displayString }, new[] { s_debuggerDisplayNameProperty }, new object[] { nameString });
-      property.AddCustomAttribute (attributeBuilder);
     }
 
     private void ImplementIntroducedInterfaces ()
@@ -332,14 +315,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           ? Emitter.CreatePublicInterfaceMethodImplementation (interfaceMember) 
           : Emitter.CreateInterfaceMethodImplementation (interfaceMember);
 
-      Statement initializationStatement = GetInitializationStatement ();
+      var initializationStatement = _initializationStatementGenerator.GetInitializationStatement ();
       methodEmitter.AddStatement (initializationStatement);
 
       var implementer = new ExpressionReference (interfaceMember.DeclaringType, implementerExpression, methodEmitter);
       methodEmitter.ImplementByDelegating (implementer, interfaceMember);
 
-      ReplicateAttributes (implementingMember, methodEmitter);
-      AddIntroducedMemberAttribute (methodEmitter, implementingMember, interfaceMember);
+      _attributeReplicator.ReplicateAttributes (implementingMember, methodEmitter);
+      _introducedMemberAttributeGenerator.AddIntroducedMemberAttribute (methodEmitter, implementingMember, interfaceMember);
       return methodEmitter;
     }
 
@@ -372,8 +355,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
             visibility);
       }
 
-      ReplicateAttributes (implementingMember, propertyEmitter);
-      AddIntroducedMemberAttribute (propertyEmitter, implementingMember, interfaceMember);
+      _attributeReplicator.ReplicateAttributes (implementingMember, propertyEmitter);
+      _introducedMemberAttributeGenerator.AddIntroducedMemberAttribute (propertyEmitter, implementingMember, interfaceMember);
       return;
     }
 
@@ -402,21 +385,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           interfaceMember.GetRemoveMethod (),
           visibility);
 
-      ReplicateAttributes (implementingMember, eventEmitter);
-      AddIntroducedMemberAttribute (eventEmitter, implementingMember, interfaceMember);
+      _attributeReplicator.ReplicateAttributes (implementingMember, eventEmitter);
+      _introducedMemberAttributeGenerator.AddIntroducedMemberAttribute (eventEmitter, implementingMember, interfaceMember);
       return;
-    }
-
-    private void AddIntroducedMemberAttribute (IAttributableEmitter memberEmitter, MemberDefinitionBase implementingMember, MemberInfo interfaceMember)
-    {
-      var constructorArgs = new object[] { 
-          implementingMember.DeclaringClass.Type, 
-          implementingMember.Name, 
-          interfaceMember.DeclaringType, 
-          interfaceMember.Name };
-
-      var builder = new CustomAttributeBuilder (s_introducedMemberAttributeCtor, constructorArgs);
-      memberEmitter.AddCustomAttribute (builder);
     }
 
     private void ImplementRequiredDuckMethods ()
@@ -473,7 +444,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       MethodInfo proxyMethod = _baseCallGenerator.GetProxyMethodForOverriddenMethod (method);
       CustomMethodEmitter methodOverride = Emitter.CreateMethodOverride (method.MethodInfo);
-      Statement initializationStatement = GetInitializationStatement ();
+      var initializationStatement = _initializationStatementGenerator.GetInitializationStatement ();
       methodOverride.AddStatement (initializationStatement);
       methodOverride.ImplementByDelegating (new TypeReferenceWrapper (_firstField, _firstField.Reference.FieldType), proxyMethod);
       return methodOverride;
@@ -505,14 +476,16 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       {
         // only replicate those attributes from the base which are not inherited anyway
         if (!attribute.IsCopyTemplate
-            && (!CanInheritAttributesFromBase (targetConfiguration) 
+            && (!CanInheritAttributesFromBase (targetConfiguration)
             || (!AttributeUtility.IsAttributeInherited (attribute.AttributeType) && !IsSuppressedByMixin (attribute))))
-          AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Data);
+        {
+          _attributeGenerator.GenerateAttribute (targetEmitter, attribute.Data);
+        }
       }
 
       // Replicate introduced attributes
       foreach (AttributeIntroductionDefinition attribute in targetConfiguration.ReceivedAttributes)
-        AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Attribute.Data);
+        _attributeGenerator.GenerateAttribute (targetEmitter, attribute.Attribute.Data);
     }
 
     private bool IsSuppressedByMixin (AttributeDefinition attribute)
@@ -534,20 +507,15 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return configuration is TargetClassDefinition || configuration is MethodDefinition;
     }
 
-    private void ReplicateAttributes (IAttributableDefinition source, IAttributableEmitter targetEmitter)
-    {
-      foreach (AttributeDefinition attribute in source.CustomAttributes)
-        AttributeReplicator.ReplicateAttribute (targetEmitter, attribute.Data);
-    }
-
     private void AddDebuggerAttributes ()
     {
       if (!Configuration.ReceivedAttributes.ContainsKey (typeof (DebuggerDisplayAttribute)))
       {
         string debuggerString = "Mix of " + _configuration.Type.FullName + " + " 
             + SeparatedStringBuilder.Build (" + ", _configuration.Mixins, m => m.FullName);
-        var debuggerAttribute = new CustomAttributeBuilder (s_debuggerDisplayAttributeConstructor, new object[] {debuggerString});
-        Emitter.AddCustomAttribute (debuggerAttribute);
+        _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (
+            Emitter,
+            debuggerString);
       }
     }
 

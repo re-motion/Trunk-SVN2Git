@@ -36,6 +36,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private static readonly ConstructorInfo s_debuggerDisplayAttributeConstructor = 
         typeof (DebuggerDisplayAttribute).GetConstructor (new[] { typeof (string) });
 
+    private readonly AttributeGenerator _attributeGenerator = new AttributeGenerator();
+
     private readonly ICodeGenerationModule _module;
     private readonly ITypeGenerator _targetGenerator;
     private readonly MixinDefinition _configuration;
@@ -190,7 +192,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       {
         // only replicate those attributes from the base which are not inherited anyway
         if (!attribute.IsCopyTemplate && !AttributeUtility.IsAttributeInherited (attribute.AttributeType))
-          AttributeReplicator.ReplicateAttribute (target, attribute.Data);
+          _attributeGenerator.GenerateAttribute (target, attribute.Data);
       }
     }
 

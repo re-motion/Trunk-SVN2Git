@@ -20,9 +20,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Reflection.CodeGeneration.DPExtensions
 {
-  public static class AttributeReplicator
+  /// <summary>
+  /// Generates attribute data given as <see cref="CustomAttributeData"/> to an <see cref="IAttributableEmitter"/>.
+  /// </summary>
+  public class AttributeGenerator
   {
-    public static void ReplicateAttribute (IAttributableEmitter target, CustomAttributeData attributeData)
+    public void GenerateAttribute (IAttributableEmitter target, CustomAttributeData attributeData)
     {
       ArgumentUtility.CheckNotNull ("target", target);
       ArgumentUtility.CheckNotNull ("attributeData", attributeData);
@@ -31,7 +34,7 @@ namespace Remotion.Reflection.CodeGeneration.DPExtensions
       target.AddCustomAttribute (builder);
     }
 
-    private static CustomAttributeBuilder CreateAttributeBuilderFromData (CustomAttributeData attributeData)
+    private CustomAttributeBuilder CreateAttributeBuilderFromData (CustomAttributeData attributeData)
     {
       CustomAttributeArguments arguments = CustomAttributeDataUtility.ParseCustomAttributeArguments (attributeData);
       return new CustomAttributeBuilder (attributeData.Constructor, arguments.ConstructorArgs, arguments.NamedProperties,

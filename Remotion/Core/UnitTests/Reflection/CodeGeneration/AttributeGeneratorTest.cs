@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Reflection;
+using System.Reflection.Emit;
 using NUnit.Framework;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
@@ -24,22 +25,28 @@ using Mocks_Is = Rhino.Mocks.Constraints.Is;
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
   [TestFixture]
-  public class AttributeReplicatorTest
+  public class AttributeGeneratorTest
   {
-    [Test]
-    public void ReplicateAttribute ()
+    private AttributeGenerator _generator;
+
+    [SetUp]
+    public void SetUp ()
     {
-      MockRepository mockRepository = new MockRepository ();
-      IAttributableEmitter emitter = mockRepository.StrictMock<IAttributableEmitter> ();
+      _generator = new AttributeGenerator ();
+    }
+
+    [Test]
+    public void GenerateAttribute ()
+    {
+      var mockRepository = new MockRepository ();
+      var emitterMock = mockRepository.StrictMock<IAttributableEmitter> ();
       
-      // expect
-      emitter.AddCustomAttribute (null);
-      LastCall.Constraints (Mocks_Is.NotNull ());
+      emitterMock.Expect (mock => mock.AddCustomAttribute (Arg<CustomAttributeBuilder>.Is.NotNull));
 
       mockRepository.ReplayAll ();
 
-      CustomAttributeData data = CustomAttributeData.GetCustomAttributes (typeof (AttributeReplicatorTest))[0];
-      AttributeReplicator.ReplicateAttribute (emitter, data);
+      CustomAttributeData data = CustomAttributeData.GetCustomAttributes (typeof (AttributeGeneratorTest))[0];
+      _generator.GenerateAttribute (emitterMock, data);
 
       mockRepository.VerifyAll ();
     }
