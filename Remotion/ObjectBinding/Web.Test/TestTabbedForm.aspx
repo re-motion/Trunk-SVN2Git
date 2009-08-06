@@ -19,6 +19,9 @@
 <asp:Content ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ContentPlaceHolderID="body" runat="server">
+  <asp:ScriptManager ID="ScriptManager" runat="server" EnablePartialRendering="true" />
+  <asp:UpdatePanel ID="UpdatePanel" runat="server">          
+    <contenttemplate>
     <remotion:TabbedMultiView ID="MultiView" runat="server" CssClass="tabbedMultiView">
       <TopControls>
         <remotion:TabbedMenu ID="NavigationTabs" runat="server" StatusText="Status Text" SubMenuBackgroundColor-IsEmpty="True" SubMenuBackgroundColor-A="0" SubMenuBackgroundColor-B="0"
@@ -163,4 +166,6 @@
         <remotion:SmartHyperLink ID="SmartHyperLink1" runat="server" NavigateUrl="~/Start.aspx">test</remotion:SmartHyperLink>
       </BottomControls>
     </remotion:TabbedMultiView>
+    </contenttemplate>
+  </asp:UpdatePanel>
 </asp:Content>
