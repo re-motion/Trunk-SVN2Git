@@ -157,56 +157,62 @@ StyleUtility.CreateBorderSpans = function(element, standardMode)
   StyleUtility.CalculateBorderSpans(elementBody, topRight, bottomLeft, bottomRight, standardMode);
 
   var elementID = element.id;
-  var resizeHandler = function() { StyleUtility.OnResize(elementID); }
+  var resizeHandler = function() { StyleUtility.OnResize(elementID, standardMode); }
   $(window).resize(resizeHandler);
 }
 
-StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bottomRight, standardMode) {
+StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bottomRight, standardMode)
+{
 
-    var right = $(element).position().left + $(element).width();
-    var bottom = $(element).position().top + $(element).height();
-    var topRightOffset = $(topRight).offset().left;
-    var bottomLeftOffset = $(bottomLeft).offset().top;
-    var bottomRightVerticalOffset = $(bottomRight).offset().top;
-    var bottomRightHorizontalOffset = $(bottomRight).offset().left;
-    
-    if (!standardMode) { // QuirksMode calculations for IE - Firefox places borders correctly with jQuery positioning
-        var offsetParent = topRight.offsetParent;
-        if (offsetParent) { // this is null in Firefox
-            right = offsetParent.clientLeft + offsetParent.clientWidth;
-            bottom = offsetParent.clientTop + offsetParent.clientHeight;
-            topRightOffset = topRight.offsetWidth;
-            bottomLeftOffset = bottomLeft.offsetHeight;
-            bottomRightVerticalOffset = bottomRight.offsetHeight;
-            bottomRightHorizontalOffset = bottomRight.offsetWidth;
-        }
+  var right = 0;  // $(element).position().left + $(element).width();
+  var bottom = $(element).position().top + $(element).height();
+  var topRightOffset = 0; // $(topRight).offset().left;
+  var bottomLeftOffset = $(bottomLeft).offset().top;
+  var bottomRightVerticalOffset = $(bottomRight).offset().top;
+  var bottomRightHorizontalOffset = 0; // $(bottomRight).offset().left;
+
+  if (!standardMode)
+  { // QuirksMode calculations for IE - Firefox places borders correctly with jQuery positioning
+    var offsetParent = topRight.offsetParent;
+    if (offsetParent)
+    { // this is null in Firefox
+      right = offsetParent.clientLeft + offsetParent.clientWidth;
+      bottom = offsetParent.clientTop + offsetParent.clientHeight;
+      topRightOffset = topRight.offsetWidth;
+      bottomLeftOffset = bottomLeft.offsetHeight;
+      bottomRightVerticalOffset = bottomRight.offsetHeight;
+      bottomRightHorizontalOffset = bottomRight.offsetWidth;
     }
-    
-    $(topRight).css('left', right - topRightOffset);
-    $(bottomLeft).css('top', bottom - bottomLeftOffset);
-    $(bottomRight).css('top', bottom - bottomRightVerticalOffset);
-    $(bottomRight).css('right', right - bottomRightHorizontalOffset);
+  }
 
-    var scrollDiv = $(element).children(':first').children(':first');
-    if ((scrollDiv.length == 1) && !TypeUtility.IsUndefined(scrollDiv[0].nodeName) && (scrollDiv[0].nodeName.toLowerCase() == 'div')) {
-        if (scrollDiv[0].scrollHeight > scrollDiv.height())
-            $(topRight).css('display', 'none');
-        else
-            $(topRight).css('display', 'inline');
+  $(topRight).css(standardMode ? 'right' : 'left', right - topRightOffset);
+  $(bottomLeft).css('top', bottom - bottomLeftOffset);
+  $(bottomRight).css('top', bottom - bottomRightVerticalOffset);
+  $(bottomRight).css(standardMode ? 'right' : 'left', right - bottomRightHorizontalOffset);
 
-        if (scrollDiv[0].scrollWidth > scrollDiv.width())
-            $(bottomLeft).css('display', 'none');
-        else
-            $(bottomLeft).css('display', 'inline');
+  var scrollDiv = $(element).children(':first').children(':first');
+  if ((scrollDiv.length == 1) && !TypeUtility.IsUndefined(scrollDiv[0].nodeName) && (scrollDiv[0].nodeName.toLowerCase() == 'div'))
+  {
+    if (scrollDiv[0].scrollHeight > scrollDiv.height())
+      $(topRight).css('display', 'none');
+    else
+      $(topRight).css('display', 'inline');
 
-        if ((scrollDiv[0].scrollHeight > scrollDiv.height() && scrollDiv[0].scrollWidth == scrollDiv.width())
-    || (scrollDiv[0].scrollHeight == scrollDiv.height() && scrollDiv[0].scrollWidth > scrollDiv.width())) {
-            $(bottomRight).css('display', 'none');
-        }
-        else {
-            $(bottomRight).css('display', 'inline');
-        }
+    if (scrollDiv[0].scrollWidth > scrollDiv.width())
+      $(bottomLeft).css('display', 'none');
+    else
+      $(bottomLeft).css('display', 'inline');
+
+    if ((scrollDiv[0].scrollHeight > scrollDiv.height() && scrollDiv[0].scrollWidth == scrollDiv.width())
+    || (scrollDiv[0].scrollHeight == scrollDiv.height() && scrollDiv[0].scrollWidth > scrollDiv.width()))
+    {
+      $(bottomRight).css('display', 'none');
     }
+    else
+    {
+      $(bottomRight).css('display', 'inline');
+    }
+  }
 
 }
 
@@ -224,13 +230,13 @@ StyleUtility.CreateAndAppendBorderSpan = function(elementBody, elementID, classN
     return borderSpan
 }
 
-StyleUtility.OnResize = function(elementID) {
+StyleUtility.OnResize = function(elementID, standardMode) {
     var element = document.getElementById(elementID);
     if (element != null) {
         var topRight = document.getElementById(elementID + '_topRight');
         var bottomLeft = document.getElementById(elementID + '_bottomLeft');
         var bottomRight = document.getElementById(elementID + '_bottomRight');
 
-        StyleUtility.CalculateBorderSpans(element, topRight, bottomLeft, bottomRight);
+        StyleUtility.CalculateBorderSpans(element, topRight, bottomLeft, bottomRight, standardMode);
     }
 }
