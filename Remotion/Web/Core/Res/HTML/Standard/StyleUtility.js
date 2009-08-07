@@ -71,6 +71,6 @@ StyleUtility.OnResize = function(elementID)
     var bottomLeft = document.getElementById(elementID + '_bottomLeft');
     var bottomRight = document.getElementById(elementID + '_bottomRight');
 
-    StyleUtility.CalculateBorderSpans(element, topRight, bottomLeft, bottomRight);
+    StyleUtility.ShowBorderSpans(element, topRight, bottomLeft, bottomRight);
   }
 }
