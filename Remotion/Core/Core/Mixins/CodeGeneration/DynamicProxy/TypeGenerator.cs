@@ -51,7 +51,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly FieldReference _configurationField;
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
-    private readonly Dictionary<MethodInfo, MethodInfo> _baseCallMethods = new Dictionary<MethodInfo, MethodInfo>();
+    private readonly FieldReference _mixinArrayInitializerField;
+    private readonly Dictionary<MethodInfo, MethodInfo> _baseCallMethods = new Dictionary<MethodInfo, MethodInfo> ();
     private readonly ConcreteMixinType[] _concreteMixinTypes;
 
     public TypeGenerator (CodeGenerationCache codeGenerationCache, ICodeGenerationModule module, TargetClassDefinition configuration, INameProvider nameProvider, INameProvider mixinNameProvider)
@@ -80,8 +81,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _configurationField = _emitter.CreateStaticField ("__configuration", typeof (TargetClassDefinition), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_configurationField);
 
-      AddTypeInitializer ();
-
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_extensionsField);
 
@@ -91,8 +90,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
        _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_firstField);
 
-       _initializationCodeGenerator = new InitializationCodeGenerator (_extensionsField, _firstField);
-       _initializationCodeGenerator.ImplementIInitializableMixinTarget (Emitter, _baseCallGenerator);
+      _mixinArrayInitializerField = _emitter.CreateStaticField ("__mixinArrayInitializer", typeof (MixinArrayInitializer), FieldAttributes.Private);
+
+      _initializationCodeGenerator = new InitializationCodeGenerator (configuration, _extensionsField, _firstField, _configurationField);
+       _initializationCodeGenerator.ImplementIInitializableMixinTarget (Emitter, _baseCallGenerator, _mixinArrayInitializerField);
+
+       AddTypeInitializer ();
 
       _emitter.ReplicateBaseTypeConstructors (
           delegate { }, 
@@ -199,6 +202,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       emitter.CodeBuilder.AddStatement (new AssignStatement (_configurationField,
           new VirtualMethodInvocationExpression (currentCachePropertyReference, getTargetClassDefinitionMethod, classContextExpression)));
+
+      _initializationCodeGenerator.AddMixinArrayInitializerCreationStatements (emitter.CodeBuilder, _mixinArrayInitializerField);
 
       emitter.CodeBuilder.AddStatement (new ReturnStatement ());
     }

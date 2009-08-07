@@ -22,22 +22,22 @@ namespace Remotion.Mixins.CodeGeneration
 {
   public class MixinArrayInitializer
   {
-    public struct ExpectedMixinInfo
+    public class ExpectedMixinInfo
     {
-      public ExpectedMixinInfo (Type expectedMixinType, bool requiresDerivedMixin)
-          : this()
+      public ExpectedMixinInfo (Type expectedMixinType, bool needsDerivedMixin)
       {
+        ArgumentUtility.CheckNotNull ("expectedMixinType", expectedMixinType);
+
         ExpectedMixinType = expectedMixinType;
-        RequiresDerivedMixin = requiresDerivedMixin;
+        NeedsDerivedMixin = needsDerivedMixin;
       }
 
       public Type ExpectedMixinType { get; private set; }
-      public bool RequiresDerivedMixin { get; private set; }
+      public bool NeedsDerivedMixin { get; private set; }
     }
 
     private readonly Type _targetType;
     private readonly ExpectedMixinInfo[] _expectedMixinInfo;
-    private readonly object[] _suppliedMixins;
     private readonly TargetClassDefinition _targetClassDefinition;
 
     // TODO: Get rid of targetClassDefinition as soon as ConcreteTypeBuilder doesn't require MixinDefinitions any more. The, pass the 
@@ -46,25 +46,22 @@ namespace Remotion.Mixins.CodeGeneration
     public MixinArrayInitializer (
         Type targetType,
         ExpectedMixinInfo[] expectedMixinInfo, 
-        object[] suppliedMixins, 
         TargetClassDefinition targetClassDefinition)
     {
       ArgumentUtility.CheckNotNull ("targetType", targetType);
       ArgumentUtility.CheckNotNull ("expectedMixinInfo", expectedMixinInfo);
-      ArgumentUtility.CheckNotNull ("suppliedMixins", suppliedMixins);
       ArgumentUtility.CheckNotNull ("targetClassDefinition", targetClassDefinition);
 
       _targetType = targetType;
       _expectedMixinInfo = expectedMixinInfo;
-      _suppliedMixins = suppliedMixins;
       _targetClassDefinition = targetClassDefinition;
     }
 
-    public object[] CreateMixinArray ()
+    public object[] CreateMixinArray (object[] suppliedMixins)
     {
       var mixins = new object[_expectedMixinInfo.Length];
 
-      FillInSuppliedMixins (mixins);
+      FillInSuppliedMixins (mixins, suppliedMixins);
 
       for (int i = 0; i < mixins.Length; i++)
       {
@@ -74,33 +71,42 @@ namespace Remotion.Mixins.CodeGeneration
       return mixins;
     }
 
-    private void FillInSuppliedMixins (object[] mixins)
+    private void FillInSuppliedMixins (object[] targetArray, object[] suppliedMixins)
     {
-      for (int i = 0; i < _suppliedMixins.Length; ++i)
+      if (suppliedMixins == null)
+        return;
+
+      // Note: This has a complexity of O(n*m) where n is the number of suppliedMixins and m is the total number of mixins.
+      // We assume that m and especially n are very small.
+      for (int i = 0; i < suppliedMixins.Length; ++i)
       {
         bool matchFound = false;
-        for (int j = 0; j < mixins.Length && !matchFound; ++j)
+        var suppliedMixinType = suppliedMixins[i].GetType();
+
+        for (int j = 0; j < targetArray.Length && !matchFound; ++j)
         {
-          if (_expectedMixinInfo[j].ExpectedMixinType.IsAssignableFrom (_suppliedMixins[i].GetType()))
+          var expectedMixinType = _expectedMixinInfo[j].ExpectedMixinType;
+          if (expectedMixinType.IsAssignableFrom (suppliedMixinType))
           {
-            if (mixins[j] != null)
+            if (targetArray[j] != null)
             {
               var message = string.Format (
                   "Two mixins were supplied that would match the expected mixin type '{0}' on target class '{1}'.",
-                  _expectedMixinInfo[j].ExpectedMixinType,
+                  expectedMixinType,
                   _targetType);
               throw new InvalidOperationException (message);
             }
-            else if (_expectedMixinInfo[j].RequiresDerivedMixin)
+            else if (_expectedMixinInfo[j].NeedsDerivedMixin 
+                && !ConcreteTypeBuilder.Current.GetConcreteMixinType (_targetClassDefinition.Mixins[j]).GeneratedType.IsAssignableFrom (suppliedMixinType))
             {
               var message = string.Format (
                   "A mixin was supplied that would match the expected mixin type '{0}' on target class '{1}'. However, a derived type must be "
                   + "generated for that mixin type, so the supplied instance cannot be used.",
-                  _expectedMixinInfo[j].ExpectedMixinType,
+                  expectedMixinType,
                   _targetType);
               throw new InvalidOperationException (message);
             }
-            mixins[j] = _suppliedMixins[i];
+            targetArray[j] = suppliedMixins[i];
             matchFound = true;
           }
         }
@@ -108,8 +114,8 @@ namespace Remotion.Mixins.CodeGeneration
         if (!matchFound)
         {
           string message = string.Format (
-              "The supplied mixin of type '{0}' is not valid for target type '{1}' in the current configuration.", 
-              _suppliedMixins[i].GetType (),
+              "The supplied mixin of type '{0}' is not valid for target type '{1}' in the current configuration.",
+              suppliedMixinType,
               _targetType);
           throw new InvalidOperationException(message);
         }
@@ -118,21 +124,28 @@ namespace Remotion.Mixins.CodeGeneration
 
     private object CreateMixin (ExpectedMixinInfo mixinInfo, int index)
     {
-      Type mixinType = mixinInfo.RequiresDerivedMixin 
+      Type mixinType = mixinInfo.NeedsDerivedMixin 
           ? ConcreteTypeBuilder.Current.GetConcreteMixinType (_targetClassDefinition.Mixins[index]).GeneratedType 
           : mixinInfo.ExpectedMixinType;
-      
-      try
+
+      if (mixinType.IsValueType)
+      {
+        return Activator.CreateInstance (mixinType); // there's always a public constructor for value types
+      }
+      else
+      {
+        try
         {
           return ObjectFactory.Create (mixinType, ParamList.Empty);
         }
         catch (MissingMethodException ex)
-      {
-        string message = string.Format (
-            "Cannot instantiate mixin '{0}' applied to class '{1}', there is no visible default constructor.",
-            mixinInfo.ExpectedMixinType,
-            _targetType);
-        throw new MissingMethodException (message, ex);
+        {
+          string message = string.Format (
+              "Cannot instantiate mixin '{0}' applied to class '{1}', there is no visible default constructor.",
+              mixinInfo.ExpectedMixinType,
+              _targetType);
+          throw new MissingMethodException (message, ex);
+        }
       }
     }
   }

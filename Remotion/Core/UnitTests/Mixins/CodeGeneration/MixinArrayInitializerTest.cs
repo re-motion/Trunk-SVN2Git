@@ -32,10 +32,23 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           typeof (NullTarget),
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false));
 
-      var mixinArray = initializer.CreateMixinArray();
+      var mixinArray = initializer.CreateMixinArray (null);
 
       Assert.That (mixinArray.Length, Is.EqualTo (1));
       Assert.That (mixinArray[0], Is.InstanceOfType (typeof (NullMixin)));
+    }
+
+    [Test]
+    public void GetMixinArray_ForValueTypeMixin ()
+    {
+      MixinArrayInitializer initializer = CreateInitializer (
+          typeof (BaseType1),
+          new MixinArrayInitializer.ExpectedMixinInfo (typeof (ValueTypeMixin), false));
+
+      var mixinArray = initializer.CreateMixinArray (null);
+
+      Assert.That (mixinArray.Length, Is.EqualTo (1));
+      Assert.That (mixinArray[0], Is.InstanceOfType (typeof (ValueTypeMixin)));
     }
 
     [Test]
@@ -47,9 +60,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           .ForClass<NullMixin> ().AddMixin<NullMixin2> ().EnterScope ())
       {
         var targetClassDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
-        var initializer = new MixinArrayInitializer (typeof (NullTarget), mixinInfos, new object[0], targetClassDefinition);
+        var initializer = new MixinArrayInitializer (typeof (NullTarget), mixinInfos, targetClassDefinition);
 
-        var mixinArray = initializer.CreateMixinArray();
+        var mixinArray = initializer.CreateMixinArray (null);
 
         Assert.That (mixinArray.Length, Is.EqualTo (1));
         Assert.That (mixinArray[0], Is.InstanceOfType (typeof (NullMixin)));
@@ -66,7 +79,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       MixinArrayInitializer initializer = CreateInitializer (
           typeof (NullTarget),
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (MixinArrayInitializer), false));
-      initializer.CreateMixinArray();
+      initializer.CreateMixinArray (null);
     }
 
     [Test]
@@ -76,7 +89,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           typeof (ClassOverridingMixinMembers),
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (MixinWithAbstractMembers), true));
 
-      var mixinArray = initializer.CreateMixinArray();
+      var mixinArray = initializer.CreateMixinArray (null);
 
       Assert.That (mixinArray.Length, Is.EqualTo (1));
       Assert.That (mixinArray[0], Is.InstanceOfType (typeof (MixinWithAbstractMembers)));
@@ -91,7 +104,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false),
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin2), false));
 
-      var mixinArray = initializer.CreateMixinArray();
+      var mixinArray = initializer.CreateMixinArray (null);
 
       Assert.That (mixinArray.Length, Is.EqualTo (2));
       Assert.That (mixinArray[0], Is.InstanceOfType (typeof (NullMixin)));
@@ -106,12 +119,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       MixinArrayInitializer initializer = CreateInitializer (
           typeof (NullTarget),
-          new object[] { mixin1, mixin3 },
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false),
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin2), false),
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin3), false));
 
-      var mixinArray = initializer.CreateMixinArray();
+      var mixinArray = initializer.CreateMixinArray(new object[] { mixin1, mixin3 } );
 
       Assert.That (mixinArray.Length, Is.EqualTo (3));
       Assert.That (mixinArray[0], Is.SameAs (mixin1));
@@ -125,10 +137,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var mixin1 = new DerivedNullMixin();
       MixinArrayInitializer initializer = CreateInitializer (
           typeof (NullTarget),
-          new object[] { mixin1 },
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false));
 
-      var mixinArray = initializer.CreateMixinArray();
+      var mixinArray = initializer.CreateMixinArray(new object[] { mixin1 } );
 
       Assert.That (mixinArray.Length, Is.EqualTo (1));
       Assert.That (mixinArray[0], Is.SameAs (mixin1));
@@ -143,10 +154,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var mixin1 = new NullMixin2();
       MixinArrayInitializer initializer = CreateInitializer (
           typeof (NullTarget),
-          new object[] { mixin1 },
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false));
 
-      initializer.CreateMixinArray();
+      initializer.CreateMixinArray (new object[] { mixin1 });
     }
 
     [Test]
@@ -157,41 +167,53 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var mixin1 = new NullMixin ();
       MixinArrayInitializer initializer = CreateInitializer (
           typeof (NullTarget),
-          new object[] { mixin1, mixin1 },
           new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false));
 
-      initializer.CreateMixinArray ();
+      initializer.CreateMixinArray (new object[] { mixin1, mixin1 });
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A mixin was supplied that would match the expected mixin type "
-        + "'Remotion.UnitTests.Mixins.SampleTypes.NullMixin' on target class 'Remotion.UnitTests.Mixins.SampleTypes.NullTarget'. However, a derived "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.MixinWithVirtualMethod' on target class "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSpecificMixinMember'. However, a derived "
         + "type must be generated for that mixin type, so the supplied instance cannot be used.")]
     public void GetMixinArray_WithFittingSuppliedForDerivedMixin ()
     {
-      var mixin1 = new NullMixin ();
+      var mixin1 = new MixinWithVirtualMethod ();
       MixinArrayInitializer initializer = CreateInitializer (
-          typeof (NullTarget),
-          new object[] { mixin1 },
-          new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), true));
+          typeof (ClassOverridingSpecificMixinMember),
+          new MixinArrayInitializer.ExpectedMixinInfo (typeof (MixinWithVirtualMethod), true));
 
-      initializer.CreateMixinArray ();
+      initializer.CreateMixinArray (new object[] { mixin1 });
     }
 
-    private MixinArrayInitializer CreateInitializer (Type targetType, params MixinArrayInitializer.ExpectedMixinInfo[] mixinInfos)
+    [Test]
+    public void GetMixinArray_WithFittingDerivedSuppliedForDerivedMixin ()
     {
-      return CreateInitializer (targetType, new object[0], mixinInfos);
+      using (MixinConfiguration.BuildNew ().ForClass<ClassOverridingSpecificMixinMember> ().AddMixin<MixinWithVirtualMethod> ().EnterScope ())
+      {
+        var mixinInfos = new[] { new MixinArrayInitializer.ExpectedMixinInfo (typeof (MixinWithVirtualMethod), true) };
+
+        var targetClassDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingSpecificMixinMember));
+        var initializer = new MixinArrayInitializer (typeof (ClassOverridingSpecificMixinMember), mixinInfos, targetClassDefinition);
+
+        var concreteMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (targetClassDefinition.Mixins[0]).GeneratedType;
+        var mixin1 = Activator.CreateInstance (concreteMixinType);
+
+        var mixins = initializer.CreateMixinArray (new[] { mixin1 });
+        Assert.That (mixins, Is.EqualTo (new[] { mixin1 }));
+      }
     }
 
     private MixinArrayInitializer CreateInitializer (
-        Type targetType, object[] suppliedMixins, params MixinArrayInitializer.ExpectedMixinInfo[] mixinInfos)
+        Type targetType, params MixinArrayInitializer.ExpectedMixinInfo[] mixinInfos)
     {
       var mixinConfigurationBuilder = MixinConfiguration.BuildNew();
       foreach (var mixinInfo in mixinInfos)
         mixinConfigurationBuilder.ForClass (targetType).AddMixin (mixinInfo.ExpectedMixinType);
 
       var targetClassDefinition = TargetClassDefinitionUtility.GetConfiguration (targetType, mixinConfigurationBuilder.BuildConfiguration());
-      return new MixinArrayInitializer (targetType, mixinInfos, suppliedMixins, targetClassDefinition);
+      return new MixinArrayInitializer (targetType, mixinInfos, targetClassDefinition);
     }
   }
 }

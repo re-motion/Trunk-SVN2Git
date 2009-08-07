@@ -82,9 +82,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The supplied mixin of type Remotion.UnitTests.Mixins.SampleTypes.BT3Mixin1 is not valid in the current configuration.",
-        MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (InvalidOperationException),
+        ExpectedMessage = "The supplied mixin of type 'Remotion.UnitTests.Mixins.SampleTypes.BT3Mixin1' is not valid for target type "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType1' in the current configuration.")]
     public void ThrowsIfWrongMixinInstancesInScope ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType1));

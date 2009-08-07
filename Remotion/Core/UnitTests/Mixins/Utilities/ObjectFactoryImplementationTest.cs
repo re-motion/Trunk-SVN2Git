@@ -98,8 +98,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The supplied mixin of type System.Object is not valid in the current " 
-        + "configuration.\r\nParameter name: mixinInstances")]
+    [ExpectedException (typeof (InvalidOperationException))]
     public void CreateConstructorInvoker_InvalidPreparedMixinInstances ()
     {
       object mixin = new object ();

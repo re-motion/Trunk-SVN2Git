@@ -72,34 +72,13 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The supplied mixin of type .* is not valid in the current configuration.",
-        MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The supplied mixin of type "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.BT2Mixin1' is not valid for target type 'Remotion.UnitTests.Mixins.SampleTypes.BaseType3' in the "
+        + "current configuration.")]
     public void ThrowsOnWrongMixinInstances ()
     {
       BT2Mixin1 m1 = new BT2Mixin1 ();
       ObjectFactory.Create<BaseType3> (ParamList.Empty, m1);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The supplied mixin of type .* is not valid in the current configuration.",
-        MatchType = MessageMatch.Regex)]
-    public void ThrowsOnWrongMixinInstancesWithType ()
-    {
-      BT2Mixin1 m1 = new BT2Mixin1 ();
-      ObjectFactory.Create (typeof (BaseType3), ParamList.Empty, m1);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The mixin Remotion.UnitTests.Mixins.SampleTypes.MixinWithProtectedOverrider "
-        + "applied to base type Remotion.UnitTests.Mixins.SampleTypes.BaseType1 needs to have a subclass generated at runtime. It is therefore not "
-            + "possible to use the given object of type MixinWithProtectedOverrider as a mixin instance.", MatchType = MessageMatch.Contains)]
-    public void ThrowsOnBaseMixinInstanceWhenGeneratedTypeIsNeeded ()
-    {
-      using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinWithProtectedOverrider)).EnterScope())
-      {
-        BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty, new MixinWithProtectedOverrider ());
-        bt1.VirtualMethod ();
-      }
     }
 
     [Test]
@@ -251,8 +230,9 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Cannot instantiate mixin Remotion.UnitTests.Mixins."
-        + "Validation.ValidationSampleTypes.MixinWithPrivateCtorAndVirtualMethod, there is no visible default constructor.")]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Cannot instantiate mixin "
+        + "'Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes.MixinWithPrivateCtorAndVirtualMethod' applied to class "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.NullTarget', there is no visible default constructor.")]
     public void ThrowsWhenMixinWithoutPublicDefaultCtorShouldBeInstantiated ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithPrivateCtorAndVirtualMethod)).EnterScope())
