@@ -91,7 +91,8 @@ function WxePage_Context(
 
   this.Dispose = function()
   {
-    window.clearInterval(_refreshTimer);
+    if (_refreshTimer != null)
+      window.clearInterval(_refreshTimer);
   }
 
   // Handles the refresh timer events
