@@ -33,6 +33,7 @@ namespace Remotion.Web.UI.Controls
   {
     // constants
     private const string c_itemIDSuffix = "_Tab";
+    private const string c_tabstripID = "TabStrip";
     // statics
 
     // types
@@ -199,7 +200,7 @@ namespace Remotion.Web.UI.Controls
 
     protected override void CreateChildControls ()
     {
-      _tabStrip.ID = ID + "_TabStrip";
+      _tabStrip.ID = ID + "_" + c_tabstripID;
       Controls.Add (_tabStrip);
 
       _multiViewInternal.ID = ID + "_MultiView";
@@ -308,7 +309,7 @@ namespace Remotion.Web.UI.Controls
 
     public string TabStripContainerClientID
     {
-      get { return ClientID + ClientIDSeparator + "TabStripContainer"; }
+      get { return ClientID + ClientIDSeparator + c_tabstripID; }
     }
 
     public TabView GetActiveView ()
