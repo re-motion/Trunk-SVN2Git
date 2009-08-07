@@ -100,7 +100,7 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    public void CreateMixinWithMockedTarget_ThisBase_WithNonGeneratedMixin ()
+    public void CreateMixinWithMockedTarget_ThisBase ()
     {
       var repository = new MockRepository ();
 
@@ -113,7 +113,7 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    public void CreateMixinWithMockedTarget_This_WithNonGeneratedMixin ()
+    public void CreateMixinWithMockedTarget_This ()
     {
       var repository = new MockRepository ();
 
