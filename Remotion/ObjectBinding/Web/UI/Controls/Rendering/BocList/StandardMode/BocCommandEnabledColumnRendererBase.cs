@@ -81,26 +81,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
       bool isCommandAllowed = (command.Type != CommandType.None) && !List.EditModeController.IsRowEditModeActive;
       bool isCommandEnabled = (command.CommandState == null) || command.CommandState.IsEnabled ( List, businessObject, Column);
-
-      if (isActive && isCommandAllowed && isCommandEnabled)
+      bool isCommandWaiCompliant = (!WcagHelper.Instance.IsWaiConformanceLevelARequired() || command.Type == CommandType.Href);
+      if (isActive && isCommandAllowed && isCommandEnabled && isCommandWaiCompliant)
       {
-        if (WcagHelper.Instance.IsWaiConformanceLevelARequired() && command.Type != CommandType.Href)
-          return false;
+        string objectID = null;
+        IBusinessObjectWithIdentity businessObjectWithIdentity = businessObject as IBusinessObjectWithIdentity;
+        if (businessObjectWithIdentity != null)
+          objectID = businessObjectWithIdentity.UniqueIdentifier;
+
+        string argument = List.GetListItemCommandArgument (ColumnIndex, originalRowIndex);
+        string postBackEvent = List.Page.ClientScript.GetPostBackEventReference (List, argument) + ";";
+        string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
+        if (command.Type == CommandType.None)
+          Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDisabled);
+        command.RenderBegin (Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
+
+        return true;
+        
       }
-
-      string objectID = null;
-      IBusinessObjectWithIdentity businessObjectWithIdentity = businessObject as IBusinessObjectWithIdentity;
-      if (businessObjectWithIdentity != null)
-        objectID = businessObjectWithIdentity.UniqueIdentifier;
-
-      string argument = List.GetListItemCommandArgument (ColumnIndex, originalRowIndex);
-      string postBackEvent = List.Page.ClientScript.GetPostBackEventReference ( List, argument) + ";";
-      string onClick = List.HasClientScript ? c_onCommandClickScript : string.Empty;
-      if (command.Type == CommandType.None)
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDisabled);
-      command.RenderBegin (Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
-
-      return true;
+      return false;
     }
 
     protected void RenderEndTagDataCellCommand ()
