@@ -78,9 +78,13 @@ namespace OBWTest
       IWindsorContainer container = new WindsorContainer();
 
       if (PreferQuirksModeRendering)
+      {
         RegisterRendererFactories (container, "QuirksMode");
+        container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility.ScriptUtilityQuirksMode>().LifeStyle.Singleton);
+      }
 
       RegisterRendererFactories (container, "StandardMode");
+      container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility.ScriptUtilityStandardMode> ().LifeStyle.Singleton);
       
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
