@@ -126,54 +126,5 @@ namespace Remotion.UnitTests.Mixins
     {
       MixinReflector.GetBaseCallProxyType (new object());
     }
-
-    [Test]
-    public void GetMixinConfiguration_ActiveConfiguration ()
-    {
-      MixinDefinition expected1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
-      MixinDefinition expected2 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin2)];
-
-      var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
-      var mixin1 = Mixin.Get<BT1Mixin1> (bt1);
-      var mixin2 = Mixin.Get<BT1Mixin2> (bt1);
-      Assert.That (MixinReflector.GetMixinConfiguration (mixin1, bt1), Is.SameAs (expected1));
-      Assert.That (MixinReflector.GetMixinConfiguration (mixin2, bt1), Is.SameAs (expected2));
-    }
-
-    [Test]
-    public void GetMixinConfiguration_NonActiveConfiguration ()
-    {
-      MixinDefinition expected1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
-      MixinDefinition expected2 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin2)];
-
-      var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
-      var mixin1 = Mixin.Get<BT1Mixin1> (bt1);
-      var mixin2 = Mixin.Get<BT1Mixin2> (bt1);
-
-      using (MixinConfiguration.BuildNew().EnterScope())
-      {
-        Assert.That (MixinReflector.GetMixinConfiguration (mixin1, bt1), Is.SameAs (expected1));
-        Assert.That (MixinReflector.GetMixinConfiguration (mixin2, bt1), Is.SameAs (expected2));
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The given mixin is not a part of the given instance.\r\nParameter name: mixin")]
-    public void GetMixinConfiguration_InvalidMixin ()
-    {
-      var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
-      var mixin = new object();
-      MixinReflector.GetMixinConfiguration (mixin, bt1);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The given instance is not a mixed object.\r\nParameter name: mixedInstance")]
-    public void GetMixinConfiguration_UnmixedInstance ()
-    {
-      var bt1 = new BaseType1();
-      var mixin = new object();
-      MixinReflector.GetMixinConfiguration (mixin, bt1);
-    }
   }
 }

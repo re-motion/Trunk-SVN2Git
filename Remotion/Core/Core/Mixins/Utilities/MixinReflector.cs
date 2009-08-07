@@ -17,7 +17,6 @@ using System;
 using System.Reflection;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
-using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities
@@ -92,28 +91,6 @@ namespace Remotion.Mixins.Utilities
         return null;
       else
         return attribute.GetClassContext ();
-    }
-
-    /// <summary>
-    /// Returns the <see cref="MixinDefinition"/> that was used as the mixin configuration for a specific mixin when its target object was created.
-    /// </summary>
-    /// <param name="mixin">The mixin whose configuration should be returned.</param>
-    /// <param name="mixedInstance">The instance containing <paramref name="mixin"/>.</param>
-    /// <returns>The <see cref="MixinDefinition"/> object corresponding to the <paramref name="mixin"/>.</returns>
-    public static MixinDefinition GetMixinConfiguration (object mixin, object mixedInstance)
-    {
-      ArgumentUtility.CheckNotNull ("mixin", mixin);
-      ArgumentUtility.CheckNotNull ("mixedInstance", mixedInstance);
-
-      var mixinTarget = mixedInstance as IMixinTarget;
-      if (mixinTarget == null)
-        throw new ArgumentException ("The given instance is not a mixed object.", "mixedInstance");
-
-      int index = Array.IndexOf (mixinTarget.Mixins, mixin);
-      if (index == -1)
-        throw new ArgumentException ("The given mixin is not a part of the given instance.", "mixin");
-
-      return mixinTarget.Configuration.Mixins[index];
     }
   }
 }
