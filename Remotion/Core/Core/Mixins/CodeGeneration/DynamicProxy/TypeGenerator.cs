@@ -93,7 +93,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _mixinArrayInitializerField = _emitter.CreateStaticField ("__mixinArrayInitializer", typeof (MixinArrayInitializer), FieldAttributes.Private);
 
       _initializationCodeGenerator = new InitializationCodeGenerator (configuration, _extensionsField, _firstField, _configurationField, _baseCallGenerator.Ctor);
-       _initializationCodeGenerator.ImplementIInitializableMixinTarget (Emitter, _baseCallGenerator, _mixinArrayInitializerField);
+       _initializationCodeGenerator.ImplementIInitializableMixinTarget (Emitter, _mixinArrayInitializerField);
 
        AddTypeInitializer ();
 

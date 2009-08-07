@@ -31,9 +31,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
   public class InitializationCodeGenerator
   {
     private static readonly MethodInfo s_initializeMethod = typeof (IInitializableMixinTarget).GetMethod ("Initialize");
-    private static readonly MethodInfo s_createBaseCallProxyMethod = typeof (IInitializableMixinTarget).GetMethod ("CreateBaseCallProxy");
-    private static readonly MethodInfo s_setFirstBaseCallProxyMethod = typeof (IInitializableMixinTarget).GetMethod ("SetFirstBaseCallProxy");
-    private static readonly MethodInfo s_setExtensionsMethod = typeof (IInitializableMixinTarget).GetMethod ("SetExtensions");
 
     private static readonly MethodInfo s_createMixinArrayMethod = typeof (MixinArrayInitializer).GetMethod ("CreateMixinArray");
     private static readonly MethodInfo s_initializeMixinMethod = typeof (IInitializableMixin).GetMethod ("Initialize");
@@ -128,39 +125,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     /// Implements the <see cref="IInitializableMixinTarget"/> interface on the given <paramref name="classEmitter"/>.
     /// </summary>
     /// <param name="classEmitter">The class emitter to generate <see cref="IInitializableMixinTarget"/> on.</param>
-    /// <param name="baseCallProxyGenerator">The base call proxy generator.</param>
     /// <param name="mixinArrayInitializerField">The field holding the <see cref="MixinArrayInitializer"/> used to initialize the mixins.
     /// This field can be initialized using <see cref="GetAssignMixinArrayInitializerStatement"/>, e.g. in the generated class' type initializer.</param>
-    public void ImplementIInitializableMixinTarget (
-        IClassEmitter classEmitter, 
-        BaseCallProxyGenerator baseCallProxyGenerator, 
-        FieldReference mixinArrayInitializerField)
+    public void ImplementIInitializableMixinTarget (IClassEmitter classEmitter, FieldReference mixinArrayInitializerField)
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
-      ArgumentUtility.CheckNotNull ("baseCallProxyGenerator", baseCallProxyGenerator);
       ArgumentUtility.CheckNotNull ("mixinArrayInitializerField", mixinArrayInitializerField);
 
-      ImplementInitializeMethod (classEmitter, mixinArrayInitializerField);
-
-      CustomMethodEmitter createProxyMethod =
-          classEmitter.CreateInterfaceMethodImplementation (s_createBaseCallProxyMethod);
-      createProxyMethod.ImplementByReturning (new NewInstanceExpression(baseCallProxyGenerator.Ctor,
-          SelfReference.Self.ToExpression(), createProxyMethod.ArgumentReferences[0].ToExpression()));
-
-      CustomMethodEmitter setProxyMethod =
-          classEmitter.CreateInterfaceMethodImplementation (s_setFirstBaseCallProxyMethod);
-      setProxyMethod.AddStatement (new AssignStatement (_firstField, 
-          new ConvertExpression(baseCallProxyGenerator.TypeBuilder, setProxyMethod.ArgumentReferences[0].ToExpression ())));
-      setProxyMethod.ImplementByReturningVoid ();
-
-      CustomMethodEmitter setExtensionsMethod =
-          classEmitter.CreateInterfaceMethodImplementation (s_setExtensionsMethod);
-      setExtensionsMethod.AddStatement (new AssignStatement (_extensionsField, setExtensionsMethod.ArgumentReferences[0].ToExpression ()));
-      setExtensionsMethod.ImplementByReturningVoid ();
-    }
-
-    private void ImplementInitializeMethod (IClassEmitter classEmitter, FieldReference mixinArrayInitializerField)
-    {
       CustomMethodEmitter initializeMethod = classEmitter.CreateInterfaceMethodImplementation (s_initializeMethod);
 
       ImplementSettingFirstBaseCallProxy (initializeMethod);
