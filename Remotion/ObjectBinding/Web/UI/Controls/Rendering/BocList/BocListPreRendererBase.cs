@@ -47,18 +47,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
 
       if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, c_styleFileUrl);
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, ResourceTheme, c_styleFileUrl);
         htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
 
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, c_scriptFileUrl);
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, ResourceTheme, c_scriptFileUrl);
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
 
       Control.EditModeControlFactory.RegisterHtmlHeadContents (Context, htmlHeadAppender);
     }
+
+    protected abstract ResourceTheme ResourceTheme { get; }
 
     public override void PreRender ()
     {
