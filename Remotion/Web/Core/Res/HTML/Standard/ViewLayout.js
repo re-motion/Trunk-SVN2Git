@@ -31,6 +31,8 @@ ViewLayout.AdjustBottom = function(bottomSibling, elementToAdjust)
 
 ViewLayout.AdjustSingleView = function(containerElement)
 {
+  ViewLayout.SetParentUpdatePanelHeight(containerElement);
+  
   var contentElement = containerElement.children('div:first');
 
   ViewLayout.AdjustHeight(contentElement);
@@ -50,6 +52,8 @@ ViewLayout.AdjustSingleView = function(containerElement)
 
 ViewLayout.AdjustTabbedMultiView = function(containerElement)
 {
+  ViewLayout.SetParentUpdatePanelHeight(containerElement);
+
   var contentElement = containerElement.children('div:first');
 
   ViewLayout.AdjustHeight(contentElement);
@@ -68,6 +72,17 @@ ViewLayout.AdjustTabbedMultiView = function(containerElement)
 
   ViewLayout.FixIE6(view, bottom);
 };
+
+ViewLayout.SetParentUpdatePanelHeight = function(element)
+{
+  var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
+  var updatePanelIDs = pageRequestManager._updatePanelIDs;
+  for (var i = updatePanelIDs.length - 1; i >= 0; i--)
+  {
+    var updatePanelClientID = updatePanelIDs[i].replace(/\$/g, '_');;
+    element.parent('#' + updatePanelClientID).css('height', '100%');
+  }
+}
 
 ViewLayout.FixIE6 = function(view, bottom)
 {
