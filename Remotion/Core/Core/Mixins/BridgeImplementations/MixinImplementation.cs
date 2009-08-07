@@ -14,8 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Mixins.BridgeInterfaces;
-using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.BridgeImplementations
@@ -25,14 +25,52 @@ namespace Remotion.Mixins.BridgeImplementations
     public TMixin Get<TMixin> (object mixinTarget) where TMixin : class
     {
       ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
-      return MixinReflector.Get<TMixin> (mixinTarget);
+      return (TMixin) Get (typeof (TMixin), mixinTarget);
     }
 
     public object Get (Type mixinType, object mixinTarget)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
       ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
-      return MixinReflector.Get (mixinType, mixinTarget);
+
+      var castMixinTarget = mixinTarget as IMixinTarget;
+      if (castMixinTarget != null)
+      {
+        return FindMixin (castMixinTarget, mixinType);
+      }
+      return null;
+    }
+
+    private static object FindMixin (IMixinTarget mixinTarget, Type mixinType)
+    {
+      object mixin = null;
+      foreach (var potentialMixin in mixinTarget.Mixins)
+      {
+        if (IsTypeMatch (potentialMixin.GetType (), mixinType))
+        {
+          if (mixin != null)
+          {
+            string message = string.Format (
+                "Both mixins '{0}' and '{1}' match the given type '{2}'.",
+                mixin.GetType ().FullName,
+                potentialMixin.GetType ().FullName,
+                mixinType.Name);
+            throw new AmbiguousMatchException (message);
+          }
+
+          mixin = potentialMixin;
+        }
+      }
+
+      return mixin;
+    }
+
+    private static bool IsTypeMatch (Type potentialMixinType, Type searchedMixinType)
+    {
+      return searchedMixinType.IsAssignableFrom (potentialMixinType) 
+          || (searchedMixinType.IsGenericTypeDefinition 
+              && potentialMixinType.IsGenericType 
+              && potentialMixinType.GetGenericTypeDefinition() == searchedMixinType);
     }
   }
 }

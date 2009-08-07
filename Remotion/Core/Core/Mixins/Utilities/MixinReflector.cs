@@ -26,50 +26,6 @@ namespace Remotion.Mixins.Utilities
   {
     public enum InitializationMode { Construction, Deserialization }
 
-    public static TMixin Get<TMixin> (object mixinTarget) where TMixin : class
-    {
-      ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
-      return (TMixin) Get (typeof (TMixin), mixinTarget);
-    }
-
-    public static object Get (Type mixinType, object mixinTarget)
-    {
-      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-      ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
-
-      IMixinTarget castMixinTarget = mixinTarget as IMixinTarget;
-      if (castMixinTarget != null)
-      {
-        TargetClassDefinition configuration = castMixinTarget.Configuration;
-        MixinDefinition mixinDefinition = FindMixinDefinition(configuration, mixinType);
-        if (mixinDefinition != null)
-          return castMixinTarget.Mixins[mixinDefinition.MixinIndex];
-      }
-      return null;
-    }
-
-    private static MixinDefinition FindMixinDefinition (TargetClassDefinition configuration, Type mixinType)
-    {
-      MixinDefinition mixinDefinition = configuration.GetMixinByConfiguredType (mixinType);
-      if (mixinDefinition == null)
-      {
-        foreach (MixinDefinition potentialMixinDefinition in configuration.Mixins)
-        {
-          if (mixinType.IsAssignableFrom (potentialMixinDefinition.Type))
-          {
-            if (mixinDefinition != null)
-            {
-              string message = string.Format ("Both mixins '{0}' and '{1}' match the given type '{2}'.", 
-                  mixinDefinition.FullName, potentialMixinDefinition.FullName, mixinType.Name);
-              throw new AmbiguousMatchException (message);
-            }
-            mixinDefinition = potentialMixinDefinition;
-          }
-        }
-      }
-      return mixinDefinition;
-    }
-
     public static Type GetMixinBaseType (Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
@@ -109,7 +65,7 @@ namespace Remotion.Mixins.Utilities
     public static Type GetBaseCallProxyType (object mixinTargetInstance)
     {
       ArgumentUtility.CheckNotNull ("mixinTargetInstance", mixinTargetInstance);
-      IMixinTarget castTarget = mixinTargetInstance as IMixinTarget;
+      var castTarget = mixinTargetInstance as IMixinTarget;
       if (castTarget == null)
       {
         string message = string.Format ("The given object of type {0} is not a mixin target.", mixinTargetInstance.GetType().FullName);
@@ -131,7 +87,7 @@ namespace Remotion.Mixins.Utilities
     public static ClassContext GetClassContextFromConcreteType (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      ConcreteMixedTypeAttribute attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (type, true);
+      var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (type, true);
       if (attribute == null)
         return null;
       else
@@ -149,7 +105,7 @@ namespace Remotion.Mixins.Utilities
       ArgumentUtility.CheckNotNull ("mixin", mixin);
       ArgumentUtility.CheckNotNull ("mixedInstance", mixedInstance);
 
-      IMixinTarget mixinTarget = mixedInstance as IMixinTarget;
+      var mixinTarget = mixedInstance as IMixinTarget;
       if (mixinTarget == null)
         throw new ArgumentException ("The given instance is not a mixed object.", "mixedInstance");
 

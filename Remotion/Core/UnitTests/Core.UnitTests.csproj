@@ -151,6 +151,7 @@
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="Mixins\CodeGeneration\MixinArrayInitializerTest.cs" />
+    <Compile Include="Mixins\MixinTest.cs" />
     <Compile Include="Mixins\SampleTypes\MixinAddingSpecialNameMethod.cs" />
     <Compile Include="Reflection\CodeGeneration\BlockStatementTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithProtectedVirtualMethod.cs" />
