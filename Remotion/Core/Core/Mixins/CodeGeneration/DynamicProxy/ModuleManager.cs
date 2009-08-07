@@ -226,7 +226,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     public void InitializeMixinTarget (IMixinTarget target)
     {
       ArgumentUtility.CheckNotNull ("target", target);
-      ((IInitializableMixinTarget) target).Initialize (false);
+      ((IInitializableMixinTarget) target).Initialize ();
     }
 
     public void InitializeDeserializedMixinTarget (IMixinTarget instance, object[] mixinInstances)
@@ -234,10 +234,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckNotNull ("instance", instance);
       ArgumentUtility.CheckNotNull ("mixinInstances", mixinInstances);
 
-      using (new MixedObjectInstantiationScope (mixinInstances))
-      {
-        ((IInitializableMixinTarget) instance).Initialize (true);
-      }
+      ((IInitializableMixinTarget) instance).InitializeAfterDeserialization (mixinInstances);
     }
 
     public IObjectReference BeginDeserialization (Func<Type, Type> typeTransformer, SerializationInfo info, StreamingContext context)

@@ -43,7 +43,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin));
 
       var oldProxy = instance.FirstBaseCallProxy;
-      instance.Initialize (false);
+      instance.Initialize ();
 
       Assert.That (instance.FirstBaseCallProxy, Is.Not.SameAs (oldProxy));
       Assert.That (PrivateInvoke.GetPublicField (instance.FirstBaseCallProxy, "__depth"), Is.EqualTo (0));
@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin));
 
       var oldMixins = instance.Mixins;
-      instance.Initialize (false);
+      instance.Initialize ();
       
       Assert.That (instance.Mixins, Is.Not.SameAs (oldMixins));
       Assert.That (instance.Mixins.Length, Is.EqualTo (1));
@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       var instance = (IInitializableMixinTarget) CreateMixedObject<NullTarget> (typeof (MixinWithOnInitializedAndOnDeserialized));
       ((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnInitializedCalled = false;
 
-      instance.Initialize (false);
+      instance.Initialize ();
 
       Assert.That (((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnInitializedCalled, Is.True);
     }
@@ -77,7 +77,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void Initialize_InitializesMixins_WithBaseCallProxies ()
     {
       var instance = (IInitializableMixinTarget) ObjectFactory.Create<BaseType7> (ParamList.Empty);
-      instance.Initialize (false);
+      instance.Initialize ();
 
       Assert.That (GetDepthValue (instance.Mixins[0]), Is.EqualTo (1));
       Assert.That (GetDepthValue (instance.Mixins[1]), Is.EqualTo (2));

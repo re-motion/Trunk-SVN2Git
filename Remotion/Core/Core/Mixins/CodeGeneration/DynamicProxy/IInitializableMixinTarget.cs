@@ -21,7 +21,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   /// </summary>
   public interface IInitializableMixinTarget : IMixinTarget
   {
-    void Initialize (bool deserializing);
+    void Initialize ();
     void InitializeAfterDeserialization (object[] mixinInstances);
   }
 }

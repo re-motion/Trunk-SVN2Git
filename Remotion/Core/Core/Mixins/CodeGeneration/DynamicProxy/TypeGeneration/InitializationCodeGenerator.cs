@@ -112,13 +112,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     /// </summary>
     public Statement GetInitializationStatement ()
     {
-      // ((IInitializableMixinTarget) this).Initialize (false)
+      // ((IInitializableMixinTarget) this).Initialize ()
 
       var initializationMethodCall = new ExpressionStatement (
           new VirtualMethodInvocationExpression (
               new TypeReferenceWrapper (SelfReference.Self, typeof (IInitializableMixinTarget)),
-              s_initializeMethod,
-              new ConstReference (false).ToExpression()));
+              s_initializeMethod));
 
       var condition = new SameConditionExpression (_extensionsField.ToExpression(), NullExpression.Instance);
       return new IfStatement (condition, initializationMethodCall);
@@ -139,7 +138,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 
       ImplementSettingFirstBaseCallProxy (initializeMethod);
       ImplementCreatingMixinInstances (initializeMethod, mixinArrayInitializerField);
-      ImplementInitializingMixins (initializeMethod, initializeMethod.ArgumentReferences[0].ToExpression());
+      ImplementInitializingMixins (initializeMethod, new ConstReference (false).ToExpression ());
 
       initializeMethod.AddStatement (new ReturnStatement ());
 
