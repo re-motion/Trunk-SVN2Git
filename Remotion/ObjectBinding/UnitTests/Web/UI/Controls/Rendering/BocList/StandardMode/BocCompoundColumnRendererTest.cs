@@ -57,7 +57,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
-      Html.AssertStyleAttribute (textWrapper, "vertical-align", "middle");
       Html.AssertTextNode (textWrapper, HtmlHelper.WhiteSpace, 0);
     }
 
@@ -76,7 +75,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
-      Html.AssertStyleAttribute (textWrapper, "vertical-align", "middle");
       Html.AssertTextNode (textWrapper, "referencedObject1", 0);
     }
 
@@ -105,7 +103,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       Html.AssertAttribute (span, "class", CssClassContainer.Instance.Content);
 
       var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
-      Html.AssertStyleAttribute (textWrapper, "vertical-align", "middle");
       Html.AssertTextNode (textWrapper, "referencedObject1", 0);
     }
   }

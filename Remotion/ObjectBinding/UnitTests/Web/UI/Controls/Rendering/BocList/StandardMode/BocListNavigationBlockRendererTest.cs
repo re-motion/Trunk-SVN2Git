@@ -200,15 +200,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
 
       var icon = Html.GetAssertedChildElement (link, "img", 0);
       Html.AssertAttribute (icon, "src", string.Format ("/Move{0}.gif", command), HtmlHelper.AttributeValueCompareMode.Contains);
-      Html.AssertStyleAttribute (icon, "vertical-align", "middle");
-      Html.AssertStyleAttribute (icon, "border-style", "none");
     }
 
     private void AssertInactiveIcon (XmlNode icon, string command)
     {
       Html.AssertAttribute (icon, "src", string.Format ("/Move{0}Inactive.gif", command), HtmlHelper.AttributeValueCompareMode.Contains);
-      Html.AssertStyleAttribute (icon, "vertical-align", "middle");
-      Html.AssertStyleAttribute (icon, "border-style", "none");
     }
   }
 }

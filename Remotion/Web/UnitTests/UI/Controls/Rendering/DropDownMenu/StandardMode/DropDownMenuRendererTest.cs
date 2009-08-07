@@ -124,8 +124,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
       var image = span.GetAssertedChildElement ("img", 0);
       image.AssertAttributeValueEquals ("src", IconInfo.Spacer.Url);
       image.AssertAttributeValueEquals ("alt", "");
-      image.AssertStyleAttribute ("vertical-align", "middle");
-      image.AssertStyleAttribute ("border-style", "none");
     }
 
     private void AssertTitleAnchor (XmlNode titleDiv, bool withTitle, bool withIcon)
@@ -144,8 +142,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.StandardMode
         icon.AssertAttributeValueEquals ("alt", c_IconAlternateText);
         icon.AssertAttributeValueEquals ("width", s_iconWidth.ToString ());
         icon.AssertAttributeValueEquals ("height", s_iconHeight.ToString ());
-        icon.AssertStyleAttribute ("vertical-align", "middle");
-        icon.AssertStyleAttribute ("border-style", "none");
       }
     }
 

@@ -123,8 +123,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList.Sta
       var sortIcon = Html.GetAssertedChildElement (sortOrderSpan, "img", 0);
       Html.AssertAttribute (sortIcon, "src", iconFilename, HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (sortIcon, "alt", iconAltText);
-      Html.AssertStyleAttribute (sortIcon, "vertical-align", "middle");
-      Html.AssertStyleAttribute (sortIcon, "border-style", "none");
 
       Html.AssertTextNode (sortOrderSpan, HtmlHelper.WhiteSpace + (sortIndex + 1), 1);
     }

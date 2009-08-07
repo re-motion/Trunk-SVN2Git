@@ -39,8 +39,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
       AssertAttribute (img, "width", "16px");
       AssertAttribute (img, "height", "16px");
       AssertAttribute (img, "alt", "");
-      AssertStyleAttribute (img, "vertical-align", "middle");
-      AssertStyleAttribute (img, "border-style", "none");
     }
   }
 }
