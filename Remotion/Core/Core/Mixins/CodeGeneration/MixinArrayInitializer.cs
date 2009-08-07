@@ -14,8 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration
@@ -57,6 +59,20 @@ namespace Remotion.Mixins.CodeGeneration
       _targetClassDefinition = targetClassDefinition;
     }
 
+    public void CheckMixinArray (object[] mixins)
+    {
+      ArgumentUtility.CheckNotNull ("mixins", mixins);
+
+      if (mixins.Length != _expectedMixinInfo.Length)
+        throw CreateInvalidMixinArrayException(mixins);
+
+      for (int i = 0; i < mixins.Length; ++i)
+      {
+        if (!GetConcreteExpectedMixinType (i).IsAssignableFrom (mixins[i].GetType()))
+          throw CreateInvalidMixinArrayException (mixins);
+      }
+    }
+
     public object[] CreateMixinArray (object[] suppliedMixins)
     {
       var mixins = new object[_expectedMixinInfo.Length];
@@ -78,48 +94,56 @@ namespace Remotion.Mixins.CodeGeneration
 
       // Note: This has a complexity of O(n*m) where n is the number of suppliedMixins and m is the total number of mixins.
       // We assume that m and especially n are very small.
-      for (int i = 0; i < suppliedMixins.Length; ++i)
+      foreach (var suppliedMixin in suppliedMixins)
       {
-        bool matchFound = false;
-        var suppliedMixinType = suppliedMixins[i].GetType();
-
-        for (int j = 0; j < targetArray.Length && !matchFound; ++j)
-        {
-          var expectedMixinType = _expectedMixinInfo[j].ExpectedMixinType;
-          if (expectedMixinType.IsAssignableFrom (suppliedMixinType))
-          {
-            if (targetArray[j] != null)
-            {
-              var message = string.Format (
-                  "Two mixins were supplied that would match the expected mixin type '{0}' on target class '{1}'.",
-                  expectedMixinType,
-                  _targetType);
-              throw new InvalidOperationException (message);
-            }
-            else if (_expectedMixinInfo[j].NeedsDerivedMixin 
-                && !ConcreteTypeBuilder.Current.GetConcreteMixinType (_targetClassDefinition.Mixins[j]).GeneratedType.IsAssignableFrom (suppliedMixinType))
-            {
-              var message = string.Format (
-                  "A mixin was supplied that would match the expected mixin type '{0}' on target class '{1}'. However, a derived type must be "
-                  + "generated for that mixin type, so the supplied instance cannot be used.",
-                  expectedMixinType,
-                  _targetType);
-              throw new InvalidOperationException (message);
-            }
-            targetArray[j] = suppliedMixins[i];
-            matchFound = true;
-          }
-        }
-
-        if (!matchFound)
+        int index = GetSuppliedMixinIndex (suppliedMixin);
+        if (index == -1)
         {
           string message = string.Format (
               "The supplied mixin of type '{0}' is not valid for target type '{1}' in the current configuration.",
-              suppliedMixinType,
+              suppliedMixin.GetType (),
               _targetType);
-          throw new InvalidOperationException(message);
+          throw new InvalidOperationException (message);
+        }
+        else
+        {
+          if (targetArray[index] != null)
+          {
+            var message = string.Format (
+                "Two mixins were supplied that would match the expected mixin type '{0}' on target class '{1}'.",
+                _expectedMixinInfo[index].ExpectedMixinType,
+                _targetType);
+            throw new InvalidOperationException (message);
+          }
+
+          targetArray[index] = suppliedMixin;
         }
       }
+    }
+
+    private int GetSuppliedMixinIndex (object suppliedMixin)
+    {
+      var suppliedMixinType = suppliedMixin.GetType ();
+
+      for (int index = 0; index < _expectedMixinInfo.Length; ++index)
+      {
+        var expectedMixinType = _expectedMixinInfo[index].ExpectedMixinType;
+        if (GetConcreteExpectedMixinType (index).IsAssignableFrom (suppliedMixinType))
+        {
+          return index;
+        }
+        else if (_expectedMixinInfo[index].ExpectedMixinType.IsAssignableFrom (suppliedMixinType))
+        {
+          var message = string.Format (
+              "A mixin was supplied that would match the expected mixin type '{0}' on target class '{1}'. However, a derived type must be "
+              + "generated for that mixin type, so the supplied instance cannot be used.",
+              expectedMixinType,
+              _targetType);
+          throw new InvalidOperationException (message);
+        }
+      }
+
+      return -1;
     }
 
     private object CreateMixin (ExpectedMixinInfo mixinInfo, int index)
@@ -147,6 +171,31 @@ namespace Remotion.Mixins.CodeGeneration
           throw new MissingMethodException (message, ex);
         }
       }
+    }
+
+    private InvalidOperationException CreateInvalidMixinArrayException (object[] mixins)
+    {
+      var expectedMixinTypes = SeparatedStringBuilder.Build (", ", GetConcreteExpectedMixinTypes ());
+      var givenMixinTypes = SeparatedStringBuilder.Build (", ", mixins, mixin => mixin.GetType ().ToString ());
+      var message = string.Format (
+          "Invalid mixin instances supplied. Expected the following mixin types (in this order): ('{0}'). The given types were: ('{1}').",
+          expectedMixinTypes,
+          givenMixinTypes);
+      return new InvalidOperationException (message);
+    }
+
+    private IEnumerable<Type> GetConcreteExpectedMixinTypes ()
+    {
+      for (int i = 0; i < _expectedMixinInfo.Length; ++i)
+        yield return GetConcreteExpectedMixinType (i);
+    }
+
+    private Type GetConcreteExpectedMixinType (int index)
+    {
+      if (_expectedMixinInfo[index].NeedsDerivedMixin)
+        return ConcreteTypeBuilder.Current.GetConcreteMixinType (_targetClassDefinition.Mixins[index]).GeneratedType;
+      else
+        return _expectedMixinInfo[index].ExpectedMixinType;
     }
   }
 }

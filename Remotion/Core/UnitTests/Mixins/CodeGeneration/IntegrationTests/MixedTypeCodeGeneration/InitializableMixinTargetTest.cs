@@ -23,6 +23,7 @@ using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Reflection;
+using System.Linq;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {
@@ -77,6 +78,69 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       var instance = (IInitializableMixinTarget) ObjectFactory.Create<BaseType7> (ParamList.Empty);
       instance.Initialize (false);
+
+      Assert.That (GetDepthValue (instance.Mixins[0]), Is.EqualTo (1));
+      Assert.That (GetDepthValue (instance.Mixins[1]), Is.EqualTo (2));
+      Assert.That (GetDepthValue (instance.Mixins[2]), Is.EqualTo (3));
+      Assert.That (GetDepthValue (instance.Mixins[3]), Is.EqualTo (4));
+      Assert.That (GetDepthValue (instance.Mixins[4]), Is.EqualTo (5));
+      Assert.That (GetDepthValue (instance.Mixins[5]), Is.EqualTo (6));
+      Assert.That (GetDepthValue (instance.Mixins[6]), Is.EqualTo (7));
+    }
+
+    [Test]
+    public void InitializeAfterDeserialization_SetsFirstProxy ()
+    {
+      var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin));
+
+      var oldProxy = instance.FirstBaseCallProxy;
+      instance.InitializeAfterDeserialization (new object[] { new NullMixin() });
+
+      Assert.That (instance.FirstBaseCallProxy, Is.Not.SameAs (oldProxy));
+      Assert.That (PrivateInvoke.GetPublicField (instance.FirstBaseCallProxy, "__depth"), Is.EqualTo (0));
+    }
+
+    [Test]
+    public void InitializeAfterDeserialization_UsesGivenMixins ()
+    {
+      var instance = (IInitializableMixinTarget) CreateMixedObject<BaseType1> (typeof (NullMixin));
+
+      var mixins = new object[] { new NullMixin () };
+      instance.InitializeAfterDeserialization (mixins);
+
+      Assert.That (instance.Mixins, Is.SameAs (mixins));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException))]
+    public void InitializeAfterDeserialization_ChecksMixins ()
+    {
+      var instance = (IInitializableMixinTarget) CreateMixedObject<NullTarget> (typeof (NullMixin));
+
+      var mixins = new object[] { };
+      instance.InitializeAfterDeserialization (mixins);
+    }
+    
+    [Test]
+    public void InitializeAfterDeserialization_InitializesMixins ()
+    {
+      var instance = (IInitializableMixinTarget) CreateMixedObject<NullTarget> (typeof (MixinWithOnInitializedAndOnDeserialized));
+
+      var mixins = new object[] { new MixinWithOnInitializedAndOnDeserialized() };
+      instance.InitializeAfterDeserialization (mixins);
+
+      Assert.That (((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnDeserializedCalled, Is.True);
+    }
+
+    [Test]
+    public void InitializeAfterDeserialization_InitializesMixins_WithBaseCallProxies ()
+    {
+      var instance = (IInitializableMixinTarget) ObjectFactory.Create<BaseType7> (ParamList.Empty);
+
+      // create new copies of the mixins without initializing them
+      var mixins = instance.Mixins.Select (m => Activator.CreateInstance (m.GetType ())).ToArray ();
+
+      instance.InitializeAfterDeserialization (mixins);
 
       Assert.That (GetDepthValue (instance.Mixins[0]), Is.EqualTo (1));
       Assert.That (GetDepthValue (instance.Mixins[1]), Is.EqualTo (2));

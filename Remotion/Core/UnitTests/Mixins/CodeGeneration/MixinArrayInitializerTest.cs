@@ -26,6 +26,86 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   public class MixinArrayInitializerTest
   {
     [Test]
+    public void CheckMixinArray_MatchingMixins ()
+    {
+      MixinArrayInitializer initializer = CreateInitializer (
+          typeof (NullTarget),
+          new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false));
+
+      initializer.CheckMixinArray (new object[] { new NullMixin() });
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Invalid mixin instances supplied. Expected the following mixin types "
+        + "(in this order): ('Remotion.UnitTests.Mixins.SampleTypes.NullMixin'). The given types were: ('').")]
+    public void CheckMixinArray_WrongNumberOfMixins ()
+    {
+      MixinArrayInitializer initializer = CreateInitializer (
+          typeof (NullTarget),
+          new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false));
+
+      initializer.CheckMixinArray (new object[0]);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Invalid mixin instances supplied. Expected the following mixin types "
+        + "(in this order): ('Remotion.UnitTests.Mixins.SampleTypes.NullMixin'). The given types were: "
+        + "('Remotion.UnitTests.Mixins.SampleTypes.NullMixin2').")]
+    public void CheckMixinArray_NonMatchingMixins ()
+    {
+      MixinArrayInitializer initializer = CreateInitializer (
+          typeof (NullTarget),
+          new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false));
+
+      initializer.CheckMixinArray (new object[] { new NullMixin2 () });
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Invalid mixin instances supplied. Expected the following mixin types "
+        + "(in this order): ('Remotion.UnitTests.Mixins.SampleTypes.NullMixin, Remotion.UnitTests.Mixins.SampleTypes.NullMixin2'). The given types "
+        + "were: ('Remotion.UnitTests.Mixins.SampleTypes.NullMixin2, Remotion.UnitTests.Mixins.SampleTypes.NullMixin').")]
+    public void CheckMixinArray_NonMatchingMixins_InvalidOrder ()
+    {
+      MixinArrayInitializer initializer = CreateInitializer (
+          typeof (NullTarget),
+          new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin), false),
+          new MixinArrayInitializer.ExpectedMixinInfo (typeof (NullMixin2), false));
+
+      initializer.CheckMixinArray (new object[] { new NullMixin2 (), new NullMixin () });
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = @"Invalid mixin instances supplied\. Expected the following mixin types "
+        + @"\(in this order\)\: \('Remotion\.UnitTests\.Mixins\.SampleTypes\.MixinWithVirtualMethod_Mixed_.*'\)\. The given types "
+        + @"were\: \('Remotion\.UnitTests\.Mixins\.SampleTypes\.MixinWithVirtualMethod'\)\.", 
+        MatchType = MessageMatch.Regex)]
+    public void CheckMixinArray_NonMatchingMixins_NeedDerived ()
+    {
+      MixinArrayInitializer initializer = CreateInitializer (
+          typeof (ClassOverridingSpecificMixinMember),
+          new MixinArrayInitializer.ExpectedMixinInfo (typeof (MixinWithVirtualMethod), true));
+
+      initializer.CheckMixinArray (new object[] { new MixinWithVirtualMethod () });
+    }
+
+    [Test]
+    public void CheckMixinArray_MatchingMixins_NeedDerived ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass<ClassOverridingSpecificMixinMember> ().AddMixin<MixinWithVirtualMethod> ().EnterScope ())
+      {
+        var mixinInfos = new[] { new MixinArrayInitializer.ExpectedMixinInfo (typeof (MixinWithVirtualMethod), true) };
+
+        var targetClassDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingSpecificMixinMember));
+        var initializer = new MixinArrayInitializer (typeof (ClassOverridingSpecificMixinMember), mixinInfos, targetClassDefinition);
+
+        var concreteMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (targetClassDefinition.Mixins[0]).GeneratedType;
+        var mixin1 = Activator.CreateInstance (concreteMixinType);
+
+        initializer.CheckMixinArray (new[] { mixin1 });
+      }
+    }
+
+    [Test]
     public void GetMixinArray_ForOrdinaryMixin ()
     {
       MixinArrayInitializer initializer = CreateInitializer (

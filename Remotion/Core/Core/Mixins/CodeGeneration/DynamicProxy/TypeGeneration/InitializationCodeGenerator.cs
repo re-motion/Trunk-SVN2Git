@@ -31,8 +31,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
   public class InitializationCodeGenerator
   {
     private static readonly MethodInfo s_initializeMethod = typeof (IInitializableMixinTarget).GetMethod ("Initialize");
+    private static readonly MethodInfo s_initializeAfterDeserializationMethod = typeof (IInitializableMixinTarget).GetMethod ("InitializeAfterDeserialization");
 
     private static readonly MethodInfo s_createMixinArrayMethod = typeof (MixinArrayInitializer).GetMethod ("CreateMixinArray");
+    private static readonly MethodInfo s_checkMixinArrayMethod = typeof (MixinArrayInitializer).GetMethod ("CheckMixinArray");
+
     private static readonly MethodInfo s_initializeMixinMethod = typeof (IInitializableMixin).GetMethod ("Initialize");
 
     private readonly TargetClassDefinition _configuration;
@@ -135,14 +138,22 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
       CustomMethodEmitter initializeMethod = classEmitter.CreateInterfaceMethodImplementation (s_initializeMethod);
 
       ImplementSettingFirstBaseCallProxy (initializeMethod);
-      ImplementSettingMixinInstances (initializeMethod, mixinArrayInitializerField);
-      ImplementInitializingMixins (initializeMethod);
+      ImplementCreatingMixinInstances (initializeMethod, mixinArrayInitializerField);
+      ImplementInitializingMixins (initializeMethod, initializeMethod.ArgumentReferences[0].ToExpression());
 
       initializeMethod.AddStatement (new ReturnStatement ());
+
+      CustomMethodEmitter initializeAfterDeserializationMethod = 
+          classEmitter.CreateInterfaceMethodImplementation (s_initializeAfterDeserializationMethod);
+
+      ImplementSettingFirstBaseCallProxy (initializeAfterDeserializationMethod);
+      ImplementSettingMixinInstances (initializeAfterDeserializationMethod, mixinArrayInitializerField);
+      ImplementInitializingMixins (initializeAfterDeserializationMethod, new ConstReference (true).ToExpression ());
+
+      initializeAfterDeserializationMethod.AddStatement (new ReturnStatement ());
     }
 
-    private void ImplementSettingFirstBaseCallProxy (
-        CustomMethodEmitter initializeMethod)
+    private void ImplementSettingFirstBaseCallProxy (CustomMethodEmitter initializeMethod)
     {
       // __first = <NewBaseCallProxy (0)>;
 
@@ -150,7 +161,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
       initializeMethod.AddStatement (new AssignStatement (_firstField, newBaseCallProxyExpression));
     }
 
-    private void ImplementSettingMixinInstances (CustomMethodEmitter initializeMethod, FieldReference mixinArrayInitializerField)
+    private void ImplementCreatingMixinInstances (CustomMethodEmitter initializeMethod, FieldReference mixinArrayInitializerField)
     {
       // __extensions = <mixinArrayInitializerField>.CreateMixinArray (MixedObjectInstantiationScope.Current.SuppliedMixinInstances);
 
@@ -167,7 +178,20 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
       initializeMethod.AddStatement (new AssignStatement (_extensionsField, allMixinInstances));
     }
 
-    private void ImplementInitializingMixins (CustomMethodEmitter initializeMethod)
+    private void ImplementSettingMixinInstances (CustomMethodEmitter initializeMethod, FieldReference mixinArrayInitializerField)
+    {
+      // <mixinArrayInitializerField>.CheckMixinArray (<arguments[0]>)
+      // __extensions = <arguments[0]>;
+
+      initializeMethod.AddStatement (new ExpressionStatement (new VirtualMethodInvocationExpression (
+          new TypeReferenceWrapper (mixinArrayInitializerField, typeof (MixinArrayInitializer)),
+          s_checkMixinArrayMethod,
+          initializeMethod.ArgumentReferences[0].ToExpression())));
+
+      initializeMethod.AddStatement (new AssignStatement (_extensionsField, initializeMethod.ArgumentReferences[0].ToExpression()));
+    }
+
+    private void ImplementInitializingMixins (CustomMethodEmitter initializeMethod, Expression deserialization)
     {
       var initializableMixinLocal = initializeMethod.DeclareLocal (typeof (IInitializableMixin));
       for (int i = 0; i < _configuration.Mixins.Count; ++i)
@@ -190,7 +214,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
                       s_initializeMixinMethod,
                       SelfReference.Self.ToExpression (),
                       GetNewBaseCallProxyExpression (i + 1),
-                      initializeMethod.ArgumentReferences[0].ToExpression ())));
+                      deserialization)));
         }
       }
     }
