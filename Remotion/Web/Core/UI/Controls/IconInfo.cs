@@ -79,9 +79,9 @@ public sealed class IconInfo
 
     writer.AddAttribute (HtmlTextWriterAttribute.Src, Spacer.Url);
     writer.AddAttribute (HtmlTextWriterAttribute.Alt, string.Empty);
+    writer.AddAttribute ("class", "Icon");
     writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "0px");
     writer.AddStyleAttribute (HtmlTextWriterStyle.Height, "0px");
-    writer.AddStyleAttribute ("vertical-align", "middle");
     writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
     writer.RenderBeginTag (HtmlTextWriterTag.Img);
     writer.RenderEndTag();
@@ -190,9 +190,8 @@ public sealed class IconInfo
       writer.AddAttribute (HtmlTextWriterAttribute.Width, _width.ToString());
       writer.AddAttribute (HtmlTextWriterAttribute.Height, _height.ToString());
     }
-    writer.AddStyleAttribute ("vertical-align", "middle");
-    writer.AddStyleAttribute (HtmlTextWriterStyle.BorderStyle, "none");
-
+    writer.AddAttribute ("class", "Icon");
+    
     writer.AddAttribute (HtmlTextWriterAttribute.Alt, StringUtility.NullToEmpty (_alternateText));
     
     if (! StringUtility.IsNullOrEmpty (_toolTip))
