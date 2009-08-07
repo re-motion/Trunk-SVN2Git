@@ -92,7 +92,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _mixinArrayInitializerField = _emitter.CreateStaticField ("__mixinArrayInitializer", typeof (MixinArrayInitializer), FieldAttributes.Private);
 
-      _initializationCodeGenerator = new InitializationCodeGenerator (configuration, _extensionsField, _firstField, _configurationField);
+      _initializationCodeGenerator = new InitializationCodeGenerator (configuration, _extensionsField, _firstField, _configurationField, _baseCallGenerator.Ctor);
        _initializationCodeGenerator.ImplementIInitializableMixinTarget (Emitter, _baseCallGenerator, _mixinArrayInitializerField);
 
        AddTypeInitializer ();
@@ -203,7 +203,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       emitter.CodeBuilder.AddStatement (new AssignStatement (_configurationField,
           new VirtualMethodInvocationExpression (currentCachePropertyReference, getTargetClassDefinitionMethod, classContextExpression)));
 
-      _initializationCodeGenerator.AddMixinArrayInitializerCreationStatements (emitter.CodeBuilder, _mixinArrayInitializerField);
+      var assignMixinArrayInitializerStatement = _initializationCodeGenerator.GetAssignMixinArrayInitializerStatement (
+          emitter.CodeBuilder.DeclareLocal (typeof (MixinArrayInitializer.ExpectedMixinInfo[])), 
+          _mixinArrayInitializerField);
+      emitter.CodeBuilder.AddStatement (assignMixinArrayInitializerStatement);
 
       emitter.CodeBuilder.AddStatement (new ReturnStatement ());
     }

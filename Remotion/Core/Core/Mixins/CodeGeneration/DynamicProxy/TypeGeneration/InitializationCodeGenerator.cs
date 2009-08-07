@@ -14,8 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
-using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
@@ -42,45 +42,59 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
     private readonly FieldReference _configurationField;
+    private readonly ConstructorInfo _baseCallProxyCtor;
 
-    public InitializationCodeGenerator (TargetClassDefinition configuration, FieldReference extensionsField, FieldReference firstField, FieldReference configurationField)
+    public InitializationCodeGenerator (
+        TargetClassDefinition configuration, 
+        FieldReference extensionsField, 
+        FieldReference firstField, 
+        FieldReference configurationField,
+        ConstructorInfo baseCallProxyCtor)
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
       ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
       ArgumentUtility.CheckNotNull ("firstField", firstField);
       ArgumentUtility.CheckNotNull ("configurationField", configurationField);
+      ArgumentUtility.CheckNotNull ("baseCallProxyCtor", baseCallProxyCtor);
 
       _configuration = configuration;
       _extensionsField = extensionsField;
       _firstField = firstField;
       _configurationField = configurationField;
+      _baseCallProxyCtor = baseCallProxyCtor;
     }
 
-    public void AddMixinArrayInitializerCreationStatements (
-        AbstractCodeBuilder codeBuilder, 
-        FieldReference targetField)
+    /// <summary>
+    /// Gets a <see cref="Statement"/> that causes a <see cref="MixinArrayInitializer"/> to be created and assigned to 
+    /// <paramref name="mixinArrayInitializerField"/>.
+    /// </summary>
+    /// <param name="expectedMixinInfosLocal">A <see cref="LocalReference"/> used as a temporary to hold an array of 
+    /// <see cref="MixinArrayInitializer.ExpectedMixinInfo"/>.</param>
+    /// <param name="mixinArrayInitializerField">The target field to assign the new <see cref="MixinArrayInitializer"/> to.</param>
+    public Statement GetAssignMixinArrayInitializerStatement (LocalReference expectedMixinInfosLocal, FieldReference mixinArrayInitializerField)
     {
-      // var expectedMixinInfos = new MixinArrayInitializer.ExpectedMixinInfo[<configuration.Mixins.Count>];
-      var expectedMixinInfosLocal = codeBuilder.DeclareLocal (typeof (MixinArrayInitializer.ExpectedMixinInfo[]));
-      codeBuilder.AddStatement (
-          new AssignStatement (
-              expectedMixinInfosLocal, 
-              new NewArrayExpression (_configuration.Mixins.Count, typeof (MixinArrayInitializer.ExpectedMixinInfo))));
+      var statements = new List<Statement> ();
 
-      // expectedMixinInfos[0] = new MixinArrayInitializer.ExpectedMixinInfo (<configuration.Mixins[0].Type>, <configuration.Mixins[0].NeedsDerivedMixin>)
-      // ...
+      // var expectedMixinInfos = new MixinArrayInitializer.ExpectedMixinInfo[<configuration.Mixins.Count>];
+      statements.Add (new AssignStatement (
+          expectedMixinInfosLocal, 
+          new NewArrayExpression (_configuration.Mixins.Count, typeof (MixinArrayInitializer.ExpectedMixinInfo))));
 
       for (int i = 0; i < _configuration.Mixins.Count; ++i)
       {
+        // expectedMixinInfos[i] = new MixinArrayInitializer.ExpectedMixinInfo (
+        //   <configuration.Mixins[i].Type>, <configuration.Mixins[i].NeedsDerivedMixin>)
+
         var newMixinInfoExpression = new NewInstanceExpression (
             typeof (MixinArrayInitializer.ExpectedMixinInfo),
             new[] { typeof (Type), typeof (bool) },
             new TypeTokenExpression (_configuration.Mixins[i].Type),
             new ConstReference (_configuration.Mixins[i].NeedsDerivedMixinType ()).ToExpression ());
-        codeBuilder.AddStatement (new AssignArrayStatement (expectedMixinInfosLocal, i, newMixinInfoExpression));
+        statements.Add (new AssignArrayStatement (expectedMixinInfosLocal, i, newMixinInfoExpression));
       }
 
       // <targetField> = MixinArrayInitializer (<configuration.Type>, expectedMixinInfos, <configuration>);
+
       var newInitializerExpression = new NewInstanceExpression (
           typeof (MixinArrayInitializer), 
           new[] { typeof (Type), typeof (MixinArrayInitializer.ExpectedMixinInfo[]), typeof (TargetClassDefinition) },
@@ -88,11 +102,18 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
           expectedMixinInfosLocal.ToExpression(),
           _configurationField.ToExpression());
 
-      codeBuilder.AddStatement (new AssignStatement (targetField, newInitializerExpression));
+      statements.Add (new AssignStatement (mixinArrayInitializerField, newInitializerExpression));
+      return new BlockStatement (statements.ToArray ());
     }
 
+    /// <summary>
+    /// Gets a <see cref="Statement"/> that causes the mixin to initialize itself. This effectively calls the 
+    /// <see cref="IInitializableMixinTarget.Initialize"/> method added by <see cref="ImplementIInitializableMixinTarget"/>.
+    /// </summary>
     public Statement GetInitializationStatement ()
     {
+      // ((IInitializableMixinTarget) this).Initialize (false)
+
       var initializationMethodCall = new ExpressionStatement (
           new VirtualMethodInvocationExpression (
               new TypeReferenceWrapper (SelfReference.Self, typeof (IInitializableMixinTarget)),
@@ -103,10 +124,21 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
       return new IfStatement (condition, initializationMethodCall);
     }
 
-    public void ImplementIInitializableMixinTarget (IClassEmitter classEmitter, BaseCallProxyGenerator baseCallProxyGenerator, FieldReference mixinArrayInitializerField)
+    /// <summary>
+    /// Implements the <see cref="IInitializableMixinTarget"/> interface on the given <paramref name="classEmitter"/>.
+    /// </summary>
+    /// <param name="classEmitter">The class emitter to generate <see cref="IInitializableMixinTarget"/> on.</param>
+    /// <param name="baseCallProxyGenerator">The base call proxy generator.</param>
+    /// <param name="mixinArrayInitializerField">The field holding the <see cref="MixinArrayInitializer"/> used to initialize the mixins.
+    /// This field can be initialized using <see cref="GetAssignMixinArrayInitializerStatement"/>, e.g. in the generated class' type initializer.</param>
+    public void ImplementIInitializableMixinTarget (
+        IClassEmitter classEmitter, 
+        BaseCallProxyGenerator baseCallProxyGenerator, 
+        FieldReference mixinArrayInitializerField)
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
       ArgumentUtility.CheckNotNull ("baseCallProxyGenerator", baseCallProxyGenerator);
+      ArgumentUtility.CheckNotNull ("mixinArrayInitializerField", mixinArrayInitializerField);
 
       ImplementInitializeMethod (classEmitter, mixinArrayInitializerField);
 
@@ -131,93 +163,74 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     {
       CustomMethodEmitter initializeMethod = classEmitter.CreateInterfaceMethodImplementation (s_initializeMethod);
 
-      var selfAsInitializableTarget = new TypeReferenceWrapper (SelfReference.Self, typeof (IInitializableMixinTarget));
-      ImplementSettingFirstBaseCallProxy (initializeMethod, selfAsInitializableTarget);
-
-      LocalReference allMixinInstancesLocal = ImplementSettingMixinInstances (initializeMethod, mixinArrayInitializerField, selfAsInitializableTarget);
-      ImplementInitializingMixins(initializeMethod, allMixinInstancesLocal, selfAsInitializableTarget);
+      ImplementSettingFirstBaseCallProxy (initializeMethod);
+      ImplementSettingMixinInstances (initializeMethod, mixinArrayInitializerField);
+      ImplementInitializingMixins (initializeMethod);
 
       initializeMethod.AddStatement (new ReturnStatement ());
     }
 
-    private void ImplementSettingFirstBaseCallProxy (CustomMethodEmitter initializeMethod, TypeReferenceWrapper selfAsInitializableTarget)
+    private void ImplementSettingFirstBaseCallProxy (
+        CustomMethodEmitter initializeMethod)
     {
-      // ((IInitializableMixinTarget)this).SetFirstBaseCallProxy (((IInitializableMixinTarget)this).CreateBaseCallProxy (0));
+      // __first = <NewBaseCallProxy (0)>;
 
-      var firstBaseCallProxyExpression = new VirtualMethodInvocationExpression (
-          selfAsInitializableTarget,
-          s_createBaseCallProxyMethod,
-          new ConstReference (0).ToExpression ());
-
-      initializeMethod.AddStatement (
-          new ExpressionStatement (
-              new VirtualMethodInvocationExpression (
-                  selfAsInitializableTarget,
-                  s_setFirstBaseCallProxyMethod,
-                  firstBaseCallProxyExpression)));
+      NewInstanceExpression newBaseCallProxyExpression = GetNewBaseCallProxyExpression (0);
+      initializeMethod.AddStatement (new AssignStatement (_firstField, newBaseCallProxyExpression));
     }
 
-    private LocalReference ImplementSettingMixinInstances (CustomMethodEmitter initializeMethod, FieldReference mixinArrayInitializerField, TypeReferenceWrapper selfAsInitializableTarget)
+    private void ImplementSettingMixinInstances (CustomMethodEmitter initializeMethod, FieldReference mixinArrayInitializerField)
     {
-      // object[] allMixinInstances = <mixinArrayInitializerField>.CreateMixinArray (MixedObjectInstantiationScope.Current.SuppliedMixinInstances);
+      // __extensions = <mixinArrayInitializerField>.CreateMixinArray (MixedObjectInstantiationScope.Current.SuppliedMixinInstances);
 
       var currentMixedObjectInstantiationScope = new PropertyReference (null, typeof (MixedObjectInstantiationScope).GetProperty ("Current"));
       var suppliedMixinInstances = new PropertyReference (
           currentMixedObjectInstantiationScope,
           typeof (MixedObjectInstantiationScope).GetProperty ("SuppliedMixinInstances"));
       
-      var allMixinInstancesLocal = initializeMethod.DeclareLocal (typeof (object[]));
-
       var allMixinInstances = new VirtualMethodInvocationExpression (
           new TypeReferenceWrapper (mixinArrayInitializerField, typeof (MixinArrayInitializer)),
           s_createMixinArrayMethod,
           suppliedMixinInstances.ToExpression());
 
-      initializeMethod.AddStatement (new AssignStatement (allMixinInstancesLocal, allMixinInstances));
-
-      // mixinTarget.SetExtensions (allMixinInstances)
-
-      initializeMethod.AddStatement (
-          new ExpressionStatement (
-              new VirtualMethodInvocationExpression (
-                  selfAsInitializableTarget,
-                  s_setExtensionsMethod,
-                  allMixinInstancesLocal.ToExpression ())));
-
-      return allMixinInstancesLocal;
+      initializeMethod.AddStatement (new AssignStatement (_extensionsField, allMixinInstances));
     }
 
-    private void ImplementInitializingMixins (CustomMethodEmitter initializeMethod, LocalReference allMixinInstancesLocal, TypeReferenceWrapper selfAsInitializableTarget)
+    private void ImplementInitializingMixins (CustomMethodEmitter initializeMethod)
     {
       var initializableMixinLocal = initializeMethod.DeclareLocal (typeof (IInitializableMixin));
       for (int i = 0; i < _configuration.Mixins.Count; ++i)
       {
         if (typeof (IInitializableMixin).IsAssignableFrom (_configuration.Mixins[i].Type))
         {
-          // var initializableMixin = (IInitializableMixin) allMixins[i];
+          // var initializableMixin = (IInitializableMixin) __extensions[i];
           var castMixinExpression = new ConvertExpression (
               typeof (IInitializableMixin),
               typeof (object),
-              new LoadArrayElementExpression (i, allMixinInstancesLocal, typeof (object)));
+              new LoadArrayElementExpression (i, _extensionsField, typeof (object)));
 
           initializeMethod.AddStatement (new AssignStatement (initializableMixinLocal, castMixinExpression));
 
-          var baseCallProxyExpression = new VirtualMethodInvocationExpression (
-              selfAsInitializableTarget,
-              s_createBaseCallProxyMethod,
-              new ConstReference (i + 1).ToExpression ());
-
-          // initializableMixin.Initialize (mixinTargetInstance, CreateBaseCallProxy (i + 1), deserialization);
+          // initializableMixin.Initialize (mixinTargetInstance, <NewBaseCallProxy (i + 1)>, deserialization);
           initializeMethod.AddStatement (
               new ExpressionStatement (
                   new VirtualMethodInvocationExpression (
                       initializableMixinLocal,
                       s_initializeMixinMethod,
                       SelfReference.Self.ToExpression (),
-                      baseCallProxyExpression,
+                      GetNewBaseCallProxyExpression (i + 1),
                       initializeMethod.ArgumentReferences[0].ToExpression ())));
         }
       }
+    }
+
+    private NewInstanceExpression GetNewBaseCallProxyExpression (int depth)
+    {
+      // new <BaseCallProxy> (this, <depth>)
+      return new NewInstanceExpression (
+          _baseCallProxyCtor,
+          SelfReference.Self.ToExpression (),
+          new ConstReference (depth).ToExpression ());
     }
   }
 }

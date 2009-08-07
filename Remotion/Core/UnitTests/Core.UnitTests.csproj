@@ -152,6 +152,7 @@
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="Mixins\CodeGeneration\MixinArrayInitializerTest.cs" />
     <Compile Include="Mixins\SampleTypes\MixinAddingSpecialNameMethod.cs" />
+    <Compile Include="Reflection\CodeGeneration\BlockStatementTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithProtectedVirtualMethod.cs" />
     <Compile Include="Reflection\DynamicParamListTest.cs" />
     <Compile Include="Reflection\ParamListImplementationTest.cs" />
