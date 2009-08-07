@@ -16,8 +16,6 @@
 using System;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode;
-using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
@@ -41,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
-      return new BocRowRenderer (context, writer, list, CssClassContainer.Instance, serviceLocator);
+      return new StandardMode.BocRowRenderer (context, writer, list, CssClassContainer.Instance, serviceLocator);
     }
 
     IBocListPreRenderer IBocListRendererFactory.CreatePreRenderer (IHttpContext context, IBocList list)
@@ -54,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      return new BocListMenuBlockRenderer (context, writer, list, CssClassContainer.Instance);
+      return new StandardMode.BocListMenuBlockRenderer (context, writer, list, CssClassContainer.Instance);
     }
 
     IBocListNavigationBlockRenderer IBocListNavigationBlockRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list)
@@ -62,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("list", list);
 
-      return new BocListNavigationBlockRenderer (context, writer, list, CssClassContainer.Instance);
+      return new StandardMode.BocListNavigationBlockRenderer (context, writer, list, CssClassContainer.Instance);
     }
 
     public IBocListRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocList list, IServiceLocator serviceLocator)
@@ -71,7 +69,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
-      return new BocListRenderer (context, writer, list, CssClassContainer.Instance, serviceLocator);
+      return new StandardMode.BocListRenderer (context, writer, list, CssClassContainer.Instance, serviceLocator);
     }
 
     IBocListTableBlockRenderer IBocListTableBlockRendererFactory.CreateRenderer (
@@ -81,7 +79,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode.Fa
       ArgumentUtility.CheckNotNull ("list", list);
       ArgumentUtility.CheckNotNull ("serviceLocator", serviceLocator);
 
-      return new BocListTableBlockRenderer (context, writer, list, CssClassContainer.Instance, serviceLocator);
+      return new StandardMode.BocListTableBlockRenderer (context, writer, list, CssClassContainer.Instance, serviceLocator);
     }
   }
 }

@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
     protected void RenderValueColumnCellText (string contents)
     {
-      Writer.AddStyleAttribute (HtmlTextWriterStyle.VerticalAlign, "middle");
+      Writer.AddAttribute ("class", CssClasses.CommandText);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       
       contents = HtmlUtility.HtmlEncode (contents);

@@ -16,27 +16,20 @@
 using System;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode
 {
-  public class BocMultilineTextValuePreRenderer : PreRendererBase<IBocMultilineTextValue>, IBocMultilineTextValuePreRenderer
+  public class BocMultilineTextValuePreRenderer : BocMultilineTextValuePreRendererBase
   {
     public BocMultilineTextValuePreRenderer (IHttpContext context, IBocMultilineTextValue control)
         : base (context, control)
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
-    {
-      string styleKey = typeof (IBocMultilineTextValue).FullName + "_Style";
-      string styleUrl = ResourceUrlResolver.GetResourceUrl (Control, typeof (IBocMultilineTextValue), ResourceType.Html, "BocMultilineTextValue.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
-    }
 
-    public override void PreRender ()
+    protected override ResourceTheme ResourceTheme
     {
+      get { return ResourceTheme.Standard; }
     }
   }
 }

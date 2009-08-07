@@ -60,3 +60,9 @@ a
 {
   color: Gray;
 }
+
+img.Icon
+{
+  vertical-align: top;
+  border-style: none;
+}

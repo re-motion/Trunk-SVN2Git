@@ -19,30 +19,19 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
 {
   /// <summary>
-  /// Responsible for registering the style sheet for <see cref="WebTabStrip"/> controls in quirks mode.
+  /// Responsible for registering the style sheet for <see cref="WebTabStrip"/> controls in standard mode.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
-  public class WebTabStripPreRenderer : PreRendererBase<IWebTabStrip>, IWebTabStripPreRenderer
+  public class WebTabStripPreRenderer : WebTabStripPreRendererBase
   {
     public WebTabStripPreRenderer (IHttpContext context, IWebTabStrip control)
         : base (context, control)
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    protected override ResourceTheme ResourceTheme
     {
-      string key = typeof (IWebTabStrip).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IWebTabStrip), ResourceType.Html, ResourceTheme.Standard, "TabStrip.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
-    }
-
-    public override void PreRender ()
-    {
-      
+      get { return Web.ResourceTheme.Standard; }
     }
   }
 }

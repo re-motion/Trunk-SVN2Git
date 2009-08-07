@@ -20,8 +20,10 @@ using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls.Rendering.WebTreeView;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 using Remotion.Web.Infrastructure;
@@ -33,7 +35,7 @@ namespace Remotion.Web.UI.Controls
   /// <include file='doc\include\UI\Controls\WebTreeView.xml' path='WebTreeView/Class/*' />
   [ToolboxData ("<{0}:WebTreeView runat=server></{0}:WebTreeView>")]
   [DefaultEvent ("Click")]
-  public class WebTreeView : WebControl, IControl, IPostBackEventHandler, IResourceDispatchTarget
+  public class WebTreeView : WebControl, IWebTreeView, IPostBackEventHandler, IResourceDispatchTarget
   {
     // constants
 
@@ -447,12 +449,9 @@ namespace Remotion.Web.UI.Controls
 
     public virtual void RegisterHtmlHeadContents(HtmlHeadAppender htmlHeadAppender, IHttpContext httpContext)
     {
-      string styleKey = typeof (WebTreeView).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (styleKey))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (WebTreeView), ResourceType.Html, "TreeView.css");
-        htmlHeadAppender.RegisterStylesheetLink (styleKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
+      var factory = ServiceLocator.Current.GetInstance<IWebTreeViewRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <summary> Overrides the parent control's <c>OnPreRender</c> method. </summary>

@@ -41,9 +41,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     // constants
 
-    private const string c_scriptFileUrl = "BocBooleanValue.js";
-    private const string c_styleFileUrl = "BocBooleanValue.css";
-
     private const string c_trueIcon = "CheckBoxTrue.gif";
     private const string c_falseIcon = "CheckBoxFalse.gif";
     private const string c_nullIcon = "CheckBoxNull.gif";
@@ -81,9 +78,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                                                                    {
                                                                        typeof (IBusinessObjectBooleanProperty)
                                                                    };
-
-    private static readonly string s_scriptFileKey = typeof (BocBooleanValue).FullName + "_Script";
-    private static readonly string s_styleFileKey = typeof (BocBooleanValue).FullName + "_Style";
 
     // member fields
     private bool? _value;
@@ -150,17 +144,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
-      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocBooleanValue), ResourceType.Html, c_scriptFileUrl);
-        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
-      }
-
-      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
-      {
-        string styleUrl = ResourceUrlResolver.GetResourceUrl (this, httpContext, typeof (BocBooleanValue), ResourceType.Html, c_styleFileUrl);
-        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
-      }
+      var factory = ServiceLocator.GetInstance<IBocBooleanValueRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (httpContext, this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <summary> 

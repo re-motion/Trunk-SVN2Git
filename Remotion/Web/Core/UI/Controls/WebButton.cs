@@ -18,9 +18,11 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Security;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls.Rendering.WebButton;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 using Remotion.Web.Infrastructure;
@@ -33,7 +35,7 @@ namespace Remotion.Web.UI.Controls
   public class WebButton
       :
           Button,
-          IControl,
+          IWebButton,
           // Required because Page.ProcessPostData always registers the last IPostBackEventHandler in the controls 
           // collection for controls (buttons) having PostData but no IPostBackDataHandler. 
           IPostBackDataHandler
@@ -59,19 +61,9 @@ namespace Remotion.Web.UI.Controls
     {
       base.OnInit (e);
 
-      string scriptKey = typeof (WebButton).FullName + "_Script";
-      if (!HtmlHeadAppender.Current.IsRegistered (scriptKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebButton), ResourceType.Html, "WebButton.js");
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (scriptKey, url);
-      }
-
-      string styleKey = typeof (WebButton).FullName + "_Style";
-      if (!HtmlHeadAppender.Current.IsRegistered (styleKey))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebButton), ResourceType.Html, "WebButton.css");
-        HtmlHeadAppender.Current.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
-      }
+      var factory = ServiceLocator.Current.GetInstance<IWebButtonRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper(Context), this);
+      preRenderer.RegisterHtmlHeadContents (HtmlHeadAppender.Current);
     }
 
     void IPostBackDataHandler.RaisePostDataChangedEvent ()

@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
@@ -28,6 +29,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     public override bool IsBrowserCapableOfScripting
     {
       get { return IsInternetExplorer55OrHigher(); }
+    }
+    
+    protected override ResourceTheme ResourceTheme
+    {
+      get { return ResourceTheme.Legacy; }
     }
 
     protected virtual bool IsInternetExplorer55OrHigher ()

@@ -25,5 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase
   public interface IBocCheckboxRendererFactory
   {
     IBocCheckboxRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocCheckBox control);
+
+    IBocCheckboxPreRenderer CreatePreRenderer (IHttpContext context, IBocCheckBox control);
   }
 }

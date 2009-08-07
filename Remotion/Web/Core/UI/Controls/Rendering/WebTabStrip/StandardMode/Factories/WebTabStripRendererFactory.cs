@@ -20,7 +20,7 @@ using Remotion.Web.Infrastructure;
 namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode.Factories
 {
   /// <summary>
-  /// Responsible for creating quirks mode renderers for <see cref="WebTabStrip"/> controls and <see cref="WebTab"/> items.
+  /// Responsible for creating standard mode renderers for <see cref="WebTabStrip"/> controls and <see cref="WebTab"/> items.
   /// </summary>
   public class WebTabStripRendererFactory : IWebTabStripRendererFactory, IWebTabRendererFactory
   {

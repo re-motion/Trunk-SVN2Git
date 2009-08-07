@@ -18,8 +18,12 @@ using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.QuirksMode.Factories;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue;
+using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue;
@@ -64,6 +68,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
       _instances.Add (typeof (IBocReferenceValueRendererFactory), new BocReferenceValueRendererFactory ());
       _instances.Add (typeof (IBocDateTimeValueRendererFactory), new BocDateTimeValueRendererFactory());
       _instances.Add (typeof (IBocMultilineTextValueRendererFactory), new BocTextValueRendererFactory());
+      _instances.Add (typeof (IBocTextValueRendererFactory), new BocTextValueRendererFactory ());
+      _instances.Add (typeof (IBocBooleanValueRendererFactory), new BocBooleanValueRendererFactory ());
+      _instances.Add (typeof (IBocCheckboxRendererFactory), new BocBooleanValueRendererFactory ());
+      _instances.Add (typeof (IBocEnumValueRendererFactory), new BocEnumValueRendererFactory ());
       
     }
 

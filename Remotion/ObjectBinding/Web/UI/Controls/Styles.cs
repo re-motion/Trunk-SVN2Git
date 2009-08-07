@@ -381,7 +381,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       textBox.TextMode = _textMode;
     }
 
-    public void RegisterJavaScriptInclude (IControl control, IHttpContext context, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterJavaScriptInclude (IControl control, IHttpContext context, HtmlHeadAppender htmlHeadAppender, ResourceTheme resourceTheme)
     {
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -389,7 +389,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (control, context, typeof (TextBoxStyle), ResourceType.Html, c_scriptFileUrl);
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            control, context, typeof (TextBoxStyle), ResourceType.Html, resourceTheme, c_scriptFileUrl);
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
     }

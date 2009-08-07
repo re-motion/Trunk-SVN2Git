@@ -25,5 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
   public interface IBocTextValueRendererFactory
   {
     IBocTextValueRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocTextValue control);
+
+    IBocTextValuePreRenderer CreatePreRenderer (IHttpContext context, IBocTextValue control);
   }
 }

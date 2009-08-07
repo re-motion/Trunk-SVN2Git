@@ -349,6 +349,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       Binding.BindingChanged += Binding_BindingChanged;
     }
 
+    public override void RegisterHtmlHeadContents (Remotion.Web.Infrastructure.IHttpContext httpContext, Remotion.Web.UI.HtmlHeadAppender htmlHeadAppender)
+    {
+      base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
+
+      var factory = ServiceLocator.GetInstance<IBocTextValueRendererFactory>();
+      var preRenderer = factory.CreatePreRenderer (httpContext, this);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
+    }
+
     /// <summary>
     /// Loads <see cref="Text"/>, <see cref="ValueType"/> and <see cref="ActualValueType"/> in addition to the base state.
     /// </summary>

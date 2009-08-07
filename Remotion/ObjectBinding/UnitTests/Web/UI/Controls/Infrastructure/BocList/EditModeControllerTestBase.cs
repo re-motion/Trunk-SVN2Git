@@ -17,6 +17,7 @@ using System;
 using System.Collections.Specialized;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList;
@@ -88,6 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Infrastructure.BocLis
 
       _bocList = new Remotion.ObjectBinding.Web.UI.Controls.BocList();
       _bocList.ID = "BocList";
+      Page.Controls.Add (_bocList);
       NamingContainer.Controls.Add (_bocList);
 
       _controller = new EditModeController (_bocList);

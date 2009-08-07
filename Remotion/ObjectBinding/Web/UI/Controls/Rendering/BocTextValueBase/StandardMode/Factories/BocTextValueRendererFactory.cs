@@ -29,6 +29,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Stan
       return new BocTextValueRenderer (context, writer, control);
     }
 
+    public IBocTextValuePreRenderer CreatePreRenderer (IHttpContext context, IBocTextValue control)
+    {
+      return new BocTextValuePreRenderer (context, control);
+    }
+
     IBocMultilineTextValueRenderer IBocMultilineTextValueRendererFactory.CreateRenderer (
         IHttpContext context, HtmlTextWriter writer, IBocMultilineTextValue control)
     {

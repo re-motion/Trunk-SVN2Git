@@ -28,5 +28,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.Standard
     {
       return new BocEnumValueRenderer (context, writer, control);
     }
+
+    public IBocEnumValuePreRenderer CreatePreRenderer (IHttpContext context, IBocEnumValue control)
+    {
+      return new BocEnumValuePreRenderer (context, control);
+    }
   }
 }

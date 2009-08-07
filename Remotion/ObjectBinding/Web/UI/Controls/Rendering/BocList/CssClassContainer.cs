@@ -140,5 +140,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList
     {
       get { return "bocListMenuBlock"; }
     }
+
+    public virtual string CommandText
+    {
+      get { return "bocListCommandText"; }
+    }
   }
 }

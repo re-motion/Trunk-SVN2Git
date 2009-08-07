@@ -174,54 +174,33 @@ tr.bocListDataRowSelected td.bocListDataCellEven a.disabled:hover
 	background-color: transparent;	
 }
 
+/* Style applied to SPAN elements in command-enabled column cells */
+tr.bocListDataRow td.bocListDataCellOdd span.CommandText,
+tr.bocListDataRow td.bocListDataCellEven span.CommandText,
+tr.bocListDataRowSelected td.bocListDataCellOdd span.CommandText,
+tr.bocListDataRowSelected td.bocListDataCellEven span.CommandText
+{
+  vertical-align: middle;
+}
+
 
 /* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
-td.bocListDataCellOdd div td.dropDownMenuHeadTitle a,
-td.bocListDataCellEven div td.dropDownMenuHeadTitle a,
-td.bocListDataCellOdd div td.dropDownMenuHeadTitle a:hover,
-td.bocListDataCellEven div td.dropDownMenuHeadTitle a:hover
+td.bocListDataCellOdd div span.DropDownMenuSelect a,
+td.bocListDataCellEven div span.DropDownMenuSelect a,
+td.bocListDataCellOdd div span.DropDownMenuSelect a:hover,
+td.bocListDataCellEven div span.DropDownMenuSelect a:hover
 {
   color: Blue;
   padding: 0;
-}
-
-/* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
-td.bocListDataCellOdd div td.dropDownMenuHeadButton a,
-td.bocListDataCellEven div td.dropDownMenuHeadButton a,
-td.bocListDataCellOdd div td.dropDownMenuHeadButton a:hover,
-td.bocListDataCellEven div td.dropDownMenuHeadButton a:hover
-{
-	padding: 0px;
-	border: none;
+  border: none;
   background-color: Transparent;
 }
 
-/* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
-td.bocListDataCellOdd div.DropDownMenuSelect a,
-td.bocListDataCellEven div.DropDownMenuSelect a,
-td.bocListDataCellOdd div.DropDownMenuSelect a:hover,
-td.bocListDataCellEven div.DropDownMenuSelect a:hover
-{
-  color: Blue;
-  padding: 0;
-}
 
-/* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
-td.bocListDataCellOdd div.DropDownMenuSelect a,
-td.bocListDataCellEven div.DropDownMenuSelect a,
-td.bocListDataCellOdd div.DropDownMenuSelect a:hover,
-td.bocListDataCellEven div.DropDownMenuSelect a:hover
-{
-  color: Blue;
-	padding: 0px;
-	border: none;
-  background-color: Transparent;
-}
-
-td.bocListDataCellOdd div.DropDownMenuSelect.disabled a,
-td.bocListDataCellEven div.DropDownMenuSelect.disabled a,
-td.bocListDataCellOdd div.DropDownMenuSelect.disabled a:hover,
-td.bocListDataCellEven div.DropDownMenuSelect.disabled a:hover
+td.bocListDataCellOdd span.DropDownMenuSelect.disabled a,
+td.bocListDataCellEven span.DropDownMenuSelect.disabled a,
+td.bocListDataCellOdd span.DropDownMenuSelect.disabled a:hover,
+td.bocListDataCellEven span.DropDownMenuSelect.disabled a:hover
 {
   color: Gray;
 	padding: 0px;
@@ -229,12 +208,14 @@ td.bocListDataCellEven div.DropDownMenuSelect.disabled a:hover
   background-color: Transparent;
 }
 
-td.bocListDataCellOdd div.DropDownMenuContainer ul a,
-td.bocListDataCellEven div.DropDownMenuContainer ul a,
-td.bocListDataCellOdd div.DropDownMenuContainer ul a:hover,
-td.bocListDataCellEven div.DropDownMenuContainer ul a:hover
+td.bocListDataCellOdd span.bocDateTimeValue a,
+td.bocListDataCellEven span.bocDateTimeValue a,
+td.bocListDataCellOdd span.bocDateTimeValue a:hover,
+td.bocListDataCellEven span.bocDateTimeValue a:hover
 {
-	padding: 0px;
+  padding: 0px;
+  border-style: none;
+  background-color: Transparent;
 }
 
 /*  Style applied to the text providing the sorting order's index. */

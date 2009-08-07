@@ -44,7 +44,7 @@ function WxePage_Context(
   {
     ArgumentUtility.CheckNotNull('refreshUrl', refreshUrl);
     _refreshUrl = refreshUrl;
-    _refreshTimer = window.setInterval(function() { WxePage_Context.Instance.Refresh(); }, refreshInterval);
+    _refreshTimer = window.setInterval(function() { WxePage_Context._instance.Refresh(); }, refreshInterval);
   };
 
   // The URL used to post the abort request to.

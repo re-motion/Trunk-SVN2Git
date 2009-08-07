@@ -29,9 +29,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
       return new BocBooleanValueRenderer (context, writer, control);
     }
 
+    public IBocBooleanValuePreRenderer CreatePreRenderer (IHttpContext context, IBocBooleanValue control)
+    {
+      return new BocBooleanValuePreRenderer (context, control);
+    }
+
     IBocCheckboxRenderer IBocCheckboxRendererFactory.CreateRenderer (IHttpContext context, HtmlTextWriter writer, IBocCheckBox control)
     {
       return new BocCheckboxRenderer (context, writer, control);
+    }
+
+    public IBocCheckboxPreRenderer CreatePreRenderer (IHttpContext context, IBocCheckBox control)
+    {
+      return new BocCheckboxPreRenderer (context, control);
     }
   }
 }

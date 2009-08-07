@@ -195,7 +195,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.RegisterHtmlHeadContents (httpContext, htmlHeadAppender);
 
       EnsureChildControls();
-      _textBoxStyle.RegisterJavaScriptInclude (this, httpContext, htmlHeadAppender);
     }
 
     /// <summary> Invokes the <see cref="LoadPostData"/> method. </summary>
