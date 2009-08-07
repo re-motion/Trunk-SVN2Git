@@ -18,16 +18,70 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Utilities;
+using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Utilities
 {
-  /// <summary> Utility class for client-side scripts. </summary>
-  public static class ScriptUtility
+  public interface IScriptUtility
   {
-    /// <summary> Escapes special characters (e.g. <c>\n</c>) in the passed string. </summary>
+    void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string elementID);
+  }
+
+  /// <summary> Utility class for client-side scripts. </summary>
+  public class ScriptUtility
+  {
+    protected ScriptUtility ()
+    {
+    }
+
+    public static IScriptUtility Instance
+    {
+      get { return ServiceLocator.Current.GetInstance<IScriptUtility>(); }
+    }
+
+    public abstract class ScriptUtilityBase : IScriptUtility
+    {
+      public void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string elementID)
+      {
+        ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+        ArgumentUtility.CheckNotNullOrEmpty ("elementID", elementID);
+
+        string key = typeof (ScriptUtility).FullName + "_StyleUtility";
+        string url = ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+
+        control.Page.ClientScript.RegisterStartupScriptBlock (
+            control,
+            typeof (Page),
+            "BorderSpans_" + elementID,
+            string.Format (
+                "StyleUtility.CreateBorderSpans (document.getElementById ('{0}'));", elementID));
+      }
+
+      protected abstract ResourceTheme ResourceTheme { get; }
+    }
+
+    public class ScriptUtilityQuirksMode : ScriptUtilityBase
+    {
+      protected override ResourceTheme ResourceTheme
+      {
+        get { return Web.ResourceTheme.Legacy; }
+      }
+    }
+
+    public class ScriptUtilityStandardMode : ScriptUtilityBase
+    {
+      protected override ResourceTheme ResourceTheme
+      {
+        get { return Web.ResourceTheme.Standard; }
+      }
+    }
+
+      /// <summary> Escapes special characters (e.g. <c>\n</c>) in the passed string. </summary>
     /// <param name="input"> The unescaped string. Must not be <see langword="null"/>. </param>
     /// <returns> The string with special characters escaped. </returns>
     /// <remarks>
@@ -158,22 +212,10 @@ namespace Remotion.Web.Utilities
       ScriptManager.RegisterStartupScript (control, typeof (Page), key, javascript, true);
     }
 
-    public static void RegisterElementForBorderSpans (IControl control, string elementID)
+    [Obsolete ("Use ScriptUtility.Instance.RegisterElementForBorderSpans", true)]
+    public static void RegisterElementForBorderSpans ()
     {
-      RegisterElementForBorderSpans (control, elementID, false);
-    }
-    
-    public static void RegisterElementForBorderSpans (IControl control, string elementID, bool borderSpansToOuterDiv)
-    {
-      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-      ArgumentUtility.CheckNotNullOrEmpty ("elementID", elementID);
-
-      control.Page.ClientScript.RegisterStartupScriptBlock (
-          control,
-          typeof (Page),
-          "BorderSpans_" + elementID,
-          string.Format (
-              "StyleUtility.CreateBorderSpans (document.getElementById ('{0}'), {1});", elementID, borderSpansToOuterDiv ? "true" : "false"));
+      throw new NotImplementedException ("Use ScriptUtility.Instance.RegisterElementForBorderSpans");
     }
 
     /// <summary>

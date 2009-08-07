@@ -116,7 +116,7 @@ namespace Remotion.Web.UI.Controls
       }
 
       if (!IsLegacyButtonEnabled)
-        ScriptUtility.RegisterElementForBorderSpans (this, ClientID, false);
+        ScriptUtility.Instance.RegisterElementForBorderSpans (HtmlHeadAppender.Current, this, ClientID);
     }
 
     protected override void AddAttributesToRender (HtmlTextWriter writer)

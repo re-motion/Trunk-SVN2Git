@@ -760,6 +760,7 @@
     <Content Include="Doc\include\Utilities\UrlUtility.xml" />
     <Content Include="Doc\WhatsNew_Remotion.Web.txt" />
     <Content Include="Res\HTML\ColorScheme_1_3_26.css" />
+    <Content Include="Res\HTML\Legacy\StyleUtility.js" />
     <Content Include="Res\HTML\Standard\DatePicker.css" />
     <Content Include="Res\HTML\Standard\DatePicker.js" />
     <Content Include="Res\HTML\FontSize080Quirks.css" />
@@ -786,6 +787,7 @@
     <Content Include="Res\HTML\Standard\DropDownMenu.js" />
     <Content Include="Res\HTML\Standard\SingleView.css" />
     <Content Include="Res\HTML\Standard\Style.css" />
+    <Content Include="Res\HTML\Standard\StyleUtility.js" />
     <Content Include="Res\HTML\Standard\TabbedMultiView.css" />
     <Content Include="Res\HTML\Standard\TabStrip.css" />
     <Content Include="Res\HTML\Standard\ViewLayout.js" />

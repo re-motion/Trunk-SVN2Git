@@ -2,6 +2,12 @@
 =======
 - WxePage
   * Bugfix: The Refresh-Time was not disposed during asynchronous postbacks. This resulted in an accumulation of refresh-requests.
+- ScriptUtility
+  * RegisterForBorderSpans is now part of the new IScriptUtility interface
+  * To use RegisterForBorderSpans, register ScriptUtility.ScriptUtilityStandardMode or ScriptUtility.ScriptUtilityQuirksMode with the service locator.
+    Example (Castle Windsor):  
+    container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility.ScriptUtilityStandardMode> ().LifeStyle.Singleton);
+  * An IScriptUtilty object can be obtained from ScriptUtility.Instance
 
 1.13.15
 =======
@@ -80,7 +86,7 @@
  
 1.7.59
 ======
-- Das Framework generiert die Border-Elemente nun via Javascript: ScriptUtility.RegisterElementForBorderSpans (page, elementID).
+- Das Framework generiert die Border-Elemente nun via Javascript: ScriptUtility.Instance.RegisterElementForBorderSpans (page, elementID).
   Der Entwickler muss ein Element mit ID sowie ein SubElement bereit stellen, in dem der Content steht. Die Border-Elemente werden 
   am Ende des Contents eingefügt.
   

@@ -36,9 +36,9 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      ScriptUtility.RegisterElementForBorderSpans (Control, Control.ActiveViewClientID, false);
-      ScriptUtility.RegisterElementForBorderSpans (Control, Control.TopControl.ClientID, false);
-      ScriptUtility.RegisterElementForBorderSpans (Control, Control.BottomControl.ClientID, false);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, Control.ActiveViewClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, Control.TopControl.ClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, Control.BottomControl.ClientID);
 
       string key = typeof (ITabbedMultiView).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))

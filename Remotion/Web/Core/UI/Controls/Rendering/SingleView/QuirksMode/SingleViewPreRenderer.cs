@@ -35,9 +35,9 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.QuirksMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      ScriptUtility.RegisterElementForBorderSpans (Control, Control.ClientID + "_View", false);
-      ScriptUtility.RegisterElementForBorderSpans (Control, Control.TopControl.ClientID, false);
-      ScriptUtility.RegisterElementForBorderSpans (Control, Control.BottomControl.ClientID, false);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, Control.ClientID + "_View");
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, Control.TopControl.ClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, Control.BottomControl.ClientID);
 
       string key = typeof (ISingleView).FullName + "_Style";
       if (!htmlHeadAppender.IsRegistered (key))
