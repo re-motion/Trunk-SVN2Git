@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       Assertion.DebugAssert (!ReflectionUtility.CanAscribe (typeof (BindableObjectWithIdentityBaseImplementation), typeof (Mixin<,>)),
           "we assume the mixin does not have a base object");
-      MixinTargetMockUtility.SignalOnDeserialization (this, _wrapper);
+      MixinTargetMockUtility.MockMixinTargetAfterDeserialization (this, _wrapper);
     }
 
     public string BaseDisplayName
