@@ -21,6 +21,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization.TestDomain;
+using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization

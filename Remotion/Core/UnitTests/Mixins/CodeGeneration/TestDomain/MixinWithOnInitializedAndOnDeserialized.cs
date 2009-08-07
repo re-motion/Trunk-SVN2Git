@@ -17,7 +17,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Mixins;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization.TestDomain
+namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
   [Serializable]
   public class MixinWithOnInitializedAndOnDeserialized : Mixin<object, object>

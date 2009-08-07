@@ -194,7 +194,7 @@
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TestDomain\SimpleMixin.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\AbstractMixinWithSerializationCallbacks.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TargetTypeWithSerializationCallbacks.cs" />
-    <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\MixinWithOnInitializedAndOnDeserialized.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\MixinWithOnInitializedAndOnDeserialized.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\NotSerializableClassWithISerializable.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\NotSerializableClass.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\Serialization\TestDomain\OverridableBaseType.cs" />
