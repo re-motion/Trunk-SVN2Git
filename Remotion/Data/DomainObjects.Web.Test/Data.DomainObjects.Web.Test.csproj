@@ -145,12 +145,14 @@
     <Compile Include="Domain\MixinForClassWithAllDataTypes1.cs" />
     <Compile Include="FirstControl.ascx.cs">
       <DependentUpon>FirstControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="FirstControl.ascx.designer.cs">
       <DependentUpon>FirstControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="ImmediatelyReturningPage.aspx.cs">
       <DependentUpon>ImmediatelyReturningPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ImmediatelyReturningPage.aspx.designer.cs">
       <DependentUpon>ImmediatelyReturningPage.aspx</DependentUpon>
@@ -192,6 +194,7 @@
     </Compile>
     <Compile Include="EditObject.aspx.cs">
       <DependentUpon>EditObject.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -199,12 +202,15 @@
     </Compile>
     <Compile Include="NewObject.aspx.cs">
       <DependentUpon>NewObject.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="SearchObject.aspx.cs">
       <DependentUpon>SearchObject.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="SecondControl.ascx.cs">
       <DependentUpon>SecondControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="SecondControl.ascx.designer.cs">
       <DependentUpon>SecondControl.ascx</DependentUpon>
@@ -214,6 +220,7 @@
     </Compile>
     <Compile Include="UndefinedEnumTest.aspx.cs">
       <DependentUpon>UndefinedEnumTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WxeFunctions\ShowSecondUserControlFunction.cs" />
     <Compile Include="WxeFunctions\WxeUserControlTestPageFunction.cs" />
@@ -243,9 +250,11 @@
     </Compile>
     <Compile Include="WxeTestPage.aspx.cs">
       <DependentUpon>WxeTestPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WxeUserControlTestPage.aspx.cs">
       <DependentUpon>WxeUserControlTestPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="WxeUserControlTestPage.aspx.designer.cs">
       <DependentUpon>WxeUserControlTestPage.aspx</DependentUpon>
