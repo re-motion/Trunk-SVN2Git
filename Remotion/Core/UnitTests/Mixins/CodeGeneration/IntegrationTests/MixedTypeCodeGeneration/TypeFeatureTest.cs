@@ -127,7 +127,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    public void MixedTypeAttributeCanBeUsedToGetClassContext ()
+    public void MixedTypeAttribute_GetsClassContext ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
@@ -136,12 +136,38 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    public void MixedTypeAttributeCanBeUsedToGetTargetClassDefinition ()
+    public void MixedTypeAttribute_GetsTargetClassDefinition ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
       TargetClassDefinition definition = attributes[0].GetTargetClassDefinition (TargetClassDefinitionCache.Current);
       Assert.AreSame (definition, TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)));
+    }
+
+    [Test]
+    public void MixedTypeAttribute_GetsOrderedMixinTypes ()
+    {
+      Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType7));
+      var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
+
+      // see MixinDependencySortTest.MixinDefinitionsAreSortedCorrectlySmall
+      Assert.That (attributes[0].OrderedMixinTypes, Is.EqualTo (new[] { 
+          typeof (BT7Mixin0), 
+          typeof (BT7Mixin2), 
+          typeof (BT7Mixin3), 
+          typeof (BT7Mixin1), 
+          typeof (BT7Mixin10), 
+          typeof (BT7Mixin9), 
+          typeof (BT7Mixin5) }));
+    }
+
+    [Test]
+    public void MixedTypeAttribute_GetsClosedGenericMixinTypes ()
+    {
+      Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
+      var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
+
+      Assert.That (attributes[0].OrderedMixinTypes, List.Contains (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
     }
 
     [Test]
@@ -250,6 +276,20 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       Type concreteType = CreateMixedType (typeof (BaseType1), typeof (BT1Mixin1));
       Assert.That (concreteType.GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static).Attributes, Is.EqualTo (FieldAttributes.Private | FieldAttributes.Static));
+    }
+
+    [Test]
+    public void IMixinTarget ()
+    {
+      var mixinTarget = (IMixinTarget) ObjectFactory.Create<BaseType1> (ParamList.Empty);
+
+      Assert.That (mixinTarget.Configuration, Is.Not.Null);
+      Assert.That (mixinTarget.Configuration, Is.SameAs (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1))));
+
+      object[] mixins = mixinTarget.Mixins;
+      Assert.That (mixins, Is.Not.Null);
+      Assert.That (mixins.Length, Is.EqualTo (mixinTarget.Configuration.Mixins.Count));
+      Assert.That (mixins[0], Is.InstanceOfType (mixinTarget.Configuration.Mixins[0].Type));
     }
   }
 }

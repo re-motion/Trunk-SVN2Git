@@ -13,25 +13,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using Remotion.Mixins.Context;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public static class ConcreteMixedTypeAttributeUtility
   {
-    private static readonly ConstructorInfo s_attributeCtor = typeof (ConcreteMixedTypeAttribute).GetConstructor (new[] {typeof (object[])});
+    private static readonly ConstructorInfo s_attributeCtor = 
+        typeof (ConcreteMixedTypeAttribute).GetConstructor (new[] {typeof (object[]), typeof (Type[])});
 
-    public static CustomAttributeBuilder CreateAttributeBuilder (ClassContext context)
+    public static CustomAttributeBuilder CreateAttributeBuilder (ClassContext context, IEnumerable<Type> orderedMixinTypes)
     {
       ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("orderedMixinTypes", orderedMixinTypes);
 
       Assertion.IsNotNull (s_attributeCtor);
 
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context);
-      var builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { attribute.Data });
+      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context, orderedMixinTypes.ToArray());
+      var builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { attribute.ClassContextData, attribute.OrderedMixinTypes });
       return builder;
     }
   }

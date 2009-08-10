@@ -14,11 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using Remotion.Collections;
 using Remotion.Globalization;
-using Remotion.Mixins.Definitions;
-using Remotion.Utilities;
 using System.Collections.Generic;
 
 namespace Remotion.Mixins.Globalization
@@ -54,17 +51,20 @@ namespace Remotion.Mixins.Globalization
 
     private void AddSupplementingAttributesFromMixins (Type type, ResourceDefinition<TAttribute> resourcesOnType)
     {
-      TargetClassDefinition mixinConfiguration = TargetClassDefinitionUtility.GetActiveConfiguration (type);
-      if (mixinConfiguration != null)
+      var classContext = TargetClassDefinitionUtility.GetContext (
+          type, 
+          MixinConfiguration.ActiveConfiguration, 
+          GenerationPolicy.GenerateOnlyIfConfigured);
+      if (classContext != null)
       {
-        foreach (MixinDefinition mixinDefinition in mixinConfiguration.Mixins)
-          AddSupplementingAttiributesFromMixin (mixinDefinition, resourcesOnType, true);
+        foreach (var mixinType in MixinTypeUtility.GetMixinTypesExact (type))
+          AddSupplementingAttributesFromMixin (mixinType, resourcesOnType);
       }
     }
 
-    private void AddSupplementingAttiributesFromMixin (MixinDefinition mixinDefinition, ResourceDefinition<TAttribute> resourcesOnType, bool isHierarchyIncluded)
+    private void AddSupplementingAttributesFromMixin (Type mixinType, ResourceDefinition<TAttribute> resourcesOnType)
     {
-      IEnumerable<ResourceDefinition<TAttribute>> resourcesOnMixin = GetResourceDefinitionStream (mixinDefinition.Type, isHierarchyIncluded);
+      IEnumerable<ResourceDefinition<TAttribute>> resourcesOnMixin = GetResourceDefinitionStream (mixinType, true);
       foreach (ResourceDefinition<TAttribute> resourceOnMixin in resourcesOnMixin)
         resourcesOnType.AddSupplementingAttributes (resourceOnMixin.GetAllAttributePairs());
     }

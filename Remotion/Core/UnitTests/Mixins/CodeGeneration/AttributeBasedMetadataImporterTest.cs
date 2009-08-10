@@ -97,8 +97,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var importer = new AttributeBasedMetadataImporter ();
 
       var typeMock = MockRepository.GenerateMock<_Type> ();
-      var attribute1 = ConcreteMixedTypeAttribute.FromClassContext (new ClassContext (typeof (object)));
-      var attribute2 = ConcreteMixedTypeAttribute.FromClassContext (new ClassContext (typeof (string)));
+      var attribute1 = ConcreteMixedTypeAttribute.FromClassContext (new ClassContext (typeof (object)), new Type[0]);
+      var attribute2 = ConcreteMixedTypeAttribute.FromClassContext (new ClassContext (typeof (string)), new Type[0]);
 
       typeMock.Expect (mock => mock.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false)).Return (new[] { attribute1, attribute2});
       typeMock.Replay ();

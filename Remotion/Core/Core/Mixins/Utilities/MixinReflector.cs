@@ -17,6 +17,7 @@ using System;
 using System.Reflection;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities
@@ -77,20 +78,38 @@ namespace Remotion.Mixins.Utilities
     }
 
     /// <summary>
-    /// Returns the <see cref="ClassContext"/> that was used as the mixin configuration when the given concrete mixed <paramref name="type"/>
+    /// Returns the <see cref="ClassContext"/> that was used as the mixin configuration when the given <paramref name="concreteMixedType"/>
     /// was created by the <see cref="TypeFactory"/>.
     /// </summary>
-    /// <param name="type">The type whose mixin configuration is to be retrieved.</param>
-    /// <returns>The <see cref="ClassContext"/> used when the given concrete mixed <paramref name="type"/> was created, or <see langword="null"/>
-    /// if <paramref name="type"/> is no mixed type.</returns>
-    public static ClassContext GetClassContextFromConcreteType (Type type)
+    /// <param name="concreteMixedType">The type whose mixin configuration is to be retrieved.</param>
+    /// <returns>The <see cref="ClassContext"/> used when the given <paramref name="concreteMixedType"/> was created, or <see langword="null"/>
+    /// if <paramref name="concreteMixedType"/> is no mixed type.</returns>
+    public static ClassContext GetClassContextFromConcreteType (Type concreteMixedType)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (type, true);
+      ArgumentUtility.CheckNotNull ("concreteMixedType", concreteMixedType);
+      
+      var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (concreteMixedType, true);
       if (attribute == null)
         return null;
       else
         return attribute.GetClassContext ();
+    }
+
+    /// <summary>
+    /// Returns the types of the mixins that were used to generate <paramref name="concreteMixedType"/>. The mixins are ordered and open generic 
+    /// mixins are closed exactly as used by the code generation (and as defined by <see cref="TargetClassDefinition.Mixins"/>.
+    /// </summary>
+    /// <param name="concreteMixedType">The concrete mixed type whose mixins should be retrieved.</param>
+    /// <returns>An ordered array of mixin types that directly corresponds to the mixins held by instances of the mixed type.</returns>
+    public static Type[] GetOrderedMixinTypesFromConcreteType (Type concreteMixedType)
+    {
+      ArgumentUtility.CheckNotNull ("concreteMixedType", concreteMixedType);
+
+      var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (concreteMixedType, true);
+      if (attribute == null)
+        return null;
+      else
+        return attribute.OrderedMixinTypes;
     }
   }
 }

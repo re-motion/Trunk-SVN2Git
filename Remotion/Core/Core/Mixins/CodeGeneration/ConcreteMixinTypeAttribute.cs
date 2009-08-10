@@ -36,14 +36,14 @@ namespace Remotion.Mixins.CodeGeneration
     }
 
     private readonly int _mixinIndex;
-    private readonly object[] _data;
+    private readonly object[] _classContextData;
 
-    public ConcreteMixinTypeAttribute (int mixinIndex, object[] data)
+    public ConcreteMixinTypeAttribute (int mixinIndex, object[] classContextData)
     {
-      ArgumentUtility.CheckNotNull ("data", data);
+      ArgumentUtility.CheckNotNull ("classContextData", classContextData);
 
       _mixinIndex = mixinIndex;
-      _data = data;
+      _classContextData = classContextData;
     }
 
     public int MixinIndex
@@ -51,15 +51,17 @@ namespace Remotion.Mixins.CodeGeneration
       get { return _mixinIndex; }
     }
 
-    public object[] Data
+    public object[] ClassContextData
     {
-      get { return _data; }
+      get { return _classContextData; }
     }
 
     public MixinDefinition GetMixinDefinition (ITargetClassDefinitionCache targetClassDefinitionCache)
     {
-      var respectiveMixedTypeAttribute = new ConcreteMixedTypeAttribute (Data);
-      return respectiveMixedTypeAttribute.GetTargetClassDefinition (targetClassDefinitionCache).Mixins[MixinIndex];
+      var deserializer = new AttributeClassContextDeserializer (ClassContextData);
+      var classContext = ClassContext.Deserialize (deserializer);
+
+      return targetClassDefinitionCache.GetTargetClassDefinition (classContext).Mixins[MixinIndex];
     }
   }
 }

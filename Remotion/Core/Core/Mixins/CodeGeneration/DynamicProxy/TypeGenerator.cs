@@ -29,6 +29,7 @@ using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Text;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
+using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
@@ -510,7 +511,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddMixedTypeAttribute ()
     {
-      CustomAttributeBuilder attributeBuilder = ConcreteMixedTypeAttributeUtility.CreateAttributeBuilder (Configuration.ConfigurationContext);
+      var orderedMixinTypes = Configuration.Mixins.Select (m => m.Type);
+      CustomAttributeBuilder attributeBuilder = ConcreteMixedTypeAttributeUtility.CreateAttributeBuilder (
+          Configuration.ConfigurationContext, 
+          orderedMixinTypes);
+
       Emitter.AddCustomAttribute (attributeBuilder);
     }
 

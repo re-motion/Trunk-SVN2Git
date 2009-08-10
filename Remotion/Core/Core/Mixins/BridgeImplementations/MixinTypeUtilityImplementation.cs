@@ -21,6 +21,7 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Utilities.ReflectionUtility;
+using System.Linq;
 
 namespace Remotion.Mixins.BridgeImplementations
 {
@@ -40,55 +41,55 @@ namespace Remotion.Mixins.BridgeImplementations
               || typeof (IGeneratedBaseCallProxyType).IsAssignableFrom (type);
     }
 
-    public Type GetConcreteMixedType (Type baseType)
+    public Type GetConcreteMixedType (Type targetOrConcreteType)
     {
-      ArgumentUtility.CheckNotNull ("baseType", baseType);
-      if (IsGeneratedConcreteMixedType (baseType))
-        return baseType;
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
+      if (IsGeneratedConcreteMixedType (targetOrConcreteType))
+        return targetOrConcreteType;
       else
-        return TypeFactory.GetConcreteType (baseType, GenerationPolicy.GenerateOnlyIfConfigured);
+        return TypeFactory.GetConcreteType (targetOrConcreteType, GenerationPolicy.GenerateOnlyIfConfigured);
     }
 
-    public Type GetUnderlyingTargetType (Type type)
+    public Type GetUnderlyingTargetType (Type targetOrConcreteType)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
-      if (IsGeneratedConcreteMixedType (type))
-        return MixinReflector.GetClassContextFromConcreteType (type).Type;
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
+      if (IsGeneratedConcreteMixedType (targetOrConcreteType))
+        return MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType).Type;
       else
-        return type;
+        return targetOrConcreteType;
     }
 
-    public bool IsAssignableFrom (Type baseOrInterface, Type typeToAssign)
+    public bool IsAssignableFrom (Type baseOrInterface, Type targetOrConcreteType)
     {
       ArgumentUtility.CheckNotNull ("baseOrInterface", baseOrInterface);
-      ArgumentUtility.CheckNotNull ("typeToAssign", typeToAssign);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 
-      return baseOrInterface.IsAssignableFrom (GetConcreteMixedType (typeToAssign));
+      return baseOrInterface.IsAssignableFrom (GetConcreteMixedType (targetOrConcreteType));
     }
 
-    public bool HasMixins (Type type)
+    public bool HasMixins (Type targetOrConcreteType)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 
-      ClassContext classContext = GetConcreteClassContext(type);
+      ClassContext classContext = GetConcreteClassContext(targetOrConcreteType);
       return classContext != null && classContext.Mixins.Count > 0;
     }
 
-    public bool HasMixin (Type typeToCheck, Type mixinType)
+    public bool HasMixin (Type targetOrConcreteType, Type mixinType)
     {
-      ArgumentUtility.CheckNotNull ("typeToCheck", typeToCheck);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
-      ClassContext classContext = GetConcreteClassContext (typeToCheck);
+      ClassContext classContext = GetConcreteClassContext (targetOrConcreteType);
       return classContext != null && classContext.Mixins.ContainsKey (mixinType);
     }
 
-    public Type GetAscribableMixinType (Type typeToCheck, Type mixinType)
+    public Type GetAscribableMixinType (Type targetOrConcreteType, Type mixinType)
     {
-      ArgumentUtility.CheckNotNull ("typeToCheck", typeToCheck);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
-      foreach (Type configuredMixinType in GetMixinTypes (typeToCheck))
+      foreach (Type configuredMixinType in GetMixinTypes (targetOrConcreteType))
       {
         if (ReflectionUtility.CanAscribe (configuredMixinType, mixinType))
           return configuredMixinType;
@@ -96,24 +97,24 @@ namespace Remotion.Mixins.BridgeImplementations
       return null;
     }
 
-    public bool HasAscribableMixin (Type typeToCheck, Type mixinType)
+    public bool HasAscribableMixin (Type targetOrConcreteType, Type mixinType)
     {
-      return GetAscribableMixinType (typeToCheck, mixinType) != null;
+      return GetAscribableMixinType (targetOrConcreteType, mixinType) != null;
     }
 
-    private ClassContext GetConcreteClassContext (Type type)
+    private ClassContext GetConcreteClassContext (Type targetOrConcreteType)
     {
-      if (IsGeneratedConcreteMixedType (type))
-        return MixinReflector.GetClassContextFromConcreteType (type);
+      if (IsGeneratedConcreteMixedType (targetOrConcreteType))
+        return MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType);
       else
-        return MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (type);
+        return MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (targetOrConcreteType);
     }
 
-    public IEnumerable<Type> GetMixinTypes (Type type)
+    public IEnumerable<Type> GetMixinTypes (Type targetOrConcreteType)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 
-      ClassContext classContext = GetConcreteClassContext (type);
+      ClassContext classContext = GetConcreteClassContext (targetOrConcreteType);
       if (classContext != null)
       {
         foreach (MixinContext mixinContext in classContext.Mixins)
@@ -121,12 +122,21 @@ namespace Remotion.Mixins.BridgeImplementations
       }
     }
 
-    public object CreateInstance (Type type, params object[] args)
+    public Type[] GetMixinTypesExact (Type targetOrConcreteType)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
+
+      var concreteType = GetConcreteMixedType (targetOrConcreteType);
+      var types = MixinReflector.GetOrderedMixinTypesFromConcreteType (concreteType);
+      return types ?? Type.EmptyTypes;
+    }
+
+    public object CreateInstance (Type targetOrConcreteType, params object[] args)
+    {
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
       ArgumentUtility.CheckNotNull ("args", args);
 
-      return Activator.CreateInstance (GetConcreteMixedType (type), args);
+      return Activator.CreateInstance (GetConcreteMixedType (targetOrConcreteType), args);
     }
   }
 }

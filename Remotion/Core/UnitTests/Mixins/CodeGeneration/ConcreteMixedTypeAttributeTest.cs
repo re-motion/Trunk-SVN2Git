@@ -51,9 +51,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void FromClassContextSimple ()
     {
       var simpleContext = new ClassContext (typeof (object), typeof (string));
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (simpleContext);
+      ConcreteMixedTypeAttribute attribute = CreateAttribute (simpleContext);
 
-      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      var deserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
       Assert.That (ClassContext.Deserialize (deserializer), Is.EqualTo (simpleContext));
     }
 
@@ -66,9 +66,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           .AddMixin (typeof (double)).WithDependency (typeof (int))
           .BuildClassContext();
 
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context);
+      ConcreteMixedTypeAttribute attribute = CreateAttribute (context);
 
-      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      var deserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
       Assert.That (ClassContext.Deserialize (deserializer), Is.EqualTo (context));
     }
 
@@ -81,8 +81,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           .AddMixin (typeof (double)).OfKind (MixinKind.Used)
           .BuildClassContext ();
 
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context);
-      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      ConcreteMixedTypeAttribute attribute = CreateAttribute (context);
+      var deserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
       Assert.That (ClassContext.Deserialize (deserializer), Is.EqualTo (context));
     }
 
@@ -90,7 +90,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void GetClassContextSimple ()
     {
       ClassContext simpleContext = new ClassContext (typeof (object), typeof (string));
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (simpleContext);
+      ConcreteMixedTypeAttribute attribute = CreateAttribute (simpleContext);
       ClassContext regeneratedContext = attribute.GetClassContext();
 
       Assert.AreEqual (regeneratedContext, simpleContext);
@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           .AddMixin (typeof (string)).WithDependency (typeof (bool))
           .BuildClassContext();
 
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context);
+      ConcreteMixedTypeAttribute attribute = CreateAttribute (context);
       ClassContext regeneratedContext = attribute.GetClassContext ();
 
       Assert.AreEqual (regeneratedContext, context);
@@ -122,7 +122,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           .AddMixin (typeof (double)).OfKind (MixinKind.Used)
           .BuildClassContext ();
 
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context);
+      ConcreteMixedTypeAttribute attribute = CreateAttribute (context);
       ClassContext regeneratedContext = attribute.GetClassContext ();
       Assert.That (regeneratedContext.Mixins[typeof (string)].MixinKind, Is.EqualTo (MixinKind.Extending));
       Assert.That (regeneratedContext.Mixins[typeof (double)].MixinKind, Is.EqualTo (MixinKind.Used));
@@ -137,7 +137,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           .AddMixin (typeof (int)).OfKind (MixinKind.Extending)
           .BuildClassContext ();
 
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context);
+      ConcreteMixedTypeAttribute attribute = CreateAttribute (context);
       ClassContext regeneratedContext = attribute.GetClassContext ();
 
       Assert.AreEqual (3, regeneratedContext.Mixins.Count);
@@ -153,7 +153,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (BaseType3));
       TargetClassDefinition referenceDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (context);
 
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context);
+      ConcreteMixedTypeAttribute attribute = CreateAttribute (context);
       TargetClassDefinition definition = attribute.GetTargetClassDefinition (TargetClassDefinitionCache.Current);
       Assert.AreSame (referenceDefinition, definition);
     }
@@ -163,7 +163,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       ClassContext context = new ClassContext (typeof (List<>)).SpecializeWithTypeArguments (new[] {typeof (int)});
       Assert.AreEqual (typeof (List<int>), context.Type);
-      ConcreteMixedTypeAttribute attribute = ConcreteMixedTypeAttribute.FromClassContext (context);
+      ConcreteMixedTypeAttribute attribute = CreateAttribute (context);
       ClassContext context2 = attribute.GetClassContext ();
       Assert.AreEqual (typeof (List<int>), context2.Type);
 
@@ -175,10 +175,15 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void Roundtrip_WithPublicVisibility_IntegrationTest ()
     {
       var classContext = new ClassContext (typeof (BaseType1), new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public));
-      var attribute = ConcreteMixedTypeAttribute.FromClassContext (classContext);
+      var attribute = CreateAttribute (classContext);
       var classContext2 = attribute.GetClassContext ();
 
       Assert.That (classContext2, Is.EqualTo (classContext));
+    }
+
+    private ConcreteMixedTypeAttribute CreateAttribute (ClassContext context)
+    {
+      return ConcreteMixedTypeAttribute.FromClassContext (context, context.Mixins.Select (m => m.MixinType).ToArray());
     }
   }
 }

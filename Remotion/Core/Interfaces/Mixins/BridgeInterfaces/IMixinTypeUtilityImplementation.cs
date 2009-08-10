@@ -24,14 +24,15 @@ namespace Remotion.Mixins.BridgeInterfaces
   {
     bool IsGeneratedConcreteMixedType (Type type);
     bool IsGeneratedByMixinEngine (Type type);
-    Type GetConcreteMixedType (Type baseType);
-    Type GetUnderlyingTargetType (Type type);
-    bool IsAssignableFrom (Type baseOrInterface, Type typeToAssign);
-    bool HasMixins (Type type);
-    bool HasMixin (Type typeToCheck, Type mixinType);
-    Type GetAscribableMixinType (Type typeToCheck, Type mixinType);
-    bool HasAscribableMixin (Type typeToCheck, Type mixinType);
-    IEnumerable<Type> GetMixinTypes (Type type);
-    object CreateInstance (Type type, params object[] args);
+    Type GetConcreteMixedType (Type targetOrConcreteType);
+    Type GetUnderlyingTargetType (Type targetOrConcreteType);
+    bool IsAssignableFrom (Type baseOrInterface, Type targetOrConcreteType);
+    bool HasMixins (Type targetOrConcreteType);
+    bool HasMixin (Type targetOrConcreteType, Type mixinType);
+    Type GetAscribableMixinType (Type targetOrConcreteType, Type mixinType);
+    bool HasAscribableMixin (Type targetOrConcreteType, Type mixinType);
+    IEnumerable<Type> GetMixinTypes (Type targetOrConcreteType);
+    Type[] GetMixinTypesExact (Type targetOrConcreteType);
+    object CreateInstance (Type targetOrConcreteType, params object[] args);
   }
 }

@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (7, simpleContext);
 
       Assert.That (attribute.MixinIndex, Is.EqualTo (7));
-      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      var deserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
       Assert.That (ClassContext.Deserialize (deserializer), Is.EqualTo (simpleContext));
     }
 
@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (5, context);
 
       Assert.That (attribute.MixinIndex, Is.EqualTo (5));
-      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      var deserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
       Assert.That (ClassContext.Deserialize (deserializer), Is.EqualTo (context));
     }
 
@@ -84,7 +84,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (5, context);
 
       Assert.That (attribute.MixinIndex, Is.EqualTo (5));
-      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      var deserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
       Assert.That (ClassContext.Deserialize (deserializer), Is.EqualTo (context));
     }
 

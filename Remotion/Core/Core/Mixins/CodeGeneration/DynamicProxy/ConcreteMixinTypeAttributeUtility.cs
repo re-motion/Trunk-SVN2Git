@@ -30,7 +30,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Assertion.IsNotNull (s_attributeCtor);
 
       ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (mixinIndex, context);
-      var builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { attribute.MixinIndex, attribute.Data });
+      var builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { attribute.MixinIndex, attribute.ClassContextData });
       return builder;
     }
   }

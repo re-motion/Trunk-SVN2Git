@@ -56,7 +56,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void IsGeneratedConcreteMixedType_OnGeneratedMixinType ()
     {
-      ClassOverridingMixinMembers mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty);
+      var mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty);
       Type mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance).GetType();
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (mixinType), Is.False);
     }
@@ -88,7 +88,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void IsIsGeneratedByMixinEngine_OnGeneratedMixinType ()
     {
-      ClassOverridingMixinMembers mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty);
+      var mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty);
       Type mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance).GetType ();
       Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (mixinType), Is.True);
     }
@@ -285,10 +285,6 @@ namespace Remotion.UnitTests.Mixins
       Assert.That (MixinTypeUtility.GetAscribableMixinType (typeof (int), typeof (List<int>)), Is.Null);
     }
 
-    public class GenericMixin<T>
-    {
-    }
-
     [Test]
     public void GetAscribableMixinTypeOnMixedTypes ()
     {
@@ -388,7 +384,7 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    public void GetMixinTypesOnUnmixedTypes ()
+    public void GetMixinTypes_OnUnmixedTypes ()
     {
       Assert.That (new List<Type> (MixinTypeUtility.GetMixinTypes (typeof (object))), Is.EquivalentTo (new Type[0]));
       Assert.That (new List<Type> (MixinTypeUtility.GetMixinTypes (typeof (int))), Is.EquivalentTo (new Type[0]));
@@ -396,17 +392,59 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    public void GetMixinTypesOnMixedTypes ()
+    public void GetMixinTypes_OnMixedTypes ()
     {
       Assert.That (new List<Type> (MixinTypeUtility.GetMixinTypes (typeof (BaseType1))),
-          Is.EquivalentTo (new Type[] { typeof (BT1Mixin1), typeof (BT1Mixin2) }));
+          Is.EquivalentTo (new[] { typeof (BT1Mixin1), typeof (BT1Mixin2) }));
     }
 
     [Test]
-    public void GetMixinTypesOnGeneratedTypes ()
+    public void GetMixinTypes_OnGeneratedTypes ()
     {
       Assert.That (new List<Type> (MixinTypeUtility.GetMixinTypes (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1)))),
-          Is.EquivalentTo (new Type[] { typeof (BT1Mixin1), typeof (BT1Mixin2) }));
+          Is.EquivalentTo (new[] { typeof (BT1Mixin1), typeof (BT1Mixin2) }));
+    }
+
+    [Test]
+    public void GetMixinTypesExact_OnUnmixedTypes ()
+    {
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (object)), Is.EquivalentTo (new Type[0]));
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (int)), Is.EquivalentTo (new Type[0]));
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (List<int>)), Is.EquivalentTo (new Type[0]));
+    }
+
+    [Test]
+    public void GetMixinTypesExact_OnMixedTypes ()
+    {
+      // see MixinDependencySortTest.MixinDefinitionsAreSortedCorrectlySmall
+
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType7)), Is.EqualTo (new[] { 
+          typeof (BT7Mixin0), 
+          typeof (BT7Mixin2), 
+          typeof (BT7Mixin3), 
+          typeof (BT7Mixin1), 
+          typeof (BT7Mixin10), 
+          typeof (BT7Mixin9), 
+          typeof (BT7Mixin5) }));
+
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType3)), List.Contains (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
+    }
+
+    [Test]
+    public void GetMixinTypesExact_OnGeneratedTypes ()
+    {
+      // see MixinDependencySortTest.MixinDefinitionsAreSortedCorrectlySmall
+
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType7))), Is.EqualTo (new[] { 
+          typeof (BT7Mixin0), 
+          typeof (BT7Mixin2), 
+          typeof (BT7Mixin3), 
+          typeof (BT7Mixin1), 
+          typeof (BT7Mixin10), 
+          typeof (BT7Mixin9), 
+          typeof (BT7Mixin5) }));
+
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType3))), List.Contains (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
     }
 
     [Test]
@@ -433,7 +471,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void CreateInstanceWithCtorArgs ()
     {
-      List<int> instance = (List<int>) MixinTypeUtility.CreateInstance (typeof (List<int>), 51);
+      var instance = (List<int>) MixinTypeUtility.CreateInstance (typeof (List<int>), 51);
       Assert.That (instance.Capacity, Is.EqualTo (51));
     }
 
@@ -459,33 +497,9 @@ namespace Remotion.UnitTests.Mixins
     public void GetUnderlyingTargetTypeOnDerivedConcreteType ()
     {
       Type concreteType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1));
-      CustomClassEmitter customClassEmitter = new CustomClassEmitter (new ModuleScope (false), "Test", concreteType);
+      var customClassEmitter = new CustomClassEmitter (new ModuleScope (false), "Test", concreteType);
       Type derivedType = customClassEmitter.BuildType();
       Assert.That (MixinTypeUtility.GetUnderlyingTargetType (derivedType), Is.SameAs (typeof (BaseType1)));
-    }
-
-    [Test]
-    public void GetMixinConfigurationFromConcreteType ()
-    {
-      Type bt1Type = TypeFactory.GetConcreteType (typeof (BaseType1));
-      Assert.That (
-                  MixinReflector.GetClassContextFromConcreteType (bt1Type), Is.EqualTo (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).ConfigurationContext));
-    }
-
-    [Test]
-    public void GetMixinConfigurationFromConcreteTypeNullWhenNoMixedType ()
-    {
-      Assert.That (MixinReflector.GetClassContextFromConcreteType (typeof (object)), Is.Null);
-    }
-
-    [Test]
-    public void GetMixinConfigurationFromDerivedConcreteType ()
-    {
-      Type concreteType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1));
-      CustomClassEmitter customClassEmitter = new CustomClassEmitter (new ModuleScope (false), "Test", concreteType);
-      Type derivedType = customClassEmitter.BuildType ();
-      Assert.That (
-                  MixinReflector.GetClassContextFromConcreteType (derivedType), Is.EqualTo (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).ConfigurationContext));
     }
 
     private Type CreateMixedType (Type baseType, params Type[] types)
@@ -494,6 +508,10 @@ namespace Remotion.UnitTests.Mixins
       {
         return TypeFactory.GetConcreteType (baseType);
       }
+    }
+
+    public class GenericMixin<T>
+    {
     }
   }
 }

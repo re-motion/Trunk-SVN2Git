@@ -24,6 +24,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
@@ -32,6 +33,7 @@ using Remotion.Utilities;
 using Rhino.Mocks;
 using Remotion.Context;
 using System.Linq;
+using Remotion.Mixins.Context;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -518,14 +520,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     private MixinConfiguration SetupMixinConfigurationForLoadedType (Type loadedType)
     {
+      object[] classContextData;
       var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (loadedType, false);
-      if (attribute == null)
+      if (attribute != null)
+      {
+        classContextData = attribute.ClassContextData;
+      }
+      else
       {
         var mixinAttribute = AttributeUtility.GetCustomAttribute<ConcreteMixinTypeAttribute> (loadedType, false);
-        attribute = new ConcreteMixedTypeAttribute (mixinAttribute.Data);
+        classContextData = mixinAttribute.ClassContextData;
       }
 
-      var classContext = attribute.GetClassContext();
+      var classContext = ClassContext.Deserialize (new AttributeClassContextDeserializer (classContextData));
       var mixinConfiguration = new MixinConfiguration();
       mixinConfiguration.ClassContexts.Add (classContext);
       return mixinConfiguration;

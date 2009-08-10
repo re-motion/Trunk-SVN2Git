@@ -45,7 +45,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       Type type = typeBuilder.CreateType ();
       
       var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixinTypeAttribute> (type, false);
-      var deserializer = new AttributeClassContextDeserializer (attribute.Data);
+      var deserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
       var regeneratedContext = ClassContext.Deserialize (deserializer);
 
       Assert.That (regeneratedContext, Is.EqualTo (context));

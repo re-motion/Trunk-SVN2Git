@@ -15,14 +15,11 @@
 // 
 using System;
 using System.Reflection.Emit;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
 
@@ -34,18 +31,22 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void CreateAttributeBuilder ()
     {
-      ClassContext context = new ClassContextBuilder (typeof (int))
+      var context = new ClassContextBuilder (typeof (int))
           .AddCompleteInterface (typeof (uint))
           .AddMixin (typeof (double)).OfKind (MixinKind.Used)
           .AddMixin (typeof (string)).WithDependency (typeof (bool)).OfKind (MixinKind.Extending)
           .BuildClassContext ();
+      var orderedMixinTypes = new[] { typeof (string), typeof (double) };
 
-      CustomAttributeBuilder builder = ConcreteMixedTypeAttributeUtility.CreateAttributeBuilder (context);
+      CustomAttributeBuilder builder = ConcreteMixedTypeAttributeUtility.CreateAttributeBuilder (context, orderedMixinTypes);
+      
       TypeBuilder typeBuilder = ((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.ObtainDynamicModuleWithWeakName ().DefineType ("Test_ConcreteMixedTypeAttribute");
       typeBuilder.SetCustomAttribute (builder);
       Type type = typeBuilder.CreateType ();
-      ConcreteMixedTypeAttribute attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (type, false);
+      var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (type, false);
+
       Assert.That (attribute.GetClassContext (), Is.EqualTo (context));
+      Assert.That (attribute.OrderedMixinTypes, Is.EqualTo (orderedMixinTypes));
     }
   }
 }

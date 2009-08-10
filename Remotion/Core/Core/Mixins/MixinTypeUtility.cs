@@ -51,60 +51,60 @@ namespace Remotion.Mixins
     }
 
     /// <summary>
-    /// Gets the concrete type for a given <paramref name="baseType"/> which contains all mixins currently configured for the type.
+    /// Gets the concrete type for a given <paramref name="targetOrConcreteType"/> which contains all mixins currently configured for the type.
     /// </summary>
-    /// <param name="baseType">The base type for which to retrieve a concrete type.</param>
-    /// <returns>The <paramref name="baseType"/> itself if there are no mixins configured for the type or if the type itself is a generated type;
-    /// otherwise, a generated type containing all the mixins currently configured for <paramref name="baseType"/>.</returns>
-    public static Type GetConcreteMixedType (Type baseType)
+    /// <param name="targetOrConcreteType">The base type for which to retrieve a concrete type, or a concrete type.</param>
+    /// <returns>The <paramref name="targetOrConcreteType"/> itself if there are no mixins configured for the type or if the type itself is a generated type;
+    /// otherwise, a generated type containing all the mixins currently configured for <paramref name="targetOrConcreteType"/>.</returns>
+    public static Type GetConcreteMixedType (Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetConcreteMixedType (baseType);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetConcreteMixedType (targetOrConcreteType);
     }
 
     /// <summary>
-    /// Gets the underlying target type for a given <paramref name="type"/>.
+    /// Gets the underlying target type for a given <paramref name="targetOrConcreteType"/>.
     /// </summary>
-    /// <param name="type">The type to get the underlying target type for.</param>
-    /// <returns>The <paramref name="type"/> itself if it is not a generated type; otherwise, the type that was used as a target type when the
-    /// given <paramref name="type"/> was generated.</returns>
-    public static Type GetUnderlyingTargetType (Type type)
+    /// <param name="targetOrConcreteType">The type to get the underlying target type for.</param>
+    /// <returns>The <paramref name="targetOrConcreteType"/> itself if it is not a generated type; otherwise, the type that was used as a target type when the
+    /// given <paramref name="targetOrConcreteType"/> was generated.</returns>
+    public static Type GetUnderlyingTargetType (Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetUnderlyingTargetType (type);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetUnderlyingTargetType (targetOrConcreteType);
     }
 
     /// <summary>
-    /// Determines whether the given <paramref name="typeToAssign"/> would be assignable to <paramref name="baseOrInterface"/> after all mixins
+    /// Determines whether the given <paramref name="targetOrConcreteType"/> would be assignable to <paramref name="baseOrInterface"/> after all mixins
     /// currently configured for the type have been taken into account.
     /// </summary>
     /// <param name="baseOrInterface">The base or interface to assign to.</param>
-    /// <param name="typeToAssign">The type to check for assignment compatibility to <paramref name="baseOrInterface"/>. This must not be a generic
+    /// <param name="targetOrConcreteType">The type to check for assignment compatibility to <paramref name="baseOrInterface"/>. This must not be a generic
     /// type definition.</param>
     /// <returns>
-    /// True if the type returned by <see cref="GetConcreteMixedType"/> for <paramref name="typeToAssign"/> is the same as, derived from, or an
+    /// True if the type returned by <see cref="GetConcreteMixedType"/> for <paramref name="targetOrConcreteType"/> is the same as, derived from, or an
     /// implementation of <paramref name="baseOrInterface"/>; otherwise, false.
     /// </returns>
-    public static bool IsAssignableFrom (Type baseOrInterface, Type typeToAssign)
+    public static bool IsAssignableFrom (Type baseOrInterface, Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.IsAssignableFrom (baseOrInterface, typeToAssign);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.IsAssignableFrom (baseOrInterface, targetOrConcreteType);
     }
 
     /// <summary>
-    /// Determines whether the specified <paramref name="type"/> is associated with any mixins.
+    /// Determines whether the specified <paramref name="targetOrConcreteType"/> is associated with any mixins.
     /// </summary>
-    /// <param name="type">The type to check for mixins.</param>
+    /// <param name="targetOrConcreteType">The type to check for mixins.</param>
     /// <returns>
-    /// True if the specified type is a generated type containing any mixins or a base type for which there are mixins currently configured;
+    /// True if the specified type is a generated type containing any mixins or a target type for which there are mixins currently configured;
     /// otherwise, false.
     /// </returns>
-    public static bool HasMixins (Type type)
+    public static bool HasMixins (Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasMixins (type);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasMixins (targetOrConcreteType);
     }
 
     /// <summary>
-    /// Determines whether the specified <paramref name="typeToCheck"/> is associated with a mixin of the given <paramref name="mixinType"/>.
+    /// Determines whether the specified <paramref name="targetOrConcreteType"/> is associated with a mixin of the given <paramref name="mixinType"/>.
     /// </summary>
-    /// <param name="typeToCheck">The type to check.</param>
+    /// <param name="targetOrConcreteType">The type to check.</param>
     /// <param name="mixinType">The mixin type to check for.</param>
     /// <returns>
     /// True if the specified type is a generated type containing a mixin of the given <paramref name="mixinType"/> or a base type currently
@@ -112,50 +112,71 @@ namespace Remotion.Mixins
     /// </returns>
     /// <remarks>This method checks for the exact mixin type, it does not take assignability or generic type instantiations into account. If the
     /// check should be broadened to include these properties, <see cref="GetAscribableMixinType"/> should be used.</remarks>
-    public static bool HasMixin (Type typeToCheck, Type mixinType)
+    public static bool HasMixin (Type targetOrConcreteType, Type mixinType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasMixin (typeToCheck, mixinType);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasMixin (targetOrConcreteType, mixinType);
     }
 
     /// <summary>
-    /// Determines whether the specified <paramref name="typeToCheck"/> is associated with a mixin that can be ascribed to the given
+    /// Determines whether the specified <paramref name="targetOrConcreteType"/> is associated with a mixin that can be ascribed to the given
     /// <paramref name="mixinType"/> and returns the respective mixin type.
     /// </summary>
-    /// <param name="typeToCheck">The type to check.</param>
+    /// <param name="targetOrConcreteType">The type to check.</param>
     /// <param name="mixinType">The mixin type to check for.</param>
     /// <returns>
     /// The exact mixin type if the specified type is a generated type containing a mixin that can be ascribed to <paramref name="mixinType"/> or a
     /// base type currently configured with such a mixin; otherwise <see langword="null"/>.
     /// </returns>
-    public static Type GetAscribableMixinType (Type typeToCheck, Type mixinType)
+    public static Type GetAscribableMixinType (Type targetOrConcreteType, Type mixinType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetAscribableMixinType (typeToCheck, mixinType);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetAscribableMixinType (targetOrConcreteType, mixinType);
     }
 
     /// <summary>
-    /// Determines whether the specified <paramref name="typeToCheck"/> is associated with a mixin that can be ascribed to the given
+    /// Determines whether the specified <paramref name="targetOrConcreteType"/> is associated with a mixin that can be ascribed to the given
     /// <paramref name="mixinType"/>.
     /// </summary>
-    /// <param name="typeToCheck">The type to check.</param>
+    /// <param name="targetOrConcreteType">The type to check.</param>
     /// <param name="mixinType">The mixin type to check for.</param>
     /// <returns>
     /// True, if the specified type is a generated type containing a mixin that can be ascribed to <paramref name="mixinType"/> or a
     /// base type currently configured with such a mixin; otherwise false.
     /// </returns>
-    public static bool HasAscribableMixin (Type typeToCheck, Type mixinType)
+    public static bool HasAscribableMixin (Type targetOrConcreteType, Type mixinType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasAscribableMixin (typeToCheck, mixinType);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.HasAscribableMixin (targetOrConcreteType, mixinType);
     }
 
     /// <summary>
-    /// Gets the mixin types associated with the given <paramref name="type"/>.
+    /// Gets the mixin types associated with the given <paramref name="targetOrConcreteType"/>.
     /// </summary>
-    /// <param name="type">The type to check for mixin types.</param>
-    /// <returns>The mixins included in <paramref name="type"/> if it is a generated type; otherwise the mixins currently configured for
-    /// <paramref name="type"/>.</returns>
-    public static IEnumerable<Type> GetMixinTypes (Type type)
+    /// <param name="targetOrConcreteType">The type to check for mixin types.</param>
+    /// <returns>The mixins included in <paramref name="targetOrConcreteType"/> if it is a generated type; otherwise the mixins currently configured for
+    /// <paramref name="targetOrConcreteType"/>.</returns>
+    /// <remarks>
+    /// This method is quite fast, but it gets the mixins without ordering, and generic mixins are not closed before being returned.
+    /// </remarks>
+    public static IEnumerable<Type> GetMixinTypes (Type targetOrConcreteType)
     {
-      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetMixinTypes (type);
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetMixinTypes (targetOrConcreteType);
+    }
+
+    /// <summary>
+    /// Gets the mixin types associated with the given <paramref name="targetOrConcreteType"/>, ordered and closed (if generic) exactly as they are 
+    /// held by instances of the concrete type.
+    /// </summary>
+    /// <param name="targetOrConcreteType">The type to check for mixin types.</param>
+    /// <returns>The mixins included in <paramref name="targetOrConcreteType"/> if it is a generated type; otherwise the mixins currently configured for
+    /// <paramref name="targetOrConcreteType"/>.</returns>
+    /// <remarks>
+    /// This method returns the mixin types exactly as they are held in the <see cref="IMixinTarget.Mixins"/> property by the concrete type 
+    /// corresponding to <paramref name="targetOrConcreteType"/> (or <paramref name="targetOrConcreteType"/> itself if it is a generated concrete 
+    /// type). To retrieve them, this method might invoke the code generation for <paramref name="targetOrConcreteType"/> (if it is not already a
+    /// concrete type). In such cases, <see cref="GetMixinTypes"/> might be the faster variant.
+    /// </remarks>
+    public static Type[] GetMixinTypesExact (Type targetOrConcreteType)
+    {
+      return VersionDependentImplementationBridge<IMixinTypeUtilityImplementation>.Implementation.GetMixinTypesExact (targetOrConcreteType);
     }
 
     /// <summary>

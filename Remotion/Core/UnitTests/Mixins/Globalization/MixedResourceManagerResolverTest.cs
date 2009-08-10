@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Resources;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -301,7 +300,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
 			using (MixinConfiguration.BuildNew ()
 					.ForClass<InheritedClassWithMultiLingualResourcesAttributes> ().AddMixin<MixinAddingMultiLingualResourcesAttributes1> ().EnterScope ())
 			{
-				ResourceManagerSet resourceManagerSet =
+				var resourceManagerSet =
 						(ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
 				Assert.AreEqual (2, resourceManagerSet.Count);
 				Assert.AreEqual ("OnMixin1", resourceManagerSet[0].Name);
@@ -313,7 +312,7 @@ namespace Remotion.UnitTests.Mixins.Globalization
   	[Test]
     public void GetResourceManager_InheritanceFalse_SuccessOnTypeAndBase_NoMixin ()
     {
-      ResourceManagerSet resourceManagerSet =
+      var resourceManagerSet =
           (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), false);
       Assert.AreEqual (1, resourceManagerSet.Count);
       Assert.AreEqual ("OnInherited", resourceManagerSet[0].Name);
@@ -329,12 +328,12 @@ namespace Remotion.UnitTests.Mixins.Globalization
 					.AddMixin<MixinAddingMultiLingualResourcesAttributes2> ()
 					.EnterScope ())
       {
-        ResourceManagerSet resourceManagerSet =
+        var resourceManagerSet =
             (ResourceManagerSet) _resolver.GetResourceManager (typeof (InheritedClassWithMultiLingualResourcesAttributes), true);
         Assert.AreEqual (5, resourceManagerSet.Count);
-				string[] names = new string[] {resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name,
+				var names = new[] {resourceManagerSet[0].Name, resourceManagerSet[1].Name, resourceManagerSet[2].Name,
 						resourceManagerSet[3].Name, resourceManagerSet[4].Name};
-				Assert.That (names, Is.EquivalentTo (new string[] { "OnMixin2b", "OnMixin2a", "OnTarget", "OnMixin1", "OnInherited" }));
+				Assert.That (names, Is.EquivalentTo (new[] { "OnMixin2b", "OnMixin2a", "OnTarget", "OnMixin1", "OnInherited" }));
 				Assert.That (Array.IndexOf (names, "OnTarget"), Is.LessThan (Array.IndexOf (names, "OnInherited")));
       }
     }
