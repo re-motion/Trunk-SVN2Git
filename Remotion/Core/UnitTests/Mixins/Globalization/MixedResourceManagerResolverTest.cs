@@ -135,8 +135,8 @@ namespace Remotion.UnitTests.Mixins.Globalization
 
         CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes),
             AttributesFor<ClassWithMultiLingualResourcesAttributes> (),
-            TupleFor<MixinAddingMultiLingualResourcesAttributes1> (),
-            TupleFor<MixinAddingMultiLingualResourcesAttributes2> ());
+            TupleFor<MixinAddingMultiLingualResourcesAttributes2> (),
+            TupleFor<MixinAddingMultiLingualResourcesAttributes1> ());
       }
     }
 
@@ -155,8 +155,8 @@ namespace Remotion.UnitTests.Mixins.Globalization
 
         CheckDefinition (definitions[0], typeof (ClassWithMultiLingualResourcesAttributes),
             AttributesFor<ClassWithMultiLingualResourcesAttributes> (),
-            TupleFor<MixinAddingMultiLingualResourcesAttributes2> (),
-            TupleFor<MixinAddingMultiLingualResourcesAttributes1> ());
+            TupleFor<MixinAddingMultiLingualResourcesAttributes1> (),
+            TupleFor<MixinAddingMultiLingualResourcesAttributes2> ());
       }
     }
 
@@ -370,21 +370,21 @@ namespace Remotion.UnitTests.Mixins.Globalization
 			return Tuple.NewTuple (typeof (T), AttributesFor<T> ());
 		}
 
-    private void CheckDefinition (ResourceDefinition<MultiLingualResourcesAttribute> definition, Type expectedDefinitionType, 
-				MultiLingualResourcesAttribute[] expectedOwn, params Tuple<Type, MultiLingualResourcesAttribute[]>[] expectedSupplementing)
+    private void CheckDefinition (
+        ResourceDefinition<MultiLingualResourcesAttribute> definition, 
+        Type expectedDefinitionType, 
+				MultiLingualResourcesAttribute[] expectedOwn, 
+        params Tuple<Type, MultiLingualResourcesAttribute[]>[] expectedSupplementing)
     {
       Assert.That (definition.Type, Is.SameAs (expectedDefinitionType));
       Assert.That (definition.OwnAttributes, Is.EquivalentTo (expectedOwn));
-			Dictionary<Type, MultiLingualResourcesAttribute[]> supplementingAttributes = new Dictionary<Type, MultiLingualResourcesAttribute[]>();
-    	foreach (Tuple<Type, MultiLingualResourcesAttribute[]> supplementingAttribute in definition.SupplementingAttributes)
-    		supplementingAttributes.Add (supplementingAttribute.A, supplementingAttribute.B);
-
-			Assert.That (supplementingAttributes.Count, Is.EqualTo (expectedSupplementing.Length));
-    	foreach (Tuple<Type, MultiLingualResourcesAttribute[]> expected in expectedSupplementing)
-    	{
-				Assert.That (supplementingAttributes.ContainsKey (expected.A));
-				Assert.That (supplementingAttributes[expected.A], Is.EqualTo (expected.B));
-    	}
+			
+			Assert.That (definition.SupplementingAttributes.Count, Is.EqualTo (expectedSupplementing.Length));
+      for (int i = 0; i < expectedSupplementing.Length; i++)
+      {
+        Assert.That (definition.SupplementingAttributes[i].A, Is.EqualTo (expectedSupplementing[i].A));
+        Assert.That (definition.SupplementingAttributes[i].B, Is.EqualTo (expectedSupplementing[i].B));
+      }
     }
   }
 }

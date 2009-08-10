@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Collections;
 using Remotion.Utilities;
 
@@ -45,9 +46,9 @@ namespace Remotion.Globalization
       get { return _ownAttributes; }
     }
 
-    public IEnumerable<Tuple<Type, TAttribute[]>> SupplementingAttributes
+    public ReadOnlyCollection<Tuple<Type, TAttribute[]>> SupplementingAttributes
     {
-      get { return _supplementingAttributes; }
+      get { return _supplementingAttributes.AsReadOnly(); }
     }
 
     public bool HasResources
