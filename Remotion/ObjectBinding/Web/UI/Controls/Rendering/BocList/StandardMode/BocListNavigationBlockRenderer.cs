@@ -154,7 +154,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 
     private string GetResolvedImageUrl (string imageUrl)
     {
-      imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (Controls.BocList), ResourceType.Image, imageUrl);
+      imageUrl = ResourceUrlResolver.GetResourceUrl (List, Context, typeof (Controls.BocList), ResourceType.Image, ResourceTheme, imageUrl);
       return imageUrl;
     }
   }

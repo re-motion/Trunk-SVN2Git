@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var factory = ServiceLocator.GetInstance<IBocReferenceValueRendererFactory>();
       var preRenderer = factory.CreatePreRenderer (httpContext, this);
-      preRenderer.RegisterHeadContents (htmlHeadAppender);
+      preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
     /// <remarks>

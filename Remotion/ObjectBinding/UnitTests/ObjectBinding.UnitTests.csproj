@@ -323,7 +323,6 @@
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StandardMode\BocReferenceValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StubDropDownList.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StubDropDownMenu.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocReferenceValue\StubServiceLocator.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\StandardMode\BocMultilineTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\StandardMode\BocTextValueRendererTest.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocTextValue\StandardMode\BocTextValueRendererTestBase.cs" />
@@ -337,7 +336,7 @@
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubRendererFactory.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubRowRenderer.cs" />
     <Compile Include="Web\UI\Controls\Rendering\BocList\StubRowRendererFactory.cs" />
-    <Compile Include="Web\UI\Controls\Rendering\BocList\StubServiceLocator.cs" />
+    <Compile Include="Web\UI\Controls\Rendering\StubServiceLocator.cs" />
     <Compile Include="Web\UI\Controls\Rendering\RendererTestBase.cs" />
     <Compile Include="Web\UI\Controls\Rendering\XmlNodeExtensions.cs" />
     <None Include="ObjectBinding.UnitTests.build" />

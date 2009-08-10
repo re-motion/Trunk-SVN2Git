@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.Utilities;
@@ -1234,9 +1235,15 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
     string key = typeof (FormGridManager).FullName + "_Style";
     if (!HtmlHeadAppender.Current.IsRegistered (key))
     {
-      string url = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (FormGridManager), ResourceType.Html, "FormGrid.css");
+      string url = ResourceUrlResolver.GetResourceUrl (
+          this, new HttpContextWrapper (Context), typeof (FormGridManager), ResourceType.Html, ResourceTheme, "FormGrid.css");
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
+  }
+
+  protected ResourceTheme ResourceTheme
+  {
+    get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
   }
 
   private void NamingContainer_Load (object sender, EventArgs e)
@@ -2857,9 +2864,10 @@ public class FormGridManager : Control, IControl, IResourceDispatchTarget, ISupp
   /// <include file='doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/GetImageUrl/*' />
   protected string GetImageUrl (FormGridImage image)
   {
-    string relativeUrl = image.ToString() + ImageExtension;
+    string relativeUrl = image + ImageExtension;
 
-    string imageUrl = ResourceUrlResolver.GetResourceUrl (this, Context, typeof (FormGridManager), ResourceType.Image, relativeUrl);
+    string imageUrl = ResourceUrlResolver.GetResourceUrl (
+        this, new HttpContextWrapper (Context), typeof (FormGridManager), ResourceType.Image, ResourceTheme, relativeUrl);
 
     if (imageUrl != null)
       return imageUrl;

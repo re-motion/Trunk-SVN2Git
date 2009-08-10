@@ -26,5 +26,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
   {
     IDatePickerButtonRenderer CreateRenderer (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control);
     IDatePickerButtonPreRenderer CreatePreRenderer (IHttpContext context, IDatePickerButton control);
+
+    IDatePickerPagePreRenderer CreatePreRenderer (IHttpContext context, DatePickerPage page);
   }
 }

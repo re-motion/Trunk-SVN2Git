@@ -51,7 +51,7 @@ namespace Remotion.Web.Utilities
         ArgumentUtility.CheckNotNullOrEmpty ("elementID", elementID);
 
         string key = typeof (ScriptUtility).FullName + "_StyleUtility";
-        string url = ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
+        string url = GetScriptUrl(control);
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);
 
         control.Page.ClientScript.RegisterStartupScriptBlock (
@@ -62,22 +62,27 @@ namespace Remotion.Web.Utilities
                 "StyleUtility.CreateBorderSpans (document.getElementById ('{0}'));", elementID));
       }
 
-      protected abstract ResourceTheme ResourceTheme { get; }
+      protected abstract string GetScriptUrl (IControl control);
+
+      protected ResourceTheme ResourceTheme
+      {
+        get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+      }
     }
 
     public class ScriptUtilityQuirksMode : ScriptUtilityBase
     {
-      protected override ResourceTheme ResourceTheme
+      protected override string GetScriptUrl (IControl control)
       {
-        get { return Web.ResourceTheme.Legacy; }
+        return ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, "Legacy/StyleUtility.js");
       }
     }
 
     public class ScriptUtilityStandardMode : ScriptUtilityBase
     {
-      protected override ResourceTheme ResourceTheme
+      protected override string GetScriptUrl (IControl control)
       {
-        get { return Web.ResourceTheme.Standard; }
+        return ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
       }
     }
 

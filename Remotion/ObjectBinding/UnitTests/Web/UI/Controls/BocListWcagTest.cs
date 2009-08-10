@@ -17,7 +17,7 @@ using System;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Configuration;
-using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
 

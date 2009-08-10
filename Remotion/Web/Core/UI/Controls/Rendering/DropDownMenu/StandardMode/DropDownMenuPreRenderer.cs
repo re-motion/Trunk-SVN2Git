@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
@@ -61,9 +62,28 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
       return true;
     }
 
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return Web.ResourceTheme.Standard; }
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
+
+      string key = typeof (IDropDownMenu).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IDropDownMenu), ResourceType.Html, "DropDownMenu.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+      }
+
+
+      key = typeof (IDropDownMenu).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme, "DropDownMenu.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
     }
   }
 }

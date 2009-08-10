@@ -20,6 +20,7 @@ using System.Text;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.UI.Globalization;
@@ -44,13 +45,18 @@ public sealed class IconInfo
           if (s_spacer == null)
           {
             string url = 
-                ResourceUrlResolver.GetResourceUrl ((IControl)null, typeof (IconInfo), ResourceType.Image, "Spacer.gif");
+                ResourceUrlResolver.GetResourceUrl (null, typeof (IconInfo), ResourceType.Image, ResourceTheme, "Spacer.gif");
             s_spacer = new IconInfo (url);
           }
         }
       }
       return s_spacer; 
     }
+  }
+
+  private static ResourceTheme ResourceTheme
+  {
+    get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
   }
 
   public static bool ShouldSerialize (IconInfo icon)

@@ -1353,7 +1353,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       Image requiredIcon = new Image();
       requiredIcon.ImageUrl = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (BocList), ResourceType.Image, c_rowEditModeRequiredFieldIcon);
+          this, Context, typeof (BocList), ResourceType.Image, ResourceTheme, c_rowEditModeRequiredFieldIcon);
 
       IResourceManager resourceManager = GetResourceManager();
       requiredIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.RequiredFieldAlternateText);
@@ -1368,7 +1368,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       Image validationErrorIcon = new Image();
       validationErrorIcon.ImageUrl = ResourceUrlResolver.GetResourceUrl (
-          this, Context, typeof (EditableRow), ResourceType.Image, c_rowEditModeValidationErrorIcon);
+          this, Context, typeof (EditableRow), ResourceType.Image, ResourceTheme, c_rowEditModeValidationErrorIcon);
 
       IResourceManager resourceManager = GetResourceManager();
       validationErrorIcon.AlternateText = resourceManager.GetString (ResourceIdentifier.ValidationErrorInfoAlternateText);

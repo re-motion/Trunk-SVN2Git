@@ -21,7 +21,7 @@ namespace Remotion.Web.UI.Controls
 {
   public abstract class WebTreeViewMenuItemProvider
   {
-    public WebTreeViewMenuItemProvider ()
+    protected WebTreeViewMenuItemProvider ()
     {
     }
 

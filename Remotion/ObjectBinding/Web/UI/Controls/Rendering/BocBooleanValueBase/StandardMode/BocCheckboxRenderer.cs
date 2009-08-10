@@ -143,6 +143,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.S
           Context,
           typeof (BocCheckBox),
           ResourceType.Image,
+          ResourceTheme,
           Control.Value.Value ? c_trueIcon : c_falseIcon);
 
       imageControl.ImageUrl = imageUrl;

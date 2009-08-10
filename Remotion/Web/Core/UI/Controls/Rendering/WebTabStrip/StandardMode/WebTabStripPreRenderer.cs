@@ -22,16 +22,27 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
   /// Responsible for registering the style sheet for <see cref="WebTabStrip"/> controls in standard mode.
   /// <seealso cref="IWebTabStrip"/>
   /// </summary>
-  public class WebTabStripPreRenderer : WebTabStripPreRendererBase
+  public class WebTabStripPreRenderer : PreRendererBase<IWebTabStrip>, IWebTabStripPreRenderer
   {
     public WebTabStripPreRenderer (IHttpContext context, IWebTabStrip control)
         : base (context, control)
     {
     }
 
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return Web.ResourceTheme.Standard; }
+      string key = typeof (IWebTabStrip).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IWebTabStrip), ResourceType.Html, ResourceTheme, "TabStrip.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
+    public override void PreRender ()
+    {
+
     }
   }
 }

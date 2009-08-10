@@ -17,6 +17,7 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -62,13 +63,26 @@ public class SingleBocTestBasePage:
     string key = GetType().FullName + "_Style";
     if (! HtmlHeadAppender.Current.IsRegistered (key))
     {
-      string url = ResourceUrlResolver.GetResourceUrl (
-          this,
-          new HttpContextWrapper(Context), 
-          typeof (ResourceUrlResolver),
-          ResourceType.Html,
-          Global.PreferQuirksModeRendering ? ResourceTheme.Legacy : ResourceTheme.Standard,
-          "Style.css");
+      string url;
+      if (Global.PreferQuirksModeRendering)
+      {
+        url = ResourceUrlResolver.GetResourceUrl (
+            this,
+            new HttpContextWrapper (Context),
+            typeof (ResourceUrlResolver),
+            ResourceType.Html,
+            "Legacy/Style.css");
+      }
+      else
+      {
+        url = ResourceUrlResolver.GetResourceUrl (
+            this,
+            new HttpContextWrapper (Context),
+            typeof (ResourceUrlResolver),
+            ResourceType.Html,
+            ServiceLocator.Current.GetInstance<ResourceTheme>(),
+            "Style.css");
+      }
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, url);
     }
     

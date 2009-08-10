@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
@@ -21,19 +22,40 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
   /// <summary>
   /// Responsible for registering the client script file that the <see cref="DatePickerButton"/> depends on in quirks mode.
   /// </summary>
-  public class DatePickerButtonPreRenderer : DatePickerButtonPreRendererBase
+  public class DatePickerButtonPreRenderer : PreRendererBase<IDatePickerButton>, IDatePickerButtonPreRenderer
   {
+    private static readonly string s_datePickerScriptFileKey = typeof (IDatePickerButton).FullName + "_Script";
+    private static readonly string s_datePickerStyleFileKey = typeof (IDatePickerButton).FullName + "_Style";
+
     public DatePickerButtonPreRenderer (IHttpContext context, IDatePickerButton control)
         : base (context, control)
+    {
+    }
+    
+    public override void PreRender ()
     {
     }
 
     /// <summary>
     /// Registers the JavaScript file that contains the necessary functions for showing the pop-up calendar and retrieving the date.
     /// </summary>
-    public override void PreRender ()
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      if (!htmlHeadAppender.IsRegistered (s_datePickerScriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IDatePickerButton), ResourceType.Html, "DatePicker.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (s_datePickerScriptFileKey, scriptUrl);
+      }
+
+      if (!htmlHeadAppender.IsRegistered (s_datePickerStyleFileKey))
+      {
+        string styleUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IDatePickerButton), ResourceType.Html, ResourceTheme, "DatePicker.css");
+        htmlHeadAppender.RegisterStylesheetLink (s_datePickerStyleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
+      }
     }
   }
 }

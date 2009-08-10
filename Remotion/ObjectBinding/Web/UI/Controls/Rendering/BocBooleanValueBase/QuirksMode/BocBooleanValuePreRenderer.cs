@@ -16,19 +16,40 @@
 using System;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
 {
-  public class BocBooleanValuePreRenderer : BocBooleanValuePreRendererBase, IBocBooleanValuePreRenderer
+  public class BocBooleanValuePreRenderer : PreRendererBase<IBocBooleanValue>, IBocBooleanValuePreRenderer
   {
+    private static readonly string s_scriptFileKey = typeof (IBocBooleanValue).FullName + "_Script";
+    private static readonly string s_styleFileKey = typeof (IBocBooleanValue).FullName + "_Style";
+
     public BocBooleanValuePreRenderer (IHttpContext context, IBocBooleanValue control)
         : base (context, control)
     {
     }
 
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return ResourceTheme.Legacy; }
+      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocBooleanValue), ResourceType.Html, "Legacy/BocBooleanValue.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+      }
+
+      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
+      {
+        string styleUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocBooleanValue), ResourceType.Html, "Legacy/BocBooleanValue.css");
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
+    public override void PreRender ()
+    {
     }
   }
 }

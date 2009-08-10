@@ -18,8 +18,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
@@ -90,25 +92,25 @@ public class DatePickerPage : Page
 
     base.OnInit(e);
 
-	  HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (new ControlWrapper(this));
+    if( !IsDesignMode )
+	    RegisterHtmlHeadContents(HtmlHeadAppender.Current);
+	}
 
-    string key = typeof (DatePickerPage).FullName + "_Script";
-    if (!HtmlHeadAppender.Current.IsRegistered (key))
-    {
-      string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-          new ControlWrapper (this),
-          new HttpContextWrapper (Context),
-          typeof (DatePickerPage),
-          ResourceType.Html,
-          ResourceTheme.Standard,
-          c_datePickerScriptUrl);
-      HtmlHeadAppender.Current.RegisterJavaScriptInclude (key, scriptUrl);
-    }
+  protected bool IsDesignMode
+  {
+    get { return ControlHelper.IsDesignMode(this); }
+  }
+
+  private void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+  {
+    var factory = ServiceLocator.Current.GetInstance<IDatePickerButtonRendererFactory>();
+    var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+    preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
   }
 
   protected override void OnLoad(EventArgs e)
   {
-    string dateValue = null;
+    string dateValue;
     if (IsPostBack)
     {
       dateValue = DateValueField.Value;

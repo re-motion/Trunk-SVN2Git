@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
@@ -47,12 +48,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
       return isInternetExplorer55AndHigher;
     }
 
-
-    protected override ResourceTheme ResourceTheme
-    {
-      get { return Web.ResourceTheme.Legacy; }
-    }
-
     public override void PreRender ()
     {
       base.PreRender ();
@@ -61,7 +56,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
       if (!Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuPreRenderer), key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme, "DropDownMenu.css");
+            Control, Context, typeof (IDropDownMenu), ResourceType.Html, "Legacy/DropDownMenu.css");
         string script = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
         Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
       }
@@ -76,6 +71,30 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
           string script = Control.GetBindOpenEventScript (elementReference, menuIDReference, false);
           Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (DropDownMenuPreRenderer), key, script);
         }
+      }
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
+
+      string key = typeof (IDropDownMenu).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IDropDownMenu), ResourceType.Html, "Legacy/DropDownMenu.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+      }
+
+
+      key = typeof (IDropDownMenu).FullName + "_Style";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IDropDownMenu), ResourceType.Html, "Legacy/DropDownMenu.css");
+        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }
   }

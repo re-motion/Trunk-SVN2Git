@@ -44,7 +44,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ITabbedMultiView), ResourceType.Html, ResourceTheme.Legacy, "TabbedMultiView.css");
+            Control, Context, typeof (ITabbedMultiView), ResourceType.Html, "Legacy/TabbedMultiView.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }

@@ -394,9 +394,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       BocBooleanValueResourceSet resourceSet = new BocBooleanValueResourceSet (
           c_defaultResourceGroup,
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_trueIcon),
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_falseIcon),
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, c_nullIcon),
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, ResourceTheme, c_trueIcon),
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, ResourceTheme, c_falseIcon),
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (BocBooleanValue), ResourceType.Image, ResourceTheme, c_nullIcon),
           resourceManager.GetString (ResourceIdentifier.TrueDescription),
           resourceManager.GetString (ResourceIdentifier.FalseDescription),
           resourceManager.GetString (ResourceIdentifier.NullDescription)

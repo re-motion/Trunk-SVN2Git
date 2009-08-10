@@ -24,6 +24,7 @@ using Remotion.Globalization;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
+using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -451,6 +452,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected new IHttpContext Context
     {
       get { return Page != null ? Page.Context : null; }
+    }
+
+    protected ResourceTheme ResourceTheme
+    {
+      get { return ServiceLocator.GetInstance<ResourceTheme>(); }
     }
 
     protected override void LoadControlState (object savedState)

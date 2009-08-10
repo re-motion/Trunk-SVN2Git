@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
@@ -61,6 +62,11 @@ namespace Remotion.Web.UI.Controls.Rendering
     public TControl Control
     {
       get { return _control; }
+    }
+
+    protected ResourceTheme ResourceTheme
+    {
+      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     protected void AddStandardAttributesToRender ()

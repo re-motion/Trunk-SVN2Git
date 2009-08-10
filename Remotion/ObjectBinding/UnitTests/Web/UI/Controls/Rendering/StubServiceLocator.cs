@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
+using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.StandardMode.Factories;
@@ -30,6 +31,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.QuirksMode.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase;
 using Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.StandardMode.Factories;
+using Remotion.Web;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton;
 using Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.DropDownMenu;
@@ -37,7 +39,7 @@ using Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode.Factories;
 using Remotion.Web.UI.Controls.Rendering.ListMenu;
 using Remotion.Web.UI.Controls.Rendering.ListMenu.StandardMode.Factories;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
 {
   public class StubServiceLocator : ServiceLocatorImplBase
   {
@@ -72,7 +74,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocList
       _instances.Add (typeof (IBocBooleanValueRendererFactory), new BocBooleanValueRendererFactory ());
       _instances.Add (typeof (IBocCheckboxRendererFactory), new BocBooleanValueRendererFactory ());
       _instances.Add (typeof (IBocEnumValueRendererFactory), new BocEnumValueRendererFactory ());
-      
+
+      _instances.Add (typeof (ResourceTheme), ResourceTheme.ClassicBlue);
     }
 
     public void SetRowRendererFactory (IBocRowRendererFactory factory)

@@ -72,8 +72,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.ListMenu.StandardMode
                       "ListMenu_Update ( document.getElementById ('" + _control.ClientID + "'), null );";
 
       script = string.Format (script, _control.ClientID, GetItemScript (0), GetItemScript (1), GetItemScript (2), GetItemScript (4));
-     
-      _clientScriptManagerMock.Expect (mock => mock.RegisterStartupScriptBlock (_control, typeof (ListMenuPreRenderer), _control.UniqueID + "_MenuItems", script));
+
+      _clientScriptManagerMock.Expect (
+          mock => mock.RegisterStartupScriptBlock (_control, typeof (IListMenu), _control.UniqueID + "_MenuItems", script));
 
       var preRenderer = new ListMenuPreRenderer (HttpContext, _control);
       preRenderer.PreRender();
@@ -205,7 +206,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.ListMenu.StandardMode
     private void AssertIcon (XmlNode parent)
     {
       var img = parent.GetAssertedChildElement ("img", 0);
-      img.AssertAttributeValueContains ("src", "/Images/NullIcon.gif");
+      img.AssertAttributeValueContains ("src", "/Images/ClassicBlue/NullIcon.gif");
       img.AssertStyleAttribute ("vertical-align", "middle");
       img.AssertStyleAttribute ("border-style", "none");
     }
@@ -246,8 +247,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.ListMenu.StandardMode
           itemID,
           category,
           text,
-          new IconInfo ("~/Images/NullIcon.gif"),
-          new IconInfo ("~/Images/NullIcon.gif"),
+          new IconInfo ("~/Images/ClassicBlue/NullIcon.gif"),
+          new IconInfo ("~/Images/ClassicBlue/NullIcon.gif"),
           style,
           selection,
           false,

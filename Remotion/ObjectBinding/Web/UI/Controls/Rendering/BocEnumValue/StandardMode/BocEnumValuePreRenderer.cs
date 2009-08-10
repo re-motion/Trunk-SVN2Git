@@ -16,19 +16,27 @@
 using System;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.StandardMode
 {
-  public class BocEnumValuePreRenderer : BocEnumValuePreRendererBase
+  public class BocEnumValuePreRenderer : PreRendererBase<IBocEnumValue>, IBocEnumValuePreRenderer
   {
     public BocEnumValuePreRenderer (IHttpContext context, IBocEnumValue control)
         : base (context, control)
     {
     }
 
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return ResourceTheme.Standard; }
+      string key = typeof (IBocEnumValue).FullName + "_Style";
+      string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocEnumValue), ResourceType.Html, ResourceTheme, "BocEnumValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
+    }
+
+    public override void PreRender ()
+    {
     }
   }
 }

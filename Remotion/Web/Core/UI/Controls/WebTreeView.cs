@@ -21,13 +21,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Rendering.WebTreeView;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
-using Remotion.Web.Infrastructure;
-using Remotion.Collections;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -116,7 +116,7 @@ namespace Remotion.Web.UI.Controls
     private WebTreeNode _selectedNode;
     private WebTreeViewMenuItemProvider _menuItemProvider;
     private readonly Dictionary<WebTreeNode, DropDownMenu> _menus = new Dictionary<WebTreeNode, DropDownMenu>();
-    private PlaceHolder _menuPlaceHolder;
+    private readonly PlaceHolder _menuPlaceHolder;
     private bool _hasTreeNodeMenusCreated;
     private int _menuCounter;
 
@@ -128,6 +128,7 @@ namespace Remotion.Web.UI.Controls
 
     private InitializeRootWebTreeNodes _initializeRootTreeNodes;
     private WebTreeNodeRenderMethod _treeNodeRenderMethod;
+    private IPage _page;
 
     //  construction and destruction
 
@@ -317,14 +318,15 @@ namespace Remotion.Web.UI.Controls
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
-      if (!ControlHelper.IsDesignMode (this, Context))
+      if (!IsDesignMode)
         Page.RegisterRequiresControlState (this);
       if (Page != null && !Page.IsPostBack)
         _isLoadControlStateCompleted = true;
 
-      if( !IsDesignMode )
-        RegisterHtmlHeadContents (HtmlHeadAppender.Current, new HttpContextWrapper (Context));
+      if (!IsDesignMode)
+        RegisterHtmlHeadContents (HtmlHeadAppender.Current, Context);
     }
+
 
     protected override void LoadControlState (object savedState)
     {
@@ -447,10 +449,10 @@ namespace Remotion.Web.UI.Controls
       _hasTreeNodeMenusCreated = true;
     }
 
-    public virtual void RegisterHtmlHeadContents(HtmlHeadAppender htmlHeadAppender, IHttpContext httpContext)
+    public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IHttpContext httpContext)
     {
       var factory = ServiceLocator.Current.GetInstance<IWebTreeViewRendererFactory>();
-      var preRenderer = factory.CreatePreRenderer (new HttpContextWrapper (Context), this);
+      var preRenderer = factory.CreatePreRenderer (Context, this);
       preRenderer.RegisterHtmlHeadContents (htmlHeadAppender);
     }
 
@@ -530,7 +532,7 @@ namespace Remotion.Web.UI.Controls
       writer.RenderBeginTag (HtmlTextWriterTag.Ul); // Begin child nodes
       RenderNodes (writer, _nodes, true);
       writer.RenderEndTag();
-      if (ControlHelper.IsDesignMode (this, Context) && _nodes.Count == 0)
+      if (IsDesignMode && _nodes.Count == 0)
         RenderDesignModeContents (writer);
     }
 
@@ -579,7 +581,7 @@ namespace Remotion.Web.UI.Controls
           }
         }
       }
-      
+
       if (!_enableWordWrap)
         writer.AddStyleAttribute ("white-space", "nowrap");
 
@@ -819,37 +821,47 @@ namespace Remotion.Web.UI.Controls
     private void ResolveNodeIcons ()
     {
       _resolvedNodeIconF = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconF));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconF));
       _resolvedNodeIconFMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconFMinus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconFMinus));
       _resolvedNodeIconFPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconFPlus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconFPlus));
       _resolvedNodeIconI = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconI));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconI));
       _resolvedNodeIconL = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconL));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconL));
       _resolvedNodeIconLMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconLMinus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconLMinus));
       _resolvedNodeIconLPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconLPlus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconLPlus));
       _resolvedNodeIconMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconMinus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconMinus));
       _resolvedNodeIconPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconPlus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconPlus));
       _resolvedNodeIconR = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconR));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconR));
       _resolvedNodeIconRMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconRMinus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconRMinus));
       _resolvedNodeIconRPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconRPlus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconRPlus));
       _resolvedNodeIconT = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconT));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconT));
       _resolvedNodeIconTMinus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconTMinus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconTMinus));
       _resolvedNodeIconTPlus = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconTPlus));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconTPlus));
       _resolvedNodeIconWhite = new IconInfo (
-          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, c_nodeIconWhite));
+          ResourceUrlResolver.GetResourceUrl (this, Context, typeof (WebTreeView), ResourceType.Image, ResourceTheme, c_nodeIconWhite));
+    }
+
+    public new IHttpContext Context
+    {
+      get { return ((IControl) this).Page.Context; }
+    }
+
+    protected ResourceTheme ResourceTheme
+    {
+      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
     /// <summary> Sets the selected tree node. </summary>
@@ -1016,12 +1028,17 @@ namespace Remotion.Web.UI.Controls
     [Browsable (false)]
     public bool IsDesignMode
     {
-      get { return ControlHelper.IsDesignMode (this, Context); }
+      get { return ControlHelper.IsDesignMode (this, Context.WrappedInstance); }
     }
 
     IPage IControl.Page
     {
-      get { return PageWrapper.CastOrCreate (base.Page); }
+      get
+      {
+        if (_page == null)
+          _page = PageWrapper.CastOrCreate (Page);
+        return _page;
+      }
     }
 
     private bool IsTreeNodeReachable (WebTreeNode node)
@@ -1092,12 +1109,14 @@ namespace Remotion.Web.UI.Controls
 
     private void PreRenderTreeNodeMenus ()
     {
-      var page = PageWrapper.CastOrCreate (Page);
       string key = ClientID + "_BindContextMenus";
 
-      try
+      DropDownMenu anyNodeContextMenu = null;
+      if (_menus.Values.Count > 0)
+        anyNodeContextMenu = _menus.Values.First (menu => (menu != null), () => new Exception());
+
+      if (anyNodeContextMenu != null)
       {
-        var anyNodeContextMenu = _menus.Values.First (menu => (menu != null), () => new Exception ());
         string script =
             string.Format (
                 @"$(document).ready( function(){{ 
@@ -1111,10 +1130,7 @@ namespace Remotion.Web.UI.Controls
 }} );",
                 ClientID,
                 anyNodeContextMenu.GetBindOpenEventScript ("this", "menuID", true));
-        page.ClientScript.RegisterStartupScriptBlock (this, typeof (WebTreeView), key, script);
-      }
-      catch (Exception)
-      {
+        ((IControl) this).Page.ClientScript.RegisterStartupScriptBlock (this, typeof (WebTreeView), key, script);
       }
 
       List<WebTreeNode> unreachableNodes = new List<WebTreeNode>();

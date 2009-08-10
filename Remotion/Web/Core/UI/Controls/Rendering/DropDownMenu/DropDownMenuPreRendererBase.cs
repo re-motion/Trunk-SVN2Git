@@ -33,30 +33,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     {
     }
 
-    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
-    {
-      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-
-      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
-
-      string key = typeof (IDropDownMenu).FullName + "_Script";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme, "DropDownMenu.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
-      }
-
-
-      key = typeof (IDropDownMenu).FullName + "_Style";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IDropDownMenu), ResourceType.Html, ResourceTheme, "DropDownMenu.css");
-        htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
-      }
-    }
-
     public override void PreRender ()
     {
       string key = Control.UniqueID;
@@ -103,8 +79,6 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu
     }
 
     public abstract bool GetBrowserCapableOfScripting ();
-
-    protected abstract ResourceTheme ResourceTheme { get; }
 
     private void AppendMenuItem (StringBuilder stringBuilder, WebMenuItem menuItem, int menuItemIndex)
     {

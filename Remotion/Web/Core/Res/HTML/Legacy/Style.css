@@ -1,6 +1,6 @@
 /*  Changes the font-size to 80%. 
     Font-size is compatible with all browsers for pages displayed in quirks mode. (The default for ASP.NET projekts) */
-@import url("FontSize080Quirks.css");
+@import url("FontSize080.css");
 
 body
 {

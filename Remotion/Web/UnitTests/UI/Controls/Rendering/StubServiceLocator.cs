@@ -37,6 +37,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering
       _instances.Add (typeof (IDropDownMenuRendererFactory), new DropDownMenuRendererFactory());
       _instances.Add (typeof (IWebTabRendererFactory), new WebTabStripRendererFactory());
       _instances.Add (typeof (IMenuTabRendererFactory), new TabbedMenuRendererFactory ());
+      _instances.Add (typeof (ResourceTheme), ResourceTheme.ClassicBlue);
     }
 
     public void SetFactory<T> (T factory)

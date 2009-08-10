@@ -14,13 +14,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 {
   public class BocListPreRenderer : BocListPreRendererBase
   {
+    private static readonly string s_scriptFileKey = typeof (IBocList).FullName + "_Script";
+    private static readonly string s_styleFileKey = typeof (IBocList).FullName + "_Style";
+
     public BocListPreRenderer (IHttpContext context, IBocList control, CssClassContainer cssClassContainer)
         : base(context, control, cssClassContainer)
     {
@@ -29,11 +34,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
     public override bool IsBrowserCapableOfScripting
     {
       get { return IsInternetExplorer55OrHigher(); }
-    }
-    
-    protected override ResourceTheme ResourceTheme
-    {
-      get { return ResourceTheme.Legacy; }
     }
 
     protected virtual bool IsInternetExplorer55OrHigher ()
@@ -49,6 +49,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
           Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
 
       return isInternetExplorer55AndHigher;
+    }
+
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control);
+
+      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, "Legacy/BocList.css");
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+      }
+
+      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, "Legacy/BocList.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+      }
+
+      Control.EditModeControlFactory.RegisterHtmlHeadContents (Context, htmlHeadAppender);
     }
   }
 }

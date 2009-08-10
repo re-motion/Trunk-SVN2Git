@@ -99,12 +99,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering.BocReferenc
       Control.Stub (stub => stub.GetLabelText()).Return ("MyText");
     }
 
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
-    {
-      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
-    }
-
     [TearDown]
     public void TearDown ()
     {

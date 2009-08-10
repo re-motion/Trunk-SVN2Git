@@ -14,34 +14,32 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Web;
 using Remotion.Web.Infrastructure;
-using Remotion.Web.UI;
-using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase
+namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
 {
-  public abstract class BocMultilineTextValuePreRendererBase : PreRendererBase<IBocMultilineTextValue>, IBocMultilineTextValuePreRenderer
+  public class TabbedMenuPreRenderer : PreRendererBase<ITabbedMenu>, ITabbedMenuPreRenderer
   {
-    public BocMultilineTextValuePreRendererBase (IHttpContext context, IBocMultilineTextValue control)
-        : base (context, control)
+    private static readonly string s_styleFileKey = typeof (ITabbedMenu).FullName + "_Style";
+
+    public TabbedMenuPreRenderer (IHttpContext context, ITabbedMenu control)
+        : base(context, control)
     {
     }
 
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, ResourceTheme);
-
-      string styleKey = typeof (IBocMultilineTextValue).FullName + "_Style";
-      string styleUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (IBocMultilineTextValue), ResourceType.Html, ResourceTheme, "BocMultilineTextValue.css");
-      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
+      if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (ITabbedMenu), ResourceType.Html, "Legacy/TabbedMenu.css");
+        HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+      }
     }
-
-    protected abstract ResourceTheme ResourceTheme { get; }
 
     public override void PreRender ()
     {
+      
     }
   }
 }

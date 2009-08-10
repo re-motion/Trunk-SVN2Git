@@ -46,11 +46,10 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       if (!htmlHeadAppender.IsRegistered (keyStyle))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Standard, "SingleView.css");
+            Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme, "SingleView.css");
         htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ISingleView), ResourceType.Html, ResourceTheme.Standard, "ViewLayout.js");
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (ISingleView), ResourceType.Html, "ViewLayout.js");
         htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
       }
     }

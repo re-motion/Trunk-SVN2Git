@@ -16,11 +16,14 @@
 using System;
 using System.Collections;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
+using NUnit.Framework;
 using Remotion.Web.Infrastructure;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
 {
+  [TestFixture]
   public class RendererTestBase
   {
     protected IHttpContext HttpContext { get; private set; }
@@ -28,6 +31,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.Rendering
 
     protected RendererTestBase ()
     {
+    }
+
+    [TestFixtureSetUp]
+    public void TestFixtureSetUp ()
+    {
+      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
     }
 
     protected virtual void Initialize ()

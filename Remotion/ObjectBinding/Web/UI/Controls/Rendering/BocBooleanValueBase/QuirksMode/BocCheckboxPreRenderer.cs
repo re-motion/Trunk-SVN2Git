@@ -16,19 +16,40 @@
 using System;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.QuirksMode
 {
-  public class BocCheckboxPreRenderer : BocCheckboxPreRendererBase, IBocCheckboxPreRenderer
+  public class BocCheckboxPreRenderer : PreRendererBase<IBocCheckBox>, IBocCheckboxPreRenderer
   {
+    private static readonly string s_scriptFileKey = typeof (BocCheckBox).FullName + "_Script";
+    private static readonly string s_styleFileKey = typeof (BocCheckBox).FullName + "_Style";
+
     public BocCheckboxPreRenderer (IHttpContext context, IBocCheckBox control)
         : base (context, control)
     {
     }
 
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return ResourceTheme.Legacy; }
+      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocCheckBox), ResourceType.Html, "Legacy/BocCheckbox.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+      }
+
+      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
+      {
+        string styleUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (BocCheckBox), ResourceType.Html, "Legacy/BocCheckbox.css");
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
+    public override void PreRender ()
+    {
     }
   }
 }

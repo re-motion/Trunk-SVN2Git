@@ -102,7 +102,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 
     public string GetResolvedImageUrl ()
     {
-      return ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (Controls.DatePickerButton), ResourceType.Image, ImageFileName);
+      return ResourceUrlResolver.GetResourceUrl (
+          Control, Context, typeof (Controls.DatePickerButton), ResourceType.Image, ResourceTheme, ImageFileName);
     }
 
     protected abstract bool DetermineClientScriptLevel ();

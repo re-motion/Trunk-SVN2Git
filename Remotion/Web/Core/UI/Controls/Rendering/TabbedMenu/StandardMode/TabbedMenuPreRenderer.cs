@@ -36,7 +36,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.StandardMode
       if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ITabbedMenu), ResourceType.Html, ResourceTheme.Standard, c_styleFileUrl);
+            Control, Context, typeof (ITabbedMenu), ResourceType.Html, ResourceTheme, c_styleFileUrl);
         HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
     }

@@ -17,6 +17,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
@@ -375,7 +376,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.DropDownButtonClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButton);
       string imgUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (IBocAutoCompleteReferenceValue), ResourceType.Image, "DropDownMenuArrow.gif");
+          Control, Context, typeof (IBocAutoCompleteReferenceValue), ResourceType.Image, ResourceTheme, "DropDownMenuArrow.gif");
       Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url('{0}')", imgUrl));
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       IconInfo.Spacer.Render (Writer);

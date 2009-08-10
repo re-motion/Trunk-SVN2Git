@@ -83,7 +83,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.StandardMode
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassDropDownButton);
       string imageUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (IDropDownMenu), ResourceType.Image, Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
+          Control, typeof (IDropDownMenu), ResourceType.Image, ResourceTheme, Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
 
       Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format("url({0})", imageUrl));
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);

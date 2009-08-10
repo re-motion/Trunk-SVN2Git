@@ -167,13 +167,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
         case SortingDirection.Ascending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, Context, typeof (Controls.BocList), ResourceType.Image, c_sortAscendingIcon);
+              List, Context, typeof (Controls.BocList), ResourceType.Image, ResourceTheme, c_sortAscendingIcon);
           break;
         }
         case SortingDirection.Descending:
         {
           imageUrl = ResourceUrlResolver.GetResourceUrl (
-              List, Context, typeof (Controls.BocList), ResourceType.Image, c_sortDescendingIcon);
+              List, Context, typeof (Controls.BocList), ResourceType.Image, ResourceTheme, c_sortDescendingIcon);
           break;
         }
         case SortingDirection.None:

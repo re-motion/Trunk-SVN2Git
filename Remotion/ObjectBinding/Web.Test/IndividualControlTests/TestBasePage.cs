@@ -17,6 +17,7 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
@@ -53,14 +54,27 @@ public class TestBasePage :
     string key = GetType().FullName + "_Style";
     if (! HtmlHeadAppender.Current.IsRegistered (key))
     {
-      string href = ResourceUrlResolver.GetResourceUrl (
-          this,
-          new HttpContextWrapper(Context),
-          typeof (ResourceUrlResolver),
-          ResourceType.Html,
-          Global.PreferQuirksModeRendering ? ResourceTheme.Legacy : ResourceTheme.Standard,
-          "Style.css");
-      
+      string href;
+      if (Global.PreferQuirksModeRendering)
+      {
+        href = ResourceUrlResolver.GetResourceUrl (
+            this,
+            new HttpContextWrapper (Context),
+            typeof (ResourceUrlResolver),
+            ResourceType.Html,
+            "Legacy/Style.css");
+      }
+      else
+      {
+        href = ResourceUrlResolver.GetResourceUrl (
+            this,
+            new HttpContextWrapper (Context),
+            typeof (ResourceUrlResolver),
+            ResourceType.Html,
+            ServiceLocator.Current.GetInstance<ResourceTheme>(),
+            "Style.css");
+      }
+
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);
     }
 

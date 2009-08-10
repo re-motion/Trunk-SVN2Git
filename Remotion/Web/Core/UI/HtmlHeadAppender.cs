@@ -299,6 +299,17 @@ namespace Remotion.Web.UI
       }
     }
 
+    public void RegisterJQueryBgiFramesJavaScriptInclude (IControl control)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      string key = typeof (HtmlHeadContents).FullName + "_JQueryBgiFrames";
+      if (!IsRegistered (key))
+      {
+        string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "jquery.bgiframe.min.js");
+        RegisterJavaScriptInclude (key, href);
+      }
+    }
+
     /// <summary> Registers a <see cref="Control"/> containing an HTML head element. </summary>
     /// <remarks>
     ///   All calls to <see cref="RegisterHeadElement"/> must be completed before

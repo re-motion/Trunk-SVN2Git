@@ -16,19 +16,25 @@
 using System;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
-  public class BocTextValuePreRenderer : BocTextValuePreRendererBase
+  public class BocTextValuePreRenderer : PreRendererBase<IBocTextValue>, IBocTextValuePreRenderer
   {
     public BocTextValuePreRenderer (IHttpContext context, IBocTextValue control)
         : base (context, control)
     {
     }
 
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return ResourceTheme.Standard; }
+      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, true);
+    }
+
+    public override void PreRender ()
+    {
     }
   }
 }

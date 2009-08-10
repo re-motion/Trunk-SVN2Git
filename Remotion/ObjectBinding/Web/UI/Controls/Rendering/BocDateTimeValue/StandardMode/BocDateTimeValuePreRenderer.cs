@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocDateTimeValue.Stan
     {
       string styleKey = typeof (IBocDateTimeValue).FullName + "_Style";
       string styleFile = ResourceUrlResolver.GetResourceUrl (
-          Control, Context, typeof (IBocDateTimeValue), ResourceType.Html, ResourceTheme.Standard, "BocDateTimeValue.css");
+          Control, Context, typeof (IBocDateTimeValue), ResourceType.Html, ResourceTheme, "BocDateTimeValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleFile, HtmlHeadAppender.Priority.Library);
     }
 

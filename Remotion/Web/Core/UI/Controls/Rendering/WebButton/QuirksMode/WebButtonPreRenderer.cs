@@ -18,16 +18,33 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebButton.QuirksMode
 {
-  public class WebButtonPreRenderer : WebButtonPreRendererBase
+  public class WebButtonPreRenderer : PreRendererBase<IWebButton>, IWebButtonPreRenderer
   {
     public WebButtonPreRenderer (IHttpContext context, IWebButton control)
         : base (context, control)
     {
     }
 
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return ResourceTheme.Legacy; }
+      string scriptKey = typeof (IWebButton).FullName + "_Script";
+      if (!HtmlHeadAppender.Current.IsRegistered (scriptKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IWebButton), ResourceType.Html, "Legacy/WebButton.js");
+        HtmlHeadAppender.Current.RegisterJavaScriptInclude (scriptKey, url);
+      }
+
+      string styleKey = typeof (IWebButton).FullName + "_Style";
+      if (!HtmlHeadAppender.Current.IsRegistered (styleKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IWebButton), ResourceType.Html, "Legacy/WebButton.css");
+        HtmlHeadAppender.Current.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
+    public override void PreRender ()
+    {
+
     }
   }
 }

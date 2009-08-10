@@ -18,16 +18,32 @@ using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.WebButton.StandardMode
 {
-  public class WebButtonPreRenderer : WebButtonPreRendererBase
+  public class WebButtonPreRenderer : PreRendererBase<IWebButton>, IWebButtonPreRenderer
   {
     public WebButtonPreRenderer (IHttpContext context, IWebButton control)
         : base (context, control)
     {
     }
 
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return ResourceTheme.Standard; }
+      string scriptKey = typeof (IWebButton).FullName + "_Script";
+      if (!HtmlHeadAppender.Current.IsRegistered (scriptKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IWebButton), ResourceType.Html, "WebButton.js");
+        HtmlHeadAppender.Current.RegisterJavaScriptInclude (scriptKey, url);
+      }
+
+      string styleKey = typeof (IWebButton).FullName + "_Style";
+      if (!HtmlHeadAppender.Current.IsRegistered (styleKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IWebButton), ResourceType.Html, ResourceTheme, "WebButton.css");
+        HtmlHeadAppender.Current.RegisterStylesheetLink (styleKey, url, HtmlHeadAppender.Priority.Library);
+      }
+    }
+
+    public override void PreRender ()
+    {
     }
   }
 }

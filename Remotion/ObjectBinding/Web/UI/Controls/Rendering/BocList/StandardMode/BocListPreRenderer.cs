@@ -14,13 +14,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
 {
   public class BocListPreRenderer : BocListPreRendererBase
   {
+    private static readonly string s_scriptFileKey = typeof (IBocList).FullName + "_Script";
+    private static readonly string s_styleFileKey = typeof (IBocList).FullName + "_Style";
+
     public BocListPreRenderer (IHttpContext context, IBocList control, CssClassContainer cssClassContainer)
         : base(context, control, cssClassContainer)
     {
@@ -31,9 +36,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.StandardMode
       get { return true; }
     }
 
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return ResourceTheme.Standard; }
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+
+      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control);
+
+      if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
+      {
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, ResourceTheme, "BocList.css");
+        htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
+      }
+
+      if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, "BocList.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
+      }
+
+      Control.EditModeControlFactory.RegisterHtmlHeadContents (Context, htmlHeadAppender);
     }
   }
 }

@@ -16,20 +16,30 @@
 using System;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.QuirksMode
 {
-  public class BocMultilineTextValuePreRenderer : BocMultilineTextValuePreRendererBase
+  public class BocMultilineTextValuePreRenderer : PreRendererBase<IBocMultilineTextValue>, IBocMultilineTextValuePreRenderer
   {
     public BocMultilineTextValuePreRenderer (IHttpContext context, IBocMultilineTextValue control)
         : base (context, control)
     {
     }
 
-
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return ResourceTheme.Standard; }
+      Control.TextBoxStyle.RegisterJavaScriptInclude (Control, Context, htmlHeadAppender, true);
+
+      string styleKey = typeof (IBocMultilineTextValue).FullName + "_Style";
+      string styleUrl = ResourceUrlResolver.GetResourceUrl (
+          Control, typeof (IBocMultilineTextValue), ResourceType.Html, "Legacy/BocMultilineTextValue.css");
+      htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
+    }
+
+    public override void PreRender ()
+    {
     }
   }
 }

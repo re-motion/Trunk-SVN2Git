@@ -33,5 +33,10 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode.Facto
     {
       return new DatePickerButtonPreRenderer (context, control);
     }
+
+    public IDatePickerPagePreRenderer CreatePreRenderer (IHttpContext context, DatePickerPage page)
+    {
+      return new DatePickerPagePreRenderer (context, page);
+    }
   }
 }

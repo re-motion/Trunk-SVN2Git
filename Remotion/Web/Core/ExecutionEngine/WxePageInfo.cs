@@ -18,6 +18,7 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Web;
 using System.Web.UI;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Utilities;
@@ -120,10 +121,14 @@ namespace Remotion.Web.ExecutionEngine
       string url = ResourceUrlResolver.GetResourceUrl ((Control) _page, typeof (WxePageInfo), ResourceType.Html, c_scriptFileUrl);
       HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
 
-      url = ResourceUrlResolver.GetResourceUrl ((Control) _page, typeof (WxePageInfo), ResourceType.Html, c_styleFileUrl);
+      url = ResourceUrlResolver.GetResourceUrl (_page, typeof (WxePageInfo), ResourceType.Html, ResourceTheme, c_styleFileUrl);
       HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
     }
 
+    protected ResourceTheme ResourceTheme
+    {
+      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
+    }
 
     public NameValueCollection EnsurePostBackModeDetermined (HttpContext context)
     {

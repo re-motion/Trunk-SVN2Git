@@ -1,3 +1,11 @@
+1.13.20
+=======
+- Theming support
+  * A theme is represented by an instance of the ResourceTheme type
+  * Register the theme you want to use with the ServiceLocator 
+    Example (CastleWindsor):
+    container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.ClassicBlue));
+
 1.13.19
 =======
 - WxePage

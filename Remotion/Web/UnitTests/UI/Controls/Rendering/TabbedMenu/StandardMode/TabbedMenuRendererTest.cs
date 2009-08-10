@@ -17,7 +17,6 @@ using System;
 using System.Drawing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls.Rendering.TabbedMenu;
@@ -31,12 +30,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMenu.StandardMode
   public class TabbedMenuRendererTest : RendererTestBase
   {
     private ITabbedMenu _control;
-
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
-    {
-      ServiceLocator.SetLocatorProvider (() => new StubServiceLocator());
-    }
 
     [SetUp]
     public void SetUp ()

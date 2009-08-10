@@ -19,8 +19,8 @@ namespace Remotion.Web
 {
   public class ResourceTheme
   {
-    public static readonly ResourceTheme Legacy = new ResourceTheme ("Legacy");
-    public static readonly ResourceTheme Standard = new ResourceTheme ("Standard");
+    public static readonly ResourceTheme ClassicBlue = new ResourceTheme ("ClassicBlue");
+    public static readonly ResourceTheme NovaBlue = new ResourceTheme ("NovaBlue");
     
     private readonly string _name;
 

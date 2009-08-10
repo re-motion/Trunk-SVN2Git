@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
@@ -54,6 +55,11 @@ namespace Remotion.Web.UI.Controls.Rendering
     public TControl Control
     {
       get { return _control; }
+    }
+
+    public ResourceTheme ResourceTheme
+    {
+      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
   }
 }
