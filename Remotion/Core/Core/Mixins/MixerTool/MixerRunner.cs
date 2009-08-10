@@ -85,7 +85,7 @@ namespace Remotion.Mixins.MixerTool
     {
       try
       {
-        Validator.Validate (TargetClassDefinitionCache.Current.GetTargetClassDefinition (e.ClassContext));
+        TargetClassDefinitionCache.Current.GetTargetClassDefinition (e.ClassContext);
       }
       catch (ValidationException ex)
       {
