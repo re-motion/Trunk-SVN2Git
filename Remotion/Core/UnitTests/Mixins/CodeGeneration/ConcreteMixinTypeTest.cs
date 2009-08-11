@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       _simpleClassDefinition = new TargetClassDefinition (new ClassContext (typeof (BaseType1), typeof (BT1Mixin1)));
       _simpleMixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (BT1Mixin1), _simpleClassDefinition, false);
 
-      _concreteMixinType = new ConcreteMixinType (_simpleMixinDefinition, typeof (object));
+      _concreteMixinType = new ConcreteMixinType (typeof (object));
       _method1 = typeof (object).GetMethod ("ToString");
       _method2 = typeof (object).GetMethod ("Equals", BindingFlags.Instance | BindingFlags.Public);
     }

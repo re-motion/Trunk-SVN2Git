@@ -119,16 +119,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     }
 
     [Test]
-    public void GetBuiltType_MixinDefinition ()
-    {
-      DisableGenerate ();
-
-      _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
-      ConcreteMixinType mixinType = _mixinTypeGenerator.GetBuiltType ();
-      Assert.That (mixinType.MixinDefinition, Is.SameAs (_simpleMixinDefinition));
-    }
-
-    [Test]
     public void GetBuiltType_Type ()
     {
       DisableGenerate();

@@ -87,7 +87,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Tuple<MethodInfo, MethodInfo>[] methodWrappers = GenerateMethodWrappers().ToArray();
 
       Type generatedType = Emitter.BuildType();
-      var result = new ConcreteMixinType (Configuration, generatedType);
+      var result = new ConcreteMixinType (generatedType);
       foreach (var methodWrapper in methodWrappers)
         result.AddMethodWrapper (methodWrapper.A, methodWrapper.B);
 

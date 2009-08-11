@@ -18,15 +18,10 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Collections;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.Utilities;
 using Rhino.Mocks;
 using Remotion.Mixins;
-using Remotion.Development.UnitTesting;
-using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
-using System.Collections;
 using System.Reflection;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
@@ -99,7 +94,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Uncached()
     {
-      var concreteMixinType = new ConcreteMixinType (_mixinDefinition, typeof (int));
+      var concreteMixinType = new ConcreteMixinType (typeof (int));
 
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_typeGeneratorMock, _mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock);
@@ -116,7 +111,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinType_Cached()
     {
-      var concreteMixinType = new ConcreteMixinType (_mixinDefinition, typeof (int));
+      var concreteMixinType = new ConcreteMixinType (typeof (int));
 
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_typeGeneratorMock, _mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock).Repeat.Once();
@@ -141,7 +136,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteMixinTypeFromCacheOnly_NonNull()
     {
-      var concreteMixinType = new ConcreteMixinType (_mixinDefinition, typeof (int));
+      var concreteMixinType = new ConcreteMixinType (typeof (int));
       _moduleManagerMock.Expect (mock => mock.CreateMixinTypeGenerator (_typeGeneratorMock, _mixinDefinition, _nameProvider1)).Return (
           _mixinTypeGeneratorMock).Repeat.Once();
       _mixinTypeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (concreteMixinType).Repeat.Once();

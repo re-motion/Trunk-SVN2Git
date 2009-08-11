@@ -16,7 +16,6 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
-using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration
@@ -30,16 +29,13 @@ namespace Remotion.Mixins.CodeGeneration
   /// </remarks>
   public class ConcreteMixinType
   {
-    private readonly MixinDefinition _mixinDefinition;
     private readonly Type _generatedType;
     private readonly Dictionary<MethodInfo, MethodInfo> _methodWrappers;
 
-    public ConcreteMixinType (MixinDefinition mixinDefinition, Type generatedType)
+    public ConcreteMixinType (Type generatedType)
     {
-      ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
       ArgumentUtility.CheckNotNull ("generatedType", generatedType);
 
-      _mixinDefinition = mixinDefinition;
       _generatedType = generatedType;
       _methodWrappers = new Dictionary<MethodInfo, MethodInfo>();
     }
@@ -47,11 +43,6 @@ namespace Remotion.Mixins.CodeGeneration
     public Type GeneratedType
     {
       get { return _generatedType; }
-    }
-
-    public MixinDefinition MixinDefinition
-    {
-      get { return _mixinDefinition; }
     }
 
     public void AddMethodWrapper (MethodInfo protectedMethod, MethodInfo publicWrapper)
