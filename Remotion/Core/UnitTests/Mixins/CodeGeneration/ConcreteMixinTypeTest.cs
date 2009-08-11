@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using System.Reflection;
 using Remotion.Mixins.Context;
@@ -34,13 +33,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     private MethodInfo _method2;
 
     private TargetClassDefinition _simpleClassDefinition;
-    private MixinDefinition _simpleMixinDefinition;
 
     [SetUp]
     public void SetUp ()
     {
       _simpleClassDefinition = new TargetClassDefinition (new ClassContext (typeof (BaseType1), typeof (BT1Mixin1)));
-      _simpleMixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (BT1Mixin1), _simpleClassDefinition, false);
 
       _concreteMixinType = new ConcreteMixinType (typeof (object));
       _method1 = typeof (object).GetMethod ("ToString");
