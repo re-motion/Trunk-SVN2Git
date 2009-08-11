@@ -5,6 +5,11 @@
   * Register the theme you want to use with the ServiceLocator 
     Example (CastleWindsor):
     container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.ClassicBlue));
+- ScriptUtility
+  * RegisterBorderSpans now takes a jQuery selector instead of an elementID as final argument. This is done so that a control can determine
+    the parent element of its border spans.
+    Examples:
+    #MyElementID (directly below the element), #MyElementID > *:first (below the first immediate child element)
 
 1.13.19
 =======

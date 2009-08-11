@@ -59,15 +59,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
       _control.Stub (stub => stub.ActiveViewStyle).Return (new WebTabStyle ());
       _control.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
 
-      _control.Stub (stub => stub.CssClassActiveView).Return ("CssClassActiveView");
-      _control.Stub (stub => stub.CssClassBase).Return ("CssClassBase");
-      _control.Stub (stub => stub.CssClassBottomControls).Return ("CssClassBottomControls");
-      _control.Stub (stub => stub.CssClassContent).Return ("CssClassContent");
-      _control.Stub (stub => stub.CssClassEmpty).Return ("CssClassEmpty");
-      _control.Stub (stub => stub.CssClassTabStrip).Return ("CssClassTabStrip");
-      _control.Stub (stub => stub.CssClassTopControls).Return ("CssClassTopControls");
-      _control.Stub (stub => stub.CssClassViewBody).Return ("CssClassViewBody");
-
       var clientScriptStub = MockRepository.GenerateStub<IClientScriptManager> ();
 
       var pageStub = MockRepository.GenerateStub<IPage> ();
@@ -184,16 +175,16 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
       var renderer = new TabbedMultiViewRenderer (HttpContext, Html.Writer, _control);
       renderer.Render();
 
-      var container = GetAssertedContainerElement (withCssClass, inAttributes, isDesignMode);
-      AssertTopControls (container, withCssClass, isEmpty);
-      AssertTabStrip (container);
-      AssertView (container, withCssClass, isDesignMode);
-      AssertBottomControls (container, withCssClass, isEmpty);
+      var container = GetAssertedContainerElement (withCssClass, inAttributes, isDesignMode, renderer);
+      AssertTopControls (container, withCssClass, isEmpty, renderer);
+      AssertTabStrip (container, renderer);
+      AssertView (container, withCssClass, isDesignMode, renderer);
+      AssertBottomControls (container, withCssClass, isEmpty, renderer);
     }
 
-    private XmlNode GetAssertedContainerElement (bool withCssClass, bool inAttributes, bool isDesignMode)
+    private XmlNode GetAssertedContainerElement (bool withCssClass, bool inAttributes, bool isDesignMode, TabbedMultiViewRenderer renderer)
     {
-      string cssClass = _control.CssClassBase;
+      string cssClass = renderer.CssClassBase;
       if (withCssClass)
       {
         cssClass = inAttributes ? _control.Attributes["class"] : _control.CssClass;
@@ -211,67 +202,77 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
       outerDiv.AssertChildElementCount (1);
 
       var contentDiv = outerDiv.GetAssertedChildElement ("div", 0);
-      contentDiv.AssertAttributeValueEquals ("class", _control.CssClassContent);
+      contentDiv.AssertAttributeValueEquals ("class", renderer.CssClassWrapper);
 
       return contentDiv;
     }
 
-    private void AssertBottomControls (XmlNode container, bool withCssClass, bool isEmpty)
+    private void AssertBottomControls (XmlNode container, bool withCssClass, bool isEmpty, TabbedMultiViewRenderer renderer)
     {
-      string cssClass = _control.CssClassBottomControls;
+      string cssClass = renderer.CssClassBottomControls;
       if (withCssClass)
         cssClass = c_cssClass;
 
       var divBottomControls = container.GetAssertedChildElement ("div", 3);
-      divBottomControls.AssertChildElementCount (0);
 
       divBottomControls.AssertAttributeValueEquals ("id", _control.BottomControl.ClientID);
       divBottomControls.AssertAttributeValueContains ("class", cssClass);
       if( isEmpty )
-        divBottomControls.AssertAttributeValueContains ("class", _control.CssClassEmpty);
+        divBottomControls.AssertAttributeValueContains ("class", renderer.CssClassEmpty);
+
+      divBottomControls.AssertChildElementCount (1);
+
+      var divContent = divBottomControls.GetAssertedChildElement ("div", 0);
+      divContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
 
       if (!isEmpty)
-        divBottomControls.AssertTextNode ("BottomControls", 0);
+        divContent.AssertTextNode ("BottomControls", 0);
     }
 
-    private void AssertView (XmlNode container, bool withCssClass, bool isDesignMode)
+    private void AssertView (XmlNode container, bool withCssClass, bool isDesignMode, TabbedMultiViewRenderer renderer)
     {
-      string cssClassActiveView = _control.CssClassActiveView;
+      string cssClassActiveView = renderer.CssClassActiveView;
       if (withCssClass)
         cssClassActiveView = c_cssClass;
 
       var divActiveView = container.GetAssertedChildElement ("div", 2);
-      divActiveView.AssertChildElementCount (0);
-
       divActiveView.AssertAttributeValueEquals ("id", _control.ActiveViewClientID);
       divActiveView.AssertAttributeValueEquals ("class", cssClassActiveView);
       if( isDesignMode )
         divActiveView.AssertStyleAttribute ("border", "solid 1px black");
+      divActiveView.AssertChildElementCount (1);
+
+      var divContent = divActiveView.GetAssertedChildElement ("div", 0);
+      divContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
     }
 
-    private void AssertTabStrip (XmlNode container)
+    private void AssertTabStrip (XmlNode container, TabbedMultiViewRenderer renderer)
     {
       var divTabStrip = container.GetAssertedChildElement ("div", 1);
       divTabStrip.AssertChildElementCount (0);
 
-      divTabStrip.AssertAttributeValueEquals ("class", _control.CssClassTabStrip);
+      divTabStrip.AssertAttributeValueEquals ("class", renderer.CssClassTabStrip);
     }
 
-    private void AssertTopControls (XmlNode container, bool withCssClass, bool isEmpty)
+    private void AssertTopControls (XmlNode container, bool withCssClass, bool isEmpty, TabbedMultiViewRenderer renderer)
     {
-      string cssClass = _control.CssClassTopControls;
+      string cssClass = renderer.CssClassTopControls;
       if (withCssClass)
         cssClass = c_cssClass;
 
       var divTopControls = container.GetAssertedChildElement ("div", 0);
-      divTopControls.AssertChildElementCount (0);
-      if (!isEmpty)
-        divTopControls.AssertTextNode ("TopControls", 0);
-
       divTopControls.AssertAttributeValueEquals ("id", _control.TopControl.ClientID);
       divTopControls.AssertAttributeValueContains ("class", cssClass);
       if (isEmpty)
-        divTopControls.AssertAttributeValueContains ("class", _control.CssClassEmpty);
+        divTopControls.AssertAttributeValueContains ("class", renderer.CssClassEmpty);
+
+      divTopControls.AssertChildElementCount (1);
+
+      var divContent = divTopControls.GetAssertedChildElement ("div", 0);
+      divContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
+
+      if (!isEmpty)
+        divContent.AssertTextNode ("TopControls", 0);
     }
   }
 }

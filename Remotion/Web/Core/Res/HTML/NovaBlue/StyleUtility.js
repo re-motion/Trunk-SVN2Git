@@ -1,8 +1,12 @@
 ﻿function StyleUtility()
 { }
 
-StyleUtility.CreateBorderSpans = function(element)
+StyleUtility.CreateBorderSpans = function(selector)
 {
+  var element = $(selector);
+  if (element.length == 0)
+    return;
+
   StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'top');
   StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'left');
   StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'bottom');
@@ -14,7 +18,7 @@ StyleUtility.CreateBorderSpans = function(element)
 
   StyleUtility.ShowBorderSpans(element, topRight, bottomLeft, bottomRight);
 
-  var resizeHandler = function() { StyleUtility.OnResize(element.id); }
+  var resizeHandler = function() { StyleUtility.OnResize(selector); }
   $(window).resize(resizeHandler);
 }
 
@@ -43,34 +47,28 @@ StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRig
       $(bottomRight).css('display', 'inline');
     }
   }
-
 }
 
 StyleUtility.CreateAndAppendBorderSpan = function(elementBody, elementID, className)
 {
-  if (elementBody.nodeType != 1)
-  {
-    elementBody = elementBody.parentNode;
-  }
-
   var borderSpan = document.createElement('SPAN');
   borderSpan.id = elementID + '_' + className;
   borderSpan.className = className;
 
-  elementBody.appendChild(borderSpan);
+  elementBody[0].appendChild(borderSpan);
 
   return borderSpan
 }
 
-StyleUtility.OnResize = function(elementID)
+StyleUtility.OnResize = function(selector)
 {
-  var element = document.getElementById(elementID);
-  if (element != null)
+  var element = $(selector);
+  if (element.length > 0)
   {
-    var topRight = document.getElementById(elementID + '_topRight');
-    var bottomLeft = document.getElementById(elementID + '_bottomLeft');
-    var bottomRight = document.getElementById(elementID + '_bottomRight');
+    var topRight = element.find('#' + element.id + '_topRight');
+    var bottomLeft = element.find('#' + element.id + '_bottomLeft');
+    var bottomRight = element.find('#' + element.id + '_bottomRight');
 
-    StyleUtility.ShowBorderSpans(element, topRight, bottomLeft, bottomRight);
+    StyleUtility.ShowBorderSpans(element[0], topRight[0], bottomLeft[0], bottomRight[0]);
   }
 }

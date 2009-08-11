@@ -34,29 +34,27 @@
 
 *.tabStripTab a
 {
-  border: solid 1px #005588;	
+  border: solid 1px #083779;	
   background-color: #e1ecfc;
   color: Blue;
   text-decoration: none;
   cursor: default;
-  padding-bottom: 1px;
 }
 
 *.tabStripTab a:hover
 {
-	background-color: #fee197;	
+	background-color: #e6f0ff;	
   cursor: pointer;
 	cursor: hand;
 }
 
 *.tabStripTabSelected a
 {
-  border: solid 1px #005588;	
+  border: solid 1px #083779;	
   background-color: White;
   color: Blue;
   text-decoration: none;
   cursor: default;
-  padding-bottom: 1px;
 }
 
 *.tabStripTab.disabled a,
@@ -94,21 +92,21 @@
 
 *.tabStripTabSeparator
 {
+  float: left;
   width: 0.3em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
   margin: 0px;
-  padding-bottom: 1px;
 }
 
 *.tabStripTab,
 *.tabStripTabSelected
 {
   position: relative;
-  display: inline-block; /* IE-only value */
+  display: inline-block; 
 }
 
 *.tabStripTabSeparator
 {
-  display: inline-block; /* IE-only value */
+  display: inline-block;
 }
 
 *.tabStripTabSeparator span,
@@ -157,14 +155,7 @@ html>body *.tabStripTabsPane ul
 html>body *.tabStripTab,
 html>body *.tabStripTabSelected
 {
-  display: block; /* Correction for Non-IE browsers. */
   margin-left: 0.3em; /* Provides room for the separator. */
-}
-
-html>body *.tabStripTabSeparator
-{
-  display: block; /* Correction for Non-IE browsers. */
-  float: left;
 }
 
 html>body *.tabStripTabSeparator span

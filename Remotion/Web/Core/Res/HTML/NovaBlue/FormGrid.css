@@ -1,42 +1,39 @@
 /*  Style applied to the form grid table's outer structure  */
 table.formGridTable
 {
-  border-collapse: separate;
-  border-width: 1px;
+  border-collapse: collapse;
+  border-width: 0;
   width: 100%;
 }
 
-/*  Style applied to the title cell  */
-/*  Style applied to the sub title cell  */
 td.formGridTitleCell,
 td.formGridSubTitleCell
 {
 	font-weight: bold;
 	/*  no inheritence from body */
-	font-size: 125%;
 
   padding: 2px 2px 2px 2px;
-  border-style: solid;
-  border-top-width: 0px;
-  border-right-width: 0px;
-  border-bottom-width: 2px;
-  border-left-width: 0px;
-  border-color: Black;
+  border: none;
+}
+
+td.formGridTitleCell h1
+{
+  width: 100%;
+  border-bottom: solid 1px #083779;
+  color: #083779;
 }
 
 /*  Style applied to the cells containing the labels  */
 td.formGridLabelsCell
 {
-	background-color: #e1ecfc;
+	background-color: #f4f4f4;
 	text-align: right;
 
-  padding: 2px 5px 2px 5px;
-  border-style: solid;
-  border-top-width: 1px;
-  border-right-width: 0px;
-  border-bottom-width: 0px;
-  border-left-width: 0px;
-  border-color: White;
+  padding: 0.3em 1em 0.3em 1em;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: solid 1px #c8c8c8;
   width: 17%;
 }
 
@@ -45,26 +42,22 @@ td.formGridMarkersCell
 {
   white-space: nowrap;
 
-  padding: 0px 5px 0px 5px;
-  border-style: solid;
-  border-top-width: 1px;
-  border-right-width: 0px;
-  border-bottom-width: 0px;
-  border-left-width: 0px;
-  border-color: White;
+  padding: 0.3em 0.5em 0.3em 0.5em;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: solid 1px #c8c8c8;
   width: 1%;
 }
 
 /*  Style applied to the cells containing the controls  */
 td.formGridControlsCell
 {
-  padding: 0px 5px 0px 5px;
-  border-style: solid;
-  border-top-width: 1px;
-  border-right-width: 0px;
-  border-bottom-width: 0px;
-  border-left-width: 0px;
-  border-color: White;
+  padding: 0.3em 1em 0.3em 0em;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: solid 1px #c8c8c8;
   width: auto;
 }
 
@@ -73,23 +66,17 @@ td.formGridControlsCell
 td.formGridValidationMessagesCell
 {
   padding: 2px 7px 2px 7px;
-  border-style: solid;
-  border-top-width: 1px;
-  border-right-width: 0px;
-  border-bottom-width: 0px;
-  border-left-width: 0px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: solid 1px #c8c8c8;
   border-color: White;
 }
 
 /*  Style applied to the cells in the first row after the title row  */
 td.formGridTopDataRow
 {
-  border-style: solid;
-  border-top-width: 3px;
-  border-right-width: 0px;
-  border-bottom-width: 0px;
-  border-left-width: 0px;
-  border-color: White;
+  border-top: solid 1px #c8c8c8;
 }
 
 /*  Style applied to the validation messages, additiv to formGridValidationMessagesCell  */

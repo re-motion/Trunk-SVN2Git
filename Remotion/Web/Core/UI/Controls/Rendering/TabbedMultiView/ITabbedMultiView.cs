@@ -26,20 +26,12 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
   public interface ITabbedMultiView : IStyledControl
   {
     bool IsDesignMode { get; }
-    string CssClassBase { get; }
-    string CssClassTabStrip { get; }
-    string CssClassActiveView { get; }
     string ActiveViewClientID { get; }
     Style ActiveViewStyle { get; }
-    string CssClassViewBody { get; }
-    string CssClassContent { get; }
     Style TopControlsStyle { get; }
-    string CssClassTopControls { get; }
     PlaceHolder TopControl { get; }
     Style BottomControlsStyle { get; }
     PlaceHolder BottomControl { get; }
-    string CssClassBottomControls { get; }
-    string CssClassEmpty { get; }
     IWebTabStrip TabStrip { get; }
     string TabStripContainerClientID { get; }
     Control GetActiveView ();

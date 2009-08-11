@@ -1,9 +1,9 @@
 ﻿function StyleUtility()
 { }
 
-StyleUtility.CreateBorderSpans = function(element)
+StyleUtility.CreateBorderSpans = function(selector)
 {
-  var elementBody = $(element).children(':first')[0];
+  var elementBody = $(selector)[0];
 
   StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'top');
   StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'left');

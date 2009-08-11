@@ -874,6 +874,7 @@
     <Content Include="Res\Image\NovaBlue\CornerBackgroundWhiteTransparentBlackBorder.gif" />
     <Content Include="Res\Image\NovaBlue\CornerBackgroundWhiteTransparentBlueBorder.gif" />
     <Content Include="Res\Image\NovaBlue\CornerBackgroundWhiteTransparentNoBorder.gif" />
+    <Content Include="Res\Image\NovaBlue\DatePicker.gif" />
     <Content Include="Res\Image\NovaBlue\DropDownMenuArrow.gif" />
     <Content Include="Res\Image\NovaBlue\DropDownMenuItemIconPane.gif" />
     <Content Include="Res\Image\NovaBlue\Help.gif" />

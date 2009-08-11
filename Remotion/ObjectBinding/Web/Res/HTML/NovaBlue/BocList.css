@@ -22,14 +22,8 @@ div.bocListTable
 /*  Style applied to the BocList's table's outer structure.  */
 table.bocListTable
 {
-  width: 100%;
   border-collapse: collapse;
   border-style: none;
-}
-
-td.bocListMenuBlock
-{
-  padding-left: 5pt;
 }
 
 /*  Style applied to the table head block of the BocList's table.  */
@@ -44,13 +38,11 @@ th.bocListTitleCell
 	text-align: left;
 
   padding: 2px 2px 2px 2px;
-  border-style: solid;
-  border-top-width: 0px;
-  border-right-width: 0px;
-  border-bottom-width: 2px;
-  border-left-width: 0px;
-  border-color: Black;
-  
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 1px solid #002e46;
+ 
   white-space: nowrap;
 }
 
@@ -61,18 +53,18 @@ th.bocListTitleCell span
 
 th.bocListTitleCell a
 {
-  color: Blue;
+  color: #083779;
 	padding: 2px;
 }
 
 th.bocListTitleCell a:hover
 {
-  color: Blue;
+  color: #083779;
 	padding: 1px;
-	border-color: #005588;
+	border-color: #083779;
 	border-width: 1px;
 	border-style: solid;
-	background-color: #fee197;	
+	background-color: #e6f0ff;	
 }
 
 /*  Style applied to the cells in the BocList's odd and even data rows. */
@@ -82,12 +74,10 @@ td.bocListDataCellEven
 	text-align: left;
 
   padding: 2px 2px 2px 2px;
-  border-style: solid;
-  border-top-width: 1px;
-  border-right-width: 0px;
-  border-bottom-width: 0px;
-  border-left-width: 0px;
-  border-color: White;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: 1px solid #002e46;
   
   cursor: default;
 }
@@ -100,7 +90,7 @@ tr.bocListDataRow td.bocListDataCellOdd
 
 tr.bocListDataRow td.bocListDataCellEven
 {
-	background-color: #e1ecfc;
+	background-color: #f4f4f4;
 }
 
 /*  Style applied to the cells in the BocList's selected odd and even data rows. */
@@ -135,7 +125,7 @@ label.bocListContent
 tr.bocListDataRow td.bocListDataCellOdd a,
 tr.bocListDataRow td.bocListDataCellEven a
 {
-  color: Blue;
+  color: #083779;
 	padding: 2px;
 }
 
@@ -153,76 +143,19 @@ tr.bocListDataRow td.bocListDataCellEven a:hover,
 tr.bocListDataRowSelected td.bocListDataCellOdd a:hover,
 tr.bocListDataRowSelected td.bocListDataCellEven a:hover
 {
-  color: Blue;
+  color: #083779;
 	padding: 1px;
-	border-color: #005588;
+	border-color: #083779;
 	border-width: 1px;
 	border-style: solid;
-	background-color: #fee197;	
-}
-
-/*  Style applied to the disabled anchor tags during hovering in BocList's selected odd and even data rows.  */
-tr.bocListDataRow td.bocListDataCellOdd a.disabled:hover,
-tr.bocListDataRow td.bocListDataCellEven a.disabled:hover,
-tr.bocListDataRowSelected td.bocListDataCellOdd a.disabled:hover,
-tr.bocListDataRowSelected td.bocListDataCellEven a.disabled:hover
-{
-  color: Blue;
-	padding: 2px;
-	border-width: 0px;
-	border-style: none;
-	background-color: transparent;	
-}
-
-/* Style applied to SPAN elements in command-enabled column cells */
-tr.bocListDataRow td.bocListDataCellOdd span.CommandText,
-tr.bocListDataRow td.bocListDataCellEven span.CommandText,
-tr.bocListDataRowSelected td.bocListDataCellOdd span.CommandText,
-tr.bocListDataRowSelected td.bocListDataCellEven span.CommandText
-{
-  vertical-align: middle;
-}
-
-
-/* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
-td.bocListDataCellOdd div span.DropDownMenuSelect a,
-td.bocListDataCellEven div span.DropDownMenuSelect a,
-td.bocListDataCellOdd div span.DropDownMenuSelect a:hover,
-td.bocListDataCellEven div span.DropDownMenuSelect a:hover
-{
-  color: Blue;
-  padding: 0;
-  border: none;
-  background-color: Transparent;
-}
-
-
-td.bocListDataCellOdd span.DropDownMenuSelect.disabled a,
-td.bocListDataCellEven span.DropDownMenuSelect.disabled a,
-td.bocListDataCellOdd span.DropDownMenuSelect.disabled a:hover,
-td.bocListDataCellEven span.DropDownMenuSelect.disabled a:hover
-{
-  color: Gray;
-	padding: 0px;
-	border: none;
-  background-color: Transparent;
-}
-
-td.bocListDataCellOdd span.bocDateTimeValue a,
-td.bocListDataCellEven span.bocDateTimeValue a,
-td.bocListDataCellOdd span.bocDateTimeValue a:hover,
-td.bocListDataCellEven span.bocDateTimeValue a:hover
-{
-  padding: 0px;
-  border-style: none;
-  background-color: Transparent;
+	background-color: #e6f0ff;	
 }
 
 /*  Style applied to the text providing the sorting order's index. */
 span.bocListSortingOrder
 {
   color: Gray;
-  font-size: 80%;
+  font-size: 85%;
   font-weight: normal;
 }
 
@@ -245,4 +178,46 @@ span.bocListAvailableViewsListLabel
 div.bocListEditModeValidationMessage
 {
 	color: Red;
+}
+
+td.contentMenuRow
+{
+  font-size: 85%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+span.contentMenuItem
+{
+  margin-right: 10pt;
+}
+
+span.contentMenuItem a
+{
+  color: #083779;
+  padding: 2px;
+}
+
+span.contentMenuItem a:hover
+{
+  color: #083779;
+	padding: 1px;
+	border-width: 1px;
+	border-color: #083779;
+	border-style: solid;
+	background-color: #e6f0ff;	
+}
+
+span.contentMenuItemDisabled
+{
+  margin-right: 10pt;
+}
+
+span.contentMenuItemDisabled a
+{
+  padding: 2px;
+  color: gray;
+	cursor: default;
 }

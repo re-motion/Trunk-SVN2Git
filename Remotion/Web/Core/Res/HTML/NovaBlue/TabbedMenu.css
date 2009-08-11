@@ -19,23 +19,30 @@ td.tabbedMainMenuCell
 
 td.tabbedSubMenuCell
 {
-  background-color: #02537c;
+  background-color: White;
   padding: 0.3em;
+  border-bottom: solid 1px #083779;
 }
 
 td.tabbedMenuStatusCell
 {
-  background-color: #02537c;
+  background-color: White;
   padding-top: 0.3em;
   padding-bottom: 0.3em;
   padding-left: 0.3em;
   padding-right: 0.8em;
-  color: White;
+  color: Black;
   text-align: right;
   white-space: nowrap;
+  border-bottom: solid 1px #083779;
 }
 
 /* Main Menu Tabstrip */
+div.tabbedMainMenu div.tabStripTabsPane
+{
+  border-bottom: solid 1px #083779;
+}
+
 div.tabbedMainMenu span.tabStripTabWrapper
 {
   padding-top: 0.3em;
@@ -50,16 +57,22 @@ div.tabbedMainMenu span.tabStripTabSeparator
 div.tabbedMainMenu span.tabStripTab a
 {  
   border: none;
-	background-color: #e1ecfc;
-  color: Blue;
+	background-color: #DDDDDD;
+  background-image: url(../../Image/NovaBlue/TabbedMenuTabBackground.gif);
+  background-repeat: repeat-x;	
+  background-position: center;
+  color: Black;
   font-size: 120%;
   font-weight: bold;
 }
 
 div.tabbedMainMenu span.tabStripTab a:hover
 {
-	background-color: #fee197;
-  color: Blue;
+	background-color: #FEFFFF;
+  background-image: url(../../Image/NovaBlue/TabbedMenuTabBackgroundHover.gif);
+  background-repeat: repeat-x;	
+  background-position: top;
+  color: Black;
   cursor: pointer;
 	cursor: hand;
 }
@@ -67,15 +80,16 @@ div.tabbedMainMenu span.tabStripTab a:hover
 div.tabbedMainMenu span.tabStripTabSelected a
 {
   border: none;
-  background-color: #02537c;
-  color: White;
+  background-color: White;
+  color: Black;
   font-size: 120%;
   font-weight: bold;
 }
 
 div.tabbedMainMenu span.tabStripTabSelected a:hover
 {
-  color: #fee197;
+  color: Black;
+  background-color: White;
   text-decoration: underline;
   cursor: pointer;
 	cursor: hand;
@@ -84,8 +98,10 @@ div.tabbedMainMenu span.tabStripTabSelected a:hover
 div.tabbedMainMenu span.tabStripTab.disabled a,
 div.tabbedMainMenu span.tabStripTab.disabled a:hover
 {
-  color: Gray;
-  background-color: #e8e8e8;
+  color: #b0b0b0;
+  background-color: #efefef;
+	background-image: none;
+	text-decoration: none;
   cursor: default;
 }
 
@@ -100,20 +116,39 @@ div.tabbedMainMenu li span.topRight
 
 div.tabbedMainMenu a span.bottom
 {  
-  bottom: -1px;
+  bottom: 0px;
   left: 0px;
   height: 1px;
   width: 100%;  
 }
 
+/* Bottom tab border */
+div.tabbedMainMenu span.tabStripTab a span.bottom
+{  
+  border-bottom: solid 1px #083779;
+}
+
+/* Bottom tab border selected */
+div.tabbedMainMenu span.tabStripTabSelected a span.bottom
+{
+  border-bottom: solid 1px White;
+}
+
+div.tabbedMainMenu li span.topLeft,
+div.tabbedMainMenu li span.topRight
+{
+  display:none;
+  
+  background-image: url(../../Image/NovaBlue/CornerBackgroundBlueTransparentNoBorder.gif);
+  background-repeat: no-repeat;
+  width: 5px;
+  height: 5px;
+}
+
 /* Top Left tab corner */
 div.tabbedMainMenu li span.topLeft
 {
-  background-image: url(../../Image/ClassicBlue/TabbedMainMenuTabTopLeftCorner.gif);
-  background-repeat: no-repeat;
   background-position: left top;
-  width: 5px;
-  height: 5px;
   top: 0px;
   left: 0px;
 }
@@ -121,11 +156,7 @@ div.tabbedMainMenu li span.topLeft
 /* Top Right tab corner */
 div.tabbedMainMenu li span.topRight
 {
-  background-image: url(../../Image/ClassicBlue/TabbedMainMenuTabTopRightCorner.gif);
-  background-repeat: no-repeat;
   background-position: right top;
-  width: 5px;
-  height: 5px;
   top: 0px;
   right: 0px;
 }
@@ -140,6 +171,11 @@ div.tabbedMainMenu li span.anchorBody
 }
 
 /* Non-IE Browsers hack \*/
+html>body div.tabbedMainMenu span.tabStripTabWrapper
+{
+  margin-bottom: 0px; /* Removes an offset between the main menu and the sub menu */
+}
+
 html>body div.tabbedMainMenu span.tabStripTab,
 html>body div.tabbedMainMenu span.tabStripTabSelected
 {
@@ -171,7 +207,7 @@ div.tabbedSubMenu span.tabStripTabSeparator
 div.tabbedSubMenu span.tabStripTab,
 div.tabbedSubMenu span.tabStripTabSelected
 {  
-  border-right: solid 1px White;
+  border-right: solid 1px Black;
 
   padding-top: 0.1em;
   padding-bottom: 0.1em;
@@ -182,15 +218,16 @@ div.tabbedSubMenu span.tabStripTabSelected
 div.tabbedSubMenu span.tabStripTab a
 {  
   border: none;
-  background-color: #02537c;
-  color: White;
+  background-color: White;
+  color: Black;
 }
 
 div.tabbedSubMenu span.tabStripTab a:hover,
 div.tabbedSubMenu span.tabStripTabSelected a:hover
 {
-	background-color: #fee197;	
-  color: Blue;
+	background-color: White;	
+  color: Black;
+  text-decoration: underline;
   cursor: pointer;
 	cursor: hand;
 }
@@ -198,22 +235,21 @@ div.tabbedSubMenu span.tabStripTabSelected a:hover
 div.tabbedSubMenu span.tabStripTabSelected a
 {
   border: none;
-  background-color: #02537c;
-  color: White;
+  background-color: White;
+  color: Black;
   text-decoration: underline;
 }
 
 div.tabbedSubMenu span.tabStripTab.disabled a,
 div.tabbedSubMenu span.tabStripTab.disabled a:hover
 {
-  color: White;
-  background-color: Transparent;
+  color: #b0b0b0;
+  background-color: White;
   cursor: default;
 }
 
 div.tabbedSubMenu span.tabStripTab.disabled img
 {
-  opacity: 1;
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=1),
           progid:DXImageTransform.Microsoft.BasicImage(grayscale=0);
   -moz-opacity: 1;

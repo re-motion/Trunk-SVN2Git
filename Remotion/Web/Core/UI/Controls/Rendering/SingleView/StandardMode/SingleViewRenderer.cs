@@ -44,7 +44,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       }
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       RenderTopControls();
@@ -55,16 +55,24 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       Writer.RenderEndTag ();
     }
 
+    public string CssClassWrapper
+    {
+      get { return "wrapper"; }
+    }
+
     private void RenderTopControls ()
     {
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.TopControl.ClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTopControls);
       Control.TopControlsStyle.AddAttributesToRender (Writer);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       Control.TopControl.RenderControl (Writer);
 
+      Writer.RenderEndTag();
       Writer.RenderEndTag();
     }
 
@@ -75,8 +83,12 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       Control.BottomControlsStyle.AddAttributesToRender (Writer);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
       Control.BottomControl.RenderControl (Writer);
 
+      Writer.RenderEndTag();
       Writer.RenderEndTag();
     }
 
@@ -85,11 +97,14 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassView);
       Control.ViewStyle.AddAttributesToRender (Writer);
-      
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       Control.View.RenderControl (Writer);
 
+      Writer.RenderEndTag();
       Writer.RenderEndTag();
     }
 

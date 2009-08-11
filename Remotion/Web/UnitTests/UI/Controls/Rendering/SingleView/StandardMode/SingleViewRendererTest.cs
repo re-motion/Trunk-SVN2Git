@@ -167,25 +167,31 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.StandardMode
       }
 
       var contentDiv = outerDiv.GetAssertedChildElement ("div", 0);
-      contentDiv.AssertAttributeValueEquals ("class", renderer.CssClassContent);
+      contentDiv.AssertAttributeValueEquals ("class", renderer.CssClassWrapper);
 
       var topControls = contentDiv.GetAssertedChildElement ("div", 0);
       topControls.AssertAttributeValueEquals ("id", _control.TopControl.ClientID);
       topControls.AssertAttributeValueEquals ("class", renderer.CssClassTopControls);
+      var topContent = topControls.GetAssertedChildElement ("div", 0);
+      topContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
 
       var bottomControls = contentDiv.GetAssertedChildElement ("div", 2);
       bottomControls.AssertAttributeValueEquals ("id", _control.BottomControl.ClientID);
       bottomControls.AssertAttributeValueEquals ("class", renderer.CssClassBottomControls);
+      var bottomContent = bottomControls.GetAssertedChildElement ("div", 0);
+      bottomContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
 
       var viewContainer = contentDiv.GetAssertedChildElement ("div", 1);
       viewContainer.AssertAttributeValueEquals ("id", _control.ViewClientID);
       viewContainer.AssertAttributeValueEquals ("class", renderer.CssClassView);
+      var viewContent = viewContainer.GetAssertedChildElement ("div", 0);
+      viewContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
 
       if (!isEmpty)
       {
-        topControls.AssertTextNode ("TopControl", 0);
-        bottomControls.AssertTextNode ("BottomControl", 0);
-        viewContainer.AssertTextNode ("View", 0);
+        topContent.AssertTextNode ("TopControl", 0);
+        bottomContent.AssertTextNode ("BottomControl", 0);
+        viewContent.AssertTextNode ("View", 0);
       }
     }
   }

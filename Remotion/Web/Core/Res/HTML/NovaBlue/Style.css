@@ -1,10 +1,11 @@
 /*  Changes the font-size to 80%. 
-    Font-size is compatible with all browsers for pages displayed in quirks mode. (The default for ASP.NET projekts) */
+    Font-size is compatible with all browsers for pages displayed in standard mode. (The default for ASP.NET projects) */
 @import url("FontSize080.css");
 
 body
 {
   overflow: auto;
+  /*background-color: #073779;*/
 }
 
 body, input, select, textarea

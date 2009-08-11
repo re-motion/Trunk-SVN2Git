@@ -41,7 +41,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
       else if (!string.IsNullOrEmpty (Control.Attributes["class"]))
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.Attributes["class"]);
       else
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassBase);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
 
       Writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
@@ -75,15 +75,15 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
         Writer.AddStyleAttribute ("height", "75%");
       }
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassBase);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
     protected virtual void RenderTabStrip ()
     {
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassTabStrip);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabStrip);
       Writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
 
-      Control.TabStrip.CssClass = Control.CssClassTabStrip;
+      Control.TabStrip.CssClass = CssClassTabStrip;
       Control.TabStrip.RenderControl (Writer);
 
       Writer.RenderEndTag (); // end td
@@ -95,20 +95,20 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
         Writer.AddStyleAttribute ("border", "solid 1px black");
       Control.ActiveViewStyle.AddAttributesToRender (Writer);
       if (string.IsNullOrEmpty (Control.ActiveViewStyle.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassActiveView);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
       Writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewClientID);
       Control.ActiveViewStyle.AddAttributesToRender (Writer);
       if (string.IsNullOrEmpty (Control.ActiveViewStyle.CssClass))
-        Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassActiveView);
+        Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassViewBody);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassViewBody);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin body div
 
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewClientID + "_Content");
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassContent);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
 
       var view = Control.GetActiveView ();
@@ -132,7 +132,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
     {
       Style style = Control.TopControlsStyle;
       PlaceHolder placeHolder = Control.TopControl;
-      string cssClass = Control.CssClassTopControls;
+      string cssClass = CssClassTopControls;
       RenderPlaceHolder (style, placeHolder, cssClass);
     }
 
@@ -140,7 +140,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
     {
       Style style = Control.BottomControlsStyle;
       PlaceHolder placeHolder = Control.BottomControl;
-      string cssClass = Control.CssClassBottomControls;
+      string cssClass = CssClassBottomControls;
       RenderPlaceHolder (style, placeHolder, cssClass);
     }
 
@@ -151,14 +151,14 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
         if (placeHolder.Controls.Count > 0)
           Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
         else
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass + " " + Control.CssClassEmpty);
+          Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass + " " + CssClassEmpty);
       }
       else
       {
         if (placeHolder.Controls.Count > 0)
           Writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass);
         else
-          Writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass + " " + Control.CssClassEmpty);
+          Writer.AddAttribute (HtmlTextWriterAttribute.Class, style.CssClass + " " + CssClassEmpty);
       }
       Writer.RenderBeginTag (HtmlTextWriterTag.Td); // begin td
 
@@ -168,7 +168,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin outer div
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Class, Control.CssClassContent);
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div); // begin content div
 
       placeHolder.RenderControl (Writer);
@@ -178,5 +178,88 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.QuirksMode
 
       Writer.RenderEndTag (); // end td
     }
+
+    #region protected virtual string CssClass...
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="TabbedMultiView"/>. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedMultiView</c>. </para>
+    /// </remarks>
+    public virtual string CssClassBase
+    {
+      get { return "tabbedMultiView"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="TabbedMultiView"/>'s tab strip. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedMultiViewTabStrip</c>. </para>
+    /// </remarks>
+    public virtual string CssClassTabStrip
+    {
+      get { return "tabbedMultiViewTabStrip"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the <see cref="TabbedMultiView"/>'s active view. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedMultiViewActiveView</c>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="ITabbedMultiView.ActiveViewStyle"/> is not set. </para>
+    /// </remarks>
+    public virtual string CssClassActiveView
+    {
+      get { return "tabbedMultiViewActiveView"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the top section. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedMultiViewTopControls</c>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="ITabbedMultiView.TopControlsStyle"/> is not set. </para>
+    /// </remarks>
+    public virtual string CssClassTopControls
+    {
+      get { return "tabbedMultiViewTopControls"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to the bottom section. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>tabbedMultiViewBottomControls</c>. </para>
+    ///   <para> Applied only if the <see cref="Style.CssClass"/> of the <see cref="ITabbedMultiView.BottomControlsStyle"/> is not set. </para>
+    /// </remarks>
+    public virtual string CssClassBottomControls
+    {
+      get { return "tabbedMultiViewBottomControls"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to a <c>div</c> wrapping the content and the border elements. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>body</c>. </para>
+    /// </remarks>
+    public virtual string CssClassViewBody
+    {
+      get { return "body"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied to a <c>div</c> intended for formatting the content. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>content</c>. </para>
+    /// </remarks>
+    public virtual string CssClassContent
+    {
+      get { return "content"; }
+    }
+
+    /// <summary> Gets the CSS-Class applied when the section is empty. </summary>
+    /// <remarks> 
+    ///   <para> Class: <c>empty</c>. </para>
+    ///   <para> 
+    ///     Applied in addition to the regular CSS-Class. Use <c>td.tabbedMultiViewTopControls.emtpy</c> or 
+    ///     <c>td.tabbedMultiViewBottomControls.emtpy</c>as a selector.
+    ///   </para>
+    /// </remarks>
+    public virtual string CssClassEmpty
+    {
+      get { return "empty"; }
+    }
+
+    #endregion
   }
 }

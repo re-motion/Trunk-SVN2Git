@@ -28,7 +28,7 @@ namespace Remotion.Web.Utilities
 {
   public interface IScriptUtility
   {
-    void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string elementID);
+    void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQueryElementSelector);
   }
 
   /// <summary> Utility class for client-side scripts. </summary>
@@ -45,21 +45,23 @@ namespace Remotion.Web.Utilities
 
     public abstract class ScriptUtilityBase : IScriptUtility
     {
-      public void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string elementID)
+      public void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQueryElementSelector)
       {
         ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-        ArgumentUtility.CheckNotNullOrEmpty ("elementID", elementID);
+        ArgumentUtility.CheckNotNullOrEmpty ("jQueryElementSelector", jQueryElementSelector);
 
         string key = typeof (ScriptUtility).FullName + "_StyleUtility";
         string url = GetScriptUrl(control);
+        
+        htmlHeadAppender.RegisterJQueryJavaScriptInclude (control);
         htmlHeadAppender.RegisterJavaScriptInclude (key, url);
 
         control.Page.ClientScript.RegisterStartupScriptBlock (
             control,
             typeof (Page),
-            "BorderSpans_" + elementID,
+            "BorderSpans_" + jQueryElementSelector,
             string.Format (
-                "StyleUtility.CreateBorderSpans (document.getElementById ('{0}'));", elementID));
+                "StyleUtility.CreateBorderSpans ('{0}');", jQueryElementSelector));
       }
 
       protected abstract string GetScriptUrl (IControl control);

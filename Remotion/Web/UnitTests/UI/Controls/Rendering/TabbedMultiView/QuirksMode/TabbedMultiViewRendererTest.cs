@@ -58,15 +58,6 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       _control.Stub (stub => stub.ActiveViewStyle).Return (new WebTabStyle ());
       _control.Stub (stub => stub.ControlStyle).Return (new Style (stateBag));
 
-      _control.Stub (stub => stub.CssClassActiveView).Return ("CssClassActiveView");
-      _control.Stub (stub => stub.CssClassBase).Return ("CssClassBase");
-      _control.Stub (stub => stub.CssClassBottomControls).Return ("CssClassBottomControls");
-      _control.Stub (stub => stub.CssClassContent).Return ("CssClassContent");
-      _control.Stub (stub => stub.CssClassEmpty).Return ("CssClassEmpty");
-      _control.Stub (stub => stub.CssClassTabStrip).Return ("CssClassTabStrip");
-      _control.Stub (stub => stub.CssClassTopControls).Return ("CssClassTopControls");
-      _control.Stub (stub => stub.CssClassViewBody).Return ("CssClassViewBody");
-
       var clientScriptStub = MockRepository.GenerateStub<IClientScriptManager>();
 
       var pageStub = MockRepository.GenerateStub<IPage>();
@@ -183,16 +174,16 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       var renderer = new TabbedMultiViewRenderer (HttpContext, Html.Writer, _control);
       renderer.Render();
 
-      var table = GetAssertedTableElement (withCssClass, inAttributes, isDesignMode);
-      AssertTopRow (table, withCssClass, isEmpty);
-      AssertTabStripRow (table);
-      AssertViewRow (table, withCssClass, isDesignMode);
-      AssertBottomRow (table, withCssClass, isEmpty);
+      var table = GetAssertedTableElement (withCssClass, inAttributes, isDesignMode, renderer);
+      AssertTopRow (table, withCssClass, isEmpty, renderer);
+      AssertTabStripRow (table, renderer);
+      AssertViewRow (table, withCssClass, isDesignMode, renderer);
+      AssertBottomRow (table, withCssClass, isEmpty, renderer);
     }
 
-    private XmlNode GetAssertedTableElement (bool withCssClass, bool inAttributes, bool isDesignMode)
+    private XmlNode GetAssertedTableElement (bool withCssClass, bool inAttributes, bool isDesignMode, TabbedMultiViewRenderer renderer)
     {
-      string cssClass = _control.CssClassBase;
+      string cssClass = renderer.CssClassBase;
       if (withCssClass)
       {
         cssClass = inAttributes ? _control.Attributes["class"] : _control.CssClass;
@@ -215,9 +206,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       return table;
     }
 
-    private void AssertBottomRow (XmlNode table, bool withCssClass, bool isEmpty)
+    private void AssertBottomRow (XmlNode table, bool withCssClass, bool isEmpty, TabbedMultiViewRenderer renderer)
     {
-      string cssClass = _control.CssClassBottomControls;
+      string cssClass = renderer.CssClassBottomControls;
       if (withCssClass)
         cssClass = c_cssClass;
 
@@ -227,7 +218,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       var tdBottom = trBottom.GetAssertedChildElement ("td", 0);
       tdBottom.AssertAttributeValueContains ("class", cssClass);
       if( isEmpty )
-        tdBottom.AssertAttributeValueContains ("class", _control.CssClassEmpty);
+        tdBottom.AssertAttributeValueContains ("class", renderer.CssClassEmpty);
       tdBottom.AssertChildElementCount (1);
 
       var divBottomControl = tdBottom.GetAssertedChildElement ("div", 0);
@@ -236,13 +227,13 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       divBottomControl.AssertChildElementCount (1);
 
       var divBottomContent = divBottomControl.GetAssertedChildElement ("div", 0);
-      divBottomContent.AssertAttributeValueEquals ("class", _control.CssClassContent);
+      divBottomContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
       divBottomContent.AssertChildElementCount (0);
     }
 
-    private void AssertViewRow (XmlNode table, bool withCssClass, bool isDesignMode)
+    private void AssertViewRow (XmlNode table, bool withCssClass, bool isDesignMode, TabbedMultiViewRenderer renderer)
     {
-      string cssClassActiveView = _control.CssClassActiveView;
+      string cssClassActiveView = renderer.CssClassActiveView;
       if (withCssClass)
         cssClassActiveView = c_cssClass;
 
@@ -262,18 +253,18 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       divActiveView.AssertChildElementCount (1);
 
       var divBody = divActiveView.GetAssertedChildElement ("div", 0);
-      divBody.AssertAttributeValueEquals ("class", _control.CssClassViewBody);
+      divBody.AssertAttributeValueEquals ("class", renderer.CssClassViewBody);
       divBody.AssertChildElementCount (1);
 
       var divActiveViewContent = divBody.GetAssertedChildElement ("div", 0);
       divActiveViewContent.AssertAttributeValueEquals ("id", _control.ClientID + "_ActiveView_Content");
-      divActiveViewContent.AssertAttributeValueEquals ("class", _control.CssClassContent);
+      divActiveViewContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
       divActiveViewContent.AssertChildElementCount (0);
     }
 
-    private void AssertTabStripRow (XmlNode table)
+    private void AssertTabStripRow (XmlNode table, TabbedMultiViewRenderer renderer)
     {
-      string cssClass = _control.CssClassTabStrip;
+      string cssClass = renderer.CssClassTabStrip;
 
       var trTabStrip = table.GetAssertedChildElement ("tr", 1);
       trTabStrip.AssertChildElementCount (1);
@@ -283,9 +274,9 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       tdTabStrip.AssertChildElementCount (0);
     }
 
-    private void AssertTopRow (XmlNode table, bool withCssClass, bool isEmpty)
+    private void AssertTopRow (XmlNode table, bool withCssClass, bool isEmpty, TabbedMultiViewRenderer renderer)
     {
-      string cssClass = _control.CssClassTopControls;
+      string cssClass = renderer.CssClassTopControls;
       if (withCssClass)
         cssClass = c_cssClass;
 
@@ -295,7 +286,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       var tdTop = trTop.GetAssertedChildElement ("td", 0);
       tdTop.AssertAttributeValueContains ("class", cssClass);
       if( isEmpty )
-        tdTop.AssertAttributeValueContains ("class", _control.CssClassEmpty);
+        tdTop.AssertAttributeValueContains ("class", renderer.CssClassEmpty);
 
       tdTop.AssertChildElementCount (1);
 
@@ -305,7 +296,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.QuirksMod
       divTopControl.AssertChildElementCount (1);
 
       var divTopContent = divTopControl.GetAssertedChildElement ("div", 0);
-      divTopContent.AssertAttributeValueEquals ("class", _control.CssClassContent);
+      divTopContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
       divTopContent.AssertChildElementCount (0);
     }
   }

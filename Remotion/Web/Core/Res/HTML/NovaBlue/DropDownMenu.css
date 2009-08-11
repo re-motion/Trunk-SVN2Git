@@ -1,7 +1,7 @@
 span.DropDownMenuContainer 
 {
   display: block;
-	color: blue;
+	color: #083779;
 	background-color: White;
 	position: relative;
 	font-family: sans-serif;
@@ -12,7 +12,7 @@ span.DropDownMenuSelect
 {
   display: block;
   position: relative;
-	border: solid 1px #005588;
+	border: solid 1px #083779;
 	text-align: left;
 	vertical-align: top;
 	white-space: nowrap;
@@ -49,7 +49,7 @@ span.DropDownMenuContainer span.disabled a
 
 a.DropDownMenuSelectButton 
 {
-  background-color: #DFEEF5;
+  background-color: #083779;
   display: inline-block;
 }
 
@@ -62,7 +62,7 @@ span.DropDownMenuSelect span.DropDownMenuButton
   bottom: 0;
   right: 1px;
   width: 16px;
-  background-color: #DFEEF5;
+  background-color: #083779;
   margin-right: 0;
   background-position: center center;
   background-repeat: no-repeat;
@@ -87,21 +87,21 @@ span.DropDownMenuSelect img
 
 ul.DropDownMenuOptions {
   font-size: 80%;
-	border: solid 1px #005588;
+	border: solid 1px #083779;
 	position: absolute;
 	right: 0;
 	margin: 0;
 	margin-top: -1px;
 	padding: 0;
 	list-style: none;
-	background: #FFFFFF url(../../Image/DropDownMenuItemIconPane.gif) repeat-y top left;
+	background: #FFFFFF url(../../Image/NovaBlue/DropDownMenuItemIconPane.gif) repeat-y top left;
 	z-index: 1000;
 }
 
 ul.DropDownMenuOptions li.selected a
 {
-  background-color: #FFDE98;
-	border: solid 1px #005588;
+  background-color: #e6f0ff;
+	border: solid 1px #083779;
 	padding: 0px 2px 2px 2px;
 }
 
@@ -116,8 +116,8 @@ ul.DropDownMenuOptions li a {
 }
  
 ul.DropDownMenuOptions li a:hover {
-	background-color: #FFDE98;
-	border: solid 1px #005588;
+	background-color: #e6f0ff;
+	border: solid 1px #083779;
 	padding: 0px 2px 2px 2px;
 }
  
@@ -137,7 +137,7 @@ ul.DropDownMenuOptions li.DropDownMenuItemDisabled a
 {
   border-style: none;
 	padding: 1px 3px 3px 3px;
-	color: #808080
+	color: gray;
 }
 
 ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover {

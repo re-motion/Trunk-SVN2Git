@@ -282,9 +282,6 @@ namespace Remotion.Web.UI
       {
         string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "Utilities.js");
         RegisterJavaScriptInclude (key, href);
-
-        // Utilities.js also needs jQuery
-        RegisterJQueryJavaScriptInclude (control);
       }
     }
 

@@ -15,19 +15,101 @@ div.tabbedMultiView
   height: 100%;
 }
 
+div.tabbedMultiView div.wrapper
+{
+  position: relative;
+  width: auto;
+  height: auto;
+}
+
 div.tabbedMultiView div.content
 {
   position: relative;
-  margin: 10px;
-  width: auto;
-  height: auto;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+div.tabbedMultiViewActiveView
+{
+  overflow: hidden;
+  border-left:  solid 1px #083779;
+  border-right:  solid 1px #083779;
+  border-bottom:  solid 1px #083779;
+  padding-left: 0.2em;
+}
+
+div.tabbedMultiViewActiveView div.content
+{
+  overflow: auto;
+}
+
+div.tabbedMultiViewActiveView *.top, 
+div.tabbedMultiViewActiveView *.left, 
+div.tabbedMultiViewActiveView *.bottom, 
+div.tabbedMultiViewActiveView *.right, 
+div.tabbedMultiViewActiveView *.topLeft,
+div.tabbedMultiViewActiveView *.bottomLeft, 
+div.tabbedMultiViewActiveView *.topRight, 
+div.tabbedMultiViewActiveView *.bottomRight
+{
+  display: none;
+}
+
+div.tabbedMultiViewActiveView *.topLeft, 
+div.tabbedMultiViewActiveView *.bottomLeft, 
+div.tabbedMultiViewActiveView *.topRight, 
+div.tabbedMultiViewActiveView *.bottomRight
+{
+  position: absolute;
+  font-size: 0.5%;
+  display: block;
+  background-image: url(../../Image/NovaBlue/CornerBackgroundWhiteTransparentBlueBorder.gif);
+  background-repeat: no-repeat;
+  width: 5px;
+  height: 5px;
+}
+
+div.tabbedMultiViewActiveView *.topLeft
+{
+  background-position: top left;
+  top: -1px;
+  left: -1px;
+}
+
+div.tabbedMultiViewActiveView *.topRight
+{
+  background-position: top right;
+  top: -1px;
+  right: -1px;
+}
+
+div.tabbedMultiViewActiveView *.bottomLeft
+{
+  background-position: bottom left;
+  bottom: -1px;
+  left: -1px;
+}
+
+div.tabbedMultiViewActiveView *.bottomRight
+{
+  background-position: bottom right;
+  bottom: -1px;
+  right: -1px;
 }
 
 /* Applied to the top section of the multi view. Height cannot be provided in percent. */
 div.tabbedMultiViewTopControls
 {
-  padding-bottom: 1em;
+  padding: 0;
 	overflow: hidden;
+}
+
+div.tabbedMultiViewTopControls.emtpy
+{
+  height: 1em;
+  background-color: White;
 }
 
 div.tabbedMultiViewTabStrip div
@@ -39,30 +121,39 @@ div.tabbedMultiViewTabStrip div
 /* Applied to the bottom section of the multi view. Height cannot be provided in percent. */
 div.tabbedMultiViewBottomControls
 {
-  padding-top: 1em;
   overflow: hidden;
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 
-div.tabbedMultiViewActiveView
+div.tabbedMultiViewBottomControls.emtpy
 {
-  overflow: auto;
-  border-left: solid 1px #005588;
-  border-right: solid 1px #005588;
-  border-bottom: solid 1px #005588;
-  padding: 0.5em 0.2em;
 }
 
-
-div.tabbedMultiViewActiveView *.left, 
-div.tabbedMultiViewActiveView *.top, 
-div.tabbedMultiViewActiveView *.right, 
-div.tabbedMultiViewActiveView *.bottom,
-div.tabbedMultiViewActiveView *.topLeft, 
-div.tabbedMultiViewActiveView *.bottomLeft, 
-div.tabbedMultiViewActiveView *.topRight, 
-div.tabbedMultiViewActiveView *.bottomRight
+div.tabbedMultiViewBottomControls *.bottomLeft, 
+div.tabbedMultiViewBottomControls *.bottomRight
 {
-  display: none;
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  font-size: 0.5%;
+  display: block;
+  background-image: url(../../Image/NovaBlue/CornerBackgroundBlueTransparentNoBorder.gif);
+  background-repeat: no-repeat;
+}
+
+div.tabbedMultiViewBottomControls *.bottomLeft
+{
+  background-position: bottom left;
+  bottom: 0px;
+  left: 0px;
+}
+
+div.tabbedMultiViewBottomControls *.bottomRight
+{
+  background-position: bottom right;
+  bottom: 0px;
+  right: 0px;
 }
 
 /* Tab Strip */
@@ -71,65 +162,74 @@ div.tabbedMultiViewTabStrip
 {
   padding: 0;
   width: 100%;
-  font-family: Arial;
-}
-
-div.tabbedMainMenu ul
-{
-  margin-bottom: 0px !important;
+  background-color: White;
+  padding-right: 1em;
 }
 
 div.tabbedMultiViewTabStrip div.tabStripTabsPane
 {
-  border-bottom: solid 1px #005588;
+  border-bottom: solid 1px #083779;
+}
+
+div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
+{
+  display: inline;
+  margin-bottom: -1px; /* Moves the UL into the surrounding DIV. */
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabWrapper
 {
+  padding-top: 0.3em;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator
 {
-  width: 1em;
-  border-bottom: solid 1px #005588;
+  width: 0.6em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
+  border-bottom: solid 1px #083779;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab
 {
-  border: solid 1px #005588;
+  border: solid 1px #083779;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab a
 {
   border: none;
-  background-color: #e1ecfc;
-  color: Blue;
+  background-color: #083779;
+  background-image: url(../../Image/NovaBlue/TabbedMultiViewTabBackground.gif);
+  background-repeat: repeat-x;
+  background-position: top;
+  color: White;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab a:hover
 {
-  background-color: #fee197;
-  color: Blue;
+  background-color: #083779;
+  background-image: url(../../Image/NovaBlue/TabbedMultiViewTabBackgroundHover.gif);
+  background-repeat: repeat-x;
+  background-position: bottom;
+  color: White;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabSelected
 {
-  border: solid 1px #005588;
+  border: solid 1px #083779;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabSelected a
 {
   border: none;
   background-color: White;
-  color: Blue;
+  color: #0D4EBA;
 }
 
 /* Bottom tab border */
 div.tabbedMultiViewTabStrip a span.bottom
 {
   position: absolute;
-  display: block;
   font-size: 0.5%;
+  display: block;
   left: 0px;
   bottom: -1px;
   height: 1px;
@@ -139,7 +239,7 @@ div.tabbedMultiViewTabStrip a span.bottom
 /* Bottom tab border */
 div.tabbedMultiViewTabStrip span.tabStripTab a span.bottom
 {
-  border-bottom: solid 1px #005588;
+  border-bottom: solid 1px #083779;
 }
 
 /* Bottom tab border selected */
@@ -151,10 +251,10 @@ div.tabbedMultiViewTabStrip span.tabStripTabSelected a span.bottom
 /* Content area of the tab */
 div.tabbedMultiViewTabStrip a span.anchorBody
 {
-  padding-top: 0.1em; /* Value must also be set in the Non-IE browsers section as padding for the separator. */
-  padding-bottom: 0.1em; /* Value must also be set in the Non-IE browsers section as padding for the separator. */
-  padding-left: 0.3em;
-  padding-right: 0.3em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em; 
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
 
 div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
@@ -165,24 +265,23 @@ div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
 html > body div.tabbedMultiViewTabStrip span.tabStripTab, 
 html > body div.tabbedMultiViewTabStrip span.tabStripTabSelected
 {
-  margin-left: 1em; /* Provides room for the separator. */
+  margin: 0; /* Separator already has width. */
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabWrapper
 {
-  /*margin-bottom: -5px; /* The border-width and padding */
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
   margin-bottom: 1px; /* The width of the top-border of the tabs. */
-  padding-top: 1px; /* The padding used for the anchorBody span. */
-  padding-bottom: 1px; /* The padding used for the anchorBody span. */
+  padding-top: 0.2em; /* The padding used for the content span. */
+  padding-bottom: 0.2em; /* The padding used for the content span. */
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody, 
 div.tabbedMultiViewTabStrip span.tabStripTabSelected span.anchorBody, 
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
-  height: 1.4em;
+  height: 1.5em;
 }
