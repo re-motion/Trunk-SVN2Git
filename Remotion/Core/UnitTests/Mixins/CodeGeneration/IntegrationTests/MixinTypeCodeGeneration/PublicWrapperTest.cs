@@ -30,16 +30,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
   public class PublicWrapperTest : CodeGenerationBaseTest
   {
     [Test]
-    public void PublicWrapperGeneratedForOverriddenProtected()
-    {
-      Type type = ((IMixinTarget) CreateMixedObject<ClassOverridingMixinMembersProtected> (typeof (MixinWithAbstractMembers))).Mixins[0].GetType();
-      MethodInfo wrappedMethod = typeof (MixinWithAbstractMembers).GetMethod ("AbstractMethod", BindingFlags.NonPublic | BindingFlags.Instance);
-
-      MethodInfo wrapper = GetWrapper (type, wrappedMethod);
-      Assert.That (wrapper, Is.Not.Null);
-    }
-
-    [Test]
     public void PublicWrapperGeneratedForProtectedOverrider ()
     {
       Type type = ((IMixinTarget) CreateMixedObject<BaseType1> (typeof (MixinWithProtectedOverrider))).Mixins[0].GetType ();

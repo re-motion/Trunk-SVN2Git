@@ -44,8 +44,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     private MixinDefinition _simpleMixinDefinition;
     private MixinDefinition _signedMixinDefinition;
     private MixinTypeGenerator _mixinTypeGenerator;
-    private MethodInfo _referenceMethodWrapper;
-    private IEnumerable<MethodInfo> _methodsToBeWrapped;
 
     [SetUp]
     public void SetUp ()
@@ -64,14 +62,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       PrivateInvoke.InvokeNonPublicMethod (_simpleClassDefinition.Mixins, "Add", _simpleMixinDefinition);
 
       _mixinTypeGenerator = new MockRepository().PartialMock<MixinTypeGenerator> (_moduleMock, _typeGeneratorMock, _simpleMixinDefinition, GuidNameProvider.Instance);
-
-      _referenceMethodWrapper = typeof (DateTime).GetMethod ("get_Now");
-      _methodsToBeWrapped = (from m in _simpleMixinDefinition.Type.GetMethods (BindingFlags.Instance | BindingFlags.NonPublic)
-                             where m.IsFamily
-                             select m);
-      foreach (var m in _methodsToBeWrapped)
-        _classEmitterMock.Stub (mock => mock.GetPublicMethodWrapper (m)).Return (_referenceMethodWrapper);
-
     }
 
     [Test]
@@ -129,15 +119,24 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     }
 
     [Test]
-    public void GetBuiltType_ReturnsWrappersForAllProtectedMethods ()
+    public void GetBuiltType_ReturnsWrappersForAllProtectedOverriders ()
     {
       DisableGenerate ();
 
+      var finalizeMethodInfo = typeof (object).GetMethod ("Finalize", BindingFlags.NonPublic | BindingFlags.Instance);
+      var protectedOverrider = new MethodDefinition (finalizeMethodInfo, _simpleMixinDefinition);
+      var overridden = new MethodDefinition (finalizeMethodInfo, _simpleClassDefinition);
+
+      PrivateInvoke.SetPublicProperty (protectedOverrider, "Base", overridden);
+      PrivateInvoke.InvokeNonPublicMethod (_simpleMixinDefinition.Methods, "Add", protectedOverrider);
+      PrivateInvoke.InvokeNonPublicMethod (_simpleClassDefinition.Methods, "Add", overridden);
+
+      var fakeMethodWrapper = typeof (DateTime).GetMethod ("get_Now");
+      _classEmitterMock.Stub (mock => mock.GetPublicMethodWrapper (finalizeMethodInfo)).Return (fakeMethodWrapper);
       _classEmitterMock.Stub (mock => mock.BuildType ()).Return (typeof (string));
 
       var result = _mixinTypeGenerator.GetBuiltType ();
-      foreach (var m in _methodsToBeWrapped)
-        Assert.That (result.GetMethodWrapper (m), Is.SameAs (_referenceMethodWrapper));
+      Assert.That (result.GetMethodWrapper (finalizeMethodInfo), Is.SameAs (fakeMethodWrapper));
     }
 
     private void DisableGenerate ()

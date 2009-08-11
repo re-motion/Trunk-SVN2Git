@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Utilities;
@@ -168,12 +169,14 @@ namespace Remotion.Mixins.Definitions
 
     public bool HasProtectedOverriders ()
     {
-      foreach (MethodDefinition method in GetAllMethods())
-      {
-        if (method.Base != null && (method.MethodInfo.IsFamily || method.MethodInfo.IsFamilyOrAssembly))
-          return true;
-      }
-      return false;
+      return GetProtectedOverriders ().Any ();
+    }
+
+    public IEnumerable<MethodDefinition> GetProtectedOverriders ()
+    {
+      return from m in GetAllMethods()
+             where m.Base != null && m.MethodInfo.IsFamily || m.MethodInfo.IsFamilyOrAssembly
+             select m;
     }
 
     public override string ToString ()

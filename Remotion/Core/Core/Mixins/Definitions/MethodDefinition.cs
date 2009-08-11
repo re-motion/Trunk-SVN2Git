@@ -54,7 +54,7 @@ namespace Remotion.Mixins.Definitions
     public MethodDefinition Base
     {
       get { return _base; }
-      set { BaseAsMember = value; }
+      protected internal set { BaseAsMember = value; }
     }
 
     public bool IsAbstract

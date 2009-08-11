@@ -18,7 +18,7 @@ using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  [Uses(typeof(MixinWithAbstractMembers))]
+  [Uses (typeof (MixinWithAbstractMembers))]
   [Serializable]
   public class ClassOverridingMixinMembersProtected
   {

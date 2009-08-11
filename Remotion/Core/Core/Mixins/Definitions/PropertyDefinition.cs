@@ -79,7 +79,7 @@ namespace Remotion.Mixins.Definitions
     public PropertyDefinition Base
     {
       get { return _base; }
-      set { BaseAsMember = value; }
+      protected internal set { BaseAsMember = value; }
     }
 
     protected override bool IsSignatureCompatibleWith (MemberDefinitionBase overrider)

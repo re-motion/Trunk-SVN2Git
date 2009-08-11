@@ -20,6 +20,7 @@ using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using System.Linq;
 
 namespace Remotion.UnitTests.Mixins.Definitions
 {
@@ -190,6 +191,21 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
       Assert.IsFalse (definition.Mixins[0].HasOverriddenMembers ());
+    }
+
+    [Test]
+    public void GetProtectedOverriders ()
+    {
+      const BindingFlags bf = BindingFlags.NonPublic | BindingFlags.Instance;
+
+      TargetClassDefinition bt1 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider));
+      var overriders = bt1.Mixins[0].GetProtectedOverriders ();
+      Assert.That (overriders.Select (m => m.MethodInfo).ToArray (), Is.EquivalentTo (new[] {
+          typeof (MixinWithProtectedOverrider).GetMethod ("VirtualMethod", bf),
+          typeof (MixinWithProtectedOverrider).GetMethod ("get_VirtualProperty", bf),
+          typeof (MixinWithProtectedOverrider).GetMethod ("add_VirtualEvent", bf),
+          typeof (MixinWithProtectedOverrider).GetMethod ("remove_VirtualEvent", bf),
+          }));
     }
 
     [Test]

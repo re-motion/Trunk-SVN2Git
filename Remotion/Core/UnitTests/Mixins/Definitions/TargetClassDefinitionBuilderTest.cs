@@ -14,8 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
@@ -147,6 +149,25 @@ namespace Remotion.UnitTests.Mixins.Definitions
       TargetClassDefinition bt1 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassOverridingMixinMembersProtected),
           typeof (MixinWithAbstractMembers));
       Assert.IsFalse (bt1.HasOverriddenMembers ());
+    }
+
+    [Test]
+    public void GetProtectedOverriders ()
+    {
+      const BindingFlags bf = BindingFlags.NonPublic | BindingFlags.Instance;
+
+      TargetClassDefinition bt1 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          typeof (ClassOverridingMixinMembersProtected), 
+          typeof (MixinWithAbstractMembers));
+
+      var overriders = bt1.GetProtectedOverriders ();
+      Assert.That (overriders.Select (m => m.MethodInfo).ToArray (), Is.EquivalentTo (new[] {
+          typeof (ClassOverridingMixinMembersProtected).GetMethod ("AbstractMethod", bf),
+          typeof (ClassOverridingMixinMembersProtected).GetMethod ("RaiseEvent", bf),
+          typeof (ClassOverridingMixinMembersProtected).GetMethod ("get_AbstractProperty", bf),
+          typeof (ClassOverridingMixinMembersProtected).GetMethod ("add_AbstractEvent", bf),
+          typeof (ClassOverridingMixinMembersProtected).GetMethod ("remove_AbstractEvent", bf),
+          }));
     }
 
     [Test]

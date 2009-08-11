@@ -68,7 +68,7 @@ namespace Remotion.Mixins.Definitions
     public EventDefinition Base
     {
       get { return _base; }
-      set { BaseAsMember = value; }
+      protected internal set { BaseAsMember = value; }
     }
 
     public MethodDefinition AddMethod

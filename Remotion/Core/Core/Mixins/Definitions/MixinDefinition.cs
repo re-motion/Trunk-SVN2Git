@@ -48,7 +48,7 @@ namespace Remotion.Mixins.Definitions
     private readonly MixinKind _mixinKind;
     private readonly bool _acceptsAlphabeticOrdering;
 
-    private object _concreteTypeCacheKey;
+    private object _concreteTypeIdentifier;
     
     public MixinDefinition (MixinKind mixinKind, Type type, TargetClassDefinition targetClass, bool acceptsAlphabeticOrdering)
         : base (type)
@@ -168,12 +168,12 @@ namespace Remotion.Mixins.Definitions
       // these are used as the cache key (together with the mixin type), ie. we will always use the same concrete type given the same combination
       // of overriding methods for the same mixin.
 
-      if (_concreteTypeCacheKey == null)
-        _concreteTypeCacheKey = CalculateConcreteMixinTypeCacheKey();
-      return _concreteTypeCacheKey;
+      if (_concreteTypeIdentifier == null)
+        _concreteTypeIdentifier = CalculateConcreteTypeIdentifier ();
+      return _concreteTypeIdentifier;
     }
 
-    private object CalculateConcreteMixinTypeCacheKey()
+    private object CalculateConcreteTypeIdentifier ()
     {
       var topMostOverriders = new Set<MethodInfo> ();
       foreach (var member in GetAllMethods())
