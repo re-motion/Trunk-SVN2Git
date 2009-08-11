@@ -182,8 +182,8 @@ namespace Remotion.Mixins.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
 
-      GetConcreteType (configuration.TargetClass); // ensure base type was created
-      ConcreteMixinType concreteMixinType = Cache.GetConcreteMixinTypeFromCacheOnly (configuration); // now we know the mixin type must be in the cache
+      GetConcreteType (configuration.TargetClass); // ensure target's concrete type has been generated, this will also ensure generation of the mixin types
+      ConcreteMixinType concreteMixinType = Cache.GetConcreteMixinTypeFromCacheOnly (configuration.GetConcreteMixinTypeIdentifier()); // now we know the mixin type must be in the cache
       if (concreteMixinType == null)
       {
         string message = string.Format (

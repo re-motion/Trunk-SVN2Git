@@ -73,7 +73,10 @@ namespace Remotion.Mixins.CodeGeneration
       }
     }
 
-    public ConcreteMixinType GetOrCreateConcreteMixinType (ITypeGenerator mixedTypeGenerator, MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
+    public ConcreteMixinType GetOrCreateConcreteMixinType (
+        ITypeGenerator mixedTypeGenerator, 
+        MixinDefinition mixinDefinition, 
+        INameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("mixedTypeGenerator", mixedTypeGenerator);
       ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
@@ -92,13 +95,13 @@ namespace Remotion.Mixins.CodeGeneration
       return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (mixedTypeGenerator, mixinDefinition, mixinNameProvider).GetBuiltType ();
     }
 
-    public ConcreteMixinType GetConcreteMixinTypeFromCacheOnly (MixinDefinition mixinDefinition)
+    public ConcreteMixinType GetConcreteMixinTypeFromCacheOnly (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
     {
-      ArgumentUtility.CheckNotNull ("mixinDefinition", mixinDefinition);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
       lock (_lockObject)
       {
         ConcreteMixinType type;
-        _mixinTypeCache.TryGetValue (mixinDefinition.GetConcreteMixinTypeIdentifier (), out type);
+        _mixinTypeCache.TryGetValue (concreteMixinTypeIdentifier, out type);
         return type;
       }
     }
