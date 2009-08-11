@@ -90,7 +90,10 @@ namespace Remotion.Mixins.CodeGeneration
       }
     }
 
-    private ConcreteMixinType GenerateConcreteMixinType(ITypeGenerator mixedTypeGenerator, MixinDefinition mixinDefinition, INameProvider mixinNameProvider)
+    private ConcreteMixinType GenerateConcreteMixinType (
+        ITypeGenerator mixedTypeGenerator, 
+        MixinDefinition mixinDefinition, 
+        INameProvider mixinNameProvider)
     {
       return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (mixedTypeGenerator, mixinDefinition, mixinNameProvider).GetBuiltType ();
     }
