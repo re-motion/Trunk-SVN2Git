@@ -86,7 +86,7 @@ namespace OBWTest
 
       RegisterRendererFactories (container, "StandardMode");
       container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility.ScriptUtilityStandardMode> ().LifeStyle.Singleton);
-      container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.ClassicBlue));
+      container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.NovaBlue));
       
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));

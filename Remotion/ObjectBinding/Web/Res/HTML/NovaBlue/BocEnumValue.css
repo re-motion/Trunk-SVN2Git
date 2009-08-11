@@ -1,0 +1,21 @@
+.bocEnumValue
+{
+}
+
+.bocEnumValue.readOnly
+{
+}
+
+.bocEnumValue.disabled
+{
+}
+
+.bocEnumValue td
+{
+  white-space: nowrap;
+}
+
+.bocEnumValue td label
+{
+  vertical-align: top;
+}

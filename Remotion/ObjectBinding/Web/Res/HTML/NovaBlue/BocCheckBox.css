@@ -1,0 +1,30 @@
+.bocCheckBox
+{
+
+}
+
+.bocCheckBox.readOnly
+{
+}
+
+.bocCheckBox.disabled
+{
+}
+
+.bocCheckBox input
+{
+  margin-left: 4px;
+  padding: 0px;
+  vertical-align: middle;
+}
+
+.bocCheckBox span
+{
+  vertical-align: middle;
+}
+
+.bocCheckBox img
+{
+  margin-left: 0px;
+  padding: 0px;
+}

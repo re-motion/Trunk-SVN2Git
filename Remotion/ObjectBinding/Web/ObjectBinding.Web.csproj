@@ -515,6 +515,16 @@
     <Content Include="Res\HTML\BocReferenceValue.js" />
     <Content Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.js" />
     <Content Include="Res\HTML\Legacy\TextBoxStyle.js" />
+    <Content Include="Res\HTML\NovaBlue\BocAutoCompleteReferenceValue.css" />
+    <Content Include="Res\HTML\NovaBlue\BocAutoCompleteReferenceValue.jquery.css" />
+    <Content Include="Res\HTML\NovaBlue\BocBooleanValue.css" />
+    <Content Include="Res\HTML\NovaBlue\BocCheckBox.css" />
+    <Content Include="Res\HTML\NovaBlue\BocDateTimeValue.css" />
+    <Content Include="Res\HTML\NovaBlue\BocEnumValue.css" />
+    <Content Include="Res\HTML\NovaBlue\BocList.css" />
+    <Content Include="Res\HTML\NovaBlue\BocMultilineTextValue.css" />
+    <Content Include="Res\HTML\NovaBlue\BocReferenceValue.css" />
+    <Content Include="Res\HTML\NovaBlue\BocTextValue.css" />
     <Content Include="Res\HTML\TextBoxStyle.js" />
     <Content Include="Res\Image\ClassicBlue\CheckBoxFalse.gif" />
     <Content Include="Res\Image\ClassicBlue\CheckBoxNull.gif" />
@@ -532,6 +542,23 @@
     <Content Include="Res\Image\ClassicBlue\SortAscending.gif" />
     <Content Include="Res\Image\ClassicBlue\SortDescending.gif" />
     <Content Include="Res\Image\ClassicBlue\ValidationError.gif" />
+    <Content Include="Res\Image\NovaBlue\CheckBoxFalse.gif" />
+    <Content Include="Res\Image\NovaBlue\CheckBoxNull.gif" />
+    <Content Include="Res\Image\NovaBlue\CheckBoxTrue.gif" />
+    <Content Include="Res\Image\NovaBlue\DatePicker.gif" />
+    <Content Include="Res\Image\NovaBlue\DropDownMenuArrow.gif" />
+    <Content Include="Res\Image\NovaBlue\MoveFirst.gif" />
+    <Content Include="Res\Image\NovaBlue\MoveFirstInactive.gif" />
+    <Content Include="Res\Image\NovaBlue\MoveLast.gif" />
+    <Content Include="Res\Image\NovaBlue\MoveLastInactive.gif" />
+    <Content Include="Res\Image\NovaBlue\MoveNext.gif" />
+    <Content Include="Res\Image\NovaBlue\MoveNextInactive.gif" />
+    <Content Include="Res\Image\NovaBlue\MovePrevious.gif" />
+    <Content Include="Res\Image\NovaBlue\MovePreviousInactive.gif" />
+    <Content Include="Res\Image\NovaBlue\RequiredField.gif" />
+    <Content Include="Res\Image\NovaBlue\SortAscending.gif" />
+    <Content Include="Res\Image\NovaBlue\SortDescending.gif" />
+    <Content Include="Res\Image\NovaBlue\ValidationError.gif" />
     <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -589,9 +616,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Res\HTML\NovaBlue\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

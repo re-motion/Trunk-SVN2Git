@@ -808,6 +808,22 @@
     <Content Include="Res\HTML\jquery.js" />
     <Content Include="Res\HTML\Legacy\SingleView.css" />
     <Content Include="Res\HTML\Legacy\Style.css" />
+    <Content Include="Res\HTML\NovaBlue\DatePicker.css" />
+    <Content Include="Res\HTML\NovaBlue\DropDownMenu.css" />
+    <Content Include="Res\HTML\NovaBlue\ExecutionEngine.css" />
+    <Content Include="Res\HTML\NovaBlue\FontSize080.css" />
+    <Content Include="Res\HTML\NovaBlue\FontSize100.css" />
+    <Content Include="Res\HTML\NovaBlue\FormGrid.css" />
+    <Content Include="Res\HTML\NovaBlue\ListMenu.css" />
+    <Content Include="Res\HTML\NovaBlue\SingleView.css" />
+    <Content Include="Res\HTML\NovaBlue\SmartPage.css" />
+    <Content Include="Res\HTML\NovaBlue\Style.css" />
+    <Content Include="Res\HTML\NovaBlue\StyleUtility.js" />
+    <Content Include="Res\HTML\NovaBlue\TabbedMenu.css" />
+    <Content Include="Res\HTML\NovaBlue\TabbedMultiView.css" />
+    <Content Include="Res\HTML\NovaBlue\TabStrip.css" />
+    <Content Include="Res\HTML\NovaBlue\TreeView.css" />
+    <Content Include="Res\HTML\NovaBlue\WebButton.css" />
     <Content Include="Res\HTML\SmartNavigation.js" />
     <Content Include="Res\HTML\ClassicBlue\SmartPage.css" />
     <Content Include="Res\HTML\SmartPage.js" />
@@ -854,6 +870,41 @@
     <Content Include="Res\Image\ClassicBlue\TreeViewTPlus.gif" />
     <Content Include="Res\Image\ClassicBlue\TreeViewWhite.gif" />
     <Content Include="Res\Image\ClassicBlue\ValidationError.gif" />
+    <Content Include="Res\Image\NovaBlue\CornerBackgroundBlueTransparentNoBorder.gif" />
+    <Content Include="Res\Image\NovaBlue\CornerBackgroundWhiteTransparentBlackBorder.gif" />
+    <Content Include="Res\Image\NovaBlue\CornerBackgroundWhiteTransparentBlueBorder.gif" />
+    <Content Include="Res\Image\NovaBlue\CornerBackgroundWhiteTransparentNoBorder.gif" />
+    <Content Include="Res\Image\NovaBlue\DropDownMenuArrow.gif" />
+    <Content Include="Res\Image\NovaBlue\DropDownMenuItemIconPane.gif" />
+    <Content Include="Res\Image\NovaBlue\Help.gif" />
+    <Content Include="Res\Image\NovaBlue\RequiredField.gif" />
+    <Content Include="Res\Image\NovaBlue\Spacer.gif" />
+    <Content Include="Res\Image\NovaBlue\TabbedMainMenuTabTopLeftCorner.gif" />
+    <Content Include="Res\Image\NovaBlue\TabbedMainMenuTabTopRightCorner.gif" />
+    <Content Include="Res\Image\NovaBlue\TabbedMenuTabBackground.gif" />
+    <Content Include="Res\Image\NovaBlue\TabbedMenuTabBackgroundHover.gif" />
+    <Content Include="Res\Image\NovaBlue\TabbedMultiViewTabBackground.gif" />
+    <Content Include="Res\Image\NovaBlue\TabbedMultiViewTabBackgroundHover.gif" />
+    <Content Include="Res\Image\NovaBlue\transparentbackground.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewF.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewFMinus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewFPlus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewI.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewL.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewLMinus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewLPlus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewMinus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewPlus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewR.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewRMinus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewRPlus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewT.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewTMinus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewTPlus.gif" />
+    <Content Include="Res\Image\NovaBlue\TreeViewWhite.gif" />
+    <Content Include="Res\Image\NovaBlue\ValidationError.gif" />
+    <Content Include="Res\Image\NovaBlue\WebButtonBackground.gif" />
+    <Content Include="Res\Image\NovaBlue\WebButtonBackgroundHover.gif" />
     <Content Include="Res\UI\DatePickerForm.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -878,9 +929,6 @@
       <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
       <Name>Security.Interfaces</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Res\HTML\NovaBlue\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

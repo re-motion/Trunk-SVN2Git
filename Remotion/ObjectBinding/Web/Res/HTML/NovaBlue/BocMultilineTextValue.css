@@ -1,0 +1,22 @@
+/*  This style file is only used for documenting the classes. 
+    It is not automatically included by the BocMultilineTextValue. */
+
+.bocMultilineTextValue
+{
+}
+
+.bocMultilineTextValue.readOnly
+{
+}
+
+.bocMultilineTextValue.disabled
+{
+}
+
+.bocMultilineTextValue textarea
+{
+  font-size: 100%;
+  overflow-y: scroll;
+  
+  overflow-x: hidden;
+}
