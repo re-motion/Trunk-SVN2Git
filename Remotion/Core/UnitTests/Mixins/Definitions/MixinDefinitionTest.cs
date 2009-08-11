@@ -14,12 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
@@ -66,44 +67,79 @@ namespace Remotion.UnitTests.Mixins.Definitions
     }
 
     [Test]
-    public void GetConcreteMixinTypeCacheKey_NoOverrides ()
+    public void GetConcreteMixinTypeIdentifier_NoOverrides ()
     {
+      var expectedIdentifier = new ConcreteMixinTypeIdentifier (typeof (BT1Mixin1), new HashSet<MethodInfo>(), new HashSet<MethodInfo> ());
+
       var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
-      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.SameAs (definition));
+      Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
     [Test]
-    public void GetConcreteMixinTypeCacheKey_Overrides_TypeOverridesMethod ()
+    public void GetConcreteMixinTypeIdentifier_Overrides_TypeOverridesMethod ()
     {
       var overrider = typeof (DerivedClassOverridingMixinMethod).GetMethod ("M1");
+      var expectedIdentifier = new ConcreteMixinTypeIdentifier (
+          typeof (MixinWithMethodsOverriddenByDifferentClasses), 
+          new HashSet<MethodInfo> { overrider }, 
+          new HashSet<MethodInfo> ());
 
-      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedClassOverridingMixinMethod)).Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
-      var key = Tuple.NewTuple (typeof (MixinWithMethodsOverriddenByDifferentClasses), new SetBasedCacheKey<MethodInfo> (overrider));
-      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.EqualTo (key));
+      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedClassOverridingMixinMethod))
+          .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
+      Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
     [Test]
-    public void GetConcreteMixinTypeCacheKey_Overrides_TypeOverridesMethod_AndBaseOverridesOtherMethod ()
+    public void GetConcreteMixinTypeIdentifier_Overrides_TypeOverridesMethod_AndBaseOverridesOtherMethod ()
     {
       var overrider1 = typeof (DerivedClassOverridingMixinMethod).GetMethod ("M1");
       var overrider2 = typeof (DerivedDerivedClassOverridingMixinMethod).GetMethod ("M2");
+      var expectedIdentifier = new ConcreteMixinTypeIdentifier (
+          typeof (MixinWithMethodsOverriddenByDifferentClasses), 
+          new HashSet<MethodInfo> { overrider1, overrider2 },
+          new HashSet<MethodInfo> ());
 
-      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedClassOverridingMixinMethod)).Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
-      var key = Tuple.NewTuple (typeof (MixinWithMethodsOverriddenByDifferentClasses), new SetBasedCacheKey<MethodInfo> (overrider1, overrider2));
-      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.EqualTo (key));
+      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedClassOverridingMixinMethod))
+          .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
+      Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
     [Test]
-    public void GetConcreteMixinTypeCacheKey_Overrides_BaseOverrides ()
+    public void GetConcreteMixinTypeIdentifier_Overrides_BaseOverrides ()
     {
       var overrider1 = typeof (DerivedClassOverridingMixinMethod).GetMethod ("M1");
       var overrider2 = typeof (DerivedDerivedClassOverridingMixinMethod).GetMethod ("M2");
+      var expectedIdentifier = new ConcreteMixinTypeIdentifier (
+          typeof (MixinWithMethodsOverriddenByDifferentClasses),
+          new HashSet<MethodInfo> { overrider1, overrider2 },
+          new HashSet<MethodInfo> ());
 
-      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedDerivedClassOverridingMixinMethod)).Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
-      var key = Tuple.NewTuple (typeof (MixinWithMethodsOverriddenByDifferentClasses), new SetBasedCacheKey<MethodInfo> (overrider1, overrider2));
-      Assert.That (definition.GetConcreteMixinTypeCacheKey (), Is.EqualTo (key));
+      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedDerivedClassOverridingMixinMethod))
+          .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
+      Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
+    [Test]
+    public void GetConcreteMixinTypeIdentifier_ProtectedOverriders()
+    {
+      const BindingFlags bf = BindingFlags.NonPublic | BindingFlags.Instance;
+      var protectedOverriders = new[] { 
+          typeof (MixinWithProtectedOverrider).GetMethod ("VirtualMethod", bf), 
+          typeof (MixinWithProtectedOverrider).GetMethod ("get_VirtualProperty", bf),
+          typeof (MixinWithProtectedOverrider).GetMethod ("add_VirtualEvent", bf),
+          typeof (MixinWithProtectedOverrider).GetMethod ("remove_VirtualEvent", bf),
+      };
+
+      var expectedIdentifier = new ConcreteMixinTypeIdentifier (
+          typeof (MixinWithProtectedOverrider),
+          new HashSet<MethodInfo> (),
+          new HashSet<MethodInfo> (protectedOverriders));
+
+      var definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider))
+          .Mixins[typeof (MixinWithProtectedOverrider)];
+      Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
+    }
+    
     [Test]
     public void GetOrderRelevateDependencies()
     {

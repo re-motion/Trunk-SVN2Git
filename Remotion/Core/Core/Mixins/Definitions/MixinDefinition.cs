@@ -16,9 +16,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Remotion.Collections;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.Utilities;
 using System.Reflection;
+using System.Linq;
 
 namespace Remotion.Mixins.Definitions
 {
@@ -48,7 +49,7 @@ namespace Remotion.Mixins.Definitions
     private readonly MixinKind _mixinKind;
     private readonly bool _acceptsAlphabeticOrdering;
 
-    private object _concreteTypeIdentifier;
+    private ConcreteMixinTypeIdentifier _concreteTypeIdentifier;
     
     public MixinDefinition (MixinKind mixinKind, Type type, TargetClassDefinition targetClass, bool acceptsAlphabeticOrdering)
         : base (type)
@@ -162,30 +163,25 @@ namespace Remotion.Mixins.Definitions
       return Type.IsAbstract || HasOverriddenMembers () || HasProtectedOverriders ();
     }
 
-    public object GetConcreteMixinTypeCacheKey ()
+    public ConcreteMixinTypeIdentifier GetConcreteMixinTypeIdentifier ()
     {
-      // for each overridden member, find its topmost definition
-      // these are used as the cache key (together with the mixin type), ie. we will always use the same concrete type given the same combination
-      // of overriding methods for the same mixin.
-
       if (_concreteTypeIdentifier == null)
         _concreteTypeIdentifier = CalculateConcreteTypeIdentifier ();
       return _concreteTypeIdentifier;
     }
 
-    private object CalculateConcreteTypeIdentifier ()
+    private ConcreteMixinTypeIdentifier CalculateConcreteTypeIdentifier ()
     {
-      var topMostOverriders = new Set<MethodInfo> ();
-      foreach (var member in GetAllMethods())
-      {
-        foreach (var overrider in member.Overrides)
-          topMostOverriders.Add (overrider.MethodInfo.GetBaseDefinition ());
-      }
+      // for each overridden member, find its topmost definition - that way we can share concrete mixin types between target classes that
+      // overrider their base class' [OverrideMixin] methods
 
-      if (topMostOverriders.Count != 0)
-        return Tuple.NewTuple (Type, new SetBasedCacheKey<MethodInfo> (topMostOverriders));
-      else // if no overrides, use the mixin definition as a cache
-        return this;
+      var topMostOverriders = new HashSet<MethodInfo> (
+          GetAllMethods ()
+              .SelectMany (md => md.Overrides)
+              .Select (ovr => ovr.MethodInfo.GetBaseDefinition()));
+      var protectedOverriders = new HashSet<MethodInfo> (GetProtectedOverriders ().Select (md => md.MethodInfo));
+
+      return new ConcreteMixinTypeIdentifier (Type, topMostOverriders, protectedOverriders);
     }
   }
 }

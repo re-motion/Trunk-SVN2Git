@@ -26,18 +26,18 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   [TestFixture]
   public class ConcreteMixinTypeIdentifierTest
   {
-    private MemberInfo _externalOverrider1;
-    private MemberInfo _externalOverrider2;
-    private MemberInfo _wrappedProtectedMember1;
-    private MemberInfo _wrappedProtectedMember2;
+    private MethodInfo _externalOverrider1;
+    private MethodInfo _externalOverrider2;
+    private MethodInfo _wrappedProtectedMember1;
+    private MethodInfo _wrappedProtectedMember2;
 
     [SetUp]
     public void SetUp ()
     {
       _externalOverrider1 = typeof (ClassOverridingSingleMixinMethod).GetMethod ("AbstractMethod");
-      _externalOverrider2 = typeof (ClassOverridingMixinMembers).GetProperty ("AbstractProperty");
+      _externalOverrider2 = typeof (ClassOverridingMixinMembers).GetMethod ("get_AbstractProperty");
       _wrappedProtectedMember1 = typeof (MixinWithProtectedOverrider).GetMethod ("VirtualMethod", BindingFlags.NonPublic | BindingFlags.Instance);
-      _wrappedProtectedMember2 = typeof (MixinWithProtectedOverrider).GetProperty ("VirtualProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+      _wrappedProtectedMember2 = typeof (MixinWithProtectedOverrider).GetMethod ("get_VirtualProperty", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
     [Test]

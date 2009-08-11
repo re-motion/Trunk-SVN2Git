@@ -31,8 +31,8 @@ namespace Remotion.Mixins.CodeGeneration
   public sealed class ConcreteMixinTypeIdentifier
   {
     private readonly Type _mixinType;
-    private readonly HashSet<MemberInfo> _externalOverriders;
-    private readonly HashSet<MemberInfo> _wrappedProtectedMembers;
+    private readonly HashSet<MethodInfo> _externalOverriders;
+    private readonly HashSet<MethodInfo> _wrappedProtectedMembers;
     private readonly int _cachedHashCode;
 
     /// <summary>
@@ -42,7 +42,7 @@ namespace Remotion.Mixins.CodeGeneration
     /// <param name="externalOverriders">Target class members that override members of the mixin. These are called by the concrete mixin type.</param>
     /// <param name="wrappedProtectedMembers">The protected members of the mixin for which public wrappers are required. These are called by
     /// the mixin's target classes.</param>
-    public ConcreteMixinTypeIdentifier (Type mixinType, HashSet<MemberInfo> externalOverriders, HashSet<MemberInfo> wrappedProtectedMembers)
+    public ConcreteMixinTypeIdentifier (Type mixinType, HashSet<MethodInfo> externalOverriders, HashSet<MethodInfo> wrappedProtectedMembers)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
       ArgumentUtility.CheckNotNull ("externalOverriders", externalOverriders);
@@ -70,7 +70,7 @@ namespace Remotion.Mixins.CodeGeneration
     /// Gets the target class members that override members of the mixin. These are called by the concrete mixin type.
     /// </summary>
     /// <value>Target class members that override members of the mixin. These are called by the concrete mixin type.</value>
-    public IEnumerable<MemberInfo> ExternalOverriders
+    public IEnumerable<MethodInfo> ExternalOverriders
     {
       get { return _externalOverriders; }
     }
@@ -79,7 +79,7 @@ namespace Remotion.Mixins.CodeGeneration
     /// Gets the protected members of the mixin for which public wrappers are required. These are called by the mixin's target classes.
     /// </summary>
     /// <value>The protected members of the mixin for which public wrappers are required.</value>
-    public IEnumerable<MemberInfo> WrappedProtectedMembers
+    public IEnumerable<MethodInfo> WrappedProtectedMembers
     {
       get { return _wrappedProtectedMembers; }
     }

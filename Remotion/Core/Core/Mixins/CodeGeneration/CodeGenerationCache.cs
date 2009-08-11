@@ -34,7 +34,8 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly object _lockObject = new object();
     private readonly ConcreteTypeBuilder _concreteTypeBuilder;
     private readonly Cache<TargetClassDefinition, Type> _typeCache = new Cache<TargetClassDefinition, Type> ();
-    private readonly Cache<object, ConcreteMixinType> _mixinTypeCache = new Cache<object, ConcreteMixinType> ();
+    private readonly Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> _mixinTypeCache = 
+        new Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> ();
 
     public CodeGenerationCache (ConcreteTypeBuilder concreteTypeBuilder)
     {
@@ -81,7 +82,7 @@ namespace Remotion.Mixins.CodeGeneration
       lock (_lockObject)
       {
         return _mixinTypeCache.GetOrCreateValue (
-              mixinDefinition.GetConcreteMixinTypeCacheKey(),
+              mixinDefinition.GetConcreteMixinTypeIdentifier (),
               key => GenerateConcreteMixinType (mixedTypeGenerator, mixinDefinition, mixinNameProvider));
       }
     }
@@ -97,7 +98,7 @@ namespace Remotion.Mixins.CodeGeneration
       lock (_lockObject)
       {
         ConcreteMixinType type;
-        _mixinTypeCache.TryGetValue (mixinDefinition.GetConcreteMixinTypeCacheKey(), out type);
+        _mixinTypeCache.TryGetValue (mixinDefinition.GetConcreteMixinTypeIdentifier (), out type);
         return type;
       }
     }
@@ -134,7 +135,7 @@ namespace Remotion.Mixins.CodeGeneration
           foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
             concreteMixinType.AddMethodWrapper (wrapper.A, wrapper.B);
 
-          _mixinTypeCache.GetOrCreateValue (mixinDefinition.GetConcreteMixinTypeCacheKey(), delegate { return concreteMixinType; });
+          _mixinTypeCache.GetOrCreateValue (mixinDefinition.GetConcreteMixinTypeIdentifier (), delegate { return concreteMixinType; });
         }
       }
     }
