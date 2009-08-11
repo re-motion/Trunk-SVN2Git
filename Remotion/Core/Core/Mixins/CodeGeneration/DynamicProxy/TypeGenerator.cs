@@ -126,9 +126,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       var concreteMixinTypes = new ConcreteMixinType[Configuration.Mixins.Count];
       for (int i = 0; i < concreteMixinTypes.Length; ++i)
       {
-        MixinDefinition mixinConfiguration = Configuration.Mixins[i];
-        if (mixinConfiguration.NeedsDerivedMixinType ())
-          concreteMixinTypes[i] = _codeGenerationCache.GetOrCreateConcreteMixinType (this, mixinConfiguration, mixinNameProvider);
+        MixinDefinition mixinDefinition = Configuration.Mixins[i];
+        if (mixinDefinition.NeedsDerivedMixinType ())
+          concreteMixinTypes[i] = _codeGenerationCache.GetOrCreateConcreteMixinType (this, mixinDefinition, mixinNameProvider);
       }
       return concreteMixinTypes;
     }
