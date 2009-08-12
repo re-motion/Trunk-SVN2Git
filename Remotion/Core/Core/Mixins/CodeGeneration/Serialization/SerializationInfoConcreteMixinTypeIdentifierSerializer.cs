@@ -26,19 +26,10 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
   /// completely flat, using only primitive types, so the returned object is always guaranteed to be complete even in the face of the order of 
   /// deserialization of objects not being deterministic.
   /// </summary>
-  public class ConcreteMixinTypeIdentifierSerializer
+  public class SerializationInfoConcreteMixinTypeIdentifierSerializer : IConcreteMixinTypeIdentifierSerializer
   {
-    public static void Serialize (ConcreteMixinTypeIdentifier identifier, SerializationInfo serializationInfo, string key)
-    {
-      ArgumentUtility.CheckNotNull ("identifier", identifier);
-      ArgumentUtility.CheckNotNull ("serializationInfo", serializationInfo);
-      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
-
-      serializationInfo.AddValue (key + ".MixinType", identifier.MixinType.AssemblyQualifiedName);
-
-      SerializeMethods (serializationInfo, key + ".ExternalOverriders", (ICollection<MethodInfo>) identifier.ExternalOverriders, true);
-      SerializeMethods (serializationInfo, key + ".WrappedProtectedMembers", (ICollection<MethodInfo>) identifier.WrappedProtectedMembers, true);
-    }
+    private readonly SerializationInfo _serializationInfo;
+    private readonly string _key;
 
     public static ConcreteMixinTypeIdentifier Deserialize (SerializationInfo serializationInfo, string key)
     {
@@ -50,22 +41,6 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
       HashSet<MethodInfo> wrappedProtectedMembers = DeserializeMethods (serializationInfo, key + ".WrappedProtectedMembers", null);
 
       return new ConcreteMixinTypeIdentifier (mixinType, externalOverriders, wrappedProtectedMembers);
-    }
-
-    private static void SerializeMethods (SerializationInfo serializationInfo, string key, ICollection<MethodInfo> collection, bool includeDeclaringType)
-    {
-      serializationInfo.AddValue (key + ".Count", collection.Count);
-
-      var index = 0;
-      foreach (var methodInfo in collection)
-      {
-        if (includeDeclaringType)
-          serializationInfo.AddValue (key + "[" + index + "].DeclaringType", methodInfo.DeclaringType.AssemblyQualifiedName);
-
-        serializationInfo.AddValue (key + "[" + index + "].MetadataToken", methodInfo.MetadataToken);
-
-        ++index;
-      }
     }
 
     private static HashSet<MethodInfo> DeserializeMethods (SerializationInfo serializationInfo, string key, Type declaringType)
@@ -84,6 +59,46 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
         methods.Add (method);
       }
       return methods;
+    }
+
+    public SerializationInfoConcreteMixinTypeIdentifierSerializer (SerializationInfo serializationInfo, string key)
+    {
+      ArgumentUtility.CheckNotNull ("serializationInfo", serializationInfo);
+      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+
+      _serializationInfo = serializationInfo;
+      _key = key;
+    }
+
+    public void AddMixinType (Type mixinType)
+    {
+      _serializationInfo.AddValue (_key + ".MixinType", mixinType.AssemblyQualifiedName);
+    }
+
+    public void AddExternalOverriders (HashSet<MethodInfo> externalOverriders)
+    {
+      SerializeMethods (_key + ".ExternalOverriders", externalOverriders, true);
+    }
+
+    public void AddWrappedProtectedMembers (HashSet<MethodInfo> wrappedProtectedMembers)
+    {
+      SerializeMethods (_key + ".WrappedProtectedMembers", wrappedProtectedMembers, false);
+    }
+
+    private void SerializeMethods (string collectionKey, ICollection<MethodInfo> collection, bool includeDeclaringType)
+    {
+      _serializationInfo.AddValue (collectionKey + ".Count", collection.Count);
+
+      var index = 0;
+      foreach (var methodInfo in collection)
+      {
+        if (includeDeclaringType)
+          _serializationInfo.AddValue (collectionKey + "[" + index + "].DeclaringType", methodInfo.DeclaringType.AssemblyQualifiedName);
+
+        _serializationInfo.AddValue (collectionKey + "[" + index + "].MetadataToken", methodInfo.MetadataToken);
+
+        ++index;
+      }
     }
   }
 }

@@ -19,7 +19,9 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -173,6 +175,43 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           new HashSet<MethodInfo> { _wrappedProtectedMember2, _wrappedProtectedMember1 });
 
       Assert.That (one.GetHashCode (), Is.EqualTo (two.GetHashCode ()));
+    }
+
+    [Test]
+    public void Serialize ()
+    {
+      var externalOverriders = new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2 };
+      var wrappedProtectedMembers = new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2 };
+
+      var identifier = new ConcreteMixinTypeIdentifier (typeof (BT1Mixin1), externalOverriders, wrappedProtectedMembers);
+      var serializerMock = MockRepository.GenerateMock<IConcreteMixinTypeIdentifierSerializer> ();
+
+      identifier.Serialize (serializerMock);
+
+      serializerMock.AssertWasCalled (mock => mock.AddMixinType (typeof (BT1Mixin1)));
+      serializerMock.AssertWasCalled (mock => mock.AddExternalOverriders (externalOverriders));
+      serializerMock.AssertWasCalled (mock => mock.AddWrappedProtectedMembers (wrappedProtectedMembers));
+    }
+
+    [Test]
+    public void Deserialize ()
+    {
+      var externalOverriders = new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2 };
+      var wrappedProtectedMembers = new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2 };
+      var deserializerMock = MockRepository.GenerateMock<IConcreteMixinTypeIdentifierDeserializer> ();
+
+      deserializerMock.Expect (mock => mock.GetMixinType ()).Return (typeof (BT1Mixin1));
+      deserializerMock.Expect (mock => mock.GetExternalOverriders ()).Return (externalOverriders);
+      deserializerMock.Expect (mock => mock.GetWrappedProtectedMembers (typeof (BT1Mixin1))).Return (wrappedProtectedMembers);
+
+      deserializerMock.Replay ();
+
+      var identifier = ConcreteMixinTypeIdentifier.Deserialize (deserializerMock);
+      
+      deserializerMock.VerifyAllExpectations();
+      Assert.That (identifier.MixinType, Is.SameAs (typeof (BT1Mixin1)));
+      Assert.That (identifier.ExternalOverriders, Is.SameAs (externalOverriders));
+      Assert.That (identifier.WrappedProtectedMembers, Is.SameAs (wrappedProtectedMembers));
     }
   }
 }

@@ -30,12 +30,24 @@ namespace Remotion.Mixins.CodeGeneration
   /// <see cref="WrappedProtectedMembers"/> and should therefore not be performed in tight loops. Getting the hash code is, however, quite fast, as it
   /// is cached.
   /// </para>
-  /// <para>
-  /// Use <see cref="ConcreteMixinTypeIdentifierSerializer"/> to serialize instances of this type.
-  /// </para>
   /// </remarks>
   public sealed class ConcreteMixinTypeIdentifier
   {
+    /// <summary>
+    /// Deserializes an <see cref="ConcreteMixinTypeIdentifier"/> from the given deserializer.
+    /// </summary>
+    /// <param name="deserializer">The deserializer to use.</param>
+    public static ConcreteMixinTypeIdentifier Deserialize (IConcreteMixinTypeIdentifierDeserializer deserializer)
+    {
+      ArgumentUtility.CheckNotNull ("deserializer", deserializer);
+
+      var mixinType = deserializer.GetMixinType ();
+      var externalOverriders = deserializer.GetExternalOverriders ();
+      var wrappedProtectedMembers = deserializer.GetWrappedProtectedMembers (mixinType);
+
+      return new ConcreteMixinTypeIdentifier (mixinType, externalOverriders, wrappedProtectedMembers);
+    }
+
     private readonly Type _mixinType;
     private readonly HashSet<MethodInfo> _externalOverriders;
     private readonly HashSet<MethodInfo> _wrappedProtectedMembers;
@@ -117,6 +129,19 @@ namespace Remotion.Mixins.CodeGeneration
     public override int GetHashCode ()
     {
       return _cachedHashCode;
+    }
+
+    /// <summary>
+    /// Serializes this object with the specified serializer.
+    /// </summary>
+    /// <param name="serializer">The serializer to use.</param>
+    public void Serialize (IConcreteMixinTypeIdentifierSerializer serializer)
+    {
+      ArgumentUtility.CheckNotNull ("serializer", serializer);
+
+      serializer.AddMixinType (MixinType);
+      serializer.AddExternalOverriders (_externalOverriders);
+      serializer.AddWrappedProtectedMembers (_wrappedProtectedMembers);
     }
   }
 }
