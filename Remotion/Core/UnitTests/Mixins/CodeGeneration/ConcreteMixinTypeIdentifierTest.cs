@@ -45,12 +45,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var one = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1), 
-          SetOf (_externalOverrider1, _externalOverrider2 ), 
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  }, 
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
       var two = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2 ),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
 
       Assert.That (one, Is.EqualTo (two));
     }
@@ -60,12 +60,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var one = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2 ),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
       var two = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider2, _externalOverrider1 ),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider2, _externalOverrider1  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
 
       Assert.That (one, Is.EqualTo (two));
     }
@@ -75,12 +75,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var one = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2 ),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
       var two = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2 ),
-          SetOf (_wrappedProtectedMember2, _wrappedProtectedMember1 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember2, _wrappedProtectedMember1  });
 
       Assert.That (one, Is.EqualTo (two));
     }
@@ -90,12 +90,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var one = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2 ),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
       var two = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin2),
-          SetOf (_externalOverrider1, _externalOverrider2 ),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
 
       Assert.That (one, Is.Not.EqualTo (two));
     }
@@ -105,12 +105,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var one = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1 ),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider1  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
       var two = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2 ),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
 
       Assert.That (one, Is.Not.EqualTo (two));
     }
@@ -120,12 +120,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var one = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2 ),
-          SetOf (_wrappedProtectedMember1 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1  });
       var two = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2 ),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2 ));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2  },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2  });
 
       Assert.That (one, Is.Not.EqualTo (two));
     }
@@ -135,12 +135,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var one = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2 },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2 });
       var two = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2 },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2 });
 
       Assert.That (one.GetHashCode (), Is.EqualTo (two.GetHashCode ()));
     }
@@ -150,12 +150,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var one = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2 },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2 });
       var two = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider2, _externalOverrider1),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2));
+          new HashSet<MethodInfo> { _externalOverrider2, _externalOverrider1 },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2 });
 
       Assert.That (one.GetHashCode (), Is.EqualTo (two.GetHashCode ()));
     }
@@ -165,19 +165,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var one = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2),
-          SetOf (_wrappedProtectedMember1, _wrappedProtectedMember2));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2 },
+          new HashSet<MethodInfo> { _wrappedProtectedMember1, _wrappedProtectedMember2 });
       var two = new ConcreteMixinTypeIdentifier (
           typeof (BT1Mixin1),
-          SetOf (_externalOverrider1, _externalOverrider2),
-          SetOf (_wrappedProtectedMember2, _wrappedProtectedMember1));
+          new HashSet<MethodInfo> { _externalOverrider1, _externalOverrider2 },
+          new HashSet<MethodInfo> { _wrappedProtectedMember2, _wrappedProtectedMember1 });
 
       Assert.That (one.GetHashCode (), Is.EqualTo (two.GetHashCode ()));
-    }
-
-    private HashSet<T> SetOf<T> (params T[] items)
-    {
-      return new HashSet<T> (items);
     }
   }
 }
