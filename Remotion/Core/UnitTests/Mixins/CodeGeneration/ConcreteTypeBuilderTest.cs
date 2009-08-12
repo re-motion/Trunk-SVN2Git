@@ -31,9 +31,8 @@ using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using Remotion.Context;
-using System.Linq;
 using Remotion.Mixins.Context;
+using ClassOverridingSingleMixinMethod=Remotion.UnitTests.Mixins.CodeGeneration.TestDomain.ClassOverridingSingleMixinMethod;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -59,7 +58,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       Type t1 = TypeFactory.GetConcreteType (typeof (BaseType1));
       Type t2 = TypeFactory.GetConcreteType (typeof (BaseType1));
-      Assert.AreSame (t1, t2);
+      Assert.That (t2, Is.SameAs (t1));
     }
 
     [Test]
@@ -68,51 +67,51 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Type t1 = TypeFactory.GetConcreteType (typeof (BaseType1));
       ConcreteTypeBuilder.SetCurrent (AlternativeTypeBuilder);
       Type t2 = TypeFactory.GetConcreteType (typeof (BaseType1));
-      Assert.AreNotSame (t1, t2);
+      Assert.That (t2, Is.Not.SameAs (t1));
     }
 
     [Test]
     public void CacheEvenWorksForSerialization()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
-      BaseType1 bt2 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
+      var bt1 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
+      var bt2 = ObjectFactory.Create<BaseType1>(ParamList.Empty);
 
-      Assert.AreSame (bt1.GetType(), bt2.GetType());
+      Assert.That (bt2.GetType (), Is.SameAs (bt1.GetType ()));
 
       BaseType1[] array = Serializer.SerializeAndDeserialize (new[] {bt1, bt2});
-      Assert.AreSame (bt1.GetType(), array[0].GetType());
-      Assert.AreSame (array[0].GetType(), array[1].GetType());
+      Assert.That (array[0].GetType (), Is.SameAs (bt1.GetType ()));
+      Assert.That (array[1].GetType (), Is.SameAs (array[0].GetType ()));
     }
 
     [Test]
     public void GeneratedMixinTypesAreCached()
     {
-      ClassOverridingMixinMembers c1 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
-      ClassOverridingMixinMembers c2 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
+      var c1 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
+      var c2 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
 
-      Assert.AreSame (Mixin.Get<MixinWithAbstractMembers> (c1).GetType(), Mixin.Get<MixinWithAbstractMembers> (c2).GetType());
+      Assert.That (Mixin.Get<MixinWithAbstractMembers> (c2).GetType (), Is.SameAs (Mixin.Get<MixinWithAbstractMembers> (c1).GetType ()));
     }
 
     [Test]
     public void MixinTypeCacheIsBoundToConcreteTypeBuilder()
     {
-      ClassOverridingMixinMembers c1 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
+      var c1 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
       ConcreteTypeBuilder.SetCurrent (AlternativeTypeBuilder);
-      ClassOverridingMixinMembers c2 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
+      var c2 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
 
-      Assert.AreNotSame (Mixin.Get<MixinWithAbstractMembers> (c1).GetType(), Mixin.Get<MixinWithAbstractMembers> (c2).GetType());
+      Assert.That (Mixin.Get<MixinWithAbstractMembers> (c2).GetType (), Is.Not.SameAs (Mixin.Get<MixinWithAbstractMembers> (c1).GetType ()));
     }
 
     [Test]
     public void MixinTypeCacheEvenWorksForSerialization()
     {
-      ClassOverridingMixinMembers c1 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
-      ClassOverridingMixinMembers c2 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
+      var c1 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
+      var c2 = ObjectFactory.Create<ClassOverridingMixinMembers>(ParamList.Empty);
 
-      Assert.AreSame (Mixin.Get<MixinWithAbstractMembers> (c1).GetType(), Mixin.Get<MixinWithAbstractMembers> (c2).GetType());
+      Assert.That (Mixin.Get<MixinWithAbstractMembers> (c2).GetType (), Is.SameAs (Mixin.Get<MixinWithAbstractMembers> (c1).GetType ()));
 
       ClassOverridingMixinMembers[] array = Serializer.SerializeAndDeserialize (new[] {c1, c2});
-      Assert.AreSame (Mixin.Get<MixinWithAbstractMembers> (array[0]).GetType(), Mixin.Get<MixinWithAbstractMembers> (array[1]).GetType());
+      Assert.That (Mixin.Get<MixinWithAbstractMembers> (array[1]).GetType (), Is.SameAs (Mixin.Get<MixinWithAbstractMembers> (array[0]).GetType ()));
     }
 
     [Test]
@@ -121,27 +120,27 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       ConcreteTypeBuilder.SetCurrent (null);
 
       var newBuilder = new ConcreteTypeBuilder();
-      Assert.IsFalse (ConcreteTypeBuilder.HasCurrent);
-      var setterThread = new Thread ((ThreadStart) delegate { ConcreteTypeBuilder.SetCurrent (newBuilder); });
+      Assert.That (ConcreteTypeBuilder.HasCurrent, Is.False);
+      var setterThread = new Thread (() => ConcreteTypeBuilder.SetCurrent (newBuilder));
       setterThread.Start();
       setterThread.Join();
 
-      Assert.IsTrue (ConcreteTypeBuilder.HasCurrent);
-      Assert.AreSame (newBuilder, ConcreteTypeBuilder.Current);
+      Assert.That (ConcreteTypeBuilder.HasCurrent, Is.True);
+      Assert.That (ConcreteTypeBuilder.Current, Is.SameAs (newBuilder));
     }
 
     [Test]
     public void LockAndAccessScope()
     {
       IModuleManager scope = ConcreteTypeBuilder.Current.Scope;
-      ConcreteTypeBuilder.Current.LockAndAccessScope (lockedScope => Assert.AreSame (scope, lockedScope));
+      ConcreteTypeBuilder.Current.LockAndAccessScope (lockedScope => Assert.That (lockedScope, Is.SameAs (scope)));
     }
 
     [Test]
     public void DefaultNameProviderIsGuid()
     {
-      Assert.AreSame (GuidNameProvider.Instance, ConcreteTypeBuilder.Current.TypeNameProvider);
-      Assert.AreSame (GuidNameProvider.Instance, ConcreteTypeBuilder.Current.MixinTypeNameProvider);
+      Assert.That (ConcreteTypeBuilder.Current.TypeNameProvider, Is.SameAs (GuidNameProvider.Instance));
+      Assert.That (ConcreteTypeBuilder.Current.MixinTypeNameProvider, Is.SameAs (GuidNameProvider.Instance));
     }
 
     [Test]
@@ -173,7 +172,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var builder = new ConcreteTypeBuilder();
       string[] paths = builder.SaveAndResetDynamicScope();
-      Assert.AreEqual (0, paths.Length);
+      Assert.That (paths.Length, Is.EqualTo (0));
     }
 
     [Test]
@@ -182,20 +181,21 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var builder = new ConcreteTypeBuilder();
       IModuleManager scopeBefore = builder.Scope;
       builder.SaveAndResetDynamicScope();
-      Assert.AreNotSame (scopeBefore, builder.Scope);
+      Assert.That (builder.Scope, Is.Not.SameAs (scopeBefore));
     }
 
     [Test]
     public void CanContinueToGenerateTypesAfterSaving()
     {
       var builder = new ConcreteTypeBuilder();
-      Assert.IsNotNull (
-          builder.GetConcreteType (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1), GenerationPolicy.ForceGeneration)));
-      Assert.IsNotNull (
-          builder.GetConcreteType (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType2), GenerationPolicy.ForceGeneration)));
+      var bt1Context = TargetClassDefinitionUtility.GetContext (typeof (BaseType1), MixinConfiguration.ActiveConfiguration, GenerationPolicy.ForceGeneration);
+      var bt2Context = TargetClassDefinitionUtility.GetContext (typeof (BaseType2), MixinConfiguration.ActiveConfiguration, GenerationPolicy.ForceGeneration);
+
+      Assert.That (builder.GetConcreteType (bt1Context), Is.Not.Null);
+      Assert.That (builder.GetConcreteType (bt2Context), Is.Not.Null);
       builder.SaveAndResetDynamicScope();
-      Assert.IsNotNull (
-          builder.GetConcreteType (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3), GenerationPolicy.ForceGeneration)));
+      var bt3Context = TargetClassDefinitionUtility.GetContext(typeof (BaseType3), MixinConfiguration.ActiveConfiguration, GenerationPolicy.ForceGeneration);
+      Assert.That (builder.GetConcreteType (bt3Context), Is.Not.Null);
     }
 
     [Test]
@@ -211,9 +211,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Assert.IsNotEmpty (paths);
       Type concreteType3 = TypeFactory.GetConcreteType (typeof (BaseType3), GenerationPolicy.ForceGeneration);
 
-      Assert.AreSame (concreteType1, TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration));
-      Assert.AreSame (concreteType2, TypeFactory.GetConcreteType (typeof (BaseType2), GenerationPolicy.ForceGeneration));
-      Assert.AreSame (concreteType3, TypeFactory.GetConcreteType (typeof (BaseType3), GenerationPolicy.ForceGeneration));
+      Assert.That (TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration), Is.SameAs (concreteType1));
+      Assert.That (TypeFactory.GetConcreteType (typeof (BaseType2), GenerationPolicy.ForceGeneration), Is.SameAs (concreteType2));
+      Assert.That (TypeFactory.GetConcreteType (typeof (BaseType3), GenerationPolicy.ForceGeneration), Is.SameAs (concreteType3));
     }
 
     [Test]
@@ -257,7 +257,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       using (SetupMixinConfigurationForLoadedType (loadedType).EnterScope())
       {
         Type concreteType = TypeFactory.GetConcreteType (typeof (BaseType1));
-        Assert.AreSame (loadedType, concreteType);
+        Assert.That (concreteType, Is.SameAs (loadedType));
       }
 
       _moduleManagerMockForLoading.VerifyAllExpectations();
@@ -292,10 +292,15 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       using (SetupMixinConfigurationForLoadedType (loadedType).EnterScope())
       {
-        Type concreteType =
-            builder.GetConcreteMixinType (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[0]).
-                GeneratedType;
-        Assert.AreSame (loadedType, concreteType);
+        var requestingClass = TargetClassDefinitionUtility.GetContext (
+            typeof (ClassOverridingMixinMembers), 
+            MixinConfiguration.ActiveConfiguration, 
+            GenerationPolicy.GenerateOnlyIfConfigured);
+        var concreteMixinIdentifier = 
+            TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier();
+
+        Type concreteType = builder.GetConcreteMixinType (requestingClass, concreteMixinIdentifier).GeneratedType;
+        Assert.That (concreteType, Is.SameAs (loadedType));
       }
 
       _moduleManagerMockForLoading.VerifyAllExpectations();
@@ -309,11 +314,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       using (SetupMixinConfigurationForLoadedType (loadedType).EnterScope())
       {
-        Type concreteType1 = ConcreteTypeBuilder.Current.GetConcreteMixinType (
-            TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[0]).GeneratedType;
+        var requestingClass = TargetClassDefinitionUtility.GetContext (
+            typeof (ClassOverridingMixinMembers),
+            MixinConfiguration.ActiveConfiguration,
+            GenerationPolicy.GenerateOnlyIfConfigured);
+        var concreteMixinIdentifier =
+            TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier ();
+
+        Type concreteType1 = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, concreteMixinIdentifier).GeneratedType;
         ConcreteTypeBuilder.Current.LoadAssemblyIntoCache (assemblyMock);
-        Type concreteType2 = ConcreteTypeBuilder.Current.GetConcreteMixinType (
-            TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[0]).GeneratedType;
+        Type concreteType2 = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, concreteMixinIdentifier).GeneratedType;
 
         Assert.That (concreteType2, Is.SameAs (concreteType1));
         Assert.That (concreteType2, Is.Not.SameAs (loadedType));
@@ -349,17 +359,22 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void GetConcreteMixinTypeBeforeGetConcreteTypeWorks()
     {
       using (
-          MixinConfiguration.BuildFromActive().ForClass<TargetClassOverridingMixinMember>().Clear().AddMixins (typeof (MixinWithOverridableMember)).
+          MixinConfiguration.BuildFromActive().ForClass<ClassOverridingSingleMixinMethod>().Clear().AddMixins (typeof (MixinWithOverridableMember)).
               EnterScope())
       {
-        Type t =
-            ConcreteTypeBuilder.Current.GetConcreteMixinType (
-                TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassOverridingMixinMember)).Mixins[0]).GeneratedType;
-        Assert.IsNotNull (t);
-        Assert.IsTrue (typeof (MixinWithOverridableMember).IsAssignableFrom (t));
+        var requestingClass = TargetClassDefinitionUtility.GetContext (
+            typeof (ClassOverridingSingleMixinMethod), 
+            MixinConfiguration.ActiveConfiguration, 
+            GenerationPolicy.GenerateOnlyIfConfigured);
+        var concreteMixinIdentifier = 
+            TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier();
 
-        TargetClassOverridingMixinMember instance = ObjectFactory.Create<TargetClassOverridingMixinMember>(ParamList.Empty);
-        Assert.AreSame (t, Mixin.Get<MixinWithOverridableMember> (instance).GetType());
+        Type t = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, concreteMixinIdentifier).GeneratedType;
+        Assert.That (t, Is.Not.Null);
+        Assert.That (typeof (MixinWithOverridableMember).IsAssignableFrom (t), Is.True);
+
+        var instance = ObjectFactory.Create<ClassOverridingSingleMixinMethod>(ParamList.Empty);
+        Assert.That (Mixin.Get<MixinWithOverridableMember> (instance).GetType (), Is.SameAs (t));
       }
     }
 
@@ -373,7 +388,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget>().Clear().AddMixins (typeof (MixinWithOverridableMember)).EnterScope())
       {
-        ConcreteTypeBuilder.Current.GetConcreteMixinType (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[0]);
+        var requestingClass = TargetClassDefinitionUtility.GetContext (
+            typeof (NullTarget),
+            MixinConfiguration.ActiveConfiguration,
+            GenerationPolicy.GenerateOnlyIfConfigured);
+        var concreteMixinIdentifier =
+            TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier ();
+        ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, concreteMixinIdentifier);
       }
     }
 
@@ -416,7 +437,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       mockRepository.ReplayAll();
 
-      Assert.AreSame (objectReference, builder.BeginDeserialization (transformer, info, context));
+      Assert.That (builder.BeginDeserialization (transformer, info, context), Is.SameAs (objectReference));
 
       mockRepository.VerifyAll();
     }
@@ -488,8 +509,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void NameProviderIsUsedWhenTypeIsGenerated()
     {
-      TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
-
       var nameProviderFake1 = MockRepository.GenerateMock<INameProvider>();
       var nameProviderFake2 = MockRepository.GenerateMock<INameProvider>();
       var moduleManagerMock = MockRepository.GenerateMock<IModuleManager>();
@@ -505,7 +524,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       typeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (typeof (string));
       typeGeneratorMock.Replay();
 
-      builder.GetConcreteType (definition);
+      var classContext = TargetClassDefinitionUtility.GetContext (typeof (BaseType1), MixinConfiguration.ActiveConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
+      builder.GetConcreteType (classContext);
       moduleManagerMock.VerifyAllExpectations();
     }
 

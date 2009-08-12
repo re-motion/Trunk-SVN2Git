@@ -16,7 +16,6 @@
 using System;
 using Remotion.Mixins.BridgeInterfaces;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.BridgeImplementations
@@ -26,11 +25,11 @@ namespace Remotion.Mixins.BridgeImplementations
     public Type GetConcreteType (Type targetOrConcreteType, GenerationPolicy generationPolicy)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
-      TargetClassDefinition configuration = TargetClassDefinitionUtility.GetActiveConfiguration (targetOrConcreteType, generationPolicy);
-      if (configuration == null)
+      var classContext = TargetClassDefinitionUtility.GetContext (targetOrConcreteType, MixinConfiguration.ActiveConfiguration, generationPolicy);
+      if (classContext == null)
         return targetOrConcreteType;
       else
-        return ConcreteTypeBuilder.Current.GetConcreteType (configuration);
+        return ConcreteTypeBuilder.Current.GetConcreteType (classContext);
     }
 
     public void InitializeUnconstructedInstance (object mixinTarget)

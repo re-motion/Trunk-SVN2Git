@@ -148,9 +148,7 @@ namespace Remotion.Mixins.CodeGeneration
 
     private object CreateMixin (ExpectedMixinInfo mixinInfo, int index)
     {
-      Type mixinType = mixinInfo.NeedsDerivedMixin 
-          ? ConcreteTypeBuilder.Current.GetConcreteMixinType (_targetClassDefinition.Mixins[index]).GeneratedType 
-          : mixinInfo.ExpectedMixinType;
+      Type mixinType = GetConcreteExpectedMixinType (index);
 
       if (mixinType.IsValueType)
       {
@@ -193,9 +191,15 @@ namespace Remotion.Mixins.CodeGeneration
     private Type GetConcreteExpectedMixinType (int index)
     {
       if (_expectedMixinInfo[index].NeedsDerivedMixin)
-        return ConcreteTypeBuilder.Current.GetConcreteMixinType (_targetClassDefinition.Mixins[index]).GeneratedType;
+      {
+        return ConcreteTypeBuilder.Current.GetConcreteMixinType (
+            _targetClassDefinition.ConfigurationContext,
+            _targetClassDefinition.Mixins[index].GetConcreteMixinTypeIdentifier ()).GeneratedType;
+      }
       else
+      {
         return _expectedMixinInfo[index].ExpectedMixinType;
+      }
     }
   }
 }

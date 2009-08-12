@@ -409,7 +409,7 @@
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TypeFeatureTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ModuleManagerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\NamespaceChangingNameProviderTest.cs" />
-    <Compile Include="Mixins\CodeGeneration\TestDomain\TargetClassOverridingMixinMember.cs" />
+    <Compile Include="Mixins\CodeGeneration\TestDomain\ClassOverridingSingleMixinMethod.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\ClassWithCopyCustomAttributes.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinIntroducingGenericInterface.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\MixinWithOverridableMember.cs" />

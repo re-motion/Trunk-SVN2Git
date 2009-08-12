@@ -54,7 +54,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly IMixinTarget _deserializedObject;
     private readonly object[] _extensions;
     private readonly object[] _baseMemberValues;
-    private readonly TargetClassDefinition _targetClassDefinition;
+    private readonly Type _exactTargetType;
     private readonly StreamingContext _context;
 
     public SerializationHelper (SerializationInfo info, StreamingContext context)
@@ -71,15 +71,15 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       var classContextDeserializer = new SerializationInfoClassContextDeserializer (info, "__configuration.ConfigurationContext.");
       var configurationContext = ClassContext.Deserialize (classContextDeserializer);
-      _targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (configurationContext);
 
-      Type concreteType = ConcreteTypeBuilder.Current.GetConcreteType (_targetClassDefinition);
-      concreteType = typeTransformer (concreteType);
+      Type mixinConcreteType = ConcreteTypeBuilder.Current.GetConcreteType (configurationContext);
+      _exactTargetType = mixinConcreteType.BaseType;
+      Type concreteType = typeTransformer (mixinConcreteType);
 
-      if (!_targetClassDefinition.Type.IsAssignableFrom (concreteType))
+      if (!_exactTargetType.IsAssignableFrom (concreteType))
       {
         string message = string.Format ("TypeTransformer returned type {0}, which is not compatible with the serialized mixin configuration. The "
-            + "configuration requires a type assignable to {1}.", concreteType.FullName, _targetClassDefinition.Type.FullName);
+            + "configuration requires a type assignable to {1}.", concreteType, _exactTargetType);
         throw new ArgumentException (message, "typeTransformer");
       }
 
@@ -117,7 +117,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       if (_baseMemberValues != null)
       {
-        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (_targetClassDefinition.Type);
+        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (_exactTargetType);
         FormatterServices.PopulateObjectMembers (_deserializedObject, baseMembers, _baseMemberValues);
       }
 

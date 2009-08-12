@@ -14,18 +14,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Threading;
-using Remotion.Collections;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities.Singleton;
 using Remotion.Utilities;
-using Remotion.Logging;
+using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -48,8 +43,6 @@ namespace Remotion.Mixins.CodeGeneration
   /// </remarks>
   public class ConcreteTypeBuilder : ThreadSafeSingletonBase<ConcreteTypeBuilder, DefaultInstanceCreator<ConcreteTypeBuilder>>
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (ConcreteTypeBuilder));
-
     private IModuleManager _scope;
     // Use a pessimistic cache - a ModuleBuilder cannot be used by multiple threads at the same time anyway, so using a lazy cache could actually 
     // cause errors (depending on how it was implemented)
@@ -163,34 +156,39 @@ namespace Remotion.Mixins.CodeGeneration
     /// <summary>
     /// Gets the concrete mixed type for the given target class configuration either from the cache or by generating it.
     /// </summary>
-    /// <param name="configuration">The configuration object for the target class.</param>
-    /// <returns>A concrete type with all mixins from <paramref name="configuration"/> mixed in.</returns>
+    /// <param name="classContext">The <see cref="ClassContext"/> holding the mixin configuration for the target class.</param>
+    /// <returns>A concrete type with all mixins from <paramref name="classContext"/> mixed in.</returns>
     /// <remarks>This is mostly for internal reasons, users should use <see cref="TypeFactory.GetConcreteType(Type)"/> instead.</remarks>
-    public Type GetConcreteType (TargetClassDefinition configuration)
+    public Type GetConcreteType (ClassContext classContext)
     {
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
-      return Cache.GetOrCreateConcreteType (Scope, configuration.ConfigurationContext, _typeNameProvider, _mixinTypeNameProvider);
+      ArgumentUtility.CheckNotNull ("classContext", classContext);
+      return Cache.GetOrCreateConcreteType (Scope, classContext, _typeNameProvider, _mixinTypeNameProvider);
     }
 
     /// <summary>
     /// Gets the concrete type for the given mixin class configuration either from the cache or by generating it.
     /// </summary>
-    /// <param name="configuration">The configuration object for the mixin class.</param>
-    /// <returns>A concrete type for the given mixin <paramref name="configuration"/>.</returns>
-    /// <remarks>This is mostly for internal reasons, users will hardly ever need to use this method..</remarks>
-    public ConcreteMixinType GetConcreteMixinType (MixinDefinition configuration)
+    /// <param name="requestingClass">The <see cref="ClassContext"/> in whose context the concrete mixin type is requested. If the mixin type
+    /// hasn't been generated yet, the concrete type for the <paramref name="requestingClass"/> will also be generated.</param>
+    /// <param name="concreteMixinTypeIdentifier">The <see cref="ConcreteMixinTypeIdentifier"/> defining the mixin type to get.</param>
+    /// <returns>A concrete type for the given <paramref name="concreteMixinTypeIdentifier"/>.</returns>
+    /// <remarks>This is mostly for internal reasons, users will hardly ever need to use this method.</remarks>
+    public ConcreteMixinType GetConcreteMixinType (ClassContext requestingClass, ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
     {
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
+      ArgumentUtility.CheckNotNull ("requestingClass", requestingClass);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
+      
+      GetConcreteType (requestingClass); // ensure target's concrete type has been generated, this will also ensure generation of the mixin types
+      ConcreteMixinType concreteMixinType = 
+          Cache.GetConcreteMixinTypeFromCacheOnly (concreteMixinTypeIdentifier); // now we know the mixin type must be in the cache
 
-      GetConcreteType (configuration.TargetClass); // ensure target's concrete type has been generated, this will also ensure generation of the mixin types
-      ConcreteMixinType concreteMixinType = Cache.GetConcreteMixinTypeFromCacheOnly (configuration.GetConcreteMixinTypeIdentifier()); // now we know the mixin type must be in the cache
-      if (concreteMixinType == null)
+      if (concreteMixinType == null) // if it isn't, the requesting class does not require a concrete mixin type
       {
         string message = string.Format (
             "No concrete mixin type is required for the given configuration (mixin {0} and target class {1}).",
-            configuration.FullName,
-            configuration.TargetClass.FullName);
-        throw new ArgumentException (message, "configuration");
+            concreteMixinTypeIdentifier.MixinType,
+            requestingClass.Type);
+        throw new ArgumentException (message, "requestingClass");
       }
       else
         return concreteMixinType;

@@ -18,6 +18,8 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.Mixins.Context;
+using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
@@ -98,7 +100,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         var targetClassDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingSpecificMixinMember));
         var initializer = new MixinArrayInitializer (typeof (ClassOverridingSpecificMixinMember), mixinInfos, targetClassDefinition);
 
-        var concreteMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (targetClassDefinition.Mixins[0]).GeneratedType;
+        var concreteMixinType = GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
         var mixin1 = Activator.CreateInstance (concreteMixinType);
 
         initializer.CheckMixinArray (new[] { mixin1 });
@@ -277,7 +279,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         var targetClassDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingSpecificMixinMember));
         var initializer = new MixinArrayInitializer (typeof (ClassOverridingSpecificMixinMember), mixinInfos, targetClassDefinition);
 
-        var concreteMixinType = ConcreteTypeBuilder.Current.GetConcreteMixinType (targetClassDefinition.Mixins[0]).GeneratedType;
+        var concreteMixinType = GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
         var mixin1 = Activator.CreateInstance (concreteMixinType);
 
         var mixins = initializer.CreateMixinArray (new[] { mixin1 });
@@ -294,6 +296,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       var targetClassDefinition = TargetClassDefinitionUtility.GetConfiguration (targetType, mixinConfigurationBuilder.BuildConfiguration());
       return new MixinArrayInitializer (targetType, mixinInfos, targetClassDefinition);
+    }
+
+    private Type GetGeneratedMixinType (Type targetType, Type mixinType)
+    {
+      ClassContext requestingClass = TargetClassDefinitionUtility.GetContext (
+          targetType,
+          MixinConfiguration.ActiveConfiguration,
+          GenerationPolicy.GenerateOnlyIfConfigured);
+
+      MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[mixinType];
+      Assert.That (mixinDefinition, Is.Not.Null);
+
+      return ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ()).GeneratedType;
     }
   }
 }

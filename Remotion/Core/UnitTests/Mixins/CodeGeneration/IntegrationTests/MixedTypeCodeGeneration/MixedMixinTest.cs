@@ -18,6 +18,7 @@ using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using ClassOverridingSingleMixinMethod=Remotion.UnitTests.Mixins.CodeGeneration.TestDomain.ClassOverridingSingleMixinMethod;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration
 {
@@ -45,11 +46,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     public void MixedMixin_OverriddenByTargetClass ()
     {
       using (MixinConfiguration.BuildNew()
-          .ForClass<TargetClassOverridingMixinMember>().AddMixin<MixinWithOverridableMember>()
+          .ForClass<ClassOverridingSingleMixinMethod>().AddMixin<MixinWithOverridableMember>()
           .ForClass<MixinWithOverridableMember>().AddMixin<MixinOverridingToString>()
           .EnterScope())
       {
-        var instance = ObjectFactory.Create<TargetClassOverridingMixinMember>(ParamList.Empty);
+        var instance = ObjectFactory.Create<ClassOverridingSingleMixinMethod>(ParamList.Empty);
         Assert.That (Mixin.Get<MixinWithOverridableMember> (instance).ToString(), NUnit.Framework.SyntaxHelpers.Text.StartsWith ("Overridden: "));
       }
     }

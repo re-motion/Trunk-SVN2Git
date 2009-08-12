@@ -14,13 +14,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
@@ -33,39 +31,39 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void GeneratedTypeImplementsMarkerInterface ()
     {
-      MixinDefinition mixinDefinition =
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
-      Assert.IsNotNull (mixinDefinition);
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
-      Assert.IsTrue (typeof (IGeneratedMixinType).IsAssignableFrom (generatedType));
+      Type generatedType = GetGeneratedType(typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      Assert.That (typeof (IGeneratedMixinType).IsAssignableFrom (generatedType), Is.True);
     }
 
     [Test]
     public void GeneratedMixinTypeHasMixinTypeAttribute ()
     {
-      MixinDefinition mixinDefinition =
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
-      Assert.IsNotNull (mixinDefinition);
-
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
-      Assert.IsTrue (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false));
+      Type generatedType = GetGeneratedType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      Assert.That (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false), Is.True);
 
       var attributes = (ConcreteMixinTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
-      Assert.AreEqual (1, attributes.Length);
+      Assert.That (attributes.Length, Is.EqualTo (1));
     }
 
     [Test]
     public void MixinTypeAttributeCanBeUsedToGetMixinDefinition ()
     {
-      MixinDefinition mixinDefinition =
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
-      Assert.IsNotNull (mixinDefinition);
+      var requestingClass = TargetClassDefinitionUtility.GetContext (
+          typeof (ClassOverridingMixinMembers),
+          MixinConfiguration.ActiveConfiguration,
+          GenerationPolicy.GenerateOnlyIfConfigured);
 
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
-      Assert.IsTrue (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false));
+      MixinDefinition mixinDefinition = 
+          TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
+      Assert.That (mixinDefinition, Is.Not.Null);
+
+      Type generatedType = ConcreteTypeBuilder.Current
+          .GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ())
+          .GeneratedType;
+      Assert.That (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false), Is.True);
 
       var attributes = (ConcreteMixinTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
-      Assert.AreSame (mixinDefinition, attributes[0].GetMixinDefinition (TargetClassDefinitionCache.Current));
+      Assert.That (attributes[0].GetMixinDefinition (TargetClassDefinitionCache.Current), Is.SameAs (mixinDefinition));
     }
 
     [Test]
@@ -77,17 +75,24 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       builder.MixinTypeNameProvider = nameProviderMock;
       ConcreteTypeBuilder.SetCurrent (builder);
 
+      var requestingClass = TargetClassDefinitionUtility.GetContext (
+          typeof (ClassOverridingMixinMembers),
+          MixinConfiguration.ActiveConfiguration,
+          GenerationPolicy.GenerateOnlyIfConfigured);
+
       MixinDefinition mixinDefinition =
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
-      Assert.IsNotNull (mixinDefinition);
+          TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
+      Assert.That (mixinDefinition, Is.Not.Null);
 
       Expect.Call (nameProviderMock.GetNewTypeName (mixinDefinition)).Return ("Bra");
 
       repository.ReplayAll ();
 
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
+      Type generatedType = ConcreteTypeBuilder.Current
+          .GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier())
+          .GeneratedType;
 
-      Assert.AreEqual ("Bra", generatedType.FullName);
+      Assert.That (generatedType.FullName, Is.EqualTo ("Bra"));
 
       repository.VerifyAll ();
     }
@@ -101,17 +106,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       builder.MixinTypeNameProvider = nameProviderMock;
       ConcreteTypeBuilder.SetCurrent (builder);
 
-      MixinDefinition mixinDefinition =
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers)).Mixins[typeof (MixinWithAbstractMembers)];
-      Assert.IsNotNull (mixinDefinition);
-
-      Expect.Call (nameProviderMock.GetNewTypeName (mixinDefinition)).Return ("Bra+Oof");
+      Expect.Call (nameProviderMock.GetNewTypeName (Arg<MixinDefinition>.Is.Anything)).Return ("Bra+Oof");
 
       repository.ReplayAll ();
 
-      Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
-
-      Assert.AreEqual ("Bra/Oof", generatedType.FullName);
+      var generatedType = GetGeneratedType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      Assert.That (generatedType.FullName, Is.EqualTo ("Bra/Oof"));
 
       repository.VerifyAll ();
     }
@@ -121,19 +121,16 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithProtectedOverriderAndAttributes)).EnterScope())
       {
-        MixinDefinition mixinDefinition =
-            TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinWithProtectedOverriderAndAttributes)];
-        Assert.IsNotNull (mixinDefinition);
-        Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
-        Assert.AreNotSame (typeof (MixinWithProtectedOverriderAndAttributes), generatedType);
+        var generatedType = GetGeneratedType (typeof (NullTarget), typeof (MixinWithProtectedOverriderAndAttributes));
+        Assert.That (generatedType, Is.Not.SameAs (typeof (MixinWithProtectedOverriderAndAttributes)));
 
         object[] inheritableAttributes = generatedType.GetCustomAttributes (typeof (InheritableAttribute), true);
         object[] nonInheritableAttributes = generatedType.GetCustomAttributes (typeof (NonInheritableAttribute), true);
-        
-        Assert.AreEqual (1, inheritableAttributes.Length);
+
+        Assert.That (inheritableAttributes.Length, Is.EqualTo (1));
         Assert.That (inheritableAttributes, Is.EquivalentTo (typeof (MixinWithProtectedOverriderAndAttributes).GetCustomAttributes (typeof (InheritableAttribute), true)));
 
-        Assert.AreEqual (1, nonInheritableAttributes.Length);
+        Assert.That (nonInheritableAttributes.Length, Is.EqualTo (1));
         Assert.That (nonInheritableAttributes, Is.EquivalentTo (typeof (MixinWithProtectedOverriderAndAttributes).GetCustomAttributes (typeof (NonInheritableAttribute), true)));
       }
     }
@@ -143,14 +140,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithProtectedOverriderAndAttributes)).EnterScope())
       {
-        MixinDefinition mixinDefinition =
-            TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinWithProtectedOverriderAndAttributes)];
-        Assert.IsNotNull (mixinDefinition);
-        Type generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (mixinDefinition).GeneratedType;
-        Assert.AreNotSame (typeof (MixinWithProtectedOverriderAndAttributes), generatedType);
+        var generatedType = GetGeneratedType (typeof (NullTarget), typeof (MixinWithProtectedOverriderAndAttributes));
+        Assert.That (generatedType, Is.Not.SameAs (typeof (MixinWithProtectedOverriderAndAttributes)));
 
         object[] copiedAttributes = generatedType.GetCustomAttributes (typeof (SampleCopyTemplateAttribute), true);
-        Assert.AreEqual (0, copiedAttributes.Length);
+        Assert.That (copiedAttributes.Length, Is.EqualTo (0));
       }
     }
 
@@ -163,6 +157,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Assert.That (m1, Is.InstanceOfType (typeof (AbstractMixinWithoutAbstractMembers)));
       Assert.That (m1.GetType (), Is.Not.SameAs (typeof (AbstractMixinWithoutAbstractMembers)));
       Assert.That (m1.M1 (), Is.EqualTo ("AbstractMixinWithoutAbstractMembers.M1"));
+    }
+
+    private Type GetGeneratedType (Type targetType, Type mixinType)
+    {
+      var requestingClass = TargetClassDefinitionUtility.GetContext (
+          targetType,
+          MixinConfiguration.ActiveConfiguration,
+          GenerationPolicy.GenerateOnlyIfConfigured);
+
+      MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[mixinType];
+      Assert.That (mixinDefinition, Is.Not.Null);
+
+      return ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ()).GeneratedType;
     }
   }
 }

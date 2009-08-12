@@ -17,7 +17,7 @@ using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
 {
-  public class TargetClassOverridingMixinMember
+  public class ClassOverridingSingleMixinMethod
   {
     [OverrideMixin]
     protected void Foo ()
