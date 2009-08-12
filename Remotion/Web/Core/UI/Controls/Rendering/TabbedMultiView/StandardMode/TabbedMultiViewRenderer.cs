@@ -85,6 +85,9 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewContentClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
@@ -101,6 +104,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
       Writer.RenderEndTag();
       Writer.RenderEndTag();
+      Writer.RenderEndTag ();
     }
 
     protected virtual void RenderTopControls ()
@@ -230,6 +234,12 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     {
       get { return "wrapper"; }
     }
+
+    public string CssClassContentBorder
+    {
+      get { return "contentBorder"; }
+    }
+
     #endregion
   }
 }

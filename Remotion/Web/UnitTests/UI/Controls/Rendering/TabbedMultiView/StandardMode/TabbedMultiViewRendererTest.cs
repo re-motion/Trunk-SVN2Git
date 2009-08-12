@@ -245,7 +245,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
         divActiveView.AssertStyleAttribute ("border", "solid 1px black");
       divActiveView.AssertChildElementCount (1);
 
-      var divContent = divActiveView.GetAssertedChildElement ("div", 0);
+      var divContentBorder = divActiveView.GetAssertedChildElement ("div", 0);
+      divContentBorder.AssertAttributeValueEquals ("class", renderer.CssClassContentBorder);
+
+      var divContent = divContentBorder.GetAssertedChildElement ("div", 0);
       divContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
     }
 

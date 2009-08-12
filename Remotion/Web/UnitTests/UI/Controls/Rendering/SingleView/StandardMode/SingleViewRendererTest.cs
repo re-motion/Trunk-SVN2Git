@@ -186,7 +186,11 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.StandardMode
       var viewContainer = contentDiv.GetAssertedChildElement ("div", 1);
       viewContainer.AssertAttributeValueEquals ("id", _control.ViewClientID);
       viewContainer.AssertAttributeValueEquals ("class", renderer.CssClassView);
-      var viewContent = viewContainer.GetAssertedChildElement ("div", 0);
+
+      var viewContentBorder = viewContainer.GetAssertedChildElement ("div", 0);
+      viewContentBorder.AssertAttributeValueEquals ("class", renderer.CssClassContentBorder);
+
+      var viewContent = viewContentBorder.GetAssertedChildElement ("div", 0);
       viewContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
 
       if (!isEmpty)

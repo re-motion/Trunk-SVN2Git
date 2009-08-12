@@ -100,6 +100,9 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       Control.ViewStyle.AddAttributesToRender (Writer);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
+      Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
       Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewContentClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
@@ -108,6 +111,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 
       Writer.RenderEndTag();
       Writer.RenderEndTag();
+      Writer.RenderEndTag ();
     }
 
     #region protected virtual string CssClass...
@@ -167,6 +171,11 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     public virtual string CssClassContent
     {
       get { return "content"; }
+    }
+
+    public virtual string CssClassContentBorder
+    {
+      get { return "contentBorder"; }
     }
 
     /// <summary> Gets the CSS-Class applied when the section is empty. </summary>

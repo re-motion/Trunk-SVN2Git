@@ -25,12 +25,15 @@ StyleUtility.CreateBorderSpans = function(selector)
 StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRight)
 {
   var scrollDiv = element.children(':first');
-  if ((scrollDiv.length == 1) && !TypeUtility.IsUndefined(scrollDiv[0].nodeName) && (scrollDiv[0].nodeName.toLowerCase() == 'div'))
+  while ( (scrollDiv.parent().css('overflow') != 'auto') && (scrollDiv.length > 0) )
+    scrollDiv = scrollDiv.children(':first');
+
+  if ((scrollDiv.length == 1) && (scrollDiv.attr('nodeName').toLowerCase() == 'div'))
   {
     var hasVerticalScrollBar = scrollDiv[0].scrollHeight > scrollDiv.height(); //height includes the scrollbar, if it exists
     var hasHorizontalScrollbar = scrollDiv[0].scrollWidth > scrollDiv.width(); //width includes the scrollbar, if it exists
     var hasExactlyOneScrollbar = (hasVerticalScrollBar && !hasHorizontalScrollbar) || (!hasVerticalScrollBar && hasHorizontalScrollbar);
-    
+
     if (hasVerticalScrollBar)
       $(topRight).css('display', 'none');
     else

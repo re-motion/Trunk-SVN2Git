@@ -87,12 +87,16 @@ div.singleViewView
   padding: 1px;
 }
 
-div.singleViewView div.content
+div.singleViewView div.contentBorder
 {
-  top: -1px;
-  left: -1px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
   border: solid 1px #083779;
-  overflow: auto;	
+  padding: 1em;	
+  overflow: auto;
 }
 
 div.singleViewView *.top, 
