@@ -21,11 +21,22 @@ ul.treeViewTopLevelNodeChildren
 /* Applied to the node's children area. */
 ul.treeViewNodeChildren
 {
-  background-image: url(../Image/TreeViewI.gif);
+  background-image: url(../../Image/NovaBlue/TreeViewI.gif);
   background-repeat: repeat-y;  
   margin: 0;  
   padding: 0 0 0 19px;
   list-style: none;
+}
+
+span.treeViewNode a
+{
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+span.treeViewNode span
+{
+  display: inline-block;
 }
 
 /* Applied to the node's children area if the nodes should not be connected by lines. */
@@ -78,4 +89,8 @@ span.treeViewNodeHeadSelected a:hover
 	border-color: #083779;
 	border-style: solid;
 	background-color: #e6f0ff;	
+}
+span.treeViewNode ul
+{
+  right: auto;
 }

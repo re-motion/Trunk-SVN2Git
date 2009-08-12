@@ -5,14 +5,70 @@ div.singleView
   position: relative;
   margin: 0;
 	padding: 0;
+  background-color: #083779;
 }
 
 div.singleView div.wrapper
 {
   position: relative;
-  margin: 10px;
+  background-color: white;
+  margin: 0.5em;
   width: auto;
   height: auto;
+}
+
+div.singleView div.wrapper > *.top, 
+div.singleView div.wrapper > *.left, 
+div.singleView div.wrapper > *.bottom, 
+div.singleView div.wrapper > *.bottom, 
+div.singleView div.wrapper > *.topLeft,
+div.singleView div.wrapper > *.bottomLeft, 
+div.singleView div.wrapper > *.topRight, 
+div.singleView div.wrapper > *.bottomRight
+{
+  display: none;
+}
+
+div.singleView div.wrapper > *.topLeft, 
+div.singleView div.wrapper > *.bottomLeft, 
+div.singleView div.wrapper > *.topRight, 
+div.singleView div.wrapper > *.bottomRight
+{
+  position: absolute;
+  font-size: 0.5%;
+  display: block;
+  background-image: url(../../Image/NovaBlue/CornerBackgroundBlueTransparentNoBorder.gif);
+  background-repeat: no-repeat;
+  width: 5px;
+  height: 5px;
+}
+
+div.singleView div.wrapper > *.topLeft
+{
+  background-position: top left;
+  top: 0px;
+  left: 0px;
+}
+
+div.singleView div.wrapper > *.topRight
+{
+  background-position: top right;
+  top: 0px;
+  right: 0px;
+}
+
+div.singleView div.wrapper > *.bottomLeft
+{
+  background-position: bottom left;
+  bottom: 0px;
+  left: 0px;
+}
+
+div.singleView div.wrapper > *.bottomRight
+{
+  background-position: bottom right;
+  bottom: 0px;
+  right: 0px;
 }
 
 div.singleView div.content
@@ -26,15 +82,17 @@ div.singleView div.content
 
 div.singleViewView
 {
-  padding: 0;
-  vertical-align: top; 
-	border: solid 1px #083779;	
-  overflow: hidden;	
+  vertical-align: top; 	
+  margin: 0em 1em;
+  padding: 1px;
 }
 
 div.singleViewView div.content
 {
-  overflow: auto;
+  top: -1px;
+  left: -1px;
+  border: solid 1px #083779;
+  overflow: auto;	
 }
 
 div.singleViewView *.top, 
@@ -66,29 +124,29 @@ div.singleViewView *.bottomRight
 div.singleViewView *.topLeft
 {
   background-position: top left;
-  top: -1px;
-  left: -1px;
+  top: 0px;
+  left: 0px;
 }
 
 div.singleViewView *.topRight
 {
   background-position: top right;
-  top: -1px;
-  right: -1px;
+  top: 0px;
+  right: 0px;
 }
 
 div.singleViewView *.bottomLeft
 {
   background-position: bottom left;
-  bottom: -1px;
-  left: -1px;
+  bottom: 0px;
+  left: 0px;
 }
 
 div.singleViewView *.bottomRight
 {
   background-position: bottom right;
-  bottom: -1px;
-  right: -1px;
+  bottom: 0px;
+  right: 0px;
 }
 
 /* Non-IE Browsers hack \*/

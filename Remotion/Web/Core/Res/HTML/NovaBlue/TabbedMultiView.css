@@ -13,11 +13,14 @@ div.tabbedMultiView
 	padding: 0;
   width: 100%;
   height: 100%;
+  background-color: #083779;
 }
 
 div.tabbedMultiView div.wrapper
 {
   position: relative;
+  background-color: white;
+  margin: 0.5em;
   width: auto;
   height: auto;
 }
@@ -283,5 +286,5 @@ div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody,
 div.tabbedMultiViewTabStrip span.tabStripTabSelected span.anchorBody, 
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
-  height: 1.5em;
+  height: 1.2em;
 }

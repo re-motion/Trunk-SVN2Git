@@ -38,7 +38,7 @@
           <td></td>
           <td><remotion:bocdatetimevalue id=UnboundBirthdayField runat="server" width="300px" readonly="False" required="False" ShowSeconds="true"></remotion:bocdatetimevalue></td>
           <td>
-            unbound, value not set, not required</td>
+            unbound, value not set, not required, with seconds</td>
           <td style="WIDTH: 20%"><asp:label id=UnboundBirthdayFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
         <tr>
           <td></td>

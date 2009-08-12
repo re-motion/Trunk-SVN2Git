@@ -3,18 +3,18 @@
 
 StyleUtility.CreateBorderSpans = function(selector)
 {
-  var elementBody = $(selector)[0];
+  var element = $(selector)[0];
 
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'top');
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'left');
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottom');
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'right');
-  StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'topLeft');
-  var topRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'topRight');
-  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottomLeft');
-  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.id, 'bottomRight');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'top');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'left');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'bottom');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'right');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'topLeft');
+  var topRight = StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'topRight');
+  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'bottomLeft');
+  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'bottomRight');
 
-  StyleUtility.CalculateBorderSpans(elementBody, topRight, bottomLeft, bottomRight);
+  StyleUtility.CalculateBorderSpans(element, topRight, bottomLeft, bottomRight);
 
   var elementID = element.id;
   var resizeHandler = function() { StyleUtility.OnResize(elementID); }
@@ -53,12 +53,12 @@ StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bott
     if (scrollDiv[0].scrollHeight > scrollDiv.height())
       $(topRight).css('display', 'none');
     else
-      $(topRight).css('display', 'inline');
+      $(topRight).css('display', '');
 
     if (scrollDiv[0].scrollWidth > scrollDiv.width())
       $(bottomLeft).css('display', 'none');
     else
-      $(bottomLeft).css('display', 'inline');
+      $(bottomLeft).css('display', '');
 
     if ((scrollDiv[0].scrollHeight > scrollDiv.height() && scrollDiv[0].scrollWidth == scrollDiv.width())
     || (scrollDiv[0].scrollHeight == scrollDiv.height() && scrollDiv[0].scrollWidth > scrollDiv.width()))
@@ -67,7 +67,7 @@ StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bott
     }
     else
     {
-      $(bottomRight).css('display', 'inline');
+      $(bottomRight).css('display', '');
     }
   }
 

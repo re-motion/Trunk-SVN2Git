@@ -7,35 +7,35 @@ StyleUtility.CreateBorderSpans = function(selector)
   if (element.length == 0)
     return;
 
-  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'top');
-  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'left');
-  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'bottom');
-  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'right');
-  StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'topLeft');
-  var topRight = StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'topRight');
-  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'bottomLeft');
-  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(element, element.id, 'bottomRight');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'top');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'left');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'bottom');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'right');
+  StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'topLeft');
+  var topRight = StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'topRight');
+  var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'bottomLeft');
+  var bottomRight = StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'bottomRight');
 
   StyleUtility.ShowBorderSpans(element, topRight, bottomLeft, bottomRight);
 
   var resizeHandler = function() { StyleUtility.OnResize(selector); }
-  $(window).resize(resizeHandler);
+  $(document).ready( function() { $(window).resize(resizeHandler); } );
 }
 
 StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRight)
 {
-  var scrollDiv = $(element).children(':first').children(':first');
+  var scrollDiv = $(element).children(':first');
   if ((scrollDiv.length == 1) && !TypeUtility.IsUndefined(scrollDiv[0].nodeName) && (scrollDiv[0].nodeName.toLowerCase() == 'div'))
   {
     if (scrollDiv[0].scrollHeight > scrollDiv.height())
       $(topRight).css('display', 'none');
     else
-      $(topRight).css('display', 'inline');
+      $(topRight).css('display', '');
 
     if (scrollDiv[0].scrollWidth > scrollDiv.width())
       $(bottomLeft).css('display', 'none');
     else
-      $(bottomLeft).css('display', 'inline');
+      $(bottomLeft).css('display', '');
 
     if ((scrollDiv[0].scrollHeight > scrollDiv.height() && scrollDiv[0].scrollWidth == scrollDiv.width())
     || (scrollDiv[0].scrollHeight == scrollDiv.height() && scrollDiv[0].scrollWidth > scrollDiv.width()))
@@ -44,7 +44,7 @@ StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRig
     }
     else
     {
-      $(bottomRight).css('display', 'inline');
+      $(bottomRight).css('display', '');
     }
   }
 }

@@ -41,6 +41,8 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.SingleView.StandardMode
       _control.Stub (stub => stub.BottomControl).Return (new PlaceHolder { ID = "BottomControl" });
       _control.Stub (stub => stub.View).Return (new PlaceHolder { ID = "ViewControl" });
       _control.Stub (stub => stub.ViewClientID).Return ("ViewClientID");
+      _control.Stub (stub => stub.ViewContentClientID).Return (_control.ViewClientID + "_Content");
+      _control.Stub (stub => stub.WrapperClientID).Return ("WrapperClientID");
 
       StateBag stateBag = new StateBag ();
       _control.Stub (stub => stub.Attributes).Return (new AttributeCollection (stateBag));

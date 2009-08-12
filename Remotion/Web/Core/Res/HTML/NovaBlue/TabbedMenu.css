@@ -15,6 +15,7 @@ table.tabbedMenu
 td.tabbedMainMenuCell
 {
   padding: 0;
+  background-color: #083779;
 }
 
 td.tabbedSubMenuCell

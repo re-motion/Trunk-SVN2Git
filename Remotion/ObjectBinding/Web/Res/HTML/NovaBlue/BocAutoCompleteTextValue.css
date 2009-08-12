@@ -1,0 +1,24 @@
+/*  This style file is only used for documenting the classes. 
+    It is not automatically included by the BocTextValue. */
+
+.bocAutoCompleteTextValue
+{
+}
+
+.bocAutoCompleteTextValue.readOnly
+{
+}
+
+.bocAutoCompleteTextValue.disabled
+{
+}
+
+.bocAutoCompleteTextValueDropDownPanel
+{
+  max-height: 300px;
+  height: expression(this.scrollHeight > 300 ? "300px" : "auto");
+  background-color: window;
+  color: WindowText;
+  border: solid 1px buttonshadow;
+  white-space: nowrap;
+}

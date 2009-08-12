@@ -1,40 +1,57 @@
 button.webButton
 {
-  font-weight: bold;
-  background-color: #DDDDDD;
-  background-image: url(../../Image/NovaBlue/WebButtonBackground.gif);
-  background-position: center;
-  background-repeat: repeat-x;
+  background-color: Transparent;
   cursor: default !important;
   text-decoration: none !important;
   border: none;
   position: relative;
   display: inline-block;
-  padding: 0px 1px;
+  vertical-align: middle;
+  padding: 0px 3px !important;
+  margin: 1px 0px !important;
+  outline: none;
+  left: -1px;
 }
 
-button.webButton.mouseDown
+button.webButton::-moz-focus-inner 
+{ 
+  border: 0; 
+}
+
+button.webButton.mouseDown span.buttonBody
 {
   background-image: url(../../Image/NovaBlue/WebButtonBackgroundHover.gif);
 }
 
 button.webButton span.buttonBody
 {
+  border: solid 1px black;
+  font-weight: bold;
+  background-color: #DDDDDD;
+  background-image: url(../../Image/NovaBlue/WebButtonBackground.gif);
+  background-position: center top;
+  background-repeat: repeat-x;
+  
   display: block;
   position: relative;
   top: 0px;
-  left: -1px;
+  left: -2px;
+  
   width: 100%;
   white-space: nowrap;
-  border: solid 1px black;
-  padding-top: 0.15em;
-  padding-bottom: 0.15em;
+  
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 1px;
+  padding-right: 1px;
 }
 
 button.webButton.mouseDown span.buttonBody
 {
-  padding-top: 0.2em;
-  padding-bottom: 0.10em;
+  padding-top: 3px;
+  padding-bottom: 1px;
+  padding-left: 2px;
+  padding-right: 0px;
 }
 
 button.webButton span.topLeft,

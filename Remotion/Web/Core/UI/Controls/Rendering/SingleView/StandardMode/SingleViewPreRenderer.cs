@@ -35,7 +35,8 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ClientID + "_View");
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.WrapperClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ViewClientID);
       ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.TopControl.ClientID);
       ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.BottomControl.ClientID);
 
@@ -62,15 +63,8 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.ViewClientID);
       Control.Page.ClientScript.RegisterClientScriptBlock (Control, typeof (SingleViewPreRenderer), keyAdjust, scriptAdjust);
 
-      string bindScript =
-          @"$(document).ready( function()
-  {{ 
-    $(window).bind('resize', function()
-      {{ 
-        adjustView_{0}(); 
-      }}); 
-    setTimeout(""$(window).trigger('resize');"", 10);
-  }} );";
+      string bindScript = @"$(window).resize( adjustView_{0} ); 
+setTimeout(""$(window).trigger('resize');"", 10);";
       bindScript = string.Format (bindScript, Control.ClientID);
       Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (SingleViewPreRenderer), Control.ClientID + "_BindViewResize", bindScript);
     }

@@ -312,6 +312,16 @@ namespace Remotion.Web.UI.Controls
       get { return ClientID + ClientIDSeparator + c_tabstripID; }
     }
 
+    string ITabbedMultiView.ActiveViewContentClientID
+    {
+      get { return ActiveViewClientID + "_Content"; }
+    }
+
+    string ITabbedMultiView.WrapperClientID
+    {
+      get { return ClientID + "_Wrapper"; }
+    }
+
     public TabView GetActiveView ()
     {
       TabView view = (TabView) MultiViewInternal.GetActiveView();

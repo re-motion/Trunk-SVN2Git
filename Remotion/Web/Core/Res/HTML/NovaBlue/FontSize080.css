@@ -58,3 +58,13 @@ html>body td.contentMenuRow
 {
   font-size: 80%;
 }
+
+/* No scaling without a reference value */
+input,
+textarea,
+select,
+button
+{
+  font-size: 100%;
+}
+

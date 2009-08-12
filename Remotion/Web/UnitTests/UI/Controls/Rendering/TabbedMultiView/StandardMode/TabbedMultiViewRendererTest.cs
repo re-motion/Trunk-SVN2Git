@@ -50,7 +50,10 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.TabbedMultiView.StandardM
       _control.Stub (stub => stub.TabStrip).Return (tabStrip);
 
       _control.Stub (stub => stub.ActiveViewClientID).Return (_control.ClientID + "_ActiveView");
+      _control.Stub (stub => stub.ActiveViewContentClientID).Return (_control.ActiveViewClientID + "_Content");
       _control.Stub (stub => stub.TabStripContainerClientID).Return (_control.ClientID + "_TabStripContainer");
+      _control.Stub (stub => stub.WrapperClientID).Return ("WrapperClientID");
+      
 
       StateBag stateBag = new StateBag ();
       _control.Stub (stub => stub.Attributes).Return (new AttributeCollection (stateBag));

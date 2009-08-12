@@ -33,5 +33,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView
     bool IsDesignMode { get; }
     
     string ViewClientID { get; }
+    string ViewContentClientID { get; }
+    string WrapperClientID { get; }
   }
 }

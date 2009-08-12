@@ -34,6 +34,8 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView
     PlaceHolder BottomControl { get; }
     IWebTabStrip TabStrip { get; }
     string TabStripContainerClientID { get; }
+    string ActiveViewContentClientID { get; }
+    string WrapperClientID { get; }
     Control GetActiveView ();
   }
 }

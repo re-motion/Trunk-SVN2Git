@@ -27,6 +27,7 @@ span.bocDateTimeValue a
 {
   position: absolute;
   border: 0;
+  top: 0.25em;
 }
 
 span.bocDateTimeValue.disabled a
@@ -120,6 +121,7 @@ span.bocDateValue a
 {
   position: absolute;
   right: 0;
+  top: 0.25em;
 }
 
 span.bocDateValue a.disabled

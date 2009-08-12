@@ -517,8 +517,10 @@
     <Content Include="Res\HTML\Legacy\TextBoxStyle.js" />
     <Content Include="Res\HTML\NovaBlue\BocAutoCompleteReferenceValue.css" />
     <Content Include="Res\HTML\NovaBlue\BocAutoCompleteReferenceValue.jquery.css" />
+    <Content Include="Res\HTML\NovaBlue\BocAutoCompleteTextValue.css" />
     <Content Include="Res\HTML\NovaBlue\BocBooleanValue.css" />
     <Content Include="Res\HTML\NovaBlue\BocCheckBox.css" />
+    <Content Include="Res\HTML\NovaBlue\BocCheckboxValue.css" />
     <Content Include="Res\HTML\NovaBlue\BocDateTimeValue.css" />
     <Content Include="Res\HTML\NovaBlue\BocEnumValue.css" />
     <Content Include="Res\HTML\NovaBlue\BocList.css" />

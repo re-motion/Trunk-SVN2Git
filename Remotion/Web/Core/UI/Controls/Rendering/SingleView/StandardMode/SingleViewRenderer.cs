@@ -44,6 +44,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       }
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.WrapperClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassWrapper);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
@@ -99,6 +100,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       Control.ViewStyle.AddAttributesToRender (Writer);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewContentClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 

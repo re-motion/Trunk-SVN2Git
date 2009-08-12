@@ -21,7 +21,7 @@ ul.treeViewTopLevelNodeChildren
 /* Applied to the node's children area. */
 ul.treeViewNodeChildren
 {
-  background-image: url(../Image/TreeViewI.gif);
+  background-image: url(../../Image/ClassicBlue/TreeViewI.gif);
   background-repeat: repeat-y;  
   margin: 0;  
   padding: 0 0 0 19px;
@@ -34,6 +34,17 @@ ul.treeViewNodeChildrenNoLines
   margin: 0;  
   padding: 0 0 0 19px;
   list-style: none;
+}
+
+span.treeViewNode a
+{
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+span.treeViewNode span
+{
+  display: inline-block;
 }
 
 /* Applied to the node's head. */

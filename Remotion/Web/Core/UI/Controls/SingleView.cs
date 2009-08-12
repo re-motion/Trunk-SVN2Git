@@ -143,7 +143,17 @@ namespace Remotion.Web.UI.Controls
     {
       get { return ClientID + "_View"; }
     }
- 
+
+    string ISingleView.ViewContentClientID
+    {
+      get { return ViewClientID + "_Content"; }
+    }
+
+    string ISingleView.WrapperClientID
+    {
+      get { return ClientID + "_Wrapper"; }
+    }
+
     IPage IControl.Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
