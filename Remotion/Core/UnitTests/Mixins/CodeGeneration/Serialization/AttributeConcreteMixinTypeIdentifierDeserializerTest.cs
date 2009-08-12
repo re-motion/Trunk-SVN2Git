@@ -90,12 +90,5 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
       _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinType });
       Assert.That (_deserializer.GetWrappedProtectedMembers (typeof (BT1Mixin1)).ToArray (), Is.EquivalentTo (new[] { _simpleMethodOnMixinType }));
     }
-
-    [Test]
-    public void GetWrappedProtectedMembers_BogusMethod ()
-    {
-      _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleExternalMethod });
-      _deserializer.GetWrappedProtectedMembers (typeof (BT1Mixin1)).ToArray ();
-    }
   }
 }

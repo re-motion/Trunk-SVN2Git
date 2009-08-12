@@ -152,6 +152,7 @@
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\Serialization\MethodResolverTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />
     <Compile Include="Mixins\CodeGeneration\MixinArrayInitializerTest.cs" />

@@ -62,10 +62,14 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
       var index = 0;
       foreach (var methodInfo in collection)
       {
+        if (methodInfo.IsGenericMethod && !methodInfo.IsGenericMethodDefinition)
+          throw new NotSupportedException ("Cannot serialize closed generic methods. This is not supported.");
+
         if (includeDeclaringType)
           _serializationInfo.AddValue (collectionKey + "[" + index + "].DeclaringType", methodInfo.DeclaringType.AssemblyQualifiedName);
 
-        _serializationInfo.AddValue (collectionKey + "[" + index + "].MetadataToken", methodInfo.MetadataToken);
+        _serializationInfo.AddValue (collectionKey + "[" + index + "].Name", methodInfo.Name);
+        _serializationInfo.AddValue (collectionKey + "[" + index + "].Signature", methodInfo.ToString());
 
         ++index;
       }

@@ -30,6 +30,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
   {
     private MethodInfo _simpleExternalMethod;
     private MethodInfo _simpleMethodOnMixinType;
+    private MethodInfo _genericMethod;
 
     private SerializationInfo _serializationInfo;
     private SerializationInfoConcreteMixinTypeIdentifierSerializer _serializer;
@@ -39,6 +40,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     {
       _simpleExternalMethod = typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes);
       _simpleMethodOnMixinType = typeof (BT1Mixin1).GetMethod ("VirtualMethod");
+      _genericMethod = typeof (BaseType7).GetMethod ("One");
 
       _serializationInfo = new SerializationInfo (typeof (ConcreteMixinTypeIdentifier), new FormatterConverter ());
       _serializer = new SerializationInfoConcreteMixinTypeIdentifierSerializer (_serializationInfo, "identifier");
@@ -58,7 +60,15 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
 
       Assert.That (_serializationInfo.GetInt32 ("identifier.ExternalOverriders.Count"), Is.EqualTo (1));
       Assert.That (_serializationInfo.GetString ("identifier.ExternalOverriders[0].DeclaringType"), Is.EqualTo (typeof (BaseType1).AssemblyQualifiedName));
-      Assert.That (_serializationInfo.GetInt32 ("identifier.ExternalOverriders[0].MetadataToken"), Is.EqualTo (_simpleExternalMethod.MetadataToken));
+      Assert.That (_serializationInfo.GetString ("identifier.ExternalOverriders[0].Name"), Is.EqualTo ("VirtualMethod"));
+      Assert.That (_serializationInfo.GetString ("identifier.ExternalOverriders[0].Signature"), Is.EqualTo ("System.String VirtualMethod()"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void AddExternalOverriders_ClosedGeneric ()
+    {
+      _serializer.AddExternalOverriders (new HashSet<MethodInfo> { _genericMethod.MakeGenericMethod (typeof (int)) });
     }
 
     [Test]
@@ -67,8 +77,15 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
       _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinType });
 
       Assert.That (_serializationInfo.GetInt32 ("identifier.WrappedProtectedMembers.Count"), Is.EqualTo (1));
-      Assert.That (_serializationInfo.GetInt32 ("identifier.WrappedProtectedMembers[0].MetadataToken"), 
-                   Is.EqualTo (_simpleMethodOnMixinType.MetadataToken));
+      Assert.That (_serializationInfo.GetString ("identifier.WrappedProtectedMembers[0].Name"), Is.EqualTo ("VirtualMethod"));
+      Assert.That (_serializationInfo.GetString ("identifier.WrappedProtectedMembers[0].Signature"), Is.EqualTo ("System.String VirtualMethod()"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void AddWrappedProtectedMembers_ClosedGeneric ()
+    {
+      _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _genericMethod.MakeGenericMethod (typeof (int)) });
     }
   }
 }

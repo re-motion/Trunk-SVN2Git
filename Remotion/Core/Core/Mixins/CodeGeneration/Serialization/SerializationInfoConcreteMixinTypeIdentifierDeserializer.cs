@@ -63,10 +63,10 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
       {
         var methodDeclaringType = declaringType ?? Type.GetType (_serializationInfo.GetString (collectionKey + "[" + i + "].DeclaringType"));
 
-        var method = (MethodInfo) methodDeclaringType.Module.ResolveMethod (_serializationInfo.GetInt32 (collectionKey + "[" + i + "].MetadataToken"));
-        if (methodDeclaringType.IsGenericType)
-          method = (MethodInfo) MethodInfo.GetMethodFromHandle (method.MethodHandle, methodDeclaringType.TypeHandle);
+        var name = _serializationInfo.GetString (collectionKey + "[" + i + "].Name");
+        var signature = _serializationInfo.GetString (collectionKey + "[" + i + "].Signature");
 
+        var method = MethodResolver.ResolveMethod (methodDeclaringType, name, signature);
         methods.Add (method);
       }
       return methods;
