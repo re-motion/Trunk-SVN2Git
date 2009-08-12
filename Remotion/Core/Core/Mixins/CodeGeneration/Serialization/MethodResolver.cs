@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.Serialization
 {
@@ -38,6 +39,10 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
     /// </remarks>
     public static MethodInfo ResolveMethod (Type declaringType, string name, string signature)
     {
+      ArgumentUtility.CheckNotNull ("declaringType", declaringType);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      ArgumentUtility.CheckNotNullOrEmpty ("signature", signature);
+
       const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
       var candidates = (MethodInfo[]) declaringType.GetMember (name, MemberTypes.Method, flags);
       if (candidates.Length == 1)
