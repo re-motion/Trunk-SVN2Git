@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -115,8 +116,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var importer = new AttributeBasedMetadataImporter ();
 
       var typeMock = MockRepository.GenerateMock<_Type> ();
-      var attribute1 = ConcreteMixinTypeAttribute.FromClassContext (0, new ClassContext (typeof (object)));
-      var attribute2 = ConcreteMixinTypeAttribute.FromClassContext (0, new ClassContext (typeof (string)));
+      var attribute1 = ConcreteMixinTypeAttribute.Create (
+          new ClassContext (typeof (object)), 
+          0, 
+          new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo>(), new HashSet<MethodInfo>()));
+      var attribute2 = ConcreteMixinTypeAttribute.Create (
+          new ClassContext (typeof (string)), 
+          0,
+          new ConcreteMixinTypeIdentifier (typeof (string), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ()));
 
       typeMock.Expect (mock => mock.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false)).Return (new[] { attribute1, attribute2 });
       typeMock.Replay ();

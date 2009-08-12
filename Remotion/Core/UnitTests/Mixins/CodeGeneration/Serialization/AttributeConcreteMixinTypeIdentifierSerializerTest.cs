@@ -52,6 +52,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     {
       _serializer.AddExternalOverriders (new HashSet<MethodInfo> { _simpleExternalMethod });
 
+      Assert.That (_serializer.Values[1].GetType (), Is.EqualTo (typeof (object[])));
       Assert.That (((object[]) _serializer.Values[1]).Length, Is.EqualTo (1));
       Assert.That (((object[]) ((object[]) _serializer.Values[1])[0]).Length, Is.EqualTo (2));
       Assert.That (((object[]) ((object[]) _serializer.Values[1])[0])[0], Is.SameAs (typeof (BaseType1)));
@@ -63,6 +64,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     {
       _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinType });
 
+      Assert.That (_serializer.Values[2].GetType (), Is.EqualTo (typeof (int[])));
       Assert.That (((int[]) _serializer.Values[2]).Length, Is.EqualTo (1));
       Assert.That (((int[]) _serializer.Values[2])[0], Is.EqualTo (_simpleMethodOnMixinType.MetadataToken));
     }

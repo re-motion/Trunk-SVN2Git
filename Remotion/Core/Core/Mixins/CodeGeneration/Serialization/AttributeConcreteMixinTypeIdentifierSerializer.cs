@@ -39,7 +39,7 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
 
     public void AddExternalOverriders (HashSet<MethodInfo> externalOverriders)
     {
-      _values[1] = (from ovr in externalOverriders select new object[] { ovr.DeclaringType, ovr.MetadataToken }).ToArray();
+      _values[1] = (from ovr in externalOverriders select (object) new object[] { ovr.DeclaringType, ovr.MetadataToken }).ToArray();
     }
 
     public void AddWrappedProtectedMembers (HashSet<MethodInfo> wrappedProtectedMembers)

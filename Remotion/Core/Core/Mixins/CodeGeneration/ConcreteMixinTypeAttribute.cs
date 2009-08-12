@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Definitions;
@@ -25,25 +26,31 @@ namespace Remotion.Mixins.CodeGeneration
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
   public class ConcreteMixinTypeAttribute : Attribute
   {
-    public static ConcreteMixinTypeAttribute FromClassContext (int mixinIndex, ClassContext targetClassContext)
+    public static ConcreteMixinTypeAttribute Create (ClassContext targetClassContext, int mixinIndex, ConcreteMixinTypeIdentifier identifier)
     {
       ArgumentUtility.CheckNotNull ("targetClassContext", targetClassContext);
 
-      var serializer = new AttributeClassContextSerializer ();
-      targetClassContext.Serialize (serializer);
+      var classContextSerializer = new AttributeClassContextSerializer ();
+      targetClassContext.Serialize (classContextSerializer);
 
-      return new ConcreteMixinTypeAttribute (mixinIndex, serializer.Values);
+      var identifierSerializer = new AttributeConcreteMixinTypeIdentifierSerializer ();
+      identifier.Serialize (identifierSerializer);
+
+      return new ConcreteMixinTypeAttribute (classContextSerializer.Values, mixinIndex, identifierSerializer.Values);
     }
 
-    private readonly int _mixinIndex;
     private readonly object[] _classContextData;
+    private readonly int _mixinIndex;
+    private readonly object[] _concreteMixinTypeIdentifierData;
 
-    public ConcreteMixinTypeAttribute (int mixinIndex, object[] classContextData)
+    public ConcreteMixinTypeAttribute (object[] classContextData, int mixinIndex, object[] concreteMixinTypeIdentifierData)
     {
       ArgumentUtility.CheckNotNull ("classContextData", classContextData);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifierData", concreteMixinTypeIdentifierData);
 
       _mixinIndex = mixinIndex;
       _classContextData = classContextData;
+      _concreteMixinTypeIdentifierData = concreteMixinTypeIdentifierData;
     }
 
     public int MixinIndex
@@ -56,12 +63,23 @@ namespace Remotion.Mixins.CodeGeneration
       get { return _classContextData; }
     }
 
+    public object[] ConcreteMixinTypeIdentifierData
+    {
+      get { return _concreteMixinTypeIdentifierData; }
+    }
+
     public MixinDefinition GetMixinDefinition (ITargetClassDefinitionCache targetClassDefinitionCache)
     {
       var deserializer = new AttributeClassContextDeserializer (ClassContextData);
       var classContext = ClassContext.Deserialize (deserializer);
 
       return targetClassDefinitionCache.GetTargetClassDefinition (classContext).Mixins[MixinIndex];
+    }
+
+    public ConcreteMixinTypeIdentifier GetIdentifier ()
+    {
+      var deserializer = new AttributeConcreteMixinTypeIdentifierDeserializer (ConcreteMixinTypeIdentifierData);
+      return ConcreteMixinTypeIdentifier.Deserialize (deserializer);
     }
   }
 }

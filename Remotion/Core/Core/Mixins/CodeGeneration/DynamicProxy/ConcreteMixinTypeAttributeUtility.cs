@@ -22,15 +22,21 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public static class ConcreteMixinTypeAttributeUtility
   {
-    private static readonly ConstructorInfo s_attributeCtor = typeof (ConcreteMixinTypeAttribute).GetConstructor (new[] {typeof (int), typeof (object[])});
+    private static readonly ConstructorInfo s_attributeCtor = typeof (ConcreteMixinTypeAttribute).GetConstructor (
+        new[] { typeof (object[]), typeof (int), typeof (object[]) });
 
-    public static CustomAttributeBuilder CreateAttributeBuilder (int mixinIndex, ClassContext context)
+    public static CustomAttributeBuilder CreateAttributeBuilder (ClassContext context, int mixinIndex, ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
     {
       ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
       Assertion.IsNotNull (s_attributeCtor);
 
-      ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.FromClassContext (mixinIndex, context);
-      var builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { attribute.MixinIndex, attribute.ClassContextData });
+      ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.Create (context, mixinIndex, concreteMixinTypeIdentifier);
+      var builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { 
+          attribute.ClassContextData, 
+          attribute.MixinIndex, 
+          attribute.ConcreteMixinTypeIdentifierData });
+
       return builder;
     }
   }

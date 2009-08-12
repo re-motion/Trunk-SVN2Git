@@ -14,6 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -23,6 +25,7 @@ using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Mixins.Context.Serialization;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
@@ -39,17 +42,24 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
           .AddMixin (typeof (string)).WithDependency (typeof (bool)).OfKind (MixinKind.Extending)
           .BuildClassContext ();
 
-      CustomAttributeBuilder builder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (12, context);
+      var identifier = new ConcreteMixinTypeIdentifier (typeof (double), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
+      CustomAttributeBuilder builder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (context, 12, identifier);
+
       TypeBuilder typeBuilder = ((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.ObtainDynamicModuleWithWeakName ().DefineType ("Test_ConcreteMixinTypeAttribute");
       typeBuilder.SetCustomAttribute (builder);
       Type type = typeBuilder.CreateType ();
+
+      Console.WriteLine (SeparatedStringBuilder.Build (",", ConcreteTypeBuilder.Current.SaveAndResetDynamicScope ()));
       
       var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixinTypeAttribute> (type, false);
-      var deserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
-      var regeneratedContext = ClassContext.Deserialize (deserializer);
+      
+      var contextDeserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
+      var regeneratedContext = ClassContext.Deserialize (contextDeserializer);
+      var regeneratedIdentifier = attribute.GetIdentifier ();
 
       Assert.That (regeneratedContext, Is.EqualTo (context));
       Assert.That (attribute.MixinIndex, Is.EqualTo (12));
+      Assert.That (regeneratedIdentifier, Is.EqualTo (identifier));
     }
   }
 }
