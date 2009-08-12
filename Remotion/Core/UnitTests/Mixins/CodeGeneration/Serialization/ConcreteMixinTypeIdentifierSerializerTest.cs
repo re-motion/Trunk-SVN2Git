@@ -20,11 +20,12 @@ using System.Runtime.Serialization;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
 using Remotion.UnitTests.Reflection.CodeGeneration.SampleTypes;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration
+namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
 {
   [TestFixture]
   public class ConcreteMixinTypeIdentifierSerializerTest
@@ -163,7 +164,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       Assert.That (serializationInfo.GetInt32 ("identifier.WrappedProtectedMembers.Count"), Is.EqualTo (1));
       Assert.That (serializationInfo.GetInt32 ("identifier.WrappedProtectedMembers[0].MetadataToken"), 
-          Is.EqualTo (_simpleMethodOnMixinType.MetadataToken));
+                   Is.EqualTo (_simpleMethodOnMixinType.MetadataToken));
     }
 
     [Test]

@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration

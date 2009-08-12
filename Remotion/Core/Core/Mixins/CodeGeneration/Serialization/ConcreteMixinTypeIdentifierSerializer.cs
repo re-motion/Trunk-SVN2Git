@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Utilities;
 
-namespace Remotion.Mixins.CodeGeneration
+namespace Remotion.Mixins.CodeGeneration.Serialization
 {
   /// <summary>
   /// Serializes instances of <see cref="ConcreteMixinTypeIdentifier"/> into a <see cref="SerializationInfo"/> object. The serialization is
