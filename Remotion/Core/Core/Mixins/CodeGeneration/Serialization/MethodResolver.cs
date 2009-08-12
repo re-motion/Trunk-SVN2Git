@@ -16,7 +16,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Remotion.Collections;
 
 namespace Remotion.Mixins.CodeGeneration.Serialization
 {
