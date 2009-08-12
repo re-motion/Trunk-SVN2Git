@@ -150,6 +150,8 @@
     <Compile Include="Diagnostics\BugReportTest.cs" />
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />
     <Compile Include="Mixins\CodeGeneration\MixinArrayInitializerTest.cs" />

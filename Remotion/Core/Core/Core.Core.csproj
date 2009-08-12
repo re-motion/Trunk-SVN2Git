@@ -155,6 +155,8 @@
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificTypeHandlerWrapper.cs" />
     <Compile Include="Diagnostics\ToText\Infrastructure\ToTextSpecificInterfaceHandlerWrapper.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifier.cs" />
+    <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializer.cs" />
+    <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializer.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\AttributeReplicator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\DebuggerBrowsableAttributeGenerator.cs" />

@@ -31,36 +31,6 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
     private readonly SerializationInfo _serializationInfo;
     private readonly string _key;
 
-    public static ConcreteMixinTypeIdentifier Deserialize (SerializationInfo serializationInfo, string key)
-    {
-      ArgumentUtility.CheckNotNull ("serializationInfo", serializationInfo);
-      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
-
-      var mixinType = Type.GetType (serializationInfo.GetString (key + ".MixinType"));
-      HashSet<MethodInfo> externalOverriders = DeserializeMethods (serializationInfo, key + ".ExternalOverriders", null);
-      HashSet<MethodInfo> wrappedProtectedMembers = DeserializeMethods (serializationInfo, key + ".WrappedProtectedMembers", null);
-
-      return new ConcreteMixinTypeIdentifier (mixinType, externalOverriders, wrappedProtectedMembers);
-    }
-
-    private static HashSet<MethodInfo> DeserializeMethods (SerializationInfo serializationInfo, string key, Type declaringType)
-    {
-      var methods = new HashSet<MethodInfo> ();
-      var count = serializationInfo.GetInt32 (key + ".Count");
-
-      for (int i = 0; i < count; ++i)
-      {
-        var methodDeclaringType = declaringType ?? Type.GetType (serializationInfo.GetString (key + "[" + i + "].DeclaringType"));
-        
-        var method = (MethodInfo) methodDeclaringType.Module.ResolveMethod (serializationInfo.GetInt32 (key + "[" + i + "].MetadataToken"));
-        if (methodDeclaringType.IsGenericType)
-          method = (MethodInfo) MethodInfo.GetMethodFromHandle (method.MethodHandle, methodDeclaringType.TypeHandle);
-
-        methods.Add (method);
-      }
-      return methods;
-    }
-
     public SerializationInfoConcreteMixinTypeIdentifierSerializer (SerializationInfo serializationInfo, string key)
     {
       ArgumentUtility.CheckNotNull ("serializationInfo", serializationInfo);

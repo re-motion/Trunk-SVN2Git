@@ -22,9 +22,8 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.CodeGeneration.Serialization
 {
   /// <summary>
-  /// Serializes instances of <see cref="ConcreteMixinTypeIdentifier"/> into a <see cref="SerializationInfo"/> object. The serialization is
-  /// completely flat, using only primitive types, so the returned object is always guaranteed to be complete even in the face of the order of 
-  /// deserialization of objects not being deterministic.
+  /// Deserializes instances of <see cref="ConcreteMixinTypeIdentifier"/> serialized with 
+  /// <see cref="SerializationInfoConcreteMixinTypeIdentifierSerializer"/>.
   /// </summary>
   public class SerializationInfoConcreteMixinTypeIdentifierDeserializer : IConcreteMixinTypeIdentifierDeserializer
   {
