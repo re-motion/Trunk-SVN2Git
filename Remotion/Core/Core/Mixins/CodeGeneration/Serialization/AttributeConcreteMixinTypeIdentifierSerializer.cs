@@ -39,12 +39,22 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
 
     public void AddExternalOverriders (HashSet<MethodInfo> externalOverriders)
     {
-      _values[1] = (from ovr in externalOverriders select (object) new object[] { ovr.DeclaringType, ovr.MetadataToken }).ToArray();
+      _values[1] = (from ovr in externalOverriders 
+                    select (object) new object[] { CheckNotClosedGeneric (ovr).DeclaringType, ovr.Name, ovr.ToString() }).ToArray();
     }
 
     public void AddWrappedProtectedMembers (HashSet<MethodInfo> wrappedProtectedMembers)
     {
-      _values[2] = (from member in wrappedProtectedMembers select member.MetadataToken).ToArray ();
+      _values[2] = (from member in wrappedProtectedMembers 
+                    select (object) new object[] { CheckNotClosedGeneric (member).Name, member.ToString () }).ToArray ();
+    }
+
+    private MethodInfo CheckNotClosedGeneric (MethodInfo methodInfo)
+    {
+      if (methodInfo.IsGenericMethod && !methodInfo.IsGenericMethodDefinition)
+        throw new NotSupportedException ("Cannot create an attribute representation of a closed generic method. This is not supported.");
+
+      return methodInfo;
     }
   }
 }

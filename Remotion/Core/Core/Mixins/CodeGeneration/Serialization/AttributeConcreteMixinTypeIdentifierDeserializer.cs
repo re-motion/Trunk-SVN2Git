@@ -41,27 +41,32 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
 
     public HashSet<MethodInfo> GetExternalOverriders ()
     {
-      var externalOverriderData = (object[]) _values[1];
-      return new HashSet<MethodInfo> (from object[] typeAndToken in externalOverriderData
-                                      let declaringType = (Type) typeAndToken[0]
-                                      let token = (int) typeAndToken[1]
-                                      select ResolveMethod (token, declaringType));
+      var externalOverriderArray = (object[]) _values[1];
+      return new HashSet<MethodInfo> (from object[] typeAndMethodData in externalOverriderArray
+                                      let declaringType = (Type) typeAndMethodData[0]
+                                      let name = (string) typeAndMethodData[1]
+                                      let signature = (string) typeAndMethodData[2]
+                                      select ResolveMethod (name, signature, declaringType));
     }
 
     public HashSet<MethodInfo> GetWrappedProtectedMembers (Type mixinType)
     {
-      var protectedMemberTokens = (int[]) _values[2];
-      return new HashSet<MethodInfo> (from token in protectedMemberTokens
-                                      select ResolveMethod (token, mixinType));
+      var protectedMemberArray = (object[]) _values[2];
+      return new HashSet<MethodInfo> (from object[] methodData in protectedMemberArray
+                                      let name = (string) methodData[0]
+                                      let signature = (string) methodData[1]
+                                      select ResolveMethod (name, signature, mixinType));
     }
 
-    private MethodInfo ResolveMethod (int token, Type declaringType)
+    // Note: This mimics the behavior used by Reflection to serialize MethodInfos. It's not performant at all, but it works reliably.
+    private MethodInfo ResolveMethod (string name, string signature, Type declaringType)
     {
-      var method = (MethodInfo) declaringType.Module.ResolveMethod (token);
-      if (declaringType.IsGenericType)
-        return (MethodInfo) MethodInfo.GetMethodFromHandle (method.MethodHandle, declaringType.TypeHandle);
+      const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+      var candidates = (MethodInfo[]) declaringType.GetMember (name, MemberTypes.Method, flags);
+      if (candidates.Length == 1)
+        return candidates[0];
       else
-        return method;
+        return (from c in candidates where c.ToString () == signature select c).Single ();
     }
   }
 }

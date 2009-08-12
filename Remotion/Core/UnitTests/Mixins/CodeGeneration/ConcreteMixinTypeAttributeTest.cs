@@ -63,6 +63,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       var identifier = attribute.GetIdentifier ();
       Assert.That (identifier.MixinType, Is.SameAs (typeof (MixinWithAbstractMembers)));
+      Assert.That (identifier.ExternalOverriders.ToArray(), Is.EquivalentTo(new[] {
+          typeof (ClassOverridingMixinMembers).GetMethod ("AbstractMethod"),
+          typeof (ClassOverridingMixinMembers).GetMethod ("RaiseEvent"),
+          typeof (ClassOverridingMixinMembers).GetMethod ("get_AbstractProperty"),
+          typeof (ClassOverridingMixinMembers).GetMethod ("add_AbstractEvent"),
+          typeof (ClassOverridingMixinMembers).GetMethod ("remove_AbstractEvent")
+
+      }));
     }
 
     [Test]

@@ -28,6 +28,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
   {
     private MethodInfo _simpleExternalMethod;
     private MethodInfo _simpleMethodOnMixinType;
+    private MethodInfo _genericMethod;
 
     private AttributeConcreteMixinTypeIdentifierSerializer _serializer;
 
@@ -36,6 +37,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     {
       _simpleExternalMethod = typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes);
       _simpleMethodOnMixinType = typeof (BT1Mixin1).GetMethod ("VirtualMethod");
+      _genericMethod = typeof (BaseType7).GetMethod ("One");
 
       _serializer = new AttributeConcreteMixinTypeIdentifierSerializer ();
     }
@@ -54,9 +56,17 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
 
       Assert.That (_serializer.Values[1].GetType (), Is.EqualTo (typeof (object[])));
       Assert.That (((object[]) _serializer.Values[1]).Length, Is.EqualTo (1));
-      Assert.That (((object[]) ((object[]) _serializer.Values[1])[0]).Length, Is.EqualTo (2));
+      Assert.That (((object[]) ((object[]) _serializer.Values[1])[0]).Length, Is.EqualTo (3));
       Assert.That (((object[]) ((object[]) _serializer.Values[1])[0])[0], Is.SameAs (typeof (BaseType1)));
-      Assert.That (((object[]) ((object[]) _serializer.Values[1])[0])[1], Is.EqualTo (_simpleExternalMethod.MetadataToken));
+      Assert.That (((object[]) ((object[]) _serializer.Values[1])[0])[1], Is.EqualTo ("VirtualMethod"));
+      Assert.That (((object[]) ((object[]) _serializer.Values[1])[0])[2], Is.EqualTo ("System.String VirtualMethod()"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void AddExternalOverriders_ClosedGeneric ()
+    {
+      _serializer.AddExternalOverriders (new HashSet<MethodInfo> { _genericMethod.MakeGenericMethod (typeof (int)) });
     }
 
     [Test]
@@ -64,9 +74,18 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     {
       _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinType });
 
-      Assert.That (_serializer.Values[2].GetType (), Is.EqualTo (typeof (int[])));
-      Assert.That (((int[]) _serializer.Values[2]).Length, Is.EqualTo (1));
-      Assert.That (((int[]) _serializer.Values[2])[0], Is.EqualTo (_simpleMethodOnMixinType.MetadataToken));
+      Assert.That (_serializer.Values[2].GetType (), Is.EqualTo (typeof (object[])));
+      Assert.That (((object[]) _serializer.Values[2]).Length, Is.EqualTo (1));
+      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0]).Length, Is.EqualTo (2));
+      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[0], Is.EqualTo ("VirtualMethod"));
+      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[1], Is.EqualTo ("System.String VirtualMethod()"));
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException))]
+    public void AddWrappedProtectedMembers_ClosedGeneric ()
+    {
+      _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _genericMethod.MakeGenericMethod (typeof (int)) });
     }
   }
 }
