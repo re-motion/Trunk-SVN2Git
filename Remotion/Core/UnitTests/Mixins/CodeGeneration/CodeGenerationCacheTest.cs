@@ -23,6 +23,7 @@ using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 using Remotion.Mixins;
 using System.Reflection;
+using Remotion.Mixins.Context;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
@@ -37,7 +38,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     private ITypeGenerator _typeGeneratorMock;
     private IMixinTypeGenerator _mixinTypeGeneratorMock;
 
-    private TargetClassDefinition _targetClassDefinition;
+    private ClassContext _targetClassContext;
     private MixinDefinition _mixinDefinition;
     private INameProvider _nameProvider1;
     private INameProvider _nameProvider2;
@@ -54,8 +55,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       _mixinTypeGeneratorMock = _mockRepository.StrictMock<IMixinTypeGenerator>();
 
       _cache = new CodeGenerationCache (_typeBuilder);
-      _targetClassDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1));
-      _mixinDefinition = _targetClassDefinition.Mixins[0];
+      _targetClassContext = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
+      _mixinDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1)).Mixins[0];
       _nameProvider1 = MockRepository.GenerateStub<INameProvider>();
       _nameProvider2 = MockRepository.GenerateStub<INameProvider>();
     }
@@ -63,13 +64,18 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteType_Uncached()
     {
-      _moduleManagerMock.Expect (mock => mock.CreateTypeGenerator (_cache, _targetClassDefinition, _nameProvider1, _nameProvider2)).Return (
-          _typeGeneratorMock);
+      _moduleManagerMock
+          .Expect (mock => mock.CreateTypeGenerator (
+            Arg.Is (_cache), 
+            Arg<TargetClassDefinition>.Matches (tcd => tcd.ConfigurationContext.Equals (_targetClassContext)),
+            Arg.Is (_nameProvider1),
+            Arg.Is (_nameProvider2)))
+          .Return (_typeGeneratorMock);
       _typeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (typeof (string));
 
       _mockRepository.ReplayAll();
 
-      Type result = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassDefinition, _nameProvider1, _nameProvider2);
+      Type result = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassContext, _nameProvider1, _nameProvider2);
       Assert.That (result, Is.SameAs (typeof (string)));
 
       _mockRepository.VerifyAll();
@@ -78,14 +84,20 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetConcreteType_Cached()
     {
-      _moduleManagerMock.Expect (mock => mock.CreateTypeGenerator (_cache, _targetClassDefinition, _nameProvider1, _nameProvider2)).Return (
-          _typeGeneratorMock).Repeat.Once();
+      _moduleManagerMock
+          .Expect (mock => mock.CreateTypeGenerator (
+              Arg.Is (_cache), 
+              Arg<TargetClassDefinition>.Matches (tcd => tcd.ConfigurationContext.Equals (_targetClassContext)), 
+              Arg.Is (_nameProvider1),
+              Arg.Is (_nameProvider2)))
+          .Return (_typeGeneratorMock)
+          .Repeat.Once();
       _typeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (typeof (string)).Repeat.Once();
 
       _mockRepository.ReplayAll();
 
-      Type result1 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassDefinition, _nameProvider1, _nameProvider2);
-      Type result2 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassDefinition, _nameProvider1, _nameProvider2);
+      Type result1 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassContext, _nameProvider1, _nameProvider2);
+      Type result2 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassContext, _nameProvider1, _nameProvider2);
       Assert.That (result2, Is.SameAs (result1));
 
       _mockRepository.VerifyAll();
@@ -166,10 +178,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       _cache.ImportTypes (typesToImport, metadataImporterStub);
 
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition1, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType1)));
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition2, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType1)));
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition3, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType2)));
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition4, _nameProvider1, _nameProvider2), Is.SameAs (typeof (BaseType2)));
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition1.ConfigurationContext, _nameProvider1, _nameProvider2), 
+          Is.SameAs (typeof (BaseType1)));
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition2.ConfigurationContext, _nameProvider1, _nameProvider2), 
+          Is.SameAs (typeof (BaseType1)));
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition3.ConfigurationContext, _nameProvider1, _nameProvider2), 
+          Is.SameAs (typeof (BaseType2)));
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition4.ConfigurationContext, _nameProvider1, _nameProvider2), 
+          Is.SameAs (typeof (BaseType2)));
     }
 
     [Test]

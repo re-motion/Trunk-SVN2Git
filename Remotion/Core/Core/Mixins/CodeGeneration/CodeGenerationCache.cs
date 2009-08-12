@@ -21,6 +21,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 using System.Reflection;
 using System.Linq;
+using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -33,7 +34,7 @@ namespace Remotion.Mixins.CodeGeneration
     
     private readonly object _lockObject = new object();
     private readonly ConcreteTypeBuilder _concreteTypeBuilder;
-    private readonly Cache<TargetClassDefinition, Type> _typeCache = new Cache<TargetClassDefinition, Type> ();
+    private readonly Cache<ClassContext, Type> _typeCache = new Cache<ClassContext, Type> ();
     private readonly Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> _mixinTypeCache = 
         new Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> ();
 
@@ -43,26 +44,27 @@ namespace Remotion.Mixins.CodeGeneration
       _concreteTypeBuilder = concreteTypeBuilder;
     }
 
-    public Type GetOrCreateConcreteType (IModuleManager moduleManager, TargetClassDefinition targetClassDefinition, INameProvider nameProvider, INameProvider mixinNameProvider)
+    public Type GetOrCreateConcreteType (IModuleManager moduleManager, ClassContext classContext, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
       ArgumentUtility.CheckNotNull ("moduleManager", moduleManager);
-      ArgumentUtility.CheckNotNull ("targetClassDefinition", targetClassDefinition);
+      ArgumentUtility.CheckNotNull ("classContext", classContext);
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
 
       lock (_lockObject)
       {
         return _typeCache.GetOrCreateValue (
-            targetClassDefinition,
+            classContext,
             key => GenerateConcreteType (moduleManager, key, nameProvider, mixinNameProvider));
       }
     }
 
-    private Type GenerateConcreteType (IModuleManager moduleManager, TargetClassDefinition targetClassDefinition, INameProvider nameProvider, INameProvider mixinNameProvider)
+    private Type GenerateConcreteType (IModuleManager moduleManager, ClassContext classContext, INameProvider nameProvider, INameProvider mixinNameProvider)
     {
-      s_log.InfoFormat ("Generating type for {0}.", targetClassDefinition.ConfigurationContext);
+      s_log.InfoFormat ("Generating type for {0}.", classContext);
       using (new CodeGenerationTimer ())
       {
+        var targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
         ITypeGenerator generator = moduleManager.CreateTypeGenerator (
             this,
             targetClassDefinition,
@@ -125,7 +127,7 @@ namespace Remotion.Mixins.CodeGeneration
     private void ImportConcreteMixedType(IConcreteTypeMetadataImporter metadataImporter, Type type)
     {
       foreach (TargetClassDefinition mixedTypeMetadata in metadataImporter.GetMetadataForMixedType (type, TargetClassDefinitionCache.Current))
-        _typeCache.GetOrCreateValue (mixedTypeMetadata, delegate { return type; });
+        _typeCache.GetOrCreateValue (mixedTypeMetadata.ConfigurationContext, delegate { return type; });
     }
 
 

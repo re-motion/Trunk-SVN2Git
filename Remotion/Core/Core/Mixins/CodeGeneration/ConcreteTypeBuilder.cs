@@ -169,7 +169,7 @@ namespace Remotion.Mixins.CodeGeneration
     public Type GetConcreteType (TargetClassDefinition configuration)
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
-      return Cache.GetOrCreateConcreteType (Scope, configuration, _typeNameProvider, _mixinTypeNameProvider);
+      return Cache.GetOrCreateConcreteType (Scope, configuration.ConfigurationContext, _typeNameProvider, _mixinTypeNameProvider);
     }
 
     /// <summary>
