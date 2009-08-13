@@ -35,8 +35,8 @@ namespace Remotion.UnitTests.Mixins.Context.Serialization
     public void SetUp()
     {
       _info = new SerializationInfo (typeof (MixinContext), new FormatterConverter());
-      _serializer = new SerializationInfoMixinContextSerializer (_info, "M1.");
-      _deserializer = new SerializationInfoMixinContextDeserializer (_info, "M1.");
+      _serializer = new SerializationInfoMixinContextSerializer (_info, "M1");
+      _deserializer = new SerializationInfoMixinContextDeserializer (_info, "M1");
     }
 
     [Test]

@@ -59,9 +59,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "TypeTransformer returned type Remotion.UnitTests.Mixins.SampleTypes.BaseType2, "
-        + "which is not compatible with the serialized mixin configuration. The configuration requires a type assignable to "
-            + "Remotion.UnitTests.Mixins.SampleTypes.BaseType1.\r\nParameter name: typeTransformer")]
+    [ExpectedException (typeof (InvalidOperationException))]
     public void BeginDeserialization_InvalidTransformer ()
     {
       BaseType1 mixedObject = ObjectFactory.Create<BaseType1> (ParamList.Empty);

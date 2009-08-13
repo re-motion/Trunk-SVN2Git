@@ -242,7 +242,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ArgumentUtility.CheckNotNull ("typeTransformer", typeTransformer);
       ArgumentUtility.CheckNotNull ("info", info);
 
-      return new SerializationHelper (typeTransformer, info, context);
+      return new SerializationHelper (info, context, typeTransformer);
     }
 
     public void FinishDeserialization (IObjectReference objectReference)

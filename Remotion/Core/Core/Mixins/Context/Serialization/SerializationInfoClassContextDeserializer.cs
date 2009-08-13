@@ -36,22 +36,22 @@ namespace Remotion.Mixins.Context.Serialization
 
     public Type GetClassType()
     {
-      return Type.GetType (_info.GetString (_prefix + "ClassType.AssemblyQualifiedName"));
+      return Type.GetType (_info.GetString (_prefix + ".ClassType.AssemblyQualifiedName"));
     }
 
     public IEnumerable<MixinContext> GetMixins()
     {
-      int mixinCount = _info.GetInt32 (_prefix + "Mixins.Count");
+      int mixinCount = _info.GetInt32 (_prefix + ".Mixins.Count");
       for (int i = 0; i < mixinCount; ++i)
       {
-        var deserializer = new SerializationInfoMixinContextDeserializer (_info, _prefix + "Mixins[" + i + "].");
+        var deserializer = new SerializationInfoMixinContextDeserializer (_info, _prefix + ".Mixins[" + i + "]");
         yield return MixinContext.Deserialize (deserializer);
       }
     }
 
     public IEnumerable<Type> GetCompleteInterfaces ()
     {
-      var typeNames = (string[]) _info.GetValue (_prefix + "CompleteInterfaces.AssemblyQualifiedNames", typeof (string[]));
+      var typeNames = (string[]) _info.GetValue (_prefix + ".CompleteInterfaces.AssemblyQualifiedNames", typeof (string[]));
       return typeNames.Select (s => Type.GetType (s));
     }
   }

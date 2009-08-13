@@ -37,24 +37,24 @@ namespace Remotion.Mixins.Context.Serialization
     public void AddMixinType(Type mixinType)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-      _info.AddValue (_prefix + "MixinType.AssemblyQualifiedName", mixinType.AssemblyQualifiedName);
+      _info.AddValue (_prefix + ".MixinType.AssemblyQualifiedName", mixinType.AssemblyQualifiedName);
     }
 
     public void AddMixinKind(MixinKind mixinKind)
     {
-      _info.AddValue (_prefix + "MixinKind", mixinKind);
+      _info.AddValue (_prefix + ".MixinKind", mixinKind);
     }
 
     public void AddIntroducedMemberVisibility(MemberVisibility introducedMemberVisibility)
     {
-      _info.AddValue (_prefix + "IntroducedMemberVisibility", introducedMemberVisibility);
+      _info.AddValue (_prefix + ".IntroducedMemberVisibility", introducedMemberVisibility);
     }
 
     public void AddExplicitDependencies(IEnumerable<Type> explicitDependencies)
     {
       ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
       var typeNames = EnumerableUtility.SelectToArray (explicitDependencies, t => t.AssemblyQualifiedName);
-      _info.AddValue (_prefix + "ExplicitDependencies.AssemblyQualifiedNames", typeNames);
+      _info.AddValue (_prefix + ".ExplicitDependencies.AssemblyQualifiedNames", typeNames);
     }
   }
 }

@@ -225,21 +225,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementISerializable ()
     {
-      SerializationImplementer.ImplementGetObjectDataByDelegation (
-          Emitter,
-          (newMethod, baseIsISerializable) => new MethodInvocationExpression (
-                                                  null,
-                                                  typeof (SerializationHelper).GetMethod (
-                                                      "GetObjectDataForGeneratedTypes"),
-                                                  new ReferenceExpression (newMethod.ArgumentReferences[0]),
-                                                  new ReferenceExpression (newMethod.ArgumentReferences[1]),
-                                                  new ReferenceExpression (SelfReference.Self),
-                                                  new ReferenceExpression (_configurationField),
-                                                  new ReferenceExpression (_extensionsField),
-                                                  new ReferenceExpression (new ConstReference (!baseIsISerializable))));
-
-      // Implement dummy ISerializable constructor if we haven't already replicated it
-      SerializationImplementer.ImplementDeserializationConstructorByThrowingIfNotExistsOnBase (Emitter);
+      var codeGenerator = new SerializationCodeGenerator (_configurationField, _extensionsField);
+      codeGenerator.ImplementISerializable (Emitter);
     }
 
     private void ImplementIMixinTarget ()

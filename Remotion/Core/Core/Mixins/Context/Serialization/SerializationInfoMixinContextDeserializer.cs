@@ -37,22 +37,22 @@ namespace Remotion.Mixins.Context.Serialization
 
     public Type GetMixinType()
     {
-      return Type.GetType (_info.GetString (_prefix + "MixinType.AssemblyQualifiedName"));
+      return Type.GetType (_info.GetString (_prefix + ".MixinType.AssemblyQualifiedName"));
     }
 
     public MixinKind GetMixinKind()
     {
-      return (MixinKind) _info.GetValue (_prefix + "MixinKind", typeof (MixinKind));
+      return (MixinKind) _info.GetValue (_prefix + ".MixinKind", typeof (MixinKind));
     }
 
     public MemberVisibility GetIntroducedMemberVisibility()
     {
-      return (MemberVisibility) _info.GetValue (_prefix + "IntroducedMemberVisibility", typeof (MemberVisibility));
+      return (MemberVisibility) _info.GetValue (_prefix + ".IntroducedMemberVisibility", typeof (MemberVisibility));
     }
 
     public IEnumerable<Type> GetExplicitDependencies()
     {
-      var typeNames = (string[]) _info.GetValue (_prefix + "ExplicitDependencies.AssemblyQualifiedNames", typeof (string[]));
+      var typeNames = (string[]) _info.GetValue (_prefix + ".ExplicitDependencies.AssemblyQualifiedNames", typeof (string[]));
       return typeNames.Select (s => Type.GetType (s));
     }
   }

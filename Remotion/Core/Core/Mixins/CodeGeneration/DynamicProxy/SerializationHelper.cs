@@ -18,7 +18,6 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
-using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 
@@ -29,20 +28,25 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   {
     // Always remember: the whole configuration must be serialized as one single, flat object (or SerializationInfo), we cannot rely on any
     // nested objects to be deserialized in the right order
-    public static void GetObjectDataForGeneratedTypes (SerializationInfo info, StreamingContext context, object concreteObject,
-        TargetClassDefinition configuration, object[] extensions, bool serializeBaseMembers)
+    public static void GetObjectDataForGeneratedTypes (
+        SerializationInfo info, 
+        StreamingContext context, 
+        object concreteObject,
+        ClassContext classContext,
+        object[] extensions, 
+        bool serializeBaseMembers)
     {
       info.SetType (typeof (SerializationHelper));
 
-      var classContextSerializer = new SerializationInfoClassContextSerializer (info, "__configuration.ConfigurationContext.");
-      configuration.ConfigurationContext.Serialize (classContextSerializer);
+      var classContextSerializer = new SerializationInfoClassContextSerializer (info, "__configuration.ConfigurationContext");
+      classContext.Serialize (classContextSerializer);
 
       info.AddValue ("__extensions", extensions);
 
       object[] baseMemberValues;
       if (serializeBaseMembers)
       {
-        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (configuration.Type);
+        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (classContext.Type);
         baseMemberValues = FormatterServices.GetObjectData (concreteObject, baseMembers);
       }
       else
@@ -52,35 +56,39 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     }
 
     private readonly IMixinTarget _deserializedObject;
+    private readonly ClassContext _classContext;
     private readonly object[] _extensions;
     private readonly object[] _baseMemberValues;
-    private readonly Type _exactTargetType;
     private readonly StreamingContext _context;
 
     public SerializationHelper (SerializationInfo info, StreamingContext context)
-        : this (t => t, info, context)
+        : this (info, context, t => t)
     {
     }
 
-    public SerializationHelper (Func<Type, Type> typeTransformer, SerializationInfo info, StreamingContext context)
+    public SerializationHelper (SerializationInfo info, StreamingContext context, Func<Type, Type> typeTransformer)
     {
       ArgumentUtility.CheckNotNull ("typeTransformer", typeTransformer);
       ArgumentUtility.CheckNotNull ("info", info);
 
       _context = context;
 
-      var classContextDeserializer = new SerializationInfoClassContextDeserializer (info, "__configuration.ConfigurationContext.");
-      var configurationContext = ClassContext.Deserialize (classContextDeserializer);
+      var classContextDeserializer = new SerializationInfoClassContextDeserializer (info, "__configuration.ConfigurationContext");
+      _classContext = ClassContext.Deserialize (classContextDeserializer);
 
-      Type mixinConcreteType = ConcreteTypeBuilder.Current.GetConcreteType (configurationContext);
-      _exactTargetType = mixinConcreteType.BaseType;
-      Type concreteType = typeTransformer (mixinConcreteType);
+      Type untransformedConcreteType = ConcreteTypeBuilder.Current.GetConcreteType (_classContext);
+      Type concreteType = typeTransformer (untransformedConcreteType);
 
-      if (!_exactTargetType.IsAssignableFrom (concreteType))
+      if (!_classContext.Type.IsAssignableFrom (concreteType))
       {
-        string message = string.Format ("TypeTransformer returned type {0}, which is not compatible with the serialized mixin configuration. The "
-            + "configuration requires a type assignable to {1}.", concreteType, _exactTargetType);
-        throw new ArgumentException (message, "typeTransformer");
+        string message = string.Format ("TypeTransformer returned type '{0}', which is not compatible with the serialized mixin configuration. The "
+            + "configuration requires a type assignable to '{1}'.", concreteType, _classContext.Type);
+        throw new InvalidOperationException (message);
+      }
+      else if (!typeof (IMixinTarget).IsAssignableFrom (concreteType))
+      {
+        string message = string.Format ("TypeTransformer returned type '{0}', which does not implement IMixinTarget.", concreteType);
+        throw new InvalidOperationException (message);
       }
 
       _extensions = (object[]) info.GetValue ("__extensions", typeof (object[]));
@@ -96,7 +104,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       else
       {
         Assertion.IsTrue (typeof (ISerializable).IsAssignableFrom (concreteType));
-        _deserializedObject = (IMixinTarget) Activator.CreateInstance (concreteType, new object[] {info, context});
+        _deserializedObject = (IMixinTarget) Activator.CreateInstance (
+            concreteType, 
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, 
+            null, 
+            new object[] {info, context}, 
+            null);
       }
 
       SerializationImplementer.RaiseOnDeserializing (_deserializedObject, _context);
@@ -117,7 +130,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       if (_baseMemberValues != null)
       {
-        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (_exactTargetType);
+        MemberInfo[] baseMembers = FormatterServices.GetSerializableMembers (_classContext.Type);
         FormatterServices.PopulateObjectMembers (_deserializedObject, baseMembers, _baseMemberValues);
       }
 

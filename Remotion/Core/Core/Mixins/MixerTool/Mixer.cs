@@ -141,10 +141,13 @@ namespace Remotion.Mixins.MixerTool
     {
       foreach (Type type in typesToCheck)
       {
-        ClassContext contextWithoutInheritance = configuration.ClassContexts.GetExact (type);
-        ClassContext contextWithInheritance = configuration.ClassContexts.GetWithInheritance (type);
-        if (contextWithoutInheritance == null && contextWithInheritance != null)
-          GenerateForClassContext (contextWithInheritance);
+        if (!type.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false))
+        {
+          ClassContext contextWithoutInheritance = configuration.ClassContexts.GetExact (type);
+          ClassContext contextWithInheritance = configuration.ClassContexts.GetWithInheritance (type);
+          if (contextWithoutInheritance == null && contextWithInheritance != null)
+            GenerateForClassContext (contextWithInheritance);
+        }
       }
     }
 

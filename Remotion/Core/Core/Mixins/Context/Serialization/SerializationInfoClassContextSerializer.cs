@@ -37,7 +37,7 @@ namespace Remotion.Mixins.Context.Serialization
     public void AddClassType(Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      _info.AddValue (_prefix + "ClassType.AssemblyQualifiedName", type.AssemblyQualifiedName);
+      _info.AddValue (_prefix + ".ClassType.AssemblyQualifiedName", type.AssemblyQualifiedName);
     }
 
     public void AddMixins(IEnumerable<MixinContext> mixinContexts)
@@ -46,18 +46,18 @@ namespace Remotion.Mixins.Context.Serialization
       int index = 0;
       foreach (var mixinContext in mixinContexts)
       {
-        var serializer = new SerializationInfoMixinContextSerializer (_info, _prefix + "Mixins[" + index + "].");
+        var serializer = new SerializationInfoMixinContextSerializer (_info, _prefix + ".Mixins[" + index + "]");
         mixinContext.Serialize (serializer);
         ++index;
       }
-      _info.AddValue (_prefix + "Mixins.Count", index);
+      _info.AddValue (_prefix + ".Mixins.Count", index);
     }
 
     public void AddCompleteInterfaces(IEnumerable<Type> completeInterfaces)
     {
       ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
       var typeNames = EnumerableUtility.SelectToArray (completeInterfaces, t => t.AssemblyQualifiedName);
-      _info.AddValue (_prefix + "CompleteInterfaces.AssemblyQualifiedNames", typeNames);
+      _info.AddValue (_prefix + ".CompleteInterfaces.AssemblyQualifiedNames", typeNames);
     }
   }
 }
