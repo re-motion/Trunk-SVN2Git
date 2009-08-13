@@ -22,6 +22,7 @@ using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Collections;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
@@ -42,6 +43,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly ITypeGenerator _targetGenerator;
     private readonly MixinDefinition _configuration;
     private readonly IClassEmitter _emitter;
+    private readonly FieldReference _requestingClassContextField;
+    private readonly FieldReference _identifierField;
 
     public MixinTypeGenerator (ICodeGenerationModule module, ITypeGenerator targetGenerator, MixinDefinition configuration, INameProvider nameProvider)
     {
@@ -64,6 +67,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       bool forceUnsigned = !targetGenerator.IsAssemblySigned;
       _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces, flags, forceUnsigned);
+
+      _requestingClassContextField = _emitter.CreateStaticField ("__requestingClassContext", typeof (ClassContext));
+      _identifierField = _emitter.CreateStaticField ("__identifier", typeof (ConcreteMixinTypeIdentifier));
     }
 
     public IClassEmitter Emitter
@@ -96,6 +102,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     protected virtual void Generate ()
     {
+      AddTypeInitializer ();
+
       _emitter.ReplicateBaseTypeConstructors (delegate { }, delegate { });
 
       ImplementGetObjectData();
@@ -104,6 +112,27 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       AddDebuggerAttributes();
       ReplicateAttributes (_configuration.CustomAttributes, _emitter);
       ImplementOverrides();
+    }
+
+    private void AddTypeInitializer ()
+    {
+      var typeInitializerEmitter = _emitter.CreateTypeConstructor ();
+
+      var classContextSerializer = new CodeGenerationClassContextSerializer (typeInitializerEmitter.CodeBuilder);
+      _configuration.TargetClass.ConfigurationContext.Serialize (classContextSerializer);
+      typeInitializerEmitter.CodeBuilder.AddStatement (
+          new AssignStatement (
+              _requestingClassContextField, 
+              classContextSerializer.GetConstructorInvocationExpression ()));
+
+      var identifierSerializer = new CodeGenerationConcreteMixinTypeIdentifierSerializer (typeInitializerEmitter.CodeBuilder);
+      _configuration.GetConcreteMixinTypeIdentifier().Serialize (identifierSerializer);
+      typeInitializerEmitter.CodeBuilder.AddStatement (
+          new AssignStatement (
+              _identifierField,
+              identifierSerializer.GetConstructorInvocationExpression ()));
+
+      typeInitializerEmitter.CodeBuilder.AddStatement (new ReturnStatement ());
     }
 
     private IEnumerable<Tuple<MethodInfo, MethodInfo>> GenerateMethodWrappers ()

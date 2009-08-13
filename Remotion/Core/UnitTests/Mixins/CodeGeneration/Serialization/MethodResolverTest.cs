@@ -18,6 +18,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins.CodeGeneration.Serialization;
+using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serialization;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
 {
@@ -55,6 +56,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
       var method = MethodResolver.ResolveMethod (typeof (object), "Finalize", "Void Finalize()");
 
       Assert.That (method, Is.EqualTo (typeof (object).GetMethod ("Finalize", BindingFlags.NonPublic | BindingFlags.Instance)));
+    }
+
+    [Test]
+    public void ResolveMethod_BaseMethodWithSameName ()
+    {
+      var method = MethodResolver.ResolveMethod (typeof (AbstractMixinWithSerializationCallbacks), "ToString", "System.String ToString()");
+
+      Assert.That (method, Is.EqualTo (typeof (AbstractMixinWithSerializationCallbacks).GetMethod ("ToString", BindingFlags.NonPublic | BindingFlags.Instance)));
     }
 
     [Test]

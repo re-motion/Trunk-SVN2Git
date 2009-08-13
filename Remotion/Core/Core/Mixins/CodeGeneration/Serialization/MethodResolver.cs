@@ -43,7 +43,7 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNullOrEmpty ("signature", signature);
 
-      const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+      const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
       var candidates = (MethodInfo[]) declaringType.GetMember (name, MemberTypes.Method, flags);
       if (candidates.Length == 1)
       {

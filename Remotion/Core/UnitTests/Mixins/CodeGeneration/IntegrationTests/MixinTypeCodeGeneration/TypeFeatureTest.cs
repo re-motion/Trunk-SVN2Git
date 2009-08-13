@@ -149,6 +149,40 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     }
 
     [Test]
+    public void IdentifierMember_HoldsIdentifier ()
+    {
+      var requestingClass = TargetClassDefinitionUtility.GetContext (
+          typeof (ClassOverridingMixinMembers),
+          MixinConfiguration.ActiveConfiguration,
+          GenerationPolicy.GenerateOnlyIfConfigured);
+
+      MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
+      Assert.That (mixinDefinition, Is.Not.Null);
+      var generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ()).GeneratedType;
+
+      var identifier = generatedType.GetField ("__identifier").GetValue (null);
+
+      Assert.That (identifier, Is.EqualTo (mixinDefinition.GetConcreteMixinTypeIdentifier()));
+    }
+
+    [Test]
+    public void ClassContextMember_HoldsRequestingClass ()
+    {
+      var requestingClass = TargetClassDefinitionUtility.GetContext (
+          typeof (ClassOverridingMixinMembers),
+          MixinConfiguration.ActiveConfiguration,
+          GenerationPolicy.GenerateOnlyIfConfigured);
+
+      MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
+      Assert.That (mixinDefinition, Is.Not.Null);
+      var generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ()).GeneratedType;
+
+      var classContext = generatedType.GetField ("__requestingClassContext").GetValue (null);
+
+      Assert.That (classContext, Is.EqualTo (requestingClass));
+    }
+    
+    [Test]
     public void AbstractMixinWithoutAbstractMembers()
     {
       var instance = CreateMixedObject<NullTarget> (typeof (AbstractMixinWithoutAbstractMembers));
