@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
@@ -33,6 +34,16 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
     protected override bool DetermineClientScriptLevel ()
     {
       return true;
+    }
+
+    protected override Unit PopUpWidth
+    {
+      get { return new Unit (14, UnitType.Em); }
+    }
+
+    protected override Unit PopUpHeight
+    {
+      get { return new Unit (16, UnitType.Em); }
     }
   }
 }

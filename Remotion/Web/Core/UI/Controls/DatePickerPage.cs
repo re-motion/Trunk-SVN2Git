@@ -50,8 +50,6 @@ namespace Remotion.Web.UI.Controls
 /// </remarks>
 public class DatePickerPage : Page
 {
-  private const string c_datePickerScriptUrl = "DatePicker.js";
-  
   protected HtmlHeadContents HtmlHeadContents;
   protected Calendar Calendar;
   /// <summary> Preserves the target control's ID during post backs. </summary>

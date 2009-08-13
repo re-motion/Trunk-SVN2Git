@@ -45,16 +45,32 @@ function DatePicker_ShowDatePicker (button, container, target, src, width, heigh
     return;
 
    
-  var left = $(button).offset().left;
-  var top = $(button).offset().top;
+  var left = 0;
+  var top = 0;
+  
+  //  Calculate the offset of the frame in respect to the left top corner of the page.
+  var frameParent = null;
+  for (var currentNode = button; currentNode != null; currentNode = currentNode.offsetParent)
+  {
+    left += currentNode.offsetLeft + currentNode.clientLeft;
+    top += currentNode.offsetTop + currentNode.clientTop;
+    if (currentNode != window.document.body) // body does not have to be considered
+    {   
+      var overflow = currentNode.currentStyle.overflow.toLowerCase();
+      if (overflow == 'auto' || overflow == 'scroll')
+      {
+        left -= currentNode.scrollLeft;
+        top -= currentNode.scrollTop;
+      }
+    }
+  }
   
   var datePicker = window.document.createElement ('div');
-  $(datePicker).width(width);
-  $(datePicker).height(height);
-  $(datePicker).css('position', 'absolute');
-  $(datePicker).css('zIndex', '1100'); // Required so the DatePicker covers DropDownMenus
-  $(datePicker).attr('id', datePickerID);
-  $(datePicker).css('visibility', 'hidden');
+  datePicker.style.width = width;
+  datePicker.style.height = height;
+  datePicker.style.position = 'absolute';
+  datePicker.style.zIndex = 100; // Required so the DatePicker covers DropDownMenus
+  datePicker.id = datePickerID;
   
   var frame = window.document.createElement ("iframe");
   datePicker.appendChild (frame);
@@ -70,51 +86,54 @@ function DatePicker_ShowDatePicker (button, container, target, src, width, heigh
   var datePickerTop;
   var datePickerWidth;
   var datePickerHeight;
-  window.document.body.insertBefore(datePicker, window.document.body.children[0]);
-
+  window.document.body.insertBefore (datePicker, window.document.body.children[0]);
   //  Adjust position so the date picker is shown below 
   //  and aligned with the right border of the button.
-  $(datePicker).css('left', left - $(frame).width() + $(button).width());
-  $(datePicker).css('top', top + $(button).height());
-  datePickerLeft = $(datePicker).offset().left;
-  datePickerTop = $(datePicker).offset().top;
-  datePickerWidth = $(datePicker).width();
-  datePickerHeight = $(datePicker).height();
+  datePicker.style.left = left - frame.offsetWidth + button.offsetWidth;
+  datePicker.style.top = top + button.offsetHeight;
+  datePickerLeft = datePicker.offsetLeft;
+  datePickerTop = datePicker.offsetTop;
+  datePickerWidth = datePicker.offsetWidth;
+  datePickerHeight = datePicker.offsetHeight;
+  datePicker.style.display = 'none';
+  
   
   //  Re-adjust the button, in case available screen space is insufficient
-  var totalBodyHeight = $('body').height();
-  var visibleBodyTop = $('body').scrollTop();
-  var visibleBodyHeight = $(window).height();
+  var totalBodyHeight = window.document.body.scrollHeight;
+  var visibleBodyTop = window.document.body.scrollTop;
+  var visibleBodyHeight = window.document.body.offsetHeight;
   
   var datePickerTopAdjusted = datePickerTop;
   if (visibleBodyTop + visibleBodyHeight < datePickerTop + datePickerHeight)
   {
-    var newTop = $(button).offset().top - datePickerHeight;
+    var newTop = top - datePickerHeight - button.offsetTop - button.clientTop;
     if (newTop >= 0)
       datePickerTopAdjusted = newTop;
   }
   
-  var totalBodyWidth = $('body').width();
-  var visibleBodyLeft = $('body').scrollLeft();
-  var visibleBodyWidth = $(window).width();
+  var totalBodyWidth = window.document.body.scrollWidth;
+  var visibleBodyLeft = window.document.body.scrollLeft;
+  var visibleBodyWidth = window.document.body.offsetWidth;
   
   var datePickerLeftAdjusted = datePickerLeft;
   if (datePickerLeft < visibleBodyLeft && datePickerWidth <= visibleBodyWidth)
     datePickerLeftAdjusted = visibleBodyLeft;
   
-  $(datePicker).css('left', datePickerLeftAdjusted);
-  $(datePicker).css('top', datePickerTopAdjusted);
+  datePicker.style.display = '';
+  datePicker.style.left = datePickerLeftAdjusted;
+  datePicker.style.top = datePickerTopAdjusted;
+  datePicker.style.display = 'none';
 
   if (   visibleBodyTop > 0
       && datePickerTopAdjusted < visibleBodyTop)
   {
-    $('body').scrollTop(datePickerTopAdjusted);
+    window.document.body.scrollTop = datePickerTopAdjusted;
   }
   
   _datePicker_currentDatePicker = datePicker;
   _datePicker_isEventAfterDatePickerButtonClick = true;
-  window.parent.document.onclick = DatePicker_OnDocumentClick;
-  $(datePicker).css('visibility', 'visible');
+  target.document.onclick = DatePicker_OnDocumentClick;
+  datePicker.style.display = '';
 }
 
 //  Closes the currently visible date picker frame.
@@ -151,7 +170,12 @@ function DatePicker_Calendar_SelectionChanged (value)
   target.value = value;
   if (isValueChanged)
   {
-    $(target).change();
+    if (typeof (target.fireEvent) != 'undefined')
+      target.fireEvent ('onchange');
+    else if (typeof (target.dispatchEvent) != 'undefined')
+      target.dispatchEvent ('change');
+    else if (target.onchange != null)
+      target.onchange();
   }
 }
 
@@ -159,8 +183,8 @@ function DatePicker_Calendar_SelectionChanged (value)
 //  Belongs to the date picker frame.
 function DatePicker_CloseDatePicker() 
 {
-  var target = window.parent.document.getElementById(document.getElementById('TargetIDField').value);
-  window.parent.document.onclick = null;
+  var target = window.parent.document.getElementById (document.getElementById ('TargetIDField').value);
+  target.document.onclick = null;
   try
   {
     target.focus();
@@ -170,7 +194,7 @@ function DatePicker_CloseDatePicker()
   }  
   window.parent._datePicker_currentDatePicker = null;
   var datePicker = window.parent.document.getElementById (document.getElementById ('DatePickerIDField').value);
-  datePicker.style.display = 'none';
+  datePicker.parentNode.removeChild (datePicker);
 }
 
 //  Called by th event handler for the onclick event of the parent pages's document.

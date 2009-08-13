@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
@@ -25,6 +26,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
   /// </summary>
   public class DatePickerButtonRenderer: DatePickerButtonRendererBase
   {
+    private const int c_defaultDatePickerLengthInPoints = 150;
+
     public DatePickerButtonRenderer (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control)
         : base (context, writer, control)
     {
@@ -43,6 +46,16 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
           Context.Request.Browser.Browser == "IE" && isVersionGreaterOrEqual55;
 
       return isInternetExplorer55AndHigher;
+    }
+
+    protected override Unit PopUpWidth
+    {
+      get { return Unit.Point(c_defaultDatePickerLengthInPoints); }
+    }
+
+    protected override Unit PopUpHeight
+    {
+      get { return Unit.Point (c_defaultDatePickerLengthInPoints); }
     }
   }
 }

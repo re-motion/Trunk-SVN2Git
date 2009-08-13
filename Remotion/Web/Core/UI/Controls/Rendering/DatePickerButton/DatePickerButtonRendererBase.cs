@@ -24,31 +24,10 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
   public abstract class DatePickerButtonRendererBase : RendererBase<IDatePickerButton>, IDatePickerButtonRenderer
   {
     private const string c_datePickerPopupForm = "DatePickerForm.aspx";
-    private const int c_defaultDatePickerLengthInPoints = 150;
 
     protected DatePickerButtonRendererBase (IHttpContext context, HtmlTextWriter writer, IDatePickerButton control)
         : base (context, writer, control)
     {
-    }
-
-    public string CssClassBase
-    {
-      get { return "DatePickerButton"; }
-    }
-
-    public string CssClassDisabled
-    {
-      get { return "disabled"; }
-    }
-
-    public string CssClassReadOnly
-    {
-      get { throw new NotSupportedException(); }
-    }
-
-    protected virtual string ImageFileName
-    {
-      get { return "DatePicker.gif"; }
     }
 
     /// <summary>
@@ -109,6 +88,26 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 
     protected abstract bool DetermineClientScriptLevel ();
 
+    public string CssClassBase
+    {
+      get { return "DatePickerButton"; }
+    }
+
+    public string CssClassDisabled
+    {
+      get { return "disabled"; }
+    }
+
+    public string CssClassReadOnly
+    {
+      get { throw new NotSupportedException (); }
+    }
+
+    protected virtual string ImageFileName
+    {
+      get { return "DatePicker.gif"; }
+    }
+
     private string GetClickScript (bool hasClientScript)
     {
       string script;
@@ -121,10 +120,10 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 
         string pickerUrl = "'" + GetDatePickerUrl() + "'";
 
-        Unit popUpWidth = Unit.Point (c_defaultDatePickerLengthInPoints);
+        Unit popUpWidth = PopUpWidth;
         string pickerWidth = "'" + popUpWidth + "'";
 
-        Unit popUpHeight = Unit.Point (c_defaultDatePickerLengthInPoints);
+        Unit popUpHeight = PopUpHeight;
         string pickerHeight = "'" + popUpHeight + "'";
 
         script = "DatePicker_ShowDatePicker("
@@ -140,5 +139,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
         script = "return false;";
       return script;
     }
+
+    protected abstract Unit PopUpWidth { get; }
+    protected abstract Unit PopUpHeight { get; }
   }
 }

@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
@@ -39,26 +40,11 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
       get { return _page; }
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    protected ResourceTheme ResourceTheme
     {
-      var page = PageWrapper.CastOrCreate (Page);
-      HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (page);
-
-      string key = typeof (DatePickerPage).FullName + "_Script";
-      if (!HtmlHeadAppender.Current.IsRegistered (key))
-      {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            page,
-            Context,
-            typeof (DatePickerPage),
-            ResourceType.Html,
-            ResourceTheme,
-            "DatePicker.js");
-        HtmlHeadAppender.Current.RegisterJavaScriptInclude (key, scriptUrl);
-      }
+      get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
     }
 
-    protected abstract ResourceTheme ResourceTheme { get; }
-
+    public abstract void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
   }
 }

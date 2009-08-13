@@ -14,6 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 
 namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
@@ -25,10 +27,32 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
     {
     }
 
-
-    protected override ResourceTheme ResourceTheme
+    public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      get { return null; }
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+      var page = PageWrapper.CastOrCreate (Page);
+      htmlHeadAppender.RegisterJQueryJavaScriptInclude (page);
+
+      string key = typeof (DatePickerPage).FullName + "_Script";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            page,
+            Context,
+            typeof (DatePickerPage),
+            ResourceType.Html,
+            "DatePicker.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (key, scriptUrl);
+      }
+
+      string styleUrl = ResourceUrlResolver.GetResourceUrl (
+          page,
+          Context,
+          typeof (DatePickerPage),
+          ResourceType.Html,
+          ResourceTheme,
+          "Style.css");
+      htmlHeadAppender.RegisterStylesheetLink(typeof (DatePickerPage).FullName + "_Style", styleUrl);
     }
   }
 }
