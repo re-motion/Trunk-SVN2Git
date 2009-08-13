@@ -69,16 +69,11 @@ namespace Remotion.Mixins.CodeGeneration
 
     private MethodInfo GetWrappedMethod (MethodInfo potentialWrapper)
     {
-      var attribute = GetWrapperAttribute(potentialWrapper);
+      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (potentialWrapper, false);
       if (attribute != null)
-        return attribute.ResolveWrappedMethod(potentialWrapper.Module);
+        return attribute.ResolveWrappedMethod (potentialWrapper.Module);
       else
         return null;
-    }
-
-    protected virtual GeneratedMethodWrapperAttribute GetWrapperAttribute(MethodInfo potentialWrapper)
-    {
-      return AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (potentialWrapper, false);
     }
 
     public IEnumerable<TargetClassDefinition> GetMetadataForMixedType (Type concreteMixedType, ITargetClassDefinitionCache targetClassDefinitionCache)

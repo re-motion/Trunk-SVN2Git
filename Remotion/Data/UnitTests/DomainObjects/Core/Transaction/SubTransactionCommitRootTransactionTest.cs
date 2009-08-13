@@ -17,7 +17,6 @@ using System;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
@@ -53,10 +52,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         order1.OrderTicket.Delete(); // dependent object
         order1.Delete (); // this delete triggers resetting order1.OrderItems during commit
         ClientTransaction.Current.Commit ();
-        Assert.AreSame (order2, orderItem1.Order);
+        Assert.That (orderItem1.Order, Is.SameAs (order2));
         Assert.That (orderItem1.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (order2.ID));
       }
-      Assert.AreSame (order2, orderItem1.Order);
+      Assert.That (orderItem1.Order, Is.SameAs (order2));
       Assert.That (orderItem1.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (order2.ID));
     }
   }
