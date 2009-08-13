@@ -47,14 +47,14 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
       if (!htmlHeadAppender.IsRegistered (s_datePickerScriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IDatePickerButton), ResourceType.Html, "Legacy/DatePicker.js");
+            Control, Context, typeof (IDatePickerButton), ResourceType.Html, ResourceTheme.Legacy, "DatePicker.js");
         htmlHeadAppender.RegisterJavaScriptInclude (s_datePickerScriptFileKey, scriptUrl);
       }
 
       if (!htmlHeadAppender.IsRegistered (s_datePickerStyleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IDatePickerButton), ResourceType.Html, "Legacy/DatePicker.css");
+            Control, Context, typeof (IDatePickerButton), ResourceType.Html, ResourceTheme.Legacy, "DatePicker.css");
         htmlHeadAppender.RegisterStylesheetLink (s_datePickerStyleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

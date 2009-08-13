@@ -36,14 +36,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocBooleanValue), ResourceType.Html, "Legacy/BocBooleanValue.js");
+            Control, Context, typeof (BocBooleanValue), ResourceType.Html, ResourceTheme.Legacy, "BocBooleanValue.js");
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
 
       if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocBooleanValue), ResourceType.Html, "Legacy/BocBooleanValue.css");
+            Control, Context, typeof (BocBooleanValue), ResourceType.Html, ResourceTheme.Legacy, "BocBooleanValue.css");
         htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

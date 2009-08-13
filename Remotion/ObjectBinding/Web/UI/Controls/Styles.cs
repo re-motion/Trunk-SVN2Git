@@ -389,9 +389,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
-        string scriptFile = (useLegacyScriptFile ? "Legacy/" : string.Empty) + c_scriptFileUrl;
+        ResourceTheme theme = useLegacyScriptFile ? ResourceTheme.Legacy : null;
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            control, context, typeof (TextBoxStyle), ResourceType.Html, scriptFile);
+            control, context, typeof (TextBoxStyle), ResourceType.Html, theme, c_scriptFileUrl);
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
     }

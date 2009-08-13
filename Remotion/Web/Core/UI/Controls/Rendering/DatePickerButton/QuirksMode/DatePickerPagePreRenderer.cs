@@ -25,9 +25,10 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.QuirksMode
     {
     }
 
-    protected override string ScriptFileName
+
+    protected override ResourceTheme ResourceTheme
     {
-      get { return "Legacy/DatePicker.js"; }
+      get { return ResourceTheme.Legacy; }
     }
   }
 }

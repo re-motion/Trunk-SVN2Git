@@ -36,14 +36,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocBooleanValueBase.Q
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckBox), ResourceType.Html, "Legacy/BocCheckbox.js");
+            Control, Context, typeof (BocCheckBox), ResourceType.Html, ResourceTheme.Legacy, "BocCheckbox.js");
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
 
       if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
         string styleUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (BocCheckBox), ResourceType.Html, "Legacy/BocCheckbox.css");
+            Control, Context, typeof (BocCheckBox), ResourceType.Html, ResourceTheme.Legacy, "BocCheckbox.css");
         htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, styleUrl, HtmlHeadAppender.Priority.Library);
       }
     }

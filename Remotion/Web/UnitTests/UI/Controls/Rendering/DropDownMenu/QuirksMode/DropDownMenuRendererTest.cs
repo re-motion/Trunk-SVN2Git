@@ -291,7 +291,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
       Type type = typeof (IDropDownMenu);
       string initializationScriptKey = type.FullName + "_Startup";
       string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-          _control, HttpContext, type, ResourceType.Html, "Legacy/DropDownMenu.css");
+          _control, HttpContext, type, ResourceType.Html, ResourceTheme.Legacy, "DropDownMenu.css");
       string initializationScript = string.Format ("DropDownMenu_InitializeGlobals ('{0}');", styleSheetUrl);
 
       string menuInfoKey = _control.UniqueID;
@@ -451,7 +451,7 @@ namespace Remotion.Web.UnitTests.UI.Controls.Rendering.DropDownMenu.QuirksMode
     private void AssertImage (XmlNode parent)
     {
       var img = parent.GetAssertedChildElement ("img", 0);
-      img.AssertAttributeValueEquals ("src", "/res/Remotion.Web/Image/ClassicBlue/DropDownMenuArrow.gif");
+      img.AssertAttributeValueEquals ("src", "/res/Remotion.Web/Themes/ClassicBlue/Image/DropDownMenuArrow.gif");
       img.AssertAttributeValueEquals ("alt", "");
       img.AssertStyleAttribute ("vertical-align", "middle");
       img.AssertStyleAttribute ("border-style", "none");

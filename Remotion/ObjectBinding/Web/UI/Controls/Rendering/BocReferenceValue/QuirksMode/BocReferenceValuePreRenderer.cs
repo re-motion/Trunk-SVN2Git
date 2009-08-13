@@ -40,14 +40,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocReferenceValue.Qui
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IBocReferenceValue), ResourceType.Html, "Legacy/BocReferenceValue.js");
+            Control, Context, typeof (IBocReferenceValue), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.js");
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
 
       if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IBocReferenceValue), ResourceType.Html, "Legacy/BocReferenceValue.css");
+            Control, Context, typeof (IBocReferenceValue), ResourceType.Html, ResourceTheme.Legacy, "BocReferenceValue.css");
 
         htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }

@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocTextValueBase.Quir
 
       string styleKey = typeof (IBocMultilineTextValue).FullName + "_Style";
       string styleUrl = ResourceUrlResolver.GetResourceUrl (
-          Control, typeof (IBocMultilineTextValue), ResourceType.Html, "Legacy/BocMultilineTextValue.css");
+          Control, typeof (IBocMultilineTextValue), ResourceType.Html, ResourceTheme.Legacy, "BocMultilineTextValue.css");
       htmlHeadAppender.RegisterStylesheetLink (styleKey, styleUrl, HtmlHeadAppender.Priority.Library);
     }
 

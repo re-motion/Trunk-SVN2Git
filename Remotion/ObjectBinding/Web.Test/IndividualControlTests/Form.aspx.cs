@@ -16,8 +16,10 @@
 using System;
 using System.Text;
 using System.Web.UI;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Globalization;
@@ -70,6 +72,10 @@ namespace OBWTest.IndividualControlTests
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
+
+      string mode = Global.PreferQuirksModeRendering ? "Quirks" : "Standard";
+      string theme = ServiceLocator.Current.GetInstance<ResourceTheme>().Name;
+      NavigationTabs.StatusText = mode + " " + theme;
 
       StringBuilder sb = new StringBuilder();
       sb.Append ("<b>Stack:</b><br />");

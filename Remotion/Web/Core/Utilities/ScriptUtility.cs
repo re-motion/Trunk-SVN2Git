@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
@@ -28,7 +27,7 @@ namespace Remotion.Web.Utilities
 {
   public interface IScriptUtility
   {
-    void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQueryElementSelector);
+    void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQuerySelectorForBorderSpanTarget);
   }
 
   /// <summary> Utility class for client-side scripts. </summary>
@@ -43,12 +42,12 @@ namespace Remotion.Web.Utilities
       get { return ServiceLocator.Current.GetInstance<IScriptUtility>(); }
     }
 
-    public abstract class ScriptUtilityBase : IScriptUtility
+    public class ScriptUtilityBase : IScriptUtility
     {
-      public void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQueryElementSelector)
+      public void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQuerySelectorForBorderSpanTarget)
       {
         ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-        ArgumentUtility.CheckNotNullOrEmpty ("jQueryElementSelector", jQueryElementSelector);
+        ArgumentUtility.CheckNotNullOrEmpty ("jQuerySelectorForBorderSpanTarget", jQuerySelectorForBorderSpanTarget);
 
         string key = typeof (ScriptUtility).FullName + "_StyleUtility";
         string url = GetScriptUrl(control);
@@ -59,32 +58,19 @@ namespace Remotion.Web.Utilities
         control.Page.ClientScript.RegisterStartupScriptBlock (
             control,
             typeof (Page),
-            "BorderSpans_" + jQueryElementSelector,
+            "BorderSpans_" + jQuerySelectorForBorderSpanTarget,
             string.Format (
-                "StyleUtility.CreateBorderSpans ('{0}');", jQueryElementSelector));
+                "StyleUtility.CreateBorderSpans ('{0}');", jQuerySelectorForBorderSpanTarget));
       }
 
-      protected abstract string GetScriptUrl (IControl control);
+      protected string GetScriptUrl (IControl control)
+      {
+        return ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
+      }
 
       protected ResourceTheme ResourceTheme
       {
         get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
-      }
-    }
-
-    public class ScriptUtilityQuirksMode : ScriptUtilityBase
-    {
-      protected override string GetScriptUrl (IControl control)
-      {
-        return ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, "Legacy/StyleUtility.js");
-      }
-    }
-
-    public class ScriptUtilityStandardMode : ScriptUtilityBase
-    {
-      protected override string GetScriptUrl (IControl control)
-      {
-        return ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
       }
     }
 

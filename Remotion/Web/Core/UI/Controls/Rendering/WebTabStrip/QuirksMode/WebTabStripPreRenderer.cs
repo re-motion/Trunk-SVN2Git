@@ -35,7 +35,7 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.QuirksMode
       if (!htmlHeadAppender.IsRegistered (key))
       {
         string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (IWebTabStrip), ResourceType.Html, "Legacy/TabStrip.css");
+            Control, Context, typeof (IWebTabStrip), ResourceType.Html, ResourceTheme.Legacy, "TabStrip.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
     }

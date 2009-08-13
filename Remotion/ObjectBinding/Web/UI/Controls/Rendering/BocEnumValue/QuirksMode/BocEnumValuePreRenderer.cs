@@ -31,7 +31,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocEnumValue.QuirksMo
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       var key = typeof (IBocEnumValue).FullName + "_Style";
-      string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocEnumValue), ResourceType.Html, "Legacy/BocEnumValue.css");
+      string url = ResourceUrlResolver.GetResourceUrl (
+          Control, Context, typeof (IBocEnumValue), ResourceType.Html, ResourceTheme.Legacy, "BocEnumValue.css");
       htmlHeadAppender.RegisterStylesheetLink (key, url, HtmlHeadAppender.Priority.Library);
     }
 

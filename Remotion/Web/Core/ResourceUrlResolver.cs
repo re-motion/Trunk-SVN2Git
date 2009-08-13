@@ -30,6 +30,7 @@ public sealed class ResourceUrlResolver
 {
   private const string c_designTimeRootDefault = "C:\\Remotion.Resources";
   private const string c_designTimeRootEnvironmentVaribaleName = "REMOTIONRESOURCES";
+  private const string c_themesFolder = "Themes";
 
   /// <summary>
   ///   Returns the physical URL of a resource item.
@@ -169,10 +170,15 @@ public sealed class ResourceUrlResolver
       ResourceTheme theme,
       string fileName)
   {
+    ArgumentUtility.CheckNotNull ("definingType", definingType);
+    ArgumentUtility.CheckNotNull ("resourceType", resourceType);
+    ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
+
     bool isDesignMode = (control == null) ? false : Remotion.Web.Utilities.ControlHelper.IsDesignMode (control);
+    string assemblyRoot = GetAssemblyRoot (isDesignMode, definingType.Assembly);
     string separator = isDesignMode ? @"\" : "/";
-    string relativeUrl = (theme!=null) ? (theme.Name + separator + fileName) : fileName;
-    return GetResourceUrl (isDesignMode, definingType, resourceType, relativeUrl);
+    string themeFolder = (theme != null) ? c_themesFolder + separator + theme.Name + separator : string.Empty;
+    return assemblyRoot + themeFolder + resourceType.Name + separator + fileName;
   }
 
   public static string GetResourceUrl (

@@ -81,12 +81,11 @@ namespace OBWTest
       if (PreferQuirksModeRendering)
       {
         RegisterRendererFactories (container, "QuirksMode");
-        container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility.ScriptUtilityQuirksMode>().LifeStyle.Singleton);
       }
 
       RegisterRendererFactories (container, "StandardMode");
-      container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility.ScriptUtilityStandardMode> ().LifeStyle.Singleton);
-      container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.NovaBlue));
+      container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility.ScriptUtilityBase> ().LifeStyle.Singleton);
+      container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.ClassicBlue));
       
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));

@@ -32,7 +32,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMenu.QuirksMode
       if (!HtmlHeadAppender.Current.IsRegistered (s_styleFileKey))
       {
         string url = ResourceUrlResolver.GetResourceUrl (
-            Control, Context, typeof (ITabbedMenu), ResourceType.Html, "Legacy/TabbedMenu.css");
+            Control, Context, typeof (ITabbedMenu), ResourceType.Html, ResourceTheme.Legacy, "TabbedMenu.css");
         HtmlHeadAppender.Current.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
     }

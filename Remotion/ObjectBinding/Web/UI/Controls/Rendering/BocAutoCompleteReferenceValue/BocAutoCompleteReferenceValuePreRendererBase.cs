@@ -48,7 +48,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               Context,
               typeof (IBocAutoCompleteReferenceValue),
               ResourceType.Html,
-              ComponentScriptFileName));
+              ResourceTheme == ResourceTheme.Legacy ? ResourceTheme : null,
+              "BocAutoCompleteReferenceValue.jquery.js"));
 
       string scriptKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_Script";
       htmlHeadAppender.RegisterJavaScriptInclude (
@@ -58,14 +59,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               Context,
               typeof (IBocAutoCompleteReferenceValue),
               ResourceType.Html,
-              BindScriptFileName));
+              ResourceTheme == ResourceTheme.Legacy ? ResourceTheme : null,
+              "BocAutoCompleteReferenceValue.js"));
     }
-
-    protected abstract void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender);
-
-    protected abstract string BindScriptFileName { get; }
-
-    protected abstract string ComponentScriptFileName { get; }
 
     public override void PreRender ()
     {
@@ -103,14 +99,35 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
           typeof (BocAutoCompleteReferenceValuePreRendererBase),
           key,
           string.Format ("BocAutoCompleteReferenceValue.AdjustPosition($('#{0}'), {1});",
-//              @"$(document).ready( function(){{ 
-//  $(window).bind('resize', function(e){{ 
-//    BocAutoCompleteReferenceValue.AdjustPosition($('#{0}'), {1}) 
-//  }});
-//" + "setTimeout('BocAutoCompleteReferenceValue.AdjustPosition($(\"#{0}\"), {1});', 10);" + @"
-//}});",
               Control.ClientID,
               Control.EmbedInOptionsMenu ? "true" : "false"));
+    }
+
+    protected virtual void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)
+    {
+      string styleKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_Style";
+      htmlHeadAppender.RegisterStylesheetLink (
+          styleKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (IBocAutoCompleteReferenceValue),
+              ResourceType.Html,
+              ResourceTheme,
+              "BocAutoCompleteReferenceValue.css"),
+          HtmlHeadAppender.Priority.Library);
+
+      string jqueryAutocompleteStyleKey = typeof (IBocAutoCompleteReferenceValue).FullName + "_JQueryAutoCompleteStyle";
+      htmlHeadAppender.RegisterStylesheetLink (
+          jqueryAutocompleteStyleKey,
+          ResourceUrlResolver.GetResourceUrl (
+              Control,
+              Context,
+              typeof (IBocAutoCompleteReferenceValue),
+              ResourceType.Html,
+              ResourceTheme,
+              "BocAutoCompleteReferenceValue.jquery.css"),
+          HtmlHeadAppender.Priority.Library);
     }
   }
 }

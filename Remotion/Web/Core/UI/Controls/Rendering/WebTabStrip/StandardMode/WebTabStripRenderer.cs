@@ -54,6 +54,8 @@ namespace Remotion.Web.UI.Controls.Rendering.WebTabStrip.StandardMode
     {
       AddStandardAttributesToRender();
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ClientID);
+
       if (string.IsNullOrEmpty (Control.CssClass) && string.IsNullOrEmpty (Control.Attributes["class"]))
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }

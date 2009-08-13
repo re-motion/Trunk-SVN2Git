@@ -40,11 +40,11 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
       htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control);
 
       string scriptFileKey = typeof (IListMenu).FullName + "_Script";
-      string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, "Legacy/ListMenu.js");
+      string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
 
       string styleSheetKey = typeof (IListMenu).FullName + "_Style";
-      string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, "Legacy/ListMenu.css");
+      string styleSheetUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.css");
       htmlHeadAppender.RegisterStylesheetLink (styleSheetKey, styleSheetUrl, HtmlHeadAppender.Priority.Library);
     }
   }

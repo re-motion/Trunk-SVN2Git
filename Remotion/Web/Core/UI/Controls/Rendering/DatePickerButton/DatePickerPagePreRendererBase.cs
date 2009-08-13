@@ -52,11 +52,13 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
             Context,
             typeof (DatePickerPage),
             ResourceType.Html,
-            ScriptFileName);
+            ResourceTheme,
+            "DatePicker.js");
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (key, scriptUrl);
       }
     }
 
-    protected abstract string ScriptFileName { get; }
+    protected abstract ResourceTheme ResourceTheme { get; }
+
   }
 }

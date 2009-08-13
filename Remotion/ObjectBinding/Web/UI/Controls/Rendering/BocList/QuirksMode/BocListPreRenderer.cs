@@ -59,13 +59,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocList.QuirksMode
 
       if (!htmlHeadAppender.IsRegistered (s_styleFileKey))
       {
-        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, "Legacy/BocList.css");
+        string url = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, ResourceTheme.Legacy, "BocList.css");
         htmlHeadAppender.RegisterStylesheetLink (s_styleFileKey, url, HtmlHeadAppender.Priority.Library);
       }
 
       if (!htmlHeadAppender.IsRegistered (s_scriptFileKey))
       {
-        string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (IBocList), ResourceType.Html, "Legacy/BocList.js");
+        string scriptUrl = ResourceUrlResolver.GetResourceUrl (
+            Control, Context, typeof (IBocList), ResourceType.Html, ResourceTheme.Legacy, "BocList.js");
         htmlHeadAppender.RegisterJavaScriptInclude (s_scriptFileKey, scriptUrl);
       }
 

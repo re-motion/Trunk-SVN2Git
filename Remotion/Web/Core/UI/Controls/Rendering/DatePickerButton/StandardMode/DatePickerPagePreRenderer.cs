@@ -25,9 +25,10 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
     {
     }
 
-    protected override string ScriptFileName
+
+    protected override ResourceTheme ResourceTheme
     {
-      get { return "DatePicker.js"; }
+      get { return null; }
     }
   }
 }

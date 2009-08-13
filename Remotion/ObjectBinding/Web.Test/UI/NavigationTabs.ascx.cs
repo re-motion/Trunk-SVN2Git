@@ -47,6 +47,12 @@ namespace OBWTest.UI
       set { WebConfiguration.Current.Wcag.ConformanceLevel = (Remotion.Web.Configuration.WaiConformanceLevel) value; }
     }
 
+    public string StatusText
+    {
+      get { return TabbedMenu.StatusText; }
+      set { TabbedMenu.StatusText = value; }
+    }
+
     private void Page_Load (object sender, EventArgs e)
     {
       Type itemType = GetType();
