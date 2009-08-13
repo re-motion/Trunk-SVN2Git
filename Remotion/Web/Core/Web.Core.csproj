@@ -941,9 +941,10 @@
     <Content Include="Res\Themes\NovaBlue\Image\WebButtonBackground.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\WebButtonBackgroundHover.gif" />
     <Content Include="Res\Themes\ClassicBlue\UI\DatePickerForm.aspx">
+    </Content>
+    <Content Include="Res\Themes\NovaBlue\UI\DatePickerForm.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Res\Themes\NovaBlue\UI\DatePickerForm.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
