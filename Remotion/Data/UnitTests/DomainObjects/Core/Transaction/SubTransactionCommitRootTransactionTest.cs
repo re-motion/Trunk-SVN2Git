@@ -15,6 +15,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -46,18 +47,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       Order order2;
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        orderItem2.Delete(); // this delete is necessary
+        orderItem2.Delete(); // dependent object
         order2 = CreateNewOrder();
         order2.OrderItems.Add (orderItem1);
-        order1.OrderTicket.Delete(); // must delete to delete order1 
-        order1.Delete(); // this delete triggers resetting order1.OrderItems during commit
-        ClientTransaction.Current.Commit();
+        order1.OrderTicket.Delete(); // dependent object
+        order1.Delete (); // this delete triggers resetting order1.OrderItems during commit
+        ClientTransaction.Current.Commit ();
         Assert.AreSame (order2, orderItem1.Order);
+        Assert.That (orderItem1.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (order2.ID));
       }
       Assert.AreSame (order2, orderItem1.Order);
-      PropertyIndexer propertyIndexer = new PropertyIndexer (orderItem1);
-      PropertyAccessor propertyAccessor = propertyIndexer[typeof (OrderItem), "Order"];
-      Assert.IsNotNull (propertyAccessor.GetRelatedObjectID());
+      Assert.That (orderItem1.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (order2.ID));
     }
   }
 }
