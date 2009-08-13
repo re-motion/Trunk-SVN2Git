@@ -46,22 +46,22 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
 
     public HashSet<MethodInfo> GetExternalOverriders ()
     {
-      return DeserializeMethods (_key + ".ExternalOverriders", null);
+      return DeserializeMethods (_key + ".ExternalOverriders");
     }
 
-    public HashSet<MethodInfo> GetWrappedProtectedMembers (Type mixinType)
+    public HashSet<MethodInfo> GetWrappedProtectedMembers ()
     {
-      return DeserializeMethods (_key + ".WrappedProtectedMembers", mixinType);
+      return DeserializeMethods (_key + ".WrappedProtectedMembers");
     }
 
-    private HashSet<MethodInfo> DeserializeMethods (string collectionKey, Type declaringType)
+    private HashSet<MethodInfo> DeserializeMethods (string collectionKey)
     {
       var methods = new HashSet<MethodInfo> ();
       var count = _serializationInfo.GetInt32 (collectionKey + ".Count");
 
       for (int i = 0; i < count; ++i)
       {
-        var methodDeclaringType = declaringType ?? Type.GetType (_serializationInfo.GetString (collectionKey + "[" + i + "].DeclaringType"));
+        var methodDeclaringType = Type.GetType (_serializationInfo.GetString (collectionKey + "[" + i + "].DeclaringType"));
 
         var name = _serializationInfo.GetString (collectionKey + "[" + i + "].Name");
         var signature = _serializationInfo.GetString (collectionKey + "[" + i + "].Signature");

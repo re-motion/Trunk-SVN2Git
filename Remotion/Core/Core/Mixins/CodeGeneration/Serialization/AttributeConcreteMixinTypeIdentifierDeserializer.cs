@@ -50,13 +50,14 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
                                       select MethodResolver.ResolveMethod (declaringType, name, signature));
     }
 
-    public HashSet<MethodInfo> GetWrappedProtectedMembers (Type mixinType)
+    public HashSet<MethodInfo> GetWrappedProtectedMembers ()
     {
       var protectedMemberArray = (object[]) _values[2];
-      return new HashSet<MethodInfo> (from object[] methodData in protectedMemberArray
-                                      let name = (string) methodData[0]
-                                      let signature = (string) methodData[1]
-                                      select MethodResolver.ResolveMethod (mixinType, name, signature));
+      return new HashSet<MethodInfo> (from object[] typeAndMethodData in protectedMemberArray
+                                      let declaringType = (Type) typeAndMethodData[0]
+                                      let name = (string) typeAndMethodData[1]
+                                      let signature = (string) typeAndMethodData[2]
+                                      select MethodResolver.ResolveMethod (declaringType, name, signature));
     }
 
     

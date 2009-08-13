@@ -45,8 +45,8 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
 
     public void AddWrappedProtectedMembers (HashSet<MethodInfo> wrappedProtectedMembers)
     {
-      _values[2] = (from member in wrappedProtectedMembers 
-                    select (object) new object[] { CheckNotClosedGeneric (member).Name, member.ToString () }).ToArray ();
+      _values[2] = (from member in wrappedProtectedMembers
+                    select (object) new object[] { CheckNotClosedGeneric (member).DeclaringType, member.Name, member.ToString () }).ToArray ();
     }
 
     private MethodInfo CheckNotClosedGeneric (MethodInfo methodInfo)

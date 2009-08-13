@@ -33,6 +33,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     private MethodInfo _externalMethodOnGenericClosedWithReferenceType;
     private MethodInfo _externalMethodOnGenericClosedWithValueType;
     private MethodInfo _simpleMethodOnMixinType;
+    private MethodInfo _simpleMethodOnMixinBaseType;
     private AttributeConcreteMixinTypeIdentifierSerializer _serializer;
     private AttributeConcreteMixinTypeIdentifierDeserializer _deserializer;
 
@@ -44,6 +45,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
       _externalMethodOnGenericClosedWithReferenceType = typeof (GenericClassWithAllKindsOfMembers<string>).GetMethod ("Method");
       _externalMethodOnGenericClosedWithValueType = typeof (GenericClassWithAllKindsOfMembers<int>).GetMethod ("Method");
       _simpleMethodOnMixinType = typeof (BT1Mixin1).GetMethod ("VirtualMethod");
+      _simpleMethodOnMixinBaseType = typeof (object).GetMethod ("ToString");
 
       _serializer = new AttributeConcreteMixinTypeIdentifierSerializer ();
       _deserializer = new AttributeConcreteMixinTypeIdentifierDeserializer (_serializer.Values);
@@ -88,7 +90,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
     public void GetWrappedProtectedMembers ()
     {
       _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinType });
-      Assert.That (_deserializer.GetWrappedProtectedMembers (typeof (BT1Mixin1)).ToArray (), Is.EquivalentTo (new[] { _simpleMethodOnMixinType }));
+      Assert.That (_deserializer.GetWrappedProtectedMembers ().ToArray (), Is.EquivalentTo (new[] { _simpleMethodOnMixinType }));
+    }
+
+    [Test]
+    public void GetWrappedProtectedMembers_MethodOnBaseType ()
+    {
+      _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinBaseType });
+      Assert.That (_deserializer.GetWrappedProtectedMembers ().ToArray (), Is.EquivalentTo (new[] { _simpleMethodOnMixinBaseType }));
     }
   }
 }

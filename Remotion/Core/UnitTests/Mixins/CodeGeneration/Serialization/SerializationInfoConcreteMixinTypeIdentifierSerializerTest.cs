@@ -77,6 +77,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
       _serializer.AddWrappedProtectedMembers (new HashSet<MethodInfo> { _simpleMethodOnMixinType });
 
       Assert.That (_serializationInfo.GetInt32 ("identifier.WrappedProtectedMembers.Count"), Is.EqualTo (1));
+      Assert.That (_serializationInfo.GetString ("identifier.WrappedProtectedMembers[0].DeclaringType"), Is.EqualTo (typeof (BT1Mixin1).AssemblyQualifiedName));
       Assert.That (_serializationInfo.GetString ("identifier.WrappedProtectedMembers[0].Name"), Is.EqualTo ("VirtualMethod"));
       Assert.That (_serializationInfo.GetString ("identifier.WrappedProtectedMembers[0].Signature"), Is.EqualTo ("System.String VirtualMethod()"));
     }

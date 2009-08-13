@@ -43,7 +43,7 @@ namespace Remotion.Mixins.CodeGeneration
 
       var mixinType = deserializer.GetMixinType ();
       var externalOverriders = deserializer.GetExternalOverriders ();
-      var wrappedProtectedMembers = deserializer.GetWrappedProtectedMembers (mixinType);
+      var wrappedProtectedMembers = deserializer.GetWrappedProtectedMembers ();
 
       return new ConcreteMixinTypeIdentifier (mixinType, externalOverriders, wrappedProtectedMembers);
     }

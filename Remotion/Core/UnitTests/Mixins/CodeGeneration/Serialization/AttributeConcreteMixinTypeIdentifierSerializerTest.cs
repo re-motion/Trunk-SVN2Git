@@ -76,9 +76,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
 
       Assert.That (_serializer.Values[2].GetType (), Is.EqualTo (typeof (object[])));
       Assert.That (((object[]) _serializer.Values[2]).Length, Is.EqualTo (1));
-      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0]).Length, Is.EqualTo (2));
-      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[0], Is.EqualTo ("VirtualMethod"));
-      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[1], Is.EqualTo ("System.String VirtualMethod()"));
+      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0]).Length, Is.EqualTo (3));
+      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[0], Is.SameAs (typeof (BT1Mixin1)));
+      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[1], Is.EqualTo ("VirtualMethod"));
+      Assert.That (((object[]) ((object[]) _serializer.Values[2])[0])[2], Is.EqualTo ("System.String VirtualMethod()"));
     }
 
     [Test]

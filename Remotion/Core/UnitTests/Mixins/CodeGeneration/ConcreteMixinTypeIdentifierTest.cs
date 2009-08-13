@@ -202,7 +202,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       deserializerMock.Expect (mock => mock.GetMixinType ()).Return (typeof (BT1Mixin1));
       deserializerMock.Expect (mock => mock.GetExternalOverriders ()).Return (externalOverriders);
-      deserializerMock.Expect (mock => mock.GetWrappedProtectedMembers (typeof (BT1Mixin1))).Return (wrappedProtectedMembers);
+      deserializerMock.Expect (mock => mock.GetWrappedProtectedMembers ()).Return (wrappedProtectedMembers);
 
       deserializerMock.Replay ();
 

@@ -47,15 +47,15 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
 
     public void AddExternalOverriders (HashSet<MethodInfo> externalOverriders)
     {
-      SerializeMethods (_key + ".ExternalOverriders", externalOverriders, true);
+      SerializeMethods (_key + ".ExternalOverriders", externalOverriders);
     }
 
     public void AddWrappedProtectedMembers (HashSet<MethodInfo> wrappedProtectedMembers)
     {
-      SerializeMethods (_key + ".WrappedProtectedMembers", wrappedProtectedMembers, false);
+      SerializeMethods (_key + ".WrappedProtectedMembers", wrappedProtectedMembers);
     }
 
-    private void SerializeMethods (string collectionKey, ICollection<MethodInfo> collection, bool includeDeclaringType)
+    private void SerializeMethods (string collectionKey, ICollection<MethodInfo> collection)
     {
       _serializationInfo.AddValue (collectionKey + ".Count", collection.Count);
 
@@ -65,8 +65,7 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
         if (methodInfo.IsGenericMethod && !methodInfo.IsGenericMethodDefinition)
           throw new NotSupportedException ("Cannot serialize closed generic methods. This is not supported.");
 
-        if (includeDeclaringType)
-          _serializationInfo.AddValue (collectionKey + "[" + index + "].DeclaringType", methodInfo.DeclaringType.AssemblyQualifiedName);
+        _serializationInfo.AddValue (collectionKey + "[" + index + "].DeclaringType", methodInfo.DeclaringType.AssemblyQualifiedName);
 
         _serializationInfo.AddValue (collectionKey + "[" + index + "].Name", methodInfo.Name);
         _serializationInfo.AddValue (collectionKey + "[" + index + "].Signature", methodInfo.ToString());

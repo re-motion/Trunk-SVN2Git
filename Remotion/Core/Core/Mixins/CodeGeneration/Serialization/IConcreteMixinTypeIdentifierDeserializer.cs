@@ -23,6 +23,6 @@ namespace Remotion.Mixins.CodeGeneration.Serialization
   {
     Type GetMixinType ();
     HashSet<MethodInfo> GetExternalOverriders ();
-    HashSet<MethodInfo> GetWrappedProtectedMembers (Type mixinType);
+    HashSet<MethodInfo> GetWrappedProtectedMembers ();
   }
 }
