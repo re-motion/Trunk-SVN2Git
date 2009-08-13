@@ -99,10 +99,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
-    public void CommitDeletedObject_DoesNotInfluencePreviouslyRelatedObjects ()
+    public void CommitDeletedObject_DoesNotInfluencePreviouslyRelatedObjects_OneToMany ()
     {
       var originalOrder = Order.GetObject (DomainObjectIDs.Order2);
       Assert.That (originalOrder.OrderItems.Count, Is.EqualTo (1));
+
+      var originalTicket = originalOrder.OrderTicket;
+      var originalOfficial = originalOrder.Official;
 
       var orderItem = originalOrder.OrderItems[0];
 
@@ -111,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       {
         newOrder = Order.GetObject (DomainObjectIDs.Order3);
         newOrder.OrderItems.Add (orderItem);
-        originalOrder.OrderTicket.Delete (); // dependent object
+        originalTicket.Delete (); // dependent object
         originalOrder.Delete ();
         ClientTransaction.Current.Commit ();
         Assert.That (orderItem.Order, Is.SameAs (newOrder));
@@ -119,6 +122,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       }
       Assert.That (orderItem.Order, Is.SameAs (newOrder));
       Assert.That (orderItem.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (newOrder.ID));
+
+      Assert.That (newOrder.OrderItems.ContainsObject (orderItem));
+      Assert.That (originalOrder.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (originalOrder.OrderItems, Is.Empty);
+      Assert.That (originalOrder.OrderTicket, Is.Null);
+      Assert.That (originalOrder.Official, Is.Null);
+
+      Assert.That (originalTicket.Order, Is.Null);
+      Assert.That (originalOfficial.Orders, List.Not.Contains (originalOrder));
     }
 
     [Test]
@@ -126,6 +138,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     {
       var originalOrder = Order.GetObject (DomainObjectIDs.Order2);
       Assert.That (originalOrder.OrderItems.Count, Is.EqualTo (1));
+      var originalItem = originalOrder.OrderItems[0];
+      var originalOfficial = originalOrder.Official;
 
       var orderTicket = originalOrder.OrderTicket;
 
@@ -136,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
         newOrder.OrderTicket.Delete (); // delete old ticket
         newOrder.OrderTicket = orderTicket;
         
-        originalOrder.OrderItems[0].Delete (); // delete old item
+        originalItem.Delete (); // delete old item
         originalOrder.Delete ();
         ClientTransaction.Current.Commit ();
         Assert.That (orderTicket.Order, Is.SameAs (newOrder));
@@ -144,8 +158,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
       }
       Assert.That (orderTicket.Order, Is.SameAs (newOrder));
       Assert.That (orderTicket.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (newOrder.ID));
-    }
 
+      Assert.That (newOrder.OrderTicket, Is.SameAs (orderTicket));
+      Assert.That (originalOrder.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (originalOrder.OrderItems, Is.Empty);
+      Assert.That (originalOrder.OrderTicket, Is.Null);
+      Assert.That (originalOrder.Official, Is.Null);
+
+      Assert.That (originalItem.Order, Is.Null);
+      Assert.That (originalOfficial.Orders, List.Not.Contains (originalOrder));
+    }
 
     [Test]
     public void CommitSavesPropertyValuesToParentTransaction ()
