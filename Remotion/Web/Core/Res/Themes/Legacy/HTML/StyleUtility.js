@@ -4,10 +4,12 @@
 StyleUtility.CreateBorderSpans = function(selector)
 {
   var element = $(selector);
-  while (element.length>0 && element.attr('id').length == 0)
+  while (element.length > 0 && ((element.attr('id') == null) || (element.attr('id').length == 0)))
     element = element.parent();
 
   var elementBody = $(selector)[0];
+  if (element.length == 0 || elementBody.length == 0)
+    return;
 
   StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'top');
   StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'left');
@@ -20,7 +22,7 @@ StyleUtility.CreateBorderSpans = function(selector)
 
   StyleUtility.CalculateBorderSpans(element[0], topRight, bottomLeft, bottomRight);
 
-  var elementID = element.id;
+  var elementID = element.attr('id');
   var resizeHandler = function() { StyleUtility.OnResize(elementID); }
   $(window).resize(resizeHandler);
 }
