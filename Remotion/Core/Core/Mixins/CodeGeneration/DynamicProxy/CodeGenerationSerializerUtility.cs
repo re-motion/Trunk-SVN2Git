@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Utilities;
@@ -22,18 +23,22 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public static class CodeGenerationSerializerUtility
   {
-    public static LocalReference DeclareAndFillArrayLocal<T> (T[] array, AbstractCodeBuilder codeBuilder, Func<T, Expression> expressionGenerator)
+    public static LocalReference DeclareAndFillArrayLocal<T> (ICollection<T> sourceCollection, AbstractCodeBuilder codeBuilder, Func<T, Expression> expressionGenerator)
     {
-      ArgumentUtility.CheckNotNull ("array", array);
+      ArgumentUtility.CheckNotNull ("sourceCollection", sourceCollection);
       ArgumentUtility.CheckNotNull ("codeBuilder", codeBuilder);
       ArgumentUtility.CheckNotNull ("expressionGenerator", expressionGenerator);
 
-      var newArrayExpression = new NewArrayExpression (array.Length, typeof (T));
+      var newArrayExpression = new NewArrayExpression (sourceCollection.Count, typeof (T));
       var arrayLocal = codeBuilder.DeclareLocal (typeof (T[]));
       codeBuilder.AddStatement (new AssignStatement (arrayLocal, newArrayExpression));
 
-      for (int i = 0; i < array.Length; ++i)
-        codeBuilder.AddStatement (new AssignArrayStatement (arrayLocal, i, expressionGenerator (array[i])));
+      int index = 0;
+      foreach (var element in sourceCollection)
+      {
+        codeBuilder.AddStatement (new AssignArrayStatement (arrayLocal, index, expressionGenerator (element)));
+        ++index;
+      }
       return arrayLocal;
     }
 

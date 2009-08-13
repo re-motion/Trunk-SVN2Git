@@ -158,6 +158,7 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\SerializationCodeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializer.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\MethodResolver.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\AttributeReplicator.cs" />

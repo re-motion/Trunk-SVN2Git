@@ -63,5 +63,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       using (MixinConfiguration.BuildNew().ForClass<T> ().AddMixins (mixinTypes).EnterScope())
         return ObjectFactory.Create<T> (ParamList.Empty, GenerationPolicy.ForceGeneration);
     }
+
+    /// <summary>
+    /// Signals that the <see cref="SetUpFixture"/> should not delete the files it generates. Call this ad-hoc in a test to keep the files and inspect
+    /// them with Reflector or ildasm.
+    /// </summary>
+    public void SkipDeletion ()
+    {
+      SetUpFixture.SkipDeletion ();
+    }
   }
 }

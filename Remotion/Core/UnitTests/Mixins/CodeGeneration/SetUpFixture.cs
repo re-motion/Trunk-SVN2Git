@@ -20,6 +20,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Utilities;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
@@ -29,6 +30,17 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   {
     private static ConcreteTypeBuilder s_savedTypeBuilder;
     private static ConcreteTypeBuilder s_alternativeTypeBuilder;
+
+    private static bool _skipDeletion = false;
+
+    /// <summary>
+    /// Signals that the <see cref="SetUpFixture"/> should not delete the files it generates. Call this ad-hoc in a test to keep the files and inspect
+    /// them with Reflector or ildasm.
+    /// </summary>
+    public static void SkipDeletion ()
+    {
+      _skipDeletion = true;
+    }
 
     [SetUp]
     public void SetUp()
@@ -60,7 +72,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
 #endif
 
-      ResetGeneratedAssemblies (); // delete assemblies if everything went fine
+      if (!_skipDeletion)
+        ResetGeneratedAssemblies (); // delete assemblies if everything went fine
+      else
+        Console.WriteLine ("Assemblies saved to: " + Environment.NewLine + SeparatedStringBuilder.Build (Environment.NewLine, paths));
       
       s_savedTypeBuilder = null;
       s_alternativeTypeBuilder = null;
