@@ -97,7 +97,8 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton
 
     public string GetDatePickerUrl ()
     {
-      return ResourceUrlResolver.GetResourceUrl (Control.Parent, Context, typeof (DatePickerPage), ResourceType.UI, c_datePickerPopupForm);
+      return ResourceUrlResolver.GetResourceUrl (
+          Control.Parent, Context, typeof (DatePickerPage), ResourceType.UI, ResourceTheme, c_datePickerPopupForm);
     }
 
     public string GetResolvedImageUrl ()
