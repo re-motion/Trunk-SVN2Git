@@ -222,17 +222,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementGetObjectData ()
     {
-      var targetReferenceExpression = new ConvertExpression (typeof (IMixinTarget), GetTargetReference ().ToExpression());
       SerializationImplementer.ImplementGetObjectDataByDelegation (
           Emitter,
           (newMethod, baseIsISerializable) =>
           new MethodInvocationExpression (
               null,
               typeof (MixinSerializationHelper).GetMethod ("GetObjectDataForGeneratedTypes"),
-              new ReferenceExpression (newMethod.ArgumentReferences[0]),
-              new ReferenceExpression (newMethod.ArgumentReferences[1]),
-              new ReferenceExpression (SelfReference.Self),
-              targetReferenceExpression,
+              newMethod.ArgumentReferences[0].ToExpression (),
+              newMethod.ArgumentReferences[1].ToExpression (),
+              SelfReference.Self.ToExpression (),
+              _requestingClassContextField.ToExpression(),
+              _identifierField.ToExpression (),
               new ReferenceExpression (new ConstReference (!baseIsISerializable))));
     }
   }

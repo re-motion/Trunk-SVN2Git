@@ -16,9 +16,9 @@
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Remotion.Mixins.CodeGeneration.Serialization;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
-using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 
@@ -29,25 +29,27 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   {
     // Always remember: the whole configuration must be serialized as one single, flat object (or SerializationInfo), we cannot rely on any
     // nested objects to be deserialized in the right order
-    public static void GetObjectDataForGeneratedTypes (SerializationInfo info, StreamingContext context, object mixin, IMixinTarget targetObject,
+    public static void GetObjectDataForGeneratedTypes (
+        SerializationInfo info, 
+        StreamingContext context, 
+        object mixin, 
+        ClassContext requestingClassContext,
+        ConcreteMixinTypeIdentifier identifier,
         bool serializeBaseMembers)
     {
       ArgumentUtility.CheckNotNull ("info", info);
       ArgumentUtility.CheckNotNull ("mixin", mixin);
-      ArgumentUtility.CheckNotNull ("targetObject", targetObject);
+      ArgumentUtility.CheckNotNull ("requestingClassContext", requestingClassContext);
+      ArgumentUtility.CheckNotNull ("identifier", identifier);
 
       info.SetType (typeof (MixinSerializationHelper));
 
-      ClassContext targetClassContext = targetObject.Configuration.ConfigurationContext;
-      int mixinIndex = Array.IndexOf (targetObject.Mixins, mixin);
-      if (mixinIndex == -1)
-        throw new ArgumentException ("The given mixin is not part of the given targetObject.", "targetObject");
+      var classContextSerializer = new SerializationInfoClassContextSerializer (info, "__requestingClassContext");
+      requestingClassContext.Serialize (classContextSerializer);
 
-      var classContextSerializer = new SerializationInfoClassContextSerializer (info, "__configuration.TargetClass.ConfigurationContext.");
-      targetClassContext.Serialize (classContextSerializer);
+      var identifierSerializer = new SerializationInfoConcreteMixinTypeIdentifierSerializer (info, "__identifier");
+      identifier.Serialize (identifierSerializer);
       
-      info.AddValue ("__configuration.MixinIndex", mixinIndex);
-
       object[] baseMemberValues;
       if (serializeBaseMembers)
       {
@@ -60,7 +62,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       info.AddValue ("__baseMemberValues", baseMemberValues);
     }
 
-    private readonly MixinDefinition _mixinDefinition;
     private readonly object[] _baseMemberValues;
     private readonly object _deserializedObject;
     private readonly StreamingContext _context;
@@ -71,14 +72,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _context = context;
 
-      var classContextDeserializer = new SerializationInfoClassContextDeserializer (info, "__configuration.TargetClass.ConfigurationContext.");
-      var configurationContext = ClassContext.Deserialize (classContextDeserializer);
-      TargetClassDefinition targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (configurationContext);
+      var classContextDeserializer = new SerializationInfoClassContextDeserializer (info, "__requestingClassContext");
+      var requestingClassContext = ClassContext.Deserialize (classContextDeserializer);
 
-      int mixinIndex = info.GetInt32 ("__configuration.MixinIndex");
-      _mixinDefinition = targetClassDefinition.Mixins[mixinIndex];
+      var identifierDeserializer = new SerializationInfoConcreteMixinTypeIdentifierDeserializer (info, "__identifier");
+      var identifier = ConcreteMixinTypeIdentifier.Deserialize (identifierDeserializer);
 
-      Type concreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (configurationContext, _mixinDefinition.GetConcreteMixinTypeIdentifier()).GeneratedType;
+
+      Type concreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClassContext, identifier).GeneratedType;
       _baseMemberValues = (object[]) info.GetValue ("__baseMemberValues", typeof (object[]));
 
       // Usually, instantiate a deserialized object using GetSafeUninitializedObject.
