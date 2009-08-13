@@ -918,7 +918,7 @@
       {
         var offset = $(input).offset();
         element.css({
-          // changed width to span the entire control, including dropdown button
+          // re-motion: changed width to span the entire control, including dropdown button
           width: $(input).parents('span.bocAutoCompleteReferenceValueDropDownList').width() - 2,
           top: offset.top + input.offsetHeight,
           left: offset.left

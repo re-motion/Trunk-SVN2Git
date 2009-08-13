@@ -24,5 +24,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
         : base (context, control)
     {
     }
+
+    public override void PreRender ()
+    {
+      RegisterBindScript();
+      RegisterAdjustPositionScript();
+    }
   }
 }

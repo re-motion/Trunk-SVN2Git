@@ -753,7 +753,8 @@
 		.hide()
 		.addClass(options.resultsClass)
 		.css("position", "absolute")
-		.appendTo(document.body);
+		// re-motion: add it to input cell instead of body to prevent unwanted vertical scroll bars
+		.appendTo(input.parentNode);
 
       list = $("<ul/>").appendTo(element).mouseover(function(event)
       {
@@ -918,10 +919,11 @@
       {
         var offset = $(input).offset();
         element.css({
-          // changed width to span the entire control, including dropdown button
-          width: $(input).parents('span.bocAutoCompleteReferenceValueDropDownList').width() - 2,
-          top: offset.top + input.offsetHeight,
-          left: offset.left
+          // re-motion: changed width to span the input and dropdown-button cells
+        width: $(input).parent().width() + $(input).parent().next().width(),
+          // re-motion: since the list is now in the cell of the input element, only offset it by input height
+          top: offset.top - element.offsetParent().offset().top + input.offsetHeight,
+          left: offset.left - element.offsetParent().offset().left
         }).show();
         if (options.scroll)
         {

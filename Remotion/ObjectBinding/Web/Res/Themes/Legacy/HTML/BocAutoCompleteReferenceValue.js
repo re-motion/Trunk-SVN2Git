@@ -63,53 +63,6 @@ function(textbox, hiddenField, button, webServiceUrl, webServiceMethod,
     });
 };
 
-BocAutoCompleteReferenceValue.AdjustPosition = function(control, isEmbedded)
-{
-
-  var totalWidth = control.innerWidth();
-  var totalHeight = control.innerHeight();
-
-  var icon = control.find('img.bocAutoCompleteReferenceValueContent').parent();
-
-  var left = 0;
-  if (icon.length > 0)
-    left = icon.outerWidth(true);
-
-  var optionsMenu = control.find('.bocAutoCompleteReferenceValueOptionsMenu');
-  var right = 0;
-  if (!isEmbedded && optionsMenu.length > 0)
-    right = optionsMenu.outerWidth(true);
-
-  var contentSpan = control.find('span.content');
-  contentSpan.height(totalHeight);
-  contentSpan.css('left', left);
-  contentSpan.css('right', right);
-
-  if (isEmbedded)
-  {
-    var dropDownList = control.find('.bocAutoCompleteReferenceValueDropDownList');
-    var dropDownMenu = dropDownList.parent().parent();
-
-    if (dropDownMenu.length > 0)
-    {
-      dropDownMenu.css('height', dropDownList.parent().outerWidth(true));
-      dropDownMenu.height(control.find('.bocAutoCompleteReferenceValueDropDownList').parent().outerHeight(true));
-      icon.css('top', (dropDownMenu.innerHeight() - icon.outerHeight()) / 2);
-    }
-
-  }
-  else
-  {
-    var dropDownList = control.find('.bocAutoCompleteReferenceValueInput');
-    if (dropDownList.length > 0)
-    {
-      var heightDifference = dropDownList.height() - optionsMenu.height();
-      var offset = heightDifference / 2;
-      optionsMenu.css('top', offset);
-    }
-  }
-};
-
 //  Returns the number of rows selected for the specified BocList
 BocAutoCompleteReferenceValue.GetSelectionCount = function(referenceValueHiddenFieldId)
 {

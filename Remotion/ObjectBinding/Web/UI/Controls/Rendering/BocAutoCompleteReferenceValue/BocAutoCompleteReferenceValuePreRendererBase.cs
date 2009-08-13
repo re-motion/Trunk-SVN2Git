@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
               "BocAutoCompleteReferenceValue.js"));
     }
 
-    public override void PreRender ()
+    protected void RegisterBindScript ()
     {
       string key = Control.UniqueID + "_BindScript";
       const string scriptTemplate =
@@ -92,15 +92,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
           ""
           );
       Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (IBocAutoCompleteReferenceValue), key, script);
+    }
 
-      key = Control.ClientID + "_AdjustPositionScript";
+    protected void RegisterAdjustPositionScript ()
+    {
+      string key = Control.ClientID + "_AdjustPositionScript";
       Control.Page.ClientScript.RegisterStartupScriptBlock (
           Control,
           typeof (BocAutoCompleteReferenceValuePreRendererBase),
           key,
           string.Format ("BocAutoCompleteReferenceValue.AdjustPosition($('#{0}'), {1});",
-              Control.ClientID,
-              Control.EmbedInOptionsMenu ? "true" : "false"));
+                         Control.ClientID,
+                         Control.EmbedInOptionsMenu ? "true" : "false"));
     }
 
     protected virtual void RegisterStylesheets (HtmlHeadAppender htmlHeadAppender)

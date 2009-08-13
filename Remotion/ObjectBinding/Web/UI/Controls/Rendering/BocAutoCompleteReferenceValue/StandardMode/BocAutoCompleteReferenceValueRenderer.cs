@@ -17,7 +17,6 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
@@ -34,37 +33,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
     {
     }
 
-    public BocAutoCompleteReferenceValueRenderer (IHttpContext context, HtmlTextWriter writer, IBocAutoCompleteReferenceValue control, Func<TextBox> textBoxGetter)
-        : base(context, writer, control)
+    public BocAutoCompleteReferenceValueRenderer (
+        IHttpContext context,
+        HtmlTextWriter writer,
+        IBocAutoCompleteReferenceValue control,
+        Func<TextBox> textBoxGetter)
+        : base (context, writer, control)
     {
       TextBoxGetter = textBoxGetter;
     }
 
-    private Func<TextBox> TextBoxGetter
-    {
-      get; set;
-    }
+    private Func<TextBox> TextBoxGetter { get; set; }
 
     public void Render ()
     {
       AddAttributesToRender (false);
       Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      TextBox textBox = GetTextBox ();
+      TextBox textBox = GetTextBox();
       textBox.Page = Control.Page.WrappedInstance;
-      Label label = GetLabel ();
-      Image icon = GetIcon ();
+      Label label = GetLabel();
+      Image icon = GetIcon();
 
       if (Control.EmbedInOptionsMenu)
-      {
         RenderContentsWithIntegratedOptionsMenu (textBox, label);
-      }
       else
-      {
         RenderContentsWithSeparateOptionsMenu (textBox, label, icon);
-      }
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     private void RenderContentsWithSeparateOptionsMenu (TextBox textBox, Label label, Image icon)
@@ -112,9 +108,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
         objectID = Control.BusinessObjectUniqueIdentifier;
 
       if (isReadOnly)
-      {
         RenderReadOnlyValue (icon, label, isCommandEnabled, postBackEvent, string.Empty, objectID);
-      }
       else
       {
         if (icon.Visible)
@@ -125,7 +119,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
         RenderEditModeValue (textBox);
 
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
       }
 
       bool hasOptionsMenu = Control.HasOptionsMenu;
@@ -137,10 +131,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
         Control.OptionsMenu.Width = Control.OptionsMenuWidth;
         Control.OptionsMenu.RenderControl (Writer);
 
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
       }
 
-      Writer.RenderEndTag ();
+      Writer.RenderEndTag();
     }
 
     protected string CssClassOptionsMenu
@@ -158,7 +152,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
       Writer.RenderEndTag();
     }
 
-    
 
     /// <summary> Called after the edit mode value's cell is rendered. </summary>
     /// <remarks> Render a table cell: &lt;td style="width:0%"&gt;Your contents goes here&lt;/td&gt;</remarks>
@@ -175,15 +168,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       if (icon.Visible)
-      {
         icon.RenderControl (Writer);
-      }
       label.RenderControl (Writer);
 
       if (isCommandEnabled)
         Control.Command.RenderEnd (Writer);
       else
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
     }
 
     private void RenderSeparateIcon (Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
@@ -196,15 +187,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
           icon.ToolTip = Control.Command.ToolTip;
       }
       else
-      {
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      }
       icon.RenderControl (Writer);
 
       if (isCommandEnabled)
         Control.Command.RenderEnd (Writer);
       else
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
     }
 
     private void RenderContentsWithIntegratedOptionsMenu (TextBox textBox, Label label)
@@ -243,11 +232,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
     public void RenderOptionsMenuTitle ()
     {
-      TextBox textBox = GetTextBox ();
+      TextBox textBox = GetTextBox();
       textBox.Page = Control.Page.WrappedInstance;
 
-      Image icon = GetIcon ();
-      Label label = GetLabel ();
+      Image icon = GetIcon();
+      Label label = GetLabel();
       label.CssClass = CssClassReadOnly;
       bool isReadOnly = Control.IsReadOnly;
 
@@ -264,22 +253,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.Rendering.BocAutoCompleteRefere
 
 
       if (isReadOnly)
-      {
         RenderReadOnlyValue (icon, label, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
-      }
       else
       {
         if (icon.Visible)
-        {
           RenderSeparateIcon (icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
-        }
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassInnerContent);
         Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         textBox.Attributes.Add ("onclick", DropDownMenu.OnHeadTitleClickScript);
         RenderEditModeValue (textBox);
 
-        Writer.RenderEndTag ();
+        Writer.RenderEndTag();
       }
     }
 
