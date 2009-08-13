@@ -99,6 +99,55 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     }
 
     [Test]
+    public void CommitDeletedObject_DoesNotInfluencePreviouslyRelatedObjects ()
+    {
+      var originalOrder = Order.GetObject (DomainObjectIDs.Order2);
+      Assert.That (originalOrder.OrderItems.Count, Is.EqualTo (1));
+
+      var orderItem = originalOrder.OrderItems[0];
+
+      Order newOrder;
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        newOrder = Order.GetObject (DomainObjectIDs.Order3);
+        newOrder.OrderItems.Add (orderItem);
+        originalOrder.OrderTicket.Delete (); // dependent object
+        originalOrder.Delete ();
+        ClientTransaction.Current.Commit ();
+        Assert.That (orderItem.Order, Is.SameAs (newOrder));
+        Assert.That (orderItem.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (newOrder.ID));
+      }
+      Assert.That (orderItem.Order, Is.SameAs (newOrder));
+      Assert.That (orderItem.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (newOrder.ID));
+    }
+
+    [Test]
+    public void CommitDeletedObject_DoesNotInfluencePreviouslyRelatedObjects_OneToOne ()
+    {
+      var originalOrder = Order.GetObject (DomainObjectIDs.Order2);
+      Assert.That (originalOrder.OrderItems.Count, Is.EqualTo (1));
+
+      var orderTicket = originalOrder.OrderTicket;
+
+      Order newOrder;
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        newOrder = Order.GetObject (DomainObjectIDs.Order3);
+        newOrder.OrderTicket.Delete (); // delete old ticket
+        newOrder.OrderTicket = orderTicket;
+        
+        originalOrder.OrderItems[0].Delete (); // delete old item
+        originalOrder.Delete ();
+        ClientTransaction.Current.Commit ();
+        Assert.That (orderTicket.Order, Is.SameAs (newOrder));
+        Assert.That (orderTicket.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (newOrder.ID));
+      }
+      Assert.That (orderTicket.Order, Is.SameAs (newOrder));
+      Assert.That (orderTicket.Properties.Find ("Order").GetRelatedObjectID (), Is.EqualTo (newOrder.ID));
+    }
+
+
+    [Test]
     public void CommitSavesPropertyValuesToParentTransaction ()
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);

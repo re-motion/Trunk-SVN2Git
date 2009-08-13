@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.EndPointModifications;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -321,8 +322,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
       DomainObject domainObject = dataContainer.DomainObject;
-      ParentTransaction.DataManager.PerformDelete (
-          domainObject, ParentTransaction.DataManager.RelationEndPointMap.GetOppositeEndPointModificationsForDelete (domainObject));
+      // do not pass any opposite end point modifications to PerformDelete - this method only persists changes made directly to the deleted object
+      var emptyOppositeBidirectionalEndPointModification = new NotifyingBidirectionalRelationModification ();
+      ParentTransaction.DataManager.PerformDelete (domainObject, emptyOppositeBidirectionalEndPointModification);
     }
 
     private DataContainer GetParentDataContainerWithoutLoading (ObjectID id)
