@@ -15,6 +15,7 @@ table.tabbedMenu
 td.tabbedMainMenuCell
 {
   padding: 0;
+  padding-top: 0.25em;
   background-color: #083779;
 }
 
@@ -47,7 +48,7 @@ div.tabbedMainMenu div.tabStripTabsPane
 div.tabbedMainMenu span.tabStripTabWrapper
 {
   padding-top: 0.3em;
-  padding-right: 0.1em;
+  padding-right: 1px;
 }
 
 div.tabbedMainMenu span.tabStripTabSeparator

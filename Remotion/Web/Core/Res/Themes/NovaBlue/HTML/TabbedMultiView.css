@@ -167,7 +167,7 @@ div.tabbedMultiViewBottomControls *.bottomRight
 
 div.tabbedMultiViewTabStrip
 {
-  position: absolute;
+  position: relative;
   left: 0;
   right: 0;
   padding: 0;
@@ -260,8 +260,8 @@ div.tabbedMultiViewTabStrip span.tabStripTabSelected a span.bottom
 /* Content area of the tab */
 div.tabbedMultiViewTabStrip a span.anchorBody
 {
-  padding-top: 0.2em;
-  padding-bottom: 0.2em; 
+  padding-top: 0.15em;
+  padding-bottom: 0.25em; 
   padding-left: 0.5em;
   padding-right: 0.5em;
 }

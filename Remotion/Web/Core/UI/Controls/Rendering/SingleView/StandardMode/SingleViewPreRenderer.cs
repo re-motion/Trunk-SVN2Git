@@ -35,11 +35,6 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.WrapperClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ViewClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.TopControl.ClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.BottomControl.ClientID);
-
       htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
 
       string keyStyle = typeof (ISingleView).FullName + "_Style";
@@ -53,9 +48,21 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
         string scriptUrl = ResourceUrlResolver.GetResourceUrl (Control, Context, typeof (ISingleView), ResourceType.Html, "ViewLayout.js");
         htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
       }
+
+      RegisterAdjustViewScript ();
+
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.WrapperClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ViewClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.TopControl.ClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.BottomControl.ClientID);
     }
 
     public override void PreRender ()
+    {
+      
+    }
+
+    private void RegisterAdjustViewScript ()
     {
       string keyAdjust = Control.ClientID + "_AdjustView";
       string scriptAdjust = "function adjustView_{0}() {{ ViewLayout.AdjustSingleView($('#{0}')); }}";

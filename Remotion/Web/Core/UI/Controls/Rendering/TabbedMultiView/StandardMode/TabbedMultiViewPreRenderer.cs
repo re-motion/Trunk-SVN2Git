@@ -35,11 +35,6 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.WrapperClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ActiveViewClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.TopControl.ClientID);
-      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.BottomControl.ClientID);
-
       htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
 
       string keyStyle = typeof (ITabbedMultiView).FullName + "_Style";
@@ -54,9 +49,21 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
             Control, Context, typeof (ITabbedMultiView), ResourceType.Html, "ViewLayout.js");
         htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
       }
+
+      RegisterAdjustViewScript ();
+
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.WrapperClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ActiveViewClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.TopControl.ClientID);
+      ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.BottomControl.ClientID);
     }
 
     public override void PreRender ()
+    {
+      
+    }
+
+    private void RegisterAdjustViewScript ()
     {
       string keyAdjust = Control.ClientID + "_AdjustView";
       string scriptAdjust = "function adjustView_{0}(){{ ViewLayout.AdjustTabbedMultiView($('#{0}')); }}";
