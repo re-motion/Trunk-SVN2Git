@@ -16,6 +16,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
@@ -23,12 +24,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
   [TestFixture]
   public class SubTransactionCommitRootTransactionTest : ClientTransactionBaseTest
   {
-    public override void TestFixtureSetUp ()
-    {
-      base.TestFixtureSetUp();
-      SetDatabaseModifyable();
-    }
-
     private Order CreateNewOrder ()
     {
       var order = Order.NewObject();
@@ -43,36 +38,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transaction
     [Test]
     public void ChangeParent ()
     {
-      ObjectID orderItem1ID;
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      var order1 = CreateNewOrder();
+
+      var orderItem1 = OrderItem.NewObject (order1);
+      var orderItem2 = OrderItem.NewObject (order1); // a 2nd orderItem is necessary
+
+      Order order2;
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        var order1 = CreateNewOrder();
-
-        var orderItem1 = OrderItem.NewObject (order1);
-        orderItem1ID = orderItem1.ID;
-        var orderItem2 = OrderItem.NewObject (order1); // a 2nd orderItem is necessary
-
-        Order order2;
-        using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
-        {
-          orderItem2.Delete(); // this delete is necessary
-          order2 = CreateNewOrder();
-          order2.OrderItems.Add (orderItem1);
-          order1.OrderTicket.Delete(); // must delete to delete order1 
-          order1.Delete(); // this delete triggers resetting order1.OrderItems during commit
-          ClientTransaction.Current.Commit();
-          Assert.AreSame (order2, orderItem1.Order);
-        }
-        Assert.AreSame (order2, orderItem1.Order);
+        orderItem2.Delete(); // this delete is necessary
+        order2 = CreateNewOrder();
+        order2.OrderItems.Add (orderItem1);
+        order1.OrderTicket.Delete(); // must delete to delete order1 
+        order1.Delete(); // this delete triggers resetting order1.OrderItems during commit
         ClientTransaction.Current.Commit();
         Assert.AreSame (order2, orderItem1.Order);
       }
-
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        var orderItem1 = OrderItem.GetObject (orderItem1ID);
-        Assert.IsNotNull (orderItem1.Order);
-      }
+      Assert.AreSame (order2, orderItem1.Order);
+      PropertyIndexer propertyIndexer = new PropertyIndexer (orderItem1);
+      PropertyAccessor propertyAccessor = propertyIndexer[typeof (OrderItem), "Order"];
+      Assert.IsNotNull (propertyAccessor.GetRelatedObjectID());
     }
   }
 }
