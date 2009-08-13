@@ -15,27 +15,21 @@
 // 
 using System.Reflection;
 using System.Reflection.Emit;
-using Remotion.Mixins.Context;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public static class ConcreteMixinTypeAttributeUtility
   {
-    private static readonly ConstructorInfo s_attributeCtor = typeof (ConcreteMixinTypeAttribute).GetConstructor (
-        new[] { typeof (object[]), typeof (int), typeof (object[]) });
+    private static readonly ConstructorInfo s_attributeCtor = typeof (ConcreteMixinTypeAttribute).GetConstructor (new[] { typeof (object[]) });
 
-    public static CustomAttributeBuilder CreateAttributeBuilder (ClassContext context, int mixinIndex, ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
+    public static CustomAttributeBuilder CreateAttributeBuilder (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
       Assertion.IsNotNull (s_attributeCtor);
 
-      ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.Create (context, mixinIndex, concreteMixinTypeIdentifier);
-      var builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { 
-          attribute.ClassContextData, 
-          attribute.MixinIndex, 
-          attribute.ConcreteMixinTypeIdentifierData });
+      ConcreteMixinTypeAttribute attribute = ConcreteMixinTypeAttribute.Create (concreteMixinTypeIdentifier);
+      var builder = new CustomAttributeBuilder (s_attributeCtor, new object[] { attribute.ConcreteMixinTypeIdentifierData });
 
       return builder;
     }

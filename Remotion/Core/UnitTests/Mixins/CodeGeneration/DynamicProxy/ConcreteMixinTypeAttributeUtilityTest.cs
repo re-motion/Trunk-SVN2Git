@@ -19,12 +19,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Context;
-using Remotion.Mixins.Context.FluentBuilders;
-using Remotion.Mixins.Context.Serialization;
 using Remotion.Text;
 using Remotion.Utilities;
 
@@ -36,16 +32,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     [Test]
     public void CreateAttributeBuilder ()
     {
-      ClassContext context = new ClassContextBuilder (typeof (int))
-          .AddCompleteInterface (typeof (uint))
-          .AddMixin (typeof (double)).OfKind (MixinKind.Used)
-          .AddMixin (typeof (string)).WithDependency (typeof (bool)).OfKind (MixinKind.Extending)
-          .BuildClassContext ();
-
       var identifier = new ConcreteMixinTypeIdentifier (typeof (double), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
-      CustomAttributeBuilder builder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (context, 12, identifier);
+      CustomAttributeBuilder builder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (identifier);
 
-      TypeBuilder typeBuilder = ((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.ObtainDynamicModuleWithWeakName ().DefineType ("Test_ConcreteMixinTypeAttribute");
+      TypeBuilder typeBuilder = ((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope
+          .ObtainDynamicModuleWithWeakName ()
+          .DefineType ("Test_ConcreteMixinTypeAttribute");
       typeBuilder.SetCustomAttribute (builder);
       Type type = typeBuilder.CreateType ();
 
@@ -53,12 +45,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       
       var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixinTypeAttribute> (type, false);
       
-      var contextDeserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
-      var regeneratedContext = ClassContext.Deserialize (contextDeserializer);
       var regeneratedIdentifier = attribute.GetIdentifier ();
 
-      Assert.That (regeneratedContext, Is.EqualTo (context));
-      Assert.That (attribute.MixinIndex, Is.EqualTo (12));
       Assert.That (regeneratedIdentifier, Is.EqualTo (identifier));
     }
   }

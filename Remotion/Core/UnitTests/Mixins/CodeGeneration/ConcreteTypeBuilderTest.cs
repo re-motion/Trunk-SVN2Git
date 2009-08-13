@@ -24,14 +24,12 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using Remotion.Mixins.Context;
 using ClassOverridingSingleMixinMethod=Remotion.UnitTests.Mixins.CodeGeneration.TestDomain.ClassOverridingSingleMixinMethod;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
@@ -290,7 +288,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       builder.LoadAssemblyIntoCache (assemblyMock);
 
-      using (SetupMixinConfigurationForLoadedType (loadedType).EnterScope())
+      using (SetupMixinConfigurationForLoadedType (typeof (LoadableConcreteMixedTypeForClassOverridingMixinMembers)).EnterScope())
       {
         var requestingClass = TargetClassDefinitionUtility.GetContext (
             typeof (ClassOverridingMixinMembers), 
@@ -312,7 +310,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var loadedType = typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers);
       var assemblyMock = SetupAssemblyMockForLoading (loadedType);
 
-      using (SetupMixinConfigurationForLoadedType (loadedType).EnterScope())
+      using (MixinConfiguration.BuildNew ().ForClass<ClassOverridingMixinMembers> ().AddMixin<MixinWithAbstractMembers> ().EnterScope ())
       {
         var requestingClass = TargetClassDefinitionUtility.GetContext (
             typeof (ClassOverridingMixinMembers),
@@ -540,19 +538,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
     private MixinConfiguration SetupMixinConfigurationForLoadedType (Type loadedType)
     {
-      object[] classContextData;
       var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (loadedType, false);
-      if (attribute != null)
-      {
-        classContextData = attribute.ClassContextData;
-      }
-      else
-      {
-        var mixinAttribute = AttributeUtility.GetCustomAttribute<ConcreteMixinTypeAttribute> (loadedType, false);
-        classContextData = mixinAttribute.ClassContextData;
-      }
+      var classContext = attribute.GetClassContext();
 
-      var classContext = ClassContext.Deserialize (new AttributeClassContextDeserializer (classContextData));
       var mixinConfiguration = new MixinConfiguration();
       mixinConfiguration.ClassContexts.Add (classContext);
       return mixinConfiguration;

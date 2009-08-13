@@ -46,7 +46,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     }
 
     [Test]
-    public void MixinTypeAttributeCanBeUsedToGetMixinDefinition ()
+    public void MixinTypeAttribute_CanBeUsedToGetIdentifier ()
     {
       var requestingClass = TargetClassDefinitionUtility.GetContext (
           typeof (ClassOverridingMixinMembers),
@@ -63,7 +63,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Assert.That (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false), Is.True);
 
       var attributes = (ConcreteMixinTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
-      Assert.That (attributes[0].GetMixinDefinition (TargetClassDefinitionCache.Current), Is.SameAs (mixinDefinition));
+      Assert.That (attributes[0].GetIdentifier(), Is.EqualTo (mixinDefinition.GetConcreteMixinTypeIdentifier()));
     }
 
     [Test]

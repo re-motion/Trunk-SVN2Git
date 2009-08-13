@@ -129,7 +129,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var typeMock = MockRepository.GenerateMock<_Type> ();
       var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo>(), new HashSet<MethodInfo>());
-      var attribute = ConcreteMixinTypeAttribute.Create (new ClassContext (typeof (object)), 0, identifier);
+      var attribute = ConcreteMixinTypeAttribute.Create (identifier);
 
       typeMock.Expect (mock => mock.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false)).Return (new[] { attribute });
       typeMock.Replay ();

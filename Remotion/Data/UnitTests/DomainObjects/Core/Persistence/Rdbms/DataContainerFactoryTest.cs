@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository.VerifyAll ();
     }
-
+    
     private void SetupOrderTicket (ObjectID ticketID, int timestamp, string fileName, ObjectID relatedOrder, bool checkOrderIDClassIDNotExists)
     {
       using (_mockRepository.Unordered ())

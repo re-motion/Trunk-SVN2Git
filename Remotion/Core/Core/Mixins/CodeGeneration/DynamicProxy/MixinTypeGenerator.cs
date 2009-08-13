@@ -114,8 +114,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddMixinTypeAttribute ()
     {
-      CustomAttributeBuilder attributeBuilder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (Configuration.TargetClass.ConfigurationContext,
-          Configuration.MixinIndex, Configuration.GetConcreteMixinTypeIdentifier());
+      CustomAttributeBuilder attributeBuilder = 
+          ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (Configuration.GetConcreteMixinTypeIdentifier());
       Emitter.AddCustomAttribute (attributeBuilder);
     }
 
