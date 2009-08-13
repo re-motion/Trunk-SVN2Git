@@ -20,16 +20,11 @@
   width: 100%; 
 }
 
-/* HACK: Webkit-based browsers (Chrome, Safari) won't apply this, IE and Firefox will */
-*.tabStripTabsPane ul
-{
-  margin-bottom: -1px;
-}
-
-
 *.tabStripTabsPane ul li
 {
-   display: inline;
+  padding: 0;
+  margin: 0;
+  display: inline;
 }
 
 *.tabStripTab a
@@ -39,7 +34,6 @@
   color: Blue;
   text-decoration: none;
   cursor: default;
-  padding-bottom: 1px;
 }
 
 *.tabStripTab a:hover
@@ -56,7 +50,6 @@
   color: Blue;
   text-decoration: none;
   cursor: default;
-  padding-bottom: 1px;
 }
 
 *.tabStripTab.disabled a,
@@ -95,8 +88,6 @@
 *.tabStripTabSeparator
 {
   width: 0.3em; /* Value must also be set in the Non-IE browsers section as left-margin of the tab. */
-  margin: 0px;
-  padding-bottom: 1px;
 }
 
 *.tabStripTab,
@@ -169,8 +160,8 @@ html>body *.tabStripTabSeparator
 
 html>body *.tabStripTabSeparator span
 {
-  padding-top: 1px; /* The padding used for the content span. */
-  padding-bottom: 1px; /* The padding used for the content span. */
+  padding-top: 0.1em; /* The padding used for the content span. */
+  padding-bottom: 0.1em; /* The padding used for the content span. */
 }
 
 /* End Non-IE Browsers hack\*/

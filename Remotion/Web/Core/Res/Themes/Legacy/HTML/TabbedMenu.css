@@ -89,9 +89,9 @@ div.tabbedMainMenu span.tabStripTab.disabled a:hover
   cursor: default;
 }
 
-div.tabbedMainMenu li span.bottom, 
-div.tabbedMainMenu li span.topLeft, 
-div.tabbedMainMenu li span.topRight
+div.tabbedMainMenu a span.bottom, 
+div.tabbedMainMenu a span.topLeft, 
+div.tabbedMainMenu a span.topRight
 {
   position: absolute;
   font-size: 0.5%;
@@ -107,7 +107,7 @@ div.tabbedMainMenu a span.bottom
 }
 
 /* Top Left tab corner */
-div.tabbedMainMenu li span.topLeft
+div.tabbedMainMenu a span.topLeft
 {
   background-image: url(../Image/TabbedMainMenuTabTopLeftCorner.gif);
   background-repeat: no-repeat;
@@ -119,7 +119,7 @@ div.tabbedMainMenu li span.topLeft
 }
 
 /* Top Right tab corner */
-div.tabbedMainMenu li span.topRight
+div.tabbedMainMenu a span.topRight
 {
   background-image: url(../Image/TabbedMainMenuTabTopRightCorner.gif);
   background-repeat: no-repeat;
@@ -131,7 +131,7 @@ div.tabbedMainMenu li span.topRight
 }
 
 /* Content area of the tab */
-div.tabbedMainMenu li span.anchorBody
+div.tabbedMainMenu a span.anchorBody
 {
   padding-top: 0.3em;
   padding-bottom: 0.3em;

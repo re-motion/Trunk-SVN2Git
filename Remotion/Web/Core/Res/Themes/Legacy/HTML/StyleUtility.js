@@ -18,7 +18,7 @@ StyleUtility.CreateBorderSpans = function(selector)
   var bottomLeft = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'bottomLeft');
   var bottomRight = StyleUtility.CreateAndAppendBorderSpan(elementBody, element.attr('id'), 'bottomRight');
 
-  StyleUtility.CalculateBorderSpans(element, topRight, bottomLeft, bottomRight);
+  StyleUtility.CalculateBorderSpans(element[0], topRight, bottomLeft, bottomRight);
 
   var elementID = element.id;
   var resizeHandler = function() { StyleUtility.OnResize(elementID); }
@@ -27,63 +27,38 @@ StyleUtility.CreateBorderSpans = function(selector)
 
 StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bottomRight)
 {
-  var right = 0;  
-  var bottom = element.position().top + element.height();
-  var topRightOffset = 0; 
-  var bottomLeftOffset = $(bottomLeft).offset().top;
-  var bottomRightVerticalOffset = $(bottomRight).offset().top;
-  var bottomRightHorizontalOffset = 0;
+  topRight.style.left = topRight.offsetParent.clientLeft + topRight.offsetParent.clientWidth - topRight.offsetWidth  + 'px';
+  bottomLeft.style.top = bottomLeft.offsetParent.clientTop + bottomLeft.offsetParent.clientHeight - bottomLeft.offsetHeight  + 'px';
+  bottomRight.style.top = bottomRight.offsetParent.clientTop + bottomRight.offsetParent.clientHeight - bottomRight.offsetHeight  + 'px';
+  bottomRight.style.left = bottomRight.offsetParent.clientLeft + bottomRight.offsetParent.clientWidth - bottomRight.offsetWidth  + 'px';
 
-  // QuirksMode calculations for IE - Firefox places borders correctly with jQuery positioning
-  var offsetParent = topRight.offsetParent;
-  if (offsetParent)
-  { // this is null in Firefox
-    right = offsetParent.clientLeft + offsetParent.clientWidth;
-    bottom = offsetParent.clientTop + offsetParent.clientHeight;
-    topRightOffset = topRight.offsetWidth;
-    bottomLeftOffset = bottomLeft.offsetHeight;
-    bottomRightVerticalOffset = bottomRight.offsetHeight;
-    bottomRightHorizontalOffset = bottomRight.offsetWidth;
-  }
-
-  $(topRight).css('left', right - topRightOffset);
-  $(bottomLeft).css('top', bottom - bottomLeftOffset);
-  $(bottomRight).css('top', bottom - bottomRightVerticalOffset);
-  $(bottomRight).css('left', right - bottomRightHorizontalOffset);
-
-  var scrollDiv = element.children(':first').children(':first');
-  if ((scrollDiv.length == 1) && !TypeUtility.IsUndefined(scrollDiv[0].nodeName) && (scrollDiv[0].nodeName.toLowerCase() == 'div'))
+  var scrollDiv = element.firstChild.firstChild;
+  if (scrollDiv != null && !TypeUtility.IsUndefined (scrollDiv.tagName) && scrollDiv.tagName.toLowerCase() == 'div')
   {
-    if (scrollDiv[0].scrollHeight > scrollDiv.height())
-      $(topRight).css('display', 'none');
+    if (scrollDiv.scrollHeight > scrollDiv.clientHeight)
+      topRight.style.display = 'none';
     else
-      $(topRight).css('display', '');
+      topRight.style.display = '';
 
-    if (scrollDiv[0].scrollWidth > scrollDiv.width())
-      $(bottomLeft).css('display', 'none');
+    if (scrollDiv.scrollWidth > scrollDiv.clientWidth)
+      bottomLeft.style.display = 'none';
     else
-      $(bottomLeft).css('display', '');
+      bottomLeft.style.display = '';
 
-    if ((scrollDiv[0].scrollHeight > scrollDiv.height() && scrollDiv[0].scrollWidth == scrollDiv.width())
-    || (scrollDiv[0].scrollHeight == scrollDiv.height() && scrollDiv[0].scrollWidth > scrollDiv.width()))
+    if (   (scrollDiv.scrollHeight > scrollDiv.clientHeight && scrollDiv.scrollWidth == scrollDiv.clientWidth) 
+        || (scrollDiv.scrollHeight == scrollDiv.clientHeight && scrollDiv.scrollWidth > scrollDiv.clientWidth))
     {
-      $(bottomRight).css('display', 'none');
+      bottomRight.style.display = 'none';
     }
     else
     {
-      $(bottomRight).css('display', '');
+      bottomRight.style.display = '';
     }
   }
-
 }
 
 StyleUtility.CreateAndAppendBorderSpan = function(elementBody, elementID, className)
 {
-  if (elementBody.nodeType != 1)
-  {
-    elementBody = elementBody.parentNode;
-  }
-
   var borderSpan = document.createElement('SPAN');
   borderSpan.id = elementID + '_' + className;
   borderSpan.className = className;
