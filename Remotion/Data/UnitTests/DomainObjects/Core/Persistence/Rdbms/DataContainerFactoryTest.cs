@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private void SetupOrderTicket (ObjectID ticketID, int timestamp, string fileName, ObjectID relatedOrder, bool checkOrderIDClassIDNotExists)
     {
-      using (_mockRepository.Ordered ())
+      using (_mockRepository.Unordered ())
       {
         Expect.Call (_readerMock.Read()).Return (true);
         Expect.Call (_readerMock.GetOrdinal ("ID")).Return (0);
