@@ -68,11 +68,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void GetMetadataForMixinType_Wrapper ()
     {
       var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
-      var expectedResult = new MixinDefinition[0];
-      importerMock.Expect (mock => mock.GetMetadataForMixinType ((_Type) typeof (object), TargetClassDefinitionCache.Current)).Return (expectedResult);
+      var expectedResult = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
+      importerMock.Expect (mock => mock.GetMetadataForMixinType ((_Type) typeof (object))).Return (expectedResult);
 
       importerMock.Replay ();
-      var result = importerMock.GetMetadataForMixinType (typeof (object), TargetClassDefinitionCache.Current);
+      var result = importerMock.GetMetadataForMixinType (typeof (object));
 
       Assert.That (result, Is.SameAs (expectedResult));
       importerMock.VerifyAllExpectations ();
@@ -116,20 +116,29 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var importer = new AttributeBasedMetadataImporter ();
 
       var typeMock = MockRepository.GenerateMock<_Type> ();
-      var attribute1 = ConcreteMixinTypeAttribute.Create (
-          new ClassContext (typeof (object)), 
-          0, 
-          new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo>(), new HashSet<MethodInfo>()));
-      var attribute2 = ConcreteMixinTypeAttribute.Create (
-          new ClassContext (typeof (string)), 
-          0,
-          new ConcreteMixinTypeIdentifier (typeof (string), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ()));
+      var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo>(), new HashSet<MethodInfo>());
+      var attribute = ConcreteMixinTypeAttribute.Create (new ClassContext (typeof (object)), 0, identifier);
 
-      typeMock.Expect (mock => mock.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false)).Return (new[] { attribute1, attribute2 });
+      typeMock.Expect (mock => mock.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false)).Return (new[] { attribute });
       typeMock.Replay ();
 
-      var results = importer.GetMetadataForMixinType (typeMock, _targetClassDefinitionCacheStub);
-      Assert.That (results.ToArray (), Is.EqualTo (new[] { _targetClassDefinition1.Mixins[0], _targetClassDefinition2.Mixins[0] }));
+      var result = importer.GetMetadataForMixinType (typeMock);
+      Assert.That (result, Is.EqualTo (identifier));
+
+      typeMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void GetMetadataForMixinType_NoAttribute ()
+    {
+      var importer = new AttributeBasedMetadataImporter ();
+
+      var typeMock = MockRepository.GenerateMock<_Type> ();
+      typeMock.Expect (mock => mock.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false)).Return (new ConcreteMixinTypeAttribute[0]);
+      typeMock.Replay ();
+
+      var result = importer.GetMetadataForMixinType (typeMock);
+      Assert.That (result, Is.Null);
 
       typeMock.VerifyAllExpectations ();
     }

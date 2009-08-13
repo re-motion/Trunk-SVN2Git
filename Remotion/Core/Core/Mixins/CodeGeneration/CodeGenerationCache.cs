@@ -20,7 +20,6 @@ using Remotion.Logging;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 using System.Reflection;
-using System.Linq;
 using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.CodeGeneration
@@ -133,18 +132,15 @@ namespace Remotion.Mixins.CodeGeneration
 
     private void ImportConcreteMixinType (IConcreteTypeMetadataImporter metadataImporter, Type type)
     {
-      var mixinDefinitions = metadataImporter.GetMetadataForMixinType (type, TargetClassDefinitionCache.Current).ToArray ();
-      if (mixinDefinitions.Length > 0)
+      var concreteMixinTypeIdentifier = metadataImporter.GetMetadataForMixinType (type);
+      if (concreteMixinTypeIdentifier != null)
       {
         var methodWrappers = metadataImporter.GetMethodWrappersForMixinType (type);
-        foreach (MixinDefinition mixinDefinition in mixinDefinitions)
-        {
-          var concreteMixinType = new ConcreteMixinType (type);
-          foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
-            concreteMixinType.AddMethodWrapper (wrapper.A, wrapper.B);
+        var concreteMixinType = new ConcreteMixinType (type);
+        foreach (Tuple<MethodInfo, MethodInfo> wrapper in methodWrappers)
+          concreteMixinType.AddMethodWrapper (wrapper.A, wrapper.B);
 
-          _mixinTypeCache.GetOrCreateValue (mixinDefinition.GetConcreteMixinTypeIdentifier (), delegate { return concreteMixinType; });
-        }
+        _mixinTypeCache.GetOrCreateValue (concreteMixinTypeIdentifier, delegate { return concreteMixinType; });
       }
     }
   }

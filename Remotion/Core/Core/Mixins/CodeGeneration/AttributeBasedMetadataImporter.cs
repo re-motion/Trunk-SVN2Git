@@ -21,6 +21,7 @@ using Remotion.Collections;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -42,16 +43,15 @@ namespace Remotion.Mixins.CodeGeneration
 
     // CLS-incompliant version for better testing
     [CLSCompliant (false)]
-    public virtual IEnumerable<MixinDefinition> GetMetadataForMixinType (_Type concreteMixinType, ITargetClassDefinitionCache targetClassDefinitionCache)
+    public virtual ConcreteMixinTypeIdentifier GetMetadataForMixinType (_Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
-      ArgumentUtility.CheckNotNull ("targetClassDefinitionCache", targetClassDefinitionCache);
 
-      foreach (ConcreteMixinTypeAttribute typeDescriptor in concreteMixinType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false))
-      {
-        MixinDefinition mixinDefinition = typeDescriptor.GetMixinDefinition (targetClassDefinitionCache);
-        yield return mixinDefinition;
-      }
+      var attribute = concreteMixinType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false).SingleOrDefault ();
+      if (attribute != null)
+        return ((ConcreteMixinTypeAttribute) attribute).GetIdentifier ();
+      else
+        return null;
     }
 
     // CLS-incompliant version for better testing
@@ -69,11 +69,17 @@ namespace Remotion.Mixins.CodeGeneration
 
     private MethodInfo GetWrappedMethod (MethodInfo potentialWrapper)
     {
-      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (potentialWrapper, false);
+      var attribute = GetWrapperAttribute(potentialWrapper);
       if (attribute != null)
         return attribute.ResolveWrappedMethod (potentialWrapper.Module);
       else
         return null;
+    }
+
+    // This is a separate method in order to be able to test it with Rhino.Mocks.
+    protected virtual GeneratedMethodWrapperAttribute GetWrapperAttribute (MethodInfo potentialWrapper)
+    {
+      return AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (potentialWrapper, false);
     }
 
     public IEnumerable<TargetClassDefinition> GetMetadataForMixedType (Type concreteMixedType, ITargetClassDefinitionCache targetClassDefinitionCache)
@@ -84,12 +90,11 @@ namespace Remotion.Mixins.CodeGeneration
       return GetMetadataForMixedType ((_Type) concreteMixedType, targetClassDefinitionCache);
     }
 
-    public IEnumerable<MixinDefinition> GetMetadataForMixinType (Type concreteMixinType, ITargetClassDefinitionCache targetClassDefinitionCache)
+    public ConcreteMixinTypeIdentifier GetMetadataForMixinType (Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
-      ArgumentUtility.CheckNotNull ("targetClassDefinitionCache", targetClassDefinitionCache);
 
-      return (GetMetadataForMixinType ((_Type) concreteMixinType, targetClassDefinitionCache));
+      return (GetMetadataForMixinType ((_Type) concreteMixinType));
     }
 
     public IEnumerable<Tuple<MethodInfo, MethodInfo>> GetMethodWrappersForMixinType(Type concreteMixinType)

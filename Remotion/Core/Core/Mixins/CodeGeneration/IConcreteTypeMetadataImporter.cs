@@ -14,9 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Remotion.Mixins.Definitions;
 using System.Reflection;
 using Remotion.Collections;
@@ -30,8 +28,7 @@ namespace Remotion.Mixins.CodeGeneration
   public interface IConcreteTypeMetadataImporter
   {
     IEnumerable<TargetClassDefinition> GetMetadataForMixedType (Type concreteMixedType, ITargetClassDefinitionCache targetClassDefinitionCache);
-    // Note: Will not return all matching MixinDefinitions, but only the ones that were used when the type was originally created.
-    IEnumerable<MixinDefinition> GetMetadataForMixinType (Type concreteMixinType, ITargetClassDefinitionCache targetClassDefinitionCache);
+    ConcreteMixinTypeIdentifier GetMetadataForMixinType (Type concreteMixinType);
     IEnumerable<Tuple<MethodInfo, MethodInfo>> GetMethodWrappersForMixinType (Type concreteMixinType);
   }
 }
