@@ -125,10 +125,12 @@ namespace Remotion.Mixins.CodeGeneration
 
     private void ImportConcreteMixedType(IConcreteTypeMetadataImporter metadataImporter, Type type)
     {
-      foreach (TargetClassDefinition mixedTypeMetadata in metadataImporter.GetMetadataForMixedType (type, TargetClassDefinitionCache.Current))
-        _typeCache.GetOrCreateValue (mixedTypeMetadata.ConfigurationContext, delegate { return type; });
+      var mixedTypeMetadata = metadataImporter.GetMetadataForMixedType (type);
+      if (mixedTypeMetadata != null)
+      {
+        _typeCache.GetOrCreateValue (mixedTypeMetadata, delegate { return type; });
+      }
     }
-
 
     private void ImportConcreteMixinType (IConcreteTypeMetadataImporter metadataImporter, Type type)
     {

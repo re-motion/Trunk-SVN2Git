@@ -15,7 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Context;
 using System.Reflection;
 using Remotion.Collections;
 
@@ -27,7 +27,7 @@ namespace Remotion.Mixins.CodeGeneration
   /// </summary>
   public interface IConcreteTypeMetadataImporter
   {
-    IEnumerable<TargetClassDefinition> GetMetadataForMixedType (Type concreteMixedType, ITargetClassDefinitionCache targetClassDefinitionCache);
+    ClassContext GetMetadataForMixedType (Type concreteMixedType);
     ConcreteMixinTypeIdentifier GetMetadataForMixinType (Type concreteMixinType);
     IEnumerable<Tuple<MethodInfo, MethodInfo>> GetMethodWrappersForMixinType (Type concreteMixinType);
   }

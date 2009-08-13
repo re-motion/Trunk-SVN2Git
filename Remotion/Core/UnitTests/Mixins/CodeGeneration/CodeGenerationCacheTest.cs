@@ -165,26 +165,23 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void ImportTypes_MixedTypes()
     {
       var targetClassDefinition1 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1));
-      var targetClassDefinition2 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1));
-      var targetClassDefinition3 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType2), typeof (BT1Mixin1));
-      var targetClassDefinition4 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType2), typeof (BT1Mixin1));
+      var targetClassDefinition2 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType2), typeof (BT1Mixin1));
+
+      var classContext1 = targetClassDefinition1.ConfigurationContext;
+      var classContext2 = targetClassDefinition2.ConfigurationContext;
 
       var typesToImport = new[] { typeof (BaseType1), typeof (BaseType2) };
       var metadataImporterStub = MockRepository.GenerateStub<IConcreteTypeMetadataImporter> ();
-      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BaseType1), TargetClassDefinitionCache.Current)).Return (new[] { targetClassDefinition1, targetClassDefinition2 });
-      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BaseType2), TargetClassDefinitionCache.Current)).Return (new[] { targetClassDefinition3, targetClassDefinition4 });
+      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BaseType1))).Return (classContext1);
+      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BaseType2))).Return (classContext2);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BaseType1))).Return (null);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BaseType2))).Return (null);
 
       _cache.ImportTypes (typesToImport, metadataImporterStub);
 
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition1.ConfigurationContext, _nameProvider1, _nameProvider2), 
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, classContext1, _nameProvider1, _nameProvider2), 
           Is.SameAs (typeof (BaseType1)));
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition2.ConfigurationContext, _nameProvider1, _nameProvider2), 
-          Is.SameAs (typeof (BaseType1)));
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition3.ConfigurationContext, _nameProvider1, _nameProvider2), 
-          Is.SameAs (typeof (BaseType2)));
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, targetClassDefinition4.ConfigurationContext, _nameProvider1, _nameProvider2), 
+      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, classContext2, _nameProvider1, _nameProvider2), 
           Is.SameAs (typeof (BaseType2)));
     }
 
@@ -196,8 +193,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       var typesToImport = new[] { typeof (BT1Mixin1), typeof (BT1Mixin2) };
       var metadataImporterStub = MockRepository.GenerateStub<IConcreteTypeMetadataImporter> ();
-      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin1), TargetClassDefinitionCache.Current)).Return (new TargetClassDefinition[0]);
-      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin2), TargetClassDefinitionCache.Current)).Return (new TargetClassDefinition[0]);
+      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin1))).Return (null);
+      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin2))).Return (null);
      
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin1))).Return (identifier1);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin2))).Return (identifier2);
@@ -222,7 +219,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var identifier = new ConcreteMixinTypeIdentifier (typeof (BT1Mixin1), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
 
       var metadataImporterStub = MockRepository.GenerateStub<IConcreteTypeMetadataImporter> ();
-      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin1), TargetClassDefinitionCache.Current)).Return (new TargetClassDefinition[0]);
+      metadataImporterStub.Stub (stub => stub.GetMetadataForMixedType (typeof (BT1Mixin1))).Return (null);
       metadataImporterStub.Stub (stub => stub.GetMetadataForMixinType (typeof (BT1Mixin1))).Return (identifier);
 
       metadataImporterStub.Stub (stub => stub.GetMethodWrappersForMixinType (typeof (BT1Mixin1)))

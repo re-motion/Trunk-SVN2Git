@@ -18,10 +18,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Remotion.Collections;
-using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 using System.Linq;
+using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.CodeGeneration
 {
@@ -29,16 +29,16 @@ namespace Remotion.Mixins.CodeGeneration
   {
     // CLS-incompliant version for better testing
     [CLSCompliant (false)]
-    public virtual IEnumerable<TargetClassDefinition> GetMetadataForMixedType (_Type concreteMixedType, ITargetClassDefinitionCache targetClassDefinitionCache)
+    public virtual ClassContext GetMetadataForMixedType (_Type concreteMixedType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixedType", concreteMixedType);
-      ArgumentUtility.CheckNotNull ("targetClassDefinitionCache", targetClassDefinitionCache);
 
-      foreach (ConcreteMixedTypeAttribute typeDescriptor in concreteMixedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false))
-      {
-        TargetClassDefinition targetClassDefinition = typeDescriptor.GetTargetClassDefinition (targetClassDefinitionCache);
-        yield return targetClassDefinition;
-      }
+      var attribute = 
+          (ConcreteMixedTypeAttribute) concreteMixedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false).SingleOrDefault ();
+      if (attribute != null)
+        return attribute.GetClassContext ();
+      else
+        return null;
     }
 
     // CLS-incompliant version for better testing
@@ -47,9 +47,10 @@ namespace Remotion.Mixins.CodeGeneration
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
 
-      var attribute = concreteMixinType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false).SingleOrDefault ();
+      var attribute = 
+          (ConcreteMixinTypeAttribute) concreteMixinType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false).SingleOrDefault ();
       if (attribute != null)
-        return ((ConcreteMixinTypeAttribute) attribute).GetIdentifier ();
+        return attribute.GetIdentifier ();
       else
         return null;
     }
@@ -82,12 +83,11 @@ namespace Remotion.Mixins.CodeGeneration
       return AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (potentialWrapper, false);
     }
 
-    public IEnumerable<TargetClassDefinition> GetMetadataForMixedType (Type concreteMixedType, ITargetClassDefinitionCache targetClassDefinitionCache)
+    public ClassContext GetMetadataForMixedType (Type concreteMixedType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixedType", concreteMixedType);
-      ArgumentUtility.CheckNotNull ("targetClassDefinitionCache", targetClassDefinitionCache);
 
-      return GetMetadataForMixedType ((_Type) concreteMixedType, targetClassDefinitionCache);
+      return GetMetadataForMixedType ((_Type) concreteMixedType);
     }
 
     public ConcreteMixinTypeIdentifier GetMetadataForMixinType (Type concreteMixinType)
