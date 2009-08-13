@@ -93,11 +93,5 @@ namespace Remotion.Mixins.CodeGeneration
       var deserializer = new AttributeClassContextDeserializer (ClassContextData);
       return ClassContext.Deserialize (deserializer);
     }
-
-    // TODO 1511: Delete
-    public virtual TargetClassDefinition GetTargetClassDefinition (ITargetClassDefinitionCache targetClassDefinitionCache)
-    {
-      return targetClassDefinitionCache.GetTargetClassDefinition (GetClassContext ());
-    }
   }
 }

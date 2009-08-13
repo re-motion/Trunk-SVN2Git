@@ -136,15 +136,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     }
 
     [Test]
-    public void MixedTypeAttribute_GetsTargetClassDefinition ()
-    {
-      Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
-      var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
-      TargetClassDefinition definition = attributes[0].GetTargetClassDefinition (TargetClassDefinitionCache.Current);
-      Assert.AreSame (definition, TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)));
-    }
-
-    [Test]
     public void MixedTypeAttribute_GetsOrderedMixinTypes ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType7));
