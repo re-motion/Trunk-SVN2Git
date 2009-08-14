@@ -290,9 +290,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       using (SetupMixinConfigurationForLoadedType (typeof (LoadableConcreteMixedTypeForClassOverridingMixinMembers)).EnterScope())
       {
-        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
-            typeof (ClassOverridingMixinMembers), 
-            GenerationPolicy.GenerateOnlyIfConfigured);
+        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
         var concreteMixinIdentifier = 
             TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier();
 
@@ -311,9 +309,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       using (MixinConfiguration.BuildNew ().ForClass<ClassOverridingMixinMembers> ().AddMixin<MixinWithAbstractMembers> ().EnterScope ())
       {
-        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
-            typeof (ClassOverridingMixinMembers),
-            GenerationPolicy.GenerateOnlyIfConfigured);
+        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
         var concreteMixinIdentifier =
             TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier ();
 
@@ -358,9 +354,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           MixinConfiguration.BuildFromActive().ForClass<ClassOverridingSingleMixinMethod>().Clear().AddMixins (typeof (MixinWithOverridableMember)).
               EnterScope())
       {
-        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
-            typeof (ClassOverridingSingleMixinMethod), 
-            GenerationPolicy.GenerateOnlyIfConfigured);
+        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingSingleMixinMethod));
         var concreteMixinIdentifier = 
             TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier();
 
@@ -383,9 +377,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget>().Clear().AddMixins (typeof (MixinWithOverridableMember)).EnterScope())
       {
-        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
-            typeof (NullTarget),
-            GenerationPolicy.GenerateOnlyIfConfigured);
+        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (NullTarget));
         var concreteMixinIdentifier =
             TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier ();
         ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, concreteMixinIdentifier);
@@ -518,7 +510,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       typeGeneratorMock.Expect (mock => mock.GetBuiltType()).Return (typeof (string));
       typeGeneratorMock.Replay();
 
-      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1), GenerationPolicy.GenerateOnlyIfConfigured);
+      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1));
       builder.GetConcreteType (classContext);
       moduleManagerMock.VerifyAllExpectations();
     }

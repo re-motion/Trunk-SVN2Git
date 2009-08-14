@@ -155,9 +155,7 @@ namespace Remotion.UnitTests.Mixins
 
     public static TargetClassDefinition GetActiveTargetClassDefinition (Type type)
     {
-      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (
-          type,
-          GenerationPolicy.GenerateOnlyIfConfigured);
+      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (type);
 
       Assert.That (classContext, Is.Not.Null, "The given type '" + type.Name + "' must be configured as a mixin target.");
       return TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);

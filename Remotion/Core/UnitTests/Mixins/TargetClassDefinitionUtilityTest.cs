@@ -29,8 +29,7 @@ namespace Remotion.UnitTests.Mixins
     {
       Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.False);
 
-      var context = MixinConfiguration.ActiveConfiguration.GetContext (
-          typeof (object), GenerationPolicy.GenerateOnlyIfConfigured);
+      var context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (object));
       Assert.That (context, Is.Null);
     }
 
@@ -39,8 +38,7 @@ namespace Remotion.UnitTests.Mixins
     {
       Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.False);
 
-      var context = MixinConfiguration.ActiveConfiguration.GetContext (
-          typeof (object), GenerationPolicy.ForceGeneration);
+      var context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (object), GenerationPolicy.ForceGeneration);
       Assert.That (context, Is.Not.Null);
       Assert.That (context.Type, Is.SameAs (typeof (object)));
     }
@@ -48,13 +46,10 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void GetContext_NoNewContext_GeneratedForGeneratedType ()
     {
-      var expectedContext = MixinConfiguration.ActiveConfiguration.GetContext (
-          typeof (BaseType1),
-          GenerationPolicy.GenerateOnlyIfConfigured);
+      var expectedContext = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1));
 
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType1));
-      var actualContext = MixinConfiguration.ActiveConfiguration.GetContext (
-          generatedType, GenerationPolicy.GenerateOnlyIfConfigured);
+      var actualContext = MixinConfiguration.ActiveConfiguration.GetContext (generatedType);
       Assert.That (actualContext, Is.EqualTo (expectedContext));
     }
 
@@ -62,8 +57,7 @@ namespace Remotion.UnitTests.Mixins
     public void GetContext_NewContext_GeneratedForGeneratedType_Force ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType1));
-      var newContext = MixinConfiguration.ActiveConfiguration.GetContext (
-          generatedType, GenerationPolicy.ForceGeneration);
+      var newContext = MixinConfiguration.ActiveConfiguration.GetContext (generatedType, GenerationPolicy.ForceGeneration);
       var baseContext = MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (BaseType1));
 
       Assert.That (newContext, Is.Not.EqualTo (baseContext));
@@ -74,10 +68,8 @@ namespace Remotion.UnitTests.Mixins
     public void GetContext_ForcedGeneration_IsNotPersistent ()
     {
       Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.False);
-      var context1 = MixinConfiguration.ActiveConfiguration.GetContext (
-          typeof (object), GenerationPolicy.ForceGeneration);
-      var context2 = MixinConfiguration.ActiveConfiguration.GetContext (
-          typeof (object), GenerationPolicy.GenerateOnlyIfConfigured);
+      var context1 = MixinConfiguration.ActiveConfiguration.GetContext (typeof (object), GenerationPolicy.ForceGeneration);
+      var context2 = MixinConfiguration.ActiveConfiguration.GetContext (typeof (object));
 
       Assert.That (context1, Is.Not.Null);
       Assert.That (context2, Is.Null);

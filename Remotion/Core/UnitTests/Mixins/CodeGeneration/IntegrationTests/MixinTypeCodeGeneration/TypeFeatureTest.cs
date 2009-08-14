@@ -48,9 +48,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void MixinTypeAttribute_CanBeUsedToGetIdentifier ()
     {
-      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
-          typeof (ClassOverridingMixinMembers),
-          GenerationPolicy.GenerateOnlyIfConfigured);
+      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
 
       MixinDefinition mixinDefinition = 
           TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
@@ -74,9 +72,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       builder.MixinTypeNameProvider = nameProviderMock;
       ConcreteTypeBuilder.SetCurrent (builder);
 
-      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
-          typeof (ClassOverridingMixinMembers),
-          GenerationPolicy.GenerateOnlyIfConfigured);
+      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
 
       MixinDefinition mixinDefinition =
           TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
@@ -149,9 +145,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void IdentifierMember_HoldsIdentifier ()
     {
-      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
-          typeof (ClassOverridingMixinMembers),
-          GenerationPolicy.GenerateOnlyIfConfigured);
+      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
 
       MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.That (mixinDefinition, Is.Not.Null);
@@ -165,9 +159,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void ClassContextMember_HoldsRequestingClass ()
     {
-      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
-          typeof (ClassOverridingMixinMembers),
-          GenerationPolicy.GenerateOnlyIfConfigured);
+      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
 
       MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.That (mixinDefinition, Is.Not.Null);
@@ -191,9 +183,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
     private Type GetGeneratedType (Type targetType, Type mixinType)
     {
-      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
-          targetType,
-          GenerationPolicy.GenerateOnlyIfConfigured);
+      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (targetType);
 
       MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[mixinType];
       Assert.That (mixinDefinition, Is.Not.Null);

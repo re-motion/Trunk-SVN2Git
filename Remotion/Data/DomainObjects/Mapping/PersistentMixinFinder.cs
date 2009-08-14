@@ -46,13 +46,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("type", type);
       Type = type;
       _includeInherited = includeInherited;
-      _mixinConfiguration = Mixins.MixinConfiguration.ActiveConfiguration.GetContext (Type, 
-          GenerationPolicy.GenerateOnlyIfConfigured);
+      _mixinConfiguration = Mixins.MixinConfiguration.ActiveConfiguration.GetContext (Type);
       if (MixinConfiguration != null)
       {
         if (Type.BaseType != null)
         {
-          _parentClassContext = Mixins.MixinConfiguration.ActiveConfiguration.GetContext (Type.BaseType, GenerationPolicy.GenerateOnlyIfConfigured);
+          _parentClassContext = Mixins.MixinConfiguration.ActiveConfiguration.GetContext (Type.BaseType);
         }
         if (IncludeInherited)
           _allParentClassContexts = GetParentClassContexts();
@@ -65,8 +64,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       ClassContext current = MixinConfiguration;
       while (current != null && current.Type.BaseType != null)
       {
-        ClassContext parent = Mixins.MixinConfiguration.ActiveConfiguration.GetContext (current.Type.BaseType, 
-            GenerationPolicy.GenerateOnlyIfConfigured);
+        ClassContext parent = Mixins.MixinConfiguration.ActiveConfiguration.GetContext (current.Type.BaseType);
         if (parent != null)
           parentClassContexts.Add (parent);
         current = parent;

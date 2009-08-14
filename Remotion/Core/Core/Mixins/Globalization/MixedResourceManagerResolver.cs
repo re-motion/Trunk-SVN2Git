@@ -35,7 +35,7 @@ namespace Remotion.Mixins.Globalization
     {
       return Tuple.NewTuple (
           base.GetResourceManagerSetCacheKey (definingType, includeHierarchy),
-          MixinConfiguration.ActiveConfiguration.GetContext (definingType, GenerationPolicy.GenerateOnlyIfConfigured));
+          MixinConfiguration.ActiveConfiguration.GetContext (definingType));
     }
 
     protected override ResourceDefinition<TAttribute> GetResourceDefinition (Type type, Type currentType)
@@ -51,9 +51,7 @@ namespace Remotion.Mixins.Globalization
 
     private void AddSupplementingAttributesFromMixins (Type type, ResourceDefinition<TAttribute> resourcesOnType)
     {
-      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (
-          type, 
-          GenerationPolicy.GenerateOnlyIfConfigured);
+      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (type);
       if (classContext != null)
       {
         foreach (var mixinType in MixinTypeUtility.GetMixinTypesExact (type))
