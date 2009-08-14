@@ -48,39 +48,35 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
     [SetUp]
     public void SetUp ()
     {
-      using (MixinConfiguration.BuildNew ()
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (IndependentMixin1))
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (IndependentMixin2))
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (MixinOverridingM1))
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (MixinOverridingM2))
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (MixinOverridingM1M2))
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (MixinImplementingBaseCallDependency1))
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (MixinWithBaseCallDependency1))
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (MixinWithBaseCallDependency2OverridingM1))
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (MixinImplementingAdditionalDependency))
-          .ForClass (typeof (TargetClass)).AddMixin (typeof (MixinWithAdditionalDependency)).WithDependency (typeof (MixinImplementingAdditionalDependency))
-          .EnterScope ())
-      {
-        _independent1 = GetMixin(typeof (IndependentMixin1));
-        _independent2 = GetMixin (typeof (IndependentMixin2));
+      var classContext = MixinConfiguration.BuildNew ()
+          .ForClass (typeof (TargetClass))
+          .AddMixin (typeof (IndependentMixin1))
+          .AddMixin (typeof (IndependentMixin2))
+          .AddMixin (typeof (MixinOverridingM1))
+          .AddMixin (typeof (MixinOverridingM2))
+          .AddMixin (typeof (MixinOverridingM1M2))
+          .AddMixin (typeof (MixinImplementingBaseCallDependency1))
+          .AddMixin (typeof (MixinWithBaseCallDependency1))
+          .AddMixin (typeof (MixinWithBaseCallDependency2OverridingM1))
+          .AddMixin (typeof (MixinImplementingAdditionalDependency))
+          .AddMixin (typeof (MixinWithAdditionalDependency)).WithDependency (typeof (MixinImplementingAdditionalDependency))
+          .BuildClassContext();
 
-        _overrideM1 = GetMixin (typeof (MixinOverridingM1));
-        _overrideM2 = GetMixin (typeof (MixinOverridingM2));
-        _overrideM1M2 = GetMixin (typeof (MixinOverridingM1M2));
+      var targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+      _independent1 = targetClassDefinition.Mixins[typeof (IndependentMixin1)];
+      _independent2 = targetClassDefinition.Mixins[typeof (IndependentMixin2)];
 
-        _baseCallDependency0 = GetMixin (typeof (MixinImplementingBaseCallDependency1));
-        _baseCallDependency1 = GetMixin (typeof (MixinWithBaseCallDependency1));
-        _baseCallDependency2OverrideM1 = GetMixin (typeof (MixinWithBaseCallDependency2OverridingM1));
-        _additionalDependency0 = GetMixin (typeof (MixinImplementingAdditionalDependency));
-        _additionalDependency1 = GetMixin (typeof (MixinWithAdditionalDependency));
-      }
+      _overrideM1 = targetClassDefinition.Mixins[typeof (MixinOverridingM1)];
+      _overrideM2 = targetClassDefinition.Mixins[typeof (MixinOverridingM2)];
+      _overrideM1M2 = targetClassDefinition.Mixins[typeof (MixinOverridingM1M2)];
+
+      _baseCallDependency0 = targetClassDefinition.Mixins[typeof (MixinImplementingBaseCallDependency1)];
+      _baseCallDependency1 = targetClassDefinition.Mixins[typeof (MixinWithBaseCallDependency1)];
+      _baseCallDependency2OverrideM1 = targetClassDefinition.Mixins[typeof (MixinWithBaseCallDependency2OverridingM1)];
+      _additionalDependency0 = targetClassDefinition.Mixins[typeof (MixinImplementingAdditionalDependency)];
+      _additionalDependency1 = targetClassDefinition.Mixins[typeof (MixinWithAdditionalDependency)];
 
       _grouper = new DependentMixinGrouper();
-    }
-
-    private MixinDefinition GetMixin (Type mixinType)
-    {
-      return TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClass)).Mixins[mixinType];
     }
 
     [Test]

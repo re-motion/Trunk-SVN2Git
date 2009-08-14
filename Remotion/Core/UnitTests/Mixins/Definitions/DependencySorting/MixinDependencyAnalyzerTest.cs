@@ -43,48 +43,49 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
     public void SetUp ()
     {
       _analyzer = new MixinDependencyAnalyzer ();
-      using (MixinConfiguration.BuildNew().ForClass (typeof (NullTarget))
+      var classContext = MixinConfiguration.BuildNew ()
+          .ForClass (typeof (NullTarget))
           .AddMixin (typeof (NullMixin))
           .AddMixin (typeof (NullMixin2))
           .AddMixin (typeof (NullMixin3)).WithDependency (typeof (NullMixin2))
           .AddMixin (typeof (NullMixin4)).WithDependency (typeof (NullMixin3))
           .AddMixin (typeof (MixinAcceptingAlphabeticOrdering1))
           .AddMixin (typeof (MixinAcceptingAlphabeticOrdering2))
-          .EnterScope())
-      {
-        _independent1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin)];
-        _independent2 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin2)];
-        _dependentSecond = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin3)];
-        _dependentThird = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin4)];
-        _alphabeticAccepter = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinAcceptingAlphabeticOrdering1)];
-        _alphabeticAccepter2 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (MixinAcceptingAlphabeticOrdering2)];
-      }
+          .BuildClassContext();
+
+      var targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+      _independent1 = targetClassDefinition.Mixins[typeof (NullMixin)];
+      _independent2 = targetClassDefinition.Mixins[typeof (NullMixin2)];
+      _dependentSecond = targetClassDefinition.Mixins[typeof (NullMixin3)];
+      _dependentThird = targetClassDefinition.Mixins[typeof (NullMixin4)];
+      _alphabeticAccepter = targetClassDefinition.Mixins[typeof (MixinAcceptingAlphabeticOrdering1)];
+      _alphabeticAccepter2 = targetClassDefinition.Mixins[typeof (MixinAcceptingAlphabeticOrdering2)];
     }
 
     [Test]
     public void AnalyzeDirectDependency_Independent ()
     {
-      Assert.AreEqual (DependencyKind.None, _analyzer.AnalyzeDirectDependency (_independent1, _independent1));
+      Assert.That (_analyzer.AnalyzeDirectDependency (_independent1, _independent1), Is.EqualTo (DependencyKind.None));
     }
 
     [Test]
     public void AnalyzeDirectDependency_DirectDependent_SecondOnFirst ()
     {
-      Assert.AreEqual (DependencyKind.SecondOnFirst, _analyzer.AnalyzeDirectDependency (_independent2, _dependentSecond));
-      Assert.AreEqual (DependencyKind.SecondOnFirst, _analyzer.AnalyzeDirectDependency (_dependentSecond, _dependentThird));
+      Assert.That (_analyzer.AnalyzeDirectDependency (_independent2, _dependentSecond), Is.EqualTo (DependencyKind.SecondOnFirst));
+      Assert.That (_analyzer.AnalyzeDirectDependency (_dependentSecond, _dependentThird), Is.EqualTo (DependencyKind.SecondOnFirst));
     }
 
     [Test]
     public void AnalyzeDirectDependency_DirectDependent_FirstOnSecond ()
     {
-      Assert.AreEqual (DependencyKind.FirstOnSecond, _analyzer.AnalyzeDirectDependency (_dependentSecond, _independent2));
-      Assert.AreEqual (DependencyKind.FirstOnSecond, _analyzer.AnalyzeDirectDependency (_dependentThird, _dependentSecond));
+      Assert.That (_analyzer.AnalyzeDirectDependency (_dependentSecond, _independent2), Is.EqualTo (DependencyKind.FirstOnSecond));
+      Assert.That (_analyzer.AnalyzeDirectDependency (_dependentThird, _dependentSecond), Is.EqualTo (DependencyKind.FirstOnSecond));
     }
 
     [Test]
     public void AnalyzeDirectDependency_IndirectDependent ()
     {
-      Assert.AreEqual (DependencyKind.None, _analyzer.AnalyzeDirectDependency (_independent2, _dependentThird));
+      Assert.That (_analyzer.AnalyzeDirectDependency (_independent2, _dependentThird), Is.EqualTo (DependencyKind.None));
     }
 
     [Test]
@@ -95,33 +96,33 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
         + "AcceptsAlphabeticOrderingAttribute, or adjust the mixin configuration accordingly.")]
     public void ResolveEqualRoots_Throws ()
     {
-      _analyzer.ResolveEqualRoots (new MixinDefinition[] { _independent1, _independent2, _dependentThird });
+      _analyzer.ResolveEqualRoots (new[] { _independent1, _independent2, _dependentThird });
     }
 
     [Test]
     public void ResolveEqualRoots_WithEnabledAlphabeticOrdering ()
     {
-      Assert.AreSame (_alphabeticAccepter, _analyzer.ResolveEqualRoots (new MixinDefinition[] { _independent1, _alphabeticAccepter }));
+      Assert.That (_analyzer.ResolveEqualRoots (new[] { _independent1, _alphabeticAccepter }), Is.SameAs (_alphabeticAccepter));
     }
 
     [Test]
     public void ResolveEqualRoots_WithEnabledAlphabeticOrdering_TwoAccepters ()
     {
-      Assert.AreSame (_alphabeticAccepter, 
-          _analyzer.ResolveEqualRoots (new MixinDefinition[] {_independent1, _alphabeticAccepter, _alphabeticAccepter2}));
+      Assert.That (
+                  _analyzer.ResolveEqualRoots (new[] { _independent1, _alphabeticAccepter, _alphabeticAccepter2 }), Is.SameAs (_alphabeticAccepter));
     }
 
     [Test]
     public void ResolveEqualRoots_WithEnabledAlphabeticOrdering_TwoAccepters_OtherOrder ()
     {
-      Assert.AreSame (_alphabeticAccepter,
-          _analyzer.ResolveEqualRoots (new MixinDefinition[] { _independent1, _alphabeticAccepter2, _alphabeticAccepter }));
+      Assert.That (
+                  _analyzer.ResolveEqualRoots (new[] { _independent1, _alphabeticAccepter2, _alphabeticAccepter }), Is.SameAs (_alphabeticAccepter));
     }
 
     [Test]
     public void SortAlphabetically ()
     {
-      List<Tuple<string, MixinDefinition>> mixinsByTypeName = new List<Tuple<string, MixinDefinition>>();
+      var mixinsByTypeName = new List<Tuple<string, MixinDefinition>>();
       Tuple<string, MixinDefinition> zebra = Tuple.NewTuple ("Zebra", _independent1);
       Tuple<string, MixinDefinition> bravo = Tuple.NewTuple ("Bravo", _independent1);
       Tuple<string, MixinDefinition> charlie = Tuple.NewTuple ("Charlie", _independent1);
@@ -147,7 +148,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
       {
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo ("de-de");
 
-        List<Tuple<string, MixinDefinition>> mixinsByTypeName = new List<Tuple<string, MixinDefinition>> ();
+        var mixinsByTypeName = new List<Tuple<string, MixinDefinition>> ();
         Tuple<string, MixinDefinition> a = Tuple.NewTuple ("A", _independent1);
         Tuple<string, MixinDefinition> ae = Tuple.NewTuple ("Ä", _independent1);
         Tuple<string, MixinDefinition> b = Tuple.NewTuple ("B", _independent1);
@@ -174,7 +175,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
        + "AcceptsAlphabeticOrderingAttribute, or adjust the mixin configuration accordingly.")]
     public void ResolveEqualRoots_WithEnabledAlphabeticOrdering_TwoNonAccepters ()
     {
-      _analyzer.ResolveEqualRoots (new MixinDefinition[] { _independent1, _independent2, _alphabeticAccepter });
+      _analyzer.ResolveEqualRoots (new[] { _independent1, _independent2, _alphabeticAccepter });
       Assert.Fail();
     }
   }
