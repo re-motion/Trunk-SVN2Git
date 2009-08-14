@@ -45,6 +45,12 @@ namespace Remotion.UnitTests.Mixins
       return mixinDefinition;
     }
 
+    public static MixinDefinition CreateMixinDefinition (Type mixinType)
+    {
+      var targetClassDefinition = CreateTargetClassDefinition (typeof (NullTarget));
+      return CreateMixinDefinition (targetClassDefinition, mixinType);
+    }
+
     public static MixinDependencyDefinition CreateMixinDependencyDefinition(MixinDefinition definition)
     {
       var mixinDependency = new MixinDependencyDefinition (new RequiredMixinTypeDefinition (definition.TargetClass, typeof (IBaseType2)), definition, null);
