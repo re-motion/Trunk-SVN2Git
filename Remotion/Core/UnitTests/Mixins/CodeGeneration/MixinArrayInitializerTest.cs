@@ -97,8 +97,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       {
         var mixinInfos = new[] { new MixinArrayInitializer.ExpectedMixinInfo (typeof (MixinWithVirtualMethod), true) };
 
-        var targetClassDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingSpecificMixinMember));
-        var initializer = new MixinArrayInitializer (typeof (ClassOverridingSpecificMixinMember), mixinInfos, targetClassDefinition);
+        var classContext = TargetClassDefinitionUtility.GetContext (
+            typeof (ClassOverridingSpecificMixinMember), 
+            MixinConfiguration.ActiveConfiguration, 
+            GenerationPolicy.GenerateOnlyIfConfigured);
+        var initializer = new MixinArrayInitializer (typeof (ClassOverridingSpecificMixinMember), mixinInfos, classContext);
 
         var concreteMixinType = GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
         var mixin1 = Activator.CreateInstance (concreteMixinType);
@@ -141,8 +144,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           .ForClass<NullTarget> ().AddMixin<NullMixin> ()
           .ForClass<NullMixin> ().AddMixin<NullMixin2> ().EnterScope ())
       {
-        var targetClassDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
-        var initializer = new MixinArrayInitializer (typeof (NullTarget), mixinInfos, targetClassDefinition);
+        var classContext = TargetClassDefinitionUtility.GetContext (
+            typeof (NullTarget),
+            MixinConfiguration.ActiveConfiguration,
+            GenerationPolicy.GenerateOnlyIfConfigured);
+        var initializer = new MixinArrayInitializer (typeof (NullTarget), mixinInfos, classContext);
 
         var mixinArray = initializer.CreateMixinArray (null);
 
@@ -276,8 +282,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       {
         var mixinInfos = new[] { new MixinArrayInitializer.ExpectedMixinInfo (typeof (MixinWithVirtualMethod), true) };
 
-        var targetClassDefinition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingSpecificMixinMember));
-        var initializer = new MixinArrayInitializer (typeof (ClassOverridingSpecificMixinMember), mixinInfos, targetClassDefinition);
+        var classContext = TargetClassDefinitionUtility.GetContext (
+                    typeof (ClassOverridingSpecificMixinMember),
+                    MixinConfiguration.ActiveConfiguration,
+                    GenerationPolicy.GenerateOnlyIfConfigured);
+        var initializer = new MixinArrayInitializer (typeof (ClassOverridingSpecificMixinMember), mixinInfos, classContext);
 
         var concreteMixinType = GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
         var mixin1 = Activator.CreateInstance (concreteMixinType);
@@ -294,8 +303,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       foreach (var mixinInfo in mixinInfos)
         mixinConfigurationBuilder.ForClass (targetType).AddMixin (mixinInfo.ExpectedMixinType);
 
-      var targetClassDefinition = TargetClassDefinitionUtility.GetConfiguration (targetType, mixinConfigurationBuilder.BuildConfiguration());
-      return new MixinArrayInitializer (targetType, mixinInfos, targetClassDefinition);
+      using (mixinConfigurationBuilder.EnterScope ())
+      {
+        var classContext = TargetClassDefinitionUtility.GetContext (
+            targetType,
+            MixinConfiguration.ActiveConfiguration,
+            GenerationPolicy.GenerateOnlyIfConfigured);
+        return new MixinArrayInitializer (targetType, mixinInfos, classContext);
+      }
     }
 
     private Type GetGeneratedMixinType (Type targetType, Type mixinType)

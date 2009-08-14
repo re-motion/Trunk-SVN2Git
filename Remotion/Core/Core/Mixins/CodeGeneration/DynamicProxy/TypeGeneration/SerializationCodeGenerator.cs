@@ -15,9 +15,7 @@
 // 
 using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
-using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
@@ -26,21 +24,20 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
   {
     private static readonly MethodInfo s_getObjectDataMethod = typeof (SerializationHelper).GetMethod ("GetObjectDataForGeneratedTypes");
 
-    private readonly FieldReference _configurationField;
+    private readonly FieldReference _classContextField;
     private readonly FieldReference _extensionsField;
 
-    public SerializationCodeGenerator (FieldReference configurationField, FieldReference extensionsField)
+    public SerializationCodeGenerator (FieldReference classContextField, FieldReference extensionsField)
     {
-      ArgumentUtility.CheckNotNull ("configurationField", configurationField);
+      ArgumentUtility.CheckNotNull ("classContextField", classContextField);
       ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
 
-      _configurationField = configurationField;
+      _classContextField = classContextField;
       _extensionsField = extensionsField;
     }
 
     public void ImplementISerializable (IClassEmitter emitter)
     {
-      var contextReference = new PropertyReference (_configurationField, typeof (TargetClassDefinition).GetProperty ("ConfigurationContext"));
       SerializationImplementer.ImplementGetObjectDataByDelegation (
           emitter,
           (newMethod, baseIsISerializable) => new MethodInvocationExpression (
@@ -49,7 +46,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
                                                   newMethod.ArgumentReferences[0].ToExpression (),
                                                   newMethod.ArgumentReferences[1].ToExpression (),
                                                   SelfReference.Self.ToExpression (),
-                                                  contextReference.ToExpression(),
+                                                  _classContextField.ToExpression(),
                                                   _extensionsField.ToExpression (),
                                                   new ConstReference (!baseIsISerializable).ToExpression()));
 

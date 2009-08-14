@@ -23,6 +23,7 @@ using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Collections;
 using Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
@@ -49,7 +50,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private readonly InitializationCodeGenerator _initializationCodeGenerator;
 
-    private readonly FieldReference _configurationField;
+    private readonly FieldReference _classContextField;
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
     private readonly FieldReference _mixinArrayInitializerField;
@@ -79,8 +80,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _emitter = _module.CreateClassEmitter (typeName, configuration.Type, interfaces.ToArray (), flags, forceUnsigned);
 
-      _configurationField = _emitter.CreateStaticField ("__configuration", typeof (TargetClassDefinition), FieldAttributes.Private);
-      _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_configurationField);
+      _classContextField = _emitter.CreateStaticField ("__classContext", typeof (ClassContext), FieldAttributes.Private);
+      _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_classContextField);
 
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_extensionsField);
@@ -93,7 +94,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _mixinArrayInitializerField = _emitter.CreateStaticField ("__mixinArrayInitializer", typeof (MixinArrayInitializer), FieldAttributes.Private);
 
-      _initializationCodeGenerator = new InitializationCodeGenerator (configuration, _extensionsField, _firstField, _configurationField, _baseCallGenerator.Ctor);
+      _initializationCodeGenerator = new InitializationCodeGenerator (configuration, _extensionsField, _firstField, _classContextField, _baseCallGenerator.Ctor);
        _initializationCodeGenerator.ImplementIInitializableMixinTarget (Emitter, _mixinArrayInitializerField);
 
        AddTypeInitializer ();
@@ -189,27 +190,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddTypeInitializer ()
     {
-      ConstructorEmitter emitter = _emitter.CreateTypeConstructor ();
-
-      var classContextSerializer = new CodeGenerationClassContextSerializer (emitter.CodeBuilder);
-      Configuration.ConfigurationContext.Serialize (classContextSerializer);
-      var classContextExpression = classContextSerializer.GetConstructorInvocationExpression ();
-
-      var currentCacheProperty = typeof (TargetClassDefinitionCache).BaseType.GetProperty ("Current");
-      Assertion.IsNotNull (currentCacheProperty);
-      var currentCachePropertyReference = new PropertyReference (null, currentCacheProperty);
-
-      MethodInfo getTargetClassDefinitionMethod = typeof (TargetClassDefinitionCache).GetMethod ("GetTargetClassDefinition");
-
-      emitter.CodeBuilder.AddStatement (new AssignStatement (_configurationField,
-          new VirtualMethodInvocationExpression (currentCachePropertyReference, getTargetClassDefinitionMethod, classContextExpression)));
-
-      var assignMixinArrayInitializerStatement = _initializationCodeGenerator.GetAssignMixinArrayInitializerStatement (
-          emitter.CodeBuilder.DeclareLocal (typeof (MixinArrayInitializer.ExpectedMixinInfo[])), 
-          _mixinArrayInitializerField);
-      emitter.CodeBuilder.AddStatement (assignMixinArrayInitializerStatement);
-
-      emitter.CodeBuilder.AddStatement (new ReturnStatement ());
+      var codeGenerator = new TypeInitializerCodeGenerator (
+          Configuration.ConfigurationContext, 
+          _classContextField, 
+          _mixinArrayInitializerField, 
+          _initializationCodeGenerator);
+      codeGenerator.ImplementTypeInitializer (Emitter);
     }
 
     internal static LocalReference GetFirstAttributeLocal (ConstructorEmitter emitter, Type attributeType)
@@ -225,41 +211,19 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void ImplementISerializable ()
     {
-      var codeGenerator = new SerializationCodeGenerator (_configurationField, _extensionsField);
+      var codeGenerator = new SerializationCodeGenerator (_classContextField, _extensionsField);
       codeGenerator.ImplementISerializable (Emitter);
     }
 
     private void ImplementIMixinTarget ()
     {
-      CustomPropertyEmitter configurationProperty =
-          Emitter.CreateInterfacePropertyImplementation (typeof (IMixinTarget).GetProperty ("Configuration"));
-      configurationProperty.GetMethod =
-          Emitter.CreateInterfaceMethodImplementation (typeof (IMixinTarget).GetMethod ("get_Configuration"));
-      configurationProperty.ImplementWithBackingField (_configurationField);
-      _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (
-          configurationProperty, 
-          "Target class configuration for " + _configuration.Type.Name, 
-          "Configuration");
-
-      CustomPropertyEmitter mixinsProperty =
-          Emitter.CreateInterfacePropertyImplementation (typeof (IMixinTarget).GetProperty ("Mixins"));
-      mixinsProperty.GetMethod =
-          Emitter.CreateInterfaceMethodImplementation (typeof (IMixinTarget).GetMethod ("get_Mixins"));
-      mixinsProperty.ImplementWithBackingField (_extensionsField);
-      _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (
-          mixinsProperty,
-          "Count = {__extensions.Length}", 
-          "Mixins");
-
-      CustomPropertyEmitter firstProperty =
-          Emitter.CreateInterfacePropertyImplementation (typeof (IMixinTarget).GetProperty ("FirstBaseCallProxy"));
-      firstProperty.GetMethod =
-          Emitter.CreateInterfaceMethodImplementation (typeof (IMixinTarget).GetMethod ("get_FirstBaseCallProxy"));
-      firstProperty.ImplementWithBackingField (_firstField);
-      _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (
-          firstProperty, 
-          "Generated proxy", 
-          "FirstBaseCallProxy");
+      var codeGenerator = new MixinTargetCodeGenerator (
+          Configuration.Type.Name, 
+          _classContextField, 
+          _extensionsField, 
+          _firstField, 
+          _debuggerDisplayAttributeGenerator);
+      codeGenerator.ImplementIMixinTarget (Emitter);
     }
 
     private void ImplementIntroducedInterfaces ()
@@ -488,11 +452,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       if (!Configuration.ReceivedAttributes.ContainsKey (typeof (DebuggerDisplayAttribute)))
       {
-        string debuggerString = "Mix of " + _configuration.Type.FullName + " + " 
-            + SeparatedStringBuilder.Build (" + ", _configuration.Mixins, m => m.FullName);
-        _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (
-            Emitter,
-            debuggerString);
+        string debuggerString = string.Format (
+            "Mix of {0} + {1}", 
+            _configuration.Type.FullName, 
+            SeparatedStringBuilder.Build (" + ", _configuration.Mixins, m => m.FullName));
+        _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (Emitter, debuggerString);
       }
     }
 

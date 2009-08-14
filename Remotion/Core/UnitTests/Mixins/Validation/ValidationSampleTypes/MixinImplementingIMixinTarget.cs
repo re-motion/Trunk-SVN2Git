@@ -15,15 +15,15 @@
 // 
 using System;
 using Remotion.Mixins;
-using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Context;
 
 namespace Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes
 {
   public class MixinImplementingIMixinTarget : IMixinTarget
   {
-    public TargetClassDefinition Configuration
+    public ClassContext ClassContext
     {
-      get { throw new NotImplementedException (); }
+      get { throw new NotImplementedException(); }
     }
 
     public object[] Mixins

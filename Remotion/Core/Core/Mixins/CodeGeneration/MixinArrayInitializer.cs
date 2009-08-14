@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection;
 using Remotion.Text;
@@ -48,15 +49,15 @@ namespace Remotion.Mixins.CodeGeneration
     public MixinArrayInitializer (
         Type targetType,
         ExpectedMixinInfo[] expectedMixinInfo, 
-        TargetClassDefinition targetClassDefinition)
+        ClassContext classContext)
     {
       ArgumentUtility.CheckNotNull ("targetType", targetType);
       ArgumentUtility.CheckNotNull ("expectedMixinInfo", expectedMixinInfo);
-      ArgumentUtility.CheckNotNull ("targetClassDefinition", targetClassDefinition);
+      ArgumentUtility.CheckNotNull ("classContext", classContext);
 
       _targetType = targetType;
       _expectedMixinInfo = expectedMixinInfo;
-      _targetClassDefinition = targetClassDefinition;
+      _targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
     }
 
     public void CheckMixinArray (object[] mixins)

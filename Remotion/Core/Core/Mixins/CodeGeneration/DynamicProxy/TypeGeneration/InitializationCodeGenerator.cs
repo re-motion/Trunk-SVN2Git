@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
@@ -41,26 +42,26 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     private readonly TargetClassDefinition _configuration;
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
-    private readonly FieldReference _configurationField;
+    private readonly FieldReference _classContextField;
     private readonly ConstructorInfo _baseCallProxyCtor;
 
     public InitializationCodeGenerator (
         TargetClassDefinition configuration, 
         FieldReference extensionsField, 
         FieldReference firstField, 
-        FieldReference configurationField,
+        FieldReference classContextField,
         ConstructorInfo baseCallProxyCtor)
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
       ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
       ArgumentUtility.CheckNotNull ("firstField", firstField);
-      ArgumentUtility.CheckNotNull ("configurationField", configurationField);
+      ArgumentUtility.CheckNotNull ("classContextField", classContextField);
       ArgumentUtility.CheckNotNull ("baseCallProxyCtor", baseCallProxyCtor);
 
       _configuration = configuration;
       _extensionsField = extensionsField;
       _firstField = firstField;
-      _configurationField = configurationField;
+      _classContextField = classContextField;
       _baseCallProxyCtor = baseCallProxyCtor;
     }
 
@@ -97,10 +98,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 
       var newInitializerExpression = new NewInstanceExpression (
           typeof (MixinArrayInitializer), 
-          new[] { typeof (Type), typeof (MixinArrayInitializer.ExpectedMixinInfo[]), typeof (TargetClassDefinition) },
+          new[] { typeof (Type), typeof (MixinArrayInitializer.ExpectedMixinInfo[]), typeof (ClassContext) },
           new TypeTokenExpression (_configuration.Type),
           expectedMixinInfosLocal.ToExpression(),
-          _configurationField.ToExpression());
+          _classContextField.ToExpression());
 
       statements.Add (new AssignStatement (mixinArrayInitializerField, newInitializerExpression));
       return new BlockStatement (statements.ToArray ());

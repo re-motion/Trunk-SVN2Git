@@ -17,6 +17,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -33,24 +34,31 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     public void GeneratedTypeHasConfigurationField ()
     {
       Type t = TypeFactory.GetConcreteType (typeof (BaseType1));
-      Assert.IsNotNull (t.GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static));
-      Assert.IsTrue (t.GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static).IsStatic);
+      var classContextField = t.GetField ("__classContext", BindingFlags.NonPublic | BindingFlags.Static);
+      Assert.That (classContextField, Is.Not.Null);
+      Assert.That (classContextField.IsStatic, Is.True);
     }
 
     [Test]
     public void GeneratedObjectFieldHoldsConfiguration ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
+      var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
 
-      Assert.IsNotNull (bt1.GetType ().GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static));
-      Assert.AreSame (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)), bt1.GetType ().GetField ("__configuration", BindingFlags.NonPublic | BindingFlags.Static).GetValue (bt1));
+      var classContextField = bt1.GetType().GetField ("__classContext", BindingFlags.NonPublic | BindingFlags.Static);
+      Assert.That (classContextField.GetValue (null), Is.Not.Null);
+
+      var expectedClassContext = TargetClassDefinitionUtility.GetContext (
+          typeof (BaseType1), 
+          MixinConfiguration.ActiveConfiguration, 
+          GenerationPolicy.GenerateOnlyIfConfigured);
+      Assert.That (classContextField.GetValue (null), Is.EqualTo (expectedClassContext));
     }
 
     [Test]
     public void GeneratedTypeIsSerializable ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
-      Assert.IsTrue (bt1.GetType ().IsSerializable);
+      var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
+      Assert.That (bt1.GetType ().IsSerializable, Is.True);
 
       bt1.I = 25;
       Serializer.Serialize (bt1);
@@ -59,12 +67,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     [Test]
     public void GeneratedTypeIsDeserializable ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
-      Assert.IsTrue (bt1.GetType ().IsSerializable);
+      var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
+      Assert.That (bt1.GetType ().IsSerializable, Is.True);
 
       bt1.I = 25;
       Serializer.SerializeAndDeserialize (bt1);
-      Assert.AreEqual (25, bt1.I);
+      Assert.That (bt1.I, Is.EqualTo (25));
     }
 
     [Test]
@@ -72,77 +80,76 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     {
       using (MixinConfiguration.BuildFromActive().ForClass<OverridableBaseType> ().Clear().AddMixins (typeof (MixinOverridingClassMethod)).EnterScope())
       {
-        OverridableBaseType instance = ObjectFactory.Create<OverridableBaseType> (ParamList.Empty);
-        Assert.IsTrue (instance.GetType().IsSerializable);
+        var instance = ObjectFactory.Create<OverridableBaseType> (ParamList.Empty);
+        Assert.That (instance.GetType ().IsSerializable, Is.True);
 
-        Assert.AreEqual ("MixinOverridingClassMethod.OverridableMethod-85", instance.OverridableMethod (85));
+        Assert.That (instance.OverridableMethod (85), Is.EqualTo ("MixinOverridingClassMethod.OverridableMethod-85"));
 
         OverridableBaseType deserialiedInstance = Serializer.SerializeAndDeserialize (instance);
 
-        Assert.AreEqual ("MixinOverridingClassMethod.OverridableMethod-85", deserialiedInstance.OverridableMethod (85));
-        Assert.AreSame (deserialiedInstance, Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).This);
+        Assert.That (deserialiedInstance.OverridableMethod (85), Is.EqualTo ("MixinOverridingClassMethod.OverridableMethod-85"));
+        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).This, Is.SameAs (deserialiedInstance));
 
-        Assert.IsNotNull (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Base);
-        Assert.AreEqual ("OverridableBaseType.OverridableMethod(84)",
-            ((MixinOverridingClassMethod.IRequirements) Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Base).OverridableMethod(84));
+        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Base, Is.Not.Null);
+        Assert.That (
+                      ((MixinOverridingClassMethod.IRequirements) Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Base).OverridableMethod (84), Is.EqualTo ("OverridableBaseType.OverridableMethod(84)"));
       }
     }
 
     [Test]
     public void DeserializedMembersFit ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
-      Assert.IsTrue (bt1.GetType ().IsSerializable);
+      var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
+      Assert.That (bt1.GetType ().IsSerializable, Is.True);
 
       bt1.I = 25;
       BaseType1 bt1a = Serializer.SerializeAndDeserialize (bt1);
-      Assert.AreNotSame (bt1, bt1a);
-      Assert.AreEqual (bt1.I, bt1a.I);
+      Assert.That (bt1a, Is.Not.SameAs (bt1));
+      Assert.That (bt1a.I, Is.EqualTo (bt1.I));
 
-      BaseType2 bt2 = CreateMixedObject<BaseType2> (typeof(BT2Mixin1));
-      Assert.IsTrue (bt2.GetType ().IsSerializable);
+      var bt2 = CreateMixedObject<BaseType2> (typeof(BT2Mixin1));
+      Assert.That (bt2.GetType ().IsSerializable, Is.True);
 
       bt2.S = "Bla";
       BaseType2 bt2a = Serializer.SerializeAndDeserialize (bt2);
-      Assert.AreNotSame (bt2, bt2a);
-      Assert.AreEqual (bt2.S, bt2a.S);
+      Assert.That (bt2a, Is.Not.SameAs (bt2));
+      Assert.That (bt2a.S, Is.EqualTo (bt2.S));
     }
 
     [Test]
-    public void ExtensionsAndConfigurationSerializedFirstFits ()
+    public void ExtensionsAndConfigurationSerialized ()
     {
-      BaseType1 bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
+      var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
       var mixinTarget = (IMixinTarget) bt1;
 
-      BaseType1 bt1a = Serializer.SerializeAndDeserialize (bt1);
-      var mixinTargetA = (IMixinTarget) bt1a;
+      BaseType1 deserializedBT1 = Serializer.SerializeAndDeserialize (bt1);
+      var deserializedMixinTarget = (IMixinTarget) deserializedBT1;
 
-      Assert.IsNotNull (mixinTargetA.Configuration);
-      Assert.AreEqual (mixinTarget.Configuration.Type, mixinTargetA.Configuration.Type);
+      Assert.That (deserializedMixinTarget.ClassContext, Is.EqualTo (mixinTarget.ClassContext));
 
-      Assert.IsNotNull (mixinTargetA.Mixins);
-      Assert.AreEqual (mixinTarget.Mixins.Length, mixinTargetA.Mixins.Length);
-      Assert.AreEqual (mixinTarget.Mixins[0].GetType(), mixinTargetA.Mixins[0].GetType());
+      Assert.That (deserializedMixinTarget.Mixins, Is.Not.Null);
+      Assert.That (deserializedMixinTarget.Mixins.Length, Is.EqualTo (mixinTarget.Mixins.Length));
+      Assert.That (deserializedMixinTarget.Mixins[0].GetType (), Is.EqualTo (mixinTarget.Mixins[0].GetType ()));
 
-      Assert.IsNotNull (mixinTargetA.FirstBaseCallProxy);
-      Assert.AreNotEqual (mixinTarget.FirstBaseCallProxy, mixinTargetA.FirstBaseCallProxy);
-      Assert.AreEqual (mixinTargetA.GetType ().GetNestedType ("BaseCallProxy"), mixinTargetA.FirstBaseCallProxy.GetType ());
-      Assert.AreEqual (0, mixinTargetA.FirstBaseCallProxy.GetType ().GetField ("__depth").GetValue (mixinTargetA.FirstBaseCallProxy));
-      Assert.AreSame (mixinTargetA, mixinTargetA.FirstBaseCallProxy.GetType ().GetField ("__this").GetValue(mixinTargetA.FirstBaseCallProxy));
+      Assert.That (deserializedMixinTarget.FirstBaseCallProxy, Is.Not.Null);
+      Assert.That (deserializedMixinTarget.FirstBaseCallProxy, Is.Not.EqualTo (mixinTarget.FirstBaseCallProxy));
+      Assert.That (deserializedMixinTarget.FirstBaseCallProxy.GetType (), Is.EqualTo (deserializedMixinTarget.GetType ().GetNestedType ("BaseCallProxy")));
+      Assert.That (deserializedMixinTarget.FirstBaseCallProxy.GetType ().GetField ("__depth").GetValue (deserializedMixinTarget.FirstBaseCallProxy), Is.EqualTo (0));
+      Assert.That (deserializedMixinTarget.FirstBaseCallProxy.GetType ().GetField ("__this").GetValue (deserializedMixinTarget.FirstBaseCallProxy), Is.SameAs (deserializedMixinTarget));
     }
 
     [Test]
     public void RespectsISerializable ()
     {
       ClassImplementingISerializable c = ObjectFactory.Create<ClassImplementingISerializable> (ParamList.Empty);
-      Assert.AreNotEqual (typeof (ClassImplementingISerializable), c.GetType ());
+      Assert.That (c.GetType (), Is.Not.EqualTo (typeof (ClassImplementingISerializable)));
 
       c.I = 15;
-      Assert.AreEqual (15, c.I);
+      Assert.That (c.I, Is.EqualTo (15));
       
       ClassImplementingISerializable c2 = Serializer.SerializeAndDeserialize (c);
-      Assert.AreNotEqual (c, c2);
-      Assert.AreEqual (28, c2.I);
+      Assert.That (c2, Is.Not.EqualTo (c));
+      Assert.That (c2.I, Is.EqualTo (28));
     }
 
     [Test]
@@ -166,13 +173,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     public void WorksIfNoDefaultCtor ()
     {
       ClassWithoutDefaultCtor c = ObjectFactory.Create<ClassWithoutDefaultCtor> (ParamList.Create (35));
-      Assert.AreNotEqual (typeof (ClassImplementingISerializable), c.GetType ());
+      Assert.That (c.GetType (), Is.Not.EqualTo (typeof (ClassImplementingISerializable)));
 
-      Assert.AreEqual ("35", c.S);
+      Assert.That (c.S, Is.EqualTo ("35"));
 
       ClassWithoutDefaultCtor c2 = Serializer.SerializeAndDeserialize (c);
-      Assert.AreNotEqual (c, c2);
-      Assert.AreEqual ("35", c2.S);
+      Assert.That (c2, Is.Not.EqualTo (c));
+      Assert.That (c2.S, Is.EqualTo ("35"));
     }
 
     [Test]
@@ -181,10 +188,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithOnInitializedAndOnDeserialized)).EnterScope())
       {
         NullTarget instance = ObjectFactory.Create<NullTarget> (ParamList.Empty);
-        Assert.IsTrue (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (instance).OnInitializedCalled);
+        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (instance).OnInitializedCalled, Is.True);
 
         NullTarget deserializedInstance = Serializer.SerializeAndDeserialize (instance);
-        Assert.IsFalse (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (deserializedInstance).OnInitializedCalled);
+        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (deserializedInstance).OnInitializedCalled, Is.False);
       }
     }
 
@@ -194,10 +201,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithOnInitializedAndOnDeserialized)).EnterScope())
       {
         NullTarget instance = ObjectFactory.Create<NullTarget> (ParamList.Empty);
-        Assert.IsFalse (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (instance).OnDeserializedCalled);
+        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (instance).OnDeserializedCalled, Is.False);
 
         NullTarget deserializedInstance = Serializer.SerializeAndDeserialize (instance);
-        Assert.IsTrue (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (deserializedInstance).OnDeserializedCalled);
+        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (deserializedInstance).OnDeserializedCalled, Is.True);
       }
     }
 
@@ -208,12 +215,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
         NullTarget instance = ObjectFactory.Create<NullTarget> (ParamList.Empty);
-        Assert.IsNotNull (Mixin.Get<NullMixin> (instance));
+        Assert.That (Mixin.Get<NullMixin> (instance), Is.Not.Null);
         serializedData = Serializer.Serialize (instance);
       }
 
       var deserializedInstance = (NullTarget) Serializer.Deserialize (serializedData);
-      Assert.IsNotNull (Mixin.Get<NullMixin> (deserializedInstance));
+      Assert.That (Mixin.Get<NullMixin> (deserializedInstance), Is.Not.Null);
     }
   }
 }

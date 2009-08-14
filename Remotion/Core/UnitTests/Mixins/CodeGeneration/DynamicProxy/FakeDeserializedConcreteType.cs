@@ -17,6 +17,7 @@ using System;
 using System.Runtime.Serialization;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
@@ -57,7 +58,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       OnDeserializationCalled = true;
     }
 
-    public TargetClassDefinition Configuration
+    public ClassContext ClassContext
     {
       get { throw new NotImplementedException(); }
     }

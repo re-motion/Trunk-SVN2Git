@@ -14,7 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins
 {
@@ -26,8 +26,8 @@ namespace Remotion.Mixins
     /// <summary>
     /// Gets the mixin target's configuration data.
     /// </summary>
-    /// <value>A <see cref="TargetClassDefinition"/> object holding the configuration data used to create the mixin target.</value>
-    TargetClassDefinition Configuration { get; }
+    /// <value>A <see cref="ClassContext"/> object holding the configuration data used to create the mixin target.</value>
+    ClassContext ClassContext { get; }
 
     /// <summary>
     /// Gets the mixins associated with the mixed object.
