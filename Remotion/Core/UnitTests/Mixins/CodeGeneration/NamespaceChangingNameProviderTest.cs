@@ -41,9 +41,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       INameProvider nameProvider = NamespaceChangingNameProvider.Instance;
 
-      TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (
-          typeof (GenericTargetClass<int>), 
-          GenerationPolicy.ForceGeneration);
+      TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (
+          typeof (GenericTargetClass<int>));
       string newName = nameProvider.GetNewTypeName (definition);
 
       Assert.AreEqual (typeof (GenericTargetClass<int>).Namespace +

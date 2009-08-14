@@ -15,6 +15,8 @@
 // 
 using System;
 using System.Reflection;
+using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
@@ -153,16 +155,22 @@ namespace Remotion.UnitTests.Mixins
 
     public static TargetClassDefinition GetActiveTargetClassDefinition (Type type)
     {
-      return GetActiveTargetClassDefinition (type, GenerationPolicy.GenerateOnlyIfConfigured);
+      var classContext = TargetClassDefinitionUtility.GetContext (
+          type,
+          MixinConfiguration.ActiveConfiguration,
+          GenerationPolicy.GenerateOnlyIfConfigured);
+
+      Assert.That (classContext, Is.Not.Null, "The given type '" + type.Name + "' must be configured as a mixin target.");
+      return TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
     }
 
-    public static TargetClassDefinition GetActiveTargetClassDefinition (Type type, GenerationPolicy generationPolicy)
+    public static TargetClassDefinition GetActiveTargetClassDefinition_Force (Type type)
     {
       var classContext = TargetClassDefinitionUtility.GetContext (
           type, 
           MixinConfiguration.ActiveConfiguration, 
-          generationPolicy);
-      return ThreadSafeSingletonBase<TargetClassDefinitionCache, DefaultInstanceCreator<TargetClassDefinitionCache>>.Current.GetTargetClassDefinition (classContext);
+          GenerationPolicy.ForceGeneration);
+      return TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
     }
   }
 }

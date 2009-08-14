@@ -231,13 +231,14 @@ namespace Remotion.UnitTests.Mixins.Validation
       definition.Accept (visitor);
 
       var exception = new ValidationException (log);
-      Assert.That (
-                  exception.Message, Is.EqualTo ("Some parts of the mixin configuration could not be validated." + Environment.NewLine
-                            + "Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes.AbstractMixinWithoutBase.AbstractMethod (Remotion.UnitTests.Mixins."
-                                      + "Validation.ValidationSampleTypes.AbstractMixinWithoutBase -> Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSingleMixinMethod):"
-                                                + Environment.NewLine
-                                                          + "Error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes."
-                                                                    + Environment.NewLine));
+      Assert.That (exception.Message, 
+          Is.EqualTo ("Some parts of the mixin configuration could not be validated." 
+              + Environment.NewLine
+              + "Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes.AbstractMixinWithoutBase.AbstractMethod (Remotion.UnitTests.Mixins."
+              + "Validation.ValidationSampleTypes.AbstractMixinWithoutBase -> Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSingleMixinMethod):"
+              + Environment.NewLine
+              + "Error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes."
+              + Environment.NewLine));
 
       Assert.That (exception.ValidationLog, Is.SameAs (log));
     }
@@ -248,10 +249,10 @@ namespace Remotion.UnitTests.Mixins.Validation
       IValidationLog sourceLog = new DefaultValidationLog ();
       var exception = new Exception ();
 
-      TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1), GenerationPolicy.ForceGeneration);
-      TargetClassDefinition bt2 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType2), GenerationPolicy.ForceGeneration);
-      TargetClassDefinition bt3 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3), GenerationPolicy.ForceGeneration);
-      TargetClassDefinition bt4 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType4), GenerationPolicy.ForceGeneration);
+      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
+      TargetClassDefinition bt2 = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (typeof (BaseType2));
+      TargetClassDefinition bt3 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
+      TargetClassDefinition bt4 = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (typeof (BaseType4));
 
       sourceLog.ValidationStartsFor (bt1);
       sourceLog.Succeed (new DelegateValidationRule<TargetClassDefinition> (delegate { }, "Success", "Success"));

@@ -86,50 +86,51 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void TargetClassHasExplicitInterfaceMembers ()
     {
-      TargetClassDefinition cweii = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassWithExplicitInterfaceImplementation),
-          GenerationPolicy.ForceGeneration);
-      Assert.AreEqual (7, cweii.Methods.Count);
-      Assert.AreEqual (1, cweii.Properties.Count);
-      Assert.AreEqual (1, cweii.Events.Count);
+      TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (
+          typeof (ClassWithExplicitInterfaceImplementation));
+
+      Assert.AreEqual (7, definition.Methods.Count);
+      Assert.AreEqual (1, definition.Properties.Count);
+      Assert.AreEqual (1, definition.Events.Count);
 
       BindingFlags bf = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-      Assert.IsTrue (cweii.Methods.ContainsKey (typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
+      Assert.IsTrue (definition.Methods.ContainsKey (typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
           "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Method", bf)));
 
       Assert.IsTrue (
-          cweii.Properties.ContainsKey (
+          definition.Properties.ContainsKey (
               typeof (ClassWithExplicitInterfaceImplementation).GetProperty (
                   "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Property", bf)));
       Assert.AreEqual (
           typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
               "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.get_Property", bf),
-          cweii.Properties[
+          definition.Properties[
               typeof (ClassWithExplicitInterfaceImplementation).GetProperty (
                   "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Property", bf)].GetMethod.
               MemberInfo);
       Assert.AreEqual (
           typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
               "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.set_Property", bf),
-          cweii.Properties[
+          definition.Properties[
               typeof (ClassWithExplicitInterfaceImplementation).GetProperty (
                   "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Property", bf)].SetMethod.
               MemberInfo);
 
       Assert.IsTrue (
-          cweii.Events.ContainsKey (
+          definition.Events.ContainsKey (
               typeof (ClassWithExplicitInterfaceImplementation).GetEvent (
                   "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Event", bf)));
       Assert.AreEqual (
           typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
               "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.add_Event", bf),
-          cweii.Events[
+          definition.Events[
               typeof (ClassWithExplicitInterfaceImplementation).GetEvent (
                   "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Event", bf)].AddMethod.MemberInfo);
       Assert.AreEqual (
           typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
               "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.remove_Event", bf),
-          cweii.Events[
+          definition.Events[
               typeof (ClassWithExplicitInterfaceImplementation).GetEvent (
                   "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Event", bf)].RemoveMethod.
               MemberInfo);
@@ -188,7 +189,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void IsAbstractTrue ()
     {
-      TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (AbstractBaseType), GenerationPolicy.ForceGeneration);
+      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (typeof (AbstractBaseType));
       Assert.IsTrue (bt1.IsAbstract);
     }
 

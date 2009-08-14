@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void SuppressAttributeIsNotIgnored ()
     {
       TargetClassDefinition classDefinition = 
-          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithSuppressAttribute), GenerationPolicy.ForceGeneration);
+          DefinitionObjectMother.GetActiveTargetClassDefinition_Force (typeof (ClassWithSuppressAttribute));
       Assert.That (classDefinition.CustomAttributes.ContainsKey (typeof (SuppressAttributesAttribute)), Is.True);
     }
 
