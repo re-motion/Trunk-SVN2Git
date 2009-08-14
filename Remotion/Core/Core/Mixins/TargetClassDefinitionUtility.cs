@@ -28,35 +28,6 @@ namespace Remotion.Mixins
   public class TargetClassDefinitionUtility
   {
     /// <summary>
-    /// Returns a <see cref="TargetClassDefinition"/> for the a given target type, or <see langword="null"/> if no mixin configuration exists for
-    /// this type.
-    /// </summary>
-    /// <param name="targetOrConcreteType">Base type for which an analyzed mixin configuration should be returned or a concrete mixed type.</param>
-    /// <returns>A non-null <see cref="TargetClassDefinition"/> for the a given target type.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe problems that
-    /// make generation of a <see cref="TargetClassDefinition"/> object impossible.</exception>
-    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> violates at least one validation
-    /// rule, which would make code generation impossible. </exception>
-    /// <remarks>
-    /// <para>
-    /// Use this to retrieve a cached analyzed mixin configuration object for the given target type. The cache is actually maintained by
-    /// <see cref="TargetClassDefinitionCache"/>, but this is the public API that should be used instead of directly accessing the cache.
-    /// </para>
-    /// <para>
-    /// Use <see cref="GetActiveConfiguration(Type,GenerationPolicy)"/> to force generation of an empty configuration if none currently
-    /// exists for the given type in <see cref="MixinConfiguration.ActiveConfiguration"/>.
-    /// </para>
-    /// <para>
-    /// If <paramref name="targetOrConcreteType"/> is already a generated type, no new <see cref="TargetClassDefinition"/> is created for it.
-    /// </para>
-    /// </remarks>
-    public static TargetClassDefinition GetActiveConfiguration (Type targetOrConcreteType)
-    {
-      return GetActiveConfiguration (targetOrConcreteType, GenerationPolicy.GenerateOnlyIfConfigured);
-    }
-
-    /// <summary>
     /// Returns a <see cref="TargetClassDefinition"/> for the a given target type.
     /// </summary>
     /// <param name="targetOrConcreteType">Base type for which an analyzed mixin configuration should be returned or a concrete mixed type.</param>

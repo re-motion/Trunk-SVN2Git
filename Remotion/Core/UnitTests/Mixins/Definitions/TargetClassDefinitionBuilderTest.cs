@@ -50,7 +50,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       using (configuration.EnterScope())
       {
-        TargetClassDefinition def = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+        TargetClassDefinition def = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
         Assert.IsNotNull (def.ConfigurationContext);
         Assert.AreSame (classContext, def.ConfigurationContext);
       }
@@ -139,7 +139,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void HasOverriddenMembersTrue ()
     {
-      TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       Assert.IsTrue (bt1.HasOverriddenMembers ());
     }
 
@@ -181,7 +181,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void HasProtectedOverridersFalse ()
     {
-      TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       Assert.IsFalse (bt1.HasProtectedOverriders ());
     }
 
@@ -195,7 +195,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void IsAbstractFalse ()
     {
-      TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       Assert.IsFalse (bt1.IsAbstract);
     }
   }

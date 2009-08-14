@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void CorrectlyCopiesContext()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       Assert.IsNull (targetClass.Parent);
       Assert.AreEqual ("BaseType1", targetClass.Name);
 
@@ -59,7 +59,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void MixinIndicesCorrespondToPositionInArray()
     {
-      TargetClassDefinition bt3 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3));
+      TargetClassDefinition bt3 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
       for (int i = 0; i < bt3.Mixins.Count; ++i)
         Assert.AreEqual (i, bt3.Mixins[i].MixinIndex);
     }
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void OverriddenMixinMethod()
     {
-      TargetClassDefinition overrider = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers));
+      TargetClassDefinition overrider = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassOverridingMixinMembers));
       MixinDefinition mixin = overrider.Mixins[typeof (MixinWithAbstractMembers)];
       Assert.IsNotNull (mixin);
       Assert.IsTrue (mixin.HasOverriddenMembers());
@@ -148,7 +148,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void ExplicitMixinDependenciesCorrectlyCopied ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWithAdditionalDependencies));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
       Assert.IsTrue (targetClass.RequiredMixinTypes.ContainsKey (typeof (MixinWithNoAdditionalDependency)));
       Assert.IsTrue (targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinDependencies.ContainsKey (typeof (MixinWithNoAdditionalDependency)));
     }
@@ -170,7 +170,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void DuplicateDependenciesDontMatter ()
     {
-      TargetClassDefinition mt = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (MixinTargetWithExplicitDependencies));
+      TargetClassDefinition mt = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (MixinTargetWithExplicitDependencies));
       Assert.IsTrue (mt.RequiredBaseCallTypes.ContainsKey (typeof (IMixinBeingDependedUpon)));
       Assert.IsTrue (mt.Mixins[typeof (MixinWithDependency)].BaseDependencies.ContainsKey (typeof (IMixinBeingDependedUpon)));
       Assert.IsTrue (mt.Mixins[typeof (MixinWithDependency)].MixinDependencies.ContainsKey (typeof (IMixinBeingDependedUpon)));
@@ -189,7 +189,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void HasOverriddenMembersFalse ()
     {
-      TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       Assert.IsFalse (definition.Mixins[0].HasOverriddenMembers ());
     }
 
@@ -219,7 +219,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void HasProtectedOverridersFalse ()
     {
-      TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       Assert.IsFalse (bt1.HasProtectedOverriders ());
       Assert.IsFalse (bt1.Mixins[0].HasProtectedOverriders ());
     }
@@ -231,7 +231,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           .ForClass<ClassWithMixinsAcceptingAlphabeticOrdering> ().AddMixin<MixinAcceptingAlphabeticOrdering1> ()
           .EnterScope ())
       {
-        MixinDefinition accepter = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassWithMixinsAcceptingAlphabeticOrdering)).Mixins[typeof (MixinAcceptingAlphabeticOrdering1)];
+        MixinDefinition accepter = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithMixinsAcceptingAlphabeticOrdering)).Mixins[typeof (MixinAcceptingAlphabeticOrdering1)];
         Assert.IsTrue (accepter.AcceptsAlphabeticOrdering);
       }
     }
@@ -241,7 +241,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<NullMixin> ().EnterScope ())
       {
-        MixinDefinition accepter = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin)];
+        MixinDefinition accepter = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)).Mixins[typeof (NullMixin)];
         Assert.IsFalse (accepter.AcceptsAlphabeticOrdering);
       }
     }
@@ -251,7 +251,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<NullMixin> ().OfKind (MixinKind.Extending).EnterScope ())
       {
-        MixinDefinition mixin = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin)];
+        MixinDefinition mixin = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)).Mixins[typeof (NullMixin)];
         Assert.That (mixin.MixinKind, Is.EqualTo (MixinKind.Extending));
       }
     }
@@ -261,7 +261,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<NullMixin> ().OfKind (MixinKind.Used).EnterScope ())
       {
-        MixinDefinition mixin = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (NullMixin)];
+        MixinDefinition mixin = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)).Mixins[typeof (NullMixin)];
         Assert.That (mixin.MixinKind, Is.EqualTo (MixinKind.Used));
       }
     }

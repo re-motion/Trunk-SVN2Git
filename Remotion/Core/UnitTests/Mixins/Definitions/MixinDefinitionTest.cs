@@ -34,7 +34,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void NeedsDerivedMixinType_True_OverriddenMember()
     {
-      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassOverridingMixinMembers))
+      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassOverridingMixinMembers))
           .Mixins[typeof (MixinWithAbstractMembers)];
       Assert.That (definition.NeedsDerivedMixinType (), Is.True);
     }
@@ -44,7 +44,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildNew().ForClass<BaseType1>().AddMixin<MixinWithProtectedOverrider>().EnterScope())
       {
-        var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (MixinWithProtectedOverrider)];
+        var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinWithProtectedOverrider)];
         Assert.That (definition.NeedsDerivedMixinType(), Is.True);
       }
     }
@@ -54,7 +54,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<AbstractMixinWithoutAbstractMembers> ().EnterScope ())
       {
-        var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget)).Mixins[typeof (AbstractMixinWithoutAbstractMembers)];
+        var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)).Mixins[typeof (AbstractMixinWithoutAbstractMembers)];
         Assert.That (definition.NeedsDerivedMixinType (), Is.True);
       }
     }
@@ -62,7 +62,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void NeedsDerivedMixinType_False ()
     {
-      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
+      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
       Assert.That (definition.NeedsDerivedMixinType (), Is.False);
     }
 
@@ -71,7 +71,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       var expectedIdentifier = new ConcreteMixinTypeIdentifier (typeof (BT1Mixin1), new HashSet<MethodInfo>(), new HashSet<MethodInfo> ());
 
-      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
+      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
@@ -84,7 +84,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           new HashSet<MethodInfo> { overrider }, 
           new HashSet<MethodInfo> ());
 
-      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedClassOverridingMixinMethod))
+      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (DerivedClassOverridingMixinMethod))
           .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
@@ -99,7 +99,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           new HashSet<MethodInfo> { overrider1, overrider2 },
           new HashSet<MethodInfo> ());
 
-      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedClassOverridingMixinMethod))
+      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (DerivedDerivedClassOverridingMixinMethod))
           .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
@@ -114,7 +114,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           new HashSet<MethodInfo> { overrider1, overrider2 },
           new HashSet<MethodInfo> ());
 
-      var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (DerivedDerivedDerivedClassOverridingMixinMethod))
+      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (DerivedDerivedDerivedClassOverridingMixinMethod))
           .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
@@ -147,7 +147,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           .AddMixin<BT3Mixin1> ().WithDependency<NullMixin>()
           .AddMixin<NullMixin>().EnterScope ())
       {
-        var definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)];
+        var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)];
         var dependencies = definition.GetOrderRelevantDependencies ().ToArray();
         Assert.That (dependencies, Is.EquivalentTo (new DependencyDefinitionBase[] { definition.BaseDependencies[0], definition.MixinDependencies[0] }));
       }

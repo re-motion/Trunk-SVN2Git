@@ -19,6 +19,8 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Utilities.Singleton;
+using Remotion.Mixins.Validation;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -160,7 +162,7 @@ namespace Remotion.UnitTests.Mixins
           type, 
           MixinConfiguration.ActiveConfiguration, 
           generationPolicy);
-      return TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+      return ThreadSafeSingletonBase<TargetClassDefinitionCache, DefaultInstanceCreator<TargetClassDefinitionCache>>.Current.GetTargetClassDefinition (classContext);
     }
   }
 }

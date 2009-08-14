@@ -50,7 +50,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void IntroducedInterface ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)];
 
       Assert.IsTrue (mixin1.InterfaceIntroductions.ContainsKey (typeof (IBT1Mixin1)));
@@ -98,7 +98,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (DerivedIntroducer)).EnterScope())
       {
-        TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+        TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
         Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IIntroducedDerived)));
         Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IIntroducedBase)));
 
@@ -161,7 +161,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (ExplicitDerivedIntroducer)).EnterScope())
       {
-        TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+        TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
         Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IIntroducedDerived)));
         Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IIntroducedBase)));
 
@@ -198,7 +198,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void IntroducedMembers ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)];
       InterfaceIntroductionDefinition introducedInterface = mixin1.InterfaceIntroductions[typeof (IBT1Mixin1)];
 
@@ -230,7 +230,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinWithExplicitImplementation)).EnterScope())
       {
-        TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+        TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
         Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IExplicit)));
 
         MethodInfo explicitMethod = typeof (MixinWithExplicitImplementation).GetMethod (
@@ -248,9 +248,9 @@ namespace Remotion.UnitTests.Mixins.Definitions
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinImplementingISerializable)).EnterScope())
       {
         Assert.IsNull (
-            TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)].InterfaceIntroductions[typeof (ISerializable)]);
+            DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)].InterfaceIntroductions[typeof (ISerializable)]);
         Assert.IsNotNull (
-            TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)].InterfaceIntroductions[typeof (IDisposable)]);
+            DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)].InterfaceIntroductions[typeof (IDisposable)]);
       }
     }
 
@@ -260,7 +260,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinImplementingISerializable)).EnterScope())
       {
         Assert.IsNull (
-            TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)].InterfaceIntroductions[typeof (IDeserializationCallback)]);
+            DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)].InterfaceIntroductions[typeof (IDeserializationCallback)]);
       }
     }
 
@@ -268,7 +268,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void IInitializableMixinIsNotIntroduced ()
     {
       Assert.IsNull (
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)].InterfaceIntroductions[typeof (IInitializableMixin)]);
+          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)].InterfaceIntroductions[typeof (IInitializableMixin)]);
     }
 
     [Test]
@@ -276,7 +276,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinImplementingFullPropertiesWithPartialIntroduction)).EnterScope())
       {
-        InterfaceIntroductionDefinition introduction = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).ReceivedInterfaces[typeof (InterfaceWithPartialProperties)];
+        InterfaceIntroductionDefinition introduction = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).ReceivedInterfaces[typeof (InterfaceWithPartialProperties)];
         PropertyIntroductionDefinition prop1 = introduction.IntroducedProperties[typeof (InterfaceWithPartialProperties).GetProperty ("Prop1")];
         PropertyIntroductionDefinition prop2 = introduction.IntroducedProperties[typeof (InterfaceWithPartialProperties).GetProperty ("Prop2")];
         Assert.IsTrue (prop1.IntroducesGetMethod);
@@ -297,7 +297,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (BT1Mixin1), typeof (BT1Mixin1A)).EnterScope())
       {
-        TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       }
     }
 
@@ -306,7 +306,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<ClassImplementingSimpleInterface> ().Clear().AddMixins (typeof (MixinImplementingSimpleInterface)).EnterScope())
       {
-        TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassImplementingSimpleInterface));
+        TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingSimpleInterface));
         Assert.IsTrue (definition.ImplementedInterfaces.Contains (typeof (ISimpleInterface)));
         Assert.IsFalse (definition.ReceivedInterfaces.ContainsKey (typeof (ISimpleInterface)));
         Assert.IsTrue (
@@ -320,7 +320,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinNonIntroducingSimpleInterface)).EnterScope())
       {
-        TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
+        TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
         Assert.IsFalse (definition.ImplementedInterfaces.Contains (typeof (ISimpleInterface)));
         Assert.IsFalse (definition.ReceivedInterfaces.ContainsKey (typeof (ISimpleInterface)));
         Assert.IsTrue (
@@ -334,7 +334,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinNonIntroducingSimpleInterface)).EnterScope())
       {
-        TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
+        TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
         NonInterfaceIntroductionDefinition nonIntroductionDefinition =
             definition.Mixins[typeof (MixinNonIntroducingSimpleInterface)].NonInterfaceIntroductions[typeof (ISimpleInterface)];
         Assert.IsTrue (nonIntroductionDefinition.IsExplicitlySuppressed);
@@ -349,7 +349,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<ClassImplementingSimpleInterface> ().Clear().AddMixins (typeof (MixinImplementingSimpleInterface)).EnterScope())
       {
-        TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassImplementingSimpleInterface));
+        TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingSimpleInterface));
         NonInterfaceIntroductionDefinition nonIntroductionDefinition =
             definition.Mixins[typeof (MixinImplementingSimpleInterface)].NonInterfaceIntroductions[typeof (ISimpleInterface)];
         Assert.IsFalse (nonIntroductionDefinition.IsExplicitlySuppressed);
@@ -364,7 +364,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<ClassImplementingSimpleInterface> ().Clear().AddMixins (typeof (List<>)).EnterScope())
       {
-        TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassImplementingSimpleInterface));
+        TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingSimpleInterface));
         MixinDefinition mixinDefinition = definition.GetMixinByConfiguredType (typeof (List<>));
 
         Assert.IsTrue (definition.ReceivedInterfaces.ContainsKey (typeof (IList)));
@@ -393,7 +393,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
             .AddMixin<MixinIntroducingMembersWithDifferentVisibilities> ().WithIntroducedMemberVisibility (MemberVisibility.Private)
           .EnterScope ())
       {
-        TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
+        TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
         InterfaceIntroductionDefinition interfaceDefinition = definition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)];
 
         Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")].Visibility,
@@ -413,7 +413,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
             .AddMixin<MixinIntroducingMembersWithDifferentVisibilities> ().WithIntroducedMemberVisibility (MemberVisibility.Public)
           .EnterScope ())
       {
-        TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
+        TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
         InterfaceIntroductionDefinition interfaceDefinition = definition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)];
 
         Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")].Visibility,
@@ -433,7 +433,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
             .AddMixin<MixinIntroducingMembersWithDifferentVisibilities> ().WithIntroducedMemberVisibility (MemberVisibility.Private)
           .EnterScope ())
       {
-        TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
+        TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
         InterfaceIntroductionDefinition interfaceDefinition = definition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)];
 
         Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")].Visibility,

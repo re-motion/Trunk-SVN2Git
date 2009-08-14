@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void Methods ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
 
       MethodInfo baseMethod1 = typeof (BaseType1).GetMethod ("VirtualMethod", new Type[0]);
       MethodInfo baseMethod2 = typeof (BaseType1).GetMethod ("VirtualMethod", new[] {typeof (string)});
@@ -74,7 +74,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void Properties ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
 
       PropertyInfo baseProperty = typeof (BaseType1).GetProperty ("VirtualProperty");
       PropertyInfo indexedProperty1 = typeof (BaseType1).GetProperty ("Item", new[] {typeof (int)});
@@ -140,7 +140,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void Events ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
 
       EventInfo baseEvent1 = typeof (BaseType1).GetEvent ("VirtualEvent");
       EventInfo baseEvent2 = typeof (BaseType1).GetEvent ("ExplicitEvent");
@@ -310,7 +310,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void ProtectedInternalMembers ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassWithInheritedMethod));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithInheritedMethod));
       Assert.IsTrue (targetClass.Methods.ContainsKey (typeof (BaseClassWithInheritedMethod).GetMethod ("ProtectedInternalInheritedMethod",
           BindingFlags.Instance | BindingFlags.NonPublic)));
     }
@@ -325,7 +325,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void IsAbstractFalse ()
     {
-      TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       Assert.IsFalse (bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes)].IsAbstract);
     }
   }

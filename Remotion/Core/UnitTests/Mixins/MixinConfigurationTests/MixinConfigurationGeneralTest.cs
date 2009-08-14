@@ -411,5 +411,37 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
       Assert.IsFalse (configuration.ClassContexts.RemoveExact (typeof (List<>)));
       Assert.AreEqual (0, configuration.ClassContexts.Count);
     }
+
+    [Test]
+    public void MixinOnMixinDoesNotInfluenceTargetClass ()
+    {
+      ClassContext c1;
+      ClassContext c2;
+
+      using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixins (typeof (NullMixin)).EnterScope ())
+      {
+        c1 = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (NullTarget));
+        using (MixinConfiguration.BuildFromActive ().ForClass<NullMixin> ().AddMixins (typeof (NullMixin2)).EnterScope ())
+        {
+          c2 = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (NullTarget));
+        }
+      }
+
+      Assert.AreEqual (c1, c2);
+    }
+
+    [Test]
+    public void MixinOnMixin_YieldsClassContextForMixin ()
+    {
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<NullTarget> ().AddMixin<NullMixin> ()
+          .ForClass<NullMixin> ().AddMixin<NullMixin2> ()
+          .EnterScope ())
+      {
+        var classContext = MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (NullMixin));
+        Assert.That (classContext.Mixins.ContainsKey (typeof (NullMixin2)));
+      }
+    }
+
   }
 }

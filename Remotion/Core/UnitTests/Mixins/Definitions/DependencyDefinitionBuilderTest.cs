@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void FaceInterfaces ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
 
       Assert.IsTrue (targetClass.RequiredFaceTypes.ContainsKey (typeof (IBaseType31)));
       Assert.IsTrue (targetClass.RequiredFaceTypes.ContainsKey (typeof (IBaseType32)));
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void FaceInterfacesWithOpenGenericTypes ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
 
       Assert.IsFalse (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)).ThisDependencies.ContainsKey (typeof (IBaseType31)));
       Assert.IsFalse (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)).ThisDependencies.ContainsKey (typeof (IBaseType33)));
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void FaceInterfacesAddedViaContext ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType6));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType6));
 
       Assert.IsTrue (targetClass.RequiredFaceTypes.ContainsKey (typeof (ICBT6Mixin1)), "This is added via a dependency of BT6Mixin3.");
       Assert.IsTrue (targetClass.RequiredFaceTypes.ContainsKey (typeof (ICBT6Mixin2)), "This is added via a dependency of BT6Mixin3.");
@@ -95,7 +95,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void BaseInterfaces ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
 
       List<Type> requiredBaseCallTypes = new List<RequiredBaseCallTypeDefinition> (targetClass.RequiredBaseCallTypes).ConvertAll<Type>
           (delegate (RequiredBaseCallTypeDefinition def) { return def.Type; });
@@ -111,7 +111,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void BaseMethods ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
 
       RequiredBaseCallTypeDefinition req1 = targetClass.RequiredBaseCallTypes[typeof (IBaseType31)];
       Assert.AreEqual (typeof (IBaseType31).GetMembers().Length, req1.Methods.Count);
@@ -137,7 +137,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType3> ().Clear().AddMixins (typeof (BT3Mixin7Base), typeof (BT3Mixin4)).EnterScope())
       {
-        TargetClassDefinition targetClass2 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3));
+        TargetClassDefinition targetClass2 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
 
         RequiredBaseCallTypeDefinition req3 = targetClass2.RequiredBaseCallTypes[typeof (ICBaseType3BT3Mixin4)];
         Assert.AreEqual (0, req3.Methods.Count);
@@ -162,7 +162,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseTypeWithDuckFaceMixin> ().Clear().AddMixins (typeof (DuckFaceMixin)).EnterScope())
       {
-        TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseTypeWithDuckFaceMixin));
+        TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseTypeWithDuckFaceMixin));
         Assert.IsTrue (targetClass.Mixins.ContainsKey (typeof (DuckFaceMixin)));
         MixinDefinition mixin = targetClass.Mixins[typeof (DuckFaceMixin)];
         Assert.IsTrue (targetClass.RequiredFaceTypes.ContainsKey (typeof (IDuckFaceRequirements)));
@@ -193,7 +193,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (DuckFaceMixinWithoutOverrides)).EnterScope())
       {
-        TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
+        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
       }
     }
 
@@ -202,7 +202,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseTypeWithDuckBaseMixin> ().Clear().AddMixins (typeof (DuckBaseMixin)).EnterScope())
       {
-        TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseTypeWithDuckBaseMixin));
+        TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseTypeWithDuckBaseMixin));
         Assert.IsTrue (targetClass.Mixins.ContainsKey (typeof (DuckBaseMixin)));
         MixinDefinition mixin = targetClass.Mixins[typeof (DuckBaseMixin)];
         Assert.IsTrue (targetClass.RequiredBaseCallTypes.ContainsKey (typeof (IDuckBaseRequirements)));
@@ -233,14 +233,14 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (DuckBaseMixinWithoutOverrides)).EnterScope())
       {
-        TargetClassDefinitionUtility.GetActiveConfiguration (typeof (NullTarget));
+        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
       }
     }
 
     [Test]
     public void Dependencies ()
     {
-      MixinDefinition bt3Mixin1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)];
+      MixinDefinition bt3Mixin1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)];
 
       Assert.IsTrue (bt3Mixin1.ThisDependencies.ContainsKey (typeof (IBaseType31)));
       Assert.AreEqual (1, bt3Mixin1.ThisDependencies.Count);
@@ -248,13 +248,13 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (bt3Mixin1.BaseDependencies.ContainsKey (typeof (IBaseType31)));
       Assert.AreEqual (1, bt3Mixin1.BaseDependencies.Count);
 
-      MixinDefinition bt3Mixin2 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).Mixins[typeof (BT3Mixin2)];
+      MixinDefinition bt3Mixin2 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin2)];
       Assert.IsTrue (bt3Mixin2.ThisDependencies.ContainsKey (typeof (IBaseType32)));
       Assert.AreEqual (1, bt3Mixin2.ThisDependencies.Count);
 
       Assert.AreEqual (0, bt3Mixin2.BaseDependencies.Count);
 
-      MixinDefinition bt3Mixin6 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).GetMixinByConfiguredType (typeof (BT3Mixin6<,>));
+      MixinDefinition bt3Mixin6 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).GetMixinByConfiguredType (typeof (BT3Mixin6<,>));
 
       Assert.IsTrue (bt3Mixin6.ThisDependencies.ContainsKey (typeof (IBaseType31)));
       Assert.IsTrue (bt3Mixin6.ThisDependencies.ContainsKey (typeof (IBaseType32)));
@@ -273,12 +273,12 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsNull (bt3Mixin6.ThisDependencies[typeof (IBT3Mixin4)].Aggregator);
 
       Assert.AreEqual (
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).RequiredFaceTypes[typeof (IBaseType31)],
+          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).RequiredFaceTypes[typeof (IBaseType31)],
           bt3Mixin6.ThisDependencies[typeof (IBaseType31)].RequiredType);
 
-      Assert.AreSame (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)), bt3Mixin6.ThisDependencies[typeof (IBaseType32)].GetImplementer());
+      Assert.AreSame (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)), bt3Mixin6.ThisDependencies[typeof (IBaseType32)].GetImplementer());
       Assert.AreSame (
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).Mixins[typeof (BT3Mixin4)],
+          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin4)],
           bt3Mixin6.ThisDependencies[typeof (IBT3Mixin4)].GetImplementer());
 
       Assert.IsTrue (bt3Mixin6.BaseDependencies.ContainsKey (typeof (IBaseType34)));
@@ -288,12 +288,12 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsTrue (bt3Mixin6.BaseDependencies.ContainsKey (typeof (IBaseType33)), "indirect dependency");
 
       Assert.AreEqual (
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).RequiredBaseCallTypes[typeof (IBaseType34)],
+          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).RequiredBaseCallTypes[typeof (IBaseType34)],
           bt3Mixin6.BaseDependencies[typeof (IBaseType34)].RequiredType);
 
-      Assert.AreSame (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)), bt3Mixin6.BaseDependencies[typeof (IBaseType34)].GetImplementer());
+      Assert.AreSame (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)), bt3Mixin6.BaseDependencies[typeof (IBaseType34)].GetImplementer());
       Assert.AreSame (
-          TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).Mixins[typeof (BT3Mixin4)],
+          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin4)],
           bt3Mixin6.BaseDependencies[typeof (IBT3Mixin4)].GetImplementer());
 
       Assert.IsFalse (bt3Mixin6.BaseDependencies[typeof (IBT3Mixin4)].IsAggregate);
@@ -404,7 +404,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinWithEmptyInterface), typeof (MixinRequiringEmptyInterface)).EnterScope())
       {
-        TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+        TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
         MixinDefinition m1 = bt1.Mixins[typeof (MixinWithEmptyInterface)];
         MixinDefinition m2 = bt1.Mixins[typeof (MixinRequiringEmptyInterface)];
         BaseDependencyDefinition dependency = m2.BaseDependencies[0];
@@ -418,7 +418,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void IndirectThisDependencies ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassImplementingIndirectRequirements));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingIndirectRequirements));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithIndirectRequirements)];
       Assert.IsNotNull (mixin);
 
@@ -454,7 +454,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void IndirectBaseDependencies ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassImplementingIndirectRequirements));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingIndirectRequirements));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithIndirectRequirements)];
       Assert.IsNotNull (mixin);
 
@@ -487,7 +487,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void NoIndirectDependenciesForClassFaces ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassImplementingInternalInterface));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingInternalInterface));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithClassFaceImplementingInternalInterface)];
       Assert.IsNotNull (mixin);
       Assert.IsTrue (targetClass.RequiredFaceTypes.ContainsKey (typeof (ClassImplementingInternalInterface)));
@@ -503,7 +503,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void ExplicitDependenciesToInterfaceTypes ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWithAdditionalDependencies));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithAdditionalInterfaceDependency)];
       Assert.IsTrue (mixin.MixinDependencies.ContainsKey (typeof (IMixinWithAdditionalClassDependency)));
       Assert.AreSame (targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)],
@@ -525,7 +525,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void ExplicitDependenciesToClassTypes ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWithAdditionalDependencies));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
       MixinDefinition mixin = targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)];
       Assert.IsTrue (mixin.MixinDependencies.ContainsKey (typeof (MixinWithNoAdditionalDependency)));
       Assert.AreSame (targetClass.Mixins[typeof (MixinWithNoAdditionalDependency)], mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].GetImplementer ());

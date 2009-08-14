@@ -33,7 +33,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void MixinDefinitionsAreSortedCorrectlySmall()
     {
-      TargetClassDefinition bt7 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType7));
+      TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
       Assert.AreEqual (7, bt7.Mixins.Count);
       // group 1
       Assert.AreEqual (0, bt7.Mixins[typeof (BT7Mixin0)].MixinIndex);
@@ -77,7 +77,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           .EnsureMixin (typeof (BT7Mixin9)).WithDependency<IBT7Mixin8> ()
           .EnterScope ())
       {
-        TargetClassDefinition bt7 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType7));
+        TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
         Assert.AreEqual (11, bt7.Mixins.Count);
         // group 1
         Assert.AreEqual (0, bt7.Mixins[typeof (BT7Mixin0)].MixinIndex); // u
@@ -108,7 +108,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType7> ().Clear().AddMixins (typeof (BT7Mixin0), typeof (BT7Mixin4), typeof (BT7Mixin6), typeof (BT7Mixin7), typeof (BT7Mixin2), typeof (BT7Mixin5)).EnterScope())
       {
-        TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType7));
+        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
       }
     }
 
@@ -131,7 +131,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<object> ().Clear().AddMixins (typeof (Circular1), typeof (Circular2)).EnterScope())
       {
-        TargetClassDefinitionUtility.GetActiveConfiguration (typeof (object));
+        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (object));
       }
     }
 
@@ -148,7 +148,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       using (MixinConfiguration.BuildFromActive().ForClass<object> ().Clear().AddMixins (typeof (SelfDependency)).EnterScope())
       {
-        TargetClassDefinitionUtility.GetActiveConfiguration (typeof (object));
+        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (object));
       }
     }
 
@@ -164,7 +164,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           .AddMixins (typeof (BT7Mixin1), typeof (BT7Mixin2), typeof (BT7Mixin3), typeof (BT7Mixin5), typeof (BT7Mixin8), typeof (BT7Mixin10))
           .EnterScope())
       {
-        TargetClassDefinition bt7 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType7));
+        TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
         MixinDependencyAnalyzer analyzer = new MixinDependencyAnalyzer();
 
         Assert.AreEqual (DependencyKind.None, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin0)]));
@@ -211,7 +211,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           .AddMixins (typeof (BT7Mixin1), typeof (BT7Mixin2), typeof (BT7Mixin3), typeof (BT7Mixin5), typeof (BT7Mixin8), typeof (BT7Mixin10))
           .EnterScope ())
       {
-        TargetClassDefinition bt7 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType7));
+        TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
         DependentMixinGrouper grouper = new DependentMixinGrouper();
         List<Set<MixinDefinition>> mixinGroups = new List<Set<MixinDefinition>> (grouper.GroupMixins (bt7.Mixins));
         Assert.AreEqual (3, mixinGroups.Count);
@@ -273,7 +273,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       using (configuration.EnterScope())
       {
-        TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWithAdditionalDependencies));
+        TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
         Assert.AreEqual (0, targetClass.Mixins[typeof (MixinWithAdditionalInterfaceDependency)].MixinIndex);
         Assert.AreEqual (1, targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinIndex);
         Assert.AreEqual (2, targetClass.Mixins[typeof (MixinWithNoAdditionalDependency)].MixinIndex);
@@ -283,7 +283,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void AlphabeticOrdering ()
     {
-      TargetClassDefinition targetClass = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassWithMixinsAcceptingAlphabeticOrdering));
+      TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithMixinsAcceptingAlphabeticOrdering));
       Assert.AreEqual (typeof (MixinAcceptingAlphabeticOrdering1), targetClass.Mixins[0].Type);
       Assert.AreEqual (typeof (MixinAcceptingAlphabeticOrdering2), targetClass.Mixins[1].Type);
     }
