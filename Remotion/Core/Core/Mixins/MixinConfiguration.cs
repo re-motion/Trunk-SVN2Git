@@ -201,7 +201,8 @@ namespace Remotion.Mixins
         {
           try
           {
-            definitions.Add (TargetClassDefinitionUtility.GetActiveConfiguration (classContext.Type));
+            var targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+            definitions.Add (targetClassDefinition);
           }
           catch (ValidationException exception)
           {
