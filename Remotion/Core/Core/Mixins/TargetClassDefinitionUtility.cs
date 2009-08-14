@@ -17,7 +17,6 @@ using System;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
-using Remotion.Mixins.Validation;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins
@@ -27,77 +26,6 @@ namespace Remotion.Mixins
   /// </summary>
   public class TargetClassDefinitionUtility
   {
-    /// <summary>
-    /// Returns a <see cref="TargetClassDefinition"/> for the a given target type, or <see langword="null"/> if no mixin configuration exists for
-    /// this type.
-    /// </summary>
-    /// <param name="targetOrConcreteType">Base type for which an analyzed mixin configuration should be returned or a concrete mixed type.</param>
-    /// <param name="mixinConfiguration">The <see cref="MixinConfiguration"/> to use.</param>
-    /// <returns>A <see cref="TargetClassDefinition"/> for the a given target type, or <see langword="null"/> if no mixin configuration exists for
-    /// the given type.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe problems that
-    /// make generation of a <see cref="TargetClassDefinition"/> object impossible.</exception>
-    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> violates at least one validation
-    /// rule, which would make code generation impossible. </exception>
-    /// <remarks>
-    /// <para>
-    /// Use this to retrieve a cached analyzed mixin configuration object for the given target type. The cache is actually maintained by
-    /// <see cref="TargetClassDefinitionCache"/>, but this is the public API that should be used instead of directly accessing the cache.
-    /// </para>
-    /// <para>
-    /// Use <see cref="GetConfiguration(Type,MixinConfiguration,GenerationPolicy)"/> to force generation of an empty configuration if none currently
-    /// exists for the given type.
-    /// </para>
-    /// <para>
-    /// If <paramref name="targetOrConcreteType"/> is already a generated type, no new <see cref="TargetClassDefinition"/> is created for it.
-    /// </para>
-    /// </remarks>
-    public static TargetClassDefinition GetConfiguration (Type targetOrConcreteType, MixinConfiguration mixinConfiguration)
-    {
-      return GetConfiguration (targetOrConcreteType, mixinConfiguration, GenerationPolicy.GenerateOnlyIfConfigured);
-    }
-
-    /// <summary>
-    /// Returns a <see cref="TargetClassDefinition"/> for the a given target type.
-    /// </summary>
-    /// <param name="targetOrConcreteType">Base type for which an analyzed mixin configuration should be returned or a concrete mixed type.</param>
-    /// <param name="mixinConfiguration">The <see cref="MixinConfiguration"/> to use.</param>
-    /// <param name="generationPolicy">Defines whether to return <see langword="null"/> or generate an empty default configuration if no mixin
-    /// configuration is available for the given <paramref name="targetOrConcreteType"/>.</param>
-    /// <returns>A <see cref="TargetClassDefinition"/> for the a given target type, or <see langword="null"/>.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ConfigurationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> contains severe problems that
-    /// make generation of a <see cref="TargetClassDefinition"/> object impossible.</exception>
-    /// <exception cref="ValidationException">The current mixin configuration for the <paramref name="targetOrConcreteType"/> violates at least one validation
-    /// rule, which would make code generation impossible. </exception>
-    /// <remarks>
-    /// <para>
-    /// Use this to retrieve a cached analyzed mixin configuration object for the given target type. The cache is actually maintained by
-    /// <see cref="TargetClassDefinitionCache"/>, but this is the public API that should be used instead of directly accessing the cache.
-    /// </para>
-    /// <para>
-    /// Use the <paramref name="generationPolicy"/> parameter to configure whether this method should return an empty but valid
-    /// <see cref="TargetClassDefinition"/> for types that do not have a mixin configuration in <paramref name="mixinConfiguration"/>.
-    /// </para>
-    /// <para>
-    /// If <paramref name="targetOrConcreteType"/> is already a generated type, no new <see cref="TargetClassDefinition"/> is created for it unless
-    /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
-    /// </para>
-    /// </remarks>
-    public static TargetClassDefinition GetConfiguration (Type targetOrConcreteType, MixinConfiguration mixinConfiguration, GenerationPolicy generationPolicy)
-    {
-      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
-      ArgumentUtility.CheckNotNull ("mixinConfiguration", mixinConfiguration);
-
-      ClassContext context = GetContext (targetOrConcreteType, mixinConfiguration, generationPolicy);
-
-      if (context == null)
-        return null;
-      else
-        return TargetClassDefinitionCache.Current.GetTargetClassDefinition (context);
-    }
-
     /// <summary>
     /// Returns a <see cref="ClassContext"/> for the a given target type.
     /// </summary>
