@@ -25,7 +25,7 @@ td.formGridSubTitleCell
 
 /*  Style applied to the BocList's in-place menu  */
 /*  no inheritence from body */
-td.contentMenuRow
+td.listMenuRow
 {
   font-size: 64%;
 }
