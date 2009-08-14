@@ -81,12 +81,12 @@ StyleUtility.RegisterResizeOnElement = function(element, eventHandler)
 {
   var resizeHandler = function()
   {
-    var timeoutID = $(this).attr('resizeTimeoutID');
+    var timeoutID = element.attr('resizeTimeoutID');
     if (timeoutID != null)
       window.clearTimeout(timeoutID);
 
     timeoutID = window.setTimeout(eventHandler, 50);
-    $(this).attr('resizeTimeoutID', timeoutID);
+    element.attr('resizeTimeoutID', timeoutID);
   }
-  $(document).ready(function() { element.bind('resize', resizeHandler); });
+  $(window).bind('resize', resizeHandler);
 }

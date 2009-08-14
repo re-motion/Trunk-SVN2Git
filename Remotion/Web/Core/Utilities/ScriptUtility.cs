@@ -29,7 +29,7 @@ namespace Remotion.Web.Utilities
   {
     void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQuerySelectorForBorderSpanTarget);
     void RegisterResizeOnElement (IControl control, string element, string eventHandler);
-    void TriggerEventAfterPageLoad (IControl control, ScriptUtility.Event eventToTrigger);
+    void TriggerEventAfterPageLoad (IControl control, string element, ScriptUtility.Event eventToTrigger);
   }
 
   /// <summary> Utility class for client-side scripts. </summary>
@@ -87,10 +87,10 @@ namespace Remotion.Web.Utilities
         control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtilityBase), key, script);
       }
 
-      public void TriggerEventAfterPageLoad (IControl control, Event eventToTrigger)
+      public void TriggerEventAfterPageLoad (IControl control, string element, Event eventToTrigger)
       {
         string key = typeof (ScriptUtilityBase).FullName + "_Trigger_" + eventToTrigger;
-        string script = string.Format("setTimeout(\"$('#{0}').trigger('{1}');\", 10);", control.ClientID, eventToTrigger.ToString().ToLower());
+        string script = string.Format("setTimeout(\"{0}.trigger('{1}');\", 10);", element, eventToTrigger.ToString().ToLower());
         control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtilityBase), key, script);
       }
     }

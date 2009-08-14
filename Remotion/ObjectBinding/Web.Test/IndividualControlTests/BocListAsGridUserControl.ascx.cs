@@ -130,7 +130,7 @@ public class BocListAsGridUserControl : BaseUserControl
     BocSimpleColumnDefinition dayofDeathColumnDefinition = new BocSimpleColumnDefinition();
     dayofDeathColumnDefinition.ColumnTitle = "Day of Death";
     dayofDeathColumnDefinition.SetPropertyPath (dateOfDeath.BusinessObjectProvider.CreatePropertyPath (new IBusinessObjectProperty[] { dateOfDeath }));
-    dayofDeathColumnDefinition.Width = Unit.Parse ("4em");
+    dayofDeathColumnDefinition.Width = Unit.Parse ("8em");
     dayofDeathColumnDefinition.EnforceWidth = true;
 
     BocSimpleColumnDefinition heightColumnDefinition = new BocSimpleColumnDefinition();

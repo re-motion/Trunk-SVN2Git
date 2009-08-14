@@ -74,7 +74,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
           Control,
           string.Format ("$('#{0}')", Control.ClientID),
           string.Format ("adjustView_{0}", Control.ClientID));
-      ScriptUtility.Instance.TriggerEventAfterPageLoad (Control, ScriptUtility.Event.Resize);
+      ScriptUtility.Instance.TriggerEventAfterPageLoad (Control, "$(window)", ScriptUtility.Event.Resize);
     }
   }
 }
