@@ -162,6 +162,7 @@
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierDeserializerTest.cs" />
     <Compile Include="Mixins\MixinTest.cs" />
     <Compile Include="Mixins\SampleTypes\MixinAddingSpecialNameMethod.cs" />
+    <Compile Include="Mixins\TargetClassDefinitionUtilityTest.cs" />
     <Compile Include="Mixins\Utilities\MixinReflectorTest.cs" />
     <Compile Include="Reflection\CodeGeneration\BlockStatementTest.cs" />
     <Compile Include="Reflection\CodeGeneration\SampleTypes\ClassWithProtectedVirtualMethod.cs" />
