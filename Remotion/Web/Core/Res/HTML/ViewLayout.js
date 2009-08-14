@@ -15,7 +15,7 @@ ViewLayout.AdjustWidth = function(contentElement)
 
 ViewLayout.AdjustHeight = function(contentElement)
 {
-  var margin = contentElement.outerHeight(true) - contentElement.innerHeight();
+  var margin = contentElement.outerHeight(true) - contentElement.height();
   contentElement.height(contentElement.parent().height() - margin);
 };
 
@@ -100,11 +100,23 @@ ViewLayout.SetParentUpdatePanelHeight = function(element)
 
 ViewLayout.FixIE6 = function(view, bottom)
 {
-
   if (!jQuery.browser.msie || parseInt(jQuery.browser.version) > 6)
     return;
 
+  var contentElement = view.parent();
+  contentElement.height(1);
+  ViewLayout.AdjustHeight(contentElement);
   view.height(bottom.offset().top - view.offset().top);
+
+  view.width(contentElement.innerWidth());
+  var margin = view.outerWidth(true) - view.outerWidth(false);
+  view.width(view.width() - margin);
+
+  var contentBorder = view.children(':first');
+  contentBorder.css('top', 0);
+  contentBorder.css('left', 0);
+  contentBorder.height(view.innerHeight());
+  contentBorder.width(view.innerWidth());
 
   // fix absolute positioning issues
   $('span.bocReferenceValue span.content').each(function()
