@@ -182,8 +182,13 @@ div.tabbedMultiViewTabStrip div.tabStripTabsPane
 
 div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
 {
-  display: inline;
+  display: block;
   margin-bottom: -1px; /* Moves the UL into the surrounding DIV. */
+}
+
+div.tabbedMultiViewTabStrip div.tabStripTabsPane li
+{
+  display: inline-block;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabWrapper
@@ -264,11 +269,6 @@ div.tabbedMultiViewTabStrip a span.anchorBody
   padding-bottom: 0.25em; 
   padding-left: 0.5em;
   padding-right: 0.5em;
-}
-
-div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
-{
-  display: block; /* Correction for Non-IE browsers. */
 }
 
 html > body div.tabbedMultiViewTabStrip span.tabStripTab, 

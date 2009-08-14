@@ -49,7 +49,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
         htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
       }
 
-      RegisterAdjustViewScript ();
+      RegisterAdjustViewScript();
 
       ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.WrapperClientID);
       ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ViewClientID);
@@ -59,7 +59,6 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 
     public override void PreRender ()
     {
-      
     }
 
     private void RegisterAdjustViewScript ()
@@ -70,10 +69,11 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.ViewClientID);
       Control.Page.ClientScript.RegisterClientScriptBlock (Control, typeof (SingleViewPreRenderer), keyAdjust, scriptAdjust);
 
-      string bindScript = @"$(window).resize( adjustView_{0} ); 
-setTimeout(""$(window).trigger('resize');"", 10);";
-      bindScript = string.Format (bindScript, Control.ClientID);
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (SingleViewPreRenderer), Control.ClientID + "_BindViewResize", bindScript);
+      ScriptUtility.Instance.RegisterResizeOnElement (
+          Control,
+          string.Format ("$('#{0}')", Control.ClientID),
+          string.Format ("adjustView_{0}", Control.ClientID));
+      ScriptUtility.Instance.TriggerEventAfterPageLoad (Control, ScriptUtility.Event.Resize);
     }
   }
 }

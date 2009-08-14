@@ -23,6 +23,7 @@ using Castle.Windsor;
 using CommonServiceLocator.WindsorAdapter;
 using log4net;
 using log4net.Config;
+using log4net.Layout;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -63,6 +64,7 @@ namespace OBWTest
     {
       XmlConfigurator.Configure();
       PreferQuirksModeRendering = false;
+      var resourceTheme = Remotion.Web.ResourceTheme.NovaBlue;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))
@@ -85,7 +87,7 @@ namespace OBWTest
 
       RegisterRendererFactories (container, "StandardMode");
       container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility.ScriptUtilityBase> ().LifeStyle.Singleton);
-      container.Register (Component.For<ResourceTheme>().Instance (ResourceTheme.ClassicBlue));
+      container.Register (Component.For<ResourceTheme> ().Instance (resourceTheme));
       
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));

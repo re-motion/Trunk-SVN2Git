@@ -82,3 +82,8 @@ StyleUtility.OnResize = function(elementID)
     StyleUtility.CalculateBorderSpans(element, topRight, bottomLeft, bottomRight);
   }
 }
+
+StyleUtility.RegisterResizeOnElement = function(element, eventHandler)
+{
+
+}

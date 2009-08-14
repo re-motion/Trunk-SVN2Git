@@ -70,15 +70,11 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
       scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.TabStripContainerClientID, Control.ActiveViewClientID);
       Control.Page.ClientScript.RegisterClientScriptBlock (Control, typeof (TabbedMultiViewPreRenderer), keyAdjust, scriptAdjust);
 
-      string bindScript =
-          @"$(document).ready( function(){{ 
-  $(window).bind('resize', function(){{ 
-    adjustView_{0}(); 
-  }}); 
-  setTimeout(""$(window).trigger('resize');"", 10);
-}} );";
-      bindScript = string.Format (bindScript, Control.ClientID);
-      Control.Page.ClientScript.RegisterStartupScriptBlock (Control, typeof (TabbedMultiViewPreRenderer), Control.ClientID + "_BindViewResize", bindScript);
+      ScriptUtility.Instance.RegisterResizeOnElement (
+          Control,
+          string.Format ("$('#{0}')", Control.ClientID),
+          string.Format ("adjustView_{0}", Control.ClientID));
+      ScriptUtility.Instance.TriggerEventAfterPageLoad (Control, ScriptUtility.Event.Resize);
     }
   }
 }
