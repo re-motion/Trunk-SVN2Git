@@ -38,6 +38,7 @@ div.tabbedMultiViewActiveView
 {
   overflow: hidden;
   margin: 0em 1em;
+  padding-top: 1px;
 }
 
 div.tabbedMultiViewActiveView div.contentBorder
@@ -47,6 +48,7 @@ div.tabbedMultiViewActiveView div.contentBorder
   top: 0;
   overflow: auto;
   padding: 0.25em;
+  border-top:  solid 1px transparent;
   border-left:  solid 1px #083779;
   border-right:  solid 1px #083779;
   border-bottom:  solid 1px #083779;
@@ -184,11 +186,6 @@ div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
 {
   display: block;
   margin-bottom: -1px; /* Moves the UL into the surrounding DIV. */
-}
-
-div.tabbedMultiViewTabStrip div.tabStripTabsPane li
-{
-  display: inline-block;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabWrapper
