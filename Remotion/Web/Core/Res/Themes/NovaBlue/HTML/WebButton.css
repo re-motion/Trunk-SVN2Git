@@ -8,9 +8,8 @@ button.webButton
   display: inline-block;
   vertical-align: middle;
   padding: 0px 3px !important;
-  margin: 1px 0px !important;
+  margin: 1px 2px !important;
   outline: none;
-  left: -1px;
 }
 
 button.webButton::-moz-focus-inner 
