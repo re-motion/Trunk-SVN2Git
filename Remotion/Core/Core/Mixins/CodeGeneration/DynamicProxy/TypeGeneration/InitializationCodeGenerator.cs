@@ -14,11 +14,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using Remotion.Mixins.Context;
-using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
@@ -39,72 +36,28 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 
     private static readonly MethodInfo s_initializeMixinMethod = typeof (IInitializableMixin).GetMethod ("Initialize");
 
-    private readonly TargetClassDefinition _configuration;
+    private readonly Type[] _expectedMixinTypes;
     private readonly FieldReference _extensionsField;
     private readonly FieldReference _firstField;
-    private readonly FieldReference _classContextField;
     private readonly ConstructorInfo _baseCallProxyCtor;
 
     public InitializationCodeGenerator (
-        TargetClassDefinition configuration, 
+        Type[] expectedMixinTypes,
         FieldReference extensionsField, 
         FieldReference firstField, 
         FieldReference classContextField,
         ConstructorInfo baseCallProxyCtor)
     {
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
+      ArgumentUtility.CheckNotNull ("expectedMixinTypes", expectedMixinTypes);
       ArgumentUtility.CheckNotNull ("extensionsField", extensionsField);
       ArgumentUtility.CheckNotNull ("firstField", firstField);
       ArgumentUtility.CheckNotNull ("classContextField", classContextField);
       ArgumentUtility.CheckNotNull ("baseCallProxyCtor", baseCallProxyCtor);
 
-      _configuration = configuration;
+      _expectedMixinTypes = expectedMixinTypes;
       _extensionsField = extensionsField;
       _firstField = firstField;
-      _classContextField = classContextField;
       _baseCallProxyCtor = baseCallProxyCtor;
-    }
-
-    /// <summary>
-    /// Gets a <see cref="Statement"/> that causes a <see cref="MixinArrayInitializer"/> to be created and assigned to 
-    /// <paramref name="mixinArrayInitializerField"/>.
-    /// </summary>
-    /// <param name="expectedMixinInfosLocal">A <see cref="LocalReference"/> used as a temporary to hold an array of 
-    /// <see cref="MixinArrayInitializer.ExpectedMixinInfo"/>.</param>
-    /// <param name="mixinArrayInitializerField">The target field to assign the new <see cref="MixinArrayInitializer"/> to.</param>
-    public Statement GetAssignMixinArrayInitializerStatement (LocalReference expectedMixinInfosLocal, FieldReference mixinArrayInitializerField)
-    {
-      var statements = new List<Statement> ();
-
-      // var expectedMixinInfos = new MixinArrayInitializer.ExpectedMixinInfo[<configuration.Mixins.Count>];
-      statements.Add (new AssignStatement (
-          expectedMixinInfosLocal, 
-          new NewArrayExpression (_configuration.Mixins.Count, typeof (MixinArrayInitializer.ExpectedMixinInfo))));
-
-      for (int i = 0; i < _configuration.Mixins.Count; ++i)
-      {
-        // expectedMixinInfos[i] = new MixinArrayInitializer.ExpectedMixinInfo (
-        //   <configuration.Mixins[i].Type>, <configuration.Mixins[i].NeedsDerivedMixin>)
-
-        var newMixinInfoExpression = new NewInstanceExpression (
-            typeof (MixinArrayInitializer.ExpectedMixinInfo),
-            new[] { typeof (Type), typeof (bool) },
-            new TypeTokenExpression (_configuration.Mixins[i].Type),
-            new ConstReference (_configuration.Mixins[i].NeedsDerivedMixinType ()).ToExpression ());
-        statements.Add (new AssignArrayStatement (expectedMixinInfosLocal, i, newMixinInfoExpression));
-      }
-
-      // <targetField> = MixinArrayInitializer (<configuration.Type>, expectedMixinInfos, <configuration>);
-
-      var newInitializerExpression = new NewInstanceExpression (
-          typeof (MixinArrayInitializer), 
-          new[] { typeof (Type), typeof (MixinArrayInitializer.ExpectedMixinInfo[]), typeof (ClassContext) },
-          new TypeTokenExpression (_configuration.Type),
-          expectedMixinInfosLocal.ToExpression(),
-          _classContextField.ToExpression());
-
-      statements.Add (new AssignStatement (mixinArrayInitializerField, newInitializerExpression));
-      return new BlockStatement (statements.ToArray ());
     }
 
     /// <summary>
@@ -128,8 +81,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     /// Implements the <see cref="IInitializableMixinTarget"/> interface on the given <paramref name="classEmitter"/>.
     /// </summary>
     /// <param name="classEmitter">The class emitter to generate <see cref="IInitializableMixinTarget"/> on.</param>
-    /// <param name="mixinArrayInitializerField">The field holding the <see cref="MixinArrayInitializer"/> used to initialize the mixins.
-    /// This field can be initialized using <see cref="GetAssignMixinArrayInitializerStatement"/>, e.g. in the generated class' type initializer.</param>
+    /// <param name="mixinArrayInitializerField">The field holding the <see cref="MixinArrayInitializer"/> used to initialize the mixins.</param>
     public void ImplementIInitializableMixinTarget (IClassEmitter classEmitter, FieldReference mixinArrayInitializerField)
     {
       ArgumentUtility.CheckNotNull ("classEmitter", classEmitter);
@@ -194,9 +146,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     private void ImplementInitializingMixins (CustomMethodEmitter initializeMethod, Expression deserialization)
     {
       var initializableMixinLocal = initializeMethod.DeclareLocal (typeof (IInitializableMixin));
-      for (int i = 0; i < _configuration.Mixins.Count; ++i)
+      for (int i = 0; i < _expectedMixinTypes.Length; ++i)
       {
-        if (typeof (IInitializableMixin).IsAssignableFrom (_configuration.Mixins[i].Type))
+        if (typeof (IInitializableMixin).IsAssignableFrom (_expectedMixinTypes[i]))
         {
           // var initializableMixin = (IInitializableMixin) __extensions[i];
           var castMixinExpression = new ConvertExpression (

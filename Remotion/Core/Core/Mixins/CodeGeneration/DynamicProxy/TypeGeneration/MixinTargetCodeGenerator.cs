@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 {
+  /// <summary>
+  /// Generates code needed to implement <see cref="IMixinTarget"/> on concrete mixed types.
+  /// </summary>
   public class MixinTargetCodeGenerator
   {
     private static readonly PropertyInfo s_classContextProperty = typeof (IMixinTarget).GetProperty ("ClassContext");

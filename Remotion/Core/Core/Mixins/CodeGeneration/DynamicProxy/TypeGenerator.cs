@@ -94,10 +94,18 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _mixinArrayInitializerField = _emitter.CreateStaticField ("__mixinArrayInitializer", typeof (MixinArrayInitializer), FieldAttributes.Private);
 
-      _initializationCodeGenerator = new InitializationCodeGenerator (configuration, _extensionsField, _firstField, _classContextField, _baseCallGenerator.Ctor);
-       _initializationCodeGenerator.ImplementIInitializableMixinTarget (Emitter, _mixinArrayInitializerField);
+      var expectedMixinTypes = new Type[Configuration.Mixins.Count];
+      for (int i = 0; i < expectedMixinTypes.Length; i++)
+        expectedMixinTypes[i] = _concreteMixinTypes[i] != null ? _concreteMixinTypes[i].GeneratedType : Configuration.Mixins[i].Type;
 
-       AddTypeInitializer ();
+      _initializationCodeGenerator = new InitializationCodeGenerator (
+          expectedMixinTypes, 
+          _extensionsField, 
+          _firstField, 
+          _classContextField, 
+          _baseCallGenerator.Ctor);
+
+      AddTypeInitializer (expectedMixinTypes);
 
       _emitter.ReplicateBaseTypeConstructors (
           delegate { }, 
@@ -105,6 +113,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       ImplementISerializable();
 
+      ImplementIInitializableMixinTarget();
       ImplementIMixinTarget ();
       ImplementIntroducedInterfaces ();
       ImplementRequiredDuckMethods ();
@@ -188,13 +197,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       get { return _extensionsField.Reference; }
     }
 
-    private void AddTypeInitializer ()
+    private void AddTypeInitializer (Type[] expectedMixinTypes)
     {
       var codeGenerator = new TypeInitializerCodeGenerator (
           Configuration.ConfigurationContext, 
+          expectedMixinTypes,
           _classContextField, 
-          _mixinArrayInitializerField, 
-          _initializationCodeGenerator);
+          _mixinArrayInitializerField);
       codeGenerator.ImplementTypeInitializer (Emitter);
     }
 
@@ -213,6 +222,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       var codeGenerator = new SerializationCodeGenerator (_classContextField, _extensionsField);
       codeGenerator.ImplementISerializable (Emitter);
+    }
+
+    private void ImplementIInitializableMixinTarget ()
+    {
+      _initializationCodeGenerator.ImplementIInitializableMixinTarget (Emitter, _mixinArrayInitializerField);
     }
 
     private void ImplementIMixinTarget ()
