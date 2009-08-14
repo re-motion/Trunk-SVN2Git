@@ -381,7 +381,6 @@
     <Compile Include="Mixins\Globalization\MixedResourceManagerResolver.cs" />
     <Compile Include="Mixins\IMixinTarget.cs" />
     <Compile Include="Mixins\BridgeImplementations\MixinTypeUtilityImplementation.cs" />
-    <Compile Include="Mixins\TargetClassDefinitionUtility.cs" />
     <Compile Include="Mixins\MixinTypeUtility.cs" />
     <Compile Include="Mixins\Utilities\MixedObjectInstantiationScope.cs" />
     <Compile Include="Mixins\MixerTool\Mixer.cs" />

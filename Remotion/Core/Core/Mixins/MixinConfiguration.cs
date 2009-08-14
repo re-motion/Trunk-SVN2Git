@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using Remotion.Context;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Utilities;
 using Remotion.Mixins.Validation;
 using Remotion.Utilities;
 
@@ -113,68 +114,100 @@ namespace Remotion.Mixins
     /// </summary>
     /// <value>The class contexts currently sotred in this configuration.</value>
     /// <remarks>
+    /// <para>
     /// Note that the collection returned cannot be used to enumerate all mixed classes, only
     /// those which are explicitly configured for mixins. If, for example, a base class is configured to have a mixin, its subclasses will not be
     /// enumerated by the collection even though they inherit the mixin from the base class.
+    /// </para>
+    /// <para>
+    /// Use <see cref="GetContext(System.Type)"/> to retrieve a <see cref="ClassContext"/> for a specific type.
+    /// </para>
     /// </remarks>
     public ClassContextCollection ClassContexts
     {
       get { return _classContexts; }
     }
 
-    private void ClassContextAdded (object sender, ClassContextEventArgs e)
+    /// <summary>
+    /// Returns a <see cref="ClassContext"/> for the given target type, or <see langword="null" /> if the type is not configured in this 
+    /// <see cref="MixinConfiguration"/>.
+    /// </summary>
+    /// <param name="targetOrConcreteType">Base type for which a context should be returned or a concrete mixed type.</param>
+    /// <returns>A <see cref="ClassContext"/> for the a given target type, or <see langword="null"/> if the type is not configured.</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// <para>
+    /// Use this to extract a class context for a given target type from an <see cref="MixinConfiguration"/> as it would be used for mixed type code 
+    /// generation. Besides looking up the target type in the <see cref="ClassContexts"/> collection, this method also specializes the generic
+    /// arguments in the class context with those of <paramref name="targetOrConcreteType"/> (if any).
+    /// </para>
+    /// <para>
+    /// Use the <see cref="GetContext(System.Type,Remotion.Mixins.GenerationPolicy)"/> overload taking a <see cref="GenerationPolicy"/> to control
+    /// whether this method should return an empty but valid <see cref="ClassContext"/> for types that do not have a mixin configuration.
+    /// </para>
+    /// <para>
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, the <see cref="ClassContext"/> used for its generation is returned.
+    /// </para>
+    /// </remarks>
+    public ClassContext GetContext (Type targetOrConcreteType)
     {
-      foreach (Type completeInterface in e.ClassContext.CompleteInterfaces)
-        RegisterInterface (completeInterface, e.ClassContext);
+      return GetContext (targetOrConcreteType, GenerationPolicy.GenerateOnlyIfConfigured);
     }
 
-    private void ClassContextRemoved (object sender, ClassContextEventArgs e)
+    /// <summary>
+    /// Returns a <see cref="ClassContext"/> for the given target type, allowing the caller to specify what should be done if the type is not 
+    /// configured in this <see cref="MixinConfiguration"/>.
+    /// </summary>
+    /// <param name="targetOrConcreteType">Base type for which a context should be returned or a concrete mixed type.</param>
+    /// <param name="generationPolicy">Defines whether to return <see langword="null"/> or generate an empty default <see cref="ClassContext"/> if no 
+    /// mixin configuration is available for the given <paramref name="targetOrConcreteType"/>.</param>
+    /// <returns>A <see cref="ClassContext"/> for the a given target type, or <see langword="null"/> if the type is not configured and 
+    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/> is specified.</returns>
+    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// <para>
+    /// Use this to extract a class context for a given target type from an <see cref="MixinConfiguration"/> as it would be used to create the
+    /// <see cref="TargetClassDefinition"/> object for the target type. Besides looking up the target type in the given mixin configuration, this
+    /// includes generating a default context if <see cref="GenerationPolicy.ForceGeneration"/> is specified and the specialization of generic
+    /// arguments in the class context with those of <paramref name="targetOrConcreteType"/>, if any.
+    /// </para>
+    /// <para>
+    /// Use the <paramref name="generationPolicy"/> parameter to configure whether this method should return an empty but valid
+    /// <see cref="ClassContext"/> for types that do not have a mixin configuration in this <see cref="MixinConfiguration"/>.
+    /// </para>
+    /// <para>
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, the <see cref="ClassContext"/> used for its generation is returned 
+    /// unless <see cref="GenerationPolicy.ForceGeneration"/> is specified.
+    /// </para>
+    /// </remarks>
+    public ClassContext GetContext (Type targetOrConcreteType, GenerationPolicy generationPolicy)
     {
-      List<Type> interfacesToBeRemoved = new List<Type>();
-      foreach (KeyValuePair<Type, ClassContext> item in _registeredInterfaces)
-      {
-        if (ReferenceEquals (item.Value, e.ClassContext))
-          interfacesToBeRemoved.Add (item.Key);
-      }
-      foreach (Type type in interfacesToBeRemoved)
-        _registeredInterfaces.Remove (type);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
+
+      ClassContext context;
+      if (generationPolicy != GenerationPolicy.ForceGeneration && MixinTypeUtility.IsGeneratedConcreteMixedType (targetOrConcreteType))
+        context = MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType);
+      else
+        context = ClassContexts.GetWithInheritance (targetOrConcreteType);
+
+      if (context == null && generationPolicy == GenerationPolicy.ForceGeneration)
+        context = new ClassContext (targetOrConcreteType);
+
+      if (context != null && targetOrConcreteType.IsGenericType && context.Type.IsGenericTypeDefinition)
+        context = context.SpecializeWithTypeArguments (targetOrConcreteType.GetGenericArguments ());
+
+      return context;
     }
-
-    ///// <summary>
-    ///// Removes a class context from the <see cref="MixinConfiguration"/>.
-    ///// </summary>
-    ///// <param name="type">The <see cref="Type"/> whose class context is to be removed.</param>
-    ///// <returns>True if the <see cref="MixinConfiguration"/> contained a respective class context; false otherwise.</returns>
-    //public bool RemoveClassContext (Type type)
-    //{
-    //  ArgumentUtility.CheckNotNull ("type", type);
-    //  ClassContext context = GetClassContextNonRecursive (type);
-    //  if (context != null && context.Type.Equals (type))
-    //  {
-    //    List<Type> interfacesToRemove = new List<Type>();
-    //    foreach (Type registeredInterface in _registeredInterfaces.Keys)
-    //    {
-    //      if (object.ReferenceEquals (ResolveInterface (registeredInterface), context))
-    //        interfacesToRemove.Add (registeredInterface);
-    //    }
-    //    foreach (Type interfaceToRemove in interfacesToRemove)
-    //      _registeredInterfaces.Remove (interfaceToRemove);
-
-    //    return _classContexts.RemoveExact (context.Type);
-    //  }
-    //  else
-    //    return false;
-    //}
 
     /// <summary>
     /// Temporarily replaces the mixin configuration associated with the current thread (actually <see cref="SafeContext"/>) with this 
-    /// <see cref="MixinConfiguration"/>. The original configuration will be restored when the returned object's <see cref="IDisposable.Dispose"/> method
-    /// is called.
+    /// <see cref="MixinConfiguration"/>. The original configuration will be restored when the returned object's <see cref="IDisposable.Dispose"/> 
+    /// method is called.
     /// </summary>
     /// <returns>An <see cref="IDisposable"/> object for restoring the original configuration.</returns>
     public IDisposable EnterScope ()
     {
-      MixinConfigurationScope scope = new MixinConfigurationScope (PeekActiveConfiguration);
+      var scope = new MixinConfigurationScope (PeekActiveConfiguration);
       SetActiveConfiguration (this);
       return scope;
     }
@@ -192,8 +225,8 @@ namespace Remotion.Mixins
     /// <see cref="TargetClassDefinitionCache.GetTargetClassDefinition(ClassContext)"/>.</exception>
     public IValidationLog Validate()
     {
-      List<IVisitableDefinition> definitions = new List<IVisitableDefinition>();
-      List<ValidationException> exceptions = new List<ValidationException> ();
+      var definitions = new List<IVisitableDefinition>();
+      var exceptions = new List<ValidationException> ();
 
       foreach (ClassContext classContext in ActiveConfiguration.ClassContexts)
       {
@@ -210,6 +243,7 @@ namespace Remotion.Mixins
           }
         }
       }
+
       DefaultValidationLog log = Validator.Validate (definitions);
       foreach (ValidationException exception in exceptions)
         log.MergeIn (exception.ValidationLog);
@@ -334,6 +368,24 @@ namespace Remotion.Mixins
           destination._registeredInterfaces.Remove (interfaceRegistration.Key);
         destination.RegisterInterface (interfaceRegistration.Key, interfaceRegistration.Value.Type);
       }
+    }
+
+    private void ClassContextAdded (object sender, ClassContextEventArgs e)
+    {
+      foreach (Type completeInterface in e.ClassContext.CompleteInterfaces)
+        RegisterInterface (completeInterface, e.ClassContext);
+    }
+
+    private void ClassContextRemoved (object sender, ClassContextEventArgs e)
+    {
+      var interfacesToBeRemoved = new List<Type> ();
+      foreach (KeyValuePair<Type, ClassContext> item in _registeredInterfaces)
+      {
+        if (ReferenceEquals (item.Value, e.ClassContext))
+          interfacesToBeRemoved.Add (item.Key);
+      }
+      foreach (Type type in interfacesToBeRemoved)
+        _registeredInterfaces.Remove (type);
     }
   }
 }

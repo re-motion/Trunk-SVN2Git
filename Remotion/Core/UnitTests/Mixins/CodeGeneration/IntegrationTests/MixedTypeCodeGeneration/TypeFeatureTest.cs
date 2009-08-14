@@ -271,9 +271,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     {
       var mixinTarget = (IMixinTarget) ObjectFactory.Create<BaseType1> (ParamList.Empty);
 
-      var expectedClassContext = TargetClassDefinitionUtility.GetContext (
+      var expectedClassContext = MixinConfiguration.ActiveConfiguration.GetContext (
           typeof (BaseType1), 
-          MixinConfiguration.ActiveConfiguration, 
           GenerationPolicy.GenerateOnlyIfConfigured);
       Assert.That (mixinTarget.ClassContext, Is.Not.Null);
       Assert.That (mixinTarget.ClassContext, Is.EqualTo (expectedClassContext));

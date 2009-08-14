@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Runtime.Remoting.Messaging;
 using Remotion.Context;
 using Remotion.Mixins.Context;
 
@@ -24,7 +23,7 @@ namespace Remotion.Mixins
   {
     private static readonly SafeContextSingleton<MixinConfiguration> s_activeConfiguration =
         new SafeContextSingleton<MixinConfiguration> ("Remotion.Mixins.MixinConfiguration.s_activeConfiguration",
-        delegate { return CopyMasterConfiguration (); });
+        CopyMasterConfiguration);
 
     /// <summary>
     /// Gets a value indicating whether this thread has an active mixin configuration.

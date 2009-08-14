@@ -35,9 +35,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<ArrayList> ().Clear().AddMixins (typeof (EquatableMixin<>)).EnterScope())
       {
-        var requestingClass = TargetClassDefinitionUtility.GetContext (
+        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
             typeof (ArrayList), 
-            MixinConfiguration.ActiveConfiguration, 
             GenerationPolicy.GenerateOnlyIfConfigured);
         MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0];
 
@@ -54,9 +53,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (UnsignedMixin)).EnterScope())
       {
-        var requestingClass = TargetClassDefinitionUtility.GetContext (
+        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
             typeof (BaseType1),
-            MixinConfiguration.ActiveConfiguration,
             GenerationPolicy.GenerateOnlyIfConfigured);
         MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0];
 
@@ -73,9 +71,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<UnsignedClass> ().Clear().AddMixins (typeof (EquatableMixin<>)).EnterScope())
       {
-        var requestingClass = TargetClassDefinitionUtility.GetContext (
+        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
             typeof (UnsignedClass),
-            MixinConfiguration.ActiveConfiguration,
             GenerationPolicy.GenerateOnlyIfConfigured);
         MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0];
 
@@ -93,9 +90,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (UnsignedMixin)).EnterScope())
       {
-        var requestingClass = TargetClassDefinitionUtility.GetContext (
+        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
             typeof (NullTarget),
-            MixinConfiguration.ActiveConfiguration,
             GenerationPolicy.GenerateOnlyIfConfigured);
         MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0];
 

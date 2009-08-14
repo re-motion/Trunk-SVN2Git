@@ -47,9 +47,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
       var classContextField = bt1.GetType().GetField ("__classContext", BindingFlags.NonPublic | BindingFlags.Static);
       Assert.That (classContextField.GetValue (null), Is.Not.Null);
 
-      var expectedClassContext = TargetClassDefinitionUtility.GetContext (
+      var expectedClassContext = MixinConfiguration.ActiveConfiguration.GetContext (
           typeof (BaseType1), 
-          MixinConfiguration.ActiveConfiguration, 
           GenerationPolicy.GenerateOnlyIfConfigured);
       Assert.That (classContextField.GetValue (null), Is.EqualTo (expectedClassContext));
     }

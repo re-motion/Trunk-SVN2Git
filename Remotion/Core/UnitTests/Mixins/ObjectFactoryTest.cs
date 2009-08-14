@@ -416,9 +416,8 @@ namespace Remotion.UnitTests.Mixins
 
     private Type GetGeneratedMixinType (Type targetType, Type mixinType)
     {
-      ClassContext requestingClass = TargetClassDefinitionUtility.GetContext (
+      ClassContext requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (
           targetType,
-          MixinConfiguration.ActiveConfiguration,
           GenerationPolicy.GenerateOnlyIfConfigured);
 
       MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[mixinType];
