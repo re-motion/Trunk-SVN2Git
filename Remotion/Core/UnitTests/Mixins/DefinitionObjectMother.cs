@@ -142,5 +142,19 @@ namespace Remotion.UnitTests.Mixins
       var overridesCollection = PrivateInvoke.GetNonPublicField (overriddenMember.Overrides, "_items");
       PrivateInvoke.InvokeNonPublicMethod (overridesCollection, "Add", memberOverride);
     }
+
+    public static TargetClassDefinition GetActiveTargetClassDefinition (Type type)
+    {
+      return GetActiveTargetClassDefinition (type, GenerationPolicy.GenerateOnlyIfConfigured);
+    }
+
+    public static TargetClassDefinition GetActiveTargetClassDefinition (Type type, GenerationPolicy generationPolicy)
+    {
+      var classContext = TargetClassDefinitionUtility.GetContext (
+          type, 
+          MixinConfiguration.ActiveConfiguration, 
+          generationPolicy);
+      return TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+    }
   }
 }

@@ -16,12 +16,14 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
 using Remotion.Mixins.Validation.Rules;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes;
+using System.Linq;
 
 namespace Remotion.UnitTests.Mixins.Validation
 {
@@ -32,7 +34,7 @@ namespace Remotion.UnitTests.Mixins.Validation
     public void ValidationVisitsSomething ()
     {
       IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate ();
-      Assert.IsTrue (log.ResultCount > 1);
+      Assert.That (log.ResultCount > 1, Is.True);
     }
 
     [Test]
@@ -49,9 +51,9 @@ namespace Remotion.UnitTests.Mixins.Validation
 
       using (IEnumerator<ValidationResult> results = log.GetResults().GetEnumerator())
       {
-        Assert.IsTrue (results.MoveNext());
+        Assert.That (results.MoveNext (), Is.True);
         ValidationResult firstResult = results.Current;
-        Assert.IsNotNull (firstResult.Definition);
+        Assert.That (firstResult.Definition, Is.Not.Null);
       }
     }
 
@@ -66,7 +68,7 @@ namespace Remotion.UnitTests.Mixins.Validation
     public void HasDefaultRules ()
     {
       IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate ();
-      Assert.IsTrue (log.GetNumberOfRulesExecuted () > 0);
+      Assert.That (log.GetNumberOfRulesExecuted () > 0, Is.True);
     }
 
     [Test]
@@ -74,9 +76,9 @@ namespace Remotion.UnitTests.Mixins.Validation
     {
       TargetClassDefinition bc = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (DateTime));
       DefaultValidationLog log = Validator.Validate (bc, new ThrowingRuleSet ());
-      Assert.IsTrue (log.GetNumberOfUnexpectedExceptions () > 0);
+      Assert.That (log.GetNumberOfUnexpectedExceptions () > 0, Is.True);
       var results = new List<ValidationResult> (log.GetResults ());
-      Assert.IsTrue (results[0].Exceptions[0].Exception is InvalidOperationException);
+      Assert.That (results[0].Exceptions[0].Exception is InvalidOperationException, Is.True);
     }
 
 
@@ -85,137 +87,137 @@ namespace Remotion.UnitTests.Mixins.Validation
     {
       IValidationLog log = MixinConfiguration.ActiveConfiguration.Validate ();
 
-      var visitedDefinitions = new Dictionary<IVisitableDefinition, IVisitableDefinition> ();
+      var visitedDefinitions = new HashSet<IVisitableDefinition> ();
       foreach (ValidationResult result in log.GetResults ())
       {
-        Assert.IsNotNull (result.Definition);
-        Assert.IsFalse (visitedDefinitions.ContainsKey (result.Definition));
-        visitedDefinitions.Add (result.Definition, result.Definition);
+        Assert.That (result.Definition, Is.Not.Null);
+        Assert.That (visitedDefinitions.Contains (result.Definition), Is.False);
+        visitedDefinitions.Add (result.Definition);
       }
 
-      TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bt1));
-      TargetClassDefinition bt3 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bt3));
-      TargetClassDefinition btWithAdditionalDependencies = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWithAdditionalDependencies));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (btWithAdditionalDependencies));
-      TargetClassDefinition targetWithSuppressAttribute = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassSuppressingBT1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (targetWithSuppressAttribute));
-      TargetClassDefinition targetWithNonIntroducedAttribute = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWithMixinNonIntroducingSimpleAttribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (targetWithSuppressAttribute));
-      TargetClassDefinition targetClassWinningOverMixinAddingBT1AttributeToMember = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (targetClassWinningOverMixinAddingBT1AttributeToMember));
+      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
+      AssertVisitedEquivalent (visitedDefinitions, bt1);
+      TargetClassDefinition bt3 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
+      AssertVisitedEquivalent (visitedDefinitions, bt3);
+      TargetClassDefinition btWithAdditionalDependencies = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
+      AssertVisitedEquivalent (visitedDefinitions, btWithAdditionalDependencies);
+      TargetClassDefinition targetWithSuppressAttribute = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassSuppressingBT1Attribute));
+      AssertVisitedEquivalent (visitedDefinitions, targetWithSuppressAttribute);
+      TargetClassDefinition targetWithNonIntroducedAttribute = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithMixinNonIntroducingSimpleAttribute));
+      AssertVisitedEquivalent (visitedDefinitions, targetWithSuppressAttribute);
+      TargetClassDefinition targetClassWinningOverMixinAddingBT1AttributeToMember = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember));
+      AssertVisitedEquivalent (visitedDefinitions, targetClassWinningOverMixinAddingBT1AttributeToMember);
 
       MixinDefinition bt1m1 = bt1.Mixins[typeof (BT1Mixin1)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bt1m1));
+      AssertVisitedEquivalent (visitedDefinitions, bt1m1);
       MixinDefinition bt1m2 = bt1.Mixins[typeof (BT1Mixin2)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bt1m2));
+      AssertVisitedEquivalent (visitedDefinitions, bt1m2);
       MixinDefinition bt3m1 = bt3.Mixins[typeof (BT3Mixin1)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bt3m1));
+      AssertVisitedEquivalent (visitedDefinitions, bt3m1);
       MixinDefinition bt3m2 = bt3.Mixins[typeof (BT3Mixin2)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bt3m2));
+      AssertVisitedEquivalent (visitedDefinitions, bt3m2);
       MixinDefinition bt3m3 = bt3.GetMixinByConfiguredType (typeof (BT3Mixin3<,>));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bt3m3));
+      AssertVisitedEquivalent (visitedDefinitions, bt3m3);
       MixinDefinition bt3m4 = bt3.Mixins[typeof (BT3Mixin4)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bt3m4));
+      AssertVisitedEquivalent (visitedDefinitions, bt3m4);
       MixinDefinition bt3m5 = bt3.Mixins[typeof (BT3Mixin5)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bt3m5));
+      AssertVisitedEquivalent (visitedDefinitions, bt3m5);
       MixinDefinition mixinWithSuppressedAttribute = targetWithSuppressAttribute.Mixins[typeof (MixinAddingBT1Attribute)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (mixinWithSuppressedAttribute));
+      AssertVisitedEquivalent (visitedDefinitions, mixinWithSuppressedAttribute);
       MixinDefinition mixinWithNonIntroducedAttribute = targetWithNonIntroducedAttribute.Mixins[typeof (MixinNonIntroducingSimpleAttribute)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (mixinWithNonIntroducedAttribute));
+      AssertVisitedEquivalent (visitedDefinitions, mixinWithNonIntroducedAttribute);
 
       MethodDefinition m1 = bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (m1));
+      AssertVisitedEquivalent (visitedDefinitions, m1);
       MethodDefinition m2 = bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", new[] { typeof (string) })];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (m2));
+      AssertVisitedEquivalent (visitedDefinitions, m2);
       MethodDefinition m3 = bt1m1.Methods[typeof (BT1Mixin1).GetMethod ("VirtualMethod")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (m3));
+      AssertVisitedEquivalent (visitedDefinitions, m3);
       MethodDefinition m4 = bt1m1.Methods[typeof (BT1Mixin1).GetMethod ("IntroducedMethod")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (m4));
+      AssertVisitedEquivalent (visitedDefinitions, m4);
       MethodDefinition memberWinningOverMixinAddingAttribute = targetClassWinningOverMixinAddingBT1AttributeToMember.Methods[typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember).GetMethod ("VirtualMethod")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (memberWinningOverMixinAddingAttribute));
+      AssertVisitedEquivalent (visitedDefinitions, memberWinningOverMixinAddingAttribute);
 
       PropertyDefinition p1 = bt1.Properties[typeof (BaseType1).GetProperty ("VirtualProperty")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (p1));
+      AssertVisitedEquivalent (visitedDefinitions, p1);
       MethodDefinition m5 = p1.GetMethod;
-      Assert.IsTrue (visitedDefinitions.ContainsKey (m5));
+      AssertVisitedEquivalent (visitedDefinitions, m5);
       MethodDefinition m6 = p1.SetMethod;
-      Assert.IsTrue (visitedDefinitions.ContainsKey (m6));
+      AssertVisitedEquivalent (visitedDefinitions, m6);
       PropertyDefinition p2 = bt1m1.Properties[typeof (BT1Mixin1).GetProperty ("VirtualProperty")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (p2));
+      AssertVisitedEquivalent (visitedDefinitions, p2);
 
       EventDefinition e1 = bt1.Events[typeof (BaseType1).GetEvent ("VirtualEvent")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (e1));
+      AssertVisitedEquivalent (visitedDefinitions, e1);
       MethodDefinition m7 = e1.AddMethod;
-      Assert.IsTrue (visitedDefinitions.ContainsKey (m7));
+      AssertVisitedEquivalent (visitedDefinitions, m7);
       MethodDefinition m8 = e1.RemoveMethod;
-      Assert.IsTrue (visitedDefinitions.ContainsKey (m8));
+      AssertVisitedEquivalent (visitedDefinitions, m8);
       EventDefinition e2 = bt1m1.Events[typeof (BT1Mixin1).GetEvent ("VirtualEvent")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (e2));
+      AssertVisitedEquivalent (visitedDefinitions, e2);
 
       InterfaceIntroductionDefinition i1 = bt1m1.InterfaceIntroductions[typeof (IBT1Mixin1)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (i1));
+      AssertVisitedEquivalent (visitedDefinitions, i1);
       MethodIntroductionDefinition im1 = i1.IntroducedMethods[typeof (IBT1Mixin1).GetMethod ("IntroducedMethod")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (im1));
+      AssertVisitedEquivalent (visitedDefinitions, im1);
       PropertyIntroductionDefinition im2 = i1.IntroducedProperties[typeof (IBT1Mixin1).GetProperty ("IntroducedProperty")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (im2));
+      AssertVisitedEquivalent (visitedDefinitions, im2);
       EventIntroductionDefinition im3 = i1.IntroducedEvents[typeof (IBT1Mixin1).GetEvent ("IntroducedEvent")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (im3));
+      AssertVisitedEquivalent (visitedDefinitions, im3);
 
       AttributeDefinition a1 = bt1.CustomAttributes.GetFirstItem (typeof (BT1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (a1));
+      AssertVisitedEquivalent (visitedDefinitions, a1);
       AttributeDefinition a2 = bt1m1.CustomAttributes.GetFirstItem (typeof (BT1M1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (a2));
+      AssertVisitedEquivalent (visitedDefinitions, a2);
       AttributeDefinition a3 = m1.CustomAttributes.GetFirstItem (typeof (BT1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (a3));
+      AssertVisitedEquivalent (visitedDefinitions, a3);
       AttributeDefinition a4 = p1.CustomAttributes.GetFirstItem (typeof (BT1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (a4));
+      AssertVisitedEquivalent (visitedDefinitions, a4);
       AttributeDefinition a5 = e1.CustomAttributes.GetFirstItem (typeof (BT1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (a5));
+      AssertVisitedEquivalent (visitedDefinitions, a5);
       AttributeDefinition a6 = im1.ImplementingMember.CustomAttributes.GetFirstItem (typeof (BT1M1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (a6));
+      AssertVisitedEquivalent (visitedDefinitions, a6);
       AttributeDefinition a7 = im2.ImplementingMember.CustomAttributes.GetFirstItem (typeof (BT1M1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (a7));
+      AssertVisitedEquivalent (visitedDefinitions, a7);
       AttributeDefinition a8 = im3.ImplementingMember.CustomAttributes.GetFirstItem (typeof (BT1M1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (a8));
+      AssertVisitedEquivalent (visitedDefinitions, a8);
 
       AttributeIntroductionDefinition ai1 = bt1.ReceivedAttributes.GetFirstItem (typeof (BT1M1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (ai1));
+      AssertVisitedEquivalent (visitedDefinitions, ai1);
       AttributeIntroductionDefinition ai2 = m1.ReceivedAttributes.GetFirstItem (typeof (BT1M1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (ai2));
+      AssertVisitedEquivalent (visitedDefinitions, ai2);
 
       RequiredBaseCallTypeDefinition bc1 = bt3.RequiredBaseCallTypes[typeof (IBaseType34)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bc1));
+      AssertVisitedEquivalent (visitedDefinitions, bc1);
       RequiredMethodDefinition bcm1 = bc1.Methods[typeof (IBaseType34).GetMethod ("IfcMethod")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bcm1));
+      AssertVisitedEquivalent (visitedDefinitions, bcm1);
 
       RequiredFaceTypeDefinition ft1 = bt3.RequiredFaceTypes[typeof (IBaseType32)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (ft1));
+      AssertVisitedEquivalent (visitedDefinitions, ft1);
       RequiredMethodDefinition fm1 = ft1.Methods[typeof (IBaseType32).GetMethod ("IfcMethod")];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (fm1));
+      AssertVisitedEquivalent (visitedDefinitions, fm1);
 
       RequiredMixinTypeDefinition rmt1 = btWithAdditionalDependencies.RequiredMixinTypes[typeof (IMixinWithAdditionalClassDependency)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (rmt1));
+      AssertVisitedEquivalent (visitedDefinitions, rmt1);
       RequiredMixinTypeDefinition rmt2 = btWithAdditionalDependencies.RequiredMixinTypes[typeof (MixinWithNoAdditionalDependency)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (rmt2));
+      AssertVisitedEquivalent (visitedDefinitions, rmt2);
 
       ThisDependencyDefinition td1 = bt3m1.ThisDependencies[typeof (IBaseType31)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (td1));
+      AssertVisitedEquivalent (visitedDefinitions, td1);
 
       BaseDependencyDefinition bd1 = bt3m1.BaseDependencies[typeof (IBaseType31)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (bd1));
+      AssertVisitedEquivalent (visitedDefinitions, bd1);
 
       MixinDependencyDefinition md1 = btWithAdditionalDependencies.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinDependencies[typeof (MixinWithNoAdditionalDependency)];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (md1));
+      AssertVisitedEquivalent (visitedDefinitions, md1);
 
       SuppressedAttributeIntroductionDefinition suppressedAttribute1 = mixinWithSuppressedAttribute.SuppressedAttributeIntroductions.GetFirstItem (typeof (BT1Attribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (suppressedAttribute1));
+      AssertVisitedEquivalent (visitedDefinitions, suppressedAttribute1);
 
       NonAttributeIntroductionDefinition nonIntroducedAttribute1 = mixinWithNonIntroducedAttribute.NonAttributeIntroductions.GetFirstItem (typeof (SimpleAttribute));
-      Assert.IsTrue (visitedDefinitions.ContainsKey (nonIntroducedAttribute1));
+      AssertVisitedEquivalent (visitedDefinitions, nonIntroducedAttribute1);
       NonAttributeIntroductionDefinition nonIntroducedAttribute2 = memberWinningOverMixinAddingAttribute.Overrides[0].NonAttributeIntroductions[0];
-      Assert.IsTrue (visitedDefinitions.ContainsKey (nonIntroducedAttribute2));
+      AssertVisitedEquivalent (visitedDefinitions, nonIntroducedAttribute2);
     }
 
     [Test]
@@ -229,15 +231,15 @@ namespace Remotion.UnitTests.Mixins.Validation
       definition.Accept (visitor);
 
       var exception = new ValidationException (log);
-      Assert.AreEqual ("Some parts of the mixin configuration could not be validated." + Environment.NewLine
-          + "Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes.AbstractMixinWithoutBase.AbstractMethod (Remotion.UnitTests.Mixins."
-          + "Validation.ValidationSampleTypes.AbstractMixinWithoutBase -> Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSingleMixinMethod):"
-          + Environment.NewLine
-          + "Error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes."
-          + Environment.NewLine, 
-          exception.Message);
+      Assert.That (
+                  exception.Message, Is.EqualTo ("Some parts of the mixin configuration could not be validated." + Environment.NewLine
+                            + "Remotion.UnitTests.Mixins.Validation.ValidationSampleTypes.AbstractMixinWithoutBase.AbstractMethod (Remotion.UnitTests.Mixins."
+                                      + "Validation.ValidationSampleTypes.AbstractMixinWithoutBase -> Remotion.UnitTests.Mixins.SampleTypes.ClassOverridingSingleMixinMethod):"
+                                                + Environment.NewLine
+                                                          + "Error: A target class overrides a method from one of its mixins, but the mixin is not derived from one of the Mixin<...> base classes."
+                                                                    + Environment.NewLine));
 
-      Assert.AreSame (log, exception.ValidationLog);
+      Assert.That (exception.ValidationLog, Is.SameAs (log));
     }
 
     [Test]
@@ -288,58 +290,73 @@ namespace Remotion.UnitTests.Mixins.Validation
       resultLog.ValidationEndsFor (bt3);
 
       resultLog.MergeIn (sourceLog);
-      Assert.AreEqual (5, resultLog.GetNumberOfSuccesses ());
-      Assert.AreEqual (5, resultLog.GetNumberOfWarnings ());
-      Assert.AreEqual (5, resultLog.GetNumberOfFailures ());
-      Assert.AreEqual (5, resultLog.GetNumberOfUnexpectedExceptions ());
+      Assert.That (resultLog.GetNumberOfSuccesses (), Is.EqualTo (5));
+      Assert.That (resultLog.GetNumberOfWarnings (), Is.EqualTo (5));
+      Assert.That (resultLog.GetNumberOfFailures (), Is.EqualTo (5));
+      Assert.That (resultLog.GetNumberOfUnexpectedExceptions (), Is.EqualTo (5));
 
       var results = new List<ValidationResult> (resultLog.GetResults ());
 
-      Assert.AreEqual (4, results.Count);
+      Assert.That (results.Count, Is.EqualTo (4));
 
-      Assert.AreEqual (bt2, results[0].Definition);
-      Assert.AreEqual (1, results[0].Successes.Count);
-      Assert.AreEqual (1, results[0].Failures.Count);
-      Assert.AreEqual (1, results[0].Warnings.Count);
-      Assert.AreEqual (1, results[0].Exceptions.Count);
+      Assert.That (results[0].Definition, Is.EqualTo (bt2));
+      Assert.That (results[0].Successes.Count, Is.EqualTo (1));
+      Assert.That (results[0].Failures.Count, Is.EqualTo (1));
+      Assert.That (results[0].Warnings.Count, Is.EqualTo (1));
+      Assert.That (results[0].Exceptions.Count, Is.EqualTo (1));
 
-      Assert.AreEqual (bt1, results[1].Definition);
+      Assert.That (results[1].Definition, Is.EqualTo (bt1));
 
-      Assert.AreEqual (2, results[1].Successes.Count);
-      Assert.AreEqual ("4", results[1].Successes[0].Message);
-      Assert.AreEqual ("Success", results[1].Successes[1].Message);
+      Assert.That (results[1].Successes.Count, Is.EqualTo (2));
+      Assert.That (results[1].Successes[0].Message, Is.EqualTo ("4"));
+      Assert.That (results[1].Successes[1].Message, Is.EqualTo ("Success"));
 
-      Assert.AreEqual (2, results[1].Warnings.Count);
-      Assert.AreEqual ("5", results[1].Warnings[0].Message);
-      Assert.AreEqual ("Warn", results[1].Warnings[1].Message);
+      Assert.That (results[1].Warnings.Count, Is.EqualTo (2));
+      Assert.That (results[1].Warnings[0].Message, Is.EqualTo ("5"));
+      Assert.That (results[1].Warnings[1].Message, Is.EqualTo ("Warn"));
 
-      Assert.AreEqual (2, results[1].Failures.Count);
-      Assert.AreEqual ("6", results[1].Failures[0].Message);
-      Assert.AreEqual ("Fail", results[1].Failures[1].Message);
+      Assert.That (results[1].Failures.Count, Is.EqualTo (2));
+      Assert.That (results[1].Failures[0].Message, Is.EqualTo ("6"));
+      Assert.That (results[1].Failures[1].Message, Is.EqualTo ("Fail"));
 
-      Assert.AreEqual (2, results[1].Exceptions.Count);
-      Assert.AreEqual (exception, results[1].Exceptions[0].Exception);
-      Assert.AreEqual (exception, results[1].Exceptions[1].Exception);
+      Assert.That (results[1].Exceptions.Count, Is.EqualTo (2));
+      Assert.That (results[1].Exceptions[0].Exception, Is.EqualTo (exception));
+      Assert.That (results[1].Exceptions[1].Exception, Is.EqualTo (exception));
 
-      Assert.AreEqual (bt3, results[2].Definition);
-      Assert.AreEqual (1, results[2].Successes.Count);
-      Assert.AreEqual (1, results[2].Failures.Count);
-      Assert.AreEqual (1, results[2].Warnings.Count);
-      Assert.AreEqual (1, results[2].Exceptions.Count);
+      Assert.That (results[2].Definition, Is.EqualTo (bt3));
+      Assert.That (results[2].Successes.Count, Is.EqualTo (1));
+      Assert.That (results[2].Failures.Count, Is.EqualTo (1));
+      Assert.That (results[2].Warnings.Count, Is.EqualTo (1));
+      Assert.That (results[2].Exceptions.Count, Is.EqualTo (1));
 
-      Assert.AreEqual (bt4, results[3].Definition);
+      Assert.That (results[3].Definition, Is.EqualTo (bt4));
 
-      Assert.AreEqual (1, results[3].Successes.Count);
-      Assert.AreEqual ("Success2", results[3].Successes[0].Message);
+      Assert.That (results[3].Successes.Count, Is.EqualTo (1));
+      Assert.That (results[3].Successes[0].Message, Is.EqualTo ("Success2"));
 
-      Assert.AreEqual (1, results[3].Warnings.Count);
-      Assert.AreEqual ("Warn2", results[3].Warnings[0].Message);
+      Assert.That (results[3].Warnings.Count, Is.EqualTo (1));
+      Assert.That (results[3].Warnings[0].Message, Is.EqualTo ("Warn2"));
 
-      Assert.AreEqual (1, results[3].Failures.Count);
-      Assert.AreEqual ("Fail2", results[3].Failures[0].Message);
+      Assert.That (results[3].Failures.Count, Is.EqualTo (1));
+      Assert.That (results[3].Failures[0].Message, Is.EqualTo ("Fail2"));
 
-      Assert.AreEqual (1, results[3].Exceptions.Count);
-      Assert.AreEqual (exception, results[3].Exceptions[0].Exception);
+      Assert.That (results[3].Exceptions.Count, Is.EqualTo (1));
+      Assert.That (results[3].Exceptions[0].Exception, Is.EqualTo (exception));
+    }
+
+    private void AssertVisitedEquivalent (HashSet<IVisitableDefinition> visitedDefinitions, IVisitableDefinition expectedDefinition)
+    {
+      var match = visitedDefinitions.Where (def => DefinitionsMatch (expectedDefinition, def)).Any ();
+      var message = string.Format ("Expected {0} '{1}' to be visited.", expectedDefinition.GetType ().Name, expectedDefinition.FullName);
+      Assert.That (match, message);
+    }
+
+    private bool DefinitionsMatch (IVisitableDefinition expectedDefinition, IVisitableDefinition actualDefinition)
+    {
+      return actualDefinition.GetType () == expectedDefinition.GetType ()
+          && actualDefinition.FullName == expectedDefinition.FullName
+          && ((actualDefinition.Parent == null && expectedDefinition.Parent == null)
+              || DefinitionsMatch (actualDefinition.Parent, expectedDefinition.Parent));
     }
   }
 }

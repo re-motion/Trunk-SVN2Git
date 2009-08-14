@@ -132,7 +132,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
       ClassContext context = attributes[0].GetClassContext ();
-      Assert.That (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType3)).ConfigurationContext, Is.EqualTo (context));
+      Assert.That (context, Is.EqualTo (MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (BaseType3))));
     }
 
     [Test]
@@ -177,9 +177,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       builder.TypeNameProvider = nameProviderMock;
       ConcreteTypeBuilder.SetCurrent (builder);
 
-      TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
-
-      Expect.Call (nameProviderMock.GetNewTypeName (definition)).Return ("Foo");
+      Expect.Call (nameProviderMock.GetNewTypeName (Arg<TargetClassDefinition>.Matches (tcd => tcd.Type == typeof (BaseType1)))).Return ("Foo");
 
       repository.ReplayAll ();
 
@@ -199,9 +197,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       builder.TypeNameProvider = nameProviderMock;
       ConcreteTypeBuilder.SetCurrent (builder);
 
-      TargetClassDefinition definition = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
-
-      Expect.Call (nameProviderMock.GetNewTypeName (definition)).Return ("Foo+Bar");
+      Expect.Call (nameProviderMock.GetNewTypeName (Arg<TargetClassDefinition>.Matches (tcd => tcd.Type == typeof (BaseType1)))).Return ("Foo+Bar");
 
       repository.ReplayAll ();
 

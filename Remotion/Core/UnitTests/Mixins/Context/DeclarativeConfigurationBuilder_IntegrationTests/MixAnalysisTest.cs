@@ -15,7 +15,9 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
+using Remotion.Mixins.Context;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_IntegrationTests
@@ -26,23 +28,22 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void MixAttributeIsAnalyzed ()
     {
-      Assert.IsTrue (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassForGlobalMix)).Mixins
-          .ContainsKey (typeof (MixinForGlobalMix)));
-      Assert.IsTrue (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassForGlobalMix)).Mixins
-          .ContainsKey (typeof (AdditionalDependencyForGlobalMix)));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (TargetClassForGlobalMix));
+      Assert.That (context.Mixins.ContainsKey (typeof (MixinForGlobalMix)), Is.True);
     }
 
     [Test]
     public void AdditionalDependenciesAreAnalyzed ()
     {
-      Assert.IsTrue (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassForGlobalMix)).Mixins[typeof (MixinForGlobalMix)].MixinDependencies.ContainsKey (typeof (AdditionalDependencyForGlobalMix)));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (TargetClassForGlobalMix));
+      Assert.That (context.Mixins[typeof (MixinForGlobalMix)].ExplicitDependencies, List.Contains (typeof (AdditionalDependencyForGlobalMix)));
     }
 
     [Test]
     public void SuppressedMixinsAreAnalyzed ()
     {
-      Assert.IsFalse (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (TargetClassForGlobalMix)).Mixins
-          .ContainsKey (typeof (SuppressedMixinForGlobalMix)));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (TargetClassForGlobalMix));
+      Assert.That (context.Mixins.ContainsKey (typeof (SuppressedMixinForGlobalMix)), Is.False);
     }
   }
 }

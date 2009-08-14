@@ -19,6 +19,7 @@ using System.ComponentModel.Design;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -59,7 +60,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     public void BuildFromAssemblies()
     {
       MixinConfiguration ac = DeclarativeConfigurationBuilder.BuildConfigurationFromClasses (null, new ClassContext(typeof (object)));
-      Assembly[] assemblies = new Assembly[] { typeof (BaseType1).Assembly, typeof (object).Assembly };
+      var assemblies = new[] { typeof (BaseType1).Assembly, typeof (object).Assembly };
       MixinConfiguration ac2 = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (assemblies);
       Assert.IsTrue (ac2.ClassContexts.ContainsWithInheritance (typeof (BaseType1)));
       Assert.IsFalse (ac2.ClassContexts.ContainsWithInheritance (typeof (object)));
@@ -126,20 +127,21 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       }
     }
 
-    [Extends (typeof (BaseType1))]
-    [IgnoreForMixinConfiguration]
-    public class Foo { }
-
     [Test]
     public void IgnoreForMixinConfiguration()
     {
-      Assert.IsFalse (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1)).Mixins.ContainsKey (typeof (Foo)));
+      MixinConfiguration ac = DeclarativeConfigurationBuilder.BuildConfigurationFromTypes (
+          null, 
+          new[] { typeof (BaseType1), typeof (BT1Mixin1), typeof (MixinWithIgnoreForMixinConfigurationAttribute) });
+
+      Assert.That (ac.ClassContexts.GetExact (typeof (BaseType1)).Mixins.ContainsKey (typeof (MixinWithIgnoreForMixinConfigurationAttribute)), 
+          Is.False);
     }
 
     [Test]
     public void FilterExcludesSystemAssemblies ()
     {
-      AssemblyFinderTypeDiscoveryService service =
+      var service =
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
       Assert.IsFalse (service.AssemblyFinder.Filter.ShouldConsiderAssembly (typeof (object).Assembly.GetName ()));
@@ -149,7 +151,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void FilterExcludesGeneratedAssemblies ()
     {
-      AssemblyFinderTypeDiscoveryService service =
+      var service =
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
       
@@ -166,7 +168,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void FilterIncludesAllNormalAssemblies ()
     {
-      AssemblyFinderTypeDiscoveryService service =
+      var service =
           (AssemblyFinderTypeDiscoveryService)
               PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
 
@@ -181,14 +183,14 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     [Test]
     public void DesignModeIsDetected ()
     {
-      ITypeDiscoveryService service =
+      var service =
           (ITypeDiscoveryService) PrivateInvoke.InvokeNonPublicStaticMethod (typeof (DeclarativeConfigurationBuilder), "GetTypeDiscoveryService");
       Assert.IsInstanceOfType (typeof (AssemblyFinderTypeDiscoveryService), service);
 
-      MockRepository repository = new MockRepository();
-      IDesignModeHelper designModeHelperMock = repository.StrictMock<IDesignModeHelper> ();
-      IDesignerHost designerHostMock = repository.StrictMock<IDesignerHost>();
-      ITypeDiscoveryService designerServiceMock = repository.StrictMock<ITypeDiscoveryService> ();
+      var repository = new MockRepository();
+      var designModeHelperMock = repository.StrictMock<IDesignModeHelper> ();
+      var designerHostMock = repository.StrictMock<IDesignerHost>();
+      var designerServiceMock = repository.StrictMock<ITypeDiscoveryService> ();
 
       Expect.Call (designModeHelperMock.DesignerHost).Return (designerHostMock);
       Expect.Call (designerHostMock.GetService (typeof (ITypeDiscoveryService))).Return (designerServiceMock);
@@ -246,5 +248,9 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       Assert.IsTrue (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin2)));
       Assert.IsTrue (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin3)));
     }
+
+    [Extends (typeof (BaseType1))]
+    [IgnoreForMixinConfiguration]
+    public class MixinWithIgnoreForMixinConfigurationAttribute { }
   }
 }

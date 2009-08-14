@@ -108,7 +108,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void CreateTypeGenerator ()
     {
-      TargetClassDefinition bt1 = TargetClassDefinitionUtility.GetActiveConfiguration (typeof (BaseType1));
+      TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
 
       ITypeGenerator generator = SavedTypeBuilder.Scope.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache, bt1, GuidNameProvider.Instance, GuidNameProvider.Instance);
       Assert.IsNotNull (generator);

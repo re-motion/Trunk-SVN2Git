@@ -45,11 +45,5 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       Assert.IsTrue (context.Mixins.ContainsKey (typeof (NullMixin)));
       Assert.IsTrue (context.Mixins.ContainsKey (typeof (MixinExtendingMixedInterface)));
     }
-
-    [Test]
-    public void Definition_ForImplementingClass ()
-    {
-      Assert.IsTrue (TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassWithMixedInterface)).Mixins.ContainsKey (typeof (NullMixin)));
-    }
   }
 }

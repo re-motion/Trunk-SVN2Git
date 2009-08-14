@@ -52,9 +52,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     [ExpectedException (typeof (ValidationException))]
     public void InvalidMixinConfiguration ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass (typeof (ClassWithAllDataTypes)).Clear().AddMixins (typeof (MixinWithAccessToDomainObjectProperties<Official>)).EnterScope())
+      using (MixinConfiguration.BuildNew().ForClass (typeof (ClassWithAllDataTypes)).AddMixins (typeof (MixinWithAccessToDomainObjectProperties<Official>)).EnterScope())
       {
-        TargetClassDefinitionUtility.GetActiveConfiguration (typeof (ClassWithAllDataTypes));
+        TypeFactory.GetConcreteType (typeof (ClassWithAllDataTypes));
       }
     }
 
