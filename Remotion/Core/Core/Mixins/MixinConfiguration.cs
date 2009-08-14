@@ -142,8 +142,8 @@ namespace Remotion.Mixins
     /// arguments in the class context with those of <paramref name="targetOrConcreteType"/> (if any).
     /// </para>
     /// <para>
-    /// Use the <see cref="GetContext(System.Type,Remotion.Mixins.GenerationPolicy)"/> overload taking a <see cref="GenerationPolicy"/> to control
-    /// whether this method should return an empty but valid <see cref="ClassContext"/> for types that do not have a mixin configuration.
+    /// Use the <see cref="GetContextForce(System.Type)"/> method to reveive an empty but valid <see cref="ClassContext"/> for types that do not have 
+    /// a mixin configuration instead of <see langword="null" />.
     /// </para>
     /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, the <see cref="ClassContext"/> used for its generation is returned.
@@ -151,52 +151,54 @@ namespace Remotion.Mixins
     /// </remarks>
     public ClassContext GetContext (Type targetOrConcreteType)
     {
-      return GetContext (targetOrConcreteType, GenerationPolicy.GenerateOnlyIfConfigured);
+      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
+
+      ClassContext context = 
+          MixinTypeUtility.IsGeneratedConcreteMixedType (targetOrConcreteType) 
+              ? MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType) 
+              : ClassContexts.GetWithInheritance (targetOrConcreteType);
+
+      if (context != null && targetOrConcreteType.IsGenericType && context.Type.IsGenericTypeDefinition)
+        return context.SpecializeWithTypeArguments (targetOrConcreteType.GetGenericArguments ());
+      else
+        return context;
     }
 
     /// <summary>
-    /// Returns a <see cref="ClassContext"/> for the given target type, allowing the caller to specify what should be done if the type is not 
-    /// configured in this <see cref="MixinConfiguration"/>.
+    /// Returns a <see cref="ClassContext"/> for the given target type, generating a trivial default <see cref="ClassContext"/> for types that are
+    /// not configured in this <see cref="MixinConfiguration"/>.
     /// </summary>
     /// <param name="targetOrConcreteType">Base type for which a context should be returned or a concrete mixed type.</param>
-    /// <param name="generationPolicy">Defines whether to return <see langword="null"/> or generate an empty default <see cref="ClassContext"/> if no 
-    /// mixin configuration is available for the given <paramref name="targetOrConcreteType"/>.</param>
-    /// <returns>A <see cref="ClassContext"/> for the a given target type, or <see langword="null"/> if the type is not configured and 
-    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/> is specified.</returns>
+    /// <returns>A <see cref="ClassContext"/> for the a given target type.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
     /// <remarks>
     /// <para>
     /// Use this to extract a class context for a given target type from an <see cref="MixinConfiguration"/> as it would be used to create the
     /// <see cref="TargetClassDefinition"/> object for the target type. Besides looking up the target type in the given mixin configuration, this
-    /// includes generating a default context if <see cref="GenerationPolicy.ForceGeneration"/> is specified and the specialization of generic
-    /// arguments in the class context with those of <paramref name="targetOrConcreteType"/>, if any.
+    /// includes generating a default context if necessary, and the specialization of generic arguments in the class context with those of 
+    /// <paramref name="targetOrConcreteType"/>, if any.
     /// </para>
     /// <para>
-    /// Use the <paramref name="generationPolicy"/> parameter to configure whether this method should return an empty but valid
-    /// <see cref="ClassContext"/> for types that do not have a mixin configuration in this <see cref="MixinConfiguration"/>.
+    /// Use the <see cref="GetContext(System.Type)"/> method to avoid generating an empty default <see cref="ClassContext"/> for non-configured
+    /// instances.
     /// </para>
     /// <para>
-    /// If <paramref name="targetOrConcreteType"/> is already a generated type, the <see cref="ClassContext"/> used for its generation is returned 
-    /// unless <see cref="GenerationPolicy.ForceGeneration"/> is specified.
+    /// If <paramref name="targetOrConcreteType"/> is already a generated type, a new <see cref="ClassContext"/> is nevertheless generated.
     /// </para>
     /// </remarks>
-    public ClassContext GetContext (Type targetOrConcreteType, GenerationPolicy generationPolicy)
+    public ClassContext GetContextForce (Type targetOrConcreteType)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 
-      ClassContext context;
-      if (generationPolicy != GenerationPolicy.ForceGeneration && MixinTypeUtility.IsGeneratedConcreteMixedType (targetOrConcreteType))
-        context = MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType);
+      ClassContext context = ClassContexts.GetWithInheritance (targetOrConcreteType);
+
+      if (context == null)
+        return new ClassContext (targetOrConcreteType);
+
+      if (targetOrConcreteType.IsGenericType && context.Type.IsGenericTypeDefinition)
+        return context.SpecializeWithTypeArguments (targetOrConcreteType.GetGenericArguments ());
       else
-        context = ClassContexts.GetWithInheritance (targetOrConcreteType);
-
-      if (context == null && generationPolicy == GenerationPolicy.ForceGeneration)
-        context = new ClassContext (targetOrConcreteType);
-
-      if (context != null && targetOrConcreteType.IsGenericType && context.Type.IsGenericTypeDefinition)
-        context = context.SpecializeWithTypeArguments (targetOrConcreteType.GetGenericArguments ());
-
-      return context;
+        return context;
     }
 
     /// <summary>

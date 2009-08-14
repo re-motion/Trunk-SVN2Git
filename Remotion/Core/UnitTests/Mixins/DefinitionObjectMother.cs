@@ -21,14 +21,9 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Utilities.Singleton;
-using Remotion.Mixins.Validation;
-using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
-using BT1Mixin1=Remotion.UnitTests.Mixins.SampleTypes.BT1Mixin1;
-using System.Linq;
 
 namespace Remotion.UnitTests.Mixins
 {
@@ -163,9 +158,7 @@ namespace Remotion.UnitTests.Mixins
 
     public static TargetClassDefinition GetActiveTargetClassDefinition_Force (Type type)
     {
-      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (
-          type, 
-          GenerationPolicy.ForceGeneration);
+      var classContext = MixinConfiguration.ActiveConfiguration.GetContextForce (type);
       return TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
     }
   }

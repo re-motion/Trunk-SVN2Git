@@ -25,7 +25,11 @@ namespace Remotion.Mixins.BridgeImplementations
     public Type GetConcreteType (Type targetOrConcreteType, GenerationPolicy generationPolicy)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
-      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType, generationPolicy);
+      var classContext = 
+          generationPolicy == GenerationPolicy.ForceGeneration 
+              ? MixinConfiguration.ActiveConfiguration.GetContextForce (targetOrConcreteType)
+              : MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
+
       if (classContext == null)
         return targetOrConcreteType;
       else

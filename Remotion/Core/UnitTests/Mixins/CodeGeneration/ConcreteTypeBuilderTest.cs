@@ -186,13 +186,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void CanContinueToGenerateTypesAfterSaving()
     {
       var builder = new ConcreteTypeBuilder();
-      var bt1Context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1), GenerationPolicy.ForceGeneration);
-      var bt2Context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType2), GenerationPolicy.ForceGeneration);
+      var bt1Context = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType1));
+      var bt2Context = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType2));
 
       Assert.That (builder.GetConcreteType (bt1Context), Is.Not.Null);
       Assert.That (builder.GetConcreteType (bt2Context), Is.Not.Null);
       builder.SaveAndResetDynamicScope();
-      var bt3Context = MixinConfiguration.ActiveConfiguration.GetContext(typeof (BaseType3), GenerationPolicy.ForceGeneration);
+      var bt3Context = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType3));
       Assert.That (builder.GetConcreteType (bt3Context), Is.Not.Null);
     }
 

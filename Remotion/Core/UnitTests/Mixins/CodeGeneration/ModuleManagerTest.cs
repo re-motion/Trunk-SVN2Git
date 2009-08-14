@@ -81,8 +81,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       };
       var savedBuilder = new ConcreteTypeBuilder {Scope = _savedModuleManager};
 
-      var signedSavedContext = MixinConfiguration.ActiveConfiguration.GetContext (typeof (object), GenerationPolicy.ForceGeneration);
-      var unsignedSavdContext = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1), GenerationPolicy.ForceGeneration);
+      var signedSavedContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (object));
+      var unsignedSavdContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType1));
 
       _signedSavedType = savedBuilder.GetConcreteType (signedSavedContext);
       _unsignedSavedType = savedBuilder.GetConcreteType (unsignedSavdContext);
