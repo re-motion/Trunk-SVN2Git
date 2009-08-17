@@ -24,9 +24,7 @@
     <contenttemplate>
     <remotion:TabbedMultiView ID="MultiView" runat="server" CssClass="tabbedMultiView">
       <TopControls>
-        <remotion:TabbedMenu ID="NavigationTabs" runat="server" StatusText="Status Text" SubMenuBackgroundColor-IsEmpty="True" SubMenuBackgroundColor-A="0" SubMenuBackgroundColor-B="0"
-          SubMenuBackgroundColor-IsNamedColor="False" SubMenuBackgroundColor-IsKnownColor="False" SubMenuBackgroundColor-Name="0" SubMenuBackgroundColor-G="0"
-          SubMenuBackgroundColor-R="0" SubMenuBackgroundColor-IsSystemColor="False">
+        <remotion:TabbedMenu ID="NavigationTabs" runat="server" StatusText="Status Text">
           <Tabs>
             <remotion:MainMenuTab Text="Tab 1" ItemID="Tab1">
               <SubMenuTabs>
@@ -99,7 +97,7 @@
             </remotion:MainMenuTab>
           </Tabs>
         </remotion:TabbedMenu>
-        <system.web.ui.htmlcontrols.htmlgenericcontrol>Test Tabbed Form</system.web.ui.htmlcontrols.htmlgenericcontrol>
+        <div>Test Tabbed Form</div>
         <remotion:ValidationStateViewer ID="ValidationStateViewer"></remotion:ValidationStateViewer>
       </TopControls>
       <Views>
