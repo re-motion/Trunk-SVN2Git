@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void InheritedIntroducedInterfaces ()
     {
       TargetClassDefinition bt1 =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinIntroducingInheritedInterface));
+          DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinIntroducingInheritedInterface));
       Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IMixinIII1)));
       Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IMixinIII2)));
       Assert.IsTrue (bt1.ReceivedInterfaces.ContainsKey (typeof (IMixinIII3)));
@@ -38,7 +38,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void InheritedFaceDependencies ()
     {
       TargetClassDefinition bt1 =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinFaceDependingOnInheritedInterface),
+          DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinFaceDependingOnInheritedInterface),
               typeof (MixinIntroducingInheritedInterface));
       Assert.IsTrue (bt1.RequiredFaceTypes.ContainsKey (typeof (IMixinIII1)));
       Assert.IsTrue (bt1.RequiredFaceTypes.ContainsKey (typeof (IMixinIII2)));
@@ -56,7 +56,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void InheritedBaseDependencies ()
     {
       TargetClassDefinition bt1 =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (BaseType1),
               typeof (MixinBaseDependingOnInheritedInterface),
               typeof (MixinIntroducingInheritedInterface));

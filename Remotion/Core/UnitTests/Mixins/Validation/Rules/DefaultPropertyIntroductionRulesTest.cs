@@ -28,7 +28,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPrivateIntroducedProperty_HasSameNameAsTargetClassProperty ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithDefaultVisibility")];
@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedProperty_HasSameNameButDifferentSignatureFromTargetClassProperty ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesDifferentSignaturesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
@@ -54,7 +54,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedProperty_HasSameNameAndSignatureAsTargetClassProperty ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPrivateIntroducedProperty_HasSameNameAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
@@ -81,7 +81,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPublicIntroducedProperty_DoesNotHaveSameNameAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       PropertyIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")];
@@ -94,7 +94,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPublicIntroducedProperty_HasSameNameAsPrivateOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (MixinIntroducingMembersWithPrivateVisibilities));
@@ -109,7 +109,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedProperty_HasSameNameButDifferentSignatureAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures));
@@ -123,7 +123,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedProperty_HasSameNameAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));

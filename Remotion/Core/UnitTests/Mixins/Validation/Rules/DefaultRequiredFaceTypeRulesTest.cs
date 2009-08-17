@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfRequiredFaceClassNotAvailable ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassLookingLikeBaseType3), typeof (MixinWithClassThisDependency));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassLookingLikeBaseType3), typeof (MixinWithClassThisDependency));
       DefaultValidationLog log = Validator.Validate (definition.RequiredFaceTypes[typeof (BaseType3)]);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredFaceTypeRules.FaceClassMustBeAssignableFromTargetType", log));
@@ -36,7 +36,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfRequiredFaceTypeNotVisible ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithInvisibleThisDependency));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithInvisibleThisDependency));
       DefaultValidationLog log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredFaceTypeRules.RequiredFaceTypeMustBePublic", log));

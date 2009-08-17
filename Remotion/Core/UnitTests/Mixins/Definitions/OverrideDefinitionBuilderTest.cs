@@ -131,7 +131,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void OverrideNonVirtualMethod ()
     {
-      TargetClassDefinition targetClass = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
       MixinDefinition mixin = targetClass.Mixins[typeof (BT4Mixin1)];
       Assert.IsNotNull (mixin);
 
@@ -149,7 +149,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void OverrideNonVirtualProperty ()
     {
-      TargetClassDefinition targetClass = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
       MixinDefinition mixin = targetClass.Mixins[typeof (BT4Mixin1)];
       Assert.IsNotNull (mixin);
 
@@ -167,7 +167,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void OverrideNonVirtualEvent ()
     {
-      TargetClassDefinition targetClass = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
       MixinDefinition mixin = targetClass.Mixins[typeof (BT4Mixin1)];
       Assert.IsNotNull (mixin);
 
@@ -187,7 +187,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
         MatchType = MessageMatch.Regex)]
     public void ThrowsWhenInexistingOverrideBaseMethod ()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin1));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin1));
     }
 
     [Test]
@@ -195,7 +195,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
         MatchType = MessageMatch.Regex)]
     public void ThrowsWhenInexistingOverrideBaseProperty ()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin4));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin4));
     }
 
     [Test]
@@ -203,7 +203,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
         MatchType = MessageMatch.Regex)]
     public void ThrowsWhenInexistingOverrideBaseEvent ()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin5));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin5));
     }
 
     [Test]

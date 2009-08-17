@@ -272,7 +272,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void ShadowedMembersExplicitlyRetrievedButOverriddenNot()
     {
-      TargetClassDefinition d = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ExtraExtraDerived));
+      TargetClassDefinition d = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ExtraExtraDerived));
       const BindingFlags bf = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
       Assert.IsTrue (d.Methods.ContainsKey (typeof (ExtraExtraDerived).GetMethod ("Method", bf)));
@@ -299,7 +299,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void ShadowedMixinMembersExplicitlyRetrieved()
     {
-      MixinDefinition d = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin2)).Mixins[typeof (BT3Mixin2)];
+      MixinDefinition d = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin2)).Mixins[typeof (BT3Mixin2)];
 
       Assert.IsTrue (d.Properties.ContainsKey (typeof (BT3Mixin2).GetProperty ("This")));
       Assert.IsTrue (d.Properties.ContainsKey (typeof (Mixin<IBaseType32>).GetProperty ("This", BindingFlags.NonPublic | BindingFlags.Instance)));

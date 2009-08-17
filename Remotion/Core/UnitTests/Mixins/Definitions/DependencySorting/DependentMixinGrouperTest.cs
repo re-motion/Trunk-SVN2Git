@@ -62,7 +62,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
           .AddMixin (typeof (MixinWithAdditionalDependency)).WithDependency (typeof (MixinImplementingAdditionalDependency))
           .BuildClassContext();
 
-      var targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+      var targetClassDefinition = DefinitionObjectMother.GetTargetClassDefinition (classContext);
       _independent1 = targetClassDefinition.Mixins[typeof (IndependentMixin1)];
       _independent2 = targetClassDefinition.Mixins[typeof (IndependentMixin2)];
 

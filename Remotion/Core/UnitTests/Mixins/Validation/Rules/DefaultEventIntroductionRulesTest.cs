@@ -28,7 +28,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPrivateIntroducedEvent_HasSameNameAsTargetClassEvent ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")];
@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedEvent_HasSameNameButDifferentSignatureFromTargetClassEvent ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesDifferentSignaturesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
@@ -54,7 +54,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedEvent_HasSameNameAndSignatureAsTargetClassEvent ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPrivateIntroducedEvent_HasSameNameAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
@@ -81,7 +81,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPublicIntroducedEvent_DoesNotHaveSameNameAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       EventIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")];
@@ -94,7 +94,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPublicIntroducedEvent_HasSameNameAsPrivateOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (MixinIntroducingMembersWithPrivateVisibilities));
@@ -109,7 +109,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedEvent_HasSameNameButDifferentSignatureAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures));
@@ -123,7 +123,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedEvent_HasSameNameAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));

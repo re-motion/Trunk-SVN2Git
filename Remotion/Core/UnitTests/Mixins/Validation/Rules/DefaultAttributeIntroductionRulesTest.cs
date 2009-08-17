@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void SucceedsIfTargetClassWinsWhenDefiningAttributes ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1),
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1),
           typeof (MixinAddingBT1Attribute));
       DefaultValidationLog log = Validator.Validate (definition);
 
@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsTwiceIfDuplicateAttributeAddedByMixin ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType2), typeof (MixinAddingBT1Attribute),
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType2), typeof (MixinAddingBT1Attribute),
           typeof (MixinAddingBT1Attribute2));
       DefaultValidationLog log = Validator.Validate (definition);
 
@@ -49,7 +49,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsTwiceIfDuplicateAttributeAddedByMixinToMember ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassWithVirtualMethod),
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassWithVirtualMethod),
           typeof (MixinAddingBT1AttributeToMember), typeof (MixinAddingBT1AttributeToMember2));
       DefaultValidationLog log = Validator.Validate (definition);
 
@@ -63,7 +63,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfDuplicateAttributeAddedByMixinAllowsMultiple ()
     {
       TargetClassDefinition definition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseTypeWithAllowMultiple), typeof (MixinAddingAllowMultipleToClassAndMember));
+          DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseTypeWithAllowMultiple), typeof (MixinAddingAllowMultipleToClassAndMember));
       DefaultValidationLog log = Validator.Validate (definition);
 
       AssertSuccess (log);

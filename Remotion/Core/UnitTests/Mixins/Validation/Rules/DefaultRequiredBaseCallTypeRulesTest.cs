@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfRequiredBaseTypeNotVisible ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithInvisibleBaseDependency));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithInvisibleBaseDependency));
       DefaultValidationLog log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultRequiredBaseCallTypeRules.RequiredBaseCallTypeMustBePublic", log));

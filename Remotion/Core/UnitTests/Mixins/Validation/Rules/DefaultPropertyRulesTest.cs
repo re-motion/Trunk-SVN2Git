@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void WarnsIfPropertyOverrideAddsMethods ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseWithGetterOnly), typeof (MixinOverridingSetterOnly));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseWithGetterOnly), typeof (MixinOverridingSetterOnly));
       DefaultValidationLog log =
           Validator.Validate (definition.Properties[typeof (BaseWithGetterOnly).GetProperty ("Property")].Overrides[0]);
 

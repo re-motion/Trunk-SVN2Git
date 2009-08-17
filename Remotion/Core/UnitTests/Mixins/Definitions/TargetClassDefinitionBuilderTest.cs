@@ -31,29 +31,22 @@ namespace Remotion.UnitTests.Mixins.Definitions
   {
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "contains generic parameters", MatchType = MessageMatch.Contains)]
-    public void ThrowsOnGenericTargetClass()
+    public void ThrowsOnGenericTargetClass ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (BT3Mixin3<,>)).Clear().EnterScope())
       {
-        TargetClassDefinitionBuilder builder = new TargetClassDefinitionBuilder();
+        var builder = new TargetClassDefinitionBuilder();
         builder.Build (new ClassContext (typeof (BT3Mixin3<,>)));
       }
     }
 
     [Test]
-    public void TargetClassDefinitionKnowsItsContext()
+    public void TargetClassDefinitionKnowsItsContext ()
     {
-      TargetClassDefinitionCache.SetCurrent (null);
-      ClassContext classContext = new ClassContext (typeof (BaseType1));
-      MixinConfiguration configuration = new MixinConfiguration (null);
-      configuration.ClassContexts.Add (classContext);
-
-      using (configuration.EnterScope())
-      {
-        TargetClassDefinition def = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
-        Assert.IsNotNull (def.ConfigurationContext);
-        Assert.AreSame (classContext, def.ConfigurationContext);
-      }
+      var classContext = new ClassContext (typeof (BaseType1));
+      TargetClassDefinition def = DefinitionObjectMother.GetTargetClassDefinition (classContext);
+      Assert.That (def.ConfigurationContext, Is.Not.Null);
+      Assert.That (def.ConfigurationContext, Is.EqualTo (classContext));
     }
 
     public interface IInterfaceWithAllMembers
@@ -89,67 +82,76 @@ namespace Remotion.UnitTests.Mixins.Definitions
       TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (
           typeof (ClassWithExplicitInterfaceImplementation));
 
-      Assert.AreEqual (7, definition.Methods.Count);
-      Assert.AreEqual (1, definition.Properties.Count);
-      Assert.AreEqual (1, definition.Events.Count);
+      Assert.That (definition.Methods.Count, Is.EqualTo (7));
+      Assert.That (definition.Properties.Count, Is.EqualTo (1));
+      Assert.That (definition.Events.Count, Is.EqualTo (1));
 
       BindingFlags bf = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-      Assert.IsTrue (definition.Methods.ContainsKey (typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
-          "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Method", bf)));
+      Assert.That (
+          definition.Methods.ContainsKey (
+              typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
+                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Method", bf)),
+          Is.True);
 
-      Assert.IsTrue (
+      Assert.That (
           definition.Properties.ContainsKey (
               typeof (ClassWithExplicitInterfaceImplementation).GetProperty (
-                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Property", bf)));
-      Assert.AreEqual (
-          typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
-              "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.get_Property", bf),
+                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Property", bf)),
+          Is.True);
+      Assert.That (
           definition.Properties[
               typeof (ClassWithExplicitInterfaceImplementation).GetProperty (
                   "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Property", bf)].GetMethod.
-              MemberInfo);
-      Assert.AreEqual (
-          typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
-              "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.set_Property", bf),
+              MemberInfo,
+          Is.EqualTo (
+              typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
+                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.get_Property", bf)));
+      Assert.That (
           definition.Properties[
               typeof (ClassWithExplicitInterfaceImplementation).GetProperty (
                   "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Property", bf)].SetMethod.
-              MemberInfo);
+              MemberInfo,
+          Is.EqualTo (
+              typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
+                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.set_Property", bf)));
 
-      Assert.IsTrue (
+      Assert.That (
           definition.Events.ContainsKey (
               typeof (ClassWithExplicitInterfaceImplementation).GetEvent (
-                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Event", bf)));
-      Assert.AreEqual (
-          typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
-              "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.add_Event", bf),
+                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Event", bf)),
+          Is.True);
+      Assert.That (
           definition.Events[
               typeof (ClassWithExplicitInterfaceImplementation).GetEvent (
-                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Event", bf)].AddMethod.MemberInfo);
-      Assert.AreEqual (
-          typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
-              "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.remove_Event", bf),
+                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Event", bf)].AddMethod.MemberInfo,
+          Is.EqualTo (
+              typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
+                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.add_Event", bf)));
+      Assert.That (
           definition.Events[
               typeof (ClassWithExplicitInterfaceImplementation).GetEvent (
                   "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.Event", bf)].RemoveMethod.
-              MemberInfo);
-      
+              MemberInfo,
+          Is.EqualTo (
+              typeof (ClassWithExplicitInterfaceImplementation).GetMethod (
+                  "Remotion.UnitTests.Mixins.Definitions.TargetClassDefinitionBuilderTest.IInterfaceWithAllMembers.remove_Event", bf)));
     }
 
     [Test]
     public void HasOverriddenMembersTrue ()
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
-      Assert.IsTrue (bt1.HasOverriddenMembers ());
+      Assert.That (bt1.HasOverriddenMembers(), Is.True);
     }
 
     [Test]
     public void HasOverriddenMembersFalse ()
     {
-      TargetClassDefinition bt1 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassOverridingMixinMembersProtected),
+      TargetClassDefinition bt1 = DefinitionObjectMother.BuildUnvalidatedDefinition (
+          typeof (ClassOverridingMixinMembersProtected),
           typeof (MixinWithAbstractMembers));
-      Assert.IsFalse (bt1.HasOverriddenMembers ());
+      Assert.That (bt1.HasOverriddenMembers(), Is.False);
     }
 
     [Test]
@@ -157,47 +159,52 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       const BindingFlags bf = BindingFlags.NonPublic | BindingFlags.Instance;
 
-      TargetClassDefinition bt1 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
-          typeof (ClassOverridingMixinMembersProtected), 
+      TargetClassDefinition bt1 = DefinitionObjectMother.BuildUnvalidatedDefinition (
+          typeof (ClassOverridingMixinMembersProtected),
           typeof (MixinWithAbstractMembers));
 
-      var overriders = bt1.GetProtectedOverriders ();
-      Assert.That (overriders.Select (m => m.MethodInfo).ToArray (), Is.EquivalentTo (new[] {
-          typeof (ClassOverridingMixinMembersProtected).GetMethod ("AbstractMethod", bf),
-          typeof (ClassOverridingMixinMembersProtected).GetMethod ("RaiseEvent", bf),
-          typeof (ClassOverridingMixinMembersProtected).GetMethod ("get_AbstractProperty", bf),
-          typeof (ClassOverridingMixinMembersProtected).GetMethod ("add_AbstractEvent", bf),
-          typeof (ClassOverridingMixinMembersProtected).GetMethod ("remove_AbstractEvent", bf),
-          }));
+      var overriders = bt1.GetProtectedOverriders();
+      Assert.That (
+          overriders.Select (m => m.MethodInfo).ToArray(),
+          Is.EquivalentTo (
+              new[]
+              {
+                  typeof (ClassOverridingMixinMembersProtected).GetMethod ("AbstractMethod", bf),
+                  typeof (ClassOverridingMixinMembersProtected).GetMethod ("RaiseEvent", bf),
+                  typeof (ClassOverridingMixinMembersProtected).GetMethod ("get_AbstractProperty", bf),
+                  typeof (ClassOverridingMixinMembersProtected).GetMethod ("add_AbstractEvent", bf),
+                  typeof (ClassOverridingMixinMembersProtected).GetMethod ("remove_AbstractEvent", bf),
+              }));
     }
 
     [Test]
     public void HasProtectedOverridersTrue ()
     {
-      TargetClassDefinition bt1 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassOverridingMixinMembersProtected),
+      TargetClassDefinition bt1 = DefinitionObjectMother.BuildUnvalidatedDefinition (
+          typeof (ClassOverridingMixinMembersProtected),
           typeof (MixinWithAbstractMembers));
-      Assert.IsTrue (bt1.HasProtectedOverriders ());
+      Assert.That (bt1.HasProtectedOverriders(), Is.True);
     }
 
     [Test]
     public void HasProtectedOverridersFalse ()
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
-      Assert.IsFalse (bt1.HasProtectedOverriders ());
+      Assert.That (bt1.HasProtectedOverriders(), Is.False);
     }
 
     [Test]
     public void IsAbstractTrue ()
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (typeof (AbstractBaseType));
-      Assert.IsTrue (bt1.IsAbstract);
+      Assert.That (bt1.IsAbstract, Is.True);
     }
 
     [Test]
     public void IsAbstractFalse ()
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
-      Assert.IsFalse (bt1.IsAbstract);
+      Assert.That (bt1.IsAbstract, Is.False);
     }
   }
 }

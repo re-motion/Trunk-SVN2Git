@@ -28,7 +28,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPrivateIntroducedMethod_HasSameNameAsTargetClassMethod ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")];
@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPublicIntroducedMethod_HasSameNameButDifferentSignatureFromTargetClassMethod ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesDifferentSignaturesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
@@ -54,7 +54,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedMethod_HasSameNameAndSignatureAsTargetClassMethod ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPrivateIntroducedMethod_HasSameNameAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
@@ -81,7 +81,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPublicIntroducedMethod_DoesNotHaveSameNameAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
       MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
@@ -94,7 +94,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPublicIntroducedMethod_HasSameNameAsPrivateOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (MixinIntroducingMembersWithPrivateVisibilities));
@@ -108,7 +108,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void SucceedsIfPublicIntroducedMethod_HasSameNameButDifferentSignatureAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures));
@@ -122,7 +122,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     public void FailsIfPublicIntroducedMethod_HasSameNameAsOther ()
     {
       TargetClassDefinition classDefinition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+          DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));

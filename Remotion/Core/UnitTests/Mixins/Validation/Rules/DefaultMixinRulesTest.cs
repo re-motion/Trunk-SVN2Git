@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfMixinAppliedToItself ()
     {
-      TargetClassDefinition bc = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (object), typeof (object));
+      TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (object), typeof (object));
       DefaultValidationLog log = Validator.Validate (bc);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotMixItself", log));
     }
@@ -35,7 +35,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfMixinAppliedToItsBase ()
     {
-      TargetClassDefinition bc = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (object), typeof (NullMixin));
+      TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (object), typeof (NullMixin));
       DefaultValidationLog log = Validator.Validate (bc);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotMixItsBase", log));
     }
@@ -43,7 +43,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfMixinIsInterface ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (IBT1Mixin1));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (IBT1Mixin1));
       DefaultValidationLog log = Validator.Validate (definition.Mixins[typeof (IBT1Mixin1)]);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotBeInterface", log));
@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfMixinNonPublic ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin2));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin2));
       DefaultValidationLog log = Validator.Validate (definition.Mixins[typeof (BT5Mixin2)]);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log));
@@ -61,7 +61,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void SucceedsIfNestedPublicMixin ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (PublicNester.PublicNested));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (PublicNester.PublicNested));
       DefaultValidationLog log = Validator.Validate (definition);
 
       AssertSuccess (log);
@@ -70,7 +70,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfNestedPublicMixinInNonPublic ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (InternalNester.PublicNested));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (InternalNester.PublicNested));
       DefaultValidationLog log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log));
@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfNestedPrivateMixin ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (PublicNester.InternalNested));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (PublicNester.InternalNested));
       DefaultValidationLog log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log));
@@ -88,7 +88,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfNestedPrivateMixinInNonPublic ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (InternalNester.InternalNested));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (InternalNester.InternalNested));
       DefaultValidationLog log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log));
@@ -97,7 +97,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfNoPublicOrProtectedDefaultCtorInMixinClassWithOverriddenMembers ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassOverridingSingleMixinMethod),
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassOverridingSingleMixinMethod),
           typeof (MixinWithPrivateCtorAndVirtualMethod));
       DefaultValidationLog log = Validator.Validate (definition);
 
@@ -108,7 +108,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfNoMixinBaseWith ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassWithVirtualMethod),
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassWithVirtualMethod),
           typeof (MixinWithProtectedOverriderWithoutMixinBase));
       DefaultValidationLog log = Validator.Validate (definition);
 
@@ -119,7 +119,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void SucceedsIfNoPublicOrProtectedDefaultCtorInMixinClassWithoutOverriddenMembers ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (NullTarget),
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (NullTarget),
           typeof (MixinWithPrivateCtorAndVirtualMethod));
       DefaultValidationLog log = Validator.Validate (definition);
 

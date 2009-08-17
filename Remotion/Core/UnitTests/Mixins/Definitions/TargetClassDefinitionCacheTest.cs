@@ -50,7 +50,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void GetTargetClassDefinitionReturnsValidClassDef ()
     {
-      ClassContext context = new ClassContext (typeof (BaseType1));
+      var context = new ClassContext (typeof (BaseType1));
       TargetClassDefinition def = TargetClassDefinitionCache.Current.GetTargetClassDefinition (context);
       Assert.IsNotNull (def);
       Assert.AreSame (context, def.ConfigurationContext);
@@ -69,16 +69,16 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [ExpectedException (typeof (ValidationException))]
     public void CacheValidatesWhenGeneratingDefinition()
     {
-      ClassContext cc = new ClassContext (typeof (DateTime));
+      var cc = new ClassContext (typeof (DateTime));
       TargetClassDefinitionCache.Current.GetTargetClassDefinition (cc);
     }
 
     [Test]
     public void CurrentIsGlobalSingleton ()
     {
-      TargetClassDefinitionCache newCache = new TargetClassDefinitionCache ();
+      var newCache = new TargetClassDefinitionCache ();
       Assert.IsFalse (TargetClassDefinitionCache.HasCurrent);
-      Thread setterThread = new Thread ((ThreadStart) delegate { TargetClassDefinitionCache.SetCurrent (newCache); });
+      var setterThread = new Thread (() => TargetClassDefinitionCache.SetCurrent (newCache));
       setterThread.Start ();
       setterThread.Join ();
 

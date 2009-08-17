@@ -21,12 +21,17 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Definitions.Building;
+using Remotion.Mixins.Utilities.Singleton;
 using Remotion.UnitTests.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins
 {
+  /// <summary>
+  /// Contains utility methods to retrieve and instantiate <see cref="TargetClassDefinition"/> and related objects.
+  /// </summary>
   public static class DefinitionObjectMother
   {
     public static TargetClassDefinition CreateTargetClassDefinition (Type classType, params Type[] mixinTypes)
@@ -158,8 +163,25 @@ namespace Remotion.UnitTests.Mixins
 
     public static TargetClassDefinition GetActiveTargetClassDefinition_Force (Type type)
     {
-      var classContext = MixinConfiguration.ActiveConfiguration.GetContextForce (type);
+      ClassContext classContext = MixinConfiguration.ActiveConfiguration.GetContextForce (type);
+      return GetTargetClassDefinition(classContext);
+    }
+
+    public static TargetClassDefinition GetTargetClassDefinition (ClassContext classContext)
+    {
       return TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+    }
+
+    public static TargetClassDefinition BuildUnvalidatedDefinition (Type baseType, params Type[] mixinTypes)
+    {
+      var context = new ClassContext (baseType, mixinTypes);
+      return BuildUnvalidatedDefinition(context);
+    }
+
+    public static TargetClassDefinition BuildUnvalidatedDefinition (ClassContext context)
+    {
+      var builder = new TargetClassDefinitionBuilder();
+      return builder.Build (context);
     }
   }
 }

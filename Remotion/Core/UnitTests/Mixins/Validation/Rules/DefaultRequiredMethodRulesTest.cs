@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     {
       using (MixinConfiguration.BuildFromActive ().ForClass<ClassFulfillingAllMemberRequirementsExplicitly> ().Clear ().AddMixins (typeof (MixinRequiringAllMembersBase)).EnterScope ())
       {
-        TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+        TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
             typeof (ClassFulfillingAllMemberRequirementsExplicitly), typeof (MixinRequiringAllMembersBase));
         DefaultValidationLog log = Validator.Validate (definition);
 
@@ -43,7 +43,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     {
       using (MixinConfiguration.BuildFromActive ().ForClass<ClassFulfillingAllMemberRequirementsExplicitly> ().Clear ().AddMixins (typeof (MixinRequiringAllMembersFace)).EnterScope ())
       {
-        TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+        TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
             typeof (ClassFulfillingAllMemberRequirementsExplicitly), typeof (MixinRequiringAllMembersFace));
         DefaultValidationLog log = Validator.Validate (definition);
 

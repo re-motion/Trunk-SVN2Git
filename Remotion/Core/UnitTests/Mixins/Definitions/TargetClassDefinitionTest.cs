@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void InterfaceMapAdjustedCorrectly ()
     {
-      TargetClassDefinition def = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (Derived));
+      TargetClassDefinition def = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (Derived));
       Assert.IsFalse (def.Methods.ContainsKey (typeof (Derived).GetMethod ("Foo")));
       Assert.IsTrue (def.Methods.ContainsKey (typeof (Base).GetMethod ("Foo")));
 
@@ -53,7 +53,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void GetAllMethods ()
     {
-      TargetClassDefinition def = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1));
+      TargetClassDefinition def = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1));
       List<string> methodNames = new List<MethodDefinition> (def.GetAllMethods ()).ConvertAll<string> (
           delegate (MethodDefinition d) { return d.Name; });
 

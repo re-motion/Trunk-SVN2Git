@@ -44,7 +44,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsFalse (targetClass.RequiredFaceTypes[typeof (IBaseType31)].IsEmptyInterface);
       Assert.IsFalse (targetClass.RequiredFaceTypes[typeof (IBaseType31)].IsAggregatorInterface);
 
-      targetClass = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Face));
+      targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Face));
       Assert.IsTrue (targetClass.RequiredFaceTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)));
       requirers = new List<MixinDefinition> (targetClass.RequiredFaceTypes[typeof (ICBaseType3BT3Mixin4)].FindRequiringMixins());
       Assert.Contains (targetClass.Mixins[typeof (BT3Mixin7Face)], requirers);
@@ -80,7 +80,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
                           + "Remotion.UnitTests.Mixins.SampleTypes.BaseType3) is not fulfilled - public or protected method Foo could not be found on the base class.")]
     public void ThrowsIfAggregateThisDependencyIsNotFullyImplemented ()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin7Face));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin7Face));
     }
 
     [Test]
@@ -89,7 +89,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
                           + "Remotion.UnitTests.Mixins.SampleTypes.BaseType3) is not fulfilled - public or protected method Foo could not be found on the base class.")]
     public void ThrowsIfAggregateBaseDependencyIsNotFullyImplemented ()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin7Base));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin7Base));
     }
 
     [Test]
@@ -312,7 +312,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
         MatchType = MessageMatch.Regex)]
     public void ThrowsIfBaseDependencyNotFulfilled ()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin7Base));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin7Base));
     }
 
     [Test]
@@ -320,19 +320,19 @@ namespace Remotion.UnitTests.Mixins.Definitions
         MatchType = MessageMatch.Regex)]
     public void ThrowsIfRequiredBaseIsNotInterface ()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithClassBase));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithClassBase));
     }
 
     [Test]
     public void WorksIfRequiredBaseIsSystemObject ()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithObjectBase));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithObjectBase));
     }
 
     [Test]
     public void CompleteInterfacesAndDependenciesForFace ()
     {
-      TargetClassDefinition bt3 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Face));
+      TargetClassDefinition bt3 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Face));
 
       MixinDefinition m4 = bt3.Mixins[typeof (BT3Mixin4)];
       MixinDefinition m7 = bt3.Mixins[typeof (BT3Mixin7Face)];
@@ -367,7 +367,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void CompleteInterfacesAndDependenciesForBase ()
     {
       TargetClassDefinition bt3 =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Base));
+          DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Base));
 
       MixinDefinition m4 = bt3.Mixins[typeof (BT3Mixin4)];
       MixinDefinition m7 = bt3.Mixins[typeof (BT3Mixin7Base)];

@@ -150,6 +150,7 @@
     <Compile Include="Diagnostics\BugReportTest.cs" />
     <Compile Include="Diagnostics\DisableableWriterTest.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
+    <Compile Include="Mixins\CodeGenerationTypeMother.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeDeserializedConcreteType.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\SerializationHelperTest.cs" />
@@ -657,7 +658,6 @@
     <Compile Include="Mixins\SampleTypes\ValueTypeMixin.cs" />
     <Compile Include="Mixins\TypeFactoryTest.cs" />
     <Compile Include="Mixins\MixinTypeUtilityTest.cs" />
-    <Compile Include="Mixins\UnvalidatedDefinitionBuilder.cs" />
     <Compile Include="Mixins\Utilities\DependencySortTest.cs" />
     <Compile Include="Mixins\Utilities\GenericTypeInstantiatorTest.cs" />
     <Compile Include="Mixins\Utilities\ObjectFactoryImplementationTest.cs" />

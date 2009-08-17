@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void MixinAppliedToInterface()
     {
-      TargetClassDefinition targetClass = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (IBaseType2), typeof (BT2Mixin1));
+      TargetClassDefinition targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (IBaseType2), typeof (BT2Mixin1));
       Assert.IsTrue (targetClass.IsInterface);
 
       MethodInfo method = typeof (IBaseType2).GetMethod ("IfcMethod");
@@ -84,7 +84,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void NotOverriddenAbstractMixinMethodSucceeds()
     {
-      TargetClassDefinition bt1 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithAbstractMembers));
+      TargetClassDefinition bt1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithAbstractMembers));
       MixinDefinition mixin = bt1.Mixins[typeof (MixinWithAbstractMembers)];
       MethodDefinition method = mixin.Methods[typeof (MixinWithAbstractMembers).GetMethod ("AbstractMethod", BindingFlags.Instance | BindingFlags.NonPublic)];
       Assert.AreEqual (0, method.Overrides.Count);
@@ -94,27 +94,27 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [ExpectedException (typeof (ConfigurationException))]
     public void ThrowsOnMixinMethodOverridedWrongSig()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassOverridingMixinMethodWrongSig), typeof (MixinWithAbstractMembers));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassOverridingMixinMethodWrongSig), typeof (MixinWithAbstractMembers));
     }
 
     [Test]
     [ExpectedException (typeof (ConfigurationException))]
     public void ThrowsOnMixinOverrideWithoutMixin()
     {
-      UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassOverridingMixinMembers));
+      DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassOverridingMixinMembers));
     }
 
     [Test]
     public void GenericMixinsAreAllowed()
     {
-      Assert.IsTrue (UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin3<,>))
+      Assert.IsTrue (DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin3<,>))
           .HasMixinWithConfiguredType(typeof(BT3Mixin3<,>)));
     }
 
     [Test]
     public void GenericMixinsAreClosed ()
     {
-      MixinDefinition def = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin3<,>))
+      MixinDefinition def = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin3<,>))
           .GetMixinByConfiguredType(typeof (BT3Mixin3<,>));
       Assert.IsFalse (def.Type.IsGenericTypeDefinition);
     }
@@ -122,7 +122,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void GenericMixinsAreSetToConstraintOrBaseType ()
     {
-      MixinDefinition def = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin3<,>))
+      MixinDefinition def = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin3<,>))
           .GetMixinByConfiguredType (typeof (BT3Mixin3<,>));
       Assert.AreEqual (typeof (BaseType3), def.Type.GetGenericArguments()[0]);
       Assert.AreEqual (typeof (IBaseType33), def.Type.GetGenericArguments()[1]);
@@ -140,7 +140,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void GenericInterfaceArgumentIsBaseTypeWhenPossible()
     {
-      TargetClassDefinition def = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1),
+      TargetClassDefinition def = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1),
           typeof (MixinIntroducingGenericInterfaceWithTargetAsThisType<>));
       Assert.IsTrue (def.ReceivedInterfaces.ContainsKey (typeof (IEquatable<BaseType1>)));
     }
@@ -182,7 +182,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void HasOverriddenMembersTrue ()
     {
       TargetClassDefinition definition =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+          DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       Assert.IsTrue (definition.Mixins[0].HasOverriddenMembers ());
     }
 
@@ -198,7 +198,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     {
       const BindingFlags bf = BindingFlags.NonPublic | BindingFlags.Instance;
 
-      TargetClassDefinition bt1 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider));
+      TargetClassDefinition bt1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider));
       var overriders = bt1.Mixins[0].GetProtectedOverriders ();
       Assert.That (overriders.Select (m => m.MethodInfo).ToArray (), Is.EquivalentTo (new[] {
           typeof (MixinWithProtectedOverrider).GetMethod ("VirtualMethod", bf),
@@ -211,7 +211,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void HasProtectedOverridersTrue ()
     {
-      TargetClassDefinition bt1 = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider));
+      TargetClassDefinition bt1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider));
       Assert.IsFalse (bt1.HasProtectedOverriders ());
       Assert.IsTrue (bt1.Mixins[0].HasProtectedOverriders ());
     }

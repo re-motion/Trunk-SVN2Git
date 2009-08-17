@@ -33,67 +33,41 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void SignedMixinWithSignedTargetClassGeneratedIntoSignedAssembly ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<ArrayList> ().Clear().AddMixins (typeof (EquatableMixin<>)).EnterScope())
-      {
-        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ArrayList));
-        MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0];
-
-        Type generatedType = ConcreteTypeBuilder.Current
-            .GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier())
-            .GeneratedType;
-
-        Assert.That (ReflectionUtility.IsAssemblySigned (generatedType.Assembly), Is.True);
-      }
+      var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ArrayList), typeof (EquatableMixin<>));
+      Assert.That (ReflectionUtility.IsAssemblySigned (generatedType.Assembly), Is.True);
     }
 
     [Test]
     public void UnsignedMixinWithUnsignedTargetClassGeneratedIntoUnsignedAssembly ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (UnsignedMixin)).EnterScope())
-      {
-        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1));
-        MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0];
-
-        Type generatedType = ConcreteTypeBuilder.Current
-            .GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier())
-            .GeneratedType;
-
-        Assert.That (ReflectionUtility.IsAssemblySigned (generatedType.Assembly), Is.False);
-      }
+      var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (BaseType1), typeof (UnsignedMixin));
+      Assert.That (ReflectionUtility.IsAssemblySigned (generatedType.Assembly), Is.False);
     }
 
     [Test]
     public void SignedMixinWithUnsignedTargetClassGeneratedIntoUnsignedAssembly ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<UnsignedClass> ().Clear().AddMixins (typeof (EquatableMixin<>)).EnterScope())
+      var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (UnsignedClass), typeof (EquatableMixin<>));
+      Assert.That (ReflectionUtility.IsAssemblySigned (generatedType.Assembly), Is.False);
+
+      using (MixinConfiguration.BuildFromActive().ForClass<UnsignedClass>().Clear().AddMixins (typeof (EquatableMixin<>)).EnterScope())
       {
-        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (UnsignedClass));
-        MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0];
-
-        Type generatedType = ConcreteTypeBuilder.Current
-            .GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier())
-            .GeneratedType;
-        Assert.That (ReflectionUtility.IsAssemblySigned (generatedType.Assembly), Is.False);
-
-        Assert.That (Mixin.Get<EquatableMixin<UnsignedClass>> (ObjectFactory.Create<UnsignedClass> (ParamList.Empty)).ToString (), Is.EqualTo ("Overridden"));
+        var mixedInstance = ObjectFactory.Create<UnsignedClass> (ParamList.Empty);
+        var mixinInstance = Mixin.Get<EquatableMixin<UnsignedClass>> (mixedInstance);
+        Assert.That (mixinInstance.ToString(), Is.EqualTo ("Overridden"));
       }
     }
 
     [Test]
     public void UnsignedMixinWithSignedTargetClassGeneratedIntoUnsignedAssembly ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (UnsignedMixin)).EnterScope())
+      var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (NullTarget), typeof (UnsignedMixin));
+      Assert.That (ReflectionUtility.IsAssemblySigned (generatedType.Assembly), Is.False);
+        
+      using (MixinConfiguration.BuildFromActive ().ForClass<NullTarget> ().Clear ().AddMixins (typeof (UnsignedMixin)).EnterScope ())
       {
-        var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (NullTarget));
-        MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0];
-
-        Type generatedType = ConcreteTypeBuilder.Current
-            .GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier())
-            .GeneratedType;
-
-
-        Assert.That (ReflectionUtility.IsAssemblySigned (generatedType.Assembly), Is.False);
-        Assert.That (ObjectFactory.Create<NullTarget> (ParamList.Empty).ToString (), Is.EqualTo ("Overridden"));
+        var mixedInstance = ObjectFactory.Create<NullTarget> (ParamList.Empty);
+        Assert.That (mixedInstance.ToString (), Is.EqualTo ("Overridden"));
       }
     }
   }

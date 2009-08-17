@@ -28,7 +28,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfSealedTargetClass ()
     {
-      TargetClassDefinition bc = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (DateTime));
+      TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (DateTime));
       DefaultValidationLog log = Validator.Validate (bc);
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustNotBeSealed", log));
       Assert.AreEqual (0, log.GetNumberOfWarnings ());
@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void SucceedsIfAbstractTargetClass ()
     {
-      TargetClassDefinition bc = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (MixinWithAbstractMembers));
+      TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (MixinWithAbstractMembers));
       DefaultValidationLog log = Validator.Validate (bc);
       AssertSuccess (log);
     }
@@ -45,7 +45,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfTargetClassDefinitionIsInterface ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (IBaseType2));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (IBaseType2));
       DefaultValidationLog log = Validator.Validate (definition);
 
       Assert.IsTrue (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultTargetClassRules.TargetClassMustNotBeAnInterface", log));
@@ -54,7 +54,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void FailsIfNoPublicOrProtectedCtorInTargetClass ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassWithPrivateCtor),
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassWithPrivateCtor),
           typeof (NullMixin));
       DefaultValidationLog log = Validator.Validate (definition);
 
@@ -64,7 +64,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
 		[Test]
 		public void FailsIfTargetClassIsNotPublic ()
 		{
-			TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (InternalClass),
+			TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (InternalClass),
 					typeof (NullMixin));
 			DefaultValidationLog log = Validator.Validate (definition);
 
@@ -74,7 +74,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
 		[Test]
 		public void FailsIfNestedTargetClassIsNotPublic ()
 		{
-			TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (PublicNester.InternalNested),
+			TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (PublicNester.InternalNested),
 					typeof (NullMixin));
 			DefaultValidationLog log = Validator.Validate (definition);
 
@@ -84,7 +84,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
 		[Test]
 		public void SucceedsIfNestedTargetClassIsPublic ()
 		{
-			TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (PublicNester.PublicNested),
+			TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (PublicNester.PublicNested),
 					typeof (NullMixin));
 			DefaultValidationLog log = Validator.Validate (definition);
 

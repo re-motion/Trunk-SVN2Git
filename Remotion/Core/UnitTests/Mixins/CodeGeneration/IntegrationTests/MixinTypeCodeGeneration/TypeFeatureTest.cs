@@ -18,6 +18,7 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -31,14 +32,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void GeneratedTypeImplementsMarkerInterface ()
     {
-      Type generatedType = GetGeneratedType(typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      Type generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       Assert.That (typeof (IGeneratedMixinType).IsAssignableFrom (generatedType), Is.True);
     }
 
     [Test]
     public void GeneratedMixinTypeHasMixinTypeAttribute ()
     {
-      Type generatedType = GetGeneratedType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      Type generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       Assert.That (generatedType.IsDefined (typeof (ConcreteMixinTypeAttribute), false), Is.True);
 
       var attributes = (ConcreteMixinTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixinTypeAttribute), false);
@@ -50,8 +51,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
 
-      MixinDefinition mixinDefinition = 
-          TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
+      MixinDefinition mixinDefinition = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.That (mixinDefinition, Is.Not.Null);
 
       Type generatedType = ConcreteTypeBuilder.Current
@@ -74,8 +74,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
       var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
 
-      MixinDefinition mixinDefinition =
-          TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
+      MixinDefinition mixinDefinition = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.That (mixinDefinition, Is.Not.Null);
 
       Expect.Call (nameProviderMock.GetNewTypeName (mixinDefinition)).Return ("Bra");
@@ -104,7 +103,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
 
       repository.ReplayAll ();
 
-      var generatedType = GetGeneratedType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       Assert.That (generatedType.FullName, Is.EqualTo ("Bra/Oof"));
 
       repository.VerifyAll ();
@@ -115,7 +114,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithProtectedOverriderAndAttributes)).EnterScope())
       {
-        var generatedType = GetGeneratedType (typeof (NullTarget), typeof (MixinWithProtectedOverriderAndAttributes));
+        var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (NullTarget), typeof (MixinWithProtectedOverriderAndAttributes));
         Assert.That (generatedType, Is.Not.SameAs (typeof (MixinWithProtectedOverriderAndAttributes)));
 
         object[] inheritableAttributes = generatedType.GetCustomAttributes (typeof (InheritableAttribute), true);
@@ -134,7 +133,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithProtectedOverriderAndAttributes)).EnterScope())
       {
-        var generatedType = GetGeneratedType (typeof (NullTarget), typeof (MixinWithProtectedOverriderAndAttributes));
+        var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (NullTarget), typeof (MixinWithProtectedOverriderAndAttributes));
         Assert.That (generatedType, Is.Not.SameAs (typeof (MixinWithProtectedOverriderAndAttributes)));
 
         object[] copiedAttributes = generatedType.GetCustomAttributes (typeof (SampleCopyTemplateAttribute), true);
@@ -147,7 +146,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     {
       var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
 
-      MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
+      MixinDefinition mixinDefinition = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
       Assert.That (mixinDefinition, Is.Not.Null);
       var generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ()).GeneratedType;
 
@@ -159,15 +158,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void ClassContextMember_HoldsRequestingClass ()
     {
-      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
+      var generatedType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
 
-      MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
-      Assert.That (mixinDefinition, Is.Not.Null);
-      var generatedType = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ()).GeneratedType;
-
-      var classContext = generatedType.GetField ("__requestingClassContext").GetValue (null);
-
-      Assert.That (classContext, Is.EqualTo (requestingClass));
+      var classContext = (ClassContext) generatedType.GetField ("__requestingClassContext").GetValue (null);
+      // Note: Cannot compare this classContext to the requesting one because we don't know if the type was generated for this context or for another
+      Assert.That (classContext, Is.Not.Null);
+      Assert.That (classContext.Mixins.ContainsKey (typeof (MixinWithAbstractMembers)), Is.Not.Null); 
     }
     
     [Test]
@@ -179,16 +175,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       Assert.That (m1, Is.InstanceOfType (typeof (AbstractMixinWithoutAbstractMembers)));
       Assert.That (m1.GetType (), Is.Not.SameAs (typeof (AbstractMixinWithoutAbstractMembers)));
       Assert.That (m1.M1 (), Is.EqualTo ("AbstractMixinWithoutAbstractMembers.M1"));
-    }
-
-    private Type GetGeneratedType (Type targetType, Type mixinType)
-    {
-      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (targetType);
-
-      MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[mixinType];
-      Assert.That (mixinDefinition, Is.Not.Null);
-
-      return ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ()).GeneratedType;
     }
   }
 }

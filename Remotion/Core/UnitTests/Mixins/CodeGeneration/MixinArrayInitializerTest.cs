@@ -18,8 +18,6 @@ using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.Context;
-using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
@@ -73,7 +71,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         MatchType = MessageMatch.Regex)]
     public void CheckMixinArray_NonMatchingMixins_NeedDerived ()
     {
-      Type concreteMixinType = GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
+      Type concreteMixinType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
 
       MixinArrayInitializer initializer = CreateInitializer (typeof (ClassOverridingSpecificMixinMember), concreteMixinType);
       initializer.CheckMixinArray (new object[] { new MixinWithVirtualMethod () });
@@ -82,7 +80,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void CheckMixinArray_MatchingMixins_NeedDerived ()
     {
-      Type concreteMixinType = GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
+      Type concreteMixinType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
       var initializer = CreateInitializer (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
       var mixin = Activator.CreateInstance (concreteMixinType);
 
@@ -141,7 +139,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetMixinArray_ForDerivedMixin ()
     {
-      Type concreteMixinType = GetGeneratedMixinType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      Type concreteMixinType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       MixinArrayInitializer initializer = CreateInitializer (typeof (ClassOverridingMixinMembers), concreteMixinType);
 
       var mixinArray = initializer.CreateMixinArray (null);
@@ -222,7 +220,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void GetMixinArray_WithFittingSuppliedForDerivedMixin ()
     {
       var mixin1 = new MixinWithVirtualMethod ();
-      var concreteMixinType = GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
+      var concreteMixinType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
       MixinArrayInitializer initializer = CreateInitializer (typeof (ClassOverridingSpecificMixinMember), concreteMixinType);
 
       initializer.CreateMixinArray (new object[] { mixin1 });
@@ -233,7 +231,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       using (MixinConfiguration.BuildNew ().ForClass<ClassOverridingSpecificMixinMember> ().AddMixin<MixinWithVirtualMethod> ().EnterScope ())
       {
-        var concreteMixinType = GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
+        var concreteMixinType = CodeGenerationTypeMother.GetGeneratedMixinType (typeof (ClassOverridingSpecificMixinMember), typeof (MixinWithVirtualMethod));
         var initializer = CreateInitializer (typeof (ClassOverridingSpecificMixinMember), concreteMixinType);
 
         var mixin1 = Activator.CreateInstance (concreteMixinType);
@@ -246,13 +244,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     private MixinArrayInitializer CreateInitializer (Type targetType, params Type[] expectedMixinTypes)
     {
       return new MixinArrayInitializer (targetType, expectedMixinTypes);
-    }
-
-    private Type GetGeneratedMixinType (Type targetType, Type mixinType)
-    {
-      var requestingClass = new ClassContext (targetType, mixinType);
-      var mixinDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (requestingClass).Mixins[0];
-      return ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier ()).GeneratedType;
     }
   }
 }

@@ -135,7 +135,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
           new HashSet<MethodInfo> (),
           new HashSet<MethodInfo> (protectedOverriders));
 
-      var definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider))
+      var definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider))
           .Mixins[typeof (MixinWithProtectedOverrider)];
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }

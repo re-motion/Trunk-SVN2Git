@@ -74,7 +74,7 @@ namespace Remotion.UnitTests.Mixins.Validation
     [Test]
     public void CollectsUnexpectedExceptions ()
     {
-      TargetClassDefinition bc = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (DateTime));
+      TargetClassDefinition bc = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (DateTime));
       DefaultValidationLog log = Validator.Validate (bc, new ThrowingRuleSet ());
       Assert.That (log.GetNumberOfUnexpectedExceptions () > 0, Is.True);
       var results = new List<ValidationResult> (log.GetResults ());
@@ -223,7 +223,7 @@ namespace Remotion.UnitTests.Mixins.Validation
     [Test]
     public void ValidationException ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassOverridingSingleMixinMethod), typeof (AbstractMixinWithoutBase));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassOverridingSingleMixinMethod), typeof (AbstractMixinWithoutBase));
 
       var log = new DefaultValidationLog();
       var visitor = new ValidatingVisitor (log);

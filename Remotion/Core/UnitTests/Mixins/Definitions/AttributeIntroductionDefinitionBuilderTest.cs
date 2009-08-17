@@ -76,7 +76,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void MultipleAttributes ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseTypeWithAllowMultiple), typeof (MixinAddingAllowMultipleToClassAndMember), typeof (MixinAddingAllowMultipleToClassAndMember2));
       Assert.AreEqual (2, definition.ReceivedAttributes.GetItemCount (typeof (MultiAttribute)));
       Assert.AreEqual (1, definition.CustomAttributes.GetItemCount (typeof (MultiAttribute)));
@@ -86,7 +86,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void MultipleAttributesOnMembers ()
     {
       TargetClassDefinition bt1 =
-          UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseTypeWithAllowMultiple),
+          DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseTypeWithAllowMultiple),
               typeof (MixinAddingAllowMultipleToClassAndMember), typeof (MixinAddingAllowMultipleToClassAndMember2));
       MethodDefinition member = bt1.Methods[typeof (BaseTypeWithAllowMultiple).GetMethod ("Foo")];
 
@@ -114,7 +114,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void NonInheritedAttributesAreNotIntroduced ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseType1), typeof (MixinAddingNonInheritedAttribute));
       Assert.AreEqual (0, definition.ReceivedAttributes.GetItemCount (typeof (NonInheritedAttribute)));
     }
@@ -122,7 +122,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void WithNonMultipleInheritedAttributesTheTargetClassWins ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseType1), typeof (MixinAddingBT1Attribute));
       Assert.AreEqual (0, definition.ReceivedAttributes.GetItemCount (typeof (BT1Attribute)));
       Assert.AreEqual (1, definition.CustomAttributes.GetItemCount (typeof (BT1Attribute)));
@@ -131,7 +131,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void WithNonMultipleInheritedAttributesOnMemberTheTargetClassWins ()
     {
-      MethodDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (
+      MethodDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseType1), typeof (MixinAddingBT1AttributeToMember)).Methods[typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes)];
       Assert.AreEqual (0, definition.ReceivedAttributes.GetItemCount (typeof (BT1Attribute)));
       Assert.AreEqual (1, definition.CustomAttributes.GetItemCount (typeof (BT1Attribute)));

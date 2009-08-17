@@ -27,7 +27,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void SucceedsIfEmptyThisDependencyNotFulfilled ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithUnsatisfiedEmptyThisDependency));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithUnsatisfiedEmptyThisDependency));
       DefaultValidationLog log = Validator.Validate (
           definition.Mixins[typeof (MixinWithUnsatisfiedEmptyThisDependency)].ThisDependencies[typeof (IEmptyInterface)]);
 
@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void SucceedsIfCircularThisDependency ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithCircularThisDependency1), typeof (MixinWithCircularThisDependency2));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithCircularThisDependency1), typeof (MixinWithCircularThisDependency2));
       DefaultValidationLog log = Validator.Validate (
           definition.Mixins[typeof (MixinWithCircularThisDependency1)]);
 
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void SucceedsIfDuckThisDependency ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (ClassFulfillingAllMemberRequirementsDuck),
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (ClassFulfillingAllMemberRequirementsDuck),
           typeof (MixinRequiringAllMembersFace));
       DefaultValidationLog log = Validator.Validate (definition);
 
@@ -57,7 +57,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void SucceedsIfAggregateThisDependencyIsFullyImplemented ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Face));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (BT3Mixin7Face));
       DefaultValidationLog log = Validator.Validate (definition);
 
       AssertSuccess (log);
@@ -67,7 +67,7 @@ namespace Remotion.UnitTests.Mixins.Validation.Rules
     [Test]
     public void SucceedsIfEmptyAggregateThisDependencyIsNotAvailable ()
     {
-      TargetClassDefinition definition = UnvalidatedDefinitionBuilder.BuildUnvalidatedDefinition (typeof (NullTarget), typeof (MixinWithUnsatisfiedEmptyAggregateThisDependency));
+      TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (NullTarget), typeof (MixinWithUnsatisfiedEmptyAggregateThisDependency));
       DefaultValidationLog log = Validator.Validate (definition);
 
       AssertSuccess (log);
