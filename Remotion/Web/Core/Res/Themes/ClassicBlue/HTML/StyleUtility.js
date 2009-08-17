@@ -1,5 +1,45 @@
 ﻿function StyleUtility()
-{ }
+{
+  var _resizeHandlers = new Array();
+  var _resizeTimeoutID = null;
+  var _resizeTimeoutInMilliSeconds = 50;
+
+  $(document).ready(function()
+  {
+    $(window).bind('resize', function() { StyleUtility.Instance.PrepareExecuteResizeHandlers(); });
+  });
+
+  this.RegisterResizeHandler = function(selector, handler)
+  {
+    _resizeHandlers[_resizeHandlers.length] = new StyleUtility_ResizeHandlerItem(selector, handler);
+  }
+
+  this.PrepareExecuteResizeHandlers = function()
+  {
+    if (_resizeTimeoutID != null)
+      window.clearTimeout(_resizeTimeoutID);
+
+    _resizeTimeoutID = window.setTimeout(function() { StyleUtility.Instance.ExecuteResizeHandlers(); }, _resizeTimeoutInMilliSeconds);
+  }
+
+  this.ExecuteResizeHandlers = function()
+  {
+    for (var i = _resizeHandlers.length - 1; i >= 0; i--)
+    {
+      var item = _resizeHandlers[i];
+      var element = $(item.Selector);
+      item.Handler(element);
+    }
+  }
+}
+
+function StyleUtility_ResizeHandlerItem(selector, handler)
+{
+  this.Selector = selector;
+  this.Handler = handler;
+}
+
+StyleUtility.Instance = new StyleUtility();
 
 StyleUtility.CreateBorderSpans = function(selector)
 {
@@ -15,7 +55,7 @@ StyleUtility.CreateBorderSpans = function(selector)
   var bottomRight = StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'bottomRight');
 
   if (StyleUtility.ShowBorderSpans(element, topRight, bottomLeft, bottomRight))
-    StyleUtility.RegisterResizeOnElement(element, function() { StyleUtility.OnResize(element); });
+    StyleUtility.Instance.RegisterResizeHandler(selector, StyleUtility.OnResize);
 }
 
 StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRight)
@@ -75,18 +115,4 @@ StyleUtility.OnResize = function(element)
   var bottomRight = element.find('#' + element.attr('id') + '_bottomRight');
 
   StyleUtility.ShowBorderSpans(element, topRight[0], bottomLeft[0], bottomRight[0]);
-}
-
-StyleUtility.RegisterResizeOnElement = function(element, eventHandler)
-{
-  var resizeHandler = function()
-  {
-    var timeoutID = element.attr('resizeTimeoutID');
-    if (timeoutID != null)
-      window.clearTimeout(timeoutID);
-
-    timeoutID = window.setTimeout(eventHandler, 50);
-    element.attr('resizeTimeoutID', timeoutID);
-  }
-  $(window).bind('resize', resizeHandler);
 }

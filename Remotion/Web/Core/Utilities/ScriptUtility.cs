@@ -25,13 +25,6 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Utilities
 {
-  public interface IScriptUtility
-  {
-    void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQuerySelectorForBorderSpanTarget);
-    void RegisterResizeOnElement (IControl control, string element, string eventHandler);
-    void TriggerEventAfterPageLoad (IControl control, string element, ScriptUtility.Event eventToTrigger);
-  }
-
   /// <summary> Utility class for client-side scripts. </summary>
   public class ScriptUtility
   {
@@ -80,10 +73,10 @@ namespace Remotion.Web.Utilities
         get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
       }
 
-      public void RegisterResizeOnElement (IControl control, string element, string eventHandler)
+      public void RegisterResizeOnElement (IControl control, string jquerySelector, string eventHandler)
       {
         string key = control.ClientID + "_ResizeEventHandler";
-        string script = string.Format("StyleUtility.RegisterResizeOnElement( {0}, {1} );", element, eventHandler);
+        string script = string.Format ("StyleUtility.Instance.RegisterResizeHandler({0}, {1});", jquerySelector, eventHandler);
         control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtilityBase), key, script);
       }
 

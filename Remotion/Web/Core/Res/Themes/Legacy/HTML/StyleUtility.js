@@ -1,5 +1,11 @@
 ﻿function StyleUtility()
-{ }
+{
+  this.RegisterResizeHandler = function(selector, handler)
+  {
+  }
+}
+
+StyleUtility.Instance = new StyleUtility();
 
 StyleUtility.CreateBorderSpans = function(selector)
 {

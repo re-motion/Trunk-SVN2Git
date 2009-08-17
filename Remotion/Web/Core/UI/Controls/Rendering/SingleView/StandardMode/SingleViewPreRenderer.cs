@@ -63,16 +63,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
 
     private void RegisterAdjustViewScript ()
     {
-      string keyAdjust = Control.ClientID + "_AdjustView";
-      string scriptAdjust = "function adjustView_{0}() {{ ViewLayout.AdjustSingleView($('#{0}')); }}";
-
-      scriptAdjust = string.Format (scriptAdjust, Control.ClientID, Control.ViewClientID);
-      Control.Page.ClientScript.RegisterClientScriptBlock (Control, typeof (SingleViewPreRenderer), keyAdjust, scriptAdjust);
-
-      ScriptUtility.Instance.RegisterResizeOnElement (
-          Control,
-          string.Format ("$('#{0}')", Control.ClientID),
-          string.Format ("adjustView_{0}", Control.ClientID));
+      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustSingleView");
       ScriptUtility.Instance.TriggerEventAfterPageLoad (Control, "$(window)", ScriptUtility.Event.Resize);
     }
   }

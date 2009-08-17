@@ -694,6 +694,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Infrastructure\IHttpServerUtility.cs" />
+    <Compile Include="Utilities\IScriptUtility.cs" />
     <Compile Include="Utilities\PageUtility.cs">
       <SubType>Code</SubType>
     </Compile>
