@@ -168,7 +168,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     {
       var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
       mixer.Execute (false);
-      Assert.That (mixer.ProcessedContexts.Values.Select (c => c.Type).ToArray(), List.Not.Contains (typeof (FakeDeserializedConcreteType)));
+      Assert.That (mixer.ProcessedContexts.Values.Select (c => c.Type).ToArray(), List.Not.Contains (typeof (FakeConcreteMixedType)));
     }
 
     [Test]

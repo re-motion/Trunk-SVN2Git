@@ -16,15 +16,12 @@
 using System;
 using System.Runtime.Serialization;
 using Remotion.Mixins;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Context;
-using Remotion.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 {
   [IgnoreForMixinConfiguration]
-  public class FakeDeserializedConcreteType : BaseType1, IInitializableMixinTarget, ISerializable, IDeserializationCallback
+  public class FakeConcreteMixinType : MixinWithAbstractMembers, ISerializable, IDeserializationCallback
   {
     public bool OnDeserializingCalled = false;
     public bool OnDeserializedCalled = false;
@@ -32,11 +29,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     public bool CtorCalled = true;
     public bool SerializationCtorCalled = false;
 
-    public FakeDeserializedConcreteType ()
+    public FakeConcreteMixinType ()
     {
     }
 
-    protected FakeDeserializedConcreteType (SerializationInfo info, StreamingContext context)
+    protected FakeConcreteMixinType (SerializationInfo info, StreamingContext context)
     {
       SerializationCtorCalled = true;
     }
@@ -58,33 +55,25 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       OnDeserializationCalled = true;
     }
 
-    public ClassContext ClassContext
-    {
-      get { throw new NotImplementedException(); }
-    }
-
-    public object[] Mixins
-    {
-      get { throw new NotImplementedException(); }
-    }
-
-    public object FirstBaseCallProxy
-    {
-      get { throw new NotImplementedException(); }
-    }
-
     public void GetObjectData (SerializationInfo info, StreamingContext context)
     {
       throw new NotImplementedException();
     }
 
-    public void Initialize ()
+    protected override string AbstractMethod (int i)
     {
       throw new NotImplementedException();
     }
 
-    public void InitializeAfterDeserialization (object[] mixinInstances)
+    protected override string AbstractProperty
     {
+      get { throw new NotImplementedException(); }
+    }
+
+    protected override event Func<string> AbstractEvent;
+    protected override string RaiseEvent ()
+    {
+      throw new NotImplementedException();
     }
   }
 }

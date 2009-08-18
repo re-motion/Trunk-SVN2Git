@@ -67,8 +67,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly StreamingContext _context;
 
     public MixinSerializationHelper (SerializationInfo info, StreamingContext context)
+      : this (info, context, t => t)
+    {
+    }
+
+    public MixinSerializationHelper (SerializationInfo info, StreamingContext context, Func<Type, Type> typeTransformer)
     {
       ArgumentUtility.CheckNotNull ("info", info);
+      ArgumentUtility.CheckNotNull ("typeTransformer", typeTransformer);
 
       _context = context;
 
@@ -77,9 +83,17 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       var identifierDeserializer = new SerializationInfoConcreteMixinTypeIdentifierDeserializer (info, "__identifier");
       var identifier = ConcreteMixinTypeIdentifier.Deserialize (identifierDeserializer);
+      
+      Type untransformedConcreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClassContext, identifier).GeneratedType;
+      var concreteType = typeTransformer (untransformedConcreteType);
 
+      if (!identifier.MixinType.IsAssignableFrom (concreteType))
+      {
+        string message = string.Format ("TypeTransformer returned type '{0}', which is not compatible with the serialized mixin configuration. The "
+            + "configuration requires a type assignable to '{1}'.", concreteType, identifier.MixinType);
+        throw new InvalidOperationException (message);
+      }
 
-      Type concreteType = ConcreteTypeBuilder.Current.GetConcreteMixinType (requestingClassContext, identifier).GeneratedType;
       _baseMemberValues = (object[]) info.GetValue ("__baseMemberValues", typeof (object[]));
 
       // Usually, instantiate a deserialized object using GetSafeUninitializedObject.
@@ -90,7 +104,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       else
       {
         Assertion.IsTrue (typeof (ISerializable).IsAssignableFrom (concreteType));
-        _deserializedObject = Activator.CreateInstance (concreteType, new object[] { info, context });
+        _deserializedObject = Activator.CreateInstance (
+            concreteType, 
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, 
+            null,
+            new object[] { info, context },
+            null);
       }
       SerializationImplementer.RaiseOnDeserializing (_deserializedObject, _context);
     }
@@ -116,6 +135,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       SerializationImplementer.RaiseOnDeserialized (_deserializedObject, _context);
       SerializationImplementer.RaiseOnDeserialization (_deserializedObject, sender);
+
+      // Note: This and Base properties are initialized from the target class via InitializeDeserializedMixinTarget
     }
   }
 }

@@ -109,8 +109,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteObject, _classContext, _extensions, true);
 
-      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeDeserializedConcreteType));
-      var deserializedObject = (FakeDeserializedConcreteType) helper.GetRealObject (_context);
+      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixedType));
+      var deserializedObject = (FakeConcreteMixedType) helper.GetRealObject (_context);
 
       Assert.That (deserializedObject.OnDeserializingCalled, Is.True);
     }
@@ -120,8 +120,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteObject, _classContext, _extensions, true);
 
-      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeDeserializedConcreteType));
-      var deserializedObject = (FakeDeserializedConcreteType) helper.GetRealObject (_context);
+      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixedType));
+      var deserializedObject = (FakeConcreteMixedType) helper.GetRealObject (_context);
 
       Assert.That (deserializedObject.CtorCalled, Is.False);
     }
@@ -131,8 +131,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteObject, _classContext, _extensions, false);
 
-      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeDeserializedConcreteType));
-      var deserializedObject = (FakeDeserializedConcreteType) helper.GetRealObject (_context);
+      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixedType));
+      var deserializedObject = (FakeConcreteMixedType) helper.GetRealObject (_context);
 
       Assert.That (deserializedObject.CtorCalled, Is.True);
       Assert.That (deserializedObject.SerializationCtorCalled, Is.True);
@@ -160,11 +160,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
           delegate (Type t) 
           { 
               Assert.That (t, Is.SameAs (ConcreteTypeBuilder.Current.GetConcreteType (_classContext))); 
-              return typeof (FakeDeserializedConcreteType); 
+              return typeof (FakeConcreteMixedType); 
           });
 
       var realObject = helper.GetRealObject (_context);
-      Assert.That (realObject.GetType (), Is.SameAs (typeof (FakeDeserializedConcreteType)));
+      Assert.That (realObject.GetType (), Is.SameAs (typeof (FakeConcreteMixedType)));
     }
 
     [Test]
@@ -186,7 +186,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     {
       _concreteObject.I = 4711;
       SerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteObject, _classContext, _extensions, false);
-      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeDeserializedConcreteType));
+      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixedType));
 
       var deserializedObject = (BaseType1) helper.GetRealObject (_context);
       Assert.That (deserializedObject.I, Is.EqualTo (0));
@@ -209,9 +209,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     public void OnDeserialization_RaisesEvents ()
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_serializationInfo, _context, _concreteObject, _classContext, _extensions, true);
-      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeDeserializedConcreteType));
+      var helper = new SerializationHelper (_serializationInfo, _context, t => typeof (FakeConcreteMixedType));
 
-      var deserializedObject = (FakeDeserializedConcreteType) helper.GetRealObject (_context);
+      var deserializedObject = (FakeConcreteMixedType) helper.GetRealObject (_context);
       Assert.That (deserializedObject.OnDeserializedCalled, Is.False);
       Assert.That (deserializedObject.OnDeserializationCalled, Is.False);
       

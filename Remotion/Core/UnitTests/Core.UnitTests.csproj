@@ -152,7 +152,9 @@
     <Compile Include="Diagnostics\MemoryUsageInfoTest.cs" />
     <Compile Include="Mixins\CodeGenerationTypeMother.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationConcreteMixinTypeIdentifierSerializerTest.cs" />
-    <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeDeserializedConcreteType.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixinType.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixedType.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelperTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\SerializationHelperTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
