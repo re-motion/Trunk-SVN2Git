@@ -87,7 +87,8 @@ namespace Remotion.Mixins.MixerTool
 
       s_log.InfoFormat ("Base directory is '{0}'.", AppDomain.CurrentDomain.BaseDirectory);
 
-      var builder = CreateConcreteTypeBuilder ();
+      var typeBuilderFactory = new ConcreteTypeBuilderFactory (NameProvider, _signedAssemblyName, _unsignedAssemblyName);
+      var builder = typeBuilderFactory.CreateTypeBuilder (_assemblyOutputDirectory);
 
       PrepareDirectory (builder.Scope.UnsignedModulePath, builder.Scope.SignedModulePath);
 
@@ -97,23 +98,11 @@ namespace Remotion.Mixins.MixerTool
 
       s_log.InfoFormat ("Generating types for {0} configured mixin targets and {1} loaded types.", configuration.ClassContexts.Count, typesToCheck.Count);
 
-      Generate (builder, finder);
+      foreach (var classContext in finder.FindClassContexts())
+        Generate (builder, classContext);
+
       Save (builder);
       LogStatistics();
-    }
-
-    private ConcreteTypeBuilder CreateConcreteTypeBuilder ()
-    {
-      var builder = new ConcreteTypeBuilder ();
-      builder.TypeNameProvider = NameProvider;
-
-      builder.Scope.UnsignedAssemblyName = _unsignedAssemblyName;
-      builder.Scope.UnsignedModulePath = Path.Combine (_assemblyOutputDirectory, _unsignedAssemblyName + ".dll");
-
-      builder.Scope.SignedAssemblyName = _signedAssemblyName;
-      builder.Scope.SignedModulePath = Path.Combine (_assemblyOutputDirectory, _signedAssemblyName + ".dll");
-
-      return builder;
     }
 
     private void PrepareDirectory (string unsignedModulePath, string signedModulePath)
@@ -126,12 +115,6 @@ namespace Remotion.Mixins.MixerTool
 
       if (File.Exists (signedModulePath))
         File.Delete (signedModulePath);
-    }
-
-    public void Generate (ConcreteTypeBuilder builder, ClassContextFinder classContextFinder)
-    {
-      foreach (var classContext in classContextFinder.FindClassContexts())
-        Generate(builder, classContext);
     }
 
     private void Generate (ConcreteTypeBuilder builder, ClassContext classContext)

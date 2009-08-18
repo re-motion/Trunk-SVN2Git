@@ -164,6 +164,7 @@
     <Compile Include="Mixins\CodeGeneration\MixinArrayInitializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierDeserializerTest.cs" />
     <Compile Include="Mixins\MixerTool\ClassContextFinderTest.cs" />
+    <Compile Include="Mixins\MixerTool\ConcreteTypeBuilderFactoryTest.cs" />
     <Compile Include="Mixins\MixerTool\TestDomain\ClassWithIgnoreAttribute.cs" />
     <Compile Include="Mixins\MixerTool\TestDomain\GenericDerivedNullTarget.cs" />
     <Compile Include="Mixins\MixerTool\TestDomain\IDerivedIBaseType2.cs" />
