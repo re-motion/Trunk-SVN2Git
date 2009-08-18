@@ -64,7 +64,11 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     private void RegisterAdjustViewScript ()
     {
       ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustSingleView");
-      ScriptUtility.Instance.TriggerEventAfterPageLoad (Control, "$(window)", ScriptUtility.Event.Resize);
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (SingleViewPreRenderer),
+          Guid.NewGuid().ToString(),
+          string.Format ("ViewLayout.AdjustSingleView ($('#{0}'));", Control.ClientID));
     }
   }
 }

@@ -86,7 +86,7 @@ namespace OBWTest
       }
 
       RegisterRendererFactories (container, "StandardMode");
-      container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility.ScriptUtilityBase> ().LifeStyle.Singleton);
+      container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
       container.Register (Component.For<ResourceTheme> ().Instance (resourceTheme));
       
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
@@ -102,6 +102,7 @@ namespace OBWTest
               .If (t => t.Namespace.EndsWith (string.Format (".{0}.Factories", namespaceQualifier)))
               .WithService.Select ((t, b) => t.GetInterfaces())
               .Configure (c => c.Named (c.ServiceType.Name)));
+
       // Remotion.ObjectBinding.Web
       container.Register (
           AllTypes.Pick()

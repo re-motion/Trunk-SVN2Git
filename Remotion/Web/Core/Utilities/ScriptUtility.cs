@@ -26,15 +26,100 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.Web.Utilities
 {
   /// <summary> Utility class for client-side scripts. </summary>
-  public class ScriptUtility
+  public class ScriptUtility : IScriptUtility
   {
+    #region Obsolete
+
+    /// <summary>
+    ///   Used to register a client javascript script to be rendered  at the beginning of the HTML page.
+    ///   The script is automatically surrounded by &lt;script&gt; tags.
+    /// </summary>
+    /// <param name="control"> 
+    ///   The <see cref="Control"/> which the script file will be registered. Must not be <see langword="null"/>.
+    /// </param>
+    /// <param name="key"> 
+    ///   The key identifying the registered script file. Must not be <see langword="null"/> or empty.
+    /// </param>
+    /// <param name="javascript"> 
+    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
+    /// </param>
+    /// <seealso cref="Page.RegisterClientScriptBlock"/>
+    [Obsolete ("Use IPage.ClientScript.RegisterClientScriptBlock (IControl, Type, string, string) instead.")]
+    public static void RegisterClientScriptBlock (Control control, string key, string javascript)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull ("javascript", javascript);
+
+      if (!string.IsNullOrEmpty (javascript))
+        javascript += "\r\n";
+
+      ScriptManager.RegisterClientScriptBlock (control, typeof (Page), key, javascript, true);
+    }
+
+    /// <summary>
+    ///   Used to register a client javascript script to be rendered at the end of the HTML page. 
+    ///   The script is automatically surrounded by &lt;script&gt; tags.
+    /// </summary>
+    /// <param name="control"> 
+    ///   The <see cref="Control"/> for which the script file will be registered. Must not be <see langword="null"/>.
+    /// </param>
+    /// <param name="key"> 
+    ///   The key identifying the registered script block. Must not be <see langword="null"/> or empty.
+    /// </param>
+    /// <param name="javascript"> 
+    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
+    /// </param>
+    /// <seealso cref="ScriptManager.RegisterStartupScript"/>
+    [Obsolete ("Use IPage.ClientScript.RegisterStartupScriptBlock (IControl, Type, string, string) instead.")]
+    public static void RegisterStartupScriptBlock (Control control, string key, string javascript)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("key", key);
+      ArgumentUtility.CheckNotNull ("javascript", javascript);
+
+      if (!string.IsNullOrEmpty (javascript))
+        javascript += "\r\n";
+
+      ScriptManager.RegisterStartupScript (control, typeof (Page), key, javascript, true);
+    }
+
+    [Obsolete ("Use ScriptUtility.Instance.RegisterElementForBorderSpans", true)]
+    public static void RegisterElementForBorderSpans ()
+    {
+      throw new NotImplementedException ("Use ScriptUtility.Instance.RegisterElementForBorderSpans");
+    }
+
+    /// <summary>
+    /// Gets a flag that informs the caller if the <paramref name="control"/> will be part of the rendered output. This method only works during the
+    /// Render cycle.
+    /// </summary>
+    [Obsolete ("The various methods for registering scripts now accept controls instead of the page, thus allowing filtering of the output by the surrounding UpdatePanel.")]
+    public static bool IsPartOfRenderedOutput (Control control)
+    {
+      ArgumentUtility.CheckNotNull ("control", control);
+
+      var scriptManager = ScriptManager.GetCurrent (control.Page);
+      if (scriptManager != null && scriptManager.IsInAsyncPostBack)
+      {
+        bool isInsidePartialRenderingUpdatePanel = control.CreateSequence (c => c.Parent)
+            .Where (c => c is UpdatePanel && ((UpdatePanel) c).IsInPartialRendering)
+            .Cast<UpdatePanel> ()
+            .Any ();
+
+        return isInsidePartialRenderingUpdatePanel;
+      }
+      else
+      {
+        return true;
+      }
+    }
+
+    #endregion
+
     public enum Event
     {
       Resize
-    }
-
-    protected ScriptUtility ()
-    {
     }
 
     public static IScriptUtility Instance
@@ -42,53 +127,7 @@ namespace Remotion.Web.Utilities
       get { return ServiceLocator.Current.GetInstance<IScriptUtility>(); }
     }
 
-    public class ScriptUtilityBase : IScriptUtility
-    {
-      public void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQuerySelectorForBorderSpanTarget)
-      {
-        ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
-        ArgumentUtility.CheckNotNullOrEmpty ("jQuerySelectorForBorderSpanTarget", jQuerySelectorForBorderSpanTarget);
-
-        string key = typeof (ScriptUtility).FullName + "_StyleUtility";
-        string url = GetScriptUrl(control);
-        
-        htmlHeadAppender.RegisterJQueryJavaScriptInclude (control);
-        htmlHeadAppender.RegisterJavaScriptInclude (key, url);
-
-        control.Page.ClientScript.RegisterStartupScriptBlock (
-            control,
-            typeof (Page),
-            "BorderSpans_" + jQuerySelectorForBorderSpanTarget,
-            string.Format (
-                "StyleUtility.CreateBorderSpans ('{0}');", jQuerySelectorForBorderSpanTarget));
-      }
-
-      protected string GetScriptUrl (IControl control)
-      {
-        return ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
-      }
-
-      protected ResourceTheme ResourceTheme
-      {
-        get { return ServiceLocator.Current.GetInstance<ResourceTheme>(); }
-      }
-
-      public void RegisterResizeOnElement (IControl control, string jquerySelector, string eventHandler)
-      {
-        string key = control.ClientID + "_ResizeEventHandler";
-        string script = string.Format ("StyleUtility.Instance.RegisterResizeHandler({0}, {1});", jquerySelector, eventHandler);
-        control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtilityBase), key, script);
-      }
-
-      public void TriggerEventAfterPageLoad (IControl control, string element, Event eventToTrigger)
-      {
-        string key = typeof (ScriptUtilityBase).FullName + "_Trigger_" + eventToTrigger;
-        string script = string.Format("setTimeout(\"{0}.trigger('{1}');\", 10);", element, eventToTrigger.ToString().ToLower());
-        control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtilityBase), key, script);
-      }
-    }
-
-      /// <summary> Escapes special characters (e.g. <c>\n</c>) in the passed string. </summary>
+    /// <summary> Escapes special characters (e.g. <c>\n</c>) in the passed string. </summary>
     /// <param name="input"> The unescaped string. Must not be <see langword="null"/>. </param>
     /// <returns> The string with special characters escaped. </returns>
     /// <remarks>
@@ -165,89 +204,45 @@ namespace Remotion.Web.Utilities
       return output.ToString ();
     }
 
-    /// <summary>
-    ///   Used to register a client javascript script to be rendered  at the beginning of the HTML page.
-    ///   The script is automatically surrounded by &lt;script&gt; tags.
-    /// </summary>
-    /// <param name="control"> 
-    ///   The <see cref="Control"/> which the script file will be registered. Must not be <see langword="null"/>.
-    /// </param>
-    /// <param name="key"> 
-    ///   The key identifying the registered script file. Must not be <see langword="null"/> or empty.
-    /// </param>
-    /// <param name="javascript"> 
-    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
-    /// </param>
-    /// <seealso cref="Page.RegisterClientScriptBlock"/>
-    [Obsolete ("Use IPage.ClientScript.RegisterClientScriptBlock (IControl, Type, string, string) instead.")]
-    public static void RegisterClientScriptBlock (Control control, string key, string javascript)
+    public ScriptUtility ()
     {
-      ArgumentUtility.CheckNotNull ("control", control);
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("javascript", javascript);
-
-      if (!string.IsNullOrEmpty (javascript))
-        javascript += "\r\n";
-
-      ScriptManager.RegisterClientScriptBlock (control, typeof (Page), key, javascript, true);
     }
 
-    /// <summary>
-    ///   Used to register a client javascript script to be rendered at the end of the HTML page. 
-    ///   The script is automatically surrounded by &lt;script&gt; tags.
-    /// </summary>
-    /// <param name="control"> 
-    ///   The <see cref="Control"/> for which the script file will be registered. Must not be <see langword="null"/>.
-    /// </param>
-    /// <param name="key"> 
-    ///   The key identifying the registered script block. Must not be <see langword="null"/> or empty.
-    /// </param>
-    /// <param name="javascript"> 
-    ///   The client script that will be registered. Must not be <see langword="null"/> or empty. 
-    /// </param>
-    /// <seealso cref="ScriptManager.RegisterStartupScript"/>
-    [Obsolete ("Use IPage.ClientScript.RegisterStartupScriptBlock (IControl, Type, string, string) instead.")]
-    public static void RegisterStartupScriptBlock (Control control, string key, string javascript)
+    public void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQuerySelectorForBorderSpanTarget)
     {
-      ArgumentUtility.CheckNotNull ("control", control);
-      ArgumentUtility.CheckNotNull ("key", key);
-      ArgumentUtility.CheckNotNull ("javascript", javascript);
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+      ArgumentUtility.CheckNotNullOrEmpty ("jQuerySelectorForBorderSpanTarget", jQuerySelectorForBorderSpanTarget);
 
-      if (!string.IsNullOrEmpty (javascript))
-        javascript += "\r\n";
-      
-      ScriptManager.RegisterStartupScript (control, typeof (Page), key, javascript, true);
+      string key = typeof (ScriptUtility).FullName + "_StyleUtility";
+      string url = GetScriptUrl (control);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (control);
+      htmlHeadAppender.RegisterJQueryJavaScriptInclude (control);
+      htmlHeadAppender.RegisterJavaScriptInclude (key, url);
+
+      control.Page.ClientScript.RegisterStartupScriptBlock (
+          control,
+          typeof (Page),
+          "BorderSpans_" + jQuerySelectorForBorderSpanTarget,
+          string.Format (
+              "StyleUtility.CreateBorderSpans ('{0}');", jQuerySelectorForBorderSpanTarget));
     }
 
-    [Obsolete ("Use ScriptUtility.Instance.RegisterElementForBorderSpans", true)]
-    public static void RegisterElementForBorderSpans ()
+    protected string GetScriptUrl (IControl control)
     {
-      throw new NotImplementedException ("Use ScriptUtility.Instance.RegisterElementForBorderSpans");
+      return ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
     }
 
-    /// <summary>
-    /// Gets a flag that informs the caller if the <paramref name="control"/> will be part of the rendered output. This method only works during the
-    /// Render cycle.
-    /// </summary>
-    [Obsolete ("The various methods for registering scripts now accept controls instead of the page, thus allowing filtering of the output by the surrounding UpdatePanel.")]
-    public static bool IsPartOfRenderedOutput (Control control)
+    protected ResourceTheme ResourceTheme
     {
-      ArgumentUtility.CheckNotNull ("control", control);
+      get { return ServiceLocator.Current.GetInstance<ResourceTheme> (); }
+    }
 
-      var scriptManager = ScriptManager.GetCurrent (control.Page);
-      if (scriptManager != null && scriptManager.IsInAsyncPostBack)
-      {
-        bool isInsidePartialRenderingUpdatePanel = control.CreateSequence (c => c.Parent)
-          .Where (c => c is UpdatePanel && ((UpdatePanel)c).IsInPartialRendering)
-          .Cast<UpdatePanel>()
-          .Any();
-
-        return isInsidePartialRenderingUpdatePanel;
-      }
-      else
-      {
-        return true;
-      }
+    public void RegisterResizeOnElement (IControl control, string jquerySelector, string eventHandler)
+    {
+      string key = control.ClientID + "_ResizeEventHandler";
+      string script = string.Format ("StyleUtility.Instance.RegisterResizeHandler({0}, {1});", jquerySelector, eventHandler);
+      control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtility), key, script);
     }
   }
 }

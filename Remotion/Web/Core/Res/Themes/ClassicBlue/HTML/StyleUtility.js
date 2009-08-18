@@ -11,6 +11,18 @@
 
   this.RegisterResizeHandler = function(selector, handler)
   {
+    ArgumentUtility.CheckNotNullAndTypeIsString('selector', selector);
+    ArgumentUtility.CheckNotNull('handler', handler);
+
+    for (var i = 0; i < _resizeHandlers.length; i++)
+    {
+      var item = _resizeHandlers[i];
+      if (item.Selector == selector)
+      {
+        item.handler = handler;
+        return;
+      }
+    }
     _resizeHandlers[_resizeHandlers.length] = new StyleUtility_ResizeHandlerItem(selector, handler);
   }
 
@@ -24,12 +36,18 @@
 
   this.ExecuteResizeHandlers = function()
   {
-    for (var i = _resizeHandlers.length - 1; i >= 0; i--)
+    var existingResizeHandlers = new Array();
+    for (var i = 0; i < _resizeHandlers.length; i++)
     {
       var item = _resizeHandlers[i];
       var element = $(item.Selector);
-      item.Handler(element);
+      if (element != null)
+      {
+        item.Handler(element);
+        existingResizeHandlers[existingResizeHandlers.length] = item;
+      }
     }
+    _resizeHandlers = existingResizeHandlers;
   }
 }
 

@@ -65,8 +65,12 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
 
     private void RegisterAdjustViewScript ()
     {
-      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustSingleView");
-      ScriptUtility.Instance.TriggerEventAfterPageLoad (Control, "$(window)", ScriptUtility.Event.Resize);
+      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustTabbedMultiView");
+      Control.Page.ClientScript.RegisterStartupScriptBlock (
+          Control,
+          typeof (TabbedMultiViewPreRenderer),
+          Guid.NewGuid().ToString(),
+          string.Format ("ViewLayout.AdjustTabbedMultiView ($('#{0}'));", Control.ClientID));
     }
   }
 }
