@@ -20,7 +20,10 @@ div.tabbedMultiView div.wrapper
 {
   position: relative;
   background-color: white;
-  margin: 0.5em;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
   width: auto;
   height: auto;
 }
@@ -37,8 +40,10 @@ div.tabbedMultiView div.content
 div.tabbedMultiViewActiveView
 {
   overflow: hidden;
-  margin: 0em 1em;
-  padding-top: 1px;
+  margin-top: -1px;
+  margin-bottom: 0;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
 div.tabbedMultiViewActiveView div.contentBorder
@@ -112,7 +117,7 @@ div.tabbedMultiViewActiveView *.bottomRight
 div.tabbedMultiViewTopControls
 {
   padding: 0;
-	overflow: hidden;
+  overflow: hidden;
 }
 
 div.tabbedMultiViewTopControls.emtpy
