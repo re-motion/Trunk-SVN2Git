@@ -72,7 +72,7 @@ namespace Remotion.Mixins.MixerTool
 
       try
       {
-        mixer.Execute (true);
+        mixer.Execute ();
       }
       catch (Exception ex)
       {

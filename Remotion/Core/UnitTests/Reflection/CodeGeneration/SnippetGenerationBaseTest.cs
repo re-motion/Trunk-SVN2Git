@@ -15,13 +15,11 @@
 // 
 using System;
 using System.Reflection;
-using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection.CodeGeneration;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
 {
-  [TestFixture]
   public class SnippetGenerationBaseTest : CodeGenerationBaseTest
   {
     private static int s_typeCount;

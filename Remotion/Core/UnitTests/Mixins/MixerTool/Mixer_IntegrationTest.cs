@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
 
             using (MixinConfiguration.BuildNew ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
             {
-              mixer.Execute (true);
+              mixer.Execute ();
 
               Assembly theAssembly = Assembly.LoadFile (UnsignedAssemblyPath);
               Assert.AreEqual (2, theAssembly.GetTypes ().Length);
@@ -70,7 +70,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
             {
               using (MixinConfiguration.BuildFromActive ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
               {
-                mixer.Execute (true);
+                mixer.Execute ();
               }
             }
           });
@@ -100,7 +100,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
             Mixer mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
             using (MixinConfiguration.BuildNew ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
             {
-              mixer.Execute (true);
+              mixer.Execute ();
             }
           });
 
