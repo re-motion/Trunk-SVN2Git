@@ -15,154 +15,88 @@
 // 
 using System;
 using System.IO;
-using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.MixerTool;
-using Remotion.UnitTests.Mixins.SampleTypes;
-using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.MixerTool
 {
   [TestFixture]
-  [Serializable]
   public class MixerRunnerTest
   {
     private MixerParameters _parameters;
 
     [SetUp]
-    public virtual void SetUp ()
+    public void SetUp ()
     {
       _parameters = new MixerParameters ();
-      ResetGeneratedFiles ();
-    }
-
-    [TearDown]
-    public virtual void TearDown ()
-    {
-      ResetGeneratedFiles ();
-    }
-
-
-    public string UnsignedAssemblyPath
-    {
-      get { return Path.Combine (_parameters.AssemblyOutputDirectory, _parameters.UnsignedAssemblyName + ".dll"); }
-    }
-
-    public string SignedAssemblyPath
-    {
-      get { return Path.Combine (_parameters.AssemblyOutputDirectory, _parameters.SignedAssemblyName + ".dll"); }
     }
 
     [Test]
     public void ParameterDefaults ()
     {
-      Assert.AreEqual (Environment.CurrentDirectory, _parameters.AssemblyOutputDirectory);
-      Assert.AreEqual (Environment.CurrentDirectory, _parameters.BaseDirectory);
-      Assert.AreEqual ("", _parameters.ConfigFile);
-      Assert.AreEqual ("Remotion.Mixins.Persistent.Signed", _parameters.SignedAssemblyName);
-      Assert.AreEqual ("Remotion.Mixins.Persistent.Unsigned", _parameters.UnsignedAssemblyName);
-      Assert.AreEqual (false, _parameters.KeepTypeNames);
+      Assert.That (_parameters.AssemblyOutputDirectory, Is.EqualTo (Environment.CurrentDirectory));
+      Assert.That (_parameters.BaseDirectory, Is.EqualTo (Environment.CurrentDirectory));
+      Assert.That (_parameters.ConfigFile, Is.EqualTo (""));
+      Assert.That (_parameters.SignedAssemblyName, Is.EqualTo ("Remotion.Mixins.Persistent.Signed"));
+      Assert.That (_parameters.UnsignedAssemblyName, Is.EqualTo ("Remotion.Mixins.Persistent.Unsigned"));
+      Assert.That (_parameters.KeepTypeNames, Is.EqualTo (false));
+    }
+
+    [Test]
+    public void CreateAppDomainSetup_Default ()
+    {
+      var setup = MixerRunner.CreateAppDomainSetup (_parameters);
+
+      Assert.That (setup.ApplicationName, Is.EqualTo ("Mixer"));
+      Assert.That (setup.ApplicationBase, Is.EqualTo (_parameters.BaseDirectory));
+    }
+
+    [Test]
+    public void CreateMixer_Default ()
+    {
+      var runner = new MixerRunner (_parameters);
+      var mixer = (Mixer) PrivateInvoke.InvokeNonPublicMethod (runner, "CreateMixer");
+
+      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).SignedAssemblyName, Is.EqualTo (_parameters.SignedAssemblyName));
+      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).UnsignedAssemblyName, Is.EqualTo (_parameters.UnsignedAssemblyName));
+      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.SameAs (GuidNameProvider.Instance));
+      Assert.That (mixer.AssemblyOutputDirectory, Is.EqualTo (_parameters.AssemblyOutputDirectory));
+    }
+
+    [Test]
+    public void CreateMixer_KeepTypeNames ()
+    {
+      var runner = new MixerRunner (_parameters);
+      _parameters.KeepTypeNames = true;
+      var mixer = (Mixer) PrivateInvoke.InvokeNonPublicMethod (runner, "CreateMixer");
+
+      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.SameAs (NamespaceChangingNameProvider.Instance));
     }
 
     [Test]
     public void RunDefault ()
     {
-      Assert.IsFalse (File.Exists (UnsignedAssemblyPath));
-      var runner = new MixerRunner (_parameters);
-      runner.Run ();
-      Assert.IsTrue (File.Exists (UnsignedAssemblyPath));
-    }
-
-    [Test]
-    public void RunWithDifferentBaseDirectory ()
-    {
-      string basePath = Path.Combine (Environment.CurrentDirectory, "TempBasePath");
-      string localSampleTypesPath = Path.Combine (Environment.CurrentDirectory, "SampleTypes.dll");
-      string localGeneratedPath = Path.Combine (Environment.CurrentDirectory, "Remotion.Mixins.Generated.Unsigned.dll");
-      string remoteSampleTypesPath = Path.Combine (basePath, "SampleTypes.dll");
-
-      if (Directory.Exists (basePath))
-        Directory.Delete (basePath, true);
-
-      Directory.CreateDirectory (basePath);
-
-      if (File.Exists (localSampleTypesPath))
-        File.Delete (localSampleTypesPath);
-
-      if (File.Exists (localGeneratedPath))
-        File.Delete (localGeneratedPath);
-
-      string mixinDllPath = Path.Combine (basePath, typeof (ExtendsAttribute).Assembly.ManifestModule.Name);
-      File.Copy (typeof (ExtendsAttribute).Assembly.Location, mixinDllPath);
-
-      var compiler = new AssemblyCompiler ("Mixins\\MixerTool\\SampleAssembly", remoteSampleTypesPath, mixinDllPath);
-      compiler.CompileInSeparateAppDomain ();
-
-      _parameters.BaseDirectory = basePath;
-
-      Assert.IsFalse (File.Exists (UnsignedAssemblyPath));
-      var runner = new MixerRunner (_parameters);
-      runner.Run ();
-      Assert.IsTrue (File.Exists (UnsignedAssemblyPath));
-
-      File.Move (remoteSampleTypesPath, localSampleTypesPath);
-      File.Move (UnsignedAssemblyPath, localGeneratedPath);
-
-      AppDomainRunner.Run (
-          delegate (object[] args)
-          {
-            var path = (string) args[0];
-            Assembly assembly = Assembly.LoadFile (path);
-            Assert.AreEqual (2, assembly.GetTypes().Length); // concrete type + base call proxy
-            Type generatedType = GetFirstMixedType (assembly);
-            Assert.AreEqual ("BaseType", generatedType.BaseType.Name);
-          },  localGeneratedPath);
-
-      File.Delete (localSampleTypesPath);
-      File.Delete (localGeneratedPath);
-    }
-
-    [Test]
-    public void RunWithKeepTypeNames ()
-    {
-      _parameters.KeepTypeNames = true;
-      using (MixinConfiguration.BuildNew().EnterScope())
+      _parameters.AssemblyOutputDirectory = "MixerRunnerTest";
+      var unsignedAssemblyPath = Path.Combine (_parameters.AssemblyOutputDirectory, _parameters.UnsignedAssemblyName + ".dll");
+      
+      try
       {
-        using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (NullMixin)).EnterScope())
-        {
-          var runner = new MixerRunner (_parameters);
-          runner.Run();
-        }
+        Assert.That (Directory.Exists (_parameters.AssemblyOutputDirectory), Is.False);
+        Assert.That (File.Exists (unsignedAssemblyPath), Is.False);
+
+        var runner = new MixerRunner (_parameters);
+        runner.Run ();
+
+        Assert.That (Directory.Exists (_parameters.AssemblyOutputDirectory), Is.True);
+        Assert.That (File.Exists (unsignedAssemblyPath), Is.True);
       }
-
-      AppDomainRunner.Run (
-          delegate
-          {
-            Assembly assembly = Assembly.LoadFile (UnsignedAssemblyPath);
-            Type generatedType = GetFirstMixedType (assembly);
-            Assert.IsTrue (generatedType.Namespace.EndsWith ("MixedTypes"));
-          });
-    }
-
-    private void ResetGeneratedFiles ()
-    {
-      if (File.Exists (UnsignedAssemblyPath))
-        FileUtility.DeleteAndWaitForCompletion (UnsignedAssemblyPath);
-      if (File.Exists (SignedAssemblyPath))
-        FileUtility.DeleteAndWaitForCompletion (SignedAssemblyPath);
-    }
-
-    private Type GetFirstMixedType (Assembly assembly)
-    {
-      foreach (Type t in assembly.GetTypes ())
+      finally
       {
-        if (t.IsDefined (typeof (ConcreteMixedTypeAttribute), false))
-          return t;
+        Directory.Delete (_parameters.AssemblyOutputDirectory, true);
       }
-      return null;
     }
   }
 }

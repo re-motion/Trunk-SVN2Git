@@ -27,7 +27,7 @@ namespace Remotion.Mixins.MixerTool
   [Serializable]
   public class MixerRunner : AppDomainRunnerBase
   {
-    private static AppDomainSetup CreateAppDomainSetup (MixerParameters parameters)
+    public static AppDomainSetup CreateAppDomainSetup (MixerParameters parameters)
     {
       ArgumentUtility.CheckNotNull ("parameters", parameters);
 
@@ -65,14 +65,7 @@ namespace Remotion.Mixins.MixerTool
     {
       LogManager.InitializeConsole ();
 
-      var mixer = Mixer.Create (
-          _parameters.SignedAssemblyName, 
-          _parameters.UnsignedAssemblyName, 
-          _parameters.KeepTypeNames ? (INameProvider) NamespaceChangingNameProvider.Instance : GuidNameProvider.Instance, 
-          _parameters.AssemblyOutputDirectory);
-      
-      mixer.ValidationErrorOccurred += Mixer_ValidationErrorOccurred;
-      mixer.ErrorOccurred += Mixer_ErrorOccurred;
+      Mixer mixer = CreateMixer();
 
       try
       {
@@ -86,6 +79,19 @@ namespace Remotion.Mixins.MixerTool
 					Console.WriteLine (ex.Message);
 				}
       }
+    }
+
+    private Mixer CreateMixer ()
+    {
+      var mixer = Mixer.Create (
+          _parameters.SignedAssemblyName, 
+          _parameters.UnsignedAssemblyName, 
+          _parameters.KeepTypeNames ? (INameProvider) NamespaceChangingNameProvider.Instance : GuidNameProvider.Instance, 
+          _parameters.AssemblyOutputDirectory);
+      
+      mixer.ValidationErrorOccurred += Mixer_ValidationErrorOccurred;
+      mixer.ErrorOccurred += Mixer_ErrorOccurred;
+      return mixer;
     }
 
     private void Mixer_ValidationErrorOccurred (object sender, ValidationErrorEventArgs e)

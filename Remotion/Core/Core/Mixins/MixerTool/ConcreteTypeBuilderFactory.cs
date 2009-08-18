@@ -39,6 +39,21 @@ namespace Remotion.Mixins.MixerTool
       _unsignedAssemblyName = unsignedAssemblyName;
     }
 
+    public INameProvider TypeNameProvider
+    {
+      get { return _typeNameProvider; }
+    }
+
+    public string SignedAssemblyName
+    {
+      get { return _signedAssemblyName; }
+    }
+
+    public string UnsignedAssemblyName
+    {
+      get { return _unsignedAssemblyName; }
+    }
+
     public IConcreteTypeBuilder CreateTypeBuilder (string assemblyOutputDirectory)
     {
       var builder = new ConcreteTypeBuilder ();
