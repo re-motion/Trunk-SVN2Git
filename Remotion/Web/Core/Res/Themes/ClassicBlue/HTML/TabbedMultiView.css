@@ -61,9 +61,14 @@ div.tabbedMultiViewActiveView
   padding-left: 0.2em;
 }
 
+div.tabbedMultiViewActiveView div.contentBorder
+{
+  padding: 0.25em;
+  overflow: auto;
+}
+
 div.tabbedMultiViewActiveView div.content
 {
-  overflow: auto;
 }
 
 div.tabbedMultiViewActiveView *.left, 

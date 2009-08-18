@@ -91,7 +91,7 @@ div.singleViewView
 div.singleViewView div.contentBorder
 {
   border: solid 1px #083779;
-  padding: 1em;	
+  padding: 0.25em;
   overflow: auto;
 }
 

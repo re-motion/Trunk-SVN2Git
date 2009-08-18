@@ -34,13 +34,12 @@ div.singleViewView
 
 div.singleViewView div.contentBorder
 {
-  padding: 1em;	
+  padding: 0.25em;
   overflow: auto;
 }
 
 div.singleViewView div.content
 {
-  overflow: auto;
 }
 
 div.singleViewView *.left, 
