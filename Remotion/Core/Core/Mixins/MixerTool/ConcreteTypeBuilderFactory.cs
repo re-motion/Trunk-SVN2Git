@@ -45,12 +45,22 @@ namespace Remotion.Mixins.MixerTool
       builder.TypeNameProvider = _typeNameProvider;
 
       builder.Scope.SignedAssemblyName = _signedAssemblyName;
-      builder.Scope.SignedModulePath = Path.Combine (assemblyOutputDirectory, _signedAssemblyName + ".dll");
+      builder.Scope.SignedModulePath = GetSignedModulePath (assemblyOutputDirectory);
 
       builder.Scope.UnsignedAssemblyName = _unsignedAssemblyName;
-      builder.Scope.UnsignedModulePath = Path.Combine (assemblyOutputDirectory, _unsignedAssemblyName + ".dll");
+      builder.Scope.UnsignedModulePath = GetUnsignedModulePath(assemblyOutputDirectory);
 
       return builder;
+    }
+
+    public string GetSignedModulePath (string assemblyOutputDirectory)
+    {
+      return Path.Combine (assemblyOutputDirectory, _signedAssemblyName + ".dll");
+    }
+
+    public string GetUnsignedModulePath (string assemblyOutputDirectory)
+    {
+      return Path.Combine (assemblyOutputDirectory, _unsignedAssemblyName + ".dll");
     }
   }
 }

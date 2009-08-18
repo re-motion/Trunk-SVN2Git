@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -37,11 +36,11 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       AppDomainRunner.Run (
           delegate
           {
-            Mixer mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-
             using (MixinConfiguration.BuildNew ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
             {
-              mixer.Execute ();
+              Mixer mixer = CreateMixer();
+              mixer.PrepareOutputDirectory ();
+              mixer.Execute (MixinConfiguration.ActiveConfiguration);
 
               Assembly theAssembly = Assembly.LoadFile (UnsignedAssemblyPath);
               Assert.AreEqual (2, theAssembly.GetTypes ().Length);
@@ -65,13 +64,11 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       AppDomainRunner.Run (
           delegate
           {
-            Mixer mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-            using (MixinConfiguration.BuildNew ().EnterScope ())
+            using (MixinConfiguration.BuildNew ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
             {
-              using (MixinConfiguration.BuildFromActive ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
-              {
-                mixer.Execute ();
-              }
+              var mixer = CreateMixer ();
+              mixer.PrepareOutputDirectory ();
+              mixer.Execute (MixinConfiguration.ActiveConfiguration);
             }
           });
 
@@ -97,10 +94,11 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       AppDomainRunner.Run (
           delegate
           {
-            Mixer mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
+            Mixer mixer = CreateMixer();
             using (MixinConfiguration.BuildNew ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
             {
-              mixer.Execute ();
+              mixer.PrepareOutputDirectory ();
+              mixer.Execute (MixinConfiguration.ActiveConfiguration);
             }
           });
 
@@ -110,6 +108,15 @@ namespace Remotion.UnitTests.Mixins.MixerTool
             Assembly theAssembly = Assembly.LoadFile (UnsignedAssemblyPath);
             Assert.IsTrue (theAssembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
           });
+    }
+
+    private Mixer CreateMixer ()
+    {
+      return Mixer.Create (
+          Parameters.SignedAssemblyName,
+          Parameters.UnsignedAssemblyName,
+          GuidNameProvider.Instance,
+          Parameters.AssemblyOutputDirectory);
     }
   }
 }

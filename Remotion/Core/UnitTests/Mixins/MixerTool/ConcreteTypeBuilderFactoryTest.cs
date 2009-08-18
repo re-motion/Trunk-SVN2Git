@@ -25,21 +25,40 @@ namespace Remotion.UnitTests.Mixins.MixerTool
   [TestFixture]
   public class ConcreteTypeBuilderFactoryTest
   {
+    private INameProvider _typeNameProviderStub;
+    private ConcreteTypeBuilderFactory _factory;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _typeNameProviderStub = MockRepository.GenerateStub<INameProvider> ();
+      _factory = new ConcreteTypeBuilderFactory (_typeNameProviderStub, "Signed", "Unsigned");
+    }
+
     [Test]
     public void CreateTypeBuilder ()
     {
-      var typeNameProviderStub = MockRepository.GenerateStub<INameProvider> ();
-      var factory = new ConcreteTypeBuilderFactory (typeNameProviderStub, "Signed", "Unsigned");
+      var builder = _factory.CreateTypeBuilder (@"c:\directory");
 
-      var builder = factory.CreateTypeBuilder (@"c:\directory");
-
-      Assert.That (builder.TypeNameProvider, Is.SameAs (typeNameProviderStub));
+      Assert.That (builder.TypeNameProvider, Is.SameAs (_typeNameProviderStub));
       
       Assert.That (builder.Scope.SignedAssemblyName, Is.EqualTo ("Signed"));
       Assert.That (builder.Scope.SignedModulePath, Is.EqualTo (@"c:\directory\Signed.dll"));
 
       Assert.That (builder.Scope.UnsignedAssemblyName, Is.EqualTo ("Unsigned"));
       Assert.That (builder.Scope.UnsignedModulePath, Is.EqualTo (@"c:\directory\Unsigned.dll"));
+    }
+
+    [Test]
+    public void GetSignedModulePath ()
+    {
+      Assert.That (_factory.GetSignedModulePath (@"c:\directory"), Is.EqualTo (@"c:\directory\Signed.dll"));
+    }
+
+    [Test]
+    public void GetUnsignedModulePath ()
+    {
+      Assert.That (_factory.GetUnsignedModulePath (@"c:\directory"), Is.EqualTo (@"c:\directory\Unsigned.dll"));
     }
   }
 }

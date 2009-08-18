@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel.Design;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
@@ -22,6 +23,7 @@ using Remotion.Mixins.MixerTool;
 using Remotion.UnitTests.Mixins.MixerTool.TestDomain;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using System.Linq;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins.MixerTool
 {
@@ -34,6 +36,8 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     private ClassContext _interfaceClassContext;
 
     private MixinConfiguration _configuration;
+
+    private ITypeDiscoveryService _emptyTypeDiscoveryServiceStub;
 
     [SetUp]
     public void SetUp ()
@@ -48,13 +52,15 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       _configuration.ClassContexts.Add (_configuredClassContext2);
       _configuration.ClassContexts.Add (_genericClassContext);
       _configuration.ClassContexts.Add (_interfaceClassContext);
+
+      _emptyTypeDiscoveryServiceStub = CreateTypeDiscoveryServiceStub ();
     }
 
     [Test]
     public void FindClassContexts_ConfiguredContexts ()
     {
-      var finder = new ClassContextFinder (_configuration, Type.EmptyTypes);
-      var result = finder.FindClassContexts ().ToArray ();
+      var finder = new ClassContextFinder (_emptyTypeDiscoveryServiceStub);
+      var result = finder.FindClassContexts (_configuration).ToArray ();
 
       Assert.That (result, List.Contains (_configuredClassContext1));
       Assert.That (result, List.Contains (_configuredClassContext2));
@@ -63,8 +69,8 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_ConfiguredContexts_NoGenerics ()
     {
-      var finder = new ClassContextFinder (_configuration, Type.EmptyTypes);
-      var result = finder.FindClassContexts ().ToArray ();
+      var finder = new ClassContextFinder (_emptyTypeDiscoveryServiceStub);
+      var result = finder.FindClassContexts (_configuration).ToArray ();
 
       Assert.That (result, List.Not.Contains (_genericClassContext));
     }
@@ -72,8 +78,8 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_ConfiguredContexts_NoInterfaces ()
     {
-      var finder = new ClassContextFinder (_configuration, Type.EmptyTypes);
-      var result = finder.FindClassContexts ().ToArray ();
+      var finder = new ClassContextFinder (_emptyTypeDiscoveryServiceStub);
+      var result = finder.FindClassContexts (_configuration).ToArray ();
 
       Assert.That (result, List.Not.Contains (_interfaceClassContext));
     }
@@ -81,8 +87,8 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_InheritedContexts ()
     {
-      var finder = new ClassContextFinder (_configuration, new[] { typeof (DerivedNullTarget) });
-      var result = finder.FindClassContexts ().SingleOrDefault (cc => cc.Type == typeof (DerivedNullTarget));
+      var finder = new ClassContextFinder (CreateTypeDiscoveryServiceStub (typeof (DerivedNullTarget)));
+      var result = finder.FindClassContexts (_configuration).SingleOrDefault (cc => cc.Type == typeof (DerivedNullTarget));
 
       Assert.That (result, Is.Not.Null);
     }
@@ -90,8 +96,8 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_InheritedContexts_NoTypesMarkedWithIgnoreAttribute ()
     {
-      var finder = new ClassContextFinder (_configuration, new[] { typeof (ClassWithIgnoreAttribute) });
-      var result = finder.FindClassContexts ().SingleOrDefault (cc => cc.Type == typeof (ClassWithIgnoreAttribute));
+      var finder = new ClassContextFinder (CreateTypeDiscoveryServiceStub (typeof (ClassWithIgnoreAttribute)));
+      var result = finder.FindClassContexts (_configuration).SingleOrDefault (cc => cc.Type == typeof (ClassWithIgnoreAttribute));
 
       Assert.That (result, Is.Null);
     }
@@ -99,8 +105,8 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_InheritedContexts_NoDuplicates ()
     {
-      var finder = new ClassContextFinder (_configuration, new[] { typeof (NullTarget) });
-      var result = finder.FindClassContexts ().Count (cc => cc.Type == typeof (NullTarget));
+      var finder = new ClassContextFinder (CreateTypeDiscoveryServiceStub (typeof (NullTarget)));
+      var result = finder.FindClassContexts (_configuration).Count (cc => cc.Type == typeof (NullTarget));
 
       Assert.That (result, Is.EqualTo (1));
     }
@@ -108,8 +114,8 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_InheritedContexts_NoNonInherited ()
     {
-      var finder = new ClassContextFinder (_configuration, new[] { typeof (object) });
-      var result = finder.FindClassContexts ().Count (cc => cc == null || cc.Type == typeof (object));
+      var finder = new ClassContextFinder (CreateTypeDiscoveryServiceStub (typeof (object)));
+      var result = finder.FindClassContexts (_configuration).Count (cc => cc == null || cc.Type == typeof (object));
 
       Assert.That (result, Is.EqualTo (0));
     }
@@ -117,8 +123,8 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_InheritedContexts_NoGenerics ()
     {
-      var finder = new ClassContextFinder (_configuration, new[] { typeof (GenericDerivedNullTarget<>) });
-      var result = finder.FindClassContexts ().Count (cc => cc.Type == typeof (GenericDerivedNullTarget<>));
+      var finder = new ClassContextFinder (CreateTypeDiscoveryServiceStub (typeof (GenericDerivedNullTarget<>)));
+      var result = finder.FindClassContexts (_configuration).Count (cc => cc.Type == typeof (GenericDerivedNullTarget<>));
 
       Assert.That (result, Is.EqualTo (0));
     }
@@ -126,10 +132,17 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void FindClassContexts_InheritedContexts_NoInterfaces ()
     {
-      var finder = new ClassContextFinder (_configuration, new[] { typeof (IDerivedIBaseType2) });
-      var result = finder.FindClassContexts ().Count (cc => cc.Type == typeof (IDerivedIBaseType2));
+      var finder = new ClassContextFinder (CreateTypeDiscoveryServiceStub (typeof (IDerivedIBaseType2)));
+      var result = finder.FindClassContexts (_configuration).Count (cc => cc.Type == typeof (IDerivedIBaseType2));
 
       Assert.That (result, Is.EqualTo (0));
+    }
+
+    private ITypeDiscoveryService CreateTypeDiscoveryServiceStub (params Type[] stubResult)
+    {
+      var typeDiscoveryServiceStub = MockRepository.GenerateStub<ITypeDiscoveryService> ();
+      typeDiscoveryServiceStub.Stub (stub => stub.GetTypes (null, false)).Return (stubResult);
+      return typeDiscoveryServiceStub;
     }
   }
 }

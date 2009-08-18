@@ -15,6 +15,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using Remotion.Mixins.Context;
 using Remotion.Utilities;
@@ -26,29 +27,34 @@ namespace Remotion.Mixins.MixerTool
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (ClassContextFinder));
 
-    private readonly MixinConfiguration _configuration;
-    private readonly IEnumerable<Type> _types;
+    private readonly ITypeDiscoveryService _typeDiscoveryService;
 
-    public ClassContextFinder (MixinConfiguration configuration, IEnumerable<Type> types)
+    public ClassContextFinder (ITypeDiscoveryService typeDiscoveryService)
     {
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
-      ArgumentUtility.CheckNotNull ("types", types);
+      ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
 
-      _configuration = configuration;
-      _types = types;
+      _typeDiscoveryService = typeDiscoveryService;
     }
 
-    public IEnumerable<ClassContext> FindClassContexts ()
+    public IEnumerable<ClassContext> FindClassContexts (MixinConfiguration configuration)
     {
-      var inheritedContexts = from t in _types
+      ArgumentUtility.CheckNotNull ("configuration", configuration);
+
+      var types = _typeDiscoveryService.GetTypes (null, false);
+      s_log.InfoFormat (
+          "Retrieving class contexts for {0} configured mixin targets and {1} loaded types.", 
+          configuration.ClassContexts.Count,
+          types.Count);
+
+      var inheritedContexts = from t in types.Cast<Type>()
                               where !t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false)
-                              let configuredContext = _configuration.ClassContexts.GetExact (t)
+                              let configuredContext = configuration.ClassContexts.GetExact (t)
                               where configuredContext == null
-                              let inheritedContext = _configuration.ClassContexts.GetWithInheritance (t)
+                              let inheritedContext = configuration.ClassContexts.GetWithInheritance (t)
                               where inheritedContext != null
                               select inheritedContext;
 
-      return _configuration.ClassContexts.Concat (inheritedContexts).Where (ShouldProcessContext);
+      return configuration.ClassContexts.Concat (inheritedContexts).Where (ShouldProcessContext);
     }
 
     private bool ShouldProcessContext (ClassContext context)

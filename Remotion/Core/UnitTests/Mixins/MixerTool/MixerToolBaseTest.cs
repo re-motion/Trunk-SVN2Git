@@ -80,7 +80,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
 
     public Set<ClassContext> GetContextsFromGeneratedTypes (Assembly assembly)
     {
-      Set<ClassContext> contextsFromTypes = new Set<ClassContext> ();
+      var contextsFromTypes = new Set<ClassContext> ();
       foreach (Type concreteType in assembly.GetTypes ())
       {
         ClassContext context = MixinReflector.GetClassContextFromConcreteType (concreteType);

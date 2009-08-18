@@ -46,8 +46,9 @@ namespace Remotion.UnitTests.Mixins.MixerTool
 
       using (MixinConfiguration.BuildNew ().ForClass (typeof (MixerTest)).AddMixin (typeof (object)).EnterScope ())
       {
-        var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-        mixer.Execute ();
+        var mixer = CreateMixer();
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
       }
       Assert.That (File.Exists (UnsignedAssemblyPath), Is.True);
     }
@@ -58,8 +59,9 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       Assert.That (File.Exists (SignedAssemblyPath), Is.False);
       using (MixinConfiguration.BuildNew().ForClass (typeof (List<List<List<int>>>)).AddMixin(typeof (object)).EnterScope())
       {
-        var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-        mixer.Execute();
+        var mixer = CreateMixer();
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
       }
       Assert.That (File.Exists (SignedAssemblyPath), Is.True);
     }
@@ -73,41 +75,52 @@ namespace Remotion.UnitTests.Mixins.MixerTool
 
       string outputPath = Path.Combine (outputDirectory, Parameters.UnsignedAssemblyName + ".dll");
       Assert.That (File.Exists (outputPath), Is.False);
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, outputDirectory);
-      mixer.Execute();
+      var mixer = Mixer.Create (
+          Parameters.SignedAssemblyName,
+          Parameters.UnsignedAssemblyName,
+          GuidNameProvider.Instance,
+          outputDirectory);
+      mixer.PrepareOutputDirectory ();
+      mixer.Execute (MixinConfiguration.ActiveConfiguration);
       Assert.That (File.Exists (outputPath), Is.True);
     }
 
     [Test]
     public void MixerCanBeExecutedTwice ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-      mixer.Execute ();
-      mixer.Execute ();
+      var mixer = CreateMixer();
+      mixer.PrepareOutputDirectory ();
+      mixer.Execute (MixinConfiguration.ActiveConfiguration);
+      mixer.PrepareOutputDirectory ();
+      mixer.Execute (MixinConfiguration.ActiveConfiguration);
     }
 
     [Test]
-    public void MixerToolCanBeRunTwice_InIsolation ()
+    public void Mixer_DoesNotLockItsOwnOutputFile ()
     {
       AppDomainRunner.Run (
           delegate
           {
-            var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-            mixer.Execute ();
+            var mixer = CreateMixer();
+            mixer.PrepareOutputDirectory ();
+            mixer.Execute (MixinConfiguration.ActiveConfiguration);
           });
+
       AppDomainRunner.Run (
           delegate
           {
-            var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-            mixer.Execute ();
+            var mixer = CreateMixer ();
+            mixer.PrepareOutputDirectory ();
+            mixer.Execute (MixinConfiguration.ActiveConfiguration);
           });
     }
 
     [Test]
     public void DefaultConfigurationIsProcessed ()
     {
-        var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-        mixer.Execute ();
+        var mixer = CreateMixer();
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
 
         Set<ClassContext> contextsFromConfig = GetExpectedDefaultContexts ();
         Assert.That (mixer.ProcessedContexts.Values, Is.EquivalentTo (contextsFromConfig));
@@ -119,8 +132,9 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       AppDomainRunner.Run (
           delegate
           {
-            var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-            mixer.Execute();
+            var mixer = CreateMixer();
+            mixer.PrepareOutputDirectory ();
+            mixer.Execute (MixinConfiguration.ActiveConfiguration);
             
             Set<ClassContext> contextsFromTypes = GetContextsFromGeneratedTypes (Assembly.LoadFile (UnsignedAssemblyPath));
             contextsFromTypes.AddRange (GetContextsFromGeneratedTypes (Assembly.LoadFile (SignedAssemblyPath)));
@@ -133,43 +147,47 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void NoErrorsInDefaultConfiguration ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-      mixer.Execute ();
+      var mixer = CreateMixer();
+      mixer.PrepareOutputDirectory ();
+      mixer.Execute (MixinConfiguration.ActiveConfiguration);
       Assert.IsEmpty (mixer.Errors);
     }
 
     [Test]
     public void GenericTypeDefinitionsAreIgnored ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-      mixer.Execute ();
-      Assert.That (
-                  new List<ClassContext> (mixer.ProcessedContexts.Values).TrueForAll (c => !c.Type.IsGenericTypeDefinition), Is.True);
+      var mixer = CreateMixer();
+      mixer.PrepareOutputDirectory ();
+      mixer.Execute (MixinConfiguration.ActiveConfiguration);
+      Assert.That (new List<ClassContext> (mixer.ProcessedContexts.Values).TrueForAll (c => !c.Type.IsGenericTypeDefinition), Is.True);
     }
 
     [Test]
     public void InterfacesAreIgnored ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-      mixer.Execute ();
+      var mixer = CreateMixer();
+      mixer.PrepareOutputDirectory ();
+      mixer.Execute (MixinConfiguration.ActiveConfiguration);
       Assert.That (new List<ClassContext> (mixer.ProcessedContexts.Values).TrueForAll (c => !c.Type.IsInterface), Is.True);
     }
 
     [Test]
     public void TypesWithIgnoreForMixinConfiguration_AreIgnored ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-      mixer.Execute ();
+      var mixer = CreateMixer();
+      mixer.PrepareOutputDirectory ();
+      mixer.Execute (MixinConfiguration.ActiveConfiguration);
       Assert.That (mixer.ProcessedContexts.Values.Select (c => c.Type).ToArray(), List.Not.Contains (typeof (FakeConcreteMixedType)));
     }
 
     [Test]
     public void ActiveMixinConfigurationIsProcessed ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
       using (MixinConfiguration.BuildNew().ForClass<BaseType1>().Clear().AddMixins (typeof (BT1Mixin1)).EnterScope())
       {
-        mixer.Execute ();
+        var mixer = CreateMixer ();
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
         Assert.That (mixer.ProcessedContexts.Count, Is.EqualTo (1));
         Assert.That(mixer.ProcessedContexts.Values, Is.EquivalentTo (MixinConfiguration.ActiveConfiguration.ClassContexts));
       }
@@ -178,28 +196,33 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void ProcessesSubclassesOfTargetTypes ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
       
       using (MixinConfiguration.BuildNew().ForClass<NullTarget>().Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
+        var mixer = CreateMixer ();
         Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedNullTarget), typeof (NullMixin)), Is.True);
-        mixer.Execute ();
+
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
+
+        Assert.That (mixer.ProcessedContexts.ContainsKey (typeof (DerivedNullTarget)), Is.True);
       }
 
-      Assert.That (mixer.ProcessedContexts.ContainsKey (typeof (DerivedNullTarget)), Is.True);
     }
 
     [Test]
     public void HandlesClosedGenericTypes ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
       using (MixinConfiguration.BuildNew ().ForClass (typeof (List<List<List<int>>>)).Clear ().AddMixins (typeof (NullMixin)).EnterScope ())
       {
-        mixer.Execute ();
+        var mixer = CreateMixer ();
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
         Assert.IsEmpty (mixer.Errors);
+
+        Assert.That (mixer.FinishedTypes.ContainsKey (typeof (List<List<List<int>>>)), Is.True);
       }
 
-      Assert.That (mixer.FinishedTypes.ContainsKey (typeof (List<List<List<int>>>)), Is.True);
     }
 
     [Test]
@@ -216,7 +239,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
 
         repository.ReplayAll ();
 
-        new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory).Execute ();
+        CreateMixer().Execute (MixinConfiguration.ActiveConfiguration);
 
         repository.VerifyAll ();
 
@@ -232,7 +255,6 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void MixerIgnoresInvalidTypes ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
       using (MixinConfiguration.BuildNew().EnterScope())
       {
         using (MixinConfiguration.BuildNew ()
@@ -240,7 +262,10 @@ namespace Remotion.UnitTests.Mixins.MixerTool
             .ForClass<BaseType2>().Clear().AddMixins (typeof (BT1Mixin1))  // invalid
             .EnterScope())
         {
-          mixer.Execute ();
+          var mixer = CreateMixer ();
+          mixer.PrepareOutputDirectory ();
+          mixer.Execute (MixinConfiguration.ActiveConfiguration);
+
           Assert.That (mixer.Errors.Count, Is.EqualTo (1));
           Assert.That (mixer.Errors[0].A, Is.EqualTo (MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (BaseType2))));
           Assert.That (mixer.FinishedTypes.Keys, Is.EquivalentTo (new object[] { typeof (BaseType1) }));
@@ -251,16 +276,18 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void ValidationErrorOccurred ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
       using (MixinConfiguration.BuildNew ()
           .ForClass<BaseType1> ().Clear ().AddMixins (typeof (BaseType1))  // yields ValidationException
           .EnterScope ())
       {
         object eventSender = null;
         ValidationErrorEventArgs eventArgs = null;
+
+        var mixer = CreateMixer ();
         mixer.ValidationErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
 
-        mixer.Execute ();
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
 
         Assert.That (eventSender, Is.EqualTo (mixer));
         Assert.That (eventArgs.ValidationException.ValidationLog.GetNumberOfFailures (), Is.GreaterThan (0));
@@ -270,16 +297,18 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void ErrorOccurred ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
       using (MixinConfiguration.BuildNew ()
           .ForClass<BaseType2> ().Clear ().AddMixins (typeof (BT1Mixin1))  // yields ConfigurationException
           .EnterScope ())
       {
         object eventSender = null;
         ErrorEventArgs eventArgs = null;
+
+        var mixer = CreateMixer ();
         mixer.ErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
 
-        mixer.Execute ();
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
 
         Assert.That (eventSender, Is.EqualTo (mixer));
         Assert.That (eventArgs.Exception, Is.InstanceOfType (typeof (ConfigurationException)));
@@ -294,10 +323,12 @@ namespace Remotion.UnitTests.Mixins.MixerTool
       // only use this assembly for this test case
       using (DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (typeof (MixerTest).Assembly).EnterScope())
       {
-        var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
+        var mixer = CreateMixer();
         mixer.ClassContextBeingProcessed +=
             ((sender, args) => classContextsBeingProcessed.Add (args.ClassContext));
-        mixer.Execute();
+
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
         Assert.That (classContextsBeingProcessed, Is.EquivalentTo (mixer.ProcessedContexts.Values));
       }
     }
@@ -313,11 +344,16 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void UsesGivenNameProvider ()
     {
-      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
-      mixer.NameProvider = new FooNameProvider();
       using (MixinConfiguration.BuildNew().ForClass<BaseType1>().Clear().AddMixins (typeof (BT1Mixin1)).EnterScope())
       {
-        mixer.Execute ();
+        var mixer = Mixer.Create (
+            Parameters.SignedAssemblyName,
+            Parameters.UnsignedAssemblyName,
+            new FooNameProvider (),
+            Parameters.AssemblyOutputDirectory);
+
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
         Assert.That (mixer.FinishedTypes[typeof (BaseType1)].FullName, Is.EqualTo ("Foo"));
       }
     }
@@ -333,19 +369,26 @@ namespace Remotion.UnitTests.Mixins.MixerTool
         Assert.That (File.Exists (UnsignedAssemblyPath), Is.False);
         Assert.That (File.Exists (SignedAssemblyPath), Is.False);
 
-        var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, AppDomain.CurrentDomain.BaseDirectory);
-        mixer.Execute ();
+        var mixer = CreateMixer ();
+        Assert.That (mixer.AssemblyOutputDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
+        mixer.PrepareOutputDirectory ();
+        mixer.Execute (MixinConfiguration.ActiveConfiguration);
 
         Assert.That (File.Exists (UnsignedAssemblyPath), Is.True);
         Assert.That (File.Exists (SignedAssemblyPath), Is.True);
 
         ContextAwareTypeDiscoveryUtility.SetDefaultService (null); // trigger reloading of assemblies
 
+        mixer.PrepareOutputDirectory ();
+
+        Assert.That (File.Exists (UnsignedAssemblyPath), Is.False);
+        Assert.That (File.Exists (SignedAssemblyPath), Is.False);
+
         // trigger reanalysis of the default mixin configuration
         MixinConfiguration.SetActiveConfiguration (null);
         MixinConfiguration.ResetMasterConfiguration();
 
-        mixer.Execute (); // this should _not_ load/lock the generated files
+        mixer.Execute (MixinConfiguration.ActiveConfiguration); // this should _not_ load/lock the generated files
 
         File.Delete (UnsignedAssemblyPath);
         File.Delete (SignedAssemblyPath);
@@ -373,6 +416,15 @@ namespace Remotion.UnitTests.Mixins.MixerTool
         }
       }
       return contextsFromConfig;
+    }
+
+    private Mixer CreateMixer ()
+    {
+      return Mixer.Create (
+          Parameters.SignedAssemblyName,
+          Parameters.UnsignedAssemblyName,
+          GuidNameProvider.Instance,
+          Parameters.AssemblyOutputDirectory);
     }
   }
 }

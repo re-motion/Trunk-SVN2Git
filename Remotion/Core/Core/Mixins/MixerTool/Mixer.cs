@@ -14,11 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Mixins.CodeGeneration;
@@ -34,35 +32,42 @@ namespace Remotion.Mixins.MixerTool
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (Mixer));
 
+    public static Mixer Create (
+        string signedAssemblyName, 
+        string unsignedAssemblyName, 
+        INameProvider typeNameProvider, 
+        string assemblyOutputDirectory)
+    {
+      var builderFactory = new ConcreteTypeBuilderFactory (typeNameProvider, signedAssemblyName, unsignedAssemblyName);
+      
+      var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetInstance ();
+      var finder = new ClassContextFinder (typeDiscoveryService);
+
+      return new Mixer (finder, builderFactory, assemblyOutputDirectory);
+    }
+
     public event EventHandler<ClassContextEventArgs> ClassContextBeingProcessed = delegate { };
     public event EventHandler<ValidationErrorEventArgs> ValidationErrorOccurred = delegate { };
     public event EventHandler<ErrorEventArgs> ErrorOccurred = delegate { };
-
-    private readonly string _signedAssemblyName;
-    private readonly string _unsignedAssemblyName;
-    private readonly string _assemblyOutputDirectory;
-    private INameProvider _nameProvider = GuidNameProvider.Instance;
 
     private readonly List<Tuple<ClassContext, Exception>> _errors = new List<Tuple<ClassContext, Exception>> ();
     private readonly Dictionary<Type, ClassContext> _processedContexts = new Dictionary<Type, ClassContext> ();
     private readonly Dictionary<Type, Type> _finishedTypes = new Dictionary<Type, Type> ();
 
-    public Mixer (string signedAssemblyName, string unsignedAssemblyName, string assemblyOutputDirectory)
+    public Mixer (ClassContextFinder classContextFinder, ConcreteTypeBuilderFactory concreteTypeBuilderFactory, string assemblyOutputDirectory)
     {
-      ArgumentUtility.CheckNotNull ("signedAssemblyName", signedAssemblyName);
-      ArgumentUtility.CheckNotNull ("unsignedAssemblyName", unsignedAssemblyName);
+      ArgumentUtility.CheckNotNull ("classContextFinder", classContextFinder);
+      ArgumentUtility.CheckNotNull ("concreteTypeBuilder", concreteTypeBuilderFactory);
       ArgumentUtility.CheckNotNull ("assemblyOutputDirectory", assemblyOutputDirectory);
 
-      _signedAssemblyName = signedAssemblyName;
-      _unsignedAssemblyName = unsignedAssemblyName;
-      _assemblyOutputDirectory = assemblyOutputDirectory;
+      ClassContextFinder = classContextFinder;
+      ConcreteTypeBuilderFactory = concreteTypeBuilderFactory;
+      AssemblyOutputDirectory = assemblyOutputDirectory;
     }
 
-    public INameProvider NameProvider
-    {
-      get { return _nameProvider; }
-      set { _nameProvider = value; }
-    }
+    public ClassContextFinder ClassContextFinder { get; private set; }
+    public ConcreteTypeBuilderFactory ConcreteTypeBuilderFactory { get; private set; }
+    public string AssemblyOutputDirectory { get; private set; }
 
     public ReadOnlyCollection<Tuple<ClassContext, Exception>> Errors
     {
@@ -79,45 +84,49 @@ namespace Remotion.Mixins.MixerTool
       get { return _finishedTypes; }
     }
 
-    public void Execute ()
+    public void PrepareOutputDirectory ()
     {
+      if (!Directory.Exists (AssemblyOutputDirectory))
+      {
+        s_log.InfoFormat ("Preparing output directory '{0}'.", AssemblyOutputDirectory);
+        Directory.CreateDirectory (AssemblyOutputDirectory);
+      }
+
+      CleanupIfExists (ConcreteTypeBuilderFactory.GetSignedModulePath (AssemblyOutputDirectory));
+      CleanupIfExists (ConcreteTypeBuilderFactory.GetUnsignedModulePath (AssemblyOutputDirectory));
+    }
+
+    private void CleanupIfExists (string path)
+    {
+      if (File.Exists (path))
+      {
+        s_log.InfoFormat ("Removing file '{0}'.", path);
+        File.Delete (path);
+      }
+    }
+
+    // The MixinConfiguration is passed to Execute in order to be able to call PrepareOutputDirectory before analyzing the configuration (and potentially
+    // locking old generated files).
+    public void Execute (MixinConfiguration configuration)
+    {
+      ArgumentUtility.CheckNotNull ("configuration", configuration);
+
       _errors.Clear();
       _processedContexts.Clear();
       _finishedTypes.Clear();
 
-      s_log.InfoFormat ("Base directory is '{0}'.", AppDomain.CurrentDomain.BaseDirectory);
+      s_log.InfoFormat ("The base directory is '{0}'.", AppDomain.CurrentDomain.BaseDirectory);
 
-      var typeBuilderFactory = new ConcreteTypeBuilderFactory (NameProvider, _signedAssemblyName, _unsignedAssemblyName);
-      var builder = typeBuilderFactory.CreateTypeBuilder (_assemblyOutputDirectory);
+      var builder = ConcreteTypeBuilderFactory.CreateTypeBuilder (AssemblyOutputDirectory);
 
-      PrepareDirectory (builder.Scope.UnsignedModulePath, builder.Scope.SignedModulePath);
-
-      MixinConfiguration configuration = MixinConfiguration.ActiveConfiguration;
-      var typesToCheck = ContextAwareTypeDiscoveryUtility.GetInstance ().GetTypes (null, false);
-      var finder = new ClassContextFinder (configuration, typesToCheck.Cast<Type> ());
-
-      s_log.InfoFormat ("Generating types for {0} configured mixin targets and {1} loaded types.", configuration.ClassContexts.Count, typesToCheck.Count);
-
-      foreach (var classContext in finder.FindClassContexts())
-        Generate (builder, classContext);
+      foreach (var classContext in ClassContextFinder.FindClassContexts (configuration))
+        Generate (classContext, builder);
 
       Save (builder);
       LogStatistics();
     }
 
-    private void PrepareDirectory (string unsignedModulePath, string signedModulePath)
-    {
-      if (!Directory.Exists (_assemblyOutputDirectory))
-        Directory.CreateDirectory (_assemblyOutputDirectory);
-      
-      if (File.Exists (unsignedModulePath))
-        File.Delete (unsignedModulePath);
-
-      if (File.Exists (signedModulePath))
-        File.Delete (signedModulePath);
-    }
-
-    private void Generate (ConcreteTypeBuilder builder, ClassContext classContext)
+    private void Generate (ClassContext classContext, ConcreteTypeBuilder concreteTypeBuilder)
     {
       _processedContexts.Add (classContext.Type, classContext);
 
@@ -125,7 +134,7 @@ namespace Remotion.Mixins.MixerTool
       {
         ClassContextBeingProcessed (this, new ClassContextEventArgs (classContext));
 
-        Type concreteType = builder.GetConcreteType (classContext);
+        Type concreteType = concreteTypeBuilder.GetConcreteType (classContext);
         s_log.InfoFormat ("Created type: {0}.", concreteType.FullName);
         _finishedTypes.Add (classContext.Type, concreteType);
       }
@@ -143,7 +152,7 @@ namespace Remotion.Mixins.MixerTool
 
     private void Save (ConcreteTypeBuilder builder)
     {
-      string[] paths = builder.SaveAndResetDynamicScope();
+      string[] paths = builder.SaveAndResetDynamicScope ();
       if (paths.Length == 0)
         s_log.Info ("No assemblies generated.");
       else
