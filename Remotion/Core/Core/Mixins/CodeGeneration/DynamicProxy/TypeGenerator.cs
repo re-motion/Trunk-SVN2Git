@@ -83,6 +83,9 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _classContextField = _emitter.CreateStaticField ("__classContext", typeof (ClassContext), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_classContextField);
 
+      _mixinArrayInitializerField = _emitter.CreateStaticField ("__mixinArrayInitializer", typeof (MixinArrayInitializer), FieldAttributes.Private);
+      _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_mixinArrayInitializerField);
+
       _extensionsField = _emitter.CreateField ("__extensions", typeof (object[]), FieldAttributes.Private);
       _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_extensionsField);
 
@@ -91,8 +94,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _firstField = _emitter.CreateField ("__first", _baseCallGenerator.TypeBuilder, FieldAttributes.Private);
        _debuggerBrowsableAttributeGenerator.HideFieldFromDebugger (_firstField);
-
-      _mixinArrayInitializerField = _emitter.CreateStaticField ("__mixinArrayInitializer", typeof (MixinArrayInitializer), FieldAttributes.Private);
 
       var expectedMixinTypes = new Type[Configuration.Mixins.Count];
       for (int i = 0; i < expectedMixinTypes.Length; i++)
