@@ -173,6 +173,8 @@
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierDeserializer.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\IConcreteMixinTypeIdentifierDeserializer.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\IConcreteMixinTypeIdentifierSerializer.cs" />
+    <Compile Include="Mixins\MixerTool\ErrorEventArgs.cs" />
+    <Compile Include="Mixins\MixerTool\ValidationErrorEventArgs.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />

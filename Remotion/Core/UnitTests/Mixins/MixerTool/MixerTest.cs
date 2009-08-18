@@ -31,6 +31,7 @@ using Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
 using System.Linq;
+using ErrorEventArgs=Remotion.Mixins.MixerTool.ErrorEventArgs;
 
 namespace Remotion.UnitTests.Mixins.MixerTool
 {
@@ -247,13 +248,49 @@ namespace Remotion.UnitTests.Mixins.MixerTool
             .ForClass<BaseType2>().Clear().AddMixins (typeof (BT1Mixin1))  // invalid
             .EnterScope())
         {
-          Console.WriteLine ("The following error is expected:");
           mixer.Execute (false);
           Assert.AreEqual (1, mixer.Errors.Count);
           Assert.AreEqual (MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (BaseType2)), mixer.Errors[0].A);
           Assert.That (mixer.FinishedTypes.Keys, Is.EquivalentTo (new object[] { typeof (BaseType1) }));
-          Console.WriteLine ("This error was expected.");
         }
+      }
+    }
+
+    [Test]
+    public void ValidationErrorOccurred ()
+    {
+      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<BaseType1> ().Clear ().AddMixins (typeof (BaseType1))  // yields ValidationException
+          .EnterScope ())
+      {
+        object eventSender = null;
+        ValidationErrorEventArgs eventArgs = null;
+        mixer.ValidationErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
+
+        mixer.Execute (false);
+        
+        Assert.AreEqual (mixer, eventSender);
+        Assert.That (eventArgs.ValidationException.ValidationLog.GetNumberOfFailures (), Is.GreaterThan (0));
+      }
+    }
+
+    [Test]
+    public void ErrorOccurred ()
+    {
+      var mixer = new Mixer (Parameters.SignedAssemblyName, Parameters.UnsignedAssemblyName, Parameters.AssemblyOutputDirectory);
+      using (MixinConfiguration.BuildNew ()
+          .ForClass<BaseType2> ().Clear ().AddMixins (typeof (BT1Mixin1))  // yields ConfigurationException
+          .EnterScope ())
+      {
+        object eventSender = null;
+        ErrorEventArgs eventArgs = null;
+        mixer.ErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
+
+        mixer.Execute (false);
+
+        Assert.AreEqual (mixer, eventSender);
+        Assert.IsInstanceOfType (typeof (ConfigurationException), eventArgs.Exception);
       }
     }
 

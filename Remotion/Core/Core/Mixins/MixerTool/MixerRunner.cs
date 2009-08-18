@@ -17,8 +17,6 @@ using System;
 using System.IO;
 using Remotion.Logging;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.Context;
-using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Validation;
 using Remotion.Utilities;
 
@@ -31,10 +29,12 @@ namespace Remotion.Mixins.MixerTool
     {
       ArgumentUtility.CheckNotNull ("parameters", parameters);
 
-      AppDomainSetup setup = new AppDomainSetup ();
-      setup.ApplicationName = "Mixer";
-      setup.ApplicationBase = parameters.BaseDirectory;
-      setup.DynamicBase = Path.Combine (Path.GetTempPath (), "Remotion"); // necessary for AppDomainRunnerBase and AppDomainRunnerBase
+      var setup = new AppDomainSetup
+                  {
+                      ApplicationName = "Mixer",
+                      ApplicationBase = parameters.BaseDirectory,
+                      DynamicBase = Path.Combine (Path.GetTempPath(), "Remotion")
+                  };
 
       if (!string.IsNullOrEmpty (parameters.ConfigFile))
       {
@@ -63,11 +63,13 @@ namespace Remotion.Mixins.MixerTool
     {
       LogManager.InitializeConsole ();
 
-      Mixer mixer = new Mixer (_parameters.SignedAssemblyName, _parameters.UnsignedAssemblyName, _parameters.AssemblyOutputDirectory);
+      var mixer = new Mixer (_parameters.SignedAssemblyName, _parameters.UnsignedAssemblyName, _parameters.AssemblyOutputDirectory);
       if (_parameters.KeepTypeNames)
         mixer.NameProvider = NamespaceChangingNameProvider.Instance;
 
-      mixer.ClassContextBeingProcessed += Mixer_ClassContextBeingProcessed;
+      mixer.ValidationErrorOccurred += Mixer_ValidationErrorOccurred;
+      mixer.ErrorOccurred += Mixer_ErrorOccurred;
+
       try
       {
         mixer.Execute (true);
@@ -81,16 +83,16 @@ namespace Remotion.Mixins.MixerTool
       }
     }
 
-    private void Mixer_ClassContextBeingProcessed (object sender, ClassContextEventArgs e)
+    private void Mixer_ValidationErrorOccurred (object sender, ValidationErrorEventArgs e)
     {
-      try
+      ConsoleDumper.DumpValidationResults (e.ValidationException.ValidationLog.GetResults ());
+    }
+
+    void Mixer_ErrorOccurred (object sender, ErrorEventArgs e)
+    {
+      using (ConsoleUtility.EnterColorScope (ConsoleColor.Red, null))
       {
-        TargetClassDefinitionCache.Current.GetTargetClassDefinition (e.ClassContext);
-      }
-      catch (ValidationException ex)
-      {
-        ConsoleDumper.DumpValidationResults (ex.ValidationLog.GetResults());
-        throw;
+        Console.WriteLine (e.ToString ());
       }
     }
   }

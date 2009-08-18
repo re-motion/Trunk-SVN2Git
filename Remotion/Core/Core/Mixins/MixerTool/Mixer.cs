@@ -33,7 +33,9 @@ namespace Remotion.Mixins.MixerTool
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (Mixer));
 
-    public event EventHandler<ClassContextEventArgs> ClassContextBeingProcessed = delegate {};
+    public event EventHandler<ClassContextEventArgs> ClassContextBeingProcessed = delegate { };
+    public event EventHandler<ValidationErrorEventArgs> ValidationErrorOccurred = delegate { };
+    public event EventHandler<ErrorEventArgs> ErrorOccurred = delegate { };
 
     private readonly string _signedAssemblyName;
     private readonly string _unsignedAssemblyName;
@@ -95,7 +97,6 @@ namespace Remotion.Mixins.MixerTool
     private ConcreteTypeBuilder CreateConcreteTypeBuilder ()
     {
       var builder = new ConcreteTypeBuilder ();
-
       builder.TypeNameProvider = NameProvider;
 
       builder.Scope.UnsignedAssemblyName = _unsignedAssemblyName;
@@ -168,17 +169,12 @@ namespace Remotion.Mixins.MixerTool
       catch (ValidationException validationException)
       {
         _errors.Add (new Tuple<ClassContext, Exception> (context, validationException));
-        s_log.ErrorFormat (validationException, "{0} : Validation problem when generating type", context.ToString());
-        ConsoleDumper.DumpValidationResults (validationException.ValidationLog.GetResults());
+        ValidationErrorOccurred (this, new ValidationErrorEventArgs (validationException));
       }
       catch (Exception ex)
       {
         _errors.Add (new Tuple<ClassContext, Exception> (context, ex));
-        s_log.ErrorFormat (ex, "{0} : Unexpected error when generating type", context.ToString ());
-        using (ConsoleUtility.EnterColorScope (ConsoleColor.Red, null))
-        {
-          Console.WriteLine (ex.ToString());
-        }
+        ErrorOccurred (this, new ErrorEventArgs (ex));
       }
     }
 
