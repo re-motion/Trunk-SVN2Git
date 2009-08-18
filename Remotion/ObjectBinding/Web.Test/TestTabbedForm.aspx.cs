@@ -20,9 +20,11 @@ using System.IO;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Text;
+using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -219,6 +221,14 @@ public class TestTabbedForm : TestWxeBasePage
     MultiView.ActiveViewChanged += new EventHandler(MultiView_ActiveViewChanged);
   }
 	#endregion
+
+  protected override void OnPreRender (EventArgs e)
+  {
+    base.OnPreRender (e);
+    string mode = Global.PreferQuirksModeRendering ? "Quirks" : "Standard";
+    string theme = ServiceLocator.Current.GetInstance<ResourceTheme> ().Name;
+    NavigationTabs.StatusText = mode + " " + theme;
+  }
 
   protected override void OnUnload (EventArgs e)
   {
