@@ -83,61 +83,60 @@ namespace Remotion.Mixins.MixerTool
       _finishedTypes.Clear();
 
       s_log.InfoFormat ("Base directory is '{0}'.", AppDomain.CurrentDomain.BaseDirectory);
-      ConcreteTypeBuilder originalBuilder = ConcreteTypeBuilder.Current;
-      try
-      {
-        Configure();
-        Generate ();
-        Save();
-        LogStatistics();
-      }
-      finally
-      {
-        ConcreteTypeBuilder.SetCurrent (originalBuilder);
-      }
+
+      var builder = CreateConcreteTypeBuilder ();
+
+      ConfigureDirectory (builder.Scope.UnsignedModulePath, builder.Scope.SignedModulePath);
+      Generate (builder);
+      Save (builder);
+      LogStatistics();
     }
 
-    private void Configure ()
+    private ConcreteTypeBuilder CreateConcreteTypeBuilder ()
     {
-      ConcreteTypeBuilder.SetCurrent (new ConcreteTypeBuilder ());
+      var builder = new ConcreteTypeBuilder ();
 
-      ConcreteTypeBuilder.Current.TypeNameProvider = NameProvider;
+      builder.TypeNameProvider = NameProvider;
 
+      builder.Scope.UnsignedAssemblyName = _unsignedAssemblyName;
+      builder.Scope.UnsignedModulePath = Path.Combine (_assemblyOutputDirectory, _unsignedAssemblyName + ".dll");
+
+      builder.Scope.SignedAssemblyName = _signedAssemblyName;
+      builder.Scope.SignedModulePath = Path.Combine (_assemblyOutputDirectory, _signedAssemblyName + ".dll");
+
+      return builder;
+    }
+
+    private void ConfigureDirectory (string unsignedModulePath, string signedModulePath)
+    {
       if (!Directory.Exists (_assemblyOutputDirectory))
         Directory.CreateDirectory (_assemblyOutputDirectory);
+      
+      if (File.Exists (unsignedModulePath))
+        File.Delete (unsignedModulePath);
 
-      ConcreteTypeBuilder.Current.Scope.UnsignedAssemblyName = _unsignedAssemblyName;
-      ConcreteTypeBuilder.Current.Scope.UnsignedModulePath = Path.Combine (_assemblyOutputDirectory,
-          ConcreteTypeBuilder.Current.Scope.UnsignedAssemblyName + ".dll");
-
-      ConcreteTypeBuilder.Current.Scope.SignedAssemblyName = _signedAssemblyName;
-      ConcreteTypeBuilder.Current.Scope.SignedModulePath = Path.Combine (_assemblyOutputDirectory,
-          ConcreteTypeBuilder.Current.Scope.SignedAssemblyName + ".dll");
-
-      if (File.Exists (ConcreteTypeBuilder.Current.Scope.UnsignedModulePath))
-        File.Delete (ConcreteTypeBuilder.Current.Scope.UnsignedModulePath);
-
-      if (File.Exists (ConcreteTypeBuilder.Current.Scope.SignedModulePath))
-        File.Delete (ConcreteTypeBuilder.Current.Scope.SignedModulePath);
+      if (File.Exists (signedModulePath))
+        File.Delete (signedModulePath);
     }
 
-    public void Generate ()
+    public void Generate (ConcreteTypeBuilder builder)
     {
       MixinConfiguration configuration = MixinConfiguration.ActiveConfiguration;
       ICollection typesToCheck = ContextAwareTypeDiscoveryUtility.GetInstance().GetTypes (null, false);
       
       s_log.InfoFormat ("Generating types for {0} configured mixin targets and {1} loaded types.", configuration.ClassContexts.Count, typesToCheck.Count);
-      GenerateForConfiguredContexts(configuration);
-      GenerateForInheritedContexts(configuration, typesToCheck);
+
+      GenerateForConfiguredContexts (builder, configuration);
+      GenerateForInheritedContexts (builder, configuration, typesToCheck);
     }
 
-    private void GenerateForConfiguredContexts (MixinConfiguration configuration)
+    private void GenerateForConfiguredContexts (ConcreteTypeBuilder builder, MixinConfiguration configuration)
     {
       foreach (ClassContext classContext in configuration.ClassContexts)
-        GenerateForClassContext (classContext);
+        GenerateForClassContext (builder, classContext);
     }
 
-    private void GenerateForInheritedContexts (MixinConfiguration configuration, ICollection typesToCheck)
+    private void GenerateForInheritedContexts (ConcreteTypeBuilder builder, MixinConfiguration configuration, ICollection typesToCheck)
     {
       foreach (Type type in typesToCheck)
       {
@@ -146,12 +145,12 @@ namespace Remotion.Mixins.MixerTool
           ClassContext contextWithoutInheritance = configuration.ClassContexts.GetExact (type);
           ClassContext contextWithInheritance = configuration.ClassContexts.GetWithInheritance (type);
           if (contextWithoutInheritance == null && contextWithInheritance != null)
-            GenerateForClassContext (contextWithInheritance);
+            GenerateForClassContext (builder, contextWithInheritance);
         }
       }
     }
 
-    private void GenerateForClassContext (ClassContext context)
+    private void GenerateForClassContext (ConcreteTypeBuilder builder, ClassContext context)
     {
       if (!ShouldProcessContext (context))
         return;
@@ -161,7 +160,8 @@ namespace Remotion.Mixins.MixerTool
       try
       {
         ClassContextBeingProcessed (this, new ClassContextEventArgs (context));
-        Type concreteType = TypeFactory.GetConcreteType (context.Type);
+        
+        Type concreteType = builder.GetConcreteType (context);
         s_log.InfoFormat ("Created type: {0}.", concreteType.FullName);
         _finishedTypes.Add (context.Type, concreteType);
       }
@@ -199,9 +199,9 @@ namespace Remotion.Mixins.MixerTool
       return true;
     }
 
-    private void Save ()
+    private void Save (ConcreteTypeBuilder builder)
     {
-      string[] paths = ConcreteTypeBuilder.Current.SaveAndResetDynamicScope();
+      string[] paths = builder.SaveAndResetDynamicScope();
       if (paths.Length == 0)
         s_log.Info ("No assemblies generated.");
       else
