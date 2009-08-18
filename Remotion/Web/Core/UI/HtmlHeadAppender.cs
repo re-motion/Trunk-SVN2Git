@@ -19,7 +19,6 @@ using System.Collections.Specialized;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Context;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
@@ -279,21 +278,19 @@ namespace Remotion.Web.UI
     {
       ArgumentUtility.CheckNotNull ("control", control);
       
-      string utilitiesKey = typeof (HtmlHeadContents).FullName + "_Utilities";
-      if (! IsRegistered (utilitiesKey))
-      {
-        string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "Utilities.js");
-        RegisterJavaScriptInclude (utilitiesKey, href);
-      }
-      
       string jqueryKey = typeof (HtmlHeadContents).FullName + "_JQuery";
       if (!IsRegistered (jqueryKey))
       {
         string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "jquery.js");
         RegisterJavaScriptInclude (jqueryKey, href);
       }
-
-      ScriptUtility.Instance.RegisterJavascriptInclude (control, this);
+      
+      string utilitiesKey = typeof (HtmlHeadContents).FullName + "_Utilities";
+      if (! IsRegistered (utilitiesKey))
+      {
+        string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "Utilities.js");
+        RegisterJavaScriptInclude (utilitiesKey, href);
+      }
     }
 
     public void RegisterJQueryBgiFramesJavaScriptInclude (IControl control)

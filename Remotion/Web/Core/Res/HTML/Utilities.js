@@ -132,3 +132,64 @@ ArgumentUtility.CheckNotNullAndTypeIsFunction = function(name, value) {
     ArgumentUtility.CheckNotNull(name, value);
     ArgumentUtility.CheckTypeIsFunction(name, value);
 };
+
+function PageUtility()
+{
+  var _resizeHandlers = new Array();
+  var _resizeTimeoutID = null;
+  var _resizeTimeoutInMilliSeconds = 50;
+
+  $(document).ready(function()
+  {
+    $(window).bind('resize', function() { PageUtility.Instance.PrepareExecuteResizeHandlers(); });
+  });
+
+  this.RegisterResizeHandler = function(selector, handler)
+  {
+    ArgumentUtility.CheckNotNullAndTypeIsString('selector', selector);
+    ArgumentUtility.CheckNotNull('handler', handler);
+
+    for (var i = 0; i < _resizeHandlers.length; i++)
+    {
+      var item = _resizeHandlers[i];
+      if (item.Selector == selector)
+      {
+        item.handler = handler;
+        return;
+      }
+    }
+    _resizeHandlers[_resizeHandlers.length] = new PageUtility_ResizeHandlerItem(selector, handler);
+  }
+
+  this.PrepareExecuteResizeHandlers = function()
+  {
+    if (_resizeTimeoutID != null)
+      window.clearTimeout(_resizeTimeoutID);
+
+    _resizeTimeoutID = window.setTimeout(function() { PageUtility.Instance.ExecuteResizeHandlers(); }, _resizeTimeoutInMilliSeconds);
+  }
+
+  this.ExecuteResizeHandlers = function()
+  {
+    var existingResizeHandlers = new Array();
+    for (var i = 0; i < _resizeHandlers.length; i++)
+    {
+      var item = _resizeHandlers[i];
+      var element = $(item.Selector);
+      if (element != null && element.length > 0)
+      {
+        item.Handler(element);
+        existingResizeHandlers[existingResizeHandlers.length] = item;
+      }
+    }
+    _resizeHandlers = existingResizeHandlers;
+  }
+}
+
+function PageUtility_ResizeHandlerItem(selector, handler)
+{
+  this.Selector = selector;
+  this.Handler = handler;
+}
+
+PageUtility.Instance = new PageUtility();

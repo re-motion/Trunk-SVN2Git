@@ -1,63 +1,21 @@
-﻿function StyleUtility()
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2008 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+function StyleUtility()
 {
-  var _resizeHandlers = new Array();
-  var _resizeTimeoutID = null;
-  var _resizeTimeoutInMilliSeconds = 50;
-  
-  $(document).ready(function()
-  {
-    $(window).bind('resize', function() { StyleUtility.Instance.PrepareExecuteResizeHandlers(); });
-  });
-
-  this.RegisterResizeHandler = function(selector, handler)
-  {
-    ArgumentUtility.CheckNotNullAndTypeIsString('selector', selector);
-    ArgumentUtility.CheckNotNull('handler', handler);
-
-    for (var i = 0; i < _resizeHandlers.length; i++)
-    {
-      var item = _resizeHandlers[i];
-      if (item.Selector == selector)
-      {
-        item.handler = handler;
-        return;
-      }
-    }
-    _resizeHandlers[_resizeHandlers.length] = new StyleUtility_ResizeHandlerItem(selector, handler);
-  }
-
-  this.PrepareExecuteResizeHandlers = function()
-  {
-    if (_resizeTimeoutID != null)
-      window.clearTimeout(_resizeTimeoutID);
-
-    _resizeTimeoutID = window.setTimeout(function() { StyleUtility.Instance.ExecuteResizeHandlers(); }, _resizeTimeoutInMilliSeconds);
-  }
-
-  this.ExecuteResizeHandlers = function()
-  {
-    var existingResizeHandlers = new Array();
-    for (var i = 0; i < _resizeHandlers.length; i++)
-    {
-      var item = _resizeHandlers[i];
-      var element = $(item.Selector);
-      if (element != null && element.length > 0)
-      {
-        item.Handler(element);
-        existingResizeHandlers[existingResizeHandlers.length] = item;
-      }
-    }
-    _resizeHandlers = existingResizeHandlers;
-  }
 }
-
-function StyleUtility_ResizeHandlerItem(selector, handler)
-{
-  this.Selector = selector;
-  this.Handler = handler;
-}
-
-StyleUtility.Instance = new StyleUtility();
 
 StyleUtility.CreateBorderSpans = function(selector)
 {
@@ -73,7 +31,7 @@ StyleUtility.CreateBorderSpans = function(selector)
   var bottomRight = StyleUtility.CreateAndAppendBorderSpan(element, element.attr('id'), 'bottomRight');
 
   if (StyleUtility.ShowBorderSpans(element, topRight, bottomLeft, bottomRight))
-    StyleUtility.Instance.RegisterResizeHandler(selector, StyleUtility.OnResize);
+    PageUtility.Instance.RegisterResizeHandler(selector, StyleUtility.OnResize);
 }
 
 StyleUtility.ShowBorderSpans = function(element, topRight, bottomLeft, bottomRight)

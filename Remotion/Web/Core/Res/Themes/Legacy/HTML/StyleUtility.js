@@ -1,12 +1,6 @@
 ﻿function StyleUtility()
 {
-  this.RegisterResizeHandler = function(selector, handler)
-  {
-    $(window).resize(handler);
-  }
 }
-
-StyleUtility.Instance = new StyleUtility();
 
 StyleUtility.CreateBorderSpans = function(selector)
 {
@@ -29,9 +23,9 @@ StyleUtility.CreateBorderSpans = function(selector)
 
   StyleUtility.CalculateBorderSpans(element[0], topRight, bottomLeft, bottomRight);
 
-  var elementID = element.attr('id');
-  var resizeHandler = function() { StyleUtility.OnResize(elementID); }
-  $(window).resize(resizeHandler);
+  var elementID = element.attr('id'); 
+  if (elementID != '')
+    PageUtility.Instance.RegisterResizeHandler('#' + elementID, StyleUtility.OnResize);
 }
 
 StyleUtility.CalculateBorderSpans = function(element, topRight, bottomLeft, bottomRight)
@@ -77,20 +71,12 @@ StyleUtility.CreateAndAppendBorderSpan = function(elementBody, elementID, classN
   return borderSpan
 }
 
-StyleUtility.OnResize = function(elementID)
+StyleUtility.OnResize = function(element)
 {
-  var element = document.getElementById(elementID);
-  if (element != null)
-  {
-    var topRight = document.getElementById(elementID + '_topRight');
-    var bottomLeft = document.getElementById(elementID + '_bottomLeft');
-    var bottomRight = document.getElementById(elementID + '_bottomRight');
+  var elementID = element.attr('id');
+  var topRight = document.getElementById(elementID + '_topRight');
+  var bottomLeft = document.getElementById(elementID + '_bottomLeft');
+  var bottomRight = document.getElementById(elementID + '_bottomRight');
 
-    StyleUtility.CalculateBorderSpans(element, topRight, bottomLeft, bottomRight);
-  }
-}
-
-StyleUtility.RegisterResizeOnElement = function(element, eventHandler)
-{
-
+  StyleUtility.CalculateBorderSpans(element[0], topRight, bottomLeft, bottomRight);
 }

@@ -49,7 +49,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
         htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
       }
 
-      RegisterAdjustViewScript();
+      RegisterAdjustViewScript (htmlHeadAppender);
 
       ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.WrapperClientID);
       ScriptUtility.Instance.RegisterElementForBorderSpans (htmlHeadAppender, Control, "#" + Control.ViewClientID);
@@ -61,9 +61,11 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     {
     }
 
-    private void RegisterAdjustViewScript ()
+    private void RegisterAdjustViewScript (HtmlHeadAppender htmlHeadAppender)
     {
-      ScriptUtility.Instance.RegisterResizeOnElement (Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustSingleView");
+      ScriptUtility.Instance.RegisterResizeOnElement (
+          htmlHeadAppender, Control, string.Format ("'#{0}'", Control.ClientID), "ViewLayout.AdjustSingleView");
+
       Control.Page.ClientScript.RegisterStartupScriptBlock (
           Control,
           typeof (SingleViewPreRenderer),

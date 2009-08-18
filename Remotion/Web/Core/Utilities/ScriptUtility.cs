@@ -210,10 +210,15 @@ namespace Remotion.Web.Utilities
 
     public void RegisterElementForBorderSpans (HtmlHeadAppender htmlHeadAppender, IControl control, string jQuerySelectorForBorderSpanTarget)
     {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
       ArgumentUtility.CheckNotNullOrEmpty ("jQuerySelectorForBorderSpanTarget", jQuerySelectorForBorderSpanTarget);
 
+      string key = typeof (ScriptUtility).FullName + "_StyleUtility";
+      string url = ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
+
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (control);
+      htmlHeadAppender.RegisterJavaScriptInclude (key, url);
 
       control.Page.ClientScript.RegisterStartupScriptBlock (
           control,
@@ -223,32 +228,23 @@ namespace Remotion.Web.Utilities
               "StyleUtility.CreateBorderSpans ('{0}');", jQuerySelectorForBorderSpanTarget));
     }
 
-    /// <summary>
-    /// Registers the javascript for the script-utility.
-    /// </summary>
-    public void RegisterJavascriptInclude (IControl control, HtmlHeadAppender htmlHeadAppender)
-    {
-      ArgumentUtility.CheckNotNull ("control", control);
-      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
-
-      string key = typeof (ScriptUtility).FullName + "_StyleUtility";
-      if (!htmlHeadAppender.IsRegistered (key))
-      {
-        string href = ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
-        htmlHeadAppender.RegisterJavaScriptInclude (key, href);
-      }
-    }
-
-    public void RegisterResizeOnElement (IControl control, string jquerySelector, string eventHandler)
-    {
-      string key = control.ClientID + "_ResizeEventHandler";
-      string script = string.Format ("StyleUtility.Instance.RegisterResizeHandler({0}, {1});", jquerySelector, eventHandler);
-      control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtility), key, script);
-    }
-
     protected ResourceTheme ResourceTheme
     {
       get { return ServiceLocator.Current.GetInstance<ResourceTheme> (); }
+    }
+
+    public void RegisterResizeOnElement (HtmlHeadAppender htmlHeadAppender, IControl control, string jquerySelector, string eventHandler)
+    {
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+      ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
+      ArgumentUtility.CheckNotNullOrEmpty ("jquerySelector", jquerySelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("eventHandler", eventHandler);
+
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (control);
+
+      string key = control.ClientID + "_ResizeEventHandler";
+      string script = string.Format ("PageUtility.Instance.RegisterResizeHandler({0}, {1});", jquerySelector, eventHandler);
+      control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtility), key, script);
     }
   }
 }

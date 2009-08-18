@@ -162,7 +162,7 @@ function SmartPage_Context(
     RemoveEventHandler(window, 'scroll', _scrollHandler);
     AddEventHandler(window, 'scroll', _scrollHandler);
 
-    StyleUtility.Instance.RegisterResizeHandler('#' + _theForm.id, _resizeHandler);
+    PageUtility.Instance.RegisterResizeHandler('#' + _theForm.id, _resizeHandler);
 
     _aspnetFormOnSubmit = _theForm.onsubmit;
     _theForm.onsubmit = _formSubmitHandler;

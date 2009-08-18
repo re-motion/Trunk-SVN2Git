@@ -64,7 +64,7 @@ namespace OBWTest
     {
       XmlConfigurator.Configure();
       PreferQuirksModeRendering = false;
-      var resourceTheme = Remotion.Web.ResourceTheme.NovaBlue;
+      var resourceTheme = Remotion.Web.ResourceTheme.ClassicBlue;
 
       string objectPath = Server.MapPath ("~/objects");
       if (!Directory.Exists (objectPath))
