@@ -22,7 +22,6 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Context;
-using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Rhino.Mocks;
 using System.Linq;
@@ -35,21 +34,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   [TestFixture]
   public class AttributeBasedMetadataImporterTest
   {
-    private ITargetClassDefinitionCache _targetClassDefinitionCacheStub;
-    private TargetClassDefinition _targetClassDefinition1;
-    private TargetClassDefinition _targetClassDefinition2;
-
-    [SetUp]
-    public void SetUp()
-    {
-      _targetClassDefinition1 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object), typeof (int));
-      _targetClassDefinition2 = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object), typeof (int));
-
-      _targetClassDefinitionCacheStub = MockRepository.GenerateStub<ITargetClassDefinitionCache> ();
-      _targetClassDefinitionCacheStub.Stub (stub => stub.GetTargetClassDefinition (new ClassContext (typeof (object)))).Return (_targetClassDefinition1);
-      _targetClassDefinitionCacheStub.Stub (stub => stub.GetTargetClassDefinition (new ClassContext (typeof (string)))).Return (_targetClassDefinition2);
-    }
-
     [Test]
     public void GetMetadataForMixedType_Wrapper()
     {

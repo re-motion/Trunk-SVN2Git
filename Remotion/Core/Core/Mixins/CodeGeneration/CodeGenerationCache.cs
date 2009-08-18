@@ -63,7 +63,7 @@ namespace Remotion.Mixins.CodeGeneration
       s_log.InfoFormat ("Generating type for {0}.", classContext);
       using (new CodeGenerationTimer ())
       {
-        var targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+        var targetClassDefinition = TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
         ITypeGenerator generator = moduleManager.CreateTypeGenerator (
             this,
             targetClassDefinition,

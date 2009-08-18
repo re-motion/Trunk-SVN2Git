@@ -202,7 +202,6 @@
     <Compile Include="Mixins\CodeGeneration\ICodeGenerationModule.cs" />
     <Compile Include="Mixins\CodeGeneration\IConcreteTypeMetadataImporter.cs" />
     <Compile Include="Mixins\Definitions\IAttributeIntroductionSource.cs" />
-    <Compile Include="Mixins\Definitions\ITargetClassDefinitionCache.cs" />
     <Compile Include="Mixins\Definitions\NonAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\SuppressedAttributeIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\IMemberIntroductionDefinition.cs" />
@@ -376,7 +375,7 @@
     <Compile Include="Mixins\Definitions\RequirementDefinitionBase.cs" />
     <Compile Include="Mixins\Definitions\NonInterfaceIntroductionDefinition.cs" />
     <Compile Include="Mixins\Definitions\TargetClassDefinition.cs" />
-    <Compile Include="Mixins\Definitions\TargetClassDefinitionCache.cs" />
+    <Compile Include="Mixins\Definitions\TargetClassDefinitionFactory.cs" />
     <Compile Include="Mixins\Definitions\ThisDependencyDefinition.cs" />
     <Compile Include="Mixins\Definitions\UniqueDefinitionCollection.cs" />
     <Compile Include="Mixins\Globalization\MixedMultiLingualResources.cs" />

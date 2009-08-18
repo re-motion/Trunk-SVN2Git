@@ -272,14 +272,12 @@ namespace Remotion.UnitTests.Mixins.Definitions
               bt3Mixin6.ThisDependencies[typeof (IBT3Mixin4)]));
       Assert.IsNull (bt3Mixin6.ThisDependencies[typeof (IBT3Mixin4)].Aggregator);
 
-      Assert.AreEqual (
-          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).RequiredFaceTypes[typeof (IBaseType31)],
+      Assert.AreSame (
+          bt3Mixin6.TargetClass.RequiredFaceTypes[typeof (IBaseType31)],
           bt3Mixin6.ThisDependencies[typeof (IBaseType31)].RequiredType);
 
-      Assert.AreSame (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)), bt3Mixin6.ThisDependencies[typeof (IBaseType32)].GetImplementer());
-      Assert.AreSame (
-          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin4)],
-          bt3Mixin6.ThisDependencies[typeof (IBT3Mixin4)].GetImplementer());
+      Assert.AreSame (bt3Mixin6.TargetClass, bt3Mixin6.ThisDependencies[typeof (IBaseType32)].GetImplementer ());
+      Assert.AreSame (bt3Mixin6.TargetClass.Mixins[typeof (BT3Mixin4)], bt3Mixin6.ThisDependencies[typeof (IBT3Mixin4)].GetImplementer());
 
       Assert.IsTrue (bt3Mixin6.BaseDependencies.ContainsKey (typeof (IBaseType34)));
       Assert.IsTrue (bt3Mixin6.BaseDependencies.ContainsKey (typeof (IBT3Mixin4)));
@@ -287,14 +285,10 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.IsFalse (bt3Mixin6.BaseDependencies.ContainsKey (typeof (IBaseType32)));
       Assert.IsTrue (bt3Mixin6.BaseDependencies.ContainsKey (typeof (IBaseType33)), "indirect dependency");
 
-      Assert.AreEqual (
-          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).RequiredBaseCallTypes[typeof (IBaseType34)],
-          bt3Mixin6.BaseDependencies[typeof (IBaseType34)].RequiredType);
+      Assert.AreSame (bt3Mixin6.TargetClass.RequiredBaseCallTypes[typeof (IBaseType34)], bt3Mixin6.BaseDependencies[typeof (IBaseType34)].RequiredType);
 
-      Assert.AreSame (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)), bt3Mixin6.BaseDependencies[typeof (IBaseType34)].GetImplementer());
-      Assert.AreSame (
-          DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin4)],
-          bt3Mixin6.BaseDependencies[typeof (IBT3Mixin4)].GetImplementer());
+      Assert.AreSame (bt3Mixin6.TargetClass, bt3Mixin6.BaseDependencies[typeof (IBaseType34)].GetImplementer());
+      Assert.AreSame (bt3Mixin6.TargetClass.Mixins[typeof (BT3Mixin4)], bt3Mixin6.BaseDependencies[typeof (IBT3Mixin4)].GetImplementer());
 
       Assert.IsFalse (bt3Mixin6.BaseDependencies[typeof (IBT3Mixin4)].IsAggregate);
       Assert.IsFalse (bt3Mixin6.BaseDependencies[typeof (IBT3Mixin4)].IsAggregate);

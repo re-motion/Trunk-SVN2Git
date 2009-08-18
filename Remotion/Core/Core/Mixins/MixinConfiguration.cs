@@ -15,9 +15,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Context;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
+using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.Utilities;
 using Remotion.Mixins.Validation;
 using Remotion.Utilities;
@@ -224,33 +226,16 @@ namespace Remotion.Mixins
     /// <exception cref="NotSupportedException">The <see cref="MixinConfiguration"/> contains a <see cref="ClassContext"/> for a generic type, of
     /// which it cannot make a closed generic type. Because closed types are needed for validation, this <see cref="MixinConfiguration"/>
     /// cannot be validated as a whole. Even in this case, the configuration might still be correct, but validation is deferred to
-    /// <see cref="TargetClassDefinitionCache.GetTargetClassDefinition(ClassContext)"/>.</exception>
+    /// <see cref="TargetClassDefinitionFactory.CreateTargetClassDefinition(ClassContext)"/>.</exception>
     public IValidationLog Validate()
     {
-      var definitions = new List<IVisitableDefinition>();
-      var exceptions = new List<ValidationException> ();
+      var builder = new TargetClassDefinitionBuilder ();
 
-      foreach (ClassContext classContext in ActiveConfiguration.ClassContexts)
-      {
-        if (!classContext.Type.IsGenericTypeDefinition && !classContext.Type.IsInterface)
-        {
-          try
-          {
-            var targetClassDefinition = TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
-            definitions.Add (targetClassDefinition);
-          }
-          catch (ValidationException exception)
-          {
-            exceptions.Add (exception);
-          }
-        }
-      }
+      var definitions = from classContext in ActiveConfiguration.ClassContexts
+                        where !classContext.Type.IsGenericTypeDefinition && !classContext.Type.IsInterface
+                        select (IVisitableDefinition) builder.Build (classContext);
 
-      DefaultValidationLog log = Validator.Validate (definitions);
-      foreach (ValidationException exception in exceptions)
-        log.MergeIn (exception.ValidationLog);
-
-      return log;
+      return Validator.Validate (definitions);
     }
 
     /// <summary>

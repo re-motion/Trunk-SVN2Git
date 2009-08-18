@@ -72,14 +72,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
       builder.MixinTypeNameProvider = nameProviderMock;
       ConcreteTypeBuilder.SetCurrent (builder);
 
-      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
-
-      MixinDefinition mixinDefinition = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
-      Assert.That (mixinDefinition, Is.Not.Null);
-
-      Expect.Call (nameProviderMock.GetNewTypeName (mixinDefinition)).Return ("Bra");
+      nameProviderMock
+          .Expect (mock => mock.GetNewTypeName (Arg<ClassDefinitionBase>.Matches (def => def.Type == typeof (MixinWithAbstractMembers))))
+          .Return ("Bra");
 
       repository.ReplayAll ();
+
+      var requestingClass = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassOverridingMixinMembers));
+      MixinDefinition mixinDefinition = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[typeof (MixinWithAbstractMembers)];
 
       Type generatedType = ConcreteTypeBuilder.Current
           .GetConcreteMixinType (requestingClass, mixinDefinition.GetConcreteMixinTypeIdentifier())

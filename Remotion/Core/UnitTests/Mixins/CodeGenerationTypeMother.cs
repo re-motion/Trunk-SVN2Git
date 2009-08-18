@@ -42,8 +42,8 @@ namespace Remotion.UnitTests.Mixins
 
     public static Type GetGeneratedMixinType (ClassContext requestingClass, Type mixinType)
     {
-      MixinDefinition mixinDefinition = TargetClassDefinitionCache.Current
-          .GetTargetClassDefinition (requestingClass)
+      MixinDefinition mixinDefinition = TargetClassDefinitionFactory
+          .CreateTargetClassDefinition (requestingClass)
           .GetMixinByConfiguredType (mixinType);
       Assert.That (mixinDefinition, Is.Not.Null);
 

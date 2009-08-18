@@ -158,7 +158,7 @@ namespace Remotion.UnitTests.Mixins
       var classContext = MixinConfiguration.ActiveConfiguration.GetContext (type);
 
       Assert.That (classContext, Is.Not.Null, "The given type '" + type.Name + "' must be configured as a mixin target.");
-      return TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+      return TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
     }
 
     public static TargetClassDefinition GetActiveTargetClassDefinition_Force (Type type)
@@ -169,7 +169,7 @@ namespace Remotion.UnitTests.Mixins
 
     public static TargetClassDefinition GetTargetClassDefinition (ClassContext classContext)
     {
-      return TargetClassDefinitionCache.Current.GetTargetClassDefinition (classContext);
+      return TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
     }
 
     public static TargetClassDefinition BuildUnvalidatedDefinition (Type baseType, params Type[] mixinTypes)
