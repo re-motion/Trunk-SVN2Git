@@ -85,10 +85,10 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
         Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewContentClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ActiveViewContentClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 

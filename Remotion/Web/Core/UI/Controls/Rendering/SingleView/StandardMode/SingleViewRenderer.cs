@@ -100,10 +100,10 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
       Control.ViewStyle.AddAttributesToRender (Writer);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewContentClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
-      Writer.AddAttribute (HtmlTextWriterAttribute.Id, Control.ViewContentClientID);
       Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
