@@ -23,7 +23,7 @@ using Remotion.Logging;
 
 namespace Remotion.Mixins.MixerTool
 {
-  public class ClassContextFinder
+  public class ClassContextFinder : IClassContextFinder
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (ClassContextFinder));
 

@@ -41,7 +41,7 @@ namespace Remotion.Mixins.CodeGeneration
   /// <see cref="Scope"/> to unique names for each <see cref="ConcreteTypeBuilder"/> instance you use.
   /// </para>
   /// </remarks>
-  public class ConcreteTypeBuilder : ThreadSafeSingletonBase<ConcreteTypeBuilder, DefaultInstanceCreator<ConcreteTypeBuilder>>
+  public class ConcreteTypeBuilder : ThreadSafeSingletonBase<ConcreteTypeBuilder, DefaultInstanceCreator<ConcreteTypeBuilder>>, IConcreteTypeBuilder
   {
     private IModuleManager _scope;
     // Use a pessimistic cache - a ModuleBuilder cannot be used by multiple threads at the same time anyway, so using a lazy cache could actually 

@@ -54,10 +54,10 @@ namespace Remotion.Mixins.MixerTool
     private readonly Dictionary<Type, ClassContext> _processedContexts = new Dictionary<Type, ClassContext> ();
     private readonly Dictionary<Type, Type> _finishedTypes = new Dictionary<Type, Type> ();
 
-    public Mixer (ClassContextFinder classContextFinder, ConcreteTypeBuilderFactory concreteTypeBuilderFactory, string assemblyOutputDirectory)
+    public Mixer (IClassContextFinder classContextFinder, IConcreteTypeBuilderFactory concreteTypeBuilderFactory, string assemblyOutputDirectory)
     {
       ArgumentUtility.CheckNotNull ("classContextFinder", classContextFinder);
-      ArgumentUtility.CheckNotNull ("concreteTypeBuilder", concreteTypeBuilderFactory);
+      ArgumentUtility.CheckNotNull ("concreteTypeBuilderFactory", concreteTypeBuilderFactory);
       ArgumentUtility.CheckNotNull ("assemblyOutputDirectory", assemblyOutputDirectory);
 
       ClassContextFinder = classContextFinder;
@@ -65,8 +65,8 @@ namespace Remotion.Mixins.MixerTool
       AssemblyOutputDirectory = assemblyOutputDirectory;
     }
 
-    public ClassContextFinder ClassContextFinder { get; private set; }
-    public ConcreteTypeBuilderFactory ConcreteTypeBuilderFactory { get; private set; }
+    public IClassContextFinder ClassContextFinder { get; private set; }
+    public IConcreteTypeBuilderFactory ConcreteTypeBuilderFactory { get; private set; }
     public string AssemblyOutputDirectory { get; private set; }
 
     public ReadOnlyCollection<Tuple<ClassContext, Exception>> Errors
@@ -96,15 +96,6 @@ namespace Remotion.Mixins.MixerTool
       CleanupIfExists (ConcreteTypeBuilderFactory.GetUnsignedModulePath (AssemblyOutputDirectory));
     }
 
-    private void CleanupIfExists (string path)
-    {
-      if (File.Exists (path))
-      {
-        s_log.InfoFormat ("Removing file '{0}'.", path);
-        File.Delete (path);
-      }
-    }
-
     // The MixinConfiguration is passed to Execute in order to be able to call PrepareOutputDirectory before analyzing the configuration (and potentially
     // locking old generated files).
     public void Execute (MixinConfiguration configuration)
@@ -126,7 +117,7 @@ namespace Remotion.Mixins.MixerTool
       LogStatistics();
     }
 
-    private void Generate (ClassContext classContext, ConcreteTypeBuilder concreteTypeBuilder)
+    private void Generate (ClassContext classContext, IConcreteTypeBuilder concreteTypeBuilder)
     {
       _processedContexts.Add (classContext.Type, classContext);
 
@@ -150,7 +141,7 @@ namespace Remotion.Mixins.MixerTool
       }
     }
 
-    private void Save (ConcreteTypeBuilder builder)
+    private void Save (IConcreteTypeBuilder builder)
     {
       string[] paths = builder.SaveAndResetDynamicScope ();
       if (paths.Length == 0)
@@ -165,6 +156,15 @@ namespace Remotion.Mixins.MixerTool
     private void LogStatistics ()
     {
       s_log.Info (CodeGenerationStatistics.GetStatisticsString());
+    }
+
+    private void CleanupIfExists (string path)
+    {
+      if (File.Exists (path))
+      {
+        s_log.InfoFormat ("Removing file '{0}'.", path);
+        File.Delete (path);
+      }
     }
   }
 }

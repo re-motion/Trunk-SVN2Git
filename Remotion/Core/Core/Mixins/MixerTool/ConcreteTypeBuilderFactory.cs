@@ -19,7 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.MixerTool
 {
-  public class ConcreteTypeBuilderFactory
+  public class ConcreteTypeBuilderFactory : IConcreteTypeBuilderFactory
   {
     private readonly INameProvider _typeNameProvider;
     private readonly string _signedAssemblyName;
@@ -39,7 +39,7 @@ namespace Remotion.Mixins.MixerTool
       _unsignedAssemblyName = unsignedAssemblyName;
     }
 
-    public ConcreteTypeBuilder CreateTypeBuilder (string assemblyOutputDirectory)
+    public IConcreteTypeBuilder CreateTypeBuilder (string assemblyOutputDirectory)
     {
       var builder = new ConcreteTypeBuilder ();
       builder.TypeNameProvider = _typeNameProvider;

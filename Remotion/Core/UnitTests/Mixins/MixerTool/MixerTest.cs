@@ -14,417 +14,233 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
-using Remotion.Mixins.Definitions;
 using Remotion.Mixins.MixerTool;
-using Remotion.Reflection;
+using Remotion.Mixins.Validation;
 using Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.UnitTests.Mixins.SampleTypes;
 using Rhino.Mocks;
-using System.Linq;
 using ErrorEventArgs=Remotion.Mixins.MixerTool.ErrorEventArgs;
 
 namespace Remotion.UnitTests.Mixins.MixerTool
 {
   [Serializable]
   [TestFixture]
-  public class MixerTest : MixerToolBaseTest
+  public class MixerTest
   {
-    [Test]
-    public void Execute_Unsigned ()
+    private string _assemblyOutputDirectoy;
+    private string _signedModulePath;
+    private string _unsignedModulePath;
+
+    private IClassContextFinder _classContextFinderStub;
+    private IConcreteTypeBuilderFactory _concreteTypeBuilderFactoryStub;
+    private IConcreteTypeBuilder _concreteTypeBuilderStub;
+    private Mixer _mixer;
+    private MixinConfiguration _configuration;
+    private ClassContext _context;
+
+    [SetUp]
+    public void SetUp ()
     {
-      Assert.That (File.Exists (UnsignedAssemblyPath), Is.False);
-
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (MixerTest)).AddMixin (typeof (object)).EnterScope ())
-      {
-        var mixer = CreateMixer();
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
-      }
-      Assert.That (File.Exists (UnsignedAssemblyPath), Is.True);
-    }
-
-    [Test]
-    public void Execute_Signed ()
-    {
-      Assert.That (File.Exists (SignedAssemblyPath), Is.False);
-      using (MixinConfiguration.BuildNew().ForClass (typeof (List<List<List<int>>>)).AddMixin(typeof (object)).EnterScope())
-      {
-        var mixer = CreateMixer();
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
-      }
-      Assert.That (File.Exists (SignedAssemblyPath), Is.True);
-    }
-
-    [Test]
-    public void GeneratesFileInRightDirectory ()
-    {
-      string outputDirectory = Path.Combine (Environment.CurrentDirectory, "MixinTool.Output");
-      if (Directory.Exists (outputDirectory))
-        Directory.Delete (outputDirectory, true);
-
-      string outputPath = Path.Combine (outputDirectory, Parameters.UnsignedAssemblyName + ".dll");
-      Assert.That (File.Exists (outputPath), Is.False);
-      var mixer = Mixer.Create (
-          Parameters.SignedAssemblyName,
-          Parameters.UnsignedAssemblyName,
-          GuidNameProvider.Instance,
-          outputDirectory);
-      mixer.PrepareOutputDirectory ();
-      mixer.Execute (MixinConfiguration.ActiveConfiguration);
-      Assert.That (File.Exists (outputPath), Is.True);
-    }
-
-    [Test]
-    public void MixerCanBeExecutedTwice ()
-    {
-      var mixer = CreateMixer();
-      mixer.PrepareOutputDirectory ();
-      mixer.Execute (MixinConfiguration.ActiveConfiguration);
-      mixer.PrepareOutputDirectory ();
-      mixer.Execute (MixinConfiguration.ActiveConfiguration);
-    }
-
-    [Test]
-    public void Mixer_DoesNotLockItsOwnOutputFile ()
-    {
-      AppDomainRunner.Run (
-          delegate
-          {
-            var mixer = CreateMixer();
-            mixer.PrepareOutputDirectory ();
-            mixer.Execute (MixinConfiguration.ActiveConfiguration);
-          });
-
-      AppDomainRunner.Run (
-          delegate
-          {
-            var mixer = CreateMixer ();
-            mixer.PrepareOutputDirectory ();
-            mixer.Execute (MixinConfiguration.ActiveConfiguration);
-          });
-    }
-
-    [Test]
-    public void DefaultConfigurationIsProcessed ()
-    {
-        var mixer = CreateMixer();
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
-
-        Set<ClassContext> contextsFromConfig = GetExpectedDefaultContexts ();
-        Assert.That (mixer.ProcessedContexts.Values, Is.EquivalentTo (contextsFromConfig));
-    }
-
-    [Test]
-    public void TypesAreGeneratedForProcessedContexts ()
-    {
-      AppDomainRunner.Run (
-          delegate
-          {
-            var mixer = CreateMixer();
-            mixer.PrepareOutputDirectory ();
-            mixer.Execute (MixinConfiguration.ActiveConfiguration);
-            
-            Set<ClassContext> contextsFromTypes = GetContextsFromGeneratedTypes (Assembly.LoadFile (UnsignedAssemblyPath));
-            contextsFromTypes.AddRange (GetContextsFromGeneratedTypes (Assembly.LoadFile (SignedAssemblyPath)));
-            
-            Set<ClassContext> contextsFromConfig = GetExpectedDefaultContexts();
-            Assert.That (contextsFromTypes, Is.EquivalentTo (contextsFromConfig));
-          });
-    }
-
-    [Test]
-    public void NoErrorsInDefaultConfiguration ()
-    {
-      var mixer = CreateMixer();
-      mixer.PrepareOutputDirectory ();
-      mixer.Execute (MixinConfiguration.ActiveConfiguration);
-      Assert.IsEmpty (mixer.Errors);
-    }
-
-    [Test]
-    public void GenericTypeDefinitionsAreIgnored ()
-    {
-      var mixer = CreateMixer();
-      mixer.PrepareOutputDirectory ();
-      mixer.Execute (MixinConfiguration.ActiveConfiguration);
-      Assert.That (new List<ClassContext> (mixer.ProcessedContexts.Values).TrueForAll (c => !c.Type.IsGenericTypeDefinition), Is.True);
-    }
-
-    [Test]
-    public void InterfacesAreIgnored ()
-    {
-      var mixer = CreateMixer();
-      mixer.PrepareOutputDirectory ();
-      mixer.Execute (MixinConfiguration.ActiveConfiguration);
-      Assert.That (new List<ClassContext> (mixer.ProcessedContexts.Values).TrueForAll (c => !c.Type.IsInterface), Is.True);
-    }
-
-    [Test]
-    public void TypesWithIgnoreForMixinConfiguration_AreIgnored ()
-    {
-      var mixer = CreateMixer();
-      mixer.PrepareOutputDirectory ();
-      mixer.Execute (MixinConfiguration.ActiveConfiguration);
-      Assert.That (mixer.ProcessedContexts.Values.Select (c => c.Type).ToArray(), List.Not.Contains (typeof (FakeConcreteMixedType)));
-    }
-
-    [Test]
-    public void ActiveMixinConfigurationIsProcessed ()
-    {
-      using (MixinConfiguration.BuildNew().ForClass<BaseType1>().Clear().AddMixins (typeof (BT1Mixin1)).EnterScope())
-      {
-        var mixer = CreateMixer ();
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
-        Assert.That (mixer.ProcessedContexts.Count, Is.EqualTo (1));
-        Assert.That(mixer.ProcessedContexts.Values, Is.EquivalentTo (MixinConfiguration.ActiveConfiguration.ClassContexts));
-      }
-    }
-
-    [Test]
-    public void ProcessesSubclassesOfTargetTypes ()
-    {
+      _assemblyOutputDirectoy = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "MixerTest");
+      _signedModulePath = Path.Combine (_assemblyOutputDirectoy, "Signed.dll");
+      _unsignedModulePath = Path.Combine (_assemblyOutputDirectoy, "Unsigned.dll");
       
-      using (MixinConfiguration.BuildNew().ForClass<NullTarget>().Clear().AddMixins (typeof (NullMixin)).EnterScope())
-      {
-        var mixer = CreateMixer ();
-        Assert.That (MixinTypeUtility.HasMixin (typeof (DerivedNullTarget), typeof (NullMixin)), Is.True);
+      if (Directory.Exists (_assemblyOutputDirectoy))
+        Directory.Delete (_assemblyOutputDirectoy, true);
 
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
+      _configuration = new MixinConfiguration ();
+      _context = new ClassContext (typeof (object));
 
-        Assert.That (mixer.ProcessedContexts.ContainsKey (typeof (DerivedNullTarget)), Is.True);
-      }
+      _classContextFinderStub = MockRepository.GenerateStub<IClassContextFinder> ();
+      _concreteTypeBuilderFactoryStub = MockRepository.GenerateStub<IConcreteTypeBuilderFactory> ();
+      _concreteTypeBuilderStub = MockRepository.GenerateStub<IConcreteTypeBuilder> ();
 
+      _classContextFinderStub.Stub (stub => stub.FindClassContexts (_configuration)).Return (new[] { _context });
+
+      _concreteTypeBuilderFactoryStub.Stub (stub => stub.GetSignedModulePath (_assemblyOutputDirectoy)).Return (_signedModulePath);
+      _concreteTypeBuilderFactoryStub.Stub (stub => stub.GetUnsignedModulePath (_assemblyOutputDirectoy)).Return (_unsignedModulePath);
+      _concreteTypeBuilderFactoryStub.Stub (stub => stub.CreateTypeBuilder (_assemblyOutputDirectoy)).Return (_concreteTypeBuilderStub);
+
+      _concreteTypeBuilderStub.Stub (stub => stub.SaveAndResetDynamicScope ()).Return (new string[0]);
+
+      _mixer = new Mixer (_classContextFinderStub, _concreteTypeBuilderFactoryStub, _assemblyOutputDirectoy);
+    }
+
+    [SetUp]
+    public void TearDown ()
+    {
+      if (Directory.Exists (_assemblyOutputDirectoy))
+        Directory.Delete (_assemblyOutputDirectoy, true);
     }
 
     [Test]
-    public void HandlesClosedGenericTypes ()
+    public void PrepareOutputDirectory_DirectoryDoesNotExist ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass (typeof (List<List<List<int>>>)).Clear ().AddMixins (typeof (NullMixin)).EnterScope ())
-      {
-        var mixer = CreateMixer ();
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
-        Assert.IsEmpty (mixer.Errors);
+      Assert.That (Directory.Exists (_assemblyOutputDirectoy), Is.False);
 
-        Assert.That (mixer.FinishedTypes.ContainsKey (typeof (List<List<List<int>>>)), Is.True);
-      }
+      _mixer.PrepareOutputDirectory ();
 
+      Assert.That (Directory.Exists (_assemblyOutputDirectoy), Is.True);
     }
 
     [Test]
-    public void MixerLeavesCurrentTypeBuilderUnchanged ()
+    public void PrepareOutputDirectory_DirectoryDoesExist ()
     {
-      try
-      {
-        var repository = new MockRepository ();
-        ConcreteTypeBuilder builder = ConcreteTypeBuilder.Current;
-        var scopeMock = repository.StrictMock<IModuleManager> ();
-        builder.Scope = scopeMock;
+      Directory.CreateDirectory (_assemblyOutputDirectoy);
+      Assert.That (Directory.Exists (_assemblyOutputDirectoy), Is.True);
 
-        // expect no calls on scope
+      _mixer.PrepareOutputDirectory ();
 
-        repository.ReplayAll ();
-
-        CreateMixer().Execute (MixinConfiguration.ActiveConfiguration);
-
-        repository.VerifyAll ();
-
-        Assert.That (ConcreteTypeBuilder.Current, Is.SameAs (builder));
-        Assert.That (ConcreteTypeBuilder.Current.Scope, Is.SameAs (scopeMock));
-      }
-      finally
-      {
-        ConcreteTypeBuilder.SetCurrent (null);
-      }
-    }
-    
-    [Test]
-    public void MixerIgnoresInvalidTypes ()
-    {
-      using (MixinConfiguration.BuildNew().EnterScope())
-      {
-        using (MixinConfiguration.BuildNew ()
-            .ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1))  // valid
-            .ForClass<BaseType2>().Clear().AddMixins (typeof (BT1Mixin1))  // invalid
-            .EnterScope())
-        {
-          var mixer = CreateMixer ();
-          mixer.PrepareOutputDirectory ();
-          mixer.Execute (MixinConfiguration.ActiveConfiguration);
-
-          Assert.That (mixer.Errors.Count, Is.EqualTo (1));
-          Assert.That (mixer.Errors[0].A, Is.EqualTo (MixinConfiguration.ActiveConfiguration.ClassContexts.GetExact (typeof (BaseType2))));
-          Assert.That (mixer.FinishedTypes.Keys, Is.EquivalentTo (new object[] { typeof (BaseType1) }));
-        }
-      }
+      Assert.That (Directory.Exists (_assemblyOutputDirectoy), Is.True);
     }
 
     [Test]
-    public void ValidationErrorOccurred ()
+    public void PrepareOutputDirectory_SignedModuleIsDeleted ()
     {
-      using (MixinConfiguration.BuildNew ()
-          .ForClass<BaseType1> ().Clear ().AddMixins (typeof (BaseType1))  // yields ValidationException
-          .EnterScope ())
-      {
-        object eventSender = null;
-        ValidationErrorEventArgs eventArgs = null;
+      Directory.CreateDirectory (_assemblyOutputDirectoy);
+      CreateEmptyFile(_signedModulePath);
 
-        var mixer = CreateMixer ();
-        mixer.ValidationErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
+      Assert.That (File.Exists (_signedModulePath), Is.True);
 
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
+      _mixer.PrepareOutputDirectory ();
 
-        Assert.That (eventSender, Is.EqualTo (mixer));
-        Assert.That (eventArgs.ValidationException.ValidationLog.GetNumberOfFailures (), Is.GreaterThan (0));
-      }
+      Assert.That (File.Exists (_signedModulePath), Is.False);
     }
 
     [Test]
-    public void ErrorOccurred ()
+    public void PrepareOutputDirectory_UnsignedModuleIsDeleted ()
     {
-      using (MixinConfiguration.BuildNew ()
-          .ForClass<BaseType2> ().Clear ().AddMixins (typeof (BT1Mixin1))  // yields ConfigurationException
-          .EnterScope ())
-      {
-        object eventSender = null;
-        ErrorEventArgs eventArgs = null;
+      Directory.CreateDirectory (_assemblyOutputDirectoy);
+      CreateEmptyFile (_unsignedModulePath);
 
-        var mixer = CreateMixer ();
-        mixer.ErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
+      Assert.That (File.Exists (_unsignedModulePath), Is.True);
 
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
+      _mixer.PrepareOutputDirectory ();
 
-        Assert.That (eventSender, Is.EqualTo (mixer));
-        Assert.That (eventArgs.Exception, Is.InstanceOfType (typeof (ConfigurationException)));
-      }
+      Assert.That (File.Exists (_unsignedModulePath), Is.False);
     }
 
     [Test]
-    public void MixerRaisesEventForEachClassContextBeingProcessed ()
+    public void Execute_FindsClassContexts ()
     {
-      var classContextsBeingProcessed = new List<ClassContext>();
+      var classContextFinderMock = new MockRepository().StrictMock<IClassContextFinder> ();
+      classContextFinderMock.Expect (mock => mock.FindClassContexts (_configuration)).Return (new ClassContext[0]);
+      classContextFinderMock.Replay ();
 
-      // only use this assembly for this test case
-      using (DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (typeof (MixerTest).Assembly).EnterScope())
-      {
-        var mixer = CreateMixer();
-        mixer.ClassContextBeingProcessed +=
-            ((sender, args) => classContextsBeingProcessed.Add (args.ClassContext));
+      var mixer = new Mixer (classContextFinderMock, _concreteTypeBuilderFactoryStub, _assemblyOutputDirectoy);
+      mixer.Execute (_configuration);
 
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
-        Assert.That (classContextsBeingProcessed, Is.EquivalentTo (mixer.ProcessedContexts.Values));
-      }
-    }
-
-    private class FooNameProvider : INameProvider
-    {
-      public string GetNewTypeName (ClassDefinitionBase configuration)
-      {
-        return "Foo";
-      }
+      classContextFinderMock.VerifyAllExpectations ();
     }
 
     [Test]
-    public void UsesGivenNameProvider ()
+    public void Execute_RaisesClassContextBeingProcessed ()
     {
-      using (MixinConfiguration.BuildNew().ForClass<BaseType1>().Clear().AddMixins (typeof (BT1Mixin1)).EnterScope())
-      {
-        var mixer = Mixer.Create (
-            Parameters.SignedAssemblyName,
-            Parameters.UnsignedAssemblyName,
-            new FooNameProvider (),
-            Parameters.AssemblyOutputDirectory);
+      object eventSender = null;
+      ClassContextEventArgs eventArgs = null;
 
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
-        Assert.That (mixer.FinishedTypes[typeof (BaseType1)].FullName, Is.EqualTo ("Foo"));
-      }
+      _mixer.ClassContextBeingProcessed += (sender, args) => { eventSender = sender; eventArgs = args; };
+      _mixer.Execute (_configuration);
+
+      Assert.That (eventSender, Is.SameAs (_mixer));
+      Assert.That (eventArgs.ClassContext, Is.SameAs (_context));
     }
 
     [Test]
-    public void SameInputAndOutputDirectory ()
+    public void Execute_GetsConcreteType ()
     {
-      using (MixinConfiguration.BuildNew ()
-          .ForClass (typeof (List<List<List<int>>>)).AddMixin (typeof (object))
-          .ForClass (typeof (MixerTest)).AddMixin (typeof (object))
-          .EnterScope ())
-      {
-        Assert.That (File.Exists (UnsignedAssemblyPath), Is.False);
-        Assert.That (File.Exists (SignedAssemblyPath), Is.False);
+      var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
+      concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Return (typeof (FakeConcreteMixedType));
+      concreteTypeBuilderMock.Expect (mock => mock.SaveAndResetDynamicScope()).Return (new string[0]);
+      concreteTypeBuilderMock.Replay ();
 
-        var mixer = CreateMixer ();
-        Assert.That (mixer.AssemblyOutputDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
-        mixer.PrepareOutputDirectory ();
-        mixer.Execute (MixinConfiguration.ActiveConfiguration);
+      RedefineFactoryStub (concreteTypeBuilderMock);
 
-        Assert.That (File.Exists (UnsignedAssemblyPath), Is.True);
-        Assert.That (File.Exists (SignedAssemblyPath), Is.True);
+      _mixer.Execute (_configuration);
 
-        ContextAwareTypeDiscoveryUtility.SetDefaultService (null); // trigger reloading of assemblies
-
-        mixer.PrepareOutputDirectory ();
-
-        Assert.That (File.Exists (UnsignedAssemblyPath), Is.False);
-        Assert.That (File.Exists (SignedAssemblyPath), Is.False);
-
-        // trigger reanalysis of the default mixin configuration
-        MixinConfiguration.SetActiveConfiguration (null);
-        MixinConfiguration.ResetMasterConfiguration();
-
-        mixer.Execute (MixinConfiguration.ActiveConfiguration); // this should _not_ load/lock the generated files
-
-        File.Delete (UnsignedAssemblyPath);
-        File.Delete (SignedAssemblyPath);
-      }
+      concreteTypeBuilderMock.VerifyAllExpectations ();
     }
 
-    private Set<ClassContext> GetExpectedDefaultContexts ()
+    [Test]
+    public void Execute_ValidationError ()
     {
-      var contextsFromConfig = new Set<ClassContext> ();
-      foreach (ClassContext context in MixinConfiguration.ActiveConfiguration.ClassContexts)
-      {
-        if (!context.Type.IsGenericTypeDefinition && !context.Type.IsInterface)
-        {
-          contextsFromConfig.Add (context);
-        }
-      }
+      var validationException = new ValidationException ("x", MockRepository.GenerateMock<IValidationLog>());
 
-      foreach (Type t in ContextAwareTypeDiscoveryUtility.GetInstance ().GetTypes (null, false))
-      {
-        if (!t.IsGenericTypeDefinition && !t.IsInterface && !t.IsDefined (typeof (IgnoreForMixinConfigurationAttribute), false))
-        {
-          ClassContext context = MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (t);
-          if (context != null)
-            contextsFromConfig.Add (context);
-        }
-      }
-      return contextsFromConfig;
+      var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
+      concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Throw (validationException);
+      concreteTypeBuilderMock.Expect (mock => mock.SaveAndResetDynamicScope ()).Return (new string[0]);
+      concreteTypeBuilderMock.Replay ();
+
+      RedefineFactoryStub (concreteTypeBuilderMock);
+
+      object eventSender = null;
+      ValidationErrorEventArgs eventArgs = null;
+
+      _mixer.ValidationErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
+      _mixer.Execute (_configuration);
+
+      concreteTypeBuilderMock.VerifyAllExpectations ();
+
+      Assert.That (eventSender, Is.SameAs (_mixer));
+      Assert.That (eventArgs.ValidationException, Is.SameAs (validationException));
     }
 
-    private Mixer CreateMixer ()
+    [Test]
+    public void Execute_OtherError ()
     {
-      return Mixer.Create (
-          Parameters.SignedAssemblyName,
-          Parameters.UnsignedAssemblyName,
-          GuidNameProvider.Instance,
-          Parameters.AssemblyOutputDirectory);
+      var exception = new Exception ("x");
+
+      var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
+      concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Throw (exception);
+      concreteTypeBuilderMock.Expect (mock => mock.SaveAndResetDynamicScope ()).Return (new string[0]);
+      concreteTypeBuilderMock.Replay ();
+
+      RedefineFactoryStub (concreteTypeBuilderMock);
+
+      object eventSender = null;
+      ErrorEventArgs eventArgs = null;
+
+      _mixer.ErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
+      _mixer.Execute (_configuration);
+
+      concreteTypeBuilderMock.VerifyAllExpectations ();
+
+      Assert.That (eventSender, Is.SameAs (_mixer));
+      Assert.That (eventArgs.Exception, Is.SameAs (exception));
+    }
+
+    [Test]
+    public void Execute_Saves ()
+    {
+      var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
+      concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Return (typeof (FakeConcreteMixedType));
+      concreteTypeBuilderMock.Expect (mock => mock.SaveAndResetDynamicScope ()).Return (new[] { "a", "b" });
+      concreteTypeBuilderMock.Replay ();
+
+      RedefineFactoryStub (concreteTypeBuilderMock);
+
+      _mixer.Execute (_configuration);
+
+      concreteTypeBuilderMock.VerifyAllExpectations ();
+    }
+
+    private void RedefineFactoryStub (IConcreteTypeBuilder concreteTypeBuilderMock)
+    {
+      _concreteTypeBuilderFactoryStub.BackToRecord ();
+      _concreteTypeBuilderFactoryStub.Stub (stub => stub.CreateTypeBuilder (_assemblyOutputDirectoy)).Return (concreteTypeBuilderMock);
+      _concreteTypeBuilderFactoryStub.Replay ();
+    }
+
+    private void CreateEmptyFile (string path)
+    {
+      using (File.Create (path))
+      {
+      }
     }
   }
 }

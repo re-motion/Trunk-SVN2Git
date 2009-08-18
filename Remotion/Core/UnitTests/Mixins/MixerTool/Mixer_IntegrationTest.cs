@@ -14,8 +14,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
 using System.Reflection;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
@@ -23,100 +25,53 @@ using Remotion.Mixins.MixerTool;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using System.Linq;
 
 namespace Remotion.UnitTests.Mixins.MixerTool
 {
   [Serializable]
   [TestFixture]
-  public class Mixer_IntegrationTest : MixerToolBaseTest
+  public class Mixer_IntegrationTest
   {
+    private string _assemblyOutputDirectory;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _assemblyOutputDirectory = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "Mixer_IntegrationTest");
+    }
+
     [Test]
     public void SavesMixedTypes ()
     {
       AppDomainRunner.Run (
           delegate
           {
-            using (MixinConfiguration.BuildNew ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
+            using (MixinConfiguration.BuildNew().ForClass<BaseType1>().AddMixins (typeof (BT1Mixin1)).EnterScope())
             {
-              Mixer mixer = CreateMixer();
-              mixer.PrepareOutputDirectory ();
+              Mixer mixer = Mixer.Create ("Signed", "Unsigned", GuidNameProvider.Instance, _assemblyOutputDirectory);
+              mixer.PrepareOutputDirectory();
               mixer.Execute (MixinConfiguration.ActiveConfiguration);
 
-              Assembly theAssembly = Assembly.LoadFile (UnsignedAssemblyPath);
-              Assert.AreEqual (2, theAssembly.GetTypes ().Length);
-              Type generatedType = GetFirstMixedType (theAssembly);
+              Assembly theAssembly = Assembly.LoadFile (mixer.ConcreteTypeBuilderFactory.GetUnsignedModulePath (_assemblyOutputDirectory));
+              var types = theAssembly.GetTypes();
 
-              Assert.IsNotNull (MixinReflector.GetClassContextFromConcreteType (generatedType));
-              Assert.AreEqual (
-                  MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (typeof (BaseType1)),
-                  MixinReflector.GetClassContextFromConcreteType (generatedType));
+              var concreteType = types.Where (t => t.BaseType == typeof (BaseType1)).SingleOrDefault();
+              Assert.That (concreteType, Is.Not.Null);
+              Assert.That (
+                  MixinReflector.GetClassContextFromConcreteType (concreteType),
+                  Is.EqualTo (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
 
-              object instance = Activator.CreateInstance (generatedType);
-              Assert.IsTrue (generatedType.IsInstanceOfType (instance));
-              Assert.IsNotNull (Mixin.Get<BT1Mixin1> (instance));
+              object instance = Activator.CreateInstance (concreteType);
+              Assert.That (Mixin.Get<BT1Mixin1> (instance), Is.Not.Null);
+
+              ConcreteTypeBuilder.Current.LoadAssemblyIntoCache (theAssembly);
+              Type concreteTypeFromFactory = TypeFactory.GetConcreteType (typeof (BaseType1));
+              Assert.That (concreteTypeFromFactory, Is.SameAs (concreteType));
+
+              Assert.That (theAssembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false), Is.True);
             }
           });
-    }
-
-    [Test]
-    public void AssemblyGeneratedByMixerToolCanBeLoadedIntoTypeBuilder ()
-    {
-      AppDomainRunner.Run (
-          delegate
-          {
-            using (MixinConfiguration.BuildNew ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
-            {
-              var mixer = CreateMixer ();
-              mixer.PrepareOutputDirectory ();
-              mixer.Execute (MixinConfiguration.ActiveConfiguration);
-            }
-          });
-
-      AppDomainRunner.Run (
-          delegate
-          {
-            Assembly theAssembly = Assembly.LoadFile (UnsignedAssemblyPath);
-            ConcreteTypeBuilder.Current.LoadAssemblyIntoCache (theAssembly);
-            using (MixinConfiguration.BuildNew ().EnterScope ())
-            {
-              using (MixinConfiguration.BuildFromActive ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
-              {
-                Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType1));
-                Assert.Contains (generatedType, theAssembly.GetTypes ());
-              }
-            }
-          });
-    }
-
-    [Test]
-    public void AssemblyGeneratedByMixerTool_HasNonApplicationAssemblyAttribute ()
-    {
-      AppDomainRunner.Run (
-          delegate
-          {
-            Mixer mixer = CreateMixer();
-            using (MixinConfiguration.BuildNew ().ForClass<BaseType1> ().Clear ().AddMixins (typeof (BT1Mixin1)).EnterScope ())
-            {
-              mixer.PrepareOutputDirectory ();
-              mixer.Execute (MixinConfiguration.ActiveConfiguration);
-            }
-          });
-
-      AppDomainRunner.Run (
-          delegate
-          {
-            Assembly theAssembly = Assembly.LoadFile (UnsignedAssemblyPath);
-            Assert.IsTrue (theAssembly.IsDefined (typeof (NonApplicationAssemblyAttribute), false));
-          });
-    }
-
-    private Mixer CreateMixer ()
-    {
-      return Mixer.Create (
-          Parameters.SignedAssemblyName,
-          Parameters.UnsignedAssemblyName,
-          GuidNameProvider.Instance,
-          Parameters.AssemblyOutputDirectory);
     }
   }
 }

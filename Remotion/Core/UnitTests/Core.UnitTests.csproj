@@ -506,7 +506,6 @@
     <Compile Include="Mixins\Utilities\MixedObjectInstantiationScopeTest.cs" />
     <Compile Include="Mixins\MixerTool\MixerRunnerTest.cs" />
     <Compile Include="Mixins\MixerTool\MixerTest.cs" />
-    <Compile Include="Mixins\MixerTool\MixerToolBaseTest.cs" />
     <Compile Include="Mixins\MixerTool\Mixer_IntegrationTest.cs" />
     <Content Include="Mixins\MixerTool\SampleAssembly\SampleTypes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

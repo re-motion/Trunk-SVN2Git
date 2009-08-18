@@ -38,7 +38,7 @@ namespace Remotion.UnitTests.Mixins.MixerTool
     [Test]
     public void CreateTypeBuilder ()
     {
-      var builder = _factory.CreateTypeBuilder (@"c:\directory");
+      var builder = (ConcreteTypeBuilder) _factory.CreateTypeBuilder (@"c:\directory");
 
       Assert.That (builder.TypeNameProvider, Is.SameAs (_typeNameProviderStub));
       

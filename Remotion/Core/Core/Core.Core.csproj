@@ -158,6 +158,7 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\MixinTargetCodeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\SerializationCodeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\TypeGeneration\TypeInitializerCodeGenerator.cs" />
+    <Compile Include="Mixins\CodeGeneration\IConcreteTypeBuilder.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializer.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializer.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\CodeGenerationConcreteMixinTypeIdentifierSerializer.cs" />
@@ -176,6 +177,8 @@
     <Compile Include="Mixins\MixerTool\ConcreteTypeBuilderFactory.cs" />
     <Compile Include="Mixins\MixerTool\ErrorEventArgs.cs" />
     <Compile Include="Mixins\MixerTool\ClassContextFinder.cs" />
+    <Compile Include="Mixins\MixerTool\IClassContextFinder.cs" />
+    <Compile Include="Mixins\MixerTool\IConcreteTypeBuilderFactory.cs" />
     <Compile Include="Mixins\MixerTool\ValidationErrorEventArgs.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\BlockStatement.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
