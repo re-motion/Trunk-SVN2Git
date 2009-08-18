@@ -213,12 +213,7 @@ namespace Remotion.Web.Utilities
       ArgumentUtility.CheckNotNullAndType<Control> ("control", control);
       ArgumentUtility.CheckNotNullOrEmpty ("jQuerySelectorForBorderSpanTarget", jQuerySelectorForBorderSpanTarget);
 
-      string key = typeof (ScriptUtility).FullName + "_StyleUtility";
-      string url = GetScriptUrl (control);
-
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (control);
-      htmlHeadAppender.RegisterJQueryJavaScriptInclude (control);
-      htmlHeadAppender.RegisterJavaScriptInclude (key, url);
 
       control.Page.ClientScript.RegisterStartupScriptBlock (
           control,
@@ -228,14 +223,20 @@ namespace Remotion.Web.Utilities
               "StyleUtility.CreateBorderSpans ('{0}');", jQuerySelectorForBorderSpanTarget));
     }
 
-    protected string GetScriptUrl (IControl control)
+    /// <summary>
+    /// Registers the javascript for the script-utility.
+    /// </summary>
+    public void RegisterJavascriptInclude (IControl control, HtmlHeadAppender htmlHeadAppender)
     {
-      return ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
-    }
+      ArgumentUtility.CheckNotNull ("control", control);
+      ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-    protected ResourceTheme ResourceTheme
-    {
-      get { return ServiceLocator.Current.GetInstance<ResourceTheme> (); }
+      string key = typeof (ScriptUtility).FullName + "_StyleUtility";
+      if (!htmlHeadAppender.IsRegistered (key))
+      {
+        string href = ResourceUrlResolver.GetResourceUrl (control, typeof (ScriptUtility), ResourceType.Html, ResourceTheme, "StyleUtility.js");
+        htmlHeadAppender.RegisterJavaScriptInclude (key, href);
+      }
     }
 
     public void RegisterResizeOnElement (IControl control, string jquerySelector, string eventHandler)
@@ -243,6 +244,11 @@ namespace Remotion.Web.Utilities
       string key = control.ClientID + "_ResizeEventHandler";
       string script = string.Format ("StyleUtility.Instance.RegisterResizeHandler({0}, {1});", jquerySelector, eventHandler);
       control.Page.ClientScript.RegisterStartupScriptBlock (control, typeof (ScriptUtility), key, script);
+    }
+
+    protected ResourceTheme ResourceTheme
+    {
+      get { return ServiceLocator.Current.GetInstance<ResourceTheme> (); }
     }
   }
 }

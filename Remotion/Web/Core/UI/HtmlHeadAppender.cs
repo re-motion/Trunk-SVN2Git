@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Context;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
@@ -277,23 +278,22 @@ namespace Remotion.Web.UI
     public void RegisterUtilitiesJavaScriptInclude (IControl control)
     {
       ArgumentUtility.CheckNotNull ("control", control);
-      string key = typeof (HtmlHeadContents).FullName + "_Utilities";
-      if (! IsRegistered (key))
+      
+      string utilitiesKey = typeof (HtmlHeadContents).FullName + "_Utilities";
+      if (! IsRegistered (utilitiesKey))
       {
         string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "Utilities.js");
-        RegisterJavaScriptInclude (key, href);
+        RegisterJavaScriptInclude (utilitiesKey, href);
       }
-    }
-
-    public void RegisterJQueryJavaScriptInclude (IControl control)
-    {
-      ArgumentUtility.CheckNotNull ("control", control);
-      string key = typeof (HtmlHeadContents).FullName + "_JQuery";
-      if (!IsRegistered (key))
+      
+      string jqueryKey = typeof (HtmlHeadContents).FullName + "_JQuery";
+      if (!IsRegistered (jqueryKey))
       {
         string href = ResourceUrlResolver.GetResourceUrl (control, typeof (HtmlHeadContents), ResourceType.Html, "jquery.js");
-        RegisterJavaScriptInclude (key, href);
+        RegisterJavaScriptInclude (jqueryKey, href);
       }
+
+      ScriptUtility.Instance.RegisterJavascriptInclude (control, this);
     }
 
     public void RegisterJQueryBgiFramesJavaScriptInclude (IControl control)

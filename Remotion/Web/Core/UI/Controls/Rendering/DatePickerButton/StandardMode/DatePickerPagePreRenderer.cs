@@ -31,7 +31,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DatePickerButton.StandardMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
       var page = PageWrapper.CastOrCreate (Page);
-      htmlHeadAppender.RegisterJQueryJavaScriptInclude (page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (page);
 
       string key = typeof (DatePickerPage).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (key))

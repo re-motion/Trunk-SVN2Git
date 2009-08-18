@@ -2,6 +2,7 @@
 {
   this.RegisterResizeHandler = function(selector, handler)
   {
+    $(window).resize(handler);
   }
 }
 

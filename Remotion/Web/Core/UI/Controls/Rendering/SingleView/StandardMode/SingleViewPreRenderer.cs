@@ -35,7 +35,7 @@ namespace Remotion.Web.UI.Controls.Rendering.SingleView.StandardMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
 
       string keyStyle = typeof (ISingleView).FullName + "_Style";
       string keyScript = typeof (ISingleView).FullName + "_Script";

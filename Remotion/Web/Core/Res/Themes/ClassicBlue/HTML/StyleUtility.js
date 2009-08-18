@@ -41,7 +41,7 @@
     {
       var item = _resizeHandlers[i];
       var element = $(item.Selector);
-      if (element != null)
+      if (element != null && element.length > 0)
       {
         item.Handler(element);
         existingResizeHandlers[existingResizeHandlers.length] = item;

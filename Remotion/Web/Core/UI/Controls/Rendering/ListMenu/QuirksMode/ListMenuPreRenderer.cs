@@ -37,7 +37,7 @@ namespace Remotion.Web.UI.Controls.Rendering.ListMenu.QuirksMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control);
 
       string scriptFileKey = typeof (IListMenu).FullName + "_Script";
       string scriptFileUrl = ResourceUrlResolver.GetResourceUrl (Control, GetType (), ResourceType.Html, ResourceTheme.Legacy, "ListMenu.js");

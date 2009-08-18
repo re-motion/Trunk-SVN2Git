@@ -35,7 +35,7 @@ namespace Remotion.Web.UI.Controls.Rendering.TabbedMultiView.StandardMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
 
       string keyStyle = typeof (ITabbedMultiView).FullName + "_Style";
       string keyScript = typeof (ITabbedMultiView).FullName + "_Script";

@@ -78,7 +78,7 @@ namespace Remotion.Web.UI.Controls.Rendering.DropDownMenu.QuirksMode
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterJQueryJavaScriptInclude (Control.Page);
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude (Control.Page);
 
       string key = typeof (IDropDownMenu).FullName + "_Script";
       if (!htmlHeadAppender.IsRegistered (key))

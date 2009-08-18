@@ -14,5 +14,10 @@ namespace Remotion.Web.Utilities
     /// <param name="jquerySelector">The element-selector in jquery-syntax.</param>
     /// <param name="eventHandler">The eventhandler, with the following signatur: <c>function (element)</c>.</param>
     void RegisterResizeOnElement (IControl control, string jquerySelector, string eventHandler);
+
+    /// <summary>
+    /// Registers the javascript for the script-utility.
+    /// </summary>
+    void RegisterJavascriptInclude (IControl control, HtmlHeadAppender htmlHeadAppender);
   }
 }

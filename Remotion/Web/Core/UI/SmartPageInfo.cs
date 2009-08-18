@@ -307,7 +307,6 @@ namespace Remotion.Web.UI
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_smartNavigationScriptKey, url);
 
         HtmlHeadAppender.Current.RegisterUtilitiesJavaScriptInclude (_page);
-        HtmlHeadAppender.Current.RegisterJQueryJavaScriptInclude (_page);
         url = ResourceUrlResolver.GetResourceUrl (_page, typeof (SmartPageInfo), ResourceType.Html, c_scriptFileUrl);
         HtmlHeadAppender.Current.RegisterJavaScriptInclude (s_scriptFileKey, url);
 
