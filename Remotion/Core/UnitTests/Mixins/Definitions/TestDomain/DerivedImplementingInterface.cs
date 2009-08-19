@@ -15,11 +15,20 @@
 // 
 using System;
 
-namespace Remotion.UnitTests.Mixins.SampleTypes
+namespace Remotion.UnitTests.Mixins.Definitions.TestDomain
 {
-  [SuppressAttributes(typeof (BT1Attribute))]
-  public class MixinSuppressingBT1Attribute
+  internal class DerivedImplementingInterface : Base, Interface, InterfaceWithGenericOverloads
   {
-    
+    public void Bar ()
+    {
+    }
+
+    public void GBar ()
+    {
+    }
+
+    public void GBar<T1> ()
+    {
+    }
   }
 }

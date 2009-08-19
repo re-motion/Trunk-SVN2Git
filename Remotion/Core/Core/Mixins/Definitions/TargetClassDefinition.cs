@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities;
@@ -62,7 +61,7 @@ namespace Remotion.Mixins.Definitions
       get { return _configurationContext; }
     }
 
-    internal MixinTypeInstantiator MixinTypeInstantiator
+    public MixinTypeInstantiator MixinTypeInstantiator
     {
       get { return _mixinTypeInstantiator; }
     }
@@ -129,27 +128,6 @@ namespace Remotion.Mixins.Definitions
     {
       Type realType = MixinTypeInstantiator.GetClosedMixinType (configuredType);
       return _mixins[realType];
-    }
-
-    public IEnumerable<MethodDefinition> GetAllMixinMethods()
-    {
-      foreach (MixinDefinition mixin in _mixins)
-        foreach (MethodDefinition method in mixin.Methods)
-          yield return method;
-    }
-
-    public IEnumerable<PropertyDefinition> GetAllMixinProperties ()
-    {
-      foreach (MixinDefinition mixin in _mixins)
-        foreach (PropertyDefinition property in mixin.Properties)
-          yield return property;
-    }
-
-    public IEnumerable<EventDefinition> GetAllMixinEvents ()
-    {
-      foreach (MixinDefinition mixin in _mixins)
-        foreach (EventDefinition eventDefinition in mixin.Events)
-          yield return eventDefinition;
     }
   }
 }

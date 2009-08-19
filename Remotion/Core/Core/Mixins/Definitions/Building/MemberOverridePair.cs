@@ -13,13 +13,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using Remotion.Utilities;
 
-namespace Remotion.UnitTests.Mixins.SampleTypes
+namespace Remotion.Mixins.Definitions.Building
 {
-  [SuppressAttributes(typeof (BT1Attribute))]
-  public class MixinSuppressingBT1Attribute
+  /// <summary>
+  /// Represents an overridden method together with its overrider.
+  /// </summary>
+  public struct MemberOverridePair<TMember>
+      where TMember : MemberDefinitionBase
   {
-    
+    public MemberOverridePair (TMember baseMember, TMember overrider)
+        : this()
+    {
+      ArgumentUtility.CheckNotNull ("baseMember", baseMember);
+      ArgumentUtility.CheckNotNull ("overrider", overrider);
+
+      BaseMember = baseMember;
+      Overrider = overrider;
+    }
+
+    public TMember BaseMember { get; private set; }
+    public TMember Overrider { get; private set; }
   }
 }

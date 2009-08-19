@@ -25,26 +25,26 @@ namespace Remotion.Mixins.Definitions.Building
 {
   public class MemberDefinitionBuilder
   {
+    private const BindingFlags c_bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
     private readonly ClassDefinitionBase _classDefinition;
     private readonly Predicate<MethodInfo> _methodFilter;
     private readonly Set<MethodInfo> _specialMethods = new Set<MethodInfo> ();
-    private readonly BindingFlags _bindingFlags;
 
-    public MemberDefinitionBuilder (ClassDefinitionBase classDefinition, Predicate<MethodInfo> methodFilter, BindingFlags bindingFlags)
+    public MemberDefinitionBuilder (ClassDefinitionBase classDefinition, Predicate<MethodInfo> methodFilter)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("methodFilter", methodFilter);
 
       _classDefinition = classDefinition;
       _methodFilter = methodFilter;
-      _bindingFlags = bindingFlags;
     }
 
     public void Apply (Type type)
     {
-      IEnumerable<MethodInfo> methods = ReflectionUtility.RecursiveGetAllMethods (type, _bindingFlags);
-      IEnumerable<PropertyInfo> properties = ReflectionUtility.RecursiveGetAllProperties (type, _bindingFlags);
-      IEnumerable<EventInfo> events = ReflectionUtility.RecursiveGetAllEvents (type, _bindingFlags);
+      IEnumerable<MethodInfo> methods = ReflectionUtility.RecursiveGetAllMethods (type, c_bindingFlags);
+      IEnumerable<PropertyInfo> properties = ReflectionUtility.RecursiveGetAllProperties (type, c_bindingFlags);
+      IEnumerable<EventInfo> events = ReflectionUtility.RecursiveGetAllEvents (type, c_bindingFlags);
 
       AnalyzeProperties (CleanupMembers(properties, new PropertyNameAndSignatureEqualityComparer()));
       AnalyzeEvents (CleanupMembers(events, new EventNameAndSignatureEqualityComparer()));

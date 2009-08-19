@@ -15,11 +15,25 @@
 // 
 using System;
 
-namespace Remotion.UnitTests.Mixins.SampleTypes
+namespace Remotion.UnitTests.Mixins.Definitions.TestDomain
 {
-  [SuppressAttributes(typeof (BT1Attribute))]
-  public class MixinSuppressingBT1Attribute
+  public class ClassWithExplicitInterfaceImplementation : IInterfaceWithAllKindsOfMembers
   {
-    
+    void IInterfaceWithAllKindsOfMembers.Method ()
+    {
+      throw new Exception ("The method or operation is not implemented.");
+    }
+
+    string IInterfaceWithAllKindsOfMembers.Property
+    {
+      get { throw new Exception ("The method or operation is not implemented."); }
+      set { throw new Exception ("The method or operation is not implemented."); }
+    }
+
+    event EventHandler IInterfaceWithAllKindsOfMembers.Event
+    {
+      add { throw new Exception ("The method or operation is not implemented."); }
+      remove { throw new Exception ("The method or operation is not implemented."); }
+    }
   }
 }

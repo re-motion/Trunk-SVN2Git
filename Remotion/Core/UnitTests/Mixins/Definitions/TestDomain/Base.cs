@@ -15,11 +15,22 @@
 // 
 using System;
 
-namespace Remotion.UnitTests.Mixins.SampleTypes
+namespace Remotion.UnitTests.Mixins.Definitions.TestDomain
 {
-  [SuppressAttributes(typeof (BT1Attribute))]
-  public class MixinSuppressingBT1Attribute
+  // ReSharper disable UnusedTypeParameter
+  internal class Base
   {
-    
+    public void Foo ()
+    {
+    }
+
+    public void GFoo ()
+    {
+    }
+
+    public void GFoo<T2> ()
+    {
+    }
   }
+  // ReSharper restore UnusedTypeParameter
 }

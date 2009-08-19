@@ -163,6 +163,17 @@
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />
     <Compile Include="Mixins\CodeGeneration\MixinArrayInitializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\InterfaceWithGenericOverloads.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\Interface.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\Base.cs" />
+    <Compile Include="Mixins\Definitions\ClassDefinitionBaseTest.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\DerivedImplementingInterface.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\ClassWithDifferentMemberVisibilities.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\ClassWithDifferentPropertyKinds.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\ClassWithEvents.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\ClassWithExplicitInterfaceImplementation.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\IInterfaceWithAllKindsOfMembers.cs" />
+    <Compile Include="Mixins\Definitions\TestDomain\TestClassDefinition.cs" />
     <Compile Include="Mixins\MixerTool\ClassContextFinderTest.cs" />
     <Compile Include="Mixins\MixerTool\ConcreteTypeBuilderFactoryTest.cs" />
     <Compile Include="Mixins\MixerTool\TestDomain\ClassWithIgnoreAttribute.cs" />

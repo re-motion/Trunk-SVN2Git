@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -22,9 +23,8 @@ using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building;
-using Remotion.Mixins.Utilities.Singleton;
-using Remotion.UnitTests.Mixins.Definitions;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Mixins
@@ -36,6 +36,9 @@ namespace Remotion.UnitTests.Mixins
   {
     public static TargetClassDefinition CreateTargetClassDefinition (Type classType, params Type[] mixinTypes)
     {
+      ArgumentUtility.CheckNotNull ("classType", classType);
+      ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
+
       var result = new TargetClassDefinition (new ClassContext (classType, mixinTypes));
       foreach (var type in mixinTypes)
         CreateMixinDefinition (result, type);
@@ -44,6 +47,9 @@ namespace Remotion.UnitTests.Mixins
 
     public static MixinDefinition CreateMixinDefinition (TargetClassDefinition targetClassDefinition, Type mixinType)
     {
+      ArgumentUtility.CheckNotNull ("targetClassDefinition", targetClassDefinition);
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+
       var mixinDefinition = new MixinDefinition (MixinKind.Used, mixinType, targetClassDefinition, true);
       PrivateInvoke.InvokeNonPublicMethod (targetClassDefinition.Mixins, "Add", mixinDefinition);
       return mixinDefinition;
@@ -51,12 +57,16 @@ namespace Remotion.UnitTests.Mixins
 
     public static MixinDefinition CreateMixinDefinition (Type mixinType)
     {
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+
       var targetClassDefinition = CreateTargetClassDefinition (typeof (NullTarget));
       return CreateMixinDefinition (targetClassDefinition, mixinType);
     }
 
-    public static MixinDependencyDefinition CreateMixinDependencyDefinition(MixinDefinition definition)
+    public static MixinDependencyDefinition CreateMixinDependencyDefinition (MixinDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
       var mixinDependency = new MixinDependencyDefinition (new RequiredMixinTypeDefinition (definition.TargetClass, typeof (IBaseType2)), definition, null);
       PrivateInvoke.InvokeNonPublicMethod (definition.MixinDependencies, "Add", mixinDependency);
       return mixinDependency;
@@ -64,6 +74,8 @@ namespace Remotion.UnitTests.Mixins
 
     public static BaseDependencyDefinition CreateBaseDependencyDefinition (MixinDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
       var baseDependency = new BaseDependencyDefinition (new RequiredBaseCallTypeDefinition (definition.TargetClass, typeof (IBaseType2)), definition, null);
       PrivateInvoke.InvokeNonPublicMethod (definition.BaseDependencies, "Add", baseDependency);
       return baseDependency;
@@ -71,13 +83,47 @@ namespace Remotion.UnitTests.Mixins
 
     public static ThisDependencyDefinition CreateThisDependencyDefinition (MixinDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
       var thisDependency = new ThisDependencyDefinition (new RequiredFaceTypeDefinition (definition.TargetClass, typeof (IBaseType2)), definition, null);
       PrivateInvoke.InvokeNonPublicMethod (definition.ThisDependencies, "Add", thisDependency);
       return thisDependency;
     }
 
+    public static RequiredFaceTypeDefinition CreateRequiredFaceTypeDefinition (TargetClassDefinition definition, Type requiredType)
+    {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+      ArgumentUtility.CheckNotNull ("requiredType", requiredType);
+
+      var requiredFaceType = new RequiredFaceTypeDefinition (definition, requiredType);
+      PrivateInvoke.InvokeNonPublicMethod (definition.RequiredFaceTypes, "Add", requiredFaceType);
+      return requiredFaceType;
+    }
+
+    public static RequiredBaseCallTypeDefinition CreateRequiredBaseCallTypeDefinition (TargetClassDefinition definition, Type requiredType)
+    {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+      ArgumentUtility.CheckNotNull ("requiredType", requiredType);
+
+      var requiredBaseCallType = new RequiredBaseCallTypeDefinition (definition, requiredType);
+      PrivateInvoke.InvokeNonPublicMethod (definition.RequiredBaseCallTypes, "Add", requiredBaseCallType);
+      return requiredBaseCallType;
+    }
+
+    public static RequiredMixinTypeDefinition CreateRequiredMixinTypeDefinition (TargetClassDefinition definition, Type requiredType)
+    {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+      ArgumentUtility.CheckNotNull ("requiredType", requiredType);
+
+      var requiredMixinType = new RequiredMixinTypeDefinition (definition, requiredType);
+      PrivateInvoke.InvokeNonPublicMethod (definition.RequiredMixinTypes, "Add", requiredMixinType);
+      return requiredMixinType;
+    }
+
     public static SuppressedAttributeIntroductionDefinition CreateSuppressedAttributeIntroductionDefinition (MixinDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
       var attributeDefinitionFake = CreateAttributeDefinition (definition);
       var suppressedAttributeIntroduction = new SuppressedAttributeIntroductionDefinition (MockRepository.GenerateMock<IAttributeIntroductionTarget>(), attributeDefinitionFake, attributeDefinitionFake);
       PrivateInvoke.InvokeNonPublicMethod (definition.SuppressedAttributeIntroductions, "Add", suppressedAttributeIntroduction);
@@ -86,6 +132,8 @@ namespace Remotion.UnitTests.Mixins
 
     public static NonAttributeIntroductionDefinition CreateNonAttributeIntroductionDefinition (MixinDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
       var attributeDefinitionFake = CreateAttributeDefinition (definition);
       var nonAttributeIntroduction = new NonAttributeIntroductionDefinition (attributeDefinitionFake, true);
       PrivateInvoke.InvokeNonPublicMethod (definition.NonAttributeIntroductions, "Add", nonAttributeIntroduction);
@@ -94,6 +142,8 @@ namespace Remotion.UnitTests.Mixins
 
     public static AttributeIntroductionDefinition CreateAttributeIntroductionDefinition (MixinDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
       var attributeDefinitionFake = CreateAttributeDefinition(definition);
       var attributeIntroduction = new AttributeIntroductionDefinition (MockRepository.GenerateMock<IAttributeIntroductionTarget>(), attributeDefinitionFake);
       PrivateInvoke.InvokeNonPublicMethod (definition.AttributeIntroductions, "Add", attributeIntroduction);
@@ -102,13 +152,21 @@ namespace Remotion.UnitTests.Mixins
 
     public static AttributeDefinition CreateAttributeDefinition(IAttributableDefinition declaringDefinition)
     {
-      var attributeDefinition = new AttributeDefinition (declaringDefinition, CustomAttributeData.GetCustomAttributes (typeof (MixinDefinitionTest))[0], true);
+      ArgumentUtility.CheckNotNull ("declaringDefinition", declaringDefinition);
+
+      var attributeData = CustomAttributeData.GetCustomAttributes (typeof (BaseType1))
+          .Where (a => a.Constructor.DeclaringType == typeof (BT1Attribute))
+          .Single();
+
+      var attributeDefinition = new AttributeDefinition (declaringDefinition, attributeData, true);
       PrivateInvoke.InvokeNonPublicMethod (declaringDefinition.CustomAttributes, "Add", attributeDefinition);
       return attributeDefinition;
     }
 
     public static NonInterfaceIntroductionDefinition CreateNonInterfaceIntroductionDefinition (MixinDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
       var nonInterfaceIntroduction = new NonInterfaceIntroductionDefinition (typeof (IBT1Mixin1), definition, true);
       PrivateInvoke.InvokeNonPublicMethod (definition.NonInterfaceIntroductions, "Add", nonInterfaceIntroduction);
       return nonInterfaceIntroduction;
@@ -116,6 +174,8 @@ namespace Remotion.UnitTests.Mixins
 
     public static InterfaceIntroductionDefinition CreateInterfaceIntroductionDefinition (MixinDefinition definition)
     {
+      ArgumentUtility.CheckNotNull ("definition", definition);
+
       var interfaceIntroduction = new InterfaceIntroductionDefinition (typeof (IBT1Mixin1), definition);
       PrivateInvoke.InvokeNonPublicMethod (definition.InterfaceIntroductions, "Add", interfaceIntroduction);
       return interfaceIntroduction;
@@ -123,6 +183,9 @@ namespace Remotion.UnitTests.Mixins
 
     public static MethodDefinition CreateMethodDefinition (ClassDefinitionBase declaringClass, MethodInfo methodInfo)
     {
+      ArgumentUtility.CheckNotNull ("declaringClass", declaringClass);
+      ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
+
       var methodDefinition = new MethodDefinition (methodInfo, declaringClass);
       PrivateInvoke.InvokeNonPublicMethod (declaringClass.Methods, "Add", methodDefinition);
       return methodDefinition;
@@ -130,6 +193,9 @@ namespace Remotion.UnitTests.Mixins
 
     public static PropertyDefinition CreatePropertyDefinition (ClassDefinitionBase declaringClass, PropertyInfo propertyInfo)
     {
+      ArgumentUtility.CheckNotNull ("declaringClass", declaringClass);
+      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+
       var getMethod = propertyInfo.CanRead ? new MethodDefinition (propertyInfo.GetGetMethod(true), declaringClass) : null;
       var setMethod = propertyInfo.CanWrite ? new MethodDefinition (propertyInfo.GetSetMethod(true), declaringClass) : null;
       var propertyDefinition = new PropertyDefinition (propertyInfo, declaringClass, getMethod, setMethod);
@@ -139,6 +205,9 @@ namespace Remotion.UnitTests.Mixins
 
     public static EventDefinition CreateEventDefinition (ClassDefinitionBase declaringClass, EventInfo eventInfo)
     {
+      ArgumentUtility.CheckNotNull ("declaringClass", declaringClass);
+      ArgumentUtility.CheckNotNull ("eventInfo", eventInfo);
+
       var addMethod = eventInfo.GetAddMethod (true) != null ? new MethodDefinition (eventInfo.GetAddMethod (true), declaringClass) : null;
       var removeMethod = eventInfo.GetRemoveMethod (true) != null ? new MethodDefinition (eventInfo.GetRemoveMethod (true), declaringClass) : null;
       var eventDefinition = new EventDefinition (eventInfo, declaringClass, addMethod, removeMethod);
@@ -148,6 +217,9 @@ namespace Remotion.UnitTests.Mixins
 
     public static void DeclareOverride (MemberDefinitionBase memberOverride, MemberDefinitionBase overriddenMember)
     {
+      ArgumentUtility.CheckNotNull ("memberOverride", memberOverride);
+      ArgumentUtility.CheckNotNull ("overriddenMember", overriddenMember);
+
       typeof (MemberDefinitionBase).GetProperty ("BaseAsMember").SetValue (memberOverride, overriddenMember, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null);
       var overridesCollection = PrivateInvoke.GetNonPublicField (overriddenMember.Overrides, "_items");
       PrivateInvoke.InvokeNonPublicMethod (overridesCollection, "Add", memberOverride);
@@ -155,6 +227,8 @@ namespace Remotion.UnitTests.Mixins
 
     public static TargetClassDefinition GetActiveTargetClassDefinition (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       var classContext = MixinConfiguration.ActiveConfiguration.GetContext (type);
 
       Assert.That (classContext, Is.Not.Null, "The given type '" + type.Name + "' must be configured as a mixin target.");
@@ -163,23 +237,32 @@ namespace Remotion.UnitTests.Mixins
 
     public static TargetClassDefinition GetActiveTargetClassDefinition_Force (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       ClassContext classContext = MixinConfiguration.ActiveConfiguration.GetContextForce (type);
       return GetTargetClassDefinition(classContext);
     }
 
     public static TargetClassDefinition GetTargetClassDefinition (ClassContext classContext)
     {
+      ArgumentUtility.CheckNotNull ("classContext", classContext);
+
       return TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
     }
 
     public static TargetClassDefinition BuildUnvalidatedDefinition (Type baseType, params Type[] mixinTypes)
     {
+      ArgumentUtility.CheckNotNull ("baseType", baseType);
+      ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
+
       var context = new ClassContext (baseType, mixinTypes);
       return BuildUnvalidatedDefinition(context);
     }
 
     public static TargetClassDefinition BuildUnvalidatedDefinition (ClassContext context)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+
       var builder = new TargetClassDefinitionBuilder();
       return builder.Build (context);
     }

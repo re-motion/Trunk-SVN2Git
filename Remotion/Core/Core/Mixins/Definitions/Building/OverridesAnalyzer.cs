@@ -37,7 +37,7 @@ namespace Remotion.Mixins.Definitions.Building
       _baseMembers = baseMembers;
     }
 
-    public IEnumerable<Tuple<TMember, TMember>> Analyze (IEnumerable<TMember> overriderMembers)
+    public IEnumerable<MemberOverridePair<TMember>> Analyze (IEnumerable<TMember> overriderMembers)
     {
       ArgumentUtility.CheckNotNull ("overriderMembers", overriderMembers);
 
@@ -60,7 +60,7 @@ namespace Remotion.Mixins.Definitions.Building
             string message = string.Format ("The member overridden by '{0}' could not be found.", member.FullName);
             throw new ConfigurationException (message);
           }
-          yield return new Tuple<TMember, TMember> (member, baseMember);
+          yield return new MemberOverridePair<TMember> (baseMember, member);
         }
       }
     }

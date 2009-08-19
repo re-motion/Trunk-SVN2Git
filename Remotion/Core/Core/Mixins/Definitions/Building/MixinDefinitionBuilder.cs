@@ -72,8 +72,7 @@ namespace Remotion.Mixins.Definitions.Building
 
     private void AnalyzeMembers (MixinDefinition mixin)
     {
-      const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var membersBuilder = new MemberDefinitionBuilder (mixin, IsVisibleToInheritorsOrExplicitInterfaceImpl, bindingFlags);
+      var membersBuilder = new MemberDefinitionBuilder (mixin, IsVisibleToInheritorsOrExplicitInterfaceImpl);
       membersBuilder.Apply (mixin.Type);
     }
 
@@ -97,16 +96,16 @@ namespace Remotion.Mixins.Definitions.Building
     private void AnalyzeOverrides (MixinDefinition mixin)
     {
       var methodAnalyzer = new OverridesAnalyzer<MethodDefinition> (typeof (OverrideTargetAttribute), _targetClass.Methods);
-      foreach (Tuple<MethodDefinition, MethodDefinition> methodOverride in methodAnalyzer.Analyze (mixin.Methods))
-        InitializeOverride (methodOverride.A, methodOverride.B);
+      foreach (var methodOverride in methodAnalyzer.Analyze (mixin.Methods))
+        InitializeOverride (methodOverride.Overrider, methodOverride.BaseMember);
 
       var propertyAnalyzer = new OverridesAnalyzer<PropertyDefinition> (typeof (OverrideTargetAttribute), _targetClass.Properties);
-      foreach (Tuple<PropertyDefinition, PropertyDefinition> propertyOverride in propertyAnalyzer.Analyze (mixin.Properties))
-        InitializeOverride (propertyOverride.A, propertyOverride.B);
+      foreach (var propertyOverride in propertyAnalyzer.Analyze (mixin.Properties))
+        InitializeOverride (propertyOverride.Overrider, propertyOverride.BaseMember);
 
       var eventAnalyzer = new OverridesAnalyzer<EventDefinition> (typeof (OverrideTargetAttribute), _targetClass.Events);
-      foreach (Tuple<EventDefinition, EventDefinition> eventOverride in eventAnalyzer.Analyze (mixin.Events))
-        InitializeOverride (eventOverride.A, eventOverride.B);
+      foreach (var eventOverride in eventAnalyzer.Analyze (mixin.Events))
+        InitializeOverride (eventOverride.Overrider, eventOverride.BaseMember);
     }
 
     private void InitializeOverride (MemberDefinitionBase overrider, MemberDefinitionBase baseMember)

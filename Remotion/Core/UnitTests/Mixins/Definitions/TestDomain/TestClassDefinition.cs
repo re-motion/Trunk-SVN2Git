@@ -14,12 +14,27 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins.Definitions;
 
-namespace Remotion.UnitTests.Mixins.SampleTypes
+namespace Remotion.UnitTests.Mixins.Definitions.TestDomain
 {
-  [SuppressAttributes(typeof (BT1Attribute))]
-  public class MixinSuppressingBT1Attribute
+  public class TestClassDefinition : ClassDefinitionBase
   {
-    
+    public bool ChildSpecificAcceptCalled = false;
+
+    public TestClassDefinition (Type type)
+        : base(type)
+    {
+    }
+
+    public override IVisitableDefinition Parent
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    protected override void ChildSpecificAccept (IDefinitionVisitor visitor)
+    {
+      ChildSpecificAcceptCalled = true;
+    }
   }
 }

@@ -13,13 +13,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
+using Remotion.Development.UnitTesting;
 
-namespace Remotion.UnitTests.Mixins.SampleTypes
+namespace Remotion.UnitTests.Mixins.Definitions.TestDomain
 {
-  [SuppressAttributes(typeof (BT1Attribute))]
-  public class MixinSuppressingBT1Attribute
+  public class ClassWithDifferentPropertyKinds
   {
-    
+    public int PropertyWithGetAndSet { get; set; }
+    public int PropertyWithGet
+    {
+      get { return 0; }
+    }
+    public int PropertyWithSet
+    {
+      set { Dev.Null = value; }
+    }
   }
 }

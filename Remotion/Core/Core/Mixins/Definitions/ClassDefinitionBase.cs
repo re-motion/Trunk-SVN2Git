@@ -41,7 +41,7 @@ namespace Remotion.Mixins.Definitions
     {
       ArgumentUtility.CheckNotNull ("type", type);
       if (type.ContainsGenericParameters)
-        throw new ArgumentException (string.Format ("The type {0} contains generic parameters, which is not allowed.", type.FullName), "type");
+        throw new ArgumentException (string.Format ("The type {0} contains generic parameters, which is not allowed.", type), "type");
       _type = type;
       _implementedInterfaces = new Set<Type> (_type.GetInterfaces());
     }
@@ -66,6 +66,14 @@ namespace Remotion.Mixins.Definitions
       }
     }
 
+    /// <summary>
+    /// Gets the result of <see cref="System.Type.GetInterfaceMap"/> for <see cref="Type"/>, adjusting the <see cref="MethodInfo"/> instances returned
+    /// so that they match those stored in the <see cref="MethodDefinition"/> objects freturned by <see cref="Methods"/> and <see cref="GetAllMembers"/>.
+    /// </summary>
+    /// <param name="interfaceType">The interface to create a mapping for.</param>
+    /// <remarks>When calling <see cref="System.Type.GetInterfaceMap"/>, the <see cref="MemberInfo.ReflectedType"/> properties of the returned 
+    /// <see cref="MethodInfo"/> objects do not match those of the <see cref="MethodInfo"/> objects stored by this <see cref="ClassDefinitionBase"/>.
+    /// This method remedies this by aligning the returned <see cref="MethodInfo"/> instances with the stored ones.</remarks>
     public InterfaceMapping GetAdjustedInterfaceMap(Type interfaceType)
     {
       const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -74,7 +82,7 @@ namespace Remotion.Mixins.Definitions
       for (int i = 0; i < mapping.InterfaceMethods.Length; ++i)
       {
         MethodInfo targetMethod = mapping.TargetMethods[i];
-        if (!targetMethod.DeclaringType.Equals (Type))
+        if (targetMethod.DeclaringType != Type) // need to adjust all methods declared up the type hierarchy
         {
           Type[] types = ReflectionUtility.GetMethodParameterTypes (targetMethod);
           mapping.TargetMethods[i] = targetMethod.DeclaringType.GetMethod (targetMethod.Name, bindingFlags, null, types, null);
@@ -129,6 +137,7 @@ namespace Remotion.Mixins.Definitions
     {
       foreach (MethodDefinition method in _methods)
         yield return method;
+
       foreach (PropertyDefinition property in _properties)
       {
         if (property.GetMethod != null)
@@ -136,6 +145,7 @@ namespace Remotion.Mixins.Definitions
         if (property.SetMethod != null)
           yield return property.SetMethod;
       }
+
       foreach (EventDefinition eventDef in _events)
       {
         yield return eventDef.AddMethod;

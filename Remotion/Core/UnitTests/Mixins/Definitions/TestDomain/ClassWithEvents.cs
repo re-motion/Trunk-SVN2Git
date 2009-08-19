@@ -15,11 +15,11 @@
 // 
 using System;
 
-namespace Remotion.UnitTests.Mixins.SampleTypes
+namespace Remotion.UnitTests.Mixins.Definitions.TestDomain
 {
-  [SuppressAttributes(typeof (BT1Attribute))]
-  public class MixinSuppressingBT1Attribute
+  public class ClassWithEvents
   {
-    
+    public event EventHandler Event1;
+    public event EventHandler Event2;
   }
 }
