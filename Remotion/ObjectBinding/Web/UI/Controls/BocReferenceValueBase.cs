@@ -373,8 +373,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    /// <include file='doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValue/InitializeMenusItems/*' />
     protected virtual void InitializeMenusItems ()
     {
+    }
+
+    /// <include file='doc\include\UI\Controls\BocReferenceValueBase.xml' path='BocReferenceValue/PreRenderMenuItems/*' />
+    protected virtual void PreRenderMenuItems ()
+    {
+      if (_hiddenMenuItems == null)
+        return;
+
+      BocDropDownMenu.HideMenuItems (OptionsMenuItems, _hiddenMenuItems);
     }
 
     /// <remarks>
@@ -662,14 +672,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
       if (!string.IsNullOrEmpty (key))
         ErrorMessage = resourceManager.GetString (key);
-    }
-
-    protected virtual void PreRenderMenuItems ()
-    {
-      if (_hiddenMenuItems == null)
-        return;
-
-      BocDropDownMenu.HideMenuItems (OptionsMenuItems, _hiddenMenuItems);
     }
 
     protected override void OnPreRender (EventArgs e)

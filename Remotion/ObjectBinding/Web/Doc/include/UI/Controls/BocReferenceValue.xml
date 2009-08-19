@@ -263,21 +263,5 @@
     </remarks>
     <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
   </CreateValidators>
-  <InitializeMenusItems>
-    <remarks>
-      <para> 
-        Use this method to modify the list of menu items.
-      </para>
-      <note type="inheritinfo">
-        It is required that the list of menu items remains constant accross the page's life cycles. Only the properties
-        may be modified.
-      </note>
-    </remarks>
-  </InitializeMenusItems>
-  <PreRenderMenusItems>
-    <remarks>
-      Use this method to change the menu items' properties (such as their visibility).
-    </remarks>
-  </PreRenderMenusItems>
   
 </BocReferenceValue>
