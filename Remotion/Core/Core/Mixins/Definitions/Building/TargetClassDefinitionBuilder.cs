@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
+using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 using System.Linq;
@@ -25,7 +26,9 @@ namespace Remotion.Mixins.Definitions.Building
 {
   public class TargetClassDefinitionBuilder
   {
-    private readonly MixinDefinitionSorter _sorter = new MixinDefinitionSorter ();
+    private readonly MixinDefinitionSorter _sorter = new MixinDefinitionSorter (
+        new DependentMixinGrouper (), 
+        new DependentObjectSorter<MixinDefinition> (new MixinDependencyAnalyzer ()));
 
     public TargetClassDefinition Build (ClassContext classContext)
     {

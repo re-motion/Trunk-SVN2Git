@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.Text;
@@ -27,10 +28,34 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
   /// </summary>
   public class MixinDefinitionSorter
   {
-    private readonly DependentObjectSorter<MixinDefinition> _sorter = new DependentObjectSorter<MixinDefinition> (new MixinDependencyAnalyzer ());
-    private readonly DependentMixinGrouper _grouper = new DependentMixinGrouper ();
+    private readonly IDependentMixinGrouper _grouper;
+    private readonly IDependentObjectSorter<MixinDefinition> _sorter;
+
+    public MixinDefinitionSorter (IDependentMixinGrouper grouper, IDependentObjectSorter<MixinDefinition> sorter)
+    {
+      _grouper = grouper;
+      _sorter = sorter;
+    }
+
+    public IDependentMixinGrouper Grouper
+    {
+      get { return _grouper; }
+    }
+
+    public IDependentObjectSorter<MixinDefinition> Sorter
+    {
+      get { return _sorter; }
+    }
 
     public List<MixinDefinition> SortMixins (IEnumerable<MixinDefinition> unsortedMixins)
+    {
+      List<List<MixinDefinition>> sortedMixinGroups = PartitionAndSortMixins (unsortedMixins);
+
+      // flatten ordered groups of sorted mixins
+      return sortedMixinGroups.SelectMany (mixinGroup => mixinGroup).ToList();
+    }
+
+    private List<List<MixinDefinition>> PartitionAndSortMixins (IEnumerable<MixinDefinition> unsortedMixins)
     {
       var sortedMixinGroups = new List<List<MixinDefinition>> ();
 
@@ -45,22 +70,15 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
         catch (CircularDependenciesException<MixinDefinition> ex)
         {
           string message = string.Format ("The following group of mixins contains circular dependencies: {0}.",
-              SeparatedStringBuilder.Build (", ", ex.Circulars, delegate (MixinDefinition m) { return m.FullName; }));
+                                          SeparatedStringBuilder.Build (", ", ex.Circulars, m => m.FullName));
           throw new ConfigurationException (message, ex);
         }
       }
 
       // order groups alphabetically
-      sortedMixinGroups.Sort (delegate (List<MixinDefinition> one, List<MixinDefinition> two) { return one[0].FullName.CompareTo (two[0].FullName); });
+      sortedMixinGroups.Sort ((one, two) => one[0].FullName.CompareTo (two[0].FullName));
 
-      // flatten ordered groups of sorted mixins
-      var result = new List<MixinDefinition> ();
-      foreach (List<MixinDefinition> mixinGroup in sortedMixinGroups)
-      {
-        foreach (MixinDefinition mixin in mixinGroup)
-          result.Add (mixin);
-      }
-      return result;
+      return sortedMixinGroups;
     }
   }
 }

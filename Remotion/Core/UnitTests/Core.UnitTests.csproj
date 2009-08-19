@@ -163,6 +163,7 @@
     <Compile Include="Mixins\CodeGeneration\ConcreteMixinTypeIdentifierTest.cs" />
     <Compile Include="Mixins\CodeGeneration\MixinArrayInitializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Mixins\Definitions\DependencySorting\MixinDefinitionSorterTest.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\InterfaceWithGenericOverloads.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\Interface.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\Base.cs" />

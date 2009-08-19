@@ -20,7 +20,7 @@ using Remotion.Collections;
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
   // groups mixins based on dependencies and common overridden methods
-  public class DependentMixinGrouper
+  public class DependentMixinGrouper : IDependentMixinGrouper
   {
     public IEnumerable<Set<MixinDefinition>> GroupMixins (IEnumerable<MixinDefinition> mixins)
     {
