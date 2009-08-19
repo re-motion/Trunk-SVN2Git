@@ -35,7 +35,6 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
     private MixinDefinition _mixinDefinition2;
     private MixinDefinition _mixinDefinition3;
     private MixinDefinition _mixinDefinition4;
-    private MixinDefinition[] _unsortedMixins;
     private HashSet<MixinDefinition>[] _fakeGroupings;
 
     [SetUp]
@@ -43,12 +42,10 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
     {
       _targetClassDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (NullTarget));
 
-      _mixinDefinition1 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin));
-      _mixinDefinition2 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin2));
-      _mixinDefinition3 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin3));
       _mixinDefinition4 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin4));
-
-      _unsortedMixins = new[] { _mixinDefinition4, _mixinDefinition2, _mixinDefinition1, _mixinDefinition3 };
+      _mixinDefinition2 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin2));
+      _mixinDefinition1 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin));
+      _mixinDefinition3 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin3));
 
       _fakeGroupings = new[] { 
           new HashSet<MixinDefinition> { _mixinDefinition1, _mixinDefinition4  }, 
@@ -64,7 +61,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
       var mockRepository = new MockRepository ();
 
       var innerGrouperMock = mockRepository.StrictMock<IDependentMixinGrouper>();
-      innerGrouperMock.Expect (mock => mock.GroupMixins (_unsortedMixins)).Return (_fakeGroupings);
+      innerGrouperMock.Expect (mock => mock.GroupMixins (_targetClassDefinition.Mixins)).Return (_fakeGroupings);
 
       var innerSorterMock = mockRepository.StrictMock<IDependentObjectSorter<MixinDefinition>>();
       using (mockRepository.Ordered ())
@@ -76,7 +73,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
       mockRepository.ReplayAll();
 
       var sorter = new MixinDefinitionSorter (innerGrouperMock, innerSorterMock);
-      var sorted = sorter.SortMixins (_unsortedMixins);
+      var sorted = sorter.SortMixins (_targetClassDefinition);
 
       mockRepository.VerifyAll ();
 
@@ -91,7 +88,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
       var mockRepository = new MockRepository ();
 
       var innerGrouperMock = mockRepository.StrictMock<IDependentMixinGrouper> ();
-      innerGrouperMock.Expect (mock => mock.GroupMixins (_unsortedMixins)).Return (_fakeGroupings);
+      innerGrouperMock.Expect (mock => mock.GroupMixins (_targetClassDefinition.Mixins)).Return (_fakeGroupings);
 
       var innerSorterMock = mockRepository.StrictMock<IDependentObjectSorter<MixinDefinition>> ();
       using (mockRepository.Ordered ())
@@ -104,7 +101,7 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
       mockRepository.ReplayAll ();
 
       var sorter = new MixinDefinitionSorter (innerGrouperMock, innerSorterMock);
-      sorter.SortMixins (_unsortedMixins);
+      sorter.SortMixins (_targetClassDefinition);
     }
   }
 }

@@ -46,9 +46,15 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       get { return _sorter; }
     }
 
-    public List<MixinDefinition> SortMixins (IEnumerable<MixinDefinition> unsortedMixins)
+    /// <summary>
+    /// Sorts the mixins of <paramref name="targetClassDefinition"/>. The <see cref="TargetClassDefinition"/> is required because without a target
+    /// class, the dependencies are not defined.
+    /// </summary>
+    /// <param name="targetClassDefinition">The target class definition holding the mixins.</param>
+    /// <returns>A list with the mixins held by <paramref name="targetClassDefinition"/>, but in the correct order.</returns>
+    public List<MixinDefinition> SortMixins (TargetClassDefinition targetClassDefinition)
     {
-      List<List<MixinDefinition>> sortedMixinGroups = PartitionAndSortMixins (unsortedMixins);
+      var sortedMixinGroups = PartitionAndSortMixins (targetClassDefinition.Mixins);
 
       // flatten ordered groups of sorted mixins
       return sortedMixinGroups.SelectMany (mixinGroup => mixinGroup).ToList();

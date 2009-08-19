@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.Utilities.DependencySort;
@@ -65,26 +64,20 @@ namespace Remotion.Mixins.Definitions.Building
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("classContext", classContext);
 
+      // The MixinDefinitionSorter requires that the mixins have already been added to the class (and that the dependencoes have been set up
+      // correctly). Therefore, we add all the mixins, then sort them, then re-add them in the correct order.
+
       var mixinDefinitionBuilder = new MixinDefinitionBuilder (classDefinition);
+      foreach (var mixinContext in classContext.Mixins)
+          mixinDefinitionBuilder.Apply (mixinContext, -1);
 
-      using (IEnumerator<MixinContext> enumerator = classContext.Mixins.GetEnumerator())
-      {
-        for (int i = 0; enumerator.MoveNext (); ++i)
-          mixinDefinitionBuilder.Apply (enumerator.Current, i);
-      }
+      var sortedMixins = _sorter.SortMixins (classDefinition);
 
-      // It's important to have a list before clearing the mixins. If we were working with lazy enumerator streams here, we would clear the input for
-      // the sorting algorithm before actually executing it...
-      List<MixinDefinition> sortedMixins = _sorter.SortMixins (classDefinition.Mixins);
       classDefinition.Mixins.Clear();
-
-      using (IEnumerator<MixinDefinition> mixinEnumerator = sortedMixins.GetEnumerator())
+      foreach (var mixinDefinition in sortedMixins)
       {
-        for (int i = 0; mixinEnumerator.MoveNext(); ++i)
-        {
-          mixinEnumerator.Current.MixinIndex = i;
-          classDefinition.Mixins.Add (mixinEnumerator.Current);
-        }
+        mixinDefinition.MixinIndex = classDefinition.Mixins.Count;
+        classDefinition.Mixins.Add (mixinDefinition);
       }
     }
     
