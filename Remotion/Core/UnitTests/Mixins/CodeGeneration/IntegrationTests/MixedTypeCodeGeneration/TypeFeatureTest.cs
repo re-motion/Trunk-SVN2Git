@@ -141,7 +141,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType7));
       var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
 
-      // see MixinDependencySortTest.MixinDefinitionsAreSortedCorrectlySmall
+      // see MixinDependencySortIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
       Assert.That (attributes[0].OrderedMixinTypes, Is.EqualTo (new[] { 
           typeof (BT7Mixin0), 
           typeof (BT7Mixin2), 

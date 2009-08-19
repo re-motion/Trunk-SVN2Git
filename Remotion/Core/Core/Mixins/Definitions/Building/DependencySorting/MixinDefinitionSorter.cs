@@ -15,7 +15,6 @@
 // 
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.Text;
 
@@ -60,7 +59,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       var sortedMixinGroups = new List<List<MixinDefinition>> ();
 
       // partition mixins into independent groups
-      foreach (Set<MixinDefinition> mixinGroup in _grouper.GroupMixins (unsortedMixins))
+      foreach (HashSet<MixinDefinition> mixinGroup in _grouper.GroupMixins (unsortedMixins))
       {
         try
         {

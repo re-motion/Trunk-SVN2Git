@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Collections;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -24,30 +24,31 @@ using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.UnitTests.Mixins.SampleTypes;
+using System.Linq;
 
 namespace Remotion.UnitTests.Mixins.Definitions
 {
   [TestFixture]
-  public class MixinDependencySortTest
+  public class MixinDependencySortIntegrationTest
   {
     [Test]
     public void MixinDefinitionsAreSortedCorrectlySmall()
     {
       TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
-      Assert.AreEqual (7, bt7.Mixins.Count);
+      Assert.That (bt7.Mixins.Count, Is.EqualTo (7));
       // group 1
-      Assert.AreEqual (0, bt7.Mixins[typeof (BT7Mixin0)].MixinIndex);
+      Assert.That (bt7.Mixins[typeof (BT7Mixin0)].MixinIndex, Is.EqualTo (0));
 
-      Assert.AreEqual (1, bt7.Mixins[typeof (BT7Mixin2)].MixinIndex);
-      Assert.AreEqual (2, bt7.Mixins[typeof (BT7Mixin3)].MixinIndex);
-      Assert.AreEqual (3, bt7.Mixins[typeof (BT7Mixin1)].MixinIndex);
+      Assert.That (bt7.Mixins[typeof (BT7Mixin2)].MixinIndex, Is.EqualTo (1));
+      Assert.That (bt7.Mixins[typeof (BT7Mixin3)].MixinIndex, Is.EqualTo (2));
+      Assert.That (bt7.Mixins[typeof (BT7Mixin1)].MixinIndex, Is.EqualTo (3));
 
       // group 2
-      Assert.AreEqual (4, bt7.Mixins[typeof (BT7Mixin10)].MixinIndex);
-      Assert.AreEqual (5, bt7.Mixins[typeof (BT7Mixin9)].MixinIndex);
+      Assert.That (bt7.Mixins[typeof (BT7Mixin10)].MixinIndex, Is.EqualTo (4));
+      Assert.That (bt7.Mixins[typeof (BT7Mixin9)].MixinIndex, Is.EqualTo (5));
 
       // group 3
-      Assert.AreEqual (6, bt7.Mixins[typeof (BT7Mixin5)].MixinIndex);
+      Assert.That (bt7.Mixins[typeof (BT7Mixin5)].MixinIndex, Is.EqualTo (6));
     }
 
     [Test]
@@ -78,24 +79,24 @@ namespace Remotion.UnitTests.Mixins.Definitions
           .EnterScope ())
       {
         TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
-        Assert.AreEqual (11, bt7.Mixins.Count);
+        Assert.That (bt7.Mixins.Count, Is.EqualTo (11));
         // group 1
-        Assert.AreEqual (0, bt7.Mixins[typeof (BT7Mixin0)].MixinIndex); // u
-        Assert.AreEqual (1, bt7.Mixins[typeof (BT7Mixin7)].MixinIndex); // u
-        Assert.AreEqual (2, bt7.Mixins[typeof (BT7Mixin4)].MixinIndex); // u
-        Assert.AreEqual (3, bt7.Mixins[typeof (BT7Mixin6)].MixinIndex); // u
+        Assert.That (bt7.Mixins[typeof (BT7Mixin0)].MixinIndex, Is.EqualTo (0)); // u
+        Assert.That (bt7.Mixins[typeof (BT7Mixin7)].MixinIndex, Is.EqualTo (1)); // u
+        Assert.That (bt7.Mixins[typeof (BT7Mixin4)].MixinIndex, Is.EqualTo (2)); // u
+        Assert.That (bt7.Mixins[typeof (BT7Mixin6)].MixinIndex, Is.EqualTo (3)); // u
 
-        Assert.AreEqual (4, bt7.Mixins[typeof (BT7Mixin2)].MixinIndex);
-        Assert.AreEqual (5, bt7.Mixins[typeof (BT7Mixin3)].MixinIndex);
-        Assert.AreEqual (6, bt7.Mixins[typeof (BT7Mixin1)].MixinIndex);
+        Assert.That (bt7.Mixins[typeof (BT7Mixin2)].MixinIndex, Is.EqualTo (4));
+        Assert.That (bt7.Mixins[typeof (BT7Mixin3)].MixinIndex, Is.EqualTo (5));
+        Assert.That (bt7.Mixins[typeof (BT7Mixin1)].MixinIndex, Is.EqualTo (6));
 
         // group 2
-        Assert.AreEqual (7, bt7.Mixins[typeof (BT7Mixin10)].MixinIndex);
-        Assert.AreEqual (8, bt7.Mixins[typeof (BT7Mixin9)].MixinIndex); // u
-        Assert.AreEqual (9, bt7.Mixins[typeof (BT7Mixin8)].MixinIndex); // u
+        Assert.That (bt7.Mixins[typeof (BT7Mixin10)].MixinIndex, Is.EqualTo (7));
+        Assert.That (bt7.Mixins[typeof (BT7Mixin9)].MixinIndex, Is.EqualTo (8)); // u
+        Assert.That (bt7.Mixins[typeof (BT7Mixin8)].MixinIndex, Is.EqualTo (9)); // u
 
         // group 3
-        Assert.AreEqual (10, bt7.Mixins[typeof (BT7Mixin5)].MixinIndex);
+        Assert.That (bt7.Mixins[typeof (BT7Mixin5)].MixinIndex, Is.EqualTo (10));
       }
     }
 
@@ -165,37 +166,37 @@ namespace Remotion.UnitTests.Mixins.Definitions
           .EnterScope())
       {
         TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
-        MixinDependencyAnalyzer analyzer = new MixinDependencyAnalyzer();
+        var analyzer = new MixinDependencyAnalyzer();
 
-        Assert.AreEqual (DependencyKind.None, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin0)]));
-        Assert.AreEqual (DependencyKind.None, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin0)], bt7.Mixins[typeof (BT7Mixin1)]));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin0)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin0)], bt7.Mixins[typeof (BT7Mixin1)]), Is.EqualTo (DependencyKind.None));
 
-        Assert.AreEqual (DependencyKind.None, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin2)]));
-        Assert.AreEqual (DependencyKind.None, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin2)], bt7.Mixins[typeof (BT7Mixin1)]));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin2)], bt7.Mixins[typeof (BT7Mixin1)]), Is.EqualTo (DependencyKind.None));
 
-        Assert.AreEqual (DependencyKind.None, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin0)]));
-        Assert.AreEqual (DependencyKind.None, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin1)]));
-        Assert.AreEqual (DependencyKind.None, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin2)]));
-        Assert.AreEqual (DependencyKind.None, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin3)]));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin0)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin1)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin3)]), Is.EqualTo (DependencyKind.None));
 
-        Assert.AreEqual (
-            DependencyKind.FirstOnSecond, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin0)], bt7.Mixins[typeof (BT7Mixin2)]));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin0)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
+                      DependencyKind.FirstOnSecond));
 
-        Assert.AreEqual (
-            DependencyKind.SecondOnFirst, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin3)]));
-        Assert.AreEqual (
-            DependencyKind.FirstOnSecond, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin1)]));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin3)]), Is.EqualTo (
+                      DependencyKind.SecondOnFirst));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin1)]), Is.EqualTo (
+                      DependencyKind.FirstOnSecond));
 
-        Assert.AreEqual (
-            DependencyKind.FirstOnSecond, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin2)], bt7.Mixins[typeof (BT7Mixin3)]));
-        Assert.AreEqual (
-            DependencyKind.SecondOnFirst, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin2)]));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin2)], bt7.Mixins[typeof (BT7Mixin3)]), Is.EqualTo (
+                      DependencyKind.FirstOnSecond));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
+                      DependencyKind.SecondOnFirst));
 
-        Assert.AreEqual (
-            DependencyKind.SecondOnFirst, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin2)]));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
+                      DependencyKind.SecondOnFirst));
 
-        Assert.AreEqual (
-            DependencyKind.FirstOnSecond, analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin7)], bt7.Mixins[typeof (BT7Mixin2)]));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin7)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
+                      DependencyKind.FirstOnSecond));
       }
     }
     
@@ -212,32 +213,32 @@ namespace Remotion.UnitTests.Mixins.Definitions
           .EnterScope ())
       {
         TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
-        DependentMixinGrouper grouper = new DependentMixinGrouper();
-        List<Set<MixinDefinition>> mixinGroups = new List<Set<MixinDefinition>> (grouper.GroupMixins (bt7.Mixins));
-        Assert.AreEqual (3, mixinGroups.Count);
+        var grouper = new DependentMixinGrouper();
+        var mixinGroups = new List<HashSet<MixinDefinition>> (grouper.GroupMixins (bt7.Mixins));
+        Assert.That (mixinGroups.Count, Is.EqualTo (3));
 
-        mixinGroups.Sort (delegate (Set<MixinDefinition> one, Set<MixinDefinition> two) { return one.Count.CompareTo (two.Count); });
+        mixinGroups.Sort ((one, two) => one.Count.CompareTo (two.Count));
 
-        Set<MixinDefinition> smaller = mixinGroups[0];
-        Set<MixinDefinition> medium = mixinGroups[1];
-        Set<MixinDefinition> larger = mixinGroups[2];
+        var smaller = mixinGroups[0];
+        var medium = mixinGroups[1];
+        var larger = mixinGroups[2];
 
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin0)], larger, "dependency+method");
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin1)], larger, "dependency+method");
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin2)], larger, "dependency+method");
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin3)], larger, "dependency+method");
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin4)], larger, "method");
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin6)], larger, "method");
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin7)], larger, "dependency");
-        Assert.AreEqual (7, larger.Count);
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin0)], larger.ToArray(), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin1)], larger.ToArray (), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin2)], larger.ToArray (), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin3)], larger.ToArray (), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin4)], larger.ToArray (), "method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin6)], larger.ToArray (), "method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin7)], larger.ToArray (), "dependency");
+        Assert.That (larger.Count, Is.EqualTo (7));
 
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin8)], medium, "method");
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin9)], medium, "dependency+method");
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin10)], medium, "dependency");
-        Assert.AreEqual (3, medium.Count);
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin8)], medium.ToArray (), "method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin9)], medium.ToArray (), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin10)], medium.ToArray (), "dependency");
+        Assert.That (medium.Count, Is.EqualTo (3));
 
-        Assert.Contains (bt7.Mixins[typeof (BT7Mixin5)], smaller, "nothing");
-        Assert.AreEqual (1, smaller.Count);
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin5)], smaller.ToArray (), "nothing");
+        Assert.That (smaller.Count, Is.EqualTo (1));
       }
     }
 
@@ -268,15 +269,15 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
     private void CheckExplicitDependencyOrdering (ClassContext classContext)
     {
-      MixinConfiguration configuration = new MixinConfiguration (null);
+      var configuration = new MixinConfiguration (null);
       configuration.ClassContexts.Add (classContext);
 
       using (configuration.EnterScope())
       {
         TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
-        Assert.AreEqual (0, targetClass.Mixins[typeof (MixinWithAdditionalInterfaceDependency)].MixinIndex);
-        Assert.AreEqual (1, targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinIndex);
-        Assert.AreEqual (2, targetClass.Mixins[typeof (MixinWithNoAdditionalDependency)].MixinIndex);
+        Assert.That (targetClass.Mixins[typeof (MixinWithAdditionalInterfaceDependency)].MixinIndex, Is.EqualTo (0));
+        Assert.That (targetClass.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinIndex, Is.EqualTo (1));
+        Assert.That (targetClass.Mixins[typeof (MixinWithNoAdditionalDependency)].MixinIndex, Is.EqualTo (2));
       }
     }
 
@@ -284,8 +285,8 @@ namespace Remotion.UnitTests.Mixins.Definitions
     public void AlphabeticOrdering ()
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassWithMixinsAcceptingAlphabeticOrdering));
-      Assert.AreEqual (typeof (MixinAcceptingAlphabeticOrdering1), targetClass.Mixins[0].Type);
-      Assert.AreEqual (typeof (MixinAcceptingAlphabeticOrdering2), targetClass.Mixins[1].Type);
+      Assert.That (targetClass.Mixins[0].Type, Is.EqualTo (typeof (MixinAcceptingAlphabeticOrdering1)));
+      Assert.That (targetClass.Mixins[1].Type, Is.EqualTo (typeof (MixinAcceptingAlphabeticOrdering2)));
     }
   }
 }

@@ -14,37 +14,37 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
-using Remotion.Collections;
+using System.Linq;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
   internal class DependentMixinGrouperAlgorithm
   {
-    private readonly Set<MixinDefinition> _mixins;
+    private readonly HashSet<MixinDefinition> _mixins;
 
     public DependentMixinGrouperAlgorithm (IEnumerable<MixinDefinition> mixins)
     {
-      _mixins = new Set<MixinDefinition> (mixins);
+      _mixins = new HashSet<MixinDefinition> (mixins);
     }
 
-    public IEnumerable<Set<MixinDefinition>> Execute ()
+    public IEnumerable<HashSet<MixinDefinition>> Execute ()
     {
       while (_mixins.Count > 0)
       {
-        MixinDefinition current = _mixins.GetAny ();
+        MixinDefinition current = _mixins.First ();
         yield return FormGroup (current);
       }
     }
 
-    private Set<MixinDefinition> FormGroup (MixinDefinition startingPoint)
+    private HashSet<MixinDefinition> FormGroup (MixinDefinition startingPoint)
     {
-      var group = new Set<MixinDefinition> ();
+      var group = new HashSet<MixinDefinition> ();
       AddToGroupRecursive (startingPoint, group);
       AddAllWithDependenciesIntoGroup (group);
       return group;
     }
 
-    private void AddToGroupRecursive (MixinDefinition mixin, Set<MixinDefinition> group)
+    private void AddToGroupRecursive (MixinDefinition mixin, HashSet<MixinDefinition> group)
     {
       if (_mixins.Remove (mixin))
       {
@@ -64,7 +64,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       }
     }
 
-    private void AddOtherOverridersToGroup (MemberDefinitionBase overriddenMember, Set<MixinDefinition> group)
+    private void AddOtherOverridersToGroup (MemberDefinitionBase overriddenMember, HashSet<MixinDefinition> group)
     {
       foreach (MemberDefinitionBase overridingMember in overriddenMember.Overrides)
       {
@@ -74,10 +74,10 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       }
     }
 
-    private void AddAllWithDependenciesIntoGroup (Set<MixinDefinition> group)
+    private void AddAllWithDependenciesIntoGroup (HashSet<MixinDefinition> group)
     {
       // need to clone the set because we modify _mixins while iterating
-      var remainingMixinsClone = new Set<MixinDefinition> (_mixins);
+      var remainingMixinsClone = new HashSet<MixinDefinition> (_mixins);
 
       foreach (MixinDefinition mixin in remainingMixinsClone)
       {

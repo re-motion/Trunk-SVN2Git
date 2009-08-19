@@ -416,7 +416,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void GetMixinTypesExact_OnMixedTypes ()
     {
-      // see MixinDependencySortTest.MixinDefinitionsAreSortedCorrectlySmall
+      // see MixinDependencySortIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
 
       Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType7)), Is.EqualTo (new[] { 
           typeof (BT7Mixin0), 
@@ -433,7 +433,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void GetMixinTypesExact_OnGeneratedTypes ()
     {
-      // see MixinDependencySortTest.MixinDefinitionsAreSortedCorrectlySmall
+      // see MixinDependencySortIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
 
       Assert.That (MixinTypeUtility.GetMixinTypesExact (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType7))), Is.EqualTo (new[] { 
           typeof (BT7Mixin0), 

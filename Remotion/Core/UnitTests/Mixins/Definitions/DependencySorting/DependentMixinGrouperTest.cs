@@ -14,14 +14,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.UnitTests.Mixins.Definitions.DependencySorting.SampleTypes;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
 {
@@ -82,97 +83,97 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
     [Test]
     public void UnrelatedMixins ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_independent1, _independent2, _overrideM1);
+      var groups = GetGroups (_independent1, _independent2, _overrideM1);
       Assert.AreEqual (3, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _independent1 }));
-      Assert.That (groups[1], Is.EquivalentTo (new object[] { _independent2 }));
-      Assert.That (groups[2], Is.EquivalentTo (new object[] { _overrideM1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _independent1 }));
+      Assert.That (groups[1].ToArray (), Is.EquivalentTo (new object[] { _independent2 }));
+      Assert.That (groups[2].ToArray (), Is.EquivalentTo (new object[] { _overrideM1 }));
     }
 
     [Test]
     public void Overrides_NoCut ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_overrideM1, _overrideM2);
+      var groups = GetGroups (_overrideM1, _overrideM2);
       Assert.AreEqual (2, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _overrideM1 }));
-      Assert.That (groups[1], Is.EquivalentTo (new object[] { _overrideM2 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM1 }));
+      Assert.That (groups[1].ToArray (), Is.EquivalentTo (new object[] { _overrideM2 }));
     }
 
     [Test]
     public void Overrides_Cut ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_overrideM1, _overrideM1M2);
+      var groups = GetGroups (_overrideM1, _overrideM1M2);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _overrideM1, _overrideM1M2 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM1, _overrideM1M2 }));
     }
 
     [Test]
     public void Overrides_TransitiveCut ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_overrideM1, _overrideM2, _overrideM1M2);
+      var groups = GetGroups (_overrideM1, _overrideM2, _overrideM1M2);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _overrideM1, _overrideM2, _overrideM1M2 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM1, _overrideM2, _overrideM1M2 }));
     }
 
     [Test]
     public void BaseCallDependency_NoCut ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_baseCallDependency1, _independent1);
+      var groups = GetGroups (_baseCallDependency1, _independent1);
       Assert.AreEqual (2, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _baseCallDependency1 }));
-      Assert.That (groups[1], Is.EquivalentTo (new object[] { _independent1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _baseCallDependency1 }));
+      Assert.That (groups[1].ToArray (), Is.EquivalentTo (new object[] { _independent1 }));
     }
 
     [Test]
     public void BaseCallDependency_Cut ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_baseCallDependency0, _baseCallDependency1);
+      var groups = GetGroups (_baseCallDependency0, _baseCallDependency1);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _baseCallDependency0, _baseCallDependency1 }));
+      Assert.That (groups[0].ToArray(), Is.EquivalentTo (new object[] { _baseCallDependency0, _baseCallDependency1 }));
     }
 
     [Test]
     public void BaseCallDependency_TransitiveCut ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_baseCallDependency0, _baseCallDependency1, _baseCallDependency2OverrideM1);
+      var groups = GetGroups (_baseCallDependency0, _baseCallDependency1, _baseCallDependency2OverrideM1);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _baseCallDependency0, _baseCallDependency1, _baseCallDependency2OverrideM1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _baseCallDependency0, _baseCallDependency1, _baseCallDependency2OverrideM1 }));
     }
 
     [Test]
     public void BaseCallDependency_TransitiveCutAndOverride ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_overrideM2, _overrideM1M2, _baseCallDependency1, _baseCallDependency2OverrideM1);
+      var groups = GetGroups (_overrideM2, _overrideM1M2, _baseCallDependency1, _baseCallDependency2OverrideM1);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _overrideM2, _overrideM1M2, _baseCallDependency1, _baseCallDependency2OverrideM1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _overrideM2, _overrideM1M2, _baseCallDependency1, _baseCallDependency2OverrideM1 }));
     }
 
     [Test]
     public void ExplicitDependency_NoCut ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_additionalDependency1, _independent1);
+      var groups = GetGroups (_additionalDependency1, _independent1);
       Assert.AreEqual (2, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _additionalDependency1 }));
-      Assert.That (groups[1], Is.EquivalentTo (new object[] { _independent1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _additionalDependency1 }));
+      Assert.That (groups[1].ToArray (), Is.EquivalentTo (new object[] { _independent1 }));
     }
 
     [Test]
     public void ExplicitDependency_Cut ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_additionalDependency0, _additionalDependency1);
+      var groups = GetGroups (_additionalDependency0, _additionalDependency1);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _additionalDependency0, _additionalDependency1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _additionalDependency0, _additionalDependency1 }));
     }
 
     [Test]
     public void ExplicitDependency_Cut_OtherDirection ()
     {
-      Set<MixinDefinition>[] groups = GetGroups (_additionalDependency1, _additionalDependency0);
+      var groups = GetGroups (_additionalDependency1, _additionalDependency0);
       Assert.AreEqual (1, groups.Length);
-      Assert.That (groups[0], Is.EquivalentTo (new object[] { _additionalDependency0, _additionalDependency1 }));
+      Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _additionalDependency0, _additionalDependency1 }));
     }
 
-    private Set<MixinDefinition>[] GetGroups (params MixinDefinition[] mixins)
+    private HashSet<MixinDefinition>[] GetGroups (params MixinDefinition[] mixins)
     {
       return EnumerableUtility.ToArray (_grouper.GroupMixins (mixins));
     }

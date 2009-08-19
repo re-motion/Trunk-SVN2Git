@@ -110,7 +110,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     {
       var concreteMixedType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType7));
       
-      // see MixinDependencySortTest.MixinDefinitionsAreSortedCorrectlySmall
+      // see MixinDependencySortIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
       Assert.That (MixinReflector.GetOrderedMixinTypesFromConcreteType (concreteMixedType), Is.EqualTo (new[] { 
           typeof (BT7Mixin0), 
           typeof (BT7Mixin2), 

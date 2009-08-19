@@ -15,12 +15,11 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
   public interface IDependentMixinGrouper
   {
-    IEnumerable<Set<MixinDefinition>> GroupMixins (IEnumerable<MixinDefinition> mixins);
+    IEnumerable<HashSet<MixinDefinition>> GroupMixins (IEnumerable<MixinDefinition> mixins);
   }
 }

@@ -14,9 +14,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Collections;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
@@ -35,6 +35,8 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
     private MixinDefinition _mixinDefinition2;
     private MixinDefinition _mixinDefinition3;
     private MixinDefinition _mixinDefinition4;
+    private MixinDefinition[] _unsortedMixins;
+    private HashSet<MixinDefinition>[] _fakeGroupings;
 
     [SetUp]
     public void SetUp ()
@@ -45,36 +47,36 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
       _mixinDefinition2 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin2));
       _mixinDefinition3 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin3));
       _mixinDefinition4 = DefinitionObjectMother.CreateMixinDefinition (_targetClassDefinition, typeof (NullMixin4));
+
+      _unsortedMixins = new[] { _mixinDefinition4, _mixinDefinition2, _mixinDefinition1, _mixinDefinition3 };
+
+      _fakeGroupings = new[] { 
+          new HashSet<MixinDefinition> { _mixinDefinition1, _mixinDefinition4  }, 
+          new HashSet<MixinDefinition> { _mixinDefinition3, _mixinDefinition2 } };
     }
 
     [Test]
     public void SortMixins_PartitionsAndSortsAlphabetically ()
     {
-      var unsortedMixins = new[] { _mixinDefinition4, _mixinDefinition2, _mixinDefinition1, _mixinDefinition3 };
-      
-      var fakeGroupings = new[] { 
-          new Set<MixinDefinition> { _mixinDefinition1, _mixinDefinition4  }, 
-          new Set<MixinDefinition> { _mixinDefinition3, _mixinDefinition2 } };
-
       var fakeSortedGroup1 = new[] { _mixinDefinition4, _mixinDefinition1 };
       var fakeSortedGroup2 = new[] { _mixinDefinition3, _mixinDefinition2 };
 
       var mockRepository = new MockRepository ();
 
       var innerGrouperMock = mockRepository.StrictMock<IDependentMixinGrouper>();
-      innerGrouperMock.Expect (mock => mock.GroupMixins (unsortedMixins)).Return (fakeGroupings);
+      innerGrouperMock.Expect (mock => mock.GroupMixins (_unsortedMixins)).Return (_fakeGroupings);
 
       var innerSorterMock = mockRepository.StrictMock<IDependentObjectSorter<MixinDefinition>>();
       using (mockRepository.Ordered ())
       {
-        innerSorterMock.Expect (mock => mock.SortDependencies (fakeGroupings[0])).Return (fakeSortedGroup1);
-        innerSorterMock.Expect (mock => mock.SortDependencies (fakeGroupings[1])).Return (fakeSortedGroup2);
+        innerSorterMock.Expect (mock => mock.SortDependencies (_fakeGroupings[0])).Return (fakeSortedGroup1);
+        innerSorterMock.Expect (mock => mock.SortDependencies (_fakeGroupings[1])).Return (fakeSortedGroup2);
       }
 
       mockRepository.ReplayAll();
 
       var sorter = new MixinDefinitionSorter (innerGrouperMock, innerSorterMock);
-      var sorted = sorter.SortMixins (unsortedMixins);
+      var sorted = sorter.SortMixins (_unsortedMixins);
 
       mockRepository.VerifyAll ();
 
@@ -86,27 +88,23 @@ namespace Remotion.UnitTests.Mixins.Definitions.DependencySorting
         + "Remotion.UnitTests.Mixins.SampleTypes.NullMixin, Remotion.UnitTests.Mixins.SampleTypes.NullMixin4.")]
     public void SortMixins_CircularDependencies ()
     {
-      var unsortedMixins = new[] { _mixinDefinition4, _mixinDefinition2, _mixinDefinition1, _mixinDefinition3 };
-
-      var fakeGroupings = new[] { 
-          new Set<MixinDefinition> { _mixinDefinition1, _mixinDefinition4  }, 
-          new Set<MixinDefinition> { _mixinDefinition3, _mixinDefinition2 } };
-
       var mockRepository = new MockRepository ();
 
       var innerGrouperMock = mockRepository.StrictMock<IDependentMixinGrouper> ();
-      innerGrouperMock.Expect (mock => mock.GroupMixins (unsortedMixins)).Return (fakeGroupings);
+      innerGrouperMock.Expect (mock => mock.GroupMixins (_unsortedMixins)).Return (_fakeGroupings);
 
       var innerSorterMock = mockRepository.StrictMock<IDependentObjectSorter<MixinDefinition>> ();
       using (mockRepository.Ordered ())
       {
-        innerSorterMock.Expect (mock => mock.SortDependencies (fakeGroupings[0])).Throw (new CircularDependenciesException<MixinDefinition> ("bla", fakeGroupings[0]));
+        innerSorterMock
+            .Expect (mock => mock.SortDependencies (_fakeGroupings[0]))
+            .Throw (new CircularDependenciesException<MixinDefinition> ("bla", _fakeGroupings[0]));
       }
 
       mockRepository.ReplayAll ();
 
       var sorter = new MixinDefinitionSorter (innerGrouperMock, innerSorterMock);
-      sorter.SortMixins (unsortedMixins);
+      sorter.SortMixins (_unsortedMixins);
     }
   }
 }

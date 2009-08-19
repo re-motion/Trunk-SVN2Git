@@ -499,7 +499,7 @@
     <Compile Include="Mixins\Definitions\MemberChainTest.cs" />
     <Compile Include="Mixins\Definitions\MemberDefinitionBuilderTest.cs" />
     <Compile Include="Mixins\Definitions\MixinDefinitionBuilderTest.cs" />
-    <Compile Include="Mixins\Definitions\MixinDependencySortTest.cs" />
+    <Compile Include="Mixins\Definitions\MixinDependencySortIntegrationTest.cs" />
     <Compile Include="Mixins\Definitions\OverrideAttributeHierarchyTest.cs" />
     <Compile Include="Mixins\Definitions\OverrideDefinitionBuilderTest.cs" />
     <Compile Include="Mixins\Definitions\RequiredMethodDefinitionBuilderTest.cs" />

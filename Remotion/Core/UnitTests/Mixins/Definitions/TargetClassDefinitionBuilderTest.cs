@@ -158,7 +158,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       var targetClassDefinition = _builder.Build (classContext);
 
-      // see MixinDependencySortTest.MixinDefinitionsAreSortedCorrectlySmall
+      // see MixinDependencySortIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
       Assert.That (targetClassDefinition.Mixins.Select (m => m.Type).ToArray (), Is.EqualTo (new[] {
           typeof (BT7Mixin0), 
           typeof (BT7Mixin2), 
@@ -185,7 +185,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
 
       var targetClassDefinition = _builder.Build (classContext);
 
-      // see MixinDependencySortTest.MixinDefinitionsAreSortedCorrectlySmall
+      // see MixinDependencySortIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
       Assert.That (targetClassDefinition.Mixins.Select (m => m.MixinIndex).ToArray (), Is.EqualTo (new[] { 0, 1, 2, 3, 4, 5, 6 }));
     }
 
