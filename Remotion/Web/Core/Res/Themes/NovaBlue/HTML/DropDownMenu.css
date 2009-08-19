@@ -25,12 +25,14 @@ span.DropDownMenuSelect.disabled
   cursor: default;
 }
 
-span.DropDownMenuSelect span {
+span.DropDownMenuSelect span 
+{
 	left: 0;
 	vertical-align: middle;
 }
 
-span.DropDownMenuSelect a {
+span.DropDownMenuSelect a 
+{
 	left: 0;
 	margin-right: 15px;
 	border-style: none;
@@ -38,7 +40,8 @@ span.DropDownMenuSelect a {
 	color: #083779;
 }
 
-span.DropDownMenuSelect a:hover {
+span.DropDownMenuSelect a:hover 
+{
 	border-style: none;
 	background-color: Transparent;
 }
@@ -86,7 +89,8 @@ span.DropDownMenuSelect img
   border: 0;
 }
 
-ul.DropDownMenuOptions {
+ul.DropDownMenuOptions 
+{
   font-size: 80%;
 	border: solid 1px #083779;
 	position: absolute;
@@ -116,13 +120,15 @@ ul.DropDownMenuOptions li a {
 	
 }
  
-ul.DropDownMenuOptions li a:hover {
+ul.DropDownMenuOptions li a:hover 
+{
 	background-color: #e6f0ff;
 	border: solid 1px #083779;
 	padding: 0px 2px 2px 2px;
 }
  
-ul.DropDownMenuOptions li a img {
+ul.DropDownMenuOptions li a img 
+{
 	border: 0;
 	margin-right: 15px;
 	vertical-align: middle;
@@ -141,7 +147,8 @@ ul.DropDownMenuOptions li.DropDownMenuItemDisabled a
 	color: gray;
 }
 
-ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover {
+ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover 
+{
 	background-color: transparent;
 	border-style: none;
 	padding: 1px 3px 3px 3px;
@@ -150,7 +157,8 @@ ul.DropDownMenuOptions li.DropDownMenuItemDisabled a:hover {
 
 
 /* style separator */
-span.DropDownMenuSeparator {
+span.DropDownMenuSeparator 
+{
 	line-height: 0.1em;
 	margin-left: 35px; 
 	border: 0;
