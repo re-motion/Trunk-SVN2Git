@@ -17,7 +17,6 @@ using System;
 using System.Data;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
@@ -68,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       ++order.OrderNumber;
       Provider.Connect ();
-      UpdateCommandBuilder commandBuilder = new UpdateCommandBuilder (Provider, order.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, order.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -86,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       computer.Employee = Employee.NewObject ();
       Provider.Connect ();
-      UpdateCommandBuilder commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -107,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       
       Provider.Connect ();
       
-      UpdateCommandBuilder commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -128,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       Provider.Connect ();
 
-      UpdateCommandBuilder commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
@@ -143,13 +142,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void Create_WithNoPropertyAffected ()
     {
-      Order order = Order.GetObject (DomainObjectIDs.Order1);
-      order.InternalDataContainer.MarkAsChanged ();
+      var computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      computer.Int32TransactionProperty = 12; // change non-persistent property
       Provider.Connect ();
-      UpdateCommandBuilder commandBuilder = new UpdateCommandBuilder (Provider, order.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command, Is.Null);
+      }
+    }
+
+    [Test]
+    public void Create_WithNoPropertyAffected_ButMarkedAsChanged ()
+    {
+      var computer = Computer.GetObject (DomainObjectIDs.Computer1);
+      computer.MarkAsChanged ();
+      Provider.Connect ();
+      
+      var commandBuilder = new UpdateCommandBuilder (Provider, computer.InternalDataContainer);
+      using (IDbCommand command = commandBuilder.Create ())
+      {
+        Assert.That (command, Is.Not.Null);
+        Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));
+        Assert.That (command.CommandText, Is.EqualTo ("UPDATE [Computer] SET [ClassID] = [ClassID] WHERE [ID] = @ID AND [Timestamp] = @Timestamp;"));
+        Assert.That (command.Parameters.Count, Is.EqualTo (2));
+        Assert.That (((IDbDataParameter) command.Parameters["@ID"]).Value, Is.EqualTo (computer.ID.Value));
+        Assert.That (((IDbDataParameter) command.Parameters["@Timestamp"]).Value, Is.EqualTo (computer.InternalDataContainer.Timestamp));
       }
     }
 
@@ -160,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       orderTicket.FileName = "new.txt";
       orderTicket.Int32TransactionProperty = 5;
       Provider.Connect ();
-      UpdateCommandBuilder commandBuilder = new UpdateCommandBuilder (Provider, orderTicket.InternalDataContainer);
+      var commandBuilder = new UpdateCommandBuilder (Provider, orderTicket.InternalDataContainer);
       using (IDbCommand command = commandBuilder.Create ())
       {
         Assert.That (command.CommandType, Is.EqualTo (CommandType.Text));

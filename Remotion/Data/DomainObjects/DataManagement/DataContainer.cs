@@ -216,6 +216,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
+    public bool HasBeenMarkedChanged
+    {
+      get { return _hasBeenMarkedChanged; }
+    }
+
     /// <summary>
     /// Gets the value of the <see cref="PropertyValue"/> specified by <paramref name="propertyName"/>.
     /// </summary>

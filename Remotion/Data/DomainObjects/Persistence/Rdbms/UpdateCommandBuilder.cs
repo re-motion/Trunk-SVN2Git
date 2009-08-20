@@ -30,7 +30,7 @@ public class UpdateCommandBuilder : CommandBuilder
 
   // member fields
 
-  private DataContainer _dataContainer;
+  private readonly DataContainer _dataContainer;
   private StringBuilder _updateBuilder;
 
   // construction and disposing
@@ -60,8 +60,18 @@ public class UpdateCommandBuilder : CommandBuilder
 
     if (command.Parameters.Count == 0)
     {
-      command.Dispose ();
-      return null;
+      if (!_dataContainer.HasBeenMarkedChanged)
+      {
+        command.Dispose();
+        return null;
+      }
+      else
+      {
+        // SET [ClassID] = [ClassID] => dummy set to increment Timestamp
+        _updateBuilder.AppendFormat ("{0} = {1}",
+            Provider.DelimitIdentifier ("ClassID"),
+            Provider.DelimitIdentifier ("ClassID"));
+      }
     }
 
     WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
@@ -73,8 +83,8 @@ public class UpdateCommandBuilder : CommandBuilder
     command.CommandText = string.Format (
         "UPDATE {0} SET {1} WHERE {2}{3}",
         Provider.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName ()),
-        _updateBuilder.ToString (), 
-        whereClauseBuilder.ToString (),
+        _updateBuilder, 
+        whereClauseBuilder,
         Provider.StatementDelimiter);
 
     return command;

@@ -93,6 +93,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return commandParameter;
     }
 
+    // TODO 1537: Move to UpdateCommandBuilder
     protected void AddObjectIDAndClassIDParameters (
         IDbCommand command,
         ClassDefinition classDefinition,
