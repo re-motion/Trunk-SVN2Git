@@ -30,9 +30,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // member fields
 
-    private DataContainer _dataContainer;
-    private StringBuilder _columnBuilder;
-    private StringBuilder _valueBuilder;
+    private readonly DataContainer _dataContainer;
 
     // construction and disposing
 
@@ -53,14 +51,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       IDbCommand command = Provider.CreateDbCommand();
 
-      _columnBuilder = new StringBuilder();
-      _valueBuilder = new StringBuilder();
+      var columnBuilder = new StringBuilder();
+      var valueBuilder = new StringBuilder();
 
       string idColumn = "ID";
       string classIDColumn = "ClassID";
 
-      AppendColumn (idColumn, idColumn);
-      AppendColumn (classIDColumn, classIDColumn);
+      AppendColumn (columnBuilder, valueBuilder, idColumn, idColumn);
+      AppendColumn (columnBuilder, valueBuilder, classIDColumn, classIDColumn);
 
       AddCommandParameter (command, idColumn, _dataContainer.ID);
       AddCommandParameter (command, classIDColumn, _dataContainer.ID.ClassID);
@@ -69,7 +67,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         if (propertyValue.Definition.StorageClass == StorageClass.Persistent && propertyValue.PropertyType != typeof (ObjectID))
         {
-          AppendColumn (propertyValue.Definition.StorageSpecificName, propertyValue.Definition.StorageSpecificName);
+          AppendColumn (columnBuilder, valueBuilder, propertyValue.Definition.StorageSpecificName, propertyValue.Definition.StorageSpecificName);
           AddCommandParameter (command, propertyValue.Definition.StorageSpecificName, propertyValue);
         }
       }
@@ -77,24 +75,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       command.CommandText = string.Format (
           "INSERT INTO {0} ({1}) VALUES ({2}){3}",
           Provider.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
-          _columnBuilder.ToString(),
-          _valueBuilder.ToString(),
+          columnBuilder,
+          valueBuilder,
           Provider.StatementDelimiter);
 
       return command;
     }
 
-    protected override void AppendColumn (string columnName, string parameterName)
+    protected virtual void AppendColumn (StringBuilder columnBuilder, StringBuilder valueBuilder, string columnName, string parameterName)
     {
-      if (_columnBuilder.Length > 0)
-        _columnBuilder.Append (", ");
+      if (columnBuilder.Length > 0)
+        columnBuilder.Append (", ");
 
-      _columnBuilder.Append (Provider.DelimitIdentifier (columnName));
+      columnBuilder.Append (Provider.DelimitIdentifier (columnName));
 
-      if (_valueBuilder.Length > 0)
-        _valueBuilder.Append (", ");
+      if (valueBuilder.Length > 0)
+        valueBuilder.Append (", ");
 
-      _valueBuilder.Append (Provider.GetParameterName (parameterName));
+      valueBuilder.Append (Provider.GetParameterName (parameterName));
     }
   }
 }

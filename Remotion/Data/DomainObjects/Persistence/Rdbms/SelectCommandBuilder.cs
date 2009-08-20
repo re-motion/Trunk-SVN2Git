@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("id", id);
 
-      return new SelectCommandBuilder (provider, selectColumns, entityName, "ID", new ObjectID[] {id}, false, null);
+      return new SelectCommandBuilder (provider, selectColumns, entityName, "ID", new[] {id}, false, null);
     }
 
     public static SelectCommandBuilder CreateForIDLookup (RdbmsProvider provider, string entityName, ObjectID[] ids)
@@ -57,27 +57,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
 
-      VirtualRelationEndPointDefinition oppositeRelationEndPointDefinition = 
-          (VirtualRelationEndPointDefinition) propertyDefinition.ClassDefinition.GetMandatoryOppositeEndPointDefinition (propertyDefinition.PropertyName);
+      var oppositeRelationEndPointDefinition = (VirtualRelationEndPointDefinition) 
+          propertyDefinition.ClassDefinition.GetMandatoryOppositeEndPointDefinition (propertyDefinition.PropertyName);
 
       return new SelectCommandBuilder (
           provider,
           "*",
           entityName,
           propertyDefinition.StorageSpecificName,
-          new ObjectID[] {relatedID},
+          new[] {relatedID},
           true,
           oppositeRelationEndPointDefinition.SortExpression);
     }
 
     // member fields
 
-    private string _selectColumns;
-    private string _entityName;
-    private string _whereClauseColumnName;
-    private ObjectID[] _whereClauseIDs;
-    private bool _whereClauseValueIsRelatedID;
-    private string _orderExpression;
+    private readonly string _selectColumns;
+    private readonly string _entityName;
+    private readonly string _whereClauseColumnName;
+    private readonly ObjectID[] _whereClauseIDs;
+    private readonly string _orderExpression;
 
     // construction and disposing
 
@@ -100,7 +99,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       _entityName = entityName;
       _whereClauseColumnName = whereClauseColumnName;
       _whereClauseIDs = whereClauseIDs;
-      _whereClauseValueIsRelatedID = whereClauseValueIsRelatedID;
       _orderExpression = orderExpression;
     }
 
@@ -128,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           "SELECT {0} FROM {1} WHERE {2}{3}{4}",
           _selectColumns,
           Provider.DelimitIdentifier (_entityName),
-          whereClauseBuilder.ToString(),
+          whereClauseBuilder,
           GetOrderClause (_orderExpression),
           Provider.StatementDelimiter);
 
@@ -137,17 +135,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     private object[] GetValueArrayForParameter (ObjectID[] objectIDs)
     {
-      object[] values = new object[objectIDs.Length];
+      var values = new object[objectIDs.Length];
 
       for (int i = 0; i < objectIDs.Length; i++)
         values[i] = GetObjectIDValueForParameter (objectIDs[i]);
 
       return values;
-    }
-
-    protected override void AppendColumn (string columnName, string parameterName)
-    {
-      throw new NotSupportedException ("'AppendColumn' is not supported by 'QueryCommandBuilder'.");
     }
   }
 }

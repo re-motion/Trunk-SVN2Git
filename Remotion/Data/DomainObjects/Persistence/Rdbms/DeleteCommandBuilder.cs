@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // member fields
 
-    private DataContainer _dataContainer;
+    private readonly DataContainer _dataContainer;
 
     // construction and disposing
 
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       command.CommandText = string.Format (
           "DELETE FROM {0} WHERE {1}{2}",
           Provider.DelimitIdentifier (_dataContainer.ClassDefinition.GetEntityName()),
-          whereClauseBuilder.ToString(),
+          whereClauseBuilder,
           Provider.StatementDelimiter);
 
       return command;
@@ -73,11 +73,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
 
       return true;
-    }
-
-    protected override void AppendColumn (string columnName, string parameterName)
-    {
-      throw new NotSupportedException ("'AppendColumn' is not supported by 'QueryCommandBuilder'.");
     }
   }
 }

@@ -43,9 +43,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // member fields
 
-    private ClassDefinition _classDefinition;
-    private PropertyDefinition _propertyDefinition;
-    private ObjectID _relatedID;
+    private readonly ClassDefinition _classDefinition;
+    private readonly PropertyDefinition _propertyDefinition;
+    private readonly ObjectID _relatedID;
 
     // construction and disposing
 
@@ -76,12 +76,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       WhereClauseBuilder whereClauseBuilder = WhereClauseBuilder.Create (this, command);
       whereClauseBuilder.Add (_propertyDefinition.StorageSpecificName, GetObjectIDValueForParameter (_relatedID));
 
-      VirtualRelationEndPointDefinition oppositeRelationEndPointDefinition =
+      var oppositeRelationEndPointDefinition =
           (VirtualRelationEndPointDefinition) _classDefinition.GetMandatoryOppositeEndPointDefinition (_propertyDefinition.PropertyName);
 
       string columnsFromSortExpression = GetColumnsFromSortExpression (oppositeRelationEndPointDefinition.SortExpression);
 
-      StringBuilder commandTextStringBuilder = new StringBuilder ();
+      var commandTextStringBuilder = new StringBuilder ();
       string selectTemplate = "SELECT {0}, {1}{2} FROM {3} WHERE {4}";
       foreach (string entityName in allConcreteEntityNames)
       {
@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
                   Provider.DelimitIdentifier ("ClassID"),
                   columnsFromSortExpression, 
                   Provider.DelimitIdentifier (entityName),
-                  whereClauseBuilder.ToString ());
+                  whereClauseBuilder);
       }
 
       commandTextStringBuilder.Append (GetOrderClause (oppositeRelationEndPointDefinition.SortExpression));
@@ -110,11 +110,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
         return string.Empty;
 
       return ", " + Provider.GetColumnsFromSortExpression (sortExpression);
-    }
-
-    protected override void AppendColumn (string columnName, string parameterName)
-    {
-      throw new NotSupportedException ("'AppendColumn' is not supported by 'QueryCommandBuilder'.");
     }
   }
 }

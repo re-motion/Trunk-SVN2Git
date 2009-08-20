@@ -16,7 +16,6 @@
 using System;
 using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
@@ -29,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // member fields
 
-    private RdbmsProvider _provider;
+    private readonly RdbmsProvider _provider;
 
     // construction and disposing
 
@@ -93,58 +92,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return commandParameter;
     }
 
-    // TODO 1537: Move to UpdateCommandBuilder
-    protected void AddObjectIDAndClassIDParameters (
-        IDbCommand command,
-        ClassDefinition classDefinition,
-        PropertyValue propertyValue)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-
-      ClassDefinition relatedClassDefinition = null;
-      object relatedIDValue = null;
-      if (propertyValue.GetFieldValue (ValueAccess.Current) != null)
-      {
-        ObjectID relatedID = (ObjectID) propertyValue.GetFieldValue (ValueAccess.Current);
-        relatedClassDefinition = relatedID.ClassDefinition;
-        relatedIDValue = GetObjectIDValueForParameter (relatedID);
-      }
-      else
-      {
-        relatedClassDefinition = classDefinition.GetOppositeClassDefinition (propertyValue.Name);
-        relatedIDValue = null;
-      }
-
-      AddCommandParameter (command, propertyValue.Definition.StorageSpecificName, relatedIDValue);
-
-      if (classDefinition.StorageProviderID == relatedClassDefinition.StorageProviderID)
-        AddClassIDParameter (command, relatedClassDefinition, propertyValue);
-    }
-
-    protected void AddClassIDParameter (
-        IDbCommand command,
-        ClassDefinition relatedClassDefinition,
-        PropertyValue propertyValue)
-    {
-      ArgumentUtility.CheckNotNull ("command", command);
-      ArgumentUtility.CheckNotNull ("relatedClassDefinition", relatedClassDefinition);
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-
-      if (relatedClassDefinition.IsPartOfInheritanceHierarchy)
-      {
-        string classIDColumnName = RdbmsProvider.GetClassIDColumnName (propertyValue.Definition.StorageSpecificName);
-        AppendColumn (classIDColumnName, classIDColumnName);
-
-        string classID = null;
-        if (propertyValue.GetFieldValue (ValueAccess.Current) != null)
-          classID = relatedClassDefinition.ID;
-
-        AddCommandParameter (command, classIDColumnName, classID);
-      }
-    }
-
     protected object GetValueForParameter (object value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -154,8 +101,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       else
         return value;
     }
-
-    protected abstract void AppendColumn (string columnName, string parameterName);
 
     protected object GetObjectIDValueForParameter (ObjectID id)
     {
@@ -176,7 +121,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     protected string GetOrderClause (string orderExpression)
     {
-      if (orderExpression != null && orderExpression != string.Empty)
+      if (!string.IsNullOrEmpty (orderExpression))
         return " ORDER BY " + orderExpression;
 
       return string.Empty;

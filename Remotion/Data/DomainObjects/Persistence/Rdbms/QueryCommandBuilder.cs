@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // member fields
 
-    private IQuery _query;
+    private readonly IQuery _query;
 
     // construction and disposing
 
@@ -57,11 +57,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
       command.CommandText = statement;
       return command;
-    }
-
-    protected override void AppendColumn (string columnName, string parameterName)
-    {
-      throw new NotSupportedException ("'AppendColumn' is not supported by 'QueryCommandBuilder'.");
     }
   }
 }
