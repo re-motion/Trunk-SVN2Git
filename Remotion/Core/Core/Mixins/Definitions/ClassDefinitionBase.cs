@@ -84,7 +84,7 @@ namespace Remotion.Mixins.Definitions
         MethodInfo targetMethod = mapping.TargetMethods[i];
         if (targetMethod.DeclaringType != Type) // need to adjust all methods declared up the type hierarchy
         {
-          Type[] types = ReflectionUtility.GetMethodParameterTypes (targetMethod);
+          Type[] types = targetMethod.GetParameters().Select (p => p.ParameterType).ToArray();
           mapping.TargetMethods[i] = targetMethod.DeclaringType.GetMethod (targetMethod.Name, bindingFlags, null, types, null);
         }
       }

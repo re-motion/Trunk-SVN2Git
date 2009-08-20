@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -85,68 +84,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
       Assert.IsFalse (ReflectionUtility.IsVirtualMember (typeof (Derived).GetEvent ("BazE")));
     }
 
-    [Test]
-    public void GetMethodSignature()
-    {
-      Tuple<Type, Type[]> methodSignature = ReflectionUtility.GetMethodSignature (typeof (object).GetMethod ("ReferenceEquals"));
-      Assert.AreEqual (typeof (bool), methodSignature.A);
-      Assert.AreEqual (2, methodSignature.B.Length);
-      Assert.AreEqual (typeof (object), methodSignature.B[0]);
-      Assert.AreEqual (typeof (object), methodSignature.B[1]);
-    }
-
     public class BlaAttribute : Attribute { }
-
-    class C<T1, T2, [Bla]T3> : Mixin<T2>
-        where T2 : class
-    {
-    }
-
-    [Test]
-    public void GetGenericArgumentsBoundToAttribute()
-    {
-      List<Type> arguments = new List<Type> (ReflectionUtility.GetGenericParametersAssociatedWithAttribute (typeof (C<,,>), typeof (BlaAttribute)));
-      Assert.AreEqual (1, arguments.Count);
-      Assert.IsNotNull (arguments.Find (delegate (Type arg) { return arg.Name == "T3"; }));
-
-      Type thisAttribute = typeof (Mixin).Assembly.GetType ("Remotion.Mixins.ThisAttribute");
-      arguments = new List<Type> (ReflectionUtility.GetGenericParametersAssociatedWithAttribute (typeof (C<,,>), thisAttribute));
-      Assert.AreEqual (1, arguments.Count);
-      Assert.IsNotNull (arguments.Find (delegate (Type arg) { return arg.Name == "T2"; }));
-    }
-
-    class GenericBase<T>
-    {
-      public virtual void Foo () { }
-    }
-
-    class GenericSub<T> : GenericBase<T>
-    {
-      public override void Foo () { }
-    }
-
-    class NonGenericSub : GenericSub<int>
-    {
-      public new void Foo () { }
-    }
-
-    [Test]
-    public void IsSameTypeIgnoreGenerics ()
-    {
-      Assert.IsTrue (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (GenericBase<>), typeof (GenericBase<>)));
-      Assert.IsTrue (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (GenericBase<>), typeof (GenericBase<string>)));
-      Assert.IsTrue (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (GenericBase<int>), typeof (GenericBase<string>)));
-
-      Assert.IsFalse (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (GenericSub<>), typeof (GenericBase<>)));
-      Assert.IsFalse (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (GenericSub<>), typeof (GenericBase<string>)));
-      Assert.IsFalse (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (GenericSub<int>), typeof (GenericBase<string>)));
-
-      Assert.IsFalse (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (GenericSub<>), typeof (object)));
-      Assert.IsFalse (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (GenericSub<int>), typeof (object)));
-
-      Assert.IsTrue (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (object), typeof (object)));
-      Assert.IsTrue (ReflectionUtility.IsSameTypeIgnoreGenerics (typeof (object), typeof (object)));
-    }
 
     interface IInterface
     {
