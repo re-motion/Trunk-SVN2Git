@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities
@@ -57,11 +56,11 @@ namespace Remotion.Mixins.Utilities
 
     private static bool CheckMethodAttributeOnMember (MemberInfo member, MethodAttributes attribute)
     {
-      MethodInfo method = member as MethodInfo;
+      var method = member as MethodInfo;
       if (method != null)
         return (method.Attributes & attribute) == attribute;
 
-      PropertyInfo property = member as PropertyInfo;
+      var property = member as PropertyInfo;
       if (property != null)
       {
         MethodInfo getMethod = property.GetGetMethod (true);
@@ -70,7 +69,7 @@ namespace Remotion.Mixins.Utilities
             || (setMethod != null && CheckMethodAttributeOnMember (setMethod, attribute));
       }
 
-      EventInfo eventInfo = member as EventInfo;
+      var eventInfo = member as EventInfo;
       if (eventInfo != null)
         return CheckMethodAttributeOnMember(eventInfo.GetAddMethod (), attribute)
             || CheckMethodAttributeOnMember(eventInfo.GetRemoveMethod (), attribute);
