@@ -409,14 +409,14 @@
     <Compile Include="Mixins\Utilities\DependencySort\IDependencyAnalyzer.cs" />
     <Compile Include="Mixins\Utilities\EventNameAndSignatureEqualityComparer.cs" />
     <Compile Include="Mixins\Utilities\EventSignatureEqualityComparaer.cs" />
-    <Compile Include="Mixins\Utilities\GenericTypeInstantiator.cs" />
+    <Compile Include="Mixins\Utilities\ConstraintBasedGenericParameterInstantiator.cs" />
     <Compile Include="Mixins\Utilities\MethodNameAndSignatureEqualityComparer.cs" />
     <Compile Include="Mixins\Utilities\MethodSignatureEqualityComparer.cs" />
     <Compile Include="Mixins\BridgeImplementations\ObjectFactoryImplementation.cs" />
     <Compile Include="Mixins\Utilities\MixedTypeConstructorLookupInfo.cs" />
     <Compile Include="Mixins\BridgeImplementations\MixinImplementation.cs" />
     <Compile Include="Mixins\Utilities\MixinReflector.cs" />
-    <Compile Include="Mixins\Utilities\MixinTypeInstantiator.cs" />
+    <Compile Include="Mixins\Utilities\MixinTypeCloser.cs" />
     <Compile Include="Mixins\Utilities\MultiSet.cs" />
     <Compile Include="Mixins\Utilities\PropertyNameAndSignatureEqualityComparer.cs" />
     <Compile Include="Mixins\Utilities\PropertySignatureEqualityComparer.cs" />
@@ -643,7 +643,6 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Mixins\Context\Context.cd" />
     <None Include="Mixins\Definitions\Definitions.cd" />
     <None Include="Mixins\Validation\Validation.cd" />

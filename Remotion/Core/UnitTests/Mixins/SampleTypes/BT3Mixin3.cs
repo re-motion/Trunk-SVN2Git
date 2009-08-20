@@ -20,7 +20,7 @@ namespace Remotion.UnitTests.Mixins.SampleTypes
 {
   [Extends (typeof (BaseType3))]
   [Serializable]
-  public class BT3Mixin3<TThis, TBase> : Mixin<TThis, TBase>
+  public class BT3Mixin3<[BindToTargetType] TThis, [BindToConstraints] TBase> : Mixin<TThis, TBase>
     where TThis : class, IBaseType33
     where TBase : class, IBaseType33
   {

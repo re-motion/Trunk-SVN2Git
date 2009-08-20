@@ -128,7 +128,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       Assert.AreEqual (typeof (IBaseType33), def.Type.GetGenericArguments()[1]);
     }
 
-    private class MixinIntroducingGenericInterfaceWithTargetAsThisType<T>: Mixin<T>, IEquatable<T>
+    private class MixinIntroducingGenericInterfaceWithTargetAsThisType<[BindToTargetType] T>: Mixin<T>, IEquatable<T>
         where T: class
     {
       public bool Equals (T other)

@@ -18,7 +18,7 @@ using Remotion.Mixins;
 
 namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  public class GenericMixinWithVirtualMethod<T> : Mixin<T>
+  public class GenericMixinWithVirtualMethod<[BindToTargetType]T> : Mixin<T>
       where T : class
   {
     public virtual string VirtualMethod ()

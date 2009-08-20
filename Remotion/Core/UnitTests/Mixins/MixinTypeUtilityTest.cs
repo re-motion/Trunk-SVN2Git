@@ -509,9 +509,5 @@ namespace Remotion.UnitTests.Mixins
         return TypeFactory.GetConcreteType (baseType);
       }
     }
-
-    public class GenericMixin<T>
-    {
-    }
   }
 }

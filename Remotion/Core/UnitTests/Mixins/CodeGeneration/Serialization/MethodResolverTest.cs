@@ -39,7 +39,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.Serialization
       var method = MethodResolver.ResolveMethod (typeof (object), "ReferenceEquals", "Boolean ReferenceEquals(System.Object, System.Object)");
 
       Assert.That (method, Is.EqualTo (typeof (object).GetMethod ("ReferenceEquals")));
-      Console.WriteLine (typeof (object).GetMethod ("ReferenceEquals"));
     }
 
     [Test]

@@ -362,10 +362,12 @@ namespace Remotion.UnitTests.Mixins.Definitions
     [Test]
     public void MultipleSimilarInterfaces ()
     {
-      using (MixinConfiguration.BuildFromActive().ForClass<ClassImplementingSimpleInterface> ().Clear().AddMixins (typeof (List<>)).EnterScope())
+      using (MixinConfiguration.BuildNew()
+          .ForClass<ClassImplementingSimpleInterface> ().AddMixin (typeof (MixinIntroducingInterfacesImplementingEachOther<>))
+          .EnterScope ())
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingSimpleInterface));
-        MixinDefinition mixinDefinition = definition.GetMixinByConfiguredType (typeof (List<>));
+        MixinDefinition mixinDefinition = definition.GetMixinByConfiguredType (typeof (MixinIntroducingInterfacesImplementingEachOther<>));
 
         Assert.IsTrue (definition.ReceivedInterfaces.ContainsKey (typeof (IList)));
         Assert.AreSame (mixinDefinition, definition.ReceivedInterfaces[typeof (IList)].Implementer);

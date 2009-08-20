@@ -26,7 +26,7 @@ namespace Remotion.UnitTests.Mixins.SampleTypes
   public interface IBT6Mixin3Constraints : ICBT6Mixin1, ICBT6Mixin2 {}
 
   [Extends (typeof (BaseType6))]
-  public class BT6Mixin3<This> : Mixin<This>, IBT6Mixin3
+  public class BT6Mixin3<[BindToConstraints] This> : Mixin<This>, IBT6Mixin3
       where This : class, IBT6Mixin3Constraints
   {
     public string Mixin3Method ()

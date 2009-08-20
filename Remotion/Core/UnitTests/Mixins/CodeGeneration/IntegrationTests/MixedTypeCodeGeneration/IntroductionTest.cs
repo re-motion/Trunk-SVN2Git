@@ -108,7 +108,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void MultipleSimilarInterfaces ()
     {
-      object o = CreateMixedObject<NullTarget> (typeof (List<>));
+      object o = CreateMixedObject<NullTarget> (typeof (MixinIntroducingInterfacesImplementingEachOther<>));
       Assert.IsTrue (o is IList<NullTarget>);
       Assert.IsTrue (o is ICollection<NullTarget>);
       Assert.IsTrue (o is IEnumerable<NullTarget>);

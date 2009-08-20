@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Mixins.SampleTypes
 
   [Extends(typeof(BaseType3))]
   [Serializable]
-  public class BT3Mixin6<TThis, TBase> : Mixin<TThis, TBase>, IBT3Mixin6
+  public class BT3Mixin6<[BindToConstraints] TThis, [BindToConstraints]TBase> : Mixin<TThis, TBase>, IBT3Mixin6
       where TThis : class, IBT3Mixin6ThisDependencies
       where TBase : class, IBT3Mixin6BaseDependencies
   {

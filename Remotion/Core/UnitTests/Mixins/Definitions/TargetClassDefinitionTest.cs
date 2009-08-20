@@ -81,7 +81,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       var nonGenericMixinType = typeof (BT3Mixin1);
       DefinitionObjectMother.CreateMixinDefinition (targetClassDefinition, nonGenericMixinType);
       
-      var closedMixinType =  targetClassDefinition.MixinTypeInstantiator.GetClosedMixinType (typeof (BT3Mixin3<,>));
+      var closedMixinType =  targetClassDefinition.MixinTypeCloser.GetClosedMixinType (typeof (BT3Mixin3<,>));
       DefinitionObjectMother.CreateMixinDefinition (targetClassDefinition, closedMixinType);
 
       Assert.That (targetClassDefinition.HasMixinWithConfiguredType (nonGenericMixinType), Is.True);
@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Mixins.Definitions
       var nonGenericMixinType = typeof (BT3Mixin1);
       var nonGenericMixinDefinition = DefinitionObjectMother.CreateMixinDefinition (targetClassDefinition, nonGenericMixinType);
 
-      var closedMixinType = targetClassDefinition.MixinTypeInstantiator.GetClosedMixinType (typeof (BT3Mixin3<,>));
+      var closedMixinType = targetClassDefinition.MixinTypeCloser.GetClosedMixinType (typeof (BT3Mixin3<,>));
       var closedMixinDefinition = DefinitionObjectMother.CreateMixinDefinition (targetClassDefinition, closedMixinType);
 
       Assert.That (targetClassDefinition.GetMixinByConfiguredType (nonGenericMixinType), Is.SameAs (nonGenericMixinDefinition));

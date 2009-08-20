@@ -38,7 +38,7 @@ namespace Remotion.Mixins.Definitions
     private readonly MultiDefinitionCollection<Type, AttributeIntroductionDefinition> _receivedAttributes;
 
     private readonly ClassContext _configurationContext;
-    private readonly MixinTypeInstantiator _mixinTypeInstantiator;
+    private readonly MixinTypeCloser _mixinTypeCloser;
 
     public TargetClassDefinition (ClassContext configurationContext)
         : base (configurationContext.Type)
@@ -48,7 +48,7 @@ namespace Remotion.Mixins.Definitions
       _receivedAttributes = new MultiDefinitionCollection<Type, AttributeIntroductionDefinition> (a => a.AttributeType);
 
       _configurationContext = configurationContext;
-      _mixinTypeInstantiator = new MixinTypeInstantiator (configurationContext.Type);
+      _mixinTypeCloser = new MixinTypeCloser (configurationContext.Type);
     }
 
     public MultiDefinitionCollection<Type, AttributeIntroductionDefinition> ReceivedAttributes
@@ -61,9 +61,9 @@ namespace Remotion.Mixins.Definitions
       get { return _configurationContext; }
     }
 
-    public MixinTypeInstantiator MixinTypeInstantiator
+    public MixinTypeCloser MixinTypeCloser
     {
-      get { return _mixinTypeInstantiator; }
+      get { return _mixinTypeCloser; }
     }
 
     public bool IsInterface
@@ -120,13 +120,13 @@ namespace Remotion.Mixins.Definitions
 
     public bool HasMixinWithConfiguredType(Type configuredType)
     {
-      Type realType = MixinTypeInstantiator.GetClosedMixinType (configuredType);
+      Type realType = MixinTypeCloser.GetClosedMixinType (configuredType);
       return _mixins.ContainsKey (realType);
     }
 
     public MixinDefinition GetMixinByConfiguredType(Type configuredType)
     {
-      Type realType = MixinTypeInstantiator.GetClosedMixinType (configuredType);
+      Type realType = MixinTypeCloser.GetClosedMixinType (configuredType);
       return _mixins[realType];
     }
   }

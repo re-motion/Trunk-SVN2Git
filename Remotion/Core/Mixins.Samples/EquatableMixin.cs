@@ -19,7 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Samples
 {
-  public class EquatableMixin<T> : Mixin<T>, IEquatable<T>
+  public class EquatableMixin<[BindToTargetType]T> : Mixin<T>, IEquatable<T>
      where T : class
   {
     private FieldInfo[] _targetFields;

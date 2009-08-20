@@ -14,23 +14,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Mixins;
+using System.Collections.Generic;
 
-#pragma warning disable 0693
-
-namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
+namespace Remotion.UnitTests.Mixins.Utilities.TestDomain
 {
-  public interface IGeneric<T>
+// ReSharper disable UnusedTypeParameter
+  public class GenericClassWithConflictingConstraints<T>
+      where T : List<int>, IServiceProvider
   {
-    string Generic<T> (T t);
   }
-
-  public class MixinIntroducingGenericInterface<[BindToTargetType] T> : Mixin<T>, IGeneric<T>
-    where T : class
-  {
-    public string Generic<T> (T t)
-    {
-      return "Generic";
-    }
-  }
+  // ReSharper restore UnusedTypeParameter
 }

@@ -41,8 +41,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       typeBuilder.SetCustomAttribute (builder);
       Type type = typeBuilder.CreateType ();
 
-      Console.WriteLine (SeparatedStringBuilder.Build (",", ConcreteTypeBuilder.Current.SaveAndResetDynamicScope ()));
-      
       var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixinTypeAttribute> (type, false);
       
       var regeneratedIdentifier = attribute.GetIdentifier ();

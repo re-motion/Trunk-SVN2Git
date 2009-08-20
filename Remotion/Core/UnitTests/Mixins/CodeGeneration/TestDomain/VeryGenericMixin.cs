@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
     string GenericIfcMethod<T3> (T1 t1, T2 t2, T3 t3);
   }
 
-  public class VeryGenericMixin<TThis, TBase> : Mixin<TThis, TBase>, IVeryGenericMixin<TThis, TBase>, IVeryGenericMixin
+  public class VeryGenericMixin<[BindToTargetType] TThis, [BindToConstraints] TBase> : Mixin<TThis, TBase>, IVeryGenericMixin<TThis, TBase>, IVeryGenericMixin
     where TThis : class
     where TBase : class
   {
@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
   public interface IADUGMThisDependencies : IBaseType31, IBaseType32, IBT3Mixin4 {}
   public interface IADUGMBaseDependencies : IBaseType31, IBaseType32, IBT3Mixin4 {}
 
-  public abstract class AbstractDerivedUltraGenericMixin<TThis, TBase> : VeryGenericMixin<TThis, TBase>, IUltraGenericMixin
+  public abstract class AbstractDerivedUltraGenericMixin<[BindToConstraints] TThis, [BindToConstraints] TBase> : VeryGenericMixin<TThis, TBase>, IUltraGenericMixin
     where TThis : class, IADUGMThisDependencies
     where TBase : class, IADUGMBaseDependencies
   {

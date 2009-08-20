@@ -16,21 +16,11 @@
 using System;
 using Remotion.Mixins;
 
-#pragma warning disable 0693
-
-namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
+namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  public interface IGeneric<T>
+// ReSharper disable UnusedTypeParameter
+  public class GenericMixin<[BindToTargetType]T>
   {
-    string Generic<T> (T t);
   }
-
-  public class MixinIntroducingGenericInterface<[BindToTargetType] T> : Mixin<T>, IGeneric<T>
-    where T : class
-  {
-    public string Generic<T> (T t)
-    {
-      return "Generic";
-    }
-  }
+  // ReSharper restore UnusedTypeParameter
 }

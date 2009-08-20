@@ -13,24 +13,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Mixins;
 
-#pragma warning disable 0693
-
-namespace Remotion.UnitTests.Mixins.CodeGeneration.TestDomain
+namespace Remotion.UnitTests.Mixins.SampleTypes
 {
-  public interface IGeneric<T>
+  public class GenericMixinWithDoubleBindingInformation<[BindToTargetType, BindToConstraints] T>
   {
-    string Generic<T> (T t);
-  }
-
-  public class MixinIntroducingGenericInterface<[BindToTargetType] T> : Mixin<T>, IGeneric<T>
-    where T : class
-  {
-    public string Generic<T> (T t)
-    {
-      return "Generic";
-    }
   }
 }
