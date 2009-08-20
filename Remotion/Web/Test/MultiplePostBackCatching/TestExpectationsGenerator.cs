@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -57,7 +58,7 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
       _testControlGenerator = new TestControlGenerator (_testPage, new PostBackEventHandler());
 
       List<TableRow> rows = new List<TableRow>();
-      rows.Add (Expect ("open", UrlUtility.AddParameter (_testPage.ResolveUrl (_sutPage), SutGenerator.ServerDelayParameter, "250"), null));
+      rows.Add (Expect ("open", UrlUtility.AddParameter (_testPage.ResolveUrl (_sutPage), SutGenerator.ServerDelayParameter, "500"), null));
 
       foreach (Control control in _testControlGenerator.GetTestControls (null))
         rows.AddRange (ExpectControlAttributes (control));
@@ -120,7 +121,7 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
     {
       List<TableRow> rows = new List<TableRow>();
 
-      rows.Add (ExpectAttribute (button, "tagname", "INPUT"));
+      rows.Add (ExpectElementTag (button, "INPUT"));
       rows.Add (ExpectAttribute (button, "type", button.UseSubmitBehavior ? "submit" : "button"));
 
       return rows.ToArray();
@@ -130,7 +131,7 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
     {
       List<TableRow> rows = new List<TableRow>();
 
-      rows.Add (ExpectAttribute (button, "tagname", "BUTTON"));
+      rows.Add (ExpectElementTag (button, "BUTTON"));
       rows.Add (ExpectAttribute (button, "type", button.UseSubmitBehavior ? "submit" : "button"));
 
       return rows.ToArray();
@@ -162,6 +163,11 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
     {
       Control targetControl = (control.Controls.Count == 0) ? control : control.Controls[0];
       return Expect ("click", targetControl.ID, null);
+    }
+
+    private TableRow ExpectElementTag (Control control, string tagName)
+    {
+      return Expect ("assertElementPresent", string.Format ("xpath=//{1}[contains(@id,'{0}')]", control.ID, tagName), null);
     }
 
     private TableRow ExpectAttribute (Control control, string name, string value)

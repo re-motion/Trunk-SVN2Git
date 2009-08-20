@@ -82,10 +82,10 @@ namespace OBWTest
 
       if (PreferQuirksModeRendering)
       {
-        RegisterRendererFactories (container, "QuirksMode");
+        RegisterRendererFactories (container, ".QuirksMode.Factories");
       }
 
-      RegisterRendererFactories (container, "StandardMode");
+      RegisterRendererFactories (container, ".StandardMode.Factories");
       container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
       container.Register (Component.For<ResourceTheme> ().Instance (resourceTheme));
       
@@ -93,13 +93,13 @@ namespace OBWTest
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
     }
 
-    private void RegisterRendererFactories (IWindsorContainer container, string namespaceQualifier)
+    private void RegisterRendererFactories (IWindsorContainer container, string namespaceSuffix)
     {
       // Remotion.Web.Core
       container.Register (
           AllTypes.Pick()
               .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (string.Format (".{0}.Factories", namespaceQualifier)))
+              .If (t => t.Namespace.EndsWith (namespaceSuffix))
               .WithService.Select ((t, b) => t.GetInterfaces())
               .Configure (c => c.Named (c.ServiceType.Name)));
 
@@ -107,7 +107,7 @@ namespace OBWTest
       container.Register (
           AllTypes.Pick()
               .FromAssembly (typeof (BocRendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (string.Format (".{0}.Factories", namespaceQualifier)))
+              .If (t => t.Namespace.EndsWith (namespaceSuffix))
               .WithService.Select ((t, b) => t.GetInterfaces())
               .Configure (c => c.Named (c.ServiceType.Name)));
     }

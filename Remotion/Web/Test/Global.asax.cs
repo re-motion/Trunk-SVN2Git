@@ -17,8 +17,10 @@ using System;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using CommonServiceLocator.WindsorAdapter;
+using log4net.Config;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Test
 {
@@ -35,29 +37,31 @@ namespace Remotion.Web.Test
     public Global()
     {
       InitializeComponent();
-    }	
-		
-    protected void Application_Start(Object sender, EventArgs e)
+    }
+
+    protected void Application_Start (Object sender, EventArgs e)
     {
-      log4net.Config.XmlConfigurator.Configure();
+      XmlConfigurator.Configure ();
 
       IWindsorContainer container = new WindsorContainer ();
-      container.Register (
-          AllTypes.Pick ()
-              .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".StandardMode.Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("standard." + c.ServiceType.Name)));
 
-      container.Register (
-          AllTypes.Pick ()
-              .FromAssembly (typeof (RendererBase<>).Assembly)
-              .If (t => t.Namespace.EndsWith (".QuirksMode.Factories"))
-              .WithService.Select ((t, b) => t.GetInterfaces ())
-              .Configure (c => c.Named ("legacy." + c.ServiceType.Name)));
+      RegisterRendererFactories (container, ".StandardMode.Factories");
+      container.Register (Component.For<IScriptUtility> ().ImplementedBy<ScriptUtility> ().LifeStyle.Singleton);
+      container.Register (Component.For<ResourceTheme> ().Instance (Remotion.Web.ResourceTheme.NovaBlue));
 
       Application.Set (typeof (IServiceLocator).AssemblyQualifiedName, new WindsorServiceLocator (container));
       ServiceLocator.SetLocatorProvider (() => (IServiceLocator) Application.Get (typeof (IServiceLocator).AssemblyQualifiedName));
+    }
+
+    private void RegisterRendererFactories (IWindsorContainer container, string namespaceSuffix)
+    {
+      // Remotion.Web.Core
+      container.Register (
+          AllTypes.Pick ()
+              .FromAssembly (typeof (RendererBase<>).Assembly)
+              .If (t => t.Namespace.EndsWith (namespaceSuffix))
+              .WithService.Select ((t, b) => t.GetInterfaces ())
+              .Configure (c => c.Named (c.ServiceType.Name)));
     }
  
     protected void Session_Start(Object sender, EventArgs e)
