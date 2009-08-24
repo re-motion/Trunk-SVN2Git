@@ -196,6 +196,7 @@ div.tabbedMultiViewTabStrip div.tabStripTabsPane ul
 div.tabbedMultiViewTabStrip span.tabStripTabWrapper
 {
   padding-top: 0.3em;
+  position:relative;
 }
 
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator
