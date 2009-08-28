@@ -1,7 +1,21 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// version 3.0 as published by the Free Software Foundation.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI;
 
 namespace Remotion.Web.Infrastructure
 {
@@ -100,7 +114,8 @@ namespace Remotion.Web.Infrastructure
     /// </param><exception cref="T:System.ArgumentNullException">The <see cref="T:System.Web.UI.Control"/> specified is null. 
     /// </exception><exception cref="T:System.InvalidOperationException">The <see cref="T:System.Web.UI.Control"/> specified does not implement the <see cref="T:System.Web.UI.ICallbackEventHandler"/> interface.
     /// </exception>
-    string GetCallbackEventReference (IControl control, string argument, string clientCallback, string context, string clientErrorCallback, bool useAsync);
+    string GetCallbackEventReference (
+        IControl control, string argument, string clientCallback, string context, string clientErrorCallback, bool useAsync);
 
     /// <summary>
     /// Obtains a reference to a client function that, when invoked, initiates a client call back to server events. The client function for this overloaded method includes a specified target, argument, client script, context, error handler, and Boolean value.
@@ -116,7 +131,8 @@ namespace Remotion.Web.Infrastructure
     /// </param><param name="clientErrorCallback">The name of the client event handler that receives the result when an error occurs in the server event handler. 
     /// </param><param name="useAsync">true to perform the callback asynchronously; false to perform the callback synchronously.
     /// </param>
-    string GetCallbackEventReference (string target, string argument, string clientCallback, string context, string clientErrorCallback, bool useAsync);
+    string GetCallbackEventReference (
+        string target, string argument, string clientCallback, string context, string clientErrorCallback, bool useAsync);
 
     /// <summary>
     /// Gets a reference, with javascript: appended to the beginning of it, that can be used in a client event to post back to the server for the specified control and with the specified event arguments.
@@ -367,7 +383,7 @@ namespace Remotion.Web.Infrastructure
     /// </exception>
     void RegisterHiddenField (IControl control, string hiddenFieldName, string hiddenFieldInitialValue);
 
-    
+
     /// <summary>
     /// Registers the client script with the <see cref="T:System.Web.UI.Page"/> object using a type, key, and script literal.
     /// </summary>
