@@ -26,23 +26,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     // static members and constants
 
-    public static SelectCommandBuilder CreateForIDLookup (RdbmsProvider provider, string selectColumns, string entityName, ObjectID id)
+    public static SelectCommandBuilder CreateForIDLookup (RdbmsProvider provider, string selectColumns, string entityName, ObjectID[] ids)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
-      ArgumentUtility.CheckNotNull ("id", id);
-
-      return new SelectCommandBuilder (provider, selectColumns, entityName, "ID", new[] {id}, false, null);
-    }
-
-    public static SelectCommandBuilder CreateForIDLookup (RdbmsProvider provider, string entityName, ObjectID[] ids)
-    {
-      ArgumentUtility.CheckNotNull ("provider", provider);
-      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("ids", ids);
 
-      return new SelectCommandBuilder (provider, "*", entityName, "ID", ids, false, null);
+      return new SelectCommandBuilder (provider, selectColumns, entityName, "ID", ids, null);
     }
 
     public static SelectCommandBuilder CreateForRelatedIDLookup (
@@ -56,7 +47,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       ArgumentUtility.CheckNotNull ("relatedID", relatedID);
 
-
       var oppositeRelationEndPointDefinition = (VirtualRelationEndPointDefinition) 
           propertyDefinition.ClassDefinition.GetMandatoryOppositeEndPointDefinition (propertyDefinition.PropertyName);
 
@@ -66,7 +56,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
           entityName,
           propertyDefinition.StorageSpecificName,
           new[] {relatedID},
-          true,
           oppositeRelationEndPointDefinition.SortExpression);
     }
 
@@ -81,20 +70,14 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     // construction and disposing
 
     private SelectCommandBuilder (
-        RdbmsProvider provider,
-        string selectColumns,
-        string entityName,
-        string whereClauseColumnName,
-        ObjectID[] whereClauseIDs,
-        bool whereClauseValueIsRelatedID,
+        RdbmsProvider provider, 
+        string selectColumns, 
+        string entityName, 
+        string whereClauseColumnName, 
+        ObjectID[] whereClauseIDs, 
         string orderExpression)
-        : base (provider)
+      : base (provider)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("selectColumns", selectColumns);
-      ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
-      ArgumentUtility.CheckNotNullOrEmpty ("whereClauseColumnName", whereClauseColumnName);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("whereClauseIDs", whereClauseIDs);
-
       _selectColumns = selectColumns;
       _entityName = entityName;
       _whereClauseColumnName = whereClauseColumnName;

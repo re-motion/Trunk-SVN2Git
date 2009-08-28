@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
     public void RelationClassIDColumnRefersToAbstractClass ()
     {
       ObjectID id = new ObjectID (typeof (Order), new Guid ("{F404FD2C-B92F-46d8-BEAC-F92C0599BFD3}"));
-      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", "TableInheritance_Order", id);
+      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", "TableInheritance_Order", new[] { id });
 
       using (IDbCommand command = builder.Create ())
       {
@@ -44,7 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
           }
           catch (RdbmsProviderException ex)
           {
-            string expectedBeginOfMessage = string.Format ("Error while reading property 'Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Order.Customer' of object '{0}':", id);
+            string expectedBeginOfMessage = string.Format (
+                "Error while reading property 'Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain.Order.Customer' of object '{0}':", 
+                id);
             Assert.IsTrue (ex.Message.StartsWith (expectedBeginOfMessage));
           }
         }

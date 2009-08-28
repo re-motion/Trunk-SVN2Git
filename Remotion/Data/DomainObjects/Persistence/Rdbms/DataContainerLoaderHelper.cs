@@ -14,7 +14,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -22,13 +21,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
   public class DataContainerLoaderHelper : IDataContainerLoaderHelper
   {
-    public virtual SelectCommandBuilder GetSelectCommandBuilder (RdbmsProvider provider, string entityName, IEnumerable<ObjectID> objectIDs)
+    public virtual SelectCommandBuilder GetSelectCommandBuilder (RdbmsProvider provider, string entityName, ObjectID[] objectIDs)
     {
       ArgumentUtility.CheckNotNull ("provider", provider);
       ArgumentUtility.CheckNotNullOrEmpty ("entityName", entityName);
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      return SelectCommandBuilder.CreateForIDLookup (provider, entityName, new List<ObjectID> (objectIDs).ToArray ());
+      return SelectCommandBuilder.CreateForIDLookup (provider, "*", entityName, objectIDs);
     }
 
     public virtual SelectCommandBuilder GetSelectCommandBuilderForRelatedIDLookup (RdbmsProvider provider, string entityName, PropertyDefinition relationProperty, ObjectID relatedID)

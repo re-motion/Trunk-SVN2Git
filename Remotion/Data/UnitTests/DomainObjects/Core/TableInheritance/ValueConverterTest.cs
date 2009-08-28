@@ -90,9 +90,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
           typeof (DerivedClassWithInvalidRelationClassIDColumns));
 
-      ObjectID id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
+      var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", classDefinition.GetEntityName (), id);
+      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", classDefinition.GetEntityName (), new[] { id });
       using (IDbCommand command = builder.Create ())
       {
         using (IDataReader reader = command.ExecuteReader ())
@@ -116,9 +116,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
           typeof (DerivedClassWithInvalidRelationClassIDColumns));
 
-      ObjectID id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
+      var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", classDefinition.GetEntityName (), id);
+      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", classDefinition.GetEntityName (), new[] { id });
       using (IDbCommand command = builder.Create ())
       {
         using (IDataReader reader = command.ExecuteReader ())
@@ -142,9 +142,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
           typeof (DerivedClassWithInvalidRelationClassIDColumns));
 
-      ObjectID id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
+      var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", classDefinition.GetEntityName (), id);
+      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", classDefinition.GetEntityName (), new[] { id });
       using (IDbCommand command = builder.Create ())
       {
         using (IDataReader reader = command.ExecuteReader ())
@@ -168,9 +168,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (
           typeof (DerivedClassWithInvalidRelationClassIDColumns));
 
-      ObjectID id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
+      var id = new ObjectID (classDefinition, new Guid ("{BEBF584B-31A6-4d5e-8628-7EACE9034588}"));
 
-      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", classDefinition.GetEntityName (), id);
+      SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", classDefinition.GetEntityName (), new[] { id });
       using (IDbCommand command = builder.Create ())
       {
         using (IDataReader reader = command.ExecuteReader ())

@@ -17,7 +17,6 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance.TestDomain;
@@ -33,7 +32,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.TableInheritance
       ClassDefinition personClass = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (Person));
 
       SelectCommandBuilder sqlCommandBuilder = SelectCommandBuilder.CreateForIDLookup (
-          Provider, personClass.GetEntityName (), new ObjectID[] { DomainObjectIDs.Person, DomainObjectIDs.Customer });
+          Provider, 
+          "*", 
+          personClass.GetEntityName(), 
+          new[] { DomainObjectIDs.Person, DomainObjectIDs.Customer });
 
       Assert.IsNotNull (sqlCommandBuilder);
 

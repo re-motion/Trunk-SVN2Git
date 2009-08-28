@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersFromIDs_Simple ()
     {
-      IEnumerable<ObjectID> objectIDs = new ObjectID[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 };
+      IEnumerable<ObjectID> objectIDs = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 };
       DataContainerCollection dataContainers = _loader.LoadDataContainersFromIDs (objectIDs);
       Assert.AreEqual (3, dataContainers.Count);
 
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersFromIDs_NonExistingID ()
     {
-      IEnumerable<ObjectID> objectIDs = new ObjectID[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2,
+      IEnumerable<ObjectID> objectIDs = new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2,
           new ObjectID (typeof (Order), Guid.NewGuid()), DomainObjectIDs.Order3 };
       DataContainerCollection dataContainers = _loader.LoadDataContainersFromIDs (objectIDs);
       Assert.AreEqual (3, dataContainers.Count);
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersFromIDs_DifferentEntities_Ordering ()
     {
-      IEnumerable<ObjectID> objectIDs = new ObjectID[] { DomainObjectIDs.Order1, DomainObjectIDs.OrderItem1, DomainObjectIDs.Order2,
+      IEnumerable<ObjectID> objectIDs = new[] { DomainObjectIDs.Order1, DomainObjectIDs.OrderItem1, DomainObjectIDs.Order2,
           DomainObjectIDs.Customer1, DomainObjectIDs.Customer2, DomainObjectIDs.Order3, DomainObjectIDs.OrderItem2 };
       DataContainerCollection dataContainers = _loader.LoadDataContainersFromIDs (objectIDs);
       Assert.AreEqual (7, dataContainers.Count);
@@ -140,26 +140,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void LoadDataContainersFromIDs_DifferentEntities_Grouping ()
     {
-      IEnumerable<ObjectID> objectIDs = new ObjectID[] { DomainObjectIDs.Order1, DomainObjectIDs.OrderItem1, DomainObjectIDs.Order2,
+      IEnumerable<ObjectID> objectIDs = new[] { DomainObjectIDs.Order1, DomainObjectIDs.OrderItem1, DomainObjectIDs.Order2,
           DomainObjectIDs.Company1, DomainObjectIDs.Company2, DomainObjectIDs.Order3, DomainObjectIDs.OrderItem2 };
 
       IDataContainerLoaderHelper loaderHelperMock = _mockRepository.StrictMock<DataContainerLoaderHelper>();
 
-      DataContainerLoader loader = new DataContainerLoader (loaderHelperMock, Provider);
+      var loader = new DataContainerLoader (loaderHelperMock, Provider);
 
       using (_mockRepository.Unordered ())
       {
         Expect.Call (loaderHelperMock.GetSelectCommandBuilder (null, null, null))
             .Constraints (Mocks_Is.Same (Provider), Mocks_Is.Equal ("Order"),
-                Mocks_List.Equal (new ObjectID[] {DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3}))
+                Mocks_List.Equal (new[] {DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3}))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
         Expect.Call (loaderHelperMock.GetSelectCommandBuilder (null, null, null))
             .Constraints (Mocks_Is.Same (Provider), Mocks_Is.Equal ("OrderItem"),
-            Mocks_List.Equal (new ObjectID[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }))
+            Mocks_List.Equal (new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
         Expect.Call (loaderHelperMock.GetSelectCommandBuilder (null, null, null))
             .Constraints (Mocks_Is.Same (Provider), Mocks_Is.Equal ("Company"),
-            Mocks_List.Equal (new ObjectID[] { DomainObjectIDs.Company1, DomainObjectIDs.Company2 }))
+            Mocks_List.Equal (new[] { DomainObjectIDs.Company1, DomainObjectIDs.Company2 }))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
       }
 
@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           {
             loader.Provider.Connect();
 
-            loader.LoadDataContainersFromIDs (new ObjectID[] {DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2});
+            loader.LoadDataContainersFromIDs (new[] {DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2});
           });
     }
 
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (OrderItem));
       SelectCommandBuilder builder =
-          SelectCommandBuilder.CreateForIDLookup (Provider, "OrderItem", new ObjectID[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
+          SelectCommandBuilder.CreateForIDLookup (Provider, "*", "OrderItem", new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
 
       List<DataContainer> sortedContainers = GetSortedContainers (_loader.LoadDataContainersFromCommandBuilder (builder, false));
 
@@ -230,8 +230,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           {
             loader.Provider.Connect ();
 
-            SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (loader.Provider, "OrderItem",
-              new ObjectID[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
+            SelectCommandBuilder builder = SelectCommandBuilder.CreateForIDLookup (
+                loader.Provider, 
+                "*",
+                "OrderItem",
+                new[] { DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 });
 
             loader.LoadDataContainersFromCommandBuilder (builder, false);
           });
@@ -357,8 +360,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         ClassDefinition classDefinition = MappingConfiguration.Current.ClassDefinitions.GetMandatory (typeof (DomainBase));
         Assert.IsNull (classDefinition.GetEntityName());
 
-        DataContainerLoader loader = new DataContainerLoader (provider);
-        DomainObjectIDs domainObjectIDs = new DomainObjectIDs();
+        var loader = new DataContainerLoader (provider);
+        var domainObjectIDs = new DomainObjectIDs();
         DataContainerCollection dataContainers = loader.LoadDataContainersByRelatedID (
             classDefinition,
             MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (DomainBase), "Client"),
@@ -392,9 +395,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
         _mockRepository.ReplayAll ();
 
-        DataContainerLoader loader = new DataContainerLoader (loaderHelperMock, provider);
+        var loader = new DataContainerLoader (loaderHelperMock, provider);
 
-        DomainObjectIDs domainObjectIDs = new DomainObjectIDs ();
+        var domainObjectIDs = new DomainObjectIDs ();
         loader.LoadDataContainersByRelatedID (
             classDefinition,
             MappingConfiguration.Current.NameResolver.GetPropertyName (typeof (DomainBase), "Client"),
@@ -410,7 +413,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       using (RdbmsProvider providerMock = _mockRepository.PartialMock<SqlProvider> (ProviderDefinition))
       {
-        DataContainerLoader loader = new DataContainerLoader (providerMock);
+        var loader = new DataContainerLoader (providerMock);
 
         expectationSetup (providerMock);
 
@@ -432,7 +435,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
     private List<DataContainer> GetSortedContainers (IEnumerable<DataContainer> dataContainers)
     {
-      List<DataContainer> sortedContainers = new List<DataContainer> (dataContainers);
+      var sortedContainers = new List<DataContainer> (dataContainers);
       sortedContainers.Sort ((one, two) => one.ID.Value.ToString().CompareTo (two.ID.Value.ToString()));
       return sortedContainers;
     }

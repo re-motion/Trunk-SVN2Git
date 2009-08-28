@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -50,12 +51,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      SelectCommandBuilder commandBuilder = SelectCommandBuilder.CreateForIDLookup (Provider, "*", id.ClassDefinition.GetEntityName (), id);
+      SelectCommandBuilder commandBuilder = _loaderHelper.GetSelectCommandBuilder (Provider, id.ClassDefinition.GetEntityName (), new[] { id });
       using (IDbCommand command = commandBuilder.Create ())
       {
         using (IDataReader reader = Provider.ExecuteReader (command, CommandBehavior.SingleRow))
         {
-          DataContainerFactory dataContainerFactory = new DataContainerFactory (Provider, reader);
+          var dataContainerFactory = new DataContainerFactory (Provider, reader);
           return dataContainerFactory.CreateDataContainer ();
         }
       }
@@ -63,17 +64,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public DataContainerCollection LoadDataContainersFromIDs (IEnumerable<ObjectID> orderedIDs)
     {
-      Dictionary<string, List<ObjectID>> objectIDsPerEntityName = GetObjectIDsPerEntityName (orderedIDs);
-      DataContainerCollection allDataContainers = new DataContainerCollection();
+      var objectIDsPerEntityName = GetObjectIDsPerEntityName (orderedIDs);
+      var allDataContainers = new DataContainerCollection();
       foreach (string entityName in objectIDsPerEntityName.Keys)
-        allDataContainers = DataContainerCollection.Join (allDataContainers, GetDataContainers (entityName, objectIDsPerEntityName[entityName]));
+        allDataContainers = DataContainerCollection.Join (allDataContainers, GetDataContainers (entityName, objectIDsPerEntityName[entityName].ToArray()));
 
       return GetOrderedDataContainers (orderedIDs, allDataContainers);
     }
 
     private DataContainerCollection GetOrderedDataContainers (IEnumerable<ObjectID> objectIDsInCorrectOrder, DataContainerCollection unorderedDataContainers)
     {
-      DataContainerCollection orderedDataContainers = new DataContainerCollection ();
+      var orderedDataContainers = new DataContainerCollection ();
       foreach (ObjectID objectID in objectIDsInCorrectOrder)
       {
         DataContainer dataContainer = unorderedDataContainers[objectID];
@@ -84,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return orderedDataContainers;
     }
 
-    private DataContainerCollection GetDataContainers (string entityName, IEnumerable<ObjectID> objectIDs)
+    private DataContainerCollection GetDataContainers (string entityName, ObjectID[] objectIDs)
     {
       SelectCommandBuilder commandBuilder = _loaderHelper.GetSelectCommandBuilder(Provider, entityName, objectIDs);
 
@@ -98,15 +99,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       }
     }
 
-    private Dictionary<string, List<ObjectID>> GetObjectIDsPerEntityName (IEnumerable<ObjectID> objectIDsInCorrectOrder)
+    private MultiDictionary<string, ObjectID> GetObjectIDsPerEntityName (IEnumerable<ObjectID> objectIDsInCorrectOrder)
     {
-      Dictionary<string, List<ObjectID>> objectIDsPerEntityName = new Dictionary<string, List<ObjectID>> ();
+      var objectIDsPerEntityName = new MultiDictionary<string, ObjectID> ();
       foreach (ObjectID objectID in objectIDsInCorrectOrder)
       {
         string entityName = objectID.ClassDefinition.GetEntityName ();
-        if (!objectIDsPerEntityName.ContainsKey (entityName))
-          objectIDsPerEntityName.Add (entityName, new List<ObjectID> ());
-
         objectIDsPerEntityName[entityName].Add (objectID);
       }
       return objectIDsPerEntityName;
@@ -120,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       {
         using (IDataReader dataReader = Provider.ExecuteReader (command, CommandBehavior.SingleResult))
         {
-          DataContainerFactory dataContainerFactory = new DataContainerFactory (Provider, dataReader);
+          var dataContainerFactory = new DataContainerFactory (Provider, dataReader);
           return dataContainerFactory.CreateCollection (allowNulls);
         }
       }
