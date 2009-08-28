@@ -19,7 +19,7 @@ using Remotion.Mixins;
 namespace Remotion.UnitTests.Mixins.SampleTypes
 {
 // ReSharper disable UnusedTypeParameter
-  public class GenericMixin<[BindToTargetType]T>
+  public class GenericMixin<[BindToGenericTargetParameter]T>
   {
   }
   // ReSharper restore UnusedTypeParameter

@@ -15,6 +15,7 @@
 // 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.SyntaxHelpers;
 using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
 using Remotion.UnitTests.Mixins.SampleTypes;
@@ -25,11 +26,19 @@ namespace Remotion.UnitTests.Mixins.Utilities
   public class MixinTypeCloserTest
   {
     [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The target class must not contain generic parameters.\r\n"
+        + "Parameter name: targetClass")]
+    public void Initialization_GenericTypeDefinition ()
+    {
+      new MixinTypeCloser (typeof (GenericTargetClass<>));
+    }
+
+    [Test]
     public void GetClosedMixinType_NonGenericMixin()
     {
       var instantiator = new MixinTypeCloser (typeof (BaseType3));
       Type t = instantiator.GetClosedMixinType (typeof (object));
-      Assert.AreEqual (typeof (object), t);
+      Assert.That (t, Is.EqualTo (typeof (object)));
     }
 
     [Test]
@@ -37,7 +46,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     {
       var instantiator = new MixinTypeCloser (typeof (BaseType3));
       Type t = instantiator.GetClosedMixinType (typeof (BT3Mixin6<,>));
-      Assert.AreEqual (typeof (BT3Mixin6<IBT3Mixin6ThisDependencies, IBT3Mixin6BaseDependencies>), t);
+      Assert.That (t, Is.EqualTo (typeof (BT3Mixin6<IBT3Mixin6ThisDependencies, IBT3Mixin6BaseDependencies>)));
     }
 
     [Test]
@@ -45,7 +54,55 @@ namespace Remotion.UnitTests.Mixins.Utilities
     {
       var instantiator = new MixinTypeCloser (typeof (BaseType3));
       Type t = instantiator.GetClosedMixinType (typeof (BT3Mixin3<,>));
-      Assert.AreEqual (typeof (BT3Mixin3<BaseType3, IBaseType33>), t);
+      Assert.That (t, Is.EqualTo (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
+    }
+
+    [Test]
+    public void GetClosedMixinType_BindToTargetParameter ()
+    {
+      var instantiator = new MixinTypeCloser (typeof (GenericTargetClass<string>));
+      Type t = instantiator.GetClosedMixinType (typeof (GenericMixin<>));
+      Assert.That (t, Is.EqualTo (typeof (GenericMixin<string>)));
+    }
+
+    [Test]
+    [ExpectedException (typeof(ConfigurationException), ExpectedMessage = "Cannot bind generic parameter 'T' of mixin "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixin`1[T]' to generic parameter number 0 of target type "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType1': The target type does not have so many parameters.")]
+    public void GetClosedMixinType_UnmappablePosition ()
+    {
+      var instantiator = new MixinTypeCloser (typeof (BaseType1));
+      instantiator.GetClosedMixinType (typeof (GenericMixin<>));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Type parameter 'T2' of mixin "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithPositionalAfterTargetBoundParameter`2[T1,T2]' applied to target class "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericTargetClass`1[System.String]' has a BindToGenericTargetParameterAttribute, but it is not at "
+        + "the front of the generic parameters. The type parameters with BindToGenericTargetParameterAttributes must all be at the front, before any "
+        + "other generic parameters.")]
+    public void GetClosedMixinType_PositionalAfterFirstNonPositional ()
+    {
+      var instantiator = new MixinTypeCloser (typeof (GenericTargetClass<string>));
+      instantiator.GetClosedMixinType (typeof (GenericMixinWithPositionalAfterTargetBoundParameter<,>));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Type parameter 'T' of mixin "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithPositionalAndTargetBoundParameter`1[T]' has more than one binding specification.")]
+    public void GetClosedMixinType_PositionalAndTargetBound ()
+    {
+      var instantiator = new MixinTypeCloser (typeof (GenericTargetClass<string>));
+      instantiator.GetClosedMixinType (typeof (GenericMixinWithPositionalAndTargetBoundParameter<>));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Type parameter 'T' of mixin "
+        + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithPositionalAndConstraintBoundParameter`1[T]' has more than one binding specification.")]
+    public void GetClosedMixinType_PositionalAndConstraintBound ()
+    {
+      var instantiator = new MixinTypeCloser (typeof (GenericTargetClass<string>));
+      instantiator.GetClosedMixinType (typeof (GenericMixinWithPositionalAndConstraintBoundParameter<>));
     }
 
     [Test]
@@ -64,7 +121,7 @@ namespace Remotion.UnitTests.Mixins.Utilities
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The generic mixin "
         + "'Remotion.UnitTests.Mixins.SampleTypes.GenericMixinWithoutBindingInformation`1[T]' applied to class "
         + "'Remotion.UnitTests.Mixins.SampleTypes.BaseType3' cannot be automatically closed because its type parameter 'T' does not have any binding "
-        + "information. Apply the BindToTargetTypeAttribute or the BindToConstraintsAttribute to the type parameter or specify the parameter's "
+        + "information. Apply the BindToTargetTypeAttribute, BindToConstraintsAttribute, or BindToGenericTargetParameterAttribute to the type parameter or specify the parameter's "
         + "instantiation when configuring the mixin for the target class.")]
     public void GetClosedMixinType_MixinWithoutBindingInformationThrows ()
     {

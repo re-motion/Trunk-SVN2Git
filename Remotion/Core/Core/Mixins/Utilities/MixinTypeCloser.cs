@@ -31,6 +31,9 @@ namespace Remotion.Mixins.Utilities
     {
       ArgumentUtility.CheckNotNull ("targetClass", targetClass);
 
+      if (targetClass.ContainsGenericParameters)
+        throw new ArgumentException ("The target class must not contain generic parameters.", "targetClass");
+
       _targetClass = targetClass;
     }
 
@@ -63,23 +66,77 @@ namespace Remotion.Mixins.Utilities
     private Type[] GetGenericParameterInstantiations (Type mixinType)
     {
       var genericArguments = mixinType.GetGenericArguments ();
+
       var instantiations = new Type[genericArguments.Length];
 
-      for (int i = 0; i < genericArguments.Length; i++)
-        instantiations[i] = GetInstantiation (mixinType, genericArguments[i]);
+      int firstNonPositionalIndex = FillPositionalInstantiations (instantiations, genericArguments, mixinType);
+      FillNonPositionalInstantiations (instantiations, genericArguments, firstNonPositionalIndex, mixinType);
 
       return instantiations;
     }
 
-    private Type GetInstantiation (Type mixinType, Type genericArgument)
+    private int FillPositionalInstantiations (Type[] instantiations, Type[] genericArguments, Type mixinType)
+    {
+      int index = 0;
+      var targetGenericParameters = _targetClass.GetGenericArguments ();
+      while (index < genericArguments.Length && IsBoundToPositionalTargetParameter (genericArguments[index]))
+      {
+        if (index >= targetGenericParameters.Length)
+        {
+          var message = string.Format (
+              "Cannot bind generic parameter '{0}' of mixin '{1}' to generic parameter number {2} of target type '{3}': The target type does not have "
+              + "so many parameters.",
+              genericArguments[index].Name,
+              mixinType,
+              index,
+              _targetClass);
+          throw new ConfigurationException (message);
+        }
+
+        if (IsBoundToConstraint (genericArguments[index]) || IsBoundToTargetType (genericArguments[index]))
+        {
+          var message = string.Format (
+              "Type parameter '{0}' of mixin '{1}' has more than one binding specification.",
+              genericArguments[index].Name,
+              mixinType);
+          throw new ConfigurationException (message);
+        }
+
+        instantiations[index] = targetGenericParameters[index];
+        ++index;
+      }
+      return index;
+    }
+
+    private void FillNonPositionalInstantiations (Type[] instantiations, Type[] genericArguments, int startIndex, Type mixinType)
+    {
+      for (int i = startIndex; i < genericArguments.Length; ++i)
+      {
+        instantiations[i] = GetNonPositionalInstantiation (mixinType, genericArguments[i]);
+      }
+    }
+
+    private Type GetNonPositionalInstantiation (Type mixinType, Type genericArgument)
     {
       Assertion.IsTrue (genericArgument.IsGenericParameter, "Types with partially specified generic parameters are not supported.");
 
+      if (IsBoundToPositionalTargetParameter (genericArgument))
+      {
+        var message = string.Format (
+            "Type parameter '{0}' of mixin '{1}' applied to target class '{2}' has a BindToGenericTargetParameterAttribute, but it is not at the "
+            + "front of the generic parameters. The type parameters with BindToGenericTargetParameterAttributes must all be at the front, before any "
+            + "other generic parameters.",
+            genericArgument.Name,
+            mixinType,
+            _targetClass);
+        throw new ConfigurationException (message);
+      }
+
       Type instantiation = null;
-      if (genericArgument.IsDefined (typeof (BindToTargetTypeAttribute), false))
+      if (IsBoundToTargetType (genericArgument))
         instantiation = _targetClass;
         
-      if (genericArgument.IsDefined (typeof (BindToConstraintsAttribute), false))
+      if (IsBoundToConstraint (genericArgument))
       {
         if (instantiation != null)
         {
@@ -97,8 +154,8 @@ namespace Remotion.Mixins.Utilities
       {
         string message = string.Format (
             "The generic mixin '{0}' applied to class '{1}' cannot be automatically closed because its type parameter '{2}' does not have any "
-            + "binding information. Apply the BindToTargetTypeAttribute or the BindToConstraintsAttribute to the type parameter or specify the "
-            + "parameter's instantiation when configuring the mixin for the target class.",
+            + "binding information. Apply the BindToTargetTypeAttribute, BindToConstraintsAttribute, or BindToGenericTargetParameterAttribute to the "
+            + "type parameter or specify the parameter's instantiation when configuring the mixin for the target class.",
             mixinType,
             _targetClass,
             genericArgument.Name);
@@ -106,6 +163,21 @@ namespace Remotion.Mixins.Utilities
       }
 
       return instantiation;
+    }
+
+    private bool IsBoundToPositionalTargetParameter (Type genericArgument)
+    {
+      return genericArgument.IsDefined (typeof (BindToGenericTargetParameterAttribute), false);
+    }
+
+    private bool IsBoundToTargetType (Type genericArgument)
+    {
+      return genericArgument.IsDefined (typeof (BindToTargetTypeAttribute), false);
+    }
+
+    private bool IsBoundToConstraint (Type genericArgument)
+    {
+      return genericArgument.IsDefined (typeof (BindToConstraintsAttribute), false);
     }
 
     private Type GetConstraintBasedInstantiation (Type mixinType, Type genericArgument)

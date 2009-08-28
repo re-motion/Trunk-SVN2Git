@@ -18,38 +18,35 @@ using System;
 namespace Remotion.Mixins
 {
   /// <summary>
-  /// Indicates that a generic parameter of a mixin should be bound to the mixin's target type (unless the generic parameter type is explicitly
-  /// specified when the mixin is configured).
+  /// Indicates that a generic parameter of a mixin should be bound to the mixin's target type's generic parameter (unless the generic parameter 
+  /// type is explicitly specified when the mixin is configured). Generic parameters with this attribute must be at the front of a mixin's generic
+  /// parameter list, and they are mapped to the generic parameter of the target type by position.
   /// </summary>
   /// <remarks>
-  /// <para>
-  /// Apply this attribute to a generic parameter of a generic mixin when the mixin engine should be able to automatically close the mixin type.
-  /// Without the attribute, an exception will be thrown.
-  /// </para>
   /// <para>
   /// For example, consider the following code:
   /// <code>
   /// public class TargetClass&lt;T&gt; { }
   /// 
   /// [Extends (typeof (TargetClass&lt;&gt;))]
-  /// public class MyMixin&lt;T&gt; { }
+  /// public class MyMixin&lt;[BindToGenericTargetParameter]T&gt; { }
   /// </code>
-  /// To bind <c>T</c> to <c>TargetClass&lt;T&gt;</c>, use a binding specification:
+  /// To bind MyMixin's <c>T</c> to the <c>&lt;T&gt;</c> parameter of TargetClass, use the following code:
   /// <code>
   /// public class TargetClass&lt;T&gt; { }
   /// 
   /// [Extends (typeof (TargetClass&lt;&gt;))]
-  /// public class MyMixin&lt;[BindToTargetType] T&gt; { }
+  /// public class MyMixin&lt;[BindToGenericTargetParameter] T&gt; { }
   /// </code>
   /// </para>
   /// <note type="inotes">When a type parameter is reused for the generic parameter of the <see cref="Mixin{TThis,TBase}"/>
   /// or <see cref="Mixin{TThis}"/> base classes, the type parameter must satisfy several constraints. See <see cref="Mixin{TThis,TBase}"/> and
   /// <see cref="Mixin{TThis}"/> for more information.</note>
   /// </remarks>
+  /// <seealso cref="BindToTargetTypeAttribute"/>
   /// <seealso cref="BindToConstraintsAttribute"/>
-  /// <seealso cref="BindToGenericTargetParameterAttribute"/>
   [AttributeUsage (AttributeTargets.GenericParameter, Inherited = false)]
-  public class BindToTargetTypeAttribute : Attribute
+  public class BindToGenericTargetParameterAttribute : Attribute
   {
   }
 }

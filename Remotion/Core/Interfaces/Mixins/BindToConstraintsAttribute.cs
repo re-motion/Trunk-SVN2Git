@@ -24,8 +24,7 @@ namespace Remotion.Mixins
   /// <remarks>
   /// <para>
   /// Apply this attribute to a generic parameter of a generic mixin when the mixin engine should be able to automatically close the mixin type.
-  /// Without the attribute, the generic parameter will be bound to the target type's generic parameter, and the mixin engine will throw an exception
-  /// if the target type has no parameter.
+  /// Without the attribute, an exception will be thrown.
   /// </para>
   /// <para>
   /// For example, consider the following code:
@@ -35,10 +34,7 @@ namespace Remotion.Mixins
   /// [Extends (typeof (TargetClass&lt;&gt;))]
   /// public class MyMixin&lt;T&gt; where T : ITargetClass { }
   /// </code>
-  /// In this example, MyMixin's <c>T</c> will be bound to the TargetClass' <c>T</c> parameter.
-  /// </para>
-  /// <para>
-  /// To bind <c>T</c> to <c>ITargetClass</c> instead, use the following code:
+  /// To bind <c>T</c> to <c>ITargetClass</c>, use a binding specification:
   /// <code>
   /// public class TargetClass&lt;T&gt; : ITargetClass { }
   /// 
@@ -64,6 +60,7 @@ namespace Remotion.Mixins
   /// <see cref="Mixin{TThis}"/> for more information.</note>
   /// </remarks>
   /// <seealso cref="BindToTargetTypeAttribute"/>
+  /// <seealso cref="BindToGenericTargetParameterAttribute"/>
   [AttributeUsage (AttributeTargets.GenericParameter, Inherited = false)]
   public class BindToConstraintsAttribute : Attribute
   {

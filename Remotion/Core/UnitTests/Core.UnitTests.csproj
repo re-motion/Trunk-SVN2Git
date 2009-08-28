@@ -156,7 +156,10 @@
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\FakeConcreteMixedType.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\MixinSerializationHelperTest.cs" />
     <Compile Include="Mixins\CodeGeneration\DynamicProxy\SerializationHelperTest.cs" />
-    <Compile Include="Mixins\SampleTypes\Copy of GenericMixinWithVirtualMethod.cs" />
+    <Compile Include="Mixins\SampleTypes\GenericMixinWithPositionalAndConstraintBoundParameter.cs" />
+    <Compile Include="Mixins\SampleTypes\GenericMixin.cs" />
+    <Compile Include="Mixins\SampleTypes\GenericMixinWithPositionalAfterTargetBoundParameter.cs" />
+    <Compile Include="Mixins\SampleTypes\GenericMixinWithPositionalAndTargetBoundParameter.cs" />
     <Compile Include="Mixins\SampleTypes\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />

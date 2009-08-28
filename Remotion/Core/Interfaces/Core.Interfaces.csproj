@@ -76,6 +76,7 @@
     <Compile Include="Mixins\BridgeInterfaces\IObjectFactoryImplementation.cs" />
     <Compile Include="Mixins\CompleteInterfaceAttribute.cs" />
     <Compile Include="Mixins\BindToConstraintsAttribute.cs" />
+    <Compile Include="Mixins\BindToGenericTargetParameterAttribute.cs" />
     <Compile Include="Mixins\CopyCustomAttributesAttribute.cs" />
     <Compile Include="Mixins\ExtendsAttribute.cs" />
     <Compile Include="Mixins\GenerationPolicy.cs" />
