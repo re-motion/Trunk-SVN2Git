@@ -40,7 +40,7 @@ namespace Remotion.Mixins.MixerTool
     {
       var builderFactory = new ConcreteTypeBuilderFactory (typeNameProvider, signedAssemblyName, unsignedAssemblyName);
       
-      var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetInstance ();
+      var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
       var finder = new ClassContextFinder (typeDiscoveryService);
 
       return new Mixer (finder, builderFactory, assemblyOutputDirectory);

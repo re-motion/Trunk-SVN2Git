@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     //TODO: Test
     public MappingReflector ()
     {
-      _typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetInstance();
+      _typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
     }
 
     public MappingReflector (ITypeDiscoveryService typeDiscoveryService)

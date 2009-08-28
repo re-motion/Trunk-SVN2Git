@@ -35,24 +35,24 @@ namespace Remotion.UnitTests.Reflection
     {
       _mockRepository = new MockRepository();
       _serviceMock = _mockRepository.StrictMock<ITypeDiscoveryService>();
-      ContextAwareTypeDiscoveryUtility.SetDefaultService (null);
+      ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
       DesignerUtility.ClearDesignMode ();
     }
 
     [TearDown]
     public void TearDown ()
     {
-      ContextAwareTypeDiscoveryUtility.SetDefaultService (null);
+      ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
       DesignerUtility.ClearDesignMode ();
     }
 
     [Test]
     public void AutoIntoDefaultService ()
     {
-      ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultService;
+      ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
       Assert.IsNotNull (defaultService);
-      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryUtility.DefaultService);
-      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryUtility.DefaultService);
+      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService);
+      Assert.AreSame (defaultService, ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService);
       Assert.IsInstanceOfType (typeof (AssemblyFinderTypeDiscoveryService), defaultService);
       Assert.AreSame (ApplicationAssemblyFinderFilter.Instance, ((AssemblyFinderTypeDiscoveryService) defaultService).AssemblyFinder.Filter);
     }
@@ -60,37 +60,37 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void SetDefaultCurrent ()
     {
-      ContextAwareTypeDiscoveryUtility.SetDefaultService (_serviceMock);
-      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.DefaultService);
+      ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = _serviceMock;
+      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService);
     }
 
     [Test]
     public void SetDefaultCurrent_Null ()
     {
-      ContextAwareTypeDiscoveryUtility.SetDefaultService (_serviceMock);
-      ContextAwareTypeDiscoveryUtility.SetDefaultService (null);
-      ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultService;
+      ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = _serviceMock;
+      ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
+      ITypeDiscoveryService defaultService = ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService;
       Assert.IsNotNull (defaultService);
       Assert.AreNotSame (_serviceMock, defaultService);
     }
 
     [Test]
-    public void StandardContext ()
+    public void GetTypeDiscoveryService_StandardContext ()
     {
-      ContextAwareTypeDiscoveryUtility.SetDefaultService (_serviceMock);
-      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.GetInstance ());
+      ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = _serviceMock;
+      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ());
     }
 
     [Test]
-    public void DesignModeContext ()
+    public void GetTypeDiscoveryService_DesignModeContext ()
     {
-      IDesignerHost designerHostMock = _mockRepository.StrictMock<IDesignerHost>();
+      var designerHostMock = _mockRepository.StrictMock<IDesignerHost>();
       Expect.Call (designerHostMock.GetService (typeof (ITypeDiscoveryService))).Return (_serviceMock);
 
       _mockRepository.ReplayAll();
 
       DesignerUtility.SetDesignMode (new StubDesignModeHelper (designerHostMock));
-      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.GetInstance ());
+      Assert.AreSame (_serviceMock, ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ());
 
       _mockRepository.VerifyAll ();
     }
@@ -118,7 +118,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetType_DesignMode_Success ()
     {
-      IDesignerHost designerHostMock = _mockRepository.StrictMock<IDesignerHost> ();
+      var designerHostMock = _mockRepository.StrictMock<IDesignerHost> ();
       Expect.Call (designerHostMock.GetType("abc")).Return (typeof (int));
 
       _mockRepository.ReplayAll ();
@@ -132,7 +132,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void GetType_DesignMode_Failure_Null ()
     {
-      IDesignerHost designerHostMock = _mockRepository.StrictMock<IDesignerHost> ();
+      var designerHostMock = _mockRepository.StrictMock<IDesignerHost> ();
       Expect.Call (designerHostMock.GetType ("abc")).Return (null);
 
       _mockRepository.ReplayAll ();
@@ -147,7 +147,7 @@ namespace Remotion.UnitTests.Reflection
     [ExpectedException (typeof (TypeLoadException), ExpectedMessage = "Type 'abc' could not be loaded by the designer host.")]
     public void GetType_DesignMode_Failure_Exception ()
     {
-      IDesignerHost designerHostMock = _mockRepository.StrictMock<IDesignerHost> ();
+      var designerHostMock = _mockRepository.StrictMock<IDesignerHost> ();
       Expect.Call (designerHostMock.GetType ("abc")).Return (null);
 
       _mockRepository.ReplayAll ();

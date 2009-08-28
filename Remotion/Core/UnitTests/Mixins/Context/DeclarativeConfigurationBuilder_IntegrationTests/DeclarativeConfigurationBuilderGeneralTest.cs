@@ -118,7 +118,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
       try
       {
         Assert.AreEqual (1, paths.Length);
-        ContextAwareTypeDiscoveryUtility.SetDefaultService (null);
+        ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
         DeclarativeConfigurationBuilder.BuildDefaultConfiguration ();
       }
       finally

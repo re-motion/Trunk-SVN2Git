@@ -26,7 +26,7 @@ namespace Remotion.Reflection
     private static ITypeDiscoveryService _defaultService = null;
     private static readonly object _defaultServiceLock = new object ();
 
-    public static ITypeDiscoveryService DefaultService
+    public static ITypeDiscoveryService DefaultNonDesignModeService
     {
       get
       {
@@ -34,28 +34,27 @@ namespace Remotion.Reflection
         {
           if (_defaultService == null)
           {
-            _defaultService =
-                VersionDependentImplementationBridge<IAssemblyFinderTypeDiscoveryServiceFactoryImplementation>.Implementation.CreateTypeDiscoveryService();
+            _defaultService = VersionDependentImplementationBridge<IAssemblyFinderTypeDiscoveryServiceFactoryImplementation>.Implementation
+                .CreateTypeDiscoveryService();
           }
           return _defaultService;
         }
       }
+      set
+      {
+        lock (_defaultServiceLock)
+        {
+          _defaultService = value;
+        }
+      }
     }
 
-    public static ITypeDiscoveryService GetInstance ()
+    public static ITypeDiscoveryService GetTypeDiscoveryService ()
     {
       if (DesignerUtility.IsDesignMode)
         return (ITypeDiscoveryService) DesignerUtility.DesignerHost.GetService (typeof (ITypeDiscoveryService));
       else
-        return DefaultService;
-    }
-
-    public static void SetDefaultService (ITypeDiscoveryService newDefaultService)
-    {
-      lock (_defaultServiceLock)
-      {
-        _defaultService = newDefaultService;
-      }
+        return DefaultNonDesignModeService;
     }
 
     public static Type GetType (string typeName, bool throwOnError)

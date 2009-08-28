@@ -165,7 +165,7 @@ namespace Remotion.Mixins.Context
 
     private static ITypeDiscoveryService GetTypeDiscoveryService ()
     {
-      return ContextAwareTypeDiscoveryUtility.GetInstance();
+      return ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
     }
 
     private readonly MixinConfiguration _parentConfiguration;
