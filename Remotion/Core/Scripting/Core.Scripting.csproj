@@ -62,7 +62,6 @@
     <Compile Include="ExpressionScript.cs" />
     <Compile Include="ForwardingProxyBuilder.cs" />
     <Compile Include="IProxy.cs" />
-    <Compile Include="MethodInfoFromRelatedTypesEqualityComparer.cs" />
     <Compile Include="ReflectionHelper.cs" />
     <Compile Include="ScriptFunction.generated.cs">
       <SubType>Code</SubType>

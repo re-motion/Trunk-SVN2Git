@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="MethodInfoEqualityComparer.cs" />
     <Compile Include="MethodInfoExtensions.cs" />
+    <Compile Include="MethodInfoFromRelatedTypesEqualityComparer.cs" />
     <Compile Include="MethodInfoFromRelatedTypesEqualityComparerTest.cs" />
     <Compile Include="ReflectionHelperTest.cs" />
     <Compile Include="ScriptEnvironmentTest.cs" />
