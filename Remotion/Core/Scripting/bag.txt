@@ -1,4 +1,15 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿private HashSet<MethodInfo> CreateMethodsKnownInBaseTypeSet ()
+{
+  HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> (MethodInfoEqualityComparer.Get);
+  var firstKnownBaseType = GetFirstKnownBaseType ();
+  foreach (var method in firstKnownBaseType.GetMethods ())
+  {
+    methodsKnownInBaseTypeSet.Add (method.GetBaseDefinition ());
+  }
+  return methodsKnownInBaseTypeSet;
+}
+
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (C) 2005-2009 rubicon informationstechnologie gmbh, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 

@@ -36,8 +36,6 @@ namespace Remotion.Scripting
   /// </remarks>
   public class StableBindingProxyBuilder
   {
-    private static readonly Dictionary<Type, Dictionary<MethodInfo, HashSet<MethodInfo>>> s_typeToClassMethodToInterfaceMethodsMapMap = new Dictionary<Type, Dictionary<MethodInfo, HashSet<MethodInfo>>> ();
-
     private readonly Type _proxiedType;
     private readonly ITypeFilter _typeFilter;
     private readonly ForwardingProxyBuilder _forwardingProxyBuilder;
@@ -186,14 +184,7 @@ namespace Remotion.Scripting
     }
 
 
-    //private HashSet<T1> GetHashSetFromMap<T0,T1> (Dictionary<T0,HashSet<T1>> map, T0 classMethod)
-   // {
-   //   HashSet<T1> hashSet;
-   //   map.TryGetValue (classMethod, out hashSet);
-   //   return hashSet ?? new HashSet<T1>();
-   // }
-
-
+ 
     private Dictionary<StableMetadataToken, PropertyInfo> BuildSpecialMethodsToPropertyMap (Type startType)
     {
       const BindingFlags bindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public; 
@@ -217,17 +208,7 @@ namespace Remotion.Scripting
       return specialMethodsToPropertiesMap;
     }
 
-    //private void AddTo_HashSetMap<T0,T1> (Dictionary<T0,HashSet<T1>> map, T0 classMethod, T1 interfaceMethod)
-    //{
-    //  if (!map.ContainsKey (classMethod))
-    //  {
-    //    map[classMethod] = new HashSet<T1> ();
-    //  }
-    //  map[classMethod].Add (interfaceMethod);
-    //}
-
-
-
+ 
     private void ImplementKnownMethods ()
     {
       var regularMethodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(mi => !mi.IsSpecialName);
@@ -282,7 +263,7 @@ namespace Remotion.Scripting
 
     // TODO: If IsMethodEqualToBaseTypeMethod can be expressed as a CompoundValueEqualityComparer<MethodInfo>,
     // (MethodInfoFromRelatedTypesEqualityComparer) refactor back to initial implementation using HashSet, 
-    // to get rid of quadratic runtime behavior.
+    // to get rid of quadratic runtime behavior (see "CreateMethodsKnownInBaseTypeSet" in bag.txt).
     public bool IsMethodKnownInBaseType (MethodInfo method)
     {
       foreach (var baseTypeMethod in _publicMethodsInFirstKnownBaseType)
@@ -305,32 +286,6 @@ namespace Remotion.Scripting
     }
 
  
-
-
-    //private HashSet<MethodInfo> CreateMethodsKnownInBaseTypeSet ()
-    //{
-    //  HashSet<MethodInfo> methodsKnownInBaseTypeSet = new HashSet<MethodInfo> (MethodInfoEqualityComparer.Get);
-    //  var firstKnownBaseType = GetFirstKnownBaseType ();
-    //  foreach (var method in firstKnownBaseType.GetMethods ())
-    //  {
-    //    methodsKnownInBaseTypeSet.Add (method.GetBaseDefinition ());
-    //  }
-    //  return methodsKnownInBaseTypeSet;
-    //}
-
-
-    ///// <summary>
-    ///// Calls <see cref="BuildProxyType"/> and returns an instance of the generated proxy type proxying the passed <see cref="object"/>.
-    ///// </summary>
-    ///// <param name="proxied">The <see cref="object"/> to be proxied. Must be of the <see cref="Type"/> 
-    ///// the <see cref="ForwardingProxyBuilder"/> was initialized with.</param>
-    //public object CreateInstance (Object proxied)
-    //{
-    //  ArgumentUtility.CheckNotNullAndType ("proxied", proxied, _proxiedType);
-    //  return Activator.CreateInstance (BuildProxyType (), proxied);
-    //}
-
-
     private Type GetFirstKnownBaseType ()
     {
       // Object is always known.
@@ -367,12 +322,7 @@ namespace Remotion.Scripting
 
     private IEnumerable<MethodInfo> GetInterfaceMethodsToClassMethod (MethodInfo classMethod)
     {
-      HashSet<MethodInfo> interfaceMethodsToClassMethod;
-      _classMethodToInterfaceMethodsMap.TryGetValue (classMethod, out interfaceMethodsToClassMethod);
-      return (IEnumerable<MethodInfo>) interfaceMethodsToClassMethod ?? new MethodInfo[0];
-
-      // TODO: Use call below
-      // return GetInterfaceMethodsToClassMethod (classMethod, _classMethodToInterfaceMethodsMap);
+      return GetInterfaceMethodsToClassMethod (classMethod, _classMethodToInterfaceMethodsMap);
     }
 
     private IEnumerable<MethodInfo> GetInterfaceMethodsToClassMethod (MethodInfo classMethod, 
