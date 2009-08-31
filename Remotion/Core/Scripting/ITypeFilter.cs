@@ -24,7 +24,7 @@ namespace Remotion.Scripting
   public interface ITypeFilter
   {
     /// <summary>
-    /// Decides whether passed <see cref="Type"/> is valid.
+    /// Decides whether passed <see cref="Type"/> passes the filter test.
     /// </summary>
     /// <returns><see langword="true" /> if <see cref="Type"/> is valid, <see langword="false" /> otherwise.</returns>
     bool IsTypeValid (Type type);  

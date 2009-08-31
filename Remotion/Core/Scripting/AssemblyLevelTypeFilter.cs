@@ -37,6 +37,9 @@ namespace Remotion.Scripting
       }
     }
 
+    /// <summary>
+    /// Returns true if the passed <see cref="Type"/> is a member of the <see cref="AssemblyLevelTypeFilter"/>|s assemblies.
+    /// </summary>
     public bool IsTypeValid (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
