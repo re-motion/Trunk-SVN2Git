@@ -36,6 +36,8 @@ namespace Remotion.Scripting
   /// </remarks>
   public class StableBindingProxyBuilder
   {
+    private static readonly Dictionary<Type, Dictionary<MethodInfo, HashSet<MethodInfo>>> s_typeToClassMethodToInterfaceMethodsMapMap = new Dictionary<Type, Dictionary<MethodInfo, HashSet<MethodInfo>>> ();
+
     private readonly Type _proxiedType;
     private readonly ITypeFilter _typeFilter;
     private readonly ForwardingProxyBuilder _forwardingProxyBuilder;
@@ -45,7 +47,7 @@ namespace Remotion.Scripting
     private readonly MethodInfo[] _publicMethodsInFirstKnownBaseType;
     private readonly Type _firstKnownBaseType;
     private readonly StableMetadataTokenToMethodInfoMap _knownBaseTypeStableMetadataTokenToMethodInfoMap;
-    private Dictionary<StableMetadataToken, PropertyInfo> _firstKnownBaseTypeSpecialMethodsToPropertyMap;
+    private readonly Dictionary<StableMetadataToken, PropertyInfo> _firstKnownBaseTypeSpecialMethodsToPropertyMap;
 
     public StableBindingProxyBuilder (Type proxiedType, ITypeFilter typeFilter, ModuleScope moduleScope)
     {
@@ -110,27 +112,8 @@ namespace Remotion.Scripting
       {
         // Build class method to interface method map for current type
         // TODO: Optimize (cache)
-        var classMethodToInterfaceMethodsMap = new Dictionary<MethodInfo, HashSet<MethodInfo>>();
-        var knownInterfacesInType = _knownInterfaces.Intersect(type.GetInterfaces());
-        foreach (var knownInterface in knownInterfacesInType)
-        {
-          var interfaceMapping = type.GetInterfaceMap (knownInterface);
-          var classMethods = interfaceMapping.TargetMethods;
-          var interfaceMethods = interfaceMapping.InterfaceMethods;
-
-          for (int i = 0; i < classMethods.Length; i++)
-          {
-            var classMethod = classMethods[i];
-            if (classMethod.IsSpecialName)
-            {
-              if (!classMethodToInterfaceMethodsMap.ContainsKey (classMethod))
-              {
-                classMethodToInterfaceMethodsMap[classMethod] = new HashSet<MethodInfo>();
-              }
-              classMethodToInterfaceMethodsMap[classMethod].Add (interfaceMethods[i]);
-            }
-          }
-        }
+        //var classMethodToInterfaceMethodsMap = new Dictionary<MethodInfo, HashSet<MethodInfo>>();
+        var classMethodToInterfaceMethodsMap = GetClassMethodToInterfaceMethodsMap(type);
 
         var typePublicProperties = type.GetProperties (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
 
@@ -162,8 +145,46 @@ namespace Remotion.Scripting
       }
     }
 
+    private Dictionary<MethodInfo, HashSet<MethodInfo>> GetClassMethodToInterfaceMethodsMap (Type type)
+    {
+      Dictionary<MethodInfo, HashSet<MethodInfo>> classMethodToInterfaceMethodsMap;
+      bool exists = s_typeToClassMethodToInterfaceMethodsMapMap.TryGetValue (type, out classMethodToInterfaceMethodsMap);
+      //if (exists)
+      if(false)
+      {
+        return classMethodToInterfaceMethodsMap;
+      }
+      else
+      {
+        classMethodToInterfaceMethodsMap = new Dictionary<MethodInfo, HashSet<MethodInfo>>();
+        var knownInterfacesInType = _knownInterfaces.Intersect (type.GetInterfaces());
+        foreach (var knownInterface in knownInterfacesInType)
+        {
+          var interfaceMapping = type.GetInterfaceMap (knownInterface);
+          var classMethods = interfaceMapping.TargetMethods;
+          var interfaceMethods = interfaceMapping.InterfaceMethods;
 
-   //private HashSet<T1> GetHashSetFromMap<T0,T1> (Dictionary<T0,HashSet<T1>> map, T0 classMethod)
+          for (int i = 0; i < classMethods.Length; i++)
+          {
+            var classMethod = classMethods[i];
+            if (classMethod.IsSpecialName)
+            {
+              if (!classMethodToInterfaceMethodsMap.ContainsKey (classMethod))
+              {
+                classMethodToInterfaceMethodsMap[classMethod] = new HashSet<MethodInfo>();
+              }
+              classMethodToInterfaceMethodsMap[classMethod].Add (interfaceMethods[i]);
+            }
+          }
+        }
+        s_typeToClassMethodToInterfaceMethodsMapMap[type] = classMethodToInterfaceMethodsMap;
+      }
+
+      return classMethodToInterfaceMethodsMap;
+    }
+
+
+    //private HashSet<T1> GetHashSetFromMap<T0,T1> (Dictionary<T0,HashSet<T1>> map, T0 classMethod)
    // {
    //   HashSet<T1> hashSet;
    //   map.TryGetValue (classMethod, out hashSet);
