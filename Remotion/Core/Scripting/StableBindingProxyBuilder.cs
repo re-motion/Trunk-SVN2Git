@@ -89,13 +89,6 @@ namespace Remotion.Scripting
     {
       var specialMethodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (mi => mi.IsSpecialName);
 
-
-      //if (_firstKnownBaseType != null)
-      //{
-      //  _firstKnownBaseTypeSpecialMethodsToPropertyMap = BuildSpecialMethodsToPropertyMap (_firstKnownBaseType);
-      //}
-
-
       foreach (var proxiedTypeMethod in specialMethodsInProxiedType)
       {
         PropertyInfo knownBaseTypeProperty = null;
