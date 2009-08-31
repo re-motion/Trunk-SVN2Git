@@ -30,7 +30,6 @@ namespace Remotion.Scripting
   public partial class ScriptFunction<TResult> : ScriptBase
   {
     private readonly Func<TResult> _func;
-    //private readonly Func<TFixedArg1, TResult> _funcUncompiled;
 
     public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
@@ -67,7 +66,6 @@ namespace Remotion.Scripting
   public partial class ScriptFunction<TFixedArg1, TFixedArg2, TResult> : ScriptBase
   {
     private readonly Func<TFixedArg1, TFixedArg2, TResult> _func;
-    //private readonly Func<TFixedArg1, TResult> _funcUncompiled;
 
     public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
@@ -104,7 +102,6 @@ namespace Remotion.Scripting
   public partial class ScriptFunction<TFixedArg1, TFixedArg2, TFixedArg3, TResult> : ScriptBase
   {
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TResult> _func;
-    //private readonly Func<TFixedArg1, TResult> _funcUncompiled;
 
     public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
@@ -141,7 +138,6 @@ namespace Remotion.Scripting
   public partial class ScriptFunction<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TResult> : ScriptBase
   {
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TResult> _func;
-    //private readonly Func<TFixedArg1, TResult> _funcUncompiled;
 
     public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
@@ -178,7 +174,6 @@ namespace Remotion.Scripting
   public partial class ScriptFunction<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TResult> : ScriptBase
   {
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TResult> _func;
-    //private readonly Func<TFixedArg1, TResult> _funcUncompiled;
 
     public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
@@ -215,7 +210,6 @@ namespace Remotion.Scripting
   public partial class ScriptFunction<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TResult> : ScriptBase
   {
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TResult> _func;
-    //private readonly Func<TFixedArg1, TResult> _funcUncompiled;
 
     public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
@@ -252,7 +246,6 @@ namespace Remotion.Scripting
   public partial class ScriptFunction<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TResult> : ScriptBase
   {
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TResult> _func;
-    //private readonly Func<TFixedArg1, TResult> _funcUncompiled;
 
     public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
@@ -289,7 +282,6 @@ namespace Remotion.Scripting
   public partial class ScriptFunction<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TResult> : ScriptBase
   {
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TResult> _func;
-    //private readonly Func<TFixedArg1, TResult> _funcUncompiled;
 
     public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
@@ -326,7 +318,6 @@ namespace Remotion.Scripting
   public partial class ScriptFunction<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TFixedArg9, TResult> : ScriptBase
   {
     private readonly Func<TFixedArg1, TFixedArg2, TFixedArg3, TFixedArg4, TFixedArg5, TFixedArg6, TFixedArg7, TFixedArg8, TFixedArg9, TResult> _func;
-    //private readonly Func<TFixedArg1, TResult> _funcUncompiled;
 
     public ScriptFunction (ScriptContext scriptContext, ScriptLanguageType scriptLanguageType, string scriptText, 
       ScriptEnvironment scriptEnvironment, string scriptFunctionName)
