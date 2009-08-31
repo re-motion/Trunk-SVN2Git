@@ -69,7 +69,7 @@ def PropertyPathAccess(cascade) :
 
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
-      ExecuteAndTime ("C# method", nrLoopsArray, delegate
+      ExecuteAndLogTimings ("C# method", nrLoopsArray, delegate
       {
         if (cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name == "C0")
         {
@@ -78,8 +78,8 @@ def PropertyPathAccess(cascade) :
         return "FAILED";
       }
       );
-      ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndTime ("expression script", nrLoopsArray, propertyPathAccessExpressionScript.Execute);
+      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ExecuteAndLogTimings ("expression script", nrLoopsArray, propertyPathAccessExpressionScript.Execute);
     }
 
 
@@ -106,18 +106,18 @@ def Empty() :
 
       //var nrLoopsArray = new[] {1,1,10,100,1000,10000,100000,1000000};
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
-      ExecuteAndTime ("empty script function", nrLoopsArray, emptyScript.Execute);
-      ExecuteAndTime ("empty expression script", nrLoopsArray, emptyExpression.Execute);
-      ExecuteAndTime ("empty expression script (uncompiled)", nrLoopsArray, emptyExpression.ExecuteUncompiled);
+      ExecuteAndLogTimings ("empty script function", nrLoopsArray, emptyScript.Execute);
+      ExecuteAndLogTimings ("empty expression script", nrLoopsArray, emptyExpression.Execute);
+      ExecuteAndLogTimings ("empty expression script (uncompiled)", nrLoopsArray, emptyExpression.ExecuteUncompiled);
     }
 
 
-    public void ExecuteAndTime (string testName, int nrLoops, Func<Object> func)
+    public void ExecuteAndLogTimings (string testName, int nrLoops, Func<Object> func)
     {
-      ExecuteAndTime (testName, new[] { nrLoops }, func);
+      ExecuteAndLogTimings (testName, new[] { nrLoops }, func);
     }
 
-    public void ExecuteAndTime ( string testName, int[] nrLoopsArray, Func<Object> func)
+    public void ExecuteAndLogTimings ( string testName, int[] nrLoopsArray, Func<Object> func)
     {
       object result = null;
 
@@ -191,10 +191,10 @@ def PropertyPathAccess(cascade) :
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000 };
-      ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndTime ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
-      ExecuteAndTime ("script function (local stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeLocalStableBinding));
-      ExecuteAndTime ("script function (from map)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
+      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
+      ExecuteAndLogTimings ("script function (local stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeLocalStableBinding));
+      ExecuteAndLogTimings ("script function (from map)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
       //ExecuteAndTime ("uncompiled expression", nrLoopsArray, () => expression.Execute ());
       //ExecuteAndTime ("uncompiled expression", nrLoopsArray, () => expression.ExecuteUncompiled ());
     }
@@ -228,8 +228,8 @@ def PropertyPathAccess(cascade) :
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000};
-      ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndTime ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
+      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
     }
 
 
@@ -268,10 +268,10 @@ def PropertyPathAccess(cascade) :
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
-      ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndTime ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
-      ExecuteAndTime ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMember));
-      ExecuteAndTime ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
+      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ExecuteAndLogTimings ("script function (stable binding)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
+      ExecuteAndLogTimings ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMember));
+      ExecuteAndLogTimings ("script function (GetCustomMember)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
     }
 
 
@@ -308,8 +308,8 @@ def PropertyPathAccess(cascade) :
 
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
-      ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndTime ("script function (FixedAttributeProxy)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
+      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ExecuteAndLogTimings ("script function (FixedAttributeProxy)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsFixedAttributeProxy));
     }
 
     [Test]
@@ -343,8 +343,8 @@ def PropertyPathAccess(cascade) :
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000, 1000000 };
       //var nrLoopsArray = new[] { 1, 1, 10, 100, 1000, 10000, 100000 };
       var nrLoopsArray = new[] { 10 };
-      ExecuteAndTime ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
-      ExecuteAndTime ("script function (AttributeProxyFromMap)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
+      ExecuteAndLogTimings ("script function", nrLoopsArray, () => propertyPathAccessScript.Execute (cascade));
+      ExecuteAndLogTimings ("script function (AttributeProxyFromMap)", nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeGetCustomMemberReturnsAttributeProxyFromMap));
     }
 
 
@@ -601,40 +601,9 @@ def PropertyPathAccess(cascade) :
   }
 
 
-  //public class CascadeGetCustomMemberReturnsAttributeProxyFromMap : Cascade
-  //{
-  //  private readonly Dictionary<string, object> _attributeProxyMap = new Dictionary<string, object>();
-
-  //  public CascadeGetCustomMemberReturnsAttributeProxyFromMap (int nrChildren)
-  //  {
-  //    --nrChildren;
-  //    Name = "C" + nrChildren;
-  //    if (nrChildren > 0)
-  //    {
-  //      Child = new CascadeGetCustomMemberReturnsAttributeProxyFromMap (nrChildren);
-  //    }
-  //  }
-
-  //  public void AddAttributeProxy(string name, object proxied, ScriptContext scriptContext)
-  //  {
-  //    ScriptContext.SwitchAndHoldScriptContext (scriptContext);
-  //    var attributeNameProxy = ScriptContext.GetAttributeProxy (proxied, name);
-  //    _attributeProxyMap[name] = attributeNameProxy;
-  //    ScriptContext.ReleaseScriptContext (scriptContext);
-  //  }
-
-  //  [SpecialName]
-  //  public object GetCustomMember (string name)
-  //  {
-  //    //To.ConsoleLine.s ("CascadeGetCustomMemberReturnsAttributeProxyFromMap.GetCustomMember").e(() => name);
-  //    return _attributeProxyMap[name];
-  //  }
-  //}
-
 
   public class CascadeGetCustomMemberReturnsAttributeProxyFromMap : Cascade
   {
-    //private readonly Dictionary<string, object> _attributeProxyMap = new Dictionary<string, object> ();
     protected readonly Dictionary<Tuple<Type, string>, object> _attributeProxyMap = new Dictionary<Tuple<Type, string>, object> ();
 
     public CascadeGetCustomMemberReturnsAttributeProxyFromMap (int nrChildren)

@@ -14,6 +14,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
@@ -32,6 +33,79 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
+    public void SimplePropertyAccess_GetCustomMember ()
+    {
+      const string scriptFunctionSourceCode = @"
+import clr
+def PropertyPathAccess(cascade) :
+  return cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name
+";
+
+      const int numberChildren = 10;
+      var cascadeWithoutStableBinding = new Cascade (numberChildren);
+      var cascadeStableBinding = new CascadeStableBinding (numberChildren);
+
+      var privateScriptEnvironment = ScriptEnvironment.Create ();
+
+      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+
+      var propertyPathAccessScript = new ScriptFunction<Cascade, string> (
+        _scriptContext, ScriptLanguageType.Python,
+        scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
+      );
+
+      var nrLoopsArray = new[] { 1, 1, 10000 };
+      double timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding)).Last ();
+      double timingWithoutStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeWithoutStableBinding)).Last ();
+
+      Assert.That (timingStableBinding / timingWithoutStableBinding, Is.LessThanOrEqualTo (5.0));
+    }
+
+
+    [Test]
+    [Explicit]
+    public void CompiledVsUncompiled ()
+    {
+      var nrLoopsArray = new[] { 1, 1, 1000 };
+      CompiledVsUncompiledHelper (nrLoopsArray, false); // Warm up DLR
+      var timingsCompiled = CompiledVsUncompiledHelper (nrLoopsArray, true);
+      var timingsUncompiled = CompiledVsUncompiledHelper (nrLoopsArray, false);
+
+      To.ConsoleLine.e (() => timingsUncompiled).e (() => timingsCompiled);
+    }
+
+    private long[] CompiledVsUncompiledHelper (int[] nrLoopsArray, bool executeCompiled)
+    {
+      const string scriptExpressionSourceCode = "GLOBAL_cascade.Child.Child.Child.Child.Child.Child.Child.Child.Child.Name";
+
+      const int numberChildren = 10;
+      var cascade = new Cascade (numberChildren);
+
+      var privateScriptEnvironment = ScriptEnvironment.Create ();
+
+      privateScriptEnvironment.Import ("Remotion.Scripting.UnitTests", "Remotion.Scripting.UnitTests", "Cascade");
+      privateScriptEnvironment.SetVariable ("GLOBAL_cascade", cascade);
+
+      ExpressionScript<string> expressionScript = new ExpressionScript<string> (
+          _scriptContext, ScriptLanguageType.Python,
+          scriptExpressionSourceCode, privateScriptEnvironment
+          );
+
+      long[] timings;
+      if (executeCompiled)
+      {
+        timings = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => expressionScript.Execute ());
+      }
+      else
+      {
+        timings = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => expressionScript.ExecuteUncompiled ());
+      }
+      return timings;
+    }
+
+
+    [Test]
+    [Explicit]
     public void SimplePropertyAccess_GetCustomMember1 ()
     {
       const string scriptFunctionSourceCode = @"
@@ -52,8 +126,8 @@ def PropertyPathAccess(cascade) :
         scriptFunctionSourceCode, privateScriptEnvironment, "PropertyPathAccess"
       );
 
-      var nrLoopsArray = new[] { 1, 1, 100 };
-      var timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding))[2];
+      var nrLoopsArray = new[] { 1, 1, 10000 };
+      var timingStableBinding = ScriptingHelper.ExecuteAndTime (nrLoopsArray, () => propertyPathAccessScript.Execute (cascadeStableBinding));
 
       To.ConsoleLine.e (() => timingStableBinding);
     }
@@ -100,7 +174,6 @@ def PropertyPathAccess(cascade) :
 
     public interface ICascade2
     {
-      //Cascade Child { get; set; }
       string Name { get; set; }
     }
 
