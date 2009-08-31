@@ -15,6 +15,9 @@
 // 
 namespace Remotion.Scripting
 {
+  /// <summary>
+  /// Base class for <see cref="StableMethodMetadataToken"/>.
+  /// </summary>
   public class StableMetadataToken
   {
     
