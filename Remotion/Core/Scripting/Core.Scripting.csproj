@@ -71,7 +71,6 @@
     </Compile>
     <Compile Include="ScriptEnvironment.cs" />
     <Compile Include="ScriptLanguageType.cs" />
-    <Compile Include="StableBindingGetCustomMemberImplementor.cs" />
     <Compile Include="ITypeFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfoTemplate.cs" />
