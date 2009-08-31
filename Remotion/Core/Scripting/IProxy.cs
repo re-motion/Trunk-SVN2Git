@@ -15,9 +15,11 @@
 // 
 namespace Remotion.Scripting
 {
+  /// <summary>
+  /// Reflection performance enhancement interface that allows setting of the proxied type instance in a proxy object.
+  /// </summary>
   public interface IProxy
   {
-    //object GetProxied ();
     void SetProxied (object proxied);  
   }
 }
