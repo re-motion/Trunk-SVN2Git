@@ -18,6 +18,9 @@ using Castle.DynamicProxy;
 
 namespace Remotion.Scripting
 {
+  /// <summary>
+  /// Helps with typical reflection tasks such as creating a ModuleScope.
+  /// </summary>
   public static class ReflectionHelper
   {
     public static ModuleScope CreateModuleScope (string namePostfix, bool savePhysicalAssembly)

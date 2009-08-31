@@ -18,7 +18,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.UnitTests
 {
   public class MethodInfoEqualityComparer : CompoundValueEqualityComparer<MethodInfo> {
     private static readonly MethodInfoEqualityComparer s_equalityComparer = new MethodInfoEqualityComparer();
@@ -36,7 +36,7 @@ namespace Remotion.Scripting
 
     // Masking out VtableLayoutMask is necessary, otherwise a virtual method and its override will not compare equal
     public MethodInfoEqualityComparer ()
-      : this (~(MethodAttributes.ReservedMask | MethodAttributes.VtableLayoutMask))
+        : this (~(MethodAttributes.ReservedMask | MethodAttributes.VtableLayoutMask))
     {
     }
 

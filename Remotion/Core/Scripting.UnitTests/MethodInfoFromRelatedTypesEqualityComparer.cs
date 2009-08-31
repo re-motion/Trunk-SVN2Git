@@ -18,7 +18,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
 
-namespace Remotion.Scripting
+namespace Remotion.Scripting.UnitTests
 {
   public class MethodInfoFromRelatedTypesEqualityComparer : CompoundValueEqualityComparer<MethodInfo> {
     private static readonly MethodInfoFromRelatedTypesEqualityComparer s_equalityComparer = new MethodInfoFromRelatedTypesEqualityComparer();

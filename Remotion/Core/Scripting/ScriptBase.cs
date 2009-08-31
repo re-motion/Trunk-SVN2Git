@@ -18,7 +18,8 @@ using System;
 namespace Remotion.Scripting
 {
   /// <summary>
-  /// Represents a re-motion script which knows its <see cref="ScriptContext"/> and <see cref="Scripting.ScriptLanguageType"/>.
+  /// Mother of all re-motion classes representing scripts (<see cref="ExpressionScript{TResult}"/>, <see cref="ScriptFunction{TResult}"/>, <see cref="ScriptFunction{TFixedArg1,TResult}"/>, etc).
+  /// Each script knows its <see cref="ScriptContext"/> and <see cref="Scripting.ScriptLanguageType"/>.
   /// </summary>
   public abstract class ScriptBase
   {
