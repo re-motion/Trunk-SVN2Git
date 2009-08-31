@@ -38,6 +38,11 @@ namespace Remotion.Scripting
       get { return _token; } 
     }
 
+    public MethodInfo MethodInfo
+    {
+      get { return _method; }
+    }
+
     public override bool Equals (object obj)
     {
       return Equals (obj as MethodMetadataToken);

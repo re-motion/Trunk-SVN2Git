@@ -30,6 +30,7 @@ namespace Remotion.Scripting.UnitTests
       var method0 = typeof (Proxied).GetPublicInstanceMethods ("OverrideMe", typeof (string)).Last ();
       var metadateToken0 = new MethodMetadataToken (method0);
       Assert.That (metadateToken0.Token, Is.EqualTo (method0.MetadataToken));
+      Assert.That (metadateToken0.MethodInfo, Is.EqualTo (method0));
     }
 
 
