@@ -40,9 +40,7 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void BuildProxyType_PublicProperty ()
     {
-      //var knownBaseTypes = new[] { typeof (ProxiedChild) };
       var knownBaseTypes = new[] { typeof (ProxiedChildChild) };
-      //var knownInterfaceTypes = new[] { typeof (IProperty) };
       var knownTypes = knownBaseTypes; //knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
       var typeFilter = new TypeLevelTypeFilter (knownTypes);
       var proxiedType = typeof (ProxiedChildChildChild);
@@ -54,8 +52,6 @@ namespace Remotion.Scripting.UnitTests
       object proxy = Activator.CreateInstance (proxyType, proxied);
 
       Assert.That (proxied.NameProperty, Is.EqualTo ("ProxiedChildChildChild::NameProperty PC"));
-
-      //To.ConsoleLine.e ("proxyType.GetAllProperties()", proxyType.GetAllProperties ()).nl ().e (proxyType.GetAllProperties ().Select (pi => pi.Attributes)).nl (2).e ("proxyType.GetAllMethods()", proxyType.GetAllMethods ());
 
       var proxyPropertyInfo = proxyType.GetProperty ("NameProperty", _publicInstanceFlags);
 
@@ -69,7 +65,6 @@ namespace Remotion.Scripting.UnitTests
     public void BuildProxyType_PublicProperty_WithSetter ()
     {
       var knownBaseTypes = new[] { typeof (ProxiedChild) };
-      //var knownInterfaceTypes = new[] { typeof (IProperty) };
       var knownTypes = knownBaseTypes; //knownBaseTypes.Union (knownInterfaceTypes).ToArray ();
       var typeFilter = new TypeLevelTypeFilter (knownTypes);
       var proxiedType = typeof (ProxiedChildChildChild);

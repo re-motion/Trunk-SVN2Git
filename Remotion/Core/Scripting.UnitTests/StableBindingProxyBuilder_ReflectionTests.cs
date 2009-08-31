@@ -30,15 +30,6 @@ namespace Remotion.Scripting.UnitTests
           mi => (mi.Name == name) && mi.GetParameters ().Length == 1 && mi.GetParameters ()[0].ParameterType == typeof (string)).ToArray ();
 
       Assert.That (methods.Length, Is.EqualTo (expectedNumberOfMethods));
-
-      //var method = methods[0];
-
-      //// Note: For this to work, the first method with a matching name must be the one which was added in the leaf class.
-      //Assert.That (StableBindingProxyBuilder.IsMethodBound (method, methods), Is.True);
-      //for (int i = 1; i < methods.Length; i++)
-      //{
-      //  Assert.That (StableBindingProxyBuilder.IsMethodBound (methods[i], methods), Is.False);
-      //}
     }
 
 
@@ -69,8 +60,6 @@ namespace Remotion.Scripting.UnitTests
     [Test]
     public void IsMethodBound_MethodInfosNotFromSameTypeAsMethodToTest ()
     {
-      //Assert_IsMethodBound_MethodInfosNotFromSameTypeAsMethodToTest (
-      //  typeof (Proxied), typeof (Proxied), 1);
       Assert_IsMethodBound_MethodInfosNotFromSameTypeAsMethodToTest (
         typeof (ProxiedChildChildChild), typeof (Proxied), 1);
     }

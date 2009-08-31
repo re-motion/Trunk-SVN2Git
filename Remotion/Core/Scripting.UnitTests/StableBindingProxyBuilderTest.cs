@@ -77,7 +77,6 @@ namespace Remotion.Scripting.UnitTests
       // Note: ProxiedChild implements IAmbigous1 and IAmbigous2
       var proxiedType = typeof (ProxiedChild);
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildClassMethodToInterfaceMethodsMap_TwoExplicitInterfaceMethods"));
-      //stableBindingProxyBuilder.BuildProxyType();
 
       var classMethodToInterfaceMethodsMap = stableBindingProxyBuilder.GetClassMethodToInterfaceMethodsMap ();
 
@@ -266,17 +265,6 @@ namespace Remotion.Scripting.UnitTests
       var knownBaseTypeMethods = knownBaseType.GetMethods ().Where (m => m.IsSpecialName == false);
       var proxyMethods = proxyType.GetMethods ().Where (m => m.IsSpecialName == false && m.DeclaringType != typeof(Object));
 
-      //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (proxyMethods);
-
-      //ScriptingHelper.ToConsoleLine ("OverrideMe", knownBaseType, proxiedType, proxyType);
-      //ScriptingHelper.ToConsoleLine ("PrependName", knownBaseType, proxiedType, proxyType);
-
-      //var misPrependName_BaseType = ScriptingHelper.GetAnyInstanceMethodArray (knownBaseType, "PrependName");
-      //var misPrependName_ProxiedeType = ScriptingHelper.GetAnyInstanceMethodArray (proxiedType, "PrependName");
-
-      //To.ConsoleLine.e(misPrependName_BaseType.Select (mi => mi.GetBaseDefinition ().MetadataToken));
-      //To.ConsoleLine.e (misPrependName_ProxiedeType.Select (mi => mi.GetBaseDefinition ().MetadataToken));
-
       Assert.That (knownBaseTypeMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
 
       AssertHasSameMethod (knownBaseType, proxyType, "GetName");
@@ -295,7 +283,6 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    //[Ignore] 
     public void BuildProxyType_MethodHiddenWithNew ()
     {
       AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (ProxiedChildChild),true, "PrependName");
@@ -303,26 +290,14 @@ namespace Remotion.Scripting.UnitTests
       AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (Proxied), false, "PrependName");
 
       AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChild), typeof (ProxiedChildChild), true, "PrependName");
-      //AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChild), false);
       AssertBuildProxyType_MethodHiddenWithNew (typeof (Proxied), typeof (ProxiedChild), false, "PrependName");
     }
 
     [Test]
     public void BuildProxyType_MethodHiddenWithNew_ProxiedTypeIsKnownBaseType ()
     {
-      // Failed with "AmbiguousMethodNameException : Method name "PrependName" is ambiguous in type ProxiedChildChild."
-      // Problem: Both PrependName methods (one coming from Proxied base class and one coming from proxied class ProxiedChildChild) 
-      // get implemented in the proxy, since they both are known due to knownBaseType == proxiedType.
-      // The difference to ProxiedChildChild lies in the fact that the DeclaringType of both PrependName methods in the proxy
-      // is the proxyType itself, whereas in ProxiedChildChild one method has Proxied and the other ProxiedChildChild.
-      // Solution: Use Type.DefaultBinder.SelectMethod to find the correct method to expose in the proxy.
-
-      //ScriptingHelper.ToConsoleLine ("PrependName", typeof (Proxied), typeof (ProxiedChild),
-      //  typeof (ProxiedChildChild), typeof (ProxiedChildChildChild));
-
       AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChildChild), false, "PrependName");
       AssertBuildProxyType_MethodHiddenWithNew (typeof (ProxiedChildChild), typeof (ProxiedChildChild), false, "PrependName");
-
     }
 
 
@@ -332,18 +307,6 @@ namespace Remotion.Scripting.UnitTests
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("AssertBuildProxyType_MethodHiddenWithNew"));
       var proxyType = stableBindingProxyBuilder.BuildProxyType ();
 
-      //var knownBaseTypeMethods = knownBaseType.GetMethods ().Where (m => m.IsSpecialName == false);
-      //var proxyMethods = proxyType.GetMethods ().Where (m => m.IsSpecialName == false && m.DeclaringType != typeof (Object));
-
-      //To.ConsoleLine.e (knownBaseTypeMethods).nl (3).e (proxyMethods);
-      //ScriptingHelper.ToConsoleLine ("OverrideMe", knownBaseType, proxiedType, proxyType);
-      //ScriptingHelper.ToConsoleLine ("PrependName", knownBaseType, proxiedType, proxyType);
-
-      //Assert.That (knownBaseTypeMethods.Count (), Is.EqualTo (proxyMethods.Count ()));
-
-      //AssertHasSameMethod (knownBaseType, proxyType, "PrependName",typeof(String));
-
-      //var proxied = new ProxiedChildChild("Peter");
       var proxiedTypeInstance = Activator.CreateInstance (proxiedType, "Peter");
       var knownBaseTypeInstance = Activator.CreateInstance (knownBaseType, "Peter");
       var proxy = Activator.CreateInstance (proxyType, proxiedTypeInstance);
@@ -352,19 +315,6 @@ namespace Remotion.Scripting.UnitTests
 
       // Test that call to proxy method is not ambigous
       PrivateInvoke.InvokePublicMethod (proxy, methodName, argument);
-
-
-      // TODO: After AmbiguousMethodNameException workaround has been found, pass expected result into method.
-#if(false)
-      //Assert.That (((Proxied)proxiedTypeInstance).PrependName (argument), Is.EqualTo (expected));
-      Assert.That (InvokeMethod (knownBaseTypeInstance, methodName, argument), Is.EqualTo (expected));
-      Assert.That (PrivateInvoke.InvokePublicMethod (proxy, methodName, argument), Is.EqualTo (expected));
-
-      if (expectProxiedCallDifferent)
-      {
-        Assert.That (InvokeMethod (proxiedTypeInstance, methodName, argument), Is.Not.EqualTo (expected));
-      }
-#endif
     }
 
 
@@ -447,8 +397,6 @@ namespace Remotion.Scripting.UnitTests
       var proxy = Activator.CreateInstance (proxyType, proxiedTypeInstance);
       const string argument = "Fox";
 
-      //ScriptingHelper.ToConsoleLine ("PrependNameVirtual", proxyType);
-
       var proxyResult = InvokeMethod (proxy, methodName, argument);
 
       // We expect the call to be virtual.
@@ -525,7 +473,6 @@ namespace Remotion.Scripting.UnitTests
 
 
     [Test]
-    //[Ignore] 
     public void BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation ()
     {
       Assert_BuildProxyType_MultipleKnownInterfaces_PublicAndExplicitInterfaceImplementation(
@@ -575,7 +522,6 @@ namespace Remotion.Scripting.UnitTests
 
 
 
-//------------------------------------------------------------------------------------------------------------------------------------
 
 
     [Test]
@@ -611,26 +557,6 @@ namespace Remotion.Scripting.UnitTests
       #endif
 
       AssertHasSameMethod (knownBaseType, proxyType, "ProxiedChildGenericToString", typeof (int), typeof (string));
-
-      //To.ConsoleLine.nl (2).s("Base Type:");
-      //ScriptingHelper.GetAnyGenericInstanceMethodArray (knownBaseType, "ProxiedChildGenericToString", 2).Process (mi => ScriptingHelper.ToConsoleLine (mi));
-      //To.ConsoleLine.nl ().s ("Proxied Type:");
-      //ScriptingHelper.GetAnyGenericInstanceMethodArray (proxiedType, "ProxiedChildGenericToString", 2).Process (mi => ScriptingHelper.ToConsoleLine (mi));
-      //To.ConsoleLine.nl ().s ("Proxy Type:");
-      //ScriptingHelper.GetAnyGenericInstanceMethodArray (proxyType, "ProxiedChildGenericToString", 2).Process (mi => ScriptingHelper.ToConsoleLine (mi));
-
-      // Base Type:
-      //  ("ProxiedChildGenericToString",System.String,PrivateScope, Public, HideBySig,{System.Int32,System.String,T2,T3},{None,None,None,None},{0,1,2,3},{-1,-1,0,1},{134217835,134217836,134217837,134217838},{"Int32 t0","System.String t1","T2 t2","T3 t3"}) Remotion.Scripting.UnitTests.TestDomain.ProxiedChildGeneric`2[System.Int32,System.String] 
-
-      // Proxied Type 
-      // TODO: MetadataToken is the same as in Base Type ONLY for the correct method => use in MethodInfoEqualityComparer => Can get rid of "method.GetBaseDefinition ().DeclaringType.IsAssignableFrom..."
-      //  ("ProxiedChildGenericToString",System.String,PrivateScope, Public, HideBySig,{System.Int32,System.String,T2,T3},{None,None,None,None},{0,1,2,3},{-1,-1,0,1},{134217976,134217977,134217978,134217979},{"Int32 t0","System.String t1","T2 t2","T3 t3"}) Remotion.Scripting.UnitTests.TestDomain.ProxiedChildChildGeneric`2[System.Int32,System.String] 
-      //  ("ProxiedChildGenericToString",System.String,PrivateScope, Public, HideBySig,{System.Int32,System.String,T2,T3},{None,None,None,None},{0,1,2,3},{-1,-1,0,1},{134217835,134217836,134217837,134217838},{"Int32 t0","System.String t1","T2 t2","T3 t3"}) Remotion.Scripting.UnitTests.TestDomain.ProxiedChildGeneric`2[System.Int32,System.String] 
-
-      // Proxy Type:
-      //  ("ProxiedChildGenericToString",System.String,PrivateScope, Public, HideBySig,{System.Int32,System.String,T2,T3},{None,None,None,None},{0,1,2,3},{-1,-1,0,1},{134217729,134217730,134217731,134217732},{"Int32 t0","System.String t1","T2 t2","T3 t3"}) ProxiedChildChildGeneric`2 
-      //  ("ProxiedChildGenericToString",System.String,PrivateScope, Public, HideBySig,{System.Int32,System.String,T2,T3},{None,None,None,None},{0,1,2,3},{-1,-1,0,1},{134217739,134217740,134217741,134217742},{"Int32 t0","System.String t1","T2 t2","T3 t3"}) ProxiedChildChildGeneric`2
-
     }
 
 
@@ -669,15 +595,12 @@ namespace Remotion.Scripting.UnitTests
 
       //To.ConsoleLine.e (() => resultProxy);
       StringAssert.StartsWith ("ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_New", resultProxy);
-      //Assert.That (resultProxy, Is.EqualTo (((ProxiedChildGeneric<Proxied, Document>) proxied).Pro);
     }
 
     [Test]
     public void BuildProxyType_ComplexGenericArguments_Virtual ()
     {
       var knownBaseType = typeof (ProxiedChildGeneric<Proxied, Document>);
-      //var knownInterfaceType = typeof (IAmbigous2);
-      //var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType, knownInterfaceType });
       var typeFilter = new TypeLevelTypeFilter (new[] { knownBaseType });
       var proxiedType = typeof (ProxiedChildChildGeneric<Proxied, Document>);
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, typeFilter, CreateModuleScope ("BuildProxyType_CheckInterfaceMembers"));
@@ -703,11 +626,6 @@ namespace Remotion.Scripting.UnitTests
       var methodArguments = Create_ProxiedChildGeneric_ComplexGenericArguments_Parameters (p0, p1, p2, p3);
 
       var proxyResult = (string) proxyMethod.Invoke (proxy, methodArguments);
-      //var proxyResult = (string) InvokeMethod (proxy, methodName, methodArguments);
-      //proxy.GetType ().InvokeMember (
-      //    methodName, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Instance, null, proxy, methodArguments);
-
-      //To.ConsoleLine.e (() => resultProxy);
       StringAssert.StartsWith ("ProxiedChildGeneric::ProxiedChildGeneric_ComplexGenericArguments_Virtual", proxyResult);
     }
 
@@ -751,7 +669,6 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (methodFromType0, Is.Not.Null);
       var methodFromType1 = type1.GetMethod (methodName, parameterTypes);
       Assert.That (methodFromType1, Is.Not.Null);
-      //Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
       Assert.That (_methodInfoEqualityComparerIgnoreVirtual.Equals (methodFromType0, methodFromType1), Is.True);
     }
 
@@ -761,8 +678,6 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (methodFromType0, Is.Not.Null);
       var methodFromType1 = ScriptingHelper.GetExplicitInterfaceMethod (interfaceType, type1, methodName, parameterTypes);
       Assert.That (methodFromType1, Is.Not.Null);
-      //var methodFromType1 = type1.GetMethod (methodName, parameterTypes);
-      //Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
       Assert.That (_methodInfoEqualityComparerIgnoreVirtual.Equals (methodFromType0, methodFromType1), Is.True);
     }
 
@@ -772,8 +687,6 @@ namespace Remotion.Scripting.UnitTests
       Assert.That (methodFromType0, Is.Not.Null);
       var methodFromType1 = GetGenericMethod (type1, methodName, numberOfGenericArguments);
       Assert.That (methodFromType1, Is.Not.Null);
-      //ScriptingHelper.ToConsoleLine (methodFromType0); ScriptingHelper.ToConsoleLine (methodFromType1);
-      //Assert.That (MethodInfoEqualityComparer.Get.Equals (methodFromType0, methodFromType1), Is.True);
       Assert.That (_methodInfoEqualityComparerIgnoreVirtual.Equals (methodFromType0, methodFromType1), Is.True);
     }
 
