@@ -45,6 +45,7 @@ namespace Remotion.Scripting
     private readonly MethodInfo[] _publicMethodsInFirstKnownBaseType;
     private readonly Type _firstKnownBaseType;
     private readonly StableMetadataTokenToMethodInfoMap _knownBaseTypeStableMetadataTokenToMethodInfoMap;
+    private Dictionary<StableMetadataToken, PropertyInfo> _firstKnownBaseTypeSpecialMethodsToPropertyMap;
 
     public StableBindingProxyBuilder (Type proxiedType, ITypeFilter typeFilter, ModuleScope moduleScope)
     {
@@ -64,6 +65,7 @@ namespace Remotion.Scripting
       {
         _publicMethodsInFirstKnownBaseType = _firstKnownBaseType.GetMethods().ToArray();
         _knownBaseTypeStableMetadataTokenToMethodInfoMap = new StableMetadataTokenToMethodInfoMap (_firstKnownBaseType);
+        _firstKnownBaseTypeSpecialMethodsToPropertyMap = BuildSpecialMethodsToPropertyMap (_firstKnownBaseType);
       }
     }
 
@@ -87,23 +89,11 @@ namespace Remotion.Scripting
     {
       var specialMethodsInProxiedType = _proxiedType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where (mi => mi.IsSpecialName);
 
-      var implementedProperties = new HashSet<PropertyInfo>();
 
-      //// TODO: Turn into field, move initialization into ctor
-      //MethodInfo[] methodsInFirstKnownBaseType = new MethodInfo[0];
       //if (_firstKnownBaseType != null)
       //{
-      //  methodsInFirstKnownBaseType = _firstKnownBaseType.GetMethods (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      //  _firstKnownBaseTypeSpecialMethodsToPropertyMap = BuildSpecialMethodsToPropertyMap (_firstKnownBaseType);
       //}
-
-      // TODO: Turn into field, move initialization into ctor
-      //Dictionary<StableMetadataToken,HashSet<PropertyInfo>> firstKnownBaseTypeSpecialMethodsToPropertyMap = null;
-      Dictionary<StableMetadataToken, PropertyInfo> firstKnownBaseTypeSpecialMethodsToPropertyMap = null;
-
-      if (_firstKnownBaseType != null)
-      {
-        firstKnownBaseTypeSpecialMethodsToPropertyMap = BuildSpecialMethodsToPropertyMap(_firstKnownBaseType);
-      }
 
 
       foreach (var proxiedTypeMethod in specialMethodsInProxiedType)
@@ -111,7 +101,7 @@ namespace Remotion.Scripting
         PropertyInfo knownBaseTypeProperty = null;
         if (_firstKnownBaseType != null)
         {
-          firstKnownBaseTypeSpecialMethodsToPropertyMap.TryGetValue (new StableMethodMetadataToken(proxiedTypeMethod), out knownBaseTypeProperty);
+          _firstKnownBaseTypeSpecialMethodsToPropertyMap.TryGetValue (new StableMethodMetadataToken(proxiedTypeMethod), out knownBaseTypeProperty);
         }
 
         if (knownBaseTypeProperty != null)
