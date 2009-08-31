@@ -38,7 +38,6 @@ namespace Remotion.Scripting
     private readonly ModuleScope _moduleScope;
     private readonly Dictionary<Type, Type> _proxiedTypeToProxyTypeCache = new Dictionary<Type, Type> ();
     private readonly Dictionary<Type, object> _proxiedTypeToProxyCache = new Dictionary<Type, object> ();
-    //private readonly Dictionary<Tuple<Type, string>, object> _proxiedTypeToAttributeProxyCache = new Dictionary<Tuple<Type, string>, object> ();
     private readonly Dictionary<Tuple<Type, string>, AttributeProxyCached> _proxiedTypeToAttributeProxyCache = new Dictionary<Tuple<Type, string>, AttributeProxyCached> ();
 
     public StableBindingProxyProvider (ITypeFilter typeFilter, ModuleScope moduleScope)
@@ -61,22 +60,6 @@ namespace Remotion.Scripting
     }
 
 
-    //public object GetAttributeProxy (Object proxied, string attributeName)
-    //{
-    //  var key = new Tuple<Type, string> (proxied.GetType (), attributeName);
-    //  Object attributeProxy;
-    //  if (!_proxiedTypeToAttributeProxyCache.TryGetValue (key, out attributeProxy))
-    //  {
-    //    object proxy = GetProxy (proxied);
-    //    attributeProxy = ScriptingHost.GetScriptEngine (ScriptLanguageType.Python).Operations.GetMember (proxy, attributeName);
-    //    _proxiedTypeToAttributeProxyCache[key] = attributeProxy;
-    //  }
-
-    //  SetProxiedFieldValue (proxy, proxied);
-
-    //  return attributeProxy;
-    //}
-
     public object GetAttributeProxy (Object proxied, string attributeName)
     {
       var key = new Tuple<Type, string> (proxied.GetType(), attributeName);
@@ -90,8 +73,6 @@ namespace Remotion.Scripting
         _proxiedTypeToAttributeProxyCache[key] = attributeProxyCached;
       }
 
-      //attributeProxyCached.SetProxiedFieldValue (proxied);
-      //SetProxiedFieldValue (attributeProxyCached.Proxy, proxied);
       ((IProxy) attributeProxyCached.Proxy).SetProxied (proxied);
 
       return attributeProxyCached.AttributeProxy;
@@ -99,7 +80,6 @@ namespace Remotion.Scripting
 
     protected Type BuildProxyType (Type proxiedType)
     {
-      //To.ConsoleLine.s ("BuildProxyType: ").e (proxiedType);
       var stableBindingProxyBuilder = new StableBindingProxyBuilder (proxiedType, _typeFilter, _moduleScope);
       return stableBindingProxyBuilder.BuildProxyType ();
     }
@@ -120,7 +100,6 @@ namespace Remotion.Scripting
 
     protected object BuildProxy (object proxied)
     {
-      //To.ConsoleLine.s ("BuildProxy: ").e (proxied);
       Type proxyType = GetProxyType (proxied.GetType ());
       var proxy = Activator.CreateInstance (proxyType, proxied);
       // Set proxied member in proxy to null, so it will not keep the proxied object alive.
